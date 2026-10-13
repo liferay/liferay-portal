@@ -43,15 +43,22 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.search.document.DocumentBuilderFactory;
+import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
+import com.liferay.portal.search.engine.adapter.document.DeleteDocumentRequest;
+import com.liferay.portal.search.engine.adapter.document.IndexDocumentRequest;
+import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
+import com.liferay.portal.workflow.metrics.sla.processor.WorkflowMetricsSLAStatus;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -265,6 +272,7 @@ public class AssetStatisticsResourceTest
 
 		_testGetAssetStatisticsBrokenLinksCount();
 		_testGetAssetStatisticsByAssetLibrary();
+		_testGetAssetStatisticsSLABreachedWorkflowTasksCount();
 		_testGetAssetStatisticsWithFreeTier();
 		_testGetAssetStatisticsWorkflowTasksCounts();
 	}
@@ -402,6 +410,23 @@ public class AssetStatisticsResourceTest
 		}
 	}
 
+	private void _assertSLABreachedWorkflowTasksCount(
+			Long assetLibraryId, long expectedSLABreachedWorkflowTasksCount)
+		throws Exception {
+
+		for (AssetStatisticsResource assetStatisticsResource :
+				_assetStatisticsResources) {
+
+			AssetStatistics assetStatistics =
+				assetStatisticsResource.getAssetStatistics(assetLibraryId);
+
+			Assert.assertEquals(
+				expectedSLABreachedWorkflowTasksCount,
+				GetterUtil.getLong(
+					assetStatistics.getSlaBreachedWorkflowTasksCount()));
+		}
+	}
+
 	private void _assertWorkflowTasksCounts(
 			Long assetLibraryId, long expectedOverdueWorkflowTasksCount,
 			long expectedWorkflowTasksCount)
@@ -441,6 +466,55 @@ public class AssetStatisticsResourceTest
 		return _objectDefinitionLocalService.
 			getObjectDefinitionByExternalReferenceCode(
 				"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId());
+	}
+
+	private String _getSLATaskResultsIndexName() throws Exception {
+		return _indexNameBuilder.getIndexName(TestPropsValues.getCompanyId()) +
+			"-workflow-metrics-sla-task-results";
+	}
+
+	private void _indexSLATaskResult(
+			boolean breached, ObjectDefinition objectDefinition,
+			ObjectEntry objectEntry, boolean onTime,
+			WorkflowMetricsSLAStatus workflowMetricsSLAStatus)
+		throws Exception {
+
+		List<KaleoTaskInstanceToken> kaleoTaskInstanceTokens =
+			_kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceTokens(
+				objectDefinition.getClassName(),
+				objectEntry.getObjectEntryId());
+
+		KaleoTaskInstanceToken kaleoTaskInstanceToken =
+			kaleoTaskInstanceTokens.get(0);
+
+		String uid = RandomTestUtil.randomString();
+
+		IndexDocumentRequest indexDocumentRequest = new IndexDocumentRequest(
+			_getSLATaskResultsIndexName(), uid,
+			DocumentBuilderFactory.builder(
+			).setValue(
+				"breached", breached
+			).setLong(
+				"companyId", TestPropsValues.getCompanyId()
+			).setValue(
+				"deleted", false
+			).setValue(
+				"onTime", onTime
+			).setLong(
+				"slaDefinitionId", RandomTestUtil.randomLong()
+			).setString(
+				"status", workflowMetricsSLAStatus.name()
+			).setLong(
+				"taskId", kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId()
+			).setString(
+				"uid", uid
+			).build());
+
+		indexDocumentRequest.setRefresh(true);
+
+		_searchEngineAdapter.execute(indexDocumentRequest);
+
+		_slaTaskResultUids.add(uid);
 	}
 
 	private void _testGetAssetStatisticsBrokenLinksCount() throws Exception {
@@ -596,6 +670,120 @@ public class AssetStatisticsResourceTest
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
 	}
 
+	private void _testGetAssetStatisticsSLABreachedWorkflowTasksCount()
+		throws Exception {
+
+		// Add object entry with breached workflow task
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry depotEntry1 = _addSpaceDepotEntry(serviceContext);
+		DepotEntry depotEntry2 = _addSpaceDepotEntry(serviceContext);
+
+		ObjectDefinition objectDefinition =
+			_getBasicWebContentObjectDefinition();
+
+		for (DepotEntry depotEntry :
+				new DepotEntry[] {depotEntry1, depotEntry2}) {
+
+			_workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
+				TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+				depotEntry.getGroupId(), objectDefinition.getClassName(), 0, 0,
+				"Single Approver", 1);
+		}
+
+		_indexSLATaskResult(
+			true, objectDefinition,
+			_addObjectEntry(depotEntry1, objectDefinition), false,
+			WorkflowMetricsSLAStatus.RUNNING);
+
+		_assertSLABreachedWorkflowTasksCount(depotEntry1.getGroupId(), 1);
+
+		// Add object entry with breached workflow task on another space
+
+		_indexSLATaskResult(
+			true, objectDefinition,
+			_addObjectEntry(depotEntry2, objectDefinition), false,
+			WorkflowMetricsSLAStatus.RUNNING);
+
+		_assertSLABreachedWorkflowTasksCount(depotEntry1.getGroupId(), 1);
+		_assertSLABreachedWorkflowTasksCount(depotEntry1.getDepotEntryId(), 1);
+
+		_assertSLABreachedWorkflowTasksCount(depotEntry2.getGroupId(), 1);
+		_assertSLABreachedWorkflowTasksCount(depotEntry2.getDepotEntryId(), 1);
+
+		_assertSLABreachedWorkflowTasksCount(null, 2);
+
+		// Add object entry with completed breached workflow task
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			depotEntry1, objectDefinition);
+
+		_indexSLATaskResult(
+			true, objectDefinition, objectEntry1, false,
+			WorkflowMetricsSLAStatus.COMPLETED);
+
+		_updateKaleoTaskInstanceToken(
+			true, null, objectDefinition, objectEntry1);
+
+		_assertSLABreachedWorkflowTasksCount(depotEntry1.getGroupId(), 1);
+
+		// Add object entry with workflow task breached by two SLAs
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			depotEntry1, objectDefinition);
+
+		_indexSLATaskResult(
+			true, objectDefinition, objectEntry2, false,
+			WorkflowMetricsSLAStatus.RUNNING);
+		_indexSLATaskResult(
+			true, objectDefinition, objectEntry2, false,
+			WorkflowMetricsSLAStatus.RUNNING);
+
+		_assertSLABreachedWorkflowTasksCount(depotEntry1.getGroupId(), 2);
+
+		// Add object entry with workflow task on time
+
+		_indexSLATaskResult(
+			false, objectDefinition,
+			_addObjectEntry(depotEntry1, objectDefinition), true,
+			WorkflowMetricsSLAStatus.RUNNING);
+
+		_assertSLABreachedWorkflowTasksCount(depotEntry1.getGroupId(), 2);
+
+		// Add object entry with workflow task created after the SLA deadline
+
+		_indexSLATaskResult(
+			false, objectDefinition,
+			_addObjectEntry(depotEntry1, objectDefinition), false,
+			WorkflowMetricsSLAStatus.RUNNING);
+
+		_assertSLABreachedWorkflowTasksCount(depotEntry1.getGroupId(), 2);
+
+		// Add object entry with workflow task whose SLA has not started
+
+		_indexSLATaskResult(
+			true, objectDefinition,
+			_addObjectEntry(depotEntry1, objectDefinition), false,
+			WorkflowMetricsSLAStatus.NEW);
+
+		_assertSLABreachedWorkflowTasksCount(depotEntry1.getGroupId(), 2);
+
+		for (String slaTaskResultUid : _slaTaskResultUids) {
+			DeleteDocumentRequest deleteDocumentRequest =
+				new DeleteDocumentRequest(
+					_getSLATaskResultsIndexName(), slaTaskResultUid);
+
+			deleteDocumentRequest.setRefresh(true);
+
+			_searchEngineAdapter.execute(deleteDocumentRequest);
+		}
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry1.getDepotEntryId());
+		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
+	}
+
 	private void _testGetAssetStatisticsWithFreeTier() throws Exception {
 		try (AutoCloseable autoCloseable = CMSFreeTierTestUtil.withFreeTier()) {
 			assertHttpResponseStatusCode(
@@ -700,6 +888,9 @@ public class AssetStatisticsResourceTest
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
+	private IndexNameBuilder _indexNameBuilder;
+
+	@Inject
 	private KaleoTaskInstanceTokenLocalService
 		_kaleoTaskInstanceTokenLocalService;
 
@@ -714,6 +905,11 @@ public class AssetStatisticsResourceTest
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private SearchEngineAdapter _searchEngineAdapter;
+
+	private final List<String> _slaTaskResultUids = new ArrayList<>();
 
 	@Inject
 	private UserLocalService _userLocalService;
