@@ -956,7 +956,7 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 			() -> _dynamicInclude.include(
 				_getAssetDisplayPageHttpServletRequest(fileEntry),
 				mockHttpServletResponse, RandomTestUtil.randomString()),
-			false, true);
+			true, true);
 
 		Document document = Jsoup.parse(
 			mockHttpServletResponse.getContentAsString());
@@ -1137,7 +1137,7 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 			mockHttpServletResponse.getContentAsString());
 
 		_assertAlternateLinkTag(
-			document, _getAvailableLocalesLayoutTranslatedLanguages());
+			document, _language.getAvailableLocales(_group.getGroupId()));
 		_assertCanonicalLinkTag(
 			document,
 			PortalUtil.getCanonicalURL("", _getThemeDisplay(), _layout));
@@ -1764,6 +1764,17 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 			null, null, serviceContext);
 	}
 
+	private void _assertAlternateLinkElementsSize(
+		Elements alternateLinkElements, Set<Locale> locales) {
+
+		Elements localeAlternateLinkElements = alternateLinkElements.select(
+			"[hrefLang]:not([hrefLang='x-default'])");
+
+		Assert.assertEquals(
+			localeAlternateLinkElements.toString(), locales.size(),
+			localeAlternateLinkElements.size());
+	}
+
 	private void _assertAlternateLinkTag(Document document, Set<Locale> locales)
 		throws Exception {
 
@@ -1771,6 +1782,8 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 			"link[rel='alternate']");
 
 		Assert.assertNotNull(alternateLinkElements);
+
+		_assertAlternateLinkElementsSize(alternateLinkElements, locales);
 
 		for (Locale locale : locales) {
 			Elements localeAlternateLinkElements = alternateLinkElements.select(
@@ -1795,6 +1808,8 @@ public class OpenGraphTopHeadDynamicIncludeTest {
 
 		Elements alternateLinkElements = document.select(
 			"link[rel='alternate']");
+
+		_assertAlternateLinkElementsSize(alternateLinkElements, locales);
 
 		HttpServletRequest httpServletRequest = _getHttpServletRequest();
 
