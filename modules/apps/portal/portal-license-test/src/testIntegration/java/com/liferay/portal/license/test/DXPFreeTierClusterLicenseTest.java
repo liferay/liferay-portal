@@ -27,14 +27,14 @@ import org.junit.runner.RunWith;
  */
 @Ignore
 @RunWith(Arquillian.class)
-public class ClusterLicenseTest extends BaseClusterLicenseTestCase {
+public class DXPFreeTierClusterLicenseTest extends BaseClusterLicenseTestCase {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		BaseClusterLicenseTestCase.setUpClass();
 
 		TomcatNode.ClusterExecutable<Serializable> clusterExecutable =
-			ClusterLicenseTest::_deployFreeTierLicense;
+			DXPFreeTierClusterLicenseTest::_deployFreeTierLicense;
 
 		registerBackgroundTomcatNode(startTomcatNode(true, clusterExecutable));
 		registerBackgroundTomcatNode(startTomcatNode(true, clusterExecutable));
@@ -43,7 +43,7 @@ public class ClusterLicenseTest extends BaseClusterLicenseTestCase {
 	@Test
 	public void testClusterLicense() throws Exception {
 		testClusterLicense(
-			ClusterLicenseTest::_deployFreeTierLicense,
+			DXPFreeTierClusterLicenseTest::_deployFreeTierLicense,
 			_PAGE_KEY_EXCEEDED_LIMIT_FREE_TIER, _MAX_CLUSTER_NODES_FREE_TIER);
 	}
 
@@ -53,7 +53,7 @@ public class ClusterLicenseTest extends BaseClusterLicenseTestCase {
 
 		tomcatNode1.syncExecute(
 			() -> deployAndAssertClusterLicense(
-				ClusterLicenseTest::_deployFreeTierLicense));
+				DXPFreeTierClusterLicenseTest::_deployFreeTierLicense));
 
 		Future<String> messageFuture1 = testConsoleMessageListener.register(
 			tomcatNode1.getNodeId(), CONSOLE_KEY_LICENSED_NODE,
@@ -69,7 +69,7 @@ public class ClusterLicenseTest extends BaseClusterLicenseTestCase {
 
 		tomcatNode2.syncExecute(
 			() -> deployAndAssertClusterLicense(
-				ClusterLicenseTest::_deployFreeTierLicense));
+				DXPFreeTierClusterLicenseTest::_deployFreeTierLicense));
 
 		testConsoleMessageListener.assertMessageListened(messageFuture1);
 		testConsoleMessageListener.assertMessageListened(messageFuture2);
@@ -93,7 +93,7 @@ public class ClusterLicenseTest extends BaseClusterLicenseTestCase {
 	@Test
 	public void testLimitPreviouslyValidatedClusterNode() throws Exception {
 		testLimitPreviouslyValidatedClusterNode(
-			ClusterLicenseTest::_deployFreeTierLicense,
+			DXPFreeTierClusterLicenseTest::_deployFreeTierLicense,
 			_MAX_CLUSTER_NODES_FREE_TIER, true);
 	}
 
@@ -102,14 +102,14 @@ public class ClusterLicenseTest extends BaseClusterLicenseTestCase {
 		throws Exception {
 
 		testLimitPreviouslyValidatedClusterNode(
-			ClusterLicenseTest::_deployFreeTierLicense,
+			DXPFreeTierClusterLicenseTest::_deployFreeTierLicense,
 			_MAX_CLUSTER_NODES_FREE_TIER, false);
 	}
 
 	@Test
 	public void testRecoverCluster() throws Exception {
 		testRecoverCluster(
-			ClusterLicenseTest::_deployFreeTierLicense,
+			DXPFreeTierClusterLicenseTest::_deployFreeTierLicense,
 			_PAGE_KEY_EXCEEDED_LIMIT_FREE_TIER, _MAX_CLUSTER_NODES_FREE_TIER,
 			false);
 	}
@@ -117,7 +117,7 @@ public class ClusterLicenseTest extends BaseClusterLicenseTestCase {
 	@Test
 	public void testRecoverClusterWithLicensedNodeShutdown() throws Exception {
 		testRecoverCluster(
-			ClusterLicenseTest::_deployFreeTierLicense,
+			DXPFreeTierClusterLicenseTest::_deployFreeTierLicense,
 			_PAGE_KEY_EXCEEDED_LIMIT_FREE_TIER, _MAX_CLUSTER_NODES_FREE_TIER,
 			true);
 	}

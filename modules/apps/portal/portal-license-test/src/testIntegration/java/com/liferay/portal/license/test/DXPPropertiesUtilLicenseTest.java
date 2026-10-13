@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
  * @author Tina Tian
  */
 @RunWith(Arquillian.class)
-public class PropertiesUtilLicenseTest
+public class DXPPropertiesUtilLicenseTest
 	extends BasePropertiesUtilLicenseTestCase {
 
 	@Override

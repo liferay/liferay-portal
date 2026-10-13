@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
  * @author Tina Tian
  */
 @RunWith(Arquillian.class)
-public class CheckLicenseTest extends BaseCheckLicenseTestCase {
+public class DXPCheckLicenseTest extends BaseCheckLicenseTestCase {
 
 	@Test
 	public void testCheckLicenseWithFreeTierBinaryFile2026_Q1_0()
@@ -48,7 +48,7 @@ public class CheckLicenseTest extends BaseCheckLicenseTestCase {
 		Path target = Path.of(LicenseUtil.LICENSE_REPOSITORY_DIR, fileName);
 
 		try (InputStream inputStream =
-				CheckLicenseTest.class.getResourceAsStream(
+				DXPCheckLicenseTest.class.getResourceAsStream(
 					"dependencies/" + fileName)) {
 
 			Files.createDirectories(target.getParent());

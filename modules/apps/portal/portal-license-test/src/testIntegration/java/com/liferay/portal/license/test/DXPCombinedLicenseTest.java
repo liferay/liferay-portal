@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
  * @author Kevin Lee
  */
 @RunWith(Arquillian.class)
-public class CombinedLicenseTest extends BaseCombinedLicenseTestCase {
+public class DXPCombinedLicenseTest extends BaseCombinedLicenseTestCase {
 
 	@Test
 	public void testAppLicensesWithPortalLicenseFreeTier() throws Exception {

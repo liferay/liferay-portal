@@ -43,7 +43,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
  * @author Kevin Lee
  */
 @RunWith(Arquillian.class)
-public class CKEditorLicenseTest extends BaseLicenseTestCase {
+public class DXPFreeTierCKEditorLicenseTest extends BaseLicenseTestCase {
 
 	@BeforeClass
 	public static void setUpClass() {
@@ -257,7 +257,7 @@ public class CKEditorLicenseTest extends BaseLicenseTestCase {
 
 	private static final File _CKEDITOR_CONFIG_FILE = new File(
 		PropsValues.MODULE_FRAMEWORK_CONFIGS_DIR,
-		CKEditorLicenseTest._CKEDITOR_CONFIG_ID + ".config");
+		DXPFreeTierCKEditorLicenseTest._CKEDITOR_CONFIG_ID + ".config");
 
 	private static final String _CKEDITOR_CONFIG_ID =
 		"com.liferay.frontend.editor.ckeditor.web.internal.configuration." +

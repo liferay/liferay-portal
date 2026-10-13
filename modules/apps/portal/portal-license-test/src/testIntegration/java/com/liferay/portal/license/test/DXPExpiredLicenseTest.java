@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
  * @author Tina Tian
  */
 @RunWith(Arquillian.class)
-public class ExpiredLicenseTest extends BaseExpiredLicenseTestCase {
+public class DXPExpiredLicenseTest extends BaseExpiredLicenseTestCase {
 
 	@Test
 	public void testFreeAndEnterpriseExpired() throws Exception {

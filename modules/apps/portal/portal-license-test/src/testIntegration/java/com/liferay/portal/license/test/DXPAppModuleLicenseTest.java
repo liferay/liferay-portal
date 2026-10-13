@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
  * @author Kevin Lee
  */
 @RunWith(Arquillian.class)
-public class AppModuleLicenseTest extends BaseAppModuleLicenseTestCase {
+public class DXPAppModuleLicenseTest extends BaseAppModuleLicenseTestCase {
 
 	@Override
 	protected App[] getApps() {

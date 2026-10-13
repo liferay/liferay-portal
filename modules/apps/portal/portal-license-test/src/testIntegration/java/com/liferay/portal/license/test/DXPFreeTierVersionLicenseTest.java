@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
  * @author Tina Tian
  */
 @RunWith(Arquillian.class)
-public class FreeTierVersionLicenseTest extends BaseLicenseTestCase {
+public class DXPFreeTierVersionLicenseTest extends BaseLicenseTestCase {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
