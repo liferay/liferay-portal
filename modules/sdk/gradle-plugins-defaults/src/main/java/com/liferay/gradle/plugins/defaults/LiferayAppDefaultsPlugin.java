@@ -16,7 +16,9 @@ import com.liferay.gradle.plugins.defaults.internal.util.LiferayRelengUtil;
 import com.liferay.gradle.plugins.defaults.task.WritePropertiesTask;
 import com.liferay.gradle.plugins.jsdoc.AppJSDocConfigurationExtension;
 import com.liferay.gradle.plugins.jsdoc.AppJSDocPlugin;
+import com.liferay.gradle.plugins.jsdoc.BaseJSDocPlugin;
 import com.liferay.gradle.plugins.jsdoc.JSDocTask;
+import com.liferay.gradle.plugins.node.task.DownloadNodeModuleTask;
 import com.liferay.gradle.plugins.tlddoc.builder.AppTLDDocBuilderExtension;
 import com.liferay.gradle.plugins.tlddoc.builder.AppTLDDocBuilderPlugin;
 import com.liferay.gradle.plugins.tlddoc.builder.task.TLDDocTask;
@@ -128,6 +130,7 @@ public class LiferayAppDefaultsPlugin implements Plugin<Project> {
 		_configureTaskAppJSDoc(writeAppPackageJsonFileTask);
 		_configureTaskAppJavadoc(project, appTitle, appVersion);
 		_configureTaskAppTlddoc(project, portalRootDir);
+		_configureTaskDownloadJSDoc(project);
 
 		if (privateProject != null) {
 			Gradle gradle = project.getGradle();
@@ -357,6 +360,15 @@ public class LiferayAppDefaultsPlugin implements Plugin<Project> {
 		File xsltDir = new File(portalRootDir, "tools/styles/taglibs");
 
 		tldDocTask.setXsltDir(xsltDir);
+	}
+
+	private void _configureTaskDownloadJSDoc(Project project) {
+		DownloadNodeModuleTask downloadJSDocTask =
+			(DownloadNodeModuleTask)GradleUtil.getTask(
+				project, BaseJSDocPlugin.DOWNLOAD_JSDOC_TASK_NAME);
+
+		GradlePluginsDefaultsUtil.configureTaskDownloadNodeModule(
+			downloadJSDocTask);
 	}
 
 	private void _forceProjectHierarchyEvaluation(Project project) {

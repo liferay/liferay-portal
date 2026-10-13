@@ -5,6 +5,7 @@
 
 package com.liferay.gradle.plugins.defaults.internal.util;
 
+import com.liferay.gradle.plugins.node.task.DownloadNodeModuleTask;
 import com.liferay.gradle.util.Validator;
 
 import groovy.json.JsonSlurper;
@@ -19,10 +20,12 @@ import java.util.regex.Pattern;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
 import org.gradle.api.artifacts.repositories.AuthenticationContainer;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.artifacts.repositories.PasswordCredentials;
+import org.gradle.api.specs.Spec;
 import org.gradle.internal.authentication.DefaultBasicAuthentication;
 import org.gradle.util.GradleVersion;
 
@@ -160,6 +163,21 @@ public class GradlePluginsDefaultsUtil {
 
 				});
 		}
+	}
+
+	public static void configureTaskDownloadNodeModule(
+		DownloadNodeModuleTask downloadNodeModuleTask) {
+
+		downloadNodeModuleTask.onlyIf(
+			new Spec<Task>() {
+
+				@Override
+				public boolean isSatisfiedBy(Task task) {
+					return !_hasRootPackageJSONDependency(
+						(DownloadNodeModuleTask)task);
+				}
+
+			});
 	}
 
 	public static Set<String> getBuildProfileFileNames(
@@ -327,6 +345,49 @@ public class GradlePluginsDefaultsUtil {
 
 			project.setVersion(version + SNAPSHOT_VERSION_SUFFIX);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static boolean _hasRootPackageJSONDependency(
+		DownloadNodeModuleTask downloadNodeModuleTask) {
+
+		Project project = downloadNodeModuleTask.getProject();
+
+		Project rootProject = project.getRootProject();
+
+		File moduleDir = downloadNodeModuleTask.getModuleDir();
+
+		if (!Objects.equals(
+				moduleDir.getParentFile(), rootProject.file("node_modules"))) {
+
+			return false;
+		}
+
+		File packageJSONFile = rootProject.file("package.json");
+
+		if (!packageJSONFile.exists()) {
+			return false;
+		}
+
+		JsonSlurper jsonSlurper = new JsonSlurper();
+
+		Map<String, Object> packageJSONMap =
+			(Map<String, Object>)jsonSlurper.parse(packageJSONFile);
+
+		String moduleName = downloadNodeModuleTask.getModuleName();
+
+		for (String key : new String[] {"dependencies", "devDependencies"}) {
+			Map<String, Object> dependencies =
+				(Map<String, Object>)packageJSONMap.get(key);
+
+			if ((dependencies != null) &&
+				dependencies.containsKey(moduleName)) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static final String _BUILD_PROFILE_FILE_NAME_PREFIX = ".lfrbuild-";

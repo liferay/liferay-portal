@@ -7,8 +7,12 @@ package com.liferay.gradle.plugins.defaults.internal;
 
 import com.liferay.gradle.plugins.BaseDefaultsPlugin;
 import com.liferay.gradle.plugins.defaults.internal.util.FileUtil;
+import com.liferay.gradle.plugins.defaults.internal.util.GradlePluginsDefaultsUtil;
+import com.liferay.gradle.plugins.defaults.internal.util.GradleUtil;
+import com.liferay.gradle.plugins.jsdoc.BaseJSDocPlugin;
 import com.liferay.gradle.plugins.jsdoc.JSDocPlugin;
 import com.liferay.gradle.plugins.jsdoc.JSDocTask;
+import com.liferay.gradle.plugins.node.task.DownloadNodeModuleTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +35,7 @@ public class JSDocDefaultsPlugin extends BaseDefaultsPlugin<JSDocPlugin> {
 	protected void applyPluginDefaults(
 		Project project, JSDocPlugin jsDocPlugin) {
 
+		_configureTaskDownloadJSDoc(project);
 		_configureTasksJSDoc(project);
 	}
 
@@ -40,6 +45,15 @@ public class JSDocDefaultsPlugin extends BaseDefaultsPlugin<JSDocPlugin> {
 	}
 
 	private JSDocDefaultsPlugin() {
+	}
+
+	private void _configureTaskDownloadJSDoc(Project project) {
+		DownloadNodeModuleTask downloadJSDocTask =
+			(DownloadNodeModuleTask)GradleUtil.getTask(
+				project, BaseJSDocPlugin.DOWNLOAD_JSDOC_TASK_NAME);
+
+		GradlePluginsDefaultsUtil.configureTaskDownloadNodeModule(
+			downloadJSDocTask);
 	}
 
 	private void _configureTaskJSDoc(JSDocTask jsDocTask) {
