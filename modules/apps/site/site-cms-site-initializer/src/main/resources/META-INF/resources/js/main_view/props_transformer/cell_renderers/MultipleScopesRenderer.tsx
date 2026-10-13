@@ -58,7 +58,7 @@ export default function MultipleScopesRenderer({
 }: MultipleScopesRendererProps) {
 	const {assetLibraries, projects} = itemData;
 
-	const renderProjects = Array.isArray(projects) && !!cmpEnabled;
+	const renderProjects = !!cmpEnabled && !!projects?.length;
 
 	const [projectScopes, setProjectScopes] = useState<Scope[]>([]);
 	const [spaceScopes, setSpaceScopes] = useState<Scope[]>([]);
