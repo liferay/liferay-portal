@@ -10,7 +10,7 @@ import useTypeProperties from '../../hooks/useTypeProperties';
 import {ConditionBuilder} from './ConditionBuilder';
 import {Config, initializeConfig} from './config';
 import {ASSET_FIELDS, RELATIVE_DATE_VALUES} from './operators';
-import {getPropertyKey} from './types';
+import {getFilterPropertyKey} from './types';
 
 import type {
 	FilterCondition,
@@ -28,10 +28,7 @@ function createEmptyConditions(): FilterCondition[] {
  * item type, so they are worth keeping when the source changes.
  */
 function isTypeSpecificCondition(condition: FilterCondition): boolean {
-	return (
-		condition.classNameId !== undefined &&
-		condition.classTypeId !== undefined
-	);
+	return condition.objectDefinitionExternalReferenceCode !== undefined;
 }
 
 function normalizeDateTime(value: string) {
@@ -136,9 +133,8 @@ export default function CollectionFilterBuilder({
 				propertiesWithAssetFields
 					.flatMap((group) => group.items ?? [])
 					.map((property) => [
-						getPropertyKey(
-							property.classNameId,
-							property.classTypeId,
+						getFilterPropertyKey(
+							property.objectDefinitionExternalReferenceCode,
 							property.name
 						),
 						property,
@@ -151,9 +147,8 @@ export default function CollectionFilterBuilder({
 		conditions
 			.map(({id: _id, ...props}) => {
 				const property = propertiesMap.get(
-					getPropertyKey(
-						props.classNameId,
-						props.classTypeId,
+					getFilterPropertyKey(
+						props.objectDefinitionExternalReferenceCode,
 						props.propertyName
 					)
 				);

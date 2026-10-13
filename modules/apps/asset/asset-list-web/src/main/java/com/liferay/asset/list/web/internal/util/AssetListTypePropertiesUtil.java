@@ -64,6 +64,7 @@ public class AssetListTypePropertiesUtil {
 					"items",
 					_getItemsJSONArray(
 						classNameIds[i], classTypeId, locale,
+						objectDefinition.getExternalReferenceCode(),
 						objectFieldBag.getNestedIndexedObjectFields())
 				).put(
 					"label", objectDefinition.getLabel(locale, true)
@@ -134,6 +135,7 @@ public class AssetListTypePropertiesUtil {
 
 	private static JSONArray _getItemsJSONArray(
 		long classNameId, long classTypeId, Locale locale,
+		String objectDefinitionExternalReferenceCode,
 		List<ObjectField> objectFields) {
 
 		return JSONUtil.toJSONArray(
@@ -146,14 +148,16 @@ public class AssetListTypePropertiesUtil {
 				}
 
 				return _getPropertyJSONObject(
-					classNameId, classTypeId, locale, objectField, type);
+					classNameId, classTypeId, locale,
+					objectDefinitionExternalReferenceCode, objectField, type);
 			},
 			_log);
 	}
 
 	private static JSONObject _getPropertyJSONObject(
 		long classNameId, long classTypeId, Locale locale,
-		ObjectField objectField, String type) {
+		String objectDefinitionExternalReferenceCode, ObjectField objectField,
+		String type) {
 
 		return JSONUtil.put(
 			"classNameId", classNameId
@@ -163,6 +167,9 @@ public class AssetListTypePropertiesUtil {
 			"label", objectField.getLabel(locale, true)
 		).put(
 			"name", objectField.getName()
+		).put(
+			"objectDefinitionExternalReferenceCode",
+			objectDefinitionExternalReferenceCode
 		).put(
 			"options",
 			() -> {

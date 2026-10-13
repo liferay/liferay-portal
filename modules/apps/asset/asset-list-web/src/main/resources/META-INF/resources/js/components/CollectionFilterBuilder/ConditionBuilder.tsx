@@ -17,7 +17,7 @@ import {
 	getCollectionOperators,
 	getCollectionQuantifierOptions,
 } from './operators';
-import {getCombinationKey, getPropertyKey} from './types';
+import {getCombinationKey, getFilterPropertyKey} from './types';
 
 import type {
 	FilterCondition,
@@ -70,8 +70,7 @@ function getUsedCombinationKeys(
 	for (const condition of conditions) {
 		if (
 			condition.id === currentConditionId ||
-			condition.classNameId !== undefined ||
-			condition.classTypeId !== undefined ||
+			condition.objectDefinitionExternalReferenceCode !== undefined ||
 			!ASSET_FIELD_NAMES.has(condition.propertyName ?? '') ||
 			!condition.operatorName ||
 			!condition.quantifier
@@ -81,7 +80,7 @@ function getUsedCombinationKeys(
 
 		usedCombinationKeys.add(
 			getCombinationKey(
-				getPropertyKey(undefined, undefined, condition.propertyName),
+				getFilterPropertyKey(undefined, condition.propertyName),
 				condition.operatorName,
 				condition.quantifier
 			)
@@ -150,9 +149,8 @@ function ConditionRow({
 	properties,
 	propertiesMap,
 }: ConditionRowProps) {
-	const conditionKey = getPropertyKey(
-		condition.classNameId,
-		condition.classTypeId,
+	const conditionKey = getFilterPropertyKey(
+		condition.objectDefinitionExternalReferenceCode,
 		condition.propertyName
 	);
 
@@ -178,9 +176,8 @@ function ConditionRow({
 	);
 
 	const renderPropertyOption = (property: FilterProperty) => {
-		const propertyKey = getPropertyKey(
-			property.classNameId,
-			property.classTypeId,
+		const propertyKey = getFilterPropertyKey(
+			property.objectDefinitionExternalReferenceCode,
 			property.name
 		);
 
@@ -211,9 +208,9 @@ function ConditionRow({
 							: null;
 
 						onChange({
-							classNameId: newProperty?.classNameId,
-							classTypeId: newProperty?.classTypeId,
 							id: condition.id,
+							objectDefinitionExternalReferenceCode:
+								newProperty?.objectDefinitionExternalReferenceCode,
 							operatorName:
 								operators?.length === 0 ? 'eq' : undefined,
 							propertyName: newProperty?.name,
