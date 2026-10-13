@@ -5,7 +5,7 @@
 
 export type Tag = {
 	actions: Actions;
-	assetLibraries: string[];
+	assetLibraries: AssetLibraryType[];
 	creator: {
 		additionalName: string;
 		contentType: string;

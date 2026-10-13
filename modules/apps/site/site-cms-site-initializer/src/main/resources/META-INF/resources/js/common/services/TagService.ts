@@ -50,7 +50,14 @@ async function createTag({
 	const tag = data?.items.find((item) => item.name === name);
 
 	if (tag) {
-		if (assetLibraryId || projectGroupId) {
+		if (projectGroupId) {
+			return ApiHelper.patch<Tag>(
+				{...requestBody, assetLibraries: tag.assetLibraries},
+				url
+			);
+		}
+
+		if (assetLibraryId) {
 			return ApiHelper.patch<Tag>(requestBody, url);
 		}
 
