@@ -20,11 +20,18 @@ public class DSRequestConstants {
 
 	public static final String STATUS_SENT = "sent";
 
+	public static final String STATUS_SIGNED = "signed";
+
 	public static final String STATUS_VOIDED = "voided";
 
-	public static final String[] STATUSES = {
+	public static final String[] STATUSES_REQUEST = {
 		STATUS_COMPLETED, STATUS_CREATED, STATUS_DECLINED, STATUS_EXPIRED,
 		STATUS_SENT, STATUS_VOIDED
+	};
+
+	public static final String[] STATUSES_REQUEST_RECIPIENT = {
+		STATUS_COMPLETED, STATUS_CREATED, STATUS_DECLINED, STATUS_SENT,
+		STATUS_SIGNED
 	};
 
 }

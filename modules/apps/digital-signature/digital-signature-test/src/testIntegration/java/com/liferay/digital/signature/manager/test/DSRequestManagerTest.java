@@ -82,14 +82,13 @@ public class DSRequestManagerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		String prefix = ".com.liferay.digital.signature.internal.batch.";
-
 		BatchEngineTestUtil.processBatchEngineUnits(
 			"com.liferay.digital.signature.impl", DSRequestManagerTest.class,
 			new String[] {
-				prefix + "00.list.type.definition",
-				prefix + "01.object.definition",
-				prefix + "02.object.relationship"
+				".com.liferay.digital.signature.internal.batch.01.object." +
+					"definition",
+				".com.liferay.digital.signature.internal.batch.02.object." +
+					"relationship"
 			});
 
 		_companyConfigurationTemporarySwapper =
@@ -247,7 +246,19 @@ public class DSRequestManagerTest {
 			DSRequestConstants.STATUS_COMPLETED, localDateTime.plusDays(1),
 			"completed", localDateTime);
 		_testUpdateDSRequest(
+			DSRequestConstants.STATUS_CREATED, localDateTime.plusDays(1),
+			RandomTestUtil.randomString(), localDateTime);
+		_testUpdateDSRequest(
+			DSRequestConstants.STATUS_DECLINED, localDateTime.plusDays(1),
+			"declined", localDateTime);
+		_testUpdateDSRequest(
 			DSRequestConstants.STATUS_EXPIRED, localDateTime, "voided",
+			localDateTime);
+		_testUpdateDSRequest(
+			DSRequestConstants.STATUS_SENT, localDateTime.plusDays(1),
+			"delivered", localDateTime);
+		_testUpdateDSRequest(
+			DSRequestConstants.STATUS_SENT, localDateTime.plusDays(1), "signed",
 			localDateTime);
 		_testUpdateDSRequest(
 			DSRequestConstants.STATUS_VOIDED, localDateTime.plusDays(1),
@@ -394,10 +405,12 @@ public class DSRequestManagerTest {
 
 	private void _testUpdateDSRequest(
 			String expectedRequestStatus, LocalDateTime expireLocalDateTime,
-			String status, LocalDateTime statusChangedLocalDateTime)
+			String requestStatus, LocalDateTime statusChangedLocalDateTime)
 		throws Exception {
 
 		DSEnvelope dsEnvelope = _createDSEnvelope();
+
+		dsEnvelope.setStatus(DSRequestConstants.STATUS_CREATED);
 
 		_dsRequestManager.addDSRequest(
 			TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
@@ -405,7 +418,7 @@ public class DSRequestManagerTest {
 			new long[] {RandomTestUtil.randomInt()});
 
 		dsEnvelope.setExpireLocalDateTime(expireLocalDateTime);
-		dsEnvelope.setStatus(status);
+		dsEnvelope.setStatus(requestStatus);
 		dsEnvelope.setStatusChangedLocalDateTime(statusChangedLocalDateTime);
 
 		DSEnvelopeManager dsEnvelopeManager =
