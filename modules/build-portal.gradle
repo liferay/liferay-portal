@@ -26,6 +26,12 @@ compileJava {
 	enabled = false
 }
 
+dependencies {
+	compileOnly fileTree(dir: "../lib", include: ["development/*.jar", "portal/*.jar"])
+	compileOnly fileTree(dir: "../tmp/lib-pre", include: "*.jar")
+	compileOnly files(["portal-impl", "portal-kernel", "portal-test", "support-tomcat", "util-bridges", "util-java", "util-slf4j", "util-taglib"].minus(name).collect { "../${it}/classes" })
+}
+
 jar {
 	archiveFileName = "${project.name}.jar"
 	destinationDirectory = projectDir
