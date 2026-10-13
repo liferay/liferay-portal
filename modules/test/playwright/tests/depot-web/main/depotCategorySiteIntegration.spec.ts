@@ -21,6 +21,7 @@ import getBasicWebContentStructureId from '../../../utils/structured-content/get
 import {JournalEditArticlePage} from '../../journal-web/main/pages/JournalEditArticlePage';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
+import addConnectedDepot from './utils/addConnectedDepot';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -36,8 +37,7 @@ async function addConnectedDepotCategory(
 	apiHelpers: DataApiHelpers,
 	site: Site
 ) {
-	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
+	const assetLibrary = await addConnectedDepot(apiHelpers, site);
 
 	const vocabulary =
 		await apiHelpers.headlessAdminTaxonomy.postAssetLibraryTaxonomyVocabulary(
@@ -50,11 +50,6 @@ async function addConnectedDepotCategory(
 		await apiHelpers.headlessAdminTaxonomy.postTaxonomyVocabularyTaxonomyCategory(
 			{name: categoryName, vocabularyId: vocabulary.id}
 		);
-
-	await apiHelpers.headlessAssetLibrary.connectSite(
-		assetLibrary.externalReferenceCode,
-		site.externalReferenceCode
-	);
 
 	return {assetLibrary, category, categoryName, vocabulary};
 }

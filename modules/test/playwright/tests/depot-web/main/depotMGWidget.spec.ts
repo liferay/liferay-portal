@@ -19,6 +19,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
+import addConnectedDepot from './utils/addConnectedDepot';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -43,13 +44,7 @@ async function addConnectedDepotFolder({
 	apiHelpers: DataApiHelpers;
 	site: Site;
 }) {
-	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
-
-	await apiHelpers.headlessAssetLibrary.connectSite(
-		assetLibrary.externalReferenceCode,
-		site.externalReferenceCode
-	);
+	const assetLibrary = await addConnectedDepot(apiHelpers, site);
 
 	const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
 		assetLibrary.siteId

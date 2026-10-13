@@ -18,6 +18,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
+import addConnectedDepot from './utils/addConnectedDepot';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -61,29 +62,11 @@ async function addDMWidgetPage({
 	return `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
 }
 
-async function addConnectedDepot({
-	apiHelpers,
-	site,
-}: {
-	apiHelpers: DataApiHelpers;
-	site: Site;
-}) {
-	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
-
-	await apiHelpers.headlessAssetLibrary.connectSite(
-		assetLibrary.externalReferenceCode,
-		site.externalReferenceCode
-	);
-
-	return assetLibrary;
-}
-
 test(
 	'Depot folder content can be edited and added from a connected site DM widget until the site is disconnected',
 	{tag: '@LPD-109097'},
 	async ({apiHelpers, page, site}) => {
-		const assetLibrary = await addConnectedDepot({apiHelpers, site});
+		const assetLibrary = await addConnectedDepot(apiHelpers, site);
 
 		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
 			assetLibrary.siteId,
@@ -202,7 +185,7 @@ test(
 	'Depot content can be deleted from a connected site DM widget',
 	{tag: '@LPD-109097'},
 	async ({apiHelpers, page, site}) => {
-		const assetLibrary = await addConnectedDepot({apiHelpers, site});
+		const assetLibrary = await addConnectedDepot(apiHelpers, site);
 
 		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
 			assetLibrary.siteId

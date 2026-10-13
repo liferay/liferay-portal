@@ -18,6 +18,7 @@ import {DisplayPageTemplatesPage} from '../../../pages/layout-page-template-admi
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
+import addConnectedDepot from './utils/addConnectedDepot';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -28,29 +29,6 @@ const test = mergeTests(
 );
 
 const DOCUMENT_PATH = path.join(__dirname, 'dependencies/Document.jpg');
-
-async function addConnectedDepot(apiHelpers: DataApiHelpers, site: Site) {
-	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
-
-	await apiHelpers.headlessAssetLibrary.connectSite(
-		assetLibrary.externalReferenceCode,
-		site.externalReferenceCode
-	);
-
-	const depotEntryGroupRel =
-		await apiHelpers.jsonWebServicesDepotGroupRel.getDepotEntryGroupRelByDepotEntryIdToGroupId(
-			String(assetLibrary.id),
-			String(site.id)
-		);
-
-	await apiHelpers.jsonWebServicesDepotGroupRel.updateDDMStructuresAvailable(
-		String(depotEntryGroupRel.depotEntryGroupRelId),
-		true
-	);
-
-	return assetLibrary;
-}
 
 async function addDefaultDisplayPageTemplate({
 	apiHelpers,
@@ -153,7 +131,9 @@ test(
 		pageEditorPage,
 		site,
 	}) => {
-		const assetLibrary = await addConnectedDepot(apiHelpers, site);
+		const assetLibrary = await addConnectedDepot(apiHelpers, site, {
+			ddmStructuresAvailable: true,
+		});
 
 		const documentTypeName = getRandomString();
 
@@ -302,7 +282,9 @@ test(
 		pageEditorPage,
 		site,
 	}) => {
-		const assetLibrary = await addConnectedDepot(apiHelpers, site);
+		const assetLibrary = await addConnectedDepot(apiHelpers, site, {
+			ddmStructuresAvailable: true,
+		});
 
 		const structureName = getRandomString();
 
