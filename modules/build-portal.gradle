@@ -38,10 +38,6 @@ jar {
 	enabled = false
 }
 
-reporting {
-	baseDir = "../baseline-reports"
-}
-
 repositories {
 	maven {
 		url System.properties["repository.url"] ?: "https://repository-cdn.liferay.com/nexus/content/groups/public"
@@ -64,10 +60,12 @@ sourceSets {
 tasks.withType(BaselineTask) {
 	ignoreFailures = true
 
+	File baselineReportsDir = file("../baseline-reports")
+
 	if (name == "baseline") {
-		logFileName = "${project.name}.log"
+		logFileName = new File(baselineReportsDir, "${project.name}.log")
 	}
 	else {
-		logFileName = project.name + "-" + name.substring(8) + ".log"
+		logFileName = new File(baselineReportsDir, project.name + "-" + name.substring(8) + ".log")
 	}
 }
