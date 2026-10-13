@@ -150,6 +150,75 @@ public class DBInspector {
 		return false;
 	}
 
+	public boolean hasColumnType(String columnType, ResultSet resultSet)
+		throws Exception {
+
+		int expectedColumnSize = _getColumnSize(columnType);
+
+		int actualColumnSize = resultSet.getInt("COLUMN_SIZE");
+
+		if ((expectedColumnSize != DB.SQL_SIZE_NONE) &&
+			(((expectedColumnSize != DB.SQL_VARCHAR_MAX_SIZE) &&
+			  (expectedColumnSize != actualColumnSize)) ||
+			 ((expectedColumnSize == DB.SQL_VARCHAR_MAX_SIZE) &&
+			  (actualColumnSize < DB.SQL_VARCHAR_MAX_SIZE_THRESHOLD)))) {
+
+			return false;
+		}
+
+		Integer expectedColumnDataType = _getByColumnType(
+			columnType, DB::getSQLType);
+
+		int actualColumnDataType = resultSet.getInt("DATA_TYPE");
+
+		if ((expectedColumnDataType == null) ||
+			(expectedColumnDataType != actualColumnDataType)) {
+
+			return false;
+		}
+
+		Integer expectedColumnDecimalDigits = _getByColumnType(
+			columnType, DB::getSQLTypeDecimalDigits);
+
+		if (expectedColumnDecimalDigits != DB.SQL_SIZE_NONE) {
+			int actualColumnDecimalDigits = resultSet.getInt("DECIMAL_DIGITS");
+
+			if (expectedColumnDecimalDigits != actualColumnDecimalDigits) {
+				return false;
+			}
+		}
+
+		boolean expectedColumnNullable = _isColumnNullable(columnType);
+
+		int actualColumnNullable = resultSet.getInt("NULLABLE");
+
+		if ((expectedColumnNullable &&
+			 (actualColumnNullable != DatabaseMetaData.columnNullable)) ||
+			(!expectedColumnNullable &&
+			 (actualColumnNullable != DatabaseMetaData.columnNoNulls))) {
+
+			return false;
+		}
+
+		if (!expectedColumnNullable) {
+			String expectedColumnDefaultValue = _getColumnDefaultValue(
+				columnType);
+			String actualColumnDefaultValue = _getColumnDefaultValue(
+				resultSet.getString("COLUMN_DEF"), DB::getDefaultValue);
+
+			if (Validator.isNull(expectedColumnDefaultValue) &&
+				Validator.isNull(actualColumnDefaultValue)) {
+
+				return true;
+			}
+
+			return StringUtil.equals(
+				expectedColumnDefaultValue, actualColumnDefaultValue);
+		}
+
+		return true;
+	}
+
 	public boolean hasColumnType(
 			String tableName, String columnName, String columnType)
 		throws Exception {
@@ -167,71 +236,7 @@ public class DBInspector {
 				return false;
 			}
 
-			int expectedColumnSize = _getColumnSize(columnType);
-
-			int actualColumnSize = resultSet.getInt("COLUMN_SIZE");
-
-			if ((expectedColumnSize != DB.SQL_SIZE_NONE) &&
-				(((expectedColumnSize != DB.SQL_VARCHAR_MAX_SIZE) &&
-				  (expectedColumnSize != actualColumnSize)) ||
-				 ((expectedColumnSize == DB.SQL_VARCHAR_MAX_SIZE) &&
-				  (actualColumnSize < DB.SQL_VARCHAR_MAX_SIZE_THRESHOLD)))) {
-
-				return false;
-			}
-
-			Integer expectedColumnDataType = _getByColumnType(
-				columnType, DB::getSQLType);
-
-			int actualColumnDataType = resultSet.getInt("DATA_TYPE");
-
-			if ((expectedColumnDataType == null) ||
-				(expectedColumnDataType != actualColumnDataType)) {
-
-				return false;
-			}
-
-			Integer expectedColumnDecimalDigits = _getByColumnType(
-				columnType, DB::getSQLTypeDecimalDigits);
-
-			if (expectedColumnDecimalDigits != DB.SQL_SIZE_NONE) {
-				int actualColumnDecimalDigits = resultSet.getInt(
-					"DECIMAL_DIGITS");
-
-				if (expectedColumnDecimalDigits != actualColumnDecimalDigits) {
-					return false;
-				}
-			}
-
-			boolean expectedColumnNullable = _isColumnNullable(columnType);
-
-			int actualColumnNullable = resultSet.getInt("NULLABLE");
-
-			if ((expectedColumnNullable &&
-				 (actualColumnNullable != DatabaseMetaData.columnNullable)) ||
-				(!expectedColumnNullable &&
-				 (actualColumnNullable != DatabaseMetaData.columnNoNulls))) {
-
-				return false;
-			}
-
-			if (!expectedColumnNullable) {
-				String expectedColumnDefaultValue = _getColumnDefaultValue(
-					columnType);
-				String actualColumnDefaultValue = _getColumnDefaultValue(
-					resultSet.getString("COLUMN_DEF"), DB::getDefaultValue);
-
-				if (Validator.isNull(expectedColumnDefaultValue) &&
-					Validator.isNull(actualColumnDefaultValue)) {
-
-					return true;
-				}
-
-				return StringUtil.equals(
-					expectedColumnDefaultValue, actualColumnDefaultValue);
-			}
-
-			return true;
+			return hasColumnType(columnType, resultSet);
 		}
 	}
 
