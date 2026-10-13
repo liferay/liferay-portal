@@ -364,6 +364,7 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 					});
 				setExternalReferenceCode(
 					commerceOrderAttachment::getExternalReferenceCode);
+				setFileEntryId(commerceOrderAttachment::getFileEntryId);
 				setFileName(
 					() -> {
 						if (fileEntry == null) {

@@ -266,6 +266,7 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 					});
 				setExternalReferenceCode(
 					commerceOrderAttachment::getExternalReferenceCode);
+				setFileEntryId(commerceOrderAttachment::getFileEntryId);
 				setId(commerceOrderAttachment::getCommerceOrderAttachmentId);
 				setPriority(commerceOrderAttachment::getPriority);
 				setRestricted(commerceOrderAttachment::isRestricted);
