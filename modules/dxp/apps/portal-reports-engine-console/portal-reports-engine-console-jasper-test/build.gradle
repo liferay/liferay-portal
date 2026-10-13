@@ -10,6 +10,7 @@ dependencies {
 	testIntegrationImplementation group: "org.apache.pdfbox", name: "fontbox", version: "3.0.7"
 	testIntegrationImplementation group: "org.apache.pdfbox", name: "pdfbox", version: "3.0.7"
 	testIntegrationImplementation group: "org.apache.pdfbox", name: "pdfbox-io", version: "3.0.7"
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-reports-engine:portal-reports-engine-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

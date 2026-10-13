@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<jasperReport columnWidth="555" name="[$NAME$]" pageHeight="842" pageWidth="595" whenNoDataType="AllSectionsNoDetail" xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd">
+	<title>
+		<band height="40">
+			<textField>
+				<reportElement height="30" width="555" x="0" y="0" />
+				<textFieldExpression><![CDATA[[$EXPRESSION$]]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>
