@@ -39,7 +39,16 @@ export const test = mergeTests(
 
 test(
 	'Account Selector in Minium theme working as expected',
-	{tag: ['@COMMERCE-5957', '@COMMERCE-6215', '@LPD-48266', '@LPD-56172']},
+	{
+		tag: [
+			'@COMMERCE-5957',
+			'@COMMERCE-6215',
+			'@COMMERCE-12909',
+			'@LPD-48266',
+			'@LPD-56172',
+			'@LPD-108861',
+		],
+	},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,
@@ -257,6 +266,46 @@ test(
 					commerceThemeMiniumCatalogPage.createNewOrderButton
 				).toBeDisabled();
 			});
+
+			await test.step('Switch to another account and assert that the pending order details page redirects to the pending orders list', async () => {
+				await commerceThemeMiniumCatalogPage.accountSelectorSearchOrderInput.fill(
+					order2Id
+				);
+				await commerceThemeMiniumCatalogPage.accountSelectorOrdersList
+					.getByText(order2Id, {exact: true})
+					.click();
+
+				await expect(pendingOrdersPage.checkoutButton).toBeVisible();
+
+				const orderDetailsURL = page.url();
+
+				const secondAccount =
+					await apiHelpers.headlessAdminUser.postAccount({
+						name: getRandomString(),
+						type: 'business',
+					});
+
+				await page.goto(`/web/${site.name}`);
+
+				await commerceThemeMiniumCatalogPage.openAccountSelectorDropdown();
+				await commerceThemeMiniumCatalogPage.accountSelectorSearchAccountInput.fill(
+					secondAccount.name
+				);
+				await commerceThemeMiniumCatalogPage
+					.accountSelectorAccount(secondAccount.name)
+					.click();
+
+				await expect(
+					commerceThemeMiniumCatalogPage.accountSelectorSelectedAccount
+				).toHaveText(secondAccount.name);
+
+				await page.goto(orderDetailsURL);
+
+				await expect(page).toHaveURL(
+					/p_p_id=com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet/
+				);
+				await expect(commerceLayoutsPage.addOrderButton).toBeVisible();
+			});
 		}
 		finally {
 			const orders =
@@ -357,7 +406,15 @@ test(
 
 test(
 	'Correct current order is fetched when creating an order with an impersonated user and then impersonating a second user',
-	{tag: ['@LPD-59082', '@LPP-59365']},
+	{
+		tag: [
+			'@COMMERCE-10841',
+			'@LPD-59082',
+			'@LPD-77244',
+			'@LPD-108861',
+			'@LPP-59365',
+		],
+	},
 	async ({
 		apiHelpers,
 		commerceThemeMiniumCatalogPage,
@@ -482,6 +539,9 @@ test(
 				waitUntil: 'networkidle',
 			});
 
+			await expect(commerceThemeMiniumCatalogPage.userNavName).toHaveText(
+				user1.name
+			);
 			await expect(
 				commerceThemeMiniumCatalogPage.accountSelectorNoOrderSelectedMessage
 			).toBeVisible();
@@ -495,6 +555,8 @@ test(
 			order1Id =
 				await commerceThemeMiniumCatalogPage.accountSelectorOrderId.innerText();
 
+			apiHelpers.data.push({id: Number(order1Id), type: 'order'});
+
 			await page.reload();
 
 			await expect(
@@ -507,6 +569,9 @@ test(
 				waitUntil: 'networkidle',
 			});
 
+			await expect(commerceThemeMiniumCatalogPage.userNavName).toHaveText(
+				user2.name
+			);
 			await expect(
 				commerceThemeMiniumCatalogPage.accountSelectorNoOrderSelectedMessage
 			).toBeVisible();
@@ -519,6 +584,8 @@ test(
 
 			const order2Id =
 				await commerceThemeMiniumCatalogPage.accountSelectorOrderId.innerText();
+
+			apiHelpers.data.push({id: Number(order2Id), type: 'order'});
 
 			expect(order2Id).not.toBe(order1Id);
 

@@ -111,6 +111,7 @@ export class CommerceThemeMiniumCatalogPage {
 	) => Locator;
 	readonly productCards: Locator;
 	readonly productLink: (productName: string) => Locator;
+	readonly userNavName: Locator;
 
 	constructor(page: Page) {
 		this.accountSelectorAccount = (accountName: string) =>
@@ -323,6 +324,7 @@ export class CommerceThemeMiniumCatalogPage {
 				exact: true,
 				name: productName,
 			});
+		this.userNavName = page.locator('.minium-user-nav__name');
 	}
 
 	getProductMinQuantity(
