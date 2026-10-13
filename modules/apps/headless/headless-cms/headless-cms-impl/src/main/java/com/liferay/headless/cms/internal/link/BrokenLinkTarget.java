@@ -12,17 +12,12 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
  */
 public class BrokenLinkTarget {
 
-	public BrokenLinkTarget() {
-		_deleted = true;
-		_objectEntryId = 0;
-		_status = WorkflowConstants.STATUS_ANY;
+	public static BrokenLinkTarget deleted() {
+		return new BrokenLinkTarget(true, 0, WorkflowConstants.STATUS_ANY);
 	}
 
 	public BrokenLinkTarget(long objectEntryId, int status) {
-		_objectEntryId = objectEntryId;
-		_status = status;
-
-		_deleted = false;
+		this(false, objectEntryId, status);
 	}
 
 	public long getObjectEntryId() {
@@ -35,6 +30,12 @@ public class BrokenLinkTarget {
 
 	public boolean isDeleted() {
 		return _deleted;
+	}
+
+	private BrokenLinkTarget(boolean deleted, long objectEntryId, int status) {
+		_deleted = deleted;
+		_objectEntryId = objectEntryId;
+		_status = status;
 	}
 
 	private final boolean _deleted;

@@ -457,7 +457,8 @@ public class BrokenLinkAssetSearcher {
 			if (!existingExternalReferenceCodes.contains(
 					_getExternalReferenceCode(outboundLink))) {
 
-				brokenLinkTargetsMap.put(outboundLink, new BrokenLinkTarget());
+				brokenLinkTargetsMap.put(
+					outboundLink, BrokenLinkTarget.deleted());
 			}
 		}
 	}
