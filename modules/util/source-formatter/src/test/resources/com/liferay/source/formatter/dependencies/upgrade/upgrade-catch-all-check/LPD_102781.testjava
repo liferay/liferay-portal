@@ -13,8 +13,8 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_102781 {
 
 	public void method(CPInstance cpInstance) throws PortalException {
-		_cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance);
 		_cpDefinitionInventoryEngine.getMinStockQuantity(0, cpInstance);
+		_cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance);
 		_cpDefinitionInventoryEngine.getMinStockQuantity(null);
 	}
 
