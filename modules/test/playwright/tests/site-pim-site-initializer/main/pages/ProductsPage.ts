@@ -11,32 +11,51 @@ import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSet
 
 export class ProductsPage {
 	readonly dataSetFragmentPage: DataSetPage;
+	readonly deleteConfirmationButton: Locator;
 	readonly generalTab: Locator;
 	readonly loadingAnimation: Locator;
 	readonly newButton: Locator;
 	readonly page: Page;
+	readonly recycleBinLink: Locator;
 	readonly saveButton: Locator;
+	readonly searchInput: Locator;
 	readonly spaceDialog: Locator;
 	readonly spaceSelect: Locator;
+	readonly successAlert: Locator;
+	readonly undoButton: Locator;
 
 	constructor(page: Page) {
 		this.dataSetFragmentPage = new DataSetPage(page);
+		this.deleteConfirmationButton = page
+			.locator('.modal-content')
+			.getByRole('button', {name: 'Delete'});
 		this.generalTab = page.getByRole('tab', {name: 'General'});
 		this.loadingAnimation = page.locator('.loading-animation').nth(0);
 		this.newButton = page.getByTestId('fdsCreationActionButton');
 		this.page = page;
+		this.recycleBinLink = page.getByRole('link', {name: 'Recycle Bin'});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
+		this.searchInput = page.getByRole('searchbox', {name: 'Search'});
 		this.spaceDialog = page.getByRole('dialog');
 		this.spaceSelect = this.spaceDialog.getByLabel('Space');
+		this.successAlert = page.locator('.alert-success');
+		this.undoButton = page.getByRole('button', {name: 'Undo'});
 	}
 
 	async deleteProduct(name: string) {
-		this.page.once('dialog', (dialog) => dialog.accept());
-
 		await this.dataSetFragmentPage.execItemAction({
 			action: 'Delete',
 			filter: name,
 		});
+
+		await this.deleteConfirmationButton
+			.or(this.successAlert)
+			.first()
+			.waitFor();
+
+		if (await this.deleteConfirmationButton.isVisible()) {
+			await this.deleteConfirmationButton.click();
+		}
 
 		await this.getProduct(name).waitFor({state: 'hidden'});
 	}
@@ -98,6 +117,27 @@ export class ProductsPage {
 		}
 
 		await this.loadingAnimation.waitFor({state: 'hidden'});
+	}
+
+	async search(value: string) {
+		await this.searchInput.fill(value);
+
+		await this.searchInput.press('Enter');
+
+		await expect(
+			this.page.locator('.search-resume-label', {
+				has: this.page.locator('strong', {hasText: value}),
+			})
+		).toBeVisible();
+	}
+
+	async selectProducts(names: string[]) {
+		for (const name of names) {
+			await this.dataSetFragmentPage
+				.getRow(name)
+				.getByRole('checkbox')
+				.check();
+		}
 	}
 
 	async openProductEditor(name: string) {
