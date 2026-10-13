@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -167,7 +168,7 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489", "LPD-107754"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-107754", "LPD-107755"})
 	public void testPostSiteResourceFolder() throws Exception {
 		super.testPostSiteResourceFolder();
 
@@ -181,6 +182,7 @@ public class ResourceFolderResourceTest
 		_testPostSiteResourceFolderFragmentSetExternalReferenceCodeNullProblemException();
 		_testPostSiteResourceFolderFragmentSetNonexistentProblemException();
 		_testPostSiteResourceFolderNameDuplicateProblemException();
+		_testPostSiteResourceFolderNameDuplicateResourceFileProblemException();
 		_testPostSiteResourceFolderNameInvalidProblemException();
 		_testPostSiteResourceFolderParentResourceFolderAndParentResourceFolderExternalReferenceCode();
 		_testPostSiteResourceFolderParentResourceFolderAndParentResourceFolderExternalReferenceCodeProblemException();
@@ -194,11 +196,14 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489", "LPD-102182", "LPD-107754"})
+	@TestInfo(
+		{"LPD-88395", "LPD-88489", "LPD-102182", "LPD-107754", "LPD-107755"}
+	)
 	public void testPutSiteResourceFolder() throws Exception {
 		_testPutSiteResourceFolder();
 		_testPutSiteResourceFolderDocumentLibraryFolderProblemException();
 		_testPutSiteResourceFolderNameDuplicateProblemException();
+		_testPutSiteResourceFolderNameDuplicateResourceFileProblemException();
 		_testPutSiteResourceFolderNameInvalidProblemException();
 		_testPutSiteResourceFolderParentResourceFolderExternalReferenceCode();
 		_testPutSiteResourceFolderPortletFolderProblemException();
@@ -321,6 +326,26 @@ public class ResourceFolderResourceTest
 
 		return resourceFolderResource.postSiteResourceFolder(
 			testGroup.getExternalReferenceCode(), resourceFolder);
+	}
+
+	private FileEntry _addFileEntry(String fragmentSetExternalReferenceCode)
+		throws Exception {
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionLocalService.
+				getFragmentCollectionByExternalReferenceCode(
+					fragmentSetExternalReferenceCode, testGroup.getGroupId());
+
+		Folder folder = _dlAppLocalService.getFolder(
+			fragmentCollection.getResourcesFolderId(true));
+
+		return _dlAppLocalService.addFileEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			folder.getRepositoryId(), folder.getFolderId(),
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM, RandomTestUtil.randomBytes(),
+			null, null, null,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 	}
 
 	private Folder _addFolder(String name) throws Exception {
@@ -1398,6 +1423,23 @@ public class ResourceFolderResourceTest
 				testGroup.getExternalReferenceCode(), resourceFolder));
 	}
 
+	private void _testPostSiteResourceFolderNameDuplicateResourceFileProblemException()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry(
+			_getFragmentSetExternalReferenceCode());
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder.setName(fileEntry.getTitle());
+
+		_assertProblemException(
+			"CONFLICT", "a-resource-file-with-that-name-already-exists",
+			() -> resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder));
+	}
+
 	private void _testPostSiteResourceFolderNameInvalidProblemException()
 		throws Exception {
 
@@ -1765,6 +1807,26 @@ public class ResourceFolderResourceTest
 				testGroup.getExternalReferenceCode(),
 				postResourceFolder2.getExternalReferenceCode(),
 				resourceFolder));
+	}
+
+	private void _testPutSiteResourceFolderNameDuplicateResourceFileProblemException()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry(
+			_getFragmentSetExternalReferenceCode());
+		ResourceFolder postResourceFolder = _postSiteResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder.setName(fileEntry.getTitle());
+
+		_assertProblemException(
+			"CONFLICT", "a-resource-file-with-that-name-already-exists",
+			() -> resourceFolderResource.putSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				postResourceFolder.getExternalReferenceCode(), resourceFolder));
 	}
 
 	private void _testPutSiteResourceFolderNameInvalidProblemException()
