@@ -10,7 +10,7 @@ Defaults change between quarterly releases. Reverify against the running portal 
 
 | Key | Default | Status | Unlocks | Used By | Dependent On |
 | --- | --- | --- | --- | --- | --- |
-| `LPD-63311` | off | beta | MCP server at `/o/mcp/sse`; `call-http-endpoint` tool | `build-site`, `manage-objects` (when MCP first) | none |
+| `LPD-63311` | off | beta | MCP server at `/o/mcp` (`/o/mcp/sse` on 2025.Q4). On 2026.Q3 the server also needs `MCPServerConfiguration` `enabled`; see `skills/mcp-server/SKILL.md` | `build-site`, `manage-objects` (when MCP first) | none |
 | `LPD-38869` | on | deprecation | Private layout REST access | `manage-pages` (private pages) | none |
 | `LPD-39244` | off | beta | Headless Admin Fragment / page composition REST API | `manage-pages`, `scaffold-fragment` | none |
 | `LPD-74328` | off | beta | Page element / page-specification creation and update (headless-admin-site) | `manage-pages`, `build-site` | none |

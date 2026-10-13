@@ -100,24 +100,16 @@ Call `feature-flags` for the full set of flags the workflow needs:
 | --- | --- |
 | Fragment composition via API | `LPD-39244` |
 | Object entry permissions | `LPD-17564` |
-| MCP transport | `LPD-63311` |
+| MCP transport | `LPD-63311`, plus the `MCPServerConfiguration` switch on 2026.Q3 (see `skills/mcp-server/SKILL.md`) |
 
 Report the gap table. Enable flags only after explicit user confirmation. Bounce Tomcat if any flags are written.
 
 ### Phase 2: Transport Selection
 
-Probe for the MCP server:
+Run the probe in `skills/mcp-server/SKILL.md` → "Audit the Current State First". It posts an `initialize` request with credentials; a bare `HEAD` does not, and on 2026.Q3 every unauthenticated request gets `401`.
 
-```bash
-# Release 2026.Q1+ uses /o/mcp (Streamable HTTP transport); 2025.Q4 used /o/mcp/sse (SSE). See skills/mcp-server.
-
-curl \
-	--head \
-	--silent \
-	--url "http://localhost:${PORT}/o/mcp"
-```
-
-- **2xx**: MCP is available. Use the `call-http-endpoint` MCP tool for all subsequent API calls.
+- **200**: MCP is available. Use it for all subsequent API calls: the `call-http-endpoint` tool on 2026.Q1 and 2026.Q2, the tool set tools on 2026.Q3 (see `skills/mcp-server/SKILL.md` → "Tool Sets Replace `call-http-endpoint`").
+- **404 on 2026.Q3**: the `MCPServerConfiguration` switch is probably off. Enable it per `skills/mcp-server/SKILL.md` before falling back.
 - **Otherwise**: Fall back to direct `curl` calls with Basic auth.
 
 ### Phase 3: Data Model

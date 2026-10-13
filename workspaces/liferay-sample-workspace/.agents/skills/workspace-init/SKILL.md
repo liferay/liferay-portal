@@ -59,7 +59,7 @@ Skip this block if MCP is not supported in your DXP version.
   auth.verifier.BasicAuthHeaderAuthVerifier.urls.includes=/api/*,/xmlrpc/*,/o/*
   ```
 
-  Every headless REST endpoint and MCP `call-http-endpoint` hits `/o/*`. Without this, those calls return 403. Adding it reactively costs an extra edit + sync + restart cycle.
+  Every headless REST endpoint hits `/o/*`, and so does every MCP `call-http-endpoint` call on 2026.Q1 and 2026.Q2. Without this, those calls return 403. Adding it reactively costs an extra edit + sync + restart cycle.
 
   **Security note**: this is for local development only. BasicAuth sends credentials in every request. For production, use OAuth2 with `OAuth2HeaderAuthVerifier` instead. Never enable BasicAuth on `/o/*` in production.
 
@@ -109,7 +109,7 @@ Skip this block if MCP is not supported in your DXP version.
 
 ### First Login Bootstrap (Mandatory Before API/MCP Calls)
 
-On a fresh Liferay instance, the default admin `test@liferay.com` is created with `passwordReset=true` and `agreedToTermsOfUse=false` in the database. Until the portal stops enforcing both, every authenticated API call (REST, MCP `call-http-endpoint`) returns 403 — including for the Omni Admin user. `terms.of.use.required=false` and `users.reminder.queries.enabled=false` lift their half of that enforcement on any boot, but `passwordReset` is written when the admin is created, so only `passwords.default.policy.change.required=false` already in effect at that point avoids it.
+On a fresh Liferay instance, the default admin `test@liferay.com` is created with `passwordReset=true` and `agreedToTermsOfUse=false` in the database. Until the portal stops enforcing both, every authenticated API call (REST, or an MCP tool call) returns 403 — including for the Omni Admin user. `terms.of.use.required=false` and `users.reminder.queries.enabled=false` lift their half of that enforcement on any boot, but `passwordReset` is written when the admin is created, so only `passwords.default.policy.change.required=false` already in effect at that point avoids it.
 
 - **Cleared and synced before its first start**: nothing to do. The admin was created with the properties in effect, so `passwordReset` was never set.
 
@@ -121,7 +121,7 @@ Do not automate the browser login flow — Liferay's login form structure varies
 
 ### MCP Connection Check (When MCP Is Supported)
 
-With the server running, first run the endpoint probe in `skills/mcp-server/SKILL.md` → "Audit the Current State First". A `404` means `LPD-63311` is not in effect on the portal, whatever the agent's server list shows — enable it and restart Liferay before going further. The probe does not check credentials; only a tool call does (see `skills/mcp-server/SKILL.md` → "Audit the Current State First"). Then run the tool call in `skills/mcp-server/SKILL.md` → "Connection Check". If it reports `Status code: 401` or `403`, stop and ask the user for updated credentials. If MCP tools are not visible, ensure the CLI session was restarted after configuration.
+With the server running, first run the endpoint probe in `skills/mcp-server/SKILL.md` → "Audit the Current State First". A `404` means `LPD-63311` is not in effect on the portal, whatever the agent's server list shows — enable it and restart Liferay before going further. On 2026.Q3 a `404` with the flag in effect means the `MCPServerConfiguration` switch is off; enable it per `skills/mcp-server/SKILL.md`, which needs no restart. On 2026.Q1 and 2026.Q2 the probe does not check credentials; only a tool call does (see `skills/mcp-server/SKILL.md` → "Audit the Current State First"). Then run the tool call in `skills/mcp-server/SKILL.md` → "Connection Check". If it reports `Status code: 401` or `403`, or the probe returns HTTP `401` on 2026.Q3, stop and ask the user for updated credentials. If MCP tools are not visible, ensure the CLI session was restarted after configuration.
 
 Only fall back to direct REST APIs if MCP has been configured correctly and is still returning errors. "Not yet configured" is not a valid fallback condition — configure it first.
 
