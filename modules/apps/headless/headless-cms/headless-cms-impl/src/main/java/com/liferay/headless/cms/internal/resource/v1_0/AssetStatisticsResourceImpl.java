@@ -8,6 +8,7 @@ package com.liferay.headless.cms.internal.resource.v1_0;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.headless.cms.dto.v1_0.AssetStatistics;
+import com.liferay.headless.cms.internal.field.MissingRequiredFieldsAssetSearcher;
 import com.liferay.headless.cms.internal.link.BrokenLinkAssetSearcher;
 import com.liferay.headless.cms.internal.link.BrokenLinkTarget;
 import com.liferay.headless.cms.internal.util.CMSGroupUtil;
@@ -146,6 +147,9 @@ public class AssetStatisticsResourceImpl
 									date.getTime() -
 										(Time.DAY * _LONG_STANDING_DRAFT_DAYS)))
 						)));
+				setMissingRequiredFieldsCount(
+					() -> _getMissingRequiredFieldsCount(
+						selectedSpaceGroupIds));
 				setOverdueWorkflowTasksCount(
 					() -> _getWorkflowTasksCount(
 						classNames, selectedSpaceGroupIds,
@@ -258,6 +262,33 @@ public class AssetStatisticsResourceImpl
 		}
 	}
 
+	private long _getMissingRequiredFieldsCount(Long[] groupIds) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-82226")) {
+
+			return 0;
+		}
+
+		try {
+			MissingRequiredFieldsAssetSearcher
+				missingRequiredFieldsAssetSearcher =
+					new MissingRequiredFieldsAssetSearcher(
+						_searcher, _searchRequestBuilderFactory);
+
+			return missingRequiredFieldsAssetSearcher.getCount(
+				contextCompany.getCompanyId(), groupIds);
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get the missing required fields count",
+					exception);
+			}
+
+			return 0;
+		}
+	}
+
 	private long _getSLABreachedWorkflowTasksCount(
 		String[] classNames, Long[] groupIds) {
 
@@ -364,6 +395,7 @@ public class AssetStatisticsResourceImpl
 				setExpiringSoonCount(() -> 0L);
 				setInDraftCount(() -> 0L);
 				setLongStandingDraftsCount(() -> 0L);
+				setMissingRequiredFieldsCount(() -> 0L);
 				setOverdueWorkflowTasksCount(() -> 0L);
 				setPendingCount(() -> 0L);
 				setReviewDateOverdueCount(() -> 0L);
