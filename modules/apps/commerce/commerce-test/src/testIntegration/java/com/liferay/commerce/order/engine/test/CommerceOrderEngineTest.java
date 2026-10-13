@@ -46,8 +46,12 @@ import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.commerce.test.util.order.status.Test1CommerceOrderStatusImpl;
 import com.liferay.commerce.test.util.order.status.Test2CommerceOrderStatusImpl;
 import com.liferay.commerce.test.util.order.status.Test3CommerceOrderStatusImpl;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.messaging.DestinationNames;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -62,17 +66,22 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -86,7 +95,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.runtime.ServiceComponentRuntime;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
 import org.osgi.util.promise.Promise;
@@ -157,6 +169,10 @@ public class CommerceOrderEngineTest {
 
 		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
 		PrincipalThreadLocal.setName(_originalName);
+
+		if (_serviceRegistration != null) {
+			_serviceRegistration.unregister();
+		}
 	}
 
 	@Test
@@ -1191,6 +1207,64 @@ public class CommerceOrderEngineTest {
 			ProcessingCommerceOrderStatusImpl.KEY);
 	}
 
+	@FeatureFlag("LPD-69290")
+	@Test
+	public void testTransitionCommerceOrderMessage() throws Exception {
+		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
+			_commerceOrder, _user.getUserId());
+
+		List<Message> messages = _registerMessageListener();
+
+		PrincipalThreadLocal.setName(null);
+
+		_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
+			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_ON_HOLD,
+			_user.getUserId(), true);
+
+		Message message = messages.get(messages.size() - 1);
+
+		Assert.assertEquals(
+			_commerceOrder.getCompanyId(), message.getLong("companyId"));
+		Assert.assertEquals(
+			String.valueOf(_user.getUserId()),
+			message.getString("principalName"));
+
+		_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
+			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_ON_HOLD, 0,
+			true);
+
+		message = messages.get(messages.size() - 1);
+
+		Assert.assertNull(message.get("principalName"));
+
+		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+
+		_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
+			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_ON_HOLD,
+			_user.getUserId(), true);
+
+		message = messages.get(messages.size() - 1);
+
+		Assert.assertEquals(
+			String.valueOf(TestPropsValues.getUserId()),
+			message.getString("principalName"));
+
+		PrincipalThreadLocal.setName(null);
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-69290")) {
+
+			_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
+				_commerceOrder, CommerceOrderConstants.ORDER_STATUS_ON_HOLD,
+				_user.getUserId(), true);
+
+			message = messages.get(messages.size() - 1);
+
+			Assert.assertNull(message.get("principalName"));
+		}
+	}
+
 	@Test
 	public void testTransitionOrderWithNonshippableItemToCompleted()
 		throws Exception {
@@ -1269,6 +1343,21 @@ public class CommerceOrderEngineTest {
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
+	private List<Message> _registerMessageListener() {
+		List<Message> messages = new ArrayList<>();
+
+		Bundle bundle = FrameworkUtil.getBundle(CommerceOrderEngineTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		_serviceRegistration = bundleContext.registerService(
+			MessageListener.class, messages::add,
+			MapUtil.singletonDictionary(
+				"destination.name", DestinationNames.COMMERCE_ORDER_STATUS));
+
+		return messages;
+	}
+
 	private AccountEntry _accountEntry;
 
 	@DeleteAfterTestRun
@@ -1315,6 +1404,7 @@ public class CommerceOrderEngineTest {
 	private ServiceComponentRuntime _serviceComponentRuntime;
 
 	private ServiceContext _serviceContext;
+	private ServiceRegistration<MessageListener> _serviceRegistration;
 	private User _user;
 
 }

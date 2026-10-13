@@ -13,8 +13,10 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.service.CommerceOrderAttachmentLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceOrderAttachmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
@@ -98,6 +100,14 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 		Attachment getAttachment = attachmentResource.getOrderAttachment(
 			testGetOrderAttachment_getOrderId(), postAttachment.getId());
+
+		CommerceOrderAttachment commerceOrderAttachment =
+			_commerceOrderAttachmentLocalService.getCommerceOrderAttachment(
+				getAttachment.getId());
+
+		Assert.assertEquals(
+			Long.valueOf(commerceOrderAttachment.getFileEntryId()),
+			getAttachment.getFileEntryId());
 
 		Assert.assertEquals(
 			"commerce-order-attachment/" + getAttachment.getId(),
@@ -376,6 +386,10 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	private CommerceOrder _commerceOrder;
+
+	@Inject
+	private CommerceOrderAttachmentLocalService
+		_commerceOrderAttachmentLocalService;
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
