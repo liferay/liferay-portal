@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -13,8 +14,8 @@ interface IEmptyStateProps extends React.HTMLAttributes<HTMLElement> {
 		src: string;
 		style: object;
 	};
-	imgSrc?: string;
 	maxWidth?: number;
+	symbol?: string;
 	title: string;
 }
 
@@ -23,8 +24,8 @@ const EmptyState: React.FC<IEmptyStateProps> = ({
 	className,
 	description,
 	externalImage,
-	imgSrc,
 	maxWidth = 268,
+	symbol,
 	title,
 }) => (
 	<div
@@ -42,7 +43,15 @@ const EmptyState: React.FC<IEmptyStateProps> = ({
 
 			<ClayEmptyState
 				description={description}
-				imgSrc={imgSrc}
+				image={
+					symbol ? (
+						<ClayIcon
+							className={`c-empty-state-icon c-empty-state-icon-${symbol}`}
+							illustration
+							symbol={symbol}
+						/>
+					) : undefined
+				}
 				small
 				title={title}
 			>

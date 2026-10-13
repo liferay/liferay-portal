@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import React, {createContext, useContext} from 'react';
 
 import {ERROR_MESSAGE} from '../utils/constants';
@@ -98,7 +99,7 @@ export function ErrorStateComponent({
 
 interface IEmptyStateComponentProps extends React.HTMLAttributes<HTMLElement> {
 	description?: string;
-	imgSrc: string;
+	symbol?: string;
 	title?: string;
 }
 
@@ -106,18 +107,22 @@ export function EmptyStateComponent({
 	children,
 	className,
 	description,
-	imgSrc,
+	symbol,
 	title,
 }: IEmptyStateComponentProps) {
 	return (
 		<div className={className}>
 			<ClayEmptyState
 				description={description}
-				imgProps={{
-					alt: title,
-					title,
-				}}
-				imgSrc={imgSrc}
+				image={
+					symbol ? (
+						<ClayIcon
+							className={`c-empty-state-icon c-empty-state-icon-${symbol}`}
+							illustration
+							symbol={symbol}
+						/>
+					) : undefined
+				}
 				title={title}
 			>
 				{children}

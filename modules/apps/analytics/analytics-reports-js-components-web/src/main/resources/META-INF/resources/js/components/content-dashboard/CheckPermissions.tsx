@@ -84,7 +84,7 @@ const CheckPermissionsContent: React.FC<ICheckPermissionsProps> = ({
 					description={Liferay.Language.get(
 						'in-order-to-view-asset-performance,-connect-sites-that-are-synced-to-analytics-cloud-to-your-asset-library'
 					)}
-					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+					symbol="search-state"
 					title={Liferay.Language.get(
 						'there-are-no-sites-connected-to-this-asset-library'
 					)}
@@ -105,7 +105,7 @@ const CheckPermissionsContent: React.FC<ICheckPermissionsProps> = ({
 				description={Liferay.Language.get(
 					'please-contact-a-dxp-instance-administrator-to-connect-your-sites-to-an-asset-library'
 				)}
-				imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+				symbol="search-state"
 				title={Liferay.Language.get(
 					'there-are-no-sites-connected-to-this-asset-library'
 				)}
