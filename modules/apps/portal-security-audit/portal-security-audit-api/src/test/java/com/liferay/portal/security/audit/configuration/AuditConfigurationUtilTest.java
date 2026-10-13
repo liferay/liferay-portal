@@ -30,57 +30,6 @@ public class AuditConfigurationUtilTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testGetCompanyIdWhenFeatureFlagIsDisabled() {
-		Assert.assertEquals(
-			CompanyConstants.SYSTEM,
-			AuditConfigurationUtil.getCompanyId(RandomTestUtil.randomLong()));
-	}
-
-	@FeatureFlag("LPD-6417")
-	@Test
-	public void testGetConfiguration() {
-		long companyId = RandomTestUtil.randomLong();
-
-		_testGetConfiguration(CompanyConstants.SYSTEM);
-		_testGetConfiguration(companyId);
-
-		Assert.assertEquals(
-			CompanyConstants.SYSTEM, AuditConfigurationUtil.getCompanyId(-1));
-		Assert.assertEquals(
-			CompanyConstants.SYSTEM,
-			AuditConfigurationUtil.getCompanyId(CompanyConstants.SYSTEM));
-		Assert.assertEquals(
-			companyId, AuditConfigurationUtil.getCompanyId(companyId));
-	}
-
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testGetScopedConfigurationWhenFeatureFlagIsDisabled() {
-		try (MockedStatic<ConfigurationProviderUtil>
-				configurationProviderUtilMockedStatic = Mockito.mockStatic(
-					ConfigurationProviderUtil.class)) {
-
-			long companyId = RandomTestUtil.randomLong();
-
-			AuditConfiguration auditConfiguration = _createAuditConfiguration(
-				RandomTestUtil.randomBoolean());
-
-			configurationProviderUtilMockedStatic.when(
-				() -> ConfigurationProviderUtil.getCompanyConfiguration(
-					AuditConfiguration.class, companyId)
-			).thenReturn(
-				auditConfiguration
-			);
-
-			Assert.assertSame(
-				auditConfiguration,
-				AuditConfigurationUtil.getScopedConfiguration(
-					AuditConfiguration.class, companyId));
-		}
-	}
-
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testIsEnabled() {
@@ -116,42 +65,6 @@ public class AuditConfigurationUtilTest {
 		);
 
 		return auditConfiguration;
-	}
-
-	private void _testGetConfiguration(long companyId) {
-		try (MockedStatic<ConfigurationProviderUtil>
-				configurationProviderUtilMockedStatic = Mockito.mockStatic(
-					ConfigurationProviderUtil.class)) {
-
-			AuditConfiguration auditConfiguration = _createAuditConfiguration(
-				RandomTestUtil.randomBoolean());
-
-			if (companyId == CompanyConstants.SYSTEM) {
-				configurationProviderUtilMockedStatic.when(
-					() -> ConfigurationProviderUtil.getSystemConfiguration(
-						AuditConfiguration.class)
-				).thenReturn(
-					auditConfiguration
-				);
-			}
-			else {
-				configurationProviderUtilMockedStatic.when(
-					() -> ConfigurationProviderUtil.getCompanyConfiguration(
-						AuditConfiguration.class, companyId)
-				).thenReturn(
-					auditConfiguration
-				);
-			}
-
-			Assert.assertSame(
-				auditConfiguration,
-				AuditConfigurationUtil.getConfiguration(
-					AuditConfiguration.class, companyId));
-			Assert.assertSame(
-				auditConfiguration,
-				AuditConfigurationUtil.getScopedConfiguration(
-					AuditConfiguration.class, companyId));
-		}
 	}
 
 	private void _testIsEnabled(long companyId, boolean enabled) {
