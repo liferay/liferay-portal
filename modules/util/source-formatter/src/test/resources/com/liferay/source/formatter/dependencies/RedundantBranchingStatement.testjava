@@ -112,6 +112,22 @@ public class RedundantBranchingStatement {
 		}
 	}
 
+	public void method10(List<String> keys) {
+		int i = 0;
+
+		do {
+			String key = keys.get(i++);
+
+			if (key.startsWith("a")) {
+				_print(key);
+			}
+			else {
+				continue;
+			}
+		}
+		while (i < keys.size());
+	}
+
 	private void _print(String value) {
 		System.out.println(value);
 	}

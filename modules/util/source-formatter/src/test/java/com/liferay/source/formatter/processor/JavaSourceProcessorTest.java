@@ -1055,6 +1055,8 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				"Redundant \"continue\" statement", 57
 			).addExpectedMessage(
 				"Redundant \"continue\" statement", 71
+			).addExpectedMessage(
+				"Redundant \"continue\" statement", 125
 			));
 	}
 
