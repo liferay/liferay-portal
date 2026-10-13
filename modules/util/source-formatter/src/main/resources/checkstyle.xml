@@ -414,6 +414,11 @@
 			<property name="description" value="Checks the creation of DTO enum." />
 			<message key="create.use" value="Use &quot;create&quot; to create DTO enum, instead of &quot;valueOf&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.EarlyLoopExitCheck">
+			<property name="category" value="Styling" />
+			<property name="description" value="Finds if-statements at the end of a loop body that can be inverted to use `continue`, `break`, `return`, or `throw` as early as possible." />
+			<message key="loop.exit.early" value="Invert the condition and use &quot;{0}&quot; as early as possible instead of nesting the rest of the loop body in the if-statement" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.EmptyConstructorCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Finds unnecessary empty constructors." />
@@ -597,11 +602,6 @@
 			<property name="category" value="Styling" />
 			<property name="description" value="Validates messages that are passed to `log.*` calls." />
 			<message key="message.incorrect" value="Incorrect log message" />
-		</module>
-		<module name="com.liferay.source.formatter.checkstyle.check.LoopEarlyExitCheck">
-			<property name="category" value="Styling" />
-			<property name="description" value="Finds if-statements at the end of a loop body that can be inverted to use `continue`, `break`, `return`, or `throw` as early as possible." />
-			<message key="loop.exit.early" value="Invert the condition and use &quot;{0}&quot; as early as possible instead of nesting the rest of the loop body in the if-statement" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.LPS42924Check">
 			<property name="category" value="Bug Prevention" />

@@ -29,6 +29,7 @@ ContractionsCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds contra
 [DefaultComesLastCheck](https://checkstyle.sourceforge.io/checks/coding/defaultcomeslast.html) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that the `default` is after all the cases in a `switch` statement. |
 DockerfileEmptyLinesCheck | Dockerfile | Finds missing and unnecessary empty lines. |
 DockerfileInstructionCheck | Dockerfile | Performs styling rules on instructions in `Dockerfile` files. |
+EarlyLoopExitCheck | .java | Finds if-statements at the end of a loop body that can be inverted to use `continue`, `break`, `return`, or `throw` as early as possible. |
 EmbeddedJSONCheck | .action, .function, .jelly, .jrxml, .macro, .markdown, .md, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Ensures consistent formatting for embedded JSON. |
 EmptyCollectionCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`. |
 EnumConstantDividerCheck | .java | Find unnecessary empty lines between enum constants. |
@@ -119,7 +120,6 @@ ListStylingCheck | .list | Applies rules to enforce consistency in code style. |
 [ListUtilCheck](check/list_util_check.md#listutilcheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks for utilization of class `ListUtil`. |
 LiteralStringEqualsCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds cases where `Objects.equals` should be used. |
 [LogMessageCheck](check/message_check.md#messagecheck) | .java | Validates messages that are passed to `log.*` calls. |
-LoopEarlyExitCheck | .java | Finds if-statements at the end of a loop body that can be inverted to use `continue`, `break`, `return`, or `throw` as early as possible. |
 MarkdownBreakingChangesAmendmentsFileCheck | .markdown or .md | Checks that breaking changes amendments should contain the schematized breaking changes in `BREAKING_CHANGES_AMENDMENTS.md` file. |
 MarkdownEmptyLinesCheck | .markdown or .md | Finds missing and unnecessary empty lines. |
 MarkdownFileExtensionCheck | .markdown or .md | Finds `markdown` files with `.markdown` extension (use `.md`). |

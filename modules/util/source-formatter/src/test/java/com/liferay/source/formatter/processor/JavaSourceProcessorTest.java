@@ -186,6 +186,46 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testEarlyLoopExit() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"EarlyLoopExit.testjava"
+			).addExpectedMessage(
+				"Invert the condition and use \"continue\" as early as " +
+					"possible instead of nesting the rest of the loop body " +
+						"in the if-statement",
+				25
+			).addExpectedMessage(
+				"Invert the condition and use \"continue\" as early as " +
+					"possible instead of nesting the rest of the loop body " +
+						"in the if-statement",
+				33
+			).addExpectedMessage(
+				"Invert the condition and use \"continue\" as early as " +
+					"possible instead of nesting the rest of the loop body " +
+						"in the if-statement",
+				43
+			).addExpectedMessage(
+				"Invert the condition and use \"break\" as early as possible " +
+					"instead of nesting the rest of the loop body in the " +
+						"if-statement",
+				54
+			).addExpectedMessage(
+				"Invert the condition and use \"return\" as early as " +
+					"possible instead of nesting the rest of the loop body " +
+						"in the if-statement",
+				143
+			).addExpectedMessage(
+				"Invert the condition and use \"throw\" as early as possible " +
+					"instead of nesting the rest of the loop body in the " +
+						"if-statement",
+				156
+			).addExpectedMessage(
+				"Redundant \"continue\" statement", 201
+			));
+	}
+
+	@Test
 	public void testElseStatement() throws Exception {
 		test("ElseStatement1.testjava");
 		test(
@@ -684,46 +724,6 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testLogParameters() throws Exception {
 		test("LogParameters.testjava");
-	}
-
-	@Test
-	public void testLoopEarlyExit() throws Exception {
-		test(
-			SourceProcessorTestParameters.create(
-				"LoopEarlyExit.testjava"
-			).addExpectedMessage(
-				"Invert the condition and use \"continue\" as early as " +
-					"possible instead of nesting the rest of the loop body " +
-						"in the if-statement",
-				25
-			).addExpectedMessage(
-				"Invert the condition and use \"continue\" as early as " +
-					"possible instead of nesting the rest of the loop body " +
-						"in the if-statement",
-				33
-			).addExpectedMessage(
-				"Invert the condition and use \"continue\" as early as " +
-					"possible instead of nesting the rest of the loop body " +
-						"in the if-statement",
-				43
-			).addExpectedMessage(
-				"Invert the condition and use \"break\" as early as possible " +
-					"instead of nesting the rest of the loop body in the " +
-						"if-statement",
-				54
-			).addExpectedMessage(
-				"Invert the condition and use \"return\" as early as " +
-					"possible instead of nesting the rest of the loop body " +
-						"in the if-statement",
-				143
-			).addExpectedMessage(
-				"Invert the condition and use \"throw\" as early as possible " +
-					"instead of nesting the rest of the loop body in the " +
-						"if-statement",
-				156
-			).addExpectedMessage(
-				"Redundant \"continue\" statement", 201
-			));
 	}
 
 	@Test

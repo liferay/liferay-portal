@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * @author Alan Huang
  */
-public class LoopEarlyExit {
+public class EarlyLoopExit {
 
 	public void method1(List<String> keys, Map<String, String> map) {
 		for (String key : keys) {
@@ -208,6 +208,6 @@ public class LoopEarlyExit {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		LoopEarlyExit.class);
+		EarlyLoopExit.class);
 
 }

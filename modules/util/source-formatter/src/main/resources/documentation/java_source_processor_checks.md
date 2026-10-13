@@ -43,6 +43,7 @@ DatabaseMetaDataSupportsBatchUpdatesCallCheck | [Bug Prevention](bug_prevention_
 [DefaultComesLastCheck](https://checkstyle.sourceforge.io/checks/coding/defaultcomeslast.html) | [Styling](styling_checks.md#styling-checks) | Checks that the `default` is after all the cases in a `switch` statement. |
 DeprecatedAPICheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds calls to deprecated classes, constructors, fields or methods. |
 DeprecatedClassesCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Replaces deprecated classes. |
+EarlyLoopExitCheck | [Styling](styling_checks.md#styling-checks) | Finds if-statements at the end of a loop body that can be inverted to use `continue`, `break`, `return`, or `throw` as early as possible. |
 EmptyCollectionCheck | [Styling](styling_checks.md#styling-checks) | Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`. |
 EmptyConstructorCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds unnecessary empty constructors. |
 EnumConstantDividerCheck | [Styling](styling_checks.md#styling-checks) | Find unnecessary empty lines between enum constants. |
@@ -228,7 +229,6 @@ LocalVariableTypeInferenceCheck | [Performance](performance_checks.md#performanc
 LocaleUtilCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases where `com.liferay.portal.kernel.util.LocaleUtil` should be used (instead of `java.util.Locale`). |
 [LogMessageCheck](check/message_check.md#messagecheck) | [Styling](styling_checks.md#styling-checks) | Validates messages that are passed to `log.*` calls. |
 LogParametersCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Validates the values of parameters passed to `_log.*` calls. |
-LoopEarlyExitCheck | [Styling](styling_checks.md#styling-checks) | Finds if-statements at the end of a loop body that can be inverted to use `continue`, `break`, `return`, or `throw` as early as possible. |
 [MVCCommandNameCheck](check/mvc_command_name_check.md#mvccommandnamecheck) | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks for consistent naming for values of `mvc.command.name`. |
 [MapBuilderCheck](check/builder_check.md#buildercheck) | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | Checks that `ConcurrentHashMapBuilder`, `HashMapBuilder`, `LinkedHashMapBuilder` or `TreeMapBuilder` is used when possible. |
 [MapIterationCheck](check/map_iteration_check.md#mapiterationcheck) | [Performance](performance_checks.md#performance-checks) | Checks that there are no unnecessary map iterations. |

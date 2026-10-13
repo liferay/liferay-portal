@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * @author Alan Huang
  */
-public class LoopEarlyExitCheck extends BaseCheck {
+public class EarlyLoopExitCheck extends BaseCheck {
 
 	@Override
 	public int[] getDefaultTokens() {
