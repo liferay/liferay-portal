@@ -6,6 +6,7 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransfor
 
 import com.liferay.gradle.plugins.change.log.builder.BuildChangeLogTask
 import com.liferay.gradle.plugins.defaults.internal.util.GradleUtil
+import com.liferay.gradle.plugins.util.ThemeUtil
 import com.liferay.gradle.util.FileUtil
 import com.liferay.gradle.util.StringUtil
 import com.liferay.gradle.util.Validator
@@ -395,7 +396,7 @@ prepareMajorIncrement {
 
 					bundleSymbolicName = bndProperties.getProperty("Bundle-SymbolicName")
 				}
-				else if (_isTheme(it)) {
+				else if (ThemeUtil.isTheme(it)) {
 					bundleSymbolicName = it.name
 				}
 				else if (liferayPluginPackagePropertiesFile.exists() && liferayPluginPackagePropertiesFile.text.contains("module-incremental-version")) {
@@ -913,7 +914,7 @@ private void _cherryPickPrepNext(Commit commit) {
 			versionClosure = antVersionClosure
 			versionFileName = "docroot/WEB-INF/liferay-plugin-package.properties"
 		}
-		else if (_isTheme(moduleDir)) {
+		else if (ThemeUtil.isTheme(moduleDir)) {
 			excludedTaskNames = ["writeParentThemesDigest"]
 			moduleOSGi = false
 			versionClosure = themeVersionClosure
@@ -1676,27 +1677,6 @@ private boolean _isGitRepoReadOnly(File dir) {
 	}
 
 	return _contains(gitRepoDir, ".gitrepo", "mode = pull")
-}
-
-private boolean _isTheme(File dir) {
-	File packageJsonFile = new File(dir, "package.json")
-
-	if (!packageJsonFile.exists()) {
-		return false
-	}
-
-	try {
-		JsonSlurper jsonSlurper = new JsonSlurper()
-
-		Object packageJson = jsonSlurper.parse(packageJsonFile, "UTF-8")
-
-		return (packageJson instanceof Map) && packageJson.containsKey("liferayTheme")
-	}
-	catch (Exception exception) {
-		logger.warn "Unable to parse {}", packageJsonFile, exception
-
-		return false
-	}
 }
 
 private void _resetFileChanges(String fileName) {
