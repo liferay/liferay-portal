@@ -177,7 +177,7 @@ test.beforeEach(async ({apiHelpers, page}) => {
 	await performUserSwitchViaApi(page, user.alternateName);
 });
 
-test.describe('Attention Required section', () => {
+test.describe('Freshness section', () => {
 	test(
 		'Stores the review date the user picked in their account time zone rather than the browser one',
 		{tag: ['@LPD-98462', '@LPD-104263']},
@@ -224,7 +224,7 @@ test.describe('Attention Required section', () => {
 			];
 
 			const overdueReviewsCard = page.getByRole('button', {
-				name: /overdue reviews/,
+				name: /^Overdue Reviews/,
 			});
 
 			const overdueReviewsCount = overdueReviewsCard
@@ -299,6 +299,18 @@ test.describe('Attention Required section', () => {
 
 			await test.step('Open the overdue reviews list', async () => {
 				await overdueReviewsCard.click();
+
+				await expect(
+					page
+						.getByRole('region', {name: 'Overdue Reviews'})
+						.getByText(secondSpaceTitle, {exact: true})
+				).toBeVisible();
+			});
+
+			await test.step('Open the overdue reviews page from the list', async () => {
+				await page
+					.getByRole('link', {name: 'View All Overdue Reviews'})
+					.click();
 
 				await expect(page).toHaveURL(/cms\/overdue-reviews/);
 
@@ -430,7 +442,7 @@ test.describe('Attention Required section', () => {
 			});
 
 			const expiredAssetsCard = page.getByRole('button', {
-				name: /expired assets/i,
+				name: /^Expired/,
 			});
 
 			const expiredAssetsCount = expiredAssetsCard
@@ -451,6 +463,18 @@ test.describe('Attention Required section', () => {
 
 			await test.step('Open the expired assets list from its card', async () => {
 				await expiredAssetsCard.click();
+
+				await expect(
+					page
+						.getByRole('region', {name: 'Expired'})
+						.getByText(secondSpaceTitle, {exact: true})
+				).toBeVisible();
+			});
+
+			await test.step('Open the expired assets page from the list', async () => {
+				await page
+					.getByRole('link', {name: 'View All Expired'})
+					.click();
 
 				await expect(page).toHaveURL(/cms\/expired-assets/);
 
@@ -519,7 +543,9 @@ test.describe('Attention Required section', () => {
 			});
 		}
 	);
+});
 
+test.describe('Attention Required section', () => {
 	test(
 		'Updates the due date of pending workflow contents from the dashboard',
 		{tag: '@LPD-98986'},

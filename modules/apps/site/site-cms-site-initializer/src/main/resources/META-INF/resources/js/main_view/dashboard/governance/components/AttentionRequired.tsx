@@ -34,24 +34,6 @@ const ATTENTION_CARDS: AttentionCard[] = [
 		title: Liferay.Language.get('broken-links'),
 	},
 	{
-		color: 'orange',
-		description: Liferay.Language.get(
-			'these-are-expired-assets-across-the-selected-spaces'
-		),
-		icon: 'warning',
-		statKey: 'expiredCount',
-		title: Liferay.Language.get('expired-assets'),
-	},
-	{
-		color: 'dark',
-		description: Liferay.Language.get(
-			'these-are-assets-with-overdue-reviews-across-the-selected-spaces'
-		),
-		icon: 'date-time',
-		statKey: 'reviewDateOverdueCount',
-		title: Liferay.Language.get('overdue-reviews'),
-	},
-	{
 		color: 'purple',
 		description: Liferay.Language.get(
 			'these-are-assets-with-pending-workflows-across-the-selected-spaces'
@@ -64,9 +46,7 @@ const ATTENTION_CARDS: AttentionCard[] = [
 
 const SECTION_PATHS: Partial<Record<keyof AssetStatistics, string>> = {
 	brokenLinksCount: 'broken-links',
-	expiredCount: 'expired-assets',
 	pendingCount: 'pending-workflows',
-	reviewDateOverdueCount: 'overdue-reviews',
 };
 
 export function AttentionRequired() {
@@ -79,9 +59,7 @@ export function AttentionRequired() {
 	const title = Liferay.Language.get('attention-required');
 
 	const openSection = (path: string) => {
-		const url = getCMSSectionURL(path);
-
-		navigate(space.siteId ? `${url}?groupId=${space.siteId}` : url);
+		navigate(getCMSSectionURL(path, space.siteId));
 	};
 
 	return (
@@ -94,12 +72,7 @@ export function AttentionRequired() {
 						const sectionPath = SECTION_PATHS[statKey];
 
 						return (
-							<ClayLayout.Col
-								className="mb-3"
-								key={title}
-								md={6}
-								xl={3}
-							>
+							<ClayLayout.Col className="mb-3" key={title} md={6}>
 								<InteractiveCard
 									color={color}
 									description={description}
