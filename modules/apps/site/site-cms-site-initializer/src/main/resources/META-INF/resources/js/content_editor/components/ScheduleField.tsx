@@ -13,6 +13,9 @@ import React, {useId, useImperativeHandle, useState} from 'react';
 
 import FieldWrapper from '../../common/components/forms/FieldWrapper';
 
+const YEARS_AFTER = 5;
+const YEARS_BEFORE = 100;
+
 export const dateConfig = datetimeUtils?.generateDateConfigurations({
 	defaultLanguageId: Liferay.ThemeDisplay.getDefaultLanguageId(),
 	locale: Liferay.ThemeDisplay.getLanguageId(),
@@ -21,6 +24,7 @@ export const dateConfig = datetimeUtils?.generateDateConfigurations({
 
 export default React.forwardRef(function ScheduleField(
 	{
+		allowPastDate = false,
 		date: initialDate = '',
 		dateConfig,
 		error: initialError = '',
@@ -30,6 +34,7 @@ export default React.forwardRef(function ScheduleField(
 		required = false,
 		updateFieldData,
 	}: {
+		allowPastDate?: boolean;
 		date: string | undefined;
 		dateConfig: datetimeUtils.DateConfig;
 		error?: string;
@@ -61,7 +66,7 @@ export default React.forwardRef(function ScheduleField(
 		else if (value && !isValid) {
 			error = Liferay.Language.get('the-field-value-is-invalid');
 		}
-		else if (isPastDate(value)) {
+		else if (!allowPastDate && isPastDate(value)) {
 			error = Liferay.Language.get('the-date-entered-is-in-the-past');
 		}
 
@@ -124,8 +129,10 @@ export default React.forwardRef(function ScheduleField(
 					value={date}
 					weekdaysShort={[...dateUtils.getWeekdaysShort(locale)]}
 					years={{
-						end: new Date().getFullYear() + 5,
-						start: new Date().getFullYear(),
+						end: new Date().getFullYear() + YEARS_AFTER,
+						start:
+							new Date().getFullYear() -
+							(allowPastDate ? YEARS_BEFORE : 0),
 					}}
 				/>
 			</FieldWrapper>

@@ -93,6 +93,7 @@ export default function SchedulePublicationModal({
 				</p>
 
 				<ScheduleField
+					allowPastDate
 					date={date}
 					dateConfig={dateConfig}
 					label={Liferay.Language.get('date-and-time')}
