@@ -22,8 +22,10 @@ import java.nio.file.StandardCopyOption;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Brittney Nguyen
@@ -63,7 +65,8 @@ public class MonitorMetricsWriter {
 			byteArrayOutputStream,
 			MetricSnapshots.of(
 				_newDurationGaugeSnapshot(), _newHeartbeatTimestampSnapshot(),
-				_newLastRunTimestampSnapshot(), _newStatusSnapshot()),
+				_newLastRunTimestampSnapshot(), _newMessageInfoSnapshot(),
+				_newStatusSnapshot()),
 			EscapingScheme.DEFAULT);
 
 		return byteArrayOutputStream.toString("UTF-8");
@@ -103,9 +106,23 @@ public class MonitorMetricsWriter {
 			type = "unknown";
 		}
 
-		return Labels.of(
+		Labels labels = Labels.of(
 			"monitor", monitor.getId(), "severity",
 			severityName.toLowerCase(Locale.ENGLISH), "type", type);
+
+		Map<String, String> parameters = monitorConfig.getParameters();
+
+		for (Map.Entry<String, String> entry : _labelNames.entrySet()) {
+			String parameterValue = parameters.get(entry.getKey());
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(parameterValue)) {
+				continue;
+			}
+
+			labels = labels.add(entry.getValue(), parameterValue);
+		}
+
+		return labels;
 	}
 
 	private long _getLastRunTimestampSeconds(Monitor monitor) {
@@ -117,6 +134,43 @@ public class MonitorMetricsWriter {
 		}
 
 		return monitorResult.getTimestamp() / 1000;
+	}
+
+	private String _getMessage(Monitor monitor) {
+		MonitorResult monitorResult =
+			_monitorResultStore.getLatestMonitorResult(monitor.getId());
+
+		if ((monitorResult == null) ||
+			(monitorResult.getStatus() == MonitorResult.Status.OK)) {
+
+			return null;
+		}
+
+		String message = monitorResult.getMessage();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(message)) {
+			return null;
+		}
+
+		if (message.length() <= _MESSAGE_LENGTH_MAXIMUM) {
+			return message;
+		}
+
+		int endIndex = _MESSAGE_LENGTH_MAXIMUM - 3;
+
+		if (Character.isHighSurrogate(message.charAt(endIndex - 1))) {
+			endIndex--;
+		}
+
+		String truncatedMessage = message.substring(0, endIndex) + "...";
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"WARNING: Truncated the message for monitor ", monitor.getId(),
+				" from ", String.valueOf(message.length()), " to ",
+				String.valueOf(truncatedMessage.length()), " characters"));
+
+		return truncatedMessage;
 	}
 
 	private int _getSeverityRank(Monitor monitor) {
@@ -200,6 +254,35 @@ public class MonitorMetricsWriter {
 		return gaugeSnapshotBuilder.build();
 	}
 
+	private GaugeSnapshot _newMessageInfoSnapshot() {
+		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
+
+		gaugeSnapshotBuilder.help(
+			"Message of the last monitor run, for each monitor that is not OK");
+		gaugeSnapshotBuilder.name("monitor_message_info");
+
+		for (Monitor monitor : _monitors) {
+			String message = _getMessage(monitor);
+
+			if (message == null) {
+				continue;
+			}
+
+			GaugeSnapshot.GaugeDataPointSnapshot.Builder
+				gaugeDataPointSnapshotBuilder =
+					GaugeSnapshot.GaugeDataPointSnapshot.builder();
+
+			gaugeDataPointSnapshotBuilder.labels(
+				Labels.of("message", message, "monitor", monitor.getId()));
+			gaugeDataPointSnapshotBuilder.value(1);
+
+			gaugeSnapshotBuilder.dataPoint(
+				gaugeDataPointSnapshotBuilder.build());
+		}
+
+		return gaugeSnapshotBuilder.build();
+	}
+
 	private GaugeSnapshot _newStatusSnapshot() {
 		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
 
@@ -215,6 +298,24 @@ public class MonitorMetricsWriter {
 
 		return gaugeSnapshotBuilder.build();
 	}
+
+	private static final int _MESSAGE_LENGTH_MAXIMUM = 1024;
+
+	private static final Map<String, String> _labelNames =
+		new HashMap<String, String>() {
+			{
+				put("branch", "branch");
+				put("controller.job.name", "controller_job_name");
+				put("device", "device");
+				put("job.name", "job_name");
+				put("label", "node_label");
+				put("master.name", "master_name");
+				put("metric", "metric");
+				put("mount", "mount");
+				put("report.name", "report_name");
+				put("url", "url");
+			}
+		};
 
 	private final File _metricsFile;
 	private final MonitorResultStore _monitorResultStore;
