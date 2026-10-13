@@ -6,6 +6,9 @@
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
@@ -170,6 +173,22 @@ public class PageTemplateResourceImpl
 			@Override
 			public String getSectionKey() {
 				return ExportImportConstants.SECTION_KEY_DESIGN;
+			}
+
+			@Override
+			public boolean isScopeSupported(long companyId, long groupId) {
+				DepotEntry depotEntry =
+					_depotEntryLocalService.fetchGroupDepotEntry(groupId);
+
+				if ((depotEntry != null) &&
+					(depotEntry.getType() ==
+						DepotConstants.TYPE_DESIGN_LIBRARY)) {
+
+					return true;
+				}
+
+				return ExportImportDescriptor.super.isScopeSupported(
+					companyId, groupId);
 			}
 
 			@Override
@@ -975,6 +994,9 @@ public class PageTemplateResourceImpl
 
 	@Reference
 	private CETManager _cetManager;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
