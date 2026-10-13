@@ -148,6 +148,13 @@ resource "kubernetes_network_policy_v1" "envoy_proxy_ingress" {
 	}
 	spec {
 		ingress {
+			dynamic "ports" {
+				content {
+					port=ports.value
+					protocol="TCP"
+				}
+				for_each=local.envoy_listener_ports
+			}
 		}
 		pod_selector {
 			match_labels={

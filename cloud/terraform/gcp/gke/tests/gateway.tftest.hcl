@@ -170,8 +170,8 @@ run "should_scope_the_envoy_gateway_network_policies_correctly" {
 		error_message="envoy-proxy-ingress must declare NO from peers, which admits every source. An ipBlock of 0.0.0.0/0 looks equivalent and is not: it is IPv4 only, and on Dataplane V2 Cilium resolves a CIDR peer to the world identity, so in-cluster pods are not matched by it and hairpin traffic to the gateway is dropped"
 	}
 	assert {
-		condition=length(kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].ingress[0].ports) == 0
-		error_message="envoy-proxy-ingress must declare NO ports. Listener container ports are the Gateway listener port plus 10000 and come from endpoints defined in the infrastructure GitOps repo, which this module cannot see; an enumerated list covers today and silently drops traffic the day an environment adds a listener. Do not tighten this."
+		condition=length(kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].ingress[0].ports) == 2 && kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].ingress[0].ports[0].port == "10080" && kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].ingress[0].ports[1].port == "10443"
+		error_message="envoy-proxy-ingress must admit only the Envoy listener ports. These are the Gateway listener port plus 10000 and carry no container port declaration to name, so they are enumerated in local.envoy_listener_ports, which google_compute_firewall.envoy_ingress_managed reads as well. Adding a listener means changing that local, and leaving it stale drops the new traffic at the firewall before this policy ever sees it"
 	}
 	assert {
 		condition=length(kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].pod_selector[0].match_labels) == 2 && kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].pod_selector[0].match_labels["app.kubernetes.io/managed-by"] == "envoy-gateway" && kubernetes_network_policy_v1.envoy_proxy_ingress.spec[0].pod_selector[0].match_labels["app.kubernetes.io/name"] == "envoy"
