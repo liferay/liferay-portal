@@ -159,12 +159,20 @@ public class DDMFormExportImportPortletPreferencesProcessor
 				portletDataContext, portletId, ddmFormInstance);
 		}
 
-		_exportImportPortletPreferencesProcessorHelper.
-			updateGroupExportPortletPreferencesExternalReferenceCode(
-				portletDataContext.getCompanyId(), "groupExternalReferenceCode",
-				portletPreferences);
+		processExportPortletPreferences(
+			portletDataContext.getCompanyId(), portletPreferences);
 
 		return portletPreferences;
+	}
+
+	@Override
+	public void processImportPortletPreferences(
+			long companyId, PortletPreferences portletPreferences)
+		throws PortletDataException {
+
+		_exportImportPortletPreferencesProcessorHelper.
+			updateGroupImportPortletPreferencesExternalReferenceCode(
+				companyId, "groupExternalReferenceCode", portletPreferences);
 	}
 
 	@Override
@@ -181,6 +189,11 @@ public class DDMFormExportImportPortletPreferencesProcessor
 			throw new PortletDataException(
 				"Unable to export portlet permissions", portalException);
 		}
+
+		_exportImportPortletPreferencesProcessorHelper.
+			updateGroupImportPortletPreferencesExternalReferenceCode(
+				portletDataContext, "groupExternalReferenceCode",
+				portletPreferences);
 
 		Map<Long, Long> formInstanceIds =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
