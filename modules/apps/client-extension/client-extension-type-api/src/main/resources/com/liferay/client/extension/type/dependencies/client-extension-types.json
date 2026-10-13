@@ -67,6 +67,11 @@
 				"type": "CETProperty.Type.String"
 			},
 			{
+				"default": "",
+				"name": "continueAfterPayment",
+				"type": "CETProperty.Type.Boolean"
+			},
+			{
 				"name": "description",
 				"type": "CETProperty.Type.String"
 			},

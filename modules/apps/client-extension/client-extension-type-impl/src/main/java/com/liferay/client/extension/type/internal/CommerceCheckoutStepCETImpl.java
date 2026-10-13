@@ -51,6 +51,11 @@ public class CommerceCheckoutStepCETImpl
 	}
 
 	@Override
+	public boolean getContinueAfterPayment() {
+		return getBoolean("continueAfterPayment");
+	}
+
+	@Override
 	public String getEditJSP() {
 		return "/admin/edit_commerce_checkout_step.jsp";
 	}

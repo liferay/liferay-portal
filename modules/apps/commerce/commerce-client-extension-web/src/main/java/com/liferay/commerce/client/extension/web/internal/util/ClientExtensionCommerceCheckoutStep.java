@@ -84,6 +84,8 @@ public class ClientExtensionCommerceCheckoutStep
 		_baseURL = commerceCheckoutStepCET.getBaseURL();
 		_commerceCheckoutStepOrder =
 			commerceCheckoutStepCET.getCheckoutStepOrder();
+		_continueAfterPayment =
+			commerceCheckoutStepCET.getContinueAfterPayment();
 		_label = commerceCheckoutStepCET.getCheckoutStepLabel();
 		_name = commerceCheckoutStepCET.getCheckoutStepName();
 		_oAuth2ApplicationExternalReferenceCode =
@@ -169,6 +171,11 @@ public class ClientExtensionCommerceCheckoutStep
 
 			return false;
 		}
+	}
+
+	@Override
+	public boolean isContinueAfterPayment() {
+		return _continueAfterPayment;
 	}
 
 	@Override
@@ -375,6 +382,7 @@ public class ClientExtensionCommerceCheckoutStep
 	private final int _commerceCheckoutStepOrder;
 	private final CommercePaymentMethodGroupRelLocalService
 		_commercePaymentMethodGroupRelLocalService;
+	private final boolean _continueAfterPayment;
 	private final Dictionary<String, Object> _dictionary;
 	private final Http _http;
 	private final JSONFactory _jsonFactory;

@@ -21,6 +21,10 @@ CommerceCheckoutStepCET commerceCheckoutStepCET = editClientExtensionEntryDispla
 
 <aui:input label="checkout-step-order" name="checkoutStepOrder" required="<%= true %>" type="text" value="<%= commerceCheckoutStepCET.getCheckoutStepOrder() %>" />
 
+<c:if test='<%= FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-69290") %>'>
+	<aui:input label="continue-after-payment" name="continueAfterPayment" type="checkbox" value="<%= commerceCheckoutStepCET.getContinueAfterPayment() %>" />
+</c:if>
+
 <aui:input label="oauth2-application-external-reference-code" name="oAuth2ApplicationExternalReferenceCode" required="<%= true %>" type="text" value="<%= commerceCheckoutStepCET.getOAuth2ApplicationExternalReferenceCode() %>" />
 
 <aui:input label="order" name="order" type="checkbox" value="<%= commerceCheckoutStepCET.getOrder() %>" />

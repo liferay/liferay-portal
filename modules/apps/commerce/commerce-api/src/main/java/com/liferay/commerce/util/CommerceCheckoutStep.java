@@ -27,6 +27,10 @@ public interface CommerceCheckoutStep {
 			HttpServletResponse httpServletResponse)
 		throws Exception;
 
+	public default boolean isContinueAfterPayment() {
+		return false;
+	}
+
 	public boolean isOrder();
 
 	public boolean isSennaDisabled();

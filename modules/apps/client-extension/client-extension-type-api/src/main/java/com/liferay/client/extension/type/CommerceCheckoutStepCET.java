@@ -41,6 +41,12 @@ public interface CommerceCheckoutStepCET extends CET {
 	public int getCheckoutStepOrder();
 
 	@CETProperty(
+		defaultValue = "", name = "continueAfterPayment",
+		type = CETProperty.Type.Boolean
+	)
+	public boolean getContinueAfterPayment();
+
+	@CETProperty(
 		defaultValue = "", name = "oAuth2ApplicationExternalReferenceCode",
 		type = CETProperty.Type.String
 	)

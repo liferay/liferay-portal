@@ -59,6 +59,9 @@ public class CommerceCheckoutStepCETImplFactoryImpl
 			"checkoutStepOrder",
 			ParamUtil.getString(portletRequest, "checkoutStepOrder", "1")
 		).put(
+			"continueAfterPayment",
+			ParamUtil.getBoolean(portletRequest, "continueAfterPayment")
+		).put(
 			"oAuth2ApplicationExternalReferenceCode",
 			ParamUtil.getString(
 				portletRequest, "oAuth2ApplicationExternalReferenceCode")
