@@ -27,7 +27,7 @@ public class CMSConfigurationCategoryShowFilter
 	}
 
 	private static final Set<String> _visibleCategoryKeys = SetUtil.fromArray(
-		"accessibility", "ai-creator", "batch-engine", "comments",
+		"accessibility", "ai-creator", "ai-hub", "batch-engine", "comments",
 		"community-tools", "default-permissions", "documents-and-media",
 		"email", "feature-flags", "instance-configuration", "ldap",
 		"localization", "login", "marketplace", "oauth2", "object", "scim-name",
