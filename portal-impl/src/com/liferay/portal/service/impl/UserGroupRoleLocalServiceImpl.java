@@ -9,6 +9,7 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleTable;
@@ -18,6 +19,9 @@ import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.Users_UserGroupsTable;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.RolePersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
@@ -81,8 +85,10 @@ public class UserGroupRoleLocalServiceImpl
 
 		Group group = _groupPersistence.fetchByPrimaryKey(groupId);
 
-		if (group.isRegularSite()) {
-			_groupPersistence.addUser(groupId, userId);
+		if (group.isRegularSite() &&
+			_groupPersistence.addUser(groupId, userId)) {
+
+			_reindex(new long[] {userId});
 		}
 
 		return userGroupRoles;
@@ -103,8 +109,10 @@ public class UserGroupRoleLocalServiceImpl
 
 		Group group = _groupPersistence.fetchByPrimaryKey(groupId);
 
-		if (group.isRegularSite()) {
-			_groupPersistence.addUsers(groupId, userIds);
+		if (group.isRegularSite() &&
+			_groupPersistence.addUsers(groupId, userIds)) {
+
+			_reindex(userIds);
 		}
 
 		return userGroupRoles;
@@ -326,6 +334,20 @@ public class UserGroupRoleLocalServiceImpl
 		}
 
 		return userGroupRolePersistence.update(userGroupRole);
+	}
+
+	private void _reindex(long[] userIds) {
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			User.class);
+
+		try {
+			for (long userId : userIds) {
+				indexer.reindex(User.class.getName(), userId);
+			}
+		}
+		catch (SearchException searchException) {
+			throw new SystemException(searchException);
+		}
 	}
 
 	@BeanReference(type = GroupPersistence.class)

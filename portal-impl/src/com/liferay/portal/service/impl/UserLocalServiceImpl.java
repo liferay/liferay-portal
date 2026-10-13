@@ -562,6 +562,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		userPersistence.addUserGroups(userId, userGroupIds);
 
+		_reindexUserGroups(userGroupIds);
+
 		return true;
 	}
 
@@ -1080,6 +1082,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			throw new SystemException(portalException);
 		}
 
+		_reindexUserGroups(new long[] {userGroupId});
+
 		return true;
 	}
 
@@ -1118,6 +1122,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			throw new SystemException(portalException);
 		}
 
+		_reindexUserGroups(new long[] {userGroupId});
+
 		return true;
 	}
 
@@ -1137,6 +1143,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 
 		reindex(userIds);
+
+		_reindexUserGroups(new long[] {userGroupId});
 
 		return true;
 	}
@@ -1442,6 +1450,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		if ((serviceContext == null) || serviceContext.isIndexingEnabled()) {
 			reindex(user);
+
+			if (userGroupIds != null) {
+				_reindexUserGroups(userGroupIds);
+			}
 		}
 
 		// Workflow
@@ -1933,6 +1945,36 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Removes the users from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 */
+	@Override
+	public void clearGroupUsers(long groupId) {
+		long[] userIds = groupPersistence.getUserPrimaryKeys(groupId);
+
+		super.clearGroupUsers(groupId);
+
+		_reindex(userIds);
+	}
+
+	/**
+	 * Removes the users from the user group.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 */
+	@Override
+	public void clearUserGroupUsers(long userGroupId) {
+		long[] userIds = userGroupPersistence.getUserPrimaryKeys(userGroupId);
+
+		super.clearUserGroupUsers(userGroupId);
+
+		_reindex(userIds);
+
+		_reindexUserGroups(new long[] {userGroupId});
+	}
+
+	/**
 	 * Completes the user's registration by generating a password and sending
 	 * the confirmation email.
 	 *
@@ -2007,6 +2049,55 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		else if (adminEmailUserAddedEnabled && sendEmail) {
 			notifyUser(user, serviceContext);
 		}
+	}
+
+	/**
+	 * Removes the user from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param userId the primary key of the user
+	 */
+	@Override
+	public void deleteGroupUser(long groupId, long userId) {
+		super.deleteGroupUser(groupId, userId);
+
+		_reindex(userId);
+	}
+
+	/**
+	 * Removes the user from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param user the user
+	 */
+	@Override
+	public void deleteGroupUser(long groupId, User user) {
+		deleteGroupUser(groupId, user.getUserId());
+	}
+
+	/**
+	 * Removes the users from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param users the users
+	 */
+	@Override
+	public void deleteGroupUsers(long groupId, List<User> users) {
+		deleteGroupUsers(
+			groupId, ListUtil.toLongArray(users, User.USER_ID_ACCESSOR));
+	}
+
+	/**
+	 * Removes the users from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void deleteGroupUsers(long groupId, long[] userIds) {
+		super.deleteGroupUsers(groupId, userIds);
+
+		_reindex(userIds);
 	}
 
 	/**
@@ -2188,7 +2279,12 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// User
 
+		long[] userGroupIds = userPersistence.getUserGroupPrimaryKeys(
+			user.getUserId());
+
 		userPersistence.remove(user);
+
+		_reindexUserGroups(userGroupIds);
 
 		// Workflow
 
@@ -2211,6 +2307,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		userGroupPersistence.removeUser(userGroupId, userId);
 
 		reindex(userId);
+
+		_reindexUserGroups(new long[] {userGroupId});
 	}
 
 	/**
@@ -2242,6 +2340,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
 		}
+
+		_reindexUserGroups(new long[] {userGroupId});
 	}
 
 	/**
@@ -2260,6 +2360,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
 		}
+
+		_reindexUserGroups(new long[] {userGroupId});
 	}
 
 	@Override
@@ -4377,6 +4479,24 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Sets the users in the group, removing and adding users to the group as
+	 * necessary.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void setGroupUsers(long groupId, long[] userIds) {
+		long[] oldUserIds = groupPersistence.getUserPrimaryKeys(groupId);
+
+		super.setGroupUsers(groupId, userIds);
+
+		_reindex(
+			ArrayUtil.toLongArray(
+				SetUtil.symmetricDifference(userIds, oldUserIds)));
+	}
+
+	/**
 	 * Sets the users in the role, removing and adding users to the role as
 	 * necessary.
 	 *
@@ -4421,6 +4541,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		userGroupPersistence.setUsers(userGroupId, userIds);
 
 		reindex(updateUserIds);
+
+		_reindexUserGroups(new long[] {userGroupId});
 	}
 
 	/**
@@ -4582,6 +4704,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		userGroupPersistence.removeUsers(userGroupId, userIds);
 
 		reindex(userIds);
+
+		_reindexUserGroups(new long[] {userGroupId});
 	}
 
 	/**
@@ -5813,7 +5937,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// User groups
 
+		long[] oldUserGroupIds = new long[0];
+
 		if (userGroupIds != null) {
+			oldUserGroupIds = userPersistence.getUserGroupPrimaryKeys(userId);
+
 			userPersistence.setUserGroups(userId, userGroupIds);
 		}
 
@@ -5836,6 +5964,13 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				User.class);
 
 			indexer.reindex(user);
+
+			if (userGroupIds != null) {
+				_reindexUserGroups(
+					ArrayUtil.toLongArray(
+						SetUtil.symmetricDifference(
+							userGroupIds, oldUserGroupIds)));
+			}
 		}
 
 		// Email address verification
@@ -7513,6 +7648,45 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 
 		return newEncPwd.equals(user.getPassword());
+	}
+
+	private void _reindex(long userId) {
+		try {
+			reindex(userId);
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+	}
+
+	private void _reindex(long[] userIds) {
+		try {
+			reindex(userIds);
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+	}
+
+	private void _reindexUserGroups(long[] userGroupIds) {
+		Indexer<UserGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			UserGroup.class);
+
+		for (long userGroupId : userGroupIds) {
+			UserGroup userGroup = userGroupPersistence.fetchByPrimaryKey(
+				userGroupId);
+
+			if (userGroup == null) {
+				continue;
+			}
+
+			try {
+				indexer.reindex(userGroup);
+			}
+			catch (SearchException searchException) {
+				throw new SystemException(searchException);
+			}
+		}
 	}
 
 	private void _sendNotificationEmail(

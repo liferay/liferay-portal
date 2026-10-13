@@ -16,6 +16,7 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -59,6 +60,7 @@ import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -394,6 +396,20 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Clears the user groups from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 */
+	@Override
+	public void clearGroupUserGroups(long groupId) {
+		long[] userGroupIds = groupPersistence.getUserGroupPrimaryKeys(groupId);
+
+		super.clearGroupUserGroups(groupId);
+
+		_reindex(userGroupIds);
+	}
+
+	/**
 	 * Removes the user from all user groups.
 	 *
 	 * @param userId the primary key of the user
@@ -414,6 +430,58 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
 		}
+	}
+
+	/**
+	 * Deletes the user group from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param userGroupId the primary key of the user group
+	 */
+	@Override
+	public void deleteGroupUserGroup(long groupId, long userGroupId) {
+		super.deleteGroupUserGroup(groupId, userGroupId);
+
+		_reindex(new long[] {userGroupId});
+	}
+
+	/**
+	 * Deletes the user group from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param userGroup the user group
+	 */
+	@Override
+	public void deleteGroupUserGroup(long groupId, UserGroup userGroup) {
+		deleteGroupUserGroup(groupId, userGroup.getUserGroupId());
+	}
+
+	/**
+	 * Deletes the user groups from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param userGroups the user groups
+	 */
+	@Override
+	public void deleteGroupUserGroups(
+		long groupId, List<UserGroup> userGroups) {
+
+		deleteGroupUserGroups(
+			groupId,
+			ListUtil.toLongArray(userGroups, UserGroup.USER_GROUP_ID_ACCESSOR));
+	}
+
+	/**
+	 * Deletes the user groups from the group.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param userGroupIds the primary keys of the user groups
+	 */
+	@Override
+	public void deleteGroupUserGroups(long groupId, long[] userGroupIds) {
+		super.deleteGroupUserGroups(groupId, userGroupIds);
+
+		_reindex(userGroupIds);
 	}
 
 	/**
@@ -478,7 +546,17 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		// User group
 
+		List<User> users = userGroupPersistence.getUsers(
+			userGroup.getUserGroupId());
+
 		userGroupPersistence.remove(userGroup);
+
+		// Indexer
+
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			User.class);
+
+		indexer.reindex(users);
 
 		return userGroup;
 	}
@@ -1088,6 +1166,25 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Sets the user groups in the group, removing and adding user groups to the
+	 * group as necessary.
+	 *
+	 * @param groupId the primary key of the group
+	 * @param userGroupIds the primary keys of the user groups
+	 */
+	@Override
+	public void setGroupUserGroups(long groupId, long[] userGroupIds) {
+		long[] oldUserGroupIds = groupPersistence.getUserGroupPrimaryKeys(
+			groupId);
+
+		super.setGroupUserGroups(groupId, userGroupIds);
+
+		_reindex(
+			ArrayUtil.toLongArray(
+				SetUtil.symmetricDifference(userGroupIds, oldUserGroupIds)));
+	}
+
+	/**
 	 * Sets the user groups associated with the user copying the user group
 	 * layouts and removing and adding user group associations for the user as
 	 * necessary.
@@ -1099,9 +1196,16 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	public void setUserUserGroups(long userId, long[] userGroupIds)
 		throws PortalException {
 
+		long[] oldUserGroupIds = userPersistence.getUserGroupPrimaryKeys(
+			userId);
+
 		userPersistence.setUserGroups(userId, userGroupIds);
 
-		for (long userGroupId : userGroupIds) {
+		for (long userGroupId :
+				ArrayUtil.toLongArray(
+					SetUtil.symmetricDifference(
+						userGroupIds, oldUserGroupIds))) {
+
 			reindexUserGroup(getUserGroup(userGroupId));
 		}
 
@@ -1560,6 +1664,19 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 			(userGroup.getUserGroupId() != userGroupId)) {
 
 			throw new DuplicateUserGroupException("{name=" + name + "}");
+		}
+	}
+
+	private void _reindex(long[] userGroupIds) {
+		try {
+			for (long userGroupId : userGroupIds) {
+				reindexUserGroup(getUserGroup(userGroupId));
+			}
+
+			reindexUsers(userGroupIds);
+		}
+		catch (PortalException portalException) {
+			ReflectionUtil.throwException(portalException);
 		}
 	}
 
