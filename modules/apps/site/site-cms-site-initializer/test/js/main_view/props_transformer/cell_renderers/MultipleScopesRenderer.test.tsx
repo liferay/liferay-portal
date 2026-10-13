@@ -188,6 +188,18 @@ describe('MultipleScopesRenderer', () => {
 		expect(screen.queryByText('all-projects')).not.toBeInTheDocument();
 	});
 
+	it('does not render "All Projects" when the tag is in no project', () => {
+		const itemData = {
+			assetLibraries: [{externalReferenceCode: '', id: -1, name: ''}],
+			projects: [],
+		} as MultipleScopesRendererProps['itemData'];
+
+		render(<MultipleScopesRenderer cmpEnabled itemData={itemData} />);
+
+		expect(screen.getByText('all-spaces')).toBeInTheDocument();
+		expect(screen.queryByText('all-projects')).not.toBeInTheDocument();
+	});
+
 	describe('When itemData has projects and CMP is enabled', () => {
 		beforeEach(() => {
 			mockGetSpaceWithCache();
