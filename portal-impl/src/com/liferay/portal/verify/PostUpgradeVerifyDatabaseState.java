@@ -478,57 +478,55 @@ public class PostUpgradeVerifyDatabaseState extends VerifyProcess {
 					return;
 				}
 
-				Set<String> databaseColumnNames = new TreeSet<>(
-					String.CASE_INSENSITIVE_ORDER);
-
-				try (ResultSet resultSet = dbInspector.getColumnsResultSet(
-						tableName)) {
-
-					while (resultSet.next()) {
-						databaseColumnNames.add(
-							resultSet.getString("COLUMN_NAME"));
-					}
-				}
-
-				String normalizedTableName = dbInspector.normalizeName(
-					tableName);
-
-				Set<String> expectedColumnNames = new TreeSet<>(
+				Map<String, String> expectedColumnTypes = new TreeMap<>(
 					String.CASE_INSENSITIVE_ORDER);
 
 				for (String columnDefinition : entry.getValue()) {
 					int index = columnDefinition.indexOf(StringPool.SPACE);
 
-					String columnName = columnDefinition.substring(0, index);
-
-					expectedColumnNames.add(columnName);
-
-					if (!databaseColumnNames.contains(columnName)) {
-						continue;
-					}
-
-					String columnType = columnDefinition.substring(index + 1);
-
-					if (!dbInspector.isSupportedColumnType(columnType) ||
-						dbInspector.hasColumnType(
-							tableName, columnName, columnType)) {
-
-						continue;
-					}
-
-					List<String> messages =
-						warnColumnMessagesMap.computeIfAbsent(
-							tableName, key -> new ArrayList<>());
-
-					messages.add(
-						_getMessage(
-							StringBundler.concat(
-								"Column ",
-								dbInspector.normalizeName(columnName),
-								" is not defined as ", columnType, " for ",
-								normalizedTableName, " table"),
-							servletContextName));
+					expectedColumnTypes.put(
+						columnDefinition.substring(0, index),
+						columnDefinition.substring(index + 1));
 				}
+
+				Set<String> databaseColumnNames = new TreeSet<>(
+					String.CASE_INSENSITIVE_ORDER);
+				String normalizedTableName = dbInspector.normalizeName(
+					tableName);
+
+				try (ResultSet resultSet = dbInspector.getColumnsResultSet(
+						tableName)) {
+
+					while (resultSet.next()) {
+						String columnName = resultSet.getString("COLUMN_NAME");
+
+						databaseColumnNames.add(columnName);
+
+						String columnType = expectedColumnTypes.get(columnName);
+
+						if ((columnType == null) ||
+							!dbInspector.isSupportedColumnType(columnType) ||
+							dbInspector.hasColumnType(columnType, resultSet)) {
+
+							continue;
+						}
+
+						List<String> messages =
+							warnColumnMessagesMap.computeIfAbsent(
+								tableName, key -> new ArrayList<>());
+
+						messages.add(
+							_getMessage(
+								StringBundler.concat(
+									"Column ",
+									dbInspector.normalizeName(columnName),
+									" is not defined as ", columnType, " for ",
+									normalizedTableName, " table"),
+								servletContextName));
+					}
+				}
+
+				Set<String> expectedColumnNames = expectedColumnTypes.keySet();
 
 				Set<String> missingColumnNames = _asymmetricDifference(
 					expectedColumnNames, databaseColumnNames);
