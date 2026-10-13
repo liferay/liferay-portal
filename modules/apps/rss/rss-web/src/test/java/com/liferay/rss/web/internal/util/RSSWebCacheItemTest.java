@@ -9,7 +9,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.InetAddressUtil;
@@ -19,7 +18,10 @@ import com.liferay.rss.web.internal.configuration.RSSWebCacheConfiguration;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import java.net.InetAddress;
 
@@ -46,7 +48,7 @@ public class RSSWebCacheItemTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		_httpUtilMockedStatic = Mockito.mockStatic(HttpUtil.class);
 
 		_httpUtilMockedStatic.when(
@@ -57,19 +59,39 @@ public class RSSWebCacheItemTest {
 
 				Assert.assertFalse(options.isFollowRedirects());
 
-				if (Objects.equals(options.getLocation(), _PUBLIC_URL)) {
-					Http.Response response = options.getResponse();
+				String location = options.getLocation();
 
+				Http.Response response = options.getResponse();
+
+				if (Objects.equals(location, _NOT_REDIRECTED_URL)) {
+					response.setRedirect(_LOCAL_URL);
+					response.setResponseCode(HttpServletResponse.SC_OK);
+				}
+
+				if (Objects.equals(location, _PUBLIC_URL)) {
 					response.setRedirect(_redirectURL);
+					response.setResponseCode(HttpServletResponse.SC_FOUND);
 				}
 
 				return new ByteArrayInputStream(
-					_getFeed().getBytes(StandardCharsets.UTF_8));
+					_getFeedXML().getBytes(StandardCharsets.UTF_8));
 			}
 		);
 
 		_inetAddressUtilMockedStatic = Mockito.mockStatic(
 			InetAddressUtil.class);
+
+		_inetAddressUtilMockedStatic.when(
+			() -> InetAddressUtil.getInetAddressByName(Mockito.anyString())
+		).thenReturn(
+			InetAddress.getByName("203.0.113.1")
+		);
+
+		_inetAddressUtilMockedStatic.when(
+			() -> InetAddressUtil.getInetAddressByName("10.0.0.1")
+		).thenReturn(
+			InetAddress.getByName("10.0.0.1")
+		);
 
 		_inetAddressUtilMockedStatic.when(
 			() -> InetAddressUtil.getInetAddressByName("127.0.0.1")
@@ -78,11 +100,15 @@ public class RSSWebCacheItemTest {
 		);
 
 		_inetAddressUtilMockedStatic.when(
-			() -> InetAddressUtil.isLocalInetAddress(
-				InetAddress.getLoopbackAddress())
+			() -> InetAddressUtil.getInetAddressByName(_UNRESOLVED_HOST)
 		).thenReturn(
-			true
+			null
 		);
+
+		_inetAddressUtilMockedStatic.when(
+			() -> InetAddressUtil.isLocalInetAddress(
+				Mockito.any(InetAddress.class))
+		).thenCallRealMethod();
 	}
 
 	@After
@@ -93,18 +119,40 @@ public class RSSWebCacheItemTest {
 
 	@Test
 	@TestInfo("LPD-106200")
-	public void testConvert() throws Exception {
-		_testConvert("file:///" + RandomTestUtil.randomString(), null, false);
-		_testConvert(_LOCAL_URL, null, false);
+	public void testConvert() {
 		_testConvert(
-			_PUBLIC_URL, "https://" + RandomTestUtil.randomString() + ".com",
-			true);
-		_testConvert(_PUBLIC_URL, _LOCAL_URL, false);
-		_testConvert(_PUBLIC_URL, _PUBLIC_URL, false);
-		_testConvert(_PUBLIC_URL, null, true);
+			IOException.class,
+			"Unable to exceed maximum number of allowed URL redirects: " +
+				_PUBLIC_URL,
+			_PUBLIC_URL, _PUBLIC_URL);
+		_testConvert(
+			SecurityException.class,
+			"Local network URLs are not allowed: " + _LOCAL_URL, _LOCAL_URL,
+			_PUBLIC_URL);
+		_testConvert(
+			SecurityException.class,
+			"Local network URLs are not allowed: " + _LOCAL_URL, null,
+			_LOCAL_URL);
+		_testConvert(
+			SecurityException.class,
+			"Local network URLs are not allowed: " + _SITE_LOCAL_URL, null,
+			_SITE_LOCAL_URL);
+		_testConvert(
+			SecurityException.class,
+			"Only HTTP or HTTPS URLs are allowed: " + _FILE_URL, null,
+			_FILE_URL);
+		_testConvert(
+			SecurityException.class,
+			"Unable to resolve host: " + _UNRESOLVED_HOST, null,
+			_UNRESOLVED_URL);
+		_testConvert(
+			null, null, "https://" + RandomTestUtil.randomString() + ".com",
+			_PUBLIC_URL);
+		_testConvert(null, null, null, _NOT_REDIRECTED_URL);
+		_testConvert(null, null, null, _PUBLIC_URL);
 	}
 
-	private String _getFeed() {
+	private String _getFeedXML() {
 		return StringBundler.concat(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\">",
 			"<channel><title>", _FEED_TITLE, "</title><link>", _PUBLIC_URL,
@@ -113,47 +161,50 @@ public class RSSWebCacheItemTest {
 	}
 
 	private void _testConvert(
-			String url, String redirectURL, boolean expectedConversion)
-		throws Exception {
+		Class<?> expectedExceptionClass, String expectedExceptionMessage,
+		String redirectURL, String url) {
+
+		_redirectURL = redirectURL;
 
 		RSSWebCacheItem rssWebCacheItem = new RSSWebCacheItem(
 			Mockito.mock(RSSWebCacheConfiguration.class), url);
 
 		try {
-			_redirectURL = redirectURL;
-
 			SyndFeed syndFeed = (SyndFeed)rssWebCacheItem.convert(
 				StringPool.BLANK);
 
-			Assert.assertTrue(expectedConversion);
+			Assert.assertNull(expectedExceptionClass);
 			Assert.assertEquals(_FEED_TITLE, syndFeed.getTitle());
 		}
 		catch (WebCacheException webCacheException) {
-			Assert.assertFalse(expectedConversion);
-
 			Throwable throwable = webCacheException.getCause();
 
-			if (Objects.equals(redirectURL, _PUBLIC_URL)) {
-				Assert.assertEquals(
-					"Unable to exceed maximum number of allowed URL " +
-						"redirects: " + url,
-					throwable.getMessage());
-			}
-			else {
-				Assert.assertEquals(
-					"Only external HTTP or HTTPS URLs are allowed: " +
-						GetterUtil.getString(redirectURL, url),
-					throwable.getMessage());
-			}
+			Assert.assertSame(expectedExceptionClass, throwable.getClass());
+			Assert.assertEquals(
+				expectedExceptionMessage, throwable.getMessage());
 		}
 	}
 
 	private static final String _FEED_TITLE = RandomTestUtil.randomString();
 
+	private static final String _FILE_URL =
+		"file:///" + RandomTestUtil.randomString();
+
 	private static final String _LOCAL_URL = "http://127.0.0.1/rss.xml";
+
+	private static final String _NOT_REDIRECTED_URL =
+		"http://" + RandomTestUtil.randomString() + ".com/not-redirected.xml";
 
 	private static final String _PUBLIC_URL =
 		"http://" + RandomTestUtil.randomString() + ".com/rss.xml";
+
+	private static final String _SITE_LOCAL_URL = "http://10.0.0.1/rss.xml";
+
+	private static final String _UNRESOLVED_HOST =
+		RandomTestUtil.randomString() + ".net";
+
+	private static final String _UNRESOLVED_URL =
+		"http://" + _UNRESOLVED_HOST + "/rss.xml";
 
 	private MockedStatic<HttpUtil> _httpUtilMockedStatic;
 	private MockedStatic<InetAddressUtil> _inetAddressUtilMockedStatic;
