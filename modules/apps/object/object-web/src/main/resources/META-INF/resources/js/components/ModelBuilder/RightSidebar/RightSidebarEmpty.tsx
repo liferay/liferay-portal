@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import './RightSidebarEmpty.scss';
@@ -15,7 +16,13 @@ export function RightSidebarEmpty() {
 				description={Liferay.Language.get(
 					'select-an-object-or-relationship-to-activate-this-panel'
 				)}
-				imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+				image={
+					<ClayIcon
+						className="c-empty-state-icon c-empty-state-icon-empty-state"
+						illustration
+						symbol="empty-state"
+					/>
+				}
 				small
 				title={Liferay.Language.get('select-an-object-or-relationship')}
 			/>
