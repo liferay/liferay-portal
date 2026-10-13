@@ -49,7 +49,13 @@ const EmptyState = () => (
 			description={Liferay.Language.get(
 				'there-are-no-rules-yet-click-on-plus-icon-below-to-add-the-first'
 			)}
-			imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+			image={
+				<ClayIcon
+					className="c-empty-state-icon c-empty-state-icon-empty-state"
+					illustration
+					symbol="empty-state"
+				/>
+			}
 			title={Liferay.Language.get('no-results-found')}
 		/>
 	</ClayLayout.Sheet>
