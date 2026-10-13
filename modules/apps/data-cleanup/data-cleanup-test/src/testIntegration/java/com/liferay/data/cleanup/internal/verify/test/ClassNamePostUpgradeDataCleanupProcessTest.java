@@ -565,6 +565,13 @@ public class ClassNamePostUpgradeDataCleanupProcessTest
 			UnsafeRunnable<Exception> initializeDataUnsafeRunnable)
 		throws Exception {
 
+		super.test(
+			null,
+			() -> {
+			},
+			() -> {
+			});
+
 		long classNameCount = _classNameLocalService.getClassNamesCount();
 
 		try {
