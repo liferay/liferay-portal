@@ -23,7 +23,7 @@ OAuthClientCompanyConfiguration oAuthClientCompanyConfiguration = (OAuthClientCo
 		<div class="sheet">
 			<aui:fieldset>
 				<aui:fieldset label="general">
-					<aui:input helpMessage="oauth-client-as-hosts-allowed-help" label="oauth-client-as-hosts-allowed" name="authServerHostsAllowed" type="textarea" value="<%= (oAuthClientCompanyConfiguration != null) ? StringUtil.merge(oAuthClientCompanyConfiguration.authServerHostsAllowed()) : StringPool.BLANK %>" />
+					<aui:input helpMessage="oauth-client-as-hosts-allowed-help" label="oauth-client-as-hosts-allowed" name="authServerHostsAllowed" type="text" value="<%= (oAuthClientCompanyConfiguration != null) ? StringUtil.merge(oAuthClientCompanyConfiguration.authServerHostsAllowed()) : StringPool.BLANK %>" />
 
 					<aui:input checked="<%= (oAuthClientCompanyConfiguration != null) && oAuthClientCompanyConfiguration.authServerLocalNetworkAccessEnabled() %>" helpMessage="oauth-client-as-local-network-access-enabled-help" label="oauth-client-as-local-network-access-enabled" name="authServerLocalNetworkAccessEnabled" type="checkbox" />
 				</aui:fieldset>
