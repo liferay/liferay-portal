@@ -2,7 +2,10 @@ import * as API from 'shared/api';
 import {Alert} from 'shared/types';
 import {addAlert} from 'shared/actions/alerts';
 import {CATALOG_FIELDS_MAX_PAGE_SIZE} from 'shared/api/catalog';
-import {isStageConfigured} from 'lifecycle/utils/lifecycleOperators';
+import {
+	isConditionComplete,
+	isStageConfigured,
+} from 'lifecycle/utils/lifecycleOperators';
 import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
 import {Routes, toRoute} from 'shared/util/router';
 import {useDispatch} from 'react-redux';
@@ -11,16 +14,29 @@ import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
+const isStageReady = (stage: IStageConfig) =>
+	!!stage.name.trim() &&
+	!!stage.description.trim() &&
+	isStageConfigured(stage) &&
+	stage.conditions.every(
+		(condition) => !condition.field || isConditionComplete(condition)
+	);
+
 /**
  * Owns the orchestration shared by the create and edit lifecycle pages: the
- * fields-catalog request, the editable stage/name state, the submit scaffold,
- * and dashboard navigation. Each page supplies only its initial values and the
- * API call it runs on submit.
+ * fields-catalog request, the editable lifecycle and stage state, the selected
+ * panel item, the submit scaffold, and dashboard navigation. Each page supplies
+ * only its initial values and the API call it runs on submit.
  */
-export const useLifecycleSettingsForm = (
-	initialStageConfigs: () => IStageConfig[],
-	initialName: string
-) => {
+export const useLifecycleSettingsForm = ({
+	description: initialDescription,
+	name: initialName,
+	stageConfigs: initialStageConfigs,
+}: {
+	description: string;
+	name: string;
+	stageConfigs: () => IStageConfig[];
+}) => {
 	const dispatch = useDispatch();
 
 	const history = useHistoryAdapter();
@@ -31,6 +47,11 @@ export const useLifecycleSettingsForm = (
 		useState<IStageConfig[]>(initialStageConfigs);
 
 	const [lifecycleName, setLifecycleName] = useState(initialName);
+
+	const [lifecycleDescription, setLifecycleDescription] =
+		useState(initialDescription);
+
+	const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
 	const {
 		data: catalogFields,
@@ -67,15 +88,18 @@ export const useLifecycleSettingsForm = (
 
 	const goToDashboard = () => history.push(lifecycleURL);
 
-	const updateStage = (index: number, value: IStageConfig) =>
+	const updateStage = (key: string, value: IStageConfig) =>
 		setStageConfigs((previous) =>
-			previous.map((config, current) =>
-				current === index ? value : config
-			)
+			previous.map((config) => (config.key === key ? value : config))
 		);
 
+	const selectedStage =
+		stageConfigs.find((stage) => stage.key === selectedKey) ?? null;
+
 	const canSubmit =
-		!!lifecycleName.trim() && stageConfigs.every(isStageConfigured);
+		!!lifecycleName.trim() &&
+		!!stageConfigs.length &&
+		stageConfigs.every(isStageReady);
 
 	const submit = (run: () => Promise<unknown>, successMessage: string) =>
 		run()
@@ -105,10 +129,14 @@ export const useLifecycleSettingsForm = (
 		catalogError,
 		catalogFields,
 		catalogLoading,
+		lifecycleDescription,
 		lifecycleName,
 		lifecycleURL,
 		refetchCatalog,
+		selectedStage,
+		setLifecycleDescription,
 		setLifecycleName,
+		setSelectedKey,
 		stageConfigs,
 		submit,
 		updateStage,

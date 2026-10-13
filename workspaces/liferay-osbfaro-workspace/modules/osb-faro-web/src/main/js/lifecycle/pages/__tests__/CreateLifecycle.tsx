@@ -3,11 +3,10 @@ import CreateLifecycle from '../CreateLifecycle';
 import React from 'react';
 import {Alert} from 'shared/types';
 import {
-	createDefaultStageConfigs,
 	createStageCondition,
+	createStageConfig,
 	DEFAULT_MAX_DAYS,
 	IStageConfig,
-	LIFECYCLE_STAGE_ORDER,
 	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
@@ -34,29 +33,30 @@ jest.mock('shared/actions/alerts', () => ({
 
 jest.mock('lifecycle/utils/stageConfiguration', () => ({
 	...jest.requireActual('lifecycle/utils/stageConfiguration'),
-	createDefaultStageConfigs: jest.fn(),
+	createStageConfig: jest.fn(),
 }));
 
-const buildStages = (configured: boolean): IStageConfig[] =>
-	LIFECYCLE_STAGE_ORDER.map(() => ({
-		conditions: [
-			{
-				...createStageCondition(),
-				conditionValue: configured ? '1000' : null,
-				field: configured ? 'account.annualRevenue' : null,
-				fieldDataCategory: configured ? 'Number' : null,
-				fieldDataType: configured ? 'NUMERIC' : null,
-				operator: configured ? 'gt' : null,
-			},
-		],
-		description: configured ? 'A configured stage' : '',
-		id: null,
-		matchLogic: MatchLogic.All,
-		maxTimeDays: DEFAULT_MAX_DAYS,
-		maxTimeEnabled: true,
-	}));
+const buildStage = (configured: boolean): IStageConfig => ({
+	conditions: [
+		{
+			...createStageCondition(),
+			conditionValue: configured ? '1000' : null,
+			field: configured ? 'account.annualRevenue' : null,
+			fieldDataCategory: configured ? 'Number' : null,
+			fieldDataType: configured ? 'NUMERIC' : null,
+			operator: configured ? 'gt' : null,
+		},
+	],
+	description: configured ? 'A configured stage' : '',
+	id: null,
+	key: 'stage-key',
+	matchLogic: MatchLogic.All,
+	maxTimeDays: DEFAULT_MAX_DAYS,
+	maxTimeEnabled: true,
+	name: configured ? 'Aware' : '',
+});
 
-const mockedCreateDefaultStageConfigs = createDefaultStageConfigs as jest.Mock;
+const mockedCreateStageConfig = createStageConfig as jest.Mock;
 
 const mockPush = jest.fn();
 
@@ -94,31 +94,48 @@ describe('CreateLifecycle', () => {
 			fetchLifecycles: jest.fn(),
 		};
 
-		mockedCreateDefaultStageConfigs.mockReturnValue(buildStages(false));
+		mockedCreateStageConfig.mockReturnValue(buildStage(false));
 
 		mockedUseRequest.mockReturnValue({data: [], loading: false});
 	});
 
-	it('renders the top nav with title and actions', () => {
+	it('opens on the configuration summary with the new lifecycle toolbar', () => {
 		renderPage();
 
 		expect(
-			screen.getByRole('heading', {level: 1, name: 'Lifecycle Settings'})
+			screen.getByRole('heading', {level: 1, name: /new lifecycle/i})
 		).toBeInTheDocument();
 		expect(screen.getByRole('link', {name: /cancel/i})).toBeInTheDocument();
 		expect(
-			screen.getByRole('button', {name: 'Create'})
+			screen.getByRole('button', {name: /create lifecycle/i})
 		).toBeInTheDocument();
+		expect(
+			screen.getByRole('heading', {name: /lifecycle conditions/i})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('group', {name: /configuration summary/i})
+		).toHaveAttribute('aria-current', 'true');
 	});
 
-	it('renders six stage panels with the first expanded', () => {
+	it('starts with one stage that has no trigger yet', () => {
 		renderPage();
 
-		[1, 2, 3, 4, 5, 6].forEach((stageNumber) =>
-			expect(screen.getByText(`Stage ${stageNumber}`)).toBeInTheDocument()
-		);
+		const stage = screen.getByRole('group', {name: /^stage 1$/i});
 
-		expect(screen.getByText('Aware')).toBeInTheDocument();
+		expect(stage).toHaveTextContent(/stage 1.+no trigger/i);
+		expect(stage).not.toHaveAttribute('aria-current');
+	});
+
+	it('shows the stage view when its chip is selected', () => {
+		renderPage();
+
+		const stage = screen.getByRole('group', {name: /^stage 1$/i});
+
+		fireEvent.keyDown(stage, {key: 'Enter'});
+
+		expect(stage).toHaveAttribute('aria-current', 'true');
+		expect(screen.getByText(/unconfigured/i)).toBeInTheDocument();
+		expect(screen.queryByLabelText(/title/i)).toBeNull();
 	});
 
 	it('renders the title input and updates its value', () => {
@@ -126,11 +143,12 @@ describe('CreateLifecycle', () => {
 
 		const nameInput = screen.getByLabelText(/title/i);
 
-		expect(nameInput).toBeInTheDocument();
-
 		fireEvent.change(nameInput, {target: {value: 'My Lifecycle'}});
 
 		expect(nameInput).toHaveValue('My Lifecycle');
+		expect(
+			screen.getByRole('group', {name: /configuration summary/i})
+		).toHaveTextContent(/my lifecycle/i);
 	});
 
 	it('links cancel and back to the dashboard', () => {
@@ -146,12 +164,12 @@ describe('CreateLifecycle', () => {
 		);
 	});
 
-	it('disables Create until every stage is configured', () => {
+	it('disables Create Lifecycle until every stage is ready', () => {
 		renderPage();
 
-		const createButton = screen.getByRole('button', {name: 'Create'});
-
-		expect(createButton).toBeDisabled();
+		const createButton = screen.getByRole('button', {
+			name: /create lifecycle/i,
+		});
 
 		fireEvent.change(screen.getByLabelText(/title/i), {
 			target: {value: 'My Lifecycle'},
@@ -165,8 +183,7 @@ describe('CreateLifecycle', () => {
 
 		renderPage();
 
-		expect(screen.queryByText('Lifecycle Settings')).toBeNull();
-		expect(screen.queryByText('Stage Configuration')).toBeNull();
+		expect(screen.queryByText(/new lifecycle/i)).toBeNull();
 	});
 
 	it('redirects to a 404 when a lifecycle already exists', () => {
@@ -177,8 +194,7 @@ describe('CreateLifecycle', () => {
 
 		renderPage();
 
-		expect(screen.queryByText('Lifecycle Settings')).toBeNull();
-		expect(screen.queryByText('Stage Configuration')).toBeNull();
+		expect(screen.queryByText(/new lifecycle/i)).toBeNull();
 	});
 
 	it('checks for lifecycles in the current channel', () => {
@@ -218,18 +234,18 @@ describe('CreateLifecycle', () => {
 		renderPage();
 
 		expect(
-			screen.getByText('An unexpected error occurred.')
+			screen.getByText(/an unexpected error occurred/i)
 		).toBeInTheDocument();
-		expect(screen.queryByText('Stage Configuration')).toBeNull();
+		expect(screen.queryByText(/lifecycle conditions/i)).toBeNull();
 		expect(mockDispatch).toHaveBeenCalled();
 
-		fireEvent.click(screen.getByRole('button', {name: 'Reload'}));
+		fireEvent.click(screen.getByRole('button', {name: /reload/i}));
 
 		expect(refetch).toHaveBeenCalled();
 	});
 
-	it('creates the lifecycle, alerts success, and navigates to the dashboard', async () => {
-		mockedCreateDefaultStageConfigs.mockReturnValue(buildStages(true));
+	it('creates the lifecycle with the contract payload, alerts success, and navigates to the dashboard', async () => {
+		mockedCreateStageConfig.mockReturnValue(buildStage(true));
 
 		renderPage();
 
@@ -237,7 +253,9 @@ describe('CreateLifecycle', () => {
 			target: {value: 'My Lifecycle'},
 		});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Create'}));
+		fireEvent.click(
+			screen.getByRole('button', {name: /create lifecycle/i})
+		);
 
 		await waitFor(() =>
 			expect(API.lifecycle.createLifecycle).toHaveBeenCalled()
@@ -249,10 +267,17 @@ describe('CreateLifecycle', () => {
 		expect(payload).toEqual(
 			expect.objectContaining({
 				channelId: '123',
+				description: '',
 				name: 'My Lifecycle',
 			})
 		);
-		expect(payload.stages).toHaveLength(6);
+		expect(payload.stages).toEqual([
+			expect.objectContaining({displayOrder: 1, name: 'Aware'}),
+		]);
+		expect(payload.stages[0]).not.toHaveProperty('stageType');
+		expect(payload.stages[0].accountLifecycleStageRule.name).toBe(
+			'My Lifecycle Stage Aware Criteria'
+		);
 
 		await waitFor(() =>
 			expect(mockPush).toHaveBeenCalledWith(lifecycleURL)
@@ -264,7 +289,7 @@ describe('CreateLifecycle', () => {
 	});
 
 	it('alerts an error and does not navigate when creation fails', async () => {
-		mockedCreateDefaultStageConfigs.mockReturnValue(buildStages(true));
+		mockedCreateStageConfig.mockReturnValue(buildStage(true));
 
 		(API.lifecycle.createLifecycle as jest.Mock).mockRejectedValue(
 			new Error('failed')
@@ -276,7 +301,9 @@ describe('CreateLifecycle', () => {
 			target: {value: 'My Lifecycle'},
 		});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Create'}));
+		fireEvent.click(
+			screen.getByRole('button', {name: /create lifecycle/i})
+		);
 
 		await waitFor(() =>
 			expect(mockDispatch).toHaveBeenCalledWith(

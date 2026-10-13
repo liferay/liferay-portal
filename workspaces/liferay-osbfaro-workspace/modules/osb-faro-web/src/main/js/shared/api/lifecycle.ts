@@ -1,6 +1,13 @@
 import sendRequest from 'shared/util/request';
 import {buildSortString, NAME} from 'shared/util/pagination';
-import {ENABLE_LIFECYCLE_DASHBOARDS_API} from 'shared/util/feature-flags';
+import {
+	ENABLE_LIFECYCLE_DASHBOARDS_API,
+	ENABLE_LIFECYCLE_STAGES_MOCK_DATA,
+} from 'shared/util/feature-flags';
+import {
+	getMockLifecycle,
+	saveMockLifecycle,
+} from 'lifecycle/utils/lifecycleMock';
 import {legacyLifecycleApi} from './lifecycle-legacy';
 import {OrderByDirections} from 'shared/util/constants';
 
@@ -28,8 +35,8 @@ export interface ILifecycleStage {
 	externalReferenceCode: string;
 	id: string;
 	maxDuration: number | null;
-	name?: string;
-	stageType: string;
+	name: string;
+	stageType?: string;
 }
 
 export interface ILifecycleDetail extends ILifecycle {
@@ -113,11 +120,16 @@ const requestLifecyclesPage = ({
 const requestLifecycle = ({
 	groupId,
 	lifecycleId,
-}: IFetchLifecycle): Promise<ILifecycleDetail> =>
-	sendRequest({
+}: IFetchLifecycle): Promise<ILifecycleDetail> => {
+	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
+		return getMockLifecycle(lifecycleId);
+	}
+
+	return sendRequest({
 		method: 'GET',
 		path: `contacts/${groupId}/account-lifecycle/${lifecycleId}`,
 	});
+};
 
 const requestDefaultLifecycle = ({
 	groupId,
@@ -147,17 +159,18 @@ export const {
 	setDefaultLifecycle,
 } = lifecycleApi;
 
-interface ILifecycleStagePayload {
+export interface ILifecycleStagePayload {
 	accountLifecycleStageRule: IAccountLifecycleStageRule;
 	description: string;
 	displayOrder: number;
 	id?: string;
 	maxDuration: number | null;
-	stageType: string;
+	name: string;
 }
 
 interface ICreateLifecycle {
 	channelId: string;
+	description: string;
 	groupId: string;
 	name: string;
 	stages: ILifecycleStagePayload[];
@@ -165,18 +178,24 @@ interface ICreateLifecycle {
 
 export async function createLifecycle({
 	channelId,
+	description,
 	groupId,
 	name,
 	stages,
-}: ICreateLifecycle): Promise<ILifecycle> {
+}: ICreateLifecycle): Promise<ILifecycleDetail> {
+	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
+		return saveMockLifecycle({description, name, stages});
+	}
+
 	return sendRequest({
-		data: {accountLifecycle: {name, stages}},
+		data: {accountLifecycle: {description, name, stages}},
 		method: 'POST',
 		path: `contacts/${groupId}/account-lifecycle?channelId=${channelId}`,
 	});
 }
 
 interface IUpdateLifecycle {
+	description: string;
 	groupId: string;
 	lifecycleId: string;
 	name: string;
@@ -184,13 +203,18 @@ interface IUpdateLifecycle {
 }
 
 export async function updateLifecycle({
+	description,
 	groupId,
 	lifecycleId,
 	name,
 	stages,
-}: IUpdateLifecycle): Promise<ILifecycle> {
+}: IUpdateLifecycle): Promise<ILifecycleDetail> {
+	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
+		return saveMockLifecycle({description, id: lifecycleId, name, stages});
+	}
+
 	return sendRequest({
-		data: {accountLifecycle: {name, stages}},
+		data: {accountLifecycle: {description, name, stages}},
 		method: 'PUT',
 		path: `contacts/${groupId}/account-lifecycle/${lifecycleId}`,
 	});

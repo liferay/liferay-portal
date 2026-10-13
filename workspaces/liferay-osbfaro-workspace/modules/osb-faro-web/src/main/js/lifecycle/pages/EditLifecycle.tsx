@@ -25,17 +25,21 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 		catalogError,
 		catalogFields,
 		catalogLoading,
+		lifecycleDescription,
 		lifecycleName,
 		lifecycleURL,
 		refetchCatalog,
+		selectedStage,
 		setLifecycleName,
+		setSelectedKey,
 		stageConfigs,
 		submit,
 		updateStage,
-	} = useLifecycleSettingsForm(
-		() => stageConfigsFromLifecycle(lifecycle.stages),
-		lifecycle.name ?? ''
-	);
+	} = useLifecycleSettingsForm({
+		description: lifecycle.description ?? '',
+		name: lifecycle.name ?? '',
+		stageConfigs: () => stageConfigsFromLifecycle(lifecycle.stages),
+	});
 
 	if (catalogLoading) {
 		return <Loading />;
@@ -54,6 +58,7 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 			() =>
 				API.lifecycle.updateLifecycle(
 					buildUpdateLifecyclePayload({
+						description: lifecycleDescription,
 						groupId: groupId!,
 						lifecycleId: lifecycleId!,
 						name: lifecycleName,
@@ -69,11 +74,14 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 			catalogFields={catalogFields?.items}
 			lifecycleName={lifecycleName}
 			onLifecycleNameChange={setLifecycleName}
+			onSelect={setSelectedKey}
 			onStageChange={updateStage}
 			onSubmit={handleSave}
+			selectedStage={selectedStage}
 			stageConfigs={stageConfigs}
 			submitDisabled={!canSubmit}
-			submitLabel={Liferay.Language.get('save')}
+			submitLabel={Liferay.Language.get('save-lifecycle')}
+			title={Liferay.Language.get('edit-lifecycle')}
 		/>
 	);
 };

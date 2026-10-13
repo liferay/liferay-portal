@@ -76,6 +76,35 @@ describe('useLifecycleStageOptions', () => {
 		);
 	});
 
+	it('should return the name of a stage without a stage type', async () => {
+		API.lifecycle.fetchAccountLifecycles.mockReturnValueOnce(
+			Promise.resolve([{id: '1'}])
+		);
+
+		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
+			Promise.resolve({
+				stages: [
+					{
+						displayOrder: 1,
+						externalReferenceCode: 'erc-stage-4101',
+						id: '4101',
+						name: 'Qualified',
+					},
+				]
+			})
+		);
+
+		const {result} = renderHook(() =>
+			useLifecycleStageOptions({groupId: '123'})
+		);
+
+		await waitFor(() =>
+			expect(result.current.options).toEqual([
+				{label: 'Qualified', value: 'erc-stage-4101'}
+			])
+		);
+	});
+
 	it('should return no options without a lifecycle', async () => {
 		const {result} = renderHook(() =>
 			useLifecycleStageOptions({groupId: '123'})

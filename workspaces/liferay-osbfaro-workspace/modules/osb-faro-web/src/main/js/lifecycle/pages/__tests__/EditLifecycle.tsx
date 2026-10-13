@@ -4,7 +4,6 @@ import React from 'react';
 import {Alert} from 'shared/types';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {ILifecycleStage} from 'shared/api/lifecycle';
-import {LIFECYCLE_STAGE_ORDER} from 'lifecycle/utils/stageConfiguration';
 import {MemoryRouter} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -38,8 +37,10 @@ jest.mock('shared/hooks/useHistoryAdapter', () => ({
 
 const mockedUseRequest = useRequest as jest.Mock;
 
+const STAGE_NAMES = ['Aware', 'Qualified', 'Pipeline'];
+
 const buildStages = (): ILifecycleStage[] =>
-	LIFECYCLE_STAGE_ORDER.map((stageType, index) => ({
+	STAGE_NAMES.map((name, index) => ({
 		accountLifecycleStageRule: {
 			filterMetadata: JSON.stringify({
 				conditionValue: '1000',
@@ -55,11 +56,14 @@ const buildStages = (): ILifecycleStage[] =>
 		externalReferenceCode: `erc-stage-${index + 1}`,
 		id: `stage-${index}`,
 		maxDuration: 30,
-		stageType,
-	}));
+		name,
+	})).reverse();
 
 const lifecycle = {
+	authorName: 'Anneta Smith',
+	description: 'Lifecycle for qualified accounts',
 	id: '9',
+	modifiedDate: 1791556330000,
 	name: 'Growth and Retention Hub',
 	processedDate: 1700000000000,
 	stages: buildStages(),
@@ -107,14 +111,56 @@ describe('EditLifecycle', () => {
 		mockedUseRequest.mockImplementation(mockCatalog());
 	});
 
-	it('renders the toolbar with a Save action and the prefilled name', () => {
+	it('opens on the configuration summary with the edit toolbar', () => {
 		renderPage();
 
-		expect(screen.getByText('Lifecycle Settings')).toBeInTheDocument();
-		expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+		expect(
+			screen.getByRole('heading', {level: 1, name: /edit lifecycle/i})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('button', {name: /save lifecycle/i})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('group', {name: /configuration summary/i})
+		).toHaveAttribute('aria-current', 'true');
 		expect(screen.getByLabelText(/title/i)).toHaveValue(
 			'Growth and Retention Hub'
 		);
+	});
+
+	it('lists one chip per stage, in display order and labelled by name', () => {
+		renderPage();
+
+		const chips = screen.getAllByRole('group', {
+			name: /^(aware|qualified|pipeline)$/i,
+		});
+
+		expect(chips.map((chip) => chip.getAttribute('aria-label'))).toEqual(
+			STAGE_NAMES
+		);
+		expect(chips[0]).toHaveTextContent(/stage 1.+1 condition/i);
+	});
+
+	it('shows the selected stage and keeps edits when switching items', () => {
+		renderPage();
+
+		fireEvent.change(screen.getByLabelText(/title/i), {
+			target: {value: 'Renamed Hub'},
+		});
+
+		const qualified = screen.getByRole('group', {name: /qualified/i});
+
+		fireEvent.click(qualified);
+
+		expect(qualified).toHaveAttribute('aria-current', 'true');
+		expect(screen.getByText(/^stage 2$/i)).toBeInTheDocument();
+		expect(screen.queryByLabelText(/title/i)).toBeNull();
+
+		fireEvent.click(
+			screen.getByRole('group', {name: /configuration summary/i})
+		);
+
+		expect(screen.getByLabelText(/title/i)).toHaveValue('Renamed Hub');
 	});
 
 	it('renders a loading state while the lifecycle is loading', () => {
@@ -122,7 +168,7 @@ describe('EditLifecycle', () => {
 
 		renderPage();
 
-		expect(screen.queryByText('Lifecycle Settings')).toBeNull();
+		expect(screen.queryByText(/edit lifecycle/i)).toBeNull();
 	});
 
 	it('renders a 404 when the lifecycle is not found', () => {
@@ -134,13 +180,13 @@ describe('EditLifecycle', () => {
 
 		renderPage();
 
-		expect(screen.queryByText('Lifecycle Settings')).toBeNull();
+		expect(screen.queryByText(/edit lifecycle/i)).toBeNull();
 	});
 
-	it('saves via PUT, alerts success, and navigates to the dashboard', async () => {
+	it('saves the contract payload, alerts success, and navigates to the dashboard', async () => {
 		renderPage();
 
-		fireEvent.click(screen.getByRole('button', {name: 'Save'}));
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
 
 		await waitFor(() =>
 			expect(API.lifecycle.updateLifecycle).toHaveBeenCalled()
@@ -151,13 +197,24 @@ describe('EditLifecycle', () => {
 
 		expect(payload).toEqual(
 			expect.objectContaining({
+				description: 'Lifecycle for qualified accounts',
 				groupId: '23',
 				lifecycleId: '9',
 				name: 'Growth and Retention Hub',
 			})
 		);
-		expect(payload.stages).toHaveLength(6);
-		expect(payload.stages[0].id).toBe('stage-0');
+		expect(
+			payload.stages.map(({displayOrder, id, name}: any) => [
+				displayOrder,
+				id,
+				name,
+			])
+		).toEqual([
+			[1, 'stage-0', 'Aware'],
+			[2, 'stage-1', 'Qualified'],
+			[3, 'stage-2', 'Pipeline'],
+		]);
+		expect(payload.stages[0]).not.toHaveProperty('stageType');
 
 		await waitFor(() =>
 			expect(mockPush).toHaveBeenCalledWith(lifecycleURL)

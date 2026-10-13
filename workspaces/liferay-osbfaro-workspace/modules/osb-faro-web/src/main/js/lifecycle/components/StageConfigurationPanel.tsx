@@ -20,10 +20,6 @@ import {
 	MATCH_LOGIC_OPTIONS,
 	isStageConfigured,
 } from 'lifecycle/utils/lifecycleOperators';
-import {
-	LifecycleStages,
-	lifecycleStagesLabelMap,
-} from 'contacts/pages/account/utils/constants';
 import {removeAtIndex} from 'shared/util/array';
 import {sub} from 'shared/util/lang';
 
@@ -31,8 +27,8 @@ interface IStageConfigurationPanelProps {
 	defaultExpanded?: boolean;
 	fields?: ICatalogField[];
 	index: number;
+	name: string;
 	onChange: (value: IStageConfig) => void;
-	stageType: LifecycleStages;
 	value: IStageConfig;
 }
 
@@ -40,8 +36,8 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 	defaultExpanded = false,
 	fields = [],
 	index,
+	name,
 	onChange,
-	stageType,
 	value,
 }) => {
 	const {conditions, matchLogic} = value;
@@ -100,9 +96,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 			}
 		>
 			<Panel.Body>
-				<Text weight="semi-bold">
-					{lifecycleStagesLabelMap[stageType].label}
-				</Text>
+				<Text weight="semi-bold">{name}</Text>
 
 				<ClayForm.Group className="mb-4 mt-3">
 					<label htmlFor={`stage-description-${index}`}>

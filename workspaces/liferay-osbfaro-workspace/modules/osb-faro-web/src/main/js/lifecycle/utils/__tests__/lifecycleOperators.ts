@@ -1,5 +1,6 @@
 import {
 	isConditionComplete,
+	isStageComplete,
 	isStageConfigured,
 	OperatorType,
 	resolveOperatorType,
@@ -22,9 +23,11 @@ const buildStage = (
 	conditions: conditions.map(buildCondition),
 	description: 'A stage',
 	id: null,
+	key: 'stage-key',
 	matchLogic: MatchLogic.All,
 	maxTimeDays: 90,
 	maxTimeEnabled: true,
+	name: 'Aware',
 	...stage,
 });
 
@@ -163,22 +166,55 @@ describe('isStageConfigured', () => {
 		).toBe(true);
 	});
 
-	it('rejects a stage when any one of its conditions is incomplete', () => {
+	it('accepts a stage with one complete trigger next to an incomplete one', () => {
 		expect(
 			isStageConfigured(
 				buildStage([completeCondition, {field: 'annualRevenue'}])
 			)
-		).toBe(false);
+		).toBe(true);
+	});
+
+	it('rejects a stage whose only trigger is incomplete', () => {
+		expect(isStageConfigured(buildStage([{field: 'annualRevenue'}]))).toBe(
+			false
+		);
 	});
 
 	it('rejects a stage with no conditions at all', () => {
 		expect(isStageConfigured(buildStage([]))).toBe(false);
 	});
 
-	it('rejects a stage whose description was cleared', () => {
+	it('does not require a description', () => {
 		expect(
 			isStageConfigured(
 				buildStage([completeCondition], {description: ' '})
+			)
+		).toBe(true);
+	});
+});
+
+describe('isStageComplete', () => {
+	it('accepts a stage with a name, a description and a complete trigger', () => {
+		expect(isStageComplete(buildStage([completeCondition]))).toBe(true);
+	});
+
+	it('rejects a stage without a name or a description', () => {
+		expect(
+			isStageComplete(buildStage([completeCondition], {name: ' '}))
+		).toBe(false);
+		expect(
+			isStageComplete(buildStage([completeCondition], {description: ' '}))
+		).toBe(false);
+	});
+
+	it('rejects a stage without a complete trigger', () => {
+		expect(isStageComplete(buildStage([{}]))).toBe(false);
+	});
+
+	it('rejects a stage with an incomplete trigger next to a complete one', () => {
+		expect(
+			isStageComplete(
+				buildStage([completeCondition, {field: 'annualRevenue'}])
 			)
 		).toBe(false);
 	});

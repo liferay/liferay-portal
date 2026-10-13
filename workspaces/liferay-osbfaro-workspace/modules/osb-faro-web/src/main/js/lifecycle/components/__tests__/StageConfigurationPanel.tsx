@@ -9,7 +9,6 @@ import {
 } from 'lifecycle/utils/stageConfiguration';
 import {ICatalogField} from 'shared/api/catalog';
 import {fireEvent, render, screen} from '@testing-library/react';
-import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 
 jest.mock('shared/util/date', () => ({
 	...jest.requireActual('shared/util/date'),
@@ -22,9 +21,11 @@ const baseValue: IStageConfig = {
 	conditions: [createStageCondition()],
 	description: '',
 	id: null,
+	key: 'stage-key',
 	matchLogic: MatchLogic.All,
 	maxTimeDays: DEFAULT_MAX_DAYS,
 	maxTimeEnabled: true,
+	name: 'Aware',
 };
 
 const withCondition = (
@@ -97,8 +98,8 @@ const renderPanel = (
 			defaultExpanded
 			fields={mockFields}
 			index={1}
+			name="Aware"
 			onChange={jest.fn()}
-			stageType={LifecycleStages.AWARE}
 			value={baseValue}
 			{...props}
 		/>
