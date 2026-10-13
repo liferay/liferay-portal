@@ -84,8 +84,8 @@ public class BannedKeyLicenseTest extends BaseLicenseTestCase {
 				RandomTestUtil.randomString(), bannedKey, Time.HOUR);
 
 			Assert.fail(
-				"Unable to see error message \'Corrupt license file. License " +
-					"was not registered\'");
+				"Unable to see error message \"Corrupt license file. License " +
+					"was not registered\"");
 		}
 		catch (LogEntriesException logEntriesException) {
 			List<LogEntry> logEntries = logEntriesException.getLogEntries();
@@ -120,8 +120,8 @@ public class BannedKeyLicenseTest extends BaseLicenseTestCase {
 			deployFreeTierPortalLicense(domain, key, Time.HOUR);
 
 			Assert.fail(
-				"Unable to see error message \'Corrupt license file. License " +
-					"was not registered\'");
+				"Unable to see error message \"Corrupt license file. License " +
+					"was not registered\"");
 		}
 		catch (LogEntriesException logEntriesException) {
 			List<LogEntry> logEntries = logEntriesException.getLogEntries();
