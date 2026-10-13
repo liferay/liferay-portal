@@ -786,6 +786,71 @@ describe('CategorizationMessageBalloon', () => {
 		);
 	});
 
+	it('does not bring back a dismissed tag when trying again', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetExistingTags.mockResolvedValue([]);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					setBalloonGenerating={setBalloonGenerating}
+				/>
+			);
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-16');
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_GENERATE_TAGS',
+				JSON.stringify({
+					data: '{"suggestions":[{"name":"Culture","isNew":true},{"name":"Tradition","isNew":true}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		fireEvent.click(screen.getAllByRole('button', {name: 'remove'})[0]);
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'try-again'}));
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-17');
+		});
+
+		expect(mockPostAgentInstance).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				context: expect.objectContaining({
+					appliedTags: JSON.stringify(['Culture', 'Tradition']),
+				}),
+			})
+		);
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_GENERATE_TAGS',
+				JSON.stringify({
+					data: '{"suggestions":[{"name":"Culture","isNew":true},{"name":"Temples","isNew":true}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		expect(screen.queryByText('Culture')).not.toBeInTheDocument();
+		expect(screen.queryByText('Tradition')).not.toBeInTheDocument();
+		expect(screen.getByText('Temples')).toBeInTheDocument();
+	});
+
 	it('leaves the shared state alone when it unmounts after loading', async () => {
 		const fakeEventSource = createFakeEventSource();
 

@@ -33,6 +33,7 @@ function toRequestContext(
 	if (agent === ECategorizationAgent.AUTO_CATEGORIZE) {
 		const appliedCategoryIds = new Set(context.appliedCategoryIds ?? []);
 		const candidateCategories = context.candidateCategories ?? [];
+		const excludedCategoryIds = new Set(context.excludedCategoryIds ?? []);
 
 		requestContext.appliedCategories = JSON.stringify(
 			candidateCategories.filter((candidateCategory) =>
@@ -42,12 +43,16 @@ function toRequestContext(
 		requestContext.candidateCategories = JSON.stringify(
 			candidateCategories.filter(
 				(candidateCategory) =>
-					!appliedCategoryIds.has(candidateCategory.id)
+					!appliedCategoryIds.has(candidateCategory.id) &&
+					!excludedCategoryIds.has(candidateCategory.id)
 			)
 		);
 	}
 	else {
-		const appliedTags = context.appliedTags ?? [];
+		const appliedTags = [
+			...(context.appliedTags ?? []),
+			...(context.excludedTags ?? []),
+		];
 
 		const lowerCaseAppliedTags = new Set(
 			appliedTags.map((appliedTag) => appliedTag.toLowerCase())
@@ -148,7 +153,6 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 	const connectingRef = useRef<boolean>(false);
 	const eventSourceRef = useRef<EventSource | null>(null);
 	const lastContextRef = useRef<CategorizationContext | null>(null);
-	const lastTargetsRef = useRef<string[] | null>(null);
 	const mountedRef = useRef<boolean>(true);
 	const pendingRef = useRef<boolean>(false);
 	const sseEventSinkKeyRef = useRef<string | null>(null);
@@ -292,7 +296,6 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 			}
 
 			lastContextRef.current = context;
-			lastTargetsRef.current = null;
 
 			setError(undefined);
 			setSuggestions([]);
@@ -317,7 +320,6 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 			}
 
 			lastContextRef.current = context;
-			lastTargetsRef.current = targets;
 
 			setError(undefined);
 
@@ -329,18 +331,39 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 		[agent]
 	);
 
-	const regenerate = useCallback(() => {
-		if (!lastContextRef.current) {
-			return;
-		}
+	const regenerate = useCallback(
+		(excludedSuggestions: Suggestion[]) => {
+			const context = lastContextRef.current;
 
-		if (lastTargetsRef.current) {
-			resolveTargets(lastContextRef.current, lastTargetsRef.current);
-		}
-		else {
-			run(lastContextRef.current);
-		}
-	}, [resolveTargets, run]);
+			if (!context) {
+				return;
+			}
+
+			if (agent === ECategorizationAgent.AUTO_CATEGORIZE) {
+				run({
+					...context,
+					excludedCategoryIds: [
+						...(context.excludedCategoryIds ?? []),
+						...excludedSuggestions
+							.map((suggestion) => suggestion.id)
+							.filter((id): id is number => id !== undefined),
+					],
+				});
+			}
+			else {
+				run({
+					...context,
+					excludedTags: [
+						...(context.excludedTags ?? []),
+						...excludedSuggestions.map(
+							(suggestion) => suggestion.name
+						),
+					],
+				});
+			}
+		},
+		[agent, run]
+	);
 
 	const stop = useCallback(() => {
 		stoppedRef.current = true;

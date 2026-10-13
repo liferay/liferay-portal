@@ -229,14 +229,20 @@ describe('useCategorizationAgent', () => {
 		});
 	});
 
-	it('regenerates by re-posting the last context', async () => {
+	it('regenerates without the categories of the previous rounds', async () => {
 		const {fakeEventSource, result} = await renderAgent(
 			ECategorizationAgent.AUTO_CATEGORIZE
 		);
 
+		const candidateCategories = [
+			{id: 39001, name: 'International', vocabulary: 'Travel'},
+			{id: 39002, name: 'Roadtrip', vocabulary: 'Travel'},
+			{id: 39003, name: 'Sightseeing', vocabulary: 'Travel'},
+		];
+
 		await act(async () => {
 			(result as {current: {run: Function}}).current.run({
-				candidateCategories: CANDIDATES,
+				candidateCategories,
 				content: 'Japan article',
 			});
 		});
@@ -244,10 +250,122 @@ describe('useCategorizationAgent', () => {
 		act(() => fakeEventSource.emit('Subscribe', 'sink-1'));
 
 		await act(async () => {
-			(result as {current: {regenerate: Function}}).current.regenerate();
+			(result as {current: {regenerate: Function}}).current.regenerate([
+				{id: 39001, name: 'International'},
+			]);
 		});
 
-		expect(mockPostAgentInstance).toHaveBeenCalledTimes(2);
+		await act(async () => {
+			(result as {current: {regenerate: Function}}).current.regenerate([
+				{id: 39002, name: 'Roadtrip'},
+			]);
+		});
+
+		expect(mockPostAgentInstance).toHaveBeenCalledTimes(3);
+		expect(mockPostAgentInstance).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				context: expect.objectContaining({
+					candidateCategories: JSON.stringify([
+						candidateCategories[2],
+					]),
+				}),
+			})
+		);
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_AUTO_CATEGORIZE',
+				JSON.stringify({
+					data: '{"suggestions":[{"id":39001},{"id":39002},{"id":39003}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		expect(
+			(result as {current: {suggestions: unknown[]}}).current.suggestions
+		).toEqual([{id: 39003, name: 'Sightseeing'}]);
+	});
+
+	it('regenerates without the tags of the previous round regardless of case', async () => {
+		const {fakeEventSource, result} = await renderAgent(
+			ECategorizationAgent.GENERATE_TAGS
+		);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				appliedTags: ['Japan'],
+				content: 'x',
+				existingTags: ['Culture', 'Japan', 'Travel'],
+			});
+		});
+
+		act(() => fakeEventSource.emit('Subscribe', 'sink-1'));
+
+		await act(async () => {
+			(result as {current: {regenerate: Function}}).current.regenerate([
+				{isNew: false, name: 'Culture'},
+				{isNew: true, name: 'Kayaking'},
+			]);
+		});
+
+		expect(mockPostAgentInstance).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				context: expect.objectContaining({
+					appliedTags: JSON.stringify([
+						'Japan',
+						'Culture',
+						'Kayaking',
+					]),
+					existingTags: JSON.stringify(['Travel']),
+				}),
+			})
+		);
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_GENERATE_TAGS',
+				JSON.stringify({
+					data: '{"suggestions":[{"name":"culture","isNew":false},{"name":"kayaking","isNew":true},{"name":"Travel","isNew":false}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		expect(
+			(result as {current: {suggestions: unknown[]}}).current.suggestions
+		).toEqual([{isNew: false, name: 'Travel'}]);
+	});
+
+	it('invokes the agent when regenerating resolved targets', async () => {
+		const {fakeEventSource, result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		act(() => {
+			(
+				result as {current: {resolveTargets: Function}}
+			).current.resolveTargets(
+				{candidateCategories: CANDIDATES, content: 'x'},
+				['International']
+			);
+		});
+
+		await act(async () => {
+			(result as {current: {regenerate: Function}}).current.regenerate([
+				{id: 39001, name: 'International'},
+			]);
+		});
+
+		act(() => fakeEventSource.emit('Subscribe', 'sink-1'));
+
+		expect(mockPostAgentInstance).toHaveBeenCalledWith(
+			expect.objectContaining({
+				context: expect.objectContaining({
+					candidateCategories: JSON.stringify([]),
+				}),
+			})
+		);
 	});
 
 	it('releases the connect latch and surfaces the error when the channel fails to open', async () => {

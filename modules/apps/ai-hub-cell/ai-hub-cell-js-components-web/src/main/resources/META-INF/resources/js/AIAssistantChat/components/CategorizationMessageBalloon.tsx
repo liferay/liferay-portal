@@ -207,7 +207,7 @@ export default function CategorizationMessageBalloon({
 								setDismissed([]);
 								setRegenerated(true);
 
-								regenerate();
+								regenerate(suggestions);
 							}}
 							status={status}
 							suggestions={visibleSuggestions}
