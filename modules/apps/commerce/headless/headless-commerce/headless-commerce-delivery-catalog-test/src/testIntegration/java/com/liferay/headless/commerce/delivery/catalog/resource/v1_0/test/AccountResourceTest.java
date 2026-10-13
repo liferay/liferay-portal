@@ -20,6 +20,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.Account;
 import com.liferay.headless.commerce.delivery.catalog.client.http.HttpInvoker;
+import com.liferay.headless.commerce.delivery.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.delivery.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.delivery.catalog.client.resource.v1_0.AccountResource;
 import com.liferay.petra.function.UnsafeRunnable;
@@ -49,7 +50,9 @@ import com.liferay.portal.test.rule.Inject;
 import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -84,6 +87,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	public void testGetChannelAccountsPage() throws Exception {
 		super.testGetChannelAccountsPage();
 
+		_testGetChannelAccountsPageActionsWithPermission();
+		_testGetChannelAccountsPageWithSearch();
 		_testGetEligibleChannelAccountsPage();
 	}
 
@@ -194,6 +199,64 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			Assert.assertEquals(status, problem.getStatus());
 			Assert.assertEquals(title, problem.getTitle());
 		}
+	}
+
+	private void _testGetChannelAccountsPageActionsWithPermission()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+
+		AccountResource accountResource = AccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).header(
+			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON
+		).build();
+
+		Page<Account> channelAccountsPage =
+			accountResource.getChannelAccountsPage(
+				_commerceChannel.getCommerceChannelId(), null, null, null,
+				null);
+
+		Map<String, Map<String, String>> actions =
+			channelAccountsPage.getActions();
+
+		Assert.assertFalse(actions.containsKey("create"));
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			testCompany.getCompanyId(), PortletKeys.PORTAL,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(testCompany.getCompanyId()), role.getRoleId(),
+			new String[] {AccountActionKeys.ADD_ACCOUNT_ENTRY});
+
+		channelAccountsPage = accountResource.getChannelAccountsPage(
+			_commerceChannel.getCommerceChannelId(), null, null, null, null);
+
+		actions = channelAccountsPage.getActions();
+
+		Assert.assertTrue(actions.containsKey("create"));
+	}
+
+	private void _testGetChannelAccountsPageWithSearch() throws Exception {
+		_addAccount(randomAccount());
+
+		Account account = _addAccount(randomAccount());
+
+		Page<Account> channelAccountsPage =
+			accountResource.getChannelAccountsPage(
+				_commerceChannel.getCommerceChannelId(), account.getName(),
+				null, null, null);
+
+		assertEquals(
+			Collections.singletonList(account),
+			(List<Account>)channelAccountsPage.getItems());
 	}
 
 	private void _testGetEligibleChannelAccountsPage() throws Exception {
