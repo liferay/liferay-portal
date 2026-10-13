@@ -72,9 +72,9 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 	}
 
 	@Test
-	public void testUpdateOAuthClientCompanyConfiguration() throws Exception {
-		_testUpdateOAuthClientCompanyConfiguration();
-		_testUpdateOAuthClientCompanyConfigurationWithoutPermission();
+	public void testProcessAction() throws Exception {
+		_testProcessAction();
+		_testProcessActionWithoutPermission();
 	}
 
 	private void _deleteCompanyConfiguration() throws Exception {
@@ -111,7 +111,7 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 		return mockLiferayPortletActionRequest;
 	}
 
-	private void _testUpdateOAuthClientCompanyConfiguration() throws Exception {
+	private void _testProcessAction() throws Exception {
 		String host = RandomTestUtil.randomString();
 
 		Assert.assertTrue(
@@ -145,9 +145,7 @@ public class UpdateOAuthClientCompanyConfigurationMVCActionCommandTest {
 			});
 	}
 
-	private void _testUpdateOAuthClientCompanyConfigurationWithoutPermission()
-		throws Exception {
-
+	private void _testProcessActionWithoutPermission() throws Exception {
 		_deleteCompanyConfiguration();
 
 		PermissionChecker permissionChecker =
