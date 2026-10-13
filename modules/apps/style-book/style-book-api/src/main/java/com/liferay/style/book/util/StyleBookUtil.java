@@ -13,8 +13,6 @@ import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.frontend.token.definition.constants.FrontendTokenDefinitionConstants;
 import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -233,9 +231,9 @@ public class StyleBookUtil {
 		return TransformUtil.transform(
 			FrontendTokenDefinitionUtil.getFrontendTokenNames(
 				frontendTokenDefinitionJSONObject),
-			frontendTokenName -> StringBundler.concat(
-				frontendTokenDefinitionId, StringPool.COLON,
-				frontendTokenName));
+			frontendTokenName ->
+				FrontendTokensValuesUtil.getFrontendTokensValuesKey(
+					frontendTokenDefinitionId, frontendTokenName));
 	}
 
 	private static String _getThemeName(

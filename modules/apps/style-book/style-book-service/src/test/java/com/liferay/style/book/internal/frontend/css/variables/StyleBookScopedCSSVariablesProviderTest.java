@@ -46,6 +46,59 @@ public class StyleBookScopedCSSVariablesProviderTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testGetScopedCSSVariablesCollectionWithLinkLoop()
+		throws Exception {
+
+		_testGetScopedCSSVariablesCollection(
+			FrontendTokenDefinitionConstants.PRIORITY_GLOBAL,
+			JSONUtil.put(
+				"theme:a",
+				_createTokenValueJSONObject("--a", "theme:b", "theme", "#111")
+			).put(
+				"theme:b",
+				_createTokenValueJSONObject("--b", "theme:a", "theme", "#222")
+			),
+			FrontendTokenDefinitionConstants.PRIORITY_THEME,
+			cssVariables -> {
+				Assert.assertEquals(
+					cssVariables.toString(), 2, cssVariables.size());
+				Assert.assertEquals("#222", cssVariables.get("--a"));
+				Assert.assertEquals("#111", cssVariables.get("--b"));
+			});
+	}
+
+	@Test
+	public void testGetScopedCSSVariablesCollectionWithLinkedTokens()
+		throws Exception {
+
+		_testGetScopedCSSVariablesCollection(
+			FrontendTokenDefinitionConstants.PRIORITY_GLOBAL,
+			JSONUtil.put(
+				"theme:a",
+				_createTokenValueJSONObject("--a", "theme:b", "theme", "#111")
+			).put(
+				"theme:b",
+				_createTokenValueJSONObject(
+					"--b", "theme:c", "theme", "var(--c)")
+			).put(
+				"theme:c", _createTokenValueJSONObject("--c", "theme", "#333")
+			).put(
+				"theme:d",
+				_createTokenValueJSONObject(
+					"--d", "theme:e", "theme", "var(--e)")
+			),
+			FrontendTokenDefinitionConstants.PRIORITY_THEME,
+			cssVariables -> {
+				Assert.assertEquals(
+					cssVariables.toString(), 4, cssVariables.size());
+				Assert.assertEquals("#333", cssVariables.get("--a"));
+				Assert.assertEquals("#333", cssVariables.get("--b"));
+				Assert.assertEquals("#333", cssVariables.get("--c"));
+				Assert.assertEquals("var(--e)", cssVariables.get("--d"));
+			});
+	}
+
+	@Test
 	public void testGetScopedCSSVariablesCollectionWithNamespacedKeys()
 		throws Exception {
 
@@ -142,6 +195,17 @@ public class StyleBookScopedCSSVariablesProviderTest {
 			"tokenDefinitionId", tokenDefinitionId
 		).put(
 			"value", value
+		);
+	}
+
+	private JSONObject _createTokenValueJSONObject(
+		String cssVariableMapping, String name, String tokenDefinitionId,
+		String value) {
+
+		return _createTokenValueJSONObject(
+			cssVariableMapping, tokenDefinitionId, value
+		).put(
+			"name", name
 		);
 	}
 

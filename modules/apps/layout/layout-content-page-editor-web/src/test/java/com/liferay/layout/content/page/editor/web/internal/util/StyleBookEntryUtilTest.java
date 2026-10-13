@@ -79,6 +79,7 @@ public class StyleBookEntryUtilTest {
 		_testGetFrontendTokensValuesWithCustomDefinition();
 		_testGetFrontendTokensValuesWithCustomTokenValue();
 		_testGetFrontendTokensValuesWithDefaultDefinition();
+		_testGetFrontendTokensValuesWithLinkedTokenValue();
 	}
 
 	@Test
@@ -249,8 +250,8 @@ public class StyleBookEntryUtilTest {
 		return frontendTokenValue.get("value");
 	}
 
-	private FrontendTokenDefinition _mockFrontendTokenDefinition(String themeId)
-		throws Exception {
+	private FrontendTokenDefinition _mockFrontendTokenDefinition(
+		JSONArray frontendTokensJSONArray, String themeId) {
 
 		FrontendTokenDefinition frontendTokenDefinition = Mockito.mock(
 			FrontendTokenDefinition.class);
@@ -264,15 +265,21 @@ public class StyleBookEntryUtilTest {
 		Mockito.when(
 			frontendTokenDefinition.getJSONObject(Mockito.any(Locale.class))
 		).thenReturn(
-			_createFrontendTokenDefinitionJSONObject(
-				JSONUtil.putAll(
-					_createFrontendTokenJSONObject(
-						_SUCCESS_COLOR_DEFAULT_VALUE,
-						RandomTestUtil.randomString(),
-						_SUCCESS_COLOR_TOKEN_NAME)))
+			_createFrontendTokenDefinitionJSONObject(frontendTokensJSONArray)
 		);
 
 		return frontendTokenDefinition;
+	}
+
+	private FrontendTokenDefinition _mockFrontendTokenDefinition(String themeId)
+		throws Exception {
+
+		return _mockFrontendTokenDefinition(
+			JSONUtil.putAll(
+				_createFrontendTokenJSONObject(
+					_SUCCESS_COLOR_DEFAULT_VALUE, RandomTestUtil.randomString(),
+					_SUCCESS_COLOR_TOKEN_NAME)),
+			themeId);
 	}
 
 	private Group _mockGroup() throws Exception {
@@ -575,11 +582,56 @@ public class StyleBookEntryUtilTest {
 		Assert.assertTrue(frontendTokensValues.isEmpty());
 	}
 
+	private void _testGetFrontendTokensValuesWithLinkedTokenValue()
+		throws Exception {
+
+		FrontendTokenDefinition frontendTokenDefinition =
+			_mockFrontendTokenDefinition(
+				JSONUtil.putAll(
+					_createFrontendTokenJSONObject(
+						_SUCCESS_COLOR_DEFAULT_VALUE,
+						RandomTestUtil.randomString(),
+						_SUCCESS_COLOR_TOKEN_NAME),
+					_createFrontendTokenJSONObject(
+						_WARNING_COLOR_DEFAULT_VALUE,
+						RandomTestUtil.randomString(),
+						_WARNING_COLOR_TOKEN_NAME)),
+				_THEME_ID);
+
+		_assertFrontendTokenValue(
+			"#NEWVAL", frontendTokenDefinition, _SUCCESS_COLOR_TOKEN_NAME,
+			_mockStyleBookEntry(
+				JSONUtil.put(
+					_THEME_ID + ":" + _SUCCESS_COLOR_TOKEN_NAME,
+					JSONUtil.put(
+						"name", _THEME_ID + ":" + _WARNING_COLOR_TOKEN_NAME
+					).put(
+						"value", "#OLDVAL"
+					)
+				).put(
+					_THEME_ID + ":" + _WARNING_COLOR_TOKEN_NAME,
+					JSONUtil.put("value", "#NEWVAL")
+				)));
+		_assertFrontendTokenValue(
+			_WARNING_COLOR_DEFAULT_VALUE, frontendTokenDefinition,
+			_SUCCESS_COLOR_TOKEN_NAME,
+			_mockStyleBookEntry(
+				JSONUtil.put(
+					_THEME_ID + ":" + _SUCCESS_COLOR_TOKEN_NAME,
+					JSONUtil.put(
+						"name", _THEME_ID + ":" + _WARNING_COLOR_TOKEN_NAME
+					).put(
+						"value", "var(--warning-color)"
+					))));
+	}
+
 	private static final String _SUCCESS_COLOR_DEFAULT_VALUE = "#287d3c";
 
 	private static final String _SUCCESS_COLOR_TOKEN_NAME = "successColor";
 
 	private static final String _THEME_ID = "classic_WAR_classictheme";
+
+	private static final String _WARNING_COLOR_DEFAULT_VALUE = "#b95000";
 
 	private static final String _WARNING_COLOR_TOKEN_NAME = "warningColor";
 
