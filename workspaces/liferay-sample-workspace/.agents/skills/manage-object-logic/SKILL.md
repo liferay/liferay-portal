@@ -499,17 +499,11 @@ Confirm by posting an entry: the response `status.label` is `pending`.
 ```bash
 WF="http://localhost:${PORT}/o/headless-admin-workflow/v1.0"
 
-INSTANCE=$(curl \
-	--silent \
-	--url "${WF}/workflow-instances?completed=false&pageSize=200" \
-	--user "test@liferay.com:test" \
-	| jq --argjson id <entry-id> '.items[] | select(.objectReviewed.id == $id) | .id')
-
 TASK=$(curl \
 	--silent \
-	--url "${WF}/workflow-instances/${INSTANCE}/workflow-tasks?completed=false" \
+	--url "${WF}/workflow-tasks/assigned-to-my-roles?pageSize=200" \
 	--user "test@liferay.com:test" \
-	| jq '.items[0].id')
+	| jq --argjson id <entry-id> '.items[] | select(.objectReviewed.id == $id) | .id')
 
 curl \
 	--data '{}' \
@@ -528,6 +522,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
+- Find the task in `assigned-to-my-roles`, not through `/workflow-instances`. An instance started by a Guest submission is missing from `GET /workflow-instances`, even though its task is in the Administrator queue.
 - `assign-to-me` needs the JSON `{}` body. Without it the call returns `415`, and transitioning an unclaimed task returns `403`.
 - The body field is `transitionName`. `{"name": ...}` returns `400`.
 - Use `"reject"` for the other outcome. The entry's status changes within a second.
