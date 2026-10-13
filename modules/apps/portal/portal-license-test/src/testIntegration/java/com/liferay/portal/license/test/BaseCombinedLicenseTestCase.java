@@ -102,7 +102,7 @@ public abstract class BaseCombinedLicenseTestCase extends BaseLicenseTestCase {
 
 		try (SafeCloseable safeCloseable = resetLicenseDataWithSafeCloseble()) {
 			deployEnterprisePortalLicense(
-				StringPool.BLANK, productName, Time.HOUR);
+				StringPool.BLANK, 0, productName, Time.HOUR);
 
 			Assert.fail();
 		}

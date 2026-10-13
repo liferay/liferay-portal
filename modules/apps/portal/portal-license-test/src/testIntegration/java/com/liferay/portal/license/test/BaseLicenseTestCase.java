@@ -107,8 +107,8 @@ public abstract class BaseLicenseTestCase implements Serializable {
 			if (Objects.equals(license[0], ENTERPRISE_LICENSE_TYPE)) {
 				sb.append(
 					_buildEnterprisePortalLicenseXML(
-						StringPool.BLANK, _getEnterpriseProductName(),
-						Long.valueOf(license[1])));
+						StringPool.BLANK, ENTERPRISE_LICENSE_TYPE, 0,
+						_getEnterpriseProductName(), Long.valueOf(license[1])));
 			}
 			else if (Objects.equals(license[0], FREE_TIER_LICENSE_TYPE)) {
 				sb.append(
@@ -266,29 +266,46 @@ public abstract class BaseLicenseTestCase implements Serializable {
 			app.toString());
 	}
 
-	public File deployEnterprisePortalLicense(long validityPeriod)
+	public static File deployEnterprisePortalLicense(long validityPeriod)
 		throws Exception {
 
 		return deployEnterprisePortalLicense(StringPool.BLANK, validityPeriod);
 	}
 
-	public File deployEnterprisePortalLicense(String key, long validityPeriod)
+	public static File deployEnterprisePortalLicense(
+			String key, int maxClusterNodes, long validityPeriod)
 		throws Exception {
 
 		return deployEnterprisePortalLicense(
-			key, _getEnterpriseProductName(), validityPeriod);
+			key, maxClusterNodes, _getEnterpriseProductName(), validityPeriod);
 	}
 
-	public File deployEnterprisePortalLicense(
-			String key, String productName, long validityPeriod)
+	public static File deployEnterprisePortalLicense(
+			String key, int maxClusterNodes, String productName,
+			long validityPeriod)
 		throws Exception {
 
+		String licenseType = ENTERPRISE_LICENSE_TYPE;
+
+		if (maxClusterNodes > 0) {
+			licenseType = "virtual-cluster";
+		}
+
 		_registerLicense(
-			_buildEnterprisePortalLicenseXML(key, productName, validityPeriod));
+			_buildEnterprisePortalLicenseXML(
+				key, licenseType, maxClusterNodes, productName,
+				validityPeriod));
 
 		return _buildBinaryFile(
-			_ENTERPRISE_ACCOUNT_NAME, ENTERPRISE_LICENSE_TYPE,
-			getPortalProductId(), productName);
+			_ENTERPRISE_ACCOUNT_NAME, licenseType, getPortalProductId(),
+			productName);
+	}
+
+	public static File deployEnterprisePortalLicense(
+			String key, long validityPeriod)
+		throws Exception {
+
+		return deployEnterprisePortalLicense(key, 0, validityPeriod);
 	}
 
 	public void resetCheckInterval() throws Exception {
@@ -625,11 +642,12 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	}
 
 	private static String _buildEnterprisePortalLicenseXML(
-		String key, String productName, long validityPeriod) {
+		String key, String licenseType, int maxClusterNodes, String productName,
+		long validityPeriod) {
 
 		long currentTimeMillis = System.currentTimeMillis();
 
-		StringBundler sb = new StringBundler(20);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("<license><account-name>");
 		sb.append(_ENTERPRISE_ACCOUNT_NAME);
@@ -639,7 +657,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append(productName);
 		sb.append("</product-name><product-version>2026.Q1</product-version>");
 		sb.append("<license-type>");
-		sb.append(ENTERPRISE_LICENSE_TYPE);
+		sb.append(licenseType);
 		sb.append("</license-type><license-version>6</license-version>");
 		sb.append("<start-date>");
 		sb.append(_DATE_FORMAT.format(new Date(currentTimeMillis)));
@@ -647,6 +665,13 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		sb.append(
 			_DATE_FORMAT.format(new Date(currentTimeMillis + validityPeriod)));
 		sb.append("</expiration-date>");
+
+		if (maxClusterNodes > 0) {
+			sb.append("<max-cluster-nodes>");
+			sb.append(maxClusterNodes);
+			sb.append("</max-cluster-nodes>");
+		}
+
 		sb.append("<domains><domain>");
 		sb.append(_ENTERPRISE_DOMAIN);
 		sb.append("</domain><domain>localhost</domain></domains><key>");
