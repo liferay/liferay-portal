@@ -36,6 +36,7 @@ export class VirtualInstancesPage {
 	readonly exportInstanceConfirmButton: Locator;
 	readonly importInstanceErrorMessage: Locator;
 	readonly importInstanceNameField: Locator;
+	readonly importInstanceNonexistentSchemaErrorMessage: Locator;
 	readonly importInstanceSchemaNameField: Locator;
 	readonly importInstanceSubmitButton: Locator;
 	readonly importInstanceVirtualHostField: Locator;
@@ -104,6 +105,10 @@ export class VirtualInstancesPage {
 			'Name',
 			{exact: true}
 		);
+		this.importInstanceNonexistentSchemaErrorMessage =
+			this.importInstanceFrame.getByText(
+				'The exported schema does not exist.'
+			);
 		this.importInstanceSchemaNameField =
 			this.importInstanceFrame.getByLabel('Schema Name');
 		this.importInstanceSubmitButton = page

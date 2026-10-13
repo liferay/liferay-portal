@@ -6,16 +6,11 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
-import {notificationsPagesTest} from '../../../fixtures/notificationsPagesTest';
 import {virtualInstancesPagesTest} from '../../../fixtures/virtualInstancesPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 
-const test = mergeTests(
-	loginTest(),
-	notificationsPagesTest,
-	virtualInstancesPagesTest
-);
+const test = mergeTests(loginTest(), virtualInstancesPagesTest);
 
 test(
 	'LPD-92621 Importing an invalid schema name shows an error',
@@ -85,30 +80,17 @@ test(
 );
 
 test(
-	'LPD-93377 Importing a nonexistent schema notifies the user of the failure',
+	'LPD-93377 Importing a nonexistent schema shows an error',
 	{tag: '@LPD-93377'},
-	async ({notificationsPage, virtualInstancesPage}) => {
-		test.setTimeout(2 * 180 * 1000);
-
-		const schemaName = `lexported_${getRandomInt()}`;
-
+	async ({virtualInstancesPage}) => {
 		await virtualInstancesPage.openImportVirtualInstanceModal();
 
-		await virtualInstancesPage.submitImportVirtualInstance({schemaName});
+		await virtualInstancesPage.submitImportVirtualInstance({
+			schemaName: `lexported_${getRandomInt()}`,
+		});
 
 		await expect(
-			virtualInstancesPage.importStartedMessage(schemaName)
+			virtualInstancesPage.importInstanceNonexistentSchemaErrorMessage
 		).toBeVisible();
-
-		await expect(async () => {
-			await notificationsPage.goto();
-
-			await expect(
-				notificationsPage.getNotification(
-					'The exported schema does not exist.',
-					`The instance could not be imported from the schema ${schemaName}.`
-				)
-			).toBeVisible({timeout: 10 * 1000});
-		}).toPass({timeout: 300 * 1000});
 	}
 );
