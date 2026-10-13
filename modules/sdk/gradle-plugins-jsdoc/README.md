@@ -53,7 +53,7 @@ Name | Depends On | Type | Description
 `downloadJSDoc` | `downloadNode` | `DownloadNodeModuleTask` | Downloads JSDoc in the project's `node_modules` directory.
 `jsdoc` | `downloadJSDoc` | [`JSDocTask`](#jsdoctask) | Generates API documentation for the project's JavaScript code.
 
-By default, the `downloadJSDoc` task downloads version `3.6.3` of the `jsdoc`
+By default, the `downloadJSDoc` task downloads version `4.0.5` of the `jsdoc`
 package. If the project's `package.json` file, however, already lists the
 `jsdoc` package in its `dependencies` or `devDependencies`, the `downloadJSDoc`
 task is disabled.
@@ -83,7 +83,7 @@ Name | Depends On | Type | Description
 `downloadJSDoc` | `downloadNode` | `DownloadNodeModuleTask` | Downloads JSDoc in the app's `node_modules` directory.
 `jarAppJSDoc` | `appJSDoc` | [`Jar`](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Jar.html) | Assembles a JAR archive containing the JavaScript documentation files for this app.
 
-By default, the `downloadJSDoc` task downloads version `3.6.3` of the `jsdoc`
+By default, the `downloadJSDoc` task downloads version `4.0.5` of the `jsdoc`
 package. If the project's `package.json` file, however, already lists the
 `jsdoc` package in its `dependencies` or `devDependencies`, the `downloadJSDoc`
 task is disabled.
