@@ -107,6 +107,16 @@ public class AssetStatisticsSerDes {
 			sb.append(assetStatistics.getLongStandingDraftsCount());
 		}
 
+		if (assetStatistics.getMissingRequiredFieldsCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"missingRequiredFieldsCount\": ");
+
+			sb.append(assetStatistics.getMissingRequiredFieldsCount());
+		}
+
 		if (assetStatistics.getOverdueWorkflowTasksCount() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -260,6 +270,16 @@ public class AssetStatisticsSerDes {
 				String.valueOf(assetStatistics.getLongStandingDraftsCount()));
 		}
 
+		if (assetStatistics.getMissingRequiredFieldsCount() == null) {
+			map.put("missingRequiredFieldsCount", null);
+		}
+		else {
+			map.put(
+				"missingRequiredFieldsCount",
+				String.valueOf(
+					assetStatistics.getMissingRequiredFieldsCount()));
+		}
+
 		if (assetStatistics.getOverdueWorkflowTasksCount() == null) {
 			map.put("overdueWorkflowTasksCount", null);
 		}
@@ -371,6 +391,11 @@ public class AssetStatisticsSerDes {
 				return false;
 			}
 			else if (Objects.equals(
+						jsonParserFieldName, "missingRequiredFieldsCount")) {
+
+				return false;
+			}
+			else if (Objects.equals(
 						jsonParserFieldName, "overdueWorkflowTasksCount")) {
 
 				return false;
@@ -448,6 +473,14 @@ public class AssetStatisticsSerDes {
 
 				if (jsonParserFieldValue != null) {
 					assetStatistics.setLongStandingDraftsCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "missingRequiredFieldsCount")) {
+
+				if (jsonParserFieldValue != null) {
+					assetStatistics.setMissingRequiredFieldsCount(
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
@@ -596,4 +629,4 @@ public class AssetStatisticsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:346830234
+// LIFERAY-REST-BUILDER-HASH:545108720

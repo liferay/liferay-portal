@@ -296,6 +296,49 @@ public class AssetStatistics implements Serializable {
 	private Supplier<Long> _longStandingDraftsCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getMissingRequiredFieldsCount() {
+		if (_missingRequiredFieldsCountSupplier != null) {
+			missingRequiredFieldsCount =
+				_missingRequiredFieldsCountSupplier.get();
+
+			_missingRequiredFieldsCountSupplier = null;
+		}
+
+		return missingRequiredFieldsCount;
+	}
+
+	public void setMissingRequiredFieldsCount(Long missingRequiredFieldsCount) {
+		this.missingRequiredFieldsCount = missingRequiredFieldsCount;
+
+		_missingRequiredFieldsCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setMissingRequiredFieldsCount(
+		UnsafeSupplier<Long, Exception>
+			missingRequiredFieldsCountUnsafeSupplier) {
+
+		_missingRequiredFieldsCountSupplier = () -> {
+			try {
+				return missingRequiredFieldsCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long missingRequiredFieldsCount;
+
+	@JsonIgnore
+	private Supplier<Long> _missingRequiredFieldsCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Long getOverdueWorkflowTasksCount() {
 		if (_overdueWorkflowTasksCountSupplier != null) {
 			overdueWorkflowTasksCount =
@@ -728,6 +771,18 @@ public class AssetStatistics implements Serializable {
 			sb.append(longStandingDraftsCount);
 		}
 
+		Long missingRequiredFieldsCount = getMissingRequiredFieldsCount();
+
+		if (missingRequiredFieldsCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"missingRequiredFieldsCount\": ");
+
+			sb.append(missingRequiredFieldsCount);
+		}
+
 		Long overdueWorkflowTasksCount = getOverdueWorkflowTasksCount();
 
 		if (overdueWorkflowTasksCount != null) {
@@ -946,4 +1001,4 @@ public class AssetStatistics implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-927761910
+// LIFERAY-REST-BUILDER-HASH:145811657

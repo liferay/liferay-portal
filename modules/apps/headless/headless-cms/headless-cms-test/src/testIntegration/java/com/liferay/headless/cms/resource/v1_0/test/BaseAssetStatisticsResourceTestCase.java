@@ -327,6 +327,16 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"missingRequiredFieldsCount", additionalAssertFieldName)) {
+
+				if (assetStatistics.getMissingRequiredFieldsCount() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"overdueWorkflowTasksCount", additionalAssertFieldName)) {
 
 				if (assetStatistics.getOverdueWorkflowTasksCount() == null) {
@@ -593,6 +603,19 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"missingRequiredFieldsCount", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						assetStatistics1.getMissingRequiredFieldsCount(),
+						assetStatistics2.getMissingRequiredFieldsCount())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"overdueWorkflowTasksCount", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
@@ -829,6 +852,11 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("missingRequiredFieldsCount")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("overdueWorkflowTasksCount")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -922,6 +950,7 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				expiringSoonCount = RandomTestUtil.randomLong();
 				inDraftCount = RandomTestUtil.randomLong();
 				longStandingDraftsCount = RandomTestUtil.randomLong();
+				missingRequiredFieldsCount = RandomTestUtil.randomLong();
 				overdueWorkflowTasksCount = RandomTestUtil.randomLong();
 				pendingCount = RandomTestUtil.randomLong();
 				reviewDateOverdueCount = RandomTestUtil.randomLong();
@@ -1157,4 +1186,4 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 		_assetStatisticsResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1556795111
+// LIFERAY-REST-BUILDER-HASH:1364135558

@@ -152,6 +152,29 @@ public class AssetStatistics implements Cloneable, Serializable {
 
 	protected Long longStandingDraftsCount;
 
+	public Long getMissingRequiredFieldsCount() {
+		return missingRequiredFieldsCount;
+	}
+
+	public void setMissingRequiredFieldsCount(Long missingRequiredFieldsCount) {
+		this.missingRequiredFieldsCount = missingRequiredFieldsCount;
+	}
+
+	public void setMissingRequiredFieldsCount(
+		UnsafeSupplier<Long, Exception>
+			missingRequiredFieldsCountUnsafeSupplier) {
+
+		try {
+			missingRequiredFieldsCount =
+				missingRequiredFieldsCountUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long missingRequiredFieldsCount;
+
 	public Long getOverdueWorkflowTasksCount() {
 		return overdueWorkflowTasksCount;
 	}
@@ -358,4 +381,4 @@ public class AssetStatistics implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1389555501
+// LIFERAY-REST-BUILDER-HASH:393163005
