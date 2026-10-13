@@ -57,6 +57,10 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                slaBreachedWorkflowTasksCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 totalCount:
                     format: int64
                     readOnly: true
