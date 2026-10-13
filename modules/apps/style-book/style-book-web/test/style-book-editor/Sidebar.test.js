@@ -79,7 +79,7 @@ jest.mock(
 				},
 			],
 			getFrontendTokens: () => ({}),
-			sortFrontendTokenValues: (frontendTokensValues) =>
+			resolveFrontendTokenValues: (frontendTokensValues) =>
 				Object.values(frontendTokensValues),
 			themeFrontendTokenDefinitionId: 'theme',
 			themeName: 'Classic',

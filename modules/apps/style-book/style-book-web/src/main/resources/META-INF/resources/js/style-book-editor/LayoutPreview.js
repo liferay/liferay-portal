@@ -39,7 +39,7 @@ export default React.memo(function LayoutPreview() {
 				for (const {
 					cssVariableMapping,
 					value,
-				} of config.sortFrontendTokenValues(frontendTokensValues)) {
+				} of config.resolveFrontendTokenValues(frontendTokensValues)) {
 					root.style.setProperty(`--${cssVariableMapping}`, value);
 				}
 

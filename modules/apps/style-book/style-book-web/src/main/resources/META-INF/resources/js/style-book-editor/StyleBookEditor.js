@@ -18,6 +18,7 @@ import {useCloseProductMenu} from './useCloseProductMenu';
 import {getFrontendTokenDefinitionsFactory} from './utils/getFrontendTokenDefinitionsFactory';
 import {getFrontendTokenValuesSorter} from './utils/getFrontendTokenValuesSorter';
 import {getFrontendTokensFactory} from './utils/getFrontendTokensFactory';
+import {getResolvedFrontendTokensValues} from './utils/getResolvedFrontendTokensValues';
 
 const StyleBookEditor = React.memo(() => {
 	useCloseProductMenu();
@@ -69,6 +70,13 @@ export default function ({
 	themeFrontendTokenDefinitionId,
 	themeName,
 } = {}) {
+	const sortFrontendTokenValues = getFrontendTokenValuesSorter({
+		customTokenDefinitionId,
+		customTokenDefinitionPriority,
+		defaultPriority: defaultTokenDefinitionPriority,
+		frontendTokenDefinitions,
+	});
+
 	initializeConfig({
 		addFrontendTokenURL,
 		customTokenDefinitionId,
@@ -86,13 +94,11 @@ export default function ({
 		previewOptions,
 		publishURL,
 		redirectURL,
+		resolveFrontendTokenValues: (frontendTokensValues) =>
+			sortFrontendTokenValues(
+				getResolvedFrontendTokensValues(frontendTokensValues)
+			),
 		saveDraftURL,
-		sortFrontendTokenValues: getFrontendTokenValuesSorter({
-			customTokenDefinitionId,
-			customTokenDefinitionPriority,
-			defaultPriority: defaultTokenDefinitionPriority,
-			frontendTokenDefinitions,
-		}),
 		styleBookEntryId,
 		themeFrontendTokenDefinitionId,
 		themeName,

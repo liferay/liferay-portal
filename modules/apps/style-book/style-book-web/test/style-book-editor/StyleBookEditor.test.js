@@ -126,6 +126,36 @@ const previewOptions = [
 ];
 
 describe('StyleBookEditor', () => {
+	it('sets the value of the linked token to the CSS variable of a token', () => {
+		const {container} = render(
+			<StyleBookEditor
+				defaultTokenDefinitionPriority={
+					DEFAULT_TOKEN_DEFINITION_PRIORITY
+				}
+				frontendTokenDefinitions={frontendTokenDefinitions}
+				frontendTokensValues={{
+					'theme:conflictingToken': {
+						cssVariableMapping: 'conflicting-token',
+						tokenDefinitionId: 'theme',
+						value: '#222',
+					},
+					'theme:themeToken': {
+						cssVariableMapping: 'theme-token',
+						name: 'theme:conflictingToken',
+						tokenDefinitionId: 'theme',
+						value: 'var(--conflicting-token)',
+					},
+				}}
+				previewOptions={previewOptions}
+				themeFrontendTokenDefinitionId="theme"
+			/>
+		);
+
+		const sidebar = container.querySelector('.style-book-editor__sidebar');
+
+		expect(sidebar.style.getPropertyValue('--theme-token')).toBe('#222');
+	});
+
 	it('respects priority precedence when multiple tokens map to the same CSS variable', () => {
 		const conflictingValues = {
 			'clay:conflictingToken': {
