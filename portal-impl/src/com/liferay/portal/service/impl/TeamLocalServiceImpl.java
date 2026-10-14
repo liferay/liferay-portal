@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.DuplicateTeamException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.exception.TeamNameException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -18,6 +19,9 @@ import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -32,8 +36,10 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.base.TeamLocalServiceBaseImpl;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
@@ -82,6 +88,86 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 	}
 
 	@Override
+	public boolean addUserGroupTeam(long userGroupId, long teamId) {
+		if (!super.addUserGroupTeam(userGroupId, teamId)) {
+			return false;
+		}
+
+		_reindexUserGroupUsers(userGroupId);
+
+		return true;
+	}
+
+	@Override
+	public boolean addUserGroupTeam(long userGroupId, Team team) {
+		return addUserGroupTeam(userGroupId, team.getTeamId());
+	}
+
+	@Override
+	public boolean addUserGroupTeams(long userGroupId, List<Team> teams) {
+		return addUserGroupTeams(
+			userGroupId, ListUtil.toLongArray(teams, Team.TEAM_ID_ACCESSOR));
+	}
+
+	@Override
+	public boolean addUserGroupTeams(long userGroupId, long[] teamIds) {
+		if (!super.addUserGroupTeams(userGroupId, teamIds)) {
+			return false;
+		}
+
+		_reindexUserGroupUsers(userGroupId);
+
+		return true;
+	}
+
+	@Override
+	public boolean addUserTeam(long userId, long teamId) {
+		if (!super.addUserTeam(userId, teamId)) {
+			return false;
+		}
+
+		_reindexUser(userId);
+
+		return true;
+	}
+
+	@Override
+	public boolean addUserTeam(long userId, Team team) {
+		return addUserTeam(userId, team.getTeamId());
+	}
+
+	@Override
+	public boolean addUserTeams(long userId, List<Team> teams) {
+		return addUserTeams(
+			userId, ListUtil.toLongArray(teams, Team.TEAM_ID_ACCESSOR));
+	}
+
+	@Override
+	public boolean addUserTeams(long userId, long[] teamIds) {
+		if (!super.addUserTeams(userId, teamIds)) {
+			return false;
+		}
+
+		_reindexUser(userId);
+
+		return true;
+	}
+
+	@Override
+	public void clearUserGroupTeams(long userGroupId) {
+		super.clearUserGroupTeams(userGroupId);
+
+		_reindexUserGroupUsers(userGroupId);
+	}
+
+	@Override
+	public void clearUserTeams(long userId) {
+		super.clearUserTeams(userId);
+
+		_reindexUser(userId);
+	}
+
+	@Override
 	public Team deleteTeam(long teamId) throws PortalException {
 		Team team = teamPersistence.findByPrimaryKey(teamId);
 
@@ -93,6 +179,15 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 	public Team deleteTeam(Team team) throws PortalException {
 
 		// Team
+
+		Set<User> users = new HashSet<>(
+			teamPersistence.getUsers(team.getTeamId()));
+
+		for (long userGroupId :
+				teamPersistence.getUserGroupPrimaryKeys(team.getTeamId())) {
+
+			users.addAll(userGroupPersistence.getUsers(userGroupId));
+		}
 
 		teamPersistence.remove(team);
 
@@ -132,6 +227,13 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 
 		_roleLocalService.deleteRole(team.getRole());
 
+		// Indexer
+
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			User.class);
+
+		indexer.reindex(users);
+
 		return team;
 	}
 
@@ -142,6 +244,56 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 		for (Team team : teams) {
 			deleteTeam(team.getTeamId());
 		}
+	}
+
+	@Override
+	public void deleteUserGroupTeam(long userGroupId, long teamId) {
+		super.deleteUserGroupTeam(userGroupId, teamId);
+
+		_reindexUserGroupUsers(userGroupId);
+	}
+
+	@Override
+	public void deleteUserGroupTeam(long userGroupId, Team team) {
+		deleteUserGroupTeam(userGroupId, team.getTeamId());
+	}
+
+	@Override
+	public void deleteUserGroupTeams(long userGroupId, List<Team> teams) {
+		deleteUserGroupTeams(
+			userGroupId, ListUtil.toLongArray(teams, Team.TEAM_ID_ACCESSOR));
+	}
+
+	@Override
+	public void deleteUserGroupTeams(long userGroupId, long[] teamIds) {
+		super.deleteUserGroupTeams(userGroupId, teamIds);
+
+		_reindexUserGroupUsers(userGroupId);
+	}
+
+	@Override
+	public void deleteUserTeam(long userId, long teamId) {
+		super.deleteUserTeam(userId, teamId);
+
+		_reindexUser(userId);
+	}
+
+	@Override
+	public void deleteUserTeam(long userId, Team team) {
+		deleteUserTeam(userId, team.getTeamId());
+	}
+
+	@Override
+	public void deleteUserTeams(long userId, List<Team> teams) {
+		deleteUserTeams(
+			userId, ListUtil.toLongArray(teams, Team.TEAM_ID_ACCESSOR));
+	}
+
+	@Override
+	public void deleteUserTeams(long userId, long[] teamIds) {
+		super.deleteUserTeams(userId, teamIds);
+
+		_reindexUser(userId);
 	}
 
 	@Override
@@ -199,6 +351,20 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 	}
 
 	@Override
+	public void setUserGroupTeams(long userGroupId, long[] teamIds) {
+		super.setUserGroupTeams(userGroupId, teamIds);
+
+		_reindexUserGroupUsers(userGroupId);
+	}
+
+	@Override
+	public void setUserTeams(long userId, long[] teamIds) {
+		super.setUserTeams(userId, teamIds);
+
+		_reindexUser(userId);
+	}
+
+	@Override
 	public Team updateTeam(long teamId, String name, String description)
 		throws PortalException {
 
@@ -226,6 +392,30 @@ public class TeamLocalServiceImpl extends TeamLocalServiceBaseImpl {
 
 		if ((team != null) && (team.getTeamId() != teamId)) {
 			throw new DuplicateTeamException("{teamId=" + teamId + "}");
+		}
+	}
+
+	private void _reindexUser(long userId) {
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			User.class);
+
+		try {
+			indexer.reindex(User.class.getName(), userId);
+		}
+		catch (SearchException searchException) {
+			throw new SystemException(searchException);
+		}
+	}
+
+	private void _reindexUserGroupUsers(long userGroupId) {
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			User.class);
+
+		try {
+			indexer.reindex(userGroupPersistence.getUsers(userGroupId));
+		}
+		catch (SearchException searchException) {
+			throw new SystemException(searchException);
 		}
 	}
 

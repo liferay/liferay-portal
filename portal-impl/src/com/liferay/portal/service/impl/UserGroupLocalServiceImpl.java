@@ -16,7 +16,6 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -224,20 +223,45 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 			serviceContext);
 	}
 
+	/**
+	 * Adds the user group to the team.
+	 *
+	 * @param  teamId the primary key of the team
+	 * @param  userGroupId the primary key of the user group
+	 * @return <code>true</code> if the association between the ${teamId} and
+	 *         ${userGroupId} is added; <code>false</code> if it was already
+	 *         added
+	 */
 	@Override
-	public boolean addTeamUserGroup(long teamId, UserGroup userGroup) {
-		if (!super.addTeamUserGroup(teamId, userGroup)) {
+	public boolean addTeamUserGroup(long teamId, long userGroupId) {
+		if (!super.addTeamUserGroup(teamId, userGroupId)) {
 			return false;
 		}
 
-		try {
-			reindexUsers(userGroup);
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
+		_reindexUsers(new long[] {userGroupId});
 
 		return true;
+	}
+
+	@Override
+	public boolean addTeamUserGroup(long teamId, UserGroup userGroup) {
+		return addTeamUserGroup(teamId, userGroup.getUserGroupId());
+	}
+
+	/**
+	 * Adds the user groups to the team.
+	 *
+	 * @param  teamId the primary key of the team
+	 * @param  userGroups the user groups
+	 * @return <code>true</code> if at least an association between the
+	 *         ${teamId} and the ${userGroups} is added; <code>false</code> if
+	 *         all were already added
+	 */
+	@Override
+	public boolean addTeamUserGroups(long teamId, List<UserGroup> userGroups) {
+		return addTeamUserGroups(
+			teamId,
+			ListUtil.toLongArray(userGroups, UserGroup.USER_GROUP_ID_ACCESSOR));
 	}
 
 	@Override
@@ -246,12 +270,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 			return false;
 		}
 
-		try {
-			reindexUsers(userGroupIds);
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
+		_reindexUsers(userGroupIds);
 
 		return true;
 	}
@@ -410,6 +429,20 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Clears the user groups from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 */
+	@Override
+	public void clearTeamUserGroups(long teamId) {
+		long[] userGroupIds = teamPersistence.getUserGroupPrimaryKeys(teamId);
+
+		super.clearTeamUserGroups(teamId);
+
+		_reindexUsers(userGroupIds);
+	}
+
+	/**
 	 * Removes the user from all user groups.
 	 *
 	 * @param userId the primary key of the user
@@ -482,6 +515,56 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		super.deleteGroupUserGroups(groupId, userGroupIds);
 
 		_reindex(userGroupIds);
+	}
+
+	/**
+	 * Deletes the user group from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param userGroupId the primary key of the user group
+	 */
+	@Override
+	public void deleteTeamUserGroup(long teamId, long userGroupId) {
+		super.deleteTeamUserGroup(teamId, userGroupId);
+
+		_reindexUsers(new long[] {userGroupId});
+	}
+
+	/**
+	 * Deletes the user group from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param userGroup the user group
+	 */
+	@Override
+	public void deleteTeamUserGroup(long teamId, UserGroup userGroup) {
+		deleteTeamUserGroup(teamId, userGroup.getUserGroupId());
+	}
+
+	/**
+	 * Deletes the user groups from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param userGroups the user groups
+	 */
+	@Override
+	public void deleteTeamUserGroups(long teamId, List<UserGroup> userGroups) {
+		deleteTeamUserGroups(
+			teamId,
+			ListUtil.toLongArray(userGroups, UserGroup.USER_GROUP_ID_ACCESSOR));
+	}
+
+	/**
+	 * Deletes the user groups from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param userGroupIds the primary keys of the user groups
+	 */
+	@Override
+	public void deleteTeamUserGroups(long teamId, long[] userGroupIds) {
+		super.deleteTeamUserGroups(teamId, userGroupIds);
+
+		_reindexUsers(userGroupIds);
 	}
 
 	/**
@@ -1185,6 +1268,25 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Sets the user groups in the team, removing and adding user groups to the
+	 * team as necessary.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param userGroupIds the primary keys of the user groups
+	 */
+	@Override
+	public void setTeamUserGroups(long teamId, long[] userGroupIds) {
+		long[] oldUserGroupIds = teamPersistence.getUserGroupPrimaryKeys(
+			teamId);
+
+		super.setTeamUserGroups(teamId, userGroupIds);
+
+		_reindexUsers(
+			ArrayUtil.toLongArray(
+				SetUtil.symmetricDifference(userGroupIds, oldUserGroupIds)));
+	}
+
+	/**
 	 * Sets the user groups associated with the user copying the user group
 	 * layouts and removing and adding user group associations for the user as
 	 * necessary.
@@ -1676,7 +1778,16 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 			reindexUsers(userGroupIds);
 		}
 		catch (PortalException portalException) {
-			ReflectionUtil.throwException(portalException);
+			throw new SystemException(portalException);
+		}
+	}
+
+	private void _reindexUsers(long[] userGroupIds) {
+		try {
+			reindexUsers(userGroupIds);
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
 		}
 	}
 

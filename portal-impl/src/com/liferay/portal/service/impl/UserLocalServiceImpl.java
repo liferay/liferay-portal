@@ -1959,6 +1959,49 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Removes the users from the organization.
+	 *
+	 * @param organizationId the primary key of the organization
+	 */
+	@Override
+	public void clearOrganizationUsers(long organizationId) {
+		long[] userIds = organizationPersistence.getUserPrimaryKeys(
+			organizationId);
+
+		super.clearOrganizationUsers(organizationId);
+
+		_reindex(userIds);
+	}
+
+	/**
+	 * Removes the users from the role.
+	 *
+	 * @param roleId the primary key of the role
+	 */
+	@Override
+	public void clearRoleUsers(long roleId) {
+		long[] userIds = rolePersistence.getUserPrimaryKeys(roleId);
+
+		super.clearRoleUsers(roleId);
+
+		_reindex(userIds);
+	}
+
+	/**
+	 * Removes the users from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 */
+	@Override
+	public void clearTeamUsers(long teamId) {
+		long[] userIds = teamPersistence.getUserPrimaryKeys(teamId);
+
+		super.clearTeamUsers(teamId);
+
+		_reindex(userIds);
+	}
+
+	/**
 	 * Removes the users from the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
@@ -2101,6 +2144,55 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Removes the user from the organization.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param userId the primary key of the user
+	 */
+	@Override
+	public void deleteOrganizationUser(long organizationId, long userId) {
+		super.deleteOrganizationUser(organizationId, userId);
+
+		_reindex(userId);
+	}
+
+	/**
+	 * Removes the user from the organization.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param user the user
+	 */
+	@Override
+	public void deleteOrganizationUser(long organizationId, User user) {
+		deleteOrganizationUser(organizationId, user.getUserId());
+	}
+
+	/**
+	 * Removes the users from the organization.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param users the users
+	 */
+	@Override
+	public void deleteOrganizationUsers(long organizationId, List<User> users) {
+		deleteOrganizationUsers(
+			organizationId, ListUtil.toLongArray(users, User.USER_ID_ACCESSOR));
+	}
+
+	/**
+	 * Removes the users from the organization.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void deleteOrganizationUsers(long organizationId, long[] userIds) {
+		super.deleteOrganizationUsers(organizationId, userIds);
+
+		_reindex(userIds);
+	}
+
+	/**
 	 * Deletes the user's portrait image.
 	 *
 	 * @param userId the primary key of the user
@@ -2125,6 +2217,91 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		rolePersistence.removeUser(roleId, userId);
 
 		reindex(userId);
+	}
+
+	/**
+	 * Removes the user from the role.
+	 *
+	 * @param roleId the primary key of the role
+	 * @param user the user
+	 */
+	@Override
+	public void deleteRoleUser(long roleId, User user) throws PortalException {
+		deleteRoleUser(roleId, user.getUserId());
+	}
+
+	/**
+	 * Removes the users from the role.
+	 *
+	 * @param roleId the primary key of the role
+	 * @param users the users
+	 */
+	@Override
+	public void deleteRoleUsers(long roleId, List<User> users) {
+		deleteRoleUsers(
+			roleId, ListUtil.toLongArray(users, User.USER_ID_ACCESSOR));
+	}
+
+	/**
+	 * Removes the users from the role.
+	 *
+	 * @param roleId the primary key of the role
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void deleteRoleUsers(long roleId, long[] userIds) {
+		super.deleteRoleUsers(roleId, userIds);
+
+		_reindex(userIds);
+	}
+
+	/**
+	 * Removes the user from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param userId the primary key of the user
+	 */
+	@Override
+	public void deleteTeamUser(long teamId, long userId) {
+		super.deleteTeamUser(teamId, userId);
+
+		_reindex(userId);
+	}
+
+	/**
+	 * Removes the user from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param user the user
+	 */
+	@Override
+	public void deleteTeamUser(long teamId, User user) {
+		deleteTeamUser(teamId, user.getUserId());
+	}
+
+	/**
+	 * Removes the users from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param users the users
+	 */
+	@Override
+	public void deleteTeamUsers(long teamId, List<User> users) {
+		deleteTeamUsers(
+			teamId, ListUtil.toLongArray(users, User.USER_ID_ACCESSOR));
+	}
+
+	/**
+	 * Removes the users from the team.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void deleteTeamUsers(long teamId, long[] userIds) {
+		super.deleteTeamUsers(teamId, userIds);
+
+		_reindex(userIds);
 	}
 
 	/**
@@ -4497,6 +4674,25 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Sets the users in the organization, removing and adding users to the
+	 * organization as necessary.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void setOrganizationUsers(long organizationId, long[] userIds) {
+		long[] oldUserIds = organizationPersistence.getUserPrimaryKeys(
+			organizationId);
+
+		super.setOrganizationUsers(organizationId, userIds);
+
+		_reindex(
+			ArrayUtil.toLongArray(
+				SetUtil.symmetricDifference(userIds, oldUserIds)));
+	}
+
+	/**
 	 * Sets the users in the role, removing and adding users to the role as
 	 * necessary.
 	 *
@@ -4517,6 +4713,24 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		rolePersistence.setUsers(roleId, userIds);
 
 		reindex(updateUserIds);
+	}
+
+	/**
+	 * Sets the users in the team, removing and adding users to the team as
+	 * necessary.
+	 *
+	 * @param teamId the primary key of the team
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void setTeamUsers(long teamId, long[] userIds) {
+		long[] oldUserIds = teamPersistence.getUserPrimaryKeys(teamId);
+
+		super.setTeamUsers(teamId, userIds);
+
+		_reindex(
+			ArrayUtil.toLongArray(
+				SetUtil.symmetricDifference(userIds, oldUserIds)));
 	}
 
 	/**

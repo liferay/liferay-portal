@@ -565,11 +565,20 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 
 		// Role
 
+		List<User> users = rolePersistence.getUsers(role.getRoleId());
+
 		rolePersistence.remove(role);
 
 		// Expando
 
 		_expandoRowLocalService.deleteRows(role.getRoleId());
+
+		// Indexer
+
+		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			User.class);
+
+		indexer.reindex(users);
 
 		return role;
 	}

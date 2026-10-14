@@ -3895,6 +3895,25 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Sets the groups in the organization, removing and adding groups to the
+	 * organization as necessary.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param groupIds the primary keys of the groups
+	 */
+	@Override
+	public void setOrganizationGroups(long organizationId, long[] groupIds) {
+		super.setOrganizationGroups(organizationId, groupIds);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+	}
+
+	/**
 	 * Sets the groups in the user group, removing and adding groups to the user
 	 * group as necessary.
 	 *
