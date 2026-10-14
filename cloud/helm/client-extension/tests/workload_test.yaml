@@ -1,0 +1,99 @@
+release:
+    name: my-release
+    namespace: my-namespace
+set:
+    clientExtension:
+        configs:
+            com.liferay.client.extension.type.configuration.CETConfiguration~able:
+                name: Able
+        serviceId: able
+    image:
+        repository: liferay/batch
+suite: Workload
+templates:
+    -   templates/cronjob.yaml
+    -   templates/deployment.yaml
+    -   templates/job.yaml
+tests:
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: workload.schedule is required for a CronJob
+                template: templates/cronjob.yaml
+        it: Fails a CronJob without a schedule
+        set:
+            workload:
+                kind: CronJob
+    -   asserts:
+            -   matchRegex:
+                    path: metadata.name
+                    pattern: ^my-release-liferay-client-extension-[0-9a-f]{8}$
+                template: templates/job.yaml
+        it: Names a Job after its pod template
+        set:
+            workload:
+                kind: Job
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/cronjob.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/deployment.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/job.yaml
+        it: Renders no workload for a configuration only client extension
+        set:
+            workload:
+                enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/cronjob.yaml
+            -   equal:
+                    path: spec.schedule
+                    value: 0 * * * *
+                template: templates/cronjob.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/deployment.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/job.yaml
+        it: Renders only a CronJob for kind CronJob
+        set:
+            workload:
+                kind: CronJob
+                schedule: 0 * * * *
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/cronjob.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/deployment.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/job.yaml
+        it: Renders only a Deployment by default
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/cronjob.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/deployment.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/job.yaml
+            -   equal:
+                    path: spec.template.spec.restartPolicy
+                    value: Never
+                template: templates/job.yaml
+            -   notExists:
+                    path: spec.template.spec.containers[0].ports
+                template: templates/job.yaml
+        it: Renders only a Job for kind Job, which never restarts its pod and exposes no port
+        set:
+            workload:
+                kind: Job

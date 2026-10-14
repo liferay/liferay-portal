@@ -1,0 +1,98 @@
+release:
+    name: my-release
+    namespace: my-namespace
+set:
+    clientExtension:
+        configs:
+            com.liferay.client.extension.type.configuration.CETConfiguration~able:
+                name: Able
+        serviceId: able
+suite: ClientExtension
+templates:
+    -   templates/clientextension.yaml
+tests:
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: clientExtension.serviceId is required
+        it: Fails without a serviceId
+        set:
+            clientExtension:
+                serviceId: ""
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: clientExtension.configs is required
+        it: Fails without configs
+        set:
+            clientExtension:
+                configs: null
+    -   asserts:
+            -   equal:
+                    path: spec.workloadRef
+                    value:
+                        kind: CronJob
+                        name: my-release-liferay-client-extension
+        it: Points workloadRef at a CronJob
+        set:
+            workload:
+                kind: CronJob
+                schedule: 0 * * * *
+    -   asserts:
+            -   equal:
+                    path: spec.workloadRef
+                    value:
+                        kind: Deployment
+                        name: my-release-liferay-client-extension
+        it: Points workloadRef at a Deployment by default
+    -   asserts:
+            -   matchRegex:
+                    path: spec.workloadRef.name
+                    pattern: ^my-release-liferay-client-extension-[0-9a-f]{8}$
+        it: Points workloadRef at a Job named after its pod template
+        set:
+            image:
+                repository: liferay/batch
+            workload:
+                kind: Job
+    -   asserts:
+            -   notExists:
+                    path: spec.workloadRef
+        it: Points workloadRef at nothing for a configuration only client extension
+        set:
+            workload:
+                enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.configs
+                    value:
+                        com.liferay.client.extension.type.configuration.CETConfiguration~able:
+                            name: Able
+                        com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent:
+                            homePageURL: https://able.example.com
+                            scopes:
+                                -   Liferay.Headless.Admin.Workflow.everything
+        it: Renders the configs as given
+        set:
+            clientExtension:
+                configs:
+                    com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent:
+                        homePageURL: https://able.example.com
+                        scopes:
+                            -   Liferay.Headless.Admin.Workflow.everything
+    -   asserts:
+            -   equal:
+                    path: spec.domain
+                    value: able.example.com
+            -   equal:
+                    path: spec.dxpNamespace
+                    value: liferay
+        it: Renders the domain and dxpNamespace when they are set
+        set:
+            clientExtension:
+                domain: able.example.com
+                dxpNamespace: liferay
+    -   asserts:
+            -   notExists:
+                    path: spec.domain
+            -   notExists:
+                    path: spec.dxpNamespace
+        it: Renders without the domain and dxpNamespace when they are empty

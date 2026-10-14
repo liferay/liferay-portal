@@ -1,0 +1,103 @@
+release:
+    name: my-release
+    namespace: my-namespace
+set:
+    clientExtension:
+        configs:
+            com.liferay.client.extension.type.configuration.CETConfiguration~able:
+                name: Able
+        serviceId: able
+        virtualInstanceId: other.test
+    image:
+        repository: liferay/jar-runner
+suite: Pod spec
+templates:
+    -   templates/deployment.yaml
+tests:
+    -   asserts:
+            -   contains:
+                    content:
+                        configMap:
+                            name: other.test-lxc-dxp-metadata
+                        name: lxc-dxp-metadata
+                    path: spec.template.spec.volumes
+        it: Mounts DXP's routes from the virtual instance's metadata
+    -   asserts:
+            -   notExists:
+                    path: spec.template.spec.volumes[?(@.name == "lxc-ext-init-metadata")]
+            -   notContains:
+                    any: true
+                    content:
+                        name: LIFERAY_ROUTES_CLIENT_EXTENSION
+                    path: spec.template.spec.containers[0].env
+        it: Mounts no OAuth2 credentials when the configs declare no OAuth2 application
+    -   asserts:
+            -   notExists:
+                    path: spec.template.spec.volumes[?(@.name == "artifact")]
+        it: Mounts no artifact without a reference
+        set:
+            artifact:
+                mounts:
+                    -   mountPath: /opt/liferay
+                        subPath: .cx-mounts/0
+    -   asserts:
+            -   contains:
+                    content:
+                        configMap:
+                            name: able-other.test-lxc-ext-init-metadata
+                        name: lxc-ext-init-metadata
+                    path: spec.template.spec.volumes
+            -   contains:
+                    content:
+                        name: LIFERAY_ROUTES_CLIENT_EXTENSION
+                        value: /etc/liferay/lxc/ext-init-metadata
+                    path: spec.template.spec.containers[0].env
+        it: Mounts the OAuth2 credentials when the configs declare an OAuth2 application
+        set:
+            clientExtension:
+                configs:
+                    com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationHeadlessServerConfiguration~able-oauth-application-headless-server: {}
+    -   asserts:
+            -   contains:
+                    content:
+                        image:
+                            pullPolicy: IfNotPresent
+                            reference: registry.example.com/cx/able@sha256:0
+                        name: artifact
+                    path: spec.template.spec.volumes
+            -   contains:
+                    content:
+                        mountPath: /opt/liferay
+                        name: artifact
+                        readOnly: true
+                        subPath: .cx-mounts/0
+                    path: spec.template.spec.containers[0].volumeMounts
+            -   contains:
+                    content:
+                        mountPath: /public_html
+                        name: artifact
+                        readOnly: true
+                    path: spec.template.spec.containers[0].volumeMounts
+        it: Mounts the artifact at each of its mounts
+        set:
+            artifact:
+                mounts:
+                    -   mountPath: /opt/liferay
+                        subPath: .cx-mounts/0
+                    -   mountPath: /public_html
+                reference: registry.example.com/cx/able@sha256:0
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env
+                    value:
+                        -   name: LIFERAY_ROUTES_DXP
+                            value: /etc/liferay/lxc/dxp-metadata
+                        -   name: PORT
+                            value: "58081"
+        it: Sets the routes variables itself rather than from workload.env
+        set:
+            workload:
+                env:
+                    LIFERAY_ROUTES_CLIENT_EXTENSION: /elsewhere
+                    LIFERAY_ROUTES_DXP: /elsewhere
+                    PORT: 58081
