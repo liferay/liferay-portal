@@ -249,96 +249,6 @@ public class AssetLinkPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<AssetLink, NoSuchLinkException>
-		_collectionPersistenceFinderByE_E;
-
-	/**
-	 * Returns an ordered range of all the asset links where entryId1 = &#63; and entryId2 = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>AssetLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param entryId1 the entry id1
-	 * @param entryId2 the entry id2
-	 * @param start the lower bound of the range of asset links
-	 * @param end the upper bound of the range of asset links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching asset links
-	 */
-	@Override
-	public List<AssetLink> findByE_E(
-		long entryId1, long entryId2, int start, int end,
-		OrderByComparator<AssetLink> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByE_E.find(
-			finderCache, new Object[] {entryId1, entryId2}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first asset link in the ordered set where entryId1 = &#63; and entryId2 = &#63;.
-	 *
-	 * @param entryId1 the entry id1
-	 * @param entryId2 the entry id2
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset link
-	 * @throws NoSuchLinkException if a matching asset link could not be found
-	 */
-	@Override
-	public AssetLink findByE_E_First(
-			long entryId1, long entryId2,
-			OrderByComparator<AssetLink> orderByComparator)
-		throws NoSuchLinkException {
-
-		return _collectionPersistenceFinderByE_E.findFirst(
-			finderCache, new Object[] {entryId1, entryId2}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first asset link in the ordered set where entryId1 = &#63; and entryId2 = &#63;.
-	 *
-	 * @param entryId1 the entry id1
-	 * @param entryId2 the entry id2
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset link, or <code>null</code> if a matching asset link could not be found
-	 */
-	@Override
-	public AssetLink fetchByE_E_First(
-		long entryId1, long entryId2,
-		OrderByComparator<AssetLink> orderByComparator) {
-
-		return _collectionPersistenceFinderByE_E.fetchFirst(
-			finderCache, new Object[] {entryId1, entryId2}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the asset links where entryId1 = &#63; and entryId2 = &#63; from the database.
-	 *
-	 * @param entryId1 the entry id1
-	 * @param entryId2 the entry id2
-	 */
-	@Override
-	public void removeByE_E(long entryId1, long entryId2) {
-		_collectionPersistenceFinderByE_E.remove(
-			finderCache, new Object[] {entryId1, entryId2});
-	}
-
-	/**
-	 * Returns the number of asset links where entryId1 = &#63; and entryId2 = &#63;.
-	 *
-	 * @param entryId1 the entry id1
-	 * @param entryId2 the entry id2
-	 * @return the number of matching asset links
-	 */
-	@Override
-	public int countByE_E(long entryId1, long entryId2) {
-		return _collectionPersistenceFinderByE_E.count(
-			finderCache, new Object[] {entryId1, entryId2});
-	}
-
-	private CollectionPersistenceFinder<AssetLink, NoSuchLinkException>
 		_collectionPersistenceFinderByE1_T;
 
 	/**
@@ -904,34 +814,6 @@ public class AssetLinkPersistenceImpl
 					"assetLink.", "entryId2", FinderColumn.Type.LONG, "=", true,
 					true, AssetLink::getEntryId2));
 
-		_collectionPersistenceFinderByE_E = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByE_E",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"entryId1", "entryId2"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByE_E",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"entryId1", "entryId2"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByE_E",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"entryId1", "entryId2"}, false),
-			_SQL_SELECT_ASSETLINK_WHERE, _SQL_COUNT_ASSETLINK_WHERE,
-			AssetLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"assetLink.", "entryId1", FinderColumn.Type.LONG, "=", true,
-				true, AssetLink::getEntryId1),
-			new FinderColumn<>(
-				"assetLink.", "entryId2", FinderColumn.Type.LONG, "=", true,
-				true, AssetLink::getEntryId2));
-
 		_collectionPersistenceFinderByE1_T = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1076,4 +958,4 @@ public class AssetLinkPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1139714359
+// LIFERAY-SERVICE-BUILDER-HASH:1538838929
