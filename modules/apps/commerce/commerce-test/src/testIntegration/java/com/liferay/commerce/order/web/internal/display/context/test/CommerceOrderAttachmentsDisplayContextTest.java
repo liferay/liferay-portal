@@ -254,7 +254,7 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 		Assert.assertEquals(
 			List.of(
 				"edit", "download", "delete", "request-signature", "resend",
-				"void"),
+				"view-signature-details", "void"),
 			_getFDSActionDropdownItemIds(user));
 
 		try (SafeCloseable safeCloseable =

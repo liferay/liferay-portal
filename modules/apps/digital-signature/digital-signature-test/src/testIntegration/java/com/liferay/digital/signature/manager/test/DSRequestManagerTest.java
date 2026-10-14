@@ -362,6 +362,37 @@ public class DSRequestManagerTest {
 	}
 
 	@Test
+	public void testGetFileEntryDSRequests() throws Exception {
+		DSEnvelope dsEnvelope = _createDSEnvelope();
+
+		dsEnvelope.setStatus(DSRequestConstants.STATUS_VOIDED);
+
+		long fileEntryId = RandomTestUtil.randomInt();
+
+		_addDSRequestWithoutValidation(
+			dsEnvelope, TestPropsValues.getUserId(), fileEntryId);
+		_addDSRequestWithoutValidation(
+			_createDSEnvelope(), TestPropsValues.getUserId(), fileEntryId);
+		_addDSRequestWithoutValidation(
+			_createDSEnvelope(), TestPropsValues.getUserId(), fileEntryId + 1);
+
+		List<DSRequest> dsRequests = _dsRequestManager.getFileEntryDSRequests(
+			TestPropsValues.getCompanyId(), fileEntryId);
+
+		Assert.assertEquals(dsRequests.toString(), 2, dsRequests.size());
+
+		DSRequest dsRequest1 = dsRequests.get(0);
+
+		Assert.assertEquals(
+			DSRequestConstants.STATUS_SENT, dsRequest1.getStatus());
+
+		DSRequest dsRequest2 = dsRequests.get(1);
+
+		Assert.assertEquals(
+			DSRequestConstants.STATUS_VOIDED, dsRequest2.getStatus());
+	}
+
+	@Test
 	public void testGetLatestFileEntryDSRequests() throws Exception {
 		long fileEntryId1 = RandomTestUtil.randomInt();
 		long fileEntryId2 = RandomTestUtil.randomInt();
