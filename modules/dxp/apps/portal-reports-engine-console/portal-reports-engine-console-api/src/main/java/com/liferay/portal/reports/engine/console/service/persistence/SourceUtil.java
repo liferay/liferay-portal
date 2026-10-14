@@ -426,78 +426,6 @@ public class SourceUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the sources where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.reports.engine.console.model.impl.SourceModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of sources
-	 * @param end the upper bound of the range of sources (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching sources
-	 */
-	public static List<Source> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<Source> orderByComparator, boolean useFinderCache) {
-
-		return getPersistence().findByCompanyId(
-			companyId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first source in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching source
-	 * @throws NoSuchSourceException if a matching source could not be found
-	 */
-	public static Source findByCompanyId_First(
-			long companyId, OrderByComparator<Source> orderByComparator)
-		throws com.liferay.portal.reports.engine.console.exception.
-			NoSuchSourceException {
-
-		return getPersistence().findByCompanyId_First(
-			companyId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first source in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching source, or <code>null</code> if a matching source could not be found
-	 */
-	public static Source fetchByCompanyId_First(
-		long companyId, OrderByComparator<Source> orderByComparator) {
-
-		return getPersistence().fetchByCompanyId_First(
-			companyId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the sources where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	public static void removeByCompanyId(long companyId) {
-		getPersistence().removeByCompanyId(companyId);
-	}
-
-	/**
-	 * Returns the number of sources where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching sources
-	 */
-	public static int countByCompanyId(long companyId) {
-		return getPersistence().countByCompanyId(companyId);
-	}
-
-	/**
 	 * Creates a new source with the primary key. Does not add the source to the database.
 	 *
 	 * @param sourceId the primary key for the new source
@@ -733,55 +661,6 @@ public class SourceUtil {
 		return getPersistence().filterFindByGroupId(groupId, start, end);
 	}
 
-	/**
-	 * Returns all the sources where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the matching sources
-	 */
-	public static List<Source> findByCompanyId(long companyId) {
-		return getPersistence().findByCompanyId(companyId);
-	}
-
-	/**
-	 * Returns a range of all the sources where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.reports.engine.console.model.impl.SourceModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of sources
-	 * @param end the upper bound of the range of sources (not inclusive)
-	 * @return the range of matching sources
-	 */
-	public static List<Source> findByCompanyId(
-		long companyId, int start, int end) {
-
-		return getPersistence().findByCompanyId(companyId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the sources where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.reports.engine.console.model.impl.SourceModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of sources
-	 * @param end the upper bound of the range of sources (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching sources
-	 */
-	public static List<Source> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<Source> orderByComparator) {
-
-		return getPersistence().findByCompanyId(
-			companyId, start, end, orderByComparator);
-	}
-
 	public static SourcePersistence getPersistence() {
 		return _persistence;
 	}
@@ -793,4 +672,4 @@ public class SourceUtil {
 	private static volatile SourcePersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1653457444
+// LIFERAY-SERVICE-BUILDER-HASH:830976898

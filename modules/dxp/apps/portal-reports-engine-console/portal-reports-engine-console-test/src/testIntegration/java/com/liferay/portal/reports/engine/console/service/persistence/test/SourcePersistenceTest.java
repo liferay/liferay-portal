@@ -217,13 +217,6 @@ public class SourcePersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		Source newSource = addSource();
 
@@ -581,4 +574,4 @@ public class SourcePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1368100640
+// LIFERAY-SERVICE-BUILDER-HASH:-863389364

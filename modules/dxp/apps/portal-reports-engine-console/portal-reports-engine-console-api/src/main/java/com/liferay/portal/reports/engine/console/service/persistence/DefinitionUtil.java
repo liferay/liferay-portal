@@ -433,79 +433,6 @@ public class DefinitionUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the definitions where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.reports.engine.console.model.impl.DefinitionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of definitions
-	 * @param end the upper bound of the range of definitions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching definitions
-	 */
-	public static List<Definition> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<Definition> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByCompanyId(
-			companyId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first definition in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching definition
-	 * @throws NoSuchDefinitionException if a matching definition could not be found
-	 */
-	public static Definition findByCompanyId_First(
-			long companyId, OrderByComparator<Definition> orderByComparator)
-		throws com.liferay.portal.reports.engine.console.exception.
-			NoSuchDefinitionException {
-
-		return getPersistence().findByCompanyId_First(
-			companyId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first definition in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching definition, or <code>null</code> if a matching definition could not be found
-	 */
-	public static Definition fetchByCompanyId_First(
-		long companyId, OrderByComparator<Definition> orderByComparator) {
-
-		return getPersistence().fetchByCompanyId_First(
-			companyId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the definitions where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	public static void removeByCompanyId(long companyId) {
-		getPersistence().removeByCompanyId(companyId);
-	}
-
-	/**
-	 * Returns the number of definitions where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching definitions
-	 */
-	public static int countByCompanyId(long companyId) {
-		return getPersistence().countByCompanyId(companyId);
-	}
-
-	/**
 	 * Creates a new definition with the primary key. Does not add the definition to the database.
 	 *
 	 * @param definitionId the primary key for the new definition
@@ -743,55 +670,6 @@ public class DefinitionUtil {
 		return getPersistence().filterFindByGroupId(groupId, start, end);
 	}
 
-	/**
-	 * Returns all the definitions where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the matching definitions
-	 */
-	public static List<Definition> findByCompanyId(long companyId) {
-		return getPersistence().findByCompanyId(companyId);
-	}
-
-	/**
-	 * Returns a range of all the definitions where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.reports.engine.console.model.impl.DefinitionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of definitions
-	 * @param end the upper bound of the range of definitions (not inclusive)
-	 * @return the range of matching definitions
-	 */
-	public static List<Definition> findByCompanyId(
-		long companyId, int start, int end) {
-
-		return getPersistence().findByCompanyId(companyId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the definitions where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.reports.engine.console.model.impl.DefinitionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of definitions
-	 * @param end the upper bound of the range of definitions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching definitions
-	 */
-	public static List<Definition> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<Definition> orderByComparator) {
-
-		return getPersistence().findByCompanyId(
-			companyId, start, end, orderByComparator);
-	}
-
 	public static DefinitionPersistence getPersistence() {
 		return _persistence;
 	}
@@ -803,4 +681,4 @@ public class DefinitionUtil {
 	private static volatile DefinitionPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1950642996
+// LIFERAY-SERVICE-BUILDER-HASH:-397632350
