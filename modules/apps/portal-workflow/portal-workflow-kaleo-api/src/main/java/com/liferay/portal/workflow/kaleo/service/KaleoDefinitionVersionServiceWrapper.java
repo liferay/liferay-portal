@@ -30,6 +30,14 @@ public class KaleoDefinitionVersionServiceWrapper
 	}
 
 	@Override
+	public void deleteKaleoDefinitionVersions(long companyId, String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_kaleoDefinitionVersionService.deleteKaleoDefinitionVersions(
+			companyId, name);
+	}
+
+	@Override
 	public KaleoDefinitionVersion getKaleoDefinitionVersion(
 			long companyId, String name, String version)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -72,4 +80,4 @@ public class KaleoDefinitionVersionServiceWrapper
 	private KaleoDefinitionVersionService _kaleoDefinitionVersionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:322205535
+// LIFERAY-SERVICE-BUILDER-HASH:-1276216675

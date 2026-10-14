@@ -62,6 +62,16 @@ public class KaleoDefinitionServiceWrapper
 	}
 
 	@Override
+	public KaleoDefinition deleteKaleoDefinition(
+			String name,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _kaleoDefinitionService.deleteKaleoDefinition(
+			name, serviceContext);
+	}
+
+	@Override
 	public KaleoDefinition getKaleoDefinition(long kaleoDefinitionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -147,4 +157,4 @@ public class KaleoDefinitionServiceWrapper
 	private KaleoDefinitionService _kaleoDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-995624232
+// LIFERAY-SERVICE-BUILDER-HASH:-581582970

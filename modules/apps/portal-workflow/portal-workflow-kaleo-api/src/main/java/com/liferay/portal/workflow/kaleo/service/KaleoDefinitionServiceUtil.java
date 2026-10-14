@@ -61,6 +61,14 @@ public class KaleoDefinitionServiceUtil {
 			name, version, serviceContext);
 	}
 
+	public static KaleoDefinition deleteKaleoDefinition(
+			String name,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().deleteKaleoDefinition(name, serviceContext);
+	}
+
 	public static KaleoDefinition getKaleoDefinition(long kaleoDefinitionId)
 		throws PortalException {
 
@@ -132,4 +140,4 @@ public class KaleoDefinitionServiceUtil {
 			KaleoDefinitionServiceUtil.class, KaleoDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1440804644
+// LIFERAY-SERVICE-BUILDER-HASH:1143252472

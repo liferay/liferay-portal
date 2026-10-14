@@ -60,6 +60,10 @@ public interface KaleoDefinitionService extends BaseService {
 			String name, int version, ServiceContext serviceContext)
 		throws PortalException;
 
+	public KaleoDefinition deleteKaleoDefinition(
+			String name, ServiceContext serviceContext)
+		throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public KaleoDefinition getKaleoDefinition(long kaleoDefinitionId)
 		throws PortalException;
@@ -102,4 +106,4 @@ public interface KaleoDefinitionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:172034269
+// LIFERAY-SERVICE-BUILDER-HASH:-1471598551

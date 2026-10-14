@@ -30,6 +30,13 @@ public class KaleoDefinitionVersionServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.portal.workflow.kaleo.service.impl.KaleoDefinitionVersionServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static void deleteKaleoDefinitionVersions(
+			long companyId, String name)
+		throws PortalException {
+
+		getService().deleteKaleoDefinitionVersions(companyId, name);
+	}
+
 	public static KaleoDefinitionVersion getKaleoDefinitionVersion(
 			long companyId, String name, String version)
 		throws PortalException {
@@ -63,4 +70,4 @@ public class KaleoDefinitionVersionServiceUtil {
 			KaleoDefinitionVersionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-964411657
+// LIFERAY-SERVICE-BUILDER-HASH:670341265

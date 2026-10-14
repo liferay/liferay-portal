@@ -44,6 +44,9 @@ public interface KaleoDefinitionVersionService extends BaseService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.portal.workflow.kaleo.service.impl.KaleoDefinitionVersionServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the kaleo definition version remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link KaleoDefinitionVersionServiceUtil} if injection and service tracking are not available.
 	 */
+	public void deleteKaleoDefinitionVersions(long companyId, String name)
+		throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public KaleoDefinitionVersion getKaleoDefinitionVersion(
 			long companyId, String name, String version)
@@ -62,4 +65,4 @@ public interface KaleoDefinitionVersionService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2108470375
+// LIFERAY-SERVICE-BUILDER-HASH:-2054847961

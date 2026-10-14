@@ -174,6 +174,49 @@ public class KaleoDefinitionServiceHttp {
 	}
 
 	public static com.liferay.portal.workflow.kaleo.model.KaleoDefinition
+			deleteKaleoDefinition(
+				HttpPrincipal httpPrincipal, String name,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				KaleoDefinitionServiceUtil.class, "deleteKaleoDefinition",
+				_deleteKaleoDefinitionParameterTypes3);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, name, serviceContext);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.portal.workflow.kaleo.model.KaleoDefinition)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.portal.workflow.kaleo.model.KaleoDefinition
 			getKaleoDefinition(
 				HttpPrincipal httpPrincipal, long kaleoDefinitionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -181,7 +224,7 @@ public class KaleoDefinitionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				KaleoDefinitionServiceUtil.class, "getKaleoDefinition",
-				_getKaleoDefinitionParameterTypes3);
+				_getKaleoDefinitionParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, kaleoDefinitionId);
@@ -224,7 +267,7 @@ public class KaleoDefinitionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				KaleoDefinitionServiceUtil.class, "getKaleoDefinition",
-				_getKaleoDefinitionParameterTypes4);
+				_getKaleoDefinitionParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, companyId);
@@ -267,7 +310,7 @@ public class KaleoDefinitionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				KaleoDefinitionServiceUtil.class, "getKaleoDefinition",
-				_getKaleoDefinitionParameterTypes5);
+				_getKaleoDefinitionParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, name, serviceContext);
@@ -316,7 +359,7 @@ public class KaleoDefinitionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				KaleoDefinitionServiceUtil.class, "getScopeKaleoDefinitions",
-				_getScopeKaleoDefinitionsParameterTypes6);
+				_getScopeKaleoDefinitionsParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, scope, active, start, end, orderByComparator,
@@ -367,7 +410,7 @@ public class KaleoDefinitionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				KaleoDefinitionServiceUtil.class, "getScopeKaleoDefinitions",
-				_getScopeKaleoDefinitionsParameterTypes7);
+				_getScopeKaleoDefinitionsParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, scope, start, end, orderByComparator,
@@ -414,7 +457,7 @@ public class KaleoDefinitionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				KaleoDefinitionServiceUtil.class, "updateKaleoDefinition",
-				_updateKaleoDefinitionParameterTypes8);
+				_updateKaleoDefinitionParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, kaleoDefinitionId, title,
@@ -468,27 +511,31 @@ public class KaleoDefinitionServiceHttp {
 			String.class, int.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _getKaleoDefinitionParameterTypes3 =
-		new Class[] {long.class};
-	private static final Class<?>[] _getKaleoDefinitionParameterTypes4 =
-		new Class[] {String.class, long.class};
-	private static final Class<?>[] _getKaleoDefinitionParameterTypes5 =
+	private static final Class<?>[] _deleteKaleoDefinitionParameterTypes3 =
 		new Class[] {
 			String.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _getScopeKaleoDefinitionsParameterTypes6 =
+	private static final Class<?>[] _getKaleoDefinitionParameterTypes4 =
+		new Class[] {long.class};
+	private static final Class<?>[] _getKaleoDefinitionParameterTypes5 =
+		new Class[] {String.class, long.class};
+	private static final Class<?>[] _getKaleoDefinitionParameterTypes6 =
+		new Class[] {
+			String.class, com.liferay.portal.kernel.service.ServiceContext.class
+		};
+	private static final Class<?>[] _getScopeKaleoDefinitionsParameterTypes7 =
 		new Class[] {
 			String.class, boolean.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _getScopeKaleoDefinitionsParameterTypes7 =
+	private static final Class<?>[] _getScopeKaleoDefinitionsParameterTypes8 =
 		new Class[] {
 			String.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateKaleoDefinitionParameterTypes8 =
+	private static final Class<?>[] _updateKaleoDefinitionParameterTypes9 =
 		new Class[] {
 			String.class, long.class, String.class, String.class, String.class,
 			boolean.class,
@@ -496,4 +543,4 @@ public class KaleoDefinitionServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:700066424
+// LIFERAY-SERVICE-BUILDER-HASH:-1420623063

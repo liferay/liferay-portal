@@ -41,6 +41,43 @@ import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionServiceUt
  */
 public class KaleoDefinitionVersionServiceHttp {
 
+	public static void deleteKaleoDefinitionVersions(
+			HttpPrincipal httpPrincipal, long companyId, String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				KaleoDefinitionVersionServiceUtil.class,
+				"deleteKaleoDefinitionVersions",
+				_deleteKaleoDefinitionVersionsParameterTypes0);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, name);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion
 			getKaleoDefinitionVersion(
 				HttpPrincipal httpPrincipal, long companyId, String name,
@@ -51,7 +88,7 @@ public class KaleoDefinitionVersionServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				KaleoDefinitionVersionServiceUtil.class,
 				"getKaleoDefinitionVersion",
-				_getKaleoDefinitionVersionParameterTypes0);
+				_getKaleoDefinitionVersionParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, name, version);
@@ -95,7 +132,7 @@ public class KaleoDefinitionVersionServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				KaleoDefinitionVersionServiceUtil.class,
 				"getKaleoDefinitionVersions",
-				_getKaleoDefinitionVersionsParameterTypes1);
+				_getKaleoDefinitionVersionsParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, name);
@@ -133,10 +170,14 @@ public class KaleoDefinitionVersionServiceHttp {
 	private static Log _log = LogFactoryUtil.getLog(
 		KaleoDefinitionVersionServiceHttp.class);
 
-	private static final Class<?>[] _getKaleoDefinitionVersionParameterTypes0 =
+	private static final Class<?>[]
+		_deleteKaleoDefinitionVersionsParameterTypes0 = new Class[] {
+			long.class, String.class
+		};
+	private static final Class<?>[] _getKaleoDefinitionVersionParameterTypes1 =
 		new Class[] {long.class, String.class, String.class};
-	private static final Class<?>[] _getKaleoDefinitionVersionsParameterTypes1 =
+	private static final Class<?>[] _getKaleoDefinitionVersionsParameterTypes2 =
 		new Class[] {long.class, String.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1021276326
+// LIFERAY-SERVICE-BUILDER-HASH:-1873962181
