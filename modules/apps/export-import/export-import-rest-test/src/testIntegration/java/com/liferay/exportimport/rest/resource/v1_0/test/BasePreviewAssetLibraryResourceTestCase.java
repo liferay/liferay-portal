@@ -604,6 +604,10 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 
 		boolean valid = true;
 
+		if (previewAssetLibrary.getExternalReferenceCode() == null) {
+			valid = false;
+		}
+
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
@@ -1278,4 +1282,4 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			_previewAssetLibraryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1652712832
+// LIFERAY-REST-BUILDER-HASH:1359888555

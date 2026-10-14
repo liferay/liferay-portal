@@ -19,6 +19,8 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
@@ -36,7 +38,14 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("PreviewAssetLibrary")
+@GraphQLName(
+	description = "An asset library that can be exported from the instance or that a file to import contains.",
+	value = "PreviewAssetLibrary"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "An asset library that can be exported from the instance or that a file to import contains.",
+	requiredProperties = {"descriptiveName", "externalReferenceCode"}
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PreviewAssetLibrary")
 public class PreviewAssetLibrary implements Serializable {
@@ -50,7 +59,9 @@ public class PreviewAssetLibrary implements Serializable {
 			PreviewAssetLibrary.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The asset library's name."
+	)
 	public String getDescriptiveName() {
 		if (_descriptiveNameSupplier != null) {
 			descriptiveName = _descriptiveNameSupplier.get();
@@ -84,8 +95,9 @@ public class PreviewAssetLibrary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The asset library's name.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@NotEmpty
 	protected String descriptiveName;
 
 	@JsonIgnore
@@ -136,7 +148,9 @@ public class PreviewAssetLibrary implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _existsInInstanceSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The asset library's external reference code."
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -170,8 +184,9 @@ public class PreviewAssetLibrary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The asset library's external reference code.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@NotEmpty
 	protected String externalReferenceCode;
 
 	@JsonIgnore
@@ -370,4 +385,4 @@ public class PreviewAssetLibrary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2107267855
+// LIFERAY-REST-BUILDER-HASH:656188995
