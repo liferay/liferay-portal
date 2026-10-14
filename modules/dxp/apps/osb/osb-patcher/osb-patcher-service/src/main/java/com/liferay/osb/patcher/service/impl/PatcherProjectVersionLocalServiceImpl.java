@@ -147,15 +147,6 @@ public class PatcherProjectVersionLocalServiceImpl
 				PatcherProjectVersionNameComparator.getInstance(true));
 	}
 
-	@Override
-	public List<PatcherProjectVersion> getRootPatcherProjectVersions(
-		long patcherProductVersionId) {
-
-		return patcherProjectVersionPersistence.findByP_R(
-			0L, patcherProductVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			PatcherProjectVersionNameComparator.getInstance(true));
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public PatcherProjectVersion updatePatcherProjectVersion(
