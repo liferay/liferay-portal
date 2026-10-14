@@ -166,92 +166,6 @@ public class AssetAutoTaggerEntryPersistenceImpl
 			finderCache, new Object[] {assetEntryId});
 	}
 
-	private CollectionPersistenceFinder
-		<AssetAutoTaggerEntry, NoSuchEntryException>
-			_collectionPersistenceFinderByAssetTagId;
-
-	/**
-	 * Returns an ordered range of all the asset auto tagger entries where assetTagId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>AssetAutoTaggerEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param assetTagId the asset tag ID
-	 * @param start the lower bound of the range of asset auto tagger entries
-	 * @param end the upper bound of the range of asset auto tagger entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching asset auto tagger entries
-	 */
-	@Override
-	public List<AssetAutoTaggerEntry> findByAssetTagId(
-		long assetTagId, int start, int end,
-		OrderByComparator<AssetAutoTaggerEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByAssetTagId.find(
-			finderCache, new Object[] {assetTagId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first asset auto tagger entry in the ordered set where assetTagId = &#63;.
-	 *
-	 * @param assetTagId the asset tag ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset auto tagger entry
-	 * @throws NoSuchEntryException if a matching asset auto tagger entry could not be found
-	 */
-	@Override
-	public AssetAutoTaggerEntry findByAssetTagId_First(
-			long assetTagId,
-			OrderByComparator<AssetAutoTaggerEntry> orderByComparator)
-		throws NoSuchEntryException {
-
-		return _collectionPersistenceFinderByAssetTagId.findFirst(
-			finderCache, new Object[] {assetTagId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first asset auto tagger entry in the ordered set where assetTagId = &#63;.
-	 *
-	 * @param assetTagId the asset tag ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset auto tagger entry, or <code>null</code> if a matching asset auto tagger entry could not be found
-	 */
-	@Override
-	public AssetAutoTaggerEntry fetchByAssetTagId_First(
-		long assetTagId,
-		OrderByComparator<AssetAutoTaggerEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByAssetTagId.fetchFirst(
-			finderCache, new Object[] {assetTagId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the asset auto tagger entries where assetTagId = &#63; from the database.
-	 *
-	 * @param assetTagId the asset tag ID
-	 */
-	@Override
-	public void removeByAssetTagId(long assetTagId) {
-		_collectionPersistenceFinderByAssetTagId.remove(
-			finderCache, new Object[] {assetTagId});
-	}
-
-	/**
-	 * Returns the number of asset auto tagger entries where assetTagId = &#63;.
-	 *
-	 * @param assetTagId the asset tag ID
-	 * @return the number of matching asset auto tagger entries
-	 */
-	@Override
-	public int countByAssetTagId(long assetTagId) {
-		return _collectionPersistenceFinderByAssetTagId.count(
-			finderCache, new Object[] {assetTagId});
-	}
-
 	private UniquePersistenceFinder<AssetAutoTaggerEntry, NoSuchEntryException>
 		_uniquePersistenceFinderByA_A;
 
@@ -628,34 +542,6 @@ public class AssetAutoTaggerEntryPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					AssetAutoTaggerEntry::getAssetEntryId));
 
-		_collectionPersistenceFinderByAssetTagId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByAssetTagId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"assetTagId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByAssetTagId", new String[] {Long.class.getName()},
-					new String[] {"assetTagId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByAssetTagId", new String[] {Long.class.getName()},
-					new String[] {"assetTagId"}, false),
-				_SQL_SELECT_ASSETAUTOTAGGERENTRY_WHERE,
-				_SQL_COUNT_ASSETAUTOTAGGERENTRY_WHERE,
-				AssetAutoTaggerEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"assetAutoTaggerEntry.", "assetTagId",
-					FinderColumn.Type.LONG, "=", true, true,
-					AssetAutoTaggerEntry::getAssetTagId));
-
 		_uniquePersistenceFinderByA_A = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -735,4 +621,4 @@ public class AssetAutoTaggerEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:500740403
+// LIFERAY-SERVICE-BUILDER-HASH:-1122833331
