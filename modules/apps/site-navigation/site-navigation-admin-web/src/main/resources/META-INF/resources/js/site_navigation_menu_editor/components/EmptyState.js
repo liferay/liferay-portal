@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import {AddItemDropDown} from './AddItemDropdown';
@@ -15,7 +16,13 @@ export function EmptyState() {
 			description={Liferay.Language.get(
 				'fortunately-it-is-very-easy-to-add-new-ones'
 			)}
-			imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+			image={
+				<ClayIcon
+					className="c-empty-state-icon c-empty-state-icon-empty-state"
+					illustration
+					symbol="empty-state"
+				/>
+			}
 			title={Liferay.Language.get('no-element-yet')}
 		>
 			<AddItemDropDown
