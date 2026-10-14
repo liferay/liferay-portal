@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -75,6 +76,11 @@ public class InputAssetLinksDisplayContext {
 			_themeDisplay.getScopeGroupId(),
 			baseAssetRendererFactory.getPortletId());
 
+		long[] groupIds =
+			SiteConnectedGroupGroupProviderUtil.
+				getCurrentAndAncestorSiteAndDepotGroupIds(
+					new long[] {_themeDisplay.getScopeGroupId()});
+
 		return JSONUtil.toJSONArray(
 			getAssetRendererFactories(),
 			assetRendererFactory -> {
@@ -90,6 +96,10 @@ public class InputAssetLinksDisplayContext {
 					"classNameId",
 					PortalUtil.getClassNameId(
 						assetRendererFactory.getClassName())
+				).put(
+					"groupIds",
+					_getStagedPortletGroupIdsJSONArray(
+						groupIds, assetRendererFactory.getPortletId())
 				).put(
 					"label",
 					assetRendererFactory.getTypeName(_themeDisplay.getLocale())
@@ -164,13 +174,6 @@ public class InputAssetLinksDisplayContext {
 		}
 
 		return assetType;
-	}
-
-	public String getConnectedGroupIdsString() throws PortalException {
-		return StringUtil.merge(
-			SiteConnectedGroupGroupProviderUtil.
-				getCurrentAndAncestorSiteAndDepotGroupIds(
-					new long[] {_themeDisplay.getScopeGroupId()}));
 	}
 
 	public String getGroupDescriptiveName(AssetEntry assetEntry)
@@ -259,6 +262,21 @@ public class InputAssetLinksDisplayContext {
 		}
 
 		return AssetEntryLocalServiceUtil.fetchEntry(_assetEntryId);
+	}
+
+	private JSONArray _getStagedPortletGroupIdsJSONArray(
+		long[] groupIds, String portletId) {
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		long[] stagedPortletGroupIds = TransformUtil.transformToLongArray(
+			ArrayUtil.toArray(groupIds),
+			groupId -> stagingGroupHelper.getStagedPortletGroupId(
+				groupId, portletId));
+
+		return JSONUtil.putAll(
+			ArrayUtil.toArray(ArrayUtil.unique(stagedPortletGroupIds)));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

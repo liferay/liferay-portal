@@ -11,7 +11,7 @@ export default function propsTransformer({
 	portletNamespace,
 	...props
 }) {
-	const {assetEntryTypes = [], groupIds} = additionalProps;
+	const {assetEntryTypes = []} = additionalProps;
 
 	return {
 		...props,
@@ -21,7 +21,6 @@ export default function propsTransformer({
 			openItemSelectorModal({
 				...getAssetEntriesItemSelectorProps({
 					assetEntryTypes,
-					groupIds,
 					portletNamespace,
 				}),
 				items: [],

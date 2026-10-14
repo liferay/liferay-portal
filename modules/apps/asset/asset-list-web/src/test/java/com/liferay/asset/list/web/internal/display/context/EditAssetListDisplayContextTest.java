@@ -19,6 +19,7 @@ import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalServiceUtil;
 import com.liferay.asset.test.util.asset.renderer.factory.TestAssetRendererFactory;
 import com.liferay.asset.util.AssetRendererFactoryClassProvider;
+import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -50,6 +52,8 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
@@ -62,6 +66,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,6 +77,9 @@ import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Lourdes Fernández Besada
@@ -86,6 +94,8 @@ public class EditAssetListDisplayContextTest {
 	@AfterClass
 	public static void tearDownClass() {
 		_assetRendererFactoryRegistryUtilMockedStatic.close();
+		_frameworkUtilMockedStatic.close();
+		_stagingGroupHelperUtilMockedStatic.close();
 	}
 
 	@Before
@@ -101,6 +111,12 @@ public class EditAssetListDisplayContextTest {
 		);
 
 		Mockito.when(
+			_themeDisplay.getScopeGroupId()
+		).thenReturn(
+			_SCOPE_GROUP_ID
+		);
+
+		Mockito.when(
 			_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
 		).thenReturn(
 			_themeDisplay
@@ -111,6 +127,13 @@ public class EditAssetListDisplayContextTest {
 		_setUpJSONFactoryUtil();
 		_setUpLanguageUtil();
 		_setUpPortalUtil();
+		_setUpSiteConnectedGroupGroupProviderUtil();
+		_setUpStagingGroupHelperUtil();
+	}
+
+	@After
+	public void tearDown() {
+		_siteConnectedGroupGroupProviderUtilMockedStatic.close();
 	}
 
 	@Test
@@ -146,6 +169,10 @@ public class EditAssetListDisplayContextTest {
 
 		Assert.assertEquals(
 			classNameId, assetEntryTypeJSONObject.getLong("classNameId"));
+		Assert.assertArrayEquals(
+			new long[] {_SCOPE_GROUP_ID},
+			JSONUtil.toLongArray(
+				assetEntryTypeJSONObject.getJSONArray("groupIds")));
 		Assert.assertEquals(
 			expectedLabel, assetEntryTypeJSONObject.getString("label"));
 	}
@@ -177,6 +204,49 @@ public class EditAssetListDisplayContextTest {
 		Assert.assertEquals(
 			assetEntryTypesJSONArray.toString(), 0,
 			assetEntryTypesJSONArray.length());
+	}
+
+	@Test
+	public void testGetAssetEntryTypesJSONArrayWithUnstagedPortlet()
+		throws Exception {
+
+		String className = RandomTestUtil.randomString();
+		long classNameId = RandomTestUtil.randomLong();
+
+		_setUpAssetRendererFactoryRegistryUtil(
+			className, classNameId, RandomTestUtil.randomString());
+
+		long liveGroupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_stagingGroupHelper.getStagedPortletGroupId(
+				Mockito.eq(_SCOPE_GROUP_ID), Mockito.any())
+		).thenReturn(
+			liveGroupId
+		);
+
+		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.put(
+			"classNameIds", classNameId
+		).put(
+			"selectionStyle", "manual"
+		).build();
+
+		_setUpAssetListEntryLocalServiceUtil(
+			StringPool.BLANK, className, unicodeProperties.toString());
+
+		EditAssetListDisplayContext editAssetListDisplayContext =
+			_getEditAssetListDisplayContext(unicodeProperties);
+
+		JSONArray assetEntryTypesJSONArray =
+			editAssetListDisplayContext.getAssetEntryTypesJSONArray();
+
+		JSONObject assetEntryTypeJSONObject =
+			assetEntryTypesJSONArray.getJSONObject(0);
+
+		Assert.assertArrayEquals(
+			new long[] {liveGroupId},
+			JSONUtil.toLongArray(
+				assetEntryTypeJSONObject.getJSONArray("groupIds")));
 	}
 
 	@Test
@@ -875,13 +945,63 @@ public class EditAssetListDisplayContextTest {
 		portalUtil.setPortal(_portal);
 	}
 
+	private void _setUpSiteConnectedGroupGroupProviderUtil() {
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		_frameworkUtilMockedStatic.when(
+			() -> FrameworkUtil.getBundle(
+				SiteConnectedGroupGroupProviderUtil.class)
+		).thenReturn(
+			bundleContext.getBundle()
+		);
+
+		_siteConnectedGroupGroupProviderUtilMockedStatic = Mockito.mockStatic(
+			SiteConnectedGroupGroupProviderUtil.class);
+
+		_siteConnectedGroupGroupProviderUtilMockedStatic.when(
+			() ->
+				SiteConnectedGroupGroupProviderUtil.
+					getCurrentAndAncestorSiteAndDepotGroupIds(
+						Mockito.any(long[].class))
+		).thenAnswer(
+			invocationOnMock -> invocationOnMock.getArgument(0)
+		);
+	}
+
+	private void _setUpStagingGroupHelperUtil() {
+		_stagingGroupHelper = Mockito.mock(StagingGroupHelper.class);
+
+		Mockito.when(
+			_stagingGroupHelper.getStagedPortletGroupId(
+				Mockito.anyLong(), Mockito.any())
+		).thenAnswer(
+			invocationOnMock -> invocationOnMock.getArgument(0)
+		);
+
+		_stagingGroupHelperUtilMockedStatic.when(
+			StagingGroupHelperUtil::getStagingGroupHelper
+		).thenReturn(
+			_stagingGroupHelper
+		);
+	}
+
+	private static final long _SCOPE_GROUP_ID = RandomTestUtil.randomLong();
+
 	private static final MockedStatic<AssetRendererFactoryRegistryUtil>
 		_assetRendererFactoryRegistryUtilMockedStatic = Mockito.mockStatic(
 			AssetRendererFactoryRegistryUtil.class);
+	private static final MockedStatic<FrameworkUtil>
+		_frameworkUtilMockedStatic = Mockito.mockStatic(FrameworkUtil.class);
+	private static final MockedStatic<StagingGroupHelperUtil>
+		_stagingGroupHelperUtilMockedStatic = Mockito.mockStatic(
+			StagingGroupHelperUtil.class);
 
 	private HttpServletRequest _httpServletRequest;
 	private Portal _portal;
 	private PortletRequest _portletRequest;
+	private MockedStatic<SiteConnectedGroupGroupProviderUtil>
+		_siteConnectedGroupGroupProviderUtilMockedStatic;
+	private StagingGroupHelper _stagingGroupHelper;
 	private ThemeDisplay _themeDisplay;
 
 }

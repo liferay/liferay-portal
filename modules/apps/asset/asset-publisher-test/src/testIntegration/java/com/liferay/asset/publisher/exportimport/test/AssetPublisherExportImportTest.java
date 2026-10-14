@@ -11,6 +11,7 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.asset.list.model.AssetListEntry;
@@ -41,6 +42,7 @@ import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalService;
@@ -856,6 +858,67 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			TestPropsValues.getUserId(), layout);
 
 		testExportImportAssetEntries(layoutGroup);
+	}
+
+	@Test
+	public void testExportImportManualAssetEntryOfUnstagedPortlet()
+		throws Exception {
+
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), group, false, false,
+			new ServiceContext());
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
+		typeSettingsUnicodeProperties.setProperty(
+			StagingUtil.getStagedPortletId(JournalPortletKeys.JOURNAL),
+			Boolean.FALSE.toString());
+
+		group = _groupLocalService.updateGroup(
+			group.getGroupId(), typeSettingsUnicodeProperties.toString());
+
+		Group stagingGroup = group.getStagingGroup();
+
+		Layout stagingLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			layout.getUuid(), stagingGroup.getGroupId(),
+			layout.isPrivateLayout());
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			stagingLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			HashMapBuilder.put(
+				"assetEntryXml",
+				new String[] {
+					AssetPublisherTestUtil.getAssetEntryXml(assetEntry)
+				}
+			).put(
+				"selectionStyle", new String[] {"manual"}
+			).build());
+
+		_publishLayouts(stagingGroup);
+
+		PortletPreferences portletPreferences =
+			_portletPreferencesLocalService.fetchPreferences(
+				_portletPreferencesFactory.getPortletPreferencesIds(
+					layout.getCompanyId(), layout.getGroupId(), 0,
+					layout.getPlid(), portletId));
+
+		Assert.assertEquals(
+			Collections.singletonList(assetEntry),
+			_assetPublisherHelper.getAssetEntries(
+				new MockPortletRequest(), portletPreferences,
+				_permissionChecker, new long[] {group.getGroupId()}, false,
+				false));
 	}
 
 	@Test
@@ -1851,6 +1914,9 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Inject
 	private AssetListEntryService _assetListEntryService;

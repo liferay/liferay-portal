@@ -8,6 +8,7 @@ package com.liferay.asset.list.staging.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
@@ -31,11 +32,17 @@ import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationPa
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.UserIdStrategy;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.journal.constants.JournalPortletKeys;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -370,6 +377,66 @@ public class AssetListEntryStagingTest {
 	}
 
 	@Test
+	public void testPublishManualAssetListWithUnstagedPortletAssetEntry()
+		throws Exception {
+
+		_stagingGroup = AssetListStagingTestUtil.enableLocalStaging(
+			_liveGroup, true);
+
+		_liveGroup = _groupLocalService.getGroup(_liveGroup.getGroupId());
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			_liveGroup.getTypeSettingsProperties();
+
+		typeSettingsUnicodeProperties.setProperty(
+			StagingUtil.getStagedPortletId(JournalPortletKeys.JOURNAL),
+			Boolean.FALSE.toString());
+
+		_liveGroup = _groupLocalService.updateGroup(
+			_liveGroup.getGroupId(), typeSettingsUnicodeProperties.toString());
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_liveGroup.getGroupId(), 0);
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+
+		AssetListEntry stagingAssetListEntry =
+			AssetListTestUtil.addAssetListEntry(
+				_stagingGroup.getGroupId(),
+				AssetListEntryTypeConstants.TYPE_MANUAL);
+
+		AssetListTestUtil.addAssetListEntryAssetEntryRel(
+			_stagingGroup.getGroupId(), assetEntry, stagingAssetListEntry,
+			SegmentsEntryConstants.ID_DEFAULT);
+
+		AssetListStagingTestUtil.publishLayouts(_stagingGroup, _liveGroup);
+
+		AssetListEntry liveAssetListEntry =
+			_assetListEntryLocalService.fetchAssetListEntryByUuidAndGroupId(
+				stagingAssetListEntry.getUuid(), _liveGroup.getGroupId());
+
+		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
+			_assetListEntryAssetEntryRelLocalService.
+				getAssetListEntryAssetEntryRels(
+					liveAssetListEntry.getAssetListEntryId(),
+					SegmentsEntryConstants.ID_DEFAULT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			assetListEntryAssetEntryRels.toString(), 1,
+			assetListEntryAssetEntryRels.size());
+
+		AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
+			assetListEntryAssetEntryRels.get(0);
+
+		Assert.assertEquals(
+			assetEntry.getEntryId(),
+			assetListEntryAssetEntryRel.getAssetEntryId());
+	}
+
+	@Test
 	public void testPublishUpdateAssetList() throws PortalException {
 		AssetListEntry liveAsset = AssetListTestUtil.addAssetListEntry(
 			_liveGroup.getGroupId(), "Test Title Original");
@@ -455,6 +522,9 @@ public class AssetListEntryStagingTest {
 
 	@Inject
 	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@DeleteAfterTestRun
 	private Group _liveGroup;

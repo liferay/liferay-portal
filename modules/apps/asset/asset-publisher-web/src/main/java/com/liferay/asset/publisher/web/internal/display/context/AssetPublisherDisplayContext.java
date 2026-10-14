@@ -123,6 +123,8 @@ import com.liferay.segments.SegmentsEntryRetriever;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.context.RequestContextMapper;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 import jakarta.portlet.PortletConfig;
 import jakarta.portlet.PortletPreferences;
@@ -435,7 +437,13 @@ public class AssetPublisherDisplayContext {
 		return _assetEntryResults;
 	}
 
-	public JSONArray getAssetEntryTypesJSONArray() throws Exception {
+	public JSONArray getAssetEntryTypesJSONArray(long groupId)
+		throws Exception {
+
+		long[] groupIds =
+			SiteConnectedGroupGroupProviderUtil.
+				getCurrentAndAncestorSiteAndDepotGroupIds(new long[] {groupId});
+
 		List<AssetRendererFactory<?>> assetRendererFactories = ListUtil.sort(
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
 				_themeDisplay.getCompanyId()),
@@ -452,6 +460,10 @@ public class AssetPublisherDisplayContext {
 				return JSONUtil.put(
 					"classNameId",
 					_portal.getClassNameId(assetRendererFactory.getClassName())
+				).put(
+					"groupIds",
+					_getStagedPortletGroupIdsJSONArray(
+						groupIds, assetRendererFactory.getPortletId())
 				).put(
 					"label",
 					assetRendererFactory.getTypeName(_themeDisplay.getLocale())
@@ -766,15 +778,6 @@ public class AssetPublisherDisplayContext {
 		}
 
 		return _compilerTagNames;
-	}
-
-	public String getConnectedGroupIdsString(long groupId)
-		throws PortalException {
-
-		return StringUtil.merge(
-			SiteConnectedGroupGroupProviderUtil.
-				getCurrentAndAncestorSiteAndDepotGroupIds(
-					new long[] {groupId}));
 	}
 
 	public String getDDMStructureDisplayFieldValue() throws Exception {
@@ -2385,6 +2388,21 @@ public class AssetPublisherDisplayContext {
 
 				return null;
 			});
+	}
+
+	private JSONArray _getStagedPortletGroupIdsJSONArray(
+		long[] groupIds, String portletId) {
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		long[] stagedPortletGroupIds = TransformUtil.transformToLongArray(
+			ArrayUtil.toArray(groupIds),
+			groupId -> stagingGroupHelper.getStagedPortletGroupId(
+				groupId, portletId));
+
+		return JSONUtil.putAll(
+			ArrayUtil.toArray(ArrayUtil.unique(stagedPortletGroupIds)));
 	}
 
 	private boolean _isShowRelatedAssets() {
