@@ -480,19 +480,9 @@ Confirm by posting an entry: the response `status.label` is `pending`.
 
 #### In a Site Initializer
 
-`site-initializer/workflow-definitions/<name>/` holds `workflow-definition.json` (the DTO without `content`), `workflow-definition.xml`, and `workflow-definition.properties.json`, which links it:
+`site-initializer/workflow-definitions/<name>/` holds `workflow-definition.json` (the DTO without `content`) and `workflow-definition.xml`, and deploying the definition from the tree works. **Linking it from the tree does not.** A `workflow-definition.properties.json` naming the object creates a link whose `className` is `ObjectDefinition#<numeric id>`, while the object's real class name is a generated code such as `ObjectDefinition#A1J1` (`_getUniqueClassName` in `ObjectDefinitionLocalServiceImpl`). The link exists, matches nothing, and entries never enter the workflow. Seen on 2026.Q2: the same object carried a `#34825` link from the tree and the working `#A1J1` link from REST.
 
-```json
-[
-	{
-		"assetName": "C_<ObjectName>",
-		"className": "com.liferay.object.model.ObjectDefinition",
-		"scope": "company"
-	}
-]
-```
-
-`assetName` is the definition's database name, prefixed with `C_`. A bare `<ObjectName>` matches nothing and the link is skipped without a log line. The handler also declares no dependency on the object definition handlers, so the object may not exist yet when it runs. After provisioning, list the links as above, and link over REST when the link is missing.
+So always link over REST after every provision, with the object's actual `className`, as in "Deploy and Link Over REST" above. Do not take an existing link as proof: compare its `className` with the object definition's `className`.
 
 #### Approve or Reject as the Administrator
 

@@ -183,7 +183,7 @@ client-extensions/<name>/
       <style-book-name>/
         style-book.json
     thumbnail.png                 # Site thumbnail (displayed in Site Admin)
-    workflow-definitions/         # Kaleo definition + object link (manage-object-logic → Approval Workflow)
+    workflow-definitions/         # Kaleo definition only; link it over REST (manage-object-logic → Approval Workflow)
 ```
 
 ## Objects and Picklists

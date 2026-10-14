@@ -261,6 +261,14 @@ curl \
 
 `function` accepts `COUNT`, `SUM`, `AVERAGE`, `MIN`, `MAX` (`ObjectFieldSettingConstants`); anything but `COUNT` also needs the child field to aggregate. Omitting `"required"` returns a bare `500` (a `NullPointerException` in `ObjectFieldResourceImpl`), not a validation message, so always send it.
 
+Three behaviors that decide whether you can use it:
+
+- **It ignores entry level permissions.** A Guest who cannot read a single child row still receives the correct count on the parent — verified with an unauthenticated `GET`. This is what lets a private, write only submissions object feed a public number, and it is a genuinely better option than the object action counter that `manage-pages` and `rules/guest-access.md` describe: nothing to maintain, nothing to drift, no scripting to enable.
+- **It serializes as a string.** `"registrationCount": "2"`, not `2`. Parse before arithmetic — `attendeeCapacity - registrationCount` in JavaScript silently concatenates, and in `jq` it throws `number and string cannot be subtracted`.
+- **It is computed, so it is read only.** Do not send it on a POST or PATCH.
+
+Whether an Aggregation field can be *mapped* into a Collection fragment is a separate question — `manage-pages` → "Mapping Limits" says aggregates cannot be mapped, and that was not retested here. Reading it over REST from fragment JavaScript is verified.
+
 #### Count Only Some Children
 
 Add a `filters` setting. Each filter carries `filterBy`, `filterType`, and a `json` value. `filterBy` and `filterType` sent as top level settings are rejected. To leave rejected entries out of a count (workflow status `4`, denied):
@@ -317,14 +325,6 @@ An Aggregation field names a relationship, so it cannot go in `object-definition
 ```
 
 A bare field DTO at the top level is skipped without a log line, because the handler reads only the `object-fields` array. Source: `_addOrUpdateObjectFields` in `BundleSiteInitializer`.
-
-Three behaviors that decide whether you can use it:
-
-- **It ignores entry level permissions.** A Guest who cannot read a single child row still receives the correct count on the parent — verified with an unauthenticated `GET`. This is what lets a private, write only submissions object feed a public number, and it is a genuinely better option than the object action counter that `manage-pages` and `rules/guest-access.md` describe: nothing to maintain, nothing to drift, no scripting to enable.
-- **It serializes as a string.** `"registrationCount": "2"`, not `2`. Parse before arithmetic — `attendeeCapacity - registrationCount` in JavaScript silently concatenates, and in `jq` it throws `number and string cannot be subtracted`.
-- **It is computed, so it is read only.** Do not send it on a POST or PATCH.
-
-Whether an Aggregation field can be *mapped* into a Collection fragment is a separate question — `manage-pages` → "Mapping Limits" says aggregates cannot be mapped, and that was not retested here. Reading it over REST from fragment JavaScript is verified.
 
 ### Add Validations
 
