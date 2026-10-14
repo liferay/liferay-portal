@@ -695,6 +695,20 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 					moduleURLs.add(
 						StringBundler.concat("/o/", moduleName, resourcePath));
 				}
+
+				for (String resourcePath :
+						staticSiteExportBundleResourceResolver.getResourcePaths(
+							moduleName, StringPool.SLASH)) {
+
+					if (!resourcePath.endsWith(".css") ||
+						!HashedFilesUtil.containsHash(resourcePath)) {
+
+						continue;
+					}
+
+					moduleURLs.add(
+						StringBundler.concat("/o/", moduleName, resourcePath));
+				}
 			}
 			catch (Exception exception) {
 				if (_log.isDebugEnabled()) {
