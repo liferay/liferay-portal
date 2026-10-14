@@ -37,6 +37,10 @@ public abstract class BaseComponentSectionFragmentRenderer
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
+		if (fragmentRendererContext.isDisablePortletRender()) {
+			return;
+		}
+
 		try {
 			ComponentTagUtil.renderComponent(
 				getComponentName(), httpServletRequest, httpServletResponse,

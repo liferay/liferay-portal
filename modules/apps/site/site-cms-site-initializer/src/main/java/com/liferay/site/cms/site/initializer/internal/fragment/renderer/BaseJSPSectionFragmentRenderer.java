@@ -45,7 +45,9 @@ public abstract class BaseJSPSectionFragmentRenderer<T>
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
-		if (fragmentRendererContext.isIndexMode()) {
+		if (fragmentRendererContext.isDisablePortletRender() ||
+			fragmentRendererContext.isIndexMode()) {
+
 			return;
 		}
 
