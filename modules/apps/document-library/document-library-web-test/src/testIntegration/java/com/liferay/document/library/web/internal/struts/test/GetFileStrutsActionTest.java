@@ -10,6 +10,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -98,10 +99,12 @@ public class GetFileStrutsActionTest {
 	}
 
 	private FileEntry _addFileEntry() throws Exception {
-		return _addFileEntry("txt", ContentTypes.TEXT_PLAIN);
+		return _addFileEntry(
+			TestDataConstants.TEST_BYTE_ARRAY, "txt", ContentTypes.TEXT_PLAIN);
 	}
 
-	private FileEntry _addFileEntry(String extension, String mimeType)
+	private FileEntry _addFileEntry(
+			byte[] bytes, String extension, String mimeType)
 		throws Exception {
 
 		ServiceContext serviceContext =
@@ -114,8 +117,7 @@ public class GetFileStrutsActionTest {
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + StringPool.PERIOD + extension,
-			mimeType, TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
-			serviceContext);
+			mimeType, bytes, null, null, null, serviceContext);
 	}
 
 	private User _addUser(FileEntry fileEntry, String... actionIds)
@@ -137,10 +139,11 @@ public class GetFileStrutsActionTest {
 	}
 
 	private void _assertContentDisposition(
-			String contentDispositionType, String extension, String mimeType)
+			byte[] bytes, String contentDispositionType, String extension,
+			String mimeType)
 		throws Exception {
 
-		FileEntry fileEntry = _addFileEntry(extension, mimeType);
+		FileEntry fileEntry = _addFileEntry(bytes, extension, mimeType);
 
 		MockHttpServletResponse mockHttpServletResponse =
 			_getMockHttpServletResponse(
@@ -326,12 +329,15 @@ public class GetFileStrutsActionTest {
 		throws Exception {
 
 		_assertContentDisposition(
+			TestDataConstants.TEST_BYTE_ARRAY,
 			HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT, "html",
 			ContentTypes.TEXT_HTML);
 		_assertContentDisposition(
+			TestDataConstants.TEST_BYTE_ARRAY,
 			HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT, "html",
 			ContentTypes.TEXT_PLAIN);
 		_assertContentDisposition(
+			TestDataConstants.TEST_BYTE_ARRAY,
 			HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT, "svg",
 			ContentTypes.IMAGE_SVG_XML);
 	}
@@ -356,6 +362,7 @@ public class GetFileStrutsActionTest {
 
 	private void _testGetFileByIdWithSafeContentType() throws Exception {
 		_assertContentDisposition(
+			DLTestUtil.getImageBytes("png"),
 			HttpHeaders.CONTENT_DISPOSITION_INLINE, "png",
 			ContentTypes.IMAGE_PNG);
 	}
