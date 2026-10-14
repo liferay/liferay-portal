@@ -1715,6 +1715,12 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 	}
 
 	private boolean _isSpaceDepotEntry(long groupId) {
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		if ((group == null) || !group.isDepot()) {
+			return false;
+		}
+
 		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
 			groupId);
 
