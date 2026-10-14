@@ -5,32 +5,23 @@
 
 package com.liferay.exportimport.rest.internal.resource.v1_0;
 
-import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewAssetLibrary;
 import com.liferay.exportimport.rest.internal.odata.entity.v1_0.PreviewAssetLibraryEntityModel;
-import com.liferay.exportimport.rest.internal.util.PermissionUtil;
+import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.resource.v1_0.PreviewAssetLibraryResource;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.comparator.GroupDescriptiveNameComparator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.staging.StagingGroupHelper;
 
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -56,22 +47,10 @@ public class PreviewAssetLibraryResourceImpl
 		FeatureFlagManagerUtil.checkEnabled(
 			contextCompany.getCompanyId(), "LPD-41307");
 
-		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
-			contextCompany.getCompanyId());
-
-		if (companyGroup == null) {
-			throw new NotFoundException();
-		}
-
-		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), companyGroup.getGroupId(),
-			ActionKeys.EXPORT_IMPORT_LAYOUTS);
-
-		List<Group> groups = ListUtil.filter(
-			_exportImportHelper.getSupportedGroups(
-				contextCompany.getCompanyId(), search,
-				_getOrderByComparator(sorts)),
-			Group::isDepot);
+		List<Group> groups = GroupUtil.getExportableGroups(
+			contextCompany.getCompanyId(),
+			contextAcceptLanguage.getPreferredLocale(), Group::isDepot, search,
+			sorts);
 
 		return Page.of(
 			transform(
@@ -90,29 +69,7 @@ public class PreviewAssetLibraryResourceImpl
 			pagination, groups.size());
 	}
 
-	private OrderByComparator<Group> _getOrderByComparator(Sort[] sorts) {
-		if (ArrayUtil.isEmpty(sorts)) {
-			return new GroupDescriptiveNameComparator(
-				true, contextAcceptLanguage.getPreferredLocale());
-		}
-
-		Sort sort = sorts[0];
-
-		if (!Objects.equals(sort.getFieldName(), "descriptiveName")) {
-			throw new UnsupportedOperationException();
-		}
-
-		return new GroupDescriptiveNameComparator(
-			!sort.isReverse(), contextAcceptLanguage.getPreferredLocale());
-	}
-
 	private static final EntityModel _entityModel =
 		new PreviewAssetLibraryEntityModel();
-
-	@Reference
-	private ExportImportHelper _exportImportHelper;
-
-	@Reference
-	private StagingGroupHelper _stagingGroupHelper;
 
 }
