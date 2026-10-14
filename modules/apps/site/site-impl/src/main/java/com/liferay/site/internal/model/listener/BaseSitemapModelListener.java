@@ -5,6 +5,11 @@
 
 package com.liferay.site.internal.model.listener;
 
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -16,6 +21,8 @@ import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 import com.liferay.site.constants.SitemapConstants;
 import com.liferay.site.service.SiteSitemapRegenerationEntryLocalService;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Reference;
@@ -48,6 +55,12 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 
 		return null;
 	}
+
+	@Reference
+	protected DepotEntryGroupRelLocalService depotEntryGroupRelLocalService;
+
+	@Reference
+	protected DepotEntryLocalService depotEntryLocalService;
 
 	@Reference
 	protected SiteSitemapRegenerationEntryLocalService
@@ -85,10 +98,12 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 			Set<String> layoutUuids = getLayoutUuids(originalModel, model);
 
 			if (layoutUuids == null) {
-				siteSitemapRegenerationEntryLocalService.
-					addSiteSitemapRegenerationEntry(
-						SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId,
-						groupId);
+				for (long siteGroupId : _getSiteGroupIds(groupId)) {
+					siteSitemapRegenerationEntryLocalService.
+						addSiteSitemapRegenerationEntry(
+							SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId,
+							siteGroupId);
+				}
 
 				return;
 			}
@@ -105,6 +120,19 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 			_log.error(
 				"Unable to add XML sitemap regeneration entry", exception);
 		}
+	}
+
+	private List<Long> _getSiteGroupIds(long groupId) {
+		DepotEntry depotEntry = depotEntryLocalService.fetchGroupDepotEntry(
+			groupId);
+
+		if (depotEntry == null) {
+			return Collections.singletonList(groupId);
+		}
+
+		return TransformUtil.transform(
+			depotEntryGroupRelLocalService.getDepotEntryGroupRels(depotEntry),
+			DepotEntryGroupRel::getToGroupId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
