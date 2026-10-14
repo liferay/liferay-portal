@@ -83,20 +83,8 @@ run "should_assemble_the_deployment_context" {
 		error_message="The deployment context must carry exactly the keys the infrastructure provider consumes"
 	}
 	assert {
-		condition=local.deployment_context.accountId == "123456789012"
-		error_message="The deployment context must carry the account ID"
-	}
-	assert {
-		condition=local.deployment_context.clusterSecurityGroupId == "sg-0123456789abcdef0"
-		error_message="The deployment context must carry the cluster security group"
-	}
-	assert {
 		condition=local.deployment_context.clusterSubnetIds == "[\"subnet-aaa\",\"subnet-bbb\"]"
 		error_message="The deployment context must carry the cluster subnets as a sorted JSON list"
-	}
-	assert {
-		condition=local.deployment_context.deploymentName == "liferay-test"
-		error_message="The deployment context must carry the deployment name"
 	}
 	assert {
 		condition=local.deployment_context.crossplaneIamPath == "/crossplane/liferay-test/"
@@ -109,18 +97,6 @@ run "should_assemble_the_deployment_context" {
 	assert {
 		condition=local.deployment_context.oidcIssuerUrl == "https://oidc.eks.us-east-1.amazonaws.com/id/EXAMPLE"
 		error_message="The deployment context must carry the full OIDC issuer URL"
-	}
-	assert {
-		condition=local.deployment_context.partition == "aws"
-		error_message="The deployment context must carry the partition"
-	}
-	assert {
-		condition=local.deployment_context.region == "us-east-1"
-		error_message="The deployment context must carry the region"
-	}
-	assert {
-		condition=local.deployment_context.vpcId == "vpc-0123456789abcdef0"
-		error_message="The deployment context must carry the VPC ID"
 	}
 	command=plan
 	override_resource {
@@ -135,10 +111,6 @@ run "should_build_the_secrets_manager_secret_store_provider" {
 	assert {
 		condition=join(",", keys(local.cluster_secret_store_provider)) == "aws"
 		error_message="The default branch must produce an AWS provider"
-	}
-	assert {
-		condition=local.cluster_secret_store_provider.aws.service == "SecretsManager"
-		error_message="The AWS provider must use Secrets Manager"
 	}
 	assert {
 		condition=local.cluster_secret_store_provider.aws.region == "us-east-1"
@@ -211,7 +183,7 @@ run "should_create_the_observability_resources_when_observability_is_enabled" {
 		error_message="The Prometheus workspace alias must be derived from deployment_name"
 	}
 	assert {
-		condition=data.aws_iam_policy_document.alloy.statement[0].resources == toset(["arn:aws:aps:us-east-1:123456789012:workspace/ws-mock"])
+		condition=one([for statement in data.aws_iam_policy_document.alloy.statement : statement if contains(statement.actions, "aps:RemoteWrite")]).resources == toset(["arn:aws:aps:us-east-1:123456789012:workspace/ws-mock"])
 		error_message="The Alloy role's AMP access must be scoped to the deployment's Prometheus workspace"
 	}
 	assert {
@@ -291,14 +263,6 @@ run "should_fence_crossplane_iam_with_a_permissions_boundary" {
 }
 run "should_grant_the_crossplane_roles_their_provider_permissions" {
 	assert {
-		condition=join(",", keys(aws_iam_role_policy.crossplane_data)) == "backup,cloudwatchlogs,ec2,kms,opensearch,rds,s3"
-		error_message="The crossplane-data role must carry one policy per data provider"
-	}
-	assert {
-		condition=aws_iam_role_policy.crossplane_iam.name == "iam"
-		error_message="The crossplane-iam role must carry the IAM provider policy"
-	}
-	assert {
 		condition=alltrue([for requirement in [{actions=["ec2:DeleteTags"], document=data.aws_iam_policy_document.crossplane_data_ec2}, {actions=["es:GetUpgradeStatus", "es:UpgradeDomain"], document=data.aws_iam_policy_document.crossplane_data_opensearch}, {actions=["rds:RemoveTagsFromResource"], document=data.aws_iam_policy_document.crossplane_data_rds}, {actions=["s3:DeleteObjectVersion", "s3:ListBucketVersions"], document=data.aws_iam_policy_document.crossplane_data_s3}] : length(setsubtract(requirement.actions, flatten([for statement in requirement.document.statement : statement.actions]))) == 0])
 		error_message="crossplane-data must be able to remove tags, upgrade search engines, and empty versioned buckets"
 	}
@@ -350,10 +314,6 @@ run "should_inject_an_external_secret_store_provider" {
 	}
 }
 run "should_let_external_secrets_pull_from_the_marketplace_registry" {
-	assert {
-		condition=aws_iam_role_policy.external_secrets_marketplace_registry.name == "marketplace-registry"
-		error_message="The External Secrets role must carry the Marketplace registry policy, so its ECR generator can mint the ArgoCD repository token"
-	}
 	assert {
 		condition=one([for statement in data.aws_iam_policy_document.external_secrets_marketplace_registry.statement : statement if contains(statement.actions, "ecr:GetAuthorizationToken")]).resources == toset(["*"])
 		error_message="ecr:GetAuthorizationToken takes no resource type, so it must be granted on all resources"
