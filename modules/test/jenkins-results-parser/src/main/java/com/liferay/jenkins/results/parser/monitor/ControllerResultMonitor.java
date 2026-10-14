@@ -106,7 +106,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 				resultBuildJSONObject, currentTimeMillis, messages, metrics,
 				statuses);
 		}
-		else if (!_isBranchUnchanged(buildsJSONArray)) {
+		else {
 			messages.add(
 				JenkinsResultsParserUtil.combine(
 					"Unable to find a result for job ", _jobName, " in its ",
@@ -415,30 +415,6 @@ public class ControllerResultMonitor extends BaseMonitor {
 		}
 
 		return true;
-	}
-
-	private boolean _isBranchUnchanged(JSONArray buildsJSONArray) {
-		for (int i = 0; i < buildsJSONArray.length(); i++) {
-			JSONObject buildJSONObject = buildsJSONArray.getJSONObject(i);
-
-			String description = buildJSONObject.optString("description");
-
-			String status = _getStatus(description);
-
-			if (status == null) {
-				continue;
-			}
-
-			if (status.equals("SKIPPED") &&
-				description.endsWith(" was already ran")) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		return false;
 	}
 
 	private MonitorResult _newMonitorResult(
