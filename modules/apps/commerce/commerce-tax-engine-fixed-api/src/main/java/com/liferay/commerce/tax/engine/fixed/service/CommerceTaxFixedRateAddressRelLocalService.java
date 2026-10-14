@@ -133,9 +133,6 @@ public interface CommerceTaxFixedRateAddressRelLocalService
 	public void deleteCommerceTaxFixedRateAddressRelsByCommerceTaxMethodId(
 		long commerceTaxMethodId);
 
-	public void deleteCommerceTaxFixedRateAddressRelsByCountryId(
-		long countryId);
-
 	public void deleteCommerceTaxFixedRateAddressRelsByCPTaxCategoryId(
 		long cpTaxCategoryId);
 
@@ -338,4 +335,4 @@ public interface CommerceTaxFixedRateAddressRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1884562929
+// LIFERAY-SERVICE-BUILDER-HASH:959104181

@@ -153,13 +153,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceUtil {
 			commerceTaxMethodId);
 	}
 
-	public static void deleteCommerceTaxFixedRateAddressRelsByCountryId(
-		long countryId) {
-
-		getService().deleteCommerceTaxFixedRateAddressRelsByCountryId(
-			countryId);
-	}
-
 	public static void deleteCommerceTaxFixedRateAddressRelsByCPTaxCategoryId(
 		long cpTaxCategoryId) {
 
@@ -449,4 +442,4 @@ public class CommerceTaxFixedRateAddressRelLocalServiceUtil {
 			CommerceTaxFixedRateAddressRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1369438938
+// LIFERAY-SERVICE-BUILDER-HASH:392590069

@@ -173,14 +173,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCommerceTaxFixedRateAddressRelsByCountryId(
-		long countryId) {
-
-		_commerceTaxFixedRateAddressRelLocalService.
-			deleteCommerceTaxFixedRateAddressRelsByCountryId(countryId);
-	}
-
-	@Override
 	public void deleteCommerceTaxFixedRateAddressRelsByCPTaxCategoryId(
 		long cpTaxCategoryId) {
 
@@ -556,4 +548,4 @@ public class CommerceTaxFixedRateAddressRelLocalServiceWrapper
 		_commerceTaxFixedRateAddressRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:605655369
+// LIFERAY-SERVICE-BUILDER-HASH:1107239931
