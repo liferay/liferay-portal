@@ -2,11 +2,11 @@ import LifecycleConditionsPanel from '../LifecycleConditionsPanel';
 import React from 'react';
 import {
 	createStageCondition,
-	DEFAULT_MAX_DAYS,
 	IStageCondition,
 	IStageConfig,
 	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
+import {LIFECYCLE_STAGE_DEFAULT_MAX_DAYS} from 'lifecycle/utils/constants';
 import {fireEvent, render, screen, within} from '@testing-library/react';
 
 jest.unmock('react-dom');
@@ -32,7 +32,7 @@ const buildStage = (
 	id: null,
 	key,
 	matchLogic: MatchLogic.All,
-	maxTimeDays: DEFAULT_MAX_DAYS,
+	maxTimeDays: LIFECYCLE_STAGE_DEFAULT_MAX_DAYS,
 	maxTimeEnabled: true,
 	name,
 });

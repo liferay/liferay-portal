@@ -7,6 +7,7 @@ interface ITitleProps {
 	errorMessage?: string;
 	id: string;
 	label: string;
+	maxLength?: number;
 	name?: string;
 	onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -30,6 +31,7 @@ const Title: React.FC<ITitleProps> = ({
 	errorMessage,
 	id,
 	label,
+	maxLength,
 	name,
 	onBlur,
 	onChange,
@@ -50,6 +52,7 @@ const Title: React.FC<ITitleProps> = ({
 			aria-describedby={errorMessage ? `${id}Error` : undefined}
 			className="form-control-inline"
 			id={id}
+			maxLength={maxLength}
 			name={name}
 			onBlur={onBlur}
 			onChange={onChange}

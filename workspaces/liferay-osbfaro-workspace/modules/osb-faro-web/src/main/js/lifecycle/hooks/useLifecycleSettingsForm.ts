@@ -3,27 +3,46 @@ import {Alert} from 'shared/types';
 import {addAlert} from 'shared/actions/alerts';
 import {CATALOG_FIELDS_MAX_PAGE_SIZE} from 'shared/api/catalog';
 import {
-	isConditionComplete,
-	isStageConfigured,
-} from 'lifecycle/utils/lifecycleOperators';
-import {
 	createStageConfig,
 	IStageConfig,
 } from 'lifecycle/utils/stageConfiguration';
+import {
+	getDuplicateStageKeys,
+	getLifecycleErrorMessages,
+	getStageErrorMessages,
+	hasStageChipError,
+} from 'lifecycle/utils/lifecycleValidation';
 import {Routes, toRoute} from 'shared/util/router';
 import {useDispatch} from 'react-redux';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
-const isStageReady = (stage: IStageConfig) =>
-	!!stage.name.trim() &&
-	!!stage.description.trim() &&
-	isStageConfigured(stage) &&
-	stage.conditions.every(
-		(condition) => !condition.field || isConditionComplete(condition)
-	);
+const serializeLifecycle = (
+	name: string,
+	description: string,
+	stageConfigs: IStageConfig[]
+) =>
+	JSON.stringify({
+		description,
+		name,
+		stages: stageConfigs.map((stage) => ({
+			conditions: stage.conditions.map(
+				({conditionValue, field, operator}) => ({
+					conditionValue,
+					field,
+					operator,
+				})
+			),
+			description: stage.description,
+			id: stage.id,
+			matchLogic: stage.matchLogic,
+			maxTimeDays: stage.maxTimeDays,
+			maxTimeEnabled: stage.maxTimeEnabled,
+			name: stage.name,
+		})),
+	});
 
 /**
  * Owns the orchestration shared by the create and edit lifecycle pages: the
@@ -55,6 +74,26 @@ export const useLifecycleSettingsForm = ({
 		useState(initialDescription);
 
 	const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
+	const [blurredFields, setBlurredFields] = useState<string[]>([]);
+
+	const [submitAttempted, setSubmitAttempted] = useState(false);
+
+	const [alertCount, setAlertCount] = useState(0);
+
+	const [alertVisible, setAlertVisible] = useState(false);
+
+	const [submitted, setSubmitted] = useState(false);
+
+	const initialSnapshotRef = useRef<string | null>(null);
+
+	if (initialSnapshotRef.current === null) {
+		initialSnapshotRef.current = serializeLifecycle(
+			lifecycleName,
+			lifecycleDescription,
+			stageConfigs
+		);
+	}
 
 	const {
 		data: catalogFields,
@@ -89,7 +128,11 @@ export const useLifecycleSettingsForm = ({
 		{channelId, groupId, lifecycleId}
 	);
 
-	const goToDashboard = () => history.push(lifecycleURL);
+	useEffect(() => {
+		if (submitted) {
+			history.push(lifecycleURL);
+		}
+	}, [submitted]);
 
 	const updateStage = (key: string, value: IStageConfig) =>
 		setStageConfigs((previous) =>
@@ -136,14 +179,58 @@ export const useLifecycleSettingsForm = ({
 	const selectedStage =
 		stageConfigs.find((stage) => stage.key === selectedKey) ?? null;
 
-	const canSubmit =
-		!!lifecycleName.trim() &&
-		!!lifecycleDescription.trim() &&
-		!!stageConfigs.length &&
-		stageConfigs.every(isStageReady);
+	const lifecycleErrorMessages = getLifecycleErrorMessages({
+		description: lifecycleDescription,
+		name: lifecycleName,
+		stageConfigs,
+	});
 
-	const submit = (run: () => Promise<unknown>, successMessage: string) =>
-		run()
+	const duplicateStageKeys = getDuplicateStageKeys(stageConfigs);
+
+	const selectedStageErrorMessages = selectedStage
+		? getStageErrorMessages(
+				selectedStage,
+				duplicateStageKeys.includes(selectedStage.key)
+			)
+		: [];
+
+	let alertMessages: string[] = [];
+
+	if (alertVisible) {
+		alertMessages = selectedStageErrorMessages.length
+			? selectedStageErrorMessages
+			: lifecycleErrorMessages;
+	}
+
+	const changed =
+		serializeLifecycle(
+			lifecycleName,
+			lifecycleDescription,
+			stageConfigs
+		) !== initialSnapshotRef.current;
+
+	const blurField = (id: string) =>
+		setBlurredFields((previous) =>
+			previous.includes(id) ? previous : [...previous, id]
+		);
+
+	const isFieldErrorVisible = (id: string) =>
+		submitAttempted || blurredFields.includes(id);
+
+	const submit = (run: () => Promise<unknown>, successMessage: string) => {
+		setSubmitAttempted(true);
+
+		if (lifecycleErrorMessages.length) {
+			setAlertVisible(true);
+
+			setAlertCount((count) => count + 1);
+
+			return Promise.resolve();
+		}
+
+		setAlertVisible(false);
+
+		return run()
 			.then(() => {
 				dispatch(
 					addAlert({
@@ -152,7 +239,7 @@ export const useLifecycleSettingsForm = ({
 					})
 				);
 
-				goToDashboard();
+				setSubmitted(true);
 			})
 			.catch(() => {
 				dispatch(
@@ -164,13 +251,20 @@ export const useLifecycleSettingsForm = ({
 					})
 				);
 			});
+	};
 
 	return {
 		addStage,
-		canSubmit,
+		alertCount,
+		alertMessages,
+		blurField,
 		catalogError,
 		catalogFields,
 		catalogLoading,
+		changed: changed && !submitted,
+		dismissAlert: () => setAlertVisible(false),
+		duplicateStageKeys,
+		isFieldErrorVisible,
 		lifecycleDescription,
 		lifecycleName,
 		lifecycleURL,
@@ -182,7 +276,15 @@ export const useLifecycleSettingsForm = ({
 		setLifecycleName,
 		setSelectedKey,
 		stageConfigs,
+		stageErrorKeys: stageConfigs
+			.filter(
+				(stage) =>
+					hasStageChipError(stage) ||
+					duplicateStageKeys.includes(stage.key)
+			)
+			.map((stage) => stage.key),
 		submit,
+		summaryError: !lifecycleName.trim(),
 		updateStage,
 	};
 };

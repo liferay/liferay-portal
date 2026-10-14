@@ -24,6 +24,12 @@ import {
 	MATCH_LOGIC_OPTIONS,
 	isStageConfigured,
 } from 'lifecycle/utils/lifecycleOperators';
+import {isAtCharacterLimit} from 'lifecycle/utils/lifecycleValidation';
+import {
+	LIFECYCLE_STAGE_DESCRIPTION_MAX_LENGTH,
+	LIFECYCLE_STAGE_NAME_MAX_LENGTH,
+} from 'lifecycle/utils/constants';
+import {noop} from 'lodash';
 import {removeAtIndex} from 'shared/util/array';
 import {sub} from 'shared/util/lang';
 
@@ -62,20 +68,65 @@ const StageSection: React.FC<IStageSectionProps> = ({
 
 interface IStageConfigurationPanelProps {
 	fields?: ICatalogField[];
+	isFieldErrorVisible?: (id: string) => boolean;
 	lifecycleName: string;
+	nameTaken?: boolean;
 	onChange: (value: IStageConfig) => void;
+	onFieldBlur?: (id: string) => void;
 	onSelectSummary?: () => void;
 	value: IStageConfig;
 }
 
 const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 	fields = [],
+	isFieldErrorVisible = () => false,
 	lifecycleName,
+	nameTaken = false,
 	onChange,
+	onFieldBlur = noop,
 	onSelectSummary,
 	value,
 }) => {
 	const {conditions, key, matchLogic} = value;
+
+	const nameId = `stageName-${key}`;
+
+	const descriptionId = `stageDescription-${key}`;
+
+	const getDescriptionErrorMessage = () => {
+		if (isFieldErrorVisible(descriptionId) && !value.description.trim()) {
+			return Liferay.Language.get('the-description-field-is-required');
+		}
+
+		if (
+			isAtCharacterLimit(
+				value.description,
+				LIFECYCLE_STAGE_DESCRIPTION_MAX_LENGTH
+			)
+		) {
+			return Liferay.Language.get(
+				'the-character-limit-has-been-reached.-you-cannot-continue-typing'
+			);
+		}
+	};
+
+	const descriptionErrorMessage = getDescriptionErrorMessage();
+
+	const getNameErrorMessage = () => {
+		if (isFieldErrorVisible(nameId) && !value.name.trim()) {
+			return Liferay.Language.get('the-name-field-is-required');
+		}
+
+		if (isFieldErrorVisible(nameId) && nameTaken) {
+			return Liferay.Language.get('enter-a-unique-name');
+		}
+
+		if (isAtCharacterLimit(value.name, LIFECYCLE_STAGE_NAME_MAX_LENGTH)) {
+			return Liferay.Language.get(
+				'the-character-limit-has-been-reached.-you-cannot-continue-typing'
+			);
+		}
+	};
 
 	const updateCondition = (
 		conditionIndex: number,
@@ -120,8 +171,11 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 
 			<div className="mb-5">
 				<BaseEditPage.Title
-					id={`stageName-${key}`}
+					errorMessage={getNameErrorMessage()}
+					id={nameId}
 					label={Liferay.Language.get('name')}
+					maxLength={LIFECYCLE_STAGE_NAME_MAX_LENGTH}
+					onBlur={() => onFieldBlur(nameId)}
 					onChange={(event) =>
 						onChange({...value, name: event.target.value})
 					}
@@ -132,13 +186,21 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 			</div>
 
 			<LifecycleFieldRow
+				errorMessage={descriptionErrorMessage}
 				icon="align-left"
-				id={`stageDescription-${key}`}
+				id={descriptionId}
 				label={Liferay.Language.get('description')}
 				required
 			>
 				<ClayInput
-					id={`stageDescription-${key}`}
+					aria-describedby={
+						descriptionErrorMessage
+							? `${descriptionId}Error`
+							: undefined
+					}
+					id={descriptionId}
+					maxLength={LIFECYCLE_STAGE_DESCRIPTION_MAX_LENGTH}
+					onBlur={() => onFieldBlur(descriptionId)}
 					onChange={(event) =>
 						onChange({...value, description: event.target.value})
 					}

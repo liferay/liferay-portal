@@ -20,30 +20,21 @@ const CreateLifecycle = () => {
 		variables: {channelId, groupId: groupId!},
 	});
 
-	const {
-		addStage,
-		canSubmit,
-		catalogError,
-		catalogFields,
-		catalogLoading,
-		lifecycleDescription,
-		lifecycleName,
-		lifecycleURL,
-		moveStage,
-		refetchCatalog,
-		removeStage,
-		selectedStage,
-		setLifecycleDescription,
-		setLifecycleName,
-		setSelectedKey,
-		stageConfigs,
-		submit,
-		updateStage,
-	} = useLifecycleSettingsForm({
+	const form = useLifecycleSettingsForm({
 		description: '',
 		name: '',
 		stageConfigs: () => [],
 	});
+
+	const {
+		catalogError,
+		catalogLoading,
+		lifecycleDescription,
+		lifecycleName,
+		refetchCatalog,
+		stageConfigs,
+		submit,
+	} = form;
 
 	if (loading || catalogLoading) {
 		return <Loading />;
@@ -79,21 +70,8 @@ const CreateLifecycle = () => {
 	return (
 		<LifecycleSettingsForm
 			authorName={currentUser.name}
-			backURL={lifecycleURL}
-			catalogFields={catalogFields?.items}
-			lifecycleDescription={lifecycleDescription}
-			lifecycleName={lifecycleName}
-			onAddStage={addStage}
-			onLifecycleDescriptionChange={setLifecycleDescription}
-			onLifecycleNameChange={setLifecycleName}
-			onMoveStage={moveStage}
-			onRemoveStage={removeStage}
-			onSelect={setSelectedKey}
-			onStageChange={updateStage}
+			form={form}
 			onSubmit={handleCreate}
-			selectedStage={selectedStage}
-			stageConfigs={stageConfigs}
-			submitDisabled={!canSubmit}
 			submitLabel={Liferay.Language.get('create-lifecycle')}
 			title={Liferay.Language.get('new-lifecycle')}
 		/>

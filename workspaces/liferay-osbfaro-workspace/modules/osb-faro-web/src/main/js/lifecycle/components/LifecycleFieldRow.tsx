@@ -1,9 +1,12 @@
+import ClayForm from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
+import getCN from 'classnames';
 import React from 'react';
 
 interface ILifecycleFieldRowProps {
 	children: React.ReactNode;
+	errorMessage?: string;
 	icon: string;
 	id: string;
 	label: string;
@@ -13,6 +16,7 @@ interface ILifecycleFieldRowProps {
 
 const LifecycleFieldRow: React.FC<ILifecycleFieldRowProps> = ({
 	children,
+	errorMessage,
 	icon,
 	id,
 	label,
@@ -36,7 +40,23 @@ const LifecycleFieldRow: React.FC<ILifecycleFieldRowProps> = ({
 		</ClayLayout.Col>
 
 		<ClayLayout.Col md={narrow ? 5 : 9} xl={narrow ? 4 : 10}>
-			{children}
+			<ClayForm.Group
+				className={getCN('mb-0', {'has-error': !!errorMessage})}
+			>
+				{children}
+
+				{errorMessage && (
+					<p
+						className="font-weight-semi-bold mb-0 mt-1 text-danger"
+						id={`${id}Error`}
+						role="alert"
+					>
+						<ClayIcon className="mr-1" symbol="exclamation-full" />
+
+						{errorMessage}
+					</p>
+				)}
+			</ClayForm.Group>
 		</ClayLayout.Col>
 	</ClayLayout.Row>
 );

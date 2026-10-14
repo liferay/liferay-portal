@@ -1,107 +1,155 @@
 import BaseEditPage from 'shared/components/base-edit-page';
+import ClayAlert from '@clayui/alert';
 import LifecycleConditionsPanel from 'lifecycle/components/LifecycleConditionsPanel';
 import LifecycleSummary from 'lifecycle/components/LifecycleSummary';
-import React from 'react';
+import NavigationWarning from 'shared/components/NavigationWarning';
+import React, {useEffect, useRef} from 'react';
 import StageConfigurationPanel from 'lifecycle/components/StageConfigurationPanel';
-import {ICatalogField} from 'shared/api/catalog';
-import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
+import {sub} from 'shared/util/lang';
+import {useLifecycleSettingsForm} from 'lifecycle/hooks/useLifecycleSettingsForm';
 
 interface ILifecycleSettingsFormProps {
 	authorName: string;
-	backURL: string;
-	catalogFields?: ICatalogField[];
-	lifecycleDescription: string;
-	lifecycleName: string;
+	form: ReturnType<typeof useLifecycleSettingsForm>;
 	modifiedDate?: number | null;
-	onAddStage: () => void;
-	onLifecycleDescriptionChange: (description: string) => void;
-	onLifecycleNameChange: (name: string) => void;
-	onMoveStage: (movement: {from: number; to: number}) => void;
-	onRemoveStage: (key: string) => void;
-	onSelect: (key: string | null) => void;
-	onStageChange: (key: string, value: IStageConfig) => void;
 	onSubmit: () => void;
-	selectedStage: IStageConfig | null;
-	stageConfigs: IStageConfig[];
-	submitDisabled?: boolean;
 	submitLabel: string;
 	title: string;
 }
 
 const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 	authorName,
-	backURL,
-	catalogFields,
-	lifecycleDescription,
-	lifecycleName,
+	form,
 	modifiedDate,
-	onAddStage,
-	onLifecycleDescriptionChange,
-	onLifecycleNameChange,
-	onMoveStage,
-	onRemoveStage,
-	onSelect,
-	onStageChange,
 	onSubmit,
-	selectedStage,
-	stageConfigs,
-	submitDisabled = false,
 	submitLabel,
 	title,
-}) => (
-	<BaseEditPage className="d-flex flex-column" documentTitle={title}>
-		<BaseEditPage.Toolbar backURL={backURL} title={title}>
-			<BaseEditPage.Toolbar.Cancel href={backURL} />
+}) => {
+	const {
+		addStage,
+		alertCount,
+		alertMessages,
+		blurField,
+		catalogFields,
+		changed,
+		dismissAlert,
+		duplicateStageKeys,
+		isFieldErrorVisible,
+		lifecycleDescription,
+		lifecycleName,
+		lifecycleURL,
+		moveStage,
+		removeStage,
+		selectedStage,
+		setLifecycleDescription,
+		setLifecycleName,
+		setSelectedKey,
+		stageConfigs,
+		stageErrorKeys,
+		summaryError,
+		updateStage,
+	} = form;
 
-			<BaseEditPage.Toolbar.Save
-				disabled={submitDisabled}
-				label={submitLabel}
-				onClick={onSubmit}
-			/>
-		</BaseEditPage.Toolbar>
+	const alertRef = useRef<HTMLDivElement>(null);
 
-		<BaseEditPage.Body>
-			<BaseEditPage.Sidebar
-				label={Liferay.Language.get('lifecycle-conditions')}
-				position="left"
-			>
-				<LifecycleConditionsPanel
-					lifecycleName={lifecycleName}
-					onAddStage={onAddStage}
-					onMoveStage={onMoveStage}
-					onRemoveStage={onRemoveStage}
-					onSelect={onSelect}
-					selectedKey={selectedStage?.key ?? null}
-					stageConfigs={stageConfigs}
+	useEffect(() => {
+		if (alertCount) {
+			alertRef.current?.focus();
+		}
+	}, [alertCount]);
+
+	return (
+		<BaseEditPage className="d-flex flex-column" documentTitle={title}>
+			<NavigationWarning when={changed} />
+
+			<BaseEditPage.Toolbar backURL={lifecycleURL} title={title}>
+				<BaseEditPage.Toolbar.Cancel href={lifecycleURL} />
+
+				<BaseEditPage.Toolbar.Save
+					label={submitLabel}
+					onClick={onSubmit}
 				/>
-			</BaseEditPage.Sidebar>
+			</BaseEditPage.Toolbar>
 
-			<BaseEditPage.Main className="page-container">
-				{selectedStage ? (
-					<StageConfigurationPanel
-						fields={catalogFields}
-						key={selectedStage.key}
+			<BaseEditPage.Body>
+				<BaseEditPage.Sidebar
+					label={Liferay.Language.get('lifecycle-conditions')}
+					position="left"
+				>
+					<LifecycleConditionsPanel
 						lifecycleName={lifecycleName}
-						onChange={(value) =>
-							onStageChange(selectedStage.key, value)
-						}
-						onSelectSummary={() => onSelect(null)}
-						value={selectedStage}
+						onAddStage={addStage}
+						onMoveStage={moveStage}
+						onRemoveStage={removeStage}
+						onSelect={setSelectedKey}
+						selectedKey={selectedStage?.key ?? null}
+						stageConfigs={stageConfigs}
+						stageErrorKeys={stageErrorKeys}
+						summaryError={summaryError}
 					/>
-				) : (
-					<LifecycleSummary
-						authorName={authorName}
-						description={lifecycleDescription}
-						modifiedDate={modifiedDate}
-						name={lifecycleName}
-						onDescriptionChange={onLifecycleDescriptionChange}
-						onNameChange={onLifecycleNameChange}
-						stageCount={stageConfigs.length}
-					/>
-				)}
-			</BaseEditPage.Main>
-		</BaseEditPage.Body>
-	</BaseEditPage>
-);
+				</BaseEditPage.Sidebar>
+
+				<BaseEditPage.Main className="page-container">
+					{!!alertMessages.length && (
+						<div className="mb-4" ref={alertRef} tabIndex={-1}>
+							<ClayAlert
+								displayType="danger"
+								onClose={dismissAlert}
+								title={
+									alertMessages.length === 1
+										? Liferay.Language.get(
+												'review-1-error-in-this-configuration'
+											)
+										: (sub(
+												Liferay.Language.get(
+													'review-x-errors-in-this-configuration'
+												),
+												[alertMessages.length]
+											) as string)
+								}
+							>
+								<ul className="mb-0 mt-1">
+									{alertMessages.map((message) => (
+										<li key={message}>{message}</li>
+									))}
+								</ul>
+							</ClayAlert>
+						</div>
+					)}
+
+					{selectedStage ? (
+						<StageConfigurationPanel
+							fields={catalogFields?.items}
+							isFieldErrorVisible={isFieldErrorVisible}
+							key={selectedStage.key}
+							lifecycleName={lifecycleName}
+							nameTaken={duplicateStageKeys.includes(
+								selectedStage.key
+							)}
+							onChange={(value) =>
+								updateStage(selectedStage.key, value)
+							}
+							onFieldBlur={blurField}
+							onSelectSummary={() => setSelectedKey(null)}
+							value={selectedStage}
+						/>
+					) : (
+						<LifecycleSummary
+							authorName={authorName}
+							description={lifecycleDescription}
+							isFieldErrorVisible={isFieldErrorVisible}
+							modifiedDate={modifiedDate}
+							name={lifecycleName}
+							onDescriptionChange={setLifecycleDescription}
+							onFieldBlur={blurField}
+							onNameChange={setLifecycleName}
+							stageCount={stageConfigs.length}
+						/>
+					)}
+				</BaseEditPage.Main>
+			</BaseEditPage.Body>
+		</BaseEditPage>
+	);
+};
 
 export default LifecycleSettingsForm;

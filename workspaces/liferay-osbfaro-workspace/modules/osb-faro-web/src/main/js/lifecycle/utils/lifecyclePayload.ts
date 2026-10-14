@@ -1,11 +1,11 @@
 import {
 	createStageCondition,
 	createStageKey,
-	DEFAULT_MAX_DAYS,
 	IStageCondition,
 	IStageConfig,
 	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
+import {LIFECYCLE_STAGE_DEFAULT_MAX_DAYS} from 'lifecycle/utils/constants';
 import {ILifecycleStage} from 'shared/api/lifecycle';
 import {
 	Operator,
@@ -271,7 +271,7 @@ const stageConfigFromStage = (stage: ILifecycleStage): IStageConfig => ({
 	description: stage.description ?? '',
 	id: stage.id,
 	key: createStageKey(),
-	maxTimeDays: stage.maxDuration ?? DEFAULT_MAX_DAYS,
+	maxTimeDays: stage.maxDuration ?? LIFECYCLE_STAGE_DEFAULT_MAX_DAYS,
 	maxTimeEnabled: stage.maxDuration != null,
 	name: stage.name ?? '',
 });

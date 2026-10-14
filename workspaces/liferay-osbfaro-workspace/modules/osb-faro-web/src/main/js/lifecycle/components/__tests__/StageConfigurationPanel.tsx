@@ -2,11 +2,11 @@ import React from 'react';
 import StageConfigurationPanel from '../StageConfigurationPanel';
 import {
 	createStageCondition,
-	DEFAULT_MAX_DAYS,
 	IStageCondition,
 	IStageConfig,
 	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
+import {LIFECYCLE_STAGE_DEFAULT_MAX_DAYS} from 'lifecycle/utils/constants';
 import {ICatalogField} from 'shared/api/catalog';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
@@ -24,7 +24,7 @@ const baseValue: IStageConfig = {
 	id: null,
 	key: 'stage-key',
 	matchLogic: MatchLogic.All,
-	maxTimeDays: DEFAULT_MAX_DAYS,
+	maxTimeDays: LIFECYCLE_STAGE_DEFAULT_MAX_DAYS,
 	maxTimeEnabled: true,
 	name: 'Aware',
 };
@@ -172,6 +172,49 @@ describe('StageConfigurationPanel', () => {
 		);
 	});
 
+	it('asks for a unique name once a duplicate name is left', () => {
+		renderPanel({isFieldErrorVisible: () => true, nameTaken: true});
+
+		expect(screen.getByText(/enter a unique name/i)).toBeInTheDocument();
+	});
+
+	it('shows the required error before the unique name error', () => {
+		renderPanel({
+			isFieldErrorVisible: () => true,
+			nameTaken: true,
+			value: {...baseValue, name: ''},
+		});
+
+		expect(
+			screen.getByText(/^the name field is required/i)
+		).toBeInTheDocument();
+		expect(screen.queryByText(/enter a unique name/i)).toBeNull();
+	});
+
+	it('stops the stage name at the character limit', () => {
+		renderPanel({value: {...baseValue, name: 'a'.repeat(24)}});
+
+		expect(screen.getByLabelText(/^name/i)).toHaveAttribute(
+			'maxLength',
+			'24'
+		);
+		expect(
+			screen.getByText(/the character limit has been reached/i)
+		).toBeInTheDocument();
+	});
+
+	it('stops the stage description at the character limit', () => {
+		renderPanel({value: {...baseValue, description: 'a'.repeat(120)}});
+
+		expect(screen.getByLabelText(/^description/i)).toHaveAttribute(
+			'maxLength',
+			'120'
+		);
+		expect(
+			screen.getByText(/the character limit has been reached/i)
+		).toBeInTheDocument();
+	});
+
 	it('groups the stage conditions into progression and triggers', () => {
 		renderPanel();
 
@@ -221,7 +264,9 @@ describe('StageConfigurationPanel', () => {
 		expect(screen.getByText('Account')).toBeInTheDocument();
 		expect(screen.queryByText('Select Entity')).toBeNull();
 		expect(screen.getByText('Select Attribute')).toBeInTheDocument();
-		expect(screen.getByRole('spinbutton')).toHaveValue(DEFAULT_MAX_DAYS);
+		expect(screen.getByRole('spinbutton')).toHaveValue(
+			LIFECYCLE_STAGE_DEFAULT_MAX_DAYS
+		);
 	});
 
 	it('does not cap the max-time value at the default number of days', () => {

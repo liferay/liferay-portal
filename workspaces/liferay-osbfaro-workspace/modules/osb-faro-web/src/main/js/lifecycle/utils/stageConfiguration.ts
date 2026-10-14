@@ -1,4 +1,4 @@
-export const DEFAULT_MAX_DAYS = 90;
+import {LIFECYCLE_STAGE_DEFAULT_MAX_DAYS} from 'lifecycle/utils/constants';
 
 export enum MatchLogic {
 	All = 'all',
@@ -51,7 +51,7 @@ export const createStageConfig = (): IStageConfig => ({
 	id: null,
 	key: createStageKey(),
 	matchLogic: MatchLogic.All,
-	maxTimeDays: DEFAULT_MAX_DAYS,
+	maxTimeDays: LIFECYCLE_STAGE_DEFAULT_MAX_DAYS,
 	maxTimeEnabled: true,
 	name: '',
 });

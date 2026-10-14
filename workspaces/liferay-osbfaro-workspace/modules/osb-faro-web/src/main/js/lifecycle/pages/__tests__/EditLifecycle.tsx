@@ -7,6 +7,7 @@ import {ILifecycleStage} from 'shared/api/lifecycle';
 import {MemoryRouter} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
 import {useRequest} from 'shared/hooks/useRequest';
+import {useUnsavedChangesPrompt} from 'shared/hooks/useUnsavedChangesPrompt';
 
 jest.unmock('react-dom');
 
@@ -29,6 +30,10 @@ const mockPush = jest.fn();
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({channelId: '123', groupId: '23', lifecycleId: '9'}),
+}));
+
+jest.mock('shared/hooks/useUnsavedChangesPrompt', () => ({
+	useUnsavedChangesPrompt: jest.fn(),
 }));
 
 jest.mock('shared/hooks/useTimeZone', () => ({
@@ -178,9 +183,9 @@ describe('EditLifecycle', () => {
 		expect(screen.getByLabelText(/last modified by/i)).toHaveValue(
 			'Anneta Smith'
 		);
-		expect(screen.getByLabelText(/modified date/i)).toHaveValue(
-			expect.stringMatching(/2026/)
-		);
+		expect(
+			(screen.getByLabelText(/modified date/i) as HTMLInputElement).value
+		).toMatch(/2026/);
 	});
 
 	it('saves the edited description and stage name', async () => {
@@ -303,6 +308,85 @@ describe('EditLifecycle', () => {
 
 		expect(stage).toHaveAttribute('aria-current', 'true');
 		expect(stage).toHaveTextContent(/stage 4.+no trigger/i);
+	});
+
+	it('leaves directly without changes, even after switching items', () => {
+		const mockedPrompt = useUnsavedChangesPrompt as jest.Mock;
+
+		renderPage();
+
+		fireEvent.click(screen.getByRole('group', {name: /^qualified$/i}));
+
+		fireEvent.click(
+			screen.getByRole('group', {name: /configuration summary/i})
+		);
+
+		expect(mockedPrompt).toHaveBeenLastCalledWith(false, expect.anything());
+	});
+
+	it('warns about unsaved changes after editing a stage', () => {
+		const mockedPrompt = useUnsavedChangesPrompt as jest.Mock;
+
+		renderPage();
+
+		fireEvent.click(screen.getByRole('group', {name: /^qualified$/i}));
+
+		fireEvent.change(screen.getByLabelText(/^description/i), {
+			target: {value: 'Changed'},
+		});
+
+		expect(mockedPrompt).toHaveBeenLastCalledWith(true, expect.anything());
+	});
+
+	it('warns about unsaved changes after reordering the stages', () => {
+		const mockedPrompt = useUnsavedChangesPrompt as jest.Mock;
+
+		renderPage();
+
+		const handle = screen.getByRole('button', {name: /drag.aware/i});
+
+		handle.focus();
+
+		fireEvent.keyDown(handle, {key: 'Enter'});
+		fireEvent.keyDown(handle, {key: 'ArrowDown'});
+		fireEvent.keyDown(handle, {key: 'Enter'});
+
+		expect(mockedPrompt).toHaveBeenLastCalledWith(true, expect.anything());
+	});
+
+	it('blocks Save when the last stage is removed', () => {
+		renderPage();
+
+		['aware', 'qualified', 'pipeline'].forEach((name) =>
+			fireEvent.click(
+				screen.getByRole('button', {
+					name: new RegExp(`remove.${name}`, 'i'),
+				})
+			)
+		);
+
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
+
+		expect(API.lifecycle.updateLifecycle).not.toHaveBeenCalled();
+		expect(screen.getByText(/add at least one stage/i)).toBeInTheDocument();
+	});
+
+	it('shows the save failure alert when the server rejects the lifecycle', async () => {
+		(API.lifecycle.updateLifecycle as jest.Mock).mockRejectedValue(
+			new Error('failed')
+		);
+
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
+
+		await waitFor(() =>
+			expect(mockDispatch).toHaveBeenCalledWith(
+				expect.objectContaining({alertType: Alert.Types.Error})
+			)
+		);
+
+		expect(mockPush).not.toHaveBeenCalled();
 	});
 
 	it('renders a loading state while the lifecycle is loading', () => {

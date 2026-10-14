@@ -3,15 +3,23 @@ import LifecycleFieldRow from 'lifecycle/components/LifecycleFieldRow';
 import React from 'react';
 import {ClayInput} from '@clayui/form';
 import {formatDateToTimeZone} from 'shared/util/date';
+import {isAtCharacterLimit} from 'lifecycle/utils/lifecycleValidation';
+import {
+	LIFECYCLE_DESCRIPTION_MAX_LENGTH,
+	LIFECYCLE_NAME_MAX_LENGTH,
+} from 'lifecycle/utils/constants';
+import {noop} from 'lodash';
 import {sub} from 'shared/util/lang';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
 
 interface ILifecycleSummaryProps {
 	authorName: string;
 	description: string;
+	isFieldErrorVisible?: (id: string) => boolean;
 	modifiedDate?: number | null;
 	name: string;
 	onDescriptionChange: (description: string) => void;
+	onFieldBlur?: (id: string) => void;
 	onNameChange: (name: string) => void;
 	stageCount: number;
 }
@@ -19,20 +27,54 @@ interface ILifecycleSummaryProps {
 const LifecycleSummary: React.FC<ILifecycleSummaryProps> = ({
 	authorName,
 	description,
+	isFieldErrorVisible = () => false,
 	modifiedDate,
 	name,
 	onDescriptionChange,
+	onFieldBlur = noop,
 	onNameChange,
 	stageCount,
 }) => {
 	const {timeZoneId} = useTimeZone();
 
+	const characterLimitMessage = Liferay.Language.get(
+		'the-character-limit-has-been-reached.-you-cannot-continue-typing'
+	);
+
+	const getNameErrorMessage = () => {
+		if (isFieldErrorVisible('lifecycleName') && !name.trim()) {
+			return Liferay.Language.get('the-name-field-is-required');
+		}
+
+		if (isAtCharacterLimit(name, LIFECYCLE_NAME_MAX_LENGTH)) {
+			return characterLimitMessage;
+		}
+	};
+
+	const getDescriptionErrorMessage = () => {
+		if (
+			isFieldErrorVisible('lifecycleDescription') &&
+			!description.trim()
+		) {
+			return Liferay.Language.get('the-description-field-is-required');
+		}
+
+		if (isAtCharacterLimit(description, LIFECYCLE_DESCRIPTION_MAX_LENGTH)) {
+			return characterLimitMessage;
+		}
+	};
+
+	const descriptionErrorMessage = getDescriptionErrorMessage();
+
 	return (
 		<>
 			<div className="mb-5">
 				<BaseEditPage.Title
+					errorMessage={getNameErrorMessage()}
 					id="lifecycleName"
 					label={Liferay.Language.get('name')}
+					maxLength={LIFECYCLE_NAME_MAX_LENGTH}
+					onBlur={() => onFieldBlur('lifecycleName')}
 					onChange={(event) => onNameChange(event.target.value)}
 					placeholder={Liferay.Language.get('new-lifecycle')}
 					required
@@ -41,13 +83,21 @@ const LifecycleSummary: React.FC<ILifecycleSummaryProps> = ({
 			</div>
 
 			<LifecycleFieldRow
+				errorMessage={descriptionErrorMessage}
 				icon="align-left"
 				id="lifecycleDescription"
 				label={Liferay.Language.get('description')}
 				required
 			>
 				<ClayInput
+					aria-describedby={
+						descriptionErrorMessage
+							? 'lifecycleDescriptionError'
+							: undefined
+					}
 					id="lifecycleDescription"
+					maxLength={LIFECYCLE_DESCRIPTION_MAX_LENGTH}
+					onBlur={() => onFieldBlur('lifecycleDescription')}
 					onChange={(event) =>
 						onDescriptionChange(event.target.value)
 					}

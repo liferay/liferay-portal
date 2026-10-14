@@ -5,15 +5,22 @@ import {Alert} from 'shared/types';
 import {
 	createStageCondition,
 	createStageConfig,
-	DEFAULT_MAX_DAYS,
 	IStageConfig,
 	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {LIFECYCLE_STAGE_DEFAULT_MAX_DAYS} from 'lifecycle/utils/constants';
+import {
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {CATALOG_FIELDS_MAX_PAGE_SIZE} from 'shared/api/catalog';
 import {Routes, toRoute} from 'shared/util/router';
 import {useRequest} from 'shared/hooks/useRequest';
+import {useUnsavedChangesPrompt} from 'shared/hooks/useUnsavedChangesPrompt';
 
 jest.unmock('react-dom');
 
@@ -51,7 +58,7 @@ const buildStage = (configured: boolean): IStageConfig => ({
 	id: null,
 	key: 'stage-key',
 	matchLogic: MatchLogic.All,
-	maxTimeDays: DEFAULT_MAX_DAYS,
+	maxTimeDays: LIFECYCLE_STAGE_DEFAULT_MAX_DAYS,
 	maxTimeEnabled: true,
 	name: configured ? 'Aware' : '',
 });
@@ -63,6 +70,10 @@ const mockPush = jest.fn();
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({channelId: '123', groupId: '23'}),
+}));
+
+jest.mock('shared/hooks/useUnsavedChangesPrompt', () => ({
+	useUnsavedChangesPrompt: jest.fn(),
 }));
 
 jest.mock('shared/hooks/useCurrentUser', () => ({
@@ -220,18 +231,201 @@ describe('CreateLifecycle', () => {
 		);
 	});
 
-	it('disables Create Lifecycle until every stage is ready', () => {
+	it('blocks Create and lists every error of the lifecycle in an alert', () => {
 		renderPage();
 
-		const createButton = screen.getByRole('button', {
-			name: /create lifecycle/i,
+		fireEvent.click(
+			screen.getByRole('button', {name: /create lifecycle/i})
+		);
+
+		expect(API.lifecycle.createLifecycle).not.toHaveBeenCalled();
+		expect(
+			screen.getByText(/review 3 errors in this configuration/i)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(/the lifecycle name field is required/i)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(/the lifecycle description field is required/i)
+		).toBeInTheDocument();
+		expect(screen.getByText(/add at least one stage/i)).toBeInTheDocument();
+		expect(
+			screen.getByText(/^the name field is required/i)
+		).toBeInTheDocument();
+	});
+
+	it('dismisses the errors alert', () => {
+		renderPage();
+
+		fireEvent.click(
+			screen.getByRole('button', {name: /create lifecycle/i})
+		);
+
+		fireEvent.click(
+			within(
+				screen.getByText(/review 3 errors/i).closest('.alert')!
+			).getByRole('button', {name: /close/i})
+		);
+
+		expect(screen.queryByText(/review 3 errors/i)).toBeNull();
+	});
+
+	it('lists only the selected stage errors on its page', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
+		fireEvent.click(
+			screen.getByRole('button', {name: /create lifecycle/i})
+		);
+
+		expect(API.lifecycle.createLifecycle).not.toHaveBeenCalled();
+		expect(
+			screen.getByText(/review 3 errors in this configuration/i)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(/the stage name field is required/i)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(/stage triggers are required/i)
+		).toBeInTheDocument();
+		expect(
+			screen.queryByText(/the lifecycle name field is required/i)
+		).toBeNull();
+	});
+
+	it('asks for unique stage names on the page of a duplicate stage', () => {
+		mockedCreateStageConfig
+			.mockReturnValueOnce({...buildStage(true), key: 'first'})
+			.mockReturnValueOnce({...buildStage(true), key: 'second'});
+
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
+		fireEvent.click(
+			screen.getByRole('button', {name: /create lifecycle/i})
+		);
+
+		expect(API.lifecycle.createLifecycle).not.toHaveBeenCalled();
+		expect(
+			screen.getByText(/review 1 error in this configuration/i)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(/stage names should be unique/i)
+		).toBeInTheDocument();
+		expect(screen.getByText(/enter a unique name/i)).toBeInTheDocument();
+
+		screen
+			.getAllByRole('group', {name: /^aware$/i})
+			.forEach((chip) => expect(chip).toHaveTextContent(/error/i));
+	});
+
+	it('stops the lifecycle name at the character limit', () => {
+		renderPage();
+
+		const nameInput = screen.getByLabelText(/^name/i);
+
+		expect(nameInput).toHaveAttribute('maxLength', '24');
+
+		fireEvent.change(nameInput, {target: {value: 'a'.repeat(23)}});
+
+		expect(
+			screen.queryByText(/the character limit has been reached/i)
+		).toBeNull();
+
+		fireEvent.change(nameInput, {target: {value: 'a'.repeat(24)}});
+
+		expect(
+			screen.getByText(/the character limit has been reached/i)
+		).toBeInTheDocument();
+	});
+
+	it('stops the lifecycle description at the character limit', () => {
+		renderPage();
+
+		const descriptionInput = screen.getByLabelText(/^description/i);
+
+		expect(descriptionInput).toHaveAttribute('maxLength', '120');
+
+		fireEvent.change(descriptionInput, {
+			target: {value: 'a'.repeat(120)},
 		});
+
+		expect(
+			screen.getByText(/the character limit has been reached/i)
+		).toBeInTheDocument();
+	});
+
+	it('shows the error icon on the summary chip from the start', () => {
+		renderPage();
+
+		expect(
+			screen.getByRole('group', {name: /configuration summary/i})
+		).toHaveTextContent(/error/i);
 
 		fireEvent.change(screen.getByLabelText(/^name/i), {
 			target: {value: 'My Lifecycle'},
 		});
 
-		expect(createButton).toBeDisabled();
+		expect(
+			screen.getByRole('group', {name: /configuration summary/i})
+		).not.toHaveTextContent(/error/i);
+	});
+
+	it('shows the name error once the empty name is left', () => {
+		renderPage();
+
+		const nameInput = screen.getByLabelText(/^name/i);
+
+		expect(screen.queryByText(/^the name field is required/i)).toBeNull();
+
+		fireEvent.blur(nameInput);
+
+		expect(
+			screen.getByText(/^the name field is required/i)
+		).toBeInTheDocument();
+		expect(nameInput).toHaveAttribute(
+			'aria-describedby',
+			'lifecycleNameError'
+		);
+	});
+
+	it('shows the description error once the empty description is left', () => {
+		renderPage();
+
+		const descriptionInput = screen.getByLabelText(/^description/i);
+
+		fireEvent.blur(descriptionInput);
+
+		expect(
+			screen.getByText(/the description field is required/i)
+		).toBeInTheDocument();
+		expect(descriptionInput).toHaveAttribute(
+			'aria-describedby',
+			'lifecycleDescriptionError'
+		);
+	});
+
+	it('warns about unsaved changes only once something changed', () => {
+		const mockedPrompt = useUnsavedChangesPrompt as jest.Mock;
+
+		renderPage();
+
+		expect(mockedPrompt).toHaveBeenLastCalledWith(false, expect.anything());
+
+		fireEvent.change(screen.getByLabelText(/^name/i), {
+			target: {value: 'My Lifecycle'},
+		});
+
+		expect(mockedPrompt).toHaveBeenLastCalledWith(true, expect.anything());
+
+		fireEvent.change(screen.getByLabelText(/^name/i), {
+			target: {value: ''},
+		});
+
+		expect(mockedPrompt).toHaveBeenLastCalledWith(false, expect.anything());
 	});
 
 	it('renders a loading state while lifecycles are loading', () => {
