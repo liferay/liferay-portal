@@ -74,7 +74,7 @@ generateJSPJava {
 
 node {
 	global = false
-	nodeVersion = "20.20.2"
+	nodeVersion = "22.23.3"
 	useNpm = false
 	yarnVersion = "1.22.19"
 }
