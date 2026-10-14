@@ -416,7 +416,7 @@
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.EarlyLoopExitCheck">
 			<property name="category" value="Styling" />
-			<property name="description" value="Finds if-statements at the end of a loop body that can be inverted to use `continue`, `break`, `return`, or `throw` as early as possible." />
+			<property name="description" value="Finds if-statements at the end of a loop body that can be inverted to use `break`, `continue`, `return`, or `throw` as early as possible." />
 			<message key="loop.exit.early" value="Invert the condition and use &quot;{0}&quot; as early as possible instead of nesting the rest of the loop body in the if-statement" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.EmptyConstructorCheck">
