@@ -71,12 +71,6 @@
 		<finder name="DDMStructureId" return-type="Collection">
 			<finder-column name="DDMStructureId" />
 		</finder>
-		<finder name="DDMTemplateKey" return-type="Collection">
-			<finder-column name="DDMTemplateKey" />
-		</finder>
-		<finder name="LayoutUuid" return-type="Collection">
-			<finder-column name="layoutUuid" />
-		</finder>
 		<finder name="SmallImageId" return-type="Collection">
 			<finder-column name="smallImageId" />
 		</finder>
@@ -87,10 +81,6 @@
 		<finder name="R_ST" return-type="Collection">
 			<finder-column name="resourcePrimKey" />
 			<finder-column arrayable-operator="OR" name="status" />
-		</finder>
-		<finder name="G_U" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="userId" />
 		</finder>
 		<finder name="G_ERC" return-type="Collection">
 			<finder-column name="groupId" />
@@ -112,17 +102,9 @@
 			<finder-column name="groupId" />
 			<finder-column name="DDMStructureId" />
 		</finder>
-		<finder name="G_DDMTK" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="DDMTemplateKey" />
-		</finder>
 		<finder name="G_L" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="layoutUuid" />
-		</finder>
-		<finder name="G_ST" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="status" />
 		</finder>
 		<finder name="C_V" return-type="Collection">
 			<finder-column name="companyId" />
@@ -131,10 +113,6 @@
 		<finder name="C_ST" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="status" />
-		</finder>
-		<finder name="C_NotST" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column comparator="!=" name="status" />
 		</finder>
 		<finder name="LtD_S" return-type="Collection">
 			<finder-column comparator="&lt;" name="displayDate" />
@@ -174,16 +152,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="classNameId" />
 			<finder-column name="DDMStructureId" />
-		</finder>
-		<finder name="G_C_DDMTK" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-			<finder-column name="DDMTemplateKey" />
-		</finder>
-		<finder name="G_C_L" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-			<finder-column name="layoutUuid" />
 		</finder>
 		<finder name="G_C_NotL" return-type="Collection">
 			<finder-column name="groupId" />
@@ -302,38 +270,10 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
-		<finder name="PortletId" return-type="Collection">
-			<finder-column name="portletId" />
-		</finder>
-		<finder name="ArticleId" return-type="Collection">
-			<finder-column name="articleId" />
-		</finder>
-		<finder name="G_P" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="privateLayout" />
-		</finder>
-		<finder name="G_A" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="articleId" />
-		</finder>
-		<finder name="G_P_L" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="privateLayout" />
-			<finder-column name="layoutId" />
-		</finder>
 		<finder name="G_P_A" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="privateLayout" />
 			<finder-column name="articleId" />
-		</finder>
-		<finder name="G_P_L_P" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="privateLayout" />
-			<finder-column name="layoutId" />
-			<finder-column name="portletId" />
 		</finder>
 		<finder name="G_P_L_P_A" return-type="JournalContentSearch" unique="true">
 			<finder-column name="groupId" />
@@ -387,9 +327,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="G_F" return-type="JournalFeed" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="feedId" />
