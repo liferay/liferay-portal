@@ -59,10 +59,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="R_G" return-type="Collection">
-			<finder-column name="resourcePrimKey" />
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="R_V" return-type="KBArticle" unique="true">
 			<finder-column name="resourcePrimKey" />
 			<finder-column name="version" />
@@ -82,10 +78,6 @@
 		<finder name="G_ERC" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="externalReferenceCode" />
-		</finder>
-		<finder name="G_L" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="latest" />
 		</finder>
 		<finder name="G_M" return-type="Collection">
 			<finder-column name="groupId" />
@@ -193,21 +185,6 @@
 			<finder-column name="kbFolderId" />
 			<finder-column name="latest" />
 		</finder>
-		<finder name="G_KBFI_S" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="kbFolderId" />
-			<finder-column name="status" />
-		</finder>
-		<finder db-index="false" name="G_LikeS_L" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column arrayable-operator="OR" comparator="LIKE" name="sections" />
-			<finder-column name="latest" />
-		</finder>
-		<finder db-index="false" name="G_LikeS_M" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column arrayable-operator="OR" comparator="LIKE" name="sections" />
-			<finder-column name="main" />
-		</finder>
 		<finder db-index="false" name="G_LikeS_S" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column arrayable-operator="OR" comparator="LIKE" name="sections" />
@@ -289,12 +266,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="kbFolderId" />
 			<finder-column name="urlTitle" />
-			<finder-column comparator="!=" name="status" />
-		</finder>
-		<finder name="G_KBFI_L_NotS" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="kbFolderId" />
-			<finder-column name="latest" />
 			<finder-column comparator="!=" name="status" />
 		</finder>
 		<finder db-index="false" name="G_LikeS_L_NotS" return-type="Collection">
@@ -403,9 +374,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="G_P" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="parentKBFolderId" />
