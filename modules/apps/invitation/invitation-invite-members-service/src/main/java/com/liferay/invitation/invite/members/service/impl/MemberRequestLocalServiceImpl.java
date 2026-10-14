@@ -175,18 +175,6 @@ public class MemberRequestLocalServiceImpl
 	}
 
 	@Override
-	public List<MemberRequest> getReceiverMemberRequest(
-		long receiverUserId, int start, int end) {
-
-		return memberRequestPersistence.findByReceiverUserId(receiverUserId);
-	}
-
-	@Override
-	public int getReceiverMemberRequestCount(long receiverUserId) {
-		return memberRequestPersistence.countByReceiverUserId(receiverUserId);
-	}
-
-	@Override
 	public List<MemberRequest> getReceiverStatusMemberRequest(
 		long receiverUserId, int status, int start, int end) {
 
