@@ -37,10 +37,6 @@
 		<finder name="EntryId2" return-type="Collection">
 			<finder-column name="entryId2" />
 		</finder>
-		<finder name="E_E" return-type="Collection">
-			<finder-column name="entryId1" />
-			<finder-column name="entryId2" />
-		</finder>
 		<finder name="E1_T" return-type="Collection">
 			<finder-column name="entryId1" />
 			<finder-column name="type" />
