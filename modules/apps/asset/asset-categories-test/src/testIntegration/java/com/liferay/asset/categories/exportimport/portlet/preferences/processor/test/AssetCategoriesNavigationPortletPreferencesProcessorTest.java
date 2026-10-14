@@ -9,26 +9,38 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.categories.navigation.constants.AssetCategoriesNavigationPortletKeys;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.persistence.GroupUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -333,8 +345,52 @@ public class AssetCategoriesNavigationPortletPreferencesProcessorTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-109596")
+	public void testPublishLayoutsWithCompanyGroup() throws Exception {
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			_group.getCompanyId());
+
+		_companyAssetVocabulary = AssetTestUtil.addVocabulary(
+			companyGroup.getGroupId());
+
+		String portletId = _addPortletToLayout(
+			_companyAssetVocabulary, companyGroup);
+
+		_remoteLiveGroup = GroupTestUtil.addGroup();
+
+		_enableRemoteStaging();
+
+		StagingUtil.publishLayouts(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			_remoteLiveGroup.getGroupId(), false,
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildFullPublishParameterMap());
+
+		Layout liveLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+			_layout.getUuid(), _remoteLiveGroup.getGroupId(), false);
+
+		PortletPreferences portletPreferences =
+			LayoutTestUtil.getPortletPreferences(liveLayout, portletId);
+
+		Assert.assertEquals(
+			_companyAssetVocabulary.getExternalReferenceCode(),
+			portletPreferences.getValue(
+				"assetVocabularyExternalReferenceCodes_" +
+					companyGroup.getExternalReferenceCode(),
+				null));
+		Assert.assertEquals(
+			companyGroup.getExternalReferenceCode(),
+			portletPreferences.getValue(
+				"assetVocabularyGroupExternalReferenceCodes", null));
+		Assert.assertEquals(
+			companyGroup.getExternalReferenceCode(),
+			portletPreferences.getValue(
+				"displayStyleGroupExternalReferenceCode", null));
+	}
+
 	private String _addPortletToLayout(
-			AssetVocabulary assetVocabulary, Group companyGroup)
+			AssetVocabulary assetVocabulary, Group group)
 		throws Exception {
 
 		return LayoutTestUtil.addPortletToLayout(
@@ -344,20 +400,55 @@ public class AssetCategoriesNavigationPortletPreferencesProcessorTest {
 				"allAssetVocabularies", new String[] {Boolean.FALSE.toString()}
 			).put(
 				"assetVocabularyExternalReferenceCodes_" +
-					companyGroup.getExternalReferenceCode(),
+					group.getExternalReferenceCode(),
 				new String[] {assetVocabulary.getExternalReferenceCode()}
 			).put(
 				"assetVocabularyGroupExternalReferenceCodes",
-				new String[] {companyGroup.getExternalReferenceCode()}
+				new String[] {group.getExternalReferenceCode()}
 			).put(
 				"displayStyle",
 				new String[] {"ddmTemplate_" + RandomTestUtil.randomString()}
 			).put(
 				"displayStyleGroupExternalReferenceCode",
-				new String[] {companyGroup.getExternalReferenceCode()}
+				new String[] {group.getExternalReferenceCode()}
 			).build());
 	}
 
+	private void _enableRemoteStaging() throws Exception {
+		try (SafeCloseable safeCloseable1 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"TUNNELING_SERVLET_SHARED_SECRET",
+					"F0E1D2C3B4A5968778695A4B3C2D1E0F");
+			SafeCloseable safeCloseable2 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"TUNNELING_SERVLET_SHARED_SECRET_HEX", true)) {
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext();
+
+			serviceContext.setAddGroupPermissions(true);
+			serviceContext.setAddGuestPermissions(true);
+			serviceContext.setAttribute(
+				StagingConstants.STAGED_PREFIX +
+					PortletDataHandlerKeys.PORTLET_DATA_ALL +
+						StringPool.DOUBLE_DASH,
+				Boolean.FALSE.toString());
+			serviceContext.setAttribute(
+				StagingConstants.STAGED_PREFIX +
+					PortletDataHandlerKeys.PORTLET_SETUP_ALL +
+						StringPool.DOUBLE_DASH,
+				Boolean.FALSE.toString());
+			serviceContext.setScopeGroupId(_group.getGroupId());
+
+			StagingLocalServiceUtil.enableRemoteStaging(
+				TestPropsValues.getUserId(), _group, false, false, "localhost",
+				PortalUtil.getPortalServerPort(false),
+				PortalUtil.getPathContext(), false,
+				_remoteLiveGroup.getGroupId(), serviceContext);
+
+			GroupUtil.clearCache();
+		}
+	}
 
 	@DeleteAfterTestRun
 	private AssetVocabulary _companyAssetVocabulary;
@@ -375,6 +466,10 @@ public class AssetCategoriesNavigationPortletPreferencesProcessorTest {
 	private GroupLocalService _groupLocalService;
 
 	private Layout _layout;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
+
 	private PortletDataContext _portletDataContextExport;
 	private PortletDataContext _portletDataContextImport;
 	private PortletPreferences _portletPreferences;
@@ -386,5 +481,8 @@ public class AssetCategoriesNavigationPortletPreferencesProcessorTest {
 	@Inject
 	private PortletPreferencesPortletConfigurationImporter
 		_portletPreferencesPortletConfigurationImporter;
+
+	@DeleteAfterTestRun
+	private Group _remoteLiveGroup;
 
 }
