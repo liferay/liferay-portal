@@ -55,10 +55,6 @@
 		<finder name="CommercePriceListId" return-type="Collection">
 			<finder-column name="commercePriceListId" />
 		</finder>
-		<finder name="C_T" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="target" />
-		</finder>
 		<finder name="LtD_S" return-type="Collection">
 			<finder-column comparator="&lt;" name="displayDate" />
 			<finder-column name="status" />
@@ -66,16 +62,6 @@
 		<finder name="LtE_S" return-type="Collection">
 			<finder-column comparator="&lt;" name="expirationDate" />
 			<finder-column name="status" />
-		</finder>
-		<finder name="G_C_S" return-type="Collection">
-			<finder-column arrayable-operator="OR" name="groupId" />
-			<finder-column name="companyId" />
-			<finder-column name="status" />
-		</finder>
-		<finder name="G_C_NotS" return-type="Collection">
-			<finder-column arrayable-operator="OR" name="groupId" />
-			<finder-column name="companyId" />
-			<finder-column comparator="!=" name="status" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="CommercePriceModifierRel" remote-service="true">
