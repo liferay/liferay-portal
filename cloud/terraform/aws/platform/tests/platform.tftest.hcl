@@ -257,19 +257,19 @@ run "should_fence_crossplane_iam_with_a_permissions_boundary" {
 		error_message="crossplane-iam may only read IAM outside the managed path"
 	}
 	assert {
-		condition=contains(data.aws_iam_policy_document.crossplane_iam.statement[1].actions, "iam:CreateRole") && one(data.aws_iam_policy_document.crossplane_iam.statement[1].condition).variable == "iam:PermissionsBoundary" && one(one(data.aws_iam_policy_document.crossplane_iam.statement[1].condition).values) == aws_iam_policy.crossplane_iam_boundary.arn
+		condition=one(one([for statement in data.aws_iam_policy_document.crossplane_iam.statement : statement if contains(statement.actions, "iam:CreateRole")]).condition).variable == "iam:PermissionsBoundary" && one(one(one([for statement in data.aws_iam_policy_document.crossplane_iam.statement : statement if contains(statement.actions, "iam:CreateRole")]).condition).values) == aws_iam_policy.crossplane_iam_boundary.arn
 		error_message="Creating principals and changing their policies must require the permissions boundary"
 	}
 	assert {
-		condition=toset(data.aws_iam_policy_document.crossplane_iam.statement[1].resources) == toset(["arn:aws:iam::123456789012:role/crossplane/liferay-test/*", "arn:aws:iam::123456789012:user/crossplane/liferay-test/*"])
+		condition=toset(one([for statement in data.aws_iam_policy_document.crossplane_iam.statement : statement if contains(statement.actions, "iam:CreateRole")]).resources) == toset(["arn:aws:iam::123456789012:role/crossplane/liferay-test/*", "arn:aws:iam::123456789012:user/crossplane/liferay-test/*"])
 		error_message="The boundary conditioned actions must target roles and users under the managed path"
 	}
 	assert {
-		condition=contains(data.aws_iam_policy_document.crossplane_iam.statement[2].actions, "iam:UpdateAssumeRolePolicy") && toset(data.aws_iam_policy_document.crossplane_iam.statement[2].resources) == toset(["arn:aws:iam::123456789012:role/crossplane/liferay-test/*", "arn:aws:iam::123456789012:user/crossplane/liferay-test/*"])
+		condition=toset(one([for statement in data.aws_iam_policy_document.crossplane_iam.statement : statement if contains(statement.actions, "iam:UpdateAssumeRolePolicy")]).resources) == toset(["arn:aws:iam::123456789012:role/crossplane/liferay-test/*", "arn:aws:iam::123456789012:user/crossplane/liferay-test/*"])
 		error_message="Trust and lifecycle changes must be confined to principals under the managed path"
 	}
 	assert {
-		condition=toset(data.aws_iam_policy_document.crossplane_iam.statement[3].resources) == toset(["arn:aws:iam::123456789012:policy/crossplane/liferay-test/*"])
+		condition=toset(one([for statement in data.aws_iam_policy_document.crossplane_iam.statement : statement if contains(statement.actions, "iam:CreatePolicy")]).resources) == toset(["arn:aws:iam::123456789012:policy/crossplane/liferay-test/*"])
 		error_message="Managed policy changes must be confined to the managed path"
 	}
 	assert {
@@ -277,7 +277,7 @@ run "should_fence_crossplane_iam_with_a_permissions_boundary" {
 		error_message="crossplane-iam must not be able to remove or replace a permissions boundary"
 	}
 	assert {
-		condition=contains(data.aws_iam_policy_document.crossplane_iam.statement[2].actions, "iam:UntagRole") && contains(data.aws_iam_policy_document.crossplane_iam.statement[3].actions, "iam:UntagPolicy")
+		condition=length(setsubtract(["iam:UntagPolicy", "iam:UntagRole"], flatten([for statement in data.aws_iam_policy_document.crossplane_iam.statement : statement.actions]))) == 0
 		error_message="crossplane-iam must be able to remove the tags it applies to managed roles and policies"
 	}
 	command=plan
