@@ -290,20 +290,10 @@
 			<finder-column name="kaleoDefinitionVersionId" />
 			<finder-column name="completed" />
 		</finder>
-		<finder name="CN_CPK" return-type="Collection">
-			<finder-column name="className" />
-			<finder-column name="classPK" />
-		</finder>
 		<finder name="KII_C_U" return-type="KaleoInstance">
 			<finder-column name="kaleoInstanceId" />
 			<finder-column name="companyId" />
 			<finder-column name="userId" />
-		</finder>
-		<finder name="C_KDN_KDV_CD" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="kaleoDefinitionName" />
-			<finder-column name="kaleoDefinitionVersion" />
-			<finder-column name="completionDate" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="KaleoInstanceToken" remote-service="false">
@@ -425,9 +415,6 @@
 		</finder>
 		<finder name="KaleoInstanceId" return-type="Collection">
 			<finder-column name="kaleoInstanceId" />
-		</finder>
-		<finder name="KaleoTaskInstanceTokenId" return-type="Collection">
-			<finder-column name="kaleoTaskInstanceTokenId" />
 		</finder>
 		<finder name="KITI_T" return-type="Collection">
 			<finder-column name="kaleoInstanceTokenId" />
@@ -783,10 +770,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="assigneeClassPK" />
 		</finder>
-		<finder name="KTITI_ACN" return-type="Collection">
-			<finder-column name="kaleoTaskInstanceTokenId" />
-			<finder-column name="assigneeClassName" />
-		</finder>
 		<finder name="ACN_ACPK" return-type="Collection">
 			<finder-column name="assigneeClassName" />
 			<finder-column name="assigneeClassPK" />
@@ -840,9 +823,6 @@
 		</finder>
 		<finder name="KaleoDefinitionVersionId" return-type="Collection">
 			<finder-column name="kaleoDefinitionVersionId" />
-		</finder>
-		<finder name="KaleoNodeId" return-type="Collection">
-			<finder-column name="kaleoNodeId" />
 		</finder>
 		<finder name="KaleoTaskId" return-type="Collection">
 			<finder-column name="kaleoTaskId" />
@@ -901,14 +881,8 @@
 		<finder name="KaleoInstanceId" return-type="Collection">
 			<finder-column name="kaleoInstanceId" />
 		</finder>
-		<finder name="KaleoTaskId" return-type="Collection">
-			<finder-column name="kaleoTaskId" />
-		</finder>
 		<finder name="KaleoTaskInstanceTokenId" return-type="Collection">
 			<finder-column name="kaleoTaskInstanceTokenId" />
-		</finder>
-		<finder name="KaleoTaskFormId" return-type="KaleoTaskFormInstance">
-			<finder-column name="kaleoTaskFormId" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="KaleoTaskInstanceToken" remote-service="true">
@@ -1079,10 +1053,6 @@
 
 		<finder name="KaleoInstanceId" return-type="Collection">
 			<finder-column name="kaleoInstanceId" />
-		</finder>
-		<finder name="KITI_KTI" return-type="KaleoTimerInstanceToken">
-			<finder-column name="kaleoInstanceTokenId" />
-			<finder-column name="kaleoTimerId" />
 		</finder>
 		<finder name="KITI_C" return-type="Collection">
 			<finder-column name="kaleoInstanceTokenId" />
