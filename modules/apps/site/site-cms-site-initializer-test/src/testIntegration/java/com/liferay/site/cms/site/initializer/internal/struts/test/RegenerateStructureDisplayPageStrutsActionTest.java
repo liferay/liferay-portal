@@ -312,8 +312,8 @@ public class RegenerateStructureDisplayPageStrutsActionTest {
 		Assert.assertEquals(
 			LanguageUtil.get(
 				LocaleUtil.getDefault(),
-				"for-now-the-file-is-only-reachable-through-the-friendly-url-" +
-					"of-the-default-language"),
+				"the-file-is-only-reachable-through-the-friendly-url-of-the-" +
+					"default-language"),
 			elementTextJSONObject.getString(
 				LocaleUtil.toLanguageId(LocaleUtil.getDefault())));
 	}

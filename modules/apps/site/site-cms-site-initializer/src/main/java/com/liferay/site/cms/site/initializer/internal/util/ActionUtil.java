@@ -1102,8 +1102,8 @@ public class ActionUtil {
 				LocaleUtil.toLanguageId(locale),
 				LanguageUtil.get(
 					locale,
-					"for-now-the-file-is-only-reachable-through-the-friendly-" +
-						"url-of-the-default-language"));
+					"the-file-is-only-reachable-through-the-friendly-url-of-" +
+						"the-default-language"));
 		}
 
 		return JSONUtil.toString(

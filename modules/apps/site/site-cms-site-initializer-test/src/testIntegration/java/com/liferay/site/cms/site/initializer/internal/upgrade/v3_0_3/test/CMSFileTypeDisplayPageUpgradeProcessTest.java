@@ -279,8 +279,8 @@ public class CMSFileTypeDisplayPageUpgradeProcessTest {
 		Assert.assertEquals(
 			LanguageUtil.get(
 				LocaleUtil.fromLanguageId(defaultLanguageId),
-				"for-now-the-file-is-only-reachable-through-the-friendly-url-" +
-					"of-the-default-language"),
+				"the-file-is-only-reachable-through-the-friendly-url-of-the-" +
+					"default-language"),
 			elementTextJSONObject.getString(defaultLanguageId));
 	}
 
