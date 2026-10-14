@@ -129,19 +129,9 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
-		<finder name="ParentCommercePriceListId" return-type="Collection">
-			<finder-column name="parentCommercePriceListId" />
-		</finder>
 		<finder name="G_C" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="companyId" />
-		</finder>
-		<finder name="G_CBPL" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="catalogBasePriceList" />
 		</finder>
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="companyId" />
@@ -414,10 +404,6 @@
 		<finder name="C_M" return-type="CommerceTierPriceEntry" unique="true">
 			<finder-column name="commercePriceEntryId" />
 			<finder-column name="minQuantity" />
-		</finder>
-		<finder name="C_LteM" return-type="Collection">
-			<finder-column name="commercePriceEntryId" />
-			<finder-column comparator="&lt;=" name="minQuantity" />
 		</finder>
 		<finder name="C_S" return-type="Collection">
 			<finder-column name="commercePriceEntryId" />
