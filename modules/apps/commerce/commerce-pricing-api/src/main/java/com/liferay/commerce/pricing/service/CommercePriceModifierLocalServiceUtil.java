@@ -375,12 +375,6 @@ public class CommercePriceModifierLocalServiceUtil {
 			commercePriceListId, start, end, orderByComparator);
 	}
 
-	public static List<CommercePriceModifier> getCommercePriceModifiers(
-		long companyId, String target) {
-
-		return getService().getCommercePriceModifiers(companyId, target);
-	}
-
 	/**
 	 * Returns all the commerce price modifiers matching the UUID and company.
 	 *
@@ -528,4 +522,4 @@ public class CommercePriceModifierLocalServiceUtil {
 			CommercePriceModifierLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-567262027
+// LIFERAY-SERVICE-BUILDER-HASH:1418700268
