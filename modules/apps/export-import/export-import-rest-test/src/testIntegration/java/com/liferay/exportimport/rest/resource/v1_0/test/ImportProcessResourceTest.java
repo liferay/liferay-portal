@@ -480,10 +480,12 @@ public class ImportProcessResourceTest
 			"allModelAdditionCountersTotal", 100L);
 		backgroundTaskStatus.setAttribute(
 			"currentModelAdditionCountersTotal", 50L);
+		backgroundTaskStatus.setAttribute("phaseIndex", 1);
+		backgroundTaskStatus.setAttribute("phasesTotal", 2);
 
 		return new ProcessProgress() {
 			{
-				percentage = 50;
+				percentage = 75;
 			}
 		};
 	}
