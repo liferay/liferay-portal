@@ -1,0 +1,24 @@
+apiVersion: cx.liferay.com/v1alpha1
+kind: ClientExtension
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    labels:
+        {{- include "liferay-client-extension.labels" . | nindent 8 }}
+    name: {{ include "liferay-client-extension.fullname" . }}
+spec:
+    configs:
+        {{- required "clientExtension.configs is required" .Values.clientExtension.configs | toYaml | nindent 8 }}
+    {{- with .Values.clientExtension.domain }}
+    domain: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.clientExtension.dxpNamespace }}
+    dxpNamespace: {{ . | quote }}
+    {{- end }}
+    serviceId: {{ include "liferay-client-extension.serviceId" . }}
+    virtualInstanceId: {{ .Values.clientExtension.virtualInstanceId | quote }}
+    {{- if .Values.workload.enabled }}
+    workloadRef:
+        kind: {{ .Values.workload.kind }}
+        name: {{ include "liferay-client-extension.workloadName" . }}
+    {{- end }}

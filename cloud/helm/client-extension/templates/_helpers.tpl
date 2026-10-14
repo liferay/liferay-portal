@@ -49,3 +49,13 @@ app.kubernetes.io/name: {{ include "liferay-client-extension.serviceId" . }}
 {{- define "liferay-client-extension.serviceId" -}}
 {{- required "clientExtension.serviceId is required" .Values.clientExtension.serviceId }}
 {{- end }}
+
+{{- define "liferay-client-extension.workloadName" -}}
+{{- $fullname := include "liferay-client-extension.fullname" . }}
+{{- if eq .Values.workload.kind "Job" }}
+{{- $podTemplate := print (include "liferay-client-extension.podTemplateMetadata" .) (include "liferay-client-extension.podSpec" .) }}
+{{- printf "%s-%s" ($fullname | trunc 54 | trimSuffix "-") ($podTemplate | sha256sum | trunc 8) }}
+{{- else }}
+{{- $fullname }}
+{{- end }}
+{{- end }}
