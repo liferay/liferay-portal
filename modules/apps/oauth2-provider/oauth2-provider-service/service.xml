@@ -71,9 +71,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="OAuth2ApplicationId" return-type="Collection">
 			<finder-column name="oAuth2ApplicationId" />
 		</finder>
