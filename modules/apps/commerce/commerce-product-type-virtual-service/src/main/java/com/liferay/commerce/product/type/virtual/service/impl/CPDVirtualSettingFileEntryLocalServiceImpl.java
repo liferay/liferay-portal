@@ -90,12 +90,6 @@ public class CPDVirtualSettingFileEntryLocalServiceImpl
 	}
 
 	@Override
-	public int countByFileEntryId(long fileEntryId) {
-		return cpdVirtualSettingFileEntryPersistence.countByFileEntryId(
-			fileEntryId);
-	}
-
-	@Override
 	public void deleteCPDVirtualSettingFileEntries(
 			long cpDefinitionVirtualSettingId)
 		throws PortalException {
