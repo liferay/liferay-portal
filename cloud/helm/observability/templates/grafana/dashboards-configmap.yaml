@@ -51,6 +51,15 @@
 {{- $gitHref = .Values.centralHub.gitURL -}}
 {{- $gitTileStyle = $activeTileStyle -}}
 {{- end -}}
+{{- $monitoringTiles := concat (list
+    (dict "alert" true "emoji" "🔔" "href" "/alerting/list" "subtitle" "Active Firing and Rules" "title" "Alerts")
+    (dict "emoji" "📦" "href" "/d/kubernetes-workloads/kubernetes-workloads" "subtitle" "Usage and Pods" "title" "Workloads")
+    (dict "emoji" "💾" "href" "/d/backups/backups" "subtitle" "Data Recovery" "title" "Backups")
+    (dict "emoji" "🛢️" "href" "/d/databases/databases" "subtitle" "DB Health" "title" "Databases")
+    (dict "emoji" "⚖️" "href" "/d/load-balancers/load-balancers" "subtitle" "Traffic Status" "title" "Load Balancers")
+) .Values.centralHub.monitoringTiles -}}
+{{- $monitoringColumnSize := div (add (len $monitoringTiles) 1) 2 -}}
+{{- $monitoringColumns := list (slice $monitoringTiles 0 $monitoringColumnSize) (slice $monitoringTiles $monitoringColumnSize) -}}
 {{- $dashboardHeaders := dict
     "backups" (dict "subtitle" "View backup history and status across the platform." "title" "Backups")
     "databases" (dict "subtitle" "Monitor database instance health and operational metrics." "title" "Database Health")
@@ -80,7 +89,7 @@
 {{- $rendered = $rendered | replace "\"${AZURE_BACKUP_HTML}\"" (tpl ($.Files.Get "dashboards/html/azure-backup.html") $azureBackupCtx | toJson) -}}
 {{- end -}}
 {{- if eq $key "central-hub" -}}
-{{- $centralHubCtx := dict "argocdDescription" $argocdDescription "argocdHref" $argocdHref "argocdTileStyle" $argocdTileStyle "argoWfDescription" $argoWfDescription "argoWfHref" $argoWfHref "argoWfTileStyle" $argoWfTileStyle "gitDescription" $gitDescription "gitHref" $gitHref "gitTileStyle" $gitTileStyle -}}
+{{- $centralHubCtx := dict "argocdDescription" $argocdDescription "argocdHref" $argocdHref "argocdTileStyle" $argocdTileStyle "argoWfDescription" $argoWfDescription "argoWfHref" $argoWfHref "argoWfTileStyle" $argoWfTileStyle "gitDescription" $gitDescription "gitHref" $gitHref "gitTileStyle" $gitTileStyle "monitoringColumns" $monitoringColumns -}}
 {{- $rendered = $rendered | replace "\"${CENTRAL_HUB_HTML}\"" (tpl ($.Files.Get "dashboards/html/central-hub.html") $centralHubCtx | toJson) -}}
 {{- end }}
 ---

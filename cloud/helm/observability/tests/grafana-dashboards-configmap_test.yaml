@@ -4,6 +4,30 @@ templates:
 tests:
     -   asserts:
             -   matchRegex:
+                    path: data["central-hub.json"]
+                    pattern: Databases.*ch-monitor-col.*Load Balancers
+            -   matchRegex:
+                    path: data["central-hub.json"]
+                    pattern: Load Balancers.*href=../d/widgets/widgets.*🧩.*Widgets.*Widget Health.*Gadgets
+            -   notMatchRegex:
+                    path: data["central-hub.json"]
+                    pattern: Backups.*ch-monitor-col.*Databases
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-central-hub
+        it: Appends the tiles from centralHub.monitoringTiles to the monitoring tiles and balances both columns
+        set:
+            centralHub.monitoringTiles:
+                -   emoji: 🧩
+                    href: /d/widgets/widgets
+                    subtitle: Widget Health
+                    title: Widgets
+                -   emoji: ⚙️
+                    href: /d/gadgets/gadgets
+                    subtitle: Gadget Health
+                    title: Gadgets
+    -   asserts:
+            -   matchRegex:
                     path: data["backups.json"]
                     pattern: where \$__timeFilter\(\$\{timeField\}\)\\n\| where status in \(.Cancelled., .Completed., .CompletedWithWarnings., .Failed.\)\\n[^"]*where status in \(.Completed., .CompletedWithWarnings.\)\\n\| summarize \[.Successful Runs.\] = count\(\)
             -   matchRegex:
@@ -351,3 +375,11 @@ tests:
         set:
             cloudProvider: gcp
             gcp.clusterName: liferay-test-gke
+    -   asserts:
+            -   matchRegex:
+                    path: data["central-hub.json"]
+                    pattern: Backups.*ch-monitor-col.*Databases
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-central-hub
+        it: Splits the built-in monitoring tiles three to two when centralHub.monitoringTiles is empty

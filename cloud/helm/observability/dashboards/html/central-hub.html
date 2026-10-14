@@ -103,54 +103,22 @@
 			</div>
 
 			<div class="ch-monitor-cols">
-				<div class="ch-monitor-col">
-					<a class="ch-monitor-tile ch-monitor-tile-alert" href="/alerting/list">
-						<div class="ch-tile-icon">
-							<span class="ch-monitor-emoji">🔔</span>
-						</div>
-
-						<div class="ch-monitor-title ch-monitor-title-alert">Alerts</div>
-						<div class="ch-monitor-sub ch-monitor-sub-alert">Active Firing and Rules</div>
-					</a>
-
-					<a class="ch-monitor-tile" href="/d/kubernetes-workloads/kubernetes-workloads">
-						<div class="ch-tile-icon">
-							<span class="ch-monitor-emoji">📦</span>
-						</div>
-
-						<div class="ch-monitor-title">Workloads</div>
-						<div class="ch-monitor-sub">Usage and Pods</div>
-					</a>
-
-					<a class="ch-monitor-tile" href="/d/backups/backups">
-						<div class="ch-tile-icon">
-							<span class="ch-monitor-emoji">💾</span>
-						</div>
-
-						<div class="ch-monitor-title">Backups</div>
-						<div class="ch-monitor-sub">Data Recovery</div>
-					</a>
-				</div>
+				{{- range .monitoringColumns }}
 
 				<div class="ch-monitor-col">
-					<a class="ch-monitor-tile" href="/d/databases/databases">
+					{{- range . }}
+
+					<a class="ch-monitor-tile{{ if .alert }} ch-monitor-tile-alert{{ end }}" href="{{ .href }}">
 						<div class="ch-tile-icon">
-							<span class="ch-monitor-emoji">🛢️</span>
+							<span class="ch-monitor-emoji">{{ .emoji }}</span>
 						</div>
 
-						<div class="ch-monitor-title">Databases</div>
-						<div class="ch-monitor-sub">DB Health</div>
+						<div class="ch-monitor-title{{ if .alert }} ch-monitor-title-alert{{ end }}">{{ .title }}</div>
+						<div class="ch-monitor-sub{{ if .alert }} ch-monitor-sub-alert{{ end }}">{{ .subtitle }}</div>
 					</a>
-
-					<a class="ch-monitor-tile" href="/d/load-balancers/load-balancers">
-						<div class="ch-tile-icon">
-							<span class="ch-monitor-emoji">⚖️</span>
-						</div>
-
-						<div class="ch-monitor-title">Load Balancers</div>
-						<div class="ch-monitor-sub">Traffic Status</div>
-					</a>
+					{{- end }}
 				</div>
+				{{- end }}
 			</div>
 		</div>
 	</div>

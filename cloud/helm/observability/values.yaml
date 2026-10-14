@@ -539,6 +539,7 @@ centralHub:
     argoWorkflowsURL: ""
     argocdURL: ""
     gitURL: ""
+    monitoringTiles: []
 cloudProvider: ""
 customLabels: {}
 dashboards:
