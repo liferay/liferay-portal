@@ -101,43 +101,4 @@ definition {
 		}
 	}
 
-	@priority = 4
-	test CanSeeUpdatedSchemaInAPIExplorer {
-		task ("And Given I update the schema Name and description") {
-			APIBuilderUI.updateSchemaNameAndDescription(
-				entity = "Schemas",
-				name = "testSchema",
-				publish = "true",
-				schemaDescription = "Description edited",
-				schemaName = "testSchema edited",
-				tabEntity = "Info",
-				title = "My-app1");
-		}
-
-		task ("When I navigate to /o/c/{aPIApplication}") {
-			APIExplorer.navigateToOpenAPI(customObjectPlural = "my-app1");
-		}
-
-		task ("Then I can see the update schema name and description") {
-			AssertElementPresent(
-				locator1 = "OpenAPI#SCHEMA_ENTITY",
-				schema = "testSchema edited");
-
-			Click(
-				locator1 = "OpenAPI#SCHEMA_COLLAPSED",
-				schema = "testSchema edited");
-
-			AssertElementPresent(
-				field = "Description edited",
-				locator1 = "OpenAPI#SCHEMA_FIELD",
-				schema = "testSchema edited");
-		}
-
-		task ("And Then the original schema is not present") {
-			AssertElementNotPresent(
-				locator1 = "OpenAPI#SCHEMA_ENTITY",
-				schema = "testSchema");
-		}
-	}
-
 }

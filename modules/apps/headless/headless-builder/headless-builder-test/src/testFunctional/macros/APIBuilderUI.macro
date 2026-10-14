@@ -348,10 +348,6 @@ definition {
 			locator1 = "APIBuilder#DROPDOWN_MENU");
 
 		Click(locator1 = "APIBuilder#DELETE_IN_DROPDOWN_MENU");
-
-		if (isSet(confirmDeletion)) {
-			Click(locator1 = "APIBuilder#MODAL_DELETE_BUTTON");
-		}
 	}
 
 	@summary = "Default summary"
@@ -365,10 +361,6 @@ definition {
 			locator1 = "APIBuilder#DROPDOWN_MENU");
 
 		Click(locator1 = "APIBuilder#DELETE_IN_DROPDOWN_MENU");
-
-		if (isSet(confirmDeletion)) {
-			Click(locator1 = "APIBuilder#MODAL_DELETE_BUTTON");
-		}
 	}
 
 	@summary = "Default summary"

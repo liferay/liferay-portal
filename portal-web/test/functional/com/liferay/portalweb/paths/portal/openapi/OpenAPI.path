@@ -19,11 +19,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>SCHEMA_FIELD</td>
-	<td>//div[@id='model-${schema}']//td[contains(.,'${field}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>SCHEMA_COLLAPSED</td>
 	<td>//div[(@id='model-${schema}')]//span[contains(@class,'collapsed')]</td>
 	<td></td>

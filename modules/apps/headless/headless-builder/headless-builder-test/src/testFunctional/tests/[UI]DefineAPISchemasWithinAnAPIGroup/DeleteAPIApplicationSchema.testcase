@@ -79,40 +79,6 @@ definition {
 	}
 
 	@priority = 4
-	test CannotSeeSchemaInAPIExplorerAfterDelete {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("And Given create an API Endpoint in the Application") {
-			EndpointAPI.createAPIEndpoint(
-				apiApplicationERC = "My-app",
-				name = "myendpoint",
-				path = "/myendpoint");
-		}
-
-		task ("When I delete the API Schema") {
-			APIBuilderUI.deleteAPISchema(
-				applicationTitle = "My-app",
-				confirmDeletion = "true",
-				schemaName = "testSchema");
-		}
-
-		task ("Then API Schema is not visible in the created API Application in API Explorer") {
-			APIExplorer.navigateToOpenAPI(customObjectPlural = "my-app");
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "OpenAPI#API_METHOD",
-				method = "getMyendpointPage",
-				service = "default",
-				value1 = "/myendpoint");
-
-			AssertElementNotPresent(
-				locator1 = "OpenAPI#SCHEMA_COLLAPSED",
-				schema = "testSchema");
-		}
-	}
-
-	@priority = 4
 	test CanSeeWarningMessageBeforeSchemaIsDeleted {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

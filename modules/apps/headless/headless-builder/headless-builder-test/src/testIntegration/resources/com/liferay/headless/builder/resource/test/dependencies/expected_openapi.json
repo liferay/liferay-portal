@@ -1,6 +1,16 @@
 {
 	"components": {
 		"schemas": {
+			"AddedSchemaName": {
+				"description": "description",
+				"properties": {
+					"addedTextProperty": {
+						"description": "description",
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
 			"Facet": {
 				"properties": {
 					"facetCriteria": {
@@ -167,6 +177,48 @@
 					"name": "ListEntry"
 				}
 			},
+			"PageAddedSchemaName": {
+				"properties": {
+					"actions": {
+						"additionalProperties": {
+							"additionalProperties": {
+								"type": "string"
+							},
+							"type": "object"
+						},
+						"type": "object"
+					},
+					"facets": {
+						"items": {
+							"$ref": "#/components/schemas/Facet"
+						},
+						"type": "array"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/AddedSchemaName"
+						},
+						"type": "array"
+					},
+					"lastPage": {
+						"format": "int64",
+						"type": "integer"
+					},
+					"page": {
+						"format": "int64",
+						"type": "integer"
+					},
+					"pageSize": {
+						"format": "int64",
+						"type": "integer"
+					},
+					"totalCount": {
+						"format": "int64",
+						"type": "integer"
+					}
+				},
+				"type": "object"
+			},
 			"PageSchemaName": {
 				"properties": {
 					"actions": {
@@ -247,46 +299,6 @@
 					"totalCount": {
 						"format": "int64",
 						"type": "integer"
-					}
-				},
-				"type": "object"
-			},
-			"RecordSchemaName": {
-				"description": "description",
-				"properties": {
-					"recordProperty1": {
-						"description": "description",
-						"type": "object"
-					},
-					"recordProperty2": {
-						"description": "description",
-						"properties": {
-							"recordProperty3": {
-								"description": "description",
-								"type": "object"
-							},
-							"textProperty": {
-								"description": "description",
-								"type": "string"
-							}
-						},
-						"type": "object"
-					},
-					"recordProperty4": {
-						"description": "description",
-						"properties": {
-							"recordProperty5": {
-								"description": "description",
-								"properties": {
-									"longTextProperty": {
-										"description": "description",
-										"type": "string"
-									}
-								},
-								"type": "object"
-							}
-						},
-						"type": "object"
 					}
 				},
 				"type": "object"
@@ -423,6 +435,46 @@
 					}
 				},
 				"type": "object"
+			},
+			"UpdatedRecordSchemaName": {
+				"description": "updated description",
+				"properties": {
+					"recordProperty1": {
+						"description": "description",
+						"type": "object"
+					},
+					"recordProperty2": {
+						"description": "description",
+						"properties": {
+							"recordProperty3": {
+								"description": "description",
+								"type": "object"
+							},
+							"textProperty": {
+								"description": "description",
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"recordProperty4": {
+						"description": "description",
+						"properties": {
+							"recordProperty5": {
+								"description": "description",
+								"properties": {
+									"longTextProperty": {
+										"description": "description",
+										"type": "string"
+									}
+								},
+								"type": "object"
+							}
+						},
+						"type": "object"
+					}
+				},
+				"type": "object"
 			}
 		}
 	},
@@ -437,6 +489,101 @@
 	},
 	"openapi": "3.0.1",
 	"paths": {
+		"/added-path": {
+			"get": {
+				"operationId": "getAddedPathPage",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "filter",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pageSize",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sort",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"default": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PageAddedSchemaName"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/PageAddedSchemaName"
+								}
+							}
+						},
+						"description": "default response"
+					}
+				},
+				"tags": [
+					"AddedSchemaName"
+				]
+			}
+		},
+		"/company-scoped-no-schema": {
+			"get": {
+				"operationId": "getCompanyScopedNoSchemaPage",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "filter",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pageSize",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sort",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "default response"
+					}
+				}
+			}
+		},
 		"/openapi.{type}": {
 			"get": {
 				"operationId": "getOpenAPI",
