@@ -515,17 +515,14 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			"user");
 
 		for (Element userAssignmentElement : userAssignmentElements) {
-			long userId = GetterUtil.getLong(
-				userAssignmentElement.elementTextTrim("user-id"));
-			String screenName = userAssignmentElement.elementTextTrim(
-				"screen-name");
-			String emailAddress = userAssignmentElement.elementTextTrim(
-				"email-address");
-
-			UserAssignment userAssignment = new UserAssignment(
-				userId, screenName, emailAddress);
-
-			assignments.add(userAssignment);
+			assignments.add(
+				new UserAssignment(
+					userAssignmentElement.elementTextTrim(
+						"user-external-reference-code"),
+					GetterUtil.getLong(
+						userAssignmentElement.elementTextTrim("user-id")),
+					userAssignmentElement.elementTextTrim("screen-name"),
+					userAssignmentElement.elementTextTrim("email-address")));
 		}
 
 		return assignments;
@@ -927,15 +924,13 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			"user");
 
 		for (Element userRecipientElement : userRecipientElements) {
-			long userId = GetterUtil.getLong(
-				userRecipientElement.elementTextTrim("user-id"));
-			String screenName = userRecipientElement.elementTextTrim(
-				"screen-name");
-			String emailAddress = userRecipientElement.elementTextTrim(
-				"email-address");
-
 			UserRecipient userRecipient = new UserRecipient(
-				userId, screenName, emailAddress);
+				userRecipientElement.elementTextTrim(
+					"user-external-reference-code"),
+				GetterUtil.getLong(
+					userRecipientElement.elementTextTrim("user-id")),
+				userRecipientElement.elementTextTrim("screen-name"),
+				userRecipientElement.elementTextTrim("email-address"));
 
 			userRecipient.setNotificationReceptionType(
 				notificationReceptionType);

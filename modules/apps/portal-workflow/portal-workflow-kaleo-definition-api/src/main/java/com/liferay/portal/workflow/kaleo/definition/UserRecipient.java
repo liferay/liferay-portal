@@ -20,8 +20,16 @@ public class UserRecipient extends Recipient {
 	}
 
 	public UserRecipient(long userId, String screenName, String emailAddress) {
+		this(null, userId, screenName, emailAddress);
+	}
+
+	public UserRecipient(
+		String externalReferenceCode, long userId, String screenName,
+		String emailAddress) {
+
 		super(RecipientType.USER);
 
+		_externalReferenceCode = GetterUtil.getString(externalReferenceCode);
 		_userId = userId;
 		_screenName = GetterUtil.getString(screenName);
 		_emailAddress = GetterUtil.getString(emailAddress);
@@ -40,6 +48,8 @@ public class UserRecipient extends Recipient {
 		UserRecipient userRecipient = (UserRecipient)object;
 
 		if (Objects.equals(_emailAddress, userRecipient._emailAddress) &&
+			Objects.equals(
+				_externalReferenceCode, userRecipient._externalReferenceCode) &&
 			Objects.equals(_screenName, userRecipient._screenName) &&
 			(_userId == userRecipient._userId)) {
 
@@ -53,6 +63,10 @@ public class UserRecipient extends Recipient {
 		return _emailAddress;
 	}
 
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
+	}
+
 	public String getScreenName() {
 		return _screenName;
 	}
@@ -63,7 +77,8 @@ public class UserRecipient extends Recipient {
 
 	@Override
 	public int hashCode() {
-		String s = StringBundler.concat(_emailAddress, _screenName, _userId);
+		String s = StringBundler.concat(
+			_emailAddress, _externalReferenceCode, _screenName, _userId);
 
 		return s.hashCode();
 	}
@@ -71,11 +86,13 @@ public class UserRecipient extends Recipient {
 	@Override
 	public String toString() {
 		return StringBundler.concat(
-			"{emailAddress=", _emailAddress, ", screenName=", _screenName,
-			", userId=", _userId, "}");
+			"{emailAddress=", _emailAddress, ", externalReferenceCode=",
+			_externalReferenceCode, ", screenName=", _screenName, ", userId=",
+			_userId, "}");
 	}
 
 	private final String _emailAddress;
+	private final String _externalReferenceCode;
 	private final String _screenName;
 	private long _userId;
 
