@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.persistence.LayoutRevisionPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetBranchPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.base.LayoutBranchLocalServiceBaseImpl;
 
@@ -161,15 +160,6 @@ public class LayoutBranchLocalServiceImpl
 		for (LayoutBranch layoutBranch : layoutBranches) {
 			deleteLayoutBranch(layoutBranch.getLayoutBranchId());
 		}
-	}
-
-	@Override
-	public List<LayoutBranch> getLayoutBranches(
-		long layoutSetBranchId, long plid, int start, int end,
-		OrderByComparator<LayoutBranch> orderByComparator) {
-
-		return layoutBranchPersistence.findByL_P(
-			layoutSetBranchId, plid, start, end, orderByComparator);
 	}
 
 	@Override
