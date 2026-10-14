@@ -9,6 +9,12 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.db.partition.util.DBPartitionUtil;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBInspector;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -27,7 +33,9 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.CompanyDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.DataCleanupPreupgradeProcessSuite;
+import com.liferay.portal.upgrade.data.cleanup.DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,6 +49,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -221,6 +230,84 @@ public class DataCleanupPreupgradeProcessSuiteTest
 
 		Assert.assertFalse(_cleanupMessages.contains(_SUCCESS_MESSAGE_2));
 		Assert.assertTrue(_cleanupMessages.contains(_SUCCESS_MESSAGE_1));
+	}
+
+	@Test
+	public void testDataCleanupPreupgradeProcessesSuiteWithIncorrectlyCasedTable()
+		throws Exception {
+
+		DB db = DBManagerUtil.getDB();
+
+		Assume.assumeTrue(
+			(db.getDBType() == DBType.MARIADB) ||
+			(db.getDBType() == DBType.MYSQL));
+
+		DataCleanupPreupgradeProcess
+			databaseTableAndColumnCaseDataCleanupPreupgradeProcess =
+				new DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess();
+
+		ReflectionTestUtil.setFieldValue(
+			this, "_dataCleanupPreupgradeProcessesMap",
+			HashMapBuilder.
+				<DataCleanupPreupgradeProcess,
+				 List<DataCleanupPreupgradeProcess>>put(
+					new CompanyDataCleanupPreupgradeProcess(),
+					DataCleanupPreupgradeProcess.dependsOn(
+						databaseTableAndColumnCaseDataCleanupPreupgradeProcess)
+				).put(
+					databaseTableAndColumnCaseDataCleanupPreupgradeProcess,
+					DataCleanupPreupgradeProcess.dependsOn()
+				).build());
+
+		long phoneId = RandomTestUtil.nextLong();
+
+		DBPartitionUtil.forEachCompanyId(
+			companyId -> {
+				db.runSQL("rename table Phone to phone");
+				db.runSQL(
+					StringBundler.concat(
+						"insert into phone (phoneId, companyId) values (",
+						phoneId, ", ", RandomTestUtil.nextLong(), ")"));
+			});
+
+		try {
+			cleanUp();
+
+			DBPartitionUtil.forEachCompanyId(
+				companyId -> {
+					try (Connection connection = DataAccess.getConnection();
+
+						PreparedStatement preparedStatement =
+							connection.prepareStatement(
+								"select 1 from Phone where phoneId = ?")) {
+
+						preparedStatement.setLong(1, phoneId);
+
+						try (ResultSet resultSet =
+								preparedStatement.executeQuery()) {
+
+							Assert.assertFalse(resultSet.next());
+						}
+					}
+				});
+		}
+		finally {
+			DBPartitionUtil.forEachCompanyId(
+				companyId -> {
+					try (Connection connection = DataAccess.getConnection()) {
+						DBInspector dbInspector = new DBInspector(connection);
+
+						List<String> tableNames = dbInspector.getTableNames(
+							"phone");
+
+						if (tableNames.contains("phone")) {
+							db.runSQL("rename table phone to Phone");
+						}
+					}
+
+					db.runSQL("delete from Phone where phoneId = " + phoneId);
+				});
+		}
 	}
 
 	@Test
