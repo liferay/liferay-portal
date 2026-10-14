@@ -191,11 +191,14 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="user-complex-type">
-		<xs:choice>
-			<xs:element minOccurs="0" name="user-id" type="xs:long" />
-			<xs:element minOccurs="0" name="screen-name" type="xs:string" />
-			<xs:element minOccurs="0" name="email-address" type="email-address-type" />
-		</xs:choice>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="user-external-reference-code" type="xs:string" />
+			<xs:choice>
+				<xs:element minOccurs="0" name="user-id" type="xs:long" />
+				<xs:element minOccurs="0" name="screen-name" type="xs:string" />
+				<xs:element minOccurs="0" name="email-address" type="email-address-type" />
+			</xs:choice>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="ai-decision">
 		<xs:complexType>
