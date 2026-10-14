@@ -7,6 +7,8 @@ package com.liferay.portal.test.rule;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.ClassTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -48,10 +50,17 @@ public class LanguageIdsTestRule extends ClassTestRule<Void> {
 			return null;
 		}
 
+		long companyId = PortalUtil.getDefaultCompanyId();
+
 		_originalAvailableLanguageIds = StringUtil.merge(
-			LocaleUtil.toLanguageIds(LanguageUtil.getAvailableLocales()));
+			LocaleUtil.toLanguageIds(
+				LanguageUtil.getCompanyAvailableLocales(companyId)));
+
+		Company company = CompanyLocalServiceUtil.getCompany(companyId);
+
 		_originalDefaultLanguageId = LocaleUtil.toLanguageId(
-			LocaleUtil.getDefault());
+			company.getLocale());
+
 		_originalLocalesEnabled = PropsValues.LOCALES_ENABLED;
 
 		_setCompanyLocales(
