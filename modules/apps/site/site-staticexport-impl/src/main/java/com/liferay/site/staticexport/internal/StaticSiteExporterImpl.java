@@ -200,15 +200,17 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		for (StaticSiteExportEntryRendering staticSiteExportEntryRendering :
 				staticSiteExportEntryRenderings) {
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					staticSiteExportEntryRendering.getLocale(), locale)) {
 
-				friendlyURLs.addAll(
-					_getDisplayPageFriendlyURLs(
-						group, portalHostNames,
-						staticSiteExportEntryRendering.
-							getStaticSiteExportDocument()));
+				continue;
 			}
+
+			friendlyURLs.addAll(
+				_getDisplayPageFriendlyURLs(
+					group, portalHostNames,
+					staticSiteExportEntryRendering.
+						getStaticSiteExportDocument()));
 		}
 
 		Map<String, StaticSiteExportEntryRendering>
@@ -760,10 +762,12 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		List<String> openGraphLocaleAlternates = new ArrayList<>();
 
 		for (Locale alternateLocale : locales) {
-			if (!Objects.equals(alternateLocale, locale)) {
-				openGraphLocaleAlternates.add(
-					LocaleUtil.toLanguageId(alternateLocale));
+			if (Objects.equals(alternateLocale, locale)) {
+				continue;
 			}
+
+			openGraphLocaleAlternates.add(
+				LocaleUtil.toLanguageId(alternateLocale));
 		}
 
 		Collections.sort(openGraphLocaleAlternates);

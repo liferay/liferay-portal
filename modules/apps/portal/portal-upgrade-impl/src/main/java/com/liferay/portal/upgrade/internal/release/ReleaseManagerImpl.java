@@ -414,14 +414,15 @@ public class ReleaseManagerImpl implements ReleaseManager {
 					_serviceComponentRuntime.getComponentConfigurationDTOs(
 						componentDescriptionDTO)) {
 
-				if (componentConfigurationDTO.state ==
+				if (componentConfigurationDTO.state !=
 						ComponentConfigurationDTO.UNSATISFIED_REFERENCE) {
 
-					unsatisfiedUpgradeStepRegistrators.add(
-						_getUnsatisfiedUpgradeStepRegistrator(
-							componentConfigurationDTO,
-							componentDescriptionDTO));
+					continue;
 				}
+
+				unsatisfiedUpgradeStepRegistrators.add(
+					_getUnsatisfiedUpgradeStepRegistrator(
+						componentConfigurationDTO, componentDescriptionDTO));
 			}
 		}
 
