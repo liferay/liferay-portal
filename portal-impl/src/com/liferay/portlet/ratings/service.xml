@@ -34,11 +34,6 @@
 			<finder-column name="classNameId" />
 			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="classPK" />
 		</finder>
-		<finder name="C_C_S" return-type="Collection">
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
-			<finder-column name="score" />
-		</finder>
 	</entity>
 	<entity local-service="true" name="RatingsStats" remote-service="false">
 
