@@ -79,16 +79,6 @@ public class InlineSQLHelperUtil {
 	}
 
 	public static String replacePermissionCheck(
-		String sql, String className, String classPKField) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField);
-	}
-
-	public static String replacePermissionCheck(
 		String sql, String className, String classPKField, long... groupIds) {
 
 		InlineSQLHelper inlineSQLPermission =
