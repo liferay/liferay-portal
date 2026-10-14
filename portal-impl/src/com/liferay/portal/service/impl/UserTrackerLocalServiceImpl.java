@@ -85,13 +85,6 @@ public class UserTrackerLocalServiceImpl
 		return userTrackerPersistence.remove(userTracker);
 	}
 
-	@Override
-	public List<UserTracker> getUserTrackers(
-		long companyId, int start, int end) {
-
-		return userTrackerPersistence.findByCompanyId(companyId, start, end);
-	}
-
 	@BeanReference(type = UserTrackerPathPersistence.class)
 	private UserTrackerPathPersistence _userTrackerPathPersistence;
 

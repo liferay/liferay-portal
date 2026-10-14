@@ -249,14 +249,6 @@ public class UserGroupRoleLocalServiceImpl
 	}
 
 	@Override
-	public List<UserGroupRole> getUserGroupRolesByUserUserGroupAndGroup(
-		long userId, long groupId) {
-
-		return userGroupRoleFinder.findByUserUserGroupGroupRole(
-			userId, groupId);
-	}
-
-	@Override
 	public int getUserGroupRolesCount(long userId, long groupId) {
 		return userGroupRolePersistence.countByU_G(userId, groupId);
 	}

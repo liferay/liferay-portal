@@ -5,7 +5,6 @@
 
 package com.liferay.user.service.test;
 
-import com.liferay.announcements.kernel.service.AnnouncementsDeliveryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
@@ -1259,32 +1258,6 @@ public class UserLocalServiceTest {
 				allGroupUserIds,
 				ListUtil.toLongArray(
 					partialGroupUsers, User.USER_ID_ACCESSOR)));
-	}
-
-	@Test
-	public void testGetNoAnnouncementsDeliveries() throws Exception {
-		User user1 = UserTestUtil.addUser();
-		User user2 = UserTestUtil.addUser();
-
-		_announcementsDeliveryLocalService.addUserDelivery(
-			user1.getUserId(), "general");
-
-		List<User> users = _userLocalService.getNoAnnouncementsDeliveries(
-			"general");
-
-		Assert.assertFalse(users.toString(), users.contains(user1));
-		Assert.assertTrue(users.toString(), users.contains(user2));
-	}
-
-	@Test
-	public void testGetNoGroups() throws Exception {
-		User user = UserTestUtil.addUser();
-
-		_groupLocalService.deleteGroup(user.getGroupId());
-
-		List<User> users = _userLocalService.getNoGroups();
-
-		Assert.assertTrue(users.toString(), users.contains(user));
 	}
 
 	@Test
@@ -3334,10 +3307,6 @@ public class UserLocalServiceTest {
 	private static String _originalName;
 	private static final Pattern _updatePasswordURLPattern = Pattern.compile(
 		"https?://[^\\s<]*/portal/update_password\\?[^\\s<]*");
-
-	@Inject
-	private AnnouncementsDeliveryLocalService
-		_announcementsDeliveryLocalService;
 
 	@Inject
 	private AssetEntryLocalService _assetEntryLocalService;

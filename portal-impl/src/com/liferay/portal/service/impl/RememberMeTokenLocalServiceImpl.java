@@ -53,19 +53,6 @@ public class RememberMeTokenLocalServiceImpl
 	}
 
 	@Override
-	public void deleteExpiredRememberMeTokens(long userId) {
-		for (RememberMeToken rememberMeToken :
-				rememberMeTokenPersistence.findByUserId(userId)) {
-
-			if (!rememberMeToken.isExpired()) {
-				continue;
-			}
-
-			deleteRememberMeToken(rememberMeToken);
-		}
-	}
-
-	@Override
 	public RememberMeToken fetchRememberMeToken(
 			long rememberMeTokenId, String value)
 		throws PwdEncryptorException {

@@ -59,6 +59,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalFolderLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -1784,10 +1785,20 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 
 		for (User user : users) {
 			List<UserNotificationEvent> userNotificationEvents =
-				_userNotificationEventLocalService.
-					getArchivedUserNotificationEvents(
-						user.getUserId(),
-						UserNotificationDeliveryConstants.TYPE_WEBSITE, false);
+				TransformUtil.transform(
+					_userNotificationEventLocalService.
+						getUserNotificationEvents(user.getUserId()),
+					userNotificationEvent -> {
+						if ((userNotificationEvent.getDeliveryType() !=
+								UserNotificationDeliveryConstants.
+									TYPE_WEBSITE) ||
+							userNotificationEvent.isArchived()) {
+
+							return null;
+						}
+
+						return userNotificationEvent;
+					});
 
 			Assert.assertEquals(
 				userNotificationEvents.toString(), expected,

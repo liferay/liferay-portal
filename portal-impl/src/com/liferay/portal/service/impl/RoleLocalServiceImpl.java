@@ -1070,28 +1070,6 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns all the roles of the subtype.
-	 *
-	 * @param  subtype the role's subtype (optionally <code>null</code>)
-	 * @return the roles of the subtype
-	 */
-	@Override
-	public List<Role> getSubtypeRoles(String subtype) {
-		return rolePersistence.findBySubtype(subtype);
-	}
-
-	/**
-	 * Returns the number of roles of the subtype.
-	 *
-	 * @param  subtype the role's subtype (optionally <code>null</code>)
-	 * @return the number of roles of the subtype
-	 */
-	@Override
-	public int getSubtypeRolesCount(String subtype) {
-		return rolePersistence.countBySubtype(subtype);
-	}
-
-	/**
 	 * Returns the team role in the company.
 	 *
 	 * @param  companyId the primary key of the company
