@@ -168,7 +168,12 @@ public class KaleoNotificationRecipientLocalServiceImpl
 
 			User user = null;
 
-			if (userRecipient.getUserId() > 0) {
+			if (Validator.isNotNull(userRecipient.getExternalReferenceCode())) {
+				user = _userLocalService.getUserByExternalReferenceCode(
+					userRecipient.getExternalReferenceCode(),
+					serviceContext.getCompanyId());
+			}
+			else if (userRecipient.getUserId() > 0) {
 				user = _userLocalService.getUser(userRecipient.getUserId());
 			}
 			else if (Validator.isNotNull(userRecipient.getScreenName())) {

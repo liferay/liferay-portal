@@ -192,7 +192,14 @@ public class KaleoTaskAssignmentLocalServiceImpl
 
 			User user = null;
 
-			if (userAssignment.getUserId() > 0) {
+			if (Validator.isNotNull(
+					userAssignment.getExternalReferenceCode())) {
+
+				user = _userLocalService.getUserByExternalReferenceCode(
+					userAssignment.getExternalReferenceCode(),
+					serviceContext.getCompanyId());
+			}
+			else if (userAssignment.getUserId() > 0) {
 				user = _userLocalService.getUser(userAssignment.getUserId());
 			}
 			else if (Validator.isNotNull(userAssignment.getEmailAddress())) {
