@@ -279,12 +279,14 @@ public class BrokenLinkAssetSearcher {
 		for (Bucket bucket : termsAggregationResult.getBuckets()) {
 			String key = bucket.getKey();
 
-			if (key.length() > outboundLinkPrefix.length()) {
-				nextCharacters.add(
-					new String(
-						Character.toChars(
-							key.codePointAt(outboundLinkPrefix.length()))));
+			if (key.length() <= outboundLinkPrefix.length()) {
+				continue;
 			}
+
+			nextCharacters.add(
+				new String(
+					Character.toChars(
+						key.codePointAt(outboundLinkPrefix.length()))));
 		}
 
 		return nextCharacters;
