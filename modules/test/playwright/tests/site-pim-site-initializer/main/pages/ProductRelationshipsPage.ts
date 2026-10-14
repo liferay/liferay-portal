@@ -52,10 +52,21 @@ export class ProductRelationshipsPage {
 		}
 	}
 
+	async clickItemAction(action: string, name: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: action,
+			}),
+			trigger: this.getRelatedProduct(name).getByRole('button', {
+				name: `${name} Actions`,
+			}),
+		});
+	}
+
 	async removeRelationship(name: string) {
-		await this.getRelatedProduct(name)
-			.getByRole('button', {name: 'Remove'})
-			.click();
+		await this.clickItemAction('Remove', name);
 
 		await this.page
 			.locator('.modal-content')

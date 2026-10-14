@@ -229,3 +229,39 @@ test(
 		}
 	}
 );
+
+test(
+	'View a related product from the row menu',
+	{tag: ['@LPD-109922']},
+	async ({productPage, productRelationshipsPage, productsPage}) => {
+		const productTitle1 = getRandomString();
+		const productTitle2 = getRandomString();
+
+		try {
+			await createProduct(productTitle1, productPage, productsPage);
+			await createProduct(productTitle2, productPage, productsPage);
+
+			await openRelationships(
+				productTitle1,
+				productPage,
+				productRelationshipsPage,
+				productsPage
+			);
+
+			await productRelationshipsPage.addRelationships([productTitle2]);
+
+			await productRelationshipsPage.clickItemAction(
+				'View',
+				productTitle2
+			);
+
+			await expect(productPage.title).toHaveValue(productTitle2);
+		}
+		finally {
+			await productsPage.goto();
+
+			await productsPage.deleteProduct(productTitle1);
+			await productsPage.deleteProduct(productTitle2);
+		}
+	}
+);
