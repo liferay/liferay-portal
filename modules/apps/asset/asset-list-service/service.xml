@@ -47,10 +47,6 @@
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column comparator="LIKE" name="title" />
 		</finder>
-		<finder name="G_TY" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="type" />
-		</finder>
 		<finder name="G_AET" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column arrayable-operator="OR" name="assetEntryType" />
