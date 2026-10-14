@@ -1442,21 +1442,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 	@Override
 	public List<WikiPage> getPages(
-		long userId, long nodeId, int status, int start, int end) {
-
-		if (userId > 0) {
-			return wikiPagePersistence.findByU_N_S(
-				userId, nodeId, status, start, end,
-				PageCreateDateComparator.getInstance(false));
-		}
-
-		return wikiPagePersistence.findByN_S(
-			nodeId, status, start, end,
-			PageCreateDateComparator.getInstance(false));
-	}
-
-	@Override
-	public List<WikiPage> getPages(
 		long groupId, long nodeId, int status, long statusByUserId) {
 
 		return dslQuery(
@@ -1505,11 +1490,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<WikiPage> getPages(String format) {
-		return wikiPagePersistence.findByFormat(format);
-	}
-
-	@Override
 	public int getPagesCount(long nodeId) {
 		return wikiPagePersistence.countByNodeId(nodeId);
 	}
@@ -1531,20 +1511,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	@Override
-	public int getPagesCount(long nodeId, int status) {
-		return wikiPagePersistence.countByN_S(nodeId, status);
-	}
-
-	@Override
-	public int getPagesCount(long userId, long nodeId, int status) {
-		if (userId > 0) {
-			return wikiPagePersistence.countByU_N_S(userId, nodeId, status);
-		}
-
-		return wikiPagePersistence.countByN_S(nodeId, status);
-	}
-
-	@Override
 	public int getPagesCount(long nodeId, String title) {
 		return wikiPagePersistence.countByN_T(nodeId, title);
 	}
@@ -1552,11 +1518,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	@Override
 	public int getPagesCount(long nodeId, String title, boolean head) {
 		return wikiPagePersistence.countByN_T_H(nodeId, title, head);
-	}
-
-	@Override
-	public int getPagesCount(String format) {
-		return wikiPagePersistence.countByFormat(format);
 	}
 
 	@Override
