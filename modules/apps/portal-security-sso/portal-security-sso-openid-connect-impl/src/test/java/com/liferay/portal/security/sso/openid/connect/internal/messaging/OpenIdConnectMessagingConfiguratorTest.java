@@ -42,7 +42,6 @@ public class OpenIdConnectMessagingConfiguratorTest {
 			DestinationFactory.class);
 
 		Destination destination = Mockito.mock(Destination.class);
-
 		String destinationName = RandomTestUtil.randomString();
 
 		Mockito.when(
