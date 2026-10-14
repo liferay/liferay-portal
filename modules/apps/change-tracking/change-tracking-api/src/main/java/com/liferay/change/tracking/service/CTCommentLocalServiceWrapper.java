@@ -293,13 +293,6 @@ public class CTCommentLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.change.tracking.model.CTComment>
-		getCTEntryCTComments(long ctEntryId) {
-
-		return _ctCommentLocalService.getCTEntryCTComments(ctEntryId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -370,4 +363,4 @@ public class CTCommentLocalServiceWrapper
 	private CTCommentLocalService _ctCommentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:415961817
+// LIFERAY-SERVICE-BUILDER-HASH:-1375467932
