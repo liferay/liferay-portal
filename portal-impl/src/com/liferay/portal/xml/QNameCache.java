@@ -5,9 +5,6 @@
 
 package com.liferay.portal.xml;
 
-import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
-import com.liferay.petra.memory.FinalizeManager;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,10 +19,8 @@ public class QNameCache extends org.dom4j.tree.QNameCache {
 	public QNameCache(DocumentFactory documentFactory) {
 		super(documentFactory);
 
-		namespaceCache = new ConcurrentReferenceKeyHashMap<>(
-			FinalizeManager.WEAK_REFERENCE_FACTORY);
-		noNamespaceCache = new ConcurrentReferenceKeyHashMap<>(
-			FinalizeManager.WEAK_REFERENCE_FACTORY);
+		namespaceCache = new ConcurrentHashMap<>();
+		noNamespaceCache = new ConcurrentHashMap<>();
 	}
 
 	@Override
