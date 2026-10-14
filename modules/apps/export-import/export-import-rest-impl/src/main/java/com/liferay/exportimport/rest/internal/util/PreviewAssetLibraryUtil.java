@@ -7,11 +7,38 @@ package com.liferay.exportimport.rest.internal.util;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewAssetLibrary;
+import com.liferay.portal.kernel.util.StringUtil;
 
 /**
  * @author Alejandro Tardín
  */
 public class PreviewAssetLibraryUtil {
+
+	public static int toDepotEntryType(String value) {
+		if (StringUtil.equalsIgnoreCase(
+				value, PreviewAssetLibrary.Type.ASSET_LIBRARY.getValue())) {
+
+			return DepotConstants.TYPE_ASSET_LIBRARY;
+		}
+		else if (StringUtil.equalsIgnoreCase(
+					value,
+					PreviewAssetLibrary.Type.DESIGN_LIBRARY.getValue())) {
+
+			return DepotConstants.TYPE_DESIGN_LIBRARY;
+		}
+		else if (StringUtil.equalsIgnoreCase(
+					value, PreviewAssetLibrary.Type.PROJECT.getValue())) {
+
+			return DepotConstants.TYPE_PROJECT;
+		}
+		else if (StringUtil.equalsIgnoreCase(
+					value, PreviewAssetLibrary.Type.SPACE.getValue())) {
+
+			return DepotConstants.TYPE_SPACE;
+		}
+
+		return DepotConstants.TYPE_ANY;
+	}
 
 	public static PreviewAssetLibrary.Type toType(int depotEntryType) {
 		if (depotEntryType == DepotConstants.TYPE_ASSET_LIBRARY) {

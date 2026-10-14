@@ -5,6 +5,8 @@
 
 package com.liferay.exportimport.rest.internal.odata.entity.v1_0;
 
+import com.liferay.exportimport.rest.internal.util.PreviewAssetLibraryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.StringEntityField;
@@ -18,8 +20,14 @@ public class PreviewAssetLibraryEntityModel implements EntityModel {
 
 	public PreviewAssetLibraryEntityModel() {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
+			new EntityField(
+				"type", EntityField.Type.STRING, locale -> Field.TYPE,
+				locale -> Field.TYPE,
+				value -> String.valueOf(
+					PreviewAssetLibraryUtil.toDepotEntryType((String)value))),
 			new StringEntityField(
-				"descriptiveName", locale -> "descriptiveName"));
+				"descriptiveName",
+				locale -> Field.getSortableFieldName(Field.NAME)));
 	}
 
 	@Override
