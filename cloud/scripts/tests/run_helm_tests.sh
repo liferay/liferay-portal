@@ -25,6 +25,7 @@ function main {
 		aws-marketplace
 		azure
 		azure-infrastructure-provider
+		client-extension
 		default
 		dxp-operator
 		gcp

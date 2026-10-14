@@ -1,0 +1,12 @@
+artifact:
+    mounts:
+        -   mountPath: /opt/liferay
+            subPath: .cx-mounts/0
+    reference: registry.example.com/cx/able@sha256:0000000000000000000000000000000000000000000000000000000000000000
+clientExtension:
+    configs:
+        com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent:
+            name: Able
+    serviceId: able
+image:
+    repository: liferay/jar-runner
