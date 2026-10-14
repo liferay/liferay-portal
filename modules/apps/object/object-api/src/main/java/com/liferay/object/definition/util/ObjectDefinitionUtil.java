@@ -269,28 +269,6 @@ public class ObjectDefinitionUtil {
 			"PIMConnectorFieldMapping", "/pim/connector-field-mappings"
 		).put(
 			"PIMLink", "/pim/links"
-		).put(
-			"SEOStudioDomain", "/seo-studio/domains"
-		).put(
-			"SEOStudioGSCCredentials", "/seo-studio/gsc-credentials"
-		).put(
-			"SEOStudioInsightType", "/seo-studio/insight-types"
-		).put(
-			"SEOStudioInstance", "/seo-studio/instances"
-		).put(
-			"SEOStudioIntegration", "/seo-studio/integrations"
-		).put(
-			"SEOStudioPage", "/seo-studio/pages"
-		).put(
-			"SEOStudioPageSpeedResult", "/seo-studio/pagespeed-results"
-		).put(
-			"SEOStudioScan", "/seo-studio/scans"
-		).put(
-			"SEOStudioScanInsight", "/seo-studio/scan-insights"
-		).put(
-			"SEOStudioScanMetric", "/seo-studio/scan-metrics"
-		).put(
-			"SEOStudioScanRun", "/seo-studio/scan-runs"
 		).build();
 
 }
