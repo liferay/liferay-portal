@@ -27,7 +27,9 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.AttachmentUrl;
 import com.liferay.headless.commerce.admin.catalog.internal.util.DateConfigUtil;
 import com.liferay.headless.commerce.core.util.DateConfig;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -43,21 +45,28 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.security.configuration.URLFetchSecurityCompanyConfiguration;
 import com.liferay.upload.UniqueFileNameProvider;
 
 import java.io.File;
+import java.io.InputStream;
 
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.UnknownHostException;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -94,18 +103,9 @@ public class AttachmentUtil {
 			return null;
 		}
 
-		URL url = new URL(attachment.getSrc());
-
-		if (Objects.equals(url.getProtocol(), "file")) {
-			throw new CPAttachmentFileEntryProtocolException(
-				"Unsupported URL protocol");
-		}
-
-		URLConnection urlConnection = url.openConnection();
-
-		urlConnection.connect();
-
-		File file = FileUtil.createTempFile(urlConnection.getInputStream());
+		File file = FileUtil.createTempFile(
+			_getInputStream(
+				serviceContext.getCompanyId(), attachment.getSrc()));
 
 		return _addFileEntry(
 			file, attachment.getContentType(), uniqueFileNameProvider,
@@ -143,7 +143,8 @@ public class AttachmentUtil {
 		}
 
 		File file = FileUtil.createTempFile(
-			HttpUtil.URLtoInputStream(attachmentUrl.getSrc()));
+			_getInputStream(
+				serviceContext.getCompanyId(), attachmentUrl.getSrc()));
 
 		return _addFileEntry(
 			file, attachmentUrl.getContentType(), uniqueFileNameProvider,
@@ -633,6 +634,30 @@ public class AttachmentUtil {
 		}
 	}
 
+	private static InputStream _getInputStream(long companyId, String location)
+		throws Exception {
+
+		_validateURL(companyId, location);
+
+		Http.Options options = new Http.Options();
+
+		options.setFollowRedirects(false);
+		options.setLocation(location);
+
+		InputStream inputStream = HttpUtil.URLtoInputStream(options);
+
+		Http.Response response = options.getResponse();
+
+		if (response.getResponseCode() != HttpURLConnection.HTTP_OK) {
+			throw new CPAttachmentFileEntryProtocolException(
+				StringBundler.concat(
+					"Unable to download ", location, " with response code ",
+					response.getResponseCode()));
+		}
+
+		return inputStream;
+	}
+
 	private static String _getJSON(
 		CPAttachmentFileEntry cpAttachmentFileEntry,
 		CPDefinitionOptionRelService cpDefinitionOptionRelService,
@@ -708,6 +733,63 @@ public class AttachmentUtil {
 		}
 
 		return false;
+	}
+
+	private static void _validateURL(long companyId, String location)
+		throws Exception {
+
+		URI uri = new URI(location);
+
+		String scheme = StringUtil.toLowerCase(uri.getScheme());
+
+		if (!Objects.equals(scheme, "http") &&
+			!Objects.equals(scheme, "https")) {
+
+			throw new CPAttachmentFileEntryProtocolException(
+				"Unsupported URL protocol");
+		}
+
+		String host = uri.getHost();
+
+		if (Validator.isNull(host)) {
+			throw new CPAttachmentFileEntryProtocolException(
+				"Unable to get the host of URL " + location);
+		}
+
+		URLFetchSecurityCompanyConfiguration
+			urlFetchSecurityCompanyConfiguration =
+				ConfigurationProviderUtil.getCompanyConfiguration(
+					URLFetchSecurityCompanyConfiguration.class, companyId);
+
+		String[] urlHostsAllowed =
+			urlFetchSecurityCompanyConfiguration.urlHostsAllowed();
+
+		if (ArrayUtil.isNotEmpty(urlHostsAllowed) &&
+			!ArrayUtil.contains(urlHostsAllowed, host, true)) {
+
+			throw new CPAttachmentFileEntryProtocolException(
+				"URL host " + host + " is not allowed");
+		}
+
+		if (urlFetchSecurityCompanyConfiguration.
+				urlLocalNetworkAccessEnabled()) {
+
+			return;
+		}
+
+		try {
+			if (InetAddressUtil.isLocalInetAddress(
+					InetAddressUtil.getInetAddressByName(host))) {
+
+				throw new CPAttachmentFileEntryProtocolException(
+					"URL host " + host +
+						" must not resolve to a local network address");
+			}
+		}
+		catch (UnknownHostException unknownHostException) {
+			throw new CPAttachmentFileEntryProtocolException(
+				"Unable to resolve URL host " + host, unknownHostException);
+		}
 	}
 
 	private static final String _TEMP_FILE_NAME =

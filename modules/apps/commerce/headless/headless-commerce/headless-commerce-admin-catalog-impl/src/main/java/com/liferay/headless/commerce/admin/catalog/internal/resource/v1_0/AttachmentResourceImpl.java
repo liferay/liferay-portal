@@ -5,11 +5,14 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.commerce.product.constants.CPActionKeys;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.exception.NoSuchCPAttachmentFileEntryException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
@@ -28,7 +31,11 @@ import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -474,6 +481,8 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			CPDefinition cpDefinition, int type, Attachment attachment)
 		throws Exception {
 
+		_checkCPAttachmentFileEntryPermissions(cpDefinition, type);
+
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			cpDefinition.getGroupId());
 
@@ -534,6 +543,8 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 	private Attachment _addOrUpdateAttachment(
 			CPDefinition cpDefinition, int type, AttachmentUrl attachmentUrl)
 		throws Exception {
+
+		_checkCPAttachmentFileEntryPermissions(cpDefinition, type);
 
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			cpDefinition.getGroupId());
@@ -612,6 +623,31 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 		return _addOrUpdateAttachment(
 			cpDefinition, CPAttachmentFileEntryConstants.TYPE_IMAGE,
 			attachment);
+	}
+
+	private void _checkCPAttachmentFileEntryPermissions(
+			CPDefinition cpDefinition, int type)
+		throws Exception {
+
+		String actionKey = CPActionKeys.MANAGE_COMMERCE_PRODUCT_IMAGES;
+
+		if (type == CPAttachmentFileEntryConstants.TYPE_OTHER) {
+			actionKey = CPActionKeys.MANAGE_COMMERCE_PRODUCT_ATTACHMENTS;
+		}
+
+		_portletResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			cpDefinition.getGroupId(), actionKey);
+
+		CommerceCatalog commerceCatalog = cpDefinition.getCommerceCatalog();
+
+		if (commerceCatalog == null) {
+			throw new PrincipalException();
+		}
+
+		_commerceCatalogModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), commerceCatalog,
+			ActionKeys.UPDATE);
 	}
 
 	private Page<Attachment> _getAttachmentPage(
@@ -708,6 +744,12 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
 
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.product.model.CommerceCatalog)"
+	)
+	private ModelResourcePermission<CommerceCatalog>
+		_commerceCatalogModelResourcePermission;
+
 	@Reference
 	private CPAttachmentFileEntryService _cpAttachmentFileEntryService;
 
@@ -735,6 +777,11 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference(
+		target = "(resource.name=" + CPConstants.RESOURCE_NAME_PRODUCT + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 	@Reference
 	private ServiceContextHelper _serviceContextHelper;

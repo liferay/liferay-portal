@@ -35,6 +35,7 @@ dependencies {
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
+	compileOnly project(":apps:portal-security:portal-security-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:upload:upload-api")
 	compileOnly project(":core:petra:petra-function")
