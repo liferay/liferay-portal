@@ -143,6 +143,12 @@ public class CETDeployerImpl implements CETDeployer {
 						friendlyURLMapping, portletId)));
 		}
 
+		serviceRegistrations.add(
+			_register(
+				Portlet.class,
+				new CustomElementCETPortlet(
+					customElementCET, _portal, portletId)));
+
 		if (Validator.isNotNull(customElementCET.getPanelAppOrder()) &&
 			Validator.isNotNull(customElementCET.getPanelCategoryKey())) {
 
@@ -160,12 +166,6 @@ public class CETDeployerImpl implements CETDeployer {
 						customElementCET.getPanelCategoryKey()
 					).build()));
 		}
-
-		serviceRegistrations.add(
-			_register(
-				Portlet.class,
-				new CustomElementCETPortlet(
-					customElementCET, _portal, portletId)));
 
 		return serviceRegistrations;
 	}
