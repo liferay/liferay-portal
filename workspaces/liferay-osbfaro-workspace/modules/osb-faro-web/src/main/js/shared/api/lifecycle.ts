@@ -28,6 +28,10 @@ export interface ILifecycleDetail extends ILifecycle {
 	stages?: ILifecycleStage[];
 }
 
+export const getDefaultLifecycle = (
+	lifecycles: ILifecycle[]
+): ILifecycle | undefined => lifecycles[0];
+
 interface IFetchLifecycles {
 	channelId?: string;
 	groupId: string;

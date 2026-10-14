@@ -87,9 +87,10 @@ const renderPage = () =>
 		</MemoryRouter>
 	);
 
-const lifecycleURL = toRoute(Routes.LIFECYCLE, {
+const lifecycleURL = toRoute(Routes.LIFECYCLE_DASHBOARD, {
 	channelId: '123',
 	groupId: '23',
+	lifecycleId: '9',
 });
 
 describe('EditLifecycle', () => {

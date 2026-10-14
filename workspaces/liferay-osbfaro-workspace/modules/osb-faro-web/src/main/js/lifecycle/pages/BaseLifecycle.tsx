@@ -3,7 +3,7 @@ import * as breadcrumbs from 'shared/util/breadcrumbs';
 import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
 import DataSourceEmptyState from 'shared/components/DataSourceEmptyState';
-import ClayLink from '@clayui/link';
+import ErrorPage from 'shared/pages/ErrorPage';
 import FilterPicker from '../components/FilterPicker';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
 import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
@@ -23,46 +23,16 @@ import {
 	LifecycleContextProvider,
 	useLifecycle,
 } from '../context/LifecycleContext';
+import {NoDataSourcesEmptyState} from 'lifecycle/components/LifecycleEmptyStates';
+import {useParams} from 'react-router-dom';
 import {RangeKeyTimeRanges, Sizes} from 'shared/util/constants';
 import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
-import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
-
-const ConfigureLifecycleEmptyState = ({
-	channelId,
-	groupId,
-}: {
-	channelId: string;
-	groupId: string;
-}) => (
-	<NoResultsDisplay
-		description={Liferay.Language.get(
-			'complete-the-configuration-to-start-seeing-insights'
-		)}
-		displayCard
-		icon={{
-			border: false,
-			size: Sizes.XXXLarge,
-			symbol: 'ac_lifecycle_empty',
-		}}
-		spacer
-		title={Liferay.Language.get('configure-a-new-lifecycle')}
-	>
-		<ClayLink
-			button
-			className="button-root mt-1"
-			displayType="primary"
-			href={toRoute(Routes.LIFECYCLE_CREATE, {channelId, groupId})}
-		>
-			{Liferay.Language.get('new-lifecycle')}
-		</ClayLink>
-	</NoResultsDisplay>
-);
 
 const ProcessingLifecycleEmptyState = () => (
 	<NoResultsDisplay
@@ -170,25 +140,23 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 
 	const history = useHistoryAdapter();
 
-	const {channelId, groupId} = useParams();
+	const {channelId, groupId, lifecycleId} = useParams();
 
 	const {empty: noDataSources, loading: dataSourcesLoading} =
 		useDataSources();
 
 	const {segmentId, segmentName, setSegment} = useSegmentFilter();
 
-	const {data: lifecycles, loading: lifecyclesLoading} = useRequest({
-		dataSourceFn: API.lifecycle.fetchLifecycles,
-		variables: {channelId, groupId: groupId!},
+	const {
+		data: lifecycle,
+		error: lifecycleError,
+		loading: lifecycleLoading,
+	} = useRequest({
+		dataSourceFn: API.lifecycle.fetchLifecycle,
+		variables: {groupId: groupId!, lifecycleId: lifecycleId!},
 	});
 
-	const lifecycle = lifecycles?.[0];
-
-	const lifecycleId = lifecycle?.id;
-
-	const hasLifecycles = !!lifecycles?.length;
-
-	const processing = hasLifecycles && lifecycle?.processedDate == null;
+	const processing = lifecycle?.processedDate == null;
 
 	const {data: accountMetrics, loading: accountMetricsLoading} = useRequest({
 		dataSourceFn: API.accounts.fetchMetrics,
@@ -203,14 +171,13 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 
 	const authorized = currentUser.isAdmin();
 
-	const loading = dataSourcesLoading || lifecyclesLoading;
+	const loading = dataSourcesLoading || lifecycleLoading;
 
 	const title = lifecycle?.name || Liferay.Language.get('lifecycles');
 
 	const hasContent =
 		!loading &&
 		!noDataSources &&
-		hasLifecycles &&
 		!processing &&
 		!accountMetricsLoading &&
 		!!totalAccounts;
@@ -222,27 +189,8 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 
 		if (noDataSources) {
 			return (
-				<DataSourceEmptyState
+				<NoDataSourcesEmptyState
 					authorized={authorized}
-					description={
-						authorized
-							? Liferay.Language.get(
-									'connect-a-data-source-to-sync-lifecycle-stages'
-								)
-							: Liferay.Language.get(
-									'please-contact-your-workspace-administrator-to-add-data-sources'
-								)
-					}
-					groupId={groupId!}
-					title={Liferay.Language.get('no-data-sources-connected')}
-				/>
-			);
-		}
-
-		if (!hasLifecycles) {
-			return (
-				<ConfigureLifecycleEmptyState
-					channelId={channelId!}
 					groupId={groupId!}
 				/>
 			);
@@ -286,8 +234,21 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 		);
 	};
 
+	if (!lifecycleLoading && (lifecycleError || !lifecycle)) {
+		return (
+			<ErrorPage
+				href={toRoute(Routes.LIFECYCLE, {channelId, groupId})}
+				linkLabel={Liferay.Language.get('go-to-lifecycles')}
+				message={Liferay.Language.get(
+					'the-lifecycle-you-are-looking-for-does-not-exist'
+				)}
+				subtitle={Liferay.Language.get('lifecycle-not-found')}
+			/>
+		);
+	}
+
 	return (
-		<LifecycleContextProvider lifecycleId={lifecycleId ?? ''}>
+		<LifecycleContextProvider key={lifecycleId} lifecycleId={lifecycleId}>
 			<BasePage documentTitle={title}>
 				<BasePage.Header
 					breadcrumbs={[
@@ -296,6 +257,17 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 							groupId: groupId!,
 							label: selectedChannel?.name,
 						}),
+						breadcrumbs.getLifecycles({
+							channelId: channelId!,
+							groupId: groupId!,
+						}),
+						...(lifecycle?.name
+							? [
+									breadcrumbs.getEntityName({
+										label: lifecycle.name,
+									}),
+								]
+							: []),
 					]}
 					groupId={groupId!}
 				>
@@ -304,48 +276,46 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 							className="mb-3"
 							title={title}
 						>
-							{hasLifecycles && (
-								<BasePage.Header.PageActionsToolbar
-									actions={[
-										...(authorized
-											? [
-													{
-														icon: {symbol: 'cog'},
-														label: Liferay.Language.get(
-															'lifecycle-configuration'
+							<BasePage.Header.PageActionsToolbar
+								actions={[
+									...(authorized
+										? [
+												{
+													icon: {symbol: 'cog'},
+													label: Liferay.Language.get(
+														'lifecycle-configuration'
+													),
+													onClick: () =>
+														history.push(
+															toRoute(
+																Routes.LIFECYCLE_EDIT,
+																{
+																	channelId,
+																	groupId,
+																	lifecycleId,
+																}
+															)
 														),
-														onClick: () =>
-															history.push(
-																toRoute(
-																	Routes.LIFECYCLE_EDIT,
-																	{
-																		channelId,
-																		groupId,
-																		lifecycleId,
-																	}
-																)
-															),
-													},
-												]
-											: []),
-										{
-											icon: {symbol: 'bell-on'},
-											label: Liferay.Language.get(
-												'manage-notifications'
+												},
+											]
+										: []),
+									{
+										icon: {symbol: 'bell-on'},
+										label: Liferay.Language.get(
+											'manage-notifications'
+										),
+										onClick: () =>
+											open(
+												modalTypes.MANAGE_LIFECYCLE_NOTIFICATIONS_MODAL,
+												{
+													groupId,
+													lifecycleId,
+													onClose: close,
+												}
 											),
-											onClick: () =>
-												open(
-													modalTypes.MANAGE_LIFECYCLE_NOTIFICATIONS_MODAL,
-													{
-														groupId,
-														lifecycleId,
-														onClose: close,
-													}
-												),
-										},
-									]}
-								/>
-							)}
+									},
+								]}
+							/>
 						</BasePage.Header.TitleSection>
 					</BasePage.Row>
 				</BasePage.Header>

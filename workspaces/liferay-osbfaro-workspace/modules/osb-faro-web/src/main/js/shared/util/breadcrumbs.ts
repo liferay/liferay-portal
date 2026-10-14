@@ -82,6 +82,14 @@ export const getIndividuals = ({
 	label: Liferay.Language.get('individuals'),
 });
 
+export const getLifecycles = ({
+	channelId,
+	groupId,
+}: IBasicSidebarRouteArgs) => ({
+	href: toRoute(Routes.LIFECYCLE, {channelId, groupId}),
+	label: Liferay.Language.get('lifecycles'),
+});
+
 export const getSegments = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
 	href: toRoute(Routes.CONTACTS_LIST_ENTITY, {
 		channelId,

@@ -25,7 +25,7 @@ export const useLifecycleSettingsForm = (
 
 	const history = useHistoryAdapter();
 
-	const {channelId, groupId} = useParams();
+	const {channelId, groupId, lifecycleId} = useParams();
 
 	const [stageConfigs, setStageConfigs] =
 		useState<IStageConfig[]>(initialStageConfigs);
@@ -60,7 +60,10 @@ export const useLifecycleSettingsForm = (
 		}
 	}, [catalogError, dispatch]);
 
-	const lifecycleURL = toRoute(Routes.LIFECYCLE, {channelId, groupId});
+	const lifecycleURL = toRoute(
+		lifecycleId ? Routes.LIFECYCLE_DASHBOARD : Routes.LIFECYCLE,
+		{channelId, groupId, lifecycleId}
+	);
 
 	const goToDashboard = () => history.push(lifecycleURL);
 

@@ -208,6 +208,7 @@ export const Routes = buildRoutes({
 								path: '/lifecycle',
 								routes: {
 									LIFECYCLE_CREATE: '/new',
+									LIFECYCLE_DASHBOARD: '/:lifecycleId',
 									LIFECYCLE_EDIT: '/:lifecycleId/edit',
 								},
 							},
