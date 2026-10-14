@@ -51,12 +51,18 @@ public class PreviewAssetLibraryResourceTest
 		super.testGetExportPreviewPreviewAssetLibrariesPage();
 
 		_testGetExportPreviewPreviewAssetLibrariesPage();
+		_testGetExportPreviewPreviewAssetLibrariesPageWithFilter();
 		_testGetExportPreviewPreviewAssetLibrariesPageWithSearch();
 	}
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"externalReferenceCode"};
+	}
+
+	@Override
+	protected String[] getIgnoredEntityFieldNames() {
+		return new String[] {"descriptiveName", "type"};
 	}
 
 	@Override
@@ -94,14 +100,23 @@ public class PreviewAssetLibraryResourceTest
 			String externalReferenceCode)
 		throws Exception {
 
+		return _getExportPreviewAssetLibrary(externalReferenceCode, null);
+	}
+
+	private PreviewAssetLibrary _getExportPreviewAssetLibrary(
+			String externalReferenceCode, String filterString)
+		throws Exception {
+
 		Page<PreviewAssetLibrary> page =
 			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(null, null, null);
+				getExportPreviewPreviewAssetLibrariesPage(
+					null, filterString, null, null);
 
 		page =
 			previewAssetLibraryResource.
 				getExportPreviewPreviewAssetLibrariesPage(
-					null, Pagination.of(1, (int)page.getTotalCount()), null);
+					null, filterString,
+					Pagination.of(1, (int)page.getTotalCount()), null);
 
 		for (PreviewAssetLibrary previewAssetLibrary : page.getItems()) {
 			if (externalReferenceCode.equals(
@@ -149,6 +164,36 @@ public class PreviewAssetLibraryResourceTest
 			_getExportPreviewAssetLibrary(group.getExternalReferenceCode()));
 	}
 
+	private void _testGetExportPreviewPreviewAssetLibrariesPageWithFilter()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		Group assetLibraryGroup = depotEntry.getGroup();
+
+		depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		Group spaceGroup = depotEntry.getGroup();
+
+		Assert.assertNull(
+			_getExportPreviewAssetLibrary(
+				assetLibraryGroup.getExternalReferenceCode(),
+				"type eq 'Space'"));
+		Assert.assertNotNull(
+			_getExportPreviewAssetLibrary(
+				spaceGroup.getExternalReferenceCode(), "type eq 'Space'"));
+
+		Assert.assertNotNull(
+			_getExportPreviewAssetLibrary(
+				assetLibraryGroup.getExternalReferenceCode(),
+				"type eq 'AssetLibrary'"));
+		Assert.assertNull(
+			_getExportPreviewAssetLibrary(
+				spaceGroup.getExternalReferenceCode(),
+				"type eq 'AssetLibrary'"));
+	}
+
 	private void _testGetExportPreviewPreviewAssetLibrariesPageWithSearch()
 		throws Exception {
 
@@ -161,7 +206,8 @@ public class PreviewAssetLibraryResourceTest
 		Page<PreviewAssetLibrary> page =
 			previewAssetLibraryResource.
 				getExportPreviewPreviewAssetLibrariesPage(
-					group.getDescriptiveName(), Pagination.of(1, 10), null);
+					group.getDescriptiveName(), null, Pagination.of(1, 10),
+					null);
 
 		Assert.assertEquals(1, page.getTotalCount());
 
