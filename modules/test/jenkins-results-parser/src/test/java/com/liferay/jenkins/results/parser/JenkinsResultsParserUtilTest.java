@@ -505,7 +505,9 @@ public class JenkinsResultsParserUtilTest
 		Thread currentThread = Thread.currentThread();
 
 		Assert.assertTrue(
-			threadDump.contains("\"" + currentThread.getName() + "\""));
+			threadDump.contains(
+				JenkinsResultsParserUtil.combine(
+					"\"", currentThread.getName(), "\"")));
 	}
 
 	@Test(timeout = 30000)
@@ -560,7 +562,8 @@ public class JenkinsResultsParserUtilTest
 
 			Assert.assertTrue(
 				lockWaiterEntry.contains(
-					"owned by \"" + lockOwnerThreadName + "\""));
+					JenkinsResultsParserUtil.combine(
+						"owned by \"", lockOwnerThreadName, "\"")));
 
 			String lockOwnerEntry = _getThreadDumpEntry(
 				threadDump, lockOwnerThreadName);
@@ -626,10 +629,14 @@ public class JenkinsResultsParserUtilTest
 				threadDump.indexOf(" deadlocked threads:"));
 
 			Assert.assertTrue(
-				deadlockSection.contains("\"" + firstThreadName + "\""));
+				deadlockSection.contains(
+					JenkinsResultsParserUtil.combine(
+						"\"", firstThreadName, "\"")));
 
 			Assert.assertTrue(
-				deadlockSection.contains("\"" + secondThreadName + "\""));
+				deadlockSection.contains(
+					JenkinsResultsParserUtil.combine(
+						"\"", secondThreadName, "\"")));
 		}
 		finally {
 			firstThread.interrupt();
@@ -1035,7 +1042,9 @@ public class JenkinsResultsParserUtilTest
 		boolean matched = false;
 
 		for (String line : threadDump.split("\n")) {
-			if (line.startsWith("\"" + threadName + "\"")) {
+			if (line.startsWith(
+					JenkinsResultsParserUtil.combine("\"", threadName, "\""))) {
+
 				matched = true;
 			}
 			else if (matched && line.isEmpty()) {
