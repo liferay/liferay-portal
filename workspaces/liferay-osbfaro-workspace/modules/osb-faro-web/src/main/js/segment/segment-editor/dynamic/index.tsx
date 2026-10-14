@@ -522,114 +522,108 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 											</BaseEditPage.Sidebar>
 
 											<div className="criteria-builder-section-main">
-												<div className="contributor-container">
-													<div className="container-fluid container-fluid-max-xl">
-														<div className="content-wrapper">
-															<SegmentTitle />
+												<BaseEditPage.Main>
+													<SegmentTitle />
 
-															<SegmentDetails
+													<SegmentDetails
+														segmentCategory={
+															segmentCategory
+														}
+														type={type}
+													/>
+
+													{segmentState ===
+														SegmentStates.Disabled && (
+														<EmbeddedAlertList
+															alerts={[
+																{
+																	iconSymbol:
+																		'exclamation-full',
+																	message:
+																		Liferay.Language.get(
+																			'some-criteria-are-empty-please-update-to-continue-using-this-segment'
+																		),
+																	title: Liferay.Language.get(
+																		'error'
+																	),
+																	type: AlertTypes.Danger,
+																},
+															]}
+														/>
+													)}
+
+													<Canvas className="segment-membership-root">
+														<Canvas.Header
+															hasBody={false}
+															title={Liferay.Language.get(
+																'membership'
+															)}
+														>
+															<Canvas.Actions>
+																<SegmentMembership
+																	channelId={
+																		channelId
+																	}
+																	criteria={
+																		criteria
+																	}
+																	criteriaString={
+																		newCriteriaString
+																	}
+																	groupId={
+																		groupId
+																	}
+																	includeAnonymousUsers={
+																		includeAnonymousUsers
+																	}
+																	segmentCategory={
+																		segmentCategory
+																	}
+																	segmentType={
+																		type
+																	}
+																/>
+															</Canvas.Actions>
+														</Canvas.Header>
+													</Canvas>
+
+													<Canvas>
+														<Canvas.Header
+															title={Liferay.Language.get(
+																'segment-conditions'
+															)}
+														>
+															{type ===
+																SegmentTypes.RealTime && (
+																<Canvas.Actions>
+																	<SegmentSequentialToggle name="sequential" />
+																</Canvas.Actions>
+															)}
+														</Canvas.Header>
+
+														<Canvas.Body>
+															<CriteriaBuilderForm
+																channelId={
+																	channelId
+																}
+																groupId={
+																	groupId
+																}
+																id={id}
+																name="criteria"
 																segmentCategory={
 																	segmentCategory
 																}
-																type={type}
+																segmentType={
+																	type
+																}
+																sequential={
+																	sequential
+																}
 															/>
-
-															{segmentState ===
-																SegmentStates.Disabled && (
-																<EmbeddedAlertList
-																	alerts={[
-																		{
-																			iconSymbol:
-																				'exclamation-full',
-																			message:
-																				Liferay.Language.get(
-																					'some-criteria-are-empty-please-update-to-continue-using-this-segment'
-																				),
-																			title: Liferay.Language.get(
-																				'error'
-																			),
-																			type: AlertTypes.Danger,
-																		},
-																	]}
-																/>
-															)}
-
-															<Canvas className="segment-membership-root">
-																<Canvas.Header
-																	hasBody={
-																		false
-																	}
-																	title={Liferay.Language.get(
-																		'membership'
-																	)}
-																>
-																	<Canvas.Actions>
-																		<SegmentMembership
-																			channelId={
-																				channelId
-																			}
-																			criteria={
-																				criteria
-																			}
-																			criteriaString={
-																				newCriteriaString
-																			}
-																			groupId={
-																				groupId
-																			}
-																			includeAnonymousUsers={
-																				includeAnonymousUsers
-																			}
-																			segmentCategory={
-																				segmentCategory
-																			}
-																			segmentType={
-																				type
-																			}
-																		/>
-																	</Canvas.Actions>
-																</Canvas.Header>
-															</Canvas>
-
-															<Canvas>
-																<Canvas.Header
-																	title={Liferay.Language.get(
-																		'segment-conditions'
-																	)}
-																>
-																	{type ===
-																		SegmentTypes.RealTime && (
-																		<Canvas.Actions>
-																			<SegmentSequentialToggle name="sequential" />
-																		</Canvas.Actions>
-																	)}
-																</Canvas.Header>
-
-																<Canvas.Body>
-																	<CriteriaBuilderForm
-																		channelId={
-																			channelId
-																		}
-																		groupId={
-																			groupId
-																		}
-																		id={id}
-																		name="criteria"
-																		segmentCategory={
-																			segmentCategory
-																		}
-																		segmentType={
-																			type
-																		}
-																		sequential={
-																			sequential
-																		}
-																	/>
-																</Canvas.Body>
-															</Canvas>
-														</div>
-													</div>
-												</div>
+														</Canvas.Body>
+													</Canvas>
+												</BaseEditPage.Main>
 											</div>
 										</BaseEditPage.Body>
 									</KeyboardMovementProvider>

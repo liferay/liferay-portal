@@ -1,5 +1,4 @@
 import BaseEditPage from 'shared/components/base-edit-page';
-import ClayLayout from '@clayui/layout';
 import ConditionsPanel from '../components/event-analysis-editor/event-analysis-builder/ConditionsPanel';
 import DownloadPDFReport, {
 	ReportContainer,
@@ -277,18 +276,16 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 	);
 
 	const editor = (
-		<ClayLayout.ContainerFluid className="page-container pb-4" size="xl">
-			<EventAnalysisEditor
-				channelId={channelId}
-				compareToPrevious={compareToPrevious}
-				event={event}
-				onCompareToPreviousChange={onCompareToPreviousChange}
-				onRangeSelectorsChange={onRangeSelectorsChange}
-				onTypeChange={onTypeChange}
-				rangeSelectors={rangeSelectors!}
-				type={type}
-			/>
-		</ClayLayout.ContainerFluid>
+		<EventAnalysisEditor
+			channelId={channelId}
+			compareToPrevious={compareToPrevious}
+			event={event}
+			onCompareToPreviousChange={onCompareToPreviousChange}
+			onRangeSelectorsChange={onRangeSelectorsChange}
+			onTypeChange={onTypeChange}
+			rangeSelectors={rangeSelectors!}
+			type={type}
+		/>
 	);
 
 	return (
@@ -367,7 +364,7 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 								<BaseEditPage.Body>
 									{conditionsPanel}
 
-									<div>
+									<BaseEditPage.Main className="page-container">
 										<Form.Form
 											id={FORM_ID}
 											onSubmit={handleSubmit}
@@ -380,16 +377,13 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 												}
 											/>
 
-											<ClayLayout.ContainerFluid
-												className="pb-4 pt-4"
-												size="xl"
-											>
+											<div className="mb-4">
 												<EventAnalysisTitle />
-											</ClayLayout.ContainerFluid>
+											</div>
 										</Form.Form>
 
 										{editor}
-									</div>
+									</BaseEditPage.Main>
 								</BaseEditPage.Body>
 							</>
 						);

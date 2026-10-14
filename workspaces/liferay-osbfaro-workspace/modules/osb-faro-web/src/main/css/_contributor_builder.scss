@@ -5,22 +5,8 @@
 		height: 100%;
 		overflow: auto;
 
-		.contributor-container .container-fluid {
-			padding: 0;
-
-			.content-wrapper {
-				padding: 24px;
-				position: relative;
-
-				> .conjunction-button {
-					margin: 16px 0;
-				}
-
-				.empty-contributors {
-					background: $secondaryHover;
-					border: 2px dashed $mainLighten65;
-				}
-			}
+		.base-edit-page-main {
+			position: relative;
 		}
 	}
 
