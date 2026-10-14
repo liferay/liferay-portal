@@ -5335,7 +5335,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.saml.opensaml.integration.jar!bcpkix-fips.jar</file-name>
-				<version>2.1.12</version>
+				<version>2.1.13</version>
 				<project-name>Bouncy Castle PKIX APIs (FIPS Distribution)</project-name>
 				<project-url>https://www.bouncycastle.org/download/bouncy-castle-java-fips</project-url>
 				<licenses>
@@ -5347,7 +5347,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.saml.opensaml.integration.jar!bcutil-fips.jar</file-name>
-				<version>2.1.7</version>
+				<version>2.1.8</version>
 				<project-name>Bouncy Castle ASN.1 Extension and Utility APIs (FIPS Distribution)</project-name>
 				<project-url>https://www.bouncycastle.org/download/bouncy-castle-java-fips</project-url>
 				<licenses>
