@@ -481,13 +481,6 @@ public interface KBArticleLocalService
 	public int getKBArticleVersionsCount(long resourcePrimKey, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KBArticle> getKBFolderKBArticles(long groupId, long kbFolderId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKBFolderKBArticlesCount(
-		long groupId, long kbFolderId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public KBArticle getLatestKBArticle(long resourcePrimKey)
 		throws PortalException;
 
@@ -683,4 +676,4 @@ public interface KBArticleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-892859866
+// LIFERAY-SERVICE-BUILDER-HASH:964696496

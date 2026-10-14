@@ -625,19 +625,6 @@ public class KBArticleLocalServiceUtil {
 		return getService().getKBArticleVersionsCount(resourcePrimKey, status);
 	}
 
-	public static List<KBArticle> getKBFolderKBArticles(
-		long groupId, long kbFolderId) {
-
-		return getService().getKBFolderKBArticles(groupId, kbFolderId);
-	}
-
-	public static int getKBFolderKBArticlesCount(
-		long groupId, long kbFolderId, int status) {
-
-		return getService().getKBFolderKBArticlesCount(
-			groupId, kbFolderId, status);
-	}
-
 	public static KBArticle getLatestKBArticle(long resourcePrimKey)
 		throws PortalException {
 
@@ -953,4 +940,4 @@ public class KBArticleLocalServiceUtil {
 			KBArticleLocalServiceUtil.class, KBArticleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-827710605
+// LIFERAY-SERVICE-BUILDER-HASH:-1533647891

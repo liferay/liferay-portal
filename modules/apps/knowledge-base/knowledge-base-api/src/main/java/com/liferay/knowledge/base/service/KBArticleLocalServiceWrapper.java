@@ -706,22 +706,6 @@ public class KBArticleLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<KBArticle> getKBFolderKBArticles(
-		long groupId, long kbFolderId) {
-
-		return _kbArticleLocalService.getKBFolderKBArticles(
-			groupId, kbFolderId);
-	}
-
-	@Override
-	public int getKBFolderKBArticlesCount(
-		long groupId, long kbFolderId, int status) {
-
-		return _kbArticleLocalService.getKBFolderKBArticlesCount(
-			groupId, kbFolderId, status);
-	}
-
-	@Override
 	public KBArticle getLatestKBArticle(long resourcePrimKey)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1113,4 +1097,4 @@ public class KBArticleLocalServiceWrapper
 	private KBArticleLocalService _kbArticleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2135641997
+// LIFERAY-SERVICE-BUILDER-HASH:447257529
