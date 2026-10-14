@@ -69,67 +69,6 @@ public interface MemberRequestPersistence
 	public int countByKey(String key);
 
 	/**
-	 * Returns an ordered range of all the member requests where receiverUserId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.invitation.invite.members.model.impl.MemberRequestModelImpl</code>.
-	 * </p>
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param start the lower bound of the range of member requests
-	 * @param end the upper bound of the range of member requests (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching member requests
-	 */
-	public java.util.List<MemberRequest> findByReceiverUserId(
-		long receiverUserId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<MemberRequest>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first member request in the ordered set where receiverUserId = &#63;.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching member request
-	 * @throws NoSuchMemberRequestException if a matching member request could not be found
-	 */
-	public MemberRequest findByReceiverUserId_First(
-			long receiverUserId,
-			com.liferay.portal.kernel.util.OrderByComparator<MemberRequest>
-				orderByComparator)
-		throws NoSuchMemberRequestException;
-
-	/**
-	 * Returns the first member request in the ordered set where receiverUserId = &#63;.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching member request, or <code>null</code> if a matching member request could not be found
-	 */
-	public MemberRequest fetchByReceiverUserId_First(
-		long receiverUserId,
-		com.liferay.portal.kernel.util.OrderByComparator<MemberRequest>
-			orderByComparator);
-
-	/**
-	 * Removes all the member requests where receiverUserId = &#63; from the database.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 */
-	public void removeByReceiverUserId(long receiverUserId);
-
-	/**
-	 * Returns the number of member requests where receiverUserId = &#63;.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @return the number of matching member requests
-	 */
-	public int countByReceiverUserId(long receiverUserId);
-
-	/**
 	 * Returns an ordered range of all the member requests where receiverUserId = &#63; and status = &#63;.
 	 *
 	 * <p>
@@ -305,60 +244,6 @@ public interface MemberRequestPersistence
 	}
 
 	/**
-	 * Returns all the member requests where receiverUserId = &#63;.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @return the matching member requests
-	 */
-	public default java.util.List<MemberRequest> findByReceiverUserId(
-		long receiverUserId) {
-
-		return findByReceiverUserId(
-			receiverUserId, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the member requests where receiverUserId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.invitation.invite.members.model.impl.MemberRequestModelImpl</code>.
-	 * </p>
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param start the lower bound of the range of member requests
-	 * @param end the upper bound of the range of member requests (not inclusive)
-	 * @return the range of matching member requests
-	 */
-	public default java.util.List<MemberRequest> findByReceiverUserId(
-		long receiverUserId, int start, int end) {
-
-		return findByReceiverUserId(receiverUserId, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the member requests where receiverUserId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.invitation.invite.members.model.impl.MemberRequestModelImpl</code>.
-	 * </p>
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param start the lower bound of the range of member requests
-	 * @param end the upper bound of the range of member requests (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching member requests
-	 */
-	public default java.util.List<MemberRequest> findByReceiverUserId(
-		long receiverUserId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<MemberRequest>
-			orderByComparator) {
-
-		return findByReceiverUserId(
-			receiverUserId, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the member requests where receiverUserId = &#63; and status = &#63;.
 	 *
 	 * @param receiverUserId the receiver user ID
@@ -417,4 +302,4 @@ public interface MemberRequestPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:292226559
+// LIFERAY-SERVICE-BUILDER-HASH:1920388818
