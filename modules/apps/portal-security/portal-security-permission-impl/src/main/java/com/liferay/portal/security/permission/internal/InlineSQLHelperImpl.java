@@ -85,13 +85,10 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			return list;
 		}
 
+		groupIds = _normalizeGroupIds(groupIds);
+
 		T baseModel = list.get(0);
 		Set<Long> disabledGroupIds = new HashSet<>();
-
-		if (groupIds.length == 0) {
-			groupIds = new long[] {0};
-		}
-
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
@@ -164,12 +161,9 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		String modelClassName, Column<T, Long> classPKColumn,
 		long... groupIds) {
 
+		groupIds = _normalizeGroupIds(groupIds);
+
 		Set<Long> disabledGroupIds = new HashSet<>();
-
-		if (ArrayUtil.isEmpty(groupIds)) {
-			groupIds = new long[] {0};
-		}
-
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
@@ -191,9 +185,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			return false;
 		}
 
-		if (ArrayUtil.isEmpty(groupIds)) {
-			groupIds = new long[] {0};
-		}
+		groupIds = _normalizeGroupIds(groupIds);
 
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -265,9 +257,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 	public String replacePermissionCheck(
 		String sql, String className, String classPKField, long... groupIds) {
 
-		if (ArrayUtil.isEmpty(groupIds)) {
-			groupIds = new long[] {0};
-		}
+		groupIds = _normalizeGroupIds(groupIds);
 
 		Set<Long> disabledGroupIds = new HashSet<>();
 		PermissionChecker permissionChecker =
@@ -832,6 +822,14 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		}
 
 		return disabledGroupIds.containsAll(ListUtil.fromArray(groupIds));
+	}
+
+	private long[] _normalizeGroupIds(long[] groupIds) {
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return new long[] {0};
+		}
+
+		return groupIds;
 	}
 
 	private static final String _GROUP_BY_CLAUSE = " GROUP BY ";
