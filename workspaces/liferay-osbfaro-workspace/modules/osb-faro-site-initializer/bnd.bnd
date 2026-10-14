@@ -1,0 +1,6 @@
+Bundle-Name: Liferay OSB Faro Site Initializer
+Bundle-SymbolicName: com.liferay.osb.faro.site.initializer
+Bundle-Version: 1.0.0
+Liferay-Site-Initializer-Name: Analytics Cloud
+Provide-Capability: liferay.site.initializer
+Web-ContextPath: /osb-faro-site-initializer
