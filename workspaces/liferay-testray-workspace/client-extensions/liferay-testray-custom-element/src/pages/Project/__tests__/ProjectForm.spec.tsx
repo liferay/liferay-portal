@@ -4,7 +4,7 @@
  */
 
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
-import {Mock, SpyInstance, vi} from 'vitest';
+import {Mock, MockInstance, vi} from 'vitest';
 
 import PageWrapper from '../../../test/PageWrapper';
 import ProjectForm from '../ProjectForm';
@@ -13,12 +13,12 @@ import ProjectForm from '../ProjectForm';
 
 describe('ProjectForm', () => {
 	let baseFetch: Mock;
-	let fetchSpy: SpyInstance;
+	let fetchMock: MockInstance;
 
 	beforeAll(() => {
 		vi.resetAllMocks();
 		vi.useFakeTimers();
-		fetchSpy = vi.spyOn(window, 'fetch');
+		fetchMock = vi.spyOn(window, 'fetch');
 	});
 
 	beforeEach(() => {
@@ -60,7 +60,7 @@ describe('ProjectForm', () => {
 	});
 
 	it('Fill ProjectForm inputs and hit actions', async () => {
-		fetchSpy.mockResolvedValueOnce({
+		fetchMock.mockResolvedValueOnce({
 			json: async () => ({success: true}),
 			ok: true,
 		});
@@ -101,8 +101,8 @@ describe('ProjectForm', () => {
 		});
 
 		expect(queryByText('name is a required field')).toBeFalsy();
-		expect(fetchSpy.mock.calls).toHaveLength(1);
-		expect(fetchSpy.mock.calls[0][1]).toMatchObject({
+		expect(fetchMock.mock.calls).toHaveLength(1);
+		expect(fetchMock.mock.calls[0][1]).toMatchObject({
 			body: JSON.stringify({
 				description: 'Liferay 7.4 Description',
 				name: 'Liferay 7.4',
