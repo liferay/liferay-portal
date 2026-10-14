@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.segments.asah.connector.cache.AsahSegmentsEntryCache;
 import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClient;
@@ -38,6 +39,7 @@ import com.liferay.segments.asah.connector.internal.client.util.OrderByField;
 import com.liferay.segments.asah.connector.internal.configuration.SegmentsAsahConfiguration;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.model.SegmentsEntry;
+import com.liferay.segments.model.SegmentsEntryRel;
 import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsEntryRelLocalService;
 
@@ -137,40 +139,24 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 		}
 	}
 
-	private void _addSegmentsEntryRels(
-		SegmentsEntry segmentsEntry, Set<Long> userIds) {
-
-		try {
-			_segmentsEntryLocalService.addSegmentsEntryClassPKs(
-				segmentsEntry.getSegmentsEntryId(),
-				ArrayUtil.toLongArray(userIds),
-				_getServiceContext(segmentsEntry.getCompanyId()));
-		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to process individuals " + userIds, portalException);
-		}
-	}
-
 	private void _checkIndividualSegmentMemberships(SegmentsEntry segmentsEntry)
 		throws Exception {
 
-		_segmentsEntryRelLocalService.deleteSegmentsEntryRels(
-			segmentsEntry.getSegmentsEntryId());
+		Set<Long> userIds = null;
 
 		try {
-			Set<Long> userIds = _getUserIds(segmentsEntry);
-
-			if (!userIds.isEmpty()) {
-				_addSegmentsEntryRels(segmentsEntry, userIds);
-			}
+			userIds = _getUserIds(segmentsEntry);
 		}
 		catch (RuntimeException runtimeException) {
 			_log.error(
 				"Unable to retrieve individuals for individual segment " +
 					segmentsEntry.getSegmentsEntryKey(),
 				runtimeException);
+
+			return;
 		}
+
+		_updateSegmentsEntryRels(segmentsEntry, userIds);
 	}
 
 	private void _checkIndividualSegments() throws Exception {
@@ -466,6 +452,45 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 
 		_asahSegmentsEntryCache.putSegmentsEntryIds(
 			userId, ArrayUtil.toLongArray(segmentsEntryIds));
+	}
+
+	private void _updateSegmentsEntryRels(
+		SegmentsEntry segmentsEntry, Set<Long> userIds) {
+
+		try {
+			long segmentsEntryId = segmentsEntry.getSegmentsEntryId();
+
+			Set<Long> oldUserIds = SetUtil.fromList(
+				TransformUtil.transform(
+					_segmentsEntryRelLocalService.getSegmentsEntryRels(
+						segmentsEntryId),
+					SegmentsEntryRel::getClassPK));
+
+			Set<Long> addUserIds = new HashSet<>(userIds);
+			Set<Long> deleteUserIds = new HashSet<>();
+
+			for (Long oldUserId : oldUserIds) {
+				if (!addUserIds.remove(oldUserId)) {
+					deleteUserIds.add(oldUserId);
+				}
+			}
+
+			if (!deleteUserIds.isEmpty()) {
+				_segmentsEntryRelLocalService.deleteSegmentsEntryRels(
+					segmentsEntryId, _portal.getClassNameId(User.class),
+					ArrayUtil.toLongArray(deleteUserIds));
+			}
+
+			if (!addUserIds.isEmpty()) {
+				_segmentsEntryLocalService.addSegmentsEntryClassPKs(
+					segmentsEntryId, ArrayUtil.toLongArray(addUserIds),
+					_getServiceContext(segmentsEntry.getCompanyId()));
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(
+				"Unable to process individuals " + userIds, portalException);
+		}
 	}
 
 	private static final int _DELTA = 100;
