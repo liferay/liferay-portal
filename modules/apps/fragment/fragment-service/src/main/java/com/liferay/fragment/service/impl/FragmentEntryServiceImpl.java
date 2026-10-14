@@ -7,11 +7,13 @@ package com.liferay.fragment.service.impl;
 
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentCompositionTable;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryTable;
 import com.liferay.fragment.service.FragmentCompositionLocalService;
 import com.liferay.fragment.service.base.FragmentEntryServiceBaseImpl;
+import com.liferay.fragment.service.persistence.FragmentCollectionPersistence;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -173,8 +175,9 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<Object> getFragmentCompositionsAndFragmentEntries(
-		long groupId, long fragmentCollectionId, int status, int start, int end,
-		OrderByComparator<?> orderByComparator) {
+			long groupId, long fragmentCollectionId, int status, int start,
+			int end, OrderByComparator<?> orderByComparator)
+		throws PortalException {
 
 		return getFragmentCompositionsAndFragmentEntries(
 			groupId, fragmentCollectionId, StringPool.BLANK, status, start, end,
@@ -183,8 +186,13 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<Object> getFragmentCompositionsAndFragmentEntries(
-		long groupId, long fragmentCollectionId, String name, int status,
-		int start, int end, OrderByComparator<?> orderByComparator) {
+			long groupId, long fragmentCollectionId, String name, int status,
+			int start, int end, OrderByComparator<?> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		List<Object> fragmentCompositionsAndFragmentEntries = new ArrayList<>();
 
@@ -232,7 +240,8 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public int getFragmentCompositionsAndFragmentEntriesCount(
-		long groupId, long fragmentCollectionId, int status) {
+			long groupId, long fragmentCollectionId, int status)
+		throws PortalException {
 
 		return getFragmentCompositionsAndFragmentEntriesCount(
 			groupId, fragmentCollectionId, null, status);
@@ -240,7 +249,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public int getFragmentCompositionsAndFragmentEntriesCount(
-		long groupId, long fragmentCollectionId, String name, int status) {
+			long groupId, long fragmentCollectionId, String name, int status)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		Table<?> fragmentCompositionsAndFragmentEntriesTable =
 			DSLQueryFactoryUtil.countDistinct(
@@ -280,14 +294,29 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	}
 
 	@Override
-	public List<FragmentEntry> getFragmentEntries(long fragmentCollectionId) {
+	public List<FragmentEntry> getFragmentEntries(long fragmentCollectionId)
+		throws PortalException {
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionPersistence.findByPrimaryKey(
+				fragmentCollectionId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentCollection.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
 		return fragmentEntryPersistence.findByFragmentCollectionId(
 			fragmentCollectionId);
 	}
 
 	@Override
 	public List<FragmentEntry> getFragmentEntries(
-		long groupId, long fragmentCollectionId, int start, int end) {
+			long groupId, long fragmentCollectionId, int start, int end)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryPersistence.findByG_FCI(
 			groupId, fragmentCollectionId, start, end);
@@ -295,8 +324,13 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntries(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator) {
+			long groupId, long fragmentCollectionId, int start, int end,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryPersistence.findByG_FCI(
 			groupId, fragmentCollectionId, start, end, orderByComparator);
@@ -304,8 +338,13 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntriesByName(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end, OrderByComparator<FragmentEntry> orderByComparator) {
+			long groupId, long fragmentCollectionId, String name, int start,
+			int end, OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryPersistence.findByG_FCI_LikeN(
 			groupId, fragmentCollectionId,
@@ -315,9 +354,14 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntriesByNameAndStatus(
-		long groupId, long fragmentCollectionId, String name, int status,
-		int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator) {
+			long groupId, long fragmentCollectionId, String name, int status,
+			int start, int end,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return fragmentEntryPersistence.findByG_FCI_LikeN(
@@ -334,7 +378,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntriesByStatus(
-		long groupId, long fragmentCollectionId, int status) {
+			long groupId, long fragmentCollectionId, int status)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return fragmentEntryPersistence.findByG_FCI(
@@ -347,8 +396,13 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntriesByStatus(
-		long groupId, long fragmentCollectionId, int status, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator) {
+			long groupId, long fragmentCollectionId, int status, int start,
+			int end, OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return fragmentEntryPersistence.findByG_FCI(
@@ -362,8 +416,13 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntriesByType(
-		long groupId, long fragmentCollectionId, int type, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator) {
+			long groupId, long fragmentCollectionId, int type, int start,
+			int end, OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryPersistence.findByG_FCI_T(
 			groupId, fragmentCollectionId, type, start, end, orderByComparator);
@@ -371,7 +430,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntriesByTypeAndStatus(
-		long groupId, long fragmentCollectionId, int type, int status) {
+			long groupId, long fragmentCollectionId, int type, int status)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryPersistence.findByG_FCI_T_S(
 			groupId, fragmentCollectionId, type, status);
@@ -379,9 +443,14 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public List<FragmentEntry> getFragmentEntriesByTypeAndStatus(
-		long groupId, long fragmentCollectionId, int type, int status,
-		int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator) {
+			long groupId, long fragmentCollectionId, int type, int status,
+			int start, int end,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return fragmentEntryPersistence.findByG_FCI_T(
@@ -395,8 +464,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	}
 
 	@Override
-	public int getFragmentEntriesCount(
-		long groupId, long fragmentCollectionId) {
+	public int getFragmentEntriesCount(long groupId, long fragmentCollectionId)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryPersistence.countByG_FCI(
 			groupId, fragmentCollectionId);
@@ -404,7 +477,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public int getFragmentEntriesCountByName(
-		long groupId, long fragmentCollectionId, String name) {
+			long groupId, long fragmentCollectionId, String name)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryPersistence.countByG_FCI_LikeN(
 			groupId, fragmentCollectionId,
@@ -413,7 +491,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public int getFragmentEntriesCountByNameAndStatus(
-		long groupId, long fragmentCollectionId, String name, int status) {
+			long groupId, long fragmentCollectionId, String name, int status)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return fragmentEntryPersistence.countByG_FCI_LikeN(
@@ -428,7 +511,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public int getFragmentEntriesCountByStatus(
-		long groupId, long fragmentCollectionId, int status) {
+			long groupId, long fragmentCollectionId, int status)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return fragmentEntryPersistence.countByG_FCI(
@@ -441,7 +529,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public int getFragmentEntriesCountByType(
-		long groupId, long fragmentCollectionId, int type) {
+			long groupId, long fragmentCollectionId, int type)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentEntryPersistence.countByG_FCI_T(
 			groupId, fragmentCollectionId, type);
@@ -449,7 +542,12 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Override
 	public int getFragmentEntriesCountByTypeAndStatus(
-		long groupId, long fragmentCollectionId, int type, int status) {
+			long groupId, long fragmentCollectionId, int type, int status)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return fragmentEntryPersistence.countByG_FCI_T(
@@ -716,6 +814,9 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 
 	@Reference
 	private CustomSQL _customSQL;
+
+	@Reference
+	private FragmentCollectionPersistence _fragmentCollectionPersistence;
 
 	@Reference
 	private FragmentCompositionLocalService _fragmentCompositionLocalService;

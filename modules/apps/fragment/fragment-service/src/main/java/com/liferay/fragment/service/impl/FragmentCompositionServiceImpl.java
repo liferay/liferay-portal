@@ -8,8 +8,10 @@ package com.liferay.fragment.service.impl;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.internal.util.FragmentCompositionKeyUtil;
+import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.service.base.FragmentCompositionServiceBaseImpl;
+import com.liferay.fragment.service.persistence.FragmentCollectionPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
@@ -126,7 +128,16 @@ public class FragmentCompositionServiceImpl
 
 	@Override
 	public List<FragmentComposition> getFragmentCompositions(
-		long fragmentCollectionId) {
+			long fragmentCollectionId)
+		throws PortalException {
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionPersistence.findByPrimaryKey(
+				fragmentCollectionId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentCollection.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentCompositionPersistence.findByFragmentCollectionId(
 			fragmentCollectionId);
@@ -134,7 +145,16 @@ public class FragmentCompositionServiceImpl
 
 	@Override
 	public List<FragmentComposition> getFragmentCompositions(
-		long fragmentCollectionId, int start, int end) {
+			long fragmentCollectionId, int start, int end)
+		throws PortalException {
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionPersistence.findByPrimaryKey(
+				fragmentCollectionId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentCollection.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentCompositionPersistence.findByFragmentCollectionId(
 			fragmentCollectionId, start, end);
@@ -142,7 +162,12 @@ public class FragmentCompositionServiceImpl
 
 	@Override
 	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int status) {
+			long groupId, long fragmentCollectionId, int status)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentCompositionPersistence.findByG_FCI_S(
 			groupId, fragmentCollectionId, status);
@@ -150,8 +175,13 @@ public class FragmentCompositionServiceImpl
 
 	@Override
 	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentComposition> orderByComparator) {
+			long groupId, long fragmentCollectionId, int start, int end,
+			OrderByComparator<FragmentComposition> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		return fragmentCompositionPersistence.findByG_FCI(
 			groupId, fragmentCollectionId, start, end, orderByComparator);
@@ -159,8 +189,13 @@ public class FragmentCompositionServiceImpl
 
 	@Override
 	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end, OrderByComparator<FragmentComposition> orderByComparator) {
+			long groupId, long fragmentCollectionId, String name, int start,
+			int end, OrderByComparator<FragmentComposition> orderByComparator)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		if (Validator.isNull(name)) {
 			return fragmentCompositionPersistence.findByG_FCI(
@@ -174,7 +209,17 @@ public class FragmentCompositionServiceImpl
 	}
 
 	@Override
-	public int getFragmentCompositionsCount(long fragmentCollectionId) {
+	public int getFragmentCompositionsCount(long fragmentCollectionId)
+		throws PortalException {
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionPersistence.findByPrimaryKey(
+				fragmentCollectionId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentCollection.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
 		return fragmentCompositionPersistence.countByFragmentCollectionId(
 			fragmentCollectionId);
 	}
@@ -272,6 +317,9 @@ public class FragmentCompositionServiceImpl
 
 	@Reference
 	private CustomSQL _customSQL;
+
+	@Reference
+	private FragmentCollectionPersistence _fragmentCollectionPersistence;
 
 	@Reference(
 		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
