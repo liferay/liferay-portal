@@ -9,6 +9,8 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
@@ -21,34 +23,49 @@ import com.liferay.commerce.test.util.CommerceOrderAttachmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.digital.signature.constants.DSRequestConstants;
+import com.liferay.digital.signature.constants.DigitalSignatureConstants;
 import com.liferay.digital.signature.manager.DSRequestManager;
 import com.liferay.digital.signature.model.DSEnvelope;
 import com.liferay.digital.signature.model.DSRecipient;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -58,6 +75,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.io.ByteArrayInputStream;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -66,7 +84,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -141,8 +158,27 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 
 		Map<String, Object> additionalProps = _getAdditionalProps(user);
 
+		Map<String, Object> addDSRequestModalProps =
+			(Map<String, Object>)additionalProps.get("addDSRequestModalProps");
+
+		Assert.assertArrayEquals(
+			DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS,
+			(String[])addDSRequestModalProps.get("allowedFileExtensions"));
+
+		JSONObject buyerJSONObject = (JSONObject)addDSRequestModalProps.get(
+			"buyer");
+
+		Assert.assertEquals(
+			user.getUserId(), buyerJSONObject.getLong("userId"));
+
+		Assert.assertEquals(
+			_commerceOrder.getCommerceOrderId(),
+			addDSRequestModalProps.get("commerceOrderId"));
 		Assert.assertEquals(
 			Collections.emptyMap(), additionalProps.get("dsRequestStatuses"));
+		Assert.assertEquals(
+			Collections.emptyList(),
+			additionalProps.get("replaceableCommerceOrderAttachmentIds"));
 
 		_addDSRequest(
 			_commerceOrderAttachment, DSRequestConstants.STATUS_SENT, user);
@@ -157,6 +193,52 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 			).build(),
 			additionalProps.get("dsRequestStatuses"));
 
+		Assert.assertEquals(
+			Collections.emptyList(),
+			additionalProps.get("replaceableCommerceOrderAttachmentIds"));
+
+		CommerceOrderAttachment commerceOrderAttachment =
+			_commerceOrderAttachmentLocalService.addCommerceOrderAttachment(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_commerceOrder.getCommerceOrderId(),
+				RandomTestUtil.nextDouble(), false,
+				RandomTestUtil.randomString(), "invoice",
+				RandomTestUtil.randomString() + ".pdf",
+				new ByteArrayInputStream(RandomTestUtil.randomBytes()));
+
+		_addDSRequest(
+			commerceOrderAttachment, DSRequestConstants.STATUS_VOIDED, user);
+
+		additionalProps = _getAdditionalProps(user);
+
+		Assert.assertEquals(
+			List.of(
+				String.valueOf(
+					commerceOrderAttachment.getCommerceOrderAttachmentId())),
+			additionalProps.get("replaceableCommerceOrderAttachmentIds"));
+
+		_commerceOrderAttachmentLocalService.deleteCommerceOrderAttachment(
+			commerceOrderAttachment);
+
+		_commerceOrder.setUserId(
+			_userLocalService.getGuestUserId(_group.getCompanyId()));
+
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		additionalProps = _getAdditionalProps(user);
+
+		addDSRequestModalProps = (Map<String, Object>)additionalProps.get(
+			"addDSRequestModalProps");
+
+		Assert.assertNull(addDSRequestModalProps.get("buyer"));
+
+		_testGetAdditionalPropsWithRestrictedCommerceOrderAttachment();
+
+		additionalProps = _getAdditionalProps(UserTestUtil.addUser());
+
+		Assert.assertNull(additionalProps.get("addDSRequestModalProps"));
+
 		_saveDigitalSignatureConfiguration(false);
 
 		Assert.assertEquals(
@@ -164,6 +246,32 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 				"commerceOrderId", _commerceOrder.getCommerceOrderId()
 			).build(),
 			_getAdditionalProps(user));
+	}
+
+	@Test
+	public void testGetFDSActionDropdownItems() throws Exception {
+		User user = TestPropsValues.getUser();
+
+		Assert.assertEquals(
+			List.of(
+				"edit", "download", "delete", "request-signature", "resend",
+				"void"),
+			_getFDSActionDropdownItemIds(user));
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-69290")) {
+
+			Assert.assertEquals(
+				List.of("edit", "download", "delete"),
+				_getFDSActionDropdownItemIds(user));
+		}
+
+		_saveDigitalSignatureConfiguration(false);
+
+		Assert.assertEquals(
+			List.of("edit", "download", "delete"),
+			_getFDSActionDropdownItemIds(user));
 	}
 
 	private void _addDSRequest(
@@ -250,6 +358,24 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 			WebKeys.PORTLET_DISPLAY_CONTEXT);
 	}
 
+	private List<String> _getFDSActionDropdownItemIds(User user)
+		throws Exception {
+
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			ReflectionTestUtil.invoke(
+				_getCommerceOrderAttachmentsDisplayContext(user),
+				"getFDSActionDropdownItems", new Class<?>[0]);
+
+		return TransformUtil.transform(
+			fdsActionDropdownItems,
+			fdsActionDropdownItem -> {
+				Map<String, Object> data =
+					(Map<String, Object>)fdsActionDropdownItem.get("data");
+
+				return MapUtil.getString(data, "id");
+			});
+	}
+
 	private MockHttpServletRequest _getMockHttpServletRequest(User user)
 		throws Exception {
 
@@ -318,6 +444,83 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 				).build());
 	}
 
+	private void _testGetAdditionalPropsWithRestrictedCommerceOrderAttachment()
+		throws Exception {
+
+		Role role = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
+			RandomTestUtil.randomString(), null, null,
+			RoleConstants.TYPE_REGULAR, null,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), CommerceOrderAttachment.class.getName(),
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(_commerceOrder.getGroupId()), role.getRoleId(),
+			new String[] {ActionKeys.VIEW});
+
+		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(accountEntry.getAccountEntryGroupId()),
+			role.getRoleId(),
+			new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+
+		User user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user.getUserId(), role);
+
+		CommerceOrderAttachment commerceOrderAttachment =
+			_commerceOrderAttachmentLocalService.addCommerceOrderAttachment(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_commerceOrder.getCommerceOrderId(),
+				RandomTestUtil.nextDouble(), true,
+				RandomTestUtil.randomString(), "invoice",
+				RandomTestUtil.randomString() + ".pdf",
+				new ByteArrayInputStream(RandomTestUtil.randomBytes()));
+
+		_addDSRequest(
+			commerceOrderAttachment, DSRequestConstants.STATUS_SENT,
+			TestPropsValues.getUser());
+
+		String commerceOrderAttachmentId = String.valueOf(
+			_commerceOrderAttachment.getCommerceOrderAttachmentId());
+
+		Map<String, Object> additionalProps = _getAdditionalProps(user);
+
+		Assert.assertEquals(
+			HashMapBuilder.put(
+				commerceOrderAttachmentId, DSRequestConstants.STATUS_SENT
+			).build(),
+			additionalProps.get("dsRequestStatuses"));
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(accountEntry.getAccountEntryGroupId()),
+			role.getRoleId(),
+			new String[] {
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS,
+				CommerceOrderActionKeys.
+					VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS
+			});
+
+		additionalProps = _getAdditionalProps(user);
+
+		Assert.assertEquals(
+			HashMapBuilder.put(
+				commerceOrderAttachmentId, DSRequestConstants.STATUS_SENT
+			).put(
+				String.valueOf(
+					commerceOrderAttachment.getCommerceOrderAttachmentId()),
+				DSRequestConstants.STATUS_SENT
+			).build(),
+			additionalProps.get("dsRequestStatuses"));
+	}
+
 	private CommerceOrder _commerceOrder;
 	private CommerceOrderAttachment _commerceOrderAttachment;
 
@@ -349,9 +552,18 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 	@Inject
 	private PortletLocalService _portletLocalService;
 
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
 	@Inject(
 		filter = "component.name=com.liferay.commerce.order.web.internal.frontend.taglib.servlet.taglib.CommerceOrderAttachmentsScreenNavigationEntry"
 	)
 	private ScreenNavigationEntry<?> _screenNavigationEntry;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
