@@ -199,6 +199,14 @@ public class LinkReferenceResourceTest
 
 		Assert.assertEquals("DELETE", deleteAction.get("method"));
 
+		Map<String, String> getAction = actions.get("get");
+
+		href = getAction.get("href");
+
+		Assert.assertTrue(href, href.contains("/links?className="));
+
+		Assert.assertEquals("GET", getAction.get("method"));
+
 		Status status = linkReference.getStatus();
 
 		Assert.assertEquals("approved", status.getLabel());
