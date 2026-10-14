@@ -10,6 +10,7 @@ import LifecycleSwitchPanel, {
 	LifecyclePanelView,
 } from 'lifecycle/components/LifecycleSwitchPanel';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
+import LifecycleSticker from 'lifecycle/components/LifecycleSticker';
 import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
 import Loading from 'shared/components/Loading';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
@@ -159,8 +160,19 @@ const BaseLifecycle = () => {
 
 	const [panelView, setPanelView] = useState<LifecyclePanelView | null>(null);
 
+	const [defaultLifecycleId, setDefaultLifecycleId] = useState<string | null>(
+		null
+	);
+
+	const isDefault = defaultLifecycleId
+		? defaultLifecycleId === lifecycleId
+		: lifecycle?.default;
+
+	const openLifecycle = lifecycle && {...lifecycle, default: isDefault};
+
 	const actions = useLifecycleActions({
-		lifecycle,
+		lifecycle: openLifecycle,
+		onDefaultChange: () => setDefaultLifecycleId(lifecycleId!),
 		onShowDetails: () =>
 			setPanelView({lifecycleId: lifecycleId!, type: 'details'}),
 	});
@@ -289,6 +301,14 @@ const BaseLifecycle = () => {
 							<BasePage.Row>
 								<BasePage.Header.TitleSection
 									className="mb-3"
+									sticker={
+										isDefault && (
+											<LifecycleSticker
+												className="mr-2"
+												pinned
+											/>
+										)
+									}
 									title={title}
 								>
 									{!!actions.length && (
@@ -371,7 +391,9 @@ const BaseLifecycle = () => {
 
 			<LifecycleSwitchPanel
 				containerRef={containerRef}
+				onDefaultChange={setDefaultLifecycleId}
 				onViewChange={setPanelView}
+				openLifecycle={openLifecycle}
 				triggerRef={switchButtonRef}
 				view={panelView}
 			/>

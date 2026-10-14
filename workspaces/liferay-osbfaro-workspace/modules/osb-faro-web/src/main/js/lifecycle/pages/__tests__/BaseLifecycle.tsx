@@ -146,6 +146,7 @@ const useRequestImpl =
 		totalCount = 1,
 	}: {
 		lifecycle?: {
+			default?: boolean;
 			id: string;
 			name?: string;
 			processedDate?: number | null;
@@ -207,6 +208,7 @@ describe('BaseLifecycle', () => {
 		(API as any).accounts = {fetchMetrics: jest.fn()};
 		(API as any).lifecycle = {
 			fetchLifecycle: jest.fn(),
+			setDefaultLifecycle: jest.fn(() => Promise.resolve()),
 		};
 
 		mockUseParams.mockReturnValue({
@@ -517,6 +519,70 @@ describe('BaseLifecycle', () => {
 			expect(
 				screen.queryByRole('menuitem', {name: /^edit$/i})
 			).toBeNull();
+		});
+	});
+
+	describe('the default lifecycle', () => {
+		it('pins the title of the default lifecycle', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({lifecycle: {default: true, id: '1'}})
+			);
+
+			renderPage();
+
+			expect(
+				screen.getByRole('img', {name: /default/i})
+			).toBeInTheDocument();
+		});
+
+		it('shows no sticker beside another lifecycle', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({lifecycle: {default: false, id: '1'}})
+			);
+
+			const {container} = renderPage();
+
+			expect(screen.queryByRole('img', {name: /default/i})).toBeNull();
+			expect(
+				container.querySelector('.title-section .sticker')
+			).toBeNull();
+		});
+
+		it('hides Set Default on the default lifecycle', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({lifecycle: {default: true, id: '1'}})
+			);
+
+			renderPage();
+
+			openActionsMenu();
+
+			expect(
+				screen.queryByRole('menuitem', {name: /set.default/i})
+			).toBeNull();
+		});
+
+		it('pins the title once the lifecycle is set as default', async () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({lifecycle: {default: false, id: '1'}})
+			);
+
+			renderPage();
+
+			openActionsMenu();
+
+			fireEvent.click(
+				screen.getByRole('menuitem', {name: /set.default/i})
+			);
+
+			expect(API.lifecycle.setDefaultLifecycle).toHaveBeenCalledWith({
+				groupId: '23',
+				lifecycleId: '1',
+			});
+
+			expect(
+				await screen.findByRole('img', {name: /default/i})
+			).toBeInTheDocument();
 		});
 	});
 

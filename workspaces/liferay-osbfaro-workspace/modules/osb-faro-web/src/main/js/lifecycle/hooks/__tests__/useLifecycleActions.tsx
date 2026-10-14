@@ -9,6 +9,8 @@ import {
 	screen,
 	waitFor,
 } from '@testing-library/react';
+import {addAlert} from 'shared/actions/alerts';
+import {Alert} from 'shared/types';
 import {ILifecycle} from 'shared/api/lifecycle';
 import {MemoryRouter, useLocation} from 'react-router-dom';
 import {Provider} from 'react-redux';
@@ -17,6 +19,11 @@ import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useLifecycleActions} from '../useLifecycleActions';
 
 jest.unmock('react-dom');
+
+jest.mock('shared/actions/alerts', () => ({
+	...jest.requireActual('shared/actions/alerts'),
+	addAlert: jest.fn((payload) => ({payload, type: 'ADD_ALERT'})),
+}));
 
 jest.mock('shared/hooks/useCurrentUser', () => ({
 	useCurrentUser: jest.fn(),
@@ -203,6 +210,10 @@ describe('useLifecycleActions', () => {
 		});
 
 		await waitFor(() => expect(onDefaultChange).toHaveBeenCalled());
+
+		expect(addAlert).toHaveBeenCalledWith(
+			expect.objectContaining({alertType: Alert.Types.Success})
+		);
 	});
 
 	it('calls the details handler on Show Details', () => {

@@ -45,7 +45,18 @@ export const useLifecycleActions = ({
 	const setDefault = () =>
 		API.lifecycle
 			.setDefaultLifecycle({groupId: groupId!, lifecycleId})
-			.then(() => onDefaultChange?.())
+			.then(() => {
+				dispatch(
+					addAlert({
+						alertType: Alert.Types.Success,
+						message: Liferay.Language.get(
+							'the-default-lifecycle-was-updated-successfully'
+						),
+					})
+				);
+
+				onDefaultChange?.();
+			})
 			.catch(() =>
 				dispatch(
 					addAlert({

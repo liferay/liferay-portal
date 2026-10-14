@@ -156,6 +156,21 @@ describe('BasePage.Header', () => {
 			expect(container).toMatchSnapshot();
 		});
 
+		it('renders TitleSection w/ a sticker before the title', () => {
+			const {getByTestId, getByText} = render(
+				<Header.TitleSection
+					sticker={<span data-testid='sticker' />}
+					title='Test Title'
+				/>
+			);
+
+			expect(
+				getByTestId('sticker').compareDocumentPosition(
+					getByText('Test Title')
+				) & Node.DOCUMENT_POSITION_FOLLOWING
+			).toBeTruthy();
+		});
+
 		it('renders TitleSection w/ title & no children', () => {
 			const {container} = render(
 				<Header.TitleSection title='Test Title' />

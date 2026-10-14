@@ -276,6 +276,24 @@ describe('LifecycleDetailsPanel', () => {
 		).toBeNull();
 	});
 
+	it('shows a lifecycle it is given without requesting it', () => {
+		mockedUseRequest.mockReturnValue({
+			data: null,
+			error: false,
+			loading: true,
+		});
+
+		renderPanel({lifecycle: LIFECYCLE});
+
+		expect(screen.getByText('Account Lifecycle')).toBeInTheDocument();
+		expect(
+			screen.getByRole('tab', {name: /^details$/i})
+		).toBeInTheDocument();
+		expect(mockedUseRequest).toHaveBeenCalledWith(
+			expect.objectContaining({skipRequest: true})
+		);
+	});
+
 	it('renders an error state when the lifecycle fails to load', () => {
 		mockLifecycle(null, true);
 

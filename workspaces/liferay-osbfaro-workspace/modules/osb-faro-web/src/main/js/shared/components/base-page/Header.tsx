@@ -250,6 +250,7 @@ const Section: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
 
 interface ITitleSectionProps extends React.HTMLAttributes<HTMLDivElement> {
 	label?: boolean;
+	sticker?: React.ReactNode;
 	subtitle?: React.ReactNode | string;
 	title?: string;
 	topLabel?: string;
@@ -270,6 +271,7 @@ const TitleSection: React.FC<ITitleSectionProps> = ({
 	children,
 	className,
 	label = false,
+	sticker,
 	subtitle,
 	title,
 	topLabel,
@@ -284,6 +286,8 @@ const TitleSection: React.FC<ITitleSectionProps> = ({
 		)}
 
 		<span className="align-items-center d-flex">
+			{sticker}
+
 			<h1 className="title text-truncate">
 				<TextTruncate title={title} />
 			</h1>

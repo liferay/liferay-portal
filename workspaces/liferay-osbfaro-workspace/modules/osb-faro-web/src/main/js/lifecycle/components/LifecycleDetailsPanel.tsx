@@ -13,7 +13,7 @@ import {
 	getStageCountLabel,
 } from 'lifecycle/utils/lifecycleLabels';
 import {getStageTrigger} from 'lifecycle/utils/stageTrigger';
-import {ILifecycleStage} from 'shared/api/lifecycle';
+import {ILifecycleDetail, ILifecycleStage} from 'shared/api/lifecycle';
 import {
 	LifecycleStages,
 	lifecycleStagesLabelMap,
@@ -124,13 +124,15 @@ const StagesTab: React.FC<{stages: ILifecycleStage[]}> = ({stages}) => (
 );
 
 interface ILifecycleDetailsPanelProps {
+	lifecycle?: ILifecycleDetail;
 	lifecycleId: string;
 	onBack?: () => void;
-	onDefaultChange?: () => void;
+	onDefaultChange?: (lifecycleId: string) => void;
 	onView?: () => void;
 }
 
 const LifecycleDetailsPanel: React.FC<ILifecycleDetailsPanelProps> = ({
+	lifecycle: openLifecycle,
 	lifecycleId,
 	onBack,
 	onDefaultChange,
@@ -142,28 +144,28 @@ const LifecycleDetailsPanel: React.FC<ILifecycleDetailsPanelProps> = ({
 
 	const {timeZoneId} = useTimeZone();
 
-	const {
-		data: lifecycle,
-		error,
-		loading,
-		refetch,
-	} = useRequest({
+	const {data, error, loading, refetch} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecycle,
+		skipRequest: !!openLifecycle,
 		variables: {groupId: groupId!, lifecycleId},
 	});
+
+	const lifecycle = openLifecycle ?? data;
 
 	const actions = useLifecycleActions({
 		lifecycle,
 		onDefaultChange: () => {
-			refetch();
+			if (!openLifecycle) {
+				refetch();
+			}
 
-			onDefaultChange?.();
+			onDefaultChange?.(lifecycleId);
 		},
 		onView,
 	});
 
 	const renderBody = () => {
-		if (loading) {
+		if (!openLifecycle && loading) {
 			return <Loading />;
 		}
 

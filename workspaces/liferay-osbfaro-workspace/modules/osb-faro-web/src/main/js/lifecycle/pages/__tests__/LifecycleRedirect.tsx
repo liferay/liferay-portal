@@ -34,7 +34,10 @@ const mockedUseCurrentUser = useCurrentUser as jest.Mock;
 const mockedUseDataSources = useDataSources as jest.Mock;
 const mockedUseRequest = useRequest as jest.Mock;
 
-const mockLifecycles = (lifecycles: {id: string}[], loading = false) =>
+const mockLifecycles = (
+	lifecycles: {default?: boolean; id: string}[],
+	loading = false
+) =>
 	mockedUseRequest.mockReturnValue({
 		data: lifecycles,
 		error: false,
@@ -75,13 +78,23 @@ describe('LifecycleRedirect', () => {
 
 	afterEach(cleanup);
 
-	it('redirects to the first lifecycle', () => {
+	it('redirects to the first lifecycle while none is flagged', () => {
 		mockLifecycles([{id: '7'}, {id: '8'}]);
 
 		renderPage();
 
 		expect(screen.getByTestId('location')).toHaveTextContent(
 			dashboardURL('7')
+		);
+	});
+
+	it('redirects to the lifecycle flagged as the default', () => {
+		mockLifecycles([{id: '7'}, {default: true, id: '8'}]);
+
+		renderPage();
+
+		expect(screen.getByTestId('location')).toHaveTextContent(
+			dashboardURL('8')
 		);
 	});
 
