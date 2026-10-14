@@ -392,8 +392,7 @@ public class ControllerResultMonitorTest
 
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Job ", _JOB_NAME, " has the schedule 0 0 31 2 *, which ",
-				"never comes round"),
+				"Job ", _JOB_NAME, " has an invalid schedule: 0 0 31 2 *"),
 			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(
 				600,

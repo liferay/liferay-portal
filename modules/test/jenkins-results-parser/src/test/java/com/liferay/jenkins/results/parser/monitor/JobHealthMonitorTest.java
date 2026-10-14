@@ -280,8 +280,8 @@ public class JobHealthMonitorTest
 
 		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
 		testEquals(
-			"Job generate-reports-controller has the schedule 0 0 31 2 *, " +
-				"which never comes round",
+			"Job generate-reports-controller has an invalid schedule: 0 0 31 " +
+				"2 *",
 			monitorResult.getMessage());
 	}
 
