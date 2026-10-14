@@ -397,6 +397,76 @@ public class EditAssetListDisplayContextTest {
 	}
 
 	@Test
+	public void testGetFilterMapsWhenAssetCategoryAndAssetTagAreDeleted() {
+		Mockito.when(
+			_portal.getCurrentAndAncestorSiteGroupIds(
+				Mockito.any(long[].class), Mockito.eq(true))
+		).thenReturn(
+			new long[] {RandomTestUtil.randomLong()}
+		);
+
+		Mockito.when(
+			_themeDisplay.getScopeGroup()
+		).thenReturn(
+			Mockito.mock(Group.class)
+		);
+
+		try (MockedStatic<AssetCategoryLocalServiceUtil>
+				assetCategoryLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetCategoryLocalServiceUtil.class);
+			MockedStatic<AssetTagLocalServiceUtil>
+				assetTagLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetTagLocalServiceUtil.class)) {
+
+			String keywords = RandomTestUtil.randomString();
+
+			EditAssetListDisplayContext editAssetListDisplayContext =
+				_getEditAssetListDisplayContext(
+					UnicodePropertiesBuilder.put(
+						"filters",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"propertyName", "assetCategories"
+							).put(
+								"value",
+								JSONUtil.put(
+									JSONUtil.put(
+										"label", RandomTestUtil.randomString()
+									).put(
+										"value",
+										String.valueOf(
+											RandomTestUtil.randomLong())
+									))
+							),
+							JSONUtil.put(
+								"propertyName", "assetTags"
+							).put(
+								"value",
+								JSONUtil.put(
+									JSONUtil.put(
+										"value", RandomTestUtil.randomString()))
+							),
+							JSONUtil.put(
+								"propertyName", "keywords"
+							).put(
+								"value", keywords
+							)
+						).toString()
+					).build());
+
+			List<Map<String, Object>> filterMaps =
+				editAssetListDisplayContext.getFilterMaps();
+
+			Assert.assertEquals(filterMaps.toString(), 1, filterMaps.size());
+
+			Map<String, Object> filterMap = filterMaps.get(0);
+
+			Assert.assertEquals("keywords", filterMap.get("propertyName"));
+			Assert.assertEquals(keywords, filterMap.get("value"));
+		}
+	}
+
+	@Test
 	public void testGetFilterMapsWhenAssetCategoryLookupFails() {
 		try (MockedStatic<AssetCategoryLocalServiceUtil>
 				assetCategoryLocalServiceUtilMockedStatic = Mockito.mockStatic(
@@ -465,76 +535,6 @@ public class EditAssetListDisplayContextTest {
 			Assert.assertTrue(
 				StringUtil.startsWith(
 					logEntry.getMessage(), "Unable to resolve filter "));
-		}
-	}
-
-	@Test
-	public void testGetFilterMapsWhenOnlyAssetCategoryOrTagIsDeleted() {
-		Mockito.when(
-			_portal.getCurrentAndAncestorSiteGroupIds(
-				Mockito.any(long[].class), Mockito.eq(true))
-		).thenReturn(
-			new long[] {RandomTestUtil.randomLong()}
-		);
-
-		Mockito.when(
-			_themeDisplay.getScopeGroup()
-		).thenReturn(
-			Mockito.mock(Group.class)
-		);
-
-		try (MockedStatic<AssetCategoryLocalServiceUtil>
-				assetCategoryLocalServiceUtilMockedStatic = Mockito.mockStatic(
-					AssetCategoryLocalServiceUtil.class);
-			MockedStatic<AssetTagLocalServiceUtil>
-				assetTagLocalServiceUtilMockedStatic = Mockito.mockStatic(
-					AssetTagLocalServiceUtil.class)) {
-
-			String keywords = RandomTestUtil.randomString();
-
-			EditAssetListDisplayContext editAssetListDisplayContext =
-				_getEditAssetListDisplayContext(
-					UnicodePropertiesBuilder.put(
-						"filters",
-						JSONUtil.putAll(
-							JSONUtil.put(
-								"propertyName", "assetCategories"
-							).put(
-								"value",
-								JSONUtil.put(
-									JSONUtil.put(
-										"label", RandomTestUtil.randomString()
-									).put(
-										"value",
-										String.valueOf(
-											RandomTestUtil.randomLong())
-									))
-							),
-							JSONUtil.put(
-								"propertyName", "assetTags"
-							).put(
-								"value",
-								JSONUtil.put(
-									JSONUtil.put(
-										"value", RandomTestUtil.randomString()))
-							),
-							JSONUtil.put(
-								"propertyName", "keywords"
-							).put(
-								"value", keywords
-							)
-						).toString()
-					).build());
-
-			List<Map<String, Object>> filterMaps =
-				editAssetListDisplayContext.getFilterMaps();
-
-			Assert.assertEquals(filterMaps.toString(), 1, filterMaps.size());
-
-			Map<String, Object> filterMap = filterMaps.get(0);
-
-			Assert.assertEquals("keywords", filterMap.get("propertyName"));
-			Assert.assertEquals(keywords, filterMap.get("value"));
 		}
 	}
 
