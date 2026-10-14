@@ -340,9 +340,7 @@ export default function AddToolsModal({
 							<div className="sticky-top">
 								<SelectedItemsBar
 									count={selectedTools.length}
-									onDeselectAll={() =>
-										setSelectedKeys(new Set())
-									}
+									onClear={() => setSelectedKeys(new Set())}
 								/>
 							</div>
 						)}

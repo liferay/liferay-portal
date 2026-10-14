@@ -571,7 +571,7 @@ test.describe('Profiles - Data Masks tab', () => {
 	);
 
 	test(
-		'Deselects every mask with the Deselect All action',
+		'Deselects every mask with the Clear action',
 		{tag: '@LPD-99230'},
 		async ({apiHelpers, profilesPage}) => {
 			const firstMaskName = profileName();
@@ -601,7 +601,7 @@ test.describe('Profiles - Data Masks tab', () => {
 				profilesPage.dialog.getByText(/Items? Selected/)
 			).toBeVisible();
 
-			await profilesPage.deselectAllButton.click();
+			await profilesPage.clearButton.click();
 
 			await expect(profilesPage.selectionStatus).toHaveText(
 				'Nothing Selected'
@@ -1021,7 +1021,7 @@ test.describe('Profiles - Tools tab', () => {
 	);
 
 	test(
-		'Deselects every tool with the Deselect All action',
+		'Deselects every tool with the Clear action',
 		{tag: '@LPD-103214'},
 		async ({apiHelpers, profilesPage}) => {
 			const name = profileName();
@@ -1040,7 +1040,7 @@ test.describe('Profiles - Tools tab', () => {
 				/[1-9]\d*\s+Items? Selected/
 			);
 
-			await profilesPage.deselectAllButton.click();
+			await profilesPage.clearButton.click();
 
 			await expect(profilesPage.dialog.getByRole('status')).toHaveText(
 				'Nothing Selected'

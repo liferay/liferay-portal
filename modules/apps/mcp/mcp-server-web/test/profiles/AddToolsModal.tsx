@@ -194,9 +194,7 @@ describe('AddToolsModal', () => {
 
 		await userEvent.click(checkbox('organizations'));
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'deselect-all'})
-		);
+		await userEvent.click(screen.getByRole('button', {name: 'clear'}));
 
 		resolve('organizations');
 

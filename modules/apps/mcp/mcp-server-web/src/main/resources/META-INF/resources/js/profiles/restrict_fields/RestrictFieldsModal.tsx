@@ -105,7 +105,7 @@ export default function RestrictFieldsModal({
 		};
 	}, [onClose, restrictFields, toolName, toolSetName]);
 
-	const deselectAll = () => {
+	const clearSelection = () => {
 		setSelectedKeys(new Set());
 
 		setTreeVersion((previousVersion) => previousVersion + 1);
@@ -191,7 +191,7 @@ export default function RestrictFieldsModal({
 
 								<SelectedItemsBar
 									count={selectedKeys.size}
-									onDeselectAll={deselectAll}
+									onClear={clearSelection}
 								/>
 							</div>
 						)}

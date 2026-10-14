@@ -230,21 +230,21 @@ describe('RestrictFieldsModal', () => {
 		expect(badge()).toHaveClass('badge-secondary');
 	});
 
-	it('clears the selection with the deselect all action', async () => {
+	it('clears the selection with the clear action', async () => {
 		fetch.mockResponseOnce(JSON.stringify(mockTool));
 
 		renderModal();
 
 		await userEvent.click(await findCheckbox('description'));
 
-		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
+		await userEvent.click(screen.getByRole('button', {name: 'clear'}));
 
 		expect(checkbox('description')).not.toBeChecked();
 		expect(screen.getByText('nothing-selected')).toBeInTheDocument();
-		expect(screen.queryByRole('button', {name: 'deselect-all'})).toBeNull();
+		expect(screen.queryByRole('button', {name: 'clear'})).toBeNull();
 	});
 
-	it('clears nested indeterminate parents with the deselect all action', async () => {
+	it('clears nested indeterminate parents with the clear action', async () => {
 		fetch.mockResponseOnce(JSON.stringify(mockTool));
 
 		renderModal();
@@ -259,7 +259,7 @@ describe('RestrictFieldsModal', () => {
 		expect(checkbox('modifiedBy')).toBePartiallyChecked();
 		expect(checkbox('userGroupBriefs')).toBePartiallyChecked();
 
-		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
+		await userEvent.click(screen.getByRole('button', {name: 'clear'}));
 
 		expect(checkbox('modifiedBy')).not.toBePartiallyChecked();
 		expect(checkbox('modifiedBy')).not.toBeChecked();
@@ -353,14 +353,14 @@ describe('RestrictFieldsModal', () => {
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});
 
-	it('moves the focus to the first field when deselect all removes its button', async () => {
+	it('moves the focus to the first field when clear removes its button', async () => {
 		fetch.mockResponseOnce(JSON.stringify(mockTool));
 
 		renderModal();
 
 		await userEvent.click(await findCheckbox('description'));
 
-		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
+		await userEvent.click(screen.getByRole('button', {name: 'clear'}));
 
 		expect(screen.getAllByRole('treeitem')[0]).toHaveFocus();
 	});
@@ -586,7 +586,7 @@ describe('RestrictFieldsModal', () => {
 		).toBeInTheDocument();
 	});
 
-	it('moves the focus to the first visible field when deselect all removes its button under a filter', async () => {
+	it('moves the focus to the first visible field when clear removes its button under a filter', async () => {
 		fetch.mockResponseOnce(JSON.stringify(mockTool));
 
 		renderModal();
@@ -595,7 +595,7 @@ describe('RestrictFieldsModal', () => {
 
 		await search('label');
 
-		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
+		await userEvent.click(screen.getByRole('button', {name: 'clear'}));
 
 		expect(
 			checkbox('taxonomyCategoryBriefs').closest('[role="treeitem"]')
@@ -680,7 +680,7 @@ describe('RestrictFieldsModal', () => {
 		expect(status).toHaveClass('sr-only');
 	});
 
-	it('moves the focus to the search box when deselect all leaves no visible field', async () => {
+	it('moves the focus to the search box when clear leaves no visible field', async () => {
 		fetch.mockResponseOnce(JSON.stringify(mockTool));
 
 		renderModal();
@@ -689,7 +689,7 @@ describe('RestrictFieldsModal', () => {
 
 		await search('nothing-like-this');
 
-		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
+		await userEvent.click(screen.getByRole('button', {name: 'clear'}));
 
 		expect(searchBox()).toHaveFocus();
 	});

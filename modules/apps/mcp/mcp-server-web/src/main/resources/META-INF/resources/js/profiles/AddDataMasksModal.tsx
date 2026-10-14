@@ -138,7 +138,7 @@ export default function AddDataMasksModal({
 
 						<SelectedItemsBar
 							count={selectedExternalReferenceCodes.length}
-							onDeselectAll={() => setSelectedKeys(new Set())}
+							onClear={() => setSelectedKeys(new Set())}
 						/>
 					</div>
 				)}

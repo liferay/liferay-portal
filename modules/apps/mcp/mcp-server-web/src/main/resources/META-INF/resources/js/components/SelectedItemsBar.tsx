@@ -5,22 +5,25 @@
 
 import ClayButton from '@clayui/button';
 import {ClayResultsBar} from '@clayui/management-toolbar';
-import React from 'react';
+import React, {useId} from 'react';
 
 interface SelectedItemsBarProps {
 	count: number;
-	onDeselectAll: () => void;
+	onClear: () => void;
 }
 
 export default function SelectedItemsBar({
 	count,
-	onDeselectAll,
+	onClear,
 }: SelectedItemsBarProps) {
+	const statusId = useId();
+
 	return (
 		<ClayResultsBar role="none">
 			<ClayResultsBar.Item expand>
 				<span
 					className="component-text text-truncate-inline"
+					id={statusId}
 					role="status"
 				>
 					<span className="text-truncate">
@@ -43,11 +46,12 @@ export default function SelectedItemsBar({
 			{!!count && (
 				<ClayResultsBar.Item>
 					<ClayButton
+						aria-describedby={statusId}
 						className="component-link tbar-link"
 						displayType="unstyled"
-						onClick={onDeselectAll}
+						onClick={onClear}
 					>
-						{Liferay.Language.get('deselect-all')}
+						{Liferay.Language.get('clear')}
 					</ClayButton>
 				</ClayResultsBar.Item>
 			)}
