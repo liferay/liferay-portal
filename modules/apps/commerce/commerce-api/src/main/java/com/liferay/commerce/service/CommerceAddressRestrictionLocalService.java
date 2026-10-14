@@ -128,8 +128,6 @@ public interface CommerceAddressRestrictionLocalService
 			long commerceAddressRestrictionId)
 		throws PortalException;
 
-	public void deleteCommerceAddressRestrictions(long countryId);
-
 	public void deleteCommerceAddressRestrictions(
 		String className, long classPK);
 
@@ -308,4 +306,4 @@ public interface CommerceAddressRestrictionLocalService
 		CommerceAddressRestriction commerceAddressRestriction);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1567159425
+// LIFERAY-SERVICE-BUILDER-HASH:1466342325

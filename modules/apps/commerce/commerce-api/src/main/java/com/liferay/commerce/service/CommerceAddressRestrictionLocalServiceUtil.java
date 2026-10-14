@@ -135,10 +135,6 @@ public class CommerceAddressRestrictionLocalServiceUtil {
 			commerceAddressRestrictionId);
 	}
 
-	public static void deleteCommerceAddressRestrictions(long countryId) {
-		getService().deleteCommerceAddressRestrictions(countryId);
-	}
-
 	public static void deleteCommerceAddressRestrictions(
 		String className, long classPK) {
 
@@ -383,4 +379,4 @@ public class CommerceAddressRestrictionLocalServiceUtil {
 			CommerceAddressRestrictionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1510472129
+// LIFERAY-SERVICE-BUILDER-HASH:328843842

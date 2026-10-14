@@ -322,11 +322,6 @@ public interface CommerceShipmentItemLocalService
 		OrderByComparator<CommerceShipmentItem> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShipmentItem> getCommerceShipmentItems(
-		long commerceShipmentId, long commerceOrderItemId, int start, int end,
-		OrderByComparator<CommerceShipmentItem> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShipmentItem>
 		getCommerceShipmentItemsByCommerceOrderItemId(long commerceOrderItemId);
 
@@ -427,4 +422,4 @@ public interface CommerceShipmentItemLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-714002526
+// LIFERAY-SERVICE-BUILDER-HASH:872198803

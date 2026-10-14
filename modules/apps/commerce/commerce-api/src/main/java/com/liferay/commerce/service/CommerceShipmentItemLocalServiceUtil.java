@@ -384,15 +384,6 @@ public class CommerceShipmentItemLocalServiceUtil {
 			commerceShipmentId, start, end, orderByComparator);
 	}
 
-	public static List<CommerceShipmentItem> getCommerceShipmentItems(
-		long commerceShipmentId, long commerceOrderItemId, int start, int end,
-		OrderByComparator<CommerceShipmentItem> orderByComparator) {
-
-		return getService().getCommerceShipmentItems(
-			commerceShipmentId, commerceOrderItemId, start, end,
-			orderByComparator);
-	}
-
 	public static List<CommerceShipmentItem>
 		getCommerceShipmentItemsByCommerceOrderItemId(
 			long commerceOrderItemId) {
@@ -546,4 +537,4 @@ public class CommerceShipmentItemLocalServiceUtil {
 			CommerceShipmentItemLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:694201672
+// LIFERAY-SERVICE-BUILDER-HASH:-1366579811

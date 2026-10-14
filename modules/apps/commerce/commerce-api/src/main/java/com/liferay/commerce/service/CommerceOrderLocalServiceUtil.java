@@ -209,16 +209,6 @@ public class CommerceOrderLocalServiceUtil {
 		getService().deleteCommerceOrders(groupId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), delete by commerceAccountId
-	 */
-	@Deprecated
-	public static void deleteCommerceOrders(
-		long userId, java.util.Date date, int status) {
-
-		getService().deleteCommerceOrders(userId, date, status);
-	}
-
 	public static void deleteCommerceOrdersByAccountId(
 			long commerceAccountId, java.util.Date date, int status)
 		throws PortalException {
@@ -479,13 +469,6 @@ public class CommerceOrderLocalServiceUtil {
 		return getService().getCommerceOrders(
 			companyId, groupId, commerceAccountIds, keywords, orderStatuses,
 			excludeOrderStatus, start, end, sort);
-	}
-
-	public static List<CommerceOrder> getCommerceOrders(
-		long groupId, String commercePaymentMethodKey) {
-
-		return getService().getCommerceOrders(
-			groupId, commercePaymentMethodKey);
 	}
 
 	public static List<CommerceOrder> getCommerceOrdersByBillingAddress(
@@ -1153,4 +1136,4 @@ public class CommerceOrderLocalServiceUtil {
 			CommerceOrderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2075724431
+// LIFERAY-SERVICE-BUILDER-HASH:636412039

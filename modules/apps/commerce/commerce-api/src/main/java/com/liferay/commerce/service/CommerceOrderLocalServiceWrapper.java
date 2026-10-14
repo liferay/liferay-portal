@@ -218,17 +218,6 @@ public class CommerceOrderLocalServiceWrapper
 		_commerceOrderLocalService.deleteCommerceOrders(groupId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), delete by commerceAccountId
-	 */
-	@Deprecated
-	@Override
-	public void deleteCommerceOrders(
-		long userId, java.util.Date date, int status) {
-
-		_commerceOrderLocalService.deleteCommerceOrders(userId, date, status);
-	}
-
 	@Override
 	public void deleteCommerceOrdersByAccountId(
 			long commerceAccountId, java.util.Date date, int status)
@@ -546,14 +535,6 @@ public class CommerceOrderLocalServiceWrapper
 		return _commerceOrderLocalService.getCommerceOrders(
 			companyId, groupId, commerceAccountIds, keywords, orderStatuses,
 			excludeOrderStatus, start, end, sort);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrder>
-		getCommerceOrders(long groupId, String commercePaymentMethodKey) {
-
-		return _commerceOrderLocalService.getCommerceOrders(
-			groupId, commercePaymentMethodKey);
 	}
 
 	@Override
@@ -1301,4 +1282,4 @@ public class CommerceOrderLocalServiceWrapper
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-352635295
+// LIFERAY-SERVICE-BUILDER-HASH:1395158671

@@ -180,12 +180,6 @@ public interface CommerceOrderLocalService
 
 	public void deleteCommerceOrders(long groupId) throws PortalException;
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), delete by commerceAccountId
-	 */
-	@Deprecated
-	public void deleteCommerceOrders(long userId, Date date, int status);
-
 	public void deleteCommerceOrdersByAccountId(
 			long commerceAccountId, Date date, int status)
 		throws PortalException;
@@ -381,10 +375,6 @@ public interface CommerceOrderLocalService
 			String keywords, int[] orderStatuses, boolean excludeOrderStatus,
 			int start, int end, Sort sort)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrder> getCommerceOrders(
-		long groupId, String commercePaymentMethodKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceOrder> getCommerceOrdersByBillingAddress(
@@ -784,4 +774,4 @@ public interface CommerceOrderLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:338506159
+// LIFERAY-SERVICE-BUILDER-HASH:2046116294
