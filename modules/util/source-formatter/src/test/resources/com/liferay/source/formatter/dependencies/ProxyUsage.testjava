@@ -84,11 +84,13 @@ public class ProxyUsage implements Closeable {
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			Class<?> returnType = method.getReturnType();
 
-			if (annotationPresent && (parameterTypes.length == 1) &&
-				returnType.equals(void.class)) {
+			if (!annotationPresent || (parameterTypes.length != 1) ||
+				!returnType.equals(void.class)) {
 
-				injectionPointMethods.add(method);
+				continue;
 			}
+
+			injectionPointMethods.add(method);
 		}
 
 		return injectionPointMethods;
@@ -107,9 +109,11 @@ public class ProxyUsage implements Closeable {
 			Class<?> parameterType =
 				injectionPointMethod.getParameterTypes()[0];
 
-			if (parameterType.isInterface()) {
-				interfaceClasses.add(parameterType);
+			if (!parameterType.isInterface()) {
+				continue;
 			}
+
+			interfaceClasses.add(parameterType);
 		}
 
 		_unavailableServiceProxy = Proxy.newProxyInstance(
@@ -122,9 +126,11 @@ public class ProxyUsage implements Closeable {
 			InjectionPoint injectionPoint = createInjectionPoint(
 				target, injectionPointMethod);
 
-			if (injectionPoint != null) {
-				injectionPoints.add(injectionPoint);
+			if (injectionPoint == null) {
+				continue;
 			}
+
+			injectionPoints.add(injectionPoint);
 		}
 
 		return injectionPoints;
