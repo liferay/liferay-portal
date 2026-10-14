@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -239,10 +240,55 @@ public class MBMessageServiceTest {
 		}
 	}
 
+	@Test
+	public void testGetCategoryMessagesCount() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAddGuestPermissions(false);
+
+		MBMessageServiceUtil.addMessage(
+			_group.getGroupId(), _category.getCategoryId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			MBMessageConstants.DEFAULT_FORMAT, new ArrayList<>(), false, 0.0,
+			false, serviceContext);
+
+		Assert.assertEquals(
+			1,
+			MBMessageServiceUtil.getCategoryMessagesCount(
+				_group.getGroupId(), _category.getCategoryId(),
+				WorkflowConstants.STATUS_ANY));
+		Assert.assertEquals(
+			1,
+			MBMessageServiceUtil.getCategoryMessagesCount(
+				_group.getGroupId(), _category.getCategoryId(),
+				WorkflowConstants.STATUS_APPROVED));
+
+		_user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			Assert.assertEquals(
+				0,
+				MBMessageServiceUtil.getCategoryMessagesCount(
+					_group.getGroupId(), _category.getCategoryId(),
+					WorkflowConstants.STATUS_ANY));
+			Assert.assertEquals(
+				0,
+				MBMessageServiceUtil.getCategoryMessagesCount(
+					_group.getGroupId(), _category.getCategoryId(),
+					WorkflowConstants.STATUS_APPROVED));
+		}
+	}
+
 	private MBCategory _category;
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 	@DeleteAfterTestRun
 	private User[] _users;
