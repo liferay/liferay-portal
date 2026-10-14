@@ -5,14 +5,33 @@
 
 import {
 	DSRequestStatusDataRenderer,
+	formatActionUrl,
 	removeDSRequestStatusColumn,
 } from 'commerce-frontend-js';
 import {openModal, openToast} from 'frontend-js-components-web';
-import {sub} from 'frontend-js-web';
+import {escapeHTML, sub} from 'frontend-js-web';
 import React from 'react';
 
+import AddDSRequestModal from './AddDSRequestModal';
 import CommerceOrderAttachmentRestrictedDataRenderer from './CommerceOrderAttachmentRestrictedDataRenderer';
 import CommerceOrderAttachmentTitleDataRenderer from './CommerceOrderAttachmentTitleDataRenderer';
+
+const openAddDSRequestModal = ({
+	addDSRequestModalProps,
+	addDSRequestURL,
+	attachment,
+}) => {
+	openModal({
+		contentComponent: ({closeModal}) =>
+			React.createElement(AddDSRequestModal, {
+				addDSRequestModalProps,
+				addDSRequestURL,
+				attachment,
+				closeModal,
+			}),
+		size: 'lg',
+	});
+};
 
 const openDeleteConfirmationModal = ({itemName, loadData, url}) => {
 	openModal({
@@ -80,8 +99,83 @@ const openDeleteConfirmationModal = ({itemName, loadData, url}) => {
 	});
 };
 
+const openErrorToast = (error) => {
+	openToast({
+		message: escapeHTML(
+			error?.errorMessage ||
+				Liferay.Language.get('an-unexpected-error-occurred')
+		),
+		type: 'danger',
+	});
+};
+
+const openVoidConfirmationModal = ({url}) => {
+	openModal({
+		bodyHTML: Liferay.Language.get(
+			'are-you-sure-you-want-to-void-this-signature-request'
+		),
+		buttons: [
+			{
+				autoFocus: true,
+				displayType: 'secondary',
+				label: Liferay.Language.get('cancel'),
+				type: 'cancel',
+			},
+			{
+				displayType: 'danger',
+				label: Liferay.Language.get('void'),
+				onClick: ({processClose}) => {
+					postDSRequestAction(url)
+						.then(() => {
+							processClose();
+
+							window.location.reload();
+						})
+						.catch(openErrorToast);
+				},
+			},
+		],
+		status: 'danger',
+		title: Liferay.Language.get('void'),
+	});
+};
+
+const postDSRequestAction = (url) =>
+	Liferay.Util.fetch(url, {method: 'POST'})
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error(response.statusText);
+			}
+
+			return response.json();
+		})
+		.then(({errorMessage}) => {
+			if (errorMessage) {
+				throw {errorMessage};
+			}
+
+			openToast({
+				message: Liferay.Language.get(
+					'your-request-completed-successfully'
+				),
+				type: 'success',
+			});
+		});
+
 const AttachmentsFDSPropsTransformer = (props) => {
+	const addDSRequestModalProps =
+		props.additionalProps?.addDSRequestModalProps;
 	const dsRequestStatuses = props.additionalProps?.dsRequestStatuses ?? {};
+	const replaceableCommerceOrderAttachmentIds =
+		props.additionalProps?.replaceableCommerceOrderAttachmentIds ?? [];
+
+	const getDSRequestStatus = (item) => dsRequestStatuses[item.id];
+
+	const isRequestable = (item) =>
+		!!addDSRequestModalProps &&
+		addDSRequestModalProps.allowedFileExtensions.includes(item.extension) &&
+		(!getDSRequestStatus(item) ||
+			replaceableCommerceOrderAttachmentIds.includes(String(item.id)));
 
 	return {
 		...props,
@@ -93,27 +187,38 @@ const AttachmentsFDSPropsTransformer = (props) => {
 			dsRequestStatusDataRenderer: (rendererProps) =>
 				React.createElement(DSRequestStatusDataRenderer, {
 					...rendererProps,
-					dsRequestStatuses,
+					value: getDSRequestStatus(rendererProps.itemData),
 				}),
 		},
 		itemsActions: props.itemsActions?.map((action) => {
-			if (action?.data?.id === 'delete') {
+			const actionId = action?.data?.id;
+
+			if (actionId === 'delete') {
 				return {
 					...action,
 					className: 'text-danger',
 				};
 			}
 
+			if (actionId === 'request-signature') {
+				return {
+					...action,
+					isVisible: isRequestable,
+				};
+			}
+
+			if (actionId === 'resend' || actionId === 'void') {
+				return {
+					...action,
+					isVisible: (item) => getDSRequestStatus(item) === 'sent',
+				};
+			}
+
 			return action;
 		}),
-		onActionDropdownItemClick: ({
-			action: {
-				data: {id: actionId},
-			},
-			event,
-			itemData,
-			loadData,
-		}) => {
+		onActionDropdownItemClick: ({action, event, itemData, loadData}) => {
+			const actionId = action?.data?.id;
+
 			if (actionId === 'delete') {
 				event?.preventDefault();
 
@@ -133,6 +238,35 @@ const AttachmentsFDSPropsTransformer = (props) => {
 				}
 
 				window.location.href = fileURL;
+			}
+			else if (actionId === 'request-signature') {
+				event?.preventDefault();
+
+				openAddDSRequestModal({
+					addDSRequestModalProps,
+					addDSRequestURL: formatActionUrl(
+						action.data.addDSRequestURL,
+						itemData
+					),
+					attachment: itemData,
+				});
+			}
+			else if (actionId === 'resend') {
+				event?.preventDefault();
+
+				postDSRequestAction(
+					formatActionUrl(action.data.resendDSRequestURL, itemData)
+				).catch(openErrorToast);
+			}
+			else if (actionId === 'void') {
+				event?.preventDefault();
+
+				openVoidConfirmationModal({
+					url: formatActionUrl(
+						action.data.voidDSRequestURL,
+						itemData
+					),
+				});
 			}
 		},
 		views: Object.keys(dsRequestStatuses).length
