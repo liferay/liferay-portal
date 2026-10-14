@@ -275,6 +275,69 @@ public class FriendlyURLServletLocalizedFriendlyURLTest {
 	}
 
 	@Test
+	public void testLocalizedSiteLayoutFriendlyURLWithEncodedLayoutFriendlyURL()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		String layoutFriendlyURL = "/test";
+
+		mockHttpServletRequest.setPathInfo(
+			_group.getFriendlyURL() + layoutFriendlyURL);
+		mockHttpServletRequest.setRequestURI(
+			_PUBLIC_GROUP_SERVLET_MAPPING + _group.getFriendlyURL() +
+				layoutFriendlyURL);
+
+		Assert.assertEquals(
+			_PUBLIC_GROUP_SERVLET_MAPPING + _group.getFriendlyURL() +
+				"/t%C3%A9st",
+			ReflectionTestUtil.invoke(
+				_servlet, "_getLocalizedFriendlyURL",
+				new Class<?>[] {
+					HttpServletRequest.class, Layout.class, Locale.class,
+					Locale.class
+				},
+				mockHttpServletRequest,
+				LayoutTestUtil.addTypePortletLayout(
+					_group.getGroupId(), false, _nameMap,
+					HashMapBuilder.put(
+						LocaleUtil.US, "/tést"
+					).build()),
+				LocaleUtil.US, null));
+	}
+
+	@Test
+	public void testLocalizedSiteLayoutFriendlyURLWithEncodedOriginalLayoutFriendlyURL()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setRequestURI(
+			_PUBLIC_GROUP_SERVLET_MAPPING + _group.getFriendlyURL() +
+				"/inici%C3%A9");
+
+		Assert.assertEquals(
+			_PUBLIC_GROUP_SERVLET_MAPPING + _group.getFriendlyURL() + "/home",
+			ReflectionTestUtil.invoke(
+				_servlet, "_getLocalizedFriendlyURL",
+				new Class<?>[] {
+					HttpServletRequest.class, Layout.class, Locale.class,
+					Locale.class
+				},
+				mockHttpServletRequest,
+				LayoutTestUtil.addTypePortletLayout(
+					_group.getGroupId(), false, _nameMap,
+					HashMapBuilder.put(
+						LocaleUtil.SPAIN, "/inicié"
+					).put(
+						LocaleUtil.US, "/home"
+					).build()),
+				LocaleUtil.US, LocaleUtil.SPAIN));
+	}
+
+	@Test
 	public void testLocalizedSiteLayoutFriendlyURLWithEncodedRequestURI()
 		throws Exception {
 
