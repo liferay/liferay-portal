@@ -81,6 +81,10 @@ baseTest(
 
 				await iframe.getByRole('link', {name: folderName}).click();
 
+				await expect(
+					iframe.locator('.breadcrumb-item').last()
+				).toHaveText(folderName);
+
 				await iframe
 					.locator('input[type="file"]')
 					.setInputFiles(
