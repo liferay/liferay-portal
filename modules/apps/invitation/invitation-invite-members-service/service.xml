@@ -40,9 +40,6 @@
 		<finder name="Key" return-type="MemberRequest">
 			<finder-column name="key" />
 		</finder>
-		<finder name="ReceiverUserId" return-type="Collection">
-			<finder-column name="receiverUserId" />
-		</finder>
 		<finder name="R_S" return-type="Collection">
 			<finder-column name="receiverUserId" />
 			<finder-column name="status" />
