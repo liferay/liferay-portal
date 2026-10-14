@@ -684,10 +684,10 @@ public class JenkinsResultsParserUtilTest
 
 			deepStackCountDownLatch.await();
 
+			int stackTraceElementsCount = 0;
+
 			String threadDumpEntry = _getThreadDumpEntry(
 				JenkinsResultsParserUtil.getThreadDump(), threadName);
-
-			int stackTraceElementsCount = 0;
 
 			for (String line : threadDumpEntry.split("\n")) {
 				if (line.startsWith("\tat ")) {
