@@ -1108,18 +1108,17 @@ public class FriendlyURLServlet extends HttpServlet {
 			if (y != -1) {
 				layoutFriendlyURL = layoutFriendlyURL.substring(0, y);
 			}
+
+			layoutFriendlyURL = HttpComponentsUtil.encodePath(
+				layoutFriendlyURL);
 		}
 		else {
 			layoutFriendlyURL = layout.getFriendlyURL(originalLocale);
 		}
 
-		String encodedLayoutFriendlyURL = HttpComponentsUtil.encodePath(
-			layoutFriendlyURL);
-
-		if (requestURI.contains(encodedLayoutFriendlyURL)) {
+		if (requestURI.contains(layoutFriendlyURL)) {
 			requestURI = StringUtil.replaceFirst(
-				requestURI, encodedLayoutFriendlyURL,
-				layout.getFriendlyURL(locale));
+				requestURI, layoutFriendlyURL, layout.getFriendlyURL(locale));
 		}
 
 		boolean appendI18nPath = true;
