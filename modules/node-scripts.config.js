@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '21e7fe24bf6fc22071e8fb3d705155a68e84809824f2c38e4fe7bae040a29af7',
+	hash: '6f1fe54d27472833e7ffed23e089532da55ad56da961c18cc2b0d55455a9702b',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -173,6 +173,7 @@ module.exports = {
 			'dagre',
 			'date-fns',
 			'dom-align',
+			'dompurify',
 			'fuzzy',
 			'highlight.js',
 			'highlight.js/lib/core',
@@ -588,6 +589,7 @@ module.exports = {
 		'@codemirror/state': ['*'],
 		'@codemirror/theme-one-dark': ['*'],
 		'@codemirror/view': ['*'],
+		'dompurify': ['default'],
 		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector': [
 			'default',
 		],

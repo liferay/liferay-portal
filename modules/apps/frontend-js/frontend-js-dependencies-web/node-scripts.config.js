@@ -22,6 +22,7 @@ module.exports = {
 		'dagre',
 		'date-fns',
 		'dom-align',
+		'dompurify',
 		'fuzzy',
 		'highlight.js',
 		'highlight.js/lib/core',
@@ -42,6 +43,7 @@ module.exports = {
 		'ua-parser-js',
 	],
 	symbols: {
+		'dompurify': ['default'],
 		'qrcode': [
 
 			// Need to explicitly list exports because the package differs in browser and server
