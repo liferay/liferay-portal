@@ -101,13 +101,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommerceTaxFixedRateAddressRelsByCountryId(
-		long countryId) {
-
-		commerceTaxFixedRateAddressRelPersistence.removeByCountryId(countryId);
-	}
-
-	@Override
 	public CommerceTaxFixedRateAddressRel fetchCommerceTaxFixedRateAddressRel(
 		long commerceTaxMethodId, long cpTaxCategoryId, long countryId,
 		long regionId, String zip) {
