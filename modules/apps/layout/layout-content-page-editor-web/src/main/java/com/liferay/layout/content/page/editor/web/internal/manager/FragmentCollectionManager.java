@@ -17,8 +17,8 @@ import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentCollectionService;
-import com.liferay.fragment.service.FragmentCompositionService;
-import com.liferay.fragment.service.FragmentEntryService;
+import com.liferay.fragment.service.FragmentCompositionLocalService;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.util.comparator.FragmentCollectionContributorNameComparator;
 import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemServiceRegistry;
@@ -123,21 +123,19 @@ public class FragmentCollectionManager {
 				continue;
 			}
 
-			List<FragmentEntry> fragmentEntries =
-				_fragmentEntryService.getFragmentEntriesByStatus(
-					fragmentCollection.getGroupId(),
-					fragmentCollection.getFragmentCollectionId(),
-					WorkflowConstants.STATUS_APPROVED);
-
 			List<Map<String, Object>> fragmentEntryMapsList =
 				_getFragmentEntryMapsList(
-					hideInputFragments, fragmentEntries,
+					hideInputFragments,
+					_fragmentEntryLocalService.getFragmentEntries(
+						fragmentCollection.getGroupId(),
+						fragmentCollection.getFragmentCollectionId(),
+						WorkflowConstants.STATUS_APPROVED),
 					highlightedFragmentEntryKeys,
 					masterDropZoneLayoutStructureItem, themeDisplay);
 
 			fragmentEntryMapsList.addAll(
 				_getFragmentCompositionMapsList(
-					_fragmentCompositionService.getFragmentCompositions(
+					_fragmentCompositionLocalService.getFragmentCompositions(
 						fragmentCollection.getGroupId(),
 						fragmentCollection.getFragmentCollectionId(),
 						WorkflowConstants.STATUS_APPROVED),
@@ -771,10 +769,10 @@ public class FragmentCollectionManager {
 	private FragmentCollectionService _fragmentCollectionService;
 
 	@Reference
-	private FragmentCompositionService _fragmentCompositionService;
+	private FragmentCompositionLocalService _fragmentCompositionLocalService;
 
 	@Reference
-	private FragmentEntryService _fragmentEntryService;
+	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Reference
 	private FragmentRendererRegistry _fragmentRendererRegistry;
