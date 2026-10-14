@@ -73,6 +73,7 @@ export interface IEmptyState {
 	description?: string;
 	image?: string;
 	imageReducedMotion?: string;
+	symbol?: string;
 	title?: string;
 }
 
