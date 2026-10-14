@@ -12,10 +12,11 @@ import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecyc
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import jakarta.servlet.ServletContext;
 
 import java.util.concurrent.FutureTask;
 
@@ -90,7 +91,7 @@ public class ContactsDemo
 	@Reference
 	private NaniteDemoCreatorService _naniteDemoCreatorService;
 
-	@Reference(target = "(jakarta.portlet.name=faro_portlet)")
-	private Portlet _portlet;
+	@Reference(target = "(osgi.web.symbolicname=com.liferay.osb.faro.web)")
+	private ServletContext _servletContext;
 
 }

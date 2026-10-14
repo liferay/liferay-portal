@@ -22,6 +22,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
 	compileOnly group: "org.apache.commons", name: "commons-collections4", version: "4.5.0"
 	compileOnly group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	compileOnly project(":modules:osb-faro-api")

@@ -51,7 +51,6 @@ declare global {
 				orderDefault: string;
 				orderDescending: string;
 			};
-			portletNamespace: string;
 			preferencesScopes: {[key: string]: PreferencesScopes};
 			projectLocations: {[key: string]: string};
 			projectStates: {[key: string]: ProjectStates};

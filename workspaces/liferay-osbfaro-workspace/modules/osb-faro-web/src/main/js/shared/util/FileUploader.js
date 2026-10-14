@@ -1,7 +1,4 @@
-import FaroConstants from './constants';
 import {get, noop, uniqueId} from 'lodash';
-
-const {portletNamespace} = FaroConstants;
 
 export const ERROR_TYPES = {
 	FILE_LIMIT: 'FILE_LIMIT',
@@ -39,7 +36,7 @@ export default class FileUploader {
 	}
 
 	render() {
-		const id = uniqueId(`${portletNamespace}fileUploader`);
+		const id = uniqueId('fileUploader');
 
 		let inputNode = document.getElementById(id);
 
