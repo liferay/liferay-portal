@@ -130,19 +130,13 @@ public class CPDVirtualSettingFileEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long FILEENTRYID_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
@@ -150,7 +144,7 @@ public class CPDVirtualSettingFileEntryModelImpl
 	 */
 	@Deprecated
 	public static final long
-		CPDEFINITIONVIRTUALSETTINGFILEENTRYID_COLUMN_BITMASK = 32L;
+		CPDEFINITIONVIRTUALSETTINGFILEENTRYID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -613,16 +607,6 @@ public class CPDVirtualSettingFileEntryModelImpl
 		}
 
 		_fileEntryId = fileEntryId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalFileEntryId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("fileEntryId"));
 	}
 
 	@JSON
@@ -1116,4 +1100,4 @@ public class CPDVirtualSettingFileEntryModelImpl
 	private CPDVirtualSettingFileEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-487358780
+// LIFERAY-SERVICE-BUILDER-HASH:-736809521

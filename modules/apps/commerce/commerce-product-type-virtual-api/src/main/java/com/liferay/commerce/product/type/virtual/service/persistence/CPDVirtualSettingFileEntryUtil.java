@@ -429,81 +429,6 @@ public class CPDVirtualSettingFileEntryUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the cpd virtual setting file entries where fileEntryId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.type.virtual.model.impl.CPDVirtualSettingFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @param start the lower bound of the range of cpd virtual setting file entries
-	 * @param end the upper bound of the range of cpd virtual setting file entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cpd virtual setting file entries
-	 */
-	public static List<CPDVirtualSettingFileEntry> findByFileEntryId(
-		long fileEntryId, int start, int end,
-		OrderByComparator<CPDVirtualSettingFileEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByFileEntryId(
-			fileEntryId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cpd virtual setting file entry in the ordered set where fileEntryId = &#63;.
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cpd virtual setting file entry
-	 * @throws NoSuchCPDVirtualSettingFileEntryException if a matching cpd virtual setting file entry could not be found
-	 */
-	public static CPDVirtualSettingFileEntry findByFileEntryId_First(
-			long fileEntryId,
-			OrderByComparator<CPDVirtualSettingFileEntry> orderByComparator)
-		throws com.liferay.commerce.product.type.virtual.exception.
-			NoSuchCPDVirtualSettingFileEntryException {
-
-		return getPersistence().findByFileEntryId_First(
-			fileEntryId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first cpd virtual setting file entry in the ordered set where fileEntryId = &#63;.
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cpd virtual setting file entry, or <code>null</code> if a matching cpd virtual setting file entry could not be found
-	 */
-	public static CPDVirtualSettingFileEntry fetchByFileEntryId_First(
-		long fileEntryId,
-		OrderByComparator<CPDVirtualSettingFileEntry> orderByComparator) {
-
-		return getPersistence().fetchByFileEntryId_First(
-			fileEntryId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the cpd virtual setting file entries where fileEntryId = &#63; from the database.
-	 *
-	 * @param fileEntryId the file entry ID
-	 */
-	public static void removeByFileEntryId(long fileEntryId) {
-		getPersistence().removeByFileEntryId(fileEntryId);
-	}
-
-	/**
-	 * Returns the number of cpd virtual setting file entries where fileEntryId = &#63;.
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @return the number of matching cpd virtual setting file entries
-	 */
-	public static int countByFileEntryId(long fileEntryId) {
-		return getPersistence().countByFileEntryId(fileEntryId);
-	}
-
-	/**
 	 * Creates a new cpd virtual setting file entry with the primary key. Does not add the cpd virtual setting file entry to the database.
 	 *
 	 * @param CPDefinitionVirtualSettingFileEntryId the primary key for the new cpd virtual setting file entry
@@ -735,57 +660,6 @@ public class CPDVirtualSettingFileEntryUtil {
 			CPDefinitionVirtualSettingId, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the cpd virtual setting file entries where fileEntryId = &#63;.
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @return the matching cpd virtual setting file entries
-	 */
-	public static List<CPDVirtualSettingFileEntry> findByFileEntryId(
-		long fileEntryId) {
-
-		return getPersistence().findByFileEntryId(fileEntryId);
-	}
-
-	/**
-	 * Returns a range of all the cpd virtual setting file entries where fileEntryId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.type.virtual.model.impl.CPDVirtualSettingFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @param start the lower bound of the range of cpd virtual setting file entries
-	 * @param end the upper bound of the range of cpd virtual setting file entries (not inclusive)
-	 * @return the range of matching cpd virtual setting file entries
-	 */
-	public static List<CPDVirtualSettingFileEntry> findByFileEntryId(
-		long fileEntryId, int start, int end) {
-
-		return getPersistence().findByFileEntryId(fileEntryId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the cpd virtual setting file entries where fileEntryId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.type.virtual.model.impl.CPDVirtualSettingFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @param start the lower bound of the range of cpd virtual setting file entries
-	 * @param end the upper bound of the range of cpd virtual setting file entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching cpd virtual setting file entries
-	 */
-	public static List<CPDVirtualSettingFileEntry> findByFileEntryId(
-		long fileEntryId, int start, int end,
-		OrderByComparator<CPDVirtualSettingFileEntry> orderByComparator) {
-
-		return getPersistence().findByFileEntryId(
-			fileEntryId, start, end, orderByComparator);
-	}
-
 	public static CPDVirtualSettingFileEntryPersistence getPersistence() {
 		return _persistence;
 	}
@@ -799,4 +673,4 @@ public class CPDVirtualSettingFileEntryUtil {
 	private static volatile CPDVirtualSettingFileEntryPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:585402290
+// LIFERAY-SERVICE-BUILDER-HASH:1507831191

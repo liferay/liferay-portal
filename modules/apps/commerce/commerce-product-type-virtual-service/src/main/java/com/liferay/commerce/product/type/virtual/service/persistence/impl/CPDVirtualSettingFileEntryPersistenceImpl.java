@@ -416,92 +416,6 @@ public class CPDVirtualSettingFileEntryPersistenceImpl
 			finderCache, new Object[] {CPDefinitionVirtualSettingId});
 	}
 
-	private CollectionPersistenceFinder
-		<CPDVirtualSettingFileEntry, NoSuchCPDVirtualSettingFileEntryException>
-			_collectionPersistenceFinderByFileEntryId;
-
-	/**
-	 * Returns an ordered range of all the cpd virtual setting file entries where fileEntryId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPDVirtualSettingFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @param start the lower bound of the range of cpd virtual setting file entries
-	 * @param end the upper bound of the range of cpd virtual setting file entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cpd virtual setting file entries
-	 */
-	@Override
-	public List<CPDVirtualSettingFileEntry> findByFileEntryId(
-		long fileEntryId, int start, int end,
-		OrderByComparator<CPDVirtualSettingFileEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByFileEntryId.find(
-			finderCache, new Object[] {fileEntryId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cpd virtual setting file entry in the ordered set where fileEntryId = &#63;.
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cpd virtual setting file entry
-	 * @throws NoSuchCPDVirtualSettingFileEntryException if a matching cpd virtual setting file entry could not be found
-	 */
-	@Override
-	public CPDVirtualSettingFileEntry findByFileEntryId_First(
-			long fileEntryId,
-			OrderByComparator<CPDVirtualSettingFileEntry> orderByComparator)
-		throws NoSuchCPDVirtualSettingFileEntryException {
-
-		return _collectionPersistenceFinderByFileEntryId.findFirst(
-			finderCache, new Object[] {fileEntryId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first cpd virtual setting file entry in the ordered set where fileEntryId = &#63;.
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cpd virtual setting file entry, or <code>null</code> if a matching cpd virtual setting file entry could not be found
-	 */
-	@Override
-	public CPDVirtualSettingFileEntry fetchByFileEntryId_First(
-		long fileEntryId,
-		OrderByComparator<CPDVirtualSettingFileEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByFileEntryId.fetchFirst(
-			finderCache, new Object[] {fileEntryId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the cpd virtual setting file entries where fileEntryId = &#63; from the database.
-	 *
-	 * @param fileEntryId the file entry ID
-	 */
-	@Override
-	public void removeByFileEntryId(long fileEntryId) {
-		_collectionPersistenceFinderByFileEntryId.remove(
-			finderCache, new Object[] {fileEntryId});
-	}
-
-	/**
-	 * Returns the number of cpd virtual setting file entries where fileEntryId = &#63;.
-	 *
-	 * @param fileEntryId the file entry ID
-	 * @return the number of matching cpd virtual setting file entries
-	 */
-	@Override
-	public int countByFileEntryId(long fileEntryId) {
-		return _collectionPersistenceFinderByFileEntryId.count(
-			finderCache, new Object[] {fileEntryId});
-	}
-
 	public CPDVirtualSettingFileEntryPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -862,34 +776,6 @@ public class CPDVirtualSettingFileEntryPersistenceImpl
 					CPDVirtualSettingFileEntry::
 						getCPDefinitionVirtualSettingId));
 
-		_collectionPersistenceFinderByFileEntryId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByFileEntryId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"fileEntryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByFileEntryId", new String[] {Long.class.getName()},
-					new String[] {"fileEntryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByFileEntryId", new String[] {Long.class.getName()},
-					new String[] {"fileEntryId"}, false),
-				_SQL_SELECT_CPDVIRTUALSETTINGFILEENTRY_WHERE,
-				_SQL_COUNT_CPDVIRTUALSETTINGFILEENTRY_WHERE,
-				CPDVirtualSettingFileEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"cpdVirtualSettingFileEntry.", "fileEntryId",
-					FinderColumn.Type.LONG, "=", true, true,
-					CPDVirtualSettingFileEntry::getFileEntryId));
-
 		CPDVirtualSettingFileEntryUtil.setPersistence(this);
 	}
 
@@ -953,4 +839,4 @@ public class CPDVirtualSettingFileEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:850758862
+// LIFERAY-SERVICE-BUILDER-HASH:916669598

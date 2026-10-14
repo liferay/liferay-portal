@@ -237,13 +237,6 @@ public class CPDVirtualSettingFileEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByFileEntryId() throws Exception {
-		_persistence.countByFileEntryId(RandomTestUtil.nextLong());
-
-		_persistence.countByFileEntryId(0L);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		CPDVirtualSettingFileEntry newCPDVirtualSettingFileEntry =
 			addCPDVirtualSettingFileEntry();
@@ -642,4 +635,4 @@ public class CPDVirtualSettingFileEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1579594715
+// LIFERAY-SERVICE-BUILDER-HASH:-2020950136
