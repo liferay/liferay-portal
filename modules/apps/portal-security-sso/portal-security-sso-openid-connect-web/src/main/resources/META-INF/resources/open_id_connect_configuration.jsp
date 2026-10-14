@@ -193,6 +193,10 @@ String matcherField = openIdConnectProviderConfigurationDisplayContext.getMatche
 	<aui:option label="screen-name" selected='<%= Objects.equals(matcherField, "screenName") %>' value="screenName" />
 </aui:select>
 
+<c:if test='<%= FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-108193") %>'>
+	<aui:input helpMessage="allow-upstream-token-forwarding-help" label="allow-upstream-token-forwarding" name="allowUpstreamTokenForwarding" type="checkbox" value="<%= openIdConnectProviderConfigurationDisplayContext.isAllowUpstreamTokenForwarding() %>" />
+</c:if>
+
 <aui:script type="module">
 	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
 

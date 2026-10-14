@@ -8,8 +8,10 @@ package com.liferay.portal.security.sso.openid.connect.web.internal.configuratio
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.sso.openid.connect.web.internal.constants.OpenIdConnectWebKeys;
 import com.liferay.portal.security.sso.openid.connect.web.internal.display.context.OpenIdConnectProviderConfigurationDisplayContext;
 
@@ -46,6 +48,19 @@ public class OpenIdConnectProviderConfigurationFormRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return HashMapBuilder.<String, Object>put(
+			"allowUpstreamTokenForwarding",
+			() -> {
+				if (FeatureFlagManagerUtil.isEnabled(
+						_portal.getCompanyId(httpServletRequest),
+						"LPD-108193")) {
+
+					return ParamUtil.getBoolean(
+						httpServletRequest, "allowUpstreamTokenForwarding");
+				}
+
+				return null;
+			}
+		).put(
 			"authorizationEndpoint",
 			ParamUtil.getString(httpServletRequest, "authorizationEndpoint")
 		).put(
@@ -195,6 +210,9 @@ public class OpenIdConnectProviderConfigurationFormRenderer
 
 	@Reference
 	private ExpandoColumnLocalService _expandoColumnLocalService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.portal.security.sso.openid.connect.web)"

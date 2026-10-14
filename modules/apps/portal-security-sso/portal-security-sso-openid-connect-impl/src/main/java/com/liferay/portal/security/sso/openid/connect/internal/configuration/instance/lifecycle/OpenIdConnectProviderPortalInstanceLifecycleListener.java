@@ -346,6 +346,13 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 			_generateRequestParametersJSONObject(
 				"customTokenRequestParameters", properties);
 
+		if (GetterUtil.getBoolean(
+				properties.get("allowUpstreamTokenForwarding"))) {
+
+			requestParametersJSONObject.put(
+				"allow_upstream_token_forwarding", true);
+		}
+
 		return requestParametersJSONObject.put(
 			"grant_type", "authorization_code"
 		).toString();

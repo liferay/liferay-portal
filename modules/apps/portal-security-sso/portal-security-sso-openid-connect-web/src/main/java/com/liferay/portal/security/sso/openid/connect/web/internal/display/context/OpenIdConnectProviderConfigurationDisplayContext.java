@@ -233,6 +233,11 @@ public class OpenIdConnectProviderConfigurationDisplayContext {
 		return GetterUtil.getString(_properties.get("userInfoEndpoint"));
 	}
 
+	public boolean isAllowUpstreamTokenForwarding() {
+		return GetterUtil.getBoolean(
+			_properties.get("allowUpstreamTokenForwarding"));
+	}
+
 	private int[] _createIndexes(int size) {
 		int[] indexes = new int[size];
 

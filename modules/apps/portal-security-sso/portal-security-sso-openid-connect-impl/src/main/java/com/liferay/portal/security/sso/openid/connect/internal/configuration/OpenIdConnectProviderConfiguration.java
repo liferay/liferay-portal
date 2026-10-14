@@ -25,6 +25,12 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface OpenIdConnectProviderConfiguration {
 
 	@Meta.AD(
+		deflt = "false", description = "allow-upstream-token-forwarding-help",
+		name = "allow-upstream-token-forwarding", required = false
+	)
+	public boolean allowUpstreamTokenForwarding();
+
+	@Meta.AD(
 		deflt = "", description = "authorization-endpoint-help",
 		name = "authorization-endpoint", required = false
 	)
