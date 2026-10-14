@@ -42,10 +42,6 @@
 		<finder name="GroupId" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 		</finder>
-		<finder name="G_D" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="defaultStyleBookEntry" />
-		</finder>
 		<finder name="G_N" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="name" />
