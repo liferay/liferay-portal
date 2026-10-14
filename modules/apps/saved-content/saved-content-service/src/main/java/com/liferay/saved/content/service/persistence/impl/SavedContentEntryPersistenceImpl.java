@@ -328,126 +328,6 @@ public class SavedContentEntryPersistenceImpl
 			finderCache, new Object[] {uuid, companyId});
 	}
 
-	private FilterCollectionPersistenceFinder
-		<SavedContentEntry, NoSuchSavedContentEntryException>
-			_collectionPersistenceFinderByGroupId;
-
-	/**
-	 * Returns an ordered range of all the saved content entries where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SavedContentEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of saved content entries
-	 * @param end the upper bound of the range of saved content entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching saved content entries
-	 */
-	@Override
-	public List<SavedContentEntry> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<SavedContentEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByGroupId.find(
-			finderCache, new Object[] {groupId}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first saved content entry in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching saved content entry
-	 * @throws NoSuchSavedContentEntryException if a matching saved content entry could not be found
-	 */
-	@Override
-	public SavedContentEntry findByGroupId_First(
-			long groupId,
-			OrderByComparator<SavedContentEntry> orderByComparator)
-		throws NoSuchSavedContentEntryException {
-
-		return _collectionPersistenceFinderByGroupId.findFirst(
-			finderCache, new Object[] {groupId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first saved content entry in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching saved content entry, or <code>null</code> if a matching saved content entry could not be found
-	 */
-	@Override
-	public SavedContentEntry fetchByGroupId_First(
-		long groupId, OrderByComparator<SavedContentEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByGroupId.fetchFirst(
-			finderCache, new Object[] {groupId}, orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the saved content entries that the user has permissions to view where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SavedContentEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of saved content entries
-	 * @param end the upper bound of the range of saved content entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching saved content entries that the user has permission to view
-	 */
-	@Override
-	public List<SavedContentEntry> filterFindByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<SavedContentEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByGroupId.filterFind(
-			finderCache, new Object[] {groupId}, start, end, orderByComparator,
-			groupId);
-	}
-
-	/**
-	 * Removes all the saved content entries where groupId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 */
-	@Override
-	public void removeByGroupId(long groupId) {
-		_collectionPersistenceFinderByGroupId.remove(
-			finderCache, new Object[] {groupId});
-	}
-
-	/**
-	 * Returns the number of saved content entries where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching saved content entries
-	 */
-	@Override
-	public int countByGroupId(long groupId) {
-		return _collectionPersistenceFinderByGroupId.count(
-			finderCache, new Object[] {groupId});
-	}
-
-	/**
-	 * Returns the number of saved content entries that the user has permission to view where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching saved content entries that the user has permission to view
-	 */
-	@Override
-	public int filterCountByGroupId(long groupId) {
-		return _collectionPersistenceFinderByGroupId.filterCount(
-			finderCache, new Object[] {groupId}, groupId);
-	}
-
 	private CollectionPersistenceFinder
 		<SavedContentEntry, NoSuchSavedContentEntryException>
 			_collectionPersistenceFinderByUserId;
@@ -788,97 +668,6 @@ public class SavedContentEntryPersistenceImpl
 	public int filterCountByG_CN(long groupId, long classNameId) {
 		return _collectionPersistenceFinderByG_CN.filterCount(
 			finderCache, new Object[] {groupId, classNameId}, groupId);
-	}
-
-	private CollectionPersistenceFinder
-		<SavedContentEntry, NoSuchSavedContentEntryException>
-			_collectionPersistenceFinderByU_C;
-
-	/**
-	 * Returns an ordered range of all the saved content entries where userId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SavedContentEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of saved content entries
-	 * @param end the upper bound of the range of saved content entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching saved content entries
-	 */
-	@Override
-	public List<SavedContentEntry> findByU_C(
-		long userId, long classNameId, int start, int end,
-		OrderByComparator<SavedContentEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByU_C.find(
-			finderCache, new Object[] {userId, classNameId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first saved content entry in the ordered set where userId = &#63; and classNameId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching saved content entry
-	 * @throws NoSuchSavedContentEntryException if a matching saved content entry could not be found
-	 */
-	@Override
-	public SavedContentEntry findByU_C_First(
-			long userId, long classNameId,
-			OrderByComparator<SavedContentEntry> orderByComparator)
-		throws NoSuchSavedContentEntryException {
-
-		return _collectionPersistenceFinderByU_C.findFirst(
-			finderCache, new Object[] {userId, classNameId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first saved content entry in the ordered set where userId = &#63; and classNameId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching saved content entry, or <code>null</code> if a matching saved content entry could not be found
-	 */
-	@Override
-	public SavedContentEntry fetchByU_C_First(
-		long userId, long classNameId,
-		OrderByComparator<SavedContentEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByU_C.fetchFirst(
-			finderCache, new Object[] {userId, classNameId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the saved content entries where userId = &#63; and classNameId = &#63; from the database.
-	 *
-	 * @param userId the user ID
-	 * @param classNameId the class name ID
-	 */
-	@Override
-	public void removeByU_C(long userId, long classNameId) {
-		_collectionPersistenceFinderByU_C.remove(
-			finderCache, new Object[] {userId, classNameId});
-	}
-
-	/**
-	 * Returns the number of saved content entries where userId = &#63; and classNameId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param classNameId the class name ID
-	 * @return the number of matching saved content entries
-	 */
-	@Override
-	public int countByU_C(long userId, long classNameId) {
-		return _collectionPersistenceFinderByU_C.count(
-			finderCache, new Object[] {userId, classNameId});
 	}
 
 	private FilterCollectionPersistenceFinder
@@ -1714,34 +1503,6 @@ public class SavedContentEntryPersistenceImpl
 					"savedContentEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getCompanyId));
 
-		_collectionPersistenceFinderByGroupId =
-			new FilterCollectionPersistenceFinder<>(
-				this, SavedContentEntry::getSavedContentEntryId,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				"", SavedContentEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId"}, true),
-				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
-				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE, null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, true),
-				"",
-				new FinderColumn<>(
-					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
-					"=", true, true, SavedContentEntry::getGroupId));
-
 		_collectionPersistenceFinderByUserId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1830,35 +1591,6 @@ public class SavedContentEntryPersistenceImpl
 				new FinderColumn<>(
 					"savedContentEntry.", "classNameId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getClassNameId));
-
-		_collectionPersistenceFinderByU_C = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByU_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"userId", "classNameId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByU_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"userId", "classNameId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"userId", "classNameId"}, false),
-			_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
-			_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
-			SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"", null,
-			new FinderColumn<>(
-				"savedContentEntry.", "userId", FinderColumn.Type.LONG, "=",
-				true, true, SavedContentEntry::getUserId),
-			new FinderColumn<>(
-				"savedContentEntry.", "classNameId", FinderColumn.Type.LONG,
-				"=", true, true, SavedContentEntry::getClassNameId));
 
 		_collectionPersistenceFinderByG_C_C =
 			new FilterCollectionPersistenceFinder<>(
@@ -2109,4 +1841,4 @@ public class SavedContentEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2056808086
+// LIFERAY-SERVICE-BUILDER-HASH:-1625423888
