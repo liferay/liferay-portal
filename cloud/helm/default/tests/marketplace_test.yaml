@@ -23,40 +23,36 @@ tests:
             licensing.enabled: true
             marketplace.enabled: true
     -   asserts:
-            -   equal:
-                    path: spec
-                    value:
-                        activationCodeSecretRef:
-                            key: activationCode
-                            name: liferay-default-activation
-                        desiredReplicas: 1
-                        workloadRef:
-                            name: liferay-default
-        it: Renders no field the LiferayEnvironment does not declare
+            -   notExists:
+                    path: spec.template.spec.volumes
+        documentSelector:
+            path: spec.serviceName
+            skipEmptyTemplates: true
+            value: liferay-default-search
+        it: Does not create the marketplace volume for statefulsets different from Liferay
         set:
+            dependencies:
+                search:
+                    source: statefulset
+                    statefulset:
+                        autoscaling:
+                            enabled: false
+                        image:
+                            pullPolicy: IfNotPresent
+                            repository: opensearchproject/opensearch
+                            tag: 2.13.0
+                        replicaCount: 1
+                        service:
+                            ports:
+                                -   name: http
+                                    port: 9200
             licensing.enabled: true
             marketplace.enabled: true
-        template: templates/liferayenvironment.yaml
-    -   asserts:
-            -   equal:
-                    path: spec.desiredReplicas
-                    value: 3
-        it: Sets desiredReplicas from the configured replica count
-        set:
-            licensing.enabled: true
-            replicaCount: 3
-        template: templates/liferayenvironment.yaml
+        template: templates/workloads.yaml
     -   asserts:
             -   hasDocuments:
                     count: 0
         it: Emits no LiferayEnvironment until the licensing integration is enabled
-        template: templates/liferayenvironment.yaml
-    -   asserts:
-            -   notExists:
-                    path: spec.desiredReplicas
-        it: Omits desiredReplicas when autoscaling manages the replica count
-        set:
-            autoscaling.enabled: true
         template: templates/liferayenvironment.yaml
     -   asserts:
             -   contains:
@@ -88,30 +84,11 @@ tests:
         template: templates/liferayenvironment.yaml
     -   asserts:
             -   notExists:
-                    path: spec.template.spec.volumes
-        documentSelector:
-            path: spec.serviceName
-            skipEmptyTemplates: true
-            value: liferay-default-search
-        it: Does not create the marketplace volume for statefulsets different from Liferay
+                    path: spec.desiredReplicas
+        it: Omits desiredReplicas when autoscaling manages the replica count
         set:
-            dependencies:
-                search:
-                    source: statefulset
-                    statefulset:
-                        autoscaling:
-                            enabled: false
-                        image:
-                            pullPolicy: IfNotPresent
-                            repository: opensearchproject/opensearch
-                            tag: 2.13.0
-                        replicaCount: 1
-                        service:
-                            ports:
-                                -   name: http
-                                    port: 9200
-            marketplace.enabled: true
-        template: templates/workloads.yaml
+            autoscaling.enabled: true
+        template: templates/liferayenvironment.yaml
     -   asserts:
             -   contains:
                     any: true
@@ -126,6 +103,21 @@ tests:
             value: StatefulSet
         it: Persists the marketplace folder so a two phase lpkg install survives a restart
     -   asserts:
+            -   equal:
+                    path: spec
+                    value:
+                        activationCodeSecretRef:
+                            key: activationCode
+                            name: liferay-default-activation
+                        desiredReplicas: 1
+                        workloadRef:
+                            name: liferay-default
+        it: Renders no field the LiferayEnvironment does not declare
+        set:
+            licensing.enabled: true
+            marketplace.enabled: true
+        template: templates/liferayenvironment.yaml
+    -   asserts:
             -   matchRegex:
                     path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
                     pattern: cp --force --recursive --verbose /opt/liferay/osgi/marketplace/\. /temp/osgi/marketplace
@@ -134,3 +126,12 @@ tests:
             skipEmptyTemplates: true
             value: StatefulSet
         it: Seeds the marketplace folder from the image so the override folder is not shadowed
+    -   asserts:
+            -   equal:
+                    path: spec.desiredReplicas
+                    value: 3
+        it: Sets desiredReplicas from the configured replica count
+        set:
+            licensing.enabled: true
+            replicaCount: 3
+        template: templates/liferayenvironment.yaml

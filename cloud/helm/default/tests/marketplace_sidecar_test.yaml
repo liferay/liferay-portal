@@ -17,7 +17,15 @@ tests:
             value: StatefulSet
         it: Adds the marketplace sync sidecar when marketplace is enabled
         set:
+            licensing.enabled: true
             marketplace.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The marketplace sync runs the deploy-sync script that the operator publishes, so licensing.enabled must be true when marketplace.enabled is true
+        it: Fails when marketplace is enabled without licensing
+        set:
+            marketplace.enabled: true
+        template: templates/workloads.yaml
     -   asserts:
             -   contains:
                     any: true
@@ -32,6 +40,7 @@ tests:
             value: StatefulSet
         it: Links the marketplace volume with the marketplace claim
         set:
+            licensing.enabled: true
             marketplace.enabled: true
     -   asserts:
             -   contains:
@@ -60,6 +69,7 @@ tests:
             value: StatefulSet
         it: Mounts the marketplace volume, sync script, and deploy folder
         set:
+            licensing.enabled: true
             marketplace.enabled: true
     -   asserts:
             -   notContains:
@@ -105,6 +115,7 @@ tests:
             value: StatefulSet
         it: Passes the marketplace sync configuration to the sidecar
         set:
+            licensing.enabled: true
             marketplace.enabled: true
             marketplace.syncInterval: 120
     -   asserts:
@@ -117,4 +128,5 @@ tests:
             value: StatefulSet
         it: Runs the marketplace sync sidecar as a native sidecar
         set:
+            licensing.enabled: true
             marketplace.enabled: true

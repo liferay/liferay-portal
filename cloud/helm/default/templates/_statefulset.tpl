@@ -12,6 +12,9 @@
 {{- $marketplace := .statefulset.marketplace | default dict }}
 {{- $marketplaceClaimName := printf "%s-marketplace" (include "liferay.name" .root) }}
 {{- $marketplaceVolumeName := "liferay-marketplace" }}
+{{- if and $marketplace.enabled (not $licensing.enabled) }}
+{{- fail "The marketplace sync runs the deploy-sync script that the operator publishes, so licensing.enabled must be true when marketplace.enabled is true" }}
+{{- end }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
