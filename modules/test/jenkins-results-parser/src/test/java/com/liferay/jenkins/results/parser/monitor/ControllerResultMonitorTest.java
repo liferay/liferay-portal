@@ -72,13 +72,17 @@ public class ControllerResultMonitorTest
 	@Test
 	public void testExecuteBranchUnchanged() throws Exception {
 		_testExecute(
-			"Job " + _JOB_NAME + " is OK", MonitorResult.Status.OK,
+			"Unable to find a result for job " + _JOB_NAME +
+				" in its last 2 builds",
+			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(0, "", RandomTestUtil.randomInt(), null),
 			_newBuildJSONObject(
 				86400, _newAlreadyRanDescription(), RandomTestUtil.randomInt(),
 				"SUCCESS"));
 		_testExecute(
-			"Job " + _JOB_NAME + " is OK", MonitorResult.Status.OK,
+			"Unable to find a result for job " + _JOB_NAME +
+				" in its last 1 builds",
+			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(
 				600, _newAlreadyRanDescription(), RandomTestUtil.randomInt(),
 				"SUCCESS"));
