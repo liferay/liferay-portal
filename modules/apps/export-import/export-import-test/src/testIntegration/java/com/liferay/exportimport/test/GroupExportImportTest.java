@@ -196,6 +196,8 @@ public class GroupExportImportTest {
 			exportImportGroups, depotGroup.getExternalReferenceCode());
 
 		Assert.assertTrue(depotExportImportGroup.isDepot());
+		Assert.assertEquals(
+			DepotConstants.TYPE_SPACE, depotExportImportGroup.getDepotType());
 
 		ExportImportGroup exportImportGroup = _getExportImportGroup(
 			exportImportGroups, _group.getExternalReferenceCode());

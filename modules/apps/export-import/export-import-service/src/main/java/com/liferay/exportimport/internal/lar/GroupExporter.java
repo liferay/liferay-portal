@@ -5,6 +5,8 @@
 
 package com.liferay.exportimport.internal.lar;
 
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.internal.util.GroupExportImportParameterUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
@@ -31,9 +33,11 @@ import java.util.Locale;
 public class GroupExporter {
 
 	public GroupExporter(
+		DepotEntryLocalService depotEntryLocalService,
 		ExportImportHelper exportImportHelper, GroupService groupService,
 		PortletDataContextFactory portletDataContextFactory) {
 
+		_depotEntryLocalService = depotEntryLocalService;
 		_exportImportHelper = exportImportHelper;
 		_groupService = groupService;
 		_portletDataContextFactory = portletDataContextFactory;
@@ -82,6 +86,16 @@ public class GroupExporter {
 				"child-groups-count",
 				String.valueOf(_exportImportHelper.getChildGroupsCount(group)));
 			groupElement.addAttribute("depot", String.valueOf(group.isDepot()));
+
+			if (group.isDepot()) {
+				DepotEntry depotEntry =
+					_depotEntryLocalService.getGroupDepotEntry(
+						group.getGroupId());
+
+				groupElement.addAttribute(
+					"depot-type", String.valueOf(depotEntry.getType()));
+			}
+
 			groupElement.addAttribute(
 				"descriptive-name", group.getDescriptiveName(locale));
 			groupElement.addAttribute(
@@ -204,6 +218,7 @@ public class GroupExporter {
 
 	private static final Log _log = LogFactoryUtil.getLog(GroupExporter.class);
 
+	private final DepotEntryLocalService _depotEntryLocalService;
 	private final ExportImportHelper _exportImportHelper;
 	private final GroupService _groupService;
 	private final PortletDataContextFactory _portletDataContextFactory;
