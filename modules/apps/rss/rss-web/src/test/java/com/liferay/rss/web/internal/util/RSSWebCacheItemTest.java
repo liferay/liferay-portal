@@ -100,7 +100,7 @@ public class RSSWebCacheItemTest {
 		);
 
 		_inetAddressUtilMockedStatic.when(
-			() -> InetAddressUtil.getInetAddressByName(_UNRESOLVED_HOST)
+			() -> InetAddressUtil.getInetAddressByName(_HOST_UNRESOLVED)
 		).thenReturn(
 			null
 		);
@@ -143,7 +143,7 @@ public class RSSWebCacheItemTest {
 			_URL_FILE);
 		_testConvert(
 			SecurityException.class,
-			"Unable to resolve host: " + _UNRESOLVED_HOST, null,
+			"Unable to resolve host: " + _HOST_UNRESOLVED, null,
 			_URL_UNRESOLVED);
 		_testConvert(
 			null, null, "https://" + RandomTestUtil.randomString() + ".com",
@@ -155,7 +155,7 @@ public class RSSWebCacheItemTest {
 	private String _getFeedXML() {
 		return StringBundler.concat(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\">",
-			"<channel><title>", _FEED_TITLE, "</title><link>", _URL_PUBLIC,
+			"<channel><title>", _TITLE, "</title><link>", _URL_PUBLIC,
 			"</link><description>", RandomTestUtil.randomString(),
 			"</description></channel></rss>");
 	}
@@ -174,7 +174,7 @@ public class RSSWebCacheItemTest {
 				StringPool.BLANK);
 
 			Assert.assertNull(expectedExceptionClass);
-			Assert.assertEquals(_FEED_TITLE, syndFeed.getTitle());
+			Assert.assertEquals(_TITLE, syndFeed.getTitle());
 		}
 		catch (WebCacheException webCacheException) {
 			Throwable throwable = webCacheException.getCause();
@@ -185,9 +185,9 @@ public class RSSWebCacheItemTest {
 		}
 	}
 
-	private static final String _FEED_TITLE = RandomTestUtil.randomString();
+	private static final String _TITLE = RandomTestUtil.randomString();
 
-	private static final String _UNRESOLVED_HOST =
+	private static final String _HOST_UNRESOLVED =
 		RandomTestUtil.randomString() + ".net";
 
 	private static final String _URL_FILE =
@@ -204,7 +204,7 @@ public class RSSWebCacheItemTest {
 	private static final String _URL_SITE_LOCAL = "http://10.0.0.1/rss.xml";
 
 	private static final String _URL_UNRESOLVED =
-		"http://" + _UNRESOLVED_HOST + "/rss.xml";
+		"http://" + _HOST_UNRESOLVED + "/rss.xml";
 
 	private MockedStatic<HttpUtil> _httpUtilMockedStatic;
 	private MockedStatic<InetAddressUtil> _inetAddressUtilMockedStatic;
