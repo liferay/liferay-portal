@@ -42,6 +42,7 @@ export default function SelectLayoutTree({
 			selectedItemsRef.current.set(item.id, {
 				externalReferenceCode: item.externalReferenceCode,
 				groupId: item.groupId,
+				hasGuestViewPermission: item.hasGuestViewPermission,
 				id: item.id,
 				layoutId: item.layoutId,
 				name: item.value,
@@ -93,6 +94,7 @@ export default function SelectLayoutTree({
 		const data = {
 			externalReferenceCode: item.externalReferenceCode,
 			groupId: item.groupId,
+			hasGuestViewPermission: item.hasGuestViewPermission,
 			id: item.id,
 			layoutId: item.layoutId,
 			name: item.value,

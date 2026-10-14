@@ -5,7 +5,9 @@
 
 import {config} from '../config';
 
-export function itemSelectorValueFromFragmentCollection(value) {
+export function itemSelectorValueFromFragmentCollection(item) {
+	const value = JSON.parse(item.value);
+
 	const url = new URL(config.fragmentCollectionPreviewURL);
 
 	url.searchParams.set(

@@ -59,15 +59,13 @@ export function LayoutSelector({className = 'ml-3', layoutType}) {
 	const handleMoreButtonClick = () => {
 		openItemSelector({
 			callback: (item) => {
-				const value = JSON.parse(item.value);
-
 				if (layoutType === LAYOUT_TYPES.fragmentCollection) {
 					selectPreviewLayout(
-						itemSelectorValueFromFragmentCollection(value)
+						itemSelectorValueFromFragmentCollection(item)
 					);
 				}
 				else {
-					selectPreviewLayout(itemSelectorValueFromLayout(value));
+					selectPreviewLayout(itemSelectorValueFromLayout(item));
 				}
 			},
 			itemSelectorURL,
@@ -119,7 +117,7 @@ export function LayoutSelector({className = 'ml-3', layoutType}) {
 								/>
 							)}
 
-							{!layout.hasGuestViewPermission && (
+							{layout.hasGuestViewPermission === false && (
 								<span
 									aria-label={Liferay.Language.get(
 										'restricted-page'
