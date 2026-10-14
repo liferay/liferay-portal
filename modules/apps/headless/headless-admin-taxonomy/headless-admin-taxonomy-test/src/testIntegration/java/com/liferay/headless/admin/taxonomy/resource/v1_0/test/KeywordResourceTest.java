@@ -593,7 +593,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_testPutKeywordWithAssetLibraries();
-
 		_testPutKeywordWithEmptyProjects();
 		_testPutKeywordWithNullAssetLibraries();
 		_testPutKeywordWithNullProjects();
