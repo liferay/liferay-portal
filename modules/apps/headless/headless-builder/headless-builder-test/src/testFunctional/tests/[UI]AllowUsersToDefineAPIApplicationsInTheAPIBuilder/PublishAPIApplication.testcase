@@ -99,23 +99,6 @@ definition {
 	}
 
 	@priority = 4
-	test CanPublishAPIApplication {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("When I click Publish button in edit application wizard") {
-			APIBuilderUI.publishApplication(key_title = "App-test");
-		}
-
-		task ("Then the status of the application changed to published") {
-			AssertTextEquals(
-				deployStatus = "Published",
-				locator1 = "AppBuilder#DEPLOY_APP_STATUS",
-				value1 = "Published");
-		}
-	}
-
-	@priority = 4
 	test CanPublishAPIApplicationWithChangePublicationStatus {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

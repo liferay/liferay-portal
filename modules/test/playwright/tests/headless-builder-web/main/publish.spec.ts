@@ -71,6 +71,7 @@ test.describe('Headless Builder - API Application', () => {
 				externalReferenceCode: application.externalReferenceCode,
 			});
 
+		expect(updatedApp.applicationStatus.key).toEqual('published');
 		expect(updatedApp.title).toEqual(`${application.title} 1`);
 	});
 
