@@ -34,9 +34,6 @@
 		<finder name="FileEntryId" return-type="Collection">
 			<finder-column name="fileEntryId" />
 		</finder>
-		<finder name="FileVersionId" return-type="Collection">
-			<finder-column name="fileVersionId" />
-		</finder>
 		<finder name="F_F" return-type="DLFileVersionPreview" unique="true">
 			<finder-column name="fileEntryId" />
 			<finder-column name="fileVersionId" />
