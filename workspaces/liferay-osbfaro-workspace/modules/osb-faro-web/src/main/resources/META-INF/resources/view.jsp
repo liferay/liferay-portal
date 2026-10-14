@@ -19,10 +19,10 @@
 		<aui:script>
 			document.addEventListener('DOMContentLoaded', () => {
 				for (const id of ['liferayAUICSS', 'liferayThemeCSS']) {
-					const link = document.getElementById(id);
+					const element = document.getElementById(id);
 
-					if (link) {
-						link.disabled = true;
+					if (element) {
+						element.disabled = true;
 					}
 				}
 			});
