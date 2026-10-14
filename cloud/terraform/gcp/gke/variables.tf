@@ -12,6 +12,10 @@ variable "deployment_name" {
 variable "envoy_gateway_helm_chart_version" {
 	type=string
 }
+variable "envoy_listener_ports" {
+	default=["10080", "10443"]
+	type=list(string)
+}
 variable "gateway_namespace" {
 	default="envoy-gateway-system"
 	type=string

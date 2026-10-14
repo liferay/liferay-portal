@@ -53,7 +53,7 @@ resource "google_compute_firewall" "allow_master" {
 }
 resource "google_compute_firewall" "envoy_ingress_managed" {
 	allow {
-		ports=local.envoy_listener_ports
+		ports=var.envoy_listener_ports
 		protocol="tcp"
 	}
 	name="${var.deployment_name}-envoy-ingress"

@@ -153,7 +153,7 @@ resource "kubernetes_network_policy_v1" "envoy_proxy_ingress" {
 					port=ports.value
 					protocol="TCP"
 				}
-				for_each=local.envoy_listener_ports
+				for_each=var.envoy_listener_ports
 			}
 		}
 		pod_selector {

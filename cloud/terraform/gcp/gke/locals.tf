@@ -1,6 +1,5 @@
 locals {
 	cluster_name="${var.deployment_name}-gke"
-	envoy_listener_ports=["10080", "10443"]
 	first_zone=data.google_compute_zones.available.names[0]
 	health_check_cidrs=distinct(
 		concat(
