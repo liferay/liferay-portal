@@ -43,8 +43,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import java.time.Instant;
+
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -115,7 +118,7 @@ public class StaticSiteExportBackgroundTaskExecutor
 				"manifest.json",
 				String.valueOf(
 					_getManifestJSONObject(
-						layoutIds == null, groupId, locales,
+						layoutIds == null, backgroundTask, groupId, locales,
 						staticSiteExport)));
 		}
 
@@ -166,7 +169,8 @@ public class StaticSiteExportBackgroundTaskExecutor
 	}
 
 	private JSONObject _getManifestJSONObject(
-			boolean allLayoutsExported, long groupId, Set<Locale> locales,
+			boolean allLayoutsExported, BackgroundTask backgroundTask,
+			long groupId, Set<Locale> locales,
 			StaticSiteExport staticSiteExport)
 		throws Exception {
 
@@ -217,6 +221,17 @@ public class StaticSiteExportBackgroundTaskExecutor
 			"displayPages",
 			JSONUtil.toJSONArray(
 				displayPageJSONObjects.values(), jsonObject -> jsonObject)
+		).put(
+			"exportDate",
+			() -> {
+				Date createDate = backgroundTask.getCreateDate();
+
+				Instant instant = createDate.toInstant();
+
+				return instant.toString();
+			}
+		).put(
+			"exportProcessId", backgroundTask.getBackgroundTaskId()
 		).put(
 			"failures",
 			JSONUtil.put(
