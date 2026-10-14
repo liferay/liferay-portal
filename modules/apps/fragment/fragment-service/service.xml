@@ -99,9 +99,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="FragmentCollectionId" return-type="Collection">
 			<finder-column name="fragmentCollectionId" />
 		</finder>
@@ -178,9 +175,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="FragmentCollectionId" return-type="Collection">
 			<finder-column name="fragmentCollectionId" />
 		</finder>
@@ -275,9 +269,6 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
-		</finder>
-		<finder name="RendererKey" return-type="Collection">
-			<finder-column name="rendererKey" />
 		</finder>
 		<finder name="Type" return-type="Collection">
 			<finder-column name="type" />
