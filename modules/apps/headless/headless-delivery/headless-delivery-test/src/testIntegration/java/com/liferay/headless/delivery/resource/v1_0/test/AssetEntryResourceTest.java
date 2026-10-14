@@ -56,6 +56,7 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 		_testGetAssetEntriesPageWithClassNameIdFilter();
 		_testGetAssetEntriesPageWithClassPKFilter();
 		_testGetAssetEntriesPageWithClassTypeIdFilter();
+		_testGetAssetEntriesPageWithGroupIdFilter();
 		_testGetAssetEntriesPageWithMultipleClassNameIdsFilter();
 		_testGetAssetEntriesPageWithMultipleGroupIds();
 		_testGetAssetEntriesPageWithStatusFilter();
@@ -68,7 +69,7 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 
 	@Override
 	protected String[] getIgnoredEntityFieldNames() {
-		return new String[] {"classNameId", "classTypeId", "status"};
+		return new String[] {"classNameId", "classTypeId", "groupId", "status"};
 	}
 
 	@Override
@@ -279,6 +280,41 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 		Assert.assertTrue(
 			_hasClassPK(assetEntries, journalArticle1.getResourcePrimKey()));
 		Assert.assertFalse(
+			_hasClassPK(assetEntries, journalArticle2.getResourcePrimKey()));
+	}
+
+	private void _testGetAssetEntriesPageWithGroupIdFilter() throws Exception {
+		Long groupId1 = testGroup.getGroupId();
+
+		BlogsEntry blogsEntry1 = _addBlogsEntry(groupId1);
+		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
+			groupId1, 0);
+
+		Long groupId2 = irrelevantGroup.getGroupId();
+
+		BlogsEntry blogsEntry2 = _addBlogsEntry(groupId2);
+		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
+			groupId2, 0);
+
+		String filterString = StringBundler.concat(
+			"((classNameId eq ",
+			PortalUtil.getClassNameId(BlogsEntry.class.getName()),
+			" and groupId eq ", groupId1, ") or (classNameId in (",
+			PortalUtil.getClassNameId(JournalArticle.class.getName()),
+			") and groupId in (", groupId2,
+			"))) and (status eq 'approved' or status eq 'scheduled')");
+
+		Page<AssetEntry> page = assetEntryResource.getAssetEntriesPage(
+			new Long[] {groupId1, groupId2}, null, null, filterString,
+			Pagination.of(1, 50), null);
+
+		List<AssetEntry> assetEntries = (List<AssetEntry>)page.getItems();
+
+		Assert.assertTrue(_hasClassPK(assetEntries, blogsEntry1.getEntryId()));
+		Assert.assertFalse(_hasClassPK(assetEntries, blogsEntry2.getEntryId()));
+		Assert.assertFalse(
+			_hasClassPK(assetEntries, journalArticle1.getResourcePrimKey()));
+		Assert.assertTrue(
 			_hasClassPK(assetEntries, journalArticle2.getResourcePrimKey()));
 	}
 
