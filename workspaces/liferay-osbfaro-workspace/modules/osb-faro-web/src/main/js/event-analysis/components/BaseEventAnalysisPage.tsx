@@ -265,7 +265,10 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 	// Built outside the form's render prop so typing the title does not re-render them
 
 	const conditionsPanel = (
-		<BaseEditPage.Sidebar position="left">
+		<BaseEditPage.Sidebar
+			label={Liferay.Language.get('conditions-library')}
+			position="left"
+		>
 			<ConditionsPanel
 				event={event ?? undefined}
 				onEventChange={onEventChange}

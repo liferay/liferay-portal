@@ -501,7 +501,12 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 										sequential={!!sequential}
 									>
 										<BaseEditPage.Body>
-											<BaseEditPage.Sidebar position="left">
+											<BaseEditPage.Sidebar
+												label={Liferay.Language.get(
+													'conditions-library'
+												)}
+												position="left"
+											>
 												<CriteriaSidebar
 													channelId={channelId}
 													criteriaString={

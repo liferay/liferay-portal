@@ -6,7 +6,7 @@ $event-analysis-toolbar-height: map-get($cadmin-component-tbar, height);
 	min-height: 100vh;
 }
 
-.event-analysis-conditions-panel .event-analysis-conditions-panel-content {
+.base-edit-page-sidebar .event-analysis-conditions-panel-content {
 	max-height: calc(100vh - #{$event-analysis-toolbar-height});
 	position: sticky;
 	top: $event-analysis-toolbar-height;

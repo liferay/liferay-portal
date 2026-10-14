@@ -3,7 +3,7 @@
 	flex: 1 1 auto;
 	min-height: 0;
 
-	> :not(.base-edit-page-sidebar) {
+	> :not(.base-edit-page-sidebar, .base-edit-page-sidebar-overlay) {
 		flex: 1 1 auto;
 		min-width: 0;
 	}
@@ -35,4 +35,49 @@
 
 .base-edit-page-sidebar-right {
 	order: 1;
+}
+
+.base-edit-page-body:has(> .base-edit-page-sidebar-overlay) {
+	flex-direction: column;
+}
+
+.base-edit-page-sidebar-overlay {
+	min-height: 0;
+	padding-top: 0.5rem;
+
+	.base-edit-page-sidebar-trigger {
+		border-bottom-left-radius: 0;
+		border-left: 0;
+		border-top-left-radius: 0;
+	}
+
+	// Clay pins the panel below its container; cover the sticky page header
+	// too.
+
+	> .c-slideout {
+		top: 0 !important;
+		z-index: $overlayZIndex + 45;
+	}
+}
+
+.base-edit-page-sidebar-backdrop {
+	background-color: $cadmin-modal-backdrop-bg;
+	bottom: 0;
+	left: 0;
+	opacity: $cadmin-modal-backdrop-opacity;
+	position: fixed;
+	right: 0;
+	top: 0;
+	z-index: -1;
+}
+
+.base-edit-page-sidebar-panel {
+	overflow-y: auto;
+
+	.base-edit-page-sidebar-close {
+		position: absolute;
+		right: 1rem;
+		top: 0.75rem;
+		z-index: 1;
+	}
 }
