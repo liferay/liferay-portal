@@ -116,12 +116,12 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				break;
 			}
 
-			boolean queryContains = GetterUtil.getBoolean(
-				portletPreferences.getValue(
-					"queryContains" + i, StringPool.BLANK));
 			boolean queryAndOperator = GetterUtil.getBoolean(
 				portletPreferences.getValue(
 					"queryAndOperator" + i, StringPool.BLANK));
+			boolean queryContains = GetterUtil.getBoolean(
+				portletPreferences.getValue(
+					"queryContains" + i, StringPool.BLANK));
 			String queryName = portletPreferences.getValue(
 				"queryName" + i, StringPool.BLANK);
 
@@ -559,12 +559,12 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				break;
 			}
 
-			boolean queryContains = GetterUtil.getBoolean(
-				portletPreferences.getValue(
-					"queryContains" + i, StringPool.BLANK));
 			boolean queryAndOperator = GetterUtil.getBoolean(
 				portletPreferences.getValue(
 					"queryAndOperator" + i, StringPool.BLANK));
+			boolean queryContains = GetterUtil.getBoolean(
+				portletPreferences.getValue(
+					"queryContains" + i, StringPool.BLANK));
 			String queryName = portletPreferences.getValue(
 				"queryName" + i, StringPool.BLANK);
 
@@ -933,12 +933,12 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				break;
 			}
 
-			boolean queryContains = GetterUtil.getBoolean(
-				portletPreferences.getValue(
-					"queryContains" + i, StringPool.BLANK));
 			boolean queryAndOperator = GetterUtil.getBoolean(
 				portletPreferences.getValue(
 					"queryAndOperator" + i, StringPool.BLANK));
+			boolean queryContains = GetterUtil.getBoolean(
+				portletPreferences.getValue(
+					"queryContains" + i, StringPool.BLANK));
 			String queryName = portletPreferences.getValue(
 				"queryName" + i, StringPool.BLANK);
 
@@ -1386,12 +1386,12 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				break;
 			}
 
-			boolean queryContains = GetterUtil.getBoolean(
-				portletPreferences.getValue(
-					"queryContains" + i, StringPool.BLANK));
 			boolean queryAndOperator = GetterUtil.getBoolean(
 				portletPreferences.getValue(
 					"queryAndOperator" + i, StringPool.BLANK));
+			boolean queryContains = GetterUtil.getBoolean(
+				portletPreferences.getValue(
+					"queryContains" + i, StringPool.BLANK));
 			String queryName = portletPreferences.getValue(
 				"queryName" + i, StringPool.BLANK);
 
