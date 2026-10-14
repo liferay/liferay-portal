@@ -293,9 +293,6 @@ public interface DDLRecordLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDLRecord fetchDDLRecordByUuidAndGroupId(String uuid, long groupId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDLRecord fetchFirstRecord(String className, long classPK);
-
 	/**
 	 * Returns the record with the ID.
 	 *
@@ -695,4 +692,4 @@ public interface DDLRecordLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1731574472
+// LIFERAY-SERVICE-BUILDER-HASH:540812410

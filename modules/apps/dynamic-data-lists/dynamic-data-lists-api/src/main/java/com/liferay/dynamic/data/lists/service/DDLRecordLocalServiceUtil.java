@@ -312,10 +312,6 @@ public class DDLRecordLocalServiceUtil {
 		return getService().fetchDDLRecordByUuidAndGroupId(uuid, groupId);
 	}
 
-	public static DDLRecord fetchFirstRecord(String className, long classPK) {
-		return getService().fetchFirstRecord(className, classPK);
-	}
-
 	/**
 	 * Returns the record with the ID.
 	 *
@@ -797,4 +793,4 @@ public class DDLRecordLocalServiceUtil {
 			DDLRecordLocalServiceUtil.class, DDLRecordLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1429263732
+// LIFERAY-SERVICE-BUILDER-HASH:1380414430

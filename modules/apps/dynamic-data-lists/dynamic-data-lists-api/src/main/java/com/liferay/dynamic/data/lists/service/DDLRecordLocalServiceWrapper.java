@@ -340,11 +340,6 @@ public class DDLRecordLocalServiceWrapper
 			uuid, groupId);
 	}
 
-	@Override
-	public DDLRecord fetchFirstRecord(String className, long classPK) {
-		return _ddlRecordLocalService.fetchFirstRecord(className, classPK);
-	}
-
 	/**
 	 * Returns the record with the ID.
 	 *
@@ -901,4 +896,4 @@ public class DDLRecordLocalServiceWrapper
 	private DDLRecordLocalService _ddlRecordLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1731370475
+// LIFERAY-SERVICE-BUILDER-HASH:1821853250
