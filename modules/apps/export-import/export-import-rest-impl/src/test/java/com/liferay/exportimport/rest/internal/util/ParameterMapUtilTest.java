@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.ws.rs.BadRequestException;
@@ -172,6 +174,7 @@ public class ParameterMapUtilTest {
 			parameterMap.get(_PORTLET_DATA_HANDLER_NAME));
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-41307"))
 	@Test
 	public void testToParameterMapWhenExportAssetLibraryAndSiteExternalReferenceCodesAreSet() {
 		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
@@ -196,6 +199,7 @@ public class ParameterMapUtilTest {
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-41307"))
 	@Test
 	public void testToParameterMapWhenExportAssetLibraryExternalReferenceCodesAreSet() {
 		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
@@ -212,6 +216,18 @@ public class ParameterMapUtilTest {
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
 	}
 
+	@Test(expected = BadRequestException.class)
+	public void testToParameterMapWhenExportAssetLibraryExternalReferenceCodesAreSetWithoutFeatureFlag() {
+		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
+
+		exportProcessRequest.setAssetLibraryExternalReferenceCodes(
+			new String[] {_EXTERNAL_REFERENCE_CODE_1});
+
+		ParameterMapUtil.toParameterMap(
+			exportProcessRequest, new PortletDataHandler[0], false);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-41307"))
 	@Test
 	public void testToParameterMapWhenImportAssetLibraryAndSiteExternalReferenceCodesAreSet() {
 		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
@@ -231,6 +247,17 @@ public class ParameterMapUtilTest {
 			},
 			parameterMap.get(
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
+	}
+
+	@Test(expected = BadRequestException.class)
+	public void testToParameterMapWhenImportAssetLibraryExternalReferenceCodesAreSetWithoutFeatureFlag() {
+		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
+
+		importProcessRequest.setAssetLibraryExternalReferenceCodes(
+			new String[] {_EXTERNAL_REFERENCE_CODE_1});
+
+		ParameterMapUtil.toParameterMap(
+			importProcessRequest, new PortletDataHandler[0], false);
 	}
 
 	@Test
