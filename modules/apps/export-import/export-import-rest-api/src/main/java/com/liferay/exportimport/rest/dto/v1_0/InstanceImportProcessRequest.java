@@ -63,7 +63,7 @@ public class InstanceImportProcessRequest implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The external reference codes of the asset libraries to import from the file. Only asset libraries of type Space can be imported."
+		description = "The external reference codes of the asset libraries to import from the file."
 	)
 	public String[] getAssetLibraryExternalReferenceCodes() {
 		if (_assetLibraryExternalReferenceCodesSupplier != null) {
@@ -104,7 +104,7 @@ public class InstanceImportProcessRequest implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The external reference codes of the asset libraries to import from the file. Only asset libraries of type Space can be imported."
+		description = "The external reference codes of the asset libraries to import from the file."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String[] assetLibraryExternalReferenceCodes;
@@ -929,4 +929,4 @@ public class InstanceImportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1764497514
+// LIFERAY-REST-BUILDER-HASH:1043901814

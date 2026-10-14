@@ -44,11 +44,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An asset library that can be exported from the instance or that a file to import contains. Only asset libraries of type Space can be exported.",
+	description = "An asset library that can be exported from the instance or that a file to import contains.",
 	value = "PreviewAssetLibrary"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "An asset library that can be exported from the instance or that a file to import contains. Only asset libraries of type Space can be exported.",
+	description = "An asset library that can be exported from the instance or that a file to import contains.",
 	requiredProperties = {"descriptiveName", "externalReferenceCode", "type"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -498,4 +498,4 @@ public class PreviewAssetLibrary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1424217217
+// LIFERAY-REST-BUILDER-HASH:1356141599
