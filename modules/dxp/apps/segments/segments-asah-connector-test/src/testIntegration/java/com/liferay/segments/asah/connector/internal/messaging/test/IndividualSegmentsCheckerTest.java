@@ -109,19 +109,7 @@ public class IndividualSegmentsCheckerTest {
 
 			jobExecutorUnsafeRunnable.run();
 
-			List<SegmentsEntry> segmentsEntries =
-				_segmentsEntryLocalService.getSegmentsEntriesBySource(
-					SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
-					new int[] {
-						SegmentsEntryConstants.TYPE_BATCH,
-						SegmentsEntryConstants.TYPE_DEFAULT
-					},
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-			Assert.assertEquals(
-				segmentsEntries.toString(), 1, segmentsEntries.size());
-
-			SegmentsEntry segmentsEntry = segmentsEntries.get(0);
+			SegmentsEntry segmentsEntry = _getSegmentsEntry();
 
 			Context context = new Context();
 
@@ -286,19 +274,7 @@ public class IndividualSegmentsCheckerTest {
 
 			jobExecutorUnsafeRunnable.run();
 
-			segmentsEntries =
-				_segmentsEntryLocalService.getSegmentsEntriesBySource(
-					SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
-					new int[] {
-						SegmentsEntryConstants.TYPE_BATCH,
-						SegmentsEntryConstants.TYPE_DEFAULT
-					},
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-			Assert.assertEquals(
-				segmentsEntries.toString(), 1, segmentsEntries.size());
-
-			SegmentsEntry segmentsEntry = segmentsEntries.get(0);
+			SegmentsEntry segmentsEntry = _getSegmentsEntry();
 
 			Assert.assertEquals(
 				"Test Segment 1",
