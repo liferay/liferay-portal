@@ -509,8 +509,12 @@ components:
                 Represents a control that selects items of a tree by external reference code. The most specific rule wins, in the order of an item list, a subtree list, the closest ancestor's subtree list, and the selectAll flag. An included list wins over the excluded one at the same level. The pages control takes the external reference codes of the Headless Admin Site API's site pages.
             type: object
         PreviewAssetLibrary:
+            description:
+                An asset library that can be exported from the instance or that a file to import contains.
             properties:
                 descriptiveName:
+                    description:
+                        The asset library's name.
                     readOnly: true
                     type: string
                 existsInInstance:
@@ -519,8 +523,13 @@ components:
                     readOnly: true
                     type: boolean
                 externalReferenceCode:
+                    description:
+                        The asset library's external reference code.
                     readOnly: true
                     type: string
+            required:
+                - descriptiveName
+                - externalReferenceCode
             type: object
         ProcessProgress:
             properties:
