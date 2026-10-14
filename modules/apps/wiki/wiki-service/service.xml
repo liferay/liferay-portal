@@ -116,9 +116,6 @@
 		<finder name="NodeId" return-type="Collection">
 			<finder-column name="nodeId" />
 		</finder>
-		<finder name="Format" return-type="Collection">
-			<finder-column name="format" />
-		</finder>
 		<finder name="R_N" return-type="Collection">
 			<finder-column name="resourcePrimKey" />
 			<finder-column name="nodeId" />
@@ -147,10 +144,6 @@
 			<finder-column name="nodeId" />
 			<finder-column case-sensitive="false" name="redirectTitle" />
 		</finder>
-		<finder name="N_S" return-type="Collection">
-			<finder-column name="nodeId" />
-			<finder-column name="status" />
-		</finder>
 		<finder name="R_N_V" return-type="WikiPage" unique="true">
 			<finder-column name="resourcePrimKey" />
 			<finder-column name="nodeId" />
@@ -178,11 +171,6 @@
 		</finder>
 		<finder name="G_N_S" return-type="Collection">
 			<finder-column name="groupId" />
-			<finder-column name="nodeId" />
-			<finder-column name="status" />
-		</finder>
-		<finder name="U_N_S" return-type="Collection">
-			<finder-column name="userId" />
 			<finder-column name="nodeId" />
 			<finder-column name="status" />
 		</finder>
@@ -245,23 +233,11 @@
 			<finder-column case-sensitive="false" name="parentTitle" />
 			<finder-column name="status" />
 		</finder>
-		<finder name="N_H_P_NotS" return-type="Collection">
-			<finder-column name="nodeId" />
-			<finder-column name="head" />
-			<finder-column case-sensitive="false" name="parentTitle" />
-			<finder-column comparator="!=" name="status" />
-		</finder>
 		<finder name="N_H_R_S" return-type="Collection">
 			<finder-column name="nodeId" />
 			<finder-column name="head" />
 			<finder-column case-sensitive="false" name="redirectTitle" />
 			<finder-column name="status" />
-		</finder>
-		<finder name="N_H_R_NotS" return-type="Collection">
-			<finder-column name="nodeId" />
-			<finder-column name="head" />
-			<finder-column case-sensitive="false" name="redirectTitle" />
-			<finder-column comparator="!=" name="status" />
 		</finder>
 		<finder name="G_N_H_P_S" return-type="Collection">
 			<finder-column name="groupId" />
