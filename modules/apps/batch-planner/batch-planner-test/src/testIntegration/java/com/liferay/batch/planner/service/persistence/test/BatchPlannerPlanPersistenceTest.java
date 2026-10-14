@@ -213,28 +213,11 @@ public class BatchPlannerPlanPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_U() throws Exception {
-		_persistence.countByC_U(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByC_U(0L, 0L);
-	}
-
-	@Test
 	public void testCountByC_E() throws Exception {
 		_persistence.countByC_E(
 			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
 
 		_persistence.countByC_E(0L, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByC_N() throws Exception {
-		_persistence.countByC_N(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByC_N(0L, "null");
-
-		_persistence.countByC_N(0L, (String)null);
 	}
 
 	@Test
@@ -553,4 +536,4 @@ public class BatchPlannerPlanPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2104934227
+// LIFERAY-SERVICE-BUILDER-HASH:1724403408
