@@ -563,80 +563,6 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 		Assert.assertEquals(count, testApplication.getCount());
 	}
 
-	private void _assertProblemWithoutOutboundRequest(
-			String status, UnsafeConsumer<String, Exception> unsafeConsumer)
-		throws Exception {
-
-		TestApplication testApplication = new TestApplication();
-
-		ServiceRegistration<Application> serviceRegistration =
-			_registerTestApplication(testApplication);
-
-		try {
-			Problem.ProblemException problemException = Assert.assertThrows(
-				Problem.ProblemException.class,
-				() -> unsafeConsumer.accept(_getURL("/image.png")));
-
-			Assert.assertEquals(0, testApplication.getCount());
-
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals(status, problem.getStatus());
-		}
-		finally {
-			serviceRegistration.unregister();
-		}
-	}
-
-	private void _assertUpdatePermission(
-			String actionId,
-			UnsafeBiConsumer<AttachmentResource, String, Exception>
-				unsafeBiConsumer)
-		throws Exception {
-
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		AttachmentResource attachmentResource = _getAttachmentResource(role);
-
-		_assertProblemWithoutOutboundRequest(
-			"FORBIDDEN",
-			url -> unsafeBiConsumer.accept(attachmentResource, url));
-
-		String primKey = String.valueOf(testCompany.getCompanyId());
-
-		RoleTestUtil.addResourcePermission(
-			role, CommerceCatalog.class.getName(),
-			ResourceConstants.SCOPE_COMPANY, primKey, ActionKeys.UPDATE);
-		RoleTestUtil.addResourcePermission(
-			role, CPConstants.RESOURCE_NAME_PRODUCT,
-			ResourceConstants.SCOPE_COMPANY, primKey, actionId);
-		RoleTestUtil.addResourcePermission(
-			role, DLConstants.RESOURCE_NAME, ResourceConstants.SCOPE_COMPANY,
-			primKey, ActionKeys.ADD_DOCUMENT);
-
-		TestApplication testApplication = new TestApplication();
-
-		ServiceRegistration<Application> serviceRegistration =
-			_registerTestApplication(testApplication);
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						_URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID,
-						HashMapDictionaryBuilder.<String, Object>put(
-							"urlLocalNetworkAccessEnabled", true
-						).build())) {
-
-			unsafeBiConsumer.accept(attachmentResource, _getURL("/image.png"));
-
-			Assert.assertEquals(1, testApplication.getCount());
-		}
-		finally {
-			serviceRegistration.unregister();
-		}
-	}
-
 	private AttachmentResource _getAttachmentResource(Role role)
 		throws Exception {
 
@@ -971,7 +897,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	private void _testPostProductIdAttachmentByUrlWithUpdatePermission()
 		throws Exception {
 
-		_assertUpdatePermission(
+		_testUpdatePermission(
 			CPActionKeys.MANAGE_COMMERCE_PRODUCT_ATTACHMENTS,
 			(attachmentResource, url) ->
 				attachmentResource.postProductIdAttachmentByUrl(
@@ -1091,7 +1017,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	private void _testPostProductIdAttachmentWithLocalNetworkURL()
 		throws Exception {
 
-		_assertProblemWithoutOutboundRequest(
+		_testProblemWithoutOutboundRequest(
 			"BAD_REQUEST",
 			url -> attachmentResource.postProductIdAttachment(
 				_cProduct.getCProductId(), _randomAttachment(url)));
@@ -1114,7 +1040,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	private void _testPostProductIdAttachmentWithUpdatePermission()
 		throws Exception {
 
-		_assertUpdatePermission(
+		_testUpdatePermission(
 			CPActionKeys.MANAGE_COMMERCE_PRODUCT_ATTACHMENTS,
 			(attachmentResource, url) ->
 				attachmentResource.postProductIdAttachment(
@@ -1124,7 +1050,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	private void _testPostProductIdImageByUrlWithUpdatePermission()
 		throws Exception {
 
-		_assertUpdatePermission(
+		_testUpdatePermission(
 			CPActionKeys.MANAGE_COMMERCE_PRODUCT_IMAGES,
 			(attachmentResource, url) ->
 				attachmentResource.postProductIdImageByUrl(
@@ -1160,10 +1086,84 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	private void _testPostProductIdImageWithUpdatePermission()
 		throws Exception {
 
-		_assertUpdatePermission(
+		_testUpdatePermission(
 			CPActionKeys.MANAGE_COMMERCE_PRODUCT_IMAGES,
 			(attachmentResource, url) -> attachmentResource.postProductIdImage(
 				_cProduct.getCProductId(), _randomAttachment(url)));
+	}
+
+	private void _testProblemWithoutOutboundRequest(
+			String status, UnsafeConsumer<String, Exception> unsafeConsumer)
+		throws Exception {
+
+		TestApplication testApplication = new TestApplication();
+
+		ServiceRegistration<Application> serviceRegistration =
+			_registerTestApplication(testApplication);
+
+		try {
+			Problem.ProblemException problemException = Assert.assertThrows(
+				Problem.ProblemException.class,
+				() -> unsafeConsumer.accept(_getURL("/image.png")));
+
+			Assert.assertEquals(0, testApplication.getCount());
+
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(status, problem.getStatus());
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+	}
+
+	private void _testUpdatePermission(
+			String actionId,
+			UnsafeBiConsumer<AttachmentResource, String, Exception>
+				unsafeBiConsumer)
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		AttachmentResource attachmentResource = _getAttachmentResource(role);
+
+		_testProblemWithoutOutboundRequest(
+			"FORBIDDEN",
+			url -> unsafeBiConsumer.accept(attachmentResource, url));
+
+		String primKey = String.valueOf(testCompany.getCompanyId());
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceCatalog.class.getName(),
+			ResourceConstants.SCOPE_COMPANY, primKey, ActionKeys.UPDATE);
+		RoleTestUtil.addResourcePermission(
+			role, CPConstants.RESOURCE_NAME_PRODUCT,
+			ResourceConstants.SCOPE_COMPANY, primKey, actionId);
+		RoleTestUtil.addResourcePermission(
+			role, DLConstants.RESOURCE_NAME, ResourceConstants.SCOPE_COMPANY,
+			primKey, ActionKeys.ADD_DOCUMENT);
+
+		TestApplication testApplication = new TestApplication();
+
+		ServiceRegistration<Application> serviceRegistration =
+			_registerTestApplication(testApplication);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						_URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"urlLocalNetworkAccessEnabled", true
+						).build())) {
+
+			unsafeBiConsumer.accept(attachmentResource, _getURL("/image.png"));
+
+			Assert.assertEquals(1, testApplication.getCount());
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
 	}
 
 	private static final String _PASSWORD = RandomTestUtil.randomString();
