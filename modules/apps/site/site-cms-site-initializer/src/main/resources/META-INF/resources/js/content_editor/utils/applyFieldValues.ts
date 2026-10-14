@@ -85,6 +85,16 @@ export default function applyFieldValues(
 			return;
 		}
 
-		setControlValue(getLocaleControl(controls, languageId), value);
+		const localeControl = getLocaleControl(controls, languageId);
+
+		setControlValue(localeControl, value);
+
+		const visibleControl = controls.find(
+			(control) => control.getAttribute('name') === `ObjectField_${name}`
+		);
+
+		if (visibleControl && visibleControl !== localeControl) {
+			setControlValue(visibleControl, value);
+		}
 	});
 }

@@ -135,6 +135,30 @@ describe('applyFieldValues', () => {
 		).toBe('Generated');
 	});
 
+	it('writes the visible input and the active locale control for a localized field', () => {
+		const form = createForm(
+			'<input name="ObjectField_title" type="text" value="Previous" />' +
+				'<input name="ObjectField_title_en_US" type="hidden" value="Previous" />'
+		);
+
+		applyFieldValues(form, {title: 'Generated'}, 'en_US');
+
+		expect(
+			(
+				form.querySelector(
+					'[name="ObjectField_title"]'
+				) as HTMLInputElement
+			).value
+		).toBe('Generated');
+		expect(
+			(
+				form.querySelector(
+					'[name="ObjectField_title_en_US"]'
+				) as HTMLInputElement
+			).value
+		).toBe('Generated');
+	});
+
 	it('writes through the native setter when a control ignores direct assignment', () => {
 		const form = createForm('<input name="ObjectField_title" value="" />');
 
