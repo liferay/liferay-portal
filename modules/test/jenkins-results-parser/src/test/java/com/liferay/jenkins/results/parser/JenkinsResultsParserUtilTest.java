@@ -517,16 +517,16 @@ public class JenkinsResultsParserUtilTest
 
 		Object lock = new Object();
 
-		CountDownLatch holdLatch = new CountDownLatch(1);
-		CountDownLatch lockedLatch = new CountDownLatch(1);
+		CountDownLatch holdCountDownLatch = new CountDownLatch(1);
+		CountDownLatch lockedCountDownLatch = new CountDownLatch(1);
 
 		Thread lockOwnerThread = new Thread(
 			() -> {
 				synchronized (lock) {
-					lockedLatch.countDown();
+					lockedCountDownLatch.countDown();
 
 					try {
-						holdLatch.await();
+						holdCountDownLatch.await();
 					}
 					catch (InterruptedException interruptedException) {
 						throw new RuntimeException(interruptedException);
@@ -545,7 +545,7 @@ public class JenkinsResultsParserUtilTest
 		try {
 			lockOwnerThread.start();
 
-			lockedLatch.await();
+			lockedCountDownLatch.await();
 
 			lockWaiterThread.start();
 
@@ -555,23 +555,23 @@ public class JenkinsResultsParserUtilTest
 
 			String threadDump = JenkinsResultsParserUtil.getThreadDump();
 
-			String lockWaiterEntry = _getThreadDumpEntry(
+			String lockWaiterThreadDumpEntry = _getThreadDumpEntry(
 				threadDump, lockWaiterThreadName);
 
-			Assert.assertTrue(lockWaiterEntry.contains("BLOCKED"));
+			Assert.assertTrue(lockWaiterThreadDumpEntry.contains("BLOCKED"));
 
 			Assert.assertTrue(
-				lockWaiterEntry.contains(
+				lockWaiterThreadDumpEntry.contains(
 					JenkinsResultsParserUtil.combine(
 						"owned by \"", lockOwnerThreadName, "\"")));
 
-			String lockOwnerEntry = _getThreadDumpEntry(
+			String lockOwnerThreadDumpEntry = _getThreadDumpEntry(
 				threadDump, lockOwnerThreadName);
 
-			Assert.assertTrue(lockOwnerEntry.contains("- locked"));
+			Assert.assertTrue(lockOwnerThreadDumpEntry.contains("- locked"));
 		}
 		finally {
-			holdLatch.countDown();
+			holdCountDownLatch.countDown();
 
 			lockOwnerThread.join();
 
@@ -581,35 +581,37 @@ public class JenkinsResultsParserUtilTest
 
 	@Test(timeout = 30000)
 	public void testGetThreadDumpDeadlockedThreads() throws Exception {
-		String firstThreadName = "deadlock-first";
-		String secondThreadName = "deadlock-second";
+		String threadName0 = "deadlock-0";
+		String threadName1 = "deadlock-1";
 
-		ReentrantLock firstLock = new ReentrantLock();
-		ReentrantLock secondLock = new ReentrantLock();
+		ReentrantLock reentrantLock0 = new ReentrantLock();
+		ReentrantLock reentrantLock1 = new ReentrantLock();
 
-		CountDownLatch bothLockedLatch = new CountDownLatch(2);
-		CountDownLatch proceedLatch = new CountDownLatch(1);
+		CountDownLatch bothLockedCountDownLatch = new CountDownLatch(2);
+		CountDownLatch proceedCountDownLatch = new CountDownLatch(1);
 
-		Thread firstThread = new Thread(
+		Thread thread0 = new Thread(
 			() -> _awaitDeadlock(
-				bothLockedLatch, firstLock, proceedLatch, secondLock),
-			firstThreadName);
+				bothLockedCountDownLatch, reentrantLock0, proceedCountDownLatch,
+				reentrantLock1),
+			threadName0);
 
-		Thread secondThread = new Thread(
+		Thread thread1 = new Thread(
 			() -> _awaitDeadlock(
-				bothLockedLatch, secondLock, proceedLatch, firstLock),
-			secondThreadName);
+				bothLockedCountDownLatch, reentrantLock1, proceedCountDownLatch,
+				reentrantLock0),
+			threadName1);
 
-		firstThread.setDaemon(true);
-		secondThread.setDaemon(true);
+		thread0.setDaemon(true);
+		thread1.setDaemon(true);
 
 		try {
-			firstThread.start();
-			secondThread.start();
+			thread0.start();
+			thread1.start();
 
-			bothLockedLatch.await();
+			bothLockedCountDownLatch.await();
 
-			proceedLatch.countDown();
+			proceedCountDownLatch.countDown();
 
 			String threadDump = JenkinsResultsParserUtil.getThreadDump();
 
@@ -630,20 +632,18 @@ public class JenkinsResultsParserUtilTest
 
 			Assert.assertTrue(
 				deadlockSection.contains(
-					JenkinsResultsParserUtil.combine(
-						"\"", firstThreadName, "\"")));
+					JenkinsResultsParserUtil.combine("\"", threadName0, "\"")));
 
 			Assert.assertTrue(
 				deadlockSection.contains(
-					JenkinsResultsParserUtil.combine(
-						"\"", secondThreadName, "\"")));
+					JenkinsResultsParserUtil.combine("\"", threadName1, "\"")));
 		}
 		finally {
-			firstThread.interrupt();
-			secondThread.interrupt();
+			thread0.interrupt();
+			thread1.interrupt();
 
-			firstThread.join();
-			secondThread.join();
+			thread0.join();
+			thread1.join();
 		}
 	}
 
@@ -651,18 +651,20 @@ public class JenkinsResultsParserUtilTest
 	public void testGetThreadDumpTruncatedStack() throws Exception {
 		String threadName = "deep-stack";
 
-		CountDownLatch deepStackLatch = new CountDownLatch(1);
-		CountDownLatch holdLatch = new CountDownLatch(1);
+		CountDownLatch deepStackCountDownLatch = new CountDownLatch(1);
+		CountDownLatch holdCountDownLatch = new CountDownLatch(1);
 
 		Thread thread = new Thread(
-			() -> _buildDeepStack(deepStackLatch, 60, holdLatch), threadName);
+			() -> _buildDeepStack(
+				deepStackCountDownLatch, 60, holdCountDownLatch),
+			threadName);
 
 		thread.setDaemon(true);
 
 		try {
 			thread.start();
 
-			deepStackLatch.await();
+			deepStackCountDownLatch.await();
 
 			String threadDumpEntry = _getThreadDumpEntry(
 				JenkinsResultsParserUtil.getThreadDump(), threadName);
@@ -670,7 +672,7 @@ public class JenkinsResultsParserUtilTest
 			Assert.assertTrue(threadDumpEntry.contains("\t..."));
 		}
 		finally {
-			holdLatch.countDown();
+			holdCountDownLatch.countDown();
 
 			thread.join();
 		}
