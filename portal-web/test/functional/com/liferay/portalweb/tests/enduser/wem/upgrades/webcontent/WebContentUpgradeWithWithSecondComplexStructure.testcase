@@ -388,7 +388,7 @@ definition {
 			AssertTextEquals(
 				key_fieldFieldLabel = ${fieldName},
 				locator1 = "WCEditWebContent#FIELD_REQUIRED_ALERT",
-				value1 = "Este campo é obrigatório.");
+				value1 = "This field is required.");
 		}
 	}
 
