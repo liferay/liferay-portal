@@ -292,6 +292,47 @@ public class CPInstanceLocalServiceTest {
 	}
 
 	@Test
+	public void testExpireCPInstanceNewCPInstanceAdded() throws Exception {
+		frutillaRule.scenario(
+			"Expire the approved product instances of a product definition " +
+				"that ignores SKU combinations"
+		).given(
+			"I have a product definition that ignores SKU combinations with " +
+				"its default instance active"
+		).when(
+			"new product instance is added to definition"
+		).then(
+			"product default instance should be expired"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		_assertDefaultCPInstance(cpDefinition.getCPDefinitionId());
+
+		CPInstance cpInstance = CPTestUtil.addCPDefinitionCPInstance(
+			cpDefinition.getCPDefinitionId(), new HashMap<>());
+
+		_assertApprovedCPInstancesCount(cpDefinition.getCPDefinitionId(), 1);
+
+		List<CPInstance> approvedCPDefinitionInstances =
+			_cpInstanceLocalService.getCPDefinitionApprovedCPInstances(
+				cpDefinition.getCPDefinitionId());
+
+		CPInstance approvedCPInstance = approvedCPDefinitionInstances.get(0);
+
+		Assert.assertEquals(
+			cpInstance.getCPInstanceId(), approvedCPInstance.getCPInstanceId());
+
+		CPInstance defaultCPInstance = _cpInstanceLocalService.getCPInstance(
+			cpDefinition.getCPDefinitionId(), CPInstanceConstants.DEFAULT_SKU);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EXPIRED, defaultCPInstance.getStatus());
+	}
+
+	@Test
 	public void testGetOrAddEmptyCPInstance() throws Exception {
 		frutillaRule.scenario(
 			"Get or add an empty product instance"
