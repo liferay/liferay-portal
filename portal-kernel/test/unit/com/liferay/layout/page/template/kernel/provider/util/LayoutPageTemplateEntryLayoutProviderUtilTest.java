@@ -63,13 +63,16 @@ public class LayoutPageTemplateEntryLayoutProviderUtilTest {
 	}
 
 	@Test
-	@TestInfo("LPD-99345")
+	@TestInfo({"LPD-81022", "LPD-99345"})
 	public void testGetLayoutPageTemplateEntryLayout() throws Throwable {
+		long companyId = RandomTestUtil.randomLong();
 		long groupId = RandomTestUtil.randomLong();
 		String externalReferenceCode = RandomTestUtil.randomString();
+		String layoutPageTemplateEntryScopeERC = RandomTestUtil.randomString();
 		long plid = RandomTestUtil.randomLong();
 
-		Layout layout = Mockito.mock(Layout.class);
+		Layout layout1 = Mockito.mock(Layout.class);
+		Layout layout2 = Mockito.mock(Layout.class);
 
 		LayoutPageTemplateEntryLayoutProvider
 			layoutPageTemplateEntryLayoutProvider = Mockito.mock(
@@ -78,9 +81,18 @@ public class LayoutPageTemplateEntryLayoutProviderUtilTest {
 		Mockito.when(
 			layoutPageTemplateEntryLayoutProvider.
 				getLayoutPageTemplateEntryLayout(
+					companyId, groupId, externalReferenceCode,
+					layoutPageTemplateEntryScopeERC, plid)
+		).thenReturn(
+			layout1
+		);
+
+		Mockito.when(
+			layoutPageTemplateEntryLayoutProvider.
+				getLayoutPageTemplateEntryLayout(
 					groupId, externalReferenceCode, plid)
 		).thenReturn(
-			layout
+			layout2
 		);
 
 		Mockito.when(
@@ -90,11 +102,23 @@ public class LayoutPageTemplateEntryLayoutProviderUtilTest {
 		);
 
 		Assert.assertSame(
-			layout,
+			layout1,
+			LayoutPageTemplateEntryLayoutProviderUtil.
+				getLayoutPageTemplateEntryLayout(
+					companyId, groupId, externalReferenceCode,
+					layoutPageTemplateEntryScopeERC, plid));
+		Assert.assertSame(
+			layout2,
 			LayoutPageTemplateEntryLayoutProviderUtil.
 				getLayoutPageTemplateEntryLayout(
 					groupId, externalReferenceCode, plid));
 
+		_testLogsDebugMessageWhenProviderIsUnavailable(
+			() ->
+				LayoutPageTemplateEntryLayoutProviderUtil.
+					getLayoutPageTemplateEntryLayout(
+						companyId, groupId, externalReferenceCode,
+						layoutPageTemplateEntryScopeERC, plid));
 		_testLogsDebugMessageWhenProviderIsUnavailable(
 			() ->
 				LayoutPageTemplateEntryLayoutProviderUtil.
