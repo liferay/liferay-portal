@@ -166,7 +166,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 
 		JSONObject portalReleaseJSONObject = portalRelease.getJSONObject();
 
-		for (String urlFieldName : _NON_TOMCAT_URL_FIELD_NAMES) {
+		for (String urlFieldName : _NONTOMCAT_URL_FIELD_NAMES) {
 			testEquals(
 				null, portalReleaseJSONObject.optString(urlFieldName, null));
 		}
@@ -217,7 +217,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 			"portal_version", "7.4.13"
 		);
 
-		for (String urlFieldName : _NON_TOMCAT_URL_FIELD_NAMES) {
+		for (String urlFieldName : _NONTOMCAT_URL_FIELD_NAMES) {
 			jsonObject.put(
 				urlFieldName, "https://" + RandomTestUtil.randomString());
 		}
@@ -245,7 +245,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		JSONObject jsonPortalReleaseJSONObject =
 			jsonPortalRelease.getJSONObject();
 
-		for (String urlFieldName : _NON_TOMCAT_URL_FIELD_NAMES) {
+		for (String urlFieldName : _NONTOMCAT_URL_FIELD_NAMES) {
 			testEquals(
 				null,
 				jsonPortalReleaseJSONObject.optString(urlFieldName, null));
@@ -260,7 +260,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		JSONObject unsetPortalReleaseJSONObject =
 			jsonPortalRelease.getJSONObject();
 
-		for (String urlFieldName : _NON_TOMCAT_URL_FIELD_NAMES) {
+		for (String urlFieldName : _NONTOMCAT_URL_FIELD_NAMES) {
 			testEquals(
 				null,
 				unsetPortalReleaseJSONObject.optString(urlFieldName, null));
@@ -332,7 +332,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		"portal.sql.zip.url", "portal.tools.zip.url", "portal.war.url"
 	};
 
-	private static final String[] _NON_TOMCAT_URL_FIELD_NAMES = {
+	private static final String[] _NONTOMCAT_URL_FIELD_NAMES = {
 		"plugins_war_zip_url_string", "portal_bundle_glassfish_url_string",
 		"portal_bundle_jboss_url_string", "portal_bundle_wildfly_url_string",
 		"portal_dependencies_zip_url_string", "portal_osgi_zip_url_string",

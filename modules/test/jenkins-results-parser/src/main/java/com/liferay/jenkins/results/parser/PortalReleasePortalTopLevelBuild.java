@@ -265,23 +265,23 @@ public class PortalReleasePortalTopLevelBuild
 					"TEST_PORTAL_RELEASE_STANDALONE is true");
 		}
 
-		List<String> nonTomcatURLParameterNames = new ArrayList<>();
+		List<String> nontomcatURLParameterNames = new ArrayList<>();
 
-		for (String parameterName : _NON_TOMCAT_URL_PARAMETER_NAMES) {
+		for (String parameterName : _NONTOMCAT_URL_PARAMETER_NAMES) {
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(
 					getParameterValue(parameterName))) {
 
-				nonTomcatURLParameterNames.add(parameterName);
+				nontomcatURLParameterNames.add(parameterName);
 			}
 		}
 
-		if (!nonTomcatURLParameterNames.isEmpty()) {
+		if (!nontomcatURLParameterNames.isEmpty()) {
 			throw new RuntimeException(
 				JenkinsResultsParserUtil.combine(
 					"A standalone release takes only ",
 					"TEST_PORTAL_RELEASE_TOMCAT_URL. Remove ",
 					JenkinsResultsParserUtil.join(
-						", ", nonTomcatURLParameterNames),
+						", ", nontomcatURLParameterNames),
 					"."));
 		}
 
@@ -311,7 +311,7 @@ public class PortalReleasePortalTopLevelBuild
 		}
 	}
 
-	private static final String[] _NON_TOMCAT_URL_PARAMETER_NAMES = {
+	private static final String[] _NONTOMCAT_URL_PARAMETER_NAMES = {
 		"TEST_PORTAL_RELEASE_DEPENDENCIES_URL", "TEST_PORTAL_RELEASE_OSGI_URL",
 		"TEST_PORTAL_RELEASE_SQL_URL", "TEST_PORTAL_RELEASE_TOOLS_URL",
 		"TEST_PORTAL_RELEASE_WAR_URL"
