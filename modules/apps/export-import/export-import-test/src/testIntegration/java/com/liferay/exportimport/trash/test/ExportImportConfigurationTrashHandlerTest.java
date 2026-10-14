@@ -66,7 +66,8 @@ public class ExportImportConfigurationTrashHandlerTest
 
 		return ExportImportConfigurationLocalServiceUtil.
 			getExportImportConfigurationsCount(
-				(Long)parentBaseModel.getPrimaryKeyObj());
+				(Long)parentBaseModel.getPrimaryKeyObj(),
+				ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT);
 	}
 
 	@Override
