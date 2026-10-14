@@ -483,15 +483,6 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
-		<finder name="T_A" return-type="Collection">
-			<finder-column name="type" />
-			<finder-column name="active" />
-		</finder>
-		<finder db-index="false" name="GtG_C_P" return-type="Collection">
-			<finder-column comparator="&gt;" name="groupId" />
-			<finder-column name="companyId" />
-			<finder-column name="parentGroupId" />
-		</finder>
 		<finder name="C_C_C" return-type="Group" unique="true">
 			<finder-column name="companyId" />
 			<finder-column name="classNameId" />
@@ -665,14 +656,8 @@
 		<finder name="CompanyId" return-type="Collection" where="system = [$FALSE$]">
 			<finder-column name="companyId" />
 		</finder>
-		<finder name="ParentPlid" return-type="Collection" where="system = [$FALSE$]">
-			<finder-column name="parentPlid" />
-		</finder>
 		<finder name="IconImageId" return-type="Collection">
 			<finder-column name="iconImageId" />
-		</finder>
-		<finder name="LayoutSetPrototypeLayoutERC" return-type="Collection" where="system = [$FALSE$]">
-			<finder-column name="layoutSetPrototypeLayoutERC" />
 		</finder>
 		<finder name="G_P" return-type="Collection">
 			<finder-column name="groupId" />
@@ -722,11 +707,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="privateLayout" />
 			<finder-column name="friendlyURL" />
-		</finder>
-		<finder name="G_P_LSPLE" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="privateLayout" />
-			<finder-column name="layoutSetPrototypeLayoutERC" />
 		</finder>
 		<finder name="G_P_ST" return-type="Collection" where="system = [$FALSE$]">
 			<finder-column name="groupId" />
@@ -784,10 +764,6 @@
 		<finder name="Plid" return-type="Collection">
 			<finder-column name="plid" />
 		</finder>
-		<finder name="L_P" return-type="Collection">
-			<finder-column name="layoutSetBranchId" />
-			<finder-column name="plid" />
-		</finder>
 		<finder name="L_P_N" return-type="LayoutBranch" unique="true">
 			<finder-column name="layoutSetBranchId" />
 			<finder-column name="plid" />
@@ -829,9 +805,6 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
 		</finder>
 		<finder name="Plid" return-type="Collection">
 			<finder-column name="plid" />
@@ -1085,9 +1058,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="G_P" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="privateLayout" />
@@ -1819,9 +1789,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
@@ -1857,9 +1824,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
@@ -1894,9 +1858,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
