@@ -6,6 +6,7 @@
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {Body, Cell, Row, Table, Text} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {buildQueryString} from '@liferay/analytics-reports-js-components-web';
@@ -169,9 +170,12 @@ const EmptyState = () => {
 				description={Liferay.Language.get(
 					'sorry,-no-results-were-found'
 				)}
-				imgSrc={
-					Liferay.ThemeDisplay.getPathThemeImages() +
-					'/states/search_state.svg'
+				image={
+					<ClayIcon
+						className="c-empty-state-icon c-empty-state-icon-search-state"
+						illustration
+						symbol="search-state"
+					/>
 				}
 				title={Liferay.Language.get('no-results-found')}
 			>

@@ -169,9 +169,7 @@ const DetailedAssetUsageModal: React.FC<IDetailedAssetUsageModalProps> = ({
 										description: Liferay.Language.get(
 											'there-are-no-references-linked-to-this-asset'
 										),
-										image: '/states/empty_state.svg',
-										imageReducedMotion:
-											'/states/empty_state_reduced_motion.svg',
+										symbol: 'empty-state',
 										title: Liferay.Language.get(
 											'no-references'
 										),
