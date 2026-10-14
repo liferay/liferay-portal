@@ -127,6 +127,8 @@ public class PreviewAssetLibraryResourceTest
 		Assert.assertEquals(
 			group.getDescriptiveName(),
 			previewAssetLibrary.getDescriptiveName());
+		Assert.assertEquals(
+			PreviewAssetLibrary.Type.SPACE, previewAssetLibrary.getType());
 
 		depotEntry = _addDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY);
 

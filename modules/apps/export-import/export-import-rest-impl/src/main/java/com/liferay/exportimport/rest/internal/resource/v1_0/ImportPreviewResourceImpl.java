@@ -22,6 +22,7 @@ import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
+import com.liferay.exportimport.rest.internal.util.PreviewAssetLibraryUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ImportPreviewResource;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -235,6 +236,9 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 						() -> _existsInInstance(exportImportGroup));
 					setExternalReferenceCode(
 						exportImportGroup::getExternalReferenceCode);
+					setType(
+						() -> PreviewAssetLibraryUtil.toType(
+							exportImportGroup.getDepotType()));
 				}
 			},
 			PreviewAssetLibrary.class);

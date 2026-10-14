@@ -5,9 +5,12 @@
 
 package com.liferay.exportimport.rest.internal.resource.v1_0;
 
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewAssetLibrary;
 import com.liferay.exportimport.rest.internal.odata.entity.v1_0.PreviewAssetLibraryEntityModel;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
+import com.liferay.exportimport.rest.internal.util.PreviewAssetLibraryUtil;
 import com.liferay.exportimport.rest.resource.v1_0.PreviewAssetLibraryResource;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -22,6 +25,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -64,6 +68,15 @@ public class PreviewAssetLibraryResourceImpl
 								contextAcceptLanguage.getPreferredLocale()));
 						setExternalReferenceCode(
 							group::getExternalReferenceCode);
+						setType(
+							() -> {
+								DepotEntry depotEntry =
+									_depotEntryLocalService.getGroupDepotEntry(
+										group.getGroupId());
+
+								return PreviewAssetLibraryUtil.toType(
+									depotEntry.getType());
+							});
 					}
 				}),
 			pagination, groups.size());
@@ -71,5 +84,8 @@ public class PreviewAssetLibraryResourceImpl
 
 	private static final EntityModel _entityModel =
 		new PreviewAssetLibraryEntityModel();
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 }

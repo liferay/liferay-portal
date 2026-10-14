@@ -543,6 +543,8 @@ public class ImportPreviewResourceTest
 			_depotGroup.getDescriptiveName(),
 			previewAssetLibrary.getDescriptiveName());
 		Assert.assertTrue(previewAssetLibrary.getExistsInInstance());
+		Assert.assertEquals(
+			PreviewAssetLibrary.Type.SPACE, previewAssetLibrary.getType());
 
 		Assert.assertNull(
 			_getPreviewAssetLibrary(
