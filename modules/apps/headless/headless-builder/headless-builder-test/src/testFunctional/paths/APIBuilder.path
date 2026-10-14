@@ -181,11 +181,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>STATUS_LIST</td>
-	<td>xpath=(//span[(@class='label-item label-item-expand')])[${index}]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>SLASH</td>
 	<td>//div[contains(@class,'input-group-text')]</td>
 	<td></td>

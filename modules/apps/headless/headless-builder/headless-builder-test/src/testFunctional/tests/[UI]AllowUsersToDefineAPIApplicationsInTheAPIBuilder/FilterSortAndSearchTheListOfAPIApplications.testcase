@@ -136,22 +136,6 @@ definition {
 	}
 
 	@priority = 4
-	test CanSortAPIsByStatus {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("When I sort the APIs by Status") {
-			Click(
-				locator1 = "APIBuilder#DND_TH_WITH_TEXT",
-				value = "Status");
-		}
-
-		task ("Then the APIs are sorted by Status") {
-			APIBuilderUI.assertSortedStatusInOrder(statusList = "Published,Unpublished,Unpublished");
-		}
-	}
-
-	@priority = 4
 	test CanSortAPIsByTitle {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

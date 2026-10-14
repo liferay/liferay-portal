@@ -19,7 +19,7 @@ const test = mergeTests(
 );
 
 test(
-	'can list API applications and filter them by excluding a status',
+	'can list API applications, sort them and filter them by status',
 	{tag: '@LPD-106934'},
 	async ({apiHelpers, headlessBuilderPage, page}) => {
 		const applications = [];
@@ -69,6 +69,48 @@ test(
 					hasText: unpublishedApplication.title,
 				})
 			).toContainText('Unpublished');
+		}
+
+		const statusColumnHeader = page
+			.getByRole('columnheader')
+			.getByText('Status');
+
+		for (const publishedFirst of [true, false]) {
+			await statusColumnHeader.click();
+
+			await expect(async () => {
+				const rowTexts = await page
+					.locator('.fds tbody tr')
+					.allInnerTexts();
+
+				const getRowIndex = (title: string) =>
+					rowTexts.findIndex((rowText) => rowText.includes(title));
+
+				const publishedRowIndex = getRowIndex(
+					publishedApplication.title
+				);
+
+				expect(publishedRowIndex).toBeGreaterThan(-1);
+
+				for (const unpublishedApplication of unpublishedApplications) {
+					const unpublishedRowIndex = getRowIndex(
+						unpublishedApplication.title
+					);
+
+					expect(unpublishedRowIndex).toBeGreaterThan(-1);
+
+					if (publishedFirst) {
+						expect(publishedRowIndex).toBeLessThan(
+							unpublishedRowIndex
+						);
+					}
+					else {
+						expect(publishedRowIndex).toBeGreaterThan(
+							unpublishedRowIndex
+						);
+					}
+				}
+			}).toPass({timeout: 15000});
 		}
 
 		await applyFDSSelectionFilter(page, {

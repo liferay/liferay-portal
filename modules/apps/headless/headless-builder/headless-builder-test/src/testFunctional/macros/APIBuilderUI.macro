@@ -105,22 +105,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertSortedStatusInOrder(statusList = null) {
-		Variables.assertDefined(parameterList = ${statusList});
-
-		var key_index = 1;
-
-		for (var statusValue : list ${statusList}) {
-			AssertTextEquals(
-				index = ${key_index},
-				locator1 = "APIBuilder#STATUS_LIST",
-				value1 = ${statusValue});
-
-			var key_index = ${key_index} + 1;
-		}
-	}
-
-	@summary = "Default summary"
 	macro changePublicationStatus(key_title = null) {
 		ApplicationsMenu.gotoPortlet(
 			category = "Object",
