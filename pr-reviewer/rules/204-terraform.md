@@ -14,7 +14,7 @@ Derived values follow the same absolute order. Rule 201 pulls a derived assignme
 
 A violation is a Terraform block whose arguments and nested blocks are not in one absolute alphabetical order: a meta argument hoisted to the top or pushed to the bottom, a nested block grouped apart from the arguments, a derived `local` placed after the values it reads instead of in its sorted slot, or an inline object or list left unsorted.
 
-**Example:** In `cloud/terraform/aws/eks/locals.tf` the derived `selected_azs` (computed from `local.az_count`) sorts last by name rather than next to `az_count`, and in `cloud/terraform/aws/eks/gateway.tf` the `depends_on` meta argument sits in its alphabetical slot inside `helm_release.envoy_gateway` between `create_namespace` and `name` rather than being hoisted to the top of the block.
+**Example:** In `cloud/terraform/aws/eks/locals.tf` the derived `selected_azs` (computed from `local.az_count`) sorts last by name rather than next to `az_count`, and in `cloud/terraform/aws/eks/eks.tf` the `depends_on` meta argument sits in its alphabetical slot inside `kubernetes_storage_class_v1.gp3_storage_class` between `allow_volume_expansion` and `metadata` rather than being hoisted to the top of the block.
 
 ## Formatting
 
