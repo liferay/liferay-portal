@@ -98,7 +98,7 @@ components:
             properties:
                 assetLibraryExternalReferenceCodes:
                     description:
-                        The external reference codes of the asset libraries to export. Only asset libraries of type Space can be exported.
+                        The external reference codes of the asset libraries to export.
                     items:
                         type: string
                     type: array
@@ -233,7 +233,7 @@ components:
             properties:
                 assetLibraryExternalReferenceCodes:
                     description:
-                        The external reference codes of the asset libraries to import from the file. Only asset libraries of type Space can be imported.
+                        The external reference codes of the asset libraries to import from the file.
                     items:
                         type: string
                     type: array
@@ -514,7 +514,7 @@ components:
             type: object
         PreviewAssetLibrary:
             description:
-                An asset library that can be exported from the instance or that a file to import contains. Only asset libraries of type Space can be exported.
+                An asset library that can be exported from the instance or that a file to import contains.
             properties:
                 descriptiveName:
                     description:
@@ -1209,7 +1209,7 @@ paths:
     "/export-preview/preview-asset-libraries":
         get:
             description:
-                Retrieves the asset libraries that can be exported. Only asset libraries of type Space can be exported.
+                Retrieves the asset libraries that can be exported.
             operationId: getExportPreviewPreviewAssetLibrariesPage
             parameters:
                 -   in: query
