@@ -293,13 +293,6 @@ public class KaleoLogPersistenceTest {
 	}
 
 	@Test
-	public void testCountByKaleoTaskInstanceTokenId() throws Exception {
-		_persistence.countByKaleoTaskInstanceTokenId(RandomTestUtil.nextLong());
-
-		_persistence.countByKaleoTaskInstanceTokenId(0L);
-	}
-
-	@Test
 	public void testCountByKITI_T() throws Exception {
 		_persistence.countByKITI_T(RandomTestUtil.nextLong(), "");
 
@@ -641,4 +634,4 @@ public class KaleoLogPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-200066889
+// LIFERAY-SERVICE-BUILDER-HASH:-1795938139

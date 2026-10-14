@@ -96,49 +96,6 @@ public interface KaleoTimerInstanceTokenPersistence
 	public int countByKaleoInstanceId(long kaleoInstanceId);
 
 	/**
-	 * Returns the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; or throws a <code>NoSuchTimerInstanceTokenException</code> if it could not be found.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the matching kaleo timer instance token
-	 * @throws NoSuchTimerInstanceTokenException if a matching kaleo timer instance token could not be found
-	 */
-	public KaleoTimerInstanceToken findByKITI_KTI(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws NoSuchTimerInstanceTokenException;
-
-	/**
-	 * Returns the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching kaleo timer instance token, or <code>null</code> if a matching kaleo timer instance token could not be found
-	 */
-	public KaleoTimerInstanceToken fetchByKITI_KTI(
-		long kaleoInstanceTokenId, long kaleoTimerId, boolean useFinderCache);
-
-	/**
-	 * Removes the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; from the database.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the kaleo timer instance token that was removed
-	 */
-	public KaleoTimerInstanceToken removeByKITI_KTI(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws NoSuchTimerInstanceTokenException;
-
-	/**
-	 * Returns the number of kaleo timer instance tokens where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63;.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the number of matching kaleo timer instance tokens
-	 */
-	public int countByKITI_KTI(long kaleoInstanceTokenId, long kaleoTimerId);
-
-	/**
 	 * Returns an ordered range of all the kaleo timer instance tokens where kaleoInstanceTokenId = &#63; and completed = &#63;.
 	 *
 	 * <p>
@@ -318,19 +275,6 @@ public interface KaleoTimerInstanceTokenPersistence
 	 */
 	public KaleoTimerInstanceToken fetchByPrimaryKey(
 		long kaleoTimerInstanceTokenId);
-
-	/**
-	 * Returns the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the matching kaleo timer instance token, or <code>null</code> if a matching kaleo timer instance token could not be found
-	 */
-	public default KaleoTimerInstanceToken fetchByKITI_KTI(
-		long kaleoInstanceTokenId, long kaleoTimerId) {
-
-		return fetchByKITI_KTI(kaleoInstanceTokenId, kaleoTimerId, true);
-	}
 
 	/**
 	 * Returns all the kaleo timer instance tokens where kaleoInstanceId = &#63;.
@@ -514,4 +458,4 @@ public interface KaleoTimerInstanceTokenPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2086938616
+// LIFERAY-SERVICE-BUILDER-HASH:-468621818

@@ -143,26 +143,14 @@ public class KaleoTaskFormInstanceModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KALEOTASKFORMID_COLUMN_BITMASK = 8L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long KALEOTASKID_COLUMN_BITMASK = 16L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long KALEOTASKINSTANCETOKENID_COLUMN_BITMASK = 32L;
+	public static final long KALEOTASKINSTANCETOKENID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KALEOTASKFORMINSTANCEID_COLUMN_BITMASK = 64L;
+	public static final long KALEOTASKFORMINSTANCEID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -667,16 +655,6 @@ public class KaleoTaskFormInstanceModelImpl
 		_kaleoTaskId = kaleoTaskId;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalKaleoTaskId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("kaleoTaskId"));
-	}
-
 	@Override
 	public long getKaleoTaskInstanceTokenId() {
 		return _kaleoTaskInstanceTokenId;
@@ -713,16 +691,6 @@ public class KaleoTaskFormInstanceModelImpl
 		}
 
 		_kaleoTaskFormId = kaleoTaskFormId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalKaleoTaskFormId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("kaleoTaskFormId"));
 	}
 
 	@Override
@@ -1318,4 +1286,4 @@ public class KaleoTaskFormInstanceModelImpl
 	private KaleoTaskFormInstance _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:276759020
+// LIFERAY-SERVICE-BUILDER-HASH:1636936937

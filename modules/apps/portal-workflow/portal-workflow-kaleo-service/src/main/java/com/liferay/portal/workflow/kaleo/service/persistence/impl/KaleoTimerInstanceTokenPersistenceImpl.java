@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPe
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
-import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.workflow.kaleo.exception.NoSuchTimerInstanceTokenException;
@@ -165,75 +164,6 @@ public class KaleoTimerInstanceTokenPersistenceImpl
 	public int countByKaleoInstanceId(long kaleoInstanceId) {
 		return _collectionPersistenceFinderByKaleoInstanceId.count(
 			finderCache, new Object[] {kaleoInstanceId});
-	}
-
-	private UniquePersistenceFinder
-		<KaleoTimerInstanceToken, NoSuchTimerInstanceTokenException>
-			_uniquePersistenceFinderByKITI_KTI;
-
-	/**
-	 * Returns the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; or throws a <code>NoSuchTimerInstanceTokenException</code> if it could not be found.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the matching kaleo timer instance token
-	 * @throws NoSuchTimerInstanceTokenException if a matching kaleo timer instance token could not be found
-	 */
-	@Override
-	public KaleoTimerInstanceToken findByKITI_KTI(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws NoSuchTimerInstanceTokenException {
-
-		return _uniquePersistenceFinderByKITI_KTI.find(
-			finderCache, new Object[] {kaleoInstanceTokenId, kaleoTimerId});
-	}
-
-	/**
-	 * Returns the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching kaleo timer instance token, or <code>null</code> if a matching kaleo timer instance token could not be found
-	 */
-	@Override
-	public KaleoTimerInstanceToken fetchByKITI_KTI(
-		long kaleoInstanceTokenId, long kaleoTimerId, boolean useFinderCache) {
-
-		return _uniquePersistenceFinderByKITI_KTI.fetch(
-			finderCache, new Object[] {kaleoInstanceTokenId, kaleoTimerId},
-			useFinderCache);
-	}
-
-	/**
-	 * Removes the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; from the database.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the kaleo timer instance token that was removed
-	 */
-	@Override
-	public KaleoTimerInstanceToken removeByKITI_KTI(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws NoSuchTimerInstanceTokenException {
-
-		KaleoTimerInstanceToken kaleoTimerInstanceToken = findByKITI_KTI(
-			kaleoInstanceTokenId, kaleoTimerId);
-
-		return remove(kaleoTimerInstanceToken);
-	}
-
-	/**
-	 * Returns the number of kaleo timer instance tokens where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63;.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the number of matching kaleo timer instance tokens
-	 */
-	@Override
-	public int countByKITI_KTI(long kaleoInstanceTokenId, long kaleoTimerId) {
-		return _uniquePersistenceFinderByKITI_KTI.count(
-			finderCache, new Object[] {kaleoInstanceTokenId, kaleoTimerId});
 	}
 
 	private CollectionPersistenceFinder
@@ -766,24 +696,6 @@ public class KaleoTimerInstanceTokenPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					KaleoTimerInstanceToken::getKaleoInstanceId));
 
-		_uniquePersistenceFinderByKITI_KTI = new UniquePersistenceFinder<>(
-			this,
-			createUniqueFinderPath(
-				FINDER_CLASS_NAME_ENTITY, "fetchByKITI_KTI",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"kaleoInstanceTokenId", "kaleoTimerId"}, 0, 0,
-				false, KaleoTimerInstanceToken::getKaleoInstanceTokenId,
-				KaleoTimerInstanceToken::getKaleoTimerId),
-			_SQL_SELECT_KALEOTIMERINSTANCETOKEN_WHERE, "",
-			new FinderColumn<>(
-				"kaleoTimerInstanceToken.", "kaleoInstanceTokenId",
-				FinderColumn.Type.LONG, "=", true, true,
-				KaleoTimerInstanceToken::getKaleoInstanceTokenId),
-			new FinderColumn<>(
-				"kaleoTimerInstanceToken.", "kaleoTimerId",
-				FinderColumn.Type.LONG, "=", true, true,
-				KaleoTimerInstanceToken::getKaleoTimerId));
-
 		_collectionPersistenceFinderByKITI_C =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -936,4 +848,4 @@ public class KaleoTimerInstanceTokenPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-45858856
+// LIFERAY-SERVICE-BUILDER-HASH:506360881

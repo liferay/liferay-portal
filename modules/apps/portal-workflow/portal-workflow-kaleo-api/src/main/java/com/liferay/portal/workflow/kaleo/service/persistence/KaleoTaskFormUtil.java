@@ -280,80 +280,6 @@ public class KaleoTaskFormUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the kaleo task forms where kaleoNodeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.workflow.kaleo.model.impl.KaleoTaskFormModelImpl</code>.
-	 * </p>
-	 *
-	 * @param kaleoNodeId the kaleo node ID
-	 * @param start the lower bound of the range of kaleo task forms
-	 * @param end the upper bound of the range of kaleo task forms (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching kaleo task forms
-	 */
-	public static List<KaleoTaskForm> findByKaleoNodeId(
-		long kaleoNodeId, int start, int end,
-		OrderByComparator<KaleoTaskForm> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByKaleoNodeId(
-			kaleoNodeId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first kaleo task form in the ordered set where kaleoNodeId = &#63;.
-	 *
-	 * @param kaleoNodeId the kaleo node ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo task form
-	 * @throws NoSuchTaskFormException if a matching kaleo task form could not be found
-	 */
-	public static KaleoTaskForm findByKaleoNodeId_First(
-			long kaleoNodeId,
-			OrderByComparator<KaleoTaskForm> orderByComparator)
-		throws com.liferay.portal.workflow.kaleo.exception.
-			NoSuchTaskFormException {
-
-		return getPersistence().findByKaleoNodeId_First(
-			kaleoNodeId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first kaleo task form in the ordered set where kaleoNodeId = &#63;.
-	 *
-	 * @param kaleoNodeId the kaleo node ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo task form, or <code>null</code> if a matching kaleo task form could not be found
-	 */
-	public static KaleoTaskForm fetchByKaleoNodeId_First(
-		long kaleoNodeId, OrderByComparator<KaleoTaskForm> orderByComparator) {
-
-		return getPersistence().fetchByKaleoNodeId_First(
-			kaleoNodeId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the kaleo task forms where kaleoNodeId = &#63; from the database.
-	 *
-	 * @param kaleoNodeId the kaleo node ID
-	 */
-	public static void removeByKaleoNodeId(long kaleoNodeId) {
-		getPersistence().removeByKaleoNodeId(kaleoNodeId);
-	}
-
-	/**
-	 * Returns the number of kaleo task forms where kaleoNodeId = &#63;.
-	 *
-	 * @param kaleoNodeId the kaleo node ID
-	 * @return the number of matching kaleo task forms
-	 */
-	public static int countByKaleoNodeId(long kaleoNodeId) {
-		return getPersistence().countByKaleoNodeId(kaleoNodeId);
-	}
-
-	/**
 	 * Returns an ordered range of all the kaleo task forms where kaleoTaskId = &#63;.
 	 *
 	 * <p>
@@ -652,55 +578,6 @@ public class KaleoTaskFormUtil {
 	}
 
 	/**
-	 * Returns all the kaleo task forms where kaleoNodeId = &#63;.
-	 *
-	 * @param kaleoNodeId the kaleo node ID
-	 * @return the matching kaleo task forms
-	 */
-	public static List<KaleoTaskForm> findByKaleoNodeId(long kaleoNodeId) {
-		return getPersistence().findByKaleoNodeId(kaleoNodeId);
-	}
-
-	/**
-	 * Returns a range of all the kaleo task forms where kaleoNodeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.workflow.kaleo.model.impl.KaleoTaskFormModelImpl</code>.
-	 * </p>
-	 *
-	 * @param kaleoNodeId the kaleo node ID
-	 * @param start the lower bound of the range of kaleo task forms
-	 * @param end the upper bound of the range of kaleo task forms (not inclusive)
-	 * @return the range of matching kaleo task forms
-	 */
-	public static List<KaleoTaskForm> findByKaleoNodeId(
-		long kaleoNodeId, int start, int end) {
-
-		return getPersistence().findByKaleoNodeId(kaleoNodeId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the kaleo task forms where kaleoNodeId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.workflow.kaleo.model.impl.KaleoTaskFormModelImpl</code>.
-	 * </p>
-	 *
-	 * @param kaleoNodeId the kaleo node ID
-	 * @param start the lower bound of the range of kaleo task forms
-	 * @param end the upper bound of the range of kaleo task forms (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching kaleo task forms
-	 */
-	public static List<KaleoTaskForm> findByKaleoNodeId(
-		long kaleoNodeId, int start, int end,
-		OrderByComparator<KaleoTaskForm> orderByComparator) {
-
-		return getPersistence().findByKaleoNodeId(
-			kaleoNodeId, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the kaleo task forms where kaleoTaskId = &#63;.
 	 *
 	 * @param kaleoTaskId the kaleo task ID
@@ -760,4 +637,4 @@ public class KaleoTaskFormUtil {
 	private static volatile KaleoTaskFormPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:326399868
+// LIFERAY-SERVICE-BUILDER-HASH:-564451902

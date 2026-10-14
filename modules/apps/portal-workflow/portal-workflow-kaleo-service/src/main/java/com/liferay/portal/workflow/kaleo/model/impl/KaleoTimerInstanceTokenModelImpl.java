@@ -151,17 +151,11 @@ public class KaleoTimerInstanceTokenModelImpl
 	public static final long KALEOINSTANCETOKENID_COLUMN_BITMASK = 8L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long KALEOTIMERID_COLUMN_BITMASK = 16L;
-
-	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KALEOTIMERINSTANCETOKENID_COLUMN_BITMASK = 32L;
+	public static final long KALEOTIMERINSTANCETOKENID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -733,16 +727,6 @@ public class KaleoTimerInstanceTokenModelImpl
 		}
 
 		_kaleoTimerId = kaleoTimerId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalKaleoTimerId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("kaleoTimerId"));
 	}
 
 	@Override
@@ -1430,4 +1414,4 @@ public class KaleoTimerInstanceTokenModelImpl
 	private KaleoTimerInstanceToken _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1079561463
+// LIFERAY-SERVICE-BUILDER-HASH:-1689332715

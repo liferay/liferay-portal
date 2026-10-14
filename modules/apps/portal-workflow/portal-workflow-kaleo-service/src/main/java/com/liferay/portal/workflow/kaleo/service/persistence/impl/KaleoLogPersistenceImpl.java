@@ -335,95 +335,6 @@ public class KaleoLogPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<KaleoLog, NoSuchLogException>
-		_collectionPersistenceFinderByKaleoTaskInstanceTokenId;
-
-	/**
-	 * Returns an ordered range of all the kaleo logs where kaleoTaskInstanceTokenId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>KaleoLogModelImpl</code>.
-	 * </p>
-	 *
-	 * @param kaleoTaskInstanceTokenId the kaleo task instance token ID
-	 * @param start the lower bound of the range of kaleo logs
-	 * @param end the upper bound of the range of kaleo logs (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching kaleo logs
-	 */
-	@Override
-	public List<KaleoLog> findByKaleoTaskInstanceTokenId(
-		long kaleoTaskInstanceTokenId, int start, int end,
-		OrderByComparator<KaleoLog> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByKaleoTaskInstanceTokenId.find(
-			finderCache, new Object[] {kaleoTaskInstanceTokenId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first kaleo log in the ordered set where kaleoTaskInstanceTokenId = &#63;.
-	 *
-	 * @param kaleoTaskInstanceTokenId the kaleo task instance token ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo log
-	 * @throws NoSuchLogException if a matching kaleo log could not be found
-	 */
-	@Override
-	public KaleoLog findByKaleoTaskInstanceTokenId_First(
-			long kaleoTaskInstanceTokenId,
-			OrderByComparator<KaleoLog> orderByComparator)
-		throws NoSuchLogException {
-
-		return _collectionPersistenceFinderByKaleoTaskInstanceTokenId.findFirst(
-			finderCache, new Object[] {kaleoTaskInstanceTokenId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first kaleo log in the ordered set where kaleoTaskInstanceTokenId = &#63;.
-	 *
-	 * @param kaleoTaskInstanceTokenId the kaleo task instance token ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo log, or <code>null</code> if a matching kaleo log could not be found
-	 */
-	@Override
-	public KaleoLog fetchByKaleoTaskInstanceTokenId_First(
-		long kaleoTaskInstanceTokenId,
-		OrderByComparator<KaleoLog> orderByComparator) {
-
-		return _collectionPersistenceFinderByKaleoTaskInstanceTokenId.
-			fetchFirst(
-				finderCache, new Object[] {kaleoTaskInstanceTokenId},
-				orderByComparator);
-	}
-
-	/**
-	 * Removes all the kaleo logs where kaleoTaskInstanceTokenId = &#63; from the database.
-	 *
-	 * @param kaleoTaskInstanceTokenId the kaleo task instance token ID
-	 */
-	@Override
-	public void removeByKaleoTaskInstanceTokenId(
-		long kaleoTaskInstanceTokenId) {
-
-		_collectionPersistenceFinderByKaleoTaskInstanceTokenId.remove(
-			finderCache, new Object[] {kaleoTaskInstanceTokenId});
-	}
-
-	/**
-	 * Returns the number of kaleo logs where kaleoTaskInstanceTokenId = &#63;.
-	 *
-	 * @param kaleoTaskInstanceTokenId the kaleo task instance token ID
-	 * @return the number of matching kaleo logs
-	 */
-	@Override
-	public int countByKaleoTaskInstanceTokenId(long kaleoTaskInstanceTokenId) {
-		return _collectionPersistenceFinderByKaleoTaskInstanceTokenId.count(
-			finderCache, new Object[] {kaleoTaskInstanceTokenId});
-	}
-
-	private CollectionPersistenceFinder<KaleoLog, NoSuchLogException>
 		_collectionPersistenceFinderByKITI_T;
 
 	/**
@@ -1019,36 +930,6 @@ public class KaleoLogPersistenceImpl
 					"kaleoLog.", "kaleoInstanceId", FinderColumn.Type.LONG, "=",
 					true, true, KaleoLog::getKaleoInstanceId));
 
-		_collectionPersistenceFinderByKaleoTaskInstanceTokenId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByKaleoTaskInstanceTokenId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"kaleoTaskInstanceTokenId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByKaleoTaskInstanceTokenId",
-					new String[] {Long.class.getName()},
-					new String[] {"kaleoTaskInstanceTokenId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByKaleoTaskInstanceTokenId",
-					new String[] {Long.class.getName()},
-					new String[] {"kaleoTaskInstanceTokenId"}, false),
-				_SQL_SELECT_KALEOLOG_WHERE, _SQL_COUNT_KALEOLOG_WHERE,
-				KaleoLogModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
-				new FinderColumn<>(
-					"kaleoLog.", "kaleoTaskInstanceTokenId",
-					FinderColumn.Type.LONG, "=", true, true,
-					KaleoLog::getKaleoTaskInstanceTokenId));
-
 		_collectionPersistenceFinderByKITI_T =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1203,4 +1084,4 @@ public class KaleoLogPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1921025606
+// LIFERAY-SERVICE-BUILDER-HASH:-508438882

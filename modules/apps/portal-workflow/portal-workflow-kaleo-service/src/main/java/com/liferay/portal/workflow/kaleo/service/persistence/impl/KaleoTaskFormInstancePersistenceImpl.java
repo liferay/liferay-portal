@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPe
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
-import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.workflow.kaleo.exception.NoSuchTaskFormInstanceException;
@@ -346,92 +345,6 @@ public class KaleoTaskFormInstancePersistenceImpl
 
 	private CollectionPersistenceFinder
 		<KaleoTaskFormInstance, NoSuchTaskFormInstanceException>
-			_collectionPersistenceFinderByKaleoTaskId;
-
-	/**
-	 * Returns an ordered range of all the kaleo task form instances where kaleoTaskId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>KaleoTaskFormInstanceModelImpl</code>.
-	 * </p>
-	 *
-	 * @param kaleoTaskId the kaleo task ID
-	 * @param start the lower bound of the range of kaleo task form instances
-	 * @param end the upper bound of the range of kaleo task form instances (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching kaleo task form instances
-	 */
-	@Override
-	public List<KaleoTaskFormInstance> findByKaleoTaskId(
-		long kaleoTaskId, int start, int end,
-		OrderByComparator<KaleoTaskFormInstance> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByKaleoTaskId.find(
-			finderCache, new Object[] {kaleoTaskId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first kaleo task form instance in the ordered set where kaleoTaskId = &#63;.
-	 *
-	 * @param kaleoTaskId the kaleo task ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo task form instance
-	 * @throws NoSuchTaskFormInstanceException if a matching kaleo task form instance could not be found
-	 */
-	@Override
-	public KaleoTaskFormInstance findByKaleoTaskId_First(
-			long kaleoTaskId,
-			OrderByComparator<KaleoTaskFormInstance> orderByComparator)
-		throws NoSuchTaskFormInstanceException {
-
-		return _collectionPersistenceFinderByKaleoTaskId.findFirst(
-			finderCache, new Object[] {kaleoTaskId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first kaleo task form instance in the ordered set where kaleoTaskId = &#63;.
-	 *
-	 * @param kaleoTaskId the kaleo task ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo task form instance, or <code>null</code> if a matching kaleo task form instance could not be found
-	 */
-	@Override
-	public KaleoTaskFormInstance fetchByKaleoTaskId_First(
-		long kaleoTaskId,
-		OrderByComparator<KaleoTaskFormInstance> orderByComparator) {
-
-		return _collectionPersistenceFinderByKaleoTaskId.fetchFirst(
-			finderCache, new Object[] {kaleoTaskId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the kaleo task form instances where kaleoTaskId = &#63; from the database.
-	 *
-	 * @param kaleoTaskId the kaleo task ID
-	 */
-	@Override
-	public void removeByKaleoTaskId(long kaleoTaskId) {
-		_collectionPersistenceFinderByKaleoTaskId.remove(
-			finderCache, new Object[] {kaleoTaskId});
-	}
-
-	/**
-	 * Returns the number of kaleo task form instances where kaleoTaskId = &#63;.
-	 *
-	 * @param kaleoTaskId the kaleo task ID
-	 * @return the number of matching kaleo task form instances
-	 */
-	@Override
-	public int countByKaleoTaskId(long kaleoTaskId) {
-		return _collectionPersistenceFinderByKaleoTaskId.count(
-			finderCache, new Object[] {kaleoTaskId});
-	}
-
-	private CollectionPersistenceFinder
-		<KaleoTaskFormInstance, NoSuchTaskFormInstanceException>
 			_collectionPersistenceFinderByKaleoTaskInstanceTokenId;
 
 	/**
@@ -519,68 +432,6 @@ public class KaleoTaskFormInstancePersistenceImpl
 	public int countByKaleoTaskInstanceTokenId(long kaleoTaskInstanceTokenId) {
 		return _collectionPersistenceFinderByKaleoTaskInstanceTokenId.count(
 			finderCache, new Object[] {kaleoTaskInstanceTokenId});
-	}
-
-	private UniquePersistenceFinder
-		<KaleoTaskFormInstance, NoSuchTaskFormInstanceException>
-			_uniquePersistenceFinderByKaleoTaskFormId;
-
-	/**
-	 * Returns the kaleo task form instance where kaleoTaskFormId = &#63; or throws a <code>NoSuchTaskFormInstanceException</code> if it could not be found.
-	 *
-	 * @param kaleoTaskFormId the kaleo task form ID
-	 * @return the matching kaleo task form instance
-	 * @throws NoSuchTaskFormInstanceException if a matching kaleo task form instance could not be found
-	 */
-	@Override
-	public KaleoTaskFormInstance findByKaleoTaskFormId(long kaleoTaskFormId)
-		throws NoSuchTaskFormInstanceException {
-
-		return _uniquePersistenceFinderByKaleoTaskFormId.find(
-			finderCache, new Object[] {kaleoTaskFormId});
-	}
-
-	/**
-	 * Returns the kaleo task form instance where kaleoTaskFormId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param kaleoTaskFormId the kaleo task form ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching kaleo task form instance, or <code>null</code> if a matching kaleo task form instance could not be found
-	 */
-	@Override
-	public KaleoTaskFormInstance fetchByKaleoTaskFormId(
-		long kaleoTaskFormId, boolean useFinderCache) {
-
-		return _uniquePersistenceFinderByKaleoTaskFormId.fetch(
-			finderCache, new Object[] {kaleoTaskFormId}, useFinderCache);
-	}
-
-	/**
-	 * Removes the kaleo task form instance where kaleoTaskFormId = &#63; from the database.
-	 *
-	 * @param kaleoTaskFormId the kaleo task form ID
-	 * @return the kaleo task form instance that was removed
-	 */
-	@Override
-	public KaleoTaskFormInstance removeByKaleoTaskFormId(long kaleoTaskFormId)
-		throws NoSuchTaskFormInstanceException {
-
-		KaleoTaskFormInstance kaleoTaskFormInstance = findByKaleoTaskFormId(
-			kaleoTaskFormId);
-
-		return remove(kaleoTaskFormInstance);
-	}
-
-	/**
-	 * Returns the number of kaleo task form instances where kaleoTaskFormId = &#63;.
-	 *
-	 * @param kaleoTaskFormId the kaleo task form ID
-	 * @return the number of matching kaleo task form instances
-	 */
-	@Override
-	public int countByKaleoTaskFormId(long kaleoTaskFormId) {
-		return _uniquePersistenceFinderByKaleoTaskFormId.count(
-			finderCache, new Object[] {kaleoTaskFormId});
 	}
 
 	public KaleoTaskFormInstancePersistenceImpl() {
@@ -966,34 +817,6 @@ public class KaleoTaskFormInstancePersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					KaleoTaskFormInstance::getKaleoInstanceId));
 
-		_collectionPersistenceFinderByKaleoTaskId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByKaleoTaskId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"kaleoTaskId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByKaleoTaskId", new String[] {Long.class.getName()},
-					new String[] {"kaleoTaskId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByKaleoTaskId", new String[] {Long.class.getName()},
-					new String[] {"kaleoTaskId"}, false),
-				_SQL_SELECT_KALEOTASKFORMINSTANCE_WHERE,
-				_SQL_COUNT_KALEOTASKFORMINSTANCE_WHERE,
-				KaleoTaskFormInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"kaleoTaskFormInstance.", "kaleoTaskId",
-					FinderColumn.Type.LONG, "=", true, true,
-					KaleoTaskFormInstance::getKaleoTaskId));
-
 		_collectionPersistenceFinderByKaleoTaskInstanceTokenId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1024,20 +847,6 @@ public class KaleoTaskFormInstancePersistenceImpl
 					"kaleoTaskFormInstance.", "kaleoTaskInstanceTokenId",
 					FinderColumn.Type.LONG, "=", true, true,
 					KaleoTaskFormInstance::getKaleoTaskInstanceTokenId));
-
-		_uniquePersistenceFinderByKaleoTaskFormId =
-			new UniquePersistenceFinder<>(
-				this,
-				createUniqueFinderPath(
-					FINDER_CLASS_NAME_ENTITY, "fetchByKaleoTaskFormId",
-					new String[] {Long.class.getName()},
-					new String[] {"kaleoTaskFormId"}, 0, 0, false,
-					KaleoTaskFormInstance::getKaleoTaskFormId),
-				_SQL_SELECT_KALEOTASKFORMINSTANCE_WHERE, "",
-				new FinderColumn<>(
-					"kaleoTaskFormInstance.", "kaleoTaskFormId",
-					FinderColumn.Type.LONG, "=", true, true,
-					KaleoTaskFormInstance::getKaleoTaskFormId));
 
 		KaleoTaskFormInstanceUtil.setPersistence(this);
 	}
@@ -1102,4 +911,4 @@ public class KaleoTaskFormInstancePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:429591005
+// LIFERAY-SERVICE-BUILDER-HASH:-1636506429

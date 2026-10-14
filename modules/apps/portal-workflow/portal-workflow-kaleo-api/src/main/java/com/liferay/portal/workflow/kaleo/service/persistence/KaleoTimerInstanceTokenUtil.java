@@ -209,68 +209,6 @@ public class KaleoTimerInstanceTokenUtil {
 	}
 
 	/**
-	 * Returns the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; or throws a <code>NoSuchTimerInstanceTokenException</code> if it could not be found.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the matching kaleo timer instance token
-	 * @throws NoSuchTimerInstanceTokenException if a matching kaleo timer instance token could not be found
-	 */
-	public static KaleoTimerInstanceToken findByKITI_KTI(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws com.liferay.portal.workflow.kaleo.exception.
-			NoSuchTimerInstanceTokenException {
-
-		return getPersistence().findByKITI_KTI(
-			kaleoInstanceTokenId, kaleoTimerId);
-	}
-
-	/**
-	 * Returns the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching kaleo timer instance token, or <code>null</code> if a matching kaleo timer instance token could not be found
-	 */
-	public static KaleoTimerInstanceToken fetchByKITI_KTI(
-		long kaleoInstanceTokenId, long kaleoTimerId, boolean useFinderCache) {
-
-		return getPersistence().fetchByKITI_KTI(
-			kaleoInstanceTokenId, kaleoTimerId, useFinderCache);
-	}
-
-	/**
-	 * Removes the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; from the database.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the kaleo timer instance token that was removed
-	 */
-	public static KaleoTimerInstanceToken removeByKITI_KTI(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws com.liferay.portal.workflow.kaleo.exception.
-			NoSuchTimerInstanceTokenException {
-
-		return getPersistence().removeByKITI_KTI(
-			kaleoInstanceTokenId, kaleoTimerId);
-	}
-
-	/**
-	 * Returns the number of kaleo timer instance tokens where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63;.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the number of matching kaleo timer instance tokens
-	 */
-	public static int countByKITI_KTI(
-		long kaleoInstanceTokenId, long kaleoTimerId) {
-
-		return getPersistence().countByKITI_KTI(
-			kaleoInstanceTokenId, kaleoTimerId);
-	}
-
-	/**
 	 * Returns an ordered range of all the kaleo timer instance tokens where kaleoInstanceTokenId = &#63; and completed = &#63;.
 	 *
 	 * <p>
@@ -508,20 +446,6 @@ public class KaleoTimerInstanceTokenUtil {
 	}
 
 	/**
-	 * Returns the kaleo timer instance token where kaleoInstanceTokenId = &#63; and kaleoTimerId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param kaleoInstanceTokenId the kaleo instance token ID
-	 * @param kaleoTimerId the kaleo timer ID
-	 * @return the matching kaleo timer instance token, or <code>null</code> if a matching kaleo timer instance token could not be found
-	 */
-	public static KaleoTimerInstanceToken fetchByKITI_KTI(
-		long kaleoInstanceTokenId, long kaleoTimerId) {
-
-		return getPersistence().fetchByKITI_KTI(
-			kaleoInstanceTokenId, kaleoTimerId);
-	}
-
-	/**
 	 * Returns all the kaleo timer instance tokens where kaleoInstanceId = &#63;.
 	 *
 	 * @param kaleoInstanceId the kaleo instance ID
@@ -703,4 +627,4 @@ public class KaleoTimerInstanceTokenUtil {
 	private static volatile KaleoTimerInstanceTokenPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2137011285
+// LIFERAY-SERVICE-BUILDER-HASH:1264619442

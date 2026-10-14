@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -260,14 +258,6 @@ public class KaleoTimerInstanceTokenPersistenceTest {
 		_persistence.countByKaleoInstanceId(RandomTestUtil.nextLong());
 
 		_persistence.countByKaleoInstanceId(0L);
-	}
-
-	@Test
-	public void testCountByKITI_KTI() throws Exception {
-		_persistence.countByKITI_KTI(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByKITI_KTI(0L, 0L);
 	}
 
 	@Test
@@ -565,75 +555,6 @@ public class KaleoTimerInstanceTokenPersistenceTest {
 		Assert.assertEquals(0, result.size());
 	}
 
-	@Test
-	public void testResetOriginalValues() throws Exception {
-		KaleoTimerInstanceToken newKaleoTimerInstanceToken =
-			addKaleoTimerInstanceToken();
-
-		_persistence.clearCache();
-
-		_assertOriginalValues(
-			_persistence.findByPrimaryKey(
-				newKaleoTimerInstanceToken.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		KaleoTimerInstanceToken newKaleoTimerInstanceToken =
-			addKaleoTimerInstanceToken();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoTimerInstanceToken.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"kaleoTimerInstanceTokenId",
-				newKaleoTimerInstanceToken.getKaleoTimerInstanceTokenId()));
-
-		List<KaleoTimerInstanceToken> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
-	}
-
-	private void _assertOriginalValues(
-		KaleoTimerInstanceToken kaleoTimerInstanceToken) {
-
-		Assert.assertEquals(
-			Long.valueOf(kaleoTimerInstanceToken.getKaleoInstanceTokenId()),
-			ReflectionTestUtil.<Long>invoke(
-				kaleoTimerInstanceToken, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "kaleoInstanceTokenId"));
-		Assert.assertEquals(
-			Long.valueOf(kaleoTimerInstanceToken.getKaleoTimerId()),
-			ReflectionTestUtil.<Long>invoke(
-				kaleoTimerInstanceToken, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "kaleoTimerId"));
-	}
-
 	protected KaleoTimerInstanceToken addKaleoTimerInstanceToken()
 		throws Exception {
 
@@ -702,4 +623,4 @@ public class KaleoTimerInstanceTokenPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2024909927
+// LIFERAY-SERVICE-BUILDER-HASH:824983417
