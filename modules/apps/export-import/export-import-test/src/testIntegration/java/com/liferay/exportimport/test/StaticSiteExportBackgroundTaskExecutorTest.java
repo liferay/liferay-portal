@@ -45,7 +45,10 @@ import com.liferay.site.staticexport.background.task.StaticSiteExportBackgroundT
 
 import java.io.Serializable;
 
+import java.time.Instant;
+
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -85,10 +88,12 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 
 		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
-		Map<String, String> zipEntries = _getZipEntries(
+		BackgroundTask backgroundTask = _addBackgroundTask(
 			HashMapBuilder.<String, Serializable>put(
 				"groupId", _group.getGroupId()
 			).build());
+
+		Map<String, String> zipEntries = _getZipEntries(backgroundTask);
 
 		String path = "en" + layout.getFriendlyURL() + ".html";
 
@@ -102,6 +107,17 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 		Assert.assertEquals(
 			"[]",
 			String.valueOf(manifestJSONObject.getJSONArray("displayPages")));
+
+		Date createDate = backgroundTask.getCreateDate();
+
+		Instant instant = createDate.toInstant();
+
+		Assert.assertEquals(
+			instant.toString(), manifestJSONObject.getString("exportDate"));
+
+		Assert.assertEquals(
+			backgroundTask.getBackgroundTaskId(),
+			manifestJSONObject.getLong("exportProcessId"));
 		Assert.assertEquals(
 			"[\"en_US\"]",
 			String.valueOf(manifestJSONObject.getJSONArray("languageIds")));
@@ -132,11 +148,12 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
 		Map<String, String> zipEntries = _getZipEntries(
-			HashMapBuilder.<String, Serializable>put(
-				"groupId", _group.getGroupId()
-			).put(
-				"languageIds", new String[] {"en_US", "es_ES"}
-			).build());
+			_addBackgroundTask(
+				HashMapBuilder.<String, Serializable>put(
+					"groupId", _group.getGroupId()
+				).put(
+					"languageIds", new String[] {"en_US", "es_ES"}
+				).build()));
 
 		String englishPath = "en" + layout.getFriendlyURL() + ".html";
 		String spanishPath = "es" + layout.getFriendlyURL() + ".html";
@@ -187,11 +204,12 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 			layout2.fetchDraftLayout(), layout2);
 
 		Map<String, String> zipEntries = _getZipEntries(
-			HashMapBuilder.<String, Serializable>put(
-				"groupId", _group.getGroupId()
-			).put(
-				"layoutIds", new long[] {layout2.getLayoutId()}
-			).build());
+			_addBackgroundTask(
+				HashMapBuilder.<String, Serializable>put(
+					"groupId", _group.getGroupId()
+				).put(
+					"layoutIds", new long[] {layout2.getLayoutId()}
+				).build()));
 
 		JSONObject manifestJSONObject = _jsonFactory.createJSONObject(
 			zipEntries.get("manifest.json"));
@@ -242,9 +260,10 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 		ContentLayoutTestUtil.publishLayout(draftLayout, contentLayout);
 
 		Map<String, String> zipEntries = _getZipEntries(
-			HashMapBuilder.<String, Serializable>put(
-				"groupId", _group.getGroupId()
-			).build());
+			_addBackgroundTask(
+				HashMapBuilder.<String, Serializable>put(
+					"groupId", _group.getGroupId()
+				).build()));
 
 		JSONObject manifestJSONObject = _jsonFactory.createJSONObject(
 			zipEntries.get("manifest.json"));
@@ -274,11 +293,9 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 			String.valueOf(manifestJSONObject.getJSONArray("displayPages")));
 	}
 
-	private Map<String, String> _getZipEntries(
+	private BackgroundTask _addBackgroundTask(
 			Map<String, Serializable> taskContextMap)
 		throws Exception {
-
-		Map<String, String> zipEntries = new HashMap<>();
 
 		BackgroundTask backgroundTask =
 			_backgroundTaskManager.addBackgroundTask(
@@ -288,8 +305,14 @@ public class StaticSiteExportBackgroundTaskExecutorTest {
 					STATIC_SITE_EXPORT_BACKGROUND_TASK_EXECUTOR,
 				taskContextMap, new ServiceContext());
 
-		backgroundTask = _backgroundTaskManager.fetchBackgroundTask(
+		return _backgroundTaskManager.fetchBackgroundTask(
 			backgroundTask.getBackgroundTaskId());
+	}
+
+	private Map<String, String> _getZipEntries(BackgroundTask backgroundTask)
+		throws Exception {
+
+		Map<String, String> zipEntries = new HashMap<>();
 
 		List<FileEntry> fileEntries =
 			backgroundTask.getAttachmentsFileEntries();
