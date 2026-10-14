@@ -462,24 +462,6 @@ public class StyleBookEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_D() throws Exception {
-		_persistence.countByG_D(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
-
-		_persistence.countByG_D(0L, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByG_D_Head() throws Exception {
-		_persistence.countByG_D_Head(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean());
-
-		_persistence.countByG_D_Head(
-			0L, RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean());
-	}
-
-	@Test
 	public void testCountByG_N() throws Exception {
 		_persistence.countByG_N(RandomTestUtil.nextLong(), "");
 
@@ -1057,4 +1039,4 @@ public class StyleBookEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-357568069
+// LIFERAY-SERVICE-BUILDER-HASH:-425048980
