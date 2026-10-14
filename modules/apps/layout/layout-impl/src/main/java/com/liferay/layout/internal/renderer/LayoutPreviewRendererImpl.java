@@ -98,6 +98,7 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 		LayoutStructure originalLayoutStructure =
 			(LayoutStructure)httpServletRequest.getAttribute(
 				LayoutWebKeys.LAYOUT_STRUCTURE);
+		Object originalLocale = httpServletRequest.getAttribute(WebKeys.LOCALE);
 		Object originalOutputData = httpServletRequest.getAttribute(
 			WebKeys.OUTPUT_DATA);
 		boolean originalPortletDecorate = GetterUtil.getBoolean(
@@ -122,6 +123,7 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			httpServletRequest.setAttribute(
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
 				new long[] {segmentsExperienceId});
+			httpServletRequest.setAttribute(WebKeys.LOCALE, locale);
 			httpServletRequest.setAttribute(WebKeys.OUTPUT_DATA, null);
 			httpServletRequest.setAttribute(
 				WebKeys.PORTLET_DECORATE, Boolean.FALSE);
@@ -193,6 +195,7 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
 				originalSegmentsExperienceIds);
 			httpServletRequest.setAttribute(WebKeys.LAYOUT, originalLayout);
+			httpServletRequest.setAttribute(WebKeys.LOCALE, originalLocale);
 			httpServletRequest.setAttribute(
 				WebKeys.OUTPUT_DATA, originalOutputData);
 			httpServletRequest.setAttribute(
