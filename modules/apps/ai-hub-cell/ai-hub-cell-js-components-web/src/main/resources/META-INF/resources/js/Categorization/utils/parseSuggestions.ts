@@ -30,10 +30,10 @@ export function stripCodeFences(text: string): string {
 function parseCategories(
 	rawSuggestions: RawSuggestion[],
 	candidateCategories: CandidateCategory[],
-	excludedCategoryIds: number[],
+	appliedCategoryIds: number[],
 	count: number
 ): Suggestion[] {
-	const excluded = new Set(excludedCategoryIds);
+	const applied = new Set(appliedCategoryIds);
 
 	const candidatesById = new Map<number, CandidateCategory>();
 
@@ -57,7 +57,7 @@ function parseCategories(
 		if (
 			id === undefined ||
 			!Number.isInteger(id) ||
-			excluded.has(id) ||
+			applied.has(id) ||
 			seen.has(id)
 		) {
 			return;
@@ -79,11 +79,11 @@ function parseCategories(
 
 function parseTags(
 	rawSuggestions: RawSuggestion[],
-	excludedTags: string[],
+	appliedTags: string[],
 	count: number
 ): Suggestion[] {
-	const excluded = new Set(
-		excludedTags.map((excludedTag) => excludedTag.toLowerCase())
+	const applied = new Set(
+		appliedTags.map((appliedTag) => appliedTag.toLowerCase())
 	);
 
 	const seen = new Set<string>();
@@ -98,7 +98,7 @@ function parseTags(
 
 		if (
 			!name ||
-			excluded.has(name.toLowerCase()) ||
+			applied.has(name.toLowerCase()) ||
 			seen.has(name.toLowerCase())
 		) {
 			return;
@@ -148,17 +148,10 @@ export function parseSuggestions(
 		return parseCategories(
 			sorted,
 			context.candidateCategories ?? [],
-			[
-				...(context.appliedCategoryIds ?? []),
-				...(context.excludedCategoryIds ?? []),
-			],
+			context.appliedCategoryIds ?? [],
 			count
 		);
 	}
 
-	return parseTags(
-		sorted,
-		[...(context.appliedTags ?? []), ...(context.excludedTags ?? [])],
-		count
-	);
+	return parseTags(sorted, context.appliedTags ?? [], count);
 }

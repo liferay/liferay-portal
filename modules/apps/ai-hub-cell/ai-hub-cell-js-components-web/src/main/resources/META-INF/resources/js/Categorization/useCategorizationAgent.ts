@@ -33,7 +33,6 @@ function toRequestContext(
 	if (agent === ECategorizationAgent.AUTO_CATEGORIZE) {
 		const appliedCategoryIds = new Set(context.appliedCategoryIds ?? []);
 		const candidateCategories = context.candidateCategories ?? [];
-		const excludedCategoryIds = new Set(context.excludedCategoryIds ?? []);
 
 		requestContext.appliedCategories = JSON.stringify(
 			candidateCategories.filter((candidateCategory) =>
@@ -43,16 +42,12 @@ function toRequestContext(
 		requestContext.candidateCategories = JSON.stringify(
 			candidateCategories.filter(
 				(candidateCategory) =>
-					!appliedCategoryIds.has(candidateCategory.id) &&
-					!excludedCategoryIds.has(candidateCategory.id)
+					!appliedCategoryIds.has(candidateCategory.id)
 			)
 		);
 	}
 	else {
-		const appliedTags = [
-			...(context.appliedTags ?? []),
-			...(context.excludedTags ?? []),
-		];
+		const appliedTags = context.appliedTags ?? [];
 
 		const lowerCaseAppliedTags = new Set(
 			appliedTags.map((appliedTag) => appliedTag.toLowerCase())
@@ -340,21 +335,25 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 			}
 
 			if (agent === ECategorizationAgent.AUTO_CATEGORIZE) {
+				const excludedCategoryIds = new Set(
+					excludedSuggestions.map((suggestion) => suggestion.id)
+				);
+
 				run({
 					...context,
-					excludedCategoryIds: [
-						...(context.excludedCategoryIds ?? []),
-						...excludedSuggestions
-							.map((suggestion) => suggestion.id)
-							.filter((id): id is number => id !== undefined),
-					],
+					candidateCategories: (
+						context.candidateCategories ?? []
+					).filter(
+						(candidateCategory) =>
+							!excludedCategoryIds.has(candidateCategory.id)
+					),
 				});
 			}
 			else {
 				run({
 					...context,
-					excludedTags: [
-						...(context.excludedTags ?? []),
+					appliedTags: [
+						...(context.appliedTags ?? []),
 						...excludedSuggestions.map(
 							(suggestion) => suggestion.name
 						),

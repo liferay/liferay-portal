@@ -30,8 +30,6 @@ export interface CategorizationContext {
 	candidateCategories?: CandidateCategory[];
 	content: string;
 	count?: number;
-	excludedCategoryIds?: number[];
-	excludedTags?: string[];
 	existingTags?: string[];
 }
 
