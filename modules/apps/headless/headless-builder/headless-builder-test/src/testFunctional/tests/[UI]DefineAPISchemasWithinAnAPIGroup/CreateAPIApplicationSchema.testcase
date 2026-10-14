@@ -127,21 +127,6 @@ definition {
 	}
 
 	@priority = 3
-	test CannotCreateSchemaWithDescriptionSizeExceeded {
-		task ("When I fill and public in description field with 281 characters") {
-			APIBuilderUI.createAPISchema(
-				confirmCreation = "true",
-				fieldDescription = "fdsfsdfkjsijokersderedlakstiowerichaehtsljlncslmtafdsfsdfkjsijokersderedlakstiowerichaehtsljlncslmtafdsfsdfkjsijokersderedlakstiowerichaehtsljlncslmtafdsfsdfkjsijokersderedlakstiowerichaehtsljlncslmtafdsfsdfkjsijokersderedlakstiowerichaehtsljlncslmtafdsfsdfkjsijokersderedlakstiowq",
-				name = "testSchema",
-				objectDefinitionName = "APIApplication");
-		}
-
-		task ("Then error message 'Object entry value exceeds the maximum length of 280 characters for object field description' blocks schema from being created") {
-			Alert.viewErrorMessage(errorMessage = "Error:Object entry value exceeds the maximum length of 280 characters for object field");
-		}
-	}
-
-	@priority = 3
 	test CanSeeDescriptionOfDescriptionField {
 		task ("When I click Add New Schema") {
 			Click(locator1 = "APIBuilder#ADD_NEW_SCHEMA");

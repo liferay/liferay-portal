@@ -5,8 +5,10 @@
 
 package com.liferay.headless.builder.model.listener.test;
 
+import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.test.BaseTestCase;
 import com.liferay.headless.builder.test.util.APIApplicationTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
@@ -15,6 +17,7 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -130,6 +133,45 @@ public class APIApplicationPublisherObjectEntryModelListenerTest
 
 		APIApplicationTestUtil.assertDeployedAPIApplication(baseURL);
 
+		String apiEndpointExternalReferenceCode = RandomTestUtil.randomString();
+
+		assertSuccessfulJSONObject(
+			JSONUtil.put(
+				"externalReferenceCode", apiEndpointExternalReferenceCode
+			).put(
+				"httpMethod", "get"
+			).put(
+				"name", "name"
+			).put(
+				"path",
+				StringPool.FORWARD_SLASH +
+					StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).put(
+				"r_apiApplicationToAPIEndpoints_l_apiApplicationERC",
+				externalReferenceCode
+			).put(
+				"retrieveType",
+				APIApplication.Endpoint.RetrieveType.COLLECTION.getValue()
+			).put(
+				"scope", APIApplication.Endpoint.Scope.COMPANY.getValue()
+			).toString(),
+			"headless-builder/endpoints", Http.Method.POST);
+
+		String apiSchemaExternalReferenceCode = RandomTestUtil.randomString();
+
+		assertSuccessfulJSONObject(
+			JSONUtil.put(
+				"externalReferenceCode", apiSchemaExternalReferenceCode
+			).put(
+				"mainObjectDefinitionERC", "L_API_APPLICATION"
+			).put(
+				"name", "name"
+			).put(
+				"r_apiApplicationToAPISchemas_l_apiApplicationERC",
+				externalReferenceCode
+			).toString(),
+			"headless-builder/schemas", Http.Method.POST);
+
 		assertSuccessfulJSONObject(
 			null,
 			"headless-builder/applications/by-external-reference-code/" +
@@ -137,6 +179,21 @@ public class APIApplicationPublisherObjectEntryModelListenerTest
 			Http.Method.DELETE);
 
 		APIApplicationTestUtil.assertNotDeployedAPIApplication(baseURL);
+
+		Assert.assertEquals(
+			404,
+			HTTPTestUtil.invokeToHttpCode(
+				null,
+				"headless-builder/endpoints/by-external-reference-code/" +
+					apiEndpointExternalReferenceCode,
+				Http.Method.GET));
+		Assert.assertEquals(
+			404,
+			HTTPTestUtil.invokeToHttpCode(
+				null,
+				"headless-builder/schemas/by-external-reference-code/" +
+					apiSchemaExternalReferenceCode,
+				Http.Method.GET));
 	}
 
 	@Test
@@ -160,6 +217,13 @@ public class APIApplicationPublisherObjectEntryModelListenerTest
 			Http.Method.PATCH);
 
 		APIApplicationTestUtil.assertNotDeployedAPIApplication(baseURL);
+
+		Assert.assertFalse(
+			HTTPTestUtil.invokeToJSONObject(
+				null, "openapi", Http.Method.GET
+			).has(
+				"/c/" + baseURL
+			));
 	}
 
 	private String _getAPIApplicationJSONString(

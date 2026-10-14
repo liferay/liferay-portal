@@ -245,22 +245,6 @@ definition {
 		}
 	}
 
-	@priority = 3
-	test CanValidateMaximumDescription {
-		task ("When I create an endpoint with description Field contains 281 characters") {
-			APIBuilderUI.createAPIEndpoint(
-				description = " Description default Description default Description default Description default Description default Description default Description default Description default Description default Description default Description default Description default Description default Description default D",
-				method = "GET",
-				path = "testendpoint2",
-				retrieveType = "Collection",
-				scope = "Company");
-		}
-
-		task ("Then I can see error message about maximum length of 280 characters blocks endpoint from being created") {
-			Alert.viewErrorMessage(errorMessage = "Error:Object entry value exceeds the maximum length of 280 characters for object field \"description\"");
-		}
-	}
-
 	@priority = 4
 	test EndpointFieldsAreVisibleInCreationModal {
 		task ("Then 'Add API Enpoint' and plus buttons are present") {

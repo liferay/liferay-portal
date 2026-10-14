@@ -255,6 +255,37 @@ public class APIEndpointRelevantObjectEntryModelListenerTest
 				"status", "BAD_REQUEST"
 			).put(
 				"title",
+				"Object entry value exceeds the maximum length of 280 " +
+					"characters for object field \"description\""
+			).toString(),
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"description", RandomTestUtil.randomString(281)
+				).put(
+					"httpMethod", "get"
+				).put(
+					"name", RandomTestUtil.randomString()
+				).put(
+					"path",
+					StringPool.FORWARD_SLASH +
+						StringUtil.toLowerCase(RandomTestUtil.randomString())
+				).put(
+					"r_apiApplicationToAPIEndpoints_l_apiApplicationId",
+					apiApplicationJSONObject1.getLong("id")
+				).put(
+					"retrieveType",
+					APIApplication.Endpoint.RetrieveType.COLLECTION.getValue()
+				).put(
+					"scope", APIApplication.Endpoint.Scope.COMPANY.getValue()
+				).toString(),
+				"headless-builder/endpoints", Http.Method.POST
+			).toString(),
+			JSONCompareMode.STRICT);
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"status", "BAD_REQUEST"
+			).put(
+				"title",
 				"Path parameter cannot be set without a response schema."
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(

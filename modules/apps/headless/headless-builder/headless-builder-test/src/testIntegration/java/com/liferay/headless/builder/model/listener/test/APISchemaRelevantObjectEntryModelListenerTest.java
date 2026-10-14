@@ -141,6 +141,26 @@ public class APISchemaRelevantObjectEntryModelListenerTest
 			"An API schema must be related to an API application.",
 			jsonObject1.get("title"));
 
+		jsonObject1 = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"description", RandomTestUtil.randomString(281)
+			).put(
+				"mainObjectDefinitionERC",
+				_objectDefinition.getExternalReferenceCode()
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"r_apiApplicationToAPISchemas_l_apiApplicationId",
+				apiApplicationJSONObject.getLong("id")
+			).toString(),
+			"headless-builder/schemas", Http.Method.POST);
+
+		Assert.assertEquals("BAD_REQUEST", jsonObject1.get("status"));
+		Assert.assertEquals(
+			"Object entry value exceeds the maximum length of 280 characters " +
+				"for object field \"description\"",
+			jsonObject1.get("title"));
+
 		JSONObject jsonObject2 = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				"mainObjectDefinitionERC",
