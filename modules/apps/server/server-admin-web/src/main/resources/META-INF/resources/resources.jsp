@@ -11,10 +11,10 @@
 <liferay-ui:error exception="<%= CaptchaException.class %>" message="captcha-verification-failed" />
 <liferay-ui:error exception="<%= CaptchaTextException.class %>" message="text-verification-failed" />
 
-<c:if test="<%= SessionErrors.contains(renderRequest, VerifyException.class.getName()) %>">
+<c:if test="<%= SessionErrors.contains(renderRequest, VerifyException.class) %>">
 
 	<%
-	VerifyException verifyException = (VerifyException)SessionErrors.get(renderRequest, VerifyException.class.getName());
+	VerifyException verifyException = (VerifyException)SessionErrors.get(renderRequest, VerifyException.class);
 	%>
 
 	<clay:alert
