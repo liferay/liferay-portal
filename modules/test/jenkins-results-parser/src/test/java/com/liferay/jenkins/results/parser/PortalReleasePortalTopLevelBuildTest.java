@@ -124,7 +124,7 @@ public class PortalReleasePortalTopLevelBuildTest
 
 	@Test
 	public void testGetPortalReleaseStandaloneFailure() {
-		String[] releaseFileParameterNames = {
+		String[] nonTomcatURLParameterNames = {
 			"TEST_PORTAL_RELEASE_DEPENDENCIES_URL",
 			"TEST_PORTAL_RELEASE_OSGI_URL", "TEST_PORTAL_RELEASE_SQL_URL",
 			"TEST_PORTAL_RELEASE_TOOLS_URL", "TEST_PORTAL_RELEASE_WAR_URL"
@@ -137,27 +137,27 @@ public class PortalReleasePortalTopLevelBuildTest
 			JenkinsResultsParserUtil.combine(
 				"A standalone release takes only ",
 				"TEST_PORTAL_RELEASE_TOMCAT_URL. Remove ",
-				JenkinsResultsParserUtil.join(", ", releaseFileParameterNames),
+				JenkinsResultsParserUtil.join(", ", nonTomcatURLParameterNames),
 				"."),
-			releaseFileParameterNames, tomcatURLString);
+			tomcatURLString, nonTomcatURLParameterNames);
 
-		for (String releaseFileParameterName : releaseFileParameterNames) {
+		for (String nonTomcatURLParameterName : nonTomcatURLParameterNames) {
 			_testGetPortalReleaseStandaloneFailure(
 				JenkinsResultsParserUtil.combine(
 					"A standalone release takes only ",
 					"TEST_PORTAL_RELEASE_TOMCAT_URL. Remove ",
-					releaseFileParameterName, "."),
-				new String[] {releaseFileParameterName}, tomcatURLString);
+					nonTomcatURLParameterName, "."),
+				tomcatURLString, nonTomcatURLParameterName);
 		}
 
 		_testGetPortalReleaseStandaloneFailure(
 			"TEST_PORTAL_RELEASE_TOMCAT_URL is required when " +
 				"TEST_PORTAL_RELEASE_STANDALONE is true",
-			new String[0], RandomTestUtil.randomString());
+			RandomTestUtil.randomString());
 		_testGetPortalReleaseStandaloneFailure(
 			"TEST_PORTAL_RELEASE_TOMCAT_URL is required when " +
 				"TEST_PORTAL_RELEASE_STANDALONE is true",
-			new String[0], null);
+			null);
 
 		String regularTomcatURLString = JenkinsResultsParserUtil.combine(
 			"https://", RandomTestUtil.randomString(),
@@ -169,7 +169,7 @@ public class PortalReleasePortalTopLevelBuildTest
 				". The file name must match liferay-dxp-tomcat-<version>-",
 				"<build profile>-<timestamp>.(7z|tar.gz|zip), where the ",
 				"build profile ends in -standalone."),
-			new String[0], regularTomcatURLString);
+			regularTomcatURLString);
 	}
 
 	private PortalReleasePortalTopLevelBuild
@@ -251,20 +251,20 @@ public class PortalReleasePortalTopLevelBuildTest
 	}
 
 	private void _testGetPortalReleaseStandaloneFailure(
-		String expectedMessage, String[] releaseFileParameterNames,
-		String tomcatURLString) {
+		String expectedMessage, String tomcatURLString,
+		String... nonTomcatURLParameterNames) {
 
 		PortalReleasePortalTopLevelBuild portalReleasePortalTopLevelBuild =
 			_mockPortalReleasePortalTopLevelBuild(
 				Mockito.mock(BuildDatabase.class));
 
-		for (String releaseFileParameterName : releaseFileParameterNames) {
+		for (String nonTomcatURLParameterName : nonTomcatURLParameterNames) {
 			Mockito.doReturn(
 				"https://" + RandomTestUtil.randomString()
 			).when(
 				portalReleasePortalTopLevelBuild
 			).getParameterValue(
-				releaseFileParameterName
+				nonTomcatURLParameterName
 			);
 		}
 

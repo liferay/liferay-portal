@@ -265,31 +265,23 @@ public class PortalReleasePortalTopLevelBuild
 					"TEST_PORTAL_RELEASE_STANDALONE is true");
 		}
 
-		List<String> releaseFileParameterNames = new ArrayList<>();
+		List<String> nonTomcatURLParameterNames = new ArrayList<>();
 
-		for (String parameterName :
-				new String[] {
-					"TEST_PORTAL_RELEASE_DEPENDENCIES_URL",
-					"TEST_PORTAL_RELEASE_OSGI_URL",
-					"TEST_PORTAL_RELEASE_SQL_URL",
-					"TEST_PORTAL_RELEASE_TOOLS_URL",
-					"TEST_PORTAL_RELEASE_WAR_URL"
-				}) {
-
+		for (String parameterName : _NON_TOMCAT_URL_PARAMETER_NAMES) {
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(
 					getParameterValue(parameterName))) {
 
-				releaseFileParameterNames.add(parameterName);
+				nonTomcatURLParameterNames.add(parameterName);
 			}
 		}
 
-		if (!releaseFileParameterNames.isEmpty()) {
+		if (!nonTomcatURLParameterNames.isEmpty()) {
 			throw new RuntimeException(
 				JenkinsResultsParserUtil.combine(
 					"A standalone release takes only ",
 					"TEST_PORTAL_RELEASE_TOMCAT_URL. Remove ",
 					JenkinsResultsParserUtil.join(
-						", ", releaseFileParameterNames),
+						", ", nonTomcatURLParameterNames),
 					"."));
 		}
 
@@ -318,6 +310,12 @@ public class PortalReleasePortalTopLevelBuild
 			throw new RuntimeException(malformedURLException);
 		}
 	}
+
+	private static final String[] _NON_TOMCAT_URL_PARAMETER_NAMES = {
+		"TEST_PORTAL_RELEASE_DEPENDENCIES_URL", "TEST_PORTAL_RELEASE_OSGI_URL",
+		"TEST_PORTAL_RELEASE_SQL_URL", "TEST_PORTAL_RELEASE_TOOLS_URL",
+		"TEST_PORTAL_RELEASE_WAR_URL"
+	};
 
 	private static final Pattern _pattern = Pattern.compile(
 		"(?<major>\\d)\\.(?<minor>\\d)\\.(?<fix>\\d+)");
