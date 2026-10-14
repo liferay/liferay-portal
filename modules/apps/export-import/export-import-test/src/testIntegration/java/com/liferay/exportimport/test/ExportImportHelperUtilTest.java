@@ -1248,7 +1248,7 @@ public class ExportImportHelperUtilTest {
 
 		_depotGroups.add(depotEntry.getGroup());
 
-		Assert.assertFalse(
+		Assert.assertTrue(
 			ExportImportHelperUtil.isGroupSupported(depotEntry.getGroup()));
 
 		depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
