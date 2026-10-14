@@ -11,12 +11,13 @@ package com.liferay.exportimport.kernel.lar;
 public class ExportImportGroup {
 
 	public ExportImportGroup(
-		int childGroupsCount, boolean depot, String descriptiveName,
-		String externalReferenceCode, long groupId,
+		int childGroupsCount, boolean depot, int depotType,
+		String descriptiveName, String externalReferenceCode, long groupId,
 		String parentGroupExternalReferenceCode, String path) {
 
 		_childGroupsCount = childGroupsCount;
 		_depot = depot;
+		_depotType = depotType;
 		_descriptiveName = descriptiveName;
 		_externalReferenceCode = externalReferenceCode;
 		_groupId = groupId;
@@ -30,12 +31,16 @@ public class ExportImportGroup {
 		String parentGroupExternalReferenceCode, String path) {
 
 		this(
-			childGroupsCount, false, descriptiveName, externalReferenceCode,
+			childGroupsCount, false, 0, descriptiveName, externalReferenceCode,
 			groupId, parentGroupExternalReferenceCode, path);
 	}
 
 	public int getChildGroupsCount() {
 		return _childGroupsCount;
+	}
+
+	public int getDepotType() {
+		return _depotType;
 	}
 
 	public String getDescriptiveName() {
@@ -64,6 +69,7 @@ public class ExportImportGroup {
 
 	private final int _childGroupsCount;
 	private final boolean _depot;
+	private final int _depotType;
 	private final String _descriptiveName;
 	private final String _externalReferenceCode;
 	private final long _groupId;
