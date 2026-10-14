@@ -519,11 +519,6 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	@Override
-	public List<FragmentEntryLink> getFragmentEntryLinks(String rendererKey) {
-		return fragmentEntryLinkPersistence.findByRendererKey(rendererKey);
-	}
-
-	@Override
 	public List<FragmentEntryLink> getFragmentEntryLinksByFragmentEntry(
 			long groupId, FragmentEntry fragmentEntry)
 		throws PortalException {
