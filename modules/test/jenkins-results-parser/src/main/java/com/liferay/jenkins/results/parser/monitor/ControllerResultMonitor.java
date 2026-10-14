@@ -110,8 +110,9 @@ public class ControllerResultMonitor extends BaseMonitor {
 			messages.add(
 				JenkinsResultsParserUtil.combine(
 					"Unable to find a result for job ", _jobName, " in its ",
-					"last ", String.valueOf(buildsJSONArray.length()),
-					" builds"));
+					"last ", String.valueOf(buildsJSONArray.length()), " ",
+					JenkinsResultsParserUtil.getNounForm(
+						buildsJSONArray.length(), "builds", "build")));
 
 			statuses.add(MonitorResult.Status.UNKNOWN);
 		}
