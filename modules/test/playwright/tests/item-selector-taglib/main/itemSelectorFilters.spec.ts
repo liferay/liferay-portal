@@ -137,20 +137,26 @@ test(
 		// The default Current Site scope shows only the site image, not the
 		// connected asset library's image
 
-		await expect(iframe.getByTitle(siteImage)).toBeVisible();
+		await expect(iframe.getByText(siteImage, {exact: true})).toBeVisible();
 
-		await expect(iframe.getByTitle(libraryImage)).toBeHidden();
+		await expect(
+			iframe.getByText(libraryImage, {exact: true})
+		).toBeHidden();
 
 		// The Everywhere filter reveals the asset library's image and its
 		// folder, which holds the third image
 
 		await setScopeFilter(iframe, 'Everywhere');
 
-		await expect(iframe.getByTitle(libraryImage)).toBeVisible();
+		await expect(
+			iframe.getByText(libraryImage, {exact: true})
+		).toBeVisible();
 
 		await iframe.getByText(folderName, {exact: true}).click();
 
-		await expect(iframe.getByTitle(libraryFolderImage)).toBeVisible();
+		await expect(
+			iframe.getByText(libraryFolderImage, {exact: true})
+		).toBeVisible();
 	}
 );
 
@@ -217,9 +223,11 @@ test('Documents show their originating location in every display style when brow
 	await setScopeFilter(iframe, 'Everywhere');
 
 	// Each entry, including the folder, reports its site or asset library
-	// as its location in the cards, list, and table views
+	// as its location in the table, list, and cards views. The display style
+	// is saved per user, so end on the default cards view to leave it as
+	// other specs expect
 
-	for (const displayStyle of ['Cards', 'List', 'Table']) {
+	for (const displayStyle of ['Table', 'List', 'Cards']) {
 		await setDisplayStyle(iframe, displayStyle);
 
 		for (const location of [site.name, depotName]) {
