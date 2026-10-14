@@ -244,14 +244,6 @@ public class PatcherProjectVersionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByP_R() throws Exception {
-		_persistence.countByP_R(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByP_R(0L, 0L);
-	}
-
-	@Test
 	public void testCountByP_RN() throws Exception {
 		_persistence.countByP_RN(RandomTestUtil.nextLong(), "");
 
@@ -650,4 +642,4 @@ public class PatcherProjectVersionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1595521562
+// LIFERAY-SERVICE-BUILDER-HASH:-472650052

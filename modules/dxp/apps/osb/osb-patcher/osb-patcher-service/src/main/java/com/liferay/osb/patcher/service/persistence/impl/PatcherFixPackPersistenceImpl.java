@@ -268,124 +268,6 @@ public class PatcherFixPackPersistenceImpl
 
 	private FilterCollectionPersistenceFinder
 		<PatcherFixPack, NoSuchPatcherFixPackException>
-			_collectionPersistenceFinderByVersion;
-
-	/**
-	 * Returns an ordered range of all the patcher fix packs where version = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixPackModelImpl</code>.
-	 * </p>
-	 *
-	 * @param version the version
-	 * @param start the lower bound of the range of patcher fix packs
-	 * @param end the upper bound of the range of patcher fix packs (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching patcher fix packs
-	 */
-	@Override
-	public List<PatcherFixPack> findByVersion(
-		int version, int start, int end,
-		OrderByComparator<PatcherFixPack> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByVersion.find(
-			finderCache, new Object[] {version}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first patcher fix pack in the ordered set where version = &#63;.
-	 *
-	 * @param version the version
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching patcher fix pack
-	 * @throws NoSuchPatcherFixPackException if a matching patcher fix pack could not be found
-	 */
-	@Override
-	public PatcherFixPack findByVersion_First(
-			int version, OrderByComparator<PatcherFixPack> orderByComparator)
-		throws NoSuchPatcherFixPackException {
-
-		return _collectionPersistenceFinderByVersion.findFirst(
-			finderCache, new Object[] {version}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first patcher fix pack in the ordered set where version = &#63;.
-	 *
-	 * @param version the version
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching patcher fix pack, or <code>null</code> if a matching patcher fix pack could not be found
-	 */
-	@Override
-	public PatcherFixPack fetchByVersion_First(
-		int version, OrderByComparator<PatcherFixPack> orderByComparator) {
-
-		return _collectionPersistenceFinderByVersion.fetchFirst(
-			finderCache, new Object[] {version}, orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the patcher fix packs that the user has permissions to view where version = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixPackModelImpl</code>.
-	 * </p>
-	 *
-	 * @param version the version
-	 * @param start the lower bound of the range of patcher fix packs
-	 * @param end the upper bound of the range of patcher fix packs (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching patcher fix packs that the user has permission to view
-	 */
-	@Override
-	public List<PatcherFixPack> filterFindByVersion(
-		int version, int start, int end,
-		OrderByComparator<PatcherFixPack> orderByComparator) {
-
-		return _collectionPersistenceFinderByVersion.filterFind(
-			finderCache, new Object[] {version}, start, end, orderByComparator);
-	}
-
-	/**
-	 * Removes all the patcher fix packs where version = &#63; from the database.
-	 *
-	 * @param version the version
-	 */
-	@Override
-	public void removeByVersion(int version) {
-		_collectionPersistenceFinderByVersion.remove(
-			finderCache, new Object[] {version});
-	}
-
-	/**
-	 * Returns the number of patcher fix packs where version = &#63;.
-	 *
-	 * @param version the version
-	 * @return the number of matching patcher fix packs
-	 */
-	@Override
-	public int countByVersion(int version) {
-		return _collectionPersistenceFinderByVersion.count(
-			finderCache, new Object[] {version});
-	}
-
-	/**
-	 * Returns the number of patcher fix packs that the user has permission to view where version = &#63;.
-	 *
-	 * @param version the version
-	 * @return the number of matching patcher fix packs that the user has permission to view
-	 */
-	@Override
-	public int filterCountByVersion(int version) {
-		return _collectionPersistenceFinderByVersion.filterCount(
-			finderCache, new Object[] {version});
-	}
-
-	private FilterCollectionPersistenceFinder
-		<PatcherFixPack, NoSuchPatcherFixPackException>
 			_collectionPersistenceFinderByPFCI_PPVI;
 
 	/**
@@ -2069,33 +1951,6 @@ public class PatcherFixPackPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					PatcherFixPack::getPatcherFixComponentId));
 
-		_collectionPersistenceFinderByVersion =
-			new FilterCollectionPersistenceFinder<>(
-				this, PatcherFixPack::getPatcherFixPackId,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByVersion",
-					new String[] {Integer.class.getName()},
-					new String[] {"version"}, false),
-				"", PatcherFixPackModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByVersion",
-					new String[] {
-						Integer.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"version"}, true),
-				_SQL_COUNT_PATCHERFIXPACK_WHERE,
-				_SQL_SELECT_PATCHERFIXPACK_WHERE, null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByVersion",
-					new String[] {Integer.class.getName()},
-					new String[] {"version"}, true),
-				"",
-				new FinderColumn<>(
-					"patcherFixPack.", "version", FinderColumn.Type.INTEGER,
-					"=", true, true, PatcherFixPack::getVersion));
-
 		_collectionPersistenceFinderByPFCI_PPVI =
 			new FilterCollectionPersistenceFinder<>(
 				this, PatcherFixPack::getPatcherFixPackId,
@@ -2412,4 +2267,4 @@ public class PatcherFixPackPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1935229321
+// LIFERAY-SERVICE-BUILDER-HASH:270806844

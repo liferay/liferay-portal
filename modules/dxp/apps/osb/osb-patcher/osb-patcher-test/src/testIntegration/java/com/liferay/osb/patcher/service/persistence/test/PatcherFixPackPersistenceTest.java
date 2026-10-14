@@ -205,13 +205,6 @@ public class PatcherFixPackPersistenceTest {
 	}
 
 	@Test
-	public void testCountByVersion() throws Exception {
-		_persistence.countByVersion(RandomTestUtil.nextInt());
-
-		_persistence.countByVersion(0);
-	}
-
-	@Test
 	public void testCountByPFCI_PPVI() throws Exception {
 		_persistence.countByPFCI_PPVI(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
@@ -652,4 +645,4 @@ public class PatcherFixPackPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1902752549
+// LIFERAY-SERVICE-BUILDER-HASH:-10939226
