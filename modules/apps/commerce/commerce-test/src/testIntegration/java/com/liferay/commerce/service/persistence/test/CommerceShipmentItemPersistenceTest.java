@@ -261,13 +261,6 @@ public class CommerceShipmentItemPersistenceTest {
 	}
 
 	@Test
-	public void testCountByGroupId() throws Exception {
-		_persistence.countByGroupId(RandomTestUtil.nextLong());
-
-		_persistence.countByGroupId(0L);
-	}
-
-	@Test
 	public void testCountByCommerceShipmentId() throws Exception {
 		_persistence.countByCommerceShipmentId(RandomTestUtil.nextLong());
 
@@ -279,14 +272,6 @@ public class CommerceShipmentItemPersistenceTest {
 		_persistence.countByCommerceOrderItemId(RandomTestUtil.nextLong());
 
 		_persistence.countByCommerceOrderItemId(0L);
-	}
-
-	@Test
-	public void testCountByC_C() throws Exception {
-		_persistence.countByC_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByC_C(0L, 0L);
 	}
 
 	@Test
@@ -729,4 +714,4 @@ public class CommerceShipmentItemPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-900524467
+// LIFERAY-SERVICE-BUILDER-HASH:-774281213

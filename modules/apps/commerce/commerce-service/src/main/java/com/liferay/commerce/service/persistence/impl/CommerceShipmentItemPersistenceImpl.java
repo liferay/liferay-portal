@@ -335,92 +335,6 @@ public class CommerceShipmentItemPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CommerceShipmentItem, NoSuchShipmentItemException>
-			_collectionPersistenceFinderByGroupId;
-
-	/**
-	 * Returns an ordered range of all the commerce shipment items where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceShipmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of commerce shipment items
-	 * @param end the upper bound of the range of commerce shipment items (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce shipment items
-	 */
-	@Override
-	public List<CommerceShipmentItem> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<CommerceShipmentItem> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByGroupId.find(
-			finderCache, new Object[] {groupId}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce shipment item in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce shipment item
-	 * @throws NoSuchShipmentItemException if a matching commerce shipment item could not be found
-	 */
-	@Override
-	public CommerceShipmentItem findByGroupId_First(
-			long groupId,
-			OrderByComparator<CommerceShipmentItem> orderByComparator)
-		throws NoSuchShipmentItemException {
-
-		return _collectionPersistenceFinderByGroupId.findFirst(
-			finderCache, new Object[] {groupId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce shipment item in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce shipment item, or <code>null</code> if a matching commerce shipment item could not be found
-	 */
-	@Override
-	public CommerceShipmentItem fetchByGroupId_First(
-		long groupId,
-		OrderByComparator<CommerceShipmentItem> orderByComparator) {
-
-		return _collectionPersistenceFinderByGroupId.fetchFirst(
-			finderCache, new Object[] {groupId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce shipment items where groupId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 */
-	@Override
-	public void removeByGroupId(long groupId) {
-		_collectionPersistenceFinderByGroupId.remove(
-			finderCache, new Object[] {groupId});
-	}
-
-	/**
-	 * Returns the number of commerce shipment items where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching commerce shipment items
-	 */
-	@Override
-	public int countByGroupId(long groupId) {
-		return _collectionPersistenceFinderByGroupId.count(
-			finderCache, new Object[] {groupId});
-	}
-
-	private CollectionPersistenceFinder
-		<CommerceShipmentItem, NoSuchShipmentItemException>
 			_collectionPersistenceFinderByCommerceShipmentId;
 
 	/**
@@ -589,101 +503,6 @@ public class CommerceShipmentItemPersistenceImpl
 	public int countByCommerceOrderItemId(long commerceOrderItemId) {
 		return _collectionPersistenceFinderByCommerceOrderItemId.count(
 			finderCache, new Object[] {commerceOrderItemId});
-	}
-
-	private CollectionPersistenceFinder
-		<CommerceShipmentItem, NoSuchShipmentItemException>
-			_collectionPersistenceFinderByC_C;
-
-	/**
-	 * Returns an ordered range of all the commerce shipment items where commerceShipmentId = &#63; and commerceOrderItemId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceShipmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceShipmentId the commerce shipment ID
-	 * @param commerceOrderItemId the commerce order item ID
-	 * @param start the lower bound of the range of commerce shipment items
-	 * @param end the upper bound of the range of commerce shipment items (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce shipment items
-	 */
-	@Override
-	public List<CommerceShipmentItem> findByC_C(
-		long commerceShipmentId, long commerceOrderItemId, int start, int end,
-		OrderByComparator<CommerceShipmentItem> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_C.find(
-			finderCache, new Object[] {commerceShipmentId, commerceOrderItemId},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceOrderItemId = &#63;.
-	 *
-	 * @param commerceShipmentId the commerce shipment ID
-	 * @param commerceOrderItemId the commerce order item ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce shipment item
-	 * @throws NoSuchShipmentItemException if a matching commerce shipment item could not be found
-	 */
-	@Override
-	public CommerceShipmentItem findByC_C_First(
-			long commerceShipmentId, long commerceOrderItemId,
-			OrderByComparator<CommerceShipmentItem> orderByComparator)
-		throws NoSuchShipmentItemException {
-
-		return _collectionPersistenceFinderByC_C.findFirst(
-			finderCache, new Object[] {commerceShipmentId, commerceOrderItemId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceOrderItemId = &#63;.
-	 *
-	 * @param commerceShipmentId the commerce shipment ID
-	 * @param commerceOrderItemId the commerce order item ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce shipment item, or <code>null</code> if a matching commerce shipment item could not be found
-	 */
-	@Override
-	public CommerceShipmentItem fetchByC_C_First(
-		long commerceShipmentId, long commerceOrderItemId,
-		OrderByComparator<CommerceShipmentItem> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_C.fetchFirst(
-			finderCache, new Object[] {commerceShipmentId, commerceOrderItemId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce shipment items where commerceShipmentId = &#63; and commerceOrderItemId = &#63; from the database.
-	 *
-	 * @param commerceShipmentId the commerce shipment ID
-	 * @param commerceOrderItemId the commerce order item ID
-	 */
-	@Override
-	public void removeByC_C(long commerceShipmentId, long commerceOrderItemId) {
-		_collectionPersistenceFinderByC_C.remove(
-			finderCache,
-			new Object[] {commerceShipmentId, commerceOrderItemId});
-	}
-
-	/**
-	 * Returns the number of commerce shipment items where commerceShipmentId = &#63; and commerceOrderItemId = &#63;.
-	 *
-	 * @param commerceShipmentId the commerce shipment ID
-	 * @param commerceOrderItemId the commerce order item ID
-	 * @return the number of matching commerce shipment items
-	 */
-	@Override
-	public int countByC_C(long commerceShipmentId, long commerceOrderItemId) {
-		return _collectionPersistenceFinderByC_C.count(
-			finderCache,
-			new Object[] {commerceShipmentId, commerceOrderItemId});
 	}
 
 	private UniquePersistenceFinder
@@ -1409,33 +1228,6 @@ public class CommerceShipmentItemPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					CommerceShipmentItem::getCompanyId));
 
-		_collectionPersistenceFinderByGroupId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_COMMERCESHIPMENTITEM_WHERE,
-				_SQL_COUNT_COMMERCESHIPMENTITEM_WHERE,
-				CommerceShipmentItemModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"commerceShipmentItem.", "groupId", FinderColumn.Type.LONG,
-					"=", true, true, CommerceShipmentItem::getGroupId));
-
 		_collectionPersistenceFinderByCommerceShipmentId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1497,40 +1289,6 @@ public class CommerceShipmentItemPersistenceImpl
 					"commerceShipmentItem.", "commerceOrderItemId",
 					FinderColumn.Type.LONG, "=", true, true,
 					CommerceShipmentItem::getCommerceOrderItemId));
-
-		_collectionPersistenceFinderByC_C = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"commerceShipmentId", "commerceOrderItemId"},
-				true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"commerceShipmentId", "commerceOrderItemId"},
-				true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"commerceShipmentId", "commerceOrderItemId"},
-				false),
-			_SQL_SELECT_COMMERCESHIPMENTITEM_WHERE,
-			_SQL_COUNT_COMMERCESHIPMENTITEM_WHERE,
-			CommerceShipmentItemModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"commerceShipmentItem.", "commerceShipmentId",
-				FinderColumn.Type.LONG, "=", true, true,
-				CommerceShipmentItem::getCommerceShipmentId),
-			new FinderColumn<>(
-				"commerceShipmentItem.", "commerceOrderItemId",
-				FinderColumn.Type.LONG, "=", true, true,
-				CommerceShipmentItem::getCommerceOrderItemId));
 
 		_uniquePersistenceFinderByC_C_C = new UniquePersistenceFinder<>(
 			this,
@@ -1689,4 +1447,4 @@ public class CommerceShipmentItemPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1271806209
+// LIFERAY-SERVICE-BUILDER-HASH:910443945

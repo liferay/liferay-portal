@@ -667,15 +667,6 @@ public class CommerceOrderPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_CP() throws Exception {
-		_persistence.countByG_CP(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByG_CP(0L, "null");
-
-		_persistence.countByG_CP(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByG_U_O() throws Exception {
 		_persistence.countByG_U_O(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -691,15 +682,6 @@ public class CommerceOrderPersistenceTest {
 			RandomTestUtil.nextInt());
 
 		_persistence.countByG_C_O(0L, 0L, 0);
-	}
-
-	@Test
-	public void testCountByU_LtC_O() throws Exception {
-		_persistence.countByU_LtC_O(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextDate(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByU_LtC_O(0L, RandomTestUtil.nextDate(), 0);
 	}
 
 	@Test
@@ -1311,4 +1293,4 @@ public class CommerceOrderPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:801045734
+// LIFERAY-SERVICE-BUILDER-HASH:-274051066

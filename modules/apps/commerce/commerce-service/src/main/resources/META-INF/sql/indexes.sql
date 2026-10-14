@@ -10,7 +10,6 @@ create index IX_B48AB5E on CSOptionAccountEntryRel (commerceChannelId);
 create index IX_64B9CFFC on CSOptionAccountEntryRel (commerceShippingOptionKey[$COLUMN_LENGTH:75$]);
 
 create unique index IX_9DD3ABD3 on CommerceAddressRestriction (classNameId, classPK, countryId);
-create index IX_AE21488 on CommerceAddressRestriction (countryId);
 
 create unique index IX_3C615299 on CommerceAvailabilityEstimate (companyId, externalReferenceCode[$COLUMN_LENGTH:75$]);
 create index IX_B83AF5B0 on CommerceAvailabilityEstimate (uuid_[$COLUMN_LENGTH:75$]);
@@ -19,10 +18,8 @@ create index IX_12131FC1 on CommerceOrder (billingAddressId);
 create index IX_4650BB0A on CommerceOrder (commerceAccountId, orderStatus, createDate);
 create unique index IX_30FF90A4 on CommerceOrder (externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
 create index IX_4F4CAEE4 on CommerceOrder (groupId, commerceAccountId, orderStatus);
-create index IX_9C04F6F8 on CommerceOrder (groupId, commercePaymentMethodKey[$COLUMN_LENGTH:75$]);
 create index IX_2F8AA139 on CommerceOrder (groupId, orderStatus, userId);
 create unique index IX_25C927E3 on CommerceOrder (groupId, uuid_[$COLUMN_LENGTH:75$]);
-create index IX_7759000F on CommerceOrder (orderStatus, userId, createDate);
 create index IX_4B11FAD8 on CommerceOrder (shippingAddressId);
 create index IX_EFAA753 on CommerceOrder (userId);
 create index IX_35A4137B on CommerceOrder (uuid_[$COLUMN_LENGTH:75$]);
@@ -68,7 +65,6 @@ create index IX_3615B923 on CommerceShipmentItem (commerceOrderItemId);
 create index IX_8B292722 on CommerceShipmentItem (commerceShipmentId, commerceInventoryWarehouseId, quantity);
 create unique index IX_4FAC36D0 on CommerceShipmentItem (commerceShipmentId, commerceOrderItemId, commerceInventoryWarehouseId);
 create unique index IX_29D8E379 on CommerceShipmentItem (externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
-create index IX_DB0BB83C on CommerceShipmentItem (groupId);
 create unique index IX_D8C6E9A4 on CommerceShipmentItem (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_42E5F6EF on CommerceShippingMethod (groupId, active_);

@@ -188,13 +188,6 @@ public class CommerceAddressRestrictionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCountryId() throws Exception {
-		_persistence.countByCountryId(RandomTestUtil.nextLong());
-
-		_persistence.countByCountryId(0L);
-	}
-
-	@Test
 	public void testCountByC_C() throws Exception {
 		_persistence.countByC_C(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
@@ -606,4 +599,4 @@ public class CommerceAddressRestrictionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2146285276
+// LIFERAY-SERVICE-BUILDER-HASH:1070393225

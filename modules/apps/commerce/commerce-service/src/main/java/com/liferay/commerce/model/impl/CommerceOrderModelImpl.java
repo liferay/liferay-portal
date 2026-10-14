@@ -1315,15 +1315,6 @@ public class CommerceOrderModelImpl
 		_commercePaymentMethodKey = commercePaymentMethodKey;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalCommercePaymentMethodKey() {
-		return getColumnOriginalValue("commercePaymentMethodKey");
-	}
-
 	@JSON
 	@Override
 	public String getCouponCode() {
@@ -3622,4 +3613,4 @@ public class CommerceOrderModelImpl
 	private CommerceOrder _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:88319081
+// LIFERAY-SERVICE-BUILDER-HASH:-1686368984

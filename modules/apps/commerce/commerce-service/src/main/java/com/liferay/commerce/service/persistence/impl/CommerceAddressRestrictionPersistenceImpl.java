@@ -76,92 +76,6 @@ public class CommerceAddressRestrictionPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CommerceAddressRestriction, NoSuchAddressRestrictionException>
-			_collectionPersistenceFinderByCountryId;
-
-	/**
-	 * Returns an ordered range of all the commerce address restrictions where countryId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceAddressRestrictionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param countryId the country ID
-	 * @param start the lower bound of the range of commerce address restrictions
-	 * @param end the upper bound of the range of commerce address restrictions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce address restrictions
-	 */
-	@Override
-	public List<CommerceAddressRestriction> findByCountryId(
-		long countryId, int start, int end,
-		OrderByComparator<CommerceAddressRestriction> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCountryId.find(
-			finderCache, new Object[] {countryId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce address restriction in the ordered set where countryId = &#63;.
-	 *
-	 * @param countryId the country ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce address restriction
-	 * @throws NoSuchAddressRestrictionException if a matching commerce address restriction could not be found
-	 */
-	@Override
-	public CommerceAddressRestriction findByCountryId_First(
-			long countryId,
-			OrderByComparator<CommerceAddressRestriction> orderByComparator)
-		throws NoSuchAddressRestrictionException {
-
-		return _collectionPersistenceFinderByCountryId.findFirst(
-			finderCache, new Object[] {countryId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce address restriction in the ordered set where countryId = &#63;.
-	 *
-	 * @param countryId the country ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce address restriction, or <code>null</code> if a matching commerce address restriction could not be found
-	 */
-	@Override
-	public CommerceAddressRestriction fetchByCountryId_First(
-		long countryId,
-		OrderByComparator<CommerceAddressRestriction> orderByComparator) {
-
-		return _collectionPersistenceFinderByCountryId.fetchFirst(
-			finderCache, new Object[] {countryId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce address restrictions where countryId = &#63; from the database.
-	 *
-	 * @param countryId the country ID
-	 */
-	@Override
-	public void removeByCountryId(long countryId) {
-		_collectionPersistenceFinderByCountryId.remove(
-			finderCache, new Object[] {countryId});
-	}
-
-	/**
-	 * Returns the number of commerce address restrictions where countryId = &#63;.
-	 *
-	 * @param countryId the country ID
-	 * @return the number of matching commerce address restrictions
-	 */
-	@Override
-	public int countByCountryId(long countryId) {
-		return _collectionPersistenceFinderByCountryId.count(
-			finderCache, new Object[] {countryId});
-	}
-
-	private CollectionPersistenceFinder
-		<CommerceAddressRestriction, NoSuchAddressRestrictionException>
 			_collectionPersistenceFinderByC_C;
 
 	/**
@@ -545,34 +459,6 @@ public class CommerceAddressRestrictionPersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_collectionPersistenceFinderByCountryId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCountryId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"countryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCountryId", new String[] {Long.class.getName()},
-					new String[] {"countryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCountryId", new String[] {Long.class.getName()},
-					new String[] {"countryId"}, false),
-				_SQL_SELECT_COMMERCEADDRESSRESTRICTION_WHERE,
-				_SQL_COUNT_COMMERCEADDRESSRESTRICTION_WHERE,
-				CommerceAddressRestrictionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"commerceAddressRestriction.", "countryId",
-					FinderColumn.Type.LONG, "=", true, true,
-					CommerceAddressRestriction::getCountryId));
-
 		_collectionPersistenceFinderByC_C = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -690,4 +576,4 @@ public class CommerceAddressRestrictionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1643564779
+// LIFERAY-SERVICE-BUILDER-HASH:-1290325656
