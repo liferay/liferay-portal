@@ -122,9 +122,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CountryId" return-type="Collection">
-			<finder-column name="countryId" />
-		</finder>
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
@@ -284,10 +281,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="commerceAccountId" />
 		</finder>
-		<finder name="G_CP" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="commercePaymentMethodKey" />
-		</finder>
 		<finder name="G_U_O" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="userId" />
@@ -296,11 +289,6 @@
 		<finder name="G_C_O" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="commerceAccountId" />
-			<finder-column name="orderStatus" />
-		</finder>
-		<finder name="U_LtC_O" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column comparator="&lt;" name="createDate" />
 			<finder-column name="orderStatus" />
 		</finder>
 		<finder name="C_LtC_O" return-type="Collection">
@@ -583,9 +571,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="C_A" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="active" />
@@ -725,17 +710,10 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="CommerceShipmentId" return-type="Collection">
 			<finder-column name="commerceShipmentId" />
 		</finder>
 		<finder name="CommerceOrderItemId" return-type="Collection">
-			<finder-column name="commerceOrderItemId" />
-		</finder>
-		<finder name="C_C" return-type="Collection">
-			<finder-column name="commerceShipmentId" />
 			<finder-column name="commerceOrderItemId" />
 		</finder>
 		<finder name="C_C_C" return-type="CommerceShipmentItem" unique="true">
@@ -887,9 +865,6 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
 		</finder>
 		<finder name="CommerceOrderItemId" return-type="CommerceSubscriptionEntry" unique="true">
 			<finder-column name="commerceOrderItemId" />
