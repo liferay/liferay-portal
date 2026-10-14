@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ElasticsearchDistribution implements Distribution {
 
-	public static final String VERSION = "8.19.20";
+	public static final String VERSION = "8.19.23";
 
 	@Override
 	public Distributable getElasticsearchDistributable() {
@@ -46,23 +46,23 @@ public class ElasticsearchDistribution implements Distribution {
 	}
 
 	private static final String _ELASTICSEARCH_CHECKSUM =
-		"1c416956374360cec621bedcd293b6365e87dc3a911353bc7b17087f977f2426a3f9" +
-			"8a7d8c2add14324207e5a44afbe87cd236b977f5fd3051cb2999899b2def";
+		"ccec1037814ef8051717d09adf22fde4edd93135284eb84948eb8fd82cb4e95513bb" +
+			"8c0780deb555e570fef549968f1d59ebe1ba81683afc6f8fab939ad03e6f";
 
 	private static final String _ICU_CHECKSUM =
-		"229ed8d94e75dd38367d1292e5c3db4de57f3a7af9c6b4312770deeab82658a93b6f" +
-			"971881f589ea104a7832231972eed2abc41b67f9dcd44a9490218af35c99";
+		"424d8d77921495782e3586f0fff1948204b0e8a0add863642fb11d0aaabd95c3afa3" +
+			"d54aa111f197fcb1110359d0b4dea648286c57c2c5c68203273a63f8fdc4";
 
 	private static final String _KUROMOJI_CHECKSUM =
-		"bdc9a461ff021381597058a16a52e0b5a190ab9fd4b6d25efd4672cb096c676f5362" +
-			"4a7959ff3714711c4def423459447b9832f19bb52e15ff4a3cb76d5cfbd9";
+		"b9faef13520aeab1070e22be81806f04080ddbc4e06a889ba7dc75e4353909356843" +
+			"98b115c04cef304e69d292518d355589c5b8fce0a66580c2f23fbd73e613";
 
 	private static final String _SMARTCN_CHECKSUM =
-		"8a115d74e0f99789ffec97e184953fe4d53baadbaba5647b3971a5f6839e5819d4b7" +
-			"02ae9aeff7d376c74677b1f50baa7aa36d8f73db6eab9ba6483eb998fe79";
+		"415729581f344596152f4e8bc39f72914c52568e34692eb8a7c6c9a3f8b22cdca52e" +
+			"d746c3793f43bddf303733e9ac960754bd840fe1c5da0bec1c44107e47cf";
 
 	private static final String _STEMPEL_CHECKSUM =
-		"5d189a776e1914ab3c8982966f5302908e230b88909f8800f909b2f4311956fa9ae6" +
-			"295781810805c28a3e7965e4080712336db97c800af8ac4a7359ec65bd93";
+		"5c7d8060950b0fb209b2303158d394298256fca31b3a70c715e63ea4996a5bde5842" +
+			"7fd82e9f8434139971cbba87f48a174ee3f36751092853b25953a3283521";
 
 }
