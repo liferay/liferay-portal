@@ -66,10 +66,6 @@ public class FrontendDataSetTestUtil {
 	}
 
 	public static void initialize(Class<?> clazz) throws Exception {
-
-		// Remember whether this call is the one that creates the object
-		// definitions, so that tearDown deletes only what it created
-
 		boolean create = false;
 
 		if (_fetchObjectDefinition(_EXTERNAL_REFERENCE_CODE_ROOT) == null) {
@@ -94,10 +90,6 @@ public class FrontendDataSetTestUtil {
 		}
 
 		_createdObjectDefinitions = false;
-
-		// The object definitions form a root context. Disable inheritance
-		// first so that deleting them drops their dynamic tables instead of
-		// leaving the data guard to remove the rows one by one.
 
 		ObjectDefinition rootObjectDefinition = _fetchObjectDefinition(
 			_EXTERNAL_REFERENCE_CODE_ROOT);
