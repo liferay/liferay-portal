@@ -59,11 +59,6 @@
 			<finder-column name="layoutPageTemplateCollectionKey" />
 			<finder-column name="type" />
 		</finder>
-		<finder name="G_N_T" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="name" />
-			<finder-column name="type" />
-		</finder>
 		<finder name="G_LikeN_T" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column comparator="LIKE" name="name" />
@@ -137,10 +132,6 @@
 		<finder name="G_LPTEK" return-type="LayoutPageTemplateEntry" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="layoutPageTemplateEntryKey" />
-		</finder>
-		<finder name="G_N" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="name" />
 		</finder>
 		<finder name="G_T" return-type="Collection">
 			<finder-column name="groupId" />
@@ -234,13 +225,6 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classTypeKey" />
 			<finder-column name="type" />
-			<finder-column name="status" />
-		</finder>
-		<finder name="G_C_C_D_S" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-			<finder-column name="classTypeKey" />
-			<finder-column name="defaultTemplate" />
 			<finder-column name="status" />
 		</finder>
 		<finder name="G_C_C_LikeN_T_S" return-type="Collection">
