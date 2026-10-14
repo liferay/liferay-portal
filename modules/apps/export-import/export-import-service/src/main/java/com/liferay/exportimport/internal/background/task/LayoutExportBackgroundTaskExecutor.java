@@ -52,6 +52,8 @@ public class LayoutExportBackgroundTaskExecutor
 		ExportImportConfiguration exportImportConfiguration =
 			getExportImportConfiguration(backgroundTask);
 
+		setPhasesTotal(backgroundTask, exportImportConfiguration);
+
 		long userId = MapUtil.getLong(
 			exportImportConfiguration.getSettingsMap(), "userId");
 		String name = StringUtil.replace(

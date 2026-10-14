@@ -5,6 +5,7 @@
 
 package com.liferay.exportimport.internal.background.task;
 
+import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.petra.string.StringBundler;
@@ -12,7 +13,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Time;
@@ -64,24 +69,17 @@ public class LayoutExportBackgroundTaskExecutorTest {
 
 	@After
 	public void tearDown() {
+		_backgroundTaskStatusRegistryUtilMockedStatic.close();
 		_timeMockedStatic.close();
 	}
 
 	@Test
 	public void test() throws Exception {
-		LayoutExportBackgroundTaskExecutor layoutExportBackgroundTaskExecutor =
-			Mockito.spy(_layoutExportBackgroundTaskExecutor);
-
 		ExportImportConfiguration exportImportConfiguration = Mockito.mock(
 			ExportImportConfiguration.class);
 
-		Mockito.doReturn(
-			exportImportConfiguration
-		).when(
-			layoutExportBackgroundTaskExecutor
-		).getExportImportConfiguration(
-			Mockito.any(BackgroundTask.class)
-		);
+		LayoutExportBackgroundTaskExecutor layoutExportBackgroundTaskExecutor =
+			_spy(exportImportConfiguration);
 
 		long userId = RandomTestUtil.randomLong();
 
@@ -152,10 +150,98 @@ public class LayoutExportBackgroundTaskExecutorTest {
 			titleArgumentCaptor.getValue());
 	}
 
+	@Test
+	@TestInfo("LPD-109895")
+	public void testExecuteSetsPhasesTotal() throws Exception {
+		BackgroundTask backgroundTask = Mockito.mock(BackgroundTask.class);
+
+		long backgroundTaskId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			backgroundTask.getBackgroundTaskId()
+		).thenReturn(
+			backgroundTaskId
+		);
+
+		BackgroundTaskStatus backgroundTaskStatus = new BackgroundTaskStatus();
+
+		_backgroundTaskStatusRegistryUtilMockedStatic.when(
+			() -> BackgroundTaskStatusRegistryUtil.getBackgroundTaskStatus(
+				backgroundTaskId)
+		).thenReturn(
+			backgroundTaskStatus
+		);
+
+		ExportImportConfiguration exportImportConfiguration = Mockito.mock(
+			ExportImportConfiguration.class);
+
+		long companyId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			exportImportConfiguration.getCompanyId()
+		).thenReturn(
+			companyId
+		);
+
+		Mockito.when(
+			exportImportConfiguration.getSettingsMap()
+		).thenReturn(
+			HashMapBuilder.<String, Serializable>put(
+				"parameterMap",
+				HashMapBuilder.put(
+					PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES,
+					new String[] {
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString()
+					}
+				).build()
+			).build()
+		);
+
+		LayoutExportBackgroundTaskExecutor layoutExportBackgroundTaskExecutor =
+			_spy(exportImportConfiguration);
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")
+			).thenReturn(
+				true
+			);
+
+			layoutExportBackgroundTaskExecutor.execute(backgroundTask);
+		}
+
+		Assert.assertEquals(
+			3, backgroundTaskStatus.getAttribute("phasesTotal"));
+	}
+
+	private LayoutExportBackgroundTaskExecutor _spy(
+		ExportImportConfiguration exportImportConfiguration) {
+
+		LayoutExportBackgroundTaskExecutor layoutExportBackgroundTaskExecutor =
+			Mockito.spy(_layoutExportBackgroundTaskExecutor);
+
+		Mockito.doReturn(
+			exportImportConfiguration
+		).when(
+			layoutExportBackgroundTaskExecutor
+		).getExportImportConfiguration(
+			Mockito.any(BackgroundTask.class)
+		);
+
+		return layoutExportBackgroundTaskExecutor;
+	}
+
 	private static final String _PROTOCOL = "lar";
 
 	private final BackgroundTaskManager _backgroundTaskManager = Mockito.mock(
 		BackgroundTaskManager.class);
+	private final MockedStatic<BackgroundTaskStatusRegistryUtil>
+		_backgroundTaskStatusRegistryUtilMockedStatic = Mockito.mockStatic(
+			BackgroundTaskStatusRegistryUtil.class);
 	private final ExportImportLocalService _exportImportLocalService =
 		Mockito.mock(ExportImportLocalService.class);
 	private final LayoutExportBackgroundTaskExecutor

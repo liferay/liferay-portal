@@ -60,6 +60,21 @@ public class GroupExportImportParameterUtil {
 		).build();
 	}
 
+	public static int getPhasesCount(
+		long companyId, Map<String, String[]> parameterMap) {
+
+		if ((parameterMap == null) || !isGroupExportImportEnabled(companyId) ||
+			isGroupScoped(parameterMap)) {
+
+			return 1;
+		}
+
+		String[] groupExternalReferenceCodes =
+			getSelectedGroupExternalReferenceCodes(parameterMap);
+
+		return groupExternalReferenceCodes.length + 1;
+	}
+
 	public static String[] getSelectedGroupExternalReferenceCodes(
 		Map<String, String[]> parameterMap) {
 

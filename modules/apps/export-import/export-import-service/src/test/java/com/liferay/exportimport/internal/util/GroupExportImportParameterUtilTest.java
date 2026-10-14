@@ -8,6 +8,8 @@ package com.liferay.exportimport.internal.util;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -21,6 +23,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -215,6 +218,62 @@ public class GroupExportImportParameterUtilTest {
 	}
 
 	@Test
+	@TestInfo("LPD-109895")
+	public void testGetPhasesCountWhenGroupExportImportIsDisabled() {
+		Assert.assertEquals(
+			1,
+			_getPhasesCount(
+				false,
+				HashMapBuilder.put(
+					PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES,
+					new String[] {RandomTestUtil.randomString()}
+				).build()));
+	}
+
+	@Test
+	@TestInfo("LPD-109895")
+	public void testGetPhasesCountWhenGroupScoped() {
+		Assert.assertEquals(
+			1,
+			_getPhasesCount(
+				true,
+				GroupExportImportParameterUtil.getGroupExportParameterMap(
+					RandomTestUtil.randomString(),
+					HashMapBuilder.put(
+						PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES,
+						new String[] {RandomTestUtil.randomString()}
+					).build())));
+	}
+
+	@Test
+	@TestInfo("LPD-109895")
+	public void testGetPhasesCountWhenParameterMapIsNull() {
+		Assert.assertEquals(1, _getPhasesCount(true, null));
+	}
+
+	@Test
+	@TestInfo("LPD-109895")
+	public void testGetPhasesCountWithSelectedGroups() {
+		Assert.assertEquals(
+			3,
+			_getPhasesCount(
+				true,
+				HashMapBuilder.put(
+					PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES,
+					new String[] {
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString()
+					}
+				).build()));
+	}
+
+	@Test
+	@TestInfo("LPD-109895")
+	public void testGetPhasesCountWithoutSelectedGroups() {
+		Assert.assertEquals(1, _getPhasesCount(true, Collections.emptyMap()));
+	}
+
+	@Test
 	public void testGetSelectedGroupExternalReferenceCodesWhenMissing() {
 		Assert.assertArrayEquals(
 			new String[0],
@@ -262,6 +321,26 @@ public class GroupExportImportParameterUtilTest {
 					PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES,
 					new String[] {RandomTestUtil.randomString()}
 				).build()));
+	}
+
+	private int _getPhasesCount(
+		boolean groupExportImportEnabled, Map<String, String[]> parameterMap) {
+
+		long companyId = RandomTestUtil.randomLong();
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")
+			).thenReturn(
+				groupExportImportEnabled
+			);
+
+			return GroupExportImportParameterUtil.getPhasesCount(
+				companyId, parameterMap);
+		}
 	}
 
 }
