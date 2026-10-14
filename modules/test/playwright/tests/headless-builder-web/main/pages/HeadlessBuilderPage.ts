@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {GlobalMenuPage} from '../../../../pages/product-navigation-applications-menu/GlobalMenuPage';
 
@@ -26,6 +26,22 @@ export class HeadlessBuilderPage {
 		this.newApplicationTitleBox = page.getByPlaceholder('Enter title.');
 		this.newApplicationURLBox = page.locator('#modalURLField');
 		this.page = page;
+	}
+
+	async createApplication(title: string) {
+		await this.addNewApplicationButton.click();
+		await this.newApplicationTitleBox.fill(title);
+
+		const [applicationResponse] = await Promise.all([
+			this.page.waitForResponse(
+				(response) =>
+					response.request().method() === 'POST' &&
+					response.url().includes('/o/headless-builder/applications')
+			),
+			this.createApplicationButton.click(),
+		]);
+
+		expect(applicationResponse.ok()).toBe(true);
 	}
 
 	async openApplicationActions(title: string) {

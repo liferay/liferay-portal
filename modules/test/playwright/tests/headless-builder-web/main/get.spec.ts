@@ -114,17 +114,19 @@ test('can see available path parameter properties of a singleElement endpoint', 
 	apiHelpers.data.push({id: objectDefinition.id, type: 'objectDefinition'});
 
 	await headlessBuilderPage.goto();
-	await headlessBuilderPage.addNewApplicationButton.click();
-	await headlessBuilderPage.newApplicationTitleBox.fill('My-app');
-	await headlessBuilderPage.createApplicationButton.click();
 
-	const apiApplicationPage =
-		await apiHelpers.apiBuilder.getAPIApplicationsPage();
+	const apiApplicationTitle = getRandomString();
 
-	apiHelpers.data.push({
-		id: apiApplicationPage.items[0].id,
-		type: 'apiApplication',
-	});
+	await headlessBuilderPage.createApplication(apiApplicationTitle);
+
+	const {
+		items: [apiApplication],
+	} = await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+		'headless-builder/applications',
+		new URLSearchParams({filter: `title eq '${apiApplicationTitle}'`})
+	);
+
+	apiHelpers.data.push({id: apiApplication.id, type: 'apiApplication'});
 
 	await applicationPage.goToSchemasTab();
 	await applicationPage.addSchemaButton.click();
@@ -164,17 +166,19 @@ test('can see path parameter property with map details', async ({
 	apiHelpers.data.push({id: objectDefinition.id, type: 'objectDefinition'});
 
 	await headlessBuilderPage.goto();
-	await headlessBuilderPage.addNewApplicationButton.click();
-	await headlessBuilderPage.newApplicationTitleBox.fill('My-app');
-	await headlessBuilderPage.createApplicationButton.click();
 
-	const apiApplicationPage =
-		await apiHelpers.apiBuilder.getAPIApplicationsPage();
+	const apiApplicationTitle = getRandomString();
 
-	apiHelpers.data.push({
-		id: apiApplicationPage.items[0].id,
-		type: 'apiApplication',
-	});
+	await headlessBuilderPage.createApplication(apiApplicationTitle);
+
+	const {
+		items: [apiApplication],
+	} = await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+		'headless-builder/applications',
+		new URLSearchParams({filter: `title eq '${apiApplicationTitle}'`})
+	);
+
+	apiHelpers.data.push({id: apiApplication.id, type: 'apiApplication'});
 
 	await applicationPage.goToSchemasTab();
 	await applicationPage.addSchemaButton.click();

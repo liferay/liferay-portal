@@ -313,6 +313,11 @@ test('can create post endpoint with different request and response schema', asyn
 
 	await applicationPage.publishButton.click();
 
+	await expect(page.getByText('API application was published')).toBeVisible();
+	await expect(
+		page.getByText('API endpoint changes were saved')
+	).toBeVisible();
+
 	await apiExplorerPage.goToApplication(
 		`c/${studentSubjectsApplicationData.baseURL}`
 	);
@@ -325,6 +330,7 @@ test('can create post method endpoint with company scope', async ({
 	apiHelpers,
 	applicationPage,
 	headlessBuilderPage,
+	page,
 }) => {
 	const application = await apiHelpers.objectEntry.postObjectEntry(
 		applicationData,
@@ -347,6 +353,11 @@ test('can create post method endpoint with company scope', async ({
 		applicationData.apiApplicationToAPISchemas[0].name
 	);
 	await applicationPage.publishButton.click();
+
+	await expect(page.getByText('API application was published')).toBeVisible();
+	await expect(
+		page.getByText('API endpoint changes were saved')
+	).toBeVisible();
 
 	await apiExplorerPage.goToApplication(`c/${applicationData.baseURL}`);
 

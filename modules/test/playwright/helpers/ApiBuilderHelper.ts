@@ -14,12 +14,6 @@ export class ApiBuilderHelper {
 		this.basePath = 'headless-builder';
 	}
 
-	async getAPIApplicationsPage() {
-		return this.apiHelpers.get(
-			`${this.apiHelpers.baseUrl}${this.basePath}/applications`
-		);
-	}
-
 	async getEndpointPage(endpointURI: string) {
 		return this.apiHelpers.getResponse(
 			`${this.apiHelpers.baseUrl}${endpointURI}`
