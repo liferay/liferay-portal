@@ -732,12 +732,64 @@ grafana-alloy:
         create: false
         name: liferay-alloy
 kube-state-metrics:
+    customResourceState:
+        config:
+            kind: CustomResourceStateMetrics
+            spec:
+                resources:
+                    -   groupVersionKind:
+                            group: backup.liferay.cloud
+                            kind: LiferayBackup
+                            version: v1alpha1
+                        labelsFromPath:
+                            name:
+                                -   metadata
+                                -   name
+                            namespace:
+                                -   metadata
+                                -   namespace
+                        metrics:
+                            -   each:
+                                    gauge:
+                                        path:
+                                            -   status
+                                        valueFrom:
+                                            -   completionTime
+                                    type: Gauge
+                                help: Completion time of the Liferay backup in Unix seconds
+                                name: liferay_backup_completion_time_seconds
+                            -   each:
+                                    gauge:
+                                        path:
+                                            -   status
+                                        valueFrom:
+                                            -   startTime
+                                    type: Gauge
+                                help: Start time of the Liferay backup in Unix seconds
+                                name: liferay_backup_start_time_seconds
+                            -   each:
+                                    gauge:
+                                        labelsFromPath:
+                                            reason:
+                                                -   reason
+                                            type:
+                                                -   type
+                                        path:
+                                            -   status
+                                            -   conditions
+                                        valueFrom:
+                                            -   status
+                                    type: Gauge
+                                help: Liferay backup condition status (1 = True, 0 = False)
+                                name: liferay_backup_status_condition
+        enabled: true
     enabled: true
     extraArgs:
-        -   --metric-allowlist=kube_deployment_status_replicas_ready,kube_namespace_labels,kube_node_info,kube_node_status_condition,kube_pod_container_info,kube_pod_container_resource_limits,kube_pod_container_resource_requests,kube_pod_container_status_restarts_total,kube_statefulset_status_replicas_ready
+        -   --metric-allowlist=kube_customresource_liferay_backup_completion_time_seconds,kube_customresource_liferay_backup_start_time_seconds,kube_customresource_liferay_backup_status_condition,kube_deployment_status_replicas_ready,kube_namespace_labels,kube_node_info,kube_node_status_condition,kube_pod_container_info,kube_pod_container_resource_limits,kube_pod_container_resource_requests,kube_pod_container_status_restarts_total,kube_statefulset_labels,kube_statefulset_status_replicas_ready
         -   --v=1
     metricLabelsAllowlist:
         -   namespaces=[liferay.com/observable]
+        -   statefulsets=[helm.sh/chart]
     networkPolicy:
         egress:
             -   {}
@@ -754,6 +806,15 @@ kube-state-metrics:
         monitor:
             enabled: false
     prometheusScrape: false
+    rbac:
+        extraRules:
+            -   apiGroups:
+                    -   backup.liferay.cloud
+                resources:
+                    -   liferaybackups
+                verbs:
+                    -   list
+                    -   watch
     resources:
         limits:
             cpu: 100m
