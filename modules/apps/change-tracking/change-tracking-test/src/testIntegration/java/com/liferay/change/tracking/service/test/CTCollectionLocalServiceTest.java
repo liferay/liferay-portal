@@ -435,6 +435,8 @@ public class CTCollectionLocalServiceTest {
 				ctCollectionTemplate.getCtCollectionTemplateId()));
 		Assert.assertNull(ctCollectionTemplate.getJSONObject());
 		Assert.assertNull(
+			_ctsContentLocalService.fetchCTSContent(ctEntry.getModelClassPK()));
+		Assert.assertNull(
 			_ctPreferencesLocalService.fetchCTPreferences(
 				company.getCompanyId(), 0));
 		Assert.assertNull(
@@ -442,8 +444,6 @@ public class CTCollectionLocalServiceTest {
 		Assert.assertNull(
 			_ctSchemaVersionLocalService.fetchCTSchemaVersion(
 				ctCollection.getSchemaVersionId()));
-		Assert.assertNull(
-			_ctsContentLocalService.fetchCTSContent(ctEntry.getModelClassPK()));
 	}
 
 	@Test
