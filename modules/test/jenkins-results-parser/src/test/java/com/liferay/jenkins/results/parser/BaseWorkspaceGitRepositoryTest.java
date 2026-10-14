@@ -35,6 +35,12 @@ public class BaseWorkspaceGitRepositoryTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testCreatePullRequestLocalGitBranch() throws Exception {
+		_testCreatePullRequestLocalGitBranch(false);
+		_testCreatePullRequestLocalGitBranch(true);
+	}
+
+	@Test
 	public void testDownloadGitArchives() throws Exception {
 		_testDownloadGitArchives(false, "test-portal-stable(7.3.x)", "compile");
 		_testDownloadGitArchives(false, "test-portal-stable(master)", null);
@@ -595,6 +601,78 @@ public class BaseWorkspaceGitRepositoryTest
 		environmentMap.put("MASTER_NETWORK_NAME", "aws-network");
 
 		mockEnvironment(environmentMap);
+	}
+
+	private void _testCreatePullRequestLocalGitBranch(
+			boolean usePullRequestBaseRepository)
+		throws Exception {
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		Mockito.doReturn(
+			true
+		).when(
+			gitWorkingDirectory
+		).localSHAExists(
+			Mockito.anyString()
+		);
+
+		RemoteGitRef upstreamRemoteGitRef = Mockito.mock(RemoteGitRef.class);
+
+		String upstreamRemoteURL = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			upstreamRemoteURL
+		).when(
+			upstreamRemoteGitRef
+		).getRemoteURL();
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository(true);
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).validateSHAInRemoteGitRef(
+			Mockito.anyString(), Mockito.nullable(RemoteGitRef.class),
+			Mockito.anyString()
+		);
+
+		Mockito.doReturn(
+			gitWorkingDirectory
+		).when(
+			defaultWorkspaceGitRepository
+		).getGitWorkingDirectory();
+
+		ReflectionTestUtil.setFieldValue(
+			defaultWorkspaceGitRepository, "_upstreamRemoteGitRef",
+			upstreamRemoteGitRef);
+
+		defaultWorkspaceGitRepository.setUsePullRequestBaseRepository(
+			usePullRequestBaseRepository);
+
+		try (MockedStatic<GitHubDevSyncUtil> gitHubDevSyncUtilMockedStatic =
+				Mockito.mockStatic(GitHubDevSyncUtil.class)) {
+
+			ReflectionTestUtil.invoke(
+				defaultWorkspaceGitRepository,
+				"_createPullRequestLocalGitBranch", new Class<?>[0]);
+		}
+
+		String expectedUpstreamRemoteURL = null;
+
+		if (usePullRequestBaseRepository) {
+			expectedUpstreamRemoteURL = upstreamRemoteURL;
+		}
+
+		Mockito.verify(
+			gitWorkingDirectory
+		).getRebasedLocalGitBranch(
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.eq(expectedUpstreamRemoteURL)
+		);
 	}
 
 	private void _testDownloadGitArchives(
