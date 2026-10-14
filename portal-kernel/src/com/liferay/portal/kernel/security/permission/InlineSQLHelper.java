@@ -33,18 +33,11 @@ public interface InlineSQLHelper {
 		String modelClassName, Column<T, Long> classPKColumn, long... groupIds);
 
 	/**
-	 * Returns <code>true</code> if the inline SQL helper is enabled.
-	 *
-	 * @return <code>true</code> if the inline SQL helper is enabled;
-	 *         <code>false</code> otherwise
-	 */
-	public boolean isEnabled();
-
-	/**
 	 * Returns <code>true</code> if the inline SQL helper is enabled for the
 	 * groups.
 	 *
-	 * @param  groupIds the primary keys of the groups
+	 * @param  groupIds the primary keys of the groups. When empty or
+	 *         <code>null</code>, the check applies at the company level.
 	 * @return <code>true</code> if the inline SQL helper is enabled for the
 	 *         groups; <code>false</code> otherwise
 	 */

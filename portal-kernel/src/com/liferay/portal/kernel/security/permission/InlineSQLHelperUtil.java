@@ -39,13 +39,6 @@ public class InlineSQLHelperUtil {
 			modelClass, classPKColumn, groupIds);
 	}
 
-	public static boolean isEnabled() {
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.isEnabled();
-	}
-
 	public static boolean isEnabled(long... groupIds) {
 		InlineSQLHelper inlineSQLPermission =
 			_inlineSQLPermissionSnapshot.get();

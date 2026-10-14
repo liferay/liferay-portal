@@ -186,24 +186,23 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 	}
 
 	@Override
-	public boolean isEnabled() {
-		return isEnabled(0);
-	}
-
-	@Override
 	public boolean isEnabled(long... groupIds) {
 		if (!_inlinePermissionConfiguration.sqlCheckEnabled()) {
 			return false;
 		}
 
+		if (ArrayUtil.isEmpty(groupIds)) {
+			groupIds = new long[] {0};
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker == null) {
+			throw new IllegalStateException("Permission checker is null");
+		}
+
 		for (long groupId : groupIds) {
-			PermissionChecker permissionChecker =
-				PermissionThreadLocal.getPermissionChecker();
-
-			if (permissionChecker == null) {
-				throw new IllegalStateException("Permission checker is null");
-			}
-
 			if (isEnabled(permissionChecker.getCompanyId(), groupId)) {
 				return true;
 			}
