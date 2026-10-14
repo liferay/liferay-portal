@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -139,6 +140,67 @@ public class IndividualSegmentsCheckerTest {
 
 			Assert.assertEquals(
 				_user.getUserId(), segmentsEntryRel.getClassPK());
+		}
+	}
+
+	@Test
+	public void testCheckIndividualSegmentsEntriesWhenMembershipChanges()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(), "123456789", true,
+						"http://localhost:" +
+							PortalUtil.getPortalServerPort(false));
+			ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.segments.asah.connector.internal." +
+						"configuration.SegmentsAsahConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"anonymousUserSegmentsCacheExpirationTime", "60"
+					).build())) {
+
+			User user1 = UserTestUtil.addUser();
+			User user2 = UserTestUtil.addUser();
+
+			_prepareAsahFaroBackendClient(user1.getUuid(), user2.getUuid());
+
+			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+				_checkIndividualSegmentsSchedulerJobConfiguration.
+					getJobExecutorUnsafeRunnable();
+
+			jobExecutorUnsafeRunnable.run();
+
+			SegmentsEntry segmentsEntry = _getSegmentsEntry();
+
+			Assert.assertNotNull(
+				_segmentsEntryRelLocalService.fetchSegmentsEntryRel(
+					segmentsEntry.getSegmentsEntryId(),
+					_portal.getClassNameId(User.class), user1.getUserId()));
+
+			long segmentsEntryRelId = _getSegmentsEntryRelId(
+				segmentsEntry, user2);
+
+			User user3 = UserTestUtil.addUser();
+
+			_prepareAsahFaroBackendClient(user2.getUuid(), user3.getUuid());
+
+			jobExecutorUnsafeRunnable.run();
+
+			segmentsEntry = _getSegmentsEntry();
+
+			Assert.assertEquals(
+				segmentsEntryRelId,
+				_getSegmentsEntryRelId(segmentsEntry, user2));
+			Assert.assertNotNull(
+				_segmentsEntryRelLocalService.fetchSegmentsEntryRel(
+					segmentsEntry.getSegmentsEntryId(),
+					_portal.getClassNameId(User.class), user3.getUserId()));
+			Assert.assertNull(
+				_segmentsEntryRelLocalService.fetchSegmentsEntryRel(
+					segmentsEntry.getSegmentsEntryId(),
+					_portal.getClassNameId(User.class), user1.getUserId()));
 		}
 	}
 
@@ -300,6 +362,17 @@ public class IndividualSegmentsCheckerTest {
 			segmentsEntries.toString(), 1, segmentsEntries.size());
 
 		return segmentsEntries.get(0);
+	}
+
+	private long _getSegmentsEntryRelId(
+		SegmentsEntry segmentsEntry, User user) {
+
+		SegmentsEntryRel segmentsEntryRel =
+			_segmentsEntryRelLocalService.fetchSegmentsEntryRel(
+				segmentsEntry.getSegmentsEntryId(),
+				_portal.getClassNameId(User.class), user.getUserId());
+
+		return segmentsEntryRel.getSegmentsEntryRelId();
 	}
 
 	private void _prepareAsahFaroBackendClient(String... individualPKs) {
