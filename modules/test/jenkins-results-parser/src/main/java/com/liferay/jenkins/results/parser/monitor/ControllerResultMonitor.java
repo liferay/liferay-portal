@@ -336,8 +336,8 @@ public class ControllerResultMonitor extends BaseMonitor {
 		if (overdueDeadlineTimestamp <= 0) {
 			messages.add(
 				JenkinsResultsParserUtil.combine(
-					"Job ", _jobName, " has the schedule ",
-					cronSchedule.getSpec(), ", which never comes round"));
+					"Job ", _jobName, " has an invalid schedule: ",
+					cronSchedule.getSpec()));
 
 			statuses.add(MonitorResult.Status.UNKNOWN);
 

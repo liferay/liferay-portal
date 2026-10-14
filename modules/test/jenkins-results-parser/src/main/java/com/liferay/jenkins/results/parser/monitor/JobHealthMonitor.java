@@ -171,8 +171,7 @@ public class JobHealthMonitor extends BaseMonitor {
 						cronSchedule, currentTimeMillis, overdueGraceSeconds);
 
 					if (overdueDeadlineTimestamp <= 0) {
-						messages.add(
-							_getUnreachableScheduleMessage(cronSchedule));
+						messages.add(_getInvalidScheduleMessage(cronSchedule));
 
 						statuses.add(MonitorResult.Status.UNKNOWN);
 					}
@@ -234,6 +233,12 @@ public class JobHealthMonitor extends BaseMonitor {
 			", exceeding its maximum duration of ",
 			JenkinsResultsParserUtil.toDurationString(
 				_buildDurationMaximumSeconds * 1000));
+	}
+
+	private String _getInvalidScheduleMessage(CronSchedule cronSchedule) {
+		return JenkinsResultsParserUtil.combine(
+			"Job ", _jobName, " has an invalid schedule: ",
+			cronSchedule.getSpec());
 	}
 
 	private JSONObject _getJobJSONObject() throws IOException {
@@ -301,12 +306,6 @@ public class JobHealthMonitor extends BaseMonitor {
 			" plus a grace period of ",
 			JenkinsResultsParserUtil.toDurationString(
 				overdueGraceSeconds * 1000));
-	}
-
-	private String _getUnreachableScheduleMessage(CronSchedule cronSchedule) {
-		return JenkinsResultsParserUtil.combine(
-			"Job ", _jobName, " has the schedule ", cronSchedule.getSpec(),
-			", which never comes round");
 	}
 
 	private String _getUntriggerableMessage(boolean disabled) {
