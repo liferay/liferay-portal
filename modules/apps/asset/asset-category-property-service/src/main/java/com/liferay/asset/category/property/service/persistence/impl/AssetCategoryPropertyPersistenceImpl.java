@@ -265,97 +265,6 @@ public class AssetCategoryPropertyPersistenceImpl
 			finderCache, new Object[] {categoryId});
 	}
 
-	private CollectionPersistenceFinder
-		<AssetCategoryProperty, NoSuchCategoryPropertyException>
-			_collectionPersistenceFinderByC_K;
-
-	/**
-	 * Returns an ordered range of all the asset category properties where companyId = &#63; and key = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>AssetCategoryPropertyModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param key the key
-	 * @param start the lower bound of the range of asset category properties
-	 * @param end the upper bound of the range of asset category properties (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching asset category properties
-	 */
-	@Override
-	public List<AssetCategoryProperty> findByC_K(
-		long companyId, String key, int start, int end,
-		OrderByComparator<AssetCategoryProperty> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_K.find(
-			finderCache, new Object[] {companyId, key}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first asset category property in the ordered set where companyId = &#63; and key = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param key the key
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset category property
-	 * @throws NoSuchCategoryPropertyException if a matching asset category property could not be found
-	 */
-	@Override
-	public AssetCategoryProperty findByC_K_First(
-			long companyId, String key,
-			OrderByComparator<AssetCategoryProperty> orderByComparator)
-		throws NoSuchCategoryPropertyException {
-
-		return _collectionPersistenceFinderByC_K.findFirst(
-			finderCache, new Object[] {companyId, key}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first asset category property in the ordered set where companyId = &#63; and key = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param key the key
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset category property, or <code>null</code> if a matching asset category property could not be found
-	 */
-	@Override
-	public AssetCategoryProperty fetchByC_K_First(
-		long companyId, String key,
-		OrderByComparator<AssetCategoryProperty> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_K.fetchFirst(
-			finderCache, new Object[] {companyId, key}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the asset category properties where companyId = &#63; and key = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param key the key
-	 */
-	@Override
-	public void removeByC_K(long companyId, String key) {
-		_collectionPersistenceFinderByC_K.remove(
-			finderCache, new Object[] {companyId, key});
-	}
-
-	/**
-	 * Returns the number of asset category properties where companyId = &#63; and key = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param key the key
-	 * @return the number of matching asset category properties
-	 */
-	@Override
-	public int countByC_K(long companyId, String key) {
-		return _collectionPersistenceFinderByC_K.count(
-			finderCache, new Object[] {companyId, key});
-	}
-
 	private UniquePersistenceFinder
 		<AssetCategoryProperty, NoSuchCategoryPropertyException>
 			_uniquePersistenceFinderByCA_K;
@@ -915,36 +824,6 @@ public class AssetCategoryPropertyPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					AssetCategoryProperty::getCategoryId));
 
-		_collectionPersistenceFinderByC_K = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_K",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "key_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_K",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "key_"}, 0, 2, true, null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_K",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "key_"}, 0, 2, false, null),
-			_SQL_SELECT_ASSETCATEGORYPROPERTY_WHERE,
-			_SQL_COUNT_ASSETCATEGORYPROPERTY_WHERE,
-			AssetCategoryPropertyModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"assetCategoryProperty.", "companyId", FinderColumn.Type.LONG,
-				"=", true, true, AssetCategoryProperty::getCompanyId),
-			new FinderColumn<>(
-				"assetCategoryProperty.", "key", "key_",
-				FinderColumn.Type.STRING, "=", true, true,
-				AssetCategoryProperty::getKey));
-
 		_uniquePersistenceFinderByCA_K = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -1047,4 +926,4 @@ public class AssetCategoryPropertyPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-824576449
+// LIFERAY-SERVICE-BUILDER-HASH:-1378657950
