@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.asah.connector.cache.AsahSegmentsEntryCache;
 import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClient;
 import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClientImpl;
@@ -111,9 +112,11 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 					serviceContext.getScopeGroupId(),
 					individualSegment.getId());
 
+			Locale locale = _portal.getSiteDefaultLocale(
+				serviceContext.getScopeGroupId());
+
 			Map<Locale, String> nameMap = Collections.singletonMap(
-				_portal.getSiteDefaultLocale(serviceContext.getScopeGroupId()),
-				individualSegment.getName());
+				locale, individualSegment.getName());
 
 			if (segmentsEntry == null) {
 				_segmentsEntryLocalService.addSegmentsEntry(
@@ -121,6 +124,20 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 					individualSegment.getId(), nameMap, Collections.emptyMap(),
 					true, null, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
 					_getType(individualSegment), serviceContext);
+
+				return;
+			}
+
+			if (segmentsEntry.isActive() &&
+				(Validator.isNull(
+					individualSegment.getExternalReferenceCode()) ||
+				 StringUtil.equals(
+					 segmentsEntry.getExternalReferenceCode(),
+					 individualSegment.getExternalReferenceCode())) &&
+				StringUtil.equals(
+					segmentsEntry.getName(locale),
+					individualSegment.getName()) &&
+				(segmentsEntry.getType() == _getType(individualSegment))) {
 
 				return;
 			}
