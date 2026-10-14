@@ -36,10 +36,6 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
-		<finder name="C_DDMSI" return-type="Collection">
-			<finder-column name="classNameId" />
-			<finder-column name="ddmStructureId" />
-		</finder>
 		<finder name="DDMSI_F" return-type="Collection">
 			<finder-column name="ddmStructureId" />
 			<finder-column arrayable-operator="OR" name="fieldName" />
