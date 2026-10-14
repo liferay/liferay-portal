@@ -19,7 +19,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.BaseManagedServiceFactory;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.concurrent.SystemExecutorServiceUtil;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -27,23 +26,19 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.service.access.policy.model.SAPEntry;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
@@ -267,30 +262,8 @@ public class AnalyticsConfigurationRegistryImpl
 				"liferayAnalyticsProjectId", "liferayAnalyticsURL"
 			});
 
-		for (String groupId :
-				PrefsPropsUtil.getStringArray(
-					companyId, "liferayAnalyticsGroupIds", StringPool.COMMA)) {
-
-			Group group = _groupLocalService.fetchGroup(
-				GetterUtil.getLong(groupId));
-
-			if (group == null) {
-				continue;
-			}
-
-			UnicodeProperties typeSettingsUnicodeProperties =
-				group.getTypeSettingsProperties();
-
-			typeSettingsUnicodeProperties.remove("analyticsChannelId");
-
-			group.setTypeSettingsProperties(typeSettingsUnicodeProperties);
-
-			_groupLocalService.updateGroup(group);
-		}
-
 		try {
-			_configurationProvider.deleteCompanyConfiguration(
-				AnalyticsConfiguration.class, companyId);
+			_analyticsSettingsManager.deleteCompanyConfiguration(companyId);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -989,14 +962,7 @@ public class AnalyticsConfigurationRegistryImpl
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 
-	@Reference
-	private ConfigurationProvider _configurationProvider;
-
 	private ExecutorService _executorService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
-
 	private final Set<Long> _initializedCompanyIds = new HashSet<>();
 
 	@Reference
