@@ -36,10 +36,6 @@
 		<finder name="DDMTemplateId" return-type="TemplateEntry">
 			<finder-column name="ddmTemplateId" />
 		</finder>
-		<finder name="G_IICN" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="infoItemClassName" />
-		</finder>
 		<finder name="G_IICN_IIFVK" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="infoItemClassName" />
