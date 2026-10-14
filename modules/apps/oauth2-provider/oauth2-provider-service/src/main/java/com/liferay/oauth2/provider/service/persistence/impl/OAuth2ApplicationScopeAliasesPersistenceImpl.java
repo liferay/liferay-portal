@@ -80,93 +80,6 @@ public class OAuth2ApplicationScopeAliasesPersistenceImpl
 	private CollectionPersistenceFinder
 		<OAuth2ApplicationScopeAliases,
 		 NoSuchOAuth2ApplicationScopeAliasesException>
-			_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the o auth2 application scope aliaseses where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuth2ApplicationScopeAliasesModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of o auth2 application scope aliaseses
-	 * @param end the upper bound of the range of o auth2 application scope aliaseses (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching o auth2 application scope aliaseses
-	 */
-	@Override
-	public List<OAuth2ApplicationScopeAliases> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<OAuth2ApplicationScopeAliases> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first o auth2 application scope aliases in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching o auth2 application scope aliases
-	 * @throws NoSuchOAuth2ApplicationScopeAliasesException if a matching o auth2 application scope aliases could not be found
-	 */
-	@Override
-	public OAuth2ApplicationScopeAliases findByCompanyId_First(
-			long companyId,
-			OrderByComparator<OAuth2ApplicationScopeAliases> orderByComparator)
-		throws NoSuchOAuth2ApplicationScopeAliasesException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first o auth2 application scope aliases in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching o auth2 application scope aliases, or <code>null</code> if a matching o auth2 application scope aliases could not be found
-	 */
-	@Override
-	public OAuth2ApplicationScopeAliases fetchByCompanyId_First(
-		long companyId,
-		OrderByComparator<OAuth2ApplicationScopeAliases> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the o auth2 application scope aliaseses where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of o auth2 application scope aliaseses where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching o auth2 application scope aliaseses
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
-	private CollectionPersistenceFinder
-		<OAuth2ApplicationScopeAliases,
-		 NoSuchOAuth2ApplicationScopeAliasesException>
 			_collectionPersistenceFinderByOAuth2ApplicationId;
 
 	/**
@@ -481,34 +394,6 @@ public class OAuth2ApplicationScopeAliasesPersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_OAUTH2APPLICATIONSCOPEALIASES_WHERE,
-				_SQL_COUNT_OAUTH2APPLICATIONSCOPEALIASES_WHERE,
-				OAuth2ApplicationScopeAliasesModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"oAuth2ApplicationScopeAliases.", "companyId",
-					FinderColumn.Type.LONG, "=", true, true,
-					OAuth2ApplicationScopeAliases::getCompanyId));
-
 		_collectionPersistenceFinderByOAuth2ApplicationId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -605,4 +490,4 @@ public class OAuth2ApplicationScopeAliasesPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1115387020
+// LIFERAY-SERVICE-BUILDER-HASH:2051825509
