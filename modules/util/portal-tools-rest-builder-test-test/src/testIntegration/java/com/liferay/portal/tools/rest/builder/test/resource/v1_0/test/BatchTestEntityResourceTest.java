@@ -6,9 +6,11 @@
 package com.liferay.portal.tools.rest.builder.test.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -20,6 +22,8 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.BatchTestEntity;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
@@ -112,6 +116,16 @@ public class BatchTestEntityResourceTest
 			JSONUtil.getValueAsString(
 				batchTestEntityJSONObject, "JSONObject/embeddedNestedField",
 				"Object/nestedField2"));
+	}
+
+	@Override
+	@Test
+	public void testPutBatchTestEntityByExternalReferenceCode()
+		throws Exception {
+
+		super.testPutBatchTestEntityByExternalReferenceCode();
+
+		_testPutBatchTestEntityBatch();
 	}
 
 	@Override
@@ -313,6 +327,33 @@ public class BatchTestEntityResourceTest
 				"portal-tools-rest-builder-test/v1.0/batch-test-entities/",
 				batchTestEntityId, "?", queryString),
 			Http.Method.GET);
+	}
+
+	private void _testPutBatchTestEntityBatch() throws Exception {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			JSONObject jsonObject = waitForFinish(
+				"FAILED",
+				JSONFactoryUtil.createJSONObject(
+					importTaskResource.putImportTaskHttpResponse(
+						"com.liferay.portal.tools.rest.builder.test.dto.v1_0." +
+							"BatchTestEntity",
+						null, null, null, null, null,
+						JSONUtil.putAll(
+							JSONFactoryUtil.createJSONObject(
+								randomBatchTestEntity().toString()))
+					).getContent()));
+
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			Assert.assertEquals(
+				"This method needs to be implemented",
+				importTask.getErrorMessage());
+		}
 	}
 
 	@Inject
