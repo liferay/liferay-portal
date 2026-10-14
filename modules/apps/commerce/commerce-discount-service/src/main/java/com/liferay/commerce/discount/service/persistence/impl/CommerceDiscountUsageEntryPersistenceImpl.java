@@ -256,99 +256,6 @@ public class CommerceDiscountUsageEntryPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CommerceDiscountUsageEntry, NoSuchDiscountUsageEntryException>
-			_collectionPersistenceFinderByCOI_CDI;
-
-	/**
-	 * Returns an ordered range of all the commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceDiscountUsageEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @param start the lower bound of the range of commerce discount usage entries
-	 * @param end the upper bound of the range of commerce discount usage entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce discount usage entries
-	 */
-	@Override
-	public List<CommerceDiscountUsageEntry> findByCOI_CDI(
-		long commerceOrderId, long commerceDiscountId, int start, int end,
-		OrderByComparator<CommerceDiscountUsageEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCOI_CDI.find(
-			finderCache, new Object[] {commerceOrderId, commerceDiscountId},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce discount usage entry in the ordered set where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce discount usage entry
-	 * @throws NoSuchDiscountUsageEntryException if a matching commerce discount usage entry could not be found
-	 */
-	@Override
-	public CommerceDiscountUsageEntry findByCOI_CDI_First(
-			long commerceOrderId, long commerceDiscountId,
-			OrderByComparator<CommerceDiscountUsageEntry> orderByComparator)
-		throws NoSuchDiscountUsageEntryException {
-
-		return _collectionPersistenceFinderByCOI_CDI.findFirst(
-			finderCache, new Object[] {commerceOrderId, commerceDiscountId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce discount usage entry in the ordered set where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce discount usage entry, or <code>null</code> if a matching commerce discount usage entry could not be found
-	 */
-	@Override
-	public CommerceDiscountUsageEntry fetchByCOI_CDI_First(
-		long commerceOrderId, long commerceDiscountId,
-		OrderByComparator<CommerceDiscountUsageEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByCOI_CDI.fetchFirst(
-			finderCache, new Object[] {commerceOrderId, commerceDiscountId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63; from the database.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 */
-	@Override
-	public void removeByCOI_CDI(long commerceOrderId, long commerceDiscountId) {
-		_collectionPersistenceFinderByCOI_CDI.remove(
-			finderCache, new Object[] {commerceOrderId, commerceDiscountId});
-	}
-
-	/**
-	 * Returns the number of commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @return the number of matching commerce discount usage entries
-	 */
-	@Override
-	public int countByCOI_CDI(long commerceOrderId, long commerceDiscountId) {
-		return _collectionPersistenceFinderByCOI_CDI.count(
-			finderCache, new Object[] {commerceOrderId, commerceDiscountId});
-	}
-
-	private CollectionPersistenceFinder
-		<CommerceDiscountUsageEntry, NoSuchDiscountUsageEntryException>
 			_collectionPersistenceFinderByCAI_COI_CDI;
 
 	/**
@@ -750,41 +657,6 @@ public class CommerceDiscountUsageEntryPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					CommerceDiscountUsageEntry::getCommerceDiscountId));
 
-		_collectionPersistenceFinderByCOI_CDI =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCOI_CDI",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"commerceOrderId", "commerceDiscountId"},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByCOI_CDI",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"commerceOrderId", "commerceDiscountId"},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByCOI_CDI",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"commerceOrderId", "commerceDiscountId"},
-					false),
-				_SQL_SELECT_COMMERCEDISCOUNTUSAGEENTRY_WHERE,
-				_SQL_COUNT_COMMERCEDISCOUNTUSAGEENTRY_WHERE,
-				CommerceDiscountUsageEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"commerceDiscountUsageEntry.", "commerceOrderId",
-					FinderColumn.Type.LONG, "=", true, true,
-					CommerceDiscountUsageEntry::getCommerceOrderId),
-				new FinderColumn<>(
-					"commerceDiscountUsageEntry.", "commerceDiscountId",
-					FinderColumn.Type.LONG, "=", true, true,
-					CommerceDiscountUsageEntry::getCommerceDiscountId));
-
 		_collectionPersistenceFinderByCAI_COI_CDI =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -902,4 +774,4 @@ public class CommerceDiscountUsageEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:501546915
+// LIFERAY-SERVICE-BUILDER-HASH:-984143643

@@ -199,14 +199,6 @@ public class CommerceDiscountUsageEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCOI_CDI() throws Exception {
-		_persistence.countByCOI_CDI(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByCOI_CDI(0L, 0L);
-	}
-
-	@Test
 	public void testCountByCAI_COI_CDI() throws Exception {
 		_persistence.countByCAI_COI_CDI(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -536,4 +528,4 @@ public class CommerceDiscountUsageEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-60480319
+// LIFERAY-SERVICE-BUILDER-HASH:1168257168

@@ -161,72 +161,6 @@ public interface CommerceDiscountUsageEntryPersistence
 	public int countByCAI_CDI(long commerceAccountId, long commerceDiscountId);
 
 	/**
-	 * Returns an ordered range of all the commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.discount.model.impl.CommerceDiscountUsageEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @param start the lower bound of the range of commerce discount usage entries
-	 * @param end the upper bound of the range of commerce discount usage entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce discount usage entries
-	 */
-	public java.util.List<CommerceDiscountUsageEntry> findByCOI_CDI(
-		long commerceOrderId, long commerceDiscountId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<CommerceDiscountUsageEntry> orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first commerce discount usage entry in the ordered set where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce discount usage entry
-	 * @throws NoSuchDiscountUsageEntryException if a matching commerce discount usage entry could not be found
-	 */
-	public CommerceDiscountUsageEntry findByCOI_CDI_First(
-			long commerceOrderId, long commerceDiscountId,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<CommerceDiscountUsageEntry> orderByComparator)
-		throws NoSuchDiscountUsageEntryException;
-
-	/**
-	 * Returns the first commerce discount usage entry in the ordered set where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce discount usage entry, or <code>null</code> if a matching commerce discount usage entry could not be found
-	 */
-	public CommerceDiscountUsageEntry fetchByCOI_CDI_First(
-		long commerceOrderId, long commerceDiscountId,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<CommerceDiscountUsageEntry> orderByComparator);
-
-	/**
-	 * Removes all the commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63; from the database.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 */
-	public void removeByCOI_CDI(long commerceOrderId, long commerceDiscountId);
-
-	/**
-	 * Returns the number of commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @return the number of matching commerce discount usage entries
-	 */
-	public int countByCOI_CDI(long commerceOrderId, long commerceDiscountId);
-
-	/**
 	 * Returns an ordered range of all the commerce discount usage entries where commerceAccountId = &#63; and commerceOrderId = &#63; and commerceDiscountId = &#63;.
 	 *
 	 * <p>
@@ -460,66 +394,6 @@ public interface CommerceDiscountUsageEntryPersistence
 	}
 
 	/**
-	 * Returns all the commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @return the matching commerce discount usage entries
-	 */
-	public default java.util.List<CommerceDiscountUsageEntry> findByCOI_CDI(
-		long commerceOrderId, long commerceDiscountId) {
-
-		return findByCOI_CDI(
-			commerceOrderId, commerceDiscountId,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.discount.model.impl.CommerceDiscountUsageEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @param start the lower bound of the range of commerce discount usage entries
-	 * @param end the upper bound of the range of commerce discount usage entries (not inclusive)
-	 * @return the range of matching commerce discount usage entries
-	 */
-	public default java.util.List<CommerceDiscountUsageEntry> findByCOI_CDI(
-		long commerceOrderId, long commerceDiscountId, int start, int end) {
-
-		return findByCOI_CDI(
-			commerceOrderId, commerceDiscountId, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the commerce discount usage entries where commerceOrderId = &#63; and commerceDiscountId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.discount.model.impl.CommerceDiscountUsageEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceOrderId the commerce order ID
-	 * @param commerceDiscountId the commerce discount ID
-	 * @param start the lower bound of the range of commerce discount usage entries
-	 * @param end the upper bound of the range of commerce discount usage entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching commerce discount usage entries
-	 */
-	public default java.util.List<CommerceDiscountUsageEntry> findByCOI_CDI(
-		long commerceOrderId, long commerceDiscountId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<CommerceDiscountUsageEntry> orderByComparator) {
-
-		return findByCOI_CDI(
-			commerceOrderId, commerceDiscountId, start, end, orderByComparator,
-			true);
-	}
-
-	/**
 	 * Returns all the commerce discount usage entries where commerceAccountId = &#63; and commerceOrderId = &#63; and commerceDiscountId = &#63;.
 	 *
 	 * @param commerceAccountId the commerce account ID
@@ -586,4 +460,4 @@ public interface CommerceDiscountUsageEntryPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1864606059
+// LIFERAY-SERVICE-BUILDER-HASH:203470934
