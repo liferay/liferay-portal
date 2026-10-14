@@ -50,9 +50,6 @@
 		<finder name="Completed" return-type="Collection">
 			<finder-column name="completed" />
 		</finder>
-		<finder name="Status" return-type="Collection">
-			<finder-column name="status" />
-		</finder>
 		<finder name="G_T" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column arrayable-operator="OR" name="taskExecutorClassName" />
