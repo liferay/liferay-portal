@@ -16,8 +16,11 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.exportimport.test.util.lar.BasePortletExportImportTestCase;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
+import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -120,6 +123,35 @@ public class DDMFormDisplayExportImportTest
 	}
 
 	@Test
+	@TestInfo("LPD-109596")
+	public void testGetPortletConfigurationWithCompanyGroup() throws Exception {
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			group.getCompanyId());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+			HashMapBuilder.put(
+				"groupExternalReferenceCode",
+				new String[] {companyGroup.getExternalReferenceCode()}
+			).build());
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			Map<String, Object> portletConfiguration =
+				_portletPreferencesPortletConfigurationExporter.
+					getPortletConfiguration(layout.getPlid(), portletId);
+
+			Assert.assertEquals(
+				companyGroup.getExternalReferenceCode(),
+				portletConfiguration.get("groupExternalReferenceCode"));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-98716")
 	public void testGetPortletConfigurationWithLocalStaging() throws Exception {
 		StagingLocalServiceUtil.enableLocalStaging(
@@ -138,19 +170,67 @@ public class DDMFormDisplayExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		Map<String, Object> portletConfiguration =
-			_portletPreferencesPortletConfigurationExporter.
-				getPortletConfiguration(layout.getPlid(), portletId);
+		try {
+			Map<String, Object> portletConfiguration =
+				_portletPreferencesPortletConfigurationExporter.
+					getPortletConfiguration(layout.getPlid(), portletId);
+
+			Assert.assertEquals(
+				group.getExternalReferenceCode(),
+				portletConfiguration.get("groupExternalReferenceCode"));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-109596")
+	public void testImportPortletConfigurationWithCompanyGroup()
+		throws Exception {
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			group.getCompanyId());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+			HashMapBuilder.put(
+				"groupExternalReferenceCode",
+				new String[] {companyGroup.getExternalReferenceCode()}
+			).build());
+
+		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			_portletPreferencesPortletConfigurationImporter.
+				importPortletConfiguration(
+					importedLayout.getPlid(), portletId,
+					_portletPreferencesPortletConfigurationExporter.
+						getPortletConfiguration(layout.getPlid(), portletId));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+
+		PortletPreferences portletPreferences =
+			LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
 
 		Assert.assertEquals(
-			group.getExternalReferenceCode(),
-			portletConfiguration.get("groupExternalReferenceCode"));
-
-		ExportImportThreadLocal.setPortletStagingInProcess(false);
+			companyGroup.getExternalReferenceCode(),
+			portletPreferences.getValue("groupExternalReferenceCode", null));
 	}
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private PortletPreferencesPortletConfigurationExporter
 		_portletPreferencesPortletConfigurationExporter;
+
+	@Inject
+	private PortletPreferencesPortletConfigurationImporter
+		_portletPreferencesPortletConfigurationImporter;
 
 }
