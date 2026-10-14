@@ -108,32 +108,11 @@ public interface InlineSQLHelper {
 	 *         by the query
 	 * @param  classPKField the name of the column containing the resource's
 	 *         primary key
-	 * @param  groupId the primary key of the group containing the resources
-	 *         (optionally <code>null</code>)
-	 * @return the modified SQL query
-	 */
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, long groupId);
-
-	/**
-	 * Modifies the SQL query to only match resources that the user has
-	 * permission to view.
-	 *
-	 * Note that this method is only intended for use with relatively simple SQL
-	 * queries (i.e. queries that have no more than one WHERE clause). For more
-	 * complex SQL queries, it is recommended to use the DSLQuery methods
-	 * instead.
-	 *
-	 * @param  sql the SQL query
-	 * @param  className the fully qualified class name of the resources matched
-	 *         by the query
-	 * @param  classPKField the name of the column containing the resource's
-	 *         primary key
 	 * @param  groupIds the primary keys of the groups containing the resources
 	 *         (optionally <code>null</code>)
 	 * @return the modified SQL query
 	 */
 	public String replacePermissionCheck(
-		String sql, String className, String classPKField, long[] groupIds);
+		String sql, String className, String classPKField, long... groupIds);
 
 }

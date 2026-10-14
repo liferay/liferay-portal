@@ -277,15 +277,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 	@Override
 	public String replacePermissionCheck(
-		String sql, String className, String classPKField, long groupId) {
-
-		return replacePermissionCheck(
-			sql, className, classPKField, new long[] {groupId});
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, long[] groupIds) {
+		String sql, String className, String classPKField, long... groupIds) {
 
 		Set<Long> disabledGroupIds = new HashSet<>();
 		PermissionChecker permissionChecker =
