@@ -269,6 +269,7 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 								]
 							: []),
 					]}
+					fluid
 					groupId={groupId!}
 				>
 					<BasePage.Row>
@@ -320,7 +321,7 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 					</BasePage.Row>
 				</BasePage.Header>
 				{hasContent && (
-					<BasePage.SubHeader>
+					<BasePage.SubHeader fluid>
 						<div className="d-flex justify-content-between w-100">
 							<div className="d-flex">
 								<FilterPicker
@@ -352,7 +353,9 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 						</div>
 					</BasePage.SubHeader>
 				)}
-				<BasePage.Body>{renderBody()}</BasePage.Body>
+				<BasePage.Body className="pt-3 px-5" pageContainer={false}>
+					{renderBody()}
+				</BasePage.Body>
 			</BasePage>
 		</LifecycleContextProvider>
 	);

@@ -539,6 +539,14 @@ describe('BaseLifecycle', () => {
 		});
 	});
 
+	it('lays the dashboard out at full width', () => {
+		const {container} = renderPage();
+
+		expect(screen.getByTestId('overview-section')).toBeInTheDocument();
+		expect(container.querySelector('.page-container')).toBeNull();
+		expect(container.querySelector('.header-container')).toBeNull();
+	});
+
 	it('renders the lifecycle content when account data is available', () => {
 		renderPage();
 
