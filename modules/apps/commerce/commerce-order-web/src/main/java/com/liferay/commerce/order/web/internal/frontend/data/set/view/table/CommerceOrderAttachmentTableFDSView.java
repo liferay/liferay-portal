@@ -48,6 +48,10 @@ public class CommerceOrderAttachmentTableFDSView extends BaseTableFDSView {
 			"priority", "priority",
 			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
 		).add(
+			"dsRequestStatus", "signature-status",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"dsRequestStatusDataRenderer")
+		).add(
 			_getDateFDSTableSchemaField("dateModified", "modified-date")
 		).add(
 			"restricted", "restricted",

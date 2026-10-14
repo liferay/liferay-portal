@@ -3,8 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	DSRequestStatusDataRenderer,
+	removeDSRequestStatusColumn,
+} from 'commerce-frontend-js';
 import {openModal, openToast} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
+import React from 'react';
 
 import CommerceOrderAttachmentRestrictedDataRenderer from './CommerceOrderAttachmentRestrictedDataRenderer';
 import CommerceOrderAttachmentTitleDataRenderer from './CommerceOrderAttachmentTitleDataRenderer';
@@ -75,53 +80,65 @@ const openDeleteConfirmationModal = ({itemName, loadData, url}) => {
 	});
 };
 
-const AttachmentsFDSPropsTransformer = (props) => ({
-	...props,
-	customDataRenderers: {
-		commerceOrderAttachmentRestrictedDataRenderer:
-			CommerceOrderAttachmentRestrictedDataRenderer,
-		commerceOrderAttachmentTitleDataRenderer:
-			CommerceOrderAttachmentTitleDataRenderer,
-	},
-	itemsActions: props.itemsActions?.map((action) => {
-		if (action?.data?.id === 'delete') {
-			return {
-				...action,
-				className: 'text-danger',
-			};
-		}
+const AttachmentsFDSPropsTransformer = (props) => {
+	const dsRequestStatuses = props.additionalProps?.dsRequestStatuses ?? {};
 
-		return action;
-	}),
-	onActionDropdownItemClick: ({
-		action: {
-			data: {id: actionId},
+	return {
+		...props,
+		customDataRenderers: {
+			commerceOrderAttachmentRestrictedDataRenderer:
+				CommerceOrderAttachmentRestrictedDataRenderer,
+			commerceOrderAttachmentTitleDataRenderer:
+				CommerceOrderAttachmentTitleDataRenderer,
+			dsRequestStatusDataRenderer: (rendererProps) =>
+				React.createElement(DSRequestStatusDataRenderer, {
+					...rendererProps,
+					dsRequestStatuses,
+				}),
 		},
-		event,
-		itemData,
-		loadData,
-	}) => {
-		if (actionId === 'delete') {
-			event?.preventDefault();
-
-			openDeleteConfirmationModal({
-				itemName: itemData?.title,
-				loadData,
-				url: itemData?.actions?.delete?.href,
-			});
-		}
-		else if (actionId === 'download') {
-			event?.preventDefault();
-
-			const fileURL = itemData?.url;
-
-			if (!fileURL) {
-				return;
+		itemsActions: props.itemsActions?.map((action) => {
+			if (action?.data?.id === 'delete') {
+				return {
+					...action,
+					className: 'text-danger',
+				};
 			}
 
-			window.location.href = fileURL;
-		}
-	},
-});
+			return action;
+		}),
+		onActionDropdownItemClick: ({
+			action: {
+				data: {id: actionId},
+			},
+			event,
+			itemData,
+			loadData,
+		}) => {
+			if (actionId === 'delete') {
+				event?.preventDefault();
+
+				openDeleteConfirmationModal({
+					itemName: itemData?.title,
+					loadData,
+					url: itemData?.actions?.delete?.href,
+				});
+			}
+			else if (actionId === 'download') {
+				event?.preventDefault();
+
+				const fileURL = itemData?.url;
+
+				if (!fileURL) {
+					return;
+				}
+
+				window.location.href = fileURL;
+			}
+		},
+		views: Object.keys(dsRequestStatuses).length
+			? props.views
+			: removeDSRequestStatusColumn(props.views),
+	};
+};
 
 export default AttachmentsFDSPropsTransformer;
