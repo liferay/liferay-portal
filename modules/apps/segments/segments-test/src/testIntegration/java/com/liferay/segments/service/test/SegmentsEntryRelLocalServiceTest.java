@@ -152,6 +152,30 @@ public class SegmentsEntryRelLocalServiceTest {
 	}
 
 	@Test
+	public void testHasSegmentsEntryRelWithAnotherSegmentsEntry()
+		throws PortalException {
+
+		SegmentsEntry segmentsEntry1 = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+		SegmentsEntry segmentsEntry2 = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+
+		int classNameId = RandomTestUtil.randomInt();
+		int classPK = RandomTestUtil.randomInt();
+
+		_segmentsEntryRelLocalService.addSegmentsEntryRel(
+			segmentsEntry1.getSegmentsEntryId(), classNameId, classPK,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertTrue(
+			_segmentsEntryRelLocalService.hasSegmentsEntryRel(
+				segmentsEntry1.getSegmentsEntryId(), classNameId, classPK));
+		Assert.assertFalse(
+			_segmentsEntryRelLocalService.hasSegmentsEntryRel(
+				segmentsEntry2.getSegmentsEntryId(), classNameId, classPK));
+	}
+
+	@Test
 	public void testHasSegmentsEntryRelWithNoSegmentsEntryRels()
 		throws PortalException {
 
