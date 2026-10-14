@@ -50,7 +50,7 @@ exports[`Event Analysis Editor render 1`] = `
           class="align-self-stretch border-left"
         />
         <div
-          class="custom-control custom-checkbox compare-to-previous-checkbox mb-0 custom-control-outside"
+          class="custom-control custom-checkbox compare-to-previous-checkbox mb-0 mt-2 custom-control-outside"
         >
           <label>
             <input
