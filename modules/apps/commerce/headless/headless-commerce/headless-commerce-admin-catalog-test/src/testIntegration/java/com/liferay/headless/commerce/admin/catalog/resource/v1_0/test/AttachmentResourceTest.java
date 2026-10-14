@@ -5,9 +5,12 @@
 
 package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
+import com.liferay.commerce.product.constants.CPActionKeys;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -18,18 +21,30 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.AttachmentBase64;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.AttachmentUrl;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
+import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.AttachmentResource;
+import com.liferay.petra.function.UnsafeBiConsumer;
+import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -38,21 +53,42 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portlet.documentlibrary.constants.DLConstants;
+
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.io.ByteArrayInputStream;
 
+import java.net.URI;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Michele Vigilante
@@ -145,6 +181,18 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 		_testPostProductIdAttachmentProductVersioning();
 		_testPostProductIdAttachmentWithFileEntryExternalReferenceCode();
+		_testPostProductIdAttachmentWithLocalNetworkURL();
+		_testPostProductIdAttachmentWithUnsupportedProtocol();
+		_testPostProductIdAttachmentWithUpdatePermission();
+	}
+
+	@Override
+	@Test
+	public void testPostProductIdAttachmentByUrl() throws Exception {
+		super.testPostProductIdAttachmentByUrl();
+
+		_testPostProductIdAttachmentByUrlWithLocalNetworkURL();
+		_testPostProductIdAttachmentByUrlWithUpdatePermission();
 	}
 
 	@Override
@@ -159,12 +207,57 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 		assertValid(postAttachment);
 
 		_testPostProductIdImageWithFileEntryExternalReferenceCode();
+		_testPostProductIdImageWithUpdatePermission();
+	}
+
+	@Override
+	@Test
+	public void testPostProductIdImageByUrl() throws Exception {
+		super.testPostProductIdImageByUrl();
+
+		_testPostProductIdImageByUrlWithUpdatePermission();
 	}
 
 	@Override
 	@Test
 	public void testPutAttachmentByExternalReferenceCode() throws Exception {
 		testPatchAttachmentByExternalReferenceCode();
+	}
+
+	public static class TestApplication extends Application {
+
+		public int getCount() {
+			return _count.get();
+		}
+
+		@GET
+		@Path("/image.png")
+		@Produces(MediaType.APPLICATION_OCTET_STREAM)
+		public byte[] getImage() {
+			_count.incrementAndGet();
+
+			return RandomTestUtil.randomBytes();
+		}
+
+		@GET
+		@Path("/redirect")
+		public Response getRedirect() {
+			_count.incrementAndGet();
+
+			return Response.status(
+				Response.Status.FOUND
+			).location(
+				URI.create("image.png")
+			).build();
+		}
+
+		@Override
+		public Set<Object> getSingletons() {
+			return Collections.singleton(this);
+		}
+
+		private final AtomicInteger _count = new AtomicInteger();
+
 	}
 
 	@Override
@@ -424,6 +517,178 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 			_cProduct.getExternalReferenceCode(), randomAttachment());
 	}
 
+	private void _assertAllowedAndFailedURL(
+		TestApplication testApplication, String url) {
+
+		int count = testApplication.getCount();
+
+		_assertBadRequest(
+			() -> attachmentResource.postProductIdAttachmentByUrl(
+				_cProduct.getCProductId(), _randomAttachmentUrl(url)));
+
+		Assert.assertEquals(count + 1, testApplication.getCount());
+	}
+
+	private void _assertAllowedURL(TestApplication testApplication, String url)
+		throws Exception {
+
+		int count = testApplication.getCount();
+
+		Attachment attachment = attachmentResource.postProductIdAttachmentByUrl(
+			_cProduct.getCProductId(), _randomAttachmentUrl(url));
+
+		Assert.assertNotNull(attachment.getId());
+
+		Assert.assertEquals(count + 1, testApplication.getCount());
+	}
+
+	private void _assertBadRequest(ThrowingRunnable throwingRunnable) {
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class, throwingRunnable);
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+	}
+
+	private void _assertDisallowedURL(
+		TestApplication testApplication, String url) {
+
+		int count = testApplication.getCount();
+
+		_assertBadRequest(
+			() -> attachmentResource.postProductIdAttachmentByUrl(
+				_cProduct.getCProductId(), _randomAttachmentUrl(url)));
+
+		Assert.assertEquals(count, testApplication.getCount());
+	}
+
+	private void _assertProblemWithoutOutboundRequest(
+			String status, UnsafeConsumer<String, Exception> unsafeConsumer)
+		throws Exception {
+
+		TestApplication testApplication = new TestApplication();
+
+		ServiceRegistration<Application> serviceRegistration =
+			_registerTestApplication(testApplication);
+
+		try {
+			Problem.ProblemException problemException = Assert.assertThrows(
+				Problem.ProblemException.class,
+				() -> unsafeConsumer.accept(_getURL("/image.png")));
+
+			Assert.assertEquals(0, testApplication.getCount());
+
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(status, problem.getStatus());
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+	}
+
+	private void _assertUpdatePermission(
+			String actionId,
+			UnsafeBiConsumer<AttachmentResource, String, Exception>
+				unsafeBiConsumer)
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		AttachmentResource attachmentResource = _getAttachmentResource(role);
+
+		_assertProblemWithoutOutboundRequest(
+			"FORBIDDEN",
+			url -> unsafeBiConsumer.accept(attachmentResource, url));
+
+		String primKey = String.valueOf(testCompany.getCompanyId());
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceCatalog.class.getName(),
+			ResourceConstants.SCOPE_COMPANY, primKey, ActionKeys.UPDATE);
+		RoleTestUtil.addResourcePermission(
+			role, CPConstants.RESOURCE_NAME_PRODUCT,
+			ResourceConstants.SCOPE_COMPANY, primKey, actionId);
+		RoleTestUtil.addResourcePermission(
+			role, DLConstants.RESOURCE_NAME, ResourceConstants.SCOPE_COMPANY,
+			primKey, ActionKeys.ADD_DOCUMENT);
+
+		TestApplication testApplication = new TestApplication();
+
+		ServiceRegistration<Application> serviceRegistration =
+			_registerTestApplication(testApplication);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						_URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"urlLocalNetworkAccessEnabled", true
+						).build())) {
+
+			unsafeBiConsumer.accept(attachmentResource, _getURL("/image.png"));
+
+			Assert.assertEquals(1, testApplication.getCount());
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+	}
+
+	private AttachmentResource _getAttachmentResource(Role role)
+		throws Exception {
+
+		User user = UserTestUtil.addUser(testCompany, _PASSWORD);
+
+		Role orderAdministratorRole = _roleLocalService.getRole(
+			testCompany.getCompanyId(),
+			AccountRoleConstants.ROLE_NAME_ORDER_ADMINISTRATOR);
+
+		_roleLocalService.addUserRoles(
+			user.getUserId(),
+			new long[] {orderAdministratorRole.getRoleId(), role.getRoleId()});
+
+		return AttachmentResource.builder(
+		).authentication(
+			user.getEmailAddress(), _PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
+	private String _getURL(String path) {
+		return StringBundler.concat(
+			"http://localhost:", PortalUtil.getPortalServerPort(false),
+			"/o/test", path);
+	}
+
+	private Attachment _randomAttachment(String url) {
+		return new Attachment() {
+			{
+				src = url;
+				title = HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build();
+			}
+		};
+	}
+
+	private AttachmentUrl _randomAttachmentUrl(String url) {
+		return new AttachmentUrl() {
+			{
+				src = url;
+				title = HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build();
+			}
+		};
+	}
+
 	private Attachment _randomImageAttachment() throws Exception {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
@@ -452,6 +717,29 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 				type = CPAttachmentFileEntryConstants.TYPE_IMAGE;
 			}
 		};
+	}
+
+	private ServiceRegistration<Application> _registerTestApplication(
+		TestApplication testApplication) {
+
+		Bundle bundle = FrameworkUtil.getBundle(AttachmentResourceTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		return bundleContext.registerService(
+			Application.class, testApplication,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"liferay.access.control.disable", true
+			).put(
+				"liferay.auth.verifier", false
+			).put(
+				"liferay.oauth2", false
+			).put(
+				"osgi.jaxrs.application.base", "/test"
+			).put(
+				"osgi.jaxrs.name",
+				"Liferay.Headless.Commerce.Admin.Catalog.Test"
+			).build());
 	}
 
 	private void _testGetProductByExternalReferenceCodeAttachmentsPageWithBinaries()
@@ -607,6 +895,89 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 			GetterUtil.getLong(postAttachment.getFileEntryId()));
 	}
 
+	private void _testPostProductIdAttachmentByUrlWithLocalNetworkURL()
+		throws Exception {
+
+		TestApplication testApplication = new TestApplication();
+
+		ServiceRegistration<Application> serviceRegistration =
+			_registerTestApplication(testApplication);
+
+		try {
+			String url = _getURL("/image.png");
+
+			_assertDisallowedURL(testApplication, url);
+
+			try (CompanyConfigurationTemporarySwapper
+					companyConfigurationTemporarySwapper =
+						new CompanyConfigurationTemporarySwapper(
+							testCompany.getCompanyId(),
+							_URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID,
+							HashMapDictionaryBuilder.<String, Object>put(
+								"urlLocalNetworkAccessEnabled", true
+							).build())) {
+
+				_assertAllowedAndFailedURL(
+					testApplication, _getURL("/redirect"));
+				_assertAllowedURL(testApplication, url);
+			}
+
+			try (CompanyConfigurationTemporarySwapper
+					companyConfigurationTemporarySwapper =
+						new CompanyConfigurationTemporarySwapper(
+							testCompany.getCompanyId(),
+							_URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID,
+							HashMapDictionaryBuilder.<String, Object>put(
+								"urlHostsAllowed", new String[] {"localhost"}
+							).build())) {
+
+				_assertDisallowedURL(testApplication, url);
+			}
+
+			try (CompanyConfigurationTemporarySwapper
+					companyConfigurationTemporarySwapper =
+						new CompanyConfigurationTemporarySwapper(
+							testCompany.getCompanyId(),
+							_URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID,
+							HashMapDictionaryBuilder.<String, Object>put(
+								"urlHostsAllowed", new String[] {"localhost"}
+							).put(
+								"urlLocalNetworkAccessEnabled", true
+							).build())) {
+
+				_assertAllowedURL(testApplication, url);
+			}
+
+			try (CompanyConfigurationTemporarySwapper
+					companyConfigurationTemporarySwapper =
+						new CompanyConfigurationTemporarySwapper(
+							testCompany.getCompanyId(),
+							_URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID,
+							HashMapDictionaryBuilder.<String, Object>put(
+								"urlHostsAllowed",
+								new String[] {RandomTestUtil.randomString()}
+							).put(
+								"urlLocalNetworkAccessEnabled", true
+							).build())) {
+
+				_assertDisallowedURL(testApplication, url);
+			}
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+	}
+
+	private void _testPostProductIdAttachmentByUrlWithUpdatePermission()
+		throws Exception {
+
+		_assertUpdatePermission(
+			CPActionKeys.MANAGE_COMMERCE_PRODUCT_ATTACHMENTS,
+			(attachmentResource, url) ->
+				attachmentResource.postProductIdAttachmentByUrl(
+					_cProduct.getCProductId(), _randomAttachmentUrl(url)));
+	}
+
 	private void _testPostProductIdAttachmentProductVersioning()
 		throws Exception {
 
@@ -717,6 +1088,49 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 			GetterUtil.getLong(postAttachment.getFileEntryId()));
 	}
 
+	private void _testPostProductIdAttachmentWithLocalNetworkURL()
+		throws Exception {
+
+		_assertProblemWithoutOutboundRequest(
+			"BAD_REQUEST",
+			url -> attachmentResource.postProductIdAttachment(
+				_cProduct.getCProductId(), _randomAttachment(url)));
+	}
+
+	private void _testPostProductIdAttachmentWithUnsupportedProtocol() {
+		_assertBadRequest(
+			() -> attachmentResource.postProductIdAttachment(
+				_cProduct.getCProductId(),
+				_randomAttachment("file:///" + RandomTestUtil.randomString())));
+		_assertBadRequest(
+			() -> attachmentResource.postProductIdAttachment(
+				_cProduct.getCProductId(),
+				_randomAttachment(
+					StringBundler.concat(
+						"jar:file:///", RandomTestUtil.randomString(), "!/",
+						RandomTestUtil.randomString()))));
+	}
+
+	private void _testPostProductIdAttachmentWithUpdatePermission()
+		throws Exception {
+
+		_assertUpdatePermission(
+			CPActionKeys.MANAGE_COMMERCE_PRODUCT_ATTACHMENTS,
+			(attachmentResource, url) ->
+				attachmentResource.postProductIdAttachment(
+					_cProduct.getCProductId(), _randomAttachment(url)));
+	}
+
+	private void _testPostProductIdImageByUrlWithUpdatePermission()
+		throws Exception {
+
+		_assertUpdatePermission(
+			CPActionKeys.MANAGE_COMMERCE_PRODUCT_IMAGES,
+			(attachmentResource, url) ->
+				attachmentResource.postProductIdImageByUrl(
+					_cProduct.getCProductId(), _randomAttachmentUrl(url)));
+	}
+
 	private void _testPostProductIdImageWithFileEntryExternalReferenceCode()
 		throws Exception {
 
@@ -743,6 +1157,21 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 			GetterUtil.getLong(postAttachment.getFileEntryId()));
 	}
 
+	private void _testPostProductIdImageWithUpdatePermission()
+		throws Exception {
+
+		_assertUpdatePermission(
+			CPActionKeys.MANAGE_COMMERCE_PRODUCT_IMAGES,
+			(attachmentResource, url) -> attachmentResource.postProductIdImage(
+				_cProduct.getCProductId(), _randomAttachment(url)));
+	}
+
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
+	private static final String _URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID =
+		"com.liferay.portal.security.configuration." +
+			"URLFetchSecurityCompanyConfiguration";
+
 	@DeleteAfterTestRun
 	private CProduct _cProduct;
 
@@ -764,6 +1193,9 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	private ServiceContext _serviceContext;
 
