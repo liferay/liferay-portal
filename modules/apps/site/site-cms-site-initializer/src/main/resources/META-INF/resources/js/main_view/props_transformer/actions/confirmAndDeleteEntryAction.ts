@@ -13,6 +13,7 @@ export default function confirmAndDeleteEntryAction({
 	dataSetId,
 	deleteAction,
 	loadData,
+	status = 'danger',
 	successMessage,
 	title,
 }: {
@@ -21,6 +22,7 @@ export default function confirmAndDeleteEntryAction({
 	dataSetId?: string;
 	deleteAction: {href: string; method: string};
 	loadData: () => void;
+	status?: 'danger' | 'warning';
 	successMessage: string;
 	title: string;
 }) {
@@ -34,7 +36,7 @@ export default function confirmAndDeleteEntryAction({
 				type: 'cancel',
 			},
 			{
-				displayType: 'danger',
+				displayType: status,
 				label: confirmButtonLabel,
 				onClick: ({processClose}: {processClose: () => void}) => {
 					processClose();
@@ -58,7 +60,7 @@ export default function confirmAndDeleteEntryAction({
 		],
 		center: true,
 		role: 'alert',
-		status: 'danger',
+		status,
 		title,
 	});
 }

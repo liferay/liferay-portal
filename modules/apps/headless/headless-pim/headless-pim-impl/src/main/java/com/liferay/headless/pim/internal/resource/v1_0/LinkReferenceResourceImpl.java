@@ -108,27 +108,43 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 	}
 
 	private Map<String, Map<String, String>> _getActions(
-			ObjectEntry objectEntry, String type)
-		throws Exception {
+		ObjectEntry objectEntry, String type) {
 
-		if (!_hasUpdatePermission(objectEntry)) {
-			return null;
-		}
+		String href = StringBundler.concat(
+			"/o/headless-pim/v1.0/scopes/", objectEntry.getGroupId(),
+			"/links?className=",
+			URLCodec.encodeURL(objectEntry.getModelClassName()),
+			"&externalReferenceCode=",
+			URLCodec.encodeURL(objectEntry.getExternalReferenceCode()));
 
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"delete",
-			HashMapBuilder.put(
-				"href",
-				StringBundler.concat(
-					"/o/headless-pim/v1.0/scopes/", objectEntry.getGroupId(),
-					"/links?className=",
-					URLCodec.encodeURL(objectEntry.getModelClassName()),
-					"&externalReferenceCode=",
-					URLCodec.encodeURL(objectEntry.getExternalReferenceCode()),
-					"&type=", URLCodec.encodeURL(type))
-			).put(
-				"method", "DELETE"
-			).build()
+			() -> {
+				if (!_hasPermission(objectEntry, ActionKeys.UPDATE)) {
+					return null;
+				}
+
+				return HashMapBuilder.put(
+					"href",
+					StringBundler.concat(
+						href, "&type=", URLCodec.encodeURL(type))
+				).put(
+					"method", "DELETE"
+				).build();
+			}
+		).put(
+			"get",
+			() -> {
+				if (!_hasPermission(objectEntry, ActionKeys.VIEW)) {
+					return null;
+				}
+
+				return HashMapBuilder.put(
+					"href", href
+				).put(
+					"method", "GET"
+				).build();
+			}
 		).build();
 	}
 
@@ -177,7 +193,7 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 		return pimLinkType.getLabel(contextAcceptLanguage.getPreferredLocale());
 	}
 
-	private boolean _hasUpdatePermission(ObjectEntry objectEntry)
+	private boolean _hasPermission(ObjectEntry objectEntry, String actionId)
 		throws Exception {
 
 		ModelResourcePermission<ObjectEntry> modelResourcePermission =
@@ -186,7 +202,7 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 
 		return modelResourcePermission.contains(
 			PermissionThreadLocal.getPermissionChecker(),
-			objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
+			objectEntry.getObjectEntryId(), actionId);
 	}
 
 	private LinkReference _toLinkReference(

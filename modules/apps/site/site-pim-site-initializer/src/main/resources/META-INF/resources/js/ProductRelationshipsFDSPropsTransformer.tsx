@@ -7,7 +7,6 @@ import {
 	StatusLabel,
 	addOnClickToCreationMenuItems,
 	confirmAndDeleteEntryAction,
-	styleDeleteAction,
 } from '@liferay/site-cms-site-initializer';
 import {sub} from 'frontend-js-web';
 import React from 'react';
@@ -21,11 +20,9 @@ const ACTIONS = {
 
 export default function propsTransformer({
 	creationMenu,
-	itemsActions,
 	...props
 }: {
 	creationMenu?: any;
-	itemsActions?: any[];
 	[key: string]: any;
 }) {
 	return {
@@ -54,7 +51,6 @@ export default function propsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
-		itemsActions: itemsActions?.map(styleDeleteAction),
 		onActionDropdownItemClick({
 			action,
 			event,
@@ -82,6 +78,7 @@ export default function propsTransformer({
 				confirmButtonLabel: Liferay.Language.get('remove'),
 				deleteAction: itemData.actions.delete,
 				loadData,
+				status: 'warning',
 				successMessage: sub(
 					Liferay.Language.get('x-was-removed-successfully'),
 					Liferay.Util.escapeHTML(itemData.title)

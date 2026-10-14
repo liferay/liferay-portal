@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -123,6 +124,23 @@ public class ProductRelationshipsDisplayContext {
 		}
 
 		return ListUtil.fromArray(
+			FDSActionDropdownItemBuilder.setHref(
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+					GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?objectEntryId={id}&redirect=",
+					themeDisplay.getURLCurrent())
+			).setIcon(
+				"view"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "view")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"get"
+			).build(
+				"view"
+			),
 			FDSActionDropdownItemBuilder.setIcon(
 				"times-circle"
 			).setLabel(
