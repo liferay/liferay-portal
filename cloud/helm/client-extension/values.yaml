@@ -1,0 +1,39 @@
+artifact:
+    mounts: []
+    pullPolicy: IfNotPresent
+    reference: ""
+clientExtension:
+    configs: {}
+    domain: ""
+    dxpNamespace: ""
+    serviceId: ""
+    virtualInstanceId: liferay.com
+fullnameOverride: ""
+image:
+    pullPolicy: IfNotPresent
+    repository: ""
+    tag: latest
+imagePullSecrets: []
+labels: {}
+nameOverride: ""
+podAnnotations: {}
+podLabels: {}
+workload:
+    affinity: {}
+    backoffLimit: 6
+    containerPort: 80
+    enabled: true
+    env: {}
+    kind: Deployment
+    livenessProbe: {}
+    nodeSelector: {}
+    podSecurityContext: {}
+    readinessProbe: {}
+    replicas: 1
+    resources: {}
+    schedule: ""
+    securityContext: {}
+    startupProbe: {}
+    tolerations: []
+    volumeMounts: []
+    volumes: []

@@ -1,0 +1,51 @@
+{{- define "liferay-client-extension.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "liferay-client-extension.dxpMetadataName" -}}
+{{- printf "%s-lxc-dxp-metadata" .Values.clientExtension.virtualInstanceId }}
+{{- end }}
+
+{{- define "liferay-client-extension.extInitName" -}}
+{{- printf "%s-%s-lxc-ext-init-metadata" (include "liferay-client-extension.serviceId" .) .Values.clientExtension.virtualInstanceId }}
+{{- end }}
+
+{{- define "liferay-client-extension.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "liferay-client-extension.labels" -}}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+helm.sh/chart: {{ include "liferay-client-extension.chart" . }}
+{{ include "liferay-client-extension.selectorLabels" . }}
+{{- with .Values.labels }}
+{{ toYaml . }}
+{{- end }}
+{{- end }}
+
+{{- define "liferay-client-extension.requiresExtInit" -}}
+{{- range $configurationKey, $_ := .Values.clientExtension.configs }}
+{{- if or (hasPrefix "com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationHeadlessServerConfiguration" $configurationKey) (hasPrefix
+"com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration" $configurationKey) -}}
+true
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "liferay-client-extension.selectorLabels" -}}
+app.kubernetes.io/instance: {{ include "liferay-client-extension.fullname" . }}
+app.kubernetes.io/name: {{ include "liferay-client-extension.serviceId" . }}
+{{- end }}
+
+{{- define "liferay-client-extension.serviceId" -}}
+{{- required "clientExtension.serviceId is required" .Values.clientExtension.serviceId }}
+{{- end }}
