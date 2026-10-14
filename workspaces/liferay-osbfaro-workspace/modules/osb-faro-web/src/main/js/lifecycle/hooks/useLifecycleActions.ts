@@ -116,7 +116,7 @@ export const useLifecycleActions = ({
 					})
 				),
 		},
-		...(lifecycle.default === false
+		...(lifecycle.defaultAccountLifecycle === false
 			? [
 					{
 						icon: {symbol: 'pin'},

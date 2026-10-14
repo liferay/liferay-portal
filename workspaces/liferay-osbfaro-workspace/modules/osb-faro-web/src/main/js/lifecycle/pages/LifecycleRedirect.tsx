@@ -1,6 +1,7 @@
 import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
+import ErrorDisplay from 'shared/components/ErrorDisplay';
 import Loading from 'shared/components/Loading';
 import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
@@ -8,7 +9,6 @@ import {
 	ConfigureLifecycleEmptyState,
 	NoDataSourcesEmptyState,
 } from 'lifecycle/components/LifecycleEmptyStates';
-import {getDefaultLifecycle} from 'shared/api/lifecycle';
 import {Navigate, useParams} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -25,13 +25,21 @@ const LifecycleRedirect = () => {
 	const {empty: noDataSources, loading: dataSourcesLoading} =
 		useDataSources();
 
-	const {data: lifecycles, loading: lifecyclesLoading} = useRequest({
+	const {
+		data: lifecycles,
+		error: lifecyclesError,
+		loading: lifecyclesLoading,
+		refetch: refetchLifecycles,
+	} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecycles,
-		variables: {groupId: groupId!},
+		variables: {
+			channelId,
+			defaultAccountLifecycle: true,
+			groupId: groupId!,
+		},
 	});
 
-	const defaultLifecycle =
-		!lifecyclesLoading && lifecycles && getDefaultLifecycle(lifecycles);
+	const defaultLifecycle = !lifecyclesLoading && lifecycles?.[0];
 
 	if (defaultLifecycle) {
 		return (
@@ -58,6 +66,10 @@ const LifecycleRedirect = () => {
 					groupId={groupId!}
 				/>
 			);
+		}
+
+		if (lifecyclesError) {
+			return <ErrorDisplay onReload={refetchLifecycles} spacer />;
 		}
 
 		return (

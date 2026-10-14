@@ -2,7 +2,7 @@ import LifecycleRedirect from '../LifecycleRedirect';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
-import {cleanup, render, screen} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter, useLocation} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
@@ -35,7 +35,7 @@ const mockedUseDataSources = useDataSources as jest.Mock;
 const mockedUseRequest = useRequest as jest.Mock;
 
 const mockLifecycles = (
-	lifecycles: {default?: boolean; id: string}[],
+	lifecycles: {defaultAccountLifecycle?: boolean; id: string}[],
 	loading = false
 ) =>
 	mockedUseRequest.mockReturnValue({
@@ -78,23 +78,29 @@ describe('LifecycleRedirect', () => {
 
 	afterEach(cleanup);
 
-	it('redirects to the first lifecycle while none is flagged', () => {
-		mockLifecycles([{id: '7'}, {id: '8'}]);
-
-		renderPage();
-
-		expect(screen.getByTestId('location')).toHaveTextContent(
-			dashboardURL('7')
-		);
-	});
-
-	it('redirects to the lifecycle flagged as the default', () => {
-		mockLifecycles([{id: '7'}, {default: true, id: '8'}]);
+	it('redirects to the default lifecycle of the channel', () => {
+		mockLifecycles([{defaultAccountLifecycle: true, id: '8'}]);
 
 		renderPage();
 
 		expect(screen.getByTestId('location')).toHaveTextContent(
 			dashboardURL('8')
+		);
+	});
+
+	it('asks for the default lifecycle of the current channel', () => {
+		mockLifecycles([{defaultAccountLifecycle: true, id: '8'}]);
+
+		renderPage();
+
+		expect(mockedUseRequest).toHaveBeenCalledWith(
+			expect.objectContaining({
+				variables: {
+					channelId: '123',
+					defaultAccountLifecycle: true,
+					groupId: '23',
+				},
+			})
 		);
 	});
 
@@ -107,6 +113,39 @@ describe('LifecycleRedirect', () => {
 			'/workspace/23/123/lifecycle'
 		);
 		expect(screen.queryByText(/configure a new lifecycle/i)).toBeNull();
+	});
+
+	describe('when the lifecycles fail to load', () => {
+		const refetch = jest.fn();
+
+		beforeEach(() =>
+			mockedUseRequest.mockReturnValue({
+				data: null,
+				error: true,
+				loading: false,
+				refetch,
+			})
+		);
+
+		it('shows an error instead of the empty state', () => {
+			renderPage();
+
+			expect(
+				screen.getByText(/an.unexpected.error.occurred/i)
+			).toBeInTheDocument();
+			expect(screen.queryByText(/configure a new lifecycle/i)).toBeNull();
+			expect(screen.getByTestId('location')).toHaveTextContent(
+				'/workspace/23/123/lifecycle'
+			);
+		});
+
+		it('reloads the lifecycles', () => {
+			renderPage();
+
+			fireEvent.click(screen.getByRole('button', {name: /reload/i}));
+
+			expect(refetch).toHaveBeenCalled();
+		});
 	});
 
 	describe('when no lifecycles are configured', () => {

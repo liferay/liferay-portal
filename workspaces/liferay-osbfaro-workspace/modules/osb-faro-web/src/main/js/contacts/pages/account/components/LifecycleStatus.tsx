@@ -32,14 +32,19 @@ const getStageLabel = (stage: IAccountLifecycleStageStatus) => {
 };
 
 const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
-	const {groupId = '', id: accountId = ''} = useParams<{
+	const {
+		channelId,
+		groupId = '',
+		id: accountId = '',
+	} = useParams<{
+		channelId: string;
 		groupId: string;
 		id: string;
 	}>();
 
 	const {data: lifecyclesData, loading: lifecyclesLoading} = useRequest({
 		dataSourceFn: API.lifecycle.fetchAccountLifecycles,
-		variables: {groupId},
+		variables: {channelId, groupId},
 	});
 
 	const accountLifecycle = lifecyclesData?.[0];

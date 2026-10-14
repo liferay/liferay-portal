@@ -1,4 +1,13 @@
-import type {ILifecycle, ILifecycleDetail, ILifecycleStage} from './lifecycle';
+import type {
+	ILifecycle,
+	ILifecycleDetail,
+	ILifecycleStage,
+	ILifecyclesPage,
+} from './lifecycle';
+import {
+	LIFECYCLE_STAGE_ORDER,
+	STAGE_DESCRIPTIONS,
+} from 'lifecycle/utils/stageConfiguration';
 
 const MOCK_AUTHOR_NAME = 'Anneta Smith';
 
@@ -40,6 +49,58 @@ const MOCK_FILTER_METADATA_BY_POSITION: {[position: number]: string} = {
 	}),
 };
 
+const MOCK_LIFECYCLE_NAMES = [
+	'Growth and Retention Hub',
+	'Enterprise Expansion',
+	'SMB Onboarding',
+	'Partner Accounts',
+	'Strategic Renewals',
+	'Healthcare Accounts',
+	'Public Sector',
+	'Financial Services',
+	'Retail and Commerce',
+	'Manufacturing',
+	'EMEA Accounts',
+	'APAC Accounts',
+	'LATAM Accounts',
+	'North America Accounts',
+	'Trial Conversions',
+	'Product-Led Growth',
+	'Win-Back Campaign',
+	'Upsell Pipeline',
+	'Customer Advocacy',
+	'Churn Prevention',
+	'Education Accounts',
+	'Mid-Market Accounts',
+	'Self-Service Accounts',
+	'Key Accounts',
+];
+
+export const MOCK_LIFECYCLES: ILifecycleDetail[] = MOCK_LIFECYCLE_NAMES.map(
+	(name, index) => {
+		const id = `mock-lifecycle-${index + 1}`;
+
+		return {
+			description: '',
+			id,
+			name,
+			processedDate: null,
+			stages: LIFECYCLE_STAGE_ORDER.map((stageType, stageIndex) => ({
+				accountLifecycleStageRule: {
+					filterMetadata: null,
+					filterString: '',
+				},
+				description: STAGE_DESCRIPTIONS[stageType],
+				displayOrder: stageIndex + 1,
+				externalReferenceCode: `${id}-stage-${stageIndex + 1}`,
+				id: `${id}-stage-${stageIndex + 1}`,
+				maxDuration: null,
+				stageType,
+			})),
+		};
+	}
+);
+
 let mockDefaultLifecycleId: string | null = null;
 
 export const resetMockDefaultLifecycle = () => {
@@ -72,61 +133,207 @@ const withMockStageTriggers = (stages?: ILifecycleStage[]) => {
 	});
 };
 
-interface ILifecycleRequests {
-	fetchLifecycle: (params: {
-		groupId: string;
-		lifecycleId: string;
-	}) => Promise<ILifecycleDetail>;
-	fetchLifecycles: (params: {groupId: string}) => Promise<ILifecycle[]>;
-	getDefaultLifecycle: (lifecycles: ILifecycle[]) => ILifecycle | undefined;
+interface ILifecyclesParams {
+	channelId?: string;
+	defaultAccountLifecycle?: boolean;
+	groupId: string;
 }
+
+interface ILifecyclesPageParams extends ILifecyclesParams {
+	page: number;
+	pageSize: number;
+	search?: string;
+}
+
+interface ILifecycleParams {
+	groupId: string;
+	lifecycleId: string;
+}
+
+interface ILifecycleRequests {
+	fetchLifecycle: (params: ILifecycleParams) => Promise<ILifecycleDetail>;
+	fetchLifecycleList: (params: ILifecyclesParams) => Promise<unknown>;
+	fetchLifecycles: (params: ILifecyclesParams) => Promise<ILifecycle[]>;
+	fetchLifecyclesPage: (
+		params: ILifecyclesPageParams
+	) => Promise<ILifecyclesPage>;
+	setDefaultLifecycle: (
+		params: ILifecycleParams
+	) => Promise<ILifecycleDetail>;
+}
+
+interface ILifecycleSource {
+	lifecycles: ILifecycleDetail[];
+	mock: boolean;
+	paged: boolean;
+}
+
+const sortByName = <T extends ILifecycle>(lifecycles: T[]) =>
+	[...lifecycles].sort((a, b) =>
+		(a.name ?? '').localeCompare(b.name ?? '', undefined, {
+			sensitivity: 'base',
+		})
+	);
+
+const MOCK_SOURCE: ILifecycleSource = {
+	lifecycles: sortByName(MOCK_LIFECYCLES),
+	mock: true,
+	paged: false,
+};
+
+const toLifecycleSource = (response: unknown): ILifecycleSource => {
+	if (Array.isArray(response) && response.length) {
+		return {lifecycles: sortByName(response), mock: false, paged: false};
+	}
+
+	const items = (response as ILifecyclesPage | undefined)?.items;
+
+	if (Array.isArray(items) && items.length) {
+		return {lifecycles: items, mock: false, paged: true};
+	}
+
+	return MOCK_SOURCE;
+};
+
+const getDefaultLifecycle = ({lifecycles}: ILifecycleSource) =>
+	lifecycles.find(({id}) => id === mockDefaultLifecycleId) ?? lifecycles[0];
+
+const withMockTriggers = (lifecycle: ILifecycleDetail): ILifecycleDetail => ({
+	...lifecycle,
+	stages: withMockStageTriggers(lifecycle.stages),
+});
+
+const withMockFields = (
+	lifecycle: ILifecycleDetail,
+	source: ILifecycleSource
+): ILifecycleDetail =>
+	withMockTriggers({
+		authorName: MOCK_AUTHOR_NAME,
+		modifiedDate: MOCK_MODIFIED_DATE,
+		...lifecycle,
+		defaultAccountLifecycle:
+			lifecycle.id === getDefaultLifecycle(source).id,
+	});
+
+const pageLifecycles = (
+	source: ILifecycleSource,
+	{
+		defaultAccountLifecycle,
+		page,
+		pageSize,
+		search = '',
+	}: ILifecyclesPageParams
+): ILifecyclesPage => {
+	const query = search.trim().toLowerCase();
+
+	const items = source.lifecycles
+		.map((lifecycle) => withMockFields(lifecycle, source))
+		.filter(
+			(lifecycle) =>
+				(!defaultAccountLifecycle ||
+					lifecycle.defaultAccountLifecycle) &&
+				[lifecycle.authorName, lifecycle.name].some((value) =>
+					value?.toLowerCase().includes(query)
+				)
+		);
+
+	return {
+		items: items.slice((page - 1) * pageSize, page * pageSize),
+		lastPage: Math.max(1, Math.ceil(items.length / pageSize)),
+		page,
+		pageSize,
+		totalCount: items.length,
+	};
+};
 
 export const createMockLifecycleApi = ({
 	fetchLifecycle,
+	fetchLifecycleList,
 	fetchLifecycles,
-	getDefaultLifecycle,
+	fetchLifecyclesPage,
+	setDefaultLifecycle,
 }: ILifecycleRequests) => {
-	const withMockFields = (
-		lifecycles: ILifecycleDetail[]
-	): ILifecycleDetail[] => {
-		const defaultLifecycleId = getDefaultLifecycle(
-			lifecycles.map((lifecycle) => ({
-				...lifecycle,
-				default: lifecycle.id === mockDefaultLifecycleId,
-			}))
-		)?.id;
-
-		return lifecycles.map((lifecycle) => ({
-			authorName: MOCK_AUTHOR_NAME,
-			modifiedDate: MOCK_MODIFIED_DATE,
-			...lifecycle,
-			default: lifecycle.id === defaultLifecycleId,
-			stages: withMockStageTriggers(lifecycle.stages),
-		}));
+	const fetchLifecycleSource = async ({
+		channelId,
+		groupId,
+	}: ILifecyclesParams) => {
+		try {
+			return toLifecycleSource(
+				await fetchLifecycleList({channelId, groupId})
+			);
+		}
+		catch {
+			return MOCK_SOURCE;
+		}
 	};
 
-	const fetchMockLifecycles = async (params: {groupId: string}) =>
-		withMockFields(await fetchLifecycles(params));
+	const fetchMockLifecycle = async ({
+		groupId,
+		lifecycleId,
+	}: ILifecycleParams): Promise<ILifecycleDetail> => {
+		const source = await fetchLifecycleSource({groupId});
+
+		if (source.mock) {
+			const mockLifecycle = MOCK_LIFECYCLES.find(
+				({id}) => id === lifecycleId
+			);
+
+			if (mockLifecycle) {
+				return withMockFields(mockLifecycle, source);
+			}
+		}
+
+		const lifecycle = await fetchLifecycle({groupId, lifecycleId});
+
+		return source.paged
+			? withMockTriggers(lifecycle)
+			: withMockFields(lifecycle, source);
+	};
 
 	return {
-		fetchLifecycle: async (params: {
-			groupId: string;
-			lifecycleId: string;
-		}): Promise<ILifecycleDetail> => {
-			const [lifecycle, lifecycles] = await Promise.all([
-				fetchLifecycle(params),
-				fetchMockLifecycles(params),
-			]);
+		fetchLifecycle: fetchMockLifecycle,
+		fetchLifecycles: async (
+			params: ILifecyclesParams
+		): Promise<ILifecycleDetail[]> => {
+			const source = await fetchLifecycleSource(params);
+
+			if (source.paged) {
+				return (await fetchLifecycles(params)).map(withMockTriggers);
+			}
+
+			return pageLifecycles(source, {...params, page: 1, pageSize: 1})
+				.items;
+		},
+		fetchLifecyclesPage: async (
+			params: ILifecyclesPageParams
+		): Promise<ILifecyclesPage> => {
+			const source = await fetchLifecycleSource(params);
+
+			if (!source.paged) {
+				return pageLifecycles(source, params);
+			}
+
+			const lifecyclesPage = await fetchLifecyclesPage(params);
 
 			return {
-				...lifecycles.find(({id}) => id === lifecycle.id),
-				...lifecycle,
-				stages: withMockStageTriggers(lifecycle.stages),
+				...lifecyclesPage,
+				items: lifecyclesPage.items.map(withMockTriggers),
 			};
 		},
-		fetchLifecycles: fetchMockLifecycles,
-		setDefaultLifecycle: async ({lifecycleId}: {lifecycleId: string}) => {
-			mockDefaultLifecycleId = lifecycleId;
+		setDefaultLifecycle: async (
+			params: ILifecycleParams
+		): Promise<ILifecycleDetail> => {
+			const source = await fetchLifecycleSource({
+				groupId: params.groupId,
+			});
+
+			if (source.paged) {
+				return withMockTriggers(await setDefaultLifecycle(params));
+			}
+
+			mockDefaultLifecycleId = params.lifecycleId;
+
+			return fetchMockLifecycle(params);
 		},
 	};
 };

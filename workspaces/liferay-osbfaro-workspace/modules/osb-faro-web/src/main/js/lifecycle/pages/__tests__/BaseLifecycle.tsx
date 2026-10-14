@@ -146,7 +146,7 @@ const useRequestImpl =
 		totalCount = 1,
 	}: {
 		lifecycle?: {
-			default?: boolean;
+			defaultAccountLifecycle?: boolean;
 			id: string;
 			name?: string;
 			processedDate?: number | null;
@@ -208,6 +208,7 @@ describe('BaseLifecycle', () => {
 		(API as any).accounts = {fetchMetrics: jest.fn()};
 		(API as any).lifecycle = {
 			fetchLifecycle: jest.fn(),
+			fetchLifecyclesPage: jest.fn(),
 			setDefaultLifecycle: jest.fn(() => Promise.resolve()),
 		};
 
@@ -525,7 +526,9 @@ describe('BaseLifecycle', () => {
 	describe('the default lifecycle', () => {
 		it('pins the title of the default lifecycle', () => {
 			mockedUseRequest.mockImplementation(
-				useRequestImpl({lifecycle: {default: true, id: '1'}})
+				useRequestImpl({
+					lifecycle: {defaultAccountLifecycle: true, id: '1'},
+				})
 			);
 
 			renderPage();
@@ -537,7 +540,9 @@ describe('BaseLifecycle', () => {
 
 		it('shows no sticker beside another lifecycle', () => {
 			mockedUseRequest.mockImplementation(
-				useRequestImpl({lifecycle: {default: false, id: '1'}})
+				useRequestImpl({
+					lifecycle: {defaultAccountLifecycle: false, id: '1'},
+				})
 			);
 
 			const {container} = renderPage();
@@ -550,7 +555,9 @@ describe('BaseLifecycle', () => {
 
 		it('hides Set Default on the default lifecycle', () => {
 			mockedUseRequest.mockImplementation(
-				useRequestImpl({lifecycle: {default: true, id: '1'}})
+				useRequestImpl({
+					lifecycle: {defaultAccountLifecycle: true, id: '1'},
+				})
 			);
 
 			renderPage();
@@ -564,7 +571,9 @@ describe('BaseLifecycle', () => {
 
 		it('pins the title once the lifecycle is set as default', async () => {
 			mockedUseRequest.mockImplementation(
-				useRequestImpl({lifecycle: {default: false, id: '1'}})
+				useRequestImpl({
+					lifecycle: {defaultAccountLifecycle: false, id: '1'},
+				})
 			);
 
 			renderPage();
@@ -724,5 +733,108 @@ describe('BaseLifecycle', () => {
 			screen.getByText(/^\S+ \d+, \d{4} – \S+ \d+, \d{4}$/)
 		).toBeInTheDocument();
 		expect(screen.queryByText('No Account Data Available')).toBeNull();
+	});
+
+	describe('when the panel is open beside the dashboard', () => {
+		const LIST_LIFECYCLES = [
+			{id: '1', name: 'Growth Hub'},
+			{id: '2', name: 'Partner Lifecycle'},
+		];
+
+		beforeEach(() => {
+			const dashboardRequest = useRequestImpl({
+				lifecycle: {
+					defaultAccountLifecycle: false,
+					id: '1',
+					name: 'Growth Hub',
+				},
+			});
+
+			mockedUseRequest.mockImplementation(
+				(options: {
+					dataSourceFn?: unknown;
+					variables?: {defaultChangeCount?: number};
+				}) => {
+					if (
+						options.dataSourceFn !==
+						API.lifecycle.fetchLifecyclesPage
+					) {
+						return dashboardRequest(options);
+					}
+
+					const defaultLifecycleId = options.variables
+						?.defaultChangeCount
+						? '1'
+						: '2';
+
+					return {
+						data: {
+							items: LIST_LIFECYCLES.map((lifecycle) => ({
+								...lifecycle,
+								defaultAccountLifecycle:
+									lifecycle.id === defaultLifecycleId,
+							})),
+							lastPage: 1,
+							page: 1,
+							pageSize: 20,
+							totalCount: LIST_LIFECYCLES.length,
+						},
+						error: false,
+						loading: false,
+						refetch: jest.fn(),
+					};
+				}
+			);
+		});
+
+		const getRow = (name: string) =>
+			within(
+				screen
+					.getByText(/switch lifecycle dashboard/i)
+					.closest('.sidebar') as HTMLElement
+			)
+				.getByRole('link', {name})
+				.closest('li') as HTMLElement;
+
+		it('moves the pin in the list when the header sets the default', async () => {
+			renderPage();
+
+			fireEvent.click(
+				screen.getByRole('button', {name: /switch dashboard/i})
+			);
+
+			expect(
+				within(getRow('Partner Lifecycle')).getByRole('img', {
+					name: /default/i,
+				})
+			).toBeInTheDocument();
+
+			openActionsMenu();
+
+			fireEvent.click(
+				screen.getByRole('menuitem', {name: /set.default/i})
+			);
+
+			expect(
+				await within(getRow('Growth Hub')).findByRole('img', {
+					name: /default/i,
+				})
+			).toBeInTheDocument();
+			expect(
+				within(getRow('Partner Lifecycle')).queryByRole('img', {
+					name: /default/i,
+				})
+			).toBeNull();
+
+			fireEvent.click(
+				within(getRow('Growth Hub')).getByRole('button', {
+					name: /actions for/i,
+				})
+			);
+
+			expect(
+				screen.queryByRole('menuitem', {name: /set.default/i})
+			).toBeNull();
+		});
 	});
 });

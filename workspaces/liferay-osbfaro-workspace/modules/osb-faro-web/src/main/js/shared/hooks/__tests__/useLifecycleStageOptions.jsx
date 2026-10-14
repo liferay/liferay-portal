@@ -87,4 +87,21 @@ describe('useLifecycleStageOptions', () => {
 
 		expect(API.lifecycle.fetchLifecycle).not.toHaveBeenCalled();
 	});
+
+	it('should read the default lifecycle of the channel', async () => {
+		API.lifecycle.fetchAccountLifecycles.mockReturnValueOnce(
+			Promise.resolve([])
+		);
+
+		renderHook(() =>
+			useLifecycleStageOptions({channelId: '456', groupId: '123'})
+		);
+
+		await waitFor(() =>
+			expect(API.lifecycle.fetchAccountLifecycles).toHaveBeenCalledWith({
+				channelId: '456',
+				groupId: '123'
+			})
+		);
+	});
 });

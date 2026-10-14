@@ -201,6 +201,20 @@ describe('List', () => {
 			).toBeInTheDocument();
 		});
 
+		it('should request the default lifecycle of the channel', () => {
+			renderList();
+
+			expect(mockedUseRequest).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: {
+						channelId: '123',
+						defaultAccountLifecycle: true,
+						groupId: '23',
+					},
+				})
+			);
+		});
+
 		it('should render the FrontendDataSet with id "accounts-list-dataset"', async () => {
 			renderList();
 

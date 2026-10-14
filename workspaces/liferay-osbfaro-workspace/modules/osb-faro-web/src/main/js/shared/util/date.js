@@ -161,6 +161,14 @@ export const NUMERIC_DATE_TIME_FORMAT = createDottedDayPeriodDateFormat({
 	year: 'numeric',
 });
 
+export const SHORT_DATE_TIME_FORMAT = createDottedDayPeriodDateFormat({
+	day: 'numeric',
+	hour: '2-digit',
+	minute: '2-digit',
+	month: 'short',
+	year: 'numeric',
+});
+
 export const SHORT_MONTH_FORMAT = createDateFormat({month: 'short'});
 
 export const SHORT_NUMERIC_DATE_FORMAT = createDateFormat({

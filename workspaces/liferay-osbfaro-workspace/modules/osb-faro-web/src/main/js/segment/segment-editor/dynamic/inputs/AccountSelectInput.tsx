@@ -19,7 +19,7 @@ const AccountSelectInput: React.FC<IAccountSelectProps> = ({
 	property,
 	value,
 }) => {
-	const {channelId} = useParams<{channelId: string}>();
+	const {channelId} = useParams();
 
 	const {options} = useLifecycleStageOptions({channelId, groupId});
 

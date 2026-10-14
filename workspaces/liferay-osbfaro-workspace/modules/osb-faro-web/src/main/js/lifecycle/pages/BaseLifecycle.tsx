@@ -160,19 +160,28 @@ const BaseLifecycle = () => {
 
 	const [panelView, setPanelView] = useState<LifecyclePanelView | null>(null);
 
-	const [defaultLifecycleId, setDefaultLifecycleId] = useState<string | null>(
-		null
-	);
+	const [defaultChange, setDefaultChange] = useState<{
+		count: number;
+		lifecycleId: string | null;
+	}>({count: 0, lifecycleId: null});
 
-	const isDefault = defaultLifecycleId
+	const defaultLifecycleId = defaultChange.lifecycleId;
+
+	const changeDefault = (nextDefaultLifecycleId: string) =>
+		setDefaultChange(({count}) => ({
+			count: count + 1,
+			lifecycleId: nextDefaultLifecycleId,
+		}));
+
+	const defaultAccountLifecycle = defaultLifecycleId
 		? defaultLifecycleId === lifecycleId
-		: lifecycle?.default;
+		: lifecycle?.defaultAccountLifecycle;
 
-	const openLifecycle = lifecycle && {...lifecycle, default: isDefault};
+	const openLifecycle = lifecycle && {...lifecycle, defaultAccountLifecycle};
 
 	const actions = useLifecycleActions({
 		lifecycle: openLifecycle,
-		onDefaultChange: () => setDefaultLifecycleId(lifecycleId!),
+		onDefaultChange: () => changeDefault(lifecycleId!),
 		onShowDetails: () =>
 			setPanelView({lifecycleId: lifecycleId!, type: 'details'}),
 	});
@@ -302,7 +311,7 @@ const BaseLifecycle = () => {
 								<BasePage.Header.TitleSection
 									className="mb-3"
 									sticker={
-										isDefault && (
+										defaultAccountLifecycle && (
 											<LifecycleSticker
 												className="mr-2"
 												pinned
@@ -391,7 +400,8 @@ const BaseLifecycle = () => {
 
 			<LifecycleSwitchPanel
 				containerRef={containerRef}
-				onDefaultChange={setDefaultLifecycleId}
+				defaultChangeCount={defaultChange.count}
+				onDefaultChange={changeDefault}
 				onViewChange={setPanelView}
 				openLifecycle={openLifecycle}
 				triggerRef={switchButtonRef}

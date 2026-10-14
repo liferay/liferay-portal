@@ -54,7 +54,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 
 	const {data: lifecycles, loading: lifecyclesLoading} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecycles,
-		variables: {channelId, groupId},
+		variables: {channelId, defaultAccountLifecycle: true, groupId},
 	});
 
 	useEffect(() => {

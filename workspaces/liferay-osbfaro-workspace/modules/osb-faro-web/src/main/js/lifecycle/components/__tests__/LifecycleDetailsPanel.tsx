@@ -35,7 +35,7 @@ const mockedUseRequest = useRequest as jest.Mock;
 
 const LIFECYCLE: ILifecycleDetail = {
 	authorName: 'Anneta Smith',
-	default: true,
+	defaultAccountLifecycle: true,
 	description: 'Unifies acquisition and expansion.',
 	id: '1',
 	modifiedDate: Date.UTC(2025, 1, 25, 9, 0),
@@ -48,6 +48,7 @@ const LIFECYCLE: ILifecycleDetail = {
 			},
 			description: 'The buying committee is researching us.',
 			displayOrder: 2,
+			externalReferenceCode: 'engaged',
 			id: 'engaged',
 			maxDuration: null,
 			stageType: 'ENGAGED',
@@ -77,6 +78,7 @@ const LIFECYCLE: ILifecycleDetail = {
 			},
 			description: 'Account identified via Demandbase.',
 			displayOrder: 1,
+			externalReferenceCode: 'aware',
 			id: 'aware',
 			maxDuration: 90,
 			name: 'Aware',

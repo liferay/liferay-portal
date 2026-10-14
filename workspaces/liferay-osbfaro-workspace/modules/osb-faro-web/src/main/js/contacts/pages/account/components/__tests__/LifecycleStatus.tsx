@@ -21,7 +21,7 @@ jest.mock('shared/hooks/useRequest', () => ({
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useParams: () => ({groupId: '23', id: 'acc-1'}),
+	useParams: () => ({channelId: '123', groupId: '23', id: 'acc-1'}),
 }));
 
 const mockedUseRequest = useRequest as jest.Mock;
@@ -326,6 +326,18 @@ describe('LifecycleStatus', () => {
 	});
 
 	describe('request', () => {
+		it('should request the default lifecycle of the channel', () => {
+			mockedUseRequest.mockImplementation(useRequestImpl({}));
+
+			render(<LifecycleStatus />);
+
+			expect(mockedUseRequest).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: {channelId: '123', groupId: '23'},
+				})
+			);
+		});
+
 		it('should render the fetched status when the backend returns data', () => {
 			mockedUseRequest.mockImplementation(
 				useRequestImpl({

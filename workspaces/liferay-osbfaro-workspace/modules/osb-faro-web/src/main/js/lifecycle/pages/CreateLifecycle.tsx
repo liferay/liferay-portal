@@ -15,7 +15,7 @@ const CreateLifecycle = () => {
 
 	const {data: lifecycles, loading} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecycles,
-		variables: {groupId: groupId!},
+		variables: {channelId, groupId: groupId!},
 	});
 
 	const {

@@ -104,7 +104,7 @@ describe('useLifecycleActions', () => {
 
 	it('lists every action in order for a non-default lifecycle', () => {
 		renderActions({
-			lifecycle: {default: false, id: '1'},
+			lifecycle: {defaultAccountLifecycle: false, id: '1'},
 			onShowDetails: jest.fn(),
 			onView: jest.fn(),
 		});
@@ -120,7 +120,7 @@ describe('useLifecycleActions', () => {
 	});
 
 	it('hides View and Show Details when no handler is given', () => {
-		renderActions({lifecycle: {default: false, id: '1'}});
+		renderActions({lifecycle: {defaultAccountLifecycle: false, id: '1'}});
 
 		expect(screen.queryByRole('button', {name: /^view$/i})).toBeNull();
 		expect(
@@ -140,7 +140,7 @@ describe('useLifecycleActions', () => {
 	});
 
 	it('hides Set Default on the default lifecycle', () => {
-		renderActions({lifecycle: {default: true, id: '1'}});
+		renderActions({lifecycle: {defaultAccountLifecycle: true, id: '1'}});
 
 		expect(screen.queryByRole('button', {name: /set.default/i})).toBeNull();
 	});
@@ -198,7 +198,7 @@ describe('useLifecycleActions', () => {
 		const onDefaultChange = jest.fn();
 
 		renderActions({
-			lifecycle: {default: false, id: '5'},
+			lifecycle: {defaultAccountLifecycle: false, id: '5'},
 			onDefaultChange,
 		});
 

@@ -181,6 +181,17 @@ describe('CreateLifecycle', () => {
 		expect(screen.queryByText('Stage Configuration')).toBeNull();
 	});
 
+	it('checks for lifecycles in the current channel', () => {
+		renderPage();
+
+		expect(mockedUseRequest).toHaveBeenCalledWith(
+			expect.objectContaining({
+				dataSourceFn: API.lifecycle.fetchLifecycles,
+				variables: {channelId: '123', groupId: '23'},
+			})
+		);
+	});
+
 	it('requests the entire catalog in a single page', () => {
 		renderPage();
 

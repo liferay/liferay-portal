@@ -11,6 +11,16 @@ $lifecycleSidePanelWidth: 512px;
 .sidebar.lifecycle-side-panel {
 	border-left: 1px solid $cadmin-secondary-l2;
 	box-shadow: none;
+
+	.pagination-bar {
+		.pagination {
+			margin-top: $cadmin-pagination-margin-top-mobile;
+		}
+
+		.pagination-results {
+			margin-left: auto;
+		}
+	}
 }
 
 .lifecycle-side-panel-backdrop {

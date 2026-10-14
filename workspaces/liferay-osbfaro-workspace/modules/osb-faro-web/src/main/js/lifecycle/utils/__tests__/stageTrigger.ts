@@ -13,6 +13,7 @@ const buildStage = (
 	},
 	description: '',
 	displayOrder: 1,
+	externalReferenceCode: '1',
 	id: '1',
 	maxDuration: null,
 	stageType: 'AWARE',
