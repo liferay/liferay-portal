@@ -393,3 +393,63 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'can save a filter and a sort in the endpoint configuration',
+	{tag: '@LPD-109889'},
+	async ({apiHelpers, applicationPage, headlessBuilderPage, page}) => {
+		const endpointExternalReferenceCode = getRandomString();
+
+		const apiApplication = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				...applicationData,
+				apiApplicationToAPIEndpoints: [
+					{
+						externalReferenceCode: endpointExternalReferenceCode,
+						httpMethod: 'get',
+						name: getRandomString(),
+						path: '/endpoint/',
+						r_responseAPISchemaToAPIEndpoints_l_apiSchemaERC:
+							'api-application-schema',
+						retrieveType: 'collection',
+						scope: 'company',
+					},
+				],
+				baseURL: `test-${getRandomString()}`,
+				externalReferenceCode: getRandomString(),
+				title: getRandomString(),
+			},
+			'headless-builder/applications'
+		);
+
+		apiHelpers.data.push({id: apiApplication.id, type: 'apiApplication'});
+
+		await headlessBuilderPage.openApplicationAndEdit(apiApplication.title);
+		await applicationPage.goToEndpointsTab();
+		await applicationPage.goToEditEndpoint('/endpoint/');
+		await applicationPage.goToEndpointConfigurationTab();
+
+		await page
+			.getByLabel('Add a filter using OData.')
+			.fill("title eq 'abc'");
+		await page.getByLabel('Add a sort using OData.').fill('title:desc');
+
+		await applicationPage.publishButton.click();
+
+		await expect(async () => {
+			expect(
+				await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode(
+					{
+						applicationName: 'headless-builder/endpoints',
+						externalReferenceCode: endpointExternalReferenceCode,
+						nestedField:
+							'apiEndpointToAPIFilters,apiEndpointToAPISorts',
+					}
+				)
+			).toMatchObject({
+				apiEndpointToAPIFilters: [{oDataFilter: "title eq 'abc'"}],
+				apiEndpointToAPISorts: [{oDataSort: 'title:desc'}],
+			});
+		}).toPass({timeout: 15000});
+	}
+);
