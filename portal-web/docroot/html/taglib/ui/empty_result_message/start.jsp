@@ -9,20 +9,29 @@
 
 <%
 String message = GetterUtil.getString((String)request.getAttribute("liferay-ui:empty-result-message:message"));
+boolean search = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:empty-result-message:search"));
 %>
 
 <c:choose>
 	<c:when test="<%= compact %>">
-		<p class="text-secondary">
-			<liferay-ui:message key="<%= message %>" />
-		</p>
+		<div class="c-empty-state">
+			<p class="c-empty-state-text">
+				<liferay-ui:message key="<%= message %>" />
+			</p>
+		</div>
 	</c:when>
 	<c:otherwise>
-		<div class="mt-4 taglib-empty-result-message">
-			<div class="<%= (String)request.getAttribute("liferay-ui:empty-result-message:cssClass") %>"></div>
+		<div class="c-empty-state c-empty-state-animation">
+			<div class="c-empty-state-image <%= (String)request.getAttribute("liferay-ui:empty-result-message:cssClass") %>">
+				<div class="c-empty-state-illustration">
+					<svg aria-hidden="true" class="c-empty-state-icon c-empty-state-icon-<%= search ? "search-state" : "empty-state" %>" focusable="false" viewBox="0 0 256 256">
+						<use xlink:href="<%= themeDisplay.getPathThemeEmptyStatesSpritemap() %>#<%= search ? "search-state" : "empty-state" %>"></use>
+					</svg>
+				</div>
+			</div>
 
 			<c:if test="<%= Validator.isNotNull(message) %>">
-				<div class="mt-2 text-center text-secondary">
+				<div class="c-empty-state-text">
 					<liferay-ui:message key="<%= message %>" />
 				</div>
 			</c:if>
