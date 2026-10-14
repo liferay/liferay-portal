@@ -14,13 +14,13 @@ import LaunchEntrySummaryCell, {
 	LaunchEntrySummaryField,
 } from '../renderers/LaunchEntrySummaryCell';
 import LaunchEntryTitleCell from '../renderers/LaunchEntryTitleCell';
-import addLaunchEntry, {LaunchEntryTypeProps} from '../util/addLaunchEntry';
+import addLaunchEntry, {LaunchEntryManagerProps} from '../util/addLaunchEntry';
 
 interface AdditionalProps {
 	getLaunchEntrySummaryURL: string;
 	getLaunchEntryVersionsURL: string;
 	itemSelectedEventName: string;
-	launchEntryTypes: LaunchEntryTypeProps[];
+	launchEntryManagers: LaunchEntryManagerProps[];
 	launchSetId: number;
 	published: boolean;
 	resolveLaunchEntryURL: string;
@@ -60,8 +60,8 @@ export default function LaunchEntriesFDSPropsTransformer({
 						addLaunchEntry({
 							itemSelectedEventName:
 								additionalProps.itemSelectedEventName,
-							launchEntryType:
-								additionalProps.launchEntryTypes[index],
+							launchEntryManager:
+								additionalProps.launchEntryManagers[index],
 							launchSetId: additionalProps.launchSetId,
 							onAdd: loadData,
 							portletNamespace,
@@ -104,7 +104,7 @@ export default function LaunchEntriesFDSPropsTransformer({
 					type: 'internal',
 				},
 				...(
-					['version', 'author', 'type', 'space', 'modified'] as const
+					['author', 'modified', 'space', 'type', 'version'] as const
 				).map((field: LaunchEntrySummaryField) => ({
 					component: (cellProps: {itemData: LaunchEntry}) => (
 						<LaunchEntrySummaryCell

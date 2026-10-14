@@ -10,8 +10,8 @@ import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
-import com.liferay.launch.entry.type.LaunchEntryType;
-import com.liferay.launch.entry.type.registry.LaunchEntryTypeRegistry;
+import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.object.exception.ObjectValidationRuleEngineException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -85,7 +85,7 @@ public class LaunchEntryRelevantObjectEntryModelListenerTest {
 
 		long draftId1 = _getDraftId(launchEntryObjectEntry1);
 
-		LaunchEntryType.Draft draft1 = _getDraft(draftId1);
+		LaunchEntryManager.Draft draft1 = _getDraft(draftId1);
 
 		Assert.assertEquals(WorkflowConstants.STATUS_DRAFT, draft1.getStatus());
 
@@ -96,16 +96,18 @@ public class LaunchEntryRelevantObjectEntryModelListenerTest {
 		long draftId2 = _getDraftId(launchEntryObjectEntry2);
 
 		Assert.assertNotEquals(draftId1, draftId2);
-		Assert.assertNotNull(_getDraft(draftId2));
 
-		Map<String, Serializable> values = launchEntryObjectEntry1.getValues();
+		LaunchEntryManager.Draft draft2 = _getDraft(draftId2);
+
+		Assert.assertEquals(WorkflowConstants.STATUS_DRAFT, draft2.getStatus());
 
 		try {
 			_addLaunchEntryObjectEntry(
 				JournalArticle.class.getName(),
 				_journalArticle.getResourcePrimKey(),
 				MapUtil.getLong(
-					values, "r_launchSetToLaunchEntries_c_launchSetId"));
+					launchEntryObjectEntry1.getValues(),
+					"r_launchSetToLaunchEntries_c_launchSetId"));
 
 			Assert.fail();
 		}
@@ -166,10 +168,10 @@ public class LaunchEntryRelevantObjectEntryModelListenerTest {
 
 		Assert.assertNotEquals(draftId1, draftId2);
 
-		LaunchEntryType launchEntryType = _getLaunchEntryType();
+		LaunchEntryManager launchEntryManager = _getLaunchEntryManager();
 
 		Assert.assertNull(
-			launchEntryType.fetchDraft(
+			launchEntryManager.fetchDraft(
 				_journalArticle.getResourcePrimKey(), draftId1));
 
 		Assert.assertEquals(
@@ -192,13 +194,14 @@ public class LaunchEntryRelevantObjectEntryModelListenerTest {
 		_objectEntryLocalService.deleteObjectEntry(
 			launchEntryObjectEntry1.getObjectEntryId());
 
-		LaunchEntryType launchEntryType = _getLaunchEntryType();
+		LaunchEntryManager launchEntryManager = _getLaunchEntryManager();
 
 		Assert.assertNull(
-			launchEntryType.fetchDraft(
+			launchEntryManager.fetchDraft(
 				_journalArticle.getResourcePrimKey(), draftId1));
-
-		Assert.assertNotNull(_getDraft(draftId2));
+		Assert.assertNotNull(
+			launchEntryManager.fetchDraft(
+				_journalArticle.getResourcePrimKey(), draftId2));
 	}
 
 	private ObjectEntry _addLaunchEntryObjectEntry(
@@ -258,10 +261,10 @@ public class LaunchEntryRelevantObjectEntryModelListenerTest {
 			serviceContext);
 	}
 
-	private LaunchEntryType.Draft _getDraft(long draftId) throws Exception {
-		LaunchEntryType launchEntryType = _getLaunchEntryType();
+	private LaunchEntryManager.Draft _getDraft(long draftId) throws Exception {
+		LaunchEntryManager launchEntryManager = _getLaunchEntryManager();
 
-		LaunchEntryType.Draft draft = launchEntryType.fetchDraft(
+		LaunchEntryManager.Draft draft = launchEntryManager.fetchDraft(
 			_journalArticle.getResourcePrimKey(), draftId);
 
 		Assert.assertNotNull(draft);
@@ -278,8 +281,6 @@ public class LaunchEntryRelevantObjectEntryModelListenerTest {
 	}
 
 	private String _getDraftTitle(long draftId) throws Exception {
-		_getDraft(draftId);
-
 		JournalArticle journalArticle =
 			_journalArticleLocalService.getLatestArticle(
 				draftId, WorkflowConstants.STATUS_ANY, false);
@@ -287,8 +288,8 @@ public class LaunchEntryRelevantObjectEntryModelListenerTest {
 		return journalArticle.getTitle(LocaleUtil.getSiteDefault());
 	}
 
-	private LaunchEntryType _getLaunchEntryType() {
-		return _launchEntryTypeRegistry.getLaunchEntryType(
+	private LaunchEntryManager _getLaunchEntryManager() {
+		return _launchEntryManagerRegistry.getLaunchEntryManager(
 			JournalArticle.class.getName());
 	}
 
@@ -299,7 +300,7 @@ public class LaunchEntryRelevantObjectEntryModelListenerTest {
 	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Inject
-	private LaunchEntryTypeRegistry _launchEntryTypeRegistry;
+	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.launch.entry.type;
+package com.liferay.launch.entry.manager;
 
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -23,7 +23,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @author David Truong
  */
 @ProviderType
-public interface LaunchEntryType {
+public interface LaunchEntryManager {
 
 	public Draft addDraft(long classPK, String versionKey)
 		throws PortalException;
@@ -46,7 +46,7 @@ public interface LaunchEntryType {
 
 	public Class<?> getModelClass();
 
-	public List<Version> getVersions(long classPK, Locale locale);
+	public List<Version> getVersions(long classPK);
 
 	public Version publishDraft(long classPK, long draftId)
 		throws PortalException;

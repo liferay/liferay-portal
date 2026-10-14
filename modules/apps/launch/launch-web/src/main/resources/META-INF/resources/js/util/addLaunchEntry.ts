@@ -13,7 +13,7 @@ import {
 } from '../api/launches';
 import getSelectedItemData from './getSelectedItemData';
 
-export interface LaunchEntryTypeProps {
+export interface LaunchEntryManagerProps {
 	className: string;
 	itemSelectorURL: string;
 	label: string;
@@ -21,14 +21,14 @@ export interface LaunchEntryTypeProps {
 
 export default function addLaunchEntry({
 	itemSelectedEventName,
-	launchEntryType,
+	launchEntryManager,
 	launchSetId,
 	onAdd,
 	portletNamespace,
 	resolveLaunchEntryURL,
 }: {
 	itemSelectedEventName: string;
-	launchEntryType: LaunchEntryTypeProps;
+	launchEntryManager: LaunchEntryManagerProps;
 	launchSetId: number;
 	onAdd: () => void;
 	portletNamespace: string;
@@ -37,14 +37,14 @@ export default function addLaunchEntry({
 	openSelectionModal({
 		onSelect: (selectedItem: unknown) => {
 			resolveLaunchEntry({
-				className: launchEntryType.className,
+				className: launchEntryManager.className,
 				portletNamespace,
 				resourceURL: resolveLaunchEntryURL,
 				selectedItemData: getSelectedItemData(selectedItem),
 			})
 				.then(async ({baseVersionKey, classPK}) => {
 					const launchEntries = await listLaunchEntries({
-						className: launchEntryType.className,
+						className: launchEntryManager.className,
 						classPK,
 						launchSetId,
 					});
@@ -59,7 +59,7 @@ export default function addLaunchEntry({
 
 					return createLaunchEntry({
 						baseVersionKey,
-						className: launchEntryType.className,
+						className: launchEntryManager.className,
 						classPK,
 						launchSetId,
 					});
@@ -73,7 +73,7 @@ export default function addLaunchEntry({
 				);
 		},
 		selectEventName: itemSelectedEventName,
-		title: launchEntryType.label,
-		url: launchEntryType.itemSelectorURL,
+		title: launchEntryManager.label,
+		url: launchEntryManager.itemSelectorURL,
 	});
 }

@@ -10,7 +10,7 @@ import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForPageToBeLoaded} from '../../utils/waitForPageToBeLoaded';
 
-export type LaunchEntryTypeLabel = 'Web Content';
+export type LaunchEntryManagerLabel = 'Web Content';
 
 export class LaunchesPage {
 	readonly page: Page;
@@ -59,7 +59,7 @@ export class LaunchesPage {
 	}
 
 	async openEntrySelector(
-		typeLabel: LaunchEntryTypeLabel
+		typeLabel: LaunchEntryManagerLabel
 	): Promise<FrameLocator> {
 		await clickAndExpectToBeVisible({
 			target: this.page.locator(`iframe[title="${typeLabel}"]`),

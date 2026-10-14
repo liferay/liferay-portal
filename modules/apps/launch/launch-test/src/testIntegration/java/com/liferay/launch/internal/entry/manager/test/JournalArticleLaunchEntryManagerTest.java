@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.launch.internal.entry.type.test;
+package com.liferay.launch.internal.entry.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -11,7 +11,7 @@ import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
-import com.liferay.launch.entry.type.LaunchEntryType;
+import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -36,8 +36,8 @@ import org.junit.runner.RunWith;
  */
 @FeatureFlag("LPD-72278")
 @RunWith(Arquillian.class)
-public class JournalArticleLaunchEntryTypeTest
-	extends BaseLaunchEntryTypeTestCase {
+public class JournalArticleLaunchEntryManagerTest
+	extends BaseLaunchEntryManagerTestCase {
 
 	@Override
 	protected long addEntry() throws Exception {
@@ -55,7 +55,7 @@ public class JournalArticleLaunchEntryTypeTest
 	}
 
 	@Override
-	protected String getDraftTitle(LaunchEntryType.Draft draft)
+	protected String getDraftTitle(LaunchEntryManager.Draft draft)
 		throws Exception {
 
 		JournalArticle journalArticle =
@@ -102,7 +102,7 @@ public class JournalArticleLaunchEntryTypeTest
 	}
 
 	@Override
-	protected void updateDraft(String title, LaunchEntryType.Draft draft)
+	protected void updateDraft(String title, LaunchEntryManager.Draft draft)
 		throws Exception {
 
 		JournalArticle journalArticle =

@@ -5,8 +5,8 @@
 
 package com.liferay.launch.web.internal.portlet.action;
 
-import com.liferay.launch.entry.type.LaunchEntryType;
-import com.liferay.launch.entry.type.registry.LaunchEntryTypeRegistry;
+import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -45,11 +45,11 @@ public class ResolveLaunchEntryMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		LaunchEntryType launchEntryType =
-			_launchEntryTypeRegistry.getLaunchEntryType(
+		LaunchEntryManager launchEntryManager =
+			_launchEntryManagerRegistry.getLaunchEntryManager(
 				ParamUtil.getString(resourceRequest, "className"));
 
-		if (launchEntryType == null) {
+		if (launchEntryManager == null) {
 			resourceResponse.setProperty(
 				ResourceResponse.HTTP_STATUS_CODE,
 				String.valueOf(HttpServletResponse.SC_NOT_FOUND));
@@ -69,12 +69,13 @@ public class ResolveLaunchEntryMVCResourceCommand
 			selectedItemDataMap.put(key, jsonObject.getString(key));
 		}
 
-		long classPK = launchEntryType.getClassPK(selectedItemDataMap);
+		long classPK = launchEntryManager.getClassPK(selectedItemDataMap);
 
-		LaunchEntryType.Version publishedVersion = null;
+		LaunchEntryManager.Version publishedVersion = null;
 
 		if (classPK != 0) {
-			publishedVersion = launchEntryType.fetchPublishedVersion(classPK);
+			publishedVersion = launchEntryManager.fetchPublishedVersion(
+				classPK);
 		}
 
 		if (publishedVersion == null) {
@@ -97,6 +98,6 @@ public class ResolveLaunchEntryMVCResourceCommand
 	private JSONFactory _jsonFactory;
 
 	@Reference
-	private LaunchEntryTypeRegistry _launchEntryTypeRegistry;
+	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 
 }

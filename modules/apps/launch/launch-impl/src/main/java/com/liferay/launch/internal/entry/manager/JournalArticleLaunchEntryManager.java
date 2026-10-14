@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.launch.internal.entry.type;
+package com.liferay.launch.internal.entry.manager;
 
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.item.selector.ItemSelectorCriterion;
@@ -14,7 +14,8 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleResource;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleResourceLocalService;
-import com.liferay.launch.entry.type.LaunchEntryType;
+import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
@@ -27,8 +28,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,10 +40,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alejandro Tardín
  */
 @Component(
-	property = "launch.entry.type.class.name=com.liferay.journal.model.JournalArticle",
-	service = LaunchEntryType.class
+	property = "launch.entry.manager.class.name=com.liferay.journal.model.JournalArticle",
+	service = LaunchEntryManager.class
 )
-public class JournalArticleLaunchEntryType implements LaunchEntryType {
+public class JournalArticleLaunchEntryManager implements LaunchEntryManager {
 
 	@Override
 	public Draft addDraft(long classPK, String versionKey)
@@ -84,7 +83,7 @@ public class JournalArticleLaunchEntryType implements LaunchEntryType {
 
 		_journalArticleLocalService.deleteArticle(
 			journalArticle.getGroupId(), journalArticle.getArticleId(),
-			_getServiceContext(WorkflowConstants.ACTION_PUBLISH));
+			ServiceContextThreadLocal.getServiceContext());
 	}
 
 	@Override
@@ -172,23 +171,10 @@ public class JournalArticleLaunchEntryType implements LaunchEntryType {
 	}
 
 	@Override
-	public List<Version> getVersions(long classPK, Locale locale) {
-		List<Version> versions = new ArrayList<>();
-
-		for (JournalArticle journalArticle :
-				_journalArticleLocalService.getArticlesByResourcePrimKey(
-					classPK)) {
-
-			versions.add(_toVersion(journalArticle));
-		}
-
-		versions.sort(
-			Comparator.comparingDouble(
-				(Version version) -> GetterUtil.getDouble(
-					version.getVersionKey())
-			).reversed());
-
-		return versions;
+	public List<Version> getVersions(long classPK) {
+		return TransformUtil.transform(
+			_journalArticleLocalService.getArticlesByResourcePrimKey(classPK),
+			this::_toVersion);
 	}
 
 	@Override
@@ -199,7 +185,7 @@ public class JournalArticleLaunchEntryType implements LaunchEntryType {
 			_journalArticleLocalService.getLatestArticle(
 				classPK, WorkflowConstants.STATUS_APPROVED);
 
-		JournalArticle launchDraftJournalArticle =
+		JournalArticle draftJournalArticle =
 			_journalArticleLocalService.getLatestArticle(
 				draftId, WorkflowConstants.STATUS_ANY, false);
 
@@ -209,15 +195,14 @@ public class JournalArticleLaunchEntryType implements LaunchEntryType {
 		journalArticle = _journalArticleLocalService.updateArticle(
 			serviceContext.getUserId(), journalArticle.getGroupId(),
 			journalArticle.getFolderId(), journalArticle.getArticleId(),
-			journalArticle.getVersion(),
-			launchDraftJournalArticle.getTitleMap(),
-			launchDraftJournalArticle.getDescriptionMap(),
-			launchDraftJournalArticle.getContent(),
-			journalArticle.getLayoutUuid(), serviceContext);
+			journalArticle.getVersion(), draftJournalArticle.getTitleMap(),
+			draftJournalArticle.getDescriptionMap(),
+			draftJournalArticle.getContent(), journalArticle.getLayoutUuid(),
+			serviceContext);
 
 		_journalArticleLocalService.deleteArticle(
-			launchDraftJournalArticle.getGroupId(),
-			launchDraftJournalArticle.getArticleId(), serviceContext);
+			draftJournalArticle.getGroupId(),
+			draftJournalArticle.getArticleId(), serviceContext);
 
 		return _toVersion(journalArticle);
 	}

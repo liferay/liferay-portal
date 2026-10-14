@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.launch.internal.entry.type.registry;
+package com.liferay.launch.internal.entry.manager;
 
-import com.liferay.launch.entry.type.LaunchEntryType;
-import com.liferay.launch.entry.type.registry.LaunchEntryTypeRegistry;
+import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 
@@ -21,24 +21,25 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Alejandro Tardín
  */
-@Component(service = LaunchEntryTypeRegistry.class)
-public class LaunchEntryTypeRegistryImpl implements LaunchEntryTypeRegistry {
+@Component(service = LaunchEntryManagerRegistry.class)
+public class LaunchEntryManagerRegistryImpl
+	implements LaunchEntryManagerRegistry {
 
 	@Override
-	public LaunchEntryType getLaunchEntryType(String className) {
+	public LaunchEntryManager getLaunchEntryManager(String className) {
 		return _serviceTrackerMap.getService(className);
 	}
 
 	@Override
-	public List<LaunchEntryType> getLaunchEntryTypes() {
+	public List<LaunchEntryManager> getLaunchEntryManagers() {
 		return new ArrayList<>(_serviceTrackerMap.values());
 	}
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, LaunchEntryType.class,
-			"launch.entry.type.class.name");
+			bundleContext, LaunchEntryManager.class,
+			"launch.entry.manager.class.name");
 	}
 
 	@Deactivate
@@ -46,6 +47,6 @@ public class LaunchEntryTypeRegistryImpl implements LaunchEntryTypeRegistry {
 		_serviceTrackerMap.close();
 	}
 
-	private ServiceTrackerMap<String, LaunchEntryType> _serviceTrackerMap;
+	private ServiceTrackerMap<String, LaunchEntryManager> _serviceTrackerMap;
 
 }

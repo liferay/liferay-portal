@@ -5,8 +5,8 @@
 
 package com.liferay.launch.web.internal.portlet.action;
 
-import com.liferay.launch.entry.type.LaunchEntryType;
-import com.liferay.launch.entry.type.registry.LaunchEntryTypeRegistry;
+import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -55,10 +55,10 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 
 		String className = ParamUtil.getString(resourceRequest, "className");
 
-		LaunchEntryType launchEntryType =
-			_launchEntryTypeRegistry.getLaunchEntryType(className);
+		LaunchEntryManager launchEntryManager =
+			_launchEntryManagerRegistry.getLaunchEntryManager(className);
 
-		if (launchEntryType == null) {
+		if (launchEntryManager == null) {
 			resourceResponse.setProperty(
 				ResourceResponse.HTTP_STATUS_CODE,
 				String.valueOf(HttpServletResponse.SC_NOT_FOUND));
@@ -71,11 +71,10 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		Locale locale = themeDisplay.getLocale();
-
 		try {
 			JSONObject jsonObject = _getJSONObject(
-				classPK, launchEntryType, locale, resourceRequest);
+				classPK, launchEntryManager, themeDisplay.getLocale(),
+				resourceRequest);
 
 			if (jsonObject == null) {
 				resourceResponse.setProperty(
@@ -92,8 +91,8 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
-						"Unable to resolve launch entry summary for class ",
-						className, " ", classPK),
+						"Unable to get the summary for class name ", className,
+						" and class PK ", classPK),
 					portalException);
 			}
 
@@ -104,11 +103,11 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 	}
 
 	private JSONObject _getJSONObject(
-			long classPK, LaunchEntryType launchEntryType, Locale locale,
+			long classPK, LaunchEntryManager launchEntryManager, Locale locale,
 			ResourceRequest resourceRequest)
 		throws PortalException {
 
-		LaunchEntryType.Item item = launchEntryType.fetchItem(classPK);
+		LaunchEntryManager.Item item = launchEntryManager.fetchItem(classPK);
 
 		if (item == null) {
 			return null;
@@ -124,7 +123,7 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 			"type", item.getTypeName(locale)
 		);
 
-		LaunchEntryType.Draft draft = launchEntryType.fetchDraft(
+		LaunchEntryManager.Draft draft = launchEntryManager.fetchDraft(
 			classPK, ParamUtil.getLong(resourceRequest, "draftId"));
 
 		if (draft != null) {
@@ -144,7 +143,7 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 			);
 		}
 
-		LaunchEntryType.Version version = launchEntryType.fetchVersion(
+		LaunchEntryManager.Version version = launchEntryManager.fetchVersion(
 			classPK, ParamUtil.getString(resourceRequest, "versionKey"));
 
 		if (version == null) {
@@ -172,6 +171,6 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 	private Language _language;
 
 	@Reference
-	private LaunchEntryTypeRegistry _launchEntryTypeRegistry;
+	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 
 }

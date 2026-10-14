@@ -5,14 +5,13 @@
 
 package com.liferay.launch.internal.model.listener;
 
-import com.liferay.launch.entry.type.LaunchEntryType;
-import com.liferay.launch.entry.type.registry.LaunchEntryTypeRegistry;
+import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.io.Serializable;
@@ -42,10 +41,9 @@ public class LaunchEntryRelevantObjectEntryModelListener
 
 		Map<String, Serializable> originalValues =
 			originalObjectEntry.getValues();
-		Map<String, Serializable> values = objectEntry.getValues();
 
-		if (GetterUtil.getLong(originalValues.get("draftId")) ==
-				GetterUtil.getLong(values.get("draftId"))) {
+		if (MapUtil.getLong(originalValues, "draftId") == MapUtil.getLong(
+				objectEntry.getValues(), "draftId")) {
 
 			return;
 		}
@@ -63,19 +61,19 @@ public class LaunchEntryRelevantObjectEntryModelListener
 	private void _deleteDraft(Map<String, Serializable> values)
 		throws ModelListenerException {
 
-		LaunchEntryType launchEntryType =
-			_launchEntryTypeRegistry.getLaunchEntryType(
+		LaunchEntryManager launchEntryManager =
+			_launchEntryManagerRegistry.getLaunchEntryManager(
 				MapUtil.getString(values, "className"));
 
-		long draftId = GetterUtil.getLong(values.get("draftId"));
+		long draftId = MapUtil.getLong(values, "draftId");
 
-		if ((launchEntryType == null) || (draftId == 0)) {
+		if ((launchEntryManager == null) || (draftId == 0)) {
 			return;
 		}
 
 		try {
-			launchEntryType.deleteDraft(
-				GetterUtil.getLong(values.get("classPK")), draftId);
+			launchEntryManager.deleteDraft(
+				MapUtil.getLong(values, "classPK"), draftId);
 		}
 		catch (PortalException portalException) {
 			throw new ModelListenerException(portalException);
@@ -83,6 +81,6 @@ public class LaunchEntryRelevantObjectEntryModelListener
 	}
 
 	@Reference
-	private LaunchEntryTypeRegistry _launchEntryTypeRegistry;
+	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 
 }

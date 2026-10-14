@@ -5,11 +5,9 @@
 
 package com.liferay.launch.web.internal.portlet.action;
 
-import com.liferay.launch.entry.type.LaunchEntryType;
-import com.liferay.launch.entry.type.registry.LaunchEntryTypeRegistry;
+import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
@@ -22,9 +20,6 @@ import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.util.List;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,11 +42,11 @@ public class GetLaunchEntryVersionsMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		LaunchEntryType launchEntryType =
-			_launchEntryTypeRegistry.getLaunchEntryType(
+		LaunchEntryManager launchEntryManager =
+			_launchEntryManagerRegistry.getLaunchEntryManager(
 				ParamUtil.getString(resourceRequest, "className"));
 
-		if (launchEntryType == null) {
+		if (launchEntryManager == null) {
 			resourceResponse.setProperty(
 				ResourceResponse.HTTP_STATUS_CODE,
 				String.valueOf(HttpServletResponse.SC_NOT_FOUND));
@@ -62,17 +57,13 @@ public class GetLaunchEntryVersionsMVCResourceCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		Locale locale = themeDisplay.getLocale();
-
-		List<LaunchEntryType.Version> versions = launchEntryType.getVersions(
-			ParamUtil.getLong(resourceRequest, "classPK"), locale);
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray();
-
-		for (LaunchEntryType.Version version : versions) {
-			jsonArray.put(
-				JSONUtil.put(
-					"label", version.getLabel(locale)
+		JSONPortletResponseUtil.writeJSON(
+			resourceRequest, resourceResponse,
+			JSONUtil.toJSONArray(
+				launchEntryManager.getVersions(
+					ParamUtil.getLong(resourceRequest, "classPK")),
+				version -> JSONUtil.put(
+					"label", version.getLabel(themeDisplay.getLocale())
 				).put(
 					"modified", version.getModifiedDate()
 				).put(
@@ -81,17 +72,10 @@ public class GetLaunchEntryVersionsMVCResourceCommand
 					"userName", version.getUserName()
 				).put(
 					"versionKey", version.getVersionKey()
-				));
-		}
-
-		JSONPortletResponseUtil.writeJSON(
-			resourceRequest, resourceResponse, jsonArray);
+				)));
 	}
 
 	@Reference
-	private JSONFactory _jsonFactory;
-
-	@Reference
-	private LaunchEntryTypeRegistry _launchEntryTypeRegistry;
+	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 
 }
