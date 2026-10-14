@@ -103,7 +103,7 @@ public class OfflineOpenIdConnectSessionManager {
 			return true;
 		}
 
-		if (_isAccessTokenExpiring(openIdConnectSession)) {
+		if (_isAccessTokenExpiringSoon(openIdConnectSession)) {
 			Message message = new Message();
 
 			message.put("openIdConnectSessionId", openIdConnectSessionId);
@@ -275,7 +275,7 @@ public class OfflineOpenIdConnectSessionManager {
 		return null;
 	}
 
-	private boolean _isAccessTokenExpiring(
+	private boolean _isAccessTokenExpiringSoon(
 		OpenIdConnectSession openIdConnectSession) {
 
 		Date accessTokenExpirationDate =
@@ -498,7 +498,8 @@ public class OfflineOpenIdConnectSessionManager {
 									getOpenIdConnectSessionId());
 
 					if ((currentOpenIdConnectSession != null) &&
-						_isAccessTokenExpiring(currentOpenIdConnectSession)) {
+						_isAccessTokenExpiringSoon(
+							currentOpenIdConnectSession)) {
 
 						_extendOpenIdConnectSession(
 							currentOpenIdConnectSession);
