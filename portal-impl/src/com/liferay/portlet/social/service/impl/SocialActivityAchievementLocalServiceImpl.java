@@ -72,11 +72,6 @@ public class SocialActivityAchievementLocalServiceImpl
 	}
 
 	@Override
-	public List<SocialActivityAchievement> getGroupAchievements(long groupId) {
-		return socialActivityAchievementPersistence.findByGroupId(groupId);
-	}
-
-	@Override
 	public List<SocialActivityAchievement> getGroupAchievements(
 		long groupId, String name) {
 
@@ -84,25 +79,8 @@ public class SocialActivityAchievementLocalServiceImpl
 	}
 
 	@Override
-	public int getGroupAchievementsCount(long groupId) {
-		return socialActivityAchievementPersistence.countByGroupId(groupId);
-	}
-
-	@Override
 	public int getGroupAchievementsCount(long groupId, String name) {
 		return socialActivityAchievementPersistence.countByG_N(groupId, name);
-	}
-
-	@Override
-	public List<SocialActivityAchievement> getGroupFirstAchievements(
-		long groupId) {
-
-		return socialActivityAchievementPersistence.findByG_F(groupId, true);
-	}
-
-	@Override
-	public int getGroupFirstAchievementsCount(long groupId) {
-		return socialActivityAchievementPersistence.countByG_F(groupId, true);
 	}
 
 	@Override
