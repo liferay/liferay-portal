@@ -243,12 +243,6 @@ public class AssetAutoTaggerEntryLocalServiceUtil {
 		return getService().getAssetAutoTaggerEntries(assetEntry);
 	}
 
-	public static List<AssetAutoTaggerEntry> getAssetAutoTaggerEntries(
-		com.liferay.asset.kernel.model.AssetTag assetTag) {
-
-		return getService().getAssetAutoTaggerEntries(assetTag);
-	}
-
 	/**
 	 * Returns a range of all the asset auto tagger entries.
 	 *
@@ -340,4 +334,4 @@ public class AssetAutoTaggerEntryLocalServiceUtil {
 			AssetAutoTaggerEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1463782235
+// LIFERAY-SERVICE-BUILDER-HASH:-537021498

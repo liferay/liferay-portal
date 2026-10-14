@@ -222,10 +222,6 @@ public interface AssetAutoTaggerEntryLocalService
 	public List<AssetAutoTaggerEntry> getAssetAutoTaggerEntries(
 		AssetEntry assetEntry);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetAutoTaggerEntry> getAssetAutoTaggerEntries(
-		AssetTag assetTag);
-
 	/**
 	 * Returns a range of all the asset auto tagger entries.
 	 *
@@ -309,4 +305,4 @@ public interface AssetAutoTaggerEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-162699969
+// LIFERAY-SERVICE-BUILDER-HASH:-1141338155
