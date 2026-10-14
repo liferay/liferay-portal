@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Discount API
 Bundle-SymbolicName: com.liferay.commerce.discount.api
-Bundle-Version: 26.2.1
+Bundle-Version: 27.0.0
 Export-Package:\
 	com.liferay.commerce.discount.application.strategy,\
 	com.liferay.commerce.discount.configuration,\

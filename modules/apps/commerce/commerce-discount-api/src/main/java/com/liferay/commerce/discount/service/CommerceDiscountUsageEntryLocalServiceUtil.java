@@ -292,13 +292,6 @@ public class CommerceDiscountUsageEntryLocalServiceUtil {
 			commerceAccountId, commerceDiscountId);
 	}
 
-	public static int getCommerceDiscountUsageEntriesCountByOrderId(
-		long commerceOrderId, long commerceDiscountId) {
-
-		return getService().getCommerceDiscountUsageEntriesCountByOrderId(
-			commerceOrderId, commerceDiscountId);
-	}
-
 	/**
 	 * Returns the commerce discount usage entry with the primary key.
 	 *
@@ -374,4 +367,4 @@ public class CommerceDiscountUsageEntryLocalServiceUtil {
 			CommerceDiscountUsageEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1848025534
+// LIFERAY-SERVICE-BUILDER-HASH:1391954603
