@@ -1001,11 +1001,11 @@ public class UserGroupLocalServiceTest {
 	@Inject
 	private SystemEventLocalService _systemEventLocalService;
 
-	private UserGroup _userGroup1;
-	private UserGroup _userGroup2;
-
 	@Inject
 	private TeamLocalService _teamLocalService;
+
+	private UserGroup _userGroup1;
+	private UserGroup _userGroup2;
 
 	@Inject
 	private UserGroupLocalService _userGroupLocalService;
