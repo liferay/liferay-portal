@@ -1149,9 +1149,6 @@ public class TaxonomyCategoryResourceTest
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), TestPropsValues.getUserId()));
 
-		// The CMS group is shared, so categories seeded into it (for example,
-		// by the Content Marketing Platform) are visible to every new depot
-
 		Page<TaxonomyCategory> page =
 			taxonomyCategoryResource.getAssetLibraryTaxonomyCategoriesPage(
 				depotEntry1.getDepotEntryId(), null, null, null,
