@@ -74,7 +74,7 @@ public class RSSWebCacheItem implements WebCacheItem {
 	}
 
 	private URL _getValidatedURL(String urlString) throws IOException {
-		if (!HttpComponentsUtil.hasHttpProtocol(urlString)) {
+		if (!HttpComponentsUtil.hasHTTPProtocol(urlString)) {
 			throw new SecurityException(
 				"Only HTTP or HTTPS URLs are allowed: " + urlString);
 		}

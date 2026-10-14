@@ -19,26 +19,26 @@ public class HttpComponentsUtilTest {
 
 	@Test
 	@TestInfo("LPD-106200")
-	public void testHasHttpProtocol() {
+	public void testHasHTTPProtocol() {
 		String host = RandomTestUtil.randomString() + ".com";
 
-		Assert.assertFalse(HttpComponentsUtil.hasHttpProtocol("/" + host));
-		Assert.assertTrue(HttpComponentsUtil.hasHttpProtocol("HTTP://" + host));
+		Assert.assertFalse(HttpComponentsUtil.hasHTTPProtocol("/" + host));
+		Assert.assertTrue(HttpComponentsUtil.hasHTTPProtocol("HTTP://" + host));
 		Assert.assertTrue(
-			HttpComponentsUtil.hasHttpProtocol("HTTPS://" + host));
+			HttpComponentsUtil.hasHTTPProtocol("HTTPS://" + host));
 		Assert.assertFalse(
-			HttpComponentsUtil.hasHttpProtocol("file:///" + host));
-		Assert.assertFalse(HttpComponentsUtil.hasHttpProtocol("ftp://" + host));
-		Assert.assertTrue(HttpComponentsUtil.hasHttpProtocol("http://" + host));
+			HttpComponentsUtil.hasHTTPProtocol("file:///" + host));
+		Assert.assertFalse(HttpComponentsUtil.hasHTTPProtocol("ftp://" + host));
+		Assert.assertTrue(HttpComponentsUtil.hasHTTPProtocol("http://" + host));
 		Assert.assertTrue(
-			HttpComponentsUtil.hasHttpProtocol("https://" + host));
+			HttpComponentsUtil.hasHTTPProtocol("https://" + host));
 		Assert.assertFalse(
-			HttpComponentsUtil.hasHttpProtocol("httpx://" + host));
-		Assert.assertFalse(HttpComponentsUtil.hasHttpProtocol(host));
+			HttpComponentsUtil.hasHTTPProtocol("httpx://" + host));
+		Assert.assertFalse(HttpComponentsUtil.hasHTTPProtocol(host));
 
 		Assert.assertFalse(
-			HttpComponentsUtil.hasHttpProtocol(StringPool.BLANK));
-		Assert.assertFalse(HttpComponentsUtil.hasHttpProtocol(null));
+			HttpComponentsUtil.hasHTTPProtocol(StringPool.BLANK));
+		Assert.assertFalse(HttpComponentsUtil.hasHTTPProtocol(null));
 	}
 
 }

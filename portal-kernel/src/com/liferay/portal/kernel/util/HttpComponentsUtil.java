@@ -518,7 +518,7 @@ public class HttpComponentsUtil {
 		return Validator.isNotNull(getDomain(url));
 	}
 
-	public static boolean hasHttpProtocol(String url) {
+	public static boolean hasHTTPProtocol(String url) {
 		String protocol = getProtocol(url);
 
 		if (StringUtil.equalsIgnoreCase(protocol, Http.HTTP) ||
