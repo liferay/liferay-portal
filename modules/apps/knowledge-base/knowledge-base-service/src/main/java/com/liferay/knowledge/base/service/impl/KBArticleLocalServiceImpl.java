@@ -1044,22 +1044,6 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<KBArticle> getKBFolderKBArticles(
-		long groupId, long kbFolderId) {
-
-		return kbArticlePersistence.findByG_KBFI_L_NotS(
-			groupId, kbFolderId, true, WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Override
-	public int getKBFolderKBArticlesCount(
-		long groupId, long kbFolderId, int status) {
-
-		return kbArticlePersistence.countByG_KBFI_S(
-			groupId, kbFolderId, status);
-	}
-
-	@Override
 	public KBArticle getLatestKBArticle(long resourcePrimKey)
 		throws PortalException {
 
