@@ -80,11 +80,6 @@ public class CTCommentLocalServiceImpl extends CTCommentLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<CTComment> getCTEntryCTComments(long ctEntryId) {
-		return ctCommentPersistence.findByCtEntryId(ctEntryId);
-	}
-
-	@Override
 	public CTComment updateCTComment(long ctCommentId, String value)
 		throws PortalException {
 
