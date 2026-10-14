@@ -522,14 +522,16 @@ public class JournalArticleInfoItemFieldValuesUpdaterTest {
 				String xliffFileName)
 		throws Exception {
 
+		String xliff = StringUtil.replace(
+			TranslationTestUtil.readFileToString(xliffFileName),
+			"[$JOURNAL_ARTICLE_ID$]",
+			String.valueOf(journalArticle.getResourcePrimKey()));
+
 		_translationEntryLocalService.addOrUpdateTranslationEntry(
 			_group.getGroupId(), JournalArticle.class.getName(),
 			journalArticle.getResourcePrimKey(),
-			StringUtil.replace(
-				TranslationTestUtil.readFileToString(xliffFileName),
-				"[$JOURNAL_ARTICLE_ID$]",
-				String.valueOf(journalArticle.getResourcePrimKey())),
-			"application/xliff+xml", LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
+			xliff.replaceAll(">\\s+<", "><"), "application/xliff+xml",
+			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		journalArticle = _journalArticleLocalService.fetchLatestArticle(
