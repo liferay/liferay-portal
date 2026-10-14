@@ -24,11 +24,13 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -239,22 +241,53 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 					return;
 				}
 
+				Map<String, String> expectedColumnTypes = new TreeMap<>(
+					String.CASE_INSENSITIVE_ORDER);
+
+				for (String columnDefinition : entry.getValue()) {
+					int index = columnDefinition.indexOf(StringPool.SPACE);
+
+					expectedColumnTypes.put(
+						columnDefinition.substring(0, index),
+						columnDefinition.substring(index + 1));
+				}
+
+				Map<String, Boolean> columnTypeMatches = new TreeMap<>(
+					String.CASE_INSENSITIVE_ORDER);
+
+				try (ResultSet resultSet = dbInspector.getColumnsResultSet(
+						entry.getKey())) {
+
+					while (resultSet.next()) {
+						String columnName = resultSet.getString("COLUMN_NAME");
+
+						String columnType = expectedColumnTypes.get(columnName);
+
+						if (columnType == null) {
+							continue;
+						}
+
+						columnTypeMatches.put(
+							columnName,
+							dbInspector.hasColumnType(columnType, resultSet));
+					}
+				}
+
 				for (String columnDefinition : entry.getValue()) {
 					int index = columnDefinition.indexOf(StringPool.SPACE);
 
 					String columnName = columnDefinition.substring(0, index);
-					String columnType = columnDefinition.substring(index + 1);
 
-					if (!dbInspector.hasColumn(entry.getKey(), columnName)) {
+					Boolean columnTypeMatch = columnTypeMatches.get(columnName);
+
+					if (columnTypeMatch == null) {
 						missingColumnNames.computeIfAbsent(
 							entry.getKey(), tableName -> new ArrayList<>()
 						).add(
 							columnName
 						);
 					}
-					else if (!dbInspector.hasColumnType(
-								entry.getKey(), columnName, columnType)) {
-
+					else if (!columnTypeMatch) {
 						mismatchedColumnDefinitionsMap.computeIfAbsent(
 							entry.getKey(), tableName -> new ArrayList<>()
 						).add(
