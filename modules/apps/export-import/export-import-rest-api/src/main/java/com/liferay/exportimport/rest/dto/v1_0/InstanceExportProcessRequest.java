@@ -61,7 +61,9 @@ public class InstanceExportProcessRequest implements Serializable {
 			InstanceExportProcessRequest.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The external reference codes of the asset libraries to export. Only asset libraries of type Space can be exported."
+	)
 	public String[] getAssetLibraryExternalReferenceCodes() {
 		if (_assetLibraryExternalReferenceCodesSupplier != null) {
 			assetLibraryExternalReferenceCodes =
@@ -100,7 +102,9 @@ public class InstanceExportProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The external reference codes of the asset libraries to export. Only asset libraries of type Space can be exported."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String[] assetLibraryExternalReferenceCodes;
 
@@ -756,4 +760,4 @@ public class InstanceExportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1162200402
+// LIFERAY-REST-BUILDER-HASH:1868052162

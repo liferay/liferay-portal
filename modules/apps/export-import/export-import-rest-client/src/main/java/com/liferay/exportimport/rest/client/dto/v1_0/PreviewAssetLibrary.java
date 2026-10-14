@@ -88,6 +88,33 @@ public class PreviewAssetLibrary implements Cloneable, Serializable {
 
 	protected String externalReferenceCode;
 
+	public Type getType() {
+		return type;
+	}
+
+	public String getTypeAsString() {
+		if (type == null) {
+			return null;
+		}
+
+		return type.toString();
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public void setType(UnsafeSupplier<Type, Exception> typeUnsafeSupplier) {
+		try {
+			type = typeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Type type;
+
 	@Override
 	public PreviewAssetLibrary clone() throws CloneNotSupportedException {
 		return (PreviewAssetLibrary)super.clone();
@@ -119,5 +146,39 @@ public class PreviewAssetLibrary implements Cloneable, Serializable {
 		return PreviewAssetLibrarySerDes.toJSON(this);
 	}
 
+	public static enum Type {
+
+		ASSET_LIBRARY("AssetLibrary"), DESIGN_LIBRARY("DesignLibrary"),
+		PROJECT("Project"), SPACE("Space");
+
+		public static Type create(String value) {
+			for (Type type : values()) {
+				if (Objects.equals(type.getValue(), value) ||
+					Objects.equals(type.name(), value)) {
+
+					return type;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Type(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
 }
-// LIFERAY-REST-BUILDER-HASH:-1715628484
+// LIFERAY-REST-BUILDER-HASH:-1176605305

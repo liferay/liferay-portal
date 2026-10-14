@@ -74,7 +74,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/export-preview/preview-asset-libraries'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the asset libraries that can be exported."
+		description = "Retrieves the asset libraries that can be exported. Only asset libraries of type Space can be exported."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -865,4 +865,4 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 		LogFactoryUtil.getLog(BasePreviewAssetLibraryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-841066378
+// LIFERAY-REST-BUILDER-HASH:892187622

@@ -85,6 +85,18 @@ public class PreviewAssetLibrarySerDes {
 			sb.append("\"");
 		}
 
+		if (previewAssetLibrary.getType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+			sb.append(previewAssetLibrary.getType());
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -133,6 +145,13 @@ public class PreviewAssetLibrarySerDes {
 				String.valueOf(previewAssetLibrary.getExternalReferenceCode()));
 		}
 
+		if (previewAssetLibrary.getType() == null) {
+			map.put("type", null);
+		}
+		else {
+			map.put("type", String.valueOf(previewAssetLibrary.getType()));
+		}
+
 		return map;
 	}
 
@@ -162,6 +181,9 @@ public class PreviewAssetLibrarySerDes {
 
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "type")) {
+				return false;
+			}
 
 			return false;
 		}
@@ -189,6 +211,13 @@ public class PreviewAssetLibrarySerDes {
 				if (jsonParserFieldValue != null) {
 					previewAssetLibrary.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "type")) {
+				if (jsonParserFieldValue != null) {
+					previewAssetLibrary.setType(
+						PreviewAssetLibrary.Type.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -278,4 +307,4 @@ public class PreviewAssetLibrarySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:270075541
+// LIFERAY-REST-BUILDER-HASH:-414808551

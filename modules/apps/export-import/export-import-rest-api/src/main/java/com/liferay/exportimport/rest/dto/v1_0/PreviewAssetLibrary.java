@@ -5,9 +5,12 @@
 
 package com.liferay.exportimport.rest.dto.v1_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -19,7 +22,9 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -39,12 +44,12 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An asset library that can be exported from the instance or that a file to import contains.",
+	description = "An asset library that can be exported from the instance or that a file to import contains. Only asset libraries of type Space can be exported.",
 	value = "PreviewAssetLibrary"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "An asset library that can be exported from the instance or that a file to import contains.",
-	requiredProperties = {"descriptiveName", "externalReferenceCode"}
+	description = "An asset library that can be exported from the instance or that a file to import contains. Only asset libraries of type Space can be exported.",
+	requiredProperties = {"descriptiveName", "externalReferenceCode", "type"}
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PreviewAssetLibrary")
@@ -192,6 +197,61 @@ public class PreviewAssetLibrary implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _externalReferenceCodeSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The asset library's type."
+	)
+	@JsonGetter("type")
+	@Valid
+	public Type getType() {
+		if (_typeSupplier != null) {
+			type = _typeSupplier.get();
+
+			_typeSupplier = null;
+		}
+
+		return type;
+	}
+
+	@JsonIgnore
+	public String getTypeAsString() {
+		Type type = getType();
+
+		if (type == null) {
+			return null;
+		}
+
+		return type.toString();
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+
+		_typeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setType(UnsafeSupplier<Type, Exception> typeUnsafeSupplier) {
+		_typeSupplier = () -> {
+			try {
+				return typeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The asset library's type.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@NotNull
+	protected Type type;
+
+	@JsonIgnore
+	private Supplier<Type> _typeSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -263,6 +323,20 @@ public class PreviewAssetLibrary implements Serializable {
 			sb.append("\"");
 		}
 
+		Type type = getType();
+
+		if (type != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+			sb.append(type);
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -274,6 +348,45 @@ public class PreviewAssetLibrary implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("Type")
+	public static enum Type {
+
+		ASSET_LIBRARY("AssetLibrary"), DESIGN_LIBRARY("DesignLibrary"),
+		PROJECT("Project"), SPACE("Space");
+
+		@JsonCreator
+		public static Type create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (Type type : values()) {
+				if (Objects.equals(type.getValue(), value)) {
+					return type;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Type(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(
@@ -385,4 +498,4 @@ public class PreviewAssetLibrary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:656188995
+// LIFERAY-REST-BUILDER-HASH:-1424217217

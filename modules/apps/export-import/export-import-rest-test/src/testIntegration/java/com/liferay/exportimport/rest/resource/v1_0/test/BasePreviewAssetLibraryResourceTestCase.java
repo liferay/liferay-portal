@@ -637,6 +637,14 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("type", additionalAssertFieldName)) {
+				if (previewAssetLibrary.getType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -788,6 +796,17 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 				if (!Objects.deepEquals(
 						previewAssetLibrary1.getExternalReferenceCode(),
 						previewAssetLibrary2.getExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("type", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						previewAssetLibrary1.getType(),
+						previewAssetLibrary2.getType())) {
 
 					return false;
 				}
@@ -998,6 +1017,11 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("type")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		throw new IllegalArgumentException(
@@ -1282,4 +1306,4 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			_previewAssetLibraryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1359888555
+// LIFERAY-REST-BUILDER-HASH:-477761456
