@@ -162,6 +162,13 @@ public class GitWorkingDirectoryTest
 			gitWorkingDirectory
 		).clean();
 
+		Mockito.doNothing(
+		).when(
+			gitWorkingDirectory
+		).reset(
+			Mockito.anyString()
+		);
+
 		Mockito.doReturn(
 			localGitBranch
 		).when(
@@ -208,13 +215,6 @@ public class GitWorkingDirectoryTest
 		).rebase(
 			Mockito.anyBoolean(), Mockito.any(LocalGitBranch.class),
 			Mockito.any(LocalGitBranch.class)
-		);
-
-		Mockito.doNothing(
-		).when(
-			gitWorkingDirectory
-		).reset(
-			Mockito.anyString()
 		);
 
 		return gitWorkingDirectory;
