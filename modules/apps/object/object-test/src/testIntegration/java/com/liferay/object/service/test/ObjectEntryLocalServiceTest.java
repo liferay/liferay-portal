@@ -5022,22 +5022,24 @@ public class ObjectEntryLocalServiceTest {
 	public void testCopyAndMoveObjectEntryWithAssetTagScopedByDepotEntryType()
 		throws Exception {
 
-		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
-
-		DepotEntry depotEntry1 = _addDepotEntry(DepotConstants.TYPE_PROJECT);
-		DepotEntry depotEntry2 = _addDepotEntry(DepotConstants.TYPE_PROJECT);
-		DepotEntry depotEntry3 = _addDepotEntry(DepotConstants.TYPE_SPACE);
-		DepotEntry depotEntry4 = _addDepotEntry(DepotConstants.TYPE_SPACE);
+		DepotEntry projectDepotEntry1 = _addDepotEntry(
+			DepotConstants.TYPE_PROJECT);
 
 		AssetTag assetTag1 = _addProjectAndSpaceScopedAssetTag(
-			depotEntry1.getGroupId(), GroupConstants.ANY_PARENT_GROUP_ID);
+			projectDepotEntry1.getGroupId(),
+			GroupConstants.ANY_PARENT_GROUP_ID);
+
 		AssetTag assetTag2 = _addProjectAndSpaceScopedAssetTag(
 			GroupConstants.ANY_PARENT_GROUP_ID,
 			GroupConstants.ANY_PARENT_GROUP_ID);
 		AssetTag assetTag3 = _addSpaceScopedAssetTag(
 			GroupConstants.ANY_PARENT_GROUP_ID);
+
+		DepotEntry spaceDepotEntry1 = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
 		AssetTag assetTag4 = _addProjectAndSpaceScopedAssetTag(
-			GroupConstants.ANY_PARENT_GROUP_ID, depotEntry3.getGroupId());
+			GroupConstants.ANY_PARENT_GROUP_ID, spaceDepotEntry1.getGroupId());
+
 		AssetTag assetTag5 = _addAssetTag();
 
 		String[] assetTagNames = {
@@ -5045,32 +5047,39 @@ public class ObjectEntryLocalServiceTest {
 			assetTag4.getName(), assetTag5.getName()
 		};
 
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
+
+		DepotEntry projectDepotEntry2 = _addDepotEntry(
+			DepotConstants.TYPE_PROJECT);
+
 		_copyObjectEntryAndAssertAssetTagNames(
 			assetTagNames,
 			new String[] {assetTag2.getName(), assetTag4.getName()},
-			objectDefinition, depotEntry2.getGroupId(),
-			depotEntry1.getGroupId());
+			objectDefinition, projectDepotEntry2.getGroupId(),
+			projectDepotEntry1.getGroupId());
 
 		_copyObjectEntryAndAssertAssetTagNames(
 			assetTagNames,
 			new String[] {
 				assetTag1.getName(), assetTag2.getName(), assetTag4.getName()
 			},
-			objectDefinition, null, depotEntry1.getGroupId());
+			objectDefinition, null, projectDepotEntry1.getGroupId());
 
 		_moveObjectEntryAndAssertAssetTagNames(
 			assetTagNames,
 			new String[] {
 				assetTag1.getName(), assetTag2.getName(), assetTag4.getName()
 			},
-			objectDefinition, depotEntry1.getGroupId(),
-			depotEntry1.getGroupId());
+			objectDefinition, projectDepotEntry1.getGroupId(),
+			projectDepotEntry1.getGroupId());
 
 		_moveObjectEntryAndAssertAssetTagNames(
 			assetTagNames,
 			new String[] {assetTag2.getName(), assetTag4.getName()},
-			objectDefinition, depotEntry2.getGroupId(),
-			depotEntry1.getGroupId());
+			objectDefinition, projectDepotEntry2.getGroupId(),
+			projectDepotEntry1.getGroupId());
+
+		DepotEntry spaceDepotEntry2 = _addDepotEntry(DepotConstants.TYPE_SPACE);
 
 		_moveObjectEntryAndAssertAssetTagNames(
 			assetTagNames,
@@ -5078,8 +5087,8 @@ public class ObjectEntryLocalServiceTest {
 				assetTag1.getName(), assetTag2.getName(), assetTag3.getName(),
 				assetTag5.getName()
 			},
-			objectDefinition, depotEntry4.getGroupId(),
-			depotEntry3.getGroupId());
+			objectDefinition, spaceDepotEntry2.getGroupId(),
+			spaceDepotEntry1.getGroupId());
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
