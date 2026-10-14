@@ -127,6 +127,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -765,6 +766,16 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 			OrderByComparator<Group> orderByComparator)
 		throws PortalException {
 
+		Set<Long> spaceDepotGroupIds = new HashSet<>();
+
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-41307")) {
+			spaceDepotGroupIds.addAll(
+				TransformUtil.transform(
+					_depotEntryLocalService.getDepotEntries(
+						companyId, DepotConstants.TYPE_SPACE),
+					DepotEntry::getGroupId));
+		}
+
 		return ListUtil.filter(
 			_groupService.search(
 				companyId, _getSupportedExportImportGroupClassNameIds(),
@@ -784,7 +795,10 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 					}
 				).build(),
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator),
-			this::isGroupSupported);
+			group -> _isGroupSupported(
+				group,
+				spaceDepotGroup -> spaceDepotGroupIds.contains(
+					spaceDepotGroup.getGroupId())));
 	}
 
 	@Override
@@ -895,25 +909,10 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 
 	@Override
 	public boolean isGroupSupported(Group group) {
-		StagingGroupHelper stagingGroupHelper =
-			StagingGroupHelperUtil.getStagingGroupHelper();
-
-		if (ArrayUtil.contains(
-				_getSupportedExportImportGroupClassNameIds(),
-				group.getClassNameId()) &&
-			group.isActive() && !group.isCMS() &&
-			(group.isSite() ||
-			 (group.isDepot() &&
-			  FeatureFlagManagerUtil.isEnabled(
-				  group.getCompanyId(), "LPD-41307") &&
-			  _isSpaceDepotEntry(group.getGroupId()))) &&
-			!group.isStaged() && !group.isStagingGroup() &&
-			!stagingGroupHelper.isCompanyGroup(group)) {
-
-			return true;
-		}
-
-		return false;
+		return _isGroupSupported(
+			group,
+			spaceDepotGroup -> _isSpaceDepotEntry(
+				spaceDepotGroup.getGroupId()));
 	}
 
 	@Override
@@ -1650,6 +1649,30 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 	private String _getZipWriterFileName(String id) {
 		return StringBundler.concat(
 			id, StringPool.DASH, Time.getTimestamp(), ".lar");
+	}
+
+	private boolean _isGroupSupported(
+		Group group, Predicate<Group> spaceDepotGroupPredicate) {
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		if (ArrayUtil.contains(
+				_getSupportedExportImportGroupClassNameIds(),
+				group.getClassNameId()) &&
+			group.isActive() && !group.isCMS() &&
+			(group.isSite() ||
+			 (group.isDepot() &&
+			  FeatureFlagManagerUtil.isEnabled(
+				  group.getCompanyId(), "LPD-41307") &&
+			  spaceDepotGroupPredicate.test(group))) &&
+			!group.isStaged() && !group.isStagingGroup() &&
+			!stagingGroupHelper.isCompanyGroup(group)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isImportPortletData(
