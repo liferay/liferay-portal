@@ -46,11 +46,11 @@ public class InlineSQLHelperUtil {
 		return inlineSQLPermission.isEnabled();
 	}
 
-	public static boolean isEnabled(long groupId) {
+	public static boolean isEnabled(long... groupIds) {
 		InlineSQLHelper inlineSQLPermission =
 			_inlineSQLPermissionSnapshot.get();
 
-		return inlineSQLPermission.isEnabled(groupId);
+		return inlineSQLPermission.isEnabled(groupIds);
 	}
 
 	public static boolean isEnabled(long companyId, long groupId) {
@@ -58,13 +58,6 @@ public class InlineSQLHelperUtil {
 			_inlineSQLPermissionSnapshot.get();
 
 		return inlineSQLPermission.isEnabled(companyId, groupId);
-	}
-
-	public static boolean isEnabled(long[] groupIds) {
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.isEnabled(groupIds);
 	}
 
 	public static <T extends Table<T>> DSLQuery replacePermissionCheck(

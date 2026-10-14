@@ -191,15 +191,25 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 	}
 
 	@Override
-	public boolean isEnabled(long groupId) {
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		if (permissionChecker == null) {
-			throw new IllegalStateException("Permission checker is null");
+	public boolean isEnabled(long... groupIds) {
+		if (!_inlinePermissionConfiguration.sqlCheckEnabled()) {
+			return false;
 		}
 
-		return isEnabled(permissionChecker.getCompanyId(), groupId);
+		for (long groupId : groupIds) {
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			if (permissionChecker == null) {
+				throw new IllegalStateException("Permission checker is null");
+			}
+
+			if (isEnabled(permissionChecker.getCompanyId(), groupId)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -234,21 +244,6 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		}
 
 		return true;
-	}
-
-	@Override
-	public boolean isEnabled(long[] groupIds) {
-		if (!_inlinePermissionConfiguration.sqlCheckEnabled()) {
-			return false;
-		}
-
-		for (long groupId : groupIds) {
-			if (isEnabled(groupId)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	@Override
@@ -770,7 +765,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		long companyId = permissionChecker.getCompanyId();
 
 		for (long groupId : groupIds) {
-			if (!isEnabled(groupId)) {
+			if (!isEnabled(companyId, groupId)) {
 				disabledGroupIds.add(groupId);
 			}
 			else {

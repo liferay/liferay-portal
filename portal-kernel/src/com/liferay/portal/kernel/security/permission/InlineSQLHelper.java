@@ -42,13 +42,13 @@ public interface InlineSQLHelper {
 
 	/**
 	 * Returns <code>true</code> if the inline SQL helper is enabled for the
-	 * group.
+	 * groups.
 	 *
-	 * @param  groupId the primary key of the group
+	 * @param  groupIds the primary keys of the groups
 	 * @return <code>true</code> if the inline SQL helper is enabled for the
-	 *         group; <code>false</code> otherwise
+	 *         groups; <code>false</code> otherwise
 	 */
-	public boolean isEnabled(long groupId);
+	public boolean isEnabled(long... groupIds);
 
 	/**
 	 * Returns <code>true</code> if the inline SQL helper is enabled for the
@@ -60,16 +60,6 @@ public interface InlineSQLHelper {
 	 *         company or group; <code>false</code> otherwise
 	 */
 	public boolean isEnabled(long companyId, long groupId);
-
-	/**
-	 * Returns <code>true</code> if the inline SQL helper is enabled for the
-	 * groups.
-	 *
-	 * @param  groupIds the primary keys of the groups
-	 * @return <code>true</code> if the inline SQL helper is enabled for the
-	 *         groups; <code>false</code> otherwise
-	 */
-	public boolean isEnabled(long[] groupIds);
 
 	public <T extends Table<T>> DSLQuery replacePermissionCheck(
 		DSLQuery dslQuery, Class<?> modelClass, Column<T, Long> classPKColumn,
