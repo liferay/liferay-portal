@@ -7,6 +7,7 @@ package com.liferay.roles.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
@@ -28,6 +29,9 @@ import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -52,7 +56,9 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -239,6 +245,17 @@ public class RoleLocalServiceTest {
 			systemEvent.getClassExternalReferenceCode());
 		Assert.assertEquals(
 			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		_assertSearchUser(true, role, user);
+
+		_roleLocalService.deleteRole(role);
+
+		_assertSearchUser(false, role, user);
 	}
 
 	@Test
@@ -890,6 +907,25 @@ public class RoleLocalServiceTest {
 		_team = _teamLocalService.addTeam(
 			user.getUserId(), _organization.getGroupId(),
 			RandomTestUtil.randomString(), null, new ServiceContext());
+	}
+
+	private void _assertSearchUser(boolean expected, Role role, User user)
+		throws Exception {
+
+		Hits hits = _userLocalService.search(
+			TestPropsValues.getCompanyId(), null,
+			WorkflowConstants.STATUS_APPROVED,
+			LinkedHashMapBuilder.<String, Object>put(
+				"usersRoles", role.getRoleId()
+			).build(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, (Sort[])null);
+
+		List<Long> userIds = TransformUtil.transform(
+			hits.toList(),
+			document -> GetterUtil.getLong(document.get(Field.USER_ID)));
+
+		Assert.assertEquals(
+			userIds.toString(), expected, userIds.contains(user.getUserId()));
 	}
 
 	private void _testLoggingAuditMessageProcessorConfigurationEnabled()

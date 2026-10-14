@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
@@ -67,6 +68,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
+import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -784,6 +786,52 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	public void testClearOrganizationUsers() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addOrganizationUser(
+			organization.getOrganizationId(), user);
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_userLocalService.clearOrganizationUsers(
+			organization.getOrganizationId());
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+	}
+
+	@Test
+	public void testClearRoleUsers() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		_assertSearchUser(true, "usersRoles", role.getRoleId(), user);
+
+		_userLocalService.clearRoleUsers(role.getRoleId());
+
+		_assertSearchUser(false, "usersRoles", role.getRoleId(), user);
+	}
+
+	@Test
+	public void testClearTeamUsers() throws Exception {
+		Team team = _addTeam();
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addTeamUser(team.getTeamId(), user);
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userLocalService.clearTeamUsers(team.getTeamId());
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
+	}
+
+	@Test
 	public void testClearUserGroupUsers() throws Exception {
 		User user = UserTestUtil.addUser();
 		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
@@ -847,6 +895,162 @@ public class UserLocalServiceTest {
 			group.getGroupId(), Collections.singletonList(user));
 
 		_assertSearchUser(false, "usersGroups", group.getGroupId(), user);
+	}
+
+	@Test
+	public void testDeleteOrganizationUser() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addOrganizationUser(
+			organization.getOrganizationId(), user);
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_userLocalService.deleteOrganizationUser(
+			organization.getOrganizationId(), user.getUserId());
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+
+		_userLocalService.addOrganizationUser(
+			organization.getOrganizationId(), user);
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_userLocalService.deleteOrganizationUser(
+			organization.getOrganizationId(), user);
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+	}
+
+	@Test
+	public void testDeleteOrganizationUsers() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addOrganizationUsers(
+			organization.getOrganizationId(), new long[] {user.getUserId()});
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_userLocalService.deleteOrganizationUsers(
+			organization.getOrganizationId(), new long[] {user.getUserId()});
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+
+		_userLocalService.addOrganizationUsers(
+			organization.getOrganizationId(), Collections.singletonList(user));
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_userLocalService.deleteOrganizationUsers(
+			organization.getOrganizationId(), Collections.singletonList(user));
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+	}
+
+	@Test
+	public void testDeleteRoleUser() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		_assertSearchUser(true, "usersRoles", role.getRoleId(), user);
+
+		_userLocalService.deleteRoleUser(role.getRoleId(), user.getUserId());
+
+		_assertSearchUser(false, "usersRoles", role.getRoleId(), user);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		_assertSearchUser(true, "usersRoles", role.getRoleId(), user);
+
+		_userLocalService.deleteRoleUser(role.getRoleId(), user);
+
+		_assertSearchUser(false, "usersRoles", role.getRoleId(), user);
+	}
+
+	@Test
+	public void testDeleteRoleUsers() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+
+		_assertSearchUser(true, "usersRoles", role.getRoleId(), user);
+
+		_userLocalService.deleteRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+
+		_assertSearchUser(false, "usersRoles", role.getRoleId(), user);
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), Collections.singletonList(user));
+
+		_assertSearchUser(true, "usersRoles", role.getRoleId(), user);
+
+		_userLocalService.deleteRoleUsers(
+			role.getRoleId(), Collections.singletonList(user));
+
+		_assertSearchUser(false, "usersRoles", role.getRoleId(), user);
+	}
+
+	@Test
+	public void testDeleteTeamUser() throws Exception {
+		Team team = _addTeam();
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addTeamUser(team.getTeamId(), user);
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userLocalService.deleteTeamUser(team.getTeamId(), user.getUserId());
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
+
+		_userLocalService.addTeamUser(team.getTeamId(), user);
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userLocalService.deleteTeamUser(team.getTeamId(), user);
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
+	}
+
+	@Test
+	public void testDeleteTeamUsers() throws Exception {
+		Team team = _addTeam();
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addTeamUsers(
+			team.getTeamId(), new long[] {user.getUserId()});
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userLocalService.deleteTeamUsers(
+			team.getTeamId(), new long[] {user.getUserId()});
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
+
+		_userLocalService.addTeamUsers(
+			team.getTeamId(), Collections.singletonList(user));
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userLocalService.deleteTeamUsers(
+			team.getTeamId(), Collections.singletonList(user));
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
 	}
 
 	@Test
@@ -1681,6 +1885,28 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	public void testSetOrganizationUsers() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+		User user1 = UserTestUtil.addUser();
+
+		_userLocalService.setOrganizationUsers(
+			organization.getOrganizationId(), new long[] {user1.getUserId()});
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		_userLocalService.setOrganizationUsers(
+			organization.getOrganizationId(), new long[] {user2.getUserId()});
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user1);
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user2);
+	}
+
+	@Test
 	public void testSetRoleUsers() throws Exception {
 		User user = UserTestUtil.addUser();
 
@@ -1691,6 +1917,25 @@ public class UserLocalServiceTest {
 		user = _userLocalService.getUser(user.getUserId());
 
 		Assert.assertTrue(ArrayUtil.contains(user.getRoleIds(), roleId));
+	}
+
+	@Test
+	public void testSetTeamUsers() throws Exception {
+		Team team = _addTeam();
+		User user1 = UserTestUtil.addUser();
+
+		_userLocalService.setTeamUsers(
+			team.getTeamId(), new long[] {user1.getUserId()});
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		_userLocalService.setTeamUsers(
+			team.getTeamId(), new long[] {user2.getUserId()});
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user1);
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user2);
 	}
 
 	@Test
@@ -2341,6 +2586,15 @@ public class UserLocalServiceTest {
 		_testVerifyEmailAddress(true);
 	}
 
+	private Team _addTeam() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		return _teamLocalService.addTeam(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+	}
+
 	private User _addUser(boolean ldapUser, String password) throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext();
@@ -2967,6 +3221,9 @@ public class UserLocalServiceTest {
 
 	@Inject
 	private SystemEventLocalService _systemEventLocalService;
+
+	@Inject
+	private TeamLocalService _teamLocalService;
 
 	@Inject
 	private TicketLocalService _ticketLocalService;

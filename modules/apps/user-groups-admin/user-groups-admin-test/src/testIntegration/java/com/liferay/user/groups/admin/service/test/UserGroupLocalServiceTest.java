@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
+import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -40,6 +42,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -253,6 +256,25 @@ public class UserGroupLocalServiceTest {
 	}
 
 	@Test
+	public void testClearTeamUserGroups() throws Exception {
+		Team team = _addTeam();
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addTeamUserGroup(
+			team.getTeamId(), userGroup.getUserGroupId());
+
+		User user = UserTestUtil.addUser();
+
+		_userGroupLocalService.addUserUserGroup(user.getUserId(), userGroup);
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userGroupLocalService.clearTeamUserGroups(team.getTeamId());
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
+	}
+
+	@Test
 	public void testClearUserUserGroups() throws Exception {
 		User user = UserTestUtil.addUser();
 		UserGroup userGroup1 = UserGroupTestUtil.addUserGroup();
@@ -376,6 +398,64 @@ public class UserGroupLocalServiceTest {
 		_assertSearchUser(
 			false, "inheritUsersGroups", group.getGroupId(), user);
 		_assertSearchUserGroupByGroupId(false, group, userGroup);
+	}
+
+	@Test
+	public void testDeleteTeamUserGroup() throws Exception {
+		Team team = _addTeam();
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addTeamUserGroup(
+			team.getTeamId(), userGroup.getUserGroupId());
+
+		User user = UserTestUtil.addUser();
+
+		_userGroupLocalService.addUserUserGroup(user.getUserId(), userGroup);
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userGroupLocalService.deleteTeamUserGroup(
+			team.getTeamId(), userGroup.getUserGroupId());
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
+
+		_userGroupLocalService.addTeamUserGroup(team.getTeamId(), userGroup);
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userGroupLocalService.deleteTeamUserGroup(team.getTeamId(), userGroup);
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
+	}
+
+	@Test
+	public void testDeleteTeamUserGroups() throws Exception {
+		Team team = _addTeam();
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addTeamUserGroups(
+			team.getTeamId(), new long[] {userGroup.getUserGroupId()});
+
+		User user = UserTestUtil.addUser();
+
+		_userGroupLocalService.addUserUserGroup(user.getUserId(), userGroup);
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userGroupLocalService.deleteTeamUserGroups(
+			team.getTeamId(), new long[] {userGroup.getUserGroupId()});
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
+
+		_userGroupLocalService.addTeamUserGroups(
+			team.getTeamId(), Collections.singletonList(userGroup));
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user);
+
+		_userGroupLocalService.deleteTeamUserGroups(
+			team.getTeamId(), Collections.singletonList(userGroup));
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user);
 	}
 
 	@Test
@@ -637,6 +717,34 @@ public class UserGroupLocalServiceTest {
 	}
 
 	@Test
+	public void testSetTeamUserGroups() throws Exception {
+		Team team = _addTeam();
+		UserGroup userGroup1 = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.setTeamUserGroups(
+			team.getTeamId(), new long[] {userGroup1.getUserGroupId()});
+
+		User user1 = UserTestUtil.addUser();
+
+		_userGroupLocalService.addUserUserGroup(user1.getUserId(), userGroup1);
+
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user1);
+
+		User user2 = UserTestUtil.addUser();
+		UserGroup userGroup2 = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addUserUserGroup(user2.getUserId(), userGroup2);
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user2);
+
+		_userGroupLocalService.setTeamUserGroups(
+			team.getTeamId(), new long[] {userGroup2.getUserGroupId()});
+
+		_assertSearchUser(false, "usersTeams", team.getTeamId(), user1);
+		_assertSearchUser(true, "usersTeams", team.getTeamId(), user2);
+	}
+
+	@Test
 	public void testSetUserUserGroups() throws Exception {
 		User user = UserTestUtil.addUser();
 		UserGroup userGroup1 = UserGroupTestUtil.addUserGroup();
@@ -743,6 +851,15 @@ public class UserGroupLocalServiceTest {
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	private Team _addTeam() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		return _teamLocalService.addTeam(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+	}
 
 	private void _assertSearchUser(
 			boolean expected, String paramKey, long paramValue, User user)
@@ -886,6 +1003,9 @@ public class UserGroupLocalServiceTest {
 
 	private UserGroup _userGroup1;
 	private UserGroup _userGroup2;
+
+	@Inject
+	private TeamLocalService _teamLocalService;
 
 	@Inject
 	private UserGroupLocalService _userGroupLocalService;

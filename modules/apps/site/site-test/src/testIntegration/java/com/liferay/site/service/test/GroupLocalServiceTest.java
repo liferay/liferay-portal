@@ -545,6 +545,36 @@ public class GroupLocalServiceTest {
 	}
 
 	@Test
+	public void testSetOrganizationGroups() throws Exception {
+		Group group1 = GroupTestUtil.addGroup();
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_groupLocalService.setOrganizationGroups(
+			organization.getOrganizationId(), new long[] {group1.getGroupId()});
+
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addOrganizationUser(
+			organization.getOrganizationId(), user);
+
+		_assertSearchUser(
+			true, "inheritUsersGroups", group1.getGroupId(), user);
+
+		Group group2 = GroupTestUtil.addGroup();
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group2.getGroupId(), user);
+
+		_groupLocalService.setOrganizationGroups(
+			organization.getOrganizationId(), new long[] {group2.getGroupId()});
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group1.getGroupId(), user);
+		_assertSearchUser(
+			true, "inheritUsersGroups", group2.getGroupId(), user);
+	}
+
+	@Test
 	public void testSetUserGroupGroups() throws Exception {
 		Group group1 = GroupTestUtil.addGroup();
 		UserGroup userGroup = UserGroupTestUtil.addUserGroup();

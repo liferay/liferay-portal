@@ -13,6 +13,7 @@ import com.liferay.object.exception.ObjectValidationRuleEngineException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -49,10 +50,12 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
@@ -414,8 +417,129 @@ public class OrganizationLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteOrganization() throws Exception {
+	public void testClearGroupOrganizations() throws Exception {
+		Group group = GroupTestUtil.addGroup();
 		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_organizationLocalService.addGroupOrganization(
+			group.getGroupId(), organization.getOrganizationId());
+
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization.getOrganizationId());
+
+		_assertSearchUser(true, "inheritUsersGroups", group.getGroupId(), user);
+
+		_organizationLocalService.clearGroupOrganizations(group.getGroupId());
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group.getGroupId(), user);
+	}
+
+	@Test
+	public void testClearUserOrganizations() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization.getOrganizationId());
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_organizationLocalService.clearUserOrganizations(user.getUserId());
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+	}
+
+	@Test
+	public void testDeleteGroupOrganization() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_organizationLocalService.addGroupOrganization(
+			group.getGroupId(), organization.getOrganizationId());
+
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization.getOrganizationId());
+
+		_assertSearchUser(true, "inheritUsersGroups", group.getGroupId(), user);
+
+		_organizationLocalService.deleteGroupOrganization(
+			group.getGroupId(), organization.getOrganizationId());
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group.getGroupId(), user);
+
+		_organizationLocalService.addGroupOrganization(
+			group.getGroupId(), organization);
+
+		_assertSearchUser(true, "inheritUsersGroups", group.getGroupId(), user);
+
+		_organizationLocalService.deleteGroupOrganization(
+			group.getGroupId(), organization);
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group.getGroupId(), user);
+	}
+
+	@Test
+	public void testDeleteGroupOrganizations() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_organizationLocalService.addGroupOrganizations(
+			group.getGroupId(), new long[] {organization.getOrganizationId()});
+
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization.getOrganizationId());
+
+		_assertSearchUser(true, "inheritUsersGroups", group.getGroupId(), user);
+
+		_organizationLocalService.deleteGroupOrganizations(
+			group.getGroupId(), new long[] {organization.getOrganizationId()});
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group.getGroupId(), user);
+
+		_organizationLocalService.addGroupOrganizations(
+			group.getGroupId(), Collections.singletonList(organization));
+
+		_assertSearchUser(true, "inheritUsersGroups", group.getGroupId(), user);
+
+		_organizationLocalService.deleteGroupOrganizations(
+			group.getGroupId(), Collections.singletonList(organization));
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group.getGroupId(), user);
+	}
+
+	@Test
+	public void testDeleteOrganization() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_organizationLocalService.addGroupOrganization(
+			group.getGroupId(), organization.getOrganizationId());
+
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization.getOrganizationId());
+
+		_userLocalService.updateStatus(
+			user.getUserId(), WorkflowConstants.STATUS_INACTIVE,
+			new ServiceContext());
+
+		_assertSearchUser(true, "inheritUsersGroups", group.getGroupId(), user);
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
 
 		_organizationLocalService.deleteOrganization(
 			organization.getOrganizationId());
@@ -423,6 +547,11 @@ public class OrganizationLocalServiceTest {
 		Assert.assertNull(
 			_organizationLocalService.fetchOrganization(
 				organization.getOrganizationId()));
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group.getGroupId(), user);
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
 
 		List<SystemEvent> systemEvents =
 			_systemEventLocalService.getSystemEvents(
@@ -436,6 +565,66 @@ public class OrganizationLocalServiceTest {
 			systemEvent.getClassExternalReferenceCode());
 		Assert.assertEquals(
 			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
+	}
+
+	@Test
+	public void testDeleteUserOrganization() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization.getOrganizationId());
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_organizationLocalService.deleteUserOrganization(
+			user.getUserId(), organization.getOrganizationId());
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization);
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_organizationLocalService.deleteUserOrganization(
+			user.getUserId(), organization);
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+	}
+
+	@Test
+	public void testDeleteUserOrganizations() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganizations(
+			user.getUserId(), new long[] {organization.getOrganizationId()});
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_organizationLocalService.deleteUserOrganizations(
+			user.getUserId(), new long[] {organization.getOrganizationId()});
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
+
+		_organizationLocalService.addUserOrganizations(
+			user.getUserId(), Collections.singletonList(organization));
+
+		_assertSearchUser(
+			true, "usersOrgs", organization.getOrganizationId(), user);
+
+		_organizationLocalService.deleteUserOrganizations(
+			user.getUserId(), Collections.singletonList(organization));
+
+		_assertSearchUser(
+			false, "usersOrgs", organization.getOrganizationId(), user);
 	}
 
 	@Test
@@ -1107,6 +1296,65 @@ public class OrganizationLocalServiceTest {
 	}
 
 	@Test
+	public void testSetGroupOrganizations() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+		Organization organization1 = OrganizationTestUtil.addOrganization();
+
+		_organizationLocalService.setGroupOrganizations(
+			group.getGroupId(), new long[] {organization1.getOrganizationId()});
+
+		User user1 = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user1.getUserId(), organization1.getOrganizationId());
+
+		_assertSearchUser(
+			true, "inheritUsersGroups", group.getGroupId(), user1);
+
+		Organization organization2 = OrganizationTestUtil.addOrganization();
+		User user2 = UserTestUtil.addUser();
+
+		_organizationLocalService.addUserOrganization(
+			user2.getUserId(), organization2.getOrganizationId());
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group.getGroupId(), user2);
+
+		_organizationLocalService.setGroupOrganizations(
+			group.getGroupId(), new long[] {organization2.getOrganizationId()});
+
+		_assertSearchUser(
+			false, "inheritUsersGroups", group.getGroupId(), user1);
+		_assertSearchUser(
+			true, "inheritUsersGroups", group.getGroupId(), user2);
+	}
+
+	@Test
+	public void testSetUserOrganizations() throws Exception {
+		Organization organization1 = OrganizationTestUtil.addOrganization();
+		User user = UserTestUtil.addUser();
+
+		_organizationLocalService.setUserOrganizations(
+			user.getUserId(), new long[] {organization1.getOrganizationId()});
+
+		_assertSearchUser(
+			true, "usersOrgs", organization1.getOrganizationId(), user);
+
+		Organization organization2 = OrganizationTestUtil.addOrganization();
+
+		_assertSearchUser(
+			false, "usersOrgs", organization2.getOrganizationId(), user);
+
+		_organizationLocalService.setUserOrganizations(
+			user.getUserId(), new long[] {organization2.getOrganizationId()});
+
+		_assertSearchUser(
+			false, "usersOrgs", organization1.getOrganizationId(), user);
+		_assertSearchUser(
+			true, "usersOrgs", organization2.getOrganizationId(), user);
+	}
+
+	@Test
 	public void testUpdateOrganizationWithLazyReferencingEnabled()
 		throws Exception {
 
@@ -1161,6 +1409,25 @@ public class OrganizationLocalServiceTest {
 			parentOrganization.getOrganizationId(), keywords,
 			WorkflowConstants.STATUS_ANY, null, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, null);
+	}
+
+	private void _assertSearchUser(
+			boolean expected, String paramKey, long paramValue, User user)
+		throws Exception {
+
+		Hits hits = _userLocalService.search(
+			TestPropsValues.getCompanyId(), null, WorkflowConstants.STATUS_ANY,
+			LinkedHashMapBuilder.<String, Object>put(
+				paramKey, paramValue
+			).build(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, (Sort[])null);
+
+		List<Long> userIds = TransformUtil.transform(
+			hits.toList(),
+			document -> GetterUtil.getLong(document.get(Field.USER_ID)));
+
+		Assert.assertEquals(
+			userIds.toString(), expected, userIds.contains(user.getUserId()));
 	}
 
 	private String _getTreePath(Organization[] organizations) {
