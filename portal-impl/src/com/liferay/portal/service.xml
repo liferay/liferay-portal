@@ -1943,9 +1943,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="UserId" return-type="Collection">
-			<finder-column name="userId" />
-		</finder>
 		<finder name="LteExpirationDate" return-type="Collection">
 			<finder-column comparator="&lt;=" name="expirationDate" />
 		</finder>
@@ -2193,9 +2190,6 @@
 		</finder>
 		<finder name="Type" return-type="Collection">
 			<finder-column name="type" />
-		</finder>
-		<finder name="Subtype" return-type="Collection">
-			<finder-column name="subtype" />
 		</finder>
 		<finder name="C_N" pretouch="true" return-type="Role" unique="true">
 			<finder-column name="companyId" />
@@ -2524,9 +2518,6 @@
 		<finder name="ContactId" return-type="User" unique="true">
 			<finder-column name="contactId" />
 		</finder>
-		<finder name="EmailAddress" return-type="Collection">
-			<finder-column name="emailAddress" />
-		</finder>
 		<finder name="PortraitId" return-type="Collection">
 			<finder-column name="portraitId" />
 		</finder>
@@ -2537,10 +2528,6 @@
 		<finder name="C_U" return-type="User" unique="true">
 			<finder-column name="companyId" />
 			<finder-column name="userId" />
-		</finder>
-		<finder name="C_CD" return-type="Collection" where="type = 1">
-			<finder-column name="companyId" />
-			<finder-column name="createDate" />
 		</finder>
 		<finder name="C_MD" return-type="Collection" where="type = 1">
 			<finder-column name="companyId" />
@@ -2565,11 +2552,6 @@
 		<finder name="C_S" return-type="Collection" where="type = 1">
 			<finder-column name="companyId" />
 			<finder-column name="status" />
-		</finder>
-		<finder name="C_CD_MD" return-type="Collection" where="type = 1">
-			<finder-column name="companyId" />
-			<finder-column name="createDate" />
-			<finder-column name="modifiedDate" />
 		</finder>
 		<finder name="C_T_S" return-type="Collection">
 			<finder-column name="companyId" />
@@ -2815,53 +2797,10 @@
 		<finder name="Type" return-type="Collection">
 			<finder-column name="type" />
 		</finder>
-		<finder name="U_DT" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="deliveryType" />
-		</finder>
-		<finder name="U_D" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="delivered" />
-		</finder>
-		<finder name="U_A" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="archived" />
-		</finder>
-		<finder name="U_DT_D" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="deliveryType" />
-			<finder-column name="delivered" />
-		</finder>
-		<finder name="U_DT_A" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="deliveryType" />
-			<finder-column name="archived" />
-		</finder>
-		<finder name="U_D_AR" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="delivered" />
-			<finder-column name="actionRequired" />
-		</finder>
-		<finder name="U_D_A" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="delivered" />
-			<finder-column name="archived" />
-		</finder>
-		<finder name="U_AR_A" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="actionRequired" />
-			<finder-column name="archived" />
-		</finder>
 		<finder name="U_T_GteT_D" return-type="Collection">
 			<finder-column name="userId" />
 			<finder-column name="type" />
 			<finder-column comparator="&gt;=" name="timestamp" />
-			<finder-column name="delivered" />
-		</finder>
-		<finder name="U_T_DT_D" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="type" />
-			<finder-column name="deliveryType" />
 			<finder-column name="delivered" />
 		</finder>
 		<finder name="U_DT_D_AR" return-type="Collection">
@@ -2874,12 +2813,6 @@
 			<finder-column name="userId" />
 			<finder-column name="deliveryType" />
 			<finder-column name="delivered" />
-			<finder-column name="archived" />
-		</finder>
-		<finder name="U_DT_AR_A" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="deliveryType" />
-			<finder-column name="actionRequired" />
 			<finder-column name="archived" />
 		</finder>
 		<finder name="U_D_AR_A" return-type="Collection">
@@ -2924,14 +2857,8 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
-		</finder>
-		<finder name="SessionId" return-type="Collection">
-			<finder-column name="sessionId" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="UserTrackerPath" remote-service="false">
