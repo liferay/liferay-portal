@@ -6,6 +6,7 @@
 import ClayButton from '@clayui/button';
 import {useResource} from '@clayui/data-provider';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
@@ -130,11 +131,14 @@ const SelectSXPBlueprintModal = ({
 					description={Liferay.Language.get(
 						'an-error-has-occurred-and-we-were-unable-to-load-the-results'
 					)}
-					imgProps={{
-						alt: Liferay.Language.get('unable-to-load-content'),
-						title: Liferay.Language.get('unable-to-load-content'),
-					}}
-					imgSrc="/o/admin-theme/images/states/empty_state.svg"
+					image={
+						<ClayIcon
+							className="c-empty-state-icon c-empty-state-icon-empty-state"
+							illustration
+							spritemap="/o/admin-theme/images/clay/empty_states.svg"
+							symbol="empty-state"
+						/>
+					}
 					title={Liferay.Language.get('unable-to-load-content')}
 				/>
 			);
@@ -244,11 +248,14 @@ const SelectSXPBlueprintModal = ({
 				description={Liferay.Language.get(
 					'sorry,-no-results-were-found'
 				)}
-				imgProps={{
-					alt: Liferay.Language.get('no-results-found'),
-					title: Liferay.Language.get('no-results-found'),
-				}}
-				imgSrc="/o/admin-theme/images/states/empty_state.svg"
+				image={
+					<ClayIcon
+						className="c-empty-state-icon c-empty-state-icon-empty-state"
+						illustration
+						spritemap="/o/admin-theme/images/clay/empty_states.svg"
+						symbol="empty-state"
+					/>
+				}
 				title={Liferay.Language.get('no-results-found')}
 			/>
 		);
