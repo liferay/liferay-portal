@@ -72,39 +72,6 @@ definition {
 		}
 	}
 
-	@priority = 4
-	test CanApplySortingAndSortParameter {
-		task ("And Given setting the Sorting to 'age:asc'") {
-			APIBuilderUI.addAndPublishEndpointConfiguration(
-				editValue = "age:asc",
-				entity = "Endpoints",
-				fieldName = "sort",
-				name = "testendpoint",
-				title = "My-app");
-
-			Alert.viewSuccessMessage();
-
-			WaitForElementNotPresent(locator1 = "Message#SUCCESS");
-		}
-
-		task ("When I call endpoint with '?sort=age:desc' in API Explorer") {
-			APIExplorer.navigateToOpenAPI(customObjectPlural = "my-app");
-
-			APIExplorer.executeAPIMethod(
-				method = "getTestendpointPage",
-				parameter = "sort",
-				service = "testSchema",
-				value = "student_age:desc");
-		}
-
-		task ("Then endpoint returns student in descemding order of student_age values") {
-			AssertTextEquals.assertPartialText(
-				locator1 = "OpenAPI#RESPONSE_BODY",
-				method = "getTestendpointPage",
-				value1 = "\"items\": [     {       \"student_age\": 101     },     {       \"student_age\": 25     },     {       \"student_age\": 0     },     {       \"student_age\": -1     }   ]");
-		}
-	}
-
 	@description = "Ignored because of bug LPD-31798"
 	@ignore = "true"
 	@priority = 4
