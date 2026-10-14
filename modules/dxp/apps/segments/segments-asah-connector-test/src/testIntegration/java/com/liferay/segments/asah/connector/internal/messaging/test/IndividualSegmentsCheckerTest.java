@@ -144,6 +144,50 @@ public class IndividualSegmentsCheckerTest {
 	}
 
 	@Test
+	public void testCheckIndividualSegmentsEntriesWhenAnalyticsCloudFails()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(), "123456789", true,
+						"http://localhost:" +
+							PortalUtil.getPortalServerPort(false));
+			ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.segments.asah.connector.internal." +
+						"configuration.SegmentsAsahConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"anonymousUserSegmentsCacheExpirationTime", "60"
+					).build())) {
+
+			User user = UserTestUtil.addUser();
+
+			_prepareAsahFaroBackendClient(user.getUuid());
+
+			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+				_checkIndividualSegmentsSchedulerJobConfiguration.
+					getJobExecutorUnsafeRunnable();
+
+			jobExecutorUnsafeRunnable.run();
+
+			long segmentsEntryRelId = _getSegmentsEntryRelId(
+				_getSegmentsEntry(), user);
+
+			_prepareAsahFaroBackendClient(
+				() -> {
+					throw new IllegalStateException();
+				});
+
+			jobExecutorUnsafeRunnable.run();
+
+			Assert.assertEquals(
+				segmentsEntryRelId,
+				_getSegmentsEntryRelId(_getSegmentsEntry(), user));
+		}
+	}
+
+	@Test
 	public void testCheckIndividualSegmentsEntriesWhenMembershipChanges()
 		throws Exception {
 
@@ -376,6 +420,48 @@ public class IndividualSegmentsCheckerTest {
 	}
 
 	private void _prepareAsahFaroBackendClient(String... individualPKs) {
+		_prepareAsahFaroBackendClient(
+			() -> {
+				JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+				for (String individualPK : individualPKs) {
+					jsonArray.put(
+						JSONUtil.put(
+							"dataSourceIndividualPKs",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"dataSourceId", "123456789"
+								).put(
+									"individualPKs",
+									JSONUtil.putAll(individualPK)
+								))
+						).put(
+							"individualSegmentIds", JSONUtil.putAll("1234567")
+						));
+				}
+
+				return JSONUtil.put(
+					"_embedded", JSONUtil.put("individuals", jsonArray)
+				).put(
+					"page",
+					JSONUtil.put(
+						"number", 0
+					).put(
+						"size", 100
+					).put(
+						"totalElements", individualPKs.length
+					).put(
+						"totalPages", 1
+					)
+				).put(
+					"total", 0
+				).toString();
+			});
+	}
+
+	private void _prepareAsahFaroBackendClient(
+		UnsafeSupplier<String, Exception> unsafeSupplier) {
+
 		Object asahFaroBackendClient = ReflectionTestUtil.getFieldValue(
 			_checkIndividualSegmentsSchedulerJobConfiguration,
 			"_asahFaroBackendClient");
@@ -411,43 +497,7 @@ public class IndividualSegmentsCheckerTest {
 					).toString()
 				).put(
 					"/api/1.0/individual-segments/1234567/individuals",
-					() -> {
-						JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-						for (String individualPK : individualPKs) {
-							jsonArray.put(
-								JSONUtil.put(
-									"dataSourceIndividualPKs",
-									JSONUtil.putAll(
-										JSONUtil.put(
-											"dataSourceId", "123456789"
-										).put(
-											"individualPKs",
-											JSONUtil.putAll(individualPK)
-										))
-								).put(
-									"individualSegmentIds",
-									JSONUtil.putAll("1234567")
-								));
-						}
-
-						return JSONUtil.put(
-							"_embedded", JSONUtil.put("individuals", jsonArray)
-						).put(
-							"page",
-							JSONUtil.put(
-								"number", 0
-							).put(
-								"size", 100
-							).put(
-								"totalElements", individualPKs.length
-							).put(
-								"totalPages", 1
-							)
-						).put(
-							"total", 0
-						).toString();
-					}
+					unsafeSupplier
 				).build()));
 	}
 
