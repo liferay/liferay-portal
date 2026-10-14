@@ -69,6 +69,8 @@ public class WorkflowConstants {
 
 	public static final String LABEL_EXPIRED = "expired";
 
+	public static final String LABEL_FAILED = "failed";
+
 	public static final String LABEL_IN_TRASH = "in-trash";
 
 	public static final String LABEL_INACTIVE = "inactive";
@@ -94,6 +96,8 @@ public class WorkflowConstants {
 	public static final int STATUS_EMPTY = 9;
 
 	public static final int STATUS_EXPIRED = 3;
+
+	public static final int STATUS_FAILED = 12;
 
 	public static final int STATUS_IN_TRASH = 8;
 
@@ -127,6 +131,9 @@ public class WorkflowConstants {
 		}
 		else if (label.equals(LABEL_EXPIRED)) {
 			return STATUS_EXPIRED;
+		}
+		else if (label.equals(LABEL_FAILED)) {
+			return STATUS_FAILED;
 		}
 		else if (label.equals(LABEL_INACTIVE)) {
 			return STATUS_INACTIVE;
@@ -166,6 +173,9 @@ public class WorkflowConstants {
 		else if (status == STATUS_EXPIRED) {
 			return LABEL_EXPIRED;
 		}
+		else if (status == STATUS_FAILED) {
+			return LABEL_FAILED;
+		}
 		else if (status == STATUS_IN_TRASH) {
 			return LABEL_IN_TRASH;
 		}
@@ -204,6 +214,9 @@ public class WorkflowConstants {
 		else if (status == STATUS_EXPIRED) {
 			return LABEL_EXPIRED;
 		}
+		else if (status == STATUS_FAILED) {
+			return LABEL_FAILED;
+		}
 		else if (status == STATUS_IN_TRASH) {
 			return LABEL_IN_TRASH;
 		}
@@ -237,6 +250,9 @@ public class WorkflowConstants {
 			return "warning";
 		}
 		else if (status == WorkflowConstants.STATUS_EXPIRED) {
+			return "danger";
+		}
+		else if (status == WorkflowConstants.STATUS_FAILED) {
 			return "danger";
 		}
 		else if (status == WorkflowConstants.STATUS_IN_TRASH) {
