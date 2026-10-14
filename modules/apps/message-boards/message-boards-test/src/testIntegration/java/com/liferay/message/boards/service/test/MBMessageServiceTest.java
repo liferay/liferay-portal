@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
@@ -200,11 +199,8 @@ public class MBMessageServiceTest {
 		MBBanLocalServiceUtil.addBan(
 			TestPropsValues.getUserId(), user.getUserId(), serviceContext);
 
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(user);
-
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, permissionChecker)) {
+				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			MBMessageServiceUtil.addMessage(
 				_group.getGroupId(), _category.getCategoryId(),
@@ -225,11 +221,8 @@ public class MBMessageServiceTest {
 		MBBanLocalServiceUtil.addBan(
 			TestPropsValues.getUserId(), user.getUserId(), serviceContext);
 
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(user);
-
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, permissionChecker)) {
+				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			MBMessageServiceUtil.addMessage(
 				_group.getGroupId(),
