@@ -45,6 +45,10 @@ public class PlacedCommerceOrderAttachmentTableFDSView
 			"priority", "priority",
 			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
 		).add(
+			"dsRequestStatus", "signature-status",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"dsRequestStatusDataRenderer")
+		).add(
 			_getDateFDSTableSchemaField("dateModified", "modified-date")
 		).build();
 	}

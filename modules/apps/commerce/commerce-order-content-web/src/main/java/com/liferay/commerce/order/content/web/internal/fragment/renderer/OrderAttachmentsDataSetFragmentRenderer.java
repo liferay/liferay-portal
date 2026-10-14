@@ -6,9 +6,14 @@
 package com.liferay.commerce.order.content.web.internal.fragment.renderer;
 
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.order.content.web.internal.constants.CommerceOrderFragmentFDSNames;
+import com.liferay.commerce.service.CommerceOrderAttachmentLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.util.CommerceOrderInfoItemUtil;
+import com.liferay.digital.signature.manager.DSRequestManager;
+import com.liferay.digital.signature.model.DSRequest;
+import com.liferay.digital.signature.url.DSRequestURLProvider;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
@@ -18,19 +23,27 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -40,6 +53,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -128,7 +145,7 @@ public class OrderAttachmentsDataSetFragmentRenderer
 
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-attachments-data-set:additionalProps",
-				_getFDSAdditionalProps(commerceOrder.getCommerceOrderId()));
+				_getFDSAdditionalProps(commerceOrder, httpServletRequest));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-attachments-data-set:apiURL",
 				_getAPIURL(commerceOrder));
@@ -147,7 +164,7 @@ public class OrderAttachmentsDataSetFragmentRenderer
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-attachments-data-set:" +
 					"fdsActionDropdownItems",
-				_getFDSActionDropdownItems(httpServletRequest));
+				_getFDSActionDropdownItems(commerceOrder, httpServletRequest));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-attachments-data-set:name",
 				_getName(commerceOrder));
@@ -175,35 +192,207 @@ public class OrderAttachmentsDataSetFragmentRenderer
 			commerceOrder.getCommerceOrderId(), "/attachments");
 	}
 
-	private List<FDSActionDropdownItem> _getFDSActionDropdownItems(
-		HttpServletRequest httpServletRequest) {
+	private Map<String, Object> _getDSRequestAdditionalProps(
+		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
 
-		return FDSActionDropdownItemList.of(
-			FDSActionDropdownItemBuilder.setHref(
-				StringPool.POUND
-			).setIcon(
-				"download"
-			).setLabel(
-				_language.get(httpServletRequest, "download")
-			).build(
-				"download"
-			),
-			FDSActionDropdownItemBuilder.setHref(
-				StringPool.POUND
-			).setIcon(
-				"trash"
-			).setLabel(
-				_language.get(httpServletRequest, "delete")
-			).setPermissionKey(
-				"delete"
-			).build(
-				"delete"
-			));
+		Map<Long, DSRequest> dsRequests = _getDSRequests(
+			commerceOrder, httpServletRequest);
+
+		if (dsRequests.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"dsRequestStatuses", _getDSRequestStatuses(dsRequests)
+		).put(
+			"signDSRequestURLs",
+			_getSignDSRequestURLs(commerceOrder, httpServletRequest)
+		).build();
 	}
 
-	private Map<String, Object> _getFDSAdditionalProps(long commerceOrderId) {
+	private String _getDSRequestDetailsURL(
+		HttpServletRequest httpServletRequest) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		String dsRequestDetailsURL = HttpComponentsUtil.addParameter(
+			StringBundler.concat(
+				themeDisplay.getPortalURL(), _portal.getPathModule(),
+				"/commerce-order-attachment-signature/details"),
+			"backURL", themeDisplay.getURLCurrent());
+
+		return dsRequestDetailsURL + "&commerceOrderAttachmentId={id}";
+	}
+
+	private List<FDSActionDropdownItem> _getDSRequestFDSActionDropdownItems(
+		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
+
+		Map<Long, DSRequest> dsRequests = _getDSRequests(
+			commerceOrder, httpServletRequest);
+
+		if (dsRequests.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<FDSActionDropdownItem> fdsActionDropdownItems = new ArrayList<>();
+
+		Map<String, String> signDSRequestURLs = _getSignDSRequestURLs(
+			commerceOrder, httpServletRequest);
+
+		if (!signDSRequestURLs.isEmpty()) {
+			fdsActionDropdownItems.add(
+				FDSActionDropdownItemBuilder.setHref(
+					StringPool.POUND
+				).setIcon(
+					"pencil"
+				).setLabel(
+					_language.get(httpServletRequest, "sign")
+				).build(
+					"sign"
+				));
+		}
+
+		fdsActionDropdownItems.add(
+			FDSActionDropdownItemBuilder.putData(
+				"dsRequestDetailsURL",
+				_getDSRequestDetailsURL(httpServletRequest)
+			).setHref(
+				StringPool.POUND
+			).setIcon(
+				"list-ul"
+			).setLabel(
+				_language.get(httpServletRequest, "view-signature-details")
+			).build(
+				"view-signature-details"
+			));
+
+		return fdsActionDropdownItems;
+	}
+
+	private Map<String, String> _getDSRequestStatuses(
+		Map<Long, DSRequest> dsRequests) {
+
+		Map<String, String> dsRequestStatuses = new HashMap<>();
+
+		for (Map.Entry<Long, DSRequest> entry : dsRequests.entrySet()) {
+			DSRequest dsRequest = entry.getValue();
+
+			dsRequestStatuses.put(
+				String.valueOf(entry.getKey()), dsRequest.getStatus());
+		}
+
+		return dsRequestStatuses;
+	}
+
+	private Map<Long, DSRequest> _getDSRequests(
+		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
+
+		String key =
+			OrderAttachmentsDataSetFragmentRenderer.class.getName() +
+				commerceOrder.getCommerceOrderId();
+
+		Map<Long, DSRequest> dsRequests =
+			(Map<Long, DSRequest>)httpServletRequest.getAttribute(key);
+
+		if (dsRequests != null) {
+			return dsRequests;
+		}
+
+		Map<Long, Long> fileEntryIds = new LinkedHashMap<>();
+
+		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			for (CommerceOrderAttachment commerceOrderAttachment :
+					_commerceOrderAttachmentLocalService.
+						getCommerceOrderAttachments(
+							commerceOrder.getCommerceOrderId(),
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+				if (!_commerceOrderAttachmentModelResourcePermission.contains(
+						themeDisplay.getPermissionChecker(),
+						commerceOrderAttachment, ActionKeys.VIEW)) {
+
+					continue;
+				}
+
+				fileEntryIds.put(
+					commerceOrderAttachment.getCommerceOrderAttachmentId(),
+					commerceOrderAttachment.getFileEntryId());
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return Collections.emptyMap();
+		}
+
+		Map<Long, DSRequest> fileEntryDSRequests =
+			_dsRequestManager.getLatestFileEntryDSRequests(
+				commerceOrder.getCompanyId(),
+				ArrayUtil.toLongArray(fileEntryIds.values()));
+
+		dsRequests = new LinkedHashMap<>();
+
+		for (Map.Entry<Long, Long> entry : fileEntryIds.entrySet()) {
+			DSRequest dsRequest = fileEntryDSRequests.get(entry.getValue());
+
+			if (dsRequest == null) {
+				continue;
+			}
+
+			dsRequests.put(entry.getKey(), dsRequest);
+		}
+
+		httpServletRequest.setAttribute(key, dsRequests);
+
+		return dsRequests;
+	}
+
+	private List<FDSActionDropdownItem> _getFDSActionDropdownItems(
+		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
+
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			FDSActionDropdownItemList.of(
+				FDSActionDropdownItemBuilder.setHref(
+					StringPool.POUND
+				).setIcon(
+					"download"
+				).setLabel(
+					_language.get(httpServletRequest, "download")
+				).build(
+					"download"
+				),
+				FDSActionDropdownItemBuilder.setHref(
+					StringPool.POUND
+				).setIcon(
+					"trash"
+				).setLabel(
+					_language.get(httpServletRequest, "delete")
+				).setPermissionKey(
+					"delete"
+				).build(
+					"delete"
+				));
+
+		fdsActionDropdownItems.addAll(
+			_getDSRequestFDSActionDropdownItems(
+				commerceOrder, httpServletRequest));
+
+		return fdsActionDropdownItems;
+	}
+
+	private Map<String, Object> _getFDSAdditionalProps(
+		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
+
 		return HashMapBuilder.<String, Object>put(
-			"commerceOrderId", commerceOrderId
+			"commerceOrderId", commerceOrder.getCommerceOrderId()
+		).putAll(
+			_getDSRequestAdditionalProps(commerceOrder, httpServletRequest)
 		).build();
 	}
 
@@ -213,6 +402,42 @@ public class OrderAttachmentsDataSetFragmentRenderer
 		}
 
 		return CommerceOrderFragmentFDSNames.PLACED_ORDER_ATTACHMENTS;
+	}
+
+	private Map<String, String> _getSignDSRequestURLs(
+		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
+
+		Map<String, String> signDSRequestURLs = new HashMap<>();
+
+		Map<Long, DSRequest> dsRequests = _getDSRequests(
+			commerceOrder, httpServletRequest);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		for (Map.Entry<Long, DSRequest> entry : dsRequests.entrySet()) {
+			DSRequest dsRequest = entry.getValue();
+
+			if (!dsRequest.isSignatureRequired(themeDisplay.getUserId())) {
+				continue;
+			}
+
+			try {
+				signDSRequestURLs.put(
+					String.valueOf(entry.getKey()),
+					_dsRequestURLProvider.getSignModalURL(
+						themeDisplay.getURLCurrent(),
+						commerceOrder.getCompanyId(),
+						dsRequest.getDSRequestId(),
+						dsRequest.getSiteGroupId()));
+			}
+			catch (PortalException portalException) {
+				_log.error(portalException);
+			}
+		}
+
+		return signDSRequestURLs;
 	}
 
 	private boolean _isEditMode(HttpServletRequest httpServletRequest) {
@@ -229,7 +454,23 @@ public class OrderAttachmentsDataSetFragmentRenderer
 		OrderAttachmentsDataSetFragmentRenderer.class);
 
 	@Reference
+	private CommerceOrderAttachmentLocalService
+		_commerceOrderAttachmentLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceOrderAttachment)"
+	)
+	private ModelResourcePermission<CommerceOrderAttachment>
+		_commerceOrderAttachmentModelResourcePermission;
+
+	@Reference
 	private CommerceOrderService _commerceOrderService;
+
+	@Reference
+	private DSRequestManager _dsRequestManager;
+
+	@Reference
+	private DSRequestURLProvider _dsRequestURLProvider;
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
