@@ -41,9 +41,6 @@
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
 		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 	</entity>
 	<entity local-service="true" name="Entry" remote-service="true">
 
@@ -117,9 +114,6 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
 		</finder>
 	</entity>
 	<exceptions>
