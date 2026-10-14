@@ -29,7 +29,7 @@ jobs:
                 uses: google-github-actions/setup-gcloud@v2
                 with:
                     project_id: ${{inputs.is_production && vars.GCP_PROJECT_ID_EXTERNAL_PRODUCTION || vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
-            -   if: ${{inputs.provider == 'azure' && !inputs.is_production}}
+            -   if: ${{(inputs.provider == 'aws' || inputs.provider == 'azure') && !inputs.is_production}}
                 name: Install ORAS
                 uses: oras-project/setup-oras@v1
             -   env:
@@ -87,22 +87,31 @@ jobs:
                         then
                             files=(
                                 cloud/scripts/_aws_common.sh
+                                cloud/scripts/_aws_platform_values.jq
                                 cloud/scripts/_common.sh
+                                cloud/scripts/_platform_values.jq
+                                cloud/scripts/config.json.defaults
                                 cloud/scripts/setup_aws.sh
                                 cloud/terraform/aws/eks/*
-                                cloud/terraform/aws/gitops/platform/*
-                                cloud/terraform/aws/gitops/resources/*
+                                cloud/terraform/aws/eks/.terraform.lock.hcl
+                                cloud/terraform/aws/platform/*
+                                cloud/terraform/aws/platform/.terraform.lock.hcl
+                                cloud/terraform/modules/argocd/*
                             )
                         elif [[ "${provider}" == "azure" ]]
                         then
                             files=(
                                 cloud/scripts/_azure_common.sh
+                                cloud/scripts/_azure_platform_values.jq
                                 cloud/scripts/_common.sh
+                                cloud/scripts/_platform_values.jq
                                 cloud/scripts/config.json.defaults
                                 cloud/scripts/setup_azure.sh
                                 cloud/scripts/teardown_azure.sh
                                 cloud/terraform/azure/aks/*
+                                cloud/terraform/azure/aks/.terraform.lock.hcl
                                 cloud/terraform/azure/platform/*
+                                cloud/terraform/azure/platform/.terraform.lock.hcl
                                 cloud/terraform/modules/argocd/*
                             )
                         elif [[ "${provider}" == "gcp" ]]
@@ -115,7 +124,7 @@ jobs:
                             )
                         fi
 
-                        if [[ "${provider}" == "azure" ]] && [[ "${{inputs.is_production}}" != "true" ]]
+                        if [[ "${provider}" == "aws" || "${provider}" == "azure" ]] && [[ "${{inputs.is_production}}" != "true" ]]
                         then
                             _point_artifacts_at_this_build ./cloud/scripts/config.json.defaults
                         fi

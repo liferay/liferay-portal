@@ -16,11 +16,13 @@ function main {
 		exit 1
 	fi
 
-	check_utils aws jq terraform
+	check_utils aws helm jq terraform
 
 	validate_config_json "${1}"
 
-	local configuration_json_file="${1}"
+	local configuration_json_file
+
+	configuration_json_file=$(resolve_config_json "${1}")
 
 	generate_tfvars "aws" "${configuration_json_file}" "eks"
 
@@ -57,6 +59,10 @@ function main {
 	_set_up_aws_eks "${terraform_args[@]}"
 
 	connect_to_cluster
+
+	set_up_platform "aws" "${terraform_args[@]}"
+
+	install_liferay_platform_chart "aws" "${configuration_json_file}"
 }
 
 function _configure_s3_bucket {

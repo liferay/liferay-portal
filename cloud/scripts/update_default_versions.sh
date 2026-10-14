@@ -23,18 +23,23 @@ function main {
 
 	local aws_bootstrap_sources=(
 		"${ROOT_CLOUD_DIR}/scripts/_aws_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/_aws_platform_values.jq"
 		"${ROOT_CLOUD_DIR}/scripts/_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/_platform_values.jq"
+		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
 		"${ROOT_CLOUD_DIR}/scripts/setup_aws.sh"
 		"${ROOT_CLOUD_DIR}/terraform/aws/eks"
-		"${ROOT_CLOUD_DIR}/terraform/aws/gitops/platform"
-		"${ROOT_CLOUD_DIR}/terraform/aws/gitops/resources"
+		"${ROOT_CLOUD_DIR}/terraform/aws/platform"
+		"${ROOT_CLOUD_DIR}/terraform/modules/argocd"
 	)
 
 	_check_bootstrap "aws" "${aws_bootstrap_sources[@]}"
 
 	local azure_bootstrap_sources=(
 		"${ROOT_CLOUD_DIR}/scripts/_azure_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/_azure_platform_values.jq"
 		"${ROOT_CLOUD_DIR}/scripts/_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/_platform_values.jq"
 		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
 		"${ROOT_CLOUD_DIR}/scripts/setup_azure.sh"
 		"${ROOT_CLOUD_DIR}/terraform/azure/aks"
@@ -279,16 +284,23 @@ function _update_artifact {
 
 	local config_json_defaults_file="${SCRIPTS_DIR}/config.json.defaults"
 
-	_record_bootstrap_file_update \
-		"azure" \
+	local previous_checksum
+
+	previous_checksum=$(get_file_checksum "${config_json_defaults_file}")
+
+	_write_json_file \
 		"${config_json_defaults_file}" \
-		_write_json_file \
-			"${config_json_defaults_file}" \
-			--arg name "${name}" \
-			--arg type "${type}" \
-			--arg version "${version}" \
-			--tab \
-			'.artifacts[$type][$name].version = $version'
+		--arg name "${name}" \
+		--arg type "${type}" \
+		--arg version "${version}" \
+		--tab \
+		'.artifacts[$type][$name].version = $version'
+
+	if [ "${previous_checksum}" != "$(get_file_checksum "${config_json_defaults_file}")" ]
+	then
+		_record_modified_bootstrap "aws"
+		_record_modified_bootstrap "azure"
+	fi
 }
 
 function _update_default_chart_version {
@@ -306,16 +318,16 @@ function _update_default_chart_version {
 
 	version=$(yq '.version' "${helm_chart_yaml}")
 
-	if [[ ${helm_chart_name} == aws ]] || [[ ${helm_chart_name} == gcp ]]
+	if [[ ${helm_chart_name} == gcp ]]
 	then
 		_update_resources_tfvars "${helm_chart_name}" "liferay_helm_chart_version" "${version}"
 	elif [[ ${helm_chart_name} == gcp-infrastructure ]]
 	then
 		_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_helm_chart_version" "${version}"
-	elif [[ ${helm_chart_name} == aws-infrastructure-provider ]] || [[ ${helm_chart_name} == gcp-infrastructure-provider ]]
+	elif [[ ${helm_chart_name} == gcp-infrastructure-provider ]]
 	then
 		_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_provider_helm_chart_version" "${version}"
-	elif [[ ${helm_chart_name} == azure ]] || [[ ${helm_chart_name} == azure-infrastructure-provider ]] || [[ ${helm_chart_name} == infrastructure ]] || [[ ${helm_chart_name} == platform ]]
+	elif [[ ${helm_chart_name} == aws ]] || [[ ${helm_chart_name} == aws-infrastructure-provider ]] || [[ ${helm_chart_name} == aws-marketplace ]] || [[ ${helm_chart_name} == azure ]] || [[ ${helm_chart_name} == azure-infrastructure-provider ]] || [[ ${helm_chart_name} == infrastructure ]] || [[ ${helm_chart_name} == platform ]]
 	then
 		_update_artifact "${chart_name}" "charts" "${version}"
 	elif [[ ${helm_chart_name} == dxp-operator ]]
@@ -329,7 +341,6 @@ function _update_default_chart_version {
 
 		_update_platform_components_target_revision "observability" "${version}"
 
-		_update_resources_tfvars "aws" "observability_helm_chart_version" "${version}"
 		_update_resources_tfvars "gcp" "observability_helm_chart_version" "${version}"
 	elif [[ ${helm_chart_name} == platform-components ]]
 	then

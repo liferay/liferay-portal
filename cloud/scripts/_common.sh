@@ -106,10 +106,73 @@ function get_terraform_args {
 	fi
 }
 
+function get_terraform_outputs {
+	local cloud="${1}"
+	local terraform_stack="${2}"
+
+	push_directory "${ROOT_CLOUD_DIR}/terraform/${cloud}/${terraform_stack}"
+
+	terraform output -json
+
+	pop_directory
+}
+
+function install_liferay_platform_chart {
+	local cloud="${1}"
+	local configuration_json_file="${2}"
+
+	local platform_repo_url
+	local platform_target_revision
+	local platform_values
+
+	platform_repo_url=$(jq --raw-output '"oci://\(.artifacts.charts."liferay-platform".registry // error("artifacts.charts.liferay-platform.registry is missing"))/liferay-platform"' "${configuration_json_file}")
+	platform_target_revision=$(jq --raw-output '.artifacts.charts."liferay-platform".version // error("artifacts.charts.liferay-platform.version is missing")' "${configuration_json_file}")
+	platform_values=$(get_terraform_outputs "${cloud}" "platform" | jq --from-file "${SCRIPTS_DIR}/_${cloud}_platform_values.jq" --slurpfile configuration "${configuration_json_file}")
+
+	echo "Applying the Liferay platform root application."
+
+	helm \
+		upgrade \
+		liferay-platform \
+		"${platform_repo_url}" \
+		--install \
+		--namespace argocd-system \
+		--values <(echo "${platform_values}") \
+		--version "${platform_target_revision}"
+}
+
 function pop_directory {
 	popd > /dev/null
 }
 
 function push_directory {
 	pushd "${1}" > /dev/null
+}
+
+function resolve_config_json {
+	local configuration_json_file="${1}"
+
+	local resolved_configuration_json_file
+
+	resolved_configuration_json_file=$(mktemp)
+
+	jq --slurp '.[0] * .[1]' "${SCRIPTS_DIR}/config.json.defaults" "${configuration_json_file}" > "${resolved_configuration_json_file}"
+
+	echo "${resolved_configuration_json_file}"
+}
+
+function set_up_platform {
+	local cloud="${1}"
+
+	push_directory "${ROOT_CLOUD_DIR}/terraform/${cloud}/platform"
+
+	echo "Setting up the Liferay platform."
+
+	terraform init
+
+	terraform apply -input=false "${@:2}"
+
+	echo "Liferay platform setup complete."
+
+	pop_directory
 }

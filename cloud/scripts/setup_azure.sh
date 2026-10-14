@@ -6,10 +6,6 @@ set -o pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/_azure_common.sh"
 
-_CONFIG_JSON_DEFAULTS_FILE="${SCRIPTS_DIR}/config.json.defaults"
-
-readonly _CONFIG_JSON_DEFAULTS_FILE
-
 function main {
 	if [ ${#} -eq 0 ]
 	then
@@ -26,7 +22,7 @@ function main {
 
 	local configuration_json_file
 
-	configuration_json_file=$(_resolve_config_json "${1}")
+	configuration_json_file=$(resolve_config_json "${1}")
 
 	generate_tfvars "azure" "${configuration_json_file}" "aks"
 
@@ -68,9 +64,9 @@ function main {
 
 	connect_to_cluster
 
-	_set_up_azure_platform "${terraform_args[@]}"
+	set_up_platform "azure" "${terraform_args[@]}"
 
-	_install_liferay_platform_chart "${configuration_json_file}"
+	install_liferay_platform_chart "azure" "${configuration_json_file}"
 }
 
 function _configure_storage_account {
@@ -164,150 +160,6 @@ function _create_tfstate_storage {
 	fi
 }
 
-function _get_artifact_values {
-	local configuration_json_file="${1}"
-
-	jq \
-		'.artifacts as $artifacts
-		| def field($type; $name; $key):
-			$artifacts[$type][$name][$key] // error("artifacts.\($type).\($name).\($key) is missing");
-		def chart($name):
-			{
-				repoURL: "oci://\(field("charts"; $name; "registry"))/\($name)",
-				targetRevision: field("charts"; $name; "version")
-			};
-		def image($name):
-			{
-				repository: "\(field("images"; $name; "registry"))/\($name)",
-				tag: field("images"; $name; "version")
-			};
-		{
-			platformComponents: (chart("liferay-platform-components") + {
-				values: {
-					infrastructure: chart("liferay-infrastructure"),
-					infrastructureProvider: chart("liferay-azure-infrastructure-provider"),
-					liferay: chart("liferay-azure"),
-					observability: chart("observability"),
-					operatorApplications: {
-						dxpOperator: (chart("liferay-dxp-operator") + {
-							values: {
-								image: image("liferay-dxp-operator")
-							}
-						})
-					}
-				}
-			})
-		}' \
-		"${configuration_json_file}"
-}
-
-function _get_keda_operator_application {
-	local platform_module_outputs=${1}
-	local tenant_id=${2}
-
-	jq \
-		--arg tenant_id "${tenant_id}" \
-		--argjson platform_module_outputs "${platform_module_outputs}" \
-		--null-input \
-		'($platform_module_outputs.keda_identity_client_id.value // "") as $client_id
-		| if $client_id == "" then
-			{}
-		else
-			{
-				namespace: ($platform_module_outputs.keda_service_account_namespace.value // "keda-system"),
-				values: {
-					podIdentity: {
-						azureWorkload: {
-							clientId: $client_id,
-							enabled: true,
-							tenantId: $tenant_id
-						}
-					}
-				}
-			}
-		end'
-}
-
-function _get_liferay_parameters {
-	local platform_module_outputs=${1}
-
-	jq \
-		--argjson platform_module_outputs "${platform_module_outputs}" \
-		--null-input \
-		'[
-			{
-				name: "global.azure.prometheusWorkspaceEndpoint",
-				value: ($platform_module_outputs.prometheus_workspace_endpoint.value // "")
-			}
-		]
-		| map(select(.value != ""))'
-}
-
-function _get_observability_parameters {
-	local platform_module_outputs=${1}
-	local tenant_id=${2}
-
-	jq \
-		--arg tenant_id "${tenant_id}" \
-		--argjson platform_module_outputs "${platform_module_outputs}" \
-		--null-input \
-		'[
-			{
-				name: "alloy.iam.azureClientId",
-				value: ($platform_module_outputs.observability_identity_client_id.value // "")
-			},
-			{
-				name: "azure.location",
-				value: ($platform_module_outputs.deployment_context.value.region // "")
-			},
-			{
-				name: "azure.prometheusWorkspaceEndpoint",
-				value: ($platform_module_outputs.prometheus_workspace_endpoint.value // "")
-			},
-			{
-				name: "azure.prometheusWorkspaceId",
-				value: ($platform_module_outputs.prometheus_workspace_id.value // "")
-			},
-			{
-				name: "azure.remoteWrite.dataCollectionRuleId",
-				value: ($platform_module_outputs.prometheus_data_collection_rule_id.value // "")
-			},
-			{
-				name: "azure.remoteWrite.metricsIngestionEndpoint",
-				value: ($platform_module_outputs.prometheus_metrics_ingestion_endpoint.value // "")
-			},
-			{
-				name: "azure.remoteWrite.tenantId",
-				value: $tenant_id
-			},
-			{
-				name: "azure.resourceGroupName",
-				value: ($platform_module_outputs.deployment_context.value.resourceGroupName // "")
-			},
-			{
-				name: "azure.subscriptionId",
-				value: ($platform_module_outputs.deployment_context.value.subscriptionId // "")
-			},
-			{
-				name: "cloudProvider",
-				value: "azure"
-			},
-			{
-				name: "grafana.grafana\\.ini.azure.workload_identity_client_id",
-				value: ($platform_module_outputs.observability_identity_client_id.value // "")
-			},
-			{
-				name: "grafana.grafana\\.ini.azure.workload_identity_tenant_id",
-				value: $tenant_id
-			},
-			{
-				name: "grafana.serviceAccount.annotations.azure\\.workload\\.identity/client-id",
-				value: ($platform_module_outputs.observability_identity_client_id.value // "")
-			}
-		]
-		| map(select(.value != ""))'
-}
-
 function _grant_tfstate_access {
 	local container_name="${1}"
 	local resource_group_name="${2}"
@@ -376,132 +228,8 @@ function _has_tfstate_access {
 		&> /dev/null
 }
 
-function _install_liferay_platform_chart {
-	local configuration_json_file="${1}"
-
-	local platform_repo_url
-	local platform_target_revision
-
-	platform_repo_url=$(jq --raw-output '"oci://\(.artifacts.charts."liferay-platform".registry // error("artifacts.charts.liferay-platform.registry is missing"))/liferay-platform"' "${configuration_json_file}")
-	platform_target_revision=$(jq --raw-output '.artifacts.charts."liferay-platform".version // error("artifacts.charts.liferay-platform.version is missing")' "${configuration_json_file}")
-
-	echo "Applying the Liferay platform root application."
-
-	local platform_module_outputs
-
-	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/platform"
-
-	platform_module_outputs=$(terraform output -json)
-
-	pop_directory
-
-	local tenant_id
-
-	tenant_id=$(jq --raw-output '.tenant_id' "${configuration_json_file}")
-
-	local artifact_values
-
-	artifact_values=$(_get_artifact_values "${configuration_json_file}")
-
-	local keda_operator_application
-
-	keda_operator_application=$(_get_keda_operator_application "${platform_module_outputs}" "${tenant_id}")
-
-	local liferay_parameters
-
-	liferay_parameters=$(_get_liferay_parameters "${platform_module_outputs}")
-
-	local observability_parameters
-
-	observability_parameters=$(_get_observability_parameters "${platform_module_outputs}" "${tenant_id}")
-
-	jq \
-		--argjson artifact_values "${artifact_values}" \
-		--argjson keda_operator_application "${keda_operator_application}" \
-		--argjson liferay_parameters "${liferay_parameters}" \
-		--argjson observability_parameters "${observability_parameters}" \
-		--argjson platform_module_outputs "${platform_module_outputs}" \
-		--null-input \
-		--slurpfile configuration "${configuration_json_file}" \
-		'{
-			platformComponents: {
-				values: (({
-					networkPolicy: {
-						apiServerSources: [
-							{
-								namespaceSelector: {
-									matchLabels: {
-										"kubernetes.io/metadata.name": "kube-system"
-									}
-								},
-								podSelector: {
-									matchLabels: {
-										app: "konnectivity-agent"
-									}
-								}
-							}
-						]
-					}
-				} * ($configuration[0].platformComponents.values // {})) * {
-					clusterSecretStore: {
-						enabled: true,
-						name: ($platform_module_outputs.deployment_context.value.deploymentName + "-secret-store"),
-						provider: $platform_module_outputs.cluster_secret_store_provider.value
-					},
-					deploymentContext: $platform_module_outputs.deployment_context.value,
-					infrastructure: {
-						parameters: [
-							{
-								name: "persistence.storageClassName",
-								value: "managed-csi-premium-v2"
-							}
-						]
-					},
-					liferay: {
-						parameters: $liferay_parameters
-					},
-					observability: {
-						parameters: $observability_parameters
-					},
-					operatorApplications: {
-						externalSecrets: {
-							values: {
-								serviceAccount: {
-									annotations: {
-										"azure.workload.identity/client-id": $platform_module_outputs.external_secrets_client_id.value
-									}
-								}
-							}
-						},
-						keda: $keda_operator_application
-					}
-				})
-			}
-		} * $artifact_values' \
-	| helm \
-		upgrade \
-		liferay-platform \
-		"${platform_repo_url}" \
-		--install \
-		--namespace argocd-system \
-		--values - \
-		--version "${platform_target_revision}"
-}
-
 function _log {
 	echo "[Tfstate storage configuration] ${1}"
-}
-
-function _resolve_config_json {
-	local configuration_json_file="${1}"
-
-	local resolved_configuration_json_file
-
-	resolved_configuration_json_file=$(mktemp)
-
-	jq --slurp '.[0] * .[1]' "${_CONFIG_JSON_DEFAULTS_FILE}" "${configuration_json_file}" > "${resolved_configuration_json_file}"
-
-	echo "${resolved_configuration_json_file}"
 }
 
 function _set_up_azure_aks {
@@ -514,20 +242,6 @@ function _set_up_azure_aks {
 	terraform apply -input=false "${@}"
 
 	echo "Azure AKS cluster setup complete."
-
-	pop_directory
-}
-
-function _set_up_azure_platform {
-	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/platform"
-
-	echo "Setting up the Liferay platform."
-
-	terraform init
-
-	terraform apply -input=false "${@}"
-
-	echo "Liferay platform setup complete."
 
 	pop_directory
 }

@@ -1,6 +1,7 @@
 {
 	"account_id": "your-aws-account-id",
 	"deployment_name": "liferay-aws-test",
+	"marketplace": false,
 	"options": {
 		"auto_approve": false,
 		"parallelism": 10,

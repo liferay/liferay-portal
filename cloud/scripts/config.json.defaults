@@ -1,6 +1,18 @@
 {
 	"artifacts": {
 		"charts": {
+			"liferay-aws": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "3.0.0"
+			},
+			"liferay-aws-infrastructure-provider": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "2.0.0"
+			},
+			"liferay-aws-marketplace": {
+				"registry": "709825985650.dkr.ecr.us-east-1.amazonaws.com",
+				"version": "3.0.0"
+			},
 			"liferay-azure": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
 				"version": "0.2.0"
