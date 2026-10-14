@@ -26,6 +26,7 @@ import {
 	performLogout,
 	userData,
 } from '../../../utils/performLogin';
+import {generateFormulaObjectFields} from '../utils/generateFormulaObjectFields';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -180,6 +181,120 @@ test(
 			from: demoAdmin.name,
 			subject: 'Entry Test A | Entry Test B',
 			to: 'demo.company.admin@liferay.com',
+		});
+	}
+);
+
+test(
+	'Can send email via on add object action when a formula field condition is met',
+	{tag: '@LPD-109935'},
+	async ({
+		apiHelpers,
+		mockMockPage,
+		page,
+		viewObjectActionsPage,
+		viewObjectEntriesPage,
+	}) => {
+		const notificationSubject = 'Subject Test ' + getRandomInt();
+
+		const notificationTemplate =
+			await apiHelpers.notification.postNotificationTemplate({
+				body: {en_US: 'Email Body'},
+				editorType: 'richText',
+				name: 'Email Template ' + getRandomInt(),
+				recipientType: 'email',
+				recipients: [
+					{
+						from: 'test@liferay.com',
+						fromName: {en_US: 'Test Test'},
+						to: {en_US: 'test@liferay.com'},
+						toType: 'email',
+					},
+				],
+				subject: {en_US: notificationSubject},
+				type: 'email',
+			});
+
+		apiHelpers.data.push({
+			id: notificationTemplate.id,
+			type: 'notificationTemplate',
+		});
+
+		const {
+			firstObjectField,
+			formulaObjectField,
+			objectFields,
+			secondObjectField,
+		} = generateFormulaObjectFields({
+			objectFieldBusinessType: 'Integer',
+			operator: '+',
+			output: 'Integer',
+		});
+
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFields,
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const objectActionLabel = getRandomString();
+
+		const objectAction = await apiHelpers.objectAction.postRandomAction(
+			objectDefinition.externalReferenceCode!,
+			{
+				conditionExpression: `${formulaObjectField.name} == 30`,
+				label: {en_US: objectActionLabel},
+				objectActionExecutorKey: 'notification',
+				objectActionTriggerKey: 'onAfterAdd',
+				parameters: {
+					notificationTemplateId: notificationTemplate.id,
+					type: 'email',
+				},
+			}
+		);
+
+		apiHelpers.data.push({id: objectAction.id, type: 'objectAction'});
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				[firstObjectField.name as string]: 15,
+				[secondObjectField.name as string]: 15,
+			},
+			'c/' + objectDefinition.name.toLowerCase() + 's'
+		);
+
+		await test.step('The formula field evaluates to 30', async () => {
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await expect(
+				page.getByRole('cell', {exact: true, name: '30'})
+			).toBeVisible();
+		});
+
+		await test.step('The notification email is delivered', async () => {
+			await mockMockPage.assertEmail({
+				body: 'Email Body',
+				from: 'Test Test',
+				subject: notificationSubject,
+				to: 'test@liferay.com',
+			});
+		});
+
+		await test.step('The action reports a successful execution', async () => {
+			await expect(async () => {
+				await viewObjectActionsPage.gotoByObjectDefinitionId(
+					objectDefinition.id
+				);
+
+				await expect(
+					page.getByRole('row').filter({hasText: objectActionLabel})
+				).toContainText('Success', {timeout: 5000});
+			}).toPass();
 		});
 	}
 );
