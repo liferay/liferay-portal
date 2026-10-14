@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -104,6 +105,21 @@ public class TextDDMFormFieldTypeReportProcessor
 					DDMFormInstanceReportConstants.
 						EVENT_DELETE_RECORD_VERSION)) {
 
+			if (!nullValue) {
+				totalEntries--;
+			}
+
+			if (!ArrayUtil.contains(
+					JSONUtil.toLongArray(
+						fieldJSONObject.getJSONArray("values"),
+						"formInstanceRecordId"),
+					formInstanceRecordId)) {
+
+				fieldJSONObject.put("totalEntries", totalEntries);
+
+				return fieldJSONObject;
+			}
+
 			DDMFormInstanceRecord ddmFormInstanceRecord =
 				ddmFormInstanceRecordLocalService.getFormInstanceRecord(
 					formInstanceRecordId);
@@ -162,10 +178,6 @@ public class TextDDMFormFieldTypeReportProcessor
 						_log.warn(portalException);
 					}
 				}
-			}
-
-			if (!nullValue) {
-				totalEntries--;
 			}
 		}
 
