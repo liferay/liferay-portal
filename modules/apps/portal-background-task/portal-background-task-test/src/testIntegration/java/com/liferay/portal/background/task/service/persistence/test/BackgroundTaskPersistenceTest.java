@@ -224,13 +224,6 @@ public class BackgroundTaskPersistenceTest {
 	}
 
 	@Test
-	public void testCountByStatus() throws Exception {
-		_persistence.countByStatus(RandomTestUtil.nextInt());
-
-		_persistence.countByStatus(0);
-	}
-
-	@Test
 	public void testCountByG_T() throws Exception {
 		_persistence.countByG_T(RandomTestUtil.nextLong(), "");
 
@@ -646,4 +639,4 @@ public class BackgroundTaskPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2145964843
+// LIFERAY-SERVICE-BUILDER-HASH:406199094

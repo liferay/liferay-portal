@@ -345,77 +345,6 @@ public class BackgroundTaskUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the background tasks where status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.background.task.model.impl.BackgroundTaskModelImpl</code>.
-	 * </p>
-	 *
-	 * @param status the status
-	 * @param start the lower bound of the range of background tasks
-	 * @param end the upper bound of the range of background tasks (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching background tasks
-	 */
-	public static List<BackgroundTask> findByStatus(
-		int status, int start, int end,
-		OrderByComparator<BackgroundTask> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByStatus(
-			status, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first background task in the ordered set where status = &#63;.
-	 *
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching background task
-	 * @throws NoSuchBackgroundTaskException if a matching background task could not be found
-	 */
-	public static BackgroundTask findByStatus_First(
-			int status, OrderByComparator<BackgroundTask> orderByComparator)
-		throws com.liferay.portal.background.task.exception.
-			NoSuchBackgroundTaskException {
-
-		return getPersistence().findByStatus_First(status, orderByComparator);
-	}
-
-	/**
-	 * Returns the first background task in the ordered set where status = &#63;.
-	 *
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching background task, or <code>null</code> if a matching background task could not be found
-	 */
-	public static BackgroundTask fetchByStatus_First(
-		int status, OrderByComparator<BackgroundTask> orderByComparator) {
-
-		return getPersistence().fetchByStatus_First(status, orderByComparator);
-	}
-
-	/**
-	 * Removes all the background tasks where status = &#63; from the database.
-	 *
-	 * @param status the status
-	 */
-	public static void removeByStatus(int status) {
-		getPersistence().removeByStatus(status);
-	}
-
-	/**
-	 * Returns the number of background tasks where status = &#63;.
-	 *
-	 * @param status the status
-	 * @return the number of matching background tasks
-	 */
-	public static int countByStatus(int status) {
-		return getPersistence().countByStatus(status);
-	}
-
-	/**
 	 * Returns an ordered range of all the background tasks where groupId = &#63; and taskExecutorClassName = &#63;.
 	 *
 	 * <p>
@@ -1475,55 +1404,6 @@ public class BackgroundTaskUtil {
 	}
 
 	/**
-	 * Returns all the background tasks where status = &#63;.
-	 *
-	 * @param status the status
-	 * @return the matching background tasks
-	 */
-	public static List<BackgroundTask> findByStatus(int status) {
-		return getPersistence().findByStatus(status);
-	}
-
-	/**
-	 * Returns a range of all the background tasks where status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.background.task.model.impl.BackgroundTaskModelImpl</code>.
-	 * </p>
-	 *
-	 * @param status the status
-	 * @param start the lower bound of the range of background tasks
-	 * @param end the upper bound of the range of background tasks (not inclusive)
-	 * @return the range of matching background tasks
-	 */
-	public static List<BackgroundTask> findByStatus(
-		int status, int start, int end) {
-
-		return getPersistence().findByStatus(status, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the background tasks where status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.background.task.model.impl.BackgroundTaskModelImpl</code>.
-	 * </p>
-	 *
-	 * @param status the status
-	 * @param start the lower bound of the range of background tasks
-	 * @param end the upper bound of the range of background tasks (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching background tasks
-	 */
-	public static List<BackgroundTask> findByStatus(
-		int status, int start, int end,
-		OrderByComparator<BackgroundTask> orderByComparator) {
-
-		return getPersistence().findByStatus(
-			status, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the background tasks where groupId = &#63; and taskExecutorClassName = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -2307,4 +2187,4 @@ public class BackgroundTaskUtil {
 	private static volatile BackgroundTaskPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1771495336
+// LIFERAY-SERVICE-BUILDER-HASH:431873694

@@ -330,90 +330,6 @@ public class BackgroundTaskPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<BackgroundTask, NoSuchBackgroundTaskException>
-			_collectionPersistenceFinderByStatus;
-
-	/**
-	 * Returns an ordered range of all the background tasks where status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>BackgroundTaskModelImpl</code>.
-	 * </p>
-	 *
-	 * @param status the status
-	 * @param start the lower bound of the range of background tasks
-	 * @param end the upper bound of the range of background tasks (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching background tasks
-	 */
-	@Override
-	public List<BackgroundTask> findByStatus(
-		int status, int start, int end,
-		OrderByComparator<BackgroundTask> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByStatus.find(
-			finderCache, new Object[] {status}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first background task in the ordered set where status = &#63;.
-	 *
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching background task
-	 * @throws NoSuchBackgroundTaskException if a matching background task could not be found
-	 */
-	@Override
-	public BackgroundTask findByStatus_First(
-			int status, OrderByComparator<BackgroundTask> orderByComparator)
-		throws NoSuchBackgroundTaskException {
-
-		return _collectionPersistenceFinderByStatus.findFirst(
-			finderCache, new Object[] {status}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first background task in the ordered set where status = &#63;.
-	 *
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching background task, or <code>null</code> if a matching background task could not be found
-	 */
-	@Override
-	public BackgroundTask fetchByStatus_First(
-		int status, OrderByComparator<BackgroundTask> orderByComparator) {
-
-		return _collectionPersistenceFinderByStatus.fetchFirst(
-			finderCache, new Object[] {status}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the background tasks where status = &#63; from the database.
-	 *
-	 * @param status the status
-	 */
-	@Override
-	public void removeByStatus(int status) {
-		_collectionPersistenceFinderByStatus.remove(
-			finderCache, new Object[] {status});
-	}
-
-	/**
-	 * Returns the number of background tasks where status = &#63;.
-	 *
-	 * @param status the status
-	 * @return the number of matching background tasks
-	 */
-	@Override
-	public int countByStatus(int status) {
-		return _collectionPersistenceFinderByStatus.count(
-			finderCache, new Object[] {status});
-	}
-
-	private CollectionPersistenceFinder
-		<BackgroundTask, NoSuchBackgroundTaskException>
 			_collectionPersistenceFinderByG_T;
 
 	/**
@@ -1772,33 +1688,6 @@ public class BackgroundTaskPersistenceImpl
 					"backgroundTask.", "completed", FinderColumn.Type.BOOLEAN,
 					"=", true, true, BackgroundTask::isCompleted));
 
-		_collectionPersistenceFinderByStatus =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByStatus",
-					new String[] {
-						Integer.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByStatus",
-					new String[] {Integer.class.getName()},
-					new String[] {"status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByStatus",
-					new String[] {Integer.class.getName()},
-					new String[] {"status"}, false),
-				_SQL_SELECT_BACKGROUNDTASK_WHERE,
-				_SQL_COUNT_BACKGROUNDTASK_WHERE,
-				BackgroundTaskModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
-				new FinderColumn<>(
-					"backgroundTask.", "status", FinderColumn.Type.INTEGER, "=",
-					true, true, BackgroundTask::getStatus));
-
 		_collectionPersistenceFinderByG_T = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -2125,4 +2014,4 @@ public class BackgroundTaskPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1391267201
+// LIFERAY-SERVICE-BUILDER-HASH:435119719
