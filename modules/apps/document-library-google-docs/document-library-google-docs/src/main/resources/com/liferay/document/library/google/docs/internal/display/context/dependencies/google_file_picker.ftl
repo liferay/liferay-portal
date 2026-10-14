@@ -77,7 +77,10 @@ GoogleFilePicker.prototype = {
 			},
 			client_id: GoogleFilePicker.CLIENT_ID,
 			error_callback: function(error) {
-				if (process.env.NODE_ENV === 'development') {
+				if (
+					typeof process !== 'undefined' &&
+					process.env.NODE_ENV === 'development'
+				) {
 					console.error(error);
 				}
 			},
