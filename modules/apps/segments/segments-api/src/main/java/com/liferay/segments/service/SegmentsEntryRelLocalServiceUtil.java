@@ -251,6 +251,13 @@ public class SegmentsEntryRelLocalServiceUtil {
 		return getService().fetchSegmentsEntryRel(segmentsEntryRelId);
 	}
 
+	public static SegmentsEntryRel fetchSegmentsEntryRel(
+		long segmentsEntryId, long classNameId, long classPK) {
+
+		return getService().fetchSegmentsEntryRel(
+			segmentsEntryId, classNameId, classPK);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -397,4 +404,4 @@ public class SegmentsEntryRelLocalServiceUtil {
 			SegmentsEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1055789026
+// LIFERAY-SERVICE-BUILDER-HASH:616206585
