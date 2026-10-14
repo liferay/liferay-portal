@@ -134,8 +134,12 @@ public class PreviewAssetLibraryResourceTest
 
 		group = depotEntry.getGroup();
 
-		Assert.assertNull(
-			_getExportPreviewAssetLibrary(group.getExternalReferenceCode()));
+		previewAssetLibrary = _getExportPreviewAssetLibrary(
+			group.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			PreviewAssetLibrary.Type.ASSET_LIBRARY,
+			previewAssetLibrary.getType());
 
 		group = GroupTestUtil.addGroup();
 
