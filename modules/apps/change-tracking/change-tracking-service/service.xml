@@ -149,9 +149,6 @@
 		<finder name="CtCollectionId" return-type="Collection">
 			<finder-column name="ctCollectionId" />
 		</finder>
-		<finder name="CtEntryId" return-type="Collection">
-			<finder-column name="ctEntryId" />
-		</finder>
 	</entity>
 	<entity external-reference-code="true" local-service="true" name="CTEntry" remote-service="false" trash-enabled="false" uuid="true">
 
