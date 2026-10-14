@@ -105,14 +105,6 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceDiscountUsageEntriesCountByOrderId(
-		long commerceOrderId, long commerceDiscountId) {
-
-		return commerceDiscountUsageEntryPersistence.countByCOI_CDI(
-			commerceOrderId, commerceDiscountId);
-	}
-
-	@Override
 	public boolean validateDiscountLimitationUsage(
 			long commerceAccountId, long commerceDiscountId)
 		throws PortalException {
