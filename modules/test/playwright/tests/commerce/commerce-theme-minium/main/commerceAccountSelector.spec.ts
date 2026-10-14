@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {devices, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
@@ -527,6 +527,101 @@ test(
 			await expect(
 				commerceThemeMiniumCatalogPage.accountSelectorOrderId
 			).toHaveText(order2Id);
+		});
+	}
+);
+
+test(
+	'Account Selector loads the next page of accounts only on scroll in mobile view',
+	{tag: ['@LPD-109813']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceThemeMiniumCatalogPage,
+		page,
+		site,
+	}) => {
+		let channel;
+		let layout;
+
+		await test.step('Create a Site with an account selector and a B2B channel', async () => {
+			layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getFragmentDefinition({
+						id: getRandomString(),
+						key: 'COMMERCE_ACCOUNT_FRAGMENTS-account-selector',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			channel = await apiHelpers.headlessCommerceAdminChannel.postChannel(
+				{
+					siteGroupId: site.id,
+				}
+			);
+
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+		});
+
+		await test.step('Create enough accounts for three pages', async () => {
+			for (let i = 0; i < 21; i++) {
+				await apiHelpers.headlessAdminUser.postAccount({
+					name: getRandomString(),
+					type: 'business',
+				});
+			}
+		});
+
+		const accountsPageNumbers: string[] = [];
+
+		page.on('request', (request) => {
+			const url = new URL(request.url());
+
+			if (
+				url.pathname.endsWith(`/channels/${channel.id}/accounts`) &&
+				url.searchParams.has('page')
+			) {
+				accountsPageNumbers.push(url.searchParams.get('page'));
+			}
+		});
+
+		await test.step('Open the account selector in mobile view and check that only the first page is loaded', async () => {
+			await page.setViewportSize(devices['Pixel 5'].viewport);
+
+			await page.goto(`/web/${site.name}${layout.friendlyUrlPath}`, {
+				waitUntil: 'networkidle',
+			});
+
+			await commerceThemeMiniumCatalogPage.openAccountSelectorDropdown();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorAccounts
+			).toHaveCount(10);
+
+			await page.waitForTimeout(1000);
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorAccounts
+			).toHaveCount(10);
+			expect(accountsPageNumbers).toEqual(['1']);
+		});
+
+		await test.step('Scroll to the bottom of the accounts list and check that the second page is loaded', async () => {
+			await commerceThemeMiniumCatalogPage.accountSelectorAccountsScroller.evaluate(
+				(element) => {
+					element.scrollTop = element.scrollHeight;
+				}
+			);
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorAccounts
+			).toHaveCount(20);
+			expect(accountsPageNumbers).toEqual(['1', '2']);
 		});
 	}
 );
