@@ -54,7 +54,7 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testDoServeResource() throws Exception {
+	public void testDoTransactionalCommand() throws Exception {
 		MockLiferayResourceRequest mockLiferayResourceRequest =
 			new MockLiferayResourceRequest();
 
@@ -81,7 +81,7 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 			PortalException.class,
 			"Days to warn signers must be fewer than days until expiration",
 			() -> ReflectionTestUtil.invoke(
-				_mvcResourceCommand, "doServeResource",
+				_mvcResourceCommand, "doTransactionalCommand",
 				new Class<?>[] {ResourceRequest.class, ResourceResponse.class},
 				mockLiferayResourceRequest, new MockLiferayResourceResponse()));
 
@@ -113,7 +113,7 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 
 		try {
 			ReflectionTestUtil.invoke(
-				_mvcResourceCommand, "doServeResource",
+				_mvcResourceCommand, "doTransactionalCommand",
 				new Class<?>[] {ResourceRequest.class, ResourceResponse.class},
 				mockLiferayResourceRequest, mockLiferayResourceResponse);
 		}

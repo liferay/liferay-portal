@@ -29,9 +29,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionConfig;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -65,26 +62,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			return;
 		}
 
-		try {
-			TransactionInvokerUtil.invoke(
-				_transactionConfig,
-				() -> {
-					_addDSRequest(
-						companyId, groupId, userId, dsEnvelope, fileEntryIds);
-
-					return null;
-				});
-		}
-		catch (Throwable throwable) {
-			if (throwable instanceof PortalException) {
-				throw (PortalException)throwable;
-			}
-
-			throw new PortalException(
-				"Unable to record the signature request for envelope " +
-					dsEnvelope.getDSEnvelopeId(),
-				throwable);
-		}
+		_addDSRequest(companyId, groupId, userId, dsEnvelope, fileEntryIds);
 	}
 
 	@Override
@@ -143,7 +121,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 	private void _addDSRequest(
 			long companyId, long groupId, long userId, DSEnvelope dsEnvelope,
 			long[] fileEntryIds)
-		throws Exception {
+		throws PortalException {
 
 		if (Validator.isNull(dsEnvelope.getDSEnvelopeId())) {
 			throw new PortalException(
@@ -349,10 +327,6 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DSRequestManagerImpl.class);
-
-	private static final TransactionConfig _transactionConfig =
-		TransactionConfig.Factory.create(
-			Propagation.REQUIRED, new Class<?>[] {Exception.class});
 
 	@Reference
 	private DSEnvelopeManager _dsEnvelopeManager;
