@@ -247,6 +247,19 @@ const conditionsFromMetadata = (
 const matchLogicFromMetadata = (metadata: IStageFilterMetadata): MatchLogic =>
 	metadata.matchLogic === MatchLogic.Any ? MatchLogic.Any : MatchLogic.All;
 
+export const stageRuleFromStage = (
+	stage: ILifecycleStage
+): {conditions: IStageCondition[]; matchLogic: MatchLogic} => {
+	const metadata = parseFilterMetadata(
+		stage.accountLifecycleStageRule?.filterMetadata
+	);
+
+	return {
+		conditions: conditionsFromMetadata(metadata),
+		matchLogic: matchLogicFromMetadata(metadata),
+	};
+};
+
 export const stageConfigsFromLifecycle = (
 	stages: ILifecycleStage[] = []
 ): IStageConfig[] => {
@@ -259,15 +272,10 @@ export const stageConfigsFromLifecycle = (
 			return defaults[index];
 		}
 
-		const metadata = parseFilterMetadata(
-			stage.accountLifecycleStageRule?.filterMetadata
-		);
-
 		return {
-			conditions: conditionsFromMetadata(metadata),
+			...stageRuleFromStage(stage),
 			description: stage.description || defaults[index].description,
 			id: stage.id,
-			matchLogic: matchLogicFromMetadata(metadata),
 			maxTimeDays: stage.maxDuration ?? DEFAULT_MAX_DAYS,
 			maxTimeEnabled: stage.maxDuration != null,
 		};

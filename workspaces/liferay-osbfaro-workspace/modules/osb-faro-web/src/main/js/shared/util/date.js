@@ -93,6 +93,26 @@ function createDateFormat(options) {
 	);
 }
 
+const DOTTED_DAY_PERIODS = {AM: 'a.m.', PM: 'p.m.'};
+
+function createDottedDayPeriodDateFormat(options) {
+	const getFormatter = perLocale(
+		(locale) =>
+			new Intl.DateTimeFormat(locale, {...options, timeZone: 'UTC'})
+	);
+
+	return new DateFormat((date) =>
+		getFormatter()
+			.formatToParts(new Date(date.valueOf() + date.utcOffset() * 60000))
+			.map(({type, value}) =>
+				type === 'dayPeriod'
+					? DOTTED_DAY_PERIODS[value] ?? value
+					: value
+			)
+			.join('')
+	);
+}
+
 const getAutoRelativeTimeFormat = perLocale(
 	(locale) => new Intl.RelativeTimeFormat(locale, {numeric: 'auto'})
 );
@@ -130,6 +150,14 @@ export const MONTH_FORMAT = createDateFormat({month: 'long'});
 export const NUMERIC_DATE_FORMAT = createDateFormat({
 	day: 'numeric',
 	month: 'numeric',
+	year: 'numeric',
+});
+
+export const NUMERIC_DATE_TIME_FORMAT = createDottedDayPeriodDateFormat({
+	day: '2-digit',
+	hour: '2-digit',
+	minute: '2-digit',
+	month: '2-digit',
 	year: 'numeric',
 });
 

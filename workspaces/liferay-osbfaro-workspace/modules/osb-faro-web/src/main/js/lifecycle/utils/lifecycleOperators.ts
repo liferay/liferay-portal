@@ -132,3 +132,14 @@ export const resolveOperatorType = (
 
 	return (operatorType as OperatorType) ?? null;
 };
+
+export const conditionOperatorOptions = (
+	condition: IStageCondition
+): IEntityOption[] => {
+	const operatorType = resolveOperatorType(
+		condition.fieldDataCategory,
+		condition.fieldDataType
+	);
+
+	return operatorType ? OPERATORS_BY_TYPE[operatorType] : [];
+};

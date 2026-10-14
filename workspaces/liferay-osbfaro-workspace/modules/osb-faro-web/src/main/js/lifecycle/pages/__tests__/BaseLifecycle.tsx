@@ -520,6 +520,33 @@ describe('BaseLifecycle', () => {
 		});
 	});
 
+	describe('the Show Details action', () => {
+		it('opens the details of the open lifecycle in the side panel', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({
+					lifecycle: {id: '1', name: 'Growth Hub'},
+					totalCount: 5,
+				})
+			);
+
+			renderPage();
+
+			openActionsMenu();
+
+			fireEvent.click(
+				screen.getByRole('menuitem', {name: /show.details/i})
+			);
+
+			expect(
+				screen.getByRole('tab', {name: /^details$/i})
+			).toBeInTheDocument();
+			expect(screen.queryByRole('button', {name: /^back$/i})).toBeNull();
+			expect(
+				screen.getByRole('button', {name: /switch dashboard/i})
+			).toHaveAttribute('aria-expanded', 'true');
+		});
+	});
+
 	it('does not offer the View action on the open dashboard', () => {
 		renderPage();
 

@@ -161,6 +161,8 @@ const BaseLifecycle = () => {
 
 	const actions = useLifecycleActions({
 		lifecycle,
+		onShowDetails: () =>
+			setPanelView({lifecycleId: lifecycleId!, type: 'details'}),
 	});
 
 	const processing = lifecycle?.processedDate == null;

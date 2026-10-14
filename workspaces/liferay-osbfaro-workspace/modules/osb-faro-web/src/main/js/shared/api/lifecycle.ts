@@ -3,9 +3,11 @@ import {createMockLifecycleApi} from './lifecycle-mock';
 import {ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA} from 'shared/util/feature-flags';
 
 export interface ILifecycle {
+	authorName?: string | null;
 	default?: boolean;
 	description?: string;
 	id: string;
+	modifiedDate?: number | null;
 	name?: string;
 	processedDate?: number | null;
 	segmentId?: string;
@@ -24,6 +26,7 @@ export interface ILifecycleStage {
 	externalReferenceCode: string;
 	id: string;
 	maxDuration: number | null;
+	name?: string;
 	stageType: string;
 }
 
