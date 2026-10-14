@@ -93,14 +93,6 @@ public class AssetAutoTaggerEntryLocalServiceImpl
 			assetEntry.getEntryId());
 	}
 
-	@Override
-	public List<AssetAutoTaggerEntry> getAssetAutoTaggerEntries(
-		AssetTag assetTag) {
-
-		return assetAutoTaggerEntryPersistence.findByAssetTagId(
-			assetTag.getTagId());
-	}
-
 	@Reference
 	private AssetTagLocalService _assetTagLocalService;
 
