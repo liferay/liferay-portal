@@ -603,6 +603,8 @@ A page selects its master through its **own** `page-definition.json`, in a top l
 }
 ```
 
+That covers the tree's pages only. New pages take the site's default master, which the tree cannot set: an extra key in `master-page.json` makes the importer drop the master page. Mark it over REST after each provision (`skills/theme-and-design/SKILL.md` → "Mark It as the Site Default").
+
 ## `layout-set/public/metadata.json`
 
 Controls theme assignment and theme settings for the public (nonprivate) layout set. A theme is named by `themeId`, or by display name with `themeName`:

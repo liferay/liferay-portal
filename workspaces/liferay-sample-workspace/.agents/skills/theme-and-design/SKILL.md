@@ -383,6 +383,37 @@ curl \
 
 The `DropZone` element must carry a `definition.fragmentSettings` block — a **bare** `{"type": "DropZone"}` does not render, and the master shows an empty body. Use `{"definition": {"fragmentSettings": {"unallowedFragments": []}}, "type": "DropZone"}` so page specific content can be placed inside the master. Note `version` is the **number** `1.1` (not the string `"1.0"`) for a master with a working drop zone. Custom header/footer fragments are referenced by `key` (the fragment's directory name) + `siteKey` (`[$GROUP_KEY$]`), exactly as in a page `page-definition.json` (see `manage-pages`); the content area is a `DropZone` element, **not** a `LAYOUT_DROP_ZONE` fragment. Master pages are typically authored in the initializer tree under `layout-page-templates/master-pages/<name>/page-definition.json` (where `pageDefinition`/`page-definition.json` is the correct importer format). Note: the **live** `headless-admin-site` `MasterPage` DTO uses `pageSpecifications`, not `pageDefinition` — prefer the initializer path, or verify the live write shape against the OpenAPI spec (`get-openapi` MCP tool, or `GET /o/headless-admin-site/v1.0/openapi.json`).
 
+#### Mark It as the Site Default
+
+`settings.masterPage.key` in each `page-definition.json` applies the master to the pages in the tree. Pages created later, in the UI or over REST, get the site's **default** master instead, so mark yours as the default or new pages render without the header and footer.
+
+The tree cannot do this. `master-page.json` accepts only `key` and `name`, and an extra key such as `"defaultTemplate": true` makes the importer drop the master page: the site provisions with no master and every page loses its header and footer. Mark it over REST after each provision, by sending the master page back with `markedAsDefault` set:
+
+```bash
+SITE="http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>"
+
+ERC=$(curl \
+	--silent \
+	--url "${SITE}/master-pages" \
+	--user "test@liferay.com:test" \
+	| jq --raw-output '.items[] | select(.key == "<master-name>") | .externalReferenceCode')
+
+curl \
+	--silent \
+	--url "${SITE}/master-pages/${ERC}" \
+	--user "test@liferay.com:test" \
+	| jq '.markedAsDefault = true' \
+	| curl \
+		--data @- \
+		--header "Content-Type: application/json" \
+		--request PUT \
+		--silent \
+		--url "${SITE}/master-pages/${ERC}" \
+		--user "test@liferay.com:test"
+```
+
+Verified on 2026.Q2: the response and a fresh `GET .../master-pages` both show `"markedAsDefault": true`. A reprovision deletes the site and the flag with it, so repeat the call after every reprovision.
+
 Consult learn.liferay.com for the full master page template reference (search `master page templates`).
 
 ## Accessibility
