@@ -523,6 +523,78 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 	}
 
 	@Test
+	public void testGetWithAPIFilterOnRelatedObjectField() throws Exception {
+		ObjectDefinition objectDefinition = _addObjectDefinition(
+			4, ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		ObjectRelationship objectRelationship = _addObjectRelationship(
+			_objectDefinition1, objectDefinition,
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_addAPIApplication(
+			_API_APPLICATION_ERC_1, _API_ENDPOINT_ERC_1, _BASE_URL_1,
+			_objectDefinition1.getExternalReferenceCode(),
+			_objectRelationship1.getName(), _objectRelationship2.getName(),
+			_API_APPLICATION_PATH_1, null,
+			APIApplication.Endpoint.RetrieveType.COLLECTION.getValue(),
+			APIApplication.Endpoint.Scope.COMPANY);
+
+		assertSuccessfulJSONObject(
+			JSONUtil.put(
+				"oDataFilter",
+				StringBundler.concat(
+					"contains(", objectRelationship.getName(),
+					"/textField, 'abc')")
+			).put(
+				"r_apiEndpointToAPIFilters_l_apiEndpointERC",
+				_API_ENDPOINT_ERC_1
+			).toString(),
+			"headless-builder/filters", Http.Method.POST);
+
+		_publishAPIApplication(_API_APPLICATION_ERC_1);
+
+		_relateObjectEntries(
+			_addCustomObjectEntry(
+				1, null, _objectDefinition1, "value1",
+				RandomTestUtil.randomString()),
+			_addCustomObjectEntry(
+				1, null, objectDefinition, "abc",
+				RandomTestUtil.randomString()),
+			objectRelationship);
+		_relateObjectEntries(
+			_addCustomObjectEntry(
+				2, null, _objectDefinition1, "value2",
+				RandomTestUtil.randomString()),
+			_addCustomObjectEntry(
+				2, null, objectDefinition, "xabcx",
+				RandomTestUtil.randomString()),
+			objectRelationship);
+		_relateObjectEntries(
+			_addCustomObjectEntry(
+				3, null, _objectDefinition1, "value3",
+				RandomTestUtil.randomString()),
+			_addCustomObjectEntry(
+				3, null, objectDefinition, "xyz",
+				RandomTestUtil.randomString()),
+			objectRelationship);
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"items",
+				JSONUtil.putAll(
+					JSONUtil.put("textProperty", "value1"),
+					JSONUtil.put("textProperty", "value2"))
+			).put(
+				"totalCount", 2
+			).toString(),
+			HTTPTestUtil.invokeToJSONObject(
+				null, "c/" + _BASE_URL_1 + _API_APPLICATION_PATH_1,
+				Http.Method.GET
+			).toString(),
+			JSONCompareMode.LENIENT);
+	}
+
+	@Test
 	public void testGetWithAPISortAsc() throws Exception {
 		_addAPIApplication(
 			_API_APPLICATION_ERC_1, _API_ENDPOINT_ERC_1, _BASE_URL_1,
