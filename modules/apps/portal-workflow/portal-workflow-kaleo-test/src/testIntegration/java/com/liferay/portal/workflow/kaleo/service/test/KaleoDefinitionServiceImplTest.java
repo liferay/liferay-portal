@@ -132,6 +132,12 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	@Test
+	public void testDeleteKaleoDefinition() throws Exception {
+		_testDeleteKaleoDefinition();
+		_testDeleteKaleoDefinitionWithGroupId();
+	}
+
+	@Test
 	public void testGetKaleoDefinition() throws Exception {
 		_testGetKaleoDefinition();
 		_testGetKaleoDefinitionWithGroupId();
@@ -514,6 +520,90 @@ public class KaleoDefinitionServiceImplTest {
 			() -> _kaleoDefinitionService.deactivateKaleoDefinition(
 				kaleoDefinition2.getName(), kaleoDefinition2.getVersion(),
 				_serviceContext));
+	}
+
+	private void _testDeleteKaleoDefinition() throws Exception {
+		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
+
+		User user = _addUser();
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", user.getUserId(), " must have ", ActionKeys.DELETE,
+				" permission for ", WorkflowConstants.RESOURCE_NAME,
+				StringPool.SPACE),
+			() -> _kaleoDefinitionService.deleteKaleoDefinition(
+				kaleoDefinition.getName(), _serviceContext));
+
+		_setUpPermissionThreadLocal(_companyAdminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _companyAdminUser.getUserId(), " must have ",
+				ActionKeys.DELETE, " permission for ",
+				WorkflowConstants.RESOURCE_NAME, StringPool.SPACE),
+			() -> _kaleoDefinitionService.deleteKaleoDefinition(
+				kaleoDefinition.getName(), _serviceContext));
+
+		ConfigurationTestUtil.saveConfiguration(
+			_configuration,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"company.administrator.can.publish", true
+			).build());
+
+		_kaleoDefinitionService.deleteKaleoDefinition(
+			kaleoDefinition.getName(), _serviceContext);
+
+		Assert.assertNull(
+			_kaleoDefinitionLocalService.fetchKaleoDefinition(
+				kaleoDefinition.getName(), _serviceContext));
+	}
+
+	private void _testDeleteKaleoDefinitionWithGroupId() throws Exception {
+		_setUpPermissionThreadLocal(TestPropsValues.getUser());
+
+		AccountEntry accountEntry = _addAccountEntry();
+
+		KaleoDefinition kaleoDefinition1 = _addKaleoDefinition(
+			ServiceContextTestUtil.getServiceContext(
+				accountEntry.getAccountEntryGroupId(),
+				TestPropsValues.getUserId()));
+
+		User user = _addUser(TestPropsValues.getCompanyId());
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", user.getUserId(), " must have ", ActionKeys.DELETE,
+				" permission for ", WorkflowConstants.RESOURCE_NAME,
+				StringPool.SPACE),
+			() -> _kaleoDefinitionService.deleteKaleoDefinition(
+				kaleoDefinition1.getName(), _serviceContext));
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			accountEntry.getAccountEntryId(), user.getUserId());
+
+		_kaleoDefinitionService.deleteKaleoDefinition(
+			kaleoDefinition1.getName(), _serviceContext);
+
+		Assert.assertNull(
+			_kaleoDefinitionLocalService.fetchKaleoDefinition(
+				kaleoDefinition1.getName(), _serviceContext));
+
+		KaleoDefinition kaleoDefinition2 =
+			_kaleoDefinitionLocalService.getKaleoDefinition(
+				"Single Approver", _serviceContext);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", user.getUserId(), " must have ", ActionKeys.DELETE,
+				" permission for ", WorkflowConstants.RESOURCE_NAME,
+				StringPool.SPACE),
+			() -> _kaleoDefinitionService.deleteKaleoDefinition(
+				kaleoDefinition2.getName(), _serviceContext));
 	}
 
 	private void _testGetKaleoDefinition() throws Exception {

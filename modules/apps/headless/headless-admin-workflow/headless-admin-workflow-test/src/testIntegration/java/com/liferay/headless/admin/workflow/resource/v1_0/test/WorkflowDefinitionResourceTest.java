@@ -201,6 +201,8 @@ public class WorkflowDefinitionResourceTest
 					workflowDefinition.getVersion()));
 
 		_workflowDefinitions.remove(workflowDefinition.getName());
+
+		_testDeleteWorkflowDefinitionUndeployWithoutPermission();
 	}
 
 	@Override
@@ -749,6 +751,24 @@ public class WorkflowDefinitionResourceTest
 		return group.getExternalReferenceCode();
 	}
 
+	private WorkflowDefinitionResource _getUserWorkflowDefinitionResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		_user = UserTestUtil.addUser(testCompany, password);
+
+		return WorkflowDefinitionResource.builder(
+		).authentication(
+			_user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private JSONObject _getWorkflowDefinitionJSONObject(String fileName)
 		throws Exception {
 
@@ -776,6 +796,66 @@ public class WorkflowDefinitionResourceTest
 			workflowDefinition.getName(), workflowDefinition);
 
 		return jsonObject;
+	}
+
+	private void _testDeleteWorkflowDefinitionUndeployWithoutPermission()
+		throws Exception {
+
+		WorkflowDefinitionResource userWorkflowDefinitionResource =
+			_getUserWorkflowDefinitionResource();
+
+		WorkflowDefinition draftWorkflowDefinition =
+			testPostWorkflowDefinitionSave_addWorkflowDefinition(
+				randomWorkflowDefinition());
+
+		assertHttpResponseStatusCode(
+			403,
+			userWorkflowDefinitionResource.
+				deleteWorkflowDefinitionUndeployHttpResponse(
+					draftWorkflowDefinition.getName(),
+					draftWorkflowDefinition.getVersion()));
+
+		assertHttpResponseStatusCode(
+			200,
+			workflowDefinitionResource.getWorkflowDefinitionByNameHttpResponse(
+				draftWorkflowDefinition.getName(), null,
+				GetterUtil.getInteger(draftWorkflowDefinition.getVersion())));
+
+		WorkflowDefinition workflowDefinition =
+			testPostWorkflowDefinitionDeploy_addWorkflowDefinition(
+				randomWorkflowDefinition());
+
+		assertHttpResponseStatusCode(
+			403,
+			userWorkflowDefinitionResource.
+				deleteWorkflowDefinitionUndeployHttpResponse(
+					workflowDefinition.getName(),
+					workflowDefinition.getVersion()));
+
+		workflowDefinition =
+			workflowDefinitionResource.getWorkflowDefinitionByName(
+				workflowDefinition.getName(), null,
+				GetterUtil.getInteger(workflowDefinition.getVersion()));
+
+		Assert.assertTrue(workflowDefinition.getActive());
+
+		workflowDefinitionResource.postWorkflowDefinitionUpdateActive(
+			false, workflowDefinition.getName(),
+			workflowDefinition.getVersion());
+
+		assertHttpResponseStatusCode(
+			403,
+			userWorkflowDefinitionResource.
+				deleteWorkflowDefinitionUndeployHttpResponse(
+					workflowDefinition.getName(),
+					workflowDefinition.getVersion()));
+
+		workflowDefinition =
+			workflowDefinitionResource.getWorkflowDefinitionByName(
+				workflowDefinition.getName(), null,
+				GetterUtil.getInteger(workflowDefinition.getVersion()));
+
+		Assert.assertFalse(workflowDefinition.getActive());
 	}
 
 	private void _testPostWorkflowDefinitionSaveWithScope() throws Exception {
@@ -837,20 +917,8 @@ public class WorkflowDefinitionResourceTest
 	private void _testPostWorkflowDefinitionUpdateActiveWithoutPermission()
 		throws Exception {
 
-		String password = RandomTestUtil.randomString();
-
-		_user = UserTestUtil.addUser(testCompany, password);
-
 		WorkflowDefinitionResource userWorkflowDefinitionResource =
-			WorkflowDefinitionResource.builder(
-			).authentication(
-				_user.getEmailAddress(), password
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
+			_getUserWorkflowDefinitionResource();
 
 		WorkflowDefinition workflowDefinition =
 			testGetWorkflowDefinitionsPage_addWorkflowDefinition(
