@@ -57,18 +57,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="segmentsEntryKey" />
 		</finder>
-		<finder name="G_A" return-type="Collection">
-			<finder-column arrayable-operator="OR" name="groupId" />
-			<finder-column name="active" />
-		</finder>
-		<finder name="G_SRC" return-type="Collection">
-			<finder-column arrayable-operator="OR" name="groupId" />
-			<finder-column arrayable-operator="OR" name="source" />
-		</finder>
-		<finder name="C_SRC" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column arrayable-operator="OR" name="source" />
-		</finder>
 		<finder name="SRC_T" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="source" />
 			<finder-column arrayable-operator="OR" name="type" />
@@ -203,9 +191,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="G_P" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="plid" />
@@ -247,12 +232,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="plid" />
 			<finder-column name="active" />
-		</finder>
-		<finder name="G_SEERC_SESERC_P" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="segmentsEntryERC" />
-			<finder-column name="segmentsEntryScopeERC" />
-			<finder-column name="plid" />
 		</finder>
 		<finder name="G_SEERC_SESERC_P_A" return-type="Collection">
 			<finder-column name="groupId" />
