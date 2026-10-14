@@ -329,7 +329,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-48984", "LPD-92443", "LPD-107149"})
+	@TestInfo({"LPD-48984", "LPD-92443", "LPD-107149", "LPD-109892"})
 	public void testPostSiteUtilityPage() throws Exception {
 		super.testPostSiteUtilityPage();
 
@@ -345,6 +345,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		_testPostSiteUtilityPageWithThumbnailURLReferenceURLFetchSecurity();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceURLUnreachableProblemException();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceURLUnsupportedProtocolProblemException();
+		_testPostSiteUtilityPageWithoutMarkedAsDefault();
 	}
 
 	@Override
@@ -1306,6 +1307,18 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			"Unable to download file from " + url +
 				" because of unsupported protocol ftp",
 			RandomTestUtil.randomString(), url);
+	}
+
+	private void _testPostSiteUtilityPageWithoutMarkedAsDefault()
+		throws Exception {
+
+		UtilityPageResource utilityPageResource = _getUtilityPageResource();
+
+		UtilityPage utilityPage = utilityPageResource.postSiteUtilityPage(
+			testGroup.getExternalReferenceCode(),
+			_getUtilityPage(null, null, RandomTestUtil.randomString()));
+
+		Assert.assertEquals(Boolean.FALSE, utilityPage.getMarkedAsDefault());
 	}
 
 	private void _testPostUtilityPageThumbnailURLReferenceProblemException(
