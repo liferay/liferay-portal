@@ -196,6 +196,26 @@ public class BatchEngineExportTaskExecutorImpl
 						portalException);
 				}
 			}
+			else {
+				BatchEngineExportTask failedBatchEngineExportTask =
+					_updateBatchEngineExportTask(
+						BatchEngineTaskExecuteStatus.FAILED,
+						batchEngineExportTask, throwable.toString(), false);
+
+				return new Result() {
+
+					@Override
+					public BatchEngineExportTask getBatchEngineExportTask() {
+						return failedBatchEngineExportTask;
+					}
+
+					@Override
+					public InputStream getInputStream() {
+						return null;
+					}
+
+				};
+			}
 		}
 		finally {
 
