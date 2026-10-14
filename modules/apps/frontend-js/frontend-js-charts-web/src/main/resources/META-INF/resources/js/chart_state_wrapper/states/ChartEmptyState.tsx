@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 interface Props {
@@ -18,7 +19,13 @@ export default function ChartEmptyState({message, style}: Props) {
 				description={
 					message ?? Liferay.Language.get('there-is-no-data')
 				}
-				imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+				image={
+					<ClayIcon
+						className="c-empty-state-icon c-empty-state-icon-empty-state"
+						illustration
+						symbol="empty-state"
+					/>
+				}
 				title={Liferay.Language.get('no-data-available')}
 			/>
 		</div>
