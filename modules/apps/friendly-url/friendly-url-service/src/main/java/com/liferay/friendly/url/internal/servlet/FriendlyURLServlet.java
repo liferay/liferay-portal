@@ -1119,7 +1119,7 @@ public class FriendlyURLServlet extends HttpServlet {
 		if (requestURI.contains(encodedLayoutFriendlyURL)) {
 			requestURI = StringUtil.replaceFirst(
 				requestURI, encodedLayoutFriendlyURL,
-				HttpComponentsUtil.encodePath(layout.getFriendlyURL(locale)));
+				layout.getFriendlyURL(locale));
 		}
 
 		boolean appendI18nPath = true;
