@@ -864,6 +864,8 @@ definition {
 				linkPageName = "Test Content Page",
 				pageName = "Test Link To A Page Of This Site",
 				sitePageType = "Link to a Page of This Site");
+
+			Alert.viewSuccessMessageText(successMessage = "The page was updated successfully.");
 		}
 
 		task ("Add a structure with Link to Page field") {
