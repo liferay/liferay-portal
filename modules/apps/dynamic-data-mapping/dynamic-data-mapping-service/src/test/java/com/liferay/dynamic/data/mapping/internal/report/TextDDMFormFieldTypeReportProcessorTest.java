@@ -162,6 +162,8 @@ public class TextDDMFormFieldTypeReportProcessorTest {
 	public void testProcessDDMFormInstanceReportOnDeleteEvent()
 		throws Exception {
 
+		// Value in the report
+
 		DDMFormFieldValue ddmFormFieldValue = Mockito.mock(
 			DDMFormFieldValue.class);
 
@@ -229,7 +231,14 @@ public class TextDDMFormFieldTypeReportProcessorTest {
 		JSONObject processedFieldJSONObject =
 			_textDDMFormFieldTypeReportProcessor.process(
 				ddmFormFieldValue,
-				JSONUtil.put("type", DDMFormFieldTypeConstants.TEXT),
+				JSONUtil.put(
+					"type", DDMFormFieldTypeConstants.TEXT
+				).put(
+					"values",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"formInstanceRecordId", formInstanceRecordId))
+				),
 				formInstanceRecordId,
 				DDMFormInstanceReportConstants.EVENT_DELETE_RECORD_VERSION);
 
@@ -243,6 +252,29 @@ public class TextDDMFormFieldTypeReportProcessorTest {
 		JSONObject jsonObject = valuesJSONArray.getJSONObject(0);
 
 		Assert.assertEquals("text " + maxLength, jsonObject.getString("value"));
+
+		// Value not in the report
+
+		formInstanceRecordId = 2;
+
+		processedFieldJSONObject = _textDDMFormFieldTypeReportProcessor.process(
+			ddmFormFieldValue,
+			JSONUtil.put(
+				"totalEntries", 2
+			).put(
+				"values",
+				JSONUtil.putAll(JSONUtil.put("formInstanceRecordId", 1))
+			),
+			formInstanceRecordId,
+			DDMFormInstanceReportConstants.EVENT_DELETE_RECORD_VERSION);
+
+		Assert.assertEquals(1, processedFieldJSONObject.getInt("totalEntries"));
+
+		Mockito.verify(
+			_ddmFormInstanceRecordLocalService, Mockito.never()
+		).getFormInstanceRecord(
+			formInstanceRecordId
+		);
 	}
 
 	@Test
