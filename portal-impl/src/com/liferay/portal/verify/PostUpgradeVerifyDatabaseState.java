@@ -491,6 +491,8 @@ public class PostUpgradeVerifyDatabaseState extends VerifyProcess {
 
 				Set<String> databaseColumnNames = new TreeSet<>(
 					String.CASE_INSENSITIVE_ORDER);
+				Set<String> mismatchedColumnNames = new TreeSet<>(
+					String.CASE_INSENSITIVE_ORDER);
 				String normalizedTableName = dbInspector.normalizeName(
 					tableName);
 
@@ -511,19 +513,32 @@ public class PostUpgradeVerifyDatabaseState extends VerifyProcess {
 							continue;
 						}
 
-						List<String> messages =
-							warnColumnMessagesMap.computeIfAbsent(
-								tableName, key -> new ArrayList<>());
-
-						messages.add(
-							_getMessage(
-								StringBundler.concat(
-									"Column ",
-									dbInspector.normalizeName(columnName),
-									" is not defined as ", columnType, " for ",
-									normalizedTableName, " table"),
-								servletContextName));
+						mismatchedColumnNames.add(columnName);
 					}
+				}
+
+				for (String columnDefinition : entry.getValue()) {
+					int index = columnDefinition.indexOf(StringPool.SPACE);
+
+					String columnName = columnDefinition.substring(0, index);
+
+					if (!mismatchedColumnNames.contains(columnName)) {
+						continue;
+					}
+
+					List<String> messages =
+						warnColumnMessagesMap.computeIfAbsent(
+							tableName, key -> new ArrayList<>());
+
+					messages.add(
+						_getMessage(
+							StringBundler.concat(
+								"Column ",
+								dbInspector.normalizeName(columnName),
+								" is not defined as ",
+								columnDefinition.substring(index + 1), " for ",
+								normalizedTableName, " table"),
+							servletContextName));
 				}
 
 				Set<String> expectedColumnNames = expectedColumnTypes.keySet();
