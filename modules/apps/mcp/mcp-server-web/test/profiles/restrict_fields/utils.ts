@@ -78,6 +78,21 @@ describe('restrict fields utils', () => {
 			]);
 		});
 
+		it('counts the fields under every field, itself included', () => {
+			const modifiedBy = tree.find((item) => item.id === 'modifiedBy');
+
+			expect(modifiedBy).toMatchObject({fieldCount: 6});
+			expect(modifiedBy?.children).toContainEqual(
+				expect.objectContaining({
+					fieldCount: 3,
+					id: 'modifiedBy.userGroupBriefs',
+				})
+			);
+			expect(
+				tree.find((item) => item.id === 'description')
+			).toMatchObject({fieldCount: 1});
+		});
+
 		it('lists the item fields of a tool returning a page', () => {
 			expect(buildFieldTree(mockPageTool.outputSchema)).toEqual(tree);
 		});

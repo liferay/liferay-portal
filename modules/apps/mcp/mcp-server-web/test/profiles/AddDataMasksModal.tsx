@@ -5,7 +5,7 @@
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
-import {render, screen, waitFor} from '@testing-library/react';
+import {render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
@@ -79,6 +79,41 @@ describe('AddDataMasksModal', () => {
 		style.textContent = '.d-none { display: none !important; }';
 
 		document.head.appendChild(style);
+	});
+
+	it('shows next to each group how many masks it holds', () => {
+		renderModal();
+
+		expect(
+			within(screen.getByRole('treeitem', {name: 'System'})).getByText(
+				'2'
+			)
+		).toBeVisible();
+		expect(
+			within(screen.getByRole('treeitem', {name: 'Custom'})).getByText(
+				'1'
+			)
+		).toBeVisible();
+		expect(checkbox('System')).toHaveAccessibleDescription('2-items');
+		expect(checkbox('Custom')).toHaveAccessibleDescription('1-item');
+		expect(checkbox('Email Address')).not.toHaveAccessibleDescription();
+	});
+
+	it('highlights the count of a group once every mask in it is selected', async () => {
+		renderModal();
+
+		const badge = () =>
+			within(screen.getByRole('treeitem', {name: 'System'}))
+				.getByText('2')
+				.closest('.badge');
+
+		await userEvent.click(checkbox('Email Address'));
+
+		expect(badge()).toHaveClass('badge-secondary');
+
+		await userEvent.click(checkbox('Phone Number'));
+
+		expect(badge()).toHaveClass('badge-primary');
 	});
 
 	it('hides the masks that do not match the query and keeps their group', async () => {
@@ -156,6 +191,17 @@ describe('AddDataMasksModal', () => {
 		).toBeInTheDocument();
 		expect(screen.queryByRole('searchbox', {name: 'search'})).toBeNull();
 		expect(screen.queryByText('nothing-selected')).toBeNull();
+	});
+
+	it('has no accessibility violations with a group selected', async () => {
+		const {container} = renderModal();
+
+		await userEvent.click(checkbox('System'));
+
+		await checkAccessibility({
+			bestPractices: true,
+			context: container,
+		});
 	});
 
 	it('has no accessibility violations under a filter', async () => {

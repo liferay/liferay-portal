@@ -67,15 +67,19 @@ describe('buildDataMaskTree', () => {
 		expect(tree).toEqual([
 			{
 				children: [
-					{id: 'SYSTEM_1', name: 'Email Address'},
-					{id: 'SYSTEM_2', name: 'Phone Number'},
+					{id: 'SYSTEM_1', maskCount: 1, name: 'Email Address'},
+					{id: 'SYSTEM_2', maskCount: 1, name: 'Phone Number'},
 				],
 				id: 'maskType:system',
+				maskCount: 2,
 				name: 'System',
 			},
 			{
-				children: [{id: 'CUSTOM_1', name: 'Project Codename'}],
+				children: [
+					{id: 'CUSTOM_1', maskCount: 1, name: 'Project Codename'},
+				],
 				id: 'maskType:custom',
+				maskCount: 1,
 				name: 'Custom',
 			},
 		]);
@@ -97,7 +101,7 @@ describe('buildDataMaskTree', () => {
 		]);
 
 		expect(tree[0].children).toEqual([
-			{id: 'SYSTEM_1', name: 'Email Address'},
+			{id: 'SYSTEM_1', maskCount: 1, name: 'Email Address'},
 		]);
 	});
 });

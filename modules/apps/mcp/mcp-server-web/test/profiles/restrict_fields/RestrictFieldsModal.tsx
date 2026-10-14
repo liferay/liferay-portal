@@ -5,7 +5,7 @@
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
-import {render, screen, waitFor} from '@testing-library/react';
+import {render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
@@ -172,6 +172,64 @@ describe('RestrictFieldsModal', () => {
 		expect(screen.getByText('7-items-selected')).toBeInTheDocument();
 	});
 
+	it('shows next to each group how many fields selecting it adds', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal();
+
+		await findCheckbox('modifiedBy');
+
+		expect(within(row('modifiedBy')).getByText('6')).toBeVisible();
+		expect(within(row('description')).queryByText('1')).toBeNull();
+
+		await expand('auditEvents');
+
+		expect(within(row('creator')).getByText('2')).toBeVisible();
+
+		await userEvent.click(checkbox('modifiedBy'));
+
+		expect(screen.getByText('6-items-selected')).toBeInTheDocument();
+	});
+
+	it('describes each group to assistive technology with its field count', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal();
+
+		await findCheckbox('modifiedBy');
+
+		expect(checkbox('modifiedBy')).toHaveAccessibleDescription('6-items');
+		expect(row('modifiedBy')).toHaveAccessibleDescription('6-items');
+		expect(checkbox('description')).not.toHaveAccessibleDescription();
+	});
+
+	it('highlights the count of a group once every field in it is selected', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal();
+
+		await findCheckbox('modifiedBy');
+
+		const badge = () =>
+			within(row('modifiedBy')).getByText('6').closest('.badge');
+
+		expect(badge()).toHaveClass('badge-secondary');
+
+		await userEvent.click(checkbox('modifiedBy'));
+
+		expect(badge()).toHaveClass('badge-primary');
+
+		await expand('modifiedBy');
+
+		expect(
+			within(row('userGroupBriefs')).getByText('3').closest('.badge')
+		).toHaveClass('badge-primary');
+
+		await userEvent.click(checkbox('userGroupBriefs'));
+
+		expect(badge()).toHaveClass('badge-secondary');
+	});
+
 	it('clears the selection with the deselect all action', async () => {
 		fetch.mockResponseOnce(JSON.stringify(mockTool));
 
@@ -179,9 +237,7 @@ describe('RestrictFieldsModal', () => {
 
 		await userEvent.click(await findCheckbox('description'));
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'deselect-all'})
-		);
+		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
 
 		expect(checkbox('description')).not.toBeChecked();
 		expect(screen.getByText('nothing-selected')).toBeInTheDocument();
@@ -203,9 +259,7 @@ describe('RestrictFieldsModal', () => {
 		expect(checkbox('modifiedBy')).toBePartiallyChecked();
 		expect(checkbox('userGroupBriefs')).toBePartiallyChecked();
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'deselect-all'})
-		);
+		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
 
 		expect(checkbox('modifiedBy')).not.toBePartiallyChecked();
 		expect(checkbox('modifiedBy')).not.toBeChecked();
@@ -279,6 +333,8 @@ describe('RestrictFieldsModal', () => {
 
 		await findCheckbox('modifiedBy');
 
+		expect(checkbox('userGroupBriefs')).toBeVisible();
+
 		await checkAccessibility({
 			bestPractices: true,
 			context: container,
@@ -304,9 +360,7 @@ describe('RestrictFieldsModal', () => {
 
 		await userEvent.click(await findCheckbox('description'));
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'deselect-all'})
-		);
+		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
 
 		expect(screen.getAllByRole('treeitem')[0]).toHaveFocus();
 	});
@@ -541,9 +595,7 @@ describe('RestrictFieldsModal', () => {
 
 		await search('label');
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'deselect-all'})
-		);
+		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
 
 		expect(
 			checkbox('taxonomyCategoryBriefs').closest('[role="treeitem"]')
@@ -637,9 +689,7 @@ describe('RestrictFieldsModal', () => {
 
 		await search('nothing-like-this');
 
-		await userEvent.click(
-			screen.getByRole('button', {name: 'deselect-all'})
-		);
+		await userEvent.click(screen.getByRole('button', {name: 'deselect-all'}));
 
 		expect(searchBox()).toHaveFocus();
 	});
