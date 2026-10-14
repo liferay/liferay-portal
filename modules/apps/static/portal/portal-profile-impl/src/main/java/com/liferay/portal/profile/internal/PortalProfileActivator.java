@@ -24,7 +24,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * @author Shuyang Zhou
  */
 @Component(service = {})
-public class PortalProfileGatekeeper {
+public class PortalProfileActivator {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
