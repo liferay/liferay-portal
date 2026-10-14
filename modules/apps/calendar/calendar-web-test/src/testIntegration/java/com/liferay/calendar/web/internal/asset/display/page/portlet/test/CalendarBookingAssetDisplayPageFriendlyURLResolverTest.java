@@ -120,7 +120,7 @@ public class CalendarBookingAssetDisplayPageFriendlyURLResolverTest {
 	private void _assertDisplayPageAttributes(
 		boolean expected, MockHttpServletRequest mockHttpServletRequest) {
 
-		for (String name : _DISPLAY_PAGE_ATTRIBUTE_NAMES) {
+		for (String name : _HTTP_SERVLET_REQUEST_ATTRIBUTE_NAMES) {
 			Assert.assertEquals(
 				name, expected,
 				mockHttpServletRequest.getAttribute(name) != null);
@@ -155,7 +155,7 @@ public class CalendarBookingAssetDisplayPageFriendlyURLResolverTest {
 		return mockHttpServletRequest;
 	}
 
-	private static final String[] _DISPLAY_PAGE_ATTRIBUTE_NAMES = {
+	private static final String[] _HTTP_SERVLET_REQUEST_ATTRIBUTE_NAMES = {
 		LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER,
 		LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_PROVIDER,
 		WebKeys.LAYOUT_ASSET_ENTRY, WebKeys.PAGE_DESCRIPTION,
