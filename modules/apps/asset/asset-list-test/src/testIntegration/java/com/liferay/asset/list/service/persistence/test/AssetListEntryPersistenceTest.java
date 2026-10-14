@@ -301,14 +301,6 @@ public class AssetListEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_TY() throws Exception {
-		_persistence.countByG_TY(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByG_TY(0L, 0);
-	}
-
-	@Test
 	public void testCountByG_AET() throws Exception {
 		_persistence.countByG_AET(RandomTestUtil.nextLong(), "");
 
@@ -803,4 +795,4 @@ public class AssetListEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2108673667
+// LIFERAY-SERVICE-BUILDER-HASH:1021977032
