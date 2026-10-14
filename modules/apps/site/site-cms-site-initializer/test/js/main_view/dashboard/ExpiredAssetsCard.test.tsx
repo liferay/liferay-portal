@@ -4,6 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
+import {ClayIconIllustrationSpriteContext} from '@clayui/icon';
 import {
 	fireEvent,
 	render,
@@ -318,9 +319,13 @@ describe('[CMS Dashboard] ExpiredAssetsCard', () => {
 		};
 
 		render(
-			<InventoryContextProvider value={customValue}>
-				<ExpiredAssetsCard />
-			</InventoryContextProvider>
+			<ClayIconIllustrationSpriteContext.Provider
+				value={Liferay.ThemeDisplay.getPathThemeEmptyStatesSpritemap()}
+			>
+				<InventoryContextProvider value={customValue}>
+					<ExpiredAssetsCard />
+				</InventoryContextProvider>
+			</ClayIconIllustrationSpriteContext.Provider>
 		);
 
 		await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
@@ -332,11 +337,14 @@ describe('[CMS Dashboard] ExpiredAssetsCard', () => {
 
 		expect(screen.getByText('clear-filters')).toBeInTheDocument();
 
-		const images = screen.getAllByRole('presentation');
-		const emptyStateImage = images.find((image) =>
-			image.getAttribute('src')?.includes('search_state.svg')
+		const illustrations = screen.getAllByRole('presentation');
+		const emptyStateIllustration = illustrations.find((illustration) =>
+			illustration
+				.querySelector('use')
+				?.getAttribute('href')
+				?.endsWith('/clay/empty_states.svg#search-state')
 		);
 
-		expect(emptyStateImage).toBeInTheDocument();
+		expect(emptyStateIllustration).toBeInTheDocument();
 	});
 });
