@@ -59,10 +59,10 @@ describe('AccountDisplay', () => {
 			Promise.resolve({
 				stages: [
 					{
-						displayOrder: 1,
+						priority: 1,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageType: 'ENGAGED'
+						stageName: 'Engaged'
 					}
 				]
 			})
@@ -112,10 +112,10 @@ describe('AccountDisplay', () => {
 			Promise.resolve({
 				stages: [
 					{
-						displayOrder: 1,
+						priority: 1,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageType: 'ENGAGED'
+						stageName: 'Engaged'
 					}
 				]
 			})
@@ -165,10 +165,10 @@ describe('AccountDisplay', () => {
 			Promise.resolve({
 				stages: [
 					{
-						displayOrder: 1,
+						priority: 1,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageType: 'ENGAGED'
+						stageName: 'Engaged'
 					}
 				]
 			})

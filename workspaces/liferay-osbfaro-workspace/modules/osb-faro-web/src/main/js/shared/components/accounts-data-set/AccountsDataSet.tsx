@@ -30,7 +30,7 @@ interface IAccountsDataSetProps {
 	fieldCatalog?: ICatalogField[];
 	groupId: string;
 	industryFilter?: string;
-	lifecycleStageFilter?: LifecycleStages;
+	lifecycleStageFilter?: string;
 	rangeKeyFilter?: RangeKeyTimeRanges;
 	segmentFilter?: string;
 	segmentName?: string;
@@ -40,8 +40,18 @@ interface IAccountsDataSetProps {
 interface ILifecycleStageFieldValue {
 	externalReferenceCode: string;
 	id: string;
-	stageType: LifecycleStages;
+	stageName?: string;
+	stageType?: LifecycleStages;
 }
+
+const getLifecycleStageLabel = ({
+	externalReferenceCode,
+	stageName,
+	stageType,
+}: ILifecycleStageFieldValue) =>
+	stageName ??
+	(stageType && lifecycleStagesLabelMap[stageType]?.label) ??
+	externalReferenceCode;
 
 const buildSelectionPreloadedData = (value?: string, label?: string) =>
 	value
@@ -80,21 +90,17 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	const lifecycleStages: ILifecycleStageFieldValue[] =
 		lifecycleStageFieldValues?.items ?? [];
 
-	const lifecycleStageItems = lifecycleStages.map(
-		({externalReferenceCode, stageType}) => ({
-			label: lifecycleStagesLabelMap[stageType].label,
-			value: externalReferenceCode,
-		})
-	);
+	const lifecycleStageItems = lifecycleStages.map((lifecycleStage) => ({
+		label: getLifecycleStageLabel(lifecycleStage),
+		value: lifecycleStage.externalReferenceCode,
+	}));
 
 	const preloadedRangeSelector = rangeSelectors.find(
 		({value}) => value === rangeKeyFilter
 	);
 
 	const preloadedLifecycleStage = lifecycleStageFilter
-		? lifecycleStages.find(
-				({stageType}) => stageType === lifecycleStageFilter
-			)
+		? lifecycleStages.find(({id}) => id === lifecycleStageFilter)
 		: undefined;
 
 	// The data set reads `filters` only when its reducer is initialized on
@@ -177,11 +183,10 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 									name: 'status',
 									preloadedData: buildSelectionPreloadedData(
 										preloadedLifecycleStage?.externalReferenceCode,
-										lifecycleStageFilter
-											? lifecycleStagesLabelMap[
-													lifecycleStageFilter
-												].label
-											: undefined
+										preloadedLifecycleStage &&
+											getLifecycleStageLabel(
+												preloadedLifecycleStage
+											)
 									),
 									type: 'selection' as const,
 								},

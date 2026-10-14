@@ -1,7 +1,6 @@
 import React from 'react';
 import {act, renderHook} from '@testing-library/react';
 import {LifecycleContextProvider, useLifecycle} from '../LifecycleContext';
-import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 
 jest.unmock('react-dom');
 
@@ -48,15 +47,9 @@ describe('LifecycleContext', () => {
 	it('should swap lifecycleStageFilter to the value provided', () => {
 		const {result} = renderHook(() => useLifecycle(), {wrapper});
 
-		act(() =>
-			result.current.updateFilters({
-				lifecycleStageFilter: LifecycleStages.AWARE,
-			})
-		);
+		act(() => result.current.updateFilters({lifecycleStageFilter: '4101'}));
 
-		expect(result.current.filters.lifecycleStageFilter).toBe(
-			LifecycleStages.AWARE
-		);
+		expect(result.current.filters.lifecycleStageFilter).toBe('4101');
 	});
 
 	it('should reset filters to their initial values', () => {
@@ -66,7 +59,7 @@ describe('LifecycleContext', () => {
 			result.current.updateFilters({
 				countryFilter: 'US',
 				industryFilter: 'Tech',
-				lifecycleStageFilter: LifecycleStages.AWARE,
+				lifecycleStageFilter: '4101',
 			})
 		);
 		act(() => result.current.resetFilters());
@@ -83,23 +76,19 @@ describe('LifecycleContext', () => {
 
 		expect(result.current.stageSelectionNonce).toBe(0);
 
-		act(() => result.current.selectStage(LifecycleStages.AWARE));
+		act(() => result.current.selectStage('4101'));
 
-		expect(result.current.filters.lifecycleStageFilter).toBe(
-			LifecycleStages.AWARE
-		);
+		expect(result.current.filters.lifecycleStageFilter).toBe('4101');
 		expect(result.current.stageSelectionNonce).toBe(1);
 	});
 
 	it('should bump stageSelectionNonce even when selectStage is called with the same stage', () => {
 		const {result} = renderHook(() => useLifecycle(), {wrapper});
 
-		act(() => result.current.selectStage(LifecycleStages.AWARE));
-		act(() => result.current.selectStage(LifecycleStages.AWARE));
+		act(() => result.current.selectStage('4101'));
+		act(() => result.current.selectStage('4101'));
 
-		expect(result.current.filters.lifecycleStageFilter).toBe(
-			LifecycleStages.AWARE
-		);
+		expect(result.current.filters.lifecycleStageFilter).toBe('4101');
 		expect(result.current.stageSelectionNonce).toBe(2);
 	});
 });

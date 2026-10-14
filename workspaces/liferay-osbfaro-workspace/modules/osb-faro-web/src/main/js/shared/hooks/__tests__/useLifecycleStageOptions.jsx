@@ -18,16 +18,16 @@ describe('useLifecycleStageOptions', () => {
 			Promise.resolve({
 				stages: [
 					{
-						displayOrder: 2,
+						priority: 2,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageType: 'ENGAGED'
+						stageName: 'Engaged'
 					},
 					{
-						displayOrder: 1,
+						priority: 1,
 						externalReferenceCode: 'erc-stage-1001',
 						id: '1001',
-						stageType: 'AWARE'
+						stageName: 'Aware'
 					}
 				]
 			})
@@ -45,64 +45,6 @@ describe('useLifecycleStageOptions', () => {
 		);
 
 		expect(result.current.loading).toBe(false);
-	});
-
-	it('should return the stage type of an unknown stage', async () => {
-		API.lifecycle.fetchAccountLifecycles.mockReturnValueOnce(
-			Promise.resolve([{id: '1'}])
-		);
-
-		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
-			Promise.resolve({
-				stages: [
-					{
-						displayOrder: 1,
-						externalReferenceCode: 'erc-stage-1001',
-						id: '1001',
-						stageType: 'CONVERTED'
-					}
-				]
-			})
-		);
-
-		const {result} = renderHook(() =>
-			useLifecycleStageOptions({groupId: '123'})
-		);
-
-		await waitFor(() =>
-			expect(result.current.options).toEqual([
-				{label: 'CONVERTED', value: 'erc-stage-1001'}
-			])
-		);
-	});
-
-	it('should return the name of a stage without a stage type', async () => {
-		API.lifecycle.fetchAccountLifecycles.mockReturnValueOnce(
-			Promise.resolve([{id: '1'}])
-		);
-
-		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
-			Promise.resolve({
-				stages: [
-					{
-						displayOrder: 1,
-						externalReferenceCode: 'erc-stage-4101',
-						id: '4101',
-						name: 'Qualified',
-					},
-				]
-			})
-		);
-
-		const {result} = renderHook(() =>
-			useLifecycleStageOptions({groupId: '123'})
-		);
-
-		await waitFor(() =>
-			expect(result.current.options).toEqual([
-				{label: 'Qualified', value: 'erc-stage-4101'}
-			])
-		);
 	});
 
 	it('should return no options without a lifecycle', async () => {

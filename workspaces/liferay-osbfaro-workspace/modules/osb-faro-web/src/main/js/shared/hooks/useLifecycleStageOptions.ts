@@ -1,9 +1,5 @@
 import * as API from 'shared/api';
 import {ILifecycleStage} from 'shared/api/lifecycle';
-import {
-	LifecycleStages,
-	lifecycleStagesLabelMap,
-} from 'contacts/pages/account/utils/constants';
 import {useRequest} from 'shared/hooks/useRequest';
 
 export const useLifecycleStageOptions = ({
@@ -35,13 +31,9 @@ export const useLifecycleStageOptions = ({
 			lifecyclesLoading || (Boolean(lifecycle) && lifecycleDetailLoading),
 		options: stages
 			.slice()
-			.sort((a, b) => a.displayOrder - b.displayOrder)
-			.map(({externalReferenceCode, name, stageType}) => ({
-				label:
-					lifecycleStagesLabelMap[stageType as LifecycleStages]
-						?.label ??
-					stageType ??
-					name,
+			.sort((a, b) => a.priority - b.priority)
+			.map(({externalReferenceCode, stageName}) => ({
+				label: stageName,
 				value: externalReferenceCode,
 			})),
 	};

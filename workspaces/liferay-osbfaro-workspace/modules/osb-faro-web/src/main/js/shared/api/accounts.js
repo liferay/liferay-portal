@@ -2,7 +2,9 @@ import FaroConstants from 'shared/util/constants';
 import sendRequest from 'shared/util/request';
 import {ACCOUNTS} from 'shared/util/router';
 import {buildOrderByFields, buildSortString} from 'shared/util/pagination';
+import {ENABLE_LIFECYCLE_STAGES_MOCK_DATA} from 'shared/util/feature-flags';
 import {escapeSingleQuotes} from 'segment/segment-editor/dynamic/utils/odata';
+import {getMockLifecycleStageFieldValues} from 'lifecycle/utils/lifecycleMock';
 
 const {
 	pagination: {cur: DEFAULT_PAGE, delta: DEFAULT_DELTA},
@@ -58,6 +60,10 @@ export async function fetchLifecycleStageFieldValues({
 	channelId,
 	groupId,
 }) {
+	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
+		return getMockLifecycleStageFieldValues();
+	}
+
 	return sendRequest({
 		data: {
 			accountLifecycleId,

@@ -528,7 +528,7 @@ describe('CreateLifecycle', () => {
 			})
 		);
 		expect(payload.stages).toEqual([
-			expect.objectContaining({displayOrder: 1, name: 'Aware'}),
+			expect.objectContaining({priority: 1, stageName: 'Aware'}),
 		]);
 		expect(payload.stages[0]).not.toHaveProperty('stageType');
 		expect(payload.stages[0].accountLifecycleStageRule.name).toBe(

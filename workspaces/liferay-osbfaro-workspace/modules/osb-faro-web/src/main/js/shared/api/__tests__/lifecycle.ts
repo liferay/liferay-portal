@@ -6,9 +6,11 @@ jest.mock('shared/util/feature-flags', () => ({
 }));
 
 import sendRequest from 'shared/util/request';
+import {fetchLifecycleStageFieldValues} from '../accounts';
 import {
 	createLifecycle,
 	fetchLifecycle,
+	fetchLifecycleStages,
 	ILifecycleStagePayload,
 	updateLifecycle,
 } from '../lifecycle';
@@ -25,9 +27,9 @@ const buildStage = (
 		name: 'Hub Stage Aware Criteria',
 	},
 	description: 'Cold accounts',
-	displayOrder: 1,
 	maxDuration: 90,
-	name: 'Aware',
+	priority: 1,
+	stageName: 'Aware',
 	...stage,
 });
 
@@ -43,6 +45,17 @@ describe('Lifecycle API', () => {
 	});
 
 	describe('while the mock data flag is off', () => {
+		it('reads the stage metrics from the server', () => {
+			fetchLifecycleStages({groupId: '23', lifecycleId: '9'});
+
+			expect(sendRequest).toHaveBeenCalledWith(
+				expect.objectContaining({
+					method: 'GET',
+					path: 'contacts/23/account-lifecycle/9/stages',
+				})
+			);
+		});
+
 		it('reads a lifecycle from the server', () => {
 			fetchLifecycle({groupId: '23', lifecycleId: '9'});
 
@@ -106,6 +119,38 @@ describe('Lifecycle API', () => {
 			featureFlags.ENABLE_LIFECYCLE_STAGES_MOCK_DATA = true;
 		});
 
+		it('reads stage metrics for every mock stage in display order', async () => {
+			const lifecycle = await fetchLifecycle({
+				groupId: '23',
+				lifecycleId: '9',
+			});
+
+			const metrics = await fetchLifecycleStages({
+				groupId: '23',
+				lifecycleId: '9',
+			});
+
+			expect(sendRequest).not.toHaveBeenCalled();
+			expect(
+				metrics.map(({stageName}: {stageName: string}) => stageName)
+			).toEqual(
+				[...lifecycle.stages!]
+					.sort((a, b) => a.priority - b.priority)
+					.map(({stageName}) => stageName)
+			);
+			expect(
+				metrics.every(
+					(metric: object) =>
+						'id' in metric &&
+						'priority' in metric &&
+						!('stageType' in metric)
+				)
+			).toBe(true);
+			expect(metrics[metrics.length - 1].conversionRateToNextStage).toBe(
+				null
+			);
+		});
+
 		it('reads a lifecycle with named custom stages and no stage type', async () => {
 			const lifecycle = await fetchLifecycle({
 				groupId: '23',
@@ -119,7 +164,7 @@ describe('Lifecycle API', () => {
 			expect(lifecycle.stages!.length).toBeGreaterThanOrEqual(4);
 			expect(
 				lifecycle.stages!.every(
-					(stage) => !!stage.name && !('stageType' in stage)
+					(stage) => !!stage.stageName && !('stageType' in stage)
 				)
 			).toBe(true);
 		});
@@ -139,6 +184,30 @@ describe('Lifecycle API', () => {
 			expect(lifecycle.stages![0].id).toEqual(expect.any(String));
 		});
 
+		it('reads the stage field values with the id and external reference code of every mock stage', async () => {
+			const lifecycle = await fetchLifecycle({
+				groupId: '23',
+				lifecycleId: '9',
+			});
+
+			const {items} = await fetchLifecycleStageFieldValues({
+				accountLifecycleId: '9',
+				channelId: '123',
+				groupId: '23',
+			});
+
+			expect(sendRequest).not.toHaveBeenCalled();
+			expect(items).toEqual(
+				lifecycle.stages!.map(
+					({externalReferenceCode, id, stageName}) => ({
+						externalReferenceCode,
+						id,
+						stageName,
+					})
+				)
+			);
+		});
+
 		it('keeps an update for the rest of the session', async () => {
 			await updateLifecycle({
 				description: 'Qualified accounts',
@@ -146,8 +215,8 @@ describe('Lifecycle API', () => {
 				lifecycleId: '9',
 				name: 'Renamed Hub',
 				stages: [
-					buildStage({id: '4101', name: 'Aware'}),
-					buildStage({displayOrder: 2, name: 'Qualified'}),
+					buildStage({id: '4101', stageName: 'Aware'}),
+					buildStage({priority: 2, stageName: 'Qualified'}),
 				],
 			});
 
@@ -158,7 +227,7 @@ describe('Lifecycle API', () => {
 
 			expect(sendRequest).not.toHaveBeenCalled();
 			expect(lifecycle.name).toBe('Renamed Hub');
-			expect(lifecycle.stages!.map(({name}) => name)).toEqual([
+			expect(lifecycle.stages!.map(({stageName}) => stageName)).toEqual([
 				'Aware',
 				'Qualified',
 			]);

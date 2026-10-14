@@ -41,11 +41,11 @@ const mockedUseRequest = useRequest as jest.Mock;
 
 const STAGE = {
 	description: '',
-	displayOrder: 1,
 	externalReferenceCode: 'stage',
 	id: 'stage',
 	maxDuration: null,
-	stageType: 'AWARE',
+	priority: 1,
+	stageName: 'Aware',
 };
 
 const LIFECYCLES: ILifecycleDetail[] = [

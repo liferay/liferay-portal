@@ -22,10 +22,10 @@ export interface IStageRulePayload {
 export interface IStagePayload {
 	accountLifecycleStageRule: IStageRulePayload;
 	description: string;
-	displayOrder: number;
 	id?: string;
 	maxDuration: number | null;
-	name: string;
+	priority: number;
+	stageName: string;
 }
 
 export interface ICreateLifecyclePayload {
@@ -152,10 +152,10 @@ const buildStagePayload = (
 		name: buildStageRuleName(lifecycleName, stage.name),
 	},
 	description: stage.description,
-	displayOrder: index + 1,
 	...(stage.id ? {id: stage.id} : {}),
 	maxDuration: stage.maxTimeEnabled ? stage.maxTimeDays : null,
-	name: stage.name,
+	priority: index + 1,
+	stageName: stage.name,
 });
 
 const buildStagePayloads = (stageConfigs: IStageConfig[], name: string) =>
@@ -273,12 +273,12 @@ const stageConfigFromStage = (stage: ILifecycleStage): IStageConfig => ({
 	key: createStageKey(),
 	maxTimeDays: stage.maxDuration ?? LIFECYCLE_STAGE_DEFAULT_MAX_DAYS,
 	maxTimeEnabled: stage.maxDuration != null,
-	name: stage.name ?? '',
+	name: stage.stageName ?? '',
 });
 
 export const stageConfigsFromLifecycle = (
 	stages: ILifecycleStage[] = []
 ): IStageConfig[] =>
 	[...stages]
-		.sort((a, b) => a.displayOrder - b.displayOrder)
+		.sort((a, b) => a.priority - b.priority)
 		.map(stageConfigFromStage);

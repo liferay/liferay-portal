@@ -337,7 +337,7 @@ describe('buildCreateLifecyclePayload', () => {
 		expect(payload.description).toBe('Lifecycle for qualified accounts');
 		expect(payload.name).toBe('My Lifecycle');
 		expect(
-			payload.stages.map(({displayOrder, name}) => [displayOrder, name])
+			payload.stages.map(({priority, stageName}) => [priority, stageName])
 		).toEqual([
 			[1, 'Aware'],
 			[2, 'Qualified'],
@@ -423,9 +423,7 @@ describe('buildUpdateLifecyclePayload', () => {
 			],
 		});
 
-		expect(
-			payload.stages.map(({displayOrder, id}) => [displayOrder, id])
-		).toEqual([
+		expect(payload.stages.map(({id, priority}) => [priority, id])).toEqual([
 			[1, 'stage-3'],
 			[2, 'stage-1'],
 		]);
@@ -461,11 +459,11 @@ describe('stageConfigsFromLifecycle', () => {
 						"(account.annualRevenue gt 1000) or (account.industry eq 'Technology')",
 				},
 				description: 'Saved description',
-				displayOrder: 1,
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: 30,
-				name: 'Aware',
+				priority: 1,
+				stageName: 'Aware',
 			},
 		]);
 
@@ -500,11 +498,11 @@ describe('stageConfigsFromLifecycle', () => {
 					filterString: '(account.annualRevenue gt 1000)',
 				},
 				description: 'Saved description',
-				displayOrder: 1,
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: 30,
-				name: 'Aware',
+				priority: 1,
+				stageName: 'Aware',
 			},
 		]);
 
@@ -526,11 +524,11 @@ describe('stageConfigsFromLifecycle', () => {
 					filterString: '',
 				},
 				description: 'Saved description',
-				displayOrder: 1,
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: 30,
-				name: 'Aware',
+				priority: 1,
+				stageName: 'Aware',
 			},
 		]);
 
@@ -541,24 +539,27 @@ describe('stageConfigsFromLifecycle', () => {
 		const configs = stageConfigsFromLifecycle([
 			{
 				description: 'Third',
-				displayOrder: 3,
+				externalReferenceCode: 'erc-stage-3',
 				id: 'stage-3',
 				maxDuration: null,
-				name: 'Pipeline',
+				priority: 3,
+				stageName: 'Pipeline',
 			},
 			{
 				description: 'First',
-				displayOrder: 1,
+				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: null,
-				name: 'Aware',
+				priority: 1,
+				stageName: 'Aware',
 			},
 			{
 				description: 'Second',
-				displayOrder: 2,
+				externalReferenceCode: 'erc-stage-2',
 				id: 'stage-2',
 				maxDuration: null,
-				name: 'Qualified',
+				priority: 2,
+				stageName: 'Qualified',
 			},
 		]);
 
@@ -573,17 +574,19 @@ describe('stageConfigsFromLifecycle', () => {
 		const configs = stageConfigsFromLifecycle([
 			{
 				description: 'First',
-				displayOrder: 1,
+				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: null,
-				name: 'Aware',
+				priority: 1,
+				stageName: 'Aware',
 			},
 			{
 				description: 'Second',
-				displayOrder: 2,
+				externalReferenceCode: 'erc-stage-2',
 				id: 'stage-2',
 				maxDuration: null,
-				name: 'Qualified',
+				priority: 2,
+				stageName: 'Qualified',
 			},
 		]);
 
@@ -598,11 +601,11 @@ describe('stageConfigsFromLifecycle', () => {
 		const [aware] = stageConfigsFromLifecycle([
 			{
 				description: 'Saved',
-				displayOrder: 1,
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: null,
-				name: 'Aware',
+				priority: 1,
+				stageName: 'Aware',
 			},
 		]);
 

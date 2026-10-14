@@ -1,5 +1,15 @@
+.stage-metrics-track {
+	scroll-snap-type: x mandatory;
+}
+
 .stage-metrics {
-	min-width: 0;
+	flex: 1 1 0;
+	min-width: 11.5rem;
+	scroll-snap-align: start;
+
+	& + & {
+		border-left: 1px dashed $cadmin-secondary-l2;
+	}
 
 	&__bar {
 		background-color: $cadmin-indigo-l2;
@@ -10,51 +20,25 @@
 			border: 1px dashed $cadmin-secondary-l2;
 		}
 	}
+
+	&__conversion {
+		bottom: 0.5rem;
+		position: absolute;
+		right: 0.5rem;
+	}
 }
 
-.stage-progression {
-	position: relative;
+.stage-metrics-scroll {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 1;
 
-	&::before,
-	&::after {
-		border-left: 1px dashed $cadmin-secondary-l2;
-		bottom: 1rem;
-		content: '';
-		position: absolute;
-		top: 0;
-		z-index: 1;
-	}
-
-	&::before {
-		left: 0;
-	}
-
-	&::after {
+	&--next {
 		right: 0;
 	}
 
-	&__fill {
-		background: $cadmin-light-d1;
-	}
-
-	@include media-breakpoint-down(md) {
-		&::before {
-			border-bottom: 1px dashed $cadmin-secondary-l2;
-			border-left: none;
-			bottom: auto;
-			left: 0;
-			right: 0;
-			top: 50%;
-			z-index: 0;
-		}
-
-		&::after {
-			display: none;
-		}
-
-		.label-inverse-info {
-			position: relative;
-			z-index: 1;
-		}
+	&--previous {
+		left: 0;
 	}
 }

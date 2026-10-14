@@ -65,7 +65,7 @@ const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 	const lifecycle: IAccountLifecycleStatus | undefined = statusData;
 	const stages = (lifecycle?.accountLifecycleStageStatuses ?? [])
 		.slice()
-		.sort((a, b) => a.displayOrder - b.displayOrder);
+		.sort((a, b) => a.priority - b.priority);
 
 	const progressionStages = stages.filter(
 		(stage) => stage.stageType !== LifecycleStages.AT_RISK

@@ -1,9 +1,7 @@
-import {LifecycleStages} from 'contacts/pages/account/utils/constants';
-
 export interface ILifecycleFilterValues {
 	countryFilter: string;
 	industryFilter: string;
-	lifecycleStageFilter?: LifecycleStages;
+	lifecycleStageFilter?: string;
 }
 
 const FILTER_CONFIG: {

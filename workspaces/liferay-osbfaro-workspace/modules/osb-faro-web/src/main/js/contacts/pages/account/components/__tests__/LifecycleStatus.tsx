@@ -29,36 +29,36 @@ const mockedUseRequest = useRequest as jest.Mock;
 const DEFAULT_STATUS = {
 	accountLifecycleStageStatuses: [
 		{
-			displayOrder: 0,
 			endDate: '2026-01-16T00:00:00.000Z',
 			id: 'als-aware',
+			priority: 0,
 			stageType: LifecycleStages.AWARE,
 			startDate: '2026-01-04T00:00:00.000Z',
 		},
 		{
-			displayOrder: 1,
 			id: 'als-engaged',
+			priority: 1,
 			stageType: LifecycleStages.ENGAGED,
 			startDate: '2026-01-16T00:00:00.000Z',
 		},
 		{
-			displayOrder: 2,
 			id: 'als-pipeline',
+			priority: 2,
 			stageType: LifecycleStages.PIPELINE,
 		},
 		{
-			displayOrder: 3,
 			id: 'als-onboarding',
+			priority: 3,
 			stageType: LifecycleStages.ONBOARDING,
 		},
 		{
-			displayOrder: 4,
 			id: 'als-established',
+			priority: 4,
 			stageType: LifecycleStages.ESTABLISHED,
 		},
 		{
-			displayOrder: 5,
 			id: 'als-at-risk',
+			priority: 5,
 			stageType: LifecycleStages.AT_RISK,
 		},
 	],
@@ -270,13 +270,13 @@ describe('LifecycleStatus', () => {
 					statusData: {
 						accountLifecycleStageStatuses: [
 							{
-								displayOrder: 0,
 								id: 'als-aware',
+								priority: 0,
 								stageType: LifecycleStages.AWARE,
 							},
 							{
-								displayOrder: 1,
 								id: 'als-at-risk',
+								priority: 1,
 								stageType: LifecycleStages.AT_RISK,
 								startDate: '2026-02-01T00:00:00.000Z',
 							},
@@ -306,8 +306,8 @@ describe('LifecycleStatus', () => {
 					statusData: {
 						accountLifecycleStageStatuses: [
 							{
-								displayOrder: 0,
 								id: 'als-aware',
+								priority: 0,
 								stageType: LifecycleStages.AWARE,
 							},
 						],
@@ -345,36 +345,36 @@ describe('LifecycleStatus', () => {
 					statusData: {
 						accountLifecycleStageStatuses: [
 							{
-								displayOrder: 0,
 								endDate: '2026-03-01T00:00:00.000Z',
 								id: 'als-aware',
+								priority: 0,
 								stageType: LifecycleStages.AWARE,
 								startDate: '2026-02-01T00:00:00.000Z',
 							},
 							{
-								displayOrder: 1,
 								id: 'als-engaged',
+								priority: 1,
 								stageType: LifecycleStages.ENGAGED,
 								startDate: '2026-03-01T00:00:00.000Z',
 							},
 							{
-								displayOrder: 2,
 								id: 'als-pipeline',
+								priority: 2,
 								stageType: LifecycleStages.PIPELINE,
 							},
 							{
-								displayOrder: 3,
 								id: 'als-onboarding',
+								priority: 3,
 								stageType: LifecycleStages.ONBOARDING,
 							},
 							{
-								displayOrder: 4,
 								id: 'als-established',
+								priority: 4,
 								stageType: LifecycleStages.ESTABLISHED,
 							},
 							{
-								displayOrder: 5,
 								id: 'als-at-risk',
+								priority: 5,
 								stageType: LifecycleStages.AT_RISK,
 							},
 						],

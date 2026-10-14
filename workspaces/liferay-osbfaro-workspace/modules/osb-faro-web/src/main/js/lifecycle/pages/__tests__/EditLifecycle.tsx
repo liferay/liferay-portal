@@ -49,7 +49,7 @@ const mockedUseRequest = useRequest as jest.Mock;
 const STAGE_NAMES = ['Aware', 'Qualified', 'Pipeline'];
 
 const buildStages = (): ILifecycleStage[] =>
-	STAGE_NAMES.map((name, index) => ({
+	STAGE_NAMES.map((stageName, index) => ({
 		accountLifecycleStageRule: {
 			filterMetadata: JSON.stringify({
 				conditionValue: '1000',
@@ -61,11 +61,11 @@ const buildStages = (): ILifecycleStage[] =>
 			filterString: '(account.annualRevenue gt 1000)',
 		},
 		description: 'A configured stage',
-		displayOrder: index + 1,
 		externalReferenceCode: `erc-stage-${index + 1}`,
 		id: `stage-${index}`,
 		maxDuration: 30,
-		name,
+		priority: index + 1,
+		stageName,
 	})).reverse();
 
 const lifecycle = {
@@ -216,9 +216,9 @@ describe('EditLifecycle', () => {
 
 		expect(payload.description).toBe('Renamed description');
 		expect(payload.stages[1]).toEqual(
-			expect.objectContaining({id: 'stage-1', name: 'Engaged'})
+			expect.objectContaining({id: 'stage-1', stageName: 'Engaged'})
 		);
-		expect(payload.stages[0].name).toBe('Aware');
+		expect(payload.stages[0].stageName).toBe('Aware');
 	});
 
 	it('moves the selection to the next stage when the selected one is removed', () => {
@@ -288,10 +288,10 @@ describe('EditLifecycle', () => {
 			.calls[0][0];
 
 		expect(
-			payload.stages.map(({displayOrder, id, name}: any) => [
-				displayOrder,
+			payload.stages.map(({id, priority, stageName}: any) => [
+				priority,
 				id,
-				name,
+				stageName,
 			])
 		).toEqual([
 			[1, 'stage-2', 'Pipeline'],
@@ -430,10 +430,10 @@ describe('EditLifecycle', () => {
 			})
 		);
 		expect(
-			payload.stages.map(({displayOrder, id, name}: any) => [
-				displayOrder,
+			payload.stages.map(({id, priority, stageName}: any) => [
+				priority,
 				id,
-				name,
+				stageName,
 			])
 		).toEqual([
 			[1, 'stage-0', 'Aware'],

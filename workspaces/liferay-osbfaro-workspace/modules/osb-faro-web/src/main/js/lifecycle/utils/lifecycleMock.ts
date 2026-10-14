@@ -1,4 +1,5 @@
 import {ILifecycleDetail, ILifecycleStagePayload} from 'shared/api/lifecycle';
+import {ILifecycleStage as ILifecycleStageMetric} from 'lifecycle/utils/types';
 
 const LIFECYCLE_NAME = 'Growth and Retention Hub';
 
@@ -33,10 +34,11 @@ export const MOCK_LIFECYCLE: ILifecycleDetail = {
 		{
 			accountLifecycleStageRule: buildRule('Expansion', ''),
 			description: 'Healthy accounts ready for add-ons',
-			displayOrder: 4,
+			externalReferenceCode: 'mock-stage-erc-4104',
 			id: '4104',
 			maxDuration: null,
-			name: 'Expansion',
+			priority: 4,
+			stageName: 'Expansion',
 		},
 		{
 			accountLifecycleStageRule: buildRule(
@@ -51,10 +53,11 @@ export const MOCK_LIFECYCLE: ILifecycleDetail = {
 				}
 			),
 			description: 'Accounts with an active deal',
-			displayOrder: 3,
+			externalReferenceCode: 'mock-stage-erc-4103',
 			id: '4103',
 			maxDuration: 60,
-			name: 'Pipeline',
+			priority: 3,
+			stageName: 'Pipeline',
 		},
 		{
 			accountLifecycleStageRule: buildRule(
@@ -69,10 +72,11 @@ export const MOCK_LIFECYCLE: ILifecycleDetail = {
 				}
 			),
 			description: 'Accounts that passed qualification',
-			displayOrder: 2,
+			externalReferenceCode: 'mock-stage-erc-4102',
 			id: '4102',
 			maxDuration: null,
-			name: 'Qualified',
+			priority: 2,
+			stageName: 'Qualified',
 		},
 		{
 			accountLifecycleStageRule: buildRule(
@@ -87,10 +91,11 @@ export const MOCK_LIFECYCLE: ILifecycleDetail = {
 				}
 			),
 			description: 'Cold accounts showing early intent',
-			displayOrder: 1,
+			externalReferenceCode: 'mock-stage-erc-4101',
 			id: '4101',
 			maxDuration: 90,
-			name: 'Aware',
+			priority: 1,
+			stageName: 'Aware',
 		},
 	],
 };
@@ -119,14 +124,66 @@ export const saveMockLifecycle = ({
 		id,
 		modifiedDate: Date.now(),
 		name,
-		stages: stages.map((stage) => ({
-			...stage,
-			id: stage.id ?? `mock-stage-${++stageCount}`,
-		})),
+		stages: stages.map((stage) => {
+			const stageId = stage.id ?? `mock-stage-${++stageCount}`;
+
+			return {
+				...stage,
+				externalReferenceCode: `mock-stage-erc-${stageId}`,
+				id: stageId,
+			};
+		}),
 	};
 
 	return Promise.resolve(mockLifecycle);
 };
+
+const MOCK_ACCOUNT_COUNTS = [120, 64, 41, 22, 9];
+
+const MOCK_AVERAGE_DURATIONS = [9.8, 4.6, 4.5, 12, 0];
+
+export const getMockLifecycleStages = (): Promise<ILifecycleStageMetric[]> => {
+	const stages = [...(mockLifecycle.stages ?? [])].sort(
+		(a, b) => a.priority - b.priority
+	);
+
+	const counts = stages.map(
+		(stage, index) => MOCK_ACCOUNT_COUNTS[index] ?? 5
+	);
+
+	const total = counts.reduce((sum, count) => sum + count, 0);
+
+	return Promise.resolve(
+		stages.map(({description, id, priority, stageName}, index) => {
+			const nextCount = counts[index + 1];
+
+			return {
+				accountsCount: counts[index],
+				averageStageDuration: MOCK_AVERAGE_DURATIONS[index] ?? 0,
+				conversionRateToNextStage:
+					nextCount === undefined
+						? null
+						: (nextCount / counts[index]) * 100,
+				description,
+				id,
+				percentage: total ? (counts[index] / total) * 100 : 0,
+				priority,
+				stageName,
+			};
+		})
+	);
+};
+
+export const getMockLifecycleStageFieldValues = () =>
+	Promise.resolve({
+		items: (mockLifecycle.stages ?? []).map(
+			({externalReferenceCode, id, stageName}) => ({
+				externalReferenceCode,
+				id,
+				stageName,
+			})
+		),
+	});
 
 export const resetMockLifecycle = () => {
 	mockLifecycle = MOCK_LIFECYCLE;

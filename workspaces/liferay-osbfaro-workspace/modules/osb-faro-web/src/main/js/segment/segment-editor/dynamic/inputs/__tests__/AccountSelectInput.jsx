@@ -42,16 +42,16 @@ describe('AccountSelectInput', () => {
 			Promise.resolve({
 				stages: [
 					{
-						displayOrder: 2,
+						priority: 2,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageType: 'ENGAGED'
+						stageName: 'Engaged'
 					},
 					{
-						displayOrder: 1,
+						priority: 1,
 						externalReferenceCode: 'erc-stage-1001',
 						id: '1001',
-						stageType: 'AWARE'
+						stageName: 'Aware'
 					}
 				]
 			})

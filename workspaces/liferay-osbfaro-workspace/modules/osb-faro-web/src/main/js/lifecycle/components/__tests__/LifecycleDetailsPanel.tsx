@@ -47,11 +47,11 @@ const LIFECYCLE: ILifecycleDetail = {
 				filterString: '',
 			},
 			description: 'The buying committee is researching us.',
-			displayOrder: 2,
 			externalReferenceCode: 'engaged',
 			id: 'engaged',
 			maxDuration: null,
-			stageType: 'ENGAGED',
+			priority: 2,
+			stageName: 'Engaged',
 		},
 		{
 			accountLifecycleStageRule: {
@@ -77,12 +77,11 @@ const LIFECYCLE: ILifecycleDetail = {
 				filterString: '',
 			},
 			description: 'Account identified via Demandbase.',
-			displayOrder: 1,
 			externalReferenceCode: 'aware',
 			id: 'aware',
 			maxDuration: 90,
-			name: 'Aware',
-			stageType: 'AWARE',
+			priority: 1,
+			stageName: 'Aware',
 		},
 	],
 };

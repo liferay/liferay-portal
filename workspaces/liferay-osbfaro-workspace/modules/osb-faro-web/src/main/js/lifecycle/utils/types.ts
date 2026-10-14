@@ -1,4 +1,3 @@
-import {LifecycleStages} from '../../contacts/pages/account/utils/constants';
 import {Metric} from '../../contacts/pages/account/utils/types';
 
 export enum OverviewMetricType {
@@ -16,6 +15,8 @@ export interface ILifecycleStage {
 	averageStageDuration: number;
 	conversionRateToNextStage: number | null;
 	description: string;
+	id: string;
 	percentage: number;
-	stageType: LifecycleStages;
+	priority: number;
+	stageName: string;
 }

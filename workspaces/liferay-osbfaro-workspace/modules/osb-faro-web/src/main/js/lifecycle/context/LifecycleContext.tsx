@@ -10,7 +10,6 @@ import {
 	buildQueryString,
 	ILifecycleFilterValues,
 } from '../utils/buildQueryString';
-import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 
 interface ILifecycleFilters extends ILifecycleFilterValues {
 	filterString: string;
@@ -19,7 +18,7 @@ interface ILifecycleFilters extends ILifecycleFilterValues {
 interface ILifecycleContext {
 	filters: ILifecycleFilters;
 	lifecycleId: string;
-	selectStage: (stage: LifecycleStages) => void;
+	selectStage: (stageId: string) => void;
 	stageSelectionNonce: number;
 	updateFilters: (newFilters: Partial<ILifecycleFilterValues>) => void;
 	resetFilters: () => void;
@@ -74,8 +73,8 @@ export const LifecycleContextProvider = ({
 		[]
 	);
 
-	const selectStage = useCallback((stage: LifecycleStages) => {
-		setFilterValues((prev) => ({...prev, lifecycleStageFilter: stage}));
+	const selectStage = useCallback((stageId: string) => {
+		setFilterValues((prev) => ({...prev, lifecycleStageFilter: stageId}));
 		setStageSelectionNonce((prev) => prev + 1);
 	}, []);
 

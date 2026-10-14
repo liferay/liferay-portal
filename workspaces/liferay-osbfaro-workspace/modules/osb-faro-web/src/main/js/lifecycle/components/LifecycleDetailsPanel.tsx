@@ -14,10 +14,6 @@ import {
 } from 'lifecycle/utils/lifecycleLabels';
 import {getStageTrigger} from 'lifecycle/utils/stageTrigger';
 import {ILifecycleDetail, ILifecycleStage} from 'shared/api/lifecycle';
-import {
-	LifecycleStages,
-	lifecycleStagesLabelMap,
-} from 'contacts/pages/account/utils/constants';
 import {PageActions} from 'shared/components/base-page/Header';
 import {SidePanel, Text} from '@clayui/core';
 import {useLifecycleActions} from 'lifecycle/hooks/useLifecycleActions';
@@ -85,11 +81,7 @@ const StageCard: React.FC<{stage: ILifecycleStage}> = ({stage}) => {
 					fields={[
 						{
 							label: Liferay.Language.get('name'),
-							value:
-								stage.name ||
-								lifecycleStagesLabelMap[
-									stage.stageType as LifecycleStages
-								]?.label,
+							value: stage.stageName,
 						},
 						{
 							label: Liferay.Language.get('description'),
@@ -116,7 +108,7 @@ const StageCard: React.FC<{stage: ILifecycleStage}> = ({stage}) => {
 const StagesTab: React.FC<{stages: ILifecycleStage[]}> = ({stages}) => (
 	<>
 		{[...stages]
-			.sort((a, b) => a.displayOrder - b.displayOrder)
+			.sort((a, b) => a.priority - b.priority)
 			.map((stage) => (
 				<StageCard key={stage.id} stage={stage} />
 			))}

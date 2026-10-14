@@ -6,6 +6,7 @@ import {
 } from 'shared/util/feature-flags';
 import {
 	getMockLifecycle,
+	getMockLifecycleStages,
 	saveMockLifecycle,
 } from 'lifecycle/utils/lifecycleMock';
 import {legacyLifecycleApi} from './lifecycle-legacy';
@@ -31,12 +32,11 @@ export interface IAccountLifecycleStageRule {
 export interface ILifecycleStage {
 	accountLifecycleStageRule?: IAccountLifecycleStageRule;
 	description: string;
-	displayOrder: number;
 	externalReferenceCode: string;
 	id: string;
 	maxDuration: number | null;
-	name: string;
-	stageType?: string;
+	priority: number;
+	stageName: string;
 }
 
 export interface ILifecycleDetail extends ILifecycle {
@@ -162,10 +162,10 @@ export const {
 export interface ILifecycleStagePayload {
 	accountLifecycleStageRule: IAccountLifecycleStageRule;
 	description: string;
-	displayOrder: number;
 	id?: string;
 	maxDuration: number | null;
-	name: string;
+	priority: number;
+	stageName: string;
 }
 
 interface ICreateLifecycle {
@@ -227,10 +227,10 @@ export interface IAccountLifecycle {
 
 export interface IAccountLifecycleStageStatus {
 	description?: string;
-	displayOrder: number;
 	endDate?: number | null;
 	id: string;
 	maxDuration?: number | null;
+	priority: number;
 	stageType: string;
 	startDate?: number | null;
 }
@@ -279,6 +279,10 @@ export async function fetchLifecycleStages({
 	lifecycleId,
 	segmentId,
 }: IFetchLifecycleStages) {
+	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
+		return getMockLifecycleStages();
+	}
+
 	return sendRequest({
 		data: {
 			...(country && {country}),

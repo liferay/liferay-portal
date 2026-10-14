@@ -1,33 +1,16 @@
 import Card from 'shared/components/Card';
-import classNames from 'classnames';
+import ClayEmptyState from '@clayui/empty-state';
+import ClayPopover from '@clayui/popover';
 import Label from '@clayui/label';
 import Loading from 'shared/components/Loading';
-import React from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ButtonWithIcon, Icon, Text} from '@clayui/core';
+import {ClayButtonWithIcon} from '@clayui/button';
 import {ILifecycleStage} from 'lifecycle/utils/types';
-import {
-	LifecycleStages,
-	lifecycleStagesLabelMap,
-} from 'contacts/pages/account/utils/constants';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {sub} from 'shared/util/lang';
 import {formatPercent, toRounded, toThousands} from 'shared/util/numbers';
 import {useLifecycle} from 'lifecycle/context/LifecycleContext';
-
-const EMPTY_STAGES: ILifecycleStage[] = [
-	LifecycleStages.AWARE,
-	LifecycleStages.ENGAGED,
-	LifecycleStages.PIPELINE,
-	LifecycleStages.ONBOARDING,
-	LifecycleStages.ESTABLISHED,
-].map((stageType) => ({
-	accountsCount: 0,
-	averageStageDuration: 0,
-	conversionRateToNextStage: 0,
-	description: '',
-	percentage: 0,
-	stageType,
-}));
 
 const REFERENCE_BAR_HEIGHT = 136;
 const MIN_BAR_HEIGHT = 4;
@@ -40,158 +23,212 @@ const getBarHeight = (percentage: number, referencePercentage: number) => {
 	);
 };
 
-interface IStageMetricsProps {
-	accountsCount: number;
-	averageDaysInStage: number;
+const useCardScroll = (itemCount: number) => {
+	const trackRef = useRef<HTMLDivElement>(null);
+
+	const [canScrollNext, setCanScrollNext] = useState(false);
+	const [canScrollPrevious, setCanScrollPrevious] = useState(false);
+
+	const updateArrows = useCallback(() => {
+		const track = trackRef.current;
+
+		if (!track) {
+			return;
+		}
+
+		const {clientWidth, scrollLeft, scrollWidth} = track;
+
+		setCanScrollPrevious(scrollLeft > 0);
+		setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 1);
+	}, []);
+
+	useEffect(() => {
+		updateArrows();
+
+		window.addEventListener('resize', updateArrows);
+
+		return () => window.removeEventListener('resize', updateArrows);
+	}, [itemCount, updateArrows]);
+
+	const scrollByCard = (direction: 1 | -1) => {
+		const track = trackRef.current;
+
+		const card = track?.firstElementChild as HTMLElement | null;
+
+		if (!track || !card) {
+			return;
+		}
+
+		track.scrollBy({
+			behavior: 'smooth',
+			left: direction * card.offsetWidth,
+		});
+	};
+
+	return {
+		canScrollNext,
+		canScrollPrevious,
+		scrollNext: () => scrollByCard(1),
+		scrollPrevious: () => scrollByCard(-1),
+		trackRef,
+		updateArrows,
+	};
+};
+
+interface IStageDescriptionProps {
 	description: string;
-	onFilterClick: (stageType: LifecycleStages) => void;
-	percentage: number;
-	placeholder?: boolean;
+	name: string;
+}
+
+const StageDescription = ({description, name}: IStageDescriptionProps) => {
+	const [show, setShow] = useState(false);
+
+	return (
+		<ClayPopover
+			alignPosition="top"
+			header={name}
+			onShowChange={setShow}
+			show={show}
+			trigger={
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('more-information')}
+					className="ml-1 text-secondary"
+					displayType="unstyled"
+					onBlur={() => setShow(false)}
+					onFocus={() => setShow(true)}
+					onMouseEnter={() => setShow(true)}
+					onMouseLeave={() => setShow(false)}
+					size="xs"
+					symbol="question-circle"
+				/>
+			}
+		>
+			{description}
+		</ClayPopover>
+	);
+};
+
+interface IStageMetricsProps {
+	onFilterClick: (stageId: string) => void;
 	referencePercentage: number;
-	stageType: LifecycleStages;
+	stage: ILifecycleStage;
 }
 
 const StageMetrics = ({
-	accountsCount,
-	averageDaysInStage,
-	description,
 	onFilterClick,
-	percentage,
-	placeholder,
 	referencePercentage,
-	stageType,
+	stage: {
+		accountsCount,
+		averageStageDuration,
+		conversionRateToNextStage,
+		description,
+		id,
+		percentage,
+		stageName: name,
+	},
 }: IStageMetricsProps) => {
 	const barHeight = getBarHeight(percentage, referencePercentage);
 
 	const barClassName =
 		percentage > 0 ? 'stage-metrics__bar' : 'stage-metrics__bar--empty';
 
-	const titleId = `stage-metrics-title-${stageType}`;
+	const titleId = `stage-metrics-title-${id}`;
 
 	return (
-		<div className="col-12 col-lg d-flex flex-column p-3 stage-metrics">
-			<div className="align-items-center d-flex mb-2">
+		<div className="d-flex flex-column px-3 py-4 stage-metrics">
+			<div className="align-items-center d-flex mb-3">
 				<Text id={titleId} size={4} weight="semi-bold">
-					{lifecycleStagesLabelMap[stageType].label}
+					{name}
 				</Text>
+
+				{description && (
+					<StageDescription description={description} name={name} />
+				)}
+
 				<ButtonWithIcon
 					aria-labelledby={titleId}
 					borderless
 					className="ml-auto"
 					data-tooltip-align="top"
 					displayType="secondary"
-					onClick={() => onFilterClick(stageType)}
+					onClick={() => onFilterClick(id)}
 					size="sm"
 					symbol="filter"
 					title={
 						sub(Liferay.Language.get('filter-by-x'), [
-							lifecycleStagesLabelMap[stageType].label,
+							name,
 						]) as string
 					}
 				/>
 			</div>
-			<Text as="p" color="secondary">
-				{description}
-			</Text>
-			<div className="justify-self-center mt-auto">
-				<div>
-					<p className="mb-0">
-						<Text size={7} weight="bold">
-							{toThousands(accountsCount)}
-						</Text>
-					</p>
-					<Text color="secondary" size={4}>
-						{(
-							sub(
-								Liferay.Language.get(
-									'x-percent-of-all-accounts'
-								),
-								[toRounded(percentage)]
-							) as string
-						).toLowerCase()}
+
+			<div className="mt-auto">
+				<p className="mb-0">
+					<Text size={7} weight="bold">
+						{toThousands(accountsCount)}
 					</Text>
-				</div>
-				<div className="mt-3 text-secondary">
-					{averageDaysInStage != 0 ? (
-						<>
-							<span className="mr-4">
-								{toRounded(averageDaysInStage, 2)}
-							</span>
-							<span>
-								{Liferay.Language.get('avg.-day').toLowerCase()}
-							</span>
-						</>
-					) : (
-						<>
-							<span className="mr-4">{'—'}</span>
-							<span>
-								{Liferay.Language.get(
-									'no-activity'
-								).toLowerCase()}
-							</span>
-						</>
-					)}
-				</div>
+				</p>
+
+				<Text color="secondary" size={4}>
+					{(
+						sub(Liferay.Language.get('x-percent-of-all-accounts'), [
+							toRounded(percentage),
+						]) as string
+					).toLowerCase()}
+				</Text>
 			</div>
-			<div
-				className="align-items-end d-none d-lg-flex mt-3 mx-n2"
-				style={{height: REFERENCE_BAR_HEIGHT}}
-			>
-				{!placeholder && (
-					<div
-						className={`${barClassName} rounded-lg w-100`}
-						style={{height: barHeight}}
-					/>
+
+			<div className="mt-3 text-secondary">
+				{averageStageDuration != 0 ? (
+					<>
+						<span className="mr-4">
+							{toRounded(averageStageDuration, 2)}
+						</span>
+
+						<span>
+							{Liferay.Language.get('avg.-day').toLowerCase()}
+						</span>
+					</>
+				) : (
+					<>
+						<span className="mr-4">{'—'}</span>
+
+						<span>
+							{Liferay.Language.get('no-activity').toLowerCase()}
+						</span>
+					</>
 				)}
 			</div>
-		</div>
-	);
-};
 
-interface IStageProgressionProps {
-	nextBarHeight: number;
-	percentage: number;
-	placeholder?: boolean;
-	previousBarHeight: number;
-}
-
-const StageProgression = ({
-	nextBarHeight,
-	percentage,
-	placeholder,
-	previousBarHeight,
-}: IStageProgressionProps) => {
-	const topLeft = REFERENCE_BAR_HEIGHT - previousBarHeight;
-	const topRight = REFERENCE_BAR_HEIGHT - nextBarHeight;
-
-	return (
-		<div className="align-items-center align-items-lg-stretch border-light col-12 col-lg-auto d-flex flex-lg-column flex-row justify-content-center justify-content-lg-start px-2 py-3 stage-progression">
-			<Label className="mt-lg-auto p-0" displayType="info" inverse>
-				<span className="inline-item ml-1">
-					{formatPercent(percentage, 0)}
-					<span className="d-lg-none ml-1">
-						{Liferay.Language.get(
-							'conversion-to-next-stage'
-						).toLowerCase()}
-					</span>
-					<Icon symbol="angle-right-small" />
-				</span>
-			</Label>
 			<div
-				className={classNames([
-					'd-none',
-					'd-lg-block',
-					'mt-auto',
-					'mx-n2',
-					placeholder ? '' : 'bg-light stage-progression__fill',
-				])}
-				style={{
-					clipPath: placeholder
-						? undefined
-						: `polygon(0 ${topLeft}px, 100% ${topRight}px, 100% 100%, 0 100%)`,
-					height: REFERENCE_BAR_HEIGHT,
-				}}
-			/>
+				className="align-items-end d-flex mt-3 position-relative"
+				style={{height: REFERENCE_BAR_HEIGHT}}
+			>
+				<div
+					className={`${barClassName} rounded-lg w-100`}
+					style={{height: barHeight}}
+				/>
+
+				{conversionRateToNextStage != null && (
+					<Label
+						className="m-0 stage-metrics__conversion"
+						displayType="info"
+						inverse
+					>
+						<span className="inline-item ml-1">
+							{formatPercent(conversionRateToNextStage, 0)}
+
+							<span className="sr-only">
+								{Liferay.Language.get(
+									'conversion-to-next-stage'
+								)}
+							</span>
+
+							<Icon symbol="angle-right-small" />
+						</span>
+					</Label>
+				)}
+			</div>
 		</div>
 	);
 };
@@ -205,21 +242,83 @@ interface ILifecycleChartProps {
 const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
 	const {selectStage} = useLifecycle();
 
-	const isEmpty = error || !stages?.length;
+	const sortedStages = error
+		? []
+		: [...(stages ?? [])].sort((a, b) => a.priority - b.priority);
 
-	const resolvedStages: ILifecycleStage[] = isEmpty
-		? EMPTY_STAGES
-		: stages.filter(
-				(stage) => stage.stageType !== LifecycleStages.AT_RISK
-			)!;
+	const {
+		canScrollNext,
+		canScrollPrevious,
+		scrollNext,
+		scrollPrevious,
+		trackRef,
+		updateArrows,
+	} = useCardScroll(loading ? 0 : sortedStages.length);
 
-	const onFilterClick = (stageType: LifecycleStages) =>
-		selectStage(stageType);
-
-	const refPct = Math.max(
-		...resolvedStages.map((stage) => stage.percentage),
+	const referencePercentage = Math.max(
+		...sortedStages.map((stage) => stage.percentage),
 		0
 	);
+
+	const renderStages = () => {
+		if (loading) {
+			return <Loading className="mt-4" />;
+		}
+
+		if (!sortedStages.length) {
+			return (
+				<ClayEmptyState
+					className="text-center"
+					description={Liferay.Language.get(
+						'lifecycle-data-will-appear-here-when-synced'
+					)}
+					small
+					title={Liferay.Language.get('no-lifecycle-data-available')}
+				/>
+			);
+		}
+
+		return (
+			<div className="mt-4 position-relative">
+				<div
+					className="d-flex overflow-auto stage-metrics-track"
+					onScroll={updateArrows}
+					ref={trackRef}
+				>
+					{sortedStages.map((stage) => (
+						<StageMetrics
+							key={stage.id}
+							onFilterClick={selectStage}
+							referencePercentage={referencePercentage}
+							stage={stage}
+						/>
+					))}
+				</div>
+
+				{canScrollPrevious && (
+					<ClayButtonWithIcon
+						aria-label={Liferay.Language.get('previous')}
+						className="stage-metrics-scroll stage-metrics-scroll--previous"
+						displayType="secondary"
+						onClick={scrollPrevious}
+						size="sm"
+						symbol="angle-left"
+					/>
+				)}
+
+				{canScrollNext && (
+					<ClayButtonWithIcon
+						aria-label={Liferay.Language.get('next')}
+						className="stage-metrics-scroll stage-metrics-scroll--next"
+						displayType="secondary"
+						onClick={scrollNext}
+						size="sm"
+						symbol="angle-right"
+					/>
+				)}
+			</div>
+		);
+	};
 
 	return (
 		<>
@@ -238,50 +337,8 @@ const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
 								'the-distribution-of-accounts-across-the-lifecycle-stages-within-the-timeframe'
 							)}
 						</Text>
-						{loading ? (
-							<Loading className="mt-4" />
-						) : (
-							<div className="flex-lg-nowrap h-100 mt-4 no-gutters row">
-								{resolvedStages.map((stage, index) => {
-									const nextStage = resolvedStages[index + 1];
-									return (
-										<React.Fragment key={stage.stageType}>
-											<StageMetrics
-												accountsCount={
-													stage.accountsCount
-												}
-												averageDaysInStage={
-													stage.averageStageDuration
-												}
-												description={stage.description}
-												onFilterClick={onFilterClick}
-												percentage={stage.percentage}
-												placeholder={isEmpty}
-												referencePercentage={refPct}
-												stageType={stage.stageType}
-											/>
-											{nextStage && (
-												<StageProgression
-													nextBarHeight={getBarHeight(
-														nextStage.percentage,
-														refPct
-													)}
-													percentage={
-														stage.conversionRateToNextStage ??
-														0
-													}
-													placeholder={isEmpty}
-													previousBarHeight={getBarHeight(
-														stage.percentage,
-														refPct
-													)}
-												/>
-											)}
-										</React.Fragment>
-									);
-								})}
-							</div>
-						)}
+
+						{renderStages()}
 					</div>
 				</Card.Body>
 			</Card>
