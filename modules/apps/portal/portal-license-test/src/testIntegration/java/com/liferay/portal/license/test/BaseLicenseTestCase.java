@@ -80,6 +80,48 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		new AggregateTestRule(
 			new AssumeTestRule("assume"), new LiferayIntegrationTestRule());
 
+	public static File deployEnterprisePortalLicense(long validityPeriod)
+		throws Exception {
+
+		return deployEnterprisePortalLicense(StringPool.BLANK, validityPeriod);
+	}
+
+	public static File deployEnterprisePortalLicense(
+			String key, int maxClusterNodes, long validityPeriod)
+		throws Exception {
+
+		return deployEnterprisePortalLicense(
+			key, maxClusterNodes, _getEnterpriseProductName(), validityPeriod);
+	}
+
+	public static File deployEnterprisePortalLicense(
+			String key, int maxClusterNodes, String productName,
+			long validityPeriod)
+		throws Exception {
+
+		String licenseType = ENTERPRISE_LICENSE_TYPE;
+
+		if (maxClusterNodes > 0) {
+			licenseType = "virtual-cluster";
+		}
+
+		_registerLicense(
+			_buildEnterprisePortalLicenseXML(
+				key, licenseType, maxClusterNodes, productName,
+				validityPeriod));
+
+		return _buildBinaryFile(
+			_ENTERPRISE_ACCOUNT_NAME, licenseType, getPortalProductId(),
+			productName);
+	}
+
+	public static File deployEnterprisePortalLicense(
+			String key, long validityPeriod)
+		throws Exception {
+
+		return deployEnterprisePortalLicense(key, 0, validityPeriod);
+	}
+
 	public static File deployFreeTierPortalLicense(long validityPeriod)
 		throws Exception {
 
@@ -264,48 +306,6 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		return _buildBinaryFile(
 			StringPool.BLANK, _APP_LICENSE_TYPE, getProductId(app),
 			app.toString());
-	}
-
-	public static File deployEnterprisePortalLicense(long validityPeriod)
-		throws Exception {
-
-		return deployEnterprisePortalLicense(StringPool.BLANK, validityPeriod);
-	}
-
-	public static File deployEnterprisePortalLicense(
-			String key, int maxClusterNodes, long validityPeriod)
-		throws Exception {
-
-		return deployEnterprisePortalLicense(
-			key, maxClusterNodes, _getEnterpriseProductName(), validityPeriod);
-	}
-
-	public static File deployEnterprisePortalLicense(
-			String key, int maxClusterNodes, String productName,
-			long validityPeriod)
-		throws Exception {
-
-		String licenseType = ENTERPRISE_LICENSE_TYPE;
-
-		if (maxClusterNodes > 0) {
-			licenseType = "virtual-cluster";
-		}
-
-		_registerLicense(
-			_buildEnterprisePortalLicenseXML(
-				key, licenseType, maxClusterNodes, productName,
-				validityPeriod));
-
-		return _buildBinaryFile(
-			_ENTERPRISE_ACCOUNT_NAME, licenseType, getPortalProductId(),
-			productName);
-	}
-
-	public static File deployEnterprisePortalLicense(
-			String key, long validityPeriod)
-		throws Exception {
-
-		return deployEnterprisePortalLicense(key, 0, validityPeriod);
 	}
 
 	public void resetCheckInterval() throws Exception {
