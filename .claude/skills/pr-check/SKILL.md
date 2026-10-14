@@ -42,10 +42,10 @@ The **Forward Target** is the repository `ci:forward` merges a pull request into
 
 	1. Fast forward local `${BASE_BRANCH}` to the fetched tip. When `${BASE_BRANCH}` is checked out in another worktree, fast forward it there with `git -C <worktree> merge --ff-only <remote>/${BASE_BRANCH}`. Otherwise update it in place with `git fetch <remote> ${BASE_BRANCH}:${BASE_BRANCH}`, which also creates `${BASE_BRANCH}` when it does not exist. Both are fast forward only. When the command fails for any reason, such as a diverged `${BASE_BRANCH}`, a worktree that is not clean, or a denied permission, warn the developer and stop the run. Never continue against a stale base, since every validation would then compare the branch with a base that lacks the latest commits.
 
-	1. When the settings name a forward target, fetch its `${BASE_BRANCH}` from the remote whose URL points at it, or from its GitHub URL when no remote does, and record the tip. Record it only after a successful fetch, since `FETCH_HEAD` otherwise still holds the `${BASE_BRANCH}` fetched above. When the fetch fails, warn the developer that the branch was not checked against the forward target and continue without `${FORWARD_TIP}`.
+	1. When the settings name a forward target, fetch its `${BASE_BRANCH}` from its GitHub URL and record the tip. Fetch the URL rather than a remote, since developers name their remotes differently and many have none for the forward target. Record it only after a successful fetch, since `FETCH_HEAD` otherwise still holds the `${BASE_BRANCH}` fetched above. When the fetch fails, warn the developer that the branch was not checked against the forward target and continue without `${FORWARD_TIP}`.
 
 	```bash
-	git fetch --no-tags <forward remote> ${BASE_BRANCH} && FORWARD_TIP=$(git rev-parse FETCH_HEAD)
+	git fetch --no-tags https://github.com/<forward target>.git ${BASE_BRANCH} && FORWARD_TIP=$(git rev-parse FETCH_HEAD)
 	```
 
 	With `${FORWARD_TIP}` set, the branch sits on the forward target when it holds commits of the target that `<remote>/${BASE_BRANCH}` lacks, which this reports by exiting `1`:
