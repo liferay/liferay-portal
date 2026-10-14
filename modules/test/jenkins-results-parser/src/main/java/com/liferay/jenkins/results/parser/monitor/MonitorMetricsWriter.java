@@ -46,7 +46,9 @@ public class MonitorMetricsWriter {
 	public void write() throws IOException {
 		File parentFile = _metricsFile.getParentFile();
 
-		parentFile.mkdirs();
+		if (parentFile != null) {
+			parentFile.mkdirs();
+		}
 
 		File temporaryFile = new File(
 			parentFile, _metricsFile.getName() + ".tmp");
