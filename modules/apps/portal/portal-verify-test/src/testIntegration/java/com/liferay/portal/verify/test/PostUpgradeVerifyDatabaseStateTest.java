@@ -15,6 +15,7 @@ import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
@@ -23,9 +24,11 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.db.IndexMetadata;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.db.DBResourceUtil;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.model.ServiceComponent;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -171,6 +174,7 @@ public class PostUpgradeVerifyDatabaseStateTest
 		try {
 			_testVerifyMessages(
 				_getExpectedMessage(
+					PortalInstancePool.getDefaultCompanyId(),
 					StringBundler.concat(
 						"Column ", getNormalizedName("DEC_PROP_1"),
 						" is not defined as NUMERIC(13,4) null for ",
@@ -594,12 +598,10 @@ public class PostUpgradeVerifyDatabaseStateTest
 	}
 
 	private String _getExpectedMessage(
-			String message, String servletContextName)
-		throws Exception {
+		long companyId, String message, String servletContextName) {
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
-			message = StringBundler.concat(
-				message, " for company ", TestPropsValues.getCompanyId());
+			message = StringBundler.concat(message, " for company ", companyId);
 		}
 
 		if (!servletContextName.isEmpty()) {
@@ -608,6 +610,14 @@ public class PostUpgradeVerifyDatabaseStateTest
 		}
 
 		return message;
+	}
+
+	private String _getExpectedMessage(
+			String message, String servletContextName)
+		throws Exception {
+
+		return _getExpectedMessage(
+			TestPropsValues.getCompanyId(), message, servletContextName);
 	}
 
 	private String _getExpectedMessage(
@@ -712,7 +722,11 @@ public class PostUpgradeVerifyDatabaseStateTest
 
 		DB db = DBManagerUtil.getDB();
 
-		try (Connection connection = DataAccess.getConnection()) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId());
+			Connection connection = DataAccess.getConnection()) {
+
 			db.alterTableDropColumn(connection, tableName, columnName);
 			db.alterTableAddColumn(
 				connection, tableName, columnName, columnType);
