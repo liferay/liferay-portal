@@ -391,9 +391,6 @@ public interface FragmentEntryLinkLocalService
 		long companyId, String[] rendererKeys);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentEntryLink> getFragmentEntryLinks(String rendererKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntryLink> getFragmentEntryLinksByFragmentEntry(
 			long groupId, FragmentEntry fragmentEntry)
 		throws PortalException;
@@ -544,4 +541,4 @@ public interface FragmentEntryLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:36831486
+// LIFERAY-SERVICE-BUILDER-HASH:-312509836

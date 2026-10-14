@@ -569,14 +569,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<FragmentEntryLink> getFragmentEntryLinks(
-		String rendererKey) {
-
-		return _fragmentEntryLinkLocalService.getFragmentEntryLinks(
-			rendererKey);
-	}
-
-	@Override
 	public java.util.List<FragmentEntryLink>
 			getFragmentEntryLinksByFragmentEntry(
 				long groupId,
@@ -867,4 +859,4 @@ public class FragmentEntryLinkLocalServiceWrapper
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2136608075
+// LIFERAY-SERVICE-BUILDER-HASH:1810675196

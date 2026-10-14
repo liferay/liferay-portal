@@ -502,12 +502,6 @@ public class FragmentEntryLinkLocalServiceUtil {
 		return getService().getFragmentEntryLinks(companyId, rendererKeys);
 	}
 
-	public static List<FragmentEntryLink> getFragmentEntryLinks(
-		String rendererKey) {
-
-		return getService().getFragmentEntryLinks(rendererKey);
-	}
-
 	public static List<FragmentEntryLink> getFragmentEntryLinksByFragmentEntry(
 			long groupId,
 			com.liferay.fragment.model.FragmentEntry fragmentEntry)
@@ -732,4 +726,4 @@ public class FragmentEntryLinkLocalServiceUtil {
 			FragmentEntryLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1136128694
+// LIFERAY-SERVICE-BUILDER-HASH:-1380888483
