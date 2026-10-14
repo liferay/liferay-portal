@@ -161,8 +161,17 @@ public class JSONWebServiceActionConfig
 			return new MethodParameter[0];
 		}
 
-		return MethodParametersResolverUtil.resolveMethodParameters(
-			_realActionMethod);
+		MethodParameter[] methodParameters = _methodParameters;
+
+		if (methodParameters == null) {
+			methodParameters =
+				MethodParametersResolverUtil.resolveMethodParameters(
+					_realActionMethod);
+
+			_methodParameters = methodParameters;
+		}
+
+		return methodParameters;
 	}
 
 	@Override
@@ -210,6 +219,7 @@ public class JSONWebServiceActionConfig
 	private final String _contextPath;
 	private final boolean _deprecated;
 	private final String _method;
+	private volatile MethodParameter[] _methodParameters;
 	private final String _path;
 	private final Method _realActionMethod;
 	private final String _signature;

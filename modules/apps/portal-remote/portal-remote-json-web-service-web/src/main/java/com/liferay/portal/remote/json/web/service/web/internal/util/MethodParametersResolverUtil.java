@@ -5,8 +5,6 @@
 
 package com.liferay.portal.remote.json.web.service.web.internal.util;
 
-import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
-import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -17,7 +15,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -25,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -40,23 +36,14 @@ import org.objectweb.asm.Type;
 public class MethodParametersResolverUtil {
 
 	public static MethodParameter[] resolveMethodParameters(Method method) {
-		MethodParameter[] methodParameters = _methodParameters.get(method);
-
-		if (methodParameters != null) {
-			return methodParameters;
-		}
-
 		try {
-			methodParameters = _resolveMethodParameters(
-				method.getDeclaringClass(), method);
-
-			_methodParameters.put(method, methodParameters);
+			return _resolveMethodParameters(method.getDeclaringClass(), method);
 		}
 		catch (PortalException portalException) {
 			_log.error("Unable to resolve method parameters", portalException);
 		}
 
-		return methodParameters;
+		return null;
 	}
 
 	private static MethodParameter[] _resolveMethodParameters(
@@ -102,10 +89,6 @@ public class MethodParametersResolverUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		MethodParametersResolverUtil.class);
-
-	private static final ConcurrentMap<AccessibleObject, MethodParameter[]>
-		_methodParameters = new ConcurrentReferenceKeyHashMap<>(
-			FinalizeManager.WEAK_REFERENCE_FACTORY);
 
 	private static class MethodParametersResolverClassVisitor
 		extends ClassVisitor {
