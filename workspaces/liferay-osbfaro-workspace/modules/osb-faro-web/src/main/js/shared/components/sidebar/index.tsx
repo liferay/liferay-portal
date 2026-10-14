@@ -2,6 +2,7 @@ import ChannelsMenu, {Channel} from '../channels-menu';
 import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import React, {useLayoutEffect} from 'react';
+import SidePanelBackdrop from 'shared/components/SidePanelBackdrop';
 import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {Map} from 'immutable';
 import {matchPath} from 'react-router-dom';
@@ -245,6 +246,10 @@ const Sidebar: React.FC<ISidebarProps> = ({
 			panelWidth={280}
 			position="fixed"
 		>
+			{!collapsed && (
+				<SidePanelBackdrop onClick={() => onCollapsedChange(true)} />
+			)}
+
 			{isMobile ? (
 				<SidePanel.Header
 					className="my-4 px-3 py-0"

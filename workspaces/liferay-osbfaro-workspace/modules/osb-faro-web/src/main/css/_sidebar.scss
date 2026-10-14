@@ -1,12 +1,23 @@
 // Clay reserves a fixed 320px for a pushing side panel regardless of its
 // `panelWidth`, so the content that follows the sidebar's slideout is offset
 // by the sidebar's own width instead. Below `lg` Clay overlays the panel and
-// stops pushing, which is left untouched.
+// stops pushing, so the backdrop only shows there.
 
-@media (min-width: 992px) {
+@include media-breakpoint-up(lg) {
 	.c-slideout:has(> .sidebar-root) + .c-slideout-push-start {
 		padding-left: $sidebarOpenWidth;
 	}
+
+	.sidebar-root .side-panel-backdrop {
+		display: none;
+	}
+}
+
+// The backdrop is rendered inside the side panel's stacking context, so -1
+// keeps it under the panel while still covering the page.
+
+.modal-backdrop.side-panel-backdrop {
+	z-index: -1;
 }
 
 // The toolbar above stays in the page flow, so a page next to the sidebar

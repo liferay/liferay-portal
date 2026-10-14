@@ -1,6 +1,7 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import getCN from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';
+import SidePanelBackdrop from 'shared/components/SidePanelBackdrop';
 import {SidePanel} from '@clayui/core';
 import {sub} from 'shared/util/lang';
 import {useIsMobile} from 'shared/hooks/useIsMobile';
@@ -70,13 +71,7 @@ const OverlaySidebar: React.FC<ISidebarProps> = ({
 				position="fixed"
 				triggerRef={triggerRef}
 			>
-				{open && (
-					<div
-						className="base-edit-page-sidebar-backdrop"
-						data-testid="sidebar-backdrop"
-						onClick={() => setOpen(false)}
-					/>
-				)}
+				{open && <SidePanelBackdrop onClick={() => setOpen(false)} />}
 
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get('close')}
