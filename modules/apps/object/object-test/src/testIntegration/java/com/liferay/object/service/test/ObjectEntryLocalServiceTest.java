@@ -2039,6 +2039,89 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testAddObjectEntryWithDuplicateUniqueValue() throws Exception {
+		ObjectField objectField = new TextObjectFieldBuilder(
+		).labelMap(
+			HashMapBuilder.put(
+				LocaleUtil.BRAZIL, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.SPAIN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build()
+		).name(
+			"a" + RandomTestUtil.randomString()
+		).objectFieldSettings(
+			Collections.singletonList(
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_UNIQUE_VALUES
+				).value(
+					Boolean.TRUE.toString()
+				).build())
+		).build();
+
+		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
+			Collections.singletonList(objectField));
+
+		String value = RandomTestUtil.randomString();
+
+		_addObjectEntry(
+			0, objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectField.getName(), value
+			).build());
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getGroupId(), LocaleUtil.BRAZIL);
+
+		Locale originalThemeDisplayLocale =
+			LocaleThreadLocal.getThemeDisplayLocale();
+
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.SPAIN);
+
+		ObjectEntryValuesException.UniqueValueConstraintViolation
+			uniqueValueConstraintViolation = Assert.assertThrows(
+				ObjectEntryValuesException.UniqueValueConstraintViolation.class,
+				() -> _objectEntryLocalService.addObjectEntry(
+					0, user.getUserId(),
+					objectDefinition.getObjectDefinitionId(),
+					ObjectEntryFolderConstants.
+						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+					null,
+					HashMapBuilder.<String, Serializable>put(
+						objectField.getName(), value
+					).build(),
+					ServiceContextTestUtil.getServiceContext()));
+
+		Assert.assertEquals(
+			Collections.singletonList(objectField.getLabel(LocaleUtil.SPAIN)),
+			uniqueValueConstraintViolation.getArguments());
+
+		LocaleThreadLocal.setThemeDisplayLocale(null);
+
+		uniqueValueConstraintViolation = Assert.assertThrows(
+			ObjectEntryValuesException.UniqueValueConstraintViolation.class,
+			() -> _objectEntryLocalService.addObjectEntry(
+				0, user.getUserId(), objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					objectField.getName(), value
+				).build(),
+				ServiceContextTestUtil.getServiceContext()));
+
+		Assert.assertEquals(
+			Collections.singletonList(objectField.getLabel(LocaleUtil.BRAZIL)),
+			uniqueValueConstraintViolation.getArguments());
+
+		LocaleThreadLocal.setThemeDisplayLocale(originalThemeDisplayLocale);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	public void testAddObjectEntryWithEmailAddressObjectField()
 		throws Exception {
 
@@ -12427,6 +12510,81 @@ public class ObjectEntryLocalServiceTest {
 					"state", "listTypeEntryKey3"
 				).build(),
 				ServiceContextTestUtil.getServiceContext()));
+
+		ListTypeEntry listTypeEntry2 =
+			_listTypeEntryLocalService.fetchListTypeEntry(
+				_listTypeDefinition.getListTypeDefinitionId(),
+				"listTypeEntryKey2");
+
+		listTypeEntry2 = _listTypeEntryLocalService.updateListTypeEntry(
+			listTypeEntry2.getExternalReferenceCode(),
+			listTypeEntry2.getListTypeEntryId(),
+			HashMapBuilder.put(
+				LocaleUtil.BRAZIL, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.SPAIN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build());
+
+		ListTypeEntry listTypeEntry3 =
+			_listTypeEntryLocalService.fetchListTypeEntry(
+				_listTypeDefinition.getListTypeDefinitionId(),
+				"listTypeEntryKey3");
+
+		listTypeEntry3 = _listTypeEntryLocalService.updateListTypeEntry(
+			listTypeEntry3.getExternalReferenceCode(),
+			listTypeEntry3.getListTypeEntryId(),
+			HashMapBuilder.put(
+				LocaleUtil.BRAZIL, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.SPAIN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build());
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getGroupId(), LocaleUtil.BRAZIL);
+
+		Locale originalThemeDisplayLocale =
+			LocaleThreadLocal.getThemeDisplayLocale();
+
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.SPAIN);
+
+		ObjectEntryValuesException.InvalidObjectStateTransition
+			invalidObjectStateTransition = Assert.assertThrows(
+				ObjectEntryValuesException.InvalidObjectStateTransition.class,
+				() -> _objectEntryLocalService.partialUpdateObjectEntry(
+					user.getUserId(), objectEntryId, objectEntryFolderId,
+					HashMapBuilder.<String, Serializable>put(
+						"state", "listTypeEntryKey3"
+					).build(),
+					ServiceContextTestUtil.getServiceContext()));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				listTypeEntry2.getName(LocaleUtil.SPAIN),
+				listTypeEntry3.getName(LocaleUtil.SPAIN)),
+			invalidObjectStateTransition.getArguments());
+
+		LocaleThreadLocal.setThemeDisplayLocale(null);
+
+		invalidObjectStateTransition = Assert.assertThrows(
+			ObjectEntryValuesException.InvalidObjectStateTransition.class,
+			() -> _objectEntryLocalService.partialUpdateObjectEntry(
+				user.getUserId(), objectEntryId, objectEntryFolderId,
+				HashMapBuilder.<String, Serializable>put(
+					"state", "listTypeEntryKey3"
+				).build(),
+				ServiceContextTestUtil.getServiceContext()));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				listTypeEntry2.getName(LocaleUtil.BRAZIL),
+				listTypeEntry3.getName(LocaleUtil.BRAZIL)),
+			invalidObjectStateTransition.getArguments());
+
+		LocaleThreadLocal.setThemeDisplayLocale(originalThemeDisplayLocale);
 
 		_objectEntryLocalService.deleteObjectEntry(
 			objectEntry.getObjectEntryId());
