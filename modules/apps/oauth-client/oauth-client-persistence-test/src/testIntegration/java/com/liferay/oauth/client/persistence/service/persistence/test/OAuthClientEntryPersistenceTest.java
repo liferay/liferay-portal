@@ -274,15 +274,6 @@ public class OAuthClientEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_A() throws Exception {
-		_persistence.countByC_A(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByC_A(0L, "null");
-
-		_persistence.countByC_A(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByC_A_C() throws Exception {
 		_persistence.countByC_A_C(RandomTestUtil.nextLong(), "", "");
 
@@ -686,4 +677,4 @@ public class OAuthClientEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:89569616
+// LIFERAY-SERVICE-BUILDER-HASH:1691137873
