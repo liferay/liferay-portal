@@ -19,6 +19,7 @@ import {
 	performLoginViaApi,
 	performLogout,
 } from '../../../../utils/performLogin';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import getFragmentDefinition from '../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
@@ -94,16 +95,16 @@ async function setUpStorefrontSite(
 		pageDefinition: getPageDefinition([
 			getFragmentDefinition({
 				id: getRandomString(),
-				key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
-			}),
-			getFragmentDefinition({
-				id: getRandomString(),
 				key: 'COMMERCE_ACCOUNT_FRAGMENTS-account-selector',
 			}),
 			getWidgetDefinition({
 				id: getRandomString(),
 				widgetName:
 					'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+			}),
+			getFragmentDefinition({
+				id: getRandomString(),
+				key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
 			}),
 		]),
 		siteId: site.id,
@@ -1857,6 +1858,310 @@ test(
 					productDetailsPage.mappedProductRow(product.skus[0].sku)
 				).toBeVisible();
 			}
+		});
+	}
+);
+
+test(
+	'Adding a mapped product twice from the table sums its quantity in the cart',
+	{tag: '@LPD-33807'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		const channel = await setUpStorefrontSite(
+			apiHelpers,
+			commerceAdminChannelsPage,
+			site
+		);
+
+		const account = await createAccount(apiHelpers, 'test@liferay.com');
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
+
+		const {diagramProduct, mappedProduct} =
+			await test.step('Map a product to a diagram pin', async () => {
+				const mappedProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						name: {en_US: getRandomString()},
+					});
+
+				const diagramProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						diagram: getDiagram(),
+						name: {en_US: getRandomString()},
+						productType: 'diagram',
+					});
+
+				await apiHelpers.headlessCommerceAdminCatalog.postPin(
+					diagramProduct.productId,
+					{
+						mappedProduct: {
+							productId: mappedProduct.productId,
+							quantity: 1,
+							sequence: '1',
+							sku: mappedProduct.skus[0].sku,
+							skuId: mappedProduct.skus[0].id,
+							type: 'sku',
+						},
+						positionX: 50,
+						positionY: 10,
+						sequence: '1',
+					}
+				);
+
+				return {diagramProduct, mappedProduct};
+			});
+
+		await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{accountId: account.id},
+			channel.id
+		);
+
+		await test.step('Add the mapped product twice from the table', async () => {
+			await page.goto(
+				`/web/${site.name}/p/${diagramProduct.name['en_US']}`
+			);
+
+			await productDetailsPage
+				.mappedProductCheckboxFor(
+					mappedProduct.skus[0].sku,
+					mappedProduct.name['en_US']
+				)
+				.check();
+			await productDetailsPage.mappedProductAddToCartButton.click();
+
+			await waitForAlert(
+				page,
+				'Success:The product was successfully added to the cart.'
+			);
+
+			await productDetailsPage.mappedProductAddToCartButton.click();
+
+			await waitForAlert(
+				page,
+				'Success:The product was successfully added to the cart.'
+			);
+		});
+
+		await test.step('Check the cart holds one row with both quantities', async () => {
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(
+				commerceMiniCartPage.miniCartItem(mappedProduct.name['en_US'])
+			).toHaveCount(1);
+			await expect(
+				commerceMiniCartPage
+					.miniCartItem(mappedProduct.name['en_US'])
+					.getByRole('spinbutton')
+			).toHaveValue('2');
+		});
+	}
+);
+
+test(
+	'The diagram tooltip and table add a mapped product with its unit of measure',
+	{tag: ['@LPD-3424', '@LPD-91224']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		const channel = await setUpStorefrontSite(
+			apiHelpers,
+			commerceAdminChannelsPage,
+			site
+		);
+
+		const account = await createAccount(apiHelpers, 'test@liferay.com');
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
+
+		const {mappedProduct, skuUnitOfMeasure1, skuUnitOfMeasure2} =
+			await test.step('Create a product with Each and Box units of measure', async () => {
+				const mappedProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						name: {en_US: getRandomString()},
+					});
+
+				const skuUnitOfMeasure1 =
+					await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+						mappedProduct.skus[0].id,
+						{
+							incrementalOrderQuantity: 1,
+							name: {en_US: 'Each'},
+							primary: true,
+							priority: 1,
+							rate: 1,
+						}
+					);
+
+				const skuUnitOfMeasure2 =
+					await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+						mappedProduct.skus[0].id,
+						{
+							incrementalOrderQuantity: 1,
+							name: {en_US: 'Box'},
+							primary: false,
+							priority: 2,
+							rate: 1,
+						}
+					);
+
+				return {mappedProduct, skuUnitOfMeasure1, skuUnitOfMeasure2};
+			});
+
+		const diagramProduct =
+			await test.step('Map the product to a diagram pin', async () => {
+				const diagramProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						diagram: getDiagram(),
+						name: {en_US: getRandomString()},
+						productType: 'diagram',
+					});
+
+				await apiHelpers.headlessCommerceAdminCatalog.postPin(
+					diagramProduct.productId,
+					{
+						mappedProduct: {
+							productId: mappedProduct.productId,
+							quantity: 1,
+							sequence: '1',
+							sku: mappedProduct.skus[0].sku,
+							skuId: mappedProduct.skus[0].id,
+							type: 'sku',
+						},
+						positionX: 50,
+						positionY: 10,
+						sequence: '1',
+					}
+				);
+
+				return diagramProduct;
+			});
+
+		await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [
+					{
+						options: '[]',
+						quantity: 1,
+						skuId: mappedProduct.skus[0].id,
+						skuUnitOfMeasure: {key: skuUnitOfMeasure2.key},
+					},
+				],
+			},
+			channel.id
+		);
+
+		await test.step('Add the mapped product from the diagram tooltip', async () => {
+			await page.goto(
+				`/web/${site.name}/p/${diagramProduct.name['en_US']}`
+			);
+
+			await expect(commerceMiniCartPage.miniCartButton).toHaveAttribute(
+				'data-badge-count',
+				'1'
+			);
+
+			await (await productDetailsPage.diagramPin('1')).click();
+
+			await expect(productDetailsPage.pinAddToCartButton).toBeVisible();
+			await expect(productDetailsPage.pinAddToCartButton).not.toHaveClass(
+				/is-added/
+			);
+
+			await productDetailsPage.pinAddToCartButton.click();
+
+			await expect(productDetailsPage.pinAddToCartButton).toHaveClass(
+				/is-added/
+			);
+			await expect(productDetailsPage.pinAddToCartButton).not.toHaveClass(
+				/not-allowed/
+			);
+		});
+
+		await test.step('Check the cart keeps a separate row per unit of measure', async () => {
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(
+				commerceMiniCartPage.miniCartItem(mappedProduct.name['en_US'])
+			).toHaveCount(2);
+			await expect(
+				commerceMiniCartPage
+					.miniCartItemForUnitOfMeasure(
+						mappedProduct.name['en_US'],
+						skuUnitOfMeasure1.key
+					)
+					.getByRole('spinbutton')
+			).toHaveValue('1');
+			await expect(
+				commerceMiniCartPage
+					.miniCartItemForUnitOfMeasure(
+						mappedProduct.name['en_US'],
+						skuUnitOfMeasure2.key
+					)
+					.getByRole('spinbutton')
+			).toHaveValue('1');
+
+			await commerceMiniCartPage.miniCartButtonClose.click();
+		});
+
+		await test.step('Add the mapped product from the table in its primary unit of measure', async () => {
+			await productDetailsPage
+				.mappedProductCheckboxFor(
+					mappedProduct.skus[0].sku,
+					mappedProduct.name['en_US']
+				)
+				.check();
+			await productDetailsPage.mappedProductAddToCartButton.click();
+
+			await waitForAlert(
+				page,
+				'Success:The product was successfully added to the cart.'
+			);
+		});
+
+		await test.step('Check the table adds to the row of the primary unit of measure', async () => {
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(
+				commerceMiniCartPage.miniCartItem(mappedProduct.name['en_US'])
+			).toHaveCount(2);
+			await expect(
+				commerceMiniCartPage
+					.miniCartItemForUnitOfMeasure(
+						mappedProduct.name['en_US'],
+						skuUnitOfMeasure1.key
+					)
+					.getByRole('spinbutton')
+			).toHaveValue('2');
+			await expect(
+				commerceMiniCartPage
+					.miniCartItemForUnitOfMeasure(
+						mappedProduct.name['en_US'],
+						skuUnitOfMeasure2.key
+					)
+					.getByRole('spinbutton')
+			).toHaveValue('1');
 		});
 	}
 );
