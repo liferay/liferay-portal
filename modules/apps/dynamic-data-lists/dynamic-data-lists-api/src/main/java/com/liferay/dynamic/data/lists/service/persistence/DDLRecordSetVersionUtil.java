@@ -262,86 +262,6 @@ public class DDLRecordSetVersionUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the ddl record set versions where recordSetId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.dynamic.data.lists.model.impl.DDLRecordSetVersionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param recordSetId the record set ID
-	 * @param status the status
-	 * @param start the lower bound of the range of ddl record set versions
-	 * @param end the upper bound of the range of ddl record set versions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ddl record set versions
-	 */
-	public static List<DDLRecordSetVersion> findByRS_S(
-		long recordSetId, int status, int start, int end,
-		OrderByComparator<DDLRecordSetVersion> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByRS_S(
-			recordSetId, status, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first ddl record set version in the ordered set where recordSetId = &#63; and status = &#63;.
-	 *
-	 * @param recordSetId the record set ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ddl record set version
-	 * @throws NoSuchRecordSetVersionException if a matching ddl record set version could not be found
-	 */
-	public static DDLRecordSetVersion findByRS_S_First(
-			long recordSetId, int status,
-			OrderByComparator<DDLRecordSetVersion> orderByComparator)
-		throws com.liferay.dynamic.data.lists.exception.
-			NoSuchRecordSetVersionException {
-
-		return getPersistence().findByRS_S_First(
-			recordSetId, status, orderByComparator);
-	}
-
-	/**
-	 * Returns the first ddl record set version in the ordered set where recordSetId = &#63; and status = &#63;.
-	 *
-	 * @param recordSetId the record set ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ddl record set version, or <code>null</code> if a matching ddl record set version could not be found
-	 */
-	public static DDLRecordSetVersion fetchByRS_S_First(
-		long recordSetId, int status,
-		OrderByComparator<DDLRecordSetVersion> orderByComparator) {
-
-		return getPersistence().fetchByRS_S_First(
-			recordSetId, status, orderByComparator);
-	}
-
-	/**
-	 * Removes all the ddl record set versions where recordSetId = &#63; and status = &#63; from the database.
-	 *
-	 * @param recordSetId the record set ID
-	 * @param status the status
-	 */
-	public static void removeByRS_S(long recordSetId, int status) {
-		getPersistence().removeByRS_S(recordSetId, status);
-	}
-
-	/**
-	 * Returns the number of ddl record set versions where recordSetId = &#63; and status = &#63;.
-	 *
-	 * @param recordSetId the record set ID
-	 * @param status the status
-	 * @return the number of matching ddl record set versions
-	 */
-	public static int countByRS_S(long recordSetId, int status) {
-		return getPersistence().countByRS_S(recordSetId, status);
-	}
-
-	/**
 	 * Creates a new ddl record set version with the primary key. Does not add the ddl record set version to the database.
 	 *
 	 * @param recordSetVersionId the primary key for the new ddl record set version
@@ -461,60 +381,6 @@ public class DDLRecordSetVersionUtil {
 			recordSetId, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the ddl record set versions where recordSetId = &#63; and status = &#63;.
-	 *
-	 * @param recordSetId the record set ID
-	 * @param status the status
-	 * @return the matching ddl record set versions
-	 */
-	public static List<DDLRecordSetVersion> findByRS_S(
-		long recordSetId, int status) {
-
-		return getPersistence().findByRS_S(recordSetId, status);
-	}
-
-	/**
-	 * Returns a range of all the ddl record set versions where recordSetId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.dynamic.data.lists.model.impl.DDLRecordSetVersionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param recordSetId the record set ID
-	 * @param status the status
-	 * @param start the lower bound of the range of ddl record set versions
-	 * @param end the upper bound of the range of ddl record set versions (not inclusive)
-	 * @return the range of matching ddl record set versions
-	 */
-	public static List<DDLRecordSetVersion> findByRS_S(
-		long recordSetId, int status, int start, int end) {
-
-		return getPersistence().findByRS_S(recordSetId, status, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the ddl record set versions where recordSetId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.dynamic.data.lists.model.impl.DDLRecordSetVersionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param recordSetId the record set ID
-	 * @param status the status
-	 * @param start the lower bound of the range of ddl record set versions
-	 * @param end the upper bound of the range of ddl record set versions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ddl record set versions
-	 */
-	public static List<DDLRecordSetVersion> findByRS_S(
-		long recordSetId, int status, int start, int end,
-		OrderByComparator<DDLRecordSetVersion> orderByComparator) {
-
-		return getPersistence().findByRS_S(
-			recordSetId, status, start, end, orderByComparator);
-	}
-
 	public static DDLRecordSetVersionPersistence getPersistence() {
 		return _persistence;
 	}
@@ -528,4 +394,4 @@ public class DDLRecordSetVersionUtil {
 	private static volatile DDLRecordSetVersionPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1186764930
+// LIFERAY-SERVICE-BUILDER-HASH:-784627688
