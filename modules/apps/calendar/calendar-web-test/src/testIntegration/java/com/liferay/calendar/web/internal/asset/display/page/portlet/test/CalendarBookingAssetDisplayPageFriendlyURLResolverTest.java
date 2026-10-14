@@ -87,7 +87,7 @@ public class CalendarBookingAssetDisplayPageFriendlyURLResolverTest {
 			calendarBooking.getTitle(LocaleUtil.getDefault()),
 			titleListMergeable.mergeToString(StringPool.SPACE));
 
-		_assertDisplayPageAttributes(true, mockHttpServletRequest);
+		_assertHttpServletRequestAttributes(true, mockHttpServletRequest);
 
 		_user = UserTestUtil.addUser();
 
@@ -97,7 +97,7 @@ public class CalendarBookingAssetDisplayPageFriendlyURLResolverTest {
 			_portal.getLayoutActualURL(layout, Portal.PATH_MAIN),
 			_getActualURL(calendarBooking, mockHttpServletRequest));
 
-		_assertDisplayPageAttributes(false, mockHttpServletRequest);
+		_assertHttpServletRequestAttributes(false, mockHttpServletRequest);
 	}
 
 	private CalendarBooking _addCalendarBooking() throws Exception {
@@ -117,7 +117,7 @@ public class CalendarBookingAssetDisplayPageFriendlyURLResolverTest {
 			null, true, WorkflowConstants.STATUS_APPROVED);
 	}
 
-	private void _assertDisplayPageAttributes(
+	private void _assertHttpServletRequestAttributes(
 		boolean expected, MockHttpServletRequest mockHttpServletRequest) {
 
 		for (String name : _HTTP_SERVLET_REQUEST_ATTRIBUTE_NAMES) {

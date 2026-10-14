@@ -136,7 +136,7 @@ public class ObjectEntryDisplayPageFriendlyURLResolverTest {
 			objectEntry.getTitleValue(),
 			titleListMergeable.mergeToString(StringPool.SPACE));
 
-		_assertDisplayPageAttributes(true, mockHttpServletRequest);
+		_assertHttpServletRequestAttributes(true, mockHttpServletRequest);
 
 		_user = UserTestUtil.addUser();
 
@@ -146,7 +146,7 @@ public class ObjectEntryDisplayPageFriendlyURLResolverTest {
 			_portal.getLayoutActualURL(layout, Portal.PATH_MAIN),
 			_getActualURL(mockHttpServletRequest, objectEntry));
 
-		_assertDisplayPageAttributes(false, mockHttpServletRequest);
+		_assertHttpServletRequestAttributes(false, mockHttpServletRequest);
 	}
 
 	@Test
@@ -228,7 +228,7 @@ public class ObjectEntryDisplayPageFriendlyURLResolverTest {
 			serviceContext);
 	}
 
-	private void _assertDisplayPageAttributes(
+	private void _assertHttpServletRequestAttributes(
 		boolean expected, MockHttpServletRequest mockHttpServletRequest) {
 
 		for (String name : _HTTP_SERVLET_REQUEST_ATTRIBUTE_NAMES) {
