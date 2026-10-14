@@ -94,12 +94,13 @@ public class AutocompleteAssigneeMVCResourceCommandTest {
 		_mvcResourceCommand = bundleContext.getService(
 			serviceReferences.get(0));
 
+		_role = RoleTestUtil.addRole("Custom Role", RoleConstants.TYPE_REGULAR);
+
 		for (int i = 0; i < _MAX_EXPANSIONS; i++) {
 			_roles.add(
 				RoleTestUtil.addRole("R" + i, RoleConstants.TYPE_REGULAR));
 		}
 
-		_role = RoleTestUtil.addRole("Custom Role", RoleConstants.TYPE_REGULAR);
 		_user = UserTestUtil.addUser(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 			RandomTestUtil.randomString(), LocaleUtil.getDefault(), "John",
