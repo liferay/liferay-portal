@@ -396,7 +396,7 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null, "/openapi", Http.Method.GET);
 
-		Assert.assertFalse(jsonObject.has("/" + _API_BASE_URL));
+		Assert.assertFalse(jsonObject.has(apiApplicationURL));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
