@@ -83,17 +83,9 @@
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
-		<finder name="C_U" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="userId" />
-		</finder>
 		<finder name="C_E" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="export" />
-		</finder>
-		<finder name="C_N" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="name" />
 		</finder>
 		<finder name="C_T" return-type="Collection">
 			<finder-column name="companyId" />
