@@ -23,6 +23,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,6 +61,9 @@ public class APIApplicationPublisherPortalInstanceLifecycleListenerTest
 					FrameworkUtil.getBundle(clazz), clazz.getName());
 
 		String baseURL = StringUtil.toLowerCase(RandomTestUtil.randomString());
+		String path =
+			StringPool.FORWARD_SLASH +
+				StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		try {
 			_disableComponentDescriptionDTO(
@@ -70,7 +74,7 @@ public class APIApplicationPublisherPortalInstanceLifecycleListenerTest
 
 			String externalReferenceCode = RandomTestUtil.randomString();
 
-			_addAPIApplication(baseURL, externalReferenceCode);
+			_addAPIApplication(baseURL, externalReferenceCode, path);
 
 			APIApplicationTestUtil.assertNotDeployedAPIApplication(baseURL);
 
@@ -78,6 +82,15 @@ public class APIApplicationPublisherPortalInstanceLifecycleListenerTest
 				portalInstanceLifecycleListenerComponentDescriptionDTO);
 
 			APIApplicationTestUtil.assertDeployedAPIApplication(baseURL);
+
+			Assert.assertTrue(
+				HTTPTestUtil.invokeToJSONObject(
+					null, "c/" + baseURL + "/openapi.json", Http.Method.GET
+				).getJSONObject(
+					"paths"
+				).has(
+					path
+				));
 		}
 		finally {
 			_enableComponentDescriptionDTO(
@@ -89,14 +102,11 @@ public class APIApplicationPublisherPortalInstanceLifecycleListenerTest
 	}
 
 	private void _addAPIApplication(
-			String baseURL, String externalReferenceCode)
+			String baseURL, String externalReferenceCode, String path)
 		throws Exception {
 
 		String apiEndpointExternalReferenceCode = RandomTestUtil.randomString();
 		String apiSchemaExternalReferenceCode = RandomTestUtil.randomString();
-		String path =
-			StringPool.FORWARD_SLASH +
-				StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
