@@ -20,12 +20,14 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -64,6 +66,7 @@ import java.util.Set;
 
 import org.hamcrest.CoreMatchers;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -86,7 +89,17 @@ public class StaticSiteExporterTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_availableLocales = LanguageUtil.getCompanyAvailableLocales(
+			TestPropsValues.getCompanyId());
+		_defaultLocale = LocaleUtil.getDefault();
+
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		CompanyTestUtil.resetCompanyLocales(
+			TestPropsValues.getCompanyId(), _availableLocales, _defaultLocale);
 	}
 
 	@Test
@@ -335,6 +348,11 @@ public class StaticSiteExporterTest {
 
 	@Test
 	public void testExportWithLocales() throws Exception {
+		CompanyTestUtil.resetCompanyLocales(
+			TestPropsValues.getCompanyId(),
+			Arrays.asList(LocaleUtil.GERMANY, LocaleUtil.SPAIN, LocaleUtil.US),
+			LocaleUtil.US);
+
 		GroupTestUtil.updateDisplaySettings(
 			_group.getGroupId(),
 			Arrays.asList(LocaleUtil.GERMANY, LocaleUtil.SPAIN, LocaleUtil.US),
@@ -889,6 +907,9 @@ public class StaticSiteExporterTest {
 
 	private static final String _ICONS_URL =
 		"/o/classic-theme/images/clay/icons.svg";
+
+	private Set<Locale> _availableLocales;
+	private Locale _defaultLocale;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
