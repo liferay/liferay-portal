@@ -273,22 +273,6 @@ public class AssetLinkLocalServiceImpl extends AssetLinkLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Delete all links that associate the two asset entries.
-	 *
-	 * @param entryId1 the primary key of the first asset entry
-	 * @param entryId2 the primary key of the second asset entry
-	 */
-	@Override
-	public void deleteLinks(long entryId1, long entryId2) {
-		List<AssetLink> links = assetLinkPersistence.findByE_E(
-			entryId1, entryId2);
-
-		for (AssetLink link : links) {
-			deleteLink(link);
-		}
-	}
-
-	/**
 	 * Returns all the asset links whose first entry ID is the given entry ID.
 	 *
 	 * @param  entryId the primary key of the asset entry
