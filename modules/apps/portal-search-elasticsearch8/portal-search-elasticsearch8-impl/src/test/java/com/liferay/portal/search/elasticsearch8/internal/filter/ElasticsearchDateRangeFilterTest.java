@@ -7,6 +7,7 @@ package com.liferay.portal.search.elasticsearch8.internal.filter;
 
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.search.elasticsearch8.internal.indexing.LiferayElasticsearchIndexingFixtureFactory;
 import com.liferay.portal.search.test.util.filter.BaseDateRangeFilterTestCase;
 import com.liferay.portal.search.test.util.indexing.IndexingFixture;
@@ -57,7 +58,7 @@ public class ElasticsearchDateRangeFilterTest
 		dateRangeFilterBuilder.setFrom("11212000000000");
 		dateRangeFilterBuilder.setTo("11232000000000");
 
-		assertElasticsearchException();
+		assertElasticsearchException("11212000000000");
 	}
 
 	@Test
@@ -67,7 +68,7 @@ public class ElasticsearchDateRangeFilterTest
 		dateRangeFilterBuilder.setFrom("2000");
 		dateRangeFilterBuilder.setTo("11232000000000");
 
-		assertElasticsearchException();
+		assertElasticsearchException("2000");
 	}
 
 	@Test
@@ -81,7 +82,7 @@ public class ElasticsearchDateRangeFilterTest
 		assertHits("20001122000000");
 	}
 
-	protected void assertElasticsearchException() {
+	protected void assertElasticsearchException(String date) {
 		assertSearch(
 			indexingTestHelper -> {
 				indexingTestHelper.setFilter(dateRangeFilterBuilder.build());
@@ -93,9 +94,14 @@ public class ElasticsearchDateRangeFilterTest
 				}
 				catch (ElasticsearchException elasticsearchException) {
 					Assert.assertEquals(
-						"[es/search] failed: " +
-							"[search_phase_execution_exception] all shards " +
-								"failed",
+						StringBundler.concat(
+							"[es/search] failed: ",
+							"[search_phase_execution_exception] all shards ",
+							"failed; root cause: [parse_exception] failed to ",
+							"parse date field [", date,
+							"] with format [yyyyMMddHHmmss]: [failed to parse ",
+							"date field [", date,
+							"] with format [yyyyMMddHHmmss]]"),
 						elasticsearchException.getMessage());
 				}
 			});
