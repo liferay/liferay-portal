@@ -152,56 +152,6 @@ definition {
 		}
 	}
 
-	@priority = 5
-	test SortingAndSortParameterReturnTheSameData {
-		task ("And Given setting the Sorting to 'age:asc'") {
-			APIBuilderUI.addAndPublishEndpointConfiguration(
-				editValue = "age:asc",
-				entity = "Endpoints",
-				fieldName = "sort",
-				name = "testendpoint",
-				title = "My-app");
-		}
-
-		task ("And Given endpoint returning student in ascending order of age") {
-			var response = APIApplicationEndpoint.getEndpoint(
-				baseURL = "my-app",
-				path = "/testendpoint");
-
-			var actualValue = JSONUtil.getWithJSONPath(${response}, "$.items..student_age");
-
-			TestUtils.assertEquals(
-				actual = ${actualValue},
-				expected = "-1,0,25,101");
-		}
-
-		task ("When I empty the Sorting") {
-			APIBuilderUI.addAndPublishEndpointConfiguration(
-				editValue = "",
-				entity = "Endpoints",
-				fieldName = "sort",
-				name = "testendpoint",
-				title = "My-app");
-		}
-
-		task ("And When I call endpoint with '?sort=student_age:asc' in API Explorer") {
-			APIExplorer.navigateToOpenAPI(customObjectPlural = "my-app");
-
-			APIExplorer.executeAPIMethod(
-				method = "getTestendpointPage",
-				parameter = "sort",
-				service = "testSchema",
-				value = "student_age:asc");
-		}
-
-		task ("Then endpoint returns student in ascending order of age") {
-			AssertTextEquals.assertPartialText(
-				locator1 = "OpenAPI#RESPONSE_BODY",
-				method = "getTestendpointPage",
-				value1 = "\"items\": [     {       \"student_age\": -1     },     {       \"student_age\": 0     },     {       \"student_age\": 25     },     {       \"student_age\": 101     }   ]");
-		}
-	}
-
 	@priority = 3
 	test SortingIsLimitedByODataCharacterLimit {
 		task ("When setting the Sorting with 10001 characters") {

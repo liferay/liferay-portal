@@ -55,41 +55,6 @@ definition {
 	}
 
 	@priority = 4
-	test CanCreateAPIOnVirtualInstance {
-		property test.liferay.virtual.instance = "false";
-
-		task ("And Given create an API with title "test"") {
-			ApplicationAPI.createAPIApplication(
-				baseURL = "test",
-				title = "test");
-		}
-
-		task ("And Given create a new virtual instance") {
-			HeadlessPortalInstanceAPI.addPortalInstance(
-				domain = "liferay.com",
-				portalInstanceId = "www.able.com",
-				virtualHost = "www.able.com");
-		}
-
-		task ("When I create an API with title "test" on the virtual instance") {
-			User.firstLoginUI(
-				password = PropsUtil.get("default.admin.password"),
-				specificURL = "http://www.able.com:8080",
-				userEmailAddress = "test@liferay.com");
-
-			APIBuilderUI.createAPIApplication(title = "test");
-		}
-
-		task ("Then the test API is created successfully") {
-			Alert.viewSuccessMessageText(successMessage = "New API Application was created.");
-
-			AssertTextEquals(
-				locator1 = "APIBuilder#ENTER_TITLE",
-				value1 = "test");
-		}
-	}
-
-	@priority = 4
 	test CanCreateAPIWithValidFieldValues {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

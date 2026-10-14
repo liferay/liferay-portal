@@ -36,22 +36,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertSchemaFieldsPresent(schemaFields = null, schemaEntity = null) {
-		Variables.assertDefined(parameterList = "${schemaEntity},${schemaFields}");
-
-		Click(
-			locator1 = "OpenAPI#SCHEMA_COLLAPSED",
-			schema = ${schemaEntity});
-
-		for (var schemaField : list ${schemaFields}) {
-			AssertElementPresent(
-				field = ${schemaField},
-				locator1 = "OpenAPI#SCHEMA_FIELD",
-				schema = ${schemaEntity});
-		}
-	}
-
-	@summary = "Default summary"
 	macro executeAllActionInSchema(schema = null, actionsList = null) {
 		Variables.assertDefined(parameterList = "${schema},${actionsList}");
 
