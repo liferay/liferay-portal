@@ -115,8 +115,12 @@ public class PoshiSourceProcessor extends BaseSourceProcessor {
 	@Override
 	protected void preFormat() throws Exception {
 
-		// Initializing PoshiProperties prints every Poshi property to
-		// System.out, so load it once here instead of during each parse
+		// The static initializer of PoshiProperties prints every Poshi
+		// property to System.out. It runs only once, the first time the class
+		// is used, which would otherwise be when parse creates the first
+		// PoshiNode. Trigger it here, before parse runs on multiple threads,
+		// so the listing goes to a discarded stream and parse never needs to
+		// redirect System.out
 
 		PrintStream printStream = System.out;
 
