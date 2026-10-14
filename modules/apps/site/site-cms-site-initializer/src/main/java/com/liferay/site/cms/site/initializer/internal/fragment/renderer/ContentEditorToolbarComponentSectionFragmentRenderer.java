@@ -220,6 +220,8 @@ public class ContentEditorToolbarComponentSectionFragmentRenderer
 						}
 
 						return JSONUtil.put(
+							"businessType", objectField.getBusinessType()
+						).put(
 							"label",
 							objectField.getLabel(themeDisplay.getLocale())
 						).put(

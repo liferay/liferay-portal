@@ -70,7 +70,11 @@ export default function ContentEditorToolbar({
 	hasWorkflow: boolean;
 	headerTitle: string;
 	isNew: boolean;
-	objectFields?: Array<{label: string; name: string}>;
+	objectFields?: Array<{
+		businessType: string;
+		label: string;
+		name: string;
+	}>;
 	title: string;
 	type: string;
 }) {
