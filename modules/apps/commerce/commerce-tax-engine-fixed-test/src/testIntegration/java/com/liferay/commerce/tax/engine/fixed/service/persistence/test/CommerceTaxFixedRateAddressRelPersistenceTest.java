@@ -224,13 +224,6 @@ public class CommerceTaxFixedRateAddressRelPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCountryId() throws Exception {
-		_persistence.countByCountryId(RandomTestUtil.nextLong());
-
-		_persistence.countByCountryId(0L);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		CommerceTaxFixedRateAddressRel newCommerceTaxFixedRateAddressRel =
 			addCommerceTaxFixedRateAddressRel();
@@ -567,4 +560,4 @@ public class CommerceTaxFixedRateAddressRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:776347611
+// LIFERAY-SERVICE-BUILDER-HASH:1116940552
