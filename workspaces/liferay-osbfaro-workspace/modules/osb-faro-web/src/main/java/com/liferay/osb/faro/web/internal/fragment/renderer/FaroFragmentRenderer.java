@@ -7,29 +7,16 @@ package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
-import com.liferay.osb.faro.constants.DocumentationConstants;
 import com.liferay.osb.faro.constants.FaroChannelConstants;
-import com.liferay.osb.faro.constants.FaroProjectConstants;
-import com.liferay.osb.faro.contacts.model.constants.ContactsCardTemplateConstants;
-import com.liferay.osb.faro.engine.client.constants.ActivityConstants;
-import com.liferay.osb.faro.engine.client.constants.DataSourceConstants;
-import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
 import com.liferay.osb.faro.engine.client.constants.LCPProjectConstants;
-import com.liferay.osb.faro.engine.client.constants.SegmentConstants;
-import com.liferay.osb.faro.engine.client.constants.TimeConstants;
 import com.liferay.osb.faro.provisioning.client.constants.FaroSubscriptionConstants;
 import com.liferay.osb.faro.util.FaroPropsValues;
-import com.liferay.osb.faro.web.internal.constants.FaroConstants;
 import com.liferay.osb.faro.web.internal.constants.FaroPaginationConstants;
-import com.liferay.osb.faro.web.internal.constants.FaroPreferencesConstants;
-import com.liferay.osb.faro.web.internal.constants.FaroWebKeys;
-import com.liferay.osb.faro.web.internal.constants.UserConstants;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -107,9 +94,8 @@ public class FaroFragmentRenderer implements FragmentRenderer {
 
 			_renderScriptTag(
 				httpServletRequest, httpServletResponse, "inline",
-				"window.faroConstants = " +
-					_getFaroConstants(httpServletRequest, themeDisplay) + ";",
-				null, null);
+				"window.faroConstants = " + _getFaroConstants() + ";", null,
+				null);
 			_renderScriptTag(
 				httpServletRequest, httpServletResponse, null, null,
 				_getStaticResourceURL(
@@ -131,81 +117,20 @@ public class FaroFragmentRenderer implements FragmentRenderer {
 		}
 	}
 
-	private String _getFaroConstants(
-			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
-		throws Exception {
-
-		User user = themeDisplay.getUser();
-
+	private String _getFaroConstants() throws Exception {
 		return JSONUtil.writeValueAsString(
 			HashMapBuilder.<String, Object>put(
-				"activityActions", ActivityConstants.getActions()
-			).put(
-				"applications", FaroConstants.getApplications()
-			).put(
-				"cerebroAssetsURL",
-				httpServletRequest.getAttribute(FaroWebKeys.CEREBRO_ASSETS_URL)
-			).put(
-				"cerebroTouchpointsURL",
-				httpServletRequest.getAttribute(
-					FaroWebKeys.CEREBRO_TOUCHPOINTS_URL)
-			).put(
 				"channelPermissionTypes",
 				FaroChannelConstants.getPermissionTypes()
 			).put(
-				"contactsCardTemplateTypes",
-				ContactsCardTemplateConstants.getConstants()
-			).put(
-				"dataSourceDisplayStatuses",
-				DataSourceConstants.getDisplayStatuses()
-			).put(
-				"dataSourceProgressStatuses",
-				DataSourceConstants.getProgressStatuses()
-			).put(
-				"dataSourceStatuses", DataSourceConstants.getStatuses()
-			).put(
-				"dataSourceTypes", DataSourceConstants.getTypes()
-			).put(
-				"documentationURLs", DocumentationConstants.getURLs()
-			).put(
-				"entityTypes", FaroConstants.getTypes()
-			).put(
 				"faroURL", FaroPropsValues.FARO_URL
-			).put(
-				"fieldContexts", FieldMappingConstants.getContexts()
-			).put(
-				"fieldOwnerTypes", FieldMappingConstants.getOwnerTypes()
-			).put(
-				"fieldTypes", FieldMappingConstants.getFieldTypes()
-			).put(
-				"locale", String.valueOf(themeDisplay.getLocale())
 			).put(
 				"pagination", FaroPaginationConstants.getConstants()
 			).put(
-				"preferencesScopes", FaroPreferencesConstants.getScopes()
-			).put(
 				"projectLocations", LCPProjectConstants.getLocations()
-			).put(
-				"projectStates", FaroProjectConstants.getStates()
-			).put(
-				"segmentStates", SegmentConstants.getSegmentStates()
-			).put(
-				"segmentTypes", SegmentConstants.getSegmentTypes()
 			).put(
 				"subscriptionPlans",
 				FaroSubscriptionConstants.getFaroSubscriptionPlans()
-			).put(
-				"subscriptionStatuses", FaroSubscriptionConstants.getStatuses()
-			).put(
-				"timeIntervals", TimeConstants.getIntervals()
-			).put(
-				"timeSpans", TimeConstants.getTimeSpans()
-			).put(
-				"userName", user.getFullName()
-			).put(
-				"userRoleNames", UserConstants.getRoleNames()
-			).put(
-				"userStatuses", UserConstants.getStatuses()
 			).build());
 	}
 

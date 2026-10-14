@@ -38,10 +38,6 @@ public class FaroSubscriptionConstants {
 		return _faroSubscriptionPlans;
 	}
 
-	public static Map<String, Integer> getStatuses() {
-		return _statuses;
-	}
-
 	private static final Map<String, FaroSubscriptionPlan>
 		_faroSubscriptionPlans =
 			HashMapBuilder.<String, FaroSubscriptionPlan>put(
@@ -230,12 +226,5 @@ public class FaroSubscriptionConstants {
 						PRODUCT_ENTRY_NAME_LXC_SUBSCRIPTION_TRANSACT_SITE,
 					-1, -1)
 			).build();
-	private static final Map<String, Integer> _statuses = HashMapBuilder.put(
-		"approaching", STATUS_LIMIT_APPROACHING
-	).put(
-		"ok", STATUS_OK
-	).put(
-		"over", STATUS_LIMIT_OVER
-	).build();
 
 }

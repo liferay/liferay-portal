@@ -34,10 +34,6 @@ public class FaroConstants {
 
 	public static final int TYPE_SEGMENT_INDIVIDUALS = 4;
 
-	public static Map<String, String> getApplications() {
-		return _applications;
-	}
-
 	public static int[] getContactsTypes() {
 		return new int[] {
 			TYPE_ACCOUNT, TYPE_INDIVIDUAL, TYPE_SEGMENT_ACCOUNTS,
@@ -49,11 +45,6 @@ public class FaroConstants {
 		return _types;
 	}
 
-	private static final Map<String, String> _applications = HashMapBuilder.put(
-		APPLICATION_CONTACTS, APPLICATION_CONTACTS
-	).put(
-		APPLICATION_MAIN, APPLICATION_MAIN
-	).build();
 	private static final Map<String, Integer> _types = HashMapBuilder.put(
 		"account", TYPE_ACCOUNT
 	).put(

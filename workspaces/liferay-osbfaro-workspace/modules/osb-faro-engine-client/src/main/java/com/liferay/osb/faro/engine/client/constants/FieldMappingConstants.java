@@ -25,15 +25,9 @@ public class FieldMappingConstants {
 
 	public static final String CONTEXT_DEMOGRAPHICS = "demographics";
 
-	public static final String CONTEXT_FIELDS = "fields";
-
-	public static final String CONTEXT_INTERESTS = "interests";
-
 	public static final String CONTEXT_ORGANIZATION = "organization";
 
 	public static final String OWNER_TYPE_ACCOUNT = "account";
-
-	public static final String OWNER_TYPE_ACCOUNT_SEGMENT = "account-segment";
 
 	public static final String OWNER_TYPE_INDIVIDUAL = "individual";
 
@@ -64,10 +58,6 @@ public class FieldMappingConstants {
 		return _accountFieldMappingMaps;
 	}
 
-	public static Map<String, String> getContexts() {
-		return _contexts;
-	}
-
 	public static List<FieldMappingMap> getDefaultFieldMappingMaps() {
 		return _defaultFieldMappingMaps;
 	}
@@ -76,10 +66,6 @@ public class FieldMappingConstants {
 		String fieldName) {
 
 		return _demographicsFieldMappingLanguageKeys.get(fieldName);
-	}
-
-	public static Map<String, String> getFieldTypes() {
-		return _fieldTypes;
 	}
 
 	public static List<FieldMappingMap> getLiferayFieldMappingMaps() {
@@ -98,10 +84,6 @@ public class FieldMappingConstants {
 		}
 
 		return _liferayFieldNames;
-	}
-
-	public static Map<String, String> getOwnerTypes() {
-		return _ownerTypes;
 	}
 
 	public static List<FieldMappingMap>
@@ -160,15 +142,6 @@ public class FieldMappingConstants {
 				"numberOfEmployees", "numberOfEmployees", TYPE_NUMBER),
 			new FieldMappingMap("state", "state", TYPE_TEXT),
 			new FieldMappingMap("yearStarted", "yearStarted", TYPE_NUMBER));
-	private static final Map<String, String> _contexts = HashMapBuilder.put(
-		CONTEXT_CUSTOM, CONTEXT_CUSTOM
-	).put(
-		CONTEXT_DEMOGRAPHICS, CONTEXT_DEMOGRAPHICS
-	).put(
-		CONTEXT_INTERESTS, CONTEXT_INTERESTS
-	).put(
-		CONTEXT_ORGANIZATION, CONTEXT_ORGANIZATION
-	).build();
 	private static final List<FieldMappingMap> _defaultFieldMappingMaps =
 		Arrays.asList(
 			new FieldMappingMap(null, "country", TYPE_TEXT),
@@ -200,15 +173,6 @@ public class FieldMappingConstants {
 		).put(
 			"screenName", "field.screen-name"
 		).build();
-	private static final Map<String, String> _fieldTypes = HashMapBuilder.put(
-		"boolean", TYPE_BOOLEAN
-	).put(
-		"date", TYPE_DATE
-	).put(
-		"number", TYPE_NUMBER
-	).put(
-		"string", TYPE_TEXT
-	).build();
 	private static final List<FieldMappingMap> _liferayFieldMappingMaps =
 		Arrays.asList(
 			new FieldMappingMap("addresses", "address", TYPE_TEXT),
@@ -222,13 +186,6 @@ public class FieldMappingConstants {
 			new FieldMappingMap("phones", "telephone", TYPE_TEXT));
 	private static final Map<String, String> _liferayFieldNames =
 		new HashMap<>();
-	private static final Map<String, String> _ownerTypes = HashMapBuilder.put(
-		OWNER_TYPE_ACCOUNT, OWNER_TYPE_ACCOUNT
-	).put(
-		OWNER_TYPE_INDIVIDUAL, OWNER_TYPE_INDIVIDUAL
-	).put(
-		OWNER_TYPE_ORGANIZATION, OWNER_TYPE_ORGANIZATION
-	).build();
 	private static final List<FieldMappingMap>
 		_salesforceIndividualFieldMappingMaps = Arrays.asList(
 			new FieldMappingMap("birthDate", "birthDate", TYPE_DATE),

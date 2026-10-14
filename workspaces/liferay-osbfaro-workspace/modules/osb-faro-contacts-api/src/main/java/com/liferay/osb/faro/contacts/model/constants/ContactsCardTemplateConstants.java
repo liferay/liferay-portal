@@ -8,7 +8,6 @@ package com.liferay.osb.faro.contacts.model.constants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,22 +19,9 @@ public class ContactsCardTemplateConstants {
 
 	public static final int SETTINGS_GRAPH_TYPE_BAR = 0;
 
-	public static final int SETTINGS_GRAPH_TYPE_LINE = 1;
-
 	public static final int SETTINGS_GRAPH_TYPE_PIE = 2;
 
 	public static final int SETTINGS_PROFILE_CARD_LAYOUT_TYPE_HORIZONTAL = 0;
-
-	public static final int SETTINGS_PROFILE_CARD_LAYOUT_TYPE_NO_AVATAR = 1;
-
-	public static final int SETTINGS_PROFILE_CARD_LAYOUT_TYPE_VERTICAL = 2;
-
-	public static final int SETTINGS_SEGMENTS_MEMBERSHIP_CARD_ORDER_BY_COUNT =
-		0;
-
-	public static final int SETTINGS_SEGMENTS_MEMBERSHIP_CARD_ORDER_BY_NAME = 1;
-
-	public static final int SETTINGS_UNIT_COUNT = 0;
 
 	public static final int SETTINGS_UNIT_PERCENTAGE = 1;
 
@@ -73,10 +59,6 @@ public class ContactsCardTemplateConstants {
 		return _cardTypes;
 	}
 
-	public static Map<String, Object> getConstants() {
-		return _constants;
-	}
-
 	private static final Map<String, Integer> _cardTypes = HashMapBuilder.put(
 		"activityHistory", TYPE_ACTIVITY_HISTORY
 	).put(
@@ -106,48 +88,5 @@ public class ContactsCardTemplateConstants {
 	).put(
 		"touchpointAttribution", TYPE_TOUCHPOINT_ATTRIBUTION
 	).build();
-	private static final Map<String, Object> _constants = new HashMap<>();
-
-	static {
-		_constants.put("cardTypes", _cardTypes);
-		_constants.put(
-			"fiterTypes",
-			HashMapBuilder.<String, String>put(
-				"all", SETTINGS_FILTER_ALL
-			).build());
-		_constants.put(
-			"graphTypes",
-			HashMapBuilder.<String, Integer>put(
-				"bar", SETTINGS_GRAPH_TYPE_BAR
-			).put(
-				"line", SETTINGS_GRAPH_TYPE_LINE
-			).put(
-				"pie", SETTINGS_GRAPH_TYPE_PIE
-			).build());
-		_constants.put(
-			"profileCardLayoutTypes",
-			HashMapBuilder.<String, Integer>put(
-				"horizontal", SETTINGS_PROFILE_CARD_LAYOUT_TYPE_HORIZONTAL
-			).put(
-				"noAvatar", SETTINGS_PROFILE_CARD_LAYOUT_TYPE_NO_AVATAR
-			).put(
-				"vertical", SETTINGS_PROFILE_CARD_LAYOUT_TYPE_VERTICAL
-			).build());
-		_constants.put(
-			"segmentsMembershipCardOrders",
-			HashMapBuilder.<String, Integer>put(
-				"alphabetical", SETTINGS_SEGMENTS_MEMBERSHIP_CARD_ORDER_BY_NAME
-			).put(
-				"numberOfMembers",
-				SETTINGS_SEGMENTS_MEMBERSHIP_CARD_ORDER_BY_COUNT
-			).build());
-		_constants.put(
-			"units",
-			HashMapBuilder.<String, Integer>put(
-				"count", SETTINGS_UNIT_COUNT
-			).put(
-				"percentage", SETTINGS_UNIT_PERCENTAGE
-			).build());
-	}
 
 }

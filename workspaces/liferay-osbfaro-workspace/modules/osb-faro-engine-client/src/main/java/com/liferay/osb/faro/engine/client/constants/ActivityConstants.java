@@ -8,13 +8,11 @@ package com.liferay.osb.faro.engine.client.constants;
 import com.liferay.osb.faro.engine.client.model.Activity;
 import com.liferay.osb.faro.engine.client.model.Asset;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Matthew Kong
@@ -124,21 +122,5 @@ public class ActivityConstants {
 
 		return Collections.emptyList();
 	}
-
-	public static Map<String, Integer> getActions() {
-		return _actions;
-	}
-
-	private static final Map<String, Integer> _actions = HashMapBuilder.put(
-		"comments", ACTION_COMMENTS
-	).put(
-		"downloads", ACTION_DOWNLOADS
-	).put(
-		"previews", ACTION_PREVIEWS
-	).put(
-		"submissions", ACTION_SUBMISSIONS
-	).put(
-		"visits", ACTION_VISITS
-	).build();
 
 }
