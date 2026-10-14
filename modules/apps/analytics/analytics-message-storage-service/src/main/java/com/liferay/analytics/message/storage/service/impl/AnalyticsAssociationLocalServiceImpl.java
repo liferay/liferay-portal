@@ -74,27 +74,11 @@ public class AnalyticsAssociationLocalServiceImpl
 	}
 
 	@Override
-	public List<AnalyticsAssociation> getAnalyticsAssociations(
-		long companyId, String associationClassName, int start, int end) {
-
-		return analyticsAssociationPersistence.findByC_A(
-			companyId, associationClassName, start, end);
-	}
-
-	@Override
 	public int getAnalyticsAssociationsCount(
 		long companyId, Date modifiedDate, String associationClassName) {
 
 		return analyticsAssociationPersistence.countByC_GtM_A(
 			companyId, modifiedDate, associationClassName);
-	}
-
-	@Override
-	public int getAnalyticsAssociationsCount(
-		long companyId, String associationClassName) {
-
-		return analyticsAssociationPersistence.countByC_A(
-			companyId, associationClassName);
 	}
 
 }
