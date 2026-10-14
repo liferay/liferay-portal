@@ -53,11 +53,6 @@ public class DLSyncEventLocalServiceImpl
 	}
 
 	@Override
-	public List<DLSyncEvent> getDLSyncEvents(long modifiedTime) {
-		return dlSyncEventPersistence.findByGtModifiedTime(modifiedTime);
-	}
-
-	@Override
 	public List<DLSyncEvent> getLatestDLSyncEvents() {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
 			DLSyncEvent.class, getClassLoader());
