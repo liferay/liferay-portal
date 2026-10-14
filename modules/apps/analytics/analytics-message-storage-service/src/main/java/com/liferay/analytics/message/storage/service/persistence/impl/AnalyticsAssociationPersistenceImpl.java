@@ -321,99 +321,6 @@ public class AnalyticsAssociationPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<AnalyticsAssociation, NoSuchAssociationException>
-			_collectionPersistenceFinderByC_A;
-
-	/**
-	 * Returns an ordered range of all the analytics associations where companyId = &#63; and associationClassName = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>AnalyticsAssociationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param associationClassName the association class name
-	 * @param start the lower bound of the range of analytics associations
-	 * @param end the upper bound of the range of analytics associations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching analytics associations
-	 */
-	@Override
-	public List<AnalyticsAssociation> findByC_A(
-		long companyId, String associationClassName, int start, int end,
-		OrderByComparator<AnalyticsAssociation> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_A.find(
-			finderCache, new Object[] {companyId, associationClassName}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first analytics association in the ordered set where companyId = &#63; and associationClassName = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param associationClassName the association class name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching analytics association
-	 * @throws NoSuchAssociationException if a matching analytics association could not be found
-	 */
-	@Override
-	public AnalyticsAssociation findByC_A_First(
-			long companyId, String associationClassName,
-			OrderByComparator<AnalyticsAssociation> orderByComparator)
-		throws NoSuchAssociationException {
-
-		return _collectionPersistenceFinderByC_A.findFirst(
-			finderCache, new Object[] {companyId, associationClassName},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first analytics association in the ordered set where companyId = &#63; and associationClassName = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param associationClassName the association class name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching analytics association, or <code>null</code> if a matching analytics association could not be found
-	 */
-	@Override
-	public AnalyticsAssociation fetchByC_A_First(
-		long companyId, String associationClassName,
-		OrderByComparator<AnalyticsAssociation> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_A.fetchFirst(
-			finderCache, new Object[] {companyId, associationClassName},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the analytics associations where companyId = &#63; and associationClassName = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param associationClassName the association class name
-	 */
-	@Override
-	public void removeByC_A(long companyId, String associationClassName) {
-		_collectionPersistenceFinderByC_A.remove(
-			finderCache, new Object[] {companyId, associationClassName});
-	}
-
-	/**
-	 * Returns the number of analytics associations where companyId = &#63; and associationClassName = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param associationClassName the association class name
-	 * @return the number of matching analytics associations
-	 */
-	@Override
-	public int countByC_A(long companyId, String associationClassName) {
-		return _collectionPersistenceFinderByC_A.count(
-			finderCache, new Object[] {companyId, associationClassName});
-	}
-
-	private CollectionPersistenceFinder
-		<AnalyticsAssociation, NoSuchAssociationException>
 			_collectionPersistenceFinderByC_GtM_A;
 
 	/**
@@ -1029,38 +936,6 @@ public class AnalyticsAssociationPersistenceImpl
 				"analyticsAssociation.", "modifiedDate", FinderColumn.Type.DATE,
 				"<", true, true, AnalyticsAssociation::getModifiedDate));
 
-		_collectionPersistenceFinderByC_A = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "associationClassName"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "associationClassName"}, 0, 2, true,
-				null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "associationClassName"}, 0, 2, false,
-				null),
-			_SQL_SELECT_ANALYTICSASSOCIATION_WHERE,
-			_SQL_COUNT_ANALYTICSASSOCIATION_WHERE,
-			AnalyticsAssociationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"analyticsAssociation.", "companyId", FinderColumn.Type.LONG,
-				"=", true, true, AnalyticsAssociation::getCompanyId),
-			new FinderColumn<>(
-				"analyticsAssociation.", "associationClassName",
-				FinderColumn.Type.STRING, "=", true, true,
-				AnalyticsAssociation::getAssociationClassName));
-
 		_collectionPersistenceFinderByC_GtM_A =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1216,4 +1091,4 @@ public class AnalyticsAssociationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-702917040
+// LIFERAY-SERVICE-BUILDER-HASH:1933741138
