@@ -12,6 +12,8 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -101,7 +103,7 @@ public class IndividualSegmentsCheckerTest {
 
 			String guestUserUuid = StringUtil.randomString();
 
-			_prepareAsahFaroBackendClient(guestUserUuid);
+			_prepareAsahFaroBackendClient(_user.getUuid(), guestUserUuid);
 
 			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
@@ -194,7 +196,8 @@ public class IndividualSegmentsCheckerTest {
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
 
-			_prepareAsahFaroBackendClient(StringUtil.randomString());
+			_prepareAsahFaroBackendClient(
+				_user.getUuid(), StringUtil.randomString());
 
 			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
@@ -266,7 +269,8 @@ public class IndividualSegmentsCheckerTest {
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
 
-			_prepareAsahFaroBackendClient(StringUtil.randomString());
+			_prepareAsahFaroBackendClient(
+				_user.getUuid(), StringUtil.randomString());
 
 			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
@@ -298,7 +302,7 @@ public class IndividualSegmentsCheckerTest {
 		return segmentsEntries.get(0);
 	}
 
-	private void _prepareAsahFaroBackendClient(String guestUserUuid) {
+	private void _prepareAsahFaroBackendClient(String... individualPKs) {
 		Object asahFaroBackendClient = ReflectionTestUtil.getFieldValue(
 			_checkIndividualSegmentsSchedulerJobConfiguration,
 			"_asahFaroBackendClient");
@@ -334,11 +338,11 @@ public class IndividualSegmentsCheckerTest {
 					).toString()
 				).put(
 					"/api/1.0/individual-segments/1234567/individuals",
-					() -> JSONUtil.put(
-						"_embedded",
-						JSONUtil.put(
-							"individuals",
-							JSONUtil.putAll(
+					() -> {
+						JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+						for (String individualPK : individualPKs) {
+							jsonArray.put(
 								JSONUtil.put(
 									"dataSourceIndividualPKs",
 									JSONUtil.putAll(
@@ -346,39 +350,31 @@ public class IndividualSegmentsCheckerTest {
 											"dataSourceId", "123456789"
 										).put(
 											"individualPKs",
-											JSONUtil.putAll(_user.getUuid())
+											JSONUtil.putAll(individualPK)
 										))
 								).put(
 									"individualSegmentIds",
 									JSONUtil.putAll("1234567")
-								),
-								JSONUtil.put(
-									"dataSourceIndividualPKs",
-									JSONUtil.putAll(
-										JSONUtil.put(
-											"dataSourceId", "123456789"
-										).put(
-											"individualPKs",
-											JSONUtil.putAll(guestUserUuid)
-										))
-								).put(
-									"individualSegmentIds",
-									JSONUtil.putAll("1234567")
-								)))
-					).put(
-						"page",
-						JSONUtil.put(
-							"number", 0
+								));
+						}
+
+						return JSONUtil.put(
+							"_embedded", JSONUtil.put("individuals", jsonArray)
 						).put(
-							"size", 100
+							"page",
+							JSONUtil.put(
+								"number", 0
+							).put(
+								"size", 100
+							).put(
+								"totalElements", individualPKs.length
+							).put(
+								"totalPages", 1
+							)
 						).put(
-							"totalElements", 2
-						).put(
-							"totalPages", 1
-						)
-					).put(
-						"total", 0
-					).toString()
+							"total", 0
+						).toString();
+					}
 				).build()));
 	}
 
