@@ -55,7 +55,7 @@ public class ThemeUtil {
 			return false;
 		}
 
-		String gulpFileContent;
+		String gulpFileContent = null;
 
 		try {
 			gulpFileContent = new String(
