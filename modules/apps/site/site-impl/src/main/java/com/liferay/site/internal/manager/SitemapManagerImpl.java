@@ -536,16 +536,16 @@ public class SitemapManagerImpl implements SitemapManager {
 		String childSitemapKey, long companyId, long groupId, Date startDate) {
 
 		try {
-			if (!_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
-					companyId) ||
-				!_isIndexModeCompanyEnabled(childSitemapKey, companyId)) {
-
-				return;
-			}
-
 			boolean force = true;
 
 			if (startDate == null) {
+				if (!_sitemapConfigurationManager.
+						isCachedGenerationCompanyEnabled(companyId) ||
+					!_isIndexModeCompanyEnabled(childSitemapKey, companyId)) {
+
+					return;
+				}
+
 				force = false;
 
 				startDate = new Date();

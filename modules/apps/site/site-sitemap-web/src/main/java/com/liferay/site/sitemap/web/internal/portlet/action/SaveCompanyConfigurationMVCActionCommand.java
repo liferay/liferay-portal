@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 import com.liferay.site.constants.SitemapConstants;
 import com.liferay.site.manager.SitemapManager;
+import com.liferay.site.service.SiteSitemapRegenerationEntryLocalService;
 import com.liferay.site.storage.helper.SitemapStorageHelper;
 
 import jakarta.portlet.ActionRequest;
@@ -80,9 +81,12 @@ public class SaveCompanyConfigurationMVCActionCommand
 				companyId));
 		boolean xmlSitemapIndexEnabled = ParamUtil.getBoolean(
 			actionRequest, "xmlSitemapIndexEnabled");
+
+		String originalXMLSitemapIndexMode =
+			_sitemapConfigurationManager.getXMLSitemapIndexMode(companyId);
+
 		String xmlSitemapIndexMode = ParamUtil.getString(
-			actionRequest, "xmlSitemapIndexMode",
-			_sitemapConfigurationManager.getXMLSitemapIndexMode(companyId));
+			actionRequest, "xmlSitemapIndexMode", originalXMLSitemapIndexMode);
 
 		_sitemapConfigurationManager.saveSitemapCompanyConfiguration(
 			cachedGenerationEnabled, companyId,
@@ -95,9 +99,12 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 		String successMessageKey = "xml-sitemap-settings-have-been-saved";
 
-		if (cachedGenerationEnabled && xmlSitemapIndexEnabled &&
-			StringUtil.equals(
-				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_ASSET_TYPE)) {
+		if (cachedGenerationEnabled && xmlSitemapIndexEnabled) {
+			if (!StringUtil.equals(
+					originalXMLSitemapIndexMode, xmlSitemapIndexMode)) {
+
+				_deleteSitemaps(companyId);
+			}
 
 			boolean saveAndGenerate = ParamUtil.getBoolean(
 				actionRequest, "saveAndGenerate");
@@ -105,22 +112,14 @@ public class SaveCompanyConfigurationMVCActionCommand
 			if (saveAndGenerate ||
 				!_sitemapStorageHelper.hasSitemapFiles(companyId)) {
 
-				Map<Long, String> assetTypeKeys =
-					_sitemapManager.getAssetTypeKeys();
-
-				for (String assetTypeKey : assetTypeKeys.values()) {
-					_sitemapManager.scheduleRegenerateSitemap(
-						assetTypeKey, companyId, 0, new Date());
-				}
+				_scheduleRegenerateSitemap(companyId, xmlSitemapIndexMode);
 
 				successMessageKey =
 					"xml-sitemap-has-been-cached-and-settings-have-been-saved";
 			}
 		}
 		else {
-			_sitemapStorageHelper.deleteSitemaps(companyId);
-
-			_sitemapManager.deleteRegenerateSitemapScheduledJobs(companyId);
+			_deleteSitemaps(companyId);
 		}
 
 		SessionMessages.add(
@@ -128,6 +127,15 @@ public class SaveCompanyConfigurationMVCActionCommand
 			_language.get(themeDisplay.getLocale(), successMessageKey));
 
 		sendRedirect(actionRequest, actionResponse);
+	}
+
+	private void _deleteSitemaps(long companyId) throws Exception {
+		_sitemapStorageHelper.deleteSitemaps(companyId);
+
+		_sitemapManager.deleteRegenerateSitemapScheduledJobs(companyId);
+
+		_siteSitemapRegenerationEntryLocalService.
+			deleteSiteSitemapRegenerationEntries(companyId);
 	}
 
 	private long[] _getCompanySitemapGroupIds(ActionRequest actionRequest) {
@@ -166,6 +174,27 @@ public class SaveCompanyConfigurationMVCActionCommand
 			});
 	}
 
+	private void _scheduleRegenerateSitemap(
+		long companyId, String xmlSitemapIndexMode) {
+
+		if (StringUtil.equals(
+				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
+
+			_sitemapManager.scheduleRegenerateSitemap(
+				SitemapConstants.INDEX_MODE_PAGE_LAYOUT, companyId, 0,
+				new Date());
+
+			return;
+		}
+
+		Map<Long, String> assetTypeKeys = _sitemapManager.getAssetTypeKeys();
+
+		for (String assetTypeKey : assetTypeKeys.values()) {
+			_sitemapManager.scheduleRegenerateSitemap(
+				assetTypeKey, companyId, 0, new Date());
+		}
+	}
+
 	@Reference
 	private GroupLocalService _groupLocalService;
 
@@ -178,6 +207,10 @@ public class SaveCompanyConfigurationMVCActionCommand
 	@Reference
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
+
+	@Reference
+	private SiteSitemapRegenerationEntryLocalService
+		_siteSitemapRegenerationEntryLocalService;
 
 	@Reference
 	private SitemapConfigurationManager _sitemapConfigurationManager;
