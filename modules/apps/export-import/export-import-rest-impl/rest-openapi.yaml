@@ -97,6 +97,8 @@ components:
         ExportProcessRequest:
             properties:
                 assetLibraryExternalReferenceCodes:
+                    description:
+                        The external reference codes of the asset libraries to export. Only asset libraries of type Space can be exported.
                     items:
                         type: string
                     type: array
@@ -230,6 +232,8 @@ components:
         ImportProcessRequest:
             properties:
                 assetLibraryExternalReferenceCodes:
+                    description:
+                        The external reference codes of the asset libraries to import from the file. Only asset libraries of type Space can be imported.
                     items:
                         type: string
                     type: array
@@ -510,7 +514,7 @@ components:
             type: object
         PreviewAssetLibrary:
             description:
-                An asset library that can be exported from the instance or that a file to import contains.
+                An asset library that can be exported from the instance or that a file to import contains. Only asset libraries of type Space can be exported.
             properties:
                 descriptiveName:
                     description:
@@ -527,9 +531,16 @@ components:
                         The asset library's external reference code.
                     readOnly: true
                     type: string
+                type:
+                    description:
+                        The asset library's type.
+                    enum: [AssetLibrary, DesignLibrary, Project, Space]
+                    readOnly: true
+                    type: string
             required:
-                - descriptiveName
-                - externalReferenceCode
+                -   descriptiveName
+                -   externalReferenceCode
+                -   type
             type: object
         ProcessProgress:
             properties:
@@ -1198,7 +1209,7 @@ paths:
     "/export-preview/preview-asset-libraries":
         get:
             description:
-                Retrieves the asset libraries that can be exported.
+                Retrieves the asset libraries that can be exported. Only asset libraries of type Space can be exported.
             operationId: getExportPreviewPreviewAssetLibrariesPage
             parameters:
                 -   in: query
