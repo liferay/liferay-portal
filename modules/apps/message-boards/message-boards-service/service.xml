@@ -31,9 +31,6 @@
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
 		</finder>
-		<finder name="UserId" return-type="Collection">
-			<finder-column name="userId" />
-		</finder>
 		<finder name="BanUserId" return-type="Collection">
 			<finder-column name="banUserId" />
 		</finder>
@@ -84,9 +81,6 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
 		</finder>
 		<finder name="G_P" return-type="Collection">
 			<finder-column name="groupId" />
@@ -202,9 +196,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="Active" return-type="Collection">
-			<finder-column name="active" />
-		</finder>
 		<finder name="G_C" return-type="MBMailingList" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="categoryId" />
@@ -298,10 +289,6 @@
 			<finder-column name="companyId" />
 			<finder-column name="status" />
 		</finder>
-		<finder name="U_C" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column arrayable-operator="OR" name="classNameId" />
-		</finder>
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
@@ -310,10 +297,6 @@
 			<finder-column name="threadId" />
 			<finder-column name="parentMessageId" />
 		</finder>
-		<finder name="T_A" return-type="Collection">
-			<finder-column name="threadId" />
-			<finder-column name="answer" />
-		</finder>
 		<finder name="T_S" return-type="Collection">
 			<finder-column name="threadId" />
 			<finder-column name="status" />
@@ -321,10 +304,6 @@
 		<finder name="T_NotS" return-type="Collection">
 			<finder-column name="threadId" />
 			<finder-column comparator="!=" name="status" />
-		</finder>
-		<finder db-index="false" name="TR_S" return-type="Collection" where="parentMessageId != 0">
-			<finder-column name="threadId" />
-			<finder-column name="status" />
 		</finder>
 		<finder name="P_S" return-type="Collection">
 			<finder-column name="parentMessageId" />
@@ -349,11 +328,6 @@
 			<finder-column name="userId" />
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
-		</finder>
-		<finder name="U_C_S" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column arrayable-operator="OR" name="classNameId" />
-			<finder-column name="status" />
 		</finder>
 		<finder name="C_C_S" return-type="Collection">
 			<finder-column name="classNameId" />
@@ -476,17 +450,9 @@
 			<finder-column name="groupId" />
 			<finder-column arrayable-operator="OR" name="categoryId" />
 		</finder>
-		<finder name="G_NotC" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column comparator="!=" name="categoryId" />
-		</finder>
 		<finder name="G_S" return-type="Collection" where="categoryId != -1">
 			<finder-column name="groupId" />
 			<finder-column name="status" />
-		</finder>
-		<finder name="C_P" return-type="Collection">
-			<finder-column name="categoryId" />
-			<finder-column name="priority" />
 		</finder>
 		<finder name="L_P" return-type="Collection" where="categoryId != -1">
 			<finder-column name="lastPostDate" />
@@ -505,16 +471,6 @@
 		<finder name="G_C_NotS" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column arrayable-operator="OR" name="categoryId" />
-			<finder-column comparator="!=" name="status" />
-		</finder>
-		<finder name="G_NotC_S" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column comparator="!=" name="categoryId" />
-			<finder-column name="status" />
-		</finder>
-		<finder name="G_NotC_NotS" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column comparator="!=" name="categoryId" />
 			<finder-column comparator="!=" name="status" />
 		</finder>
 	</entity>
