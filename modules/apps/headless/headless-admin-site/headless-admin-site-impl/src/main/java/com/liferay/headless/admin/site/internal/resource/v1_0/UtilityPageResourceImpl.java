@@ -381,8 +381,9 @@ public class UtilityPageResourceImpl
 					groupId, LayoutAdminPortletKeys.GROUP_PAGES,
 					utilityPage.getThumbnailURLReference(),
 					contextUser.getUserId()),
-				utilityPage.getMarkedAsDefault(), utilityPage.getName(),
-				_getType(utilityPage.getType()), null, serviceContext);
+				GetterUtil.getBoolean(utilityPage.getMarkedAsDefault()),
+				utilityPage.getName(), _getType(utilityPage.getType()), null,
+				serviceContext);
 
 		return _utilityPageDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
