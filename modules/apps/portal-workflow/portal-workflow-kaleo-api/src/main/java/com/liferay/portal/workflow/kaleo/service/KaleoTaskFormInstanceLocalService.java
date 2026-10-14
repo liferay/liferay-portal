@@ -81,8 +81,6 @@ public interface KaleoTaskFormInstanceLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public int countKaleoTaskFormInstanceByKaleoTaskId(long kaleoTaskId);
-
 	/**
 	 * Creates a new kaleo task form instance with the primary key. Does not add the kaleo task form instance to the database.
 	 *
@@ -223,10 +221,6 @@ public interface KaleoTaskFormInstanceLocalService
 		long kaleoTaskFormInstanceId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KaleoTaskFormInstance fetchKaleoTaskFormKaleoTaskFormInstance(
-		long kaleoTaskFormId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -266,15 +260,6 @@ public interface KaleoTaskFormInstanceLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoTaskFormInstancesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KaleoTaskFormInstance getKaleoTaskFormKaleoTaskFormInstance(
-			long kaleoTaskFormId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoTaskFormInstance> getKaleoTaskKaleoTaskFormInstances(
-		long kaleoTaskId);
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -321,4 +306,4 @@ public interface KaleoTaskFormInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-318957518
+// LIFERAY-SERVICE-BUILDER-HASH:1029211198

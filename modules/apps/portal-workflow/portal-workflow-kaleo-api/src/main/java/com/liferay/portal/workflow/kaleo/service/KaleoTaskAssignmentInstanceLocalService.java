@@ -250,11 +250,6 @@ public interface KaleoTaskAssignmentInstanceLocalService
 		OrderByComparator<KaleoTaskAssignmentInstance> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KaleoTaskAssignmentInstance fetchFirstKaleoTaskAssignmentInstance(
-		long kaleoTaskInstanceTokenId, String assigneeClassName,
-		OrderByComparator<KaleoTaskAssignmentInstance> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public KaleoTaskAssignmentInstance fetchKaleoTaskAssignmentInstance(
 		long kaleoTaskAssignmentInstanceId);
 
@@ -352,4 +347,4 @@ public interface KaleoTaskAssignmentInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-729259293
+// LIFERAY-SERVICE-BUILDER-HASH:-764852413

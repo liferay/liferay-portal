@@ -169,14 +169,6 @@ public class KaleoTimerInstanceTokenLocalServiceUtil {
 			kaleoTimerInstanceTokenId);
 	}
 
-	public static void deleteKaleoTimerInstanceToken(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws PortalException {
-
-		getService().deleteKaleoTimerInstanceToken(
-			kaleoInstanceTokenId, kaleoTimerId);
-	}
-
 	public static void deleteKaleoTimerInstanceTokens(long kaleoInstanceId) {
 		getService().deleteKaleoTimerInstanceTokens(kaleoInstanceId);
 	}
@@ -311,14 +303,6 @@ public class KaleoTimerInstanceTokenLocalServiceUtil {
 			kaleoTimerInstanceTokenId);
 	}
 
-	public static KaleoTimerInstanceToken getKaleoTimerInstanceToken(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws PortalException {
-
-		return getService().getKaleoTimerInstanceToken(
-			kaleoInstanceTokenId, kaleoTimerId);
-	}
-
 	/**
 	 * Returns a range of all the kaleo timer instance tokens.
 	 *
@@ -406,4 +390,4 @@ public class KaleoTimerInstanceTokenLocalServiceUtil {
 			KaleoTimerInstanceTokenLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1214868237
+// LIFERAY-SERVICE-BUILDER-HASH:-1351281486

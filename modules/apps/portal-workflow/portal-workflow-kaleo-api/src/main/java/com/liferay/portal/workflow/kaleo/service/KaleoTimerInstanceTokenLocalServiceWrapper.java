@@ -179,15 +179,6 @@ public class KaleoTimerInstanceTokenLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteKaleoTimerInstanceToken(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_kaleoTimerInstanceTokenLocalService.deleteKaleoTimerInstanceToken(
-			kaleoInstanceTokenId, kaleoTimerId);
-	}
-
-	@Override
 	public void deleteKaleoTimerInstanceTokens(long kaleoInstanceId) {
 		_kaleoTimerInstanceTokenLocalService.deleteKaleoTimerInstanceTokens(
 			kaleoInstanceId);
@@ -348,15 +339,6 @@ public class KaleoTimerInstanceTokenLocalServiceWrapper
 			kaleoTimerInstanceTokenId);
 	}
 
-	@Override
-	public KaleoTimerInstanceToken getKaleoTimerInstanceToken(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kaleoTimerInstanceTokenLocalService.getKaleoTimerInstanceToken(
-			kaleoInstanceTokenId, kaleoTimerId);
-	}
-
 	/**
 	 * Returns a range of all the kaleo timer instance tokens.
 	 *
@@ -489,4 +471,4 @@ public class KaleoTimerInstanceTokenLocalServiceWrapper
 		_kaleoTimerInstanceTokenLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:212848612
+// LIFERAY-SERVICE-BUILDER-HASH:-808784199

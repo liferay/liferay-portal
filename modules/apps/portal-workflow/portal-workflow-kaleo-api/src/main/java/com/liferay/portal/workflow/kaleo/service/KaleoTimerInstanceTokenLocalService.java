@@ -153,10 +153,6 @@ public interface KaleoTimerInstanceTokenLocalService
 			long kaleoTimerInstanceTokenId)
 		throws PortalException;
 
-	public void deleteKaleoTimerInstanceToken(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws PortalException;
-
 	public void deleteKaleoTimerInstanceTokens(long kaleoInstanceId);
 
 	/**
@@ -260,11 +256,6 @@ public interface KaleoTimerInstanceTokenLocalService
 			long kaleoTimerInstanceTokenId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KaleoTimerInstanceToken getKaleoTimerInstanceToken(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the kaleo timer instance tokens.
 	 *
@@ -343,4 +334,4 @@ public interface KaleoTimerInstanceTokenLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-925833736
+// LIFERAY-SERVICE-BUILDER-HASH:-1408773009

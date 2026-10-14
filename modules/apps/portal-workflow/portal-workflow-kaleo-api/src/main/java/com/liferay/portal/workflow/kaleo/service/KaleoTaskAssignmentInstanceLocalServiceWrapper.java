@@ -353,17 +353,6 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	}
 
 	@Override
-	public KaleoTaskAssignmentInstance fetchFirstKaleoTaskAssignmentInstance(
-		long kaleoTaskInstanceTokenId, String assigneeClassName,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<KaleoTaskAssignmentInstance> orderByComparator) {
-
-		return _kaleoTaskAssignmentInstanceLocalService.
-			fetchFirstKaleoTaskAssignmentInstance(
-				kaleoTaskInstanceTokenId, assigneeClassName, orderByComparator);
-	}
-
-	@Override
 	public KaleoTaskAssignmentInstance fetchKaleoTaskAssignmentInstance(
 		long kaleoTaskAssignmentInstanceId) {
 
@@ -533,4 +522,4 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 		_kaleoTaskAssignmentInstanceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1786329632
+// LIFERAY-SERVICE-BUILDER-HASH:-1788565281

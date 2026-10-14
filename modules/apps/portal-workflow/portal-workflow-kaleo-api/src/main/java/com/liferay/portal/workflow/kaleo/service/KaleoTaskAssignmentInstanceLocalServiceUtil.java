@@ -310,15 +310,6 @@ public class KaleoTaskAssignmentInstanceLocalServiceUtil {
 			kaleoTaskInstanceTokenId, orderByComparator);
 	}
 
-	public static KaleoTaskAssignmentInstance
-		fetchFirstKaleoTaskAssignmentInstance(
-			long kaleoTaskInstanceTokenId, String assigneeClassName,
-			OrderByComparator<KaleoTaskAssignmentInstance> orderByComparator) {
-
-		return getService().fetchFirstKaleoTaskAssignmentInstance(
-			kaleoTaskInstanceTokenId, assigneeClassName, orderByComparator);
-	}
-
 	public static KaleoTaskAssignmentInstance fetchKaleoTaskAssignmentInstance(
 		long kaleoTaskAssignmentInstanceId) {
 
@@ -439,4 +430,4 @@ public class KaleoTaskAssignmentInstanceLocalServiceUtil {
 			KaleoTaskAssignmentInstanceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-540749458
+// LIFERAY-SERVICE-BUILDER-HASH:-961660734

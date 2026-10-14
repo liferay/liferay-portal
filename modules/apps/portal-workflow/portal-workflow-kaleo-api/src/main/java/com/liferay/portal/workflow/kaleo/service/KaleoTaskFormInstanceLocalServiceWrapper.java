@@ -63,12 +63,6 @@ public class KaleoTaskFormInstanceLocalServiceWrapper
 			serviceContext);
 	}
 
-	@Override
-	public int countKaleoTaskFormInstanceByKaleoTaskId(long kaleoTaskId) {
-		return _kaleoTaskFormInstanceLocalService.
-			countKaleoTaskFormInstanceByKaleoTaskId(kaleoTaskId);
-	}
-
 	/**
 	 * Creates a new kaleo task form instance with the primary key. Does not add the kaleo task form instance to the database.
 	 *
@@ -290,14 +284,6 @@ public class KaleoTaskFormInstanceLocalServiceWrapper
 	}
 
 	@Override
-	public KaleoTaskFormInstance fetchKaleoTaskFormKaleoTaskFormInstance(
-		long kaleoTaskFormId) {
-
-		return _kaleoTaskFormInstanceLocalService.
-			fetchKaleoTaskFormKaleoTaskFormInstance(kaleoTaskFormId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -356,23 +342,6 @@ public class KaleoTaskFormInstanceLocalServiceWrapper
 	public int getKaleoTaskFormInstancesCount() {
 		return _kaleoTaskFormInstanceLocalService.
 			getKaleoTaskFormInstancesCount();
-	}
-
-	@Override
-	public KaleoTaskFormInstance getKaleoTaskFormKaleoTaskFormInstance(
-			long kaleoTaskFormId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kaleoTaskFormInstanceLocalService.
-			getKaleoTaskFormKaleoTaskFormInstance(kaleoTaskFormId);
-	}
-
-	@Override
-	public java.util.List<KaleoTaskFormInstance>
-		getKaleoTaskKaleoTaskFormInstances(long kaleoTaskId) {
-
-		return _kaleoTaskFormInstanceLocalService.
-			getKaleoTaskKaleoTaskFormInstances(kaleoTaskId);
 	}
 
 	/**
@@ -456,4 +425,4 @@ public class KaleoTaskFormInstanceLocalServiceWrapper
 		_kaleoTaskFormInstanceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1226110168
+// LIFERAY-SERVICE-BUILDER-HASH:-851586940
