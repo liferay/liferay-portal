@@ -145,14 +145,6 @@ public class DEDataDefinitionFieldLinkLocalServiceImpl
 			ddmStructureId);
 	}
 
-	@Override
-	public List<DEDataDefinitionFieldLink> getDEDataDefinitionFieldLinks(
-		long classNameId, long ddmStructureId) {
-
-		return deDataDefinitionFieldLinkPersistence.findByC_DDMSI(
-			classNameId, ddmStructureId);
-	}
-
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *             DEDataDefinitionFieldLinkLocalServiceImpl#getDEDataDefinitionFieldLinks(
