@@ -5,13 +5,11 @@
 
 package com.liferay.segments.asah.connector.internal.messaging.test;
 
-import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -23,7 +21,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.MockHttp;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -88,23 +85,12 @@ public class IndividualSegmentsCheckerTest {
 
 	@Test
 	public void testCheckIndividualSegmentsEntries() throws Exception {
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						AnalyticsConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"liferayAnalyticsDataSourceId", "123456789"
-						).put(
-							"liferayAnalyticsEnableAllGroupIds", true
-						).put(
-							"liferayAnalyticsFaroBackendSecuritySignature",
-							RandomTestUtil.randomString()
-						).put(
-							"liferayAnalyticsFaroBackendURL",
-							"http://localhost:" +
-								PortalUtil.getPortalServerPort(false)
-						).build());
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(), "123456789", true,
+						"http://localhost:" +
+							PortalUtil.getPortalServerPort(false));
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
@@ -170,19 +156,10 @@ public class IndividualSegmentsCheckerTest {
 	public void testCheckIndividualSegmentsEntriesWhenNotSyncedWithAnalyticsCloud()
 		throws Exception {
 
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						AnalyticsConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"liferayAnalyticsDataSourceId", StringPool.BLANK
-						).put(
-							"liferayAnalyticsFaroBackendSecuritySignature",
-							StringPool.BLANK
-						).put(
-							"liferayAnalyticsFaroBackendURL", StringPool.BLANK
-						).build());
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(), StringPool.BLANK);
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
@@ -287,23 +264,12 @@ public class IndividualSegmentsCheckerTest {
 		Assert.assertEquals(
 			segmentsEntries.toString(), 2, segmentsEntries.size());
 
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						AnalyticsConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"liferayAnalyticsDataSourceId", "123456789"
-						).put(
-							"liferayAnalyticsEnableAllGroupIds", true
-						).put(
-							"liferayAnalyticsFaroBackendSecuritySignature",
-							RandomTestUtil.randomString()
-						).put(
-							"liferayAnalyticsFaroBackendURL",
-							"http://localhost:" +
-								PortalUtil.getPortalServerPort(false)
-						).build());
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(), "123456789", true,
+						"http://localhost:" +
+							PortalUtil.getPortalServerPort(false));
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
