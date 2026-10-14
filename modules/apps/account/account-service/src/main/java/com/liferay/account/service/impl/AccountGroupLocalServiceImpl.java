@@ -42,7 +42,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -191,30 +190,6 @@ public class AccountGroupLocalServiceImpl
 	}
 
 	@Override
-	public List<AccountGroup> getAccountGroups(
-		long companyId, int start, int end,
-		OrderByComparator<AccountGroup> orderByComparator) {
-
-		return accountGroupPersistence.findByCompanyId(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<AccountGroup> getAccountGroups(
-		long companyId, String name, int start, int end,
-		OrderByComparator<AccountGroup> orderByComparator) {
-
-		if (Validator.isNull(name)) {
-			return accountGroupPersistence.findByCompanyId(
-				companyId, start, end, orderByComparator);
-		}
-
-		return accountGroupPersistence.findByC_LikeN(
-			companyId, StringUtil.quote(name, StringPool.PERCENT), start, end,
-			orderByComparator);
-	}
-
-	@Override
 	public List<AccountGroup> getAccountGroupsByAccountEntryId(
 		long accountEntryId, int start, int end) {
 
@@ -238,21 +213,6 @@ public class AccountGroupLocalServiceImpl
 		long[] accountGroupIds) {
 
 		return accountGroupPersistence.findByAccountGroupId(accountGroupIds);
-	}
-
-	@Override
-	public int getAccountGroupsCount(long companyId) {
-		return accountGroupPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	public long getAccountGroupsCount(long companyId, String name) {
-		if (Validator.isNull(name)) {
-			return accountGroupPersistence.countByCompanyId(companyId);
-		}
-
-		return accountGroupPersistence.countByC_LikeN(
-			companyId, StringUtil.quote(name, StringPool.PERCENT));
 	}
 
 	@Override

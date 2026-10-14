@@ -198,16 +198,19 @@ public class AccountGroupServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
+			long companyId = user.getCompanyId();
+
 			List<AccountGroup> expectedAccountGroups = ListUtil.filter(
 				_accountGroupLocalService.getAccountGroups(
-					user.getCompanyId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null),
-				accountGroup -> !accountGroup.isDefaultAccountGroup());
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+				accountGroup ->
+					(accountGroup.getCompanyId() == companyId) &&
+					!accountGroup.isDefaultAccountGroup());
 
 			BaseModelSearchResult<AccountGroup> baseModelSearchResult =
 				_accountGroupService.searchAccountGroups(
-					user.getCompanyId(), null, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null);
+					companyId, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null);
 
 			Assert.assertEquals(
 				expectedAccountGroups.size(),

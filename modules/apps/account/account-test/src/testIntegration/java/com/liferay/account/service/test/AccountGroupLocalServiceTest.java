@@ -199,19 +199,18 @@ public class AccountGroupLocalServiceTest {
 		_addAccountGroup();
 		_addAccountGroup();
 
-		List<AccountGroup> expectedAccountGroups =
-			_accountGroupLocalService.getAccountGroups(
-				TestPropsValues.getCompanyId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
+		long companyId = TestPropsValues.getCompanyId();
 
-		expectedAccountGroups = ListUtil.filter(
-			expectedAccountGroups,
-			accountGroup -> !accountGroup.isDefaultAccountGroup());
+		List<AccountGroup> expectedAccountGroups = ListUtil.filter(
+			_accountGroupLocalService.getAccountGroups(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+			accountGroup ->
+				(accountGroup.getCompanyId() == companyId) &&
+				!accountGroup.isDefaultAccountGroup());
 
 		BaseModelSearchResult<AccountGroup> baseModelSearchResult =
 			_accountGroupLocalService.searchAccountGroups(
-				TestPropsValues.getCompanyId(), null, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
+				companyId, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		Assert.assertEquals(
 			expectedAccountGroups.size(), baseModelSearchResult.getLength());

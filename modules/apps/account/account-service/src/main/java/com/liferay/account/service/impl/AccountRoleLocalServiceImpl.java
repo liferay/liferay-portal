@@ -40,7 +40,6 @@ import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
-import com.liferay.portal.util.PortalInstances;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -150,23 +149,6 @@ public class AccountRoleLocalServiceImpl
 		throws PortalException {
 
 		return deleteAccountRole(getAccountRole(accountRoleId));
-	}
-
-	@Override
-	public void deleteAccountRolesByCompanyId(long companyId)
-		throws PortalException {
-
-		if (!PortalInstances.isCurrentCompanyInDeletionProcess()) {
-			throw new UnsupportedOperationException(
-				"Deleting account roles by company must be called when " +
-					"deleting a company");
-		}
-
-		for (AccountRole accountRole :
-				accountRolePersistence.findByCompanyId(companyId)) {
-
-			accountRoleLocalService.deleteAccountRole(accountRole);
-		}
 	}
 
 	@Override
