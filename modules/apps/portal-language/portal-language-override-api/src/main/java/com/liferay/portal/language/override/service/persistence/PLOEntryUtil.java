@@ -276,86 +276,6 @@ public class PLOEntryUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the plo entries where companyId = &#63; and languageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.language.override.model.impl.PLOEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @param start the lower bound of the range of plo entries
-	 * @param end the upper bound of the range of plo entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching plo entries
-	 */
-	public static List<PLOEntry> findByC_L(
-		long companyId, String languageId, int start, int end,
-		OrderByComparator<PLOEntry> orderByComparator, boolean useFinderCache) {
-
-		return getPersistence().findByC_L(
-			companyId, languageId, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first plo entry in the ordered set where companyId = &#63; and languageId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching plo entry
-	 * @throws NoSuchPLOEntryException if a matching plo entry could not be found
-	 */
-	public static PLOEntry findByC_L_First(
-			long companyId, String languageId,
-			OrderByComparator<PLOEntry> orderByComparator)
-		throws com.liferay.portal.language.override.exception.
-			NoSuchPLOEntryException {
-
-		return getPersistence().findByC_L_First(
-			companyId, languageId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first plo entry in the ordered set where companyId = &#63; and languageId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching plo entry, or <code>null</code> if a matching plo entry could not be found
-	 */
-	public static PLOEntry fetchByC_L_First(
-		long companyId, String languageId,
-		OrderByComparator<PLOEntry> orderByComparator) {
-
-		return getPersistence().fetchByC_L_First(
-			companyId, languageId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the plo entries where companyId = &#63; and languageId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 */
-	public static void removeByC_L(long companyId, String languageId) {
-		getPersistence().removeByC_L(companyId, languageId);
-	}
-
-	/**
-	 * Returns the number of plo entries where companyId = &#63; and languageId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @return the number of matching plo entries
-	 */
-	public static int countByC_L(long companyId, String languageId) {
-		return getPersistence().countByC_L(companyId, languageId);
-	}
-
-	/**
 	 * Returns the plo entry where companyId = &#63; and key = &#63; and languageId = &#63; or throws a <code>NoSuchPLOEntryException</code> if it could not be found.
 	 *
 	 * @param companyId the company ID
@@ -657,58 +577,6 @@ public class PLOEntryUtil {
 			companyId, key, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the plo entries where companyId = &#63; and languageId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @return the matching plo entries
-	 */
-	public static List<PLOEntry> findByC_L(long companyId, String languageId) {
-		return getPersistence().findByC_L(companyId, languageId);
-	}
-
-	/**
-	 * Returns a range of all the plo entries where companyId = &#63; and languageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.language.override.model.impl.PLOEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @param start the lower bound of the range of plo entries
-	 * @param end the upper bound of the range of plo entries (not inclusive)
-	 * @return the range of matching plo entries
-	 */
-	public static List<PLOEntry> findByC_L(
-		long companyId, String languageId, int start, int end) {
-
-		return getPersistence().findByC_L(companyId, languageId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the plo entries where companyId = &#63; and languageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.language.override.model.impl.PLOEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @param start the lower bound of the range of plo entries
-	 * @param end the upper bound of the range of plo entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching plo entries
-	 */
-	public static List<PLOEntry> findByC_L(
-		long companyId, String languageId, int start, int end,
-		OrderByComparator<PLOEntry> orderByComparator) {
-
-		return getPersistence().findByC_L(
-			companyId, languageId, start, end, orderByComparator);
-	}
-
 	public static PLOEntryPersistence getPersistence() {
 		return _persistence;
 	}
@@ -720,4 +588,4 @@ public class PLOEntryUtil {
 	private static volatile PLOEntryPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1029797121
+// LIFERAY-SERVICE-BUILDER-HASH:61835190

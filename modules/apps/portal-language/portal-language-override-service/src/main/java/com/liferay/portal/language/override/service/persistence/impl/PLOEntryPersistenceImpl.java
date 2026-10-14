@@ -257,97 +257,6 @@ public class PLOEntryPersistenceImpl
 			finderCache, new Object[] {companyId, key});
 	}
 
-	private CollectionPersistenceFinder<PLOEntry, NoSuchPLOEntryException>
-		_collectionPersistenceFinderByC_L;
-
-	/**
-	 * Returns an ordered range of all the plo entries where companyId = &#63; and languageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PLOEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @param start the lower bound of the range of plo entries
-	 * @param end the upper bound of the range of plo entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching plo entries
-	 */
-	@Override
-	public List<PLOEntry> findByC_L(
-		long companyId, String languageId, int start, int end,
-		OrderByComparator<PLOEntry> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_L.find(
-			finderCache, new Object[] {companyId, languageId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first plo entry in the ordered set where companyId = &#63; and languageId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching plo entry
-	 * @throws NoSuchPLOEntryException if a matching plo entry could not be found
-	 */
-	@Override
-	public PLOEntry findByC_L_First(
-			long companyId, String languageId,
-			OrderByComparator<PLOEntry> orderByComparator)
-		throws NoSuchPLOEntryException {
-
-		return _collectionPersistenceFinderByC_L.findFirst(
-			finderCache, new Object[] {companyId, languageId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first plo entry in the ordered set where companyId = &#63; and languageId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching plo entry, or <code>null</code> if a matching plo entry could not be found
-	 */
-	@Override
-	public PLOEntry fetchByC_L_First(
-		long companyId, String languageId,
-		OrderByComparator<PLOEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_L.fetchFirst(
-			finderCache, new Object[] {companyId, languageId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the plo entries where companyId = &#63; and languageId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 */
-	@Override
-	public void removeByC_L(long companyId, String languageId) {
-		_collectionPersistenceFinderByC_L.remove(
-			finderCache, new Object[] {companyId, languageId});
-	}
-
-	/**
-	 * Returns the number of plo entries where companyId = &#63; and languageId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param languageId the language ID
-	 * @return the number of matching plo entries
-	 */
-	@Override
-	public int countByC_L(long companyId, String languageId) {
-		return _collectionPersistenceFinderByC_L.count(
-			finderCache, new Object[] {companyId, languageId});
-	}
-
 	private UniquePersistenceFinder<PLOEntry, NoSuchPLOEntryException>
 		_uniquePersistenceFinderByC_K_L;
 
@@ -826,33 +735,6 @@ public class PLOEntryPersistenceImpl
 				"ploEntry.", "key", "key_", FinderColumn.Type.STRING, "=", true,
 				true, PLOEntry::getKey));
 
-		_collectionPersistenceFinderByC_L = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_L",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "languageId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_L",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "languageId"}, 0, 2, true, null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_L",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "languageId"}, 0, 2, false, null),
-			_SQL_SELECT_PLOENTRY_WHERE, _SQL_COUNT_PLOENTRY_WHERE,
-			PLOEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"ploEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
-				true, PLOEntry::getCompanyId),
-			new FinderColumn<>(
-				"ploEntry.", "languageId", FinderColumn.Type.STRING, "=", true,
-				true, PLOEntry::getLanguageId));
-
 		_uniquePersistenceFinderByC_K_L = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -954,4 +836,4 @@ public class PLOEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-392396139
+// LIFERAY-SERVICE-BUILDER-HASH:-787746136
