@@ -58,7 +58,7 @@ const EventAnalysisEditor: React.FC<IEventAnalysisEditorProps> = ({
 				<ClayCheckbox
 					checked={compareToPrevious}
 					containerProps={{
-						className: 'compare-to-previous-checkbox mb-0',
+						className: 'compare-to-previous-checkbox mb-0 mt-2',
 					}}
 					label={Liferay.Language.get('compare-to-previous')}
 					onChange={(event) =>
