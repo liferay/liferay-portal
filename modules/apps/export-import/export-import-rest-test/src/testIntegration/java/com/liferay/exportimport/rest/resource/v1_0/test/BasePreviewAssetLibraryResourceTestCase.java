@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
@@ -197,7 +198,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 		Page<PreviewAssetLibrary> page =
 			previewAssetLibraryResource.
 				getExportPreviewPreviewAssetLibrariesPage(
-					null, Pagination.of(1, 10), null);
+					null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -212,7 +213,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 		page =
 			previewAssetLibraryResource.
 				getExportPreviewPreviewAssetLibrariesPage(
-					null, Pagination.of(1, (int)totalCount + 2), null);
+					null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -235,12 +236,111 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	}
 
 	@Test
+	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		PreviewAssetLibrary previewAssetLibrary1 = randomPreviewAssetLibrary();
+
+		previewAssetLibrary1 =
+			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
+				previewAssetLibrary1);
+
+		for (EntityField entityField : entityFields) {
+			Page<PreviewAssetLibrary> page =
+				previewAssetLibraryResource.
+					getExportPreviewPreviewAssetLibrariesPage(
+						null,
+						getFilterString(
+							entityField, "between", previewAssetLibrary1),
+						Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(previewAssetLibrary1),
+				(List<PreviewAssetLibrary>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+			"eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterStringContains()
+		throws Exception {
+
+		testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+			"eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		PreviewAssetLibrary previewAssetLibrary1 =
+			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
+				randomPreviewAssetLibrary());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PreviewAssetLibrary previewAssetLibrary2 =
+			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
+				randomPreviewAssetLibrary());
+
+		for (EntityField entityField : entityFields) {
+			Page<PreviewAssetLibrary> page =
+				previewAssetLibraryResource.
+					getExportPreviewPreviewAssetLibrariesPage(
+						null,
+						getFilterString(
+							entityField, operator, previewAssetLibrary1),
+						Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(previewAssetLibrary1),
+				(List<PreviewAssetLibrary>)page.getItems());
+		}
+	}
+
+	@Test
 	public void testGetExportPreviewPreviewAssetLibrariesPageWithPagination()
 		throws Exception {
 
 		Page<PreviewAssetLibrary> previewAssetLibrariesPage =
 			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(null, null, null);
+				getExportPreviewPreviewAssetLibrariesPage(
+					null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			previewAssetLibrariesPage.getTotalCount());
@@ -265,7 +365,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			Page<PreviewAssetLibrary> page1 =
 				previewAssetLibraryResource.
 					getExportPreviewPreviewAssetLibrariesPage(
-						null,
+						null, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -280,7 +380,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			Page<PreviewAssetLibrary> page2 =
 				previewAssetLibraryResource.
 					getExportPreviewPreviewAssetLibrariesPage(
-						null,
+						null, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -293,7 +393,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			Page<PreviewAssetLibrary> page3 =
 				previewAssetLibraryResource.
 					getExportPreviewPreviewAssetLibrariesPage(
-						null,
+						null, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -307,7 +407,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			Page<PreviewAssetLibrary> page1 =
 				previewAssetLibraryResource.
 					getExportPreviewPreviewAssetLibrariesPage(
-						null, Pagination.of(1, totalCount + 2), null);
+						null, null, Pagination.of(1, totalCount + 2), null);
 
 			List<PreviewAssetLibrary> previewAssetLibraries1 =
 				(List<PreviewAssetLibrary>)page1.getItems();
@@ -319,7 +419,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			Page<PreviewAssetLibrary> page2 =
 				previewAssetLibraryResource.
 					getExportPreviewPreviewAssetLibrariesPage(
-						null, Pagination.of(2, totalCount + 2), null);
+						null, null, Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -333,7 +433,8 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			Page<PreviewAssetLibrary> page3 =
 				previewAssetLibraryResource.
 					getExportPreviewPreviewAssetLibrariesPage(
-						null, Pagination.of(1, (int)totalCount + 3), null);
+						null, null, Pagination.of(1, (int)totalCount + 3),
+						null);
 
 			assertContains(
 				previewAssetLibrary1,
@@ -472,13 +573,15 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 
 		Page<PreviewAssetLibrary> page =
 			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(null, null, null);
+				getExportPreviewPreviewAssetLibrariesPage(
+					null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<PreviewAssetLibrary> ascPage =
 				previewAssetLibraryResource.
 					getExportPreviewPreviewAssetLibrariesPage(
-						null, Pagination.of(1, (int)page.getTotalCount() + 1),
+						null, null,
+						Pagination.of(1, (int)page.getTotalCount() + 1),
 						entityField.getName() + ":asc");
 
 			assertContains(
@@ -491,7 +594,8 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			Page<PreviewAssetLibrary> descPage =
 				previewAssetLibraryResource.
 					getExportPreviewPreviewAssetLibrariesPage(
-						null, Pagination.of(1, (int)page.getTotalCount() + 1),
+						null, null,
+						Pagination.of(1, (int)page.getTotalCount() + 1),
 						entityField.getName() + ":desc");
 
 			assertContains(
@@ -516,6 +620,9 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Assert.assertTrue(true);
 	}
+
+	@Rule
+	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected void assertContains(
 		PreviewAssetLibrary previewAssetLibrary,
@@ -1306,4 +1413,4 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			_previewAssetLibraryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-477761456
+// LIFERAY-REST-BUILDER-HASH:1032390327

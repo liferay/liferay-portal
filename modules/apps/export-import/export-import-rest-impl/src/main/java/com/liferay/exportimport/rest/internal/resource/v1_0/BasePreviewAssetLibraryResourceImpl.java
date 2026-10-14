@@ -80,6 +80,10 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -111,6 +115,8 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@jakarta.ws.rs.core.Context
+				com.liferay.portal.kernel.search.filter.Filter filter,
 			@jakarta.ws.rs.core.Context Pagination pagination,
 			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
@@ -126,6 +132,10 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
@@ -164,6 +174,8 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@jakarta.ws.rs.core.Context
+				com.liferay.portal.kernel.search.filter.Filter filter,
 			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
@@ -252,7 +264,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 
 		if (parameters.containsKey("search")) {
 			return getExportPreviewPreviewAssetLibrariesPage(
-				search, pagination, sorts);
+				search, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(
@@ -865,4 +877,4 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 		LogFactoryUtil.getLog(BasePreviewAssetLibraryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-841066378
+// LIFERAY-REST-BUILDER-HASH:-1982858051

@@ -47,13 +47,17 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface PreviewAssetLibraryResource {
 
 	public Page<PreviewAssetLibrary> getExportPreviewPreviewAssetLibrariesPage(
-			String search, Pagination pagination,
+			String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public Response postExportPreviewPreviewAssetLibrariesPageExportBatch(
-			String search, com.liferay.portal.kernel.search.Sort[] sorts,
-			String callbackURL, String contentType, String fieldNames)
+			String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -152,4 +156,4 @@ public interface PreviewAssetLibraryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1874740400
+// LIFERAY-REST-BUILDER-HASH:1856193216

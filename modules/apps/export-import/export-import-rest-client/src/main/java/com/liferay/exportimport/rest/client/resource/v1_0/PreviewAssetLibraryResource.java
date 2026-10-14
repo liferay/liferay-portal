@@ -35,23 +35,25 @@ public interface PreviewAssetLibraryResource {
 	}
 
 	public Page<PreviewAssetLibrary> getExportPreviewPreviewAssetLibrariesPage(
-			String search, Pagination pagination, String sortString)
+			String search, String filterString, Pagination pagination,
+			String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getExportPreviewPreviewAssetLibrariesPageHttpResponse(
-				String search, Pagination pagination, String sortString)
+				String search, String filterString, Pagination pagination,
+				String sortString)
 		throws Exception;
 
 	public void postExportPreviewPreviewAssetLibrariesPageExportBatch(
-			String search, String sortString, String callbackURL,
-			String contentType, String fieldNames)
+			String search, String filterString, String sortString,
+			String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postExportPreviewPreviewAssetLibrariesPageExportBatchHttpResponse(
-				String search, String sortString, String callbackURL,
-				String contentType, String fieldNames)
+				String search, String filterString, String sortString,
+				String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
 	public static class Builder {
@@ -165,12 +167,13 @@ public interface PreviewAssetLibraryResource {
 
 		public Page<PreviewAssetLibrary>
 				getExportPreviewPreviewAssetLibrariesPage(
-					String search, Pagination pagination, String sortString)
+					String search, String filterString, Pagination pagination,
+					String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getExportPreviewPreviewAssetLibrariesPageHttpResponse(
-					search, pagination, sortString);
+					search, filterString, pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -233,7 +236,8 @@ public interface PreviewAssetLibraryResource {
 
 		public HttpInvoker.HttpResponse
 				getExportPreviewPreviewAssetLibrariesPageHttpResponse(
-					String search, Pagination pagination, String sortString)
+					String search, String filterString, Pagination pagination,
+					String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -261,6 +265,10 @@ public interface PreviewAssetLibraryResource {
 				httpInvoker.parameter("search", String.valueOf(search));
 			}
 
+			if (filterString != null) {
+				httpInvoker.parameter("filter", filterString);
+			}
+
 			if (pagination != null) {
 				httpInvoker.parameter(
 					"page", String.valueOf(pagination.getPage()));
@@ -286,13 +294,14 @@ public interface PreviewAssetLibraryResource {
 		}
 
 		public void postExportPreviewPreviewAssetLibrariesPageExportBatch(
-				String search, String sortString, String callbackURL,
-				String contentType, String fieldNames)
+				String search, String filterString, String sortString,
+				String callbackURL, String contentType, String fieldNames)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postExportPreviewPreviewAssetLibrariesPageExportBatchHttpResponse(
-					search, sortString, callbackURL, contentType, fieldNames);
+					search, filterString, sortString, callbackURL, contentType,
+					fieldNames);
 
 			String content = httpResponse.getContent();
 
@@ -344,8 +353,8 @@ public interface PreviewAssetLibraryResource {
 
 		public HttpInvoker.HttpResponse
 				postExportPreviewPreviewAssetLibrariesPageExportBatchHttpResponse(
-					String search, String sortString, String callbackURL,
-					String contentType, String fieldNames)
+					String search, String filterString, String sortString,
+					String callbackURL, String contentType, String fieldNames)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -373,6 +382,10 @@ public interface PreviewAssetLibraryResource {
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (filterString != null) {
+				httpInvoker.parameter("filter", filterString);
 			}
 
 			if (sortString != null) {
@@ -418,4 +431,4 @@ public interface PreviewAssetLibraryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:98354712
+// LIFERAY-REST-BUILDER-HASH:967028036
