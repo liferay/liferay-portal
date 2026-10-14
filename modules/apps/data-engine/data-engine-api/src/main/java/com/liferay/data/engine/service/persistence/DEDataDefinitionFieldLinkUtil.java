@@ -500,87 +500,6 @@ public class DEDataDefinitionFieldLinkUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the de data definition field links where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.data.engine.model.impl.DEDataDefinitionFieldLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @param start the lower bound of the range of de data definition field links
-	 * @param end the upper bound of the range of de data definition field links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching de data definition field links
-	 */
-	public static List<DEDataDefinitionFieldLink> findByC_DDMSI(
-		long classNameId, long ddmStructureId, int start, int end,
-		OrderByComparator<DEDataDefinitionFieldLink> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByC_DDMSI(
-			classNameId, ddmStructureId, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first de data definition field link in the ordered set where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching de data definition field link
-	 * @throws NoSuchDataDefinitionFieldLinkException if a matching de data definition field link could not be found
-	 */
-	public static DEDataDefinitionFieldLink findByC_DDMSI_First(
-			long classNameId, long ddmStructureId,
-			OrderByComparator<DEDataDefinitionFieldLink> orderByComparator)
-		throws com.liferay.data.engine.exception.
-			NoSuchDataDefinitionFieldLinkException {
-
-		return getPersistence().findByC_DDMSI_First(
-			classNameId, ddmStructureId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first de data definition field link in the ordered set where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching de data definition field link, or <code>null</code> if a matching de data definition field link could not be found
-	 */
-	public static DEDataDefinitionFieldLink fetchByC_DDMSI_First(
-		long classNameId, long ddmStructureId,
-		OrderByComparator<DEDataDefinitionFieldLink> orderByComparator) {
-
-		return getPersistence().fetchByC_DDMSI_First(
-			classNameId, ddmStructureId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the de data definition field links where classNameId = &#63; and ddmStructureId = &#63; from the database.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 */
-	public static void removeByC_DDMSI(long classNameId, long ddmStructureId) {
-		getPersistence().removeByC_DDMSI(classNameId, ddmStructureId);
-	}
-
-	/**
-	 * Returns the number of de data definition field links where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @return the number of matching de data definition field links
-	 */
-	public static int countByC_DDMSI(long classNameId, long ddmStructureId) {
-		return getPersistence().countByC_DDMSI(classNameId, ddmStructureId);
-	}
-
-	/**
 	 * Returns an ordered range of all the de data definition field links where ddmStructureId = &#63; and fieldName = &#63;.
 	 *
 	 * <p>
@@ -1218,61 +1137,6 @@ public class DEDataDefinitionFieldLinkUtil {
 	}
 
 	/**
-	 * Returns all the de data definition field links where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @return the matching de data definition field links
-	 */
-	public static List<DEDataDefinitionFieldLink> findByC_DDMSI(
-		long classNameId, long ddmStructureId) {
-
-		return getPersistence().findByC_DDMSI(classNameId, ddmStructureId);
-	}
-
-	/**
-	 * Returns a range of all the de data definition field links where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.data.engine.model.impl.DEDataDefinitionFieldLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @param start the lower bound of the range of de data definition field links
-	 * @param end the upper bound of the range of de data definition field links (not inclusive)
-	 * @return the range of matching de data definition field links
-	 */
-	public static List<DEDataDefinitionFieldLink> findByC_DDMSI(
-		long classNameId, long ddmStructureId, int start, int end) {
-
-		return getPersistence().findByC_DDMSI(
-			classNameId, ddmStructureId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the de data definition field links where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.data.engine.model.impl.DEDataDefinitionFieldLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @param start the lower bound of the range of de data definition field links
-	 * @param end the upper bound of the range of de data definition field links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching de data definition field links
-	 */
-	public static List<DEDataDefinitionFieldLink> findByC_DDMSI(
-		long classNameId, long ddmStructureId, int start, int end,
-		OrderByComparator<DEDataDefinitionFieldLink> orderByComparator) {
-
-		return getPersistence().findByC_DDMSI(
-			classNameId, ddmStructureId, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the de data definition field links where ddmStructureId = &#63; and fieldName = &#63;.
 	 *
 	 * @param ddmStructureId the ddm structure ID
@@ -1519,4 +1383,4 @@ public class DEDataDefinitionFieldLinkUtil {
 	private static volatile DEDataDefinitionFieldLinkPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1723036554
+// LIFERAY-SERVICE-BUILDER-HASH:1912385232

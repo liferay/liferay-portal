@@ -517,99 +517,6 @@ public class DEDataDefinitionFieldLinkPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<DEDataDefinitionFieldLink, NoSuchDataDefinitionFieldLinkException>
-			_collectionPersistenceFinderByC_DDMSI;
-
-	/**
-	 * Returns an ordered range of all the de data definition field links where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DEDataDefinitionFieldLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @param start the lower bound of the range of de data definition field links
-	 * @param end the upper bound of the range of de data definition field links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching de data definition field links
-	 */
-	@Override
-	public List<DEDataDefinitionFieldLink> findByC_DDMSI(
-		long classNameId, long ddmStructureId, int start, int end,
-		OrderByComparator<DEDataDefinitionFieldLink> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_DDMSI.find(
-			finderCache, new Object[] {classNameId, ddmStructureId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first de data definition field link in the ordered set where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching de data definition field link
-	 * @throws NoSuchDataDefinitionFieldLinkException if a matching de data definition field link could not be found
-	 */
-	@Override
-	public DEDataDefinitionFieldLink findByC_DDMSI_First(
-			long classNameId, long ddmStructureId,
-			OrderByComparator<DEDataDefinitionFieldLink> orderByComparator)
-		throws NoSuchDataDefinitionFieldLinkException {
-
-		return _collectionPersistenceFinderByC_DDMSI.findFirst(
-			finderCache, new Object[] {classNameId, ddmStructureId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first de data definition field link in the ordered set where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching de data definition field link, or <code>null</code> if a matching de data definition field link could not be found
-	 */
-	@Override
-	public DEDataDefinitionFieldLink fetchByC_DDMSI_First(
-		long classNameId, long ddmStructureId,
-		OrderByComparator<DEDataDefinitionFieldLink> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_DDMSI.fetchFirst(
-			finderCache, new Object[] {classNameId, ddmStructureId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the de data definition field links where classNameId = &#63; and ddmStructureId = &#63; from the database.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 */
-	@Override
-	public void removeByC_DDMSI(long classNameId, long ddmStructureId) {
-		_collectionPersistenceFinderByC_DDMSI.remove(
-			finderCache, new Object[] {classNameId, ddmStructureId});
-	}
-
-	/**
-	 * Returns the number of de data definition field links where classNameId = &#63; and ddmStructureId = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param ddmStructureId the ddm structure ID
-	 * @return the number of matching de data definition field links
-	 */
-	@Override
-	public int countByC_DDMSI(long classNameId, long ddmStructureId) {
-		return _collectionPersistenceFinderByC_DDMSI.count(
-			finderCache, new Object[] {classNameId, ddmStructureId});
-	}
-
-	private CollectionPersistenceFinder
-		<DEDataDefinitionFieldLink, NoSuchDataDefinitionFieldLinkException>
 			_collectionPersistenceFinderByDDMSI_F;
 
 	/**
@@ -1581,38 +1488,6 @@ public class DEDataDefinitionFieldLinkPersistenceImpl
 				"deDataDefinitionFieldLink.", "classPK", FinderColumn.Type.LONG,
 				"=", true, true, DEDataDefinitionFieldLink::getClassPK));
 
-		_collectionPersistenceFinderByC_DDMSI =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_DDMSI",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"classNameId", "ddmStructureId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_DDMSI",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"classNameId", "ddmStructureId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_DDMSI",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"classNameId", "ddmStructureId"}, false),
-				_SQL_SELECT_DEDATADEFINITIONFIELDLINK_WHERE,
-				_SQL_COUNT_DEDATADEFINITIONFIELDLINK_WHERE,
-				DEDataDefinitionFieldLinkModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"deDataDefinitionFieldLink.", "classNameId",
-					FinderColumn.Type.LONG, "=", true, true,
-					DEDataDefinitionFieldLink::getClassNameId),
-				new FinderColumn<>(
-					"deDataDefinitionFieldLink.", "ddmStructureId",
-					FinderColumn.Type.LONG, "=", true, true,
-					DEDataDefinitionFieldLink::getDdmStructureId));
-
 		_collectionPersistenceFinderByDDMSI_F =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1803,4 +1678,4 @@ public class DEDataDefinitionFieldLinkPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1571043002
+// LIFERAY-SERVICE-BUILDER-HASH:-1893471342
