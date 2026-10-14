@@ -86,10 +86,6 @@
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
-		<finder name="C_A" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="authServerWellKnownURI" />
-		</finder>
 		<finder name="C_A_C" return-type="OAuthClientEntry" unique="true">
 			<finder-column name="companyId" />
 			<finder-column name="authServerWellKnownURI" />
