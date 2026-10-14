@@ -2772,6 +2772,8 @@ public class ObjectDefinitionLocalServiceImpl
 		String oldClassName = objectDefinition.getClassName();
 		boolean oldEnableObjectEntrySubscription =
 			objectDefinition.isEnableObjectEntrySubscription();
+		String oldFriendlyURLSeparator =
+			objectDefinition.getFriendlyURLSeparator();
 
 		boolean addSystemObjectFields = false;
 
@@ -2935,6 +2937,14 @@ public class ObjectDefinitionLocalServiceImpl
 
 				objectDefinitionLocalService.deployObjectDefinition(
 					objectDefinition);
+
+				if (!StringUtil.equals(
+						oldFriendlyURLSeparator,
+						objectDefinition.getFriendlyURLSeparator())) {
+
+					_registerTransactionCallbackForCluster(
+						_deployObjectDefinitionMethodKey, objectDefinition);
+				}
 			}
 
 			if (active != oldActive) {
