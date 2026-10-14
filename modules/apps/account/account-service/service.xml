@@ -140,20 +140,9 @@
 		<finder name="AccountGroupId" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="accountGroupId" />
 		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="C_D" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="defaultAccountGroup" />
-		</finder>
-		<finder name="C_LikeN" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
-		</finder>
-		<finder name="C_T" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="type" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="AccountGroupRel">
@@ -212,9 +201,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="AccountEntryId" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="accountEntryId" />
 		</finder>
