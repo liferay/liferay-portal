@@ -294,6 +294,15 @@ public class ServicePreActionTest {
 
 		Assert.assertEquals(contentPageLayout.getPlid(), plid);
 
+		_mockHttpServletRequest.setRequestURI(
+			_portal.getPathMain() + "/portal/layout");
+		_mockHttpServletRequest.setAttribute(
+			WebKeys.REDIRECT_TO_DEFAULT_LAYOUT, Boolean.TRUE);
+
+		plid = _getThemeDisplayPlid(true, contentPageLayout.getPlid(), false);
+
+		Assert.assertEquals(publishedLayout.getPlid(), plid);
+
 		int count = layouts.size();
 
 		layouts = _layoutLocalService.getLayouts(_group.getGroupId(), false);
@@ -455,6 +464,9 @@ public class ServicePreActionTest {
 		if (plid > 0) {
 			_mockHttpServletRequest.setParameter(
 				"p_l_id", String.valueOf(plid));
+		}
+		else {
+			_mockHttpServletRequest.removeParameter("p_l_id");
 		}
 
 		if (!hasGuestViewPermission) {
