@@ -659,25 +659,6 @@ public class ObjectFieldLocalServiceImpl
 	}
 
 	@Override
-	public Map<Long, List<ObjectField>> getObjectFieldsMap(
-		long companyId, String businessType) {
-
-		Map<Long, List<ObjectField>> objectFieldsMap = new HashMap<>();
-
-		for (ObjectField objectField :
-				objectFieldPersistence.findByC_BT(companyId, businessType)) {
-
-			List<ObjectField> objectFields = objectFieldsMap.computeIfAbsent(
-				objectField.getObjectDefinitionId(),
-				objectDefinitionId -> new ArrayList<>());
-
-			objectFields.add(objectField);
-		}
-
-		return objectFieldsMap;
-	}
-
-	@Override
 	public Table getTable(long objectDefinitionId, String name)
 		throws PortalException {
 
