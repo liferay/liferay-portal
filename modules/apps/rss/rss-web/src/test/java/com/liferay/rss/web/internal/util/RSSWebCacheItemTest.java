@@ -185,10 +185,10 @@ public class RSSWebCacheItemTest {
 		}
 	}
 
-	private static final String _TITLE = RandomTestUtil.randomString();
-
 	private static final String _HOST_UNRESOLVED =
 		RandomTestUtil.randomString() + ".net";
+
+	private static final String _TITLE = RandomTestUtil.randomString();
 
 	private static final String _URL_FILE =
 		"file:///" + RandomTestUtil.randomString();
