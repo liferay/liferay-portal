@@ -339,6 +339,11 @@ public class InlineSQLHelperImplTest {
 
 	@Test
 	public void testIsDisabledForCompanyAdminWithNewCompany() throws Exception {
+		_setPermissionChecker();
+
+		Assert.assertTrue(_inlineSQLHelper.isEnabled());
+		Assert.assertTrue(_inlineSQLHelper.isEnabled(new long[0]));
+
 		_company = CompanyTestUtil.addCompany();
 
 		_user = UserTestUtil.addCompanyAdminUser(_company);
@@ -456,7 +461,11 @@ public class InlineSQLHelperImplTest {
 
 		_setPermissionChecker();
 
-		String sql = _replacePermissionCheckJoin(_SQL_PLAIN, _groupIds);
+		String sql = _replacePermissionCheckJoin(_SQL_PLAIN);
+
+		_checkSQLComposition(sql);
+
+		sql = _replacePermissionCheckJoin(_SQL_PLAIN, _groupIds);
 
 		_checkSQLComposition(sql);
 
