@@ -25,6 +25,7 @@
 		"@liferay/layout-js-components-web": "*",
 		"ckeditor5": "46.0.3",
 		"classnames": "2.3.1",
+		"dompurify": "3.2.6",
 		"eventsource": "4.0.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
