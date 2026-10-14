@@ -825,9 +825,6 @@ test('LPD-33075 Verify buyers can view the SKU of a product on the product card 
 
 test('LPD-3424 Can click AddToButton button multiple times on Diagram Product Display Page', async ({
 	apiHelpers,
-	commerceAdminProductDetailsDiagramPage,
-	commerceAdminProductDetailsPage,
-	commerceAdminProductPage,
 	page,
 	productDetailsPage,
 	site,
@@ -864,24 +861,18 @@ test('LPD-3424 Can click AddToButton button multiple times on Diagram Product Di
 	const productDiagram =
 		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 			catalogId: catalog.id,
+			diagram: {
+				attachmentBase64: {
+					attachment: readFileSync(
+						path.join(__dirname, '/dependencies/liferay.png')
+					).toString('base64'),
+					title: {en_US: getRandomString()},
+				},
+				radius: 1,
+			},
 			name: {en_US: getRandomString()},
 			productType: 'diagram',
 		});
-
-	await commerceAdminProductPage.gotoProduct(productDiagram.name['en_US']);
-	await commerceAdminProductDetailsPage.goToProductDiagram();
-	await commerceAdminProductDetailsDiagramPage.goToDragAndDropImages();
-
-	await page
-		.frameLocator('iframe[title="Select File"]')
-		.getByRole('link', {name: 'Provided by Liferay'})
-		.click();
-	await page
-		.frameLocator('iframe[title="Select File"]')
-		.locator(
-			'[id="_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_repositoryEntriesSearchContainer_1"] img'
-		)
-		.click();
 
 	const pin = await apiHelpers.headlessCommerceAdminCatalog.postPin(
 		productDiagram.productId,
