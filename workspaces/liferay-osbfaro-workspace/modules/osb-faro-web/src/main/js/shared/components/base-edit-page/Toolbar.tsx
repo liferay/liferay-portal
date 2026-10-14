@@ -15,6 +15,9 @@ interface IToolbarProps {
 
 const Item = BaseToolbar.Item;
 
+/**
+ * Hidden below 992px, together with Cancel.
+ */
 const Divider: React.FC = () => (
 	<BaseToolbar.Item
 		className="align-self-stretch border-left d-lg-flex d-none my-1 p-0"
@@ -22,6 +25,9 @@ const Divider: React.FC = () => (
 	/>
 );
 
+/**
+ * Hidden below 992px, where the back link already leads back to the list.
+ */
 const Cancel: React.FC<{href: string}> = ({href}) => (
 	<BaseToolbar.Item className="d-lg-flex d-none">
 		<ClayLink
@@ -67,6 +73,11 @@ const Save: React.FC<ISaveProps> = ({
 	</BaseToolbar.Item>
 );
 
+/**
+ * Page header with a back link, the title, and the actions passed as children.
+ * The actions stay right-aligned and move below the title, wrapping 24px
+ * apart, when they run out of room, so do not give the header a fixed height.
+ */
 const Toolbar: React.FC<IToolbarProps> & {
 	Cancel: typeof Cancel;
 	Divider: typeof Divider;
