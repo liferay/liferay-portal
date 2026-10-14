@@ -42,9 +42,6 @@
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
 		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
@@ -116,9 +113,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="G_U" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="userId" />
@@ -127,19 +121,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="name" />
 		</finder>
-		<finder name="G_F" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="firstInGroup" />
-		</finder>
 		<finder name="G_U_N" return-type="SocialActivityAchievement" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="userId" />
 			<finder-column name="name" />
-		</finder>
-		<finder name="G_U_F" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="userId" />
-			<finder-column name="firstInGroup" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="SocialActivityCounter" remote-service="false">
@@ -374,9 +359,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="UserId1" return-type="Collection">
 			<finder-column name="userId1" />
 		</finder>
@@ -442,9 +424,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
