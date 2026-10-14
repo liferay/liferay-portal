@@ -308,13 +308,6 @@ public class CommercePriceModifierLocalServiceImpl
 	}
 
 	@Override
-	public List<CommercePriceModifier> getCommercePriceModifiers(
-		long companyId, String target) {
-
-		return commercePriceModifierPersistence.findByC_T(companyId, target);
-	}
-
-	@Override
 	public int getCommercePriceModifiersCount(long commercePriceListId) {
 		return commercePriceModifierPersistence.countByCommercePriceListId(
 			commercePriceListId);
