@@ -400,14 +400,6 @@ public class PatcherProjectVersionLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.osb.patcher.model.PatcherProjectVersion>
-		getRootPatcherProjectVersions(long patcherProductVersionId) {
-
-		return _patcherProjectVersionLocalService.getRootPatcherProjectVersions(
-			patcherProductVersionId);
-	}
-
-	@Override
 	public com.liferay.osb.patcher.model.PatcherProjectVersion
 			updatePatcherProjectVersion(
 				long patcherProjectVersionId, long patcherProductVersionId,
@@ -461,4 +453,4 @@ public class PatcherProjectVersionLocalServiceWrapper
 		_patcherProjectVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1130427439
+// LIFERAY-SERVICE-BUILDER-HASH:-1683120176

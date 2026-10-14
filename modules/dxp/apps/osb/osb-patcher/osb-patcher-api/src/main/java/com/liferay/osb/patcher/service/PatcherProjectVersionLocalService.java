@@ -285,10 +285,6 @@ public interface PatcherProjectVersionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherProjectVersion> getRootPatcherProjectVersions();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<PatcherProjectVersion> getRootPatcherProjectVersions(
-		long patcherProductVersionId);
-
 	@Indexable(type = IndexableType.REINDEX)
 	public PatcherProjectVersion updatePatcherProjectVersion(
 			long patcherProjectVersionId, long patcherProductVersionId,
@@ -311,4 +307,4 @@ public interface PatcherProjectVersionLocalService
 		PatcherProjectVersion patcherProjectVersion);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1048023036
+// LIFERAY-SERVICE-BUILDER-HASH:-1634318637

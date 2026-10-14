@@ -337,13 +337,6 @@ public class PatcherProjectVersionLocalServiceUtil {
 		return getService().getRootPatcherProjectVersions();
 	}
 
-	public static List<PatcherProjectVersion> getRootPatcherProjectVersions(
-		long patcherProductVersionId) {
-
-		return getService().getRootPatcherProjectVersions(
-			patcherProductVersionId);
-	}
-
 	public static PatcherProjectVersion updatePatcherProjectVersion(
 			long patcherProjectVersionId, long patcherProductVersionId,
 			boolean combinedBranch, String committish, String fixedIssues,
@@ -381,4 +374,4 @@ public class PatcherProjectVersionLocalServiceUtil {
 			PatcherProjectVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-177884504
+// LIFERAY-SERVICE-BUILDER-HASH:-313167317
