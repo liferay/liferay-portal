@@ -262,9 +262,7 @@ test(
 
 		// Create a Site Template whose name contains markup
 
-		const rowText = 'SiteTemplate-' + getRandomString();
-
-		const siteTemplateName = `<b>${rowText}</b>`;
+		const siteTemplateName = `<b>SiteTemplate-${getRandomString()}</b>`;
 
 		const layoutSetPrototype =
 			await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
@@ -282,7 +280,7 @@ test(
 
 		await clickAndExpectToBeVisible({
 			target: layoutSetPrototypePage.executeSyncMenuItem,
-			trigger: layoutSetPrototypePage.rowActions(rowText),
+			trigger: layoutSetPrototypePage.rowActions(siteTemplateName),
 		});
 
 		page.once('dialog', (dialog) => dialog.accept());
