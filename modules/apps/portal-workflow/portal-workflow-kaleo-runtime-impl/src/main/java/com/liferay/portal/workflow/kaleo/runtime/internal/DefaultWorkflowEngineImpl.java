@@ -67,6 +67,8 @@ import com.liferay.portal.workflow.kaleo.runtime.assignment.AggregateKaleoTaskAs
 import com.liferay.portal.workflow.kaleo.runtime.notification.KaleoNotificationSender;
 import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
 import com.liferay.portal.workflow.kaleo.runtime.util.comparator.KaleoInstanceOrderByComparator;
+import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionService;
+import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionService;
 import com.liferay.portal.workflow.kaleo.service.KaleoInstanceService;
 import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
@@ -118,13 +120,12 @@ public class DefaultWorkflowEngineImpl
 						workflowDefinitionLinks);
 				}
 
-				kaleoDefinitionLocalService.deleteKaleoDefinition(
+				_kaleoDefinitionService.deleteKaleoDefinition(
 					name, serviceContext);
 			}
 			else {
-				kaleoDefinitionVersionLocalService.
-					deleteKaleoDefinitionVersions(
-						serviceContext.getCompanyId(), name);
+				_kaleoDefinitionVersionService.deleteKaleoDefinitionVersions(
+					serviceContext.getCompanyId(), name);
 			}
 		}
 		catch (WorkflowException workflowException) {
@@ -1025,6 +1026,12 @@ public class DefaultWorkflowEngineImpl
 
 	@Reference
 	private KaleoActionExecutor _kaleoActionExecutor;
+
+	@Reference
+	private KaleoDefinitionService _kaleoDefinitionService;
+
+	@Reference
+	private KaleoDefinitionVersionService _kaleoDefinitionVersionService;
 
 	@Reference
 	private KaleoInstanceService _kaleoInstanceService;
