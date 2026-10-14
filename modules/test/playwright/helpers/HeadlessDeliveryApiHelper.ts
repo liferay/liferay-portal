@@ -423,7 +423,12 @@ export class HeadlessDeliveryApiHelper {
 		viewableBy = '',
 	}: {
 		categoryIds?: number[];
-		contentFields?: {contentFieldValue: {data: string}; name: string}[];
+		contentFields?: {
+			contentFieldValue:
+				| {data: string}
+				| {geo: {latitude: number; longitude: number}};
+			name: string;
+		}[];
 		contentStructureId: number;
 		datePublished: string;
 		description?: string;
