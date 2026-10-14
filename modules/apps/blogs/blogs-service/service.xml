@@ -76,10 +76,6 @@
 			<finder-column name="groupId" />
 			<finder-column comparator="!=" name="status" />
 		</finder>
-		<finder name="C_U" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="userId" />
-		</finder>
 		<finder name="C_LtD" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column comparator="&lt;" name="displayDate" />
