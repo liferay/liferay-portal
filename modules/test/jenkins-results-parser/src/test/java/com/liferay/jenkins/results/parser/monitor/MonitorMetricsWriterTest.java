@@ -617,21 +617,21 @@ public class MonitorMetricsWriterTest
 
 		String content = read(metricsFile);
 
-		int messageInfoCount = 0;
+		int messageInfoLinesCount = 0;
 
 		for (String line : content.split("\n")) {
 			if (line.startsWith("monitor_message_info{")) {
-				messageInfoCount++;
+				messageInfoLinesCount++;
 			}
 		}
 
 		if (expectedMessage == null) {
-			testEquals(0, messageInfoCount);
+			testEquals(0, messageInfoLinesCount);
 
 			return;
 		}
 
-		testEquals(1, messageInfoCount);
+		testEquals(1, messageInfoLinesCount);
 
 		Assert.assertTrue(
 			content,
