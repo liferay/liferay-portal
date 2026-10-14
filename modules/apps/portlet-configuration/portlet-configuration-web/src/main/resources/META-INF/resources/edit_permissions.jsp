@@ -133,7 +133,7 @@ if (Validator.isNotNull(portletConfigurationPermissionsDisplayContext.getModelRe
 								type = ResourceActionsUtil.getModelResource(locale, resourceName);
 							}
 
-							dataMessage = HtmlUtil.escapeAttribute(LanguageUtil.format(request, preselectedMsg, new Object[] {role.getTitle(locale), _getActionLabel(request, resourceName, action), type, HtmlUtil.escape(portletConfigurationPermissionsDisplayContext.getGroupDescriptiveName())}, false));
+							dataMessage = LanguageUtil.format(request, preselectedMsg, new Object[] {role.getTitle(locale), _getActionLabel(request, resourceName, action), type, portletConfigurationPermissionsDisplayContext.getGroupDescriptiveName()}, false);
 
 							disabled = true;
 						}
@@ -177,7 +177,7 @@ if (Validator.isNotNull(portletConfigurationPermissionsDisplayContext.getModelRe
 											id="<%= inputId %>"
 											name="<%= inputName %>"
 											type="checkbox"
-											title="<%= dataMessage %>"
+											title="<%= HtmlUtil.escapeAttribute(dataMessage) %>"
 										/><span class="custom-control-label"></span
 									>
 									</label>
