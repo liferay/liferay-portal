@@ -1604,14 +1604,6 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 	}
 
 	@Override
-	public int getPositionInThread(long messageId) throws PortalException {
-		MBMessage message = mbMessagePersistence.findByPrimaryKey(messageId);
-
-		return mbMessageFinder.countByC_T(
-			message.getCreateDate(), message.getThreadId());
-	}
-
-	@Override
 	public List<MBMessage> getRootDiscussionMessages(
 			String className, long classPK, int status)
 		throws PortalException {
@@ -1712,29 +1704,12 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 	}
 
 	@Override
-	public int getThreadMessagesCount(long threadId, boolean answer) {
-		return mbMessagePersistence.countByT_A(threadId, answer);
-	}
-
-	@Override
 	public int getThreadMessagesCount(long threadId, int status) {
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return mbMessagePersistence.countByThreadId(threadId);
 		}
 
 		return mbMessagePersistence.countByT_S(threadId, status);
-	}
-
-	@Override
-	public List<MBMessage> getThreadRepliesMessages(
-		long threadId, int status, int start, int end) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbMessagePersistence.findByThreadIdReplies(
-				threadId, start, end);
-		}
-
-		return mbMessagePersistence.findByTR_S(threadId, status, start, end);
 	}
 
 	@Override
@@ -1750,20 +1725,6 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		return mbMessagePersistence.findByU_C_C_S(
 			userId, classNameId, classPK, status, start, end,
 			orderByComparator);
-	}
-
-	@Override
-	public List<MBMessage> getUserDiscussionMessages(
-		long userId, long[] classNameIds, int status, int start, int end,
-		OrderByComparator<MBMessage> orderByComparator) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbMessagePersistence.findByU_C(
-				userId, classNameIds, start, end, orderByComparator);
-		}
-
-		return mbMessagePersistence.findByU_C_S(
-			userId, classNameIds, status, start, end, orderByComparator);
 	}
 
 	@Override
@@ -1787,17 +1748,6 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 		return mbMessagePersistence.countByU_C_C_S(
 			userId, classNameId, classPK, status);
-	}
-
-	@Override
-	public int getUserDiscussionMessagesCount(
-		long userId, long[] classNameIds, int status) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbMessagePersistence.countByU_C(userId, classNameIds);
-		}
-
-		return mbMessagePersistence.countByU_C_S(userId, classNameIds, status);
 	}
 
 	@Override

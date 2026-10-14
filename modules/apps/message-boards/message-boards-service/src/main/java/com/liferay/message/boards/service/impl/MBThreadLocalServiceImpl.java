@@ -24,14 +24,12 @@ import com.liferay.message.boards.model.MBTreeWalker;
 import com.liferay.message.boards.model.impl.MBTreeWalkerImpl;
 import com.liferay.message.boards.service.MBDiscussionLocalService;
 import com.liferay.message.boards.service.base.MBThreadLocalServiceBaseImpl;
-import com.liferay.message.boards.service.persistence.MBCategoryPersistence;
 import com.liferay.message.boards.service.persistence.MBDiscussionPersistence;
 import com.liferay.message.boards.service.persistence.MBMessageFinder;
 import com.liferay.message.boards.service.persistence.MBMessagePersistence;
 import com.liferay.message.boards.util.comparator.MessageCreateDateComparator;
 import com.liferay.message.boards.util.comparator.MessageThreadComparator;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.increment.BufferedIncrement;
@@ -80,7 +78,6 @@ import com.liferay.trash.model.TrashVersion;
 import com.liferay.trash.service.TrashEntryLocalService;
 import com.liferay.trash.service.TrashVersionLocalService;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -330,155 +327,12 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<MBThread> getGroupThreads(
-		long groupId, long userId, boolean subscribed, boolean includeAnonymous,
-		QueryDefinition<MBThread> queryDefinition) {
-
-		if (userId <= 0) {
-			return getGroupThreads(groupId, queryDefinition);
-		}
-
-		if (subscribed) {
-			return mbThreadFinder.findByS_G_U_C(
-				groupId, userId, null, queryDefinition);
-		}
-
-		if (includeAnonymous) {
-			return mbThreadFinder.findByG_U_C(
-				groupId, userId, null, queryDefinition);
-		}
-
-		return mbThreadFinder.findByG_U_C_A(
-			groupId, userId, null, false, queryDefinition);
-	}
-
-	@Override
-	public List<MBThread> getGroupThreads(
-		long groupId, long userId, boolean subscribed,
-		QueryDefinition<MBThread> queryDefinition) {
-
-		return getGroupThreads(
-			groupId, userId, subscribed, true, queryDefinition);
-	}
-
-	@Override
-	public List<MBThread> getGroupThreads(
-		long groupId, long userId, QueryDefinition<MBThread> queryDefinition) {
-
-		return getGroupThreads(groupId, userId, false, queryDefinition);
-	}
-
-	@Override
-	public List<MBThread> getGroupThreads(
-		long groupId, QueryDefinition<MBThread> queryDefinition) {
-
-		if (queryDefinition.isExcludeStatus()) {
-			return mbThreadPersistence.findByG_NotC_NotS(
-				groupId, MBCategoryConstants.DISCUSSION_CATEGORY_ID,
-				queryDefinition.getStatus(), queryDefinition.getStart(),
-				queryDefinition.getEnd());
-		}
-
-		return mbThreadPersistence.findByG_NotC_S(
-			groupId, MBCategoryConstants.DISCUSSION_CATEGORY_ID,
-			queryDefinition.getStatus(), queryDefinition.getStart(),
-			queryDefinition.getEnd());
-	}
-
-	@Override
-	public int getGroupThreadsCount(
-		long groupId, long userId, boolean subscribed, boolean includeAnonymous,
-		QueryDefinition<MBThread> queryDefinition) {
-
-		if (userId <= 0) {
-			return getGroupThreadsCount(groupId, queryDefinition);
-		}
-
-		if (subscribed) {
-			return mbThreadFinder.countByS_G_U_C(
-				groupId, userId, null, queryDefinition);
-		}
-
-		if (includeAnonymous) {
-			return mbThreadFinder.countByG_U_C(
-				groupId, userId, null, queryDefinition);
-		}
-
-		return mbThreadFinder.countByG_U_C_A(
-			groupId, userId, null, false, queryDefinition);
-	}
-
-	@Override
-	public int getGroupThreadsCount(
-		long groupId, long userId, boolean subscribed,
-		QueryDefinition<MBThread> queryDefinition) {
-
-		return getGroupThreadsCount(
-			groupId, userId, subscribed, true, queryDefinition);
-	}
-
-	@Override
-	public int getGroupThreadsCount(
-		long groupId, long userId, QueryDefinition<MBThread> queryDefinition) {
-
-		return getGroupThreadsCount(groupId, userId, false, queryDefinition);
-	}
-
-	@Override
-	public int getGroupThreadsCount(
-		long groupId, QueryDefinition<MBThread> queryDefinition) {
-
-		if (queryDefinition.isExcludeStatus()) {
-			return mbThreadPersistence.countByG_NotC_NotS(
-				groupId, MBCategoryConstants.DISCUSSION_CATEGORY_ID,
-				queryDefinition.getStatus());
-		}
-
-		return mbThreadPersistence.countByG_NotC_S(
-			groupId, MBCategoryConstants.DISCUSSION_CATEGORY_ID,
-			queryDefinition.getStatus());
-	}
-
-	@Override
 	public int getMessageCount(long threadId, int status) {
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return _mbMessagePersistence.countByThreadId(threadId);
 		}
 
 		return _mbMessagePersistence.countByT_S(threadId, status);
-	}
-
-	@Override
-	public List<MBThread> getPriorityThreads(long categoryId, double priority)
-		throws PortalException {
-
-		return getPriorityThreads(categoryId, priority, false);
-	}
-
-	@Override
-	public List<MBThread> getPriorityThreads(
-			long categoryId, double priority, boolean inherit)
-		throws PortalException {
-
-		if (!inherit) {
-			return mbThreadPersistence.findByC_P(categoryId, priority);
-		}
-
-		List<MBThread> threads = new ArrayList<>();
-
-		while ((categoryId != MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID) &&
-			   (categoryId != MBCategoryConstants.DISCUSSION_CATEGORY_ID)) {
-
-			threads.addAll(
-				0, mbThreadPersistence.findByC_P(categoryId, priority));
-
-			MBCategory category = _mbCategoryPersistence.findByPrimaryKey(
-				categoryId);
-
-			categoryId = category.getParentCategoryId();
-		}
-
-		return threads;
 	}
 
 	@Override
@@ -506,17 +360,6 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 		}
 
 		return mbThreadPersistence.countByG_C_S(groupId, categoryId, status);
-	}
-
-	@Override
-	public boolean hasAnswerMessage(long threadId) {
-		int count = _mbMessagePersistence.countByT_A(threadId, true);
-
-		if (count > 0) {
-			return true;
-		}
-
-		return false;
 	}
 
 	@Override
@@ -1210,9 +1053,6 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 
 	@Reference
 	private IndexerRegistry _indexerRegistry;
-
-	@Reference
-	private MBCategoryPersistence _mbCategoryPersistence;
 
 	@Reference
 	private MBDiscussionLocalService _mbDiscussionLocalService;

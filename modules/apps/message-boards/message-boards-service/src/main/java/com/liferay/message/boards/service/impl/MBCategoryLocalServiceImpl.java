@@ -438,15 +438,6 @@ public class MBCategoryLocalServiceImpl extends MBCategoryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public int getCategoriesAndThreadsCount(long groupId, long categoryId) {
-		QueryDefinition<?> queryDefinition = new QueryDefinition<>(
-			WorkflowConstants.STATUS_ANY);
-
-		return mbCategoryFinder.countC_T_ByG_C(
-			groupId, categoryId, queryDefinition);
-	}
-
-	@Override
 	public int getCategoriesAndThreadsCount(
 		long groupId, long categoryId, int status) {
 
@@ -548,18 +539,6 @@ public class MBCategoryLocalServiceImpl extends MBCategoryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<MBCategory> getCompanyCategories(
-		long companyId, int start, int end) {
-
-		return mbCategoryPersistence.findByCompanyId(companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyCategoriesCount(long companyId) {
-		return mbCategoryPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
 	public MBCategory getMBCategory(long groupId, String friendlyURL)
 		throws PortalException {
 
@@ -584,26 +563,6 @@ public class MBCategoryLocalServiceImpl extends MBCategoryLocalServiceBaseImpl {
 		}
 
 		return categoryIds;
-	}
-
-	@Override
-	public List<MBCategory> getSubscribedCategories(
-		long groupId, long userId, int start, int end) {
-
-		QueryDefinition<MBCategory> queryDefinition = new QueryDefinition<>(
-			WorkflowConstants.STATUS_ANY, start, end, null);
-
-		return mbCategoryFinder.findC_ByS_G_U_P(
-			groupId, userId, null, queryDefinition);
-	}
-
-	@Override
-	public int getSubscribedCategoriesCount(long groupId, long userId) {
-		QueryDefinition<MBCategory> queryDefinition = new QueryDefinition<>(
-			WorkflowConstants.STATUS_ANY);
-
-		return mbCategoryFinder.countC_ByS_G_U_P(
-			groupId, userId, null, queryDefinition);
 	}
 
 	@Override
