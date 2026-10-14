@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,15 +47,17 @@ public class OptionResourceTest extends BaseOptionResourceTestCase {
 		super.testDeleteOptionByExternalReferenceCode();
 	}
 
+	@Override
 	@Test
-	public void testGetOptionByExternalReferenceCodeNotFound()
-		throws Exception {
+	public void testGetOptionByExternalReferenceCode() throws Exception {
+		super.testGetOptionByExternalReferenceCode();
 
 		HttpInvoker.HttpResponse httpResponse =
 			optionResource.getOptionByExternalReferenceCodeHttpResponse(
 				RandomTestUtil.randomString());
 
-		Assert.assertEquals(404, httpResponse.getStatusCode());
+		Assert.assertEquals(
+			HttpServletResponse.SC_NOT_FOUND, httpResponse.getStatusCode());
 	}
 
 	@Ignore
