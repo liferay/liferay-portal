@@ -45,25 +45,7 @@ definition {
 
 	@summary = "Default summary"
 	macro enableWiki() {
-		ApplicationsMenu.gotoRootPortlet(
-			panel = "Control Panel",
-			portlet = "Instance Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Feature Flags",
-			configurationName = "Deprecation",
-			configurationScope = "Virtual Instance Scope");
-
-		if (IsElementNotPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = "Wiki", toggle_state = "")) {
-			Search.searchCP(searchTerm = "Wiki");
-		}
-
-		if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = "Wiki", toggle_state = "Disabled")) {
-			Check.checkToggleSwitch(
-				locator1 = "FeatureFlag#TOGGLE_ROW",
-				title_row = "Wiki",
-				toggle_state = "Disabled");
-		}
+		PagesAdmin.enableDeprecationFeatureFlag(featureFlagName = "Wiki");
 
 		Navigator.openURL();
 	}
