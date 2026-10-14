@@ -48,21 +48,11 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
-		<finder name="UserId" return-type="Collection">
-			<finder-column name="userId" />
-		</finder>
 		<finder name="CountryId" return-type="Collection">
 			<finder-column name="countryId" />
 		</finder>
 		<finder name="RegionId" return-type="Collection">
 			<finder-column name="regionId" />
-		</finder>
-		<finder name="C_C" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="classNameId" />
 		</finder>
 		<finder name="CN_CPK" return-type="Collection">
 			<finder-column name="classNameId" />
@@ -380,16 +370,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
-		<finder name="UserId" return-type="Collection">
-			<finder-column name="userId" />
-		</finder>
-		<finder name="C_C" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="classNameId" />
-		</finder>
 		<finder name="C_C_C" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="classNameId" />
@@ -1455,15 +1435,8 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
-		</finder>
-		<finder name="C_C" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="classNameId" />
 		</finder>
 		<finder name="C_C_C" return-type="Collection">
 			<finder-column name="companyId" />
@@ -3079,16 +3052,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
-		<finder name="UserId" return-type="Collection">
-			<finder-column name="userId" />
-		</finder>
-		<finder name="C_C" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="classNameId" />
-		</finder>
 		<finder name="C_C_C" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="classNameId" />
