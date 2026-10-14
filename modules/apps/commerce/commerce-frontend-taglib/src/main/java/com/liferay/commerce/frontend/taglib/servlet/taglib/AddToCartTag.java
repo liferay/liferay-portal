@@ -29,6 +29,7 @@ import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.util.CPJSONUtil;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -36,6 +37,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -62,6 +64,17 @@ import java.util.List;
 public class AddToCartTag extends IncludeTag {
 
 	@Override
+	public int doEndTag() throws JspException {
+		if (_guestBrowsingEnabled) {
+			return super.doEndTag();
+		}
+
+		doClearTag();
+
+		return EVAL_PAGE;
+	}
+
+	@Override
 	public int doStartTag() throws JspException {
 		try {
 			HttpServletRequest httpServletRequest = getRequest();
@@ -73,6 +86,15 @@ public class AddToCartTag extends IncludeTag {
 			if ((commerceContext == null) ||
 				(commerceContext.getCommerceChannelId() == 0)) {
 
+				return SKIP_BODY;
+			}
+
+			_guestBrowsingEnabled =
+				CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+					PermissionThreadLocal.getPermissionChecker(),
+					commerceContext.getCommerceChannelGroupId());
+
+			if (!_guestBrowsingEnabled) {
 				return SKIP_BODY;
 			}
 
@@ -439,6 +461,7 @@ public class AddToCartTag extends IncludeTag {
 		_cpInstanceUnitOfMeasure = null;
 		_cpInstanceUnitOfMeasureLocalService = null;
 		_disabled = false;
+		_guestBrowsingEnabled = true;
 		_guestOrderEnabled = false;
 		_iconOnly = false;
 		_inCart = false;
@@ -503,6 +526,7 @@ public class AddToCartTag extends IncludeTag {
 	private CPInstanceUnitOfMeasureLocalService
 		_cpInstanceUnitOfMeasureLocalService;
 	private boolean _disabled;
+	private boolean _guestBrowsingEnabled = true;
 	private boolean _guestOrderEnabled;
 	private boolean _iconOnly;
 	private boolean _inCart;
