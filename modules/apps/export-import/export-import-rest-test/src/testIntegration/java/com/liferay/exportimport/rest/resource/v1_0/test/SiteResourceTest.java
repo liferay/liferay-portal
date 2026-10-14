@@ -35,7 +35,8 @@ import org.junit.runner.RunWith;
  */
 @FeatureFlags(
 	featureFlags = {
-		@FeatureFlag(value = "LPD-57655"), @FeatureFlag("LPD-85946")
+		@FeatureFlag("LPD-41307"), @FeatureFlag("LPD-57655"),
+		@FeatureFlag("LPD-85946")
 	}
 )
 @RunWith(Arquillian.class)
