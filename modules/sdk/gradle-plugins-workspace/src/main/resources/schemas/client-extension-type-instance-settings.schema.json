@@ -4274,6 +4274,12 @@
 		},
 		{
 			"properties": {
+				"allowUpstreamTokenForwarding": {
+					"default": false,
+					"description": "Forward the signed in user's ID token from the OpenID Connect provider to backend client extensions that opt in. The token is sent only over HTTPS to the origin of the client extension.",
+					"title": "Allow Upstream Token Forwarding",
+					"type": "boolean"
+				},
 				"authorizationEndpoint": {
 					"default": "",
 					"description": "Set the authorization endpoint for the OpenID Connect provider.",
