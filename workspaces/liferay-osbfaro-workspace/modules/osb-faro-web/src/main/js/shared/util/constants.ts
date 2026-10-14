@@ -457,6 +457,8 @@ export const EXPIRATION_DATE_LABELS = {
 
 export const MAX_LABEL_LENGTH = 35;
 
+export const MAX_PAGE_WIDTH = 1280;
+
 export const ONE_DAY = '86400000';
 
 export const ONE_MONTH = '2592000000';

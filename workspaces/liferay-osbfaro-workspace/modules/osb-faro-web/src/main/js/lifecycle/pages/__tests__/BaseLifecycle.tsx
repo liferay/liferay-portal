@@ -5,7 +5,13 @@ import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {ChannelContext} from 'shared/context/channel';
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	within,
+} from '@testing-library/react';
 import {MemoryRouter, useLocation} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
@@ -13,6 +19,7 @@ import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
 import {useRequest} from 'shared/hooks/useRequest';
+import {setBodyWidth} from 'test/body-width';
 
 jest.unmock('react-dom');
 
@@ -174,15 +181,13 @@ const useRequestImpl =
 		};
 	};
 
-const store = mockStore();
-
 const LocationProbe = () => (
 	<div data-testid="location">{useLocation().pathname}</div>
 );
 
 const renderPage = (initialEntries = ['/workspace/23/123/lifecycle/1']) =>
 	render(
-		<Provider store={store}>
+		<Provider store={mockStore()}>
 			<ModalRenderer />
 
 			<ChannelContext.Provider value={mockChannelContext() as any}>
@@ -209,6 +214,8 @@ describe('BaseLifecycle', () => {
 			groupId: '23',
 			lifecycleId: '1',
 		});
+
+		setBodyWidth(1440);
 
 		mockedUseCurrentUser.mockReturnValue({isAdmin: () => true});
 		mockedUseDataSources.mockReturnValue({empty: false, loading: false});
@@ -546,6 +553,54 @@ describe('BaseLifecycle', () => {
 			expect(
 				screen.getByRole('menuitem', {name: 'Manage Notifications'})
 			).toBeInTheDocument();
+		});
+	});
+
+	describe('the Switch Dashboard button', () => {
+		const getSwitchButton = () =>
+			screen.getByRole('button', {name: /switch dashboard/i});
+
+		it('starts with the panel closed', () => {
+			renderPage();
+
+			expect(getSwitchButton()).toHaveAttribute('aria-expanded', 'false');
+		});
+
+		it('opens and closes the switch panel', () => {
+			renderPage();
+
+			fireEvent.click(getSwitchButton());
+
+			expect(getSwitchButton()).toHaveAttribute('aria-expanded', 'true');
+			expect(getSwitchButton()).toHaveClass(
+				'active',
+				'btn-outline-borderless'
+			);
+			expect(
+				screen
+					.getByText(/switch lifecycle dashboard/i)
+					.closest('.sidebar')
+			).not.toHaveAttribute('inert');
+
+			fireEvent.click(getSwitchButton());
+
+			expect(getSwitchButton()).toHaveAttribute('aria-expanded', 'false');
+		});
+
+		it('closes the panel from its close button', () => {
+			renderPage();
+
+			fireEvent.click(getSwitchButton());
+
+			const panel = screen
+				.getByText(/switch lifecycle dashboard/i)
+				.closest('.sidebar') as HTMLElement;
+
+			fireEvent.click(
+				within(panel).getByRole('button', {name: /^close$/i})
+			);
+
+			expect(getSwitchButton()).toHaveAttribute('aria-expanded', 'false');
 		});
 	});
 

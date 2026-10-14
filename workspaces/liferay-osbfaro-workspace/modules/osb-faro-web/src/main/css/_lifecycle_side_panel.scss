@@ -1,0 +1,18 @@
+$lifecycleSidePanelWidth: 512px;
+
+.lifecycle-dashboard.c-slideout-push-end {
+	padding-right: $lifecycleSidePanelWidth;
+
+	@media (max-width: $maxPageWidth) {
+		padding-right: 0;
+	}
+}
+
+.sidebar.lifecycle-side-panel {
+	border-left: 1px solid $cadmin-secondary-l2;
+	box-shadow: none;
+}
+
+.lifecycle-side-panel-backdrop {
+	z-index: calc(#{$cadmin-zindex-c-slideout} - 1);
+}

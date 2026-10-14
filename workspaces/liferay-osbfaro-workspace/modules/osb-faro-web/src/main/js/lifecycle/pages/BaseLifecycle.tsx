@@ -5,18 +5,23 @@ import BasePage from 'shared/components/base-page';
 import DataSourceEmptyState from 'shared/components/DataSourceEmptyState';
 import ErrorPage from 'shared/pages/ErrorPage';
 import FilterPicker from '../components/FilterPicker';
+import getCN from 'classnames';
+import LifecycleSwitchPanel, {
+	LifecyclePanelView,
+} from 'lifecycle/components/LifecycleSwitchPanel';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
 import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
 import Loading from 'shared/components/Loading';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import OverviewSection from '../components/OverviewSection';
-import React, {useContext} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import SegmentDropdown from 'shared/components/SegmentDropdown';
 import {
 	AccountMetricType,
 	IAccountMetric,
 } from 'contacts/pages/account/utils/types';
 import {ChannelContext} from 'shared/context/channel';
+import {ClayButtonWithIcon} from '@clayui/button';
 import {
 	LifecycleContextProvider,
 	useLifecycle,
@@ -148,6 +153,12 @@ const BaseLifecycle = () => {
 		variables: {groupId: groupId!, lifecycleId: lifecycleId!},
 	});
 
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	const switchButtonRef = useRef<HTMLButtonElement>(null);
+
+	const [panelView, setPanelView] = useState<LifecyclePanelView | null>(null);
+
 	const actions = useLifecycleActions({
 		lifecycle,
 	});
@@ -244,81 +255,125 @@ const BaseLifecycle = () => {
 	}
 
 	return (
-		<LifecycleContextProvider key={lifecycleId} lifecycleId={lifecycleId}>
-			<BasePage documentTitle={title}>
-				<BasePage.Header
-					breadcrumbs={[
-						breadcrumbs.getHome({
-							channelId: channelId!,
-							groupId: groupId!,
-							label: selectedChannel?.name,
-						}),
-						breadcrumbs.getLifecycles({
-							channelId: channelId!,
-							groupId: groupId!,
-						}),
-						...(lifecycle?.name
-							? [
-									breadcrumbs.getEntityName({
-										label: lifecycle.name,
-									}),
-								]
-							: []),
-					]}
-					fluid
-					groupId={groupId!}
+		<>
+			<div className="lifecycle-dashboard" ref={containerRef}>
+				<LifecycleContextProvider
+					key={lifecycleId}
+					lifecycleId={lifecycleId}
 				>
-					<BasePage.Row>
-						<BasePage.Header.TitleSection
-							className="mb-3"
-							title={title}
+					<BasePage documentTitle={title}>
+						<BasePage.Header
+							breadcrumbs={[
+								breadcrumbs.getHome({
+									channelId: channelId!,
+									groupId: groupId!,
+									label: selectedChannel?.name,
+								}),
+								breadcrumbs.getLifecycles({
+									channelId: channelId!,
+									groupId: groupId!,
+								}),
+								...(lifecycle?.name
+									? [
+											breadcrumbs.getEntityName({
+												label: lifecycle.name,
+											}),
+										]
+									: []),
+							]}
+							fluid
+							groupId={groupId!}
 						>
-							{!!actions.length && (
-								<BasePage.Header.PageActionsToolbar
-									actions={actions}
-								/>
-							)}
-						</BasePage.Header.TitleSection>
-					</BasePage.Row>
-				</BasePage.Header>
-				{hasContent && (
-					<BasePage.SubHeader fluid>
-						<div className="d-flex justify-content-between w-100">
-							<div className="d-flex">
-								<FilterPicker
-									className="mr-3"
-									entityLabel={Liferay.Language.get(
-										'industries'
+							<BasePage.Row>
+								<BasePage.Header.TitleSection
+									className="mb-3"
+									title={title}
+								>
+									{!!actions.length && (
+										<BasePage.Header.PageActionsToolbar
+											actions={actions}
+										/>
 									)}
-									fieldMappingFieldName="industry"
-									filterKey="industryFilter"
-								/>
 
-								<FilterPicker
-									className="mr-3"
-									entityLabel={Liferay.Language.get(
-										'countries'
-									)}
-									fieldMappingFieldName="country"
-									filterKey="countryFilter"
-								/>
+									<ClayButtonWithIcon
+										aria-expanded={!!panelView}
+										aria-label={Liferay.Language.get(
+											'switch-dashboard'
+										)}
+										borderless
+										className={getCN(
+											'ml-2 rounded text-secondary',
+											{active: !!panelView}
+										)}
+										data-tooltip-align="top"
+										displayType="secondary"
+										onClick={() =>
+											setPanelView(
+												panelView
+													? null
+													: {type: 'switch'}
+											)
+										}
+										ref={switchButtonRef}
+										size="sm"
+										symbol="change"
+										title={Liferay.Language.get(
+											'switch-dashboard'
+										)}
+									/>
+								</BasePage.Header.TitleSection>
+							</BasePage.Row>
+						</BasePage.Header>
+						{hasContent && (
+							<BasePage.SubHeader fluid>
+								<div className="d-flex justify-content-between w-100">
+									<div className="d-flex">
+										<FilterPicker
+											className="mr-3"
+											entityLabel={Liferay.Language.get(
+												'industries'
+											)}
+											fieldMappingFieldName="industry"
+											filterKey="industryFilter"
+										/>
 
-								<SegmentDropdown
-									initialSegmentId={segmentId}
-									initialSegmentName={segmentName}
-									onFilterChange={setSegment}
-								/>
-							</div>
+										<FilterPicker
+											className="mr-3"
+											entityLabel={Liferay.Language.get(
+												'countries'
+											)}
+											fieldMappingFieldName="country"
+											filterKey="countryFilter"
+										/>
 
-							<TrailingNinetyDayRange />
-						</div>
-					</BasePage.SubHeader>
-				)}
-				<BasePage.Body className="pt-3 px-5" pageContainer={false}>
-					{renderBody()}
-				</BasePage.Body>
-			</BasePage>
-		</LifecycleContextProvider>
+										<SegmentDropdown
+											initialSegmentId={segmentId}
+											initialSegmentName={segmentName}
+											onFilterChange={setSegment}
+										/>
+									</div>
+
+									<TrailingNinetyDayRange />
+								</div>
+							</BasePage.SubHeader>
+						)}
+						<BasePage.Body
+							className="pt-3 px-5"
+							pageContainer={false}
+						>
+							{renderBody()}
+						</BasePage.Body>
+					</BasePage>
+				</LifecycleContextProvider>
+			</div>
+
+			<LifecycleSwitchPanel
+				containerRef={containerRef}
+				onViewChange={setPanelView}
+				triggerRef={switchButtonRef}
+				view={panelView}
+			/>
+		</>
 	);
 };
 
