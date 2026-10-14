@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import javax.xml.stream.XMLInputFactory;
@@ -1544,19 +1545,26 @@ public class LocalizationImpl implements Localization {
 		String xml, String requestedLanguageId, boolean useDefault,
 		String value) {
 
-		if (Validator.isNotNull(xml) && !xml.equals(_EMPTY_ROOT_NODE)) {
-			_cache.compute(
-				xml,
-				(key, map) -> {
-					if (map == null) {
-						map = new HashMap<>();
-					}
+		if (Validator.isNull(xml) || xml.equals(_EMPTY_ROOT_NODE) ||
+			(value == null)) {
 
-					map.put(new Tuple(useDefault, requestedLanguageId), value);
-
-					return map;
-				});
+			return;
 		}
+
+		Map<Tuple, String> valueMap = _cache.get(xml);
+
+		if (valueMap == null) {
+			valueMap = new ConcurrentHashMap<>();
+
+			Map<Tuple, String> previousValueMap = _cache.putIfAbsent(
+				xml, valueMap);
+
+			if (previousValueMap != null) {
+				valueMap = previousValueMap;
+			}
+		}
+
+		valueMap.put(new Tuple(useDefault, requestedLanguageId), value);
 	}
 
 	private static final String _AVAILABLE_LOCALES = "available-locales";
