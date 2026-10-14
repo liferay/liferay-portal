@@ -8,6 +8,7 @@ package com.liferay.comment.taglib.internal.struts;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.NamespaceServletRequest;
 
@@ -35,6 +36,12 @@ public class GetCommentsStrutsAction implements StrutsAction {
 		throws Exception {
 
 		String namespace = ParamUtil.getString(httpServletRequest, "namespace");
+
+		if (!_isNamespace(namespace)) {
+			httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
+
+			return null;
+		}
 
 		httpServletRequest.setAttribute("aui:form:portletNamespace", namespace);
 
@@ -75,6 +82,12 @@ public class GetCommentsStrutsAction implements StrutsAction {
 		String randomNamespace = ParamUtil.getString(
 			namespacedHttpServletRequest, "randomNamespace");
 
+		if (!_isNamespace(randomNamespace)) {
+			httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
+
+			return null;
+		}
+
 		namespacedHttpServletRequest.setAttribute(
 			"liferay-comment:discussion:randomNamespace", randomNamespace);
 
@@ -105,6 +118,16 @@ public class GetCommentsStrutsAction implements StrutsAction {
 			namespacedHttpServletRequest, httpServletResponse);
 
 		return null;
+	}
+
+	private boolean _isNamespace(String namespace) {
+		if (Validator.isNull(namespace) ||
+			Validator.isVariableName(namespace)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.comment.taglib)")
