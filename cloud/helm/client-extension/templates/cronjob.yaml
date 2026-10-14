@@ -1,0 +1,19 @@
+{{- if and .Values.workload.enabled (eq .Values.workload.kind "CronJob") }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+    labels:
+        {{- include "liferay-client-extension.labels" . | nindent 8 }}
+    name: {{ include "liferay-client-extension.fullname" . }}
+spec:
+    concurrencyPolicy: Forbid
+    jobTemplate:
+        spec:
+            backoffLimit: {{ .Values.workload.backoffLimit }}
+            template:
+                metadata:
+                    {{- include "liferay-client-extension.podTemplateMetadata" . | nindent 20 }}
+                spec:
+                    {{- include "liferay-client-extension.podSpec" . | nindent 20 }}
+    schedule: {{ required "workload.schedule is required for a CronJob" .Values.workload.schedule | quote }}
+{{- end }}

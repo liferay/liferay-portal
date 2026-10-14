@@ -1,0 +1,15 @@
+{{- if and .Values.workload.enabled (eq .Values.workload.kind "Job") }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+    labels:
+        {{- include "liferay-client-extension.labels" . | nindent 8 }}
+    name: {{ include "liferay-client-extension.workloadName" . }}
+spec:
+    backoffLimit: {{ .Values.workload.backoffLimit }}
+    template:
+        metadata:
+            {{- include "liferay-client-extension.podTemplateMetadata" . | nindent 12 }}
+        spec:
+            {{- include "liferay-client-extension.podSpec" . | nindent 12 }}
+{{- end }}

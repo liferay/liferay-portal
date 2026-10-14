@@ -1,0 +1,18 @@
+{{- if and .Values.workload.enabled (eq .Values.workload.kind "Deployment") }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        {{- include "liferay-client-extension.labels" . | nindent 8 }}
+    name: {{ include "liferay-client-extension.fullname" . }}
+spec:
+    replicas: {{ .Values.workload.replicas }}
+    selector:
+        matchLabels:
+            {{- include "liferay-client-extension.selectorLabels" . | nindent 12 }}
+    template:
+        metadata:
+            {{- include "liferay-client-extension.podTemplateMetadata" . | nindent 12 }}
+        spec:
+            {{- include "liferay-client-extension.podSpec" . | nindent 12 }}
+{{- end }}
