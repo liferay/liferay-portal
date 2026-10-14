@@ -178,14 +178,6 @@ public class CommercePriceListAccountRelLocalServiceImpl
 			countByCommercePriceListId(commercePriceListId);
 	}
 
-	@Override
-	public int getCommercePriceListAccountRelsCount(
-		long commercePriceListId, String name) {
-
-		return commercePriceListAccountRelFinder.countByCommercePriceListId(
-			commercePriceListId, name);
-	}
-
 	private void _reindexCommercePriceList(long commercePriceListId)
 		throws PortalException {
 

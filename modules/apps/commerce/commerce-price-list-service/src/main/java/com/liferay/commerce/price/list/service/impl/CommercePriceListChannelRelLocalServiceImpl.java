@@ -161,14 +161,6 @@ public class CommercePriceListChannelRelLocalServiceImpl
 			countByCommercePriceListId(commercePriceListId);
 	}
 
-	@Override
-	public int getCommercePriceListChannelRelsCount(
-		long commercePriceListId, String name) {
-
-		return commercePriceListChannelRelFinder.countByCommercePriceListId(
-			commercePriceListId, name);
-	}
-
 	private void _reindexCommercePriceList(long commercePriceListId)
 		throws PortalException {
 

@@ -124,9 +124,13 @@ public class CommerceDiscountV2Test {
 
 		List<CommercePriceList> commercePriceLists =
 			_commercePriceListLocalService.getCommercePriceLists(
-				_group.getCompanyId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (CommercePriceList commercePriceList : commercePriceLists) {
+			if (commercePriceList.getCompanyId() != _group.getCompanyId()) {
+				continue;
+			}
+
 			_commercePriceListLocalService.forceDeleteCommercePriceList(
 				commercePriceList);
 		}

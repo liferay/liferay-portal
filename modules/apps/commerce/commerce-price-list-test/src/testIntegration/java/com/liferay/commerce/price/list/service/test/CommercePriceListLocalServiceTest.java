@@ -93,9 +93,13 @@ public class CommercePriceListLocalServiceTest {
 	public void tearDown() throws Exception {
 		List<CommercePriceList> commercePriceLists =
 			_commercePriceListLocalService.getCommercePriceLists(
-				_company.getCompanyId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (CommercePriceList commercePriceList : commercePriceLists) {
+			if (commercePriceList.getCompanyId() != _company.getCompanyId()) {
+				continue;
+			}
+
 			_commercePriceListLocalService.forceDeleteCommercePriceList(
 				commercePriceList);
 		}
