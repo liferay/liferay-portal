@@ -205,81 +205,6 @@ public class DLFileVersionPreviewUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the dl file version previews where fileVersionId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.document.library.model.impl.DLFileVersionPreviewModelImpl</code>.
-	 * </p>
-	 *
-	 * @param fileVersionId the file version ID
-	 * @param start the lower bound of the range of dl file version previews
-	 * @param end the upper bound of the range of dl file version previews (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching dl file version previews
-	 */
-	public static List<DLFileVersionPreview> findByFileVersionId(
-		long fileVersionId, int start, int end,
-		OrderByComparator<DLFileVersionPreview> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByFileVersionId(
-			fileVersionId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first dl file version preview in the ordered set where fileVersionId = &#63;.
-	 *
-	 * @param fileVersionId the file version ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching dl file version preview
-	 * @throws NoSuchFileVersionPreviewException if a matching dl file version preview could not be found
-	 */
-	public static DLFileVersionPreview findByFileVersionId_First(
-			long fileVersionId,
-			OrderByComparator<DLFileVersionPreview> orderByComparator)
-		throws com.liferay.document.library.exception.
-			NoSuchFileVersionPreviewException {
-
-		return getPersistence().findByFileVersionId_First(
-			fileVersionId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first dl file version preview in the ordered set where fileVersionId = &#63;.
-	 *
-	 * @param fileVersionId the file version ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching dl file version preview, or <code>null</code> if a matching dl file version preview could not be found
-	 */
-	public static DLFileVersionPreview fetchByFileVersionId_First(
-		long fileVersionId,
-		OrderByComparator<DLFileVersionPreview> orderByComparator) {
-
-		return getPersistence().fetchByFileVersionId_First(
-			fileVersionId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the dl file version previews where fileVersionId = &#63; from the database.
-	 *
-	 * @param fileVersionId the file version ID
-	 */
-	public static void removeByFileVersionId(long fileVersionId) {
-		getPersistence().removeByFileVersionId(fileVersionId);
-	}
-
-	/**
-	 * Returns the number of dl file version previews where fileVersionId = &#63;.
-	 *
-	 * @param fileVersionId the file version ID
-	 * @return the number of matching dl file version previews
-	 */
-	public static int countByFileVersionId(long fileVersionId) {
-		return getPersistence().countByFileVersionId(fileVersionId);
-	}
-
-	/**
 	 * Returns the dl file version preview where fileEntryId = &#63; and fileVersionId = &#63; or throws a <code>NoSuchFileVersionPreviewException</code> if it could not be found.
 	 *
 	 * @param fileEntryId the file entry ID
@@ -539,57 +464,6 @@ public class DLFileVersionPreviewUtil {
 			fileEntryId, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the dl file version previews where fileVersionId = &#63;.
-	 *
-	 * @param fileVersionId the file version ID
-	 * @return the matching dl file version previews
-	 */
-	public static List<DLFileVersionPreview> findByFileVersionId(
-		long fileVersionId) {
-
-		return getPersistence().findByFileVersionId(fileVersionId);
-	}
-
-	/**
-	 * Returns a range of all the dl file version previews where fileVersionId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.document.library.model.impl.DLFileVersionPreviewModelImpl</code>.
-	 * </p>
-	 *
-	 * @param fileVersionId the file version ID
-	 * @param start the lower bound of the range of dl file version previews
-	 * @param end the upper bound of the range of dl file version previews (not inclusive)
-	 * @return the range of matching dl file version previews
-	 */
-	public static List<DLFileVersionPreview> findByFileVersionId(
-		long fileVersionId, int start, int end) {
-
-		return getPersistence().findByFileVersionId(fileVersionId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the dl file version previews where fileVersionId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.document.library.model.impl.DLFileVersionPreviewModelImpl</code>.
-	 * </p>
-	 *
-	 * @param fileVersionId the file version ID
-	 * @param start the lower bound of the range of dl file version previews
-	 * @param end the upper bound of the range of dl file version previews (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching dl file version previews
-	 */
-	public static List<DLFileVersionPreview> findByFileVersionId(
-		long fileVersionId, int start, int end,
-		OrderByComparator<DLFileVersionPreview> orderByComparator) {
-
-		return getPersistence().findByFileVersionId(
-			fileVersionId, start, end, orderByComparator);
-	}
-
 	public static DLFileVersionPreviewPersistence getPersistence() {
 		return _persistence;
 	}
@@ -603,4 +477,4 @@ public class DLFileVersionPreviewUtil {
 	private static volatile DLFileVersionPreviewPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2004389617
+// LIFERAY-SERVICE-BUILDER-HASH:749266777
