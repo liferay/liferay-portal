@@ -199,6 +199,10 @@ public class StaticSiteExportURL {
 		return _queryString;
 	}
 
+	public String getScheme() {
+		return _scheme;
+	}
+
 	public String getServletPath() {
 		String dispatchPath = getDispatchPath();
 

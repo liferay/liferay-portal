@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.RequestDispatcher;
@@ -97,6 +98,16 @@ public class StaticSiteExportResourceFetcher {
 			_fetchExternalStaticSiteExportResourceFile(
 				StaticSiteExportURL staticSiteExportURL)
 		throws Exception {
+
+		String scheme = staticSiteExportURL.getScheme();
+
+		if ((scheme != null) &&
+			!StringUtil.equalsIgnoreCase(scheme, Http.HTTP) &&
+			!StringUtil.equalsIgnoreCase(scheme, Http.HTTPS)) {
+
+			throw new IllegalArgumentException(
+				"Scheme " + scheme + " is not supported");
+		}
 
 		String hostName = staticSiteExportURL.getHostName();
 
