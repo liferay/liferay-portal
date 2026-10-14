@@ -36,7 +36,8 @@
 				transform: translateX(-4px);
 			}
 
-			&:focus-visible .criteria-sidebar-item-add {
+			&:focus-visible .criteria-sidebar-item-add,
+			&:hover .criteria-sidebar-item-add {
 				opacity: 1;
 			}
 
