@@ -199,19 +199,6 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 	}
 
 	@Override
-	public void deleteKaleoTimerInstanceToken(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws PortalException {
-
-		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			getKaleoTimerInstanceToken(kaleoInstanceTokenId, kaleoTimerId);
-
-		_deleteScheduledTimer(kaleoTimerInstanceToken);
-
-		kaleoTimerInstanceTokenPersistence.remove(kaleoTimerInstanceToken);
-	}
-
-	@Override
 	public void deleteKaleoTimerInstanceTokens(long kaleoInstanceId) {
 		List<KaleoTimerInstanceToken> kaleoTimerInstanceTokens =
 			kaleoTimerInstanceTokenPersistence.findByKaleoInstanceId(
@@ -237,15 +224,6 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 
 			kaleoTimerInstanceTokenPersistence.remove(kaleoTimerInstanceToken);
 		}
-	}
-
-	@Override
-	public KaleoTimerInstanceToken getKaleoTimerInstanceToken(
-			long kaleoInstanceTokenId, long kaleoTimerId)
-		throws PortalException {
-
-		return kaleoTimerInstanceTokenPersistence.findByKITI_KTI(
-			kaleoInstanceTokenId, kaleoTimerId);
 	}
 
 	@Override

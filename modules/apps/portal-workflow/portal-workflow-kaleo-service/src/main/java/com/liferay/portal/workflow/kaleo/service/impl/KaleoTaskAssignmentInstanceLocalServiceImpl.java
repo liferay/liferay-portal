@@ -233,15 +233,6 @@ public class KaleoTaskAssignmentInstanceLocalServiceImpl
 	}
 
 	@Override
-	public KaleoTaskAssignmentInstance fetchFirstKaleoTaskAssignmentInstance(
-		long kaleoTaskInstanceTokenId, String assigneeClassName,
-		OrderByComparator<KaleoTaskAssignmentInstance> orderByComparator) {
-
-		return kaleoTaskAssignmentInstancePersistence.fetchByKTITI_ACN_First(
-			kaleoTaskInstanceTokenId, assigneeClassName, orderByComparator);
-	}
-
-	@Override
 	public List<KaleoTaskAssignmentInstance> getKaleoTaskAssignmentInstances(
 		long kaleoTaskInstanceTokenId) {
 

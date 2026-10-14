@@ -19,7 +19,6 @@ import com.liferay.portal.workflow.kaleo.service.base.KaleoTaskFormInstanceLocal
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskFormPersistence;
 
 import java.util.Date;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -84,11 +83,6 @@ public class KaleoTaskFormInstanceLocalServiceImpl
 	}
 
 	@Override
-	public int countKaleoTaskFormInstanceByKaleoTaskId(long kaleoTaskId) {
-		return kaleoTaskFormInstancePersistence.countByKaleoTaskId(kaleoTaskId);
-	}
-
-	@Override
 	public void deleteCompanyKaleoTaskFormInstances(long companyId) {
 		kaleoTaskFormInstancePersistence.removeByCompanyId(companyId);
 	}
@@ -115,30 +109,6 @@ public class KaleoTaskFormInstanceLocalServiceImpl
 
 		kaleoTaskFormInstancePersistence.removeByKaleoTaskInstanceTokenId(
 			kaleoTaskInstanceTokenId);
-	}
-
-	@Override
-	public KaleoTaskFormInstance fetchKaleoTaskFormKaleoTaskFormInstance(
-		long kaleoTaskFormId) {
-
-		return kaleoTaskFormInstancePersistence.fetchByKaleoTaskFormId(
-			kaleoTaskFormId);
-	}
-
-	@Override
-	public KaleoTaskFormInstance getKaleoTaskFormKaleoTaskFormInstance(
-			long kaleoTaskFormId)
-		throws PortalException {
-
-		return kaleoTaskFormInstancePersistence.findByKaleoTaskFormId(
-			kaleoTaskFormId);
-	}
-
-	@Override
-	public List<KaleoTaskFormInstance> getKaleoTaskKaleoTaskFormInstances(
-		long kaleoTaskId) {
-
-		return kaleoTaskFormInstancePersistence.findByKaleoTaskId(kaleoTaskId);
 	}
 
 	@Reference
