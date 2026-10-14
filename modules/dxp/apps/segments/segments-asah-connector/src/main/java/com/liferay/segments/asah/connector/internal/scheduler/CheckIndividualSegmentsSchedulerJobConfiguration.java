@@ -101,7 +101,7 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 			segmentsAsahConfiguration.checkInterval(), TimeUnit.MINUTE);
 	}
 
-	private void _addSegmentsEntry(
+	private void _addOrUpdateSegmentsEntry(
 		long companyId, IndividualSegment individualSegment) {
 
 		try {
@@ -224,7 +224,7 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 			individualSegmentResults.getItems();
 
 		individualSegments.forEach(
-			individualSegment -> _addSegmentsEntry(
+			individualSegment -> _addOrUpdateSegmentsEntry(
 				companyId, individualSegment));
 	}
 
