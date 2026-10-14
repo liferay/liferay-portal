@@ -12,6 +12,7 @@ export * as MiniCartUtils from './components/mini_cart/util';
 export {default as DSRequestStatusDataRenderer} from './components/data_renderers/DSRequestStatusDataRenderer';
 export {default as PriceRenderer} from './components/data_renderers/PriceRenderer';
 export {default as ProductOptionsDataRenderer} from './components/data_renderers/ProductOptionsDataRenderer';
+export {default as openDSRequestDetailsModal} from './components/ds_request_details/openDSRequestDetailsModal';
 export {
 	AccountCreationModal,
 	accountSelector,

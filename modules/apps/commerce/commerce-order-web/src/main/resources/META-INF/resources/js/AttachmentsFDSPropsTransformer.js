@@ -6,6 +6,7 @@
 import {
 	DSRequestStatusDataRenderer,
 	formatActionUrl,
+	openDSRequestDetailsModal,
 } from 'commerce-frontend-js';
 import {openModal, openToast} from 'frontend-js-components-web';
 import {escapeHTML, sub} from 'frontend-js-web';
@@ -213,6 +214,13 @@ const AttachmentsFDSPropsTransformer = (props) => {
 				};
 			}
 
+			if (actionId === 'view-signature-details') {
+				return {
+					...action,
+					isVisible: (item) => !!getDSRequestStatus(item),
+				};
+			}
+
 			return action;
 		}),
 		onActionDropdownItemClick: ({action, event, itemData, loadData}) => {
@@ -256,6 +264,16 @@ const AttachmentsFDSPropsTransformer = (props) => {
 				postDSRequestAction(
 					formatActionUrl(action.data.resendDSRequestURL, itemData)
 				).catch(openErrorToast);
+			}
+			else if (actionId === 'view-signature-details') {
+				event?.preventDefault();
+
+				openDSRequestDetailsModal({
+					url: formatActionUrl(
+						action.data.dsRequestDetailsURL,
+						itemData
+					),
+				});
 			}
 			else if (actionId === 'void') {
 				event?.preventDefault();

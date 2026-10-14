@@ -91,6 +91,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -289,6 +290,72 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			companyId, new long[] {fileEntryId});
 
 		return dsRequests.get(fileEntryId);
+	}
+
+	@Override
+	public List<DSRequest> getFileEntryDSRequests(
+		long companyId, long fileEntryId) {
+
+		List<DSRequest> dsRequests = new ArrayList<>();
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-69290")) {
+			return dsRequests;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					DSObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_REQUEST_DOCUMENT,
+					companyId);
+
+		if (objectDefinition == null) {
+			return dsRequests;
+		}
+
+		try {
+			Set<Long> dsRequestIds = new LinkedHashSet<>(
+				TransformUtil.transform(
+					_getValuesList(
+						companyId, "(fileEntryId eq " + fileEntryId + ")",
+						objectDefinition,
+						new Sort[] {
+							new Sort(Field.CREATE_DATE, Sort.LONG_TYPE, true),
+							new Sort("id", Sort.LONG_TYPE, true)
+						}),
+					values -> MapUtil.getLong(
+						values,
+						"r_dsRequestToDSRequestDocuments_l_dsRequestId")));
+
+			if (dsRequestIds.isEmpty()) {
+				return dsRequests;
+			}
+
+			Map<Long, DSRequest> dsRequestsMap = _getDSRequests(
+				companyId, dsRequestIds);
+
+			return TransformUtil.transform(
+				dsRequestIds,
+				dsRequestId -> {
+					DSRequest dsRequest = dsRequestsMap.get(dsRequestId);
+
+					if ((dsRequest == null) ||
+						!_isEnabled(companyId, dsRequest.getSiteGroupId())) {
+
+						return null;
+					}
+
+					return dsRequest;
+				});
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to get digital signature requests for file entry " +
+					fileEntryId,
+				exception);
+		}
+
+		return dsRequests;
 	}
 
 	@Override

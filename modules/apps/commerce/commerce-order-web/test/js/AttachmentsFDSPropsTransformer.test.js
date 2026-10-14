@@ -8,6 +8,7 @@ import AttachmentsFDSPropsTransformer from '../../src/main/resources/META-INF/re
 jest.mock('commerce-frontend-js', () => ({
 	DSRequestStatusDataRenderer: () => null,
 	formatActionUrl: jest.fn(),
+	openDSRequestDetailsModal: jest.fn(),
 }));
 
 jest.mock('frontend-js-components-web', () => ({

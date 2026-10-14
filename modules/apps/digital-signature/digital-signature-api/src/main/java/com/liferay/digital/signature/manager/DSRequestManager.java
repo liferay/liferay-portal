@@ -31,6 +31,9 @@ public interface DSRequestManager {
 	public DSRequest fetchLatestFileEntryDSRequest(
 		long companyId, long fileEntryId);
 
+	public List<DSRequest> getFileEntryDSRequests(
+		long companyId, long fileEntryId);
+
 	public List<DSRequest> getGroupDSRequests(
 		long companyId, long groupId, String search, int start, int end);
 

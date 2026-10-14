@@ -34,6 +34,7 @@ dependencies {
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-order-api")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
+	compileOnly project(":apps:digital-signature:digital-signature-api")
 	compileOnly project(":apps:friendly-url:friendly-url-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:layout:layout-display-page-api")
