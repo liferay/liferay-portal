@@ -174,10 +174,10 @@
 		<#assign assetURL = assetPublisherHelper.getAssetViewURL(renderRequest, renderResponse, assetRenderer, asset, !stringUtil.equals(assetLinkBehavior, "showFullContent")) />
 
 		<div class="asset-entry-abstract-content">
-			<h3><a href="${assetURL}">${assetRenderer.getTitle(locale)}</a></h3>
+			<h3><a href="${assetURL}">${htmlUtil.escape(assetRenderer.getTitle(locale))}</a></h3>
 
 			<div>
-				${assetRenderer.getSummary(renderRequest, renderResponse)}
+				${htmlUtil.escape(assetRenderer.getSummary(renderRequest, renderResponse))}
 			</div>
 		</div>
 
