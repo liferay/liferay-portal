@@ -20,7 +20,8 @@ import freemarker.template.TemplateModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 
@@ -87,17 +88,27 @@ public abstract class BaseObjectWrapperTestCase {
 
 		// 7. Wrap non-Liferay object when module factory is available
 
-		Map<Class<?>, ModelFactory> modelFactories =
+		ClassValue<AtomicInteger> modelFactoryIndexClassValue =
 			ReflectionTestUtil.getFieldValue(
-				LiferayObjectWrapper.class, "_modelFactories");
+				LiferayObjectWrapper.class, "_modelFactoryIndexClassValue");
 
-		modelFactories.put(
-			String.class, (object, wrapper) -> dummyTemplateModel);
+		AtomicInteger modelFactoryIndex = modelFactoryIndexClassValue.get(
+			String.class);
+
+		List<ModelFactory> modelFactories = ReflectionTestUtil.getFieldValue(
+			LiferayObjectWrapper.class, "_modelFactories");
+
+		ModelFactory modelFactory = modelFactories.set(
+			0, (object, wrapper) -> dummyTemplateModel);
+
+		modelFactoryIndex.set(0);
 
 		Assert.assertSame(
 			dummyTemplateModel, objectWrapper.wrap(StringPool.BLANK));
 
-		modelFactories.clear();
+		modelFactories.set(0, modelFactory);
+
+		modelFactoryIndexClassValue.remove(String.class);
 
 		// 8. Test
 

@@ -26,8 +26,9 @@ import java.lang.reflect.Field;
 
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Map;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -192,14 +193,20 @@ public class LiferayObjectWrapperTest extends BaseObjectWrapperTestCase {
 	private void _assertModelFactoryCache(
 		String modelFactoryFieldName, Class<?> clazz) {
 
-		Map<Class<?>, ModelFactory> modelFactories =
+		ClassValue<AtomicInteger> modelFactoryIndexClassValue =
 			ReflectionTestUtil.getFieldValue(
-				LiferayObjectWrapper.class, "_modelFactories");
+				LiferayObjectWrapper.class, "_modelFactoryIndexClassValue");
+
+		AtomicInteger modelFactoryIndex = modelFactoryIndexClassValue.get(
+			clazz);
+
+		List<ModelFactory> modelFactories = ReflectionTestUtil.getFieldValue(
+			LiferayObjectWrapper.class, "_modelFactories");
 
 		Assert.assertSame(
 			ReflectionTestUtil.getFieldValue(
 				LiferayObjectWrapper.class, modelFactoryFieldName),
-			modelFactories.get(clazz));
+			modelFactories.get(modelFactoryIndex.get()));
 	}
 
 }

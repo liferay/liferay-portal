@@ -5,8 +5,6 @@
 
 package com.liferay.portal.template.freemarker.internal;
 
-import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
-import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.templateparser.TemplateNode;
 
@@ -27,11 +25,14 @@ import freemarker.template.TemplateModelException;
 
 import java.lang.reflect.Field;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.w3c.dom.Node;
 
@@ -104,13 +105,18 @@ public class LiferayObjectWrapper extends DefaultObjectWrapper {
 			return _STRING_MODEL_FACTORY.create(object, this);
 		}
 
-		ModelFactory modelFactory = _modelFactories.get(clazz);
+		AtomicInteger modelFactoryIndex = _modelFactoryIndexClassValue.get(
+			clazz);
 
-		if (modelFactory != null) {
-			return modelFactory.create(object, this);
+		int index = modelFactoryIndex.get();
+
+		if (index < 0) {
+			return super.wrap(object);
 		}
 
-		return super.wrap(object);
+		ModelFactory modelFactory = _modelFactories.get(index);
+
+		return modelFactory.create(object, this);
 	}
 
 	@Override
@@ -130,7 +136,10 @@ public class LiferayObjectWrapper extends DefaultObjectWrapper {
 			modelFactory = _STRING_MODEL_FACTORY;
 		}
 
-		_modelFactories.put(object.getClass(), modelFactory);
+		AtomicInteger modelFactoryIndex = _modelFactoryIndexClassValue.get(
+			object.getClass());
+
+		modelFactoryIndex.set(_modelFactories.indexOf(modelFactory));
 
 		return modelFactory.create(object, this);
 	}
@@ -186,9 +195,19 @@ public class LiferayObjectWrapper extends DefaultObjectWrapper {
 
 	private static final Field _cacheClassNamesField;
 	private static final Field _classIntrospectorField;
-	private static final Map<Class<?>, ModelFactory> _modelFactories =
-		new ConcurrentReferenceKeyHashMap<>(
-			FinalizeManager.SOFT_REFERENCE_FACTORY);
+	private static final List<ModelFactory> _modelFactories = Arrays.asList(
+		_ENUMERATION_MODEL_FACTORY, _NODE_MODEL_FACTORY,
+		_RESOURCE_BUNDLE_MODEL_FACTORY, _STRING_MODEL_FACTORY);
+
+	private static final ClassValue<AtomicInteger>
+		_modelFactoryIndexClassValue = new ClassValue<AtomicInteger>() {
+
+			@Override
+			protected AtomicInteger computeValue(Class<?> clazz) {
+				return new AtomicInteger(-1);
+			}
+
+		};
 
 	static {
 		try {
