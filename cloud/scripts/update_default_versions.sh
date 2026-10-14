@@ -42,6 +42,7 @@ function main {
 		"${ROOT_CLOUD_DIR}/scripts/_platform_values.jq"
 		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
 		"${ROOT_CLOUD_DIR}/scripts/setup_azure.sh"
+		"${ROOT_CLOUD_DIR}/scripts/teardown_azure.sh"
 		"${ROOT_CLOUD_DIR}/terraform/azure/aks"
 		"${ROOT_CLOUD_DIR}/terraform/azure/platform"
 		"${ROOT_CLOUD_DIR}/terraform/modules/argocd"

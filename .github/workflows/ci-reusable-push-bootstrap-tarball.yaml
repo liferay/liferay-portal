@@ -119,8 +119,11 @@ jobs:
                             files=(
                                 cloud/scripts/setup_gcp.sh
                                 cloud/terraform/gcp/gitops/platform/*
+                                cloud/terraform/gcp/gitops/platform/.terraform.lock.hcl
                                 cloud/terraform/gcp/gitops/resources/*
+                                cloud/terraform/gcp/gitops/resources/.terraform.lock.hcl
                                 cloud/terraform/gcp/gke/*
+                                cloud/terraform/gcp/gke/.terraform.lock.hcl
                             )
                         fi
 
