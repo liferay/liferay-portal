@@ -5,6 +5,7 @@
 
 export type FieldTreeItem = {
 	children?: FieldTreeItem[];
+	fieldCount: number;
 	id: string;
 	name: string;
 };

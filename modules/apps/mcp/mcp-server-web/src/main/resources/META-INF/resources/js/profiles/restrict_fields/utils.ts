@@ -105,7 +105,14 @@ function buildFieldTreeItems(
 				id
 			);
 
-			return children.length ? {children, id, name} : {id, name};
+			const fieldCount = children.reduce(
+				(count, child) => count + child.fieldCount,
+				1
+			);
+
+			return children.length
+				? {children, fieldCount, id, name}
+				: {fieldCount, id, name};
 		});
 }
 

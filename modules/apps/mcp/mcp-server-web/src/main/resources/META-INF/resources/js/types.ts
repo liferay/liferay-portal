@@ -34,6 +34,7 @@ export type DataMaskPayload = {
 export type DataMaskTreeItem = {
 	children?: DataMaskTreeItem[];
 	id: string;
+	maskCount: number;
 	name: string;
 };
 

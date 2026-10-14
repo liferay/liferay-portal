@@ -39,13 +39,17 @@ export function buildDataMaskTree(dataMasks: DataMask[]): DataMaskTreeItem[] {
 			return [];
 		}
 
+		const children = groupDataMasks.map((dataMask) => ({
+			id: dataMask.externalReferenceCode as string,
+			maskCount: 1,
+			name: dataMask.name,
+		}));
+
 		return [
 			{
-				children: groupDataMasks.map((dataMask) => ({
-					id: dataMask.externalReferenceCode as string,
-					name: dataMask.name,
-				})),
+				children,
 				id: `${DATA_MASK_GROUP_ID_PREFIX}${groupKey}`,
+				maskCount: children.length,
 				name: groupDataMasks[0].maskType.name,
 			},
 		];

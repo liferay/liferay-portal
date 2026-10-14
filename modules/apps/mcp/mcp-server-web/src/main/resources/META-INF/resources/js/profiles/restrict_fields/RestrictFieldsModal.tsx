@@ -12,6 +12,7 @@ import ClayModal from '@clayui/modal';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import AutoSearch from '../../components/AutoSearch';
+import CountBadge from '../../components/CountBadge';
 import FilterResultsStatus from '../../components/FilterResultsStatus';
 import Highlight from '../../components/Highlight';
 import SelectedItemsBar from '../../components/SelectedItemsBar';
@@ -218,65 +219,99 @@ export default function RestrictFieldsModal({
 										selectionMode="multiple-recursive"
 										showExpanderOnHover={false}
 									>
-										{(item: FieldTreeItem) => (
-											<TreeView.Item
-												className={getRowClassName(
-													item
-												)}
-											>
-												<TreeView.ItemStack
-													expandOnClick={false}
-													expanderDisabled={
-														!isExpandable(item)
-													}
-													onKeyDown={(event) => {
-														if (
-															event.key ===
-																'ArrowRight' &&
-															!isExpandable(item)
-														) {
-															event.preventDefault();
-														}
-													}}
-												>
-													<ClayCheckbox checked />
+										{(item: FieldTreeItem, selection) => {
+											const countId = `${item.id}-count`;
 
-													<span className="font-weight-normal pl-1 text-3">
-														<Highlight
-															query={trimmedQuery}
-															text={item.name}
-														/>
-													</span>
-												</TreeView.ItemStack>
-
-												<TreeView.Group
-													items={item.children}
-												>
-													{(child: FieldTreeItem) => (
-														<TreeView.Item
-															className={getRowClassName(
-																child
-															)}
-														>
-															<ClayCheckbox
-																checked
-															/>
-
-															<span className="font-weight-normal pl-1 text-3">
-																<Highlight
-																	query={
-																		trimmedQuery
-																	}
-																	text={
-																		child.name
-																	}
-																/>
-															</span>
-														</TreeView.Item>
+											return (
+												<TreeView.Item
+													className={getRowClassName(
+														item
 													)}
-												</TreeView.Group>
-											</TreeView.Item>
-										)}
+												>
+													<TreeView.ItemStack
+														aria-describedby={
+															item.children
+																? countId
+																: undefined
+														}
+														expandOnClick={false}
+														expanderDisabled={
+															!isExpandable(item)
+														}
+														onKeyDown={(event) => {
+															if (
+																event.key ===
+																	'ArrowRight' &&
+																!isExpandable(
+																	item
+																)
+															) {
+																event.preventDefault();
+															}
+														}}
+													>
+														<ClayCheckbox
+															aria-describedby={
+																item.children
+																	? countId
+																	: undefined
+															}
+															checked
+														/>
+
+														<span className="font-weight-normal pl-1 text-3">
+															<Highlight
+																query={
+																	trimmedQuery
+																}
+																text={item.name}
+															/>
+														</span>
+
+														{item.children && (
+															<CountBadge
+																count={
+																	item.fieldCount
+																}
+																id={countId}
+																selected={selection.has(
+																	item.id
+																)}
+															/>
+														)}
+													</TreeView.ItemStack>
+
+													<TreeView.Group
+														items={item.children}
+													>
+														{(
+															child: FieldTreeItem
+														) => (
+															<TreeView.Item
+																className={getRowClassName(
+																	child
+																)}
+															>
+																<ClayCheckbox
+																	checked
+																/>
+
+																<span className="font-weight-normal pl-1 text-3">
+																	<Highlight
+																		query={
+																			trimmedQuery
+																		}
+																		text={
+																			child.name
+																		}
+																	/>
+																</span>
+															</TreeView.Item>
+														)}
+													</TreeView.Group>
+												</TreeView.Item>
+											);
+										}}
 									</TreeView>
 								</>
 							) : (

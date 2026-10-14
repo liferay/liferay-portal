@@ -11,6 +11,7 @@ import ClayModal from '@clayui/modal';
 import React, {useMemo, useState} from 'react';
 
 import AutoSearch from '../components/AutoSearch';
+import CountBadge from '../components/CountBadge';
 import FilterResultsStatus from '../components/FilterResultsStatus';
 import Highlight from '../components/Highlight';
 import SelectedItemsBar from '../components/SelectedItemsBar';
@@ -163,49 +164,71 @@ export default function AddDataMasksModal({
 								selectionMode="multiple-recursive"
 								showExpanderOnHover={false}
 							>
-								{(item: DataMaskTreeItem) => (
-									<TreeView.Item
-										className={getRowClassName(item)}
-									>
-										<TreeView.ItemStack
-											expandOnClick={false}
+								{(item: DataMaskTreeItem, selection) => {
+									const countId = `${item.id}-count`;
+
+									return (
+										<TreeView.Item
+											className={getRowClassName(item)}
 										>
-											<ClayCheckbox
-												aria-label={item.name}
-												checked
-											/>
-
-											<span className="font-weight-normal pl-1 text-3">
-												<Highlight
-													query={trimmedQuery}
-													text={item.name}
+											<TreeView.ItemStack
+												aria-describedby={countId}
+												expandOnClick={false}
+											>
+												<ClayCheckbox
+													aria-describedby={countId}
+													aria-label={item.name}
+													checked
 												/>
-											</span>
-										</TreeView.ItemStack>
 
-										<TreeView.Group items={item.children}>
-											{(child: DataMaskTreeItem) => (
-												<TreeView.Item
-													className={getRowClassName(
-														child
-													)}
-												>
-													<ClayCheckbox
-														aria-label={child.name}
-														checked
+												<span className="font-weight-normal pl-1 text-3">
+													<Highlight
+														query={trimmedQuery}
+														text={item.name}
 													/>
+												</span>
 
-													<span className="font-weight-normal pl-1 text-3">
-														<Highlight
-															query={trimmedQuery}
-															text={child.name}
+												<CountBadge
+													count={item.maskCount}
+													id={countId}
+													selected={selection.has(
+														item.id
+													)}
+												/>
+											</TreeView.ItemStack>
+
+											<TreeView.Group
+												items={item.children}
+											>
+												{(child: DataMaskTreeItem) => (
+													<TreeView.Item
+														className={getRowClassName(
+															child
+														)}
+													>
+														<ClayCheckbox
+															aria-label={
+																child.name
+															}
+															checked
 														/>
-													</span>
-												</TreeView.Item>
-											)}
-										</TreeView.Group>
-									</TreeView.Item>
-								)}
+
+														<span className="font-weight-normal pl-1 text-3">
+															<Highlight
+																query={
+																	trimmedQuery
+																}
+																text={
+																	child.name
+																}
+															/>
+														</span>
+													</TreeView.Item>
+												)}
+											</TreeView.Group>
+										</TreeView.Item>
+									);
+								}}
 							</TreeView>
 						</>
 					) : (
