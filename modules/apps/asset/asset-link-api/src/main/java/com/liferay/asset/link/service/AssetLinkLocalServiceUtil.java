@@ -156,16 +156,6 @@ public class AssetLinkLocalServiceUtil {
 	}
 
 	/**
-	 * Delete all links that associate the two asset entries.
-	 *
-	 * @param entryId1 the primary key of the first asset entry
-	 * @param entryId2 the primary key of the second asset entry
-	 */
-	public static void deleteLinks(long entryId1, long entryId2) {
-		getService().deleteLinks(entryId1, entryId2);
-	}
-
-	/**
 	 * @throws PortalException
 	 */
 	public static PersistedModel deletePersistedModel(
@@ -494,4 +484,4 @@ public class AssetLinkLocalServiceUtil {
 			AssetLinkLocalServiceUtil.class, AssetLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:279943030
+// LIFERAY-SERVICE-BUILDER-HASH:-1372008193

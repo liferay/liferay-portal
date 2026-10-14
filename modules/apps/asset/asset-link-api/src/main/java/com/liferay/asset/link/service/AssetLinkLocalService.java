@@ -157,14 +157,6 @@ public interface AssetLinkLocalService
 	public void deleteLinks(long entryId);
 
 	/**
-	 * Delete all links that associate the two asset entries.
-	 *
-	 * @param entryId1 the primary key of the first asset entry
-	 * @param entryId2 the primary key of the second asset entry
-	 */
-	public void deleteLinks(long entryId1, long entryId2);
-
-	/**
 	 * @throws PortalException
 	 */
 	@Override
@@ -447,4 +439,4 @@ public interface AssetLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:453264660
+// LIFERAY-SERVICE-BUILDER-HASH:2049600806
