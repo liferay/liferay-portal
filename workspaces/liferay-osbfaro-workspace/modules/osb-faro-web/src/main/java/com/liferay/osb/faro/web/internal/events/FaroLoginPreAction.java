@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = "key=servlet.service.events.pre", service = LifecycleAction.class
 )
-public class FaroThemePreAction extends Action {
+public class FaroLoginPreAction extends Action {
 
 	@Override
 	public void run(
@@ -64,6 +64,6 @@ public class FaroThemePreAction extends Action {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		FaroThemePreAction.class);
+		FaroLoginPreAction.class);
 
 }
