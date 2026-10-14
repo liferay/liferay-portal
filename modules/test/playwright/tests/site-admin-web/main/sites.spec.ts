@@ -499,6 +499,46 @@ test(
 	}
 );
 
+test(
+	'Global Site appears in the Recent Sites list',
+	{
+		tag: '@LPD-109992',
+	},
+	async ({page}) => {
+		await page.goto('/');
+
+		await openProductMenu(page);
+
+		const switchSiteButton = page.getByRole('button', {
+			name: 'Go to Other Site',
+		});
+
+		await switchSiteButton.click();
+
+		const frame = page.frameLocator('iframe[title="Select Site"]');
+
+		await frame
+			.getByRole('link', {
+				name: 'All Sites',
+			})
+			.click();
+
+		await frame.locator('.card-title', {hasText: 'Global'}).click();
+
+		await openProductMenu(page);
+
+		await switchSiteButton.click();
+
+		await frame
+			.getByRole('link', {
+				name: 'Recent',
+			})
+			.click();
+
+		await expect(frame.locator('.card-title').first()).toHaveText('Global');
+	}
+);
+
 test('Deleting friendly URL makes it not able to access page via old friendly URL', async ({
 	apiHelpers,
 	page,
