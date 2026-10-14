@@ -3768,6 +3768,59 @@ public class BatchEnginePortletDataHandlerTest {
 	}
 
 	@Test
+	@TestInfo("LPD-104572")
+	public void testExportObjectDefinitionsWithUnserializableObjectField()
+		throws Exception {
+
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+
+		try {
+			ObjectField objectField = _addObjectFields(1, objectDefinition)[0];
+
+			objectField.setReadOnly("1");
+
+			_objectFieldLocalService.updateObjectField(objectField);
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.batch.engine.internal." +
+						"BatchEngineExportTaskExecutorImpl",
+					LoggerTestUtil.ERROR)) {
+
+				new ExportImportExecutor(
+				).withGroupId(
+					group.getGroupId()
+				).withIncludeObjectDefinitions(
+				).executeExport();
+
+				Assert.fail();
+			}
+			catch (Exception exception) {
+				Throwable throwable = exception;
+
+				while ((throwable != null) &&
+					   !(throwable instanceof PortletDataException)) {
+
+					throwable = throwable.getCause();
+				}
+
+				String message = throwable.getMessage();
+
+				Assert.assertTrue(
+					message,
+					message.startsWith("Unable to export batch data for "));
+			}
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-99059")
 	public void testExportSiteObjectEntriesExceedingExportBatchSize()
 		throws Exception {
