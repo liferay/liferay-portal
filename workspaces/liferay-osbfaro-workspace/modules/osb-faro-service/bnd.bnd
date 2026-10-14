@@ -37,6 +37,6 @@ Import-Package:\
 	com.liferay.portal.kernel.uuid;version="[6.0.0,9999.0.0)",\
 	\
 	*
-Liferay-Require-SchemaVersion: 21.0.0
+Liferay-Require-SchemaVersion: 21.0.1
 Liferay-Service: true
 -dsannotations-options: inherit
