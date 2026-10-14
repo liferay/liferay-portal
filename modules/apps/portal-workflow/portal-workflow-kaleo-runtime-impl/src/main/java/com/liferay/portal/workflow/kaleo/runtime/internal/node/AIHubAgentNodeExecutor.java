@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
+import com.liferay.portal.kernel.security.auth.PrincipalInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -82,7 +82,7 @@ public class AIHubAgentNodeExecutor extends BaseNodeExecutor {
 		throws PortalException {
 
 		_noticeableExecutorService.submit(
-			new CompanyInheritableThreadLocalCallable<>(
+			new PrincipalInheritableThreadLocalCallable<>(
 				() -> {
 					try {
 						_postAgentInstance(currentKaleoNode, executionContext);
