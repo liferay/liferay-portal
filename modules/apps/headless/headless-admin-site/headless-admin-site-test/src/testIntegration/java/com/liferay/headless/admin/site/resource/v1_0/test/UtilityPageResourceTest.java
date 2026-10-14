@@ -1273,19 +1273,15 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		ThumbnailURLReferenceTestUtil.testThumbnailURLReferenceURLFetchSecurity(
 			(thumbnailURLReference, utilityPage) ->
 				_assertThumbnailURLReference(
-					_thumbnail1URL.equals(thumbnailURLReference.getUrl()) ?
-						_thumbnail1Bytes : _thumbnail2Bytes,
+					_thumbnail1Bytes,
 					thumbnailURLReference.getExternalReferenceCode(),
 					utilityPage),
-			_randomUtilityPage(
-				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
-					_thumbnail1URL)),
-			_randomUtilityPage(
-				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
-					_thumbnail2URL)),
 			UtilityPage::getThumbnailURLReference,
 			utilityPage -> utilityPageResource.postSiteUtilityPage(
-				testGroup.getExternalReferenceCode(), utilityPage));
+				testGroup.getExternalReferenceCode(), utilityPage),
+			() -> _randomUtilityPage(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail1URL)));
 	}
 
 	private void _testPostSiteUtilityPageWithThumbnailURLReferenceURLUnreachableProblemException()

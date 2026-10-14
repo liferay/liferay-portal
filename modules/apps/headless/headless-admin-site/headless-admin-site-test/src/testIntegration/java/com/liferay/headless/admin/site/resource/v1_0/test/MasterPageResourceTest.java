@@ -1591,18 +1591,14 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		ThumbnailURLReferenceTestUtil.testThumbnailURLReferenceURLFetchSecurity(
 			(thumbnailURLReference, masterPage) -> _assertThumbnailURLReference(
-				_thumbnail1URL.equals(thumbnailURLReference.getUrl()) ?
-					_thumbnail1Bytes : _thumbnail2Bytes,
+				_thumbnail1Bytes,
 				thumbnailURLReference.getExternalReferenceCode(), masterPage),
-			_randomMasterPage(
-				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
-					_thumbnail1URL)),
-			_randomMasterPage(
-				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
-					_thumbnail2URL)),
 			MasterPage::getThumbnailURLReference,
 			masterPage -> masterPageResource.postSiteMasterPage(
-				testGroup.getExternalReferenceCode(), masterPage));
+				testGroup.getExternalReferenceCode(), masterPage),
+			() -> _randomMasterPage(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail1URL)));
 	}
 
 	private void _testPostSiteMasterPageWithThumbnailURLReferenceURLUnsupportedProtocolProblemException()

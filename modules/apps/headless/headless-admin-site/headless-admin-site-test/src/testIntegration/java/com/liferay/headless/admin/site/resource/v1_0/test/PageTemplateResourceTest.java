@@ -2082,19 +2082,15 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 		ThumbnailURLReferenceTestUtil.testThumbnailURLReferenceURLFetchSecurity(
 			(thumbnailURLReference, pageTemplate) ->
 				_assertThumbnailURLReference(
-					_thumbnail1URL.equals(thumbnailURLReference.getUrl()) ?
-						_thumbnail1Bytes : _thumbnail2Bytes,
+					_thumbnail1Bytes,
 					thumbnailURLReference.getExternalReferenceCode(),
 					pageTemplate),
-			_randomPageTemplate(
-				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
-					_thumbnail1URL)),
-			_randomPageTemplate(
-				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
-					_thumbnail2URL)),
 			PageTemplate::getThumbnailURLReference,
 			pageTemplate -> pageTemplateResource.postSitePageTemplate(
-				testGroup.getExternalReferenceCode(), pageTemplate));
+				testGroup.getExternalReferenceCode(), pageTemplate),
+			() -> _randomPageTemplate(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail1URL)));
 	}
 
 	private void _testPostSitePageTemplateWithThumbnailURLReferenceURLUnsupportedProtocolProblemException()

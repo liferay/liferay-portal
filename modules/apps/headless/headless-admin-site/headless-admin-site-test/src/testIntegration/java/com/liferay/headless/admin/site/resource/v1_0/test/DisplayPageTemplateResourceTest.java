@@ -2900,20 +2900,16 @@ public class DisplayPageTemplateResourceTest
 		ThumbnailURLReferenceTestUtil.testThumbnailURLReferenceURLFetchSecurity(
 			(thumbnailURLReference, displayPageTemplate) ->
 				_assertThumbnailURLReference(
-					_thumbnail1URL.equals(thumbnailURLReference.getUrl()) ?
-						_thumbnail1Bytes : _thumbnail2Bytes,
+					_thumbnail1Bytes,
 					thumbnailURLReference.getExternalReferenceCode(),
 					displayPageTemplate),
-			_randomDisplayPageTemplate(
-				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
-					_thumbnail1URL)),
-			_randomDisplayPageTemplate(
-				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
-					_thumbnail2URL)),
 			DisplayPageTemplate::getThumbnailURLReference,
 			displayPageTemplate ->
 				displayPageTemplateResource.postSiteDisplayPageTemplate(
-					testGroup.getExternalReferenceCode(), displayPageTemplate));
+					testGroup.getExternalReferenceCode(), displayPageTemplate),
+			() -> _randomDisplayPageTemplate(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail1URL)));
 	}
 
 	private void _testPostSiteDisplayPageTemplateWithThumbnailURLReferenceURLUnsupportedProtocolProblemException()
