@@ -61,12 +61,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="RepositoryId" return-type="Collection">
 			<finder-column name="repositoryId" />
 		</finder>
@@ -95,10 +89,6 @@
 		<finder name="G_F" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column arrayable-operator="OR" name="folderId" />
-		</finder>
-		<finder name="R_F" return-type="Collection">
-			<finder-column name="repositoryId" />
-			<finder-column name="folderId" />
 		</finder>
 		<finder name="F_N" return-type="Collection">
 			<finder-column name="folderId" />
@@ -335,9 +325,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="FileEntryId" return-type="Collection">
 			<finder-column name="fileEntryId" />
 		</finder>
@@ -359,10 +346,6 @@
 		<finder name="F_S" return-type="Collection">
 			<finder-column name="fileEntryId" />
 			<finder-column arrayable-operator="OR" name="status" />
-		</finder>
-		<finder name="LtD_S" return-type="Collection">
-			<finder-column comparator="&lt;" name="displayDate" />
-			<finder-column name="status" />
 		</finder>
 		<finder name="G_F_S" return-type="Collection">
 			<finder-column name="groupId" />
@@ -430,9 +413,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
@@ -455,10 +435,6 @@
 			<finder-column name="repositoryId" />
 			<finder-column name="parentFolderId" />
 		</finder>
-		<finder name="P_N" return-type="Collection">
-			<finder-column name="parentFolderId" />
-			<finder-column name="name" />
-		</finder>
 		<finder db-index="false" name="GtF_C_P" return-type="Collection">
 			<finder-column comparator="&gt;" name="folderId" />
 			<finder-column name="companyId" />
@@ -473,12 +449,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="parentFolderId" />
 			<finder-column name="name" />
-		</finder>
-		<finder db-index="false" name="GtF_C_P_NotS" return-type="Collection">
-			<finder-column comparator="&gt;" name="folderId" />
-			<finder-column name="companyId" />
-			<finder-column name="parentFolderId" />
-			<finder-column comparator="!=" name="status" />
 		</finder>
 		<finder name="G_M_P_H" return-type="Collection">
 			<finder-column name="groupId" />
