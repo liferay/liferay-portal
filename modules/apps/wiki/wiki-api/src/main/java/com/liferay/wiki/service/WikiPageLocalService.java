@@ -539,10 +539,6 @@ public interface WikiPageLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<WikiPage> getPages(
-		long userId, long nodeId, int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WikiPage> getPages(
 		long groupId, long nodeId, int status, long statusByUserId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -559,9 +555,6 @@ public interface WikiPageLocalService
 		OrderByComparator<WikiPage> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WikiPage> getPages(String format);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPagesCount(long nodeId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -571,19 +564,10 @@ public interface WikiPageLocalService
 	public int getPagesCount(long nodeId, boolean head, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPagesCount(long nodeId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPagesCount(long userId, long nodeId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPagesCount(long nodeId, String title);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPagesCount(long nodeId, String title, boolean head);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPagesCount(String format);
 
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -804,4 +788,4 @@ public interface WikiPageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1469070703
+// LIFERAY-SERVICE-BUILDER-HASH:-24884529
