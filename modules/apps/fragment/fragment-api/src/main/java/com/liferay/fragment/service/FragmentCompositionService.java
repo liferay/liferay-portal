@@ -76,28 +76,34 @@ public interface FragmentCompositionService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentComposition> getFragmentCompositions(
-		long fragmentCollectionId);
+			long fragmentCollectionId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentComposition> getFragmentCompositions(
-		long fragmentCollectionId, int start, int end);
+			long fragmentCollectionId, int start, int end)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int status);
+			long groupId, long fragmentCollectionId, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentComposition> orderByComparator);
+			long groupId, long fragmentCollectionId, int start, int end,
+			OrderByComparator<FragmentComposition> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end, OrderByComparator<FragmentComposition> orderByComparator);
+			long groupId, long fragmentCollectionId, String name, int start,
+			int end, OrderByComparator<FragmentComposition> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFragmentCompositionsCount(long fragmentCollectionId);
+	public int getFragmentCompositionsCount(long fragmentCollectionId)
+		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -130,4 +136,4 @@ public interface FragmentCompositionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1520263018
+// LIFERAY-SERVICE-BUILDER-HASH:1975666850

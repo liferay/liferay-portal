@@ -90,7 +90,8 @@ public class FragmentCompositionServiceWrapper
 
 	@Override
 	public java.util.List<FragmentComposition> getFragmentCompositions(
-		long fragmentCollectionId) {
+			long fragmentCollectionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentCompositionService.getFragmentCompositions(
 			fragmentCollectionId);
@@ -98,7 +99,8 @@ public class FragmentCompositionServiceWrapper
 
 	@Override
 	public java.util.List<FragmentComposition> getFragmentCompositions(
-		long fragmentCollectionId, int start, int end) {
+			long fragmentCollectionId, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentCompositionService.getFragmentCompositions(
 			fragmentCollectionId, start, end);
@@ -106,7 +108,8 @@ public class FragmentCompositionServiceWrapper
 
 	@Override
 	public java.util.List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int status) {
+			long groupId, long fragmentCollectionId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentCompositionService.getFragmentCompositions(
 			groupId, fragmentCollectionId, status);
@@ -114,9 +117,10 @@ public class FragmentCompositionServiceWrapper
 
 	@Override
 	public java.util.List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<FragmentComposition>
-			orderByComparator) {
+			long groupId, long fragmentCollectionId, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<FragmentComposition> orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentCompositionService.getFragmentCompositions(
 			groupId, fragmentCollectionId, start, end, orderByComparator);
@@ -124,17 +128,20 @@ public class FragmentCompositionServiceWrapper
 
 	@Override
 	public java.util.List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end,
-		com.liferay.portal.kernel.util.OrderByComparator<FragmentComposition>
-			orderByComparator) {
+			long groupId, long fragmentCollectionId, String name, int start,
+			int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<FragmentComposition> orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentCompositionService.getFragmentCompositions(
 			groupId, fragmentCollectionId, name, start, end, orderByComparator);
 	}
 
 	@Override
-	public int getFragmentCompositionsCount(long fragmentCollectionId) {
+	public int getFragmentCompositionsCount(long fragmentCollectionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		return _fragmentCompositionService.getFragmentCompositionsCount(
 			fragmentCollectionId);
 	}
@@ -214,4 +221,4 @@ public class FragmentCompositionServiceWrapper
 	private FragmentCompositionService _fragmentCompositionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-549680662
+// LIFERAY-SERVICE-BUILDER-HASH:-1701210746

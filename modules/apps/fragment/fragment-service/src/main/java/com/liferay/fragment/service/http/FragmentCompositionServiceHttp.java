@@ -286,8 +286,9 @@ public class FragmentCompositionServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.fragment.model.FragmentComposition>
-		getFragmentCompositions(
-			HttpPrincipal httpPrincipal, long fragmentCollectionId) {
+			getFragmentCompositions(
+				HttpPrincipal httpPrincipal, long fragmentCollectionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -303,6 +304,13 @@ public class FragmentCompositionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -320,9 +328,10 @@ public class FragmentCompositionServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.fragment.model.FragmentComposition>
-		getFragmentCompositions(
-			HttpPrincipal httpPrincipal, long fragmentCollectionId, int start,
-			int end) {
+			getFragmentCompositions(
+				HttpPrincipal httpPrincipal, long fragmentCollectionId,
+				int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -338,6 +347,13 @@ public class FragmentCompositionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -355,9 +371,10 @@ public class FragmentCompositionServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.fragment.model.FragmentComposition>
-		getFragmentCompositions(
-			HttpPrincipal httpPrincipal, long groupId,
-			long fragmentCollectionId, int status) {
+			getFragmentCompositions(
+				HttpPrincipal httpPrincipal, long groupId,
+				long fragmentCollectionId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -373,6 +390,13 @@ public class FragmentCompositionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -390,12 +414,13 @@ public class FragmentCompositionServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.fragment.model.FragmentComposition>
-		getFragmentCompositions(
-			HttpPrincipal httpPrincipal, long groupId,
-			long fragmentCollectionId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.fragment.model.FragmentComposition>
-					orderByComparator) {
+			getFragmentCompositions(
+				HttpPrincipal httpPrincipal, long groupId,
+				long fragmentCollectionId, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.fragment.model.FragmentComposition>
+						orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -412,6 +437,13 @@ public class FragmentCompositionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -429,12 +461,13 @@ public class FragmentCompositionServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.fragment.model.FragmentComposition>
-		getFragmentCompositions(
-			HttpPrincipal httpPrincipal, long groupId,
-			long fragmentCollectionId, String name, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.fragment.model.FragmentComposition>
-					orderByComparator) {
+			getFragmentCompositions(
+				HttpPrincipal httpPrincipal, long groupId,
+				long fragmentCollectionId, String name, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.fragment.model.FragmentComposition>
+						orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -451,6 +484,13 @@ public class FragmentCompositionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -468,7 +508,8 @@ public class FragmentCompositionServiceHttp {
 	}
 
 	public static int getFragmentCompositionsCount(
-		HttpPrincipal httpPrincipal, long fragmentCollectionId) {
+			HttpPrincipal httpPrincipal, long fragmentCollectionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -485,6 +526,13 @@ public class FragmentCompositionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -776,4 +824,4 @@ public class FragmentCompositionServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:700017067
+// LIFERAY-SERVICE-BUILDER-HASH:-1215940433

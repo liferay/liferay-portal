@@ -89,89 +89,111 @@ public interface FragmentEntryService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Object> getFragmentCompositionsAndFragmentEntries(
-		long groupId, long fragmentCollectionId, int status, int start, int end,
-		OrderByComparator<?> orderByComparator);
+			long groupId, long fragmentCollectionId, int status, int start,
+			int end, OrderByComparator<?> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Object> getFragmentCompositionsAndFragmentEntries(
-		long groupId, long fragmentCollectionId, String name, int status,
-		int start, int end, OrderByComparator<?> orderByComparator);
+			long groupId, long fragmentCollectionId, String name, int status,
+			int start, int end, OrderByComparator<?> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentCompositionsAndFragmentEntriesCount(
-		long groupId, long fragmentCollectionId, int status);
+			long groupId, long fragmentCollectionId, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentCompositionsAndFragmentEntriesCount(
-		long groupId, long fragmentCollectionId, String name, int status);
+			long groupId, long fragmentCollectionId, String name, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentEntry> getFragmentEntries(long fragmentCollectionId);
+	public List<FragmentEntry> getFragmentEntries(long fragmentCollectionId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntries(
-		long groupId, long fragmentCollectionId, int start, int end);
+			long groupId, long fragmentCollectionId, int start, int end)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntries(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator);
+			long groupId, long fragmentCollectionId, int start, int end,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntriesByName(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end, OrderByComparator<FragmentEntry> orderByComparator);
+			long groupId, long fragmentCollectionId, String name, int start,
+			int end, OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntriesByNameAndStatus(
-		long groupId, long fragmentCollectionId, String name, int status,
-		int start, int end, OrderByComparator<FragmentEntry> orderByComparator);
+			long groupId, long fragmentCollectionId, String name, int status,
+			int start, int end,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntriesByStatus(
-		long groupId, long fragmentCollectionId, int status);
+			long groupId, long fragmentCollectionId, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntriesByStatus(
-		long groupId, long fragmentCollectionId, int status, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator);
+			long groupId, long fragmentCollectionId, int status, int start,
+			int end, OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntriesByType(
-		long groupId, long fragmentCollectionId, int type, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator);
+			long groupId, long fragmentCollectionId, int type, int start,
+			int end, OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntriesByTypeAndStatus(
-		long groupId, long fragmentCollectionId, int type, int status);
+			long groupId, long fragmentCollectionId, int type, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntriesByTypeAndStatus(
-		long groupId, long fragmentCollectionId, int type, int status,
-		int start, int end, OrderByComparator<FragmentEntry> orderByComparator);
+			long groupId, long fragmentCollectionId, int type, int status,
+			int start, int end,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFragmentEntriesCount(long groupId, long fragmentCollectionId);
+	public int getFragmentEntriesCount(long groupId, long fragmentCollectionId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentEntriesCountByName(
-		long groupId, long fragmentCollectionId, String name);
+			long groupId, long fragmentCollectionId, String name)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentEntriesCountByNameAndStatus(
-		long groupId, long fragmentCollectionId, String name, int status);
+			long groupId, long fragmentCollectionId, String name, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentEntriesCountByStatus(
-		long groupId, long fragmentCollectionId, int status);
+			long groupId, long fragmentCollectionId, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentEntriesCountByType(
-		long groupId, long fragmentCollectionId, int type);
+			long groupId, long fragmentCollectionId, int type)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentEntriesCountByTypeAndStatus(
-		long groupId, long fragmentCollectionId, int type, int status);
+			long groupId, long fragmentCollectionId, int type, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FragmentEntry getFragmentEntryByExternalReferenceCode(
@@ -221,4 +243,4 @@ public interface FragmentEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1251420372
+// LIFERAY-SERVICE-BUILDER-HASH:673367252
