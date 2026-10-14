@@ -269,13 +269,6 @@ public interface MemberRequestLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MemberRequest> getReceiverMemberRequest(
-		long receiverUserId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getReceiverMemberRequestCount(long receiverUserId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MemberRequest> getReceiverStatusMemberRequest(
 		long receiverUserId, int status, int start, int end);
 
@@ -307,4 +300,4 @@ public interface MemberRequestLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1690365376
+// LIFERAY-SERVICE-BUILDER-HASH:-719210213

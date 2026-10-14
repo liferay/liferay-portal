@@ -360,21 +360,6 @@ public class MemberRequestLocalServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.invitation.invite.members.model.MemberRequest>
-			getReceiverMemberRequest(long receiverUserId, int start, int end) {
-
-		return _memberRequestLocalService.getReceiverMemberRequest(
-			receiverUserId, start, end);
-	}
-
-	@Override
-	public int getReceiverMemberRequestCount(long receiverUserId) {
-		return _memberRequestLocalService.getReceiverMemberRequestCount(
-			receiverUserId);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.invitation.invite.members.model.MemberRequest>
 			getReceiverStatusMemberRequest(
 				long receiverUserId, int status, int start, int end) {
 
@@ -453,4 +438,4 @@ public class MemberRequestLocalServiceWrapper
 	private MemberRequestLocalService _memberRequestLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1012736071
+// LIFERAY-SERVICE-BUILDER-HASH:-2041823038

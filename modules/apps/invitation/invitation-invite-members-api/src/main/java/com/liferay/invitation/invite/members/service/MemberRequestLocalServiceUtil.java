@@ -310,17 +310,6 @@ public class MemberRequestLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static List<MemberRequest> getReceiverMemberRequest(
-		long receiverUserId, int start, int end) {
-
-		return getService().getReceiverMemberRequest(
-			receiverUserId, start, end);
-	}
-
-	public static int getReceiverMemberRequestCount(long receiverUserId) {
-		return getService().getReceiverMemberRequestCount(receiverUserId);
-	}
-
 	public static List<MemberRequest> getReceiverStatusMemberRequest(
 		long receiverUserId, int status, int start, int end) {
 
@@ -382,4 +371,4 @@ public class MemberRequestLocalServiceUtil {
 			MemberRequestLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1297045862
+// LIFERAY-SERVICE-BUILDER-HASH:-543090717
