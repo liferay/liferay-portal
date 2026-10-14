@@ -146,13 +146,13 @@ public class EditStructureDisplayPageStrutsActionTest {
 
 			UserTestUtil.setUser(_user);
 
-			_testExecute(classNameId, null, httpServletRequest);
 			_testExecute(
 				classNameId,
 				_layoutPageTemplateEntryLocalService.
 					fetchDefaultLayoutPageTemplateEntry(
 						_group.getGroupId(), classNameId, 0),
 				httpServletRequest);
+			_testExecute(classNameId, null, httpServletRequest);
 		}
 	}
 
