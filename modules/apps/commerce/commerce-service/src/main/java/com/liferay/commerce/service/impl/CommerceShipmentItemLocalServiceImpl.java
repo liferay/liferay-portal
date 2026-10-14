@@ -315,16 +315,6 @@ public class CommerceShipmentItemLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceShipmentItem> getCommerceShipmentItems(
-		long commerceShipmentId, long commerceOrderItemId, int start, int end,
-		OrderByComparator<CommerceShipmentItem> orderByComparator) {
-
-		return commerceShipmentItemPersistence.findByC_C(
-			commerceShipmentId, commerceOrderItemId, start, end,
-			orderByComparator);
-	}
-
-	@Override
 	public List<CommerceShipmentItem>
 		getCommerceShipmentItemsByCommerceOrderItemId(
 			long commerceOrderItemId) {
