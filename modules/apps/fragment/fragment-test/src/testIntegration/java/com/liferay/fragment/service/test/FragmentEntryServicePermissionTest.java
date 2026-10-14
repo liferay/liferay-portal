@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -38,6 +39,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
+
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -447,6 +450,68 @@ public class FragmentEntryServicePermissionTest {
 
 		_fragmentEntryService.fetchFragmentEntry(
 			fragmentEntry.getFragmentEntryId());
+	}
+
+	@Test
+	@TestInfo("LPD-109774")
+	public void testGetFragmentEntriesCountWithPermissions() throws Exception {
+		FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		UserTestUtil.setUser(_user);
+
+		Assert.assertEquals(
+			1,
+			_fragmentEntryService.getFragmentEntriesCount(
+				_group.getGroupId(),
+				_fragmentCollection.getFragmentCollectionId()));
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-109774")
+	public void testGetFragmentEntriesCountWithoutPermissions()
+		throws Exception {
+
+		FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		UserTestUtil.setUser(_user);
+
+		_fragmentEntryService.getFragmentEntriesCount(
+			_group.getGroupId(), _fragmentCollection.getFragmentCollectionId());
+	}
+
+	@Test
+	@TestInfo("LPD-109774")
+	public void testGetFragmentEntriesWithPermissions() throws Exception {
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		UserTestUtil.setUser(_user);
+
+		List<FragmentEntry> fragmentEntries =
+			_fragmentEntryService.getFragmentEntries(
+				_fragmentCollection.getFragmentCollectionId());
+
+		Assert.assertEquals(
+			fragmentEntries.toString(), 1, fragmentEntries.size());
+		Assert.assertEquals(fragmentEntry, fragmentEntries.get(0));
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-109774")
+	public void testGetFragmentEntriesWithoutPermissions() throws Exception {
+		FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		UserTestUtil.setUser(_user);
+
+		_fragmentEntryService.getFragmentEntries(
+			_fragmentCollection.getFragmentCollectionId());
 	}
 
 	@Test

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -209,6 +210,28 @@ public class FragmentCompositionServiceTest {
 		finally {
 			UserTestUtil.setUser(TestPropsValues.getUser());
 		}
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-109774")
+	public void testGetFragmentCompositionsWithoutViewPermission()
+		throws Exception {
+
+		_fragmentCompositionService.addFragmentComposition(
+			RandomTestUtil.randomString(), _group.getGroupId(),
+			_fragmentCollection.getFragmentCollectionId(),
+			StringUtil.randomId(), RandomTestUtil.randomString(),
+			StringPool.BLANK, StringPool.BLANK, 0,
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		UserTestUtil.setUser(
+			UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER));
+
+		_fragmentCompositionService.getFragmentCompositions(
+			_group.getGroupId(), _fragmentCollection.getFragmentCollectionId(),
+			WorkflowConstants.STATUS_APPROVED);
 	}
 
 	@Test
