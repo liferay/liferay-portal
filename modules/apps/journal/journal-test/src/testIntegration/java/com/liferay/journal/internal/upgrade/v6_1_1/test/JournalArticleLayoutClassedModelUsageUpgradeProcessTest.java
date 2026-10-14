@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.exportimport.changeset.Changeset;
 import com.liferay.exportimport.changeset.portlet.action.ExportImportChangesetMVCActionCommandHelper;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
@@ -350,9 +351,19 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 				"groupId", new String[] {String.valueOf(groupId)}
 			).build());
 
-		_journalContentSearchLocalService.updateContentSearch(
-			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			portletId, articleId, true);
+		JournalContentSearch journalContentSearch =
+			_journalContentSearchLocalService.createJournalContentSearch(
+				_counterLocalService.increment());
+
+		journalContentSearch.setGroupId(layout.getGroupId());
+		journalContentSearch.setCompanyId(layout.getCompanyId());
+		journalContentSearch.setPrivateLayout(layout.isPrivateLayout());
+		journalContentSearch.setLayoutId(layout.getLayoutId());
+		journalContentSearch.setPortletId(portletId);
+		journalContentSearch.setArticleId(articleId);
+
+		_journalContentSearchLocalService.addJournalContentSearch(
+			journalContentSearch);
 
 		return portletId;
 	}
@@ -433,9 +444,10 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 	private void _assertJournalContentSearchesCount(
 		String articleId, int count) {
 
-		List<JournalContentSearch> articleContentSearches =
-			_journalContentSearchLocalService.getArticleContentSearches(
-				articleId);
+		List<JournalContentSearch> articleContentSearches = ListUtil.filter(
+			_journalContentSearchLocalService.getArticleContentSearches(),
+			journalContentSearch -> articleId.equals(
+				journalContentSearch.getArticleId()));
 
 		Assert.assertEquals(
 			articleContentSearches.toString(), count,
@@ -676,6 +688,9 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private CounterLocalService _counterLocalService;
 
 	@Inject
 	private ExportImportChangesetMVCActionCommandHelper

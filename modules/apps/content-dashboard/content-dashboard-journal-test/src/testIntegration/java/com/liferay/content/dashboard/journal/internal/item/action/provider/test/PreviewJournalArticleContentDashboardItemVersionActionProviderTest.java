@@ -185,12 +185,10 @@ public class
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(), 0);
 
-		_journalArticleLocalService.updateDDMTemplateKey(
-			journalArticle.getGroupId(), journalArticle.getClassNameId(),
-			journalArticle.getDDMTemplateKey(), null);
+		journalArticle.setDDMTemplateKey(null);
 
-		journalArticle = _journalArticleLocalService.getArticle(
-			journalArticle.getGroupId(), journalArticle.getArticleId());
+		journalArticle = _journalArticleLocalService.updateJournalArticle(
+			journalArticle);
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -291,12 +289,10 @@ public class
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(), 0);
 
-		_journalArticleLocalService.updateDDMTemplateKey(
-			journalArticle.getGroupId(), journalArticle.getClassNameId(),
-			journalArticle.getDDMTemplateKey(), null);
+		journalArticle.setDDMTemplateKey(null);
 
-		journalArticle = _journalArticleLocalService.getArticle(
-			journalArticle.getGroupId(), journalArticle.getArticleId());
+		journalArticle = _journalArticleLocalService.updateJournalArticle(
+			journalArticle);
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();

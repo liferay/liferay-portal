@@ -3808,70 +3808,6 @@ public class JournalArticleLocalServiceImpl
 	}
 
 	/**
-	 * Returns the web content articles matching the group and DDM template key.
-	 *
-	 * @param  groupId the primary key of the web content article's group
-	 * @param  ddmTemplateKey the primary key of the web content article's DDM
-	 *         template
-	 * @return the matching web content articles
-	 */
-	@Override
-	public List<JournalArticle> getTemplateArticles(
-		long groupId, String ddmTemplateKey) {
-
-		return journalArticlePersistence.findByG_DDMTK(groupId, ddmTemplateKey);
-	}
-
-	/**
-	 * Returns an ordered range of all the web content articles matching the
-	 * group and DDM template key.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  groupId the primary key of the web content article's group
-	 * @param  ddmTemplateKey the primary key of the web content article's DDM
-	 *         template
-	 * @param  start the lower bound of the range of web content articles to
-	 *         return
-	 * @param  end the upper bound of the range of web content articles to
-	 *         return (not inclusive)
-	 * @param  orderByComparator the comparator to order the web content
-	 *         articles
-	 * @return the range of matching web content articles ordered by the
-	 *         comparator
-	 */
-	@Override
-	public List<JournalArticle> getTemplateArticles(
-		long groupId, String ddmTemplateKey, int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator) {
-
-		return journalArticlePersistence.findByG_DDMTK(
-			groupId, ddmTemplateKey, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of web content articles matching the group and DDM
-	 * template key.
-	 *
-	 * @param  groupId the primary key of the web content article's group
-	 * @param  ddmTemplateKey the primary key of the web content article's DDM
-	 *         template
-	 * @return the number of matching web content articles
-	 */
-	@Override
-	public int getTemplateArticlesCount(long groupId, String ddmTemplateKey) {
-		return journalArticlePersistence.countByG_DDMTK(
-			groupId, ddmTemplateKey);
-	}
-
-	/**
 	 * Returns the web content article's unique URL title.
 	 *
 	 * @param  groupId the primary key of the web content article's group
@@ -5622,37 +5558,6 @@ public class JournalArticleLocalServiceImpl
 		_assetLinkLocalService.updateLinks(
 			userId, assetEntry.getEntryId(), assetLinkEntryIds,
 			AssetLinkConstants.TYPE_RELATED);
-	}
-
-	/**
-	 * Updates the web content articles matching the group, class name ID, and
-	 * DDM template key, replacing the DDM template key with a new one.
-	 *
-	 * @param groupId the primary key of the web content article's group
-	 * @param classNameId the primary key of the DDMStructure class if the web
-	 *        content article is related to a DDM structure, the primary key of
-	 *        the class name associated with the article, or
-	 *        JournalArticleConstants.CLASS_NAME_ID_DEFAULT in the journal-api
-	 *        module otherwise
-	 * @param oldDDMTemplateKey the primary key of the web content article's old
-	 *        DDM template
-	 * @param newDDMTemplateKey the primary key of the web content article's new
-	 *        DDM template
-	 */
-	@Override
-	public void updateDDMTemplateKey(
-		long groupId, long classNameId, String oldDDMTemplateKey,
-		String newDDMTemplateKey) {
-
-		List<JournalArticle> articles =
-			journalArticlePersistence.findByG_C_DDMTK(
-				groupId, classNameId, oldDDMTemplateKey);
-
-		for (JournalArticle article : articles) {
-			article.setDDMTemplateKey(newDDMTemplateKey);
-
-			journalArticlePersistence.update(article);
-		}
 	}
 
 	/**

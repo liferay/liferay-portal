@@ -276,21 +276,6 @@ public class JournalFeedLocalServiceImpl
 	}
 
 	@Override
-	public List<JournalFeed> getFeeds(long groupId) {
-		return journalFeedPersistence.findByGroupId(groupId);
-	}
-
-	@Override
-	public List<JournalFeed> getFeeds(long groupId, int start, int end) {
-		return journalFeedPersistence.findByGroupId(groupId, start, end);
-	}
-
-	@Override
-	public int getFeedsCount(long groupId) {
-		return journalFeedPersistence.countByGroupId(groupId);
-	}
-
-	@Override
 	public List<JournalFeed> search(
 		long companyId, long groupId, String keywords, int start, int end,
 		OrderByComparator<JournalFeed> orderByComparator) {

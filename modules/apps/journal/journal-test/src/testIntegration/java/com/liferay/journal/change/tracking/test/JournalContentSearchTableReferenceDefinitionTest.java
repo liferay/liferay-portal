@@ -7,9 +7,11 @@ package com.liferay.journal.change.tracking.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.test.util.BaseTableReferenceDefinitionTestCase;
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.model.JournalContentSearch;
 import com.liferay.journal.service.JournalContentSearchLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -53,11 +55,23 @@ public class JournalContentSearchTableReferenceDefinitionTest
 
 	@Override
 	protected CTModel<?> addCTModel() throws Exception {
-		return _journalContentSearchLocalService.updateContentSearch(
-			_journalArticle.getGroupId(), _layout.isPrivateLayout(),
-			_layout.getLayoutId(), JournalPortletKeys.JOURNAL,
-			_journalArticle.getArticleId());
+		JournalContentSearch journalContentSearch =
+			_journalContentSearchLocalService.createJournalContentSearch(
+				_counterLocalService.increment());
+
+		journalContentSearch.setGroupId(_journalArticle.getGroupId());
+		journalContentSearch.setCompanyId(_journalArticle.getCompanyId());
+		journalContentSearch.setPrivateLayout(_layout.isPrivateLayout());
+		journalContentSearch.setLayoutId(_layout.getLayoutId());
+		journalContentSearch.setPortletId(JournalPortletKeys.JOURNAL);
+		journalContentSearch.setArticleId(_journalArticle.getArticleId());
+
+		return _journalContentSearchLocalService.addJournalContentSearch(
+			journalContentSearch);
 	}
+
+	@Inject
+	private CounterLocalService _counterLocalService;
 
 	private JournalArticle _journalArticle;
 
