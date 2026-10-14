@@ -46,14 +46,6 @@
 			<finder-column name="recordSetId" />
 			<finder-column name="userId" />
 		</finder>
-		<finder name="R_R" return-type="Collection">
-			<finder-column name="recordSetId" />
-			<finder-column name="recordSetVersion" />
-		</finder>
-		<finder name="C_C" return-type="Collection">
-			<finder-column name="className" />
-			<finder-column name="classPK" />
-		</finder>
 	</entity>
 	<entity local-service="true" name="DDLRecordSet" remote-service="true" uuid="true">
 
@@ -138,10 +130,6 @@
 		<finder name="RS_V" return-type="DDLRecordSetVersion" unique="true">
 			<finder-column name="recordSetId" />
 			<finder-column name="version" />
-		</finder>
-		<finder name="RS_S" return-type="Collection">
-			<finder-column name="recordSetId" />
-			<finder-column name="status" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="DDLRecordVersion" remote-service="true">
