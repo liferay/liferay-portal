@@ -32,10 +32,6 @@
 			<finder-column name="companyId" />
 			<finder-column comparator="&lt;" name="modifiedDate" />
 		</finder>
-		<finder name="C_A" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="associationClassName" />
-		</finder>
 		<finder name="C_GtM_A" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column comparator="&gt;" name="modifiedDate" />
