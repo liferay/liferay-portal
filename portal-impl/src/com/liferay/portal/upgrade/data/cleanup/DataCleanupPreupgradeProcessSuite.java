@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
@@ -42,8 +43,6 @@ public class DataCleanupPreupgradeProcessSuite {
 		}
 
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			DataCleanupPreupgradeProcessUtil.enableCache();
-
 			try {
 				DataCleanupConcurrentExecutor dataCleanupConcurrentExecutor =
 					new DataCleanupConcurrentExecutor();
@@ -327,15 +326,24 @@ public class DataCleanupPreupgradeProcessSuite {
 				if (dataCleanupPreupgradeProcesses.size() == 1) {
 					unsafeConsumer.accept(
 						dataCleanupPreupgradeProcesses.get(0));
+				}
+				else {
+					processConcurrently(
+						dataCleanupPreupgradeProcesses.toArray(
+							new DataCleanupPreupgradeProcess[0]),
+						unsafeConsumer,
+						"Unable to run data cleanup processes concurrently");
+				}
+
+				if (!ListUtil.exists(
+						dataCleanupPreupgradeProcesses,
+						DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.
+							class::isInstance)) {
 
 					continue;
 				}
 
-				processConcurrently(
-					dataCleanupPreupgradeProcesses.toArray(
-						new DataCleanupPreupgradeProcess[0]),
-					unsafeConsumer,
-					"Unable to run data cleanup processes concurrently");
+				DataCleanupPreupgradeProcessUtil.enableCache();
 			}
 		}
 
