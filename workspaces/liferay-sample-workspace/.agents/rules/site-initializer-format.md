@@ -236,6 +236,7 @@ A raw `ObjectDefinition`. Reference a picklist by **ERC**, via `listTypeDefiniti
 			"required": true
 		}
 	],
+	"panelCategoryKey": "control_panel.object",
 	"pluralLabel": {
 		"en_US": "Registrations"
 	},
@@ -243,6 +244,8 @@ A raw `ObjectDefinition`. Reference a picklist by **ERC**, via `listTypeDefiniti
 	"titleObjectFieldName": "attendeeName"
 }
 ```
+
+Keep `panelCategoryKey`: without it the object has no admin menu entry. See `skills/manage-objects/SKILL.md`.
 
 Custom field names are validated against a reserved list. `name`, `email`, `location`, and `company` are fine; `status`, `id`, `creator`, `keywords`, and `userId` are rejected. A collision throws `ObjectFieldNameException$MustNotBeReserved`, which **aborts initialization and rolls back the entire site creation transaction**, leaving no site, no objects, and no picklists. See `skills/manage-objects/SKILL.md` for the full list.
 

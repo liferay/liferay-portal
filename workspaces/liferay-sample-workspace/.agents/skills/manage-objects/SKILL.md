@@ -47,6 +47,7 @@ curl \
 	--data '{
 		"label": {"en_US": "<Label>"},
 		"name": "<Name>",
+		"panelCategoryKey": "control_panel.object",
 		"pluralLabel": {"en_US": "<PluralLabel>"},
 		"scope": "company"
 	}' \
@@ -60,6 +61,8 @@ curl \
 **Do not send `"storageType": "default"` on create** — it returns `400 ObjectDefinitionStorageTypeException`. Omit `storageType` and Liferay assigns default DB storage (for external storage, see `integrate-external-data`).
 
 Save the returned `id` as `<definition-id>`.
+
+**Set `panelCategoryKey`, or administrators cannot find the object.** Without it the object is published and its REST endpoint works, but it has no entry in the admin menus, so nobody can browse its entries in the UI. `control_panel.object` lists it under Control Panel → Object. For an object that already exists, `PATCH /o/object-admin/v1.0/object-definitions/<definition-id>` with `{"panelCategoryKey": "control_panel.object"}` adds it without republishing.
 
 #### Prefer Creating Fields Inline
 
@@ -80,6 +83,7 @@ curl \
 				"required": true
 			}
 		],
+		"panelCategoryKey": "control_panel.object",
 		"pluralLabel": {"en_US": "<PluralLabel>"},
 		"scope": "company",
 		"titleObjectFieldName": "<fieldName>"
