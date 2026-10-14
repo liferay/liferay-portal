@@ -22,8 +22,8 @@ $cadmin-c-empty-state-image: map-deep-merge(
 		width: 100%,
 		word-wrap: break-word,
 
-		'.c-empty-state-icon': (
-			margin-bottom: -0.5rem,
+		'.c-empty-state-illustration': (
+			margin-bottom: -2.5rem,
 		),
 	),
 	$cadmin-c-empty-state-image
@@ -92,7 +92,7 @@ $cadmin-c-empty-state-sm: map-deep-merge(
 		c-empty-state-image: (
 			max-width: 120px,
 
-			'.c-empty-state-icon': (
+			'.c-empty-state-illustration': (
 				margin-bottom: -0.5rem,
 			),
 		),
