@@ -519,99 +519,6 @@ public class TemplateEntryPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<TemplateEntry, NoSuchTemplateEntryException>
-			_collectionPersistenceFinderByG_IICN;
-
-	/**
-	 * Returns an ordered range of all the template entries where groupId = &#63; and infoItemClassName = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>TemplateEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param infoItemClassName the info item class name
-	 * @param start the lower bound of the range of template entries
-	 * @param end the upper bound of the range of template entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching template entries
-	 */
-	@Override
-	public List<TemplateEntry> findByG_IICN(
-		long groupId, String infoItemClassName, int start, int end,
-		OrderByComparator<TemplateEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_IICN.find(
-			finderCache, new Object[] {groupId, infoItemClassName}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first template entry in the ordered set where groupId = &#63; and infoItemClassName = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param infoItemClassName the info item class name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching template entry
-	 * @throws NoSuchTemplateEntryException if a matching template entry could not be found
-	 */
-	@Override
-	public TemplateEntry findByG_IICN_First(
-			long groupId, String infoItemClassName,
-			OrderByComparator<TemplateEntry> orderByComparator)
-		throws NoSuchTemplateEntryException {
-
-		return _collectionPersistenceFinderByG_IICN.findFirst(
-			finderCache, new Object[] {groupId, infoItemClassName},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first template entry in the ordered set where groupId = &#63; and infoItemClassName = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param infoItemClassName the info item class name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching template entry, or <code>null</code> if a matching template entry could not be found
-	 */
-	@Override
-	public TemplateEntry fetchByG_IICN_First(
-		long groupId, String infoItemClassName,
-		OrderByComparator<TemplateEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_IICN.fetchFirst(
-			finderCache, new Object[] {groupId, infoItemClassName},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the template entries where groupId = &#63; and infoItemClassName = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param infoItemClassName the info item class name
-	 */
-	@Override
-	public void removeByG_IICN(long groupId, String infoItemClassName) {
-		_collectionPersistenceFinderByG_IICN.remove(
-			finderCache, new Object[] {groupId, infoItemClassName});
-	}
-
-	/**
-	 * Returns the number of template entries where groupId = &#63; and infoItemClassName = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param infoItemClassName the info item class name
-	 * @return the number of matching template entries
-	 */
-	@Override
-	public int countByG_IICN(long groupId, String infoItemClassName) {
-		return _collectionPersistenceFinderByG_IICN.count(
-			finderCache, new Object[] {groupId, infoItemClassName});
-	}
-
-	private CollectionPersistenceFinder
-		<TemplateEntry, NoSuchTemplateEntryException>
 			_collectionPersistenceFinderByG_IICN_IIFVK;
 
 	/**
@@ -1330,38 +1237,6 @@ public class TemplateEntryPersistenceImpl
 				"templateEntry.", "ddmTemplateId", FinderColumn.Type.LONG, "=",
 				true, true, TemplateEntry::getDDMTemplateId));
 
-		_collectionPersistenceFinderByG_IICN =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_IICN",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId", "infoItemClassName"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_IICN",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "infoItemClassName"}, 0, 2, true,
-					null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_IICN",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "infoItemClassName"}, 0, 2, false,
-					null),
-				_SQL_SELECT_TEMPLATEENTRY_WHERE, _SQL_COUNT_TEMPLATEENTRY_WHERE,
-				TemplateEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
-				new FinderColumn<>(
-					"templateEntry.", "groupId", FinderColumn.Type.LONG, "=",
-					true, true, TemplateEntry::getGroupId),
-				new FinderColumn<>(
-					"templateEntry.", "infoItemClassName",
-					FinderColumn.Type.STRING, "=", true, true,
-					TemplateEntry::getInfoItemClassName));
-
 		_collectionPersistenceFinderByG_IICN_IIFVK =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1501,4 +1376,4 @@ public class TemplateEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1267965903
+// LIFERAY-SERVICE-BUILDER-HASH:1462768947
