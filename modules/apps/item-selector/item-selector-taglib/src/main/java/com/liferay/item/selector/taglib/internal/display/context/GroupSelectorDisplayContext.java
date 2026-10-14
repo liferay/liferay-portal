@@ -121,7 +121,7 @@ public class GroupSelectorDisplayContext {
 
 	public SearchContainer<Group> getSearchContainer() {
 		SearchContainer<Group> searchContainer = new GroupSearch(
-			_liferayPortletRequest, _getIteratorURL());
+			_liferayPortletRequest, getGroupItemSelectorURL(_getGroupType()));
 
 		searchContainer.setEmptyResultsMessage(_getEmptyResultsMessage());
 		searchContainer.setResultsAndTotal(
@@ -208,20 +208,6 @@ public class GroupSelectorDisplayContext {
 			ParamUtil.getString(
 				_liferayPortletRequest, "itemSelectedEventName"),
 			itemSelectorCriteria.toArray(new ItemSelectorCriterion[0]));
-	}
-
-	private PortletURL _getIteratorURL() {
-		return PortletURLBuilder.create(
-			_getItemSelectorURL()
-		).setParameter(
-			"groupType", _getGroupType()
-		).setParameter(
-			"scopeGroupType", _isScopeGroupType()
-		).setParameter(
-			"selectedTab", _getSelectedTab()
-		).setParameter(
-			"showGroupSelector", true
-		).buildPortletURL();
 	}
 
 	private String _getSelectedTab() {
