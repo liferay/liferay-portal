@@ -73,15 +73,6 @@
 			<finder-column name="companyId" />
 			<finder-column name="readOnly" />
 		</finder>
-		<finder name="C_T" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="type" />
-		</finder>
-		<finder name="C_T_S" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="type" />
-			<finder-column name="status" />
-		</finder>
 	</entity>
 	<exceptions>
 		<exception>DuplicateSXPBlueprintExternalReferenceCode</exception>
