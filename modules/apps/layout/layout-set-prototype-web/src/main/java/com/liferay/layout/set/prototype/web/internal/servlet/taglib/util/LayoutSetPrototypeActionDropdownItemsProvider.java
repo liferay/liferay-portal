@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -234,9 +233,8 @@ public class LayoutSetPrototypeActionDropdownItemsProvider {
 
 		String permissionsURL = PermissionsURLTag.doTag(
 			StringPool.BLANK, LayoutSetPrototype.class.getName(),
-			HtmlUtil.escape(
-				_layoutSetPrototype.getName(_themeDisplay.getLocale())),
-			null, String.valueOf(_layoutSetPrototype.getLayoutSetPrototypeId()),
+			_layoutSetPrototype.getName(_themeDisplay.getLocale()), null,
+			String.valueOf(_layoutSetPrototype.getLayoutSetPrototypeId()),
 			LiferayWindowState.POP_UP.toString(), null, _httpServletRequest);
 
 		return dropdownItem -> {
