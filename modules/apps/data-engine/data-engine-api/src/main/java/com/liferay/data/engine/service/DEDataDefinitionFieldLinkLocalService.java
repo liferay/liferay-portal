@@ -299,10 +299,6 @@ public interface DEDataDefinitionFieldLinkLocalService
 	public List<DEDataDefinitionFieldLink> getDEDataDefinitionFieldLinks(
 		long ddmStructureId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DEDataDefinitionFieldLink> getDEDataDefinitionFieldLinks(
-		long classNameId, long ddmStructureId);
-
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 DEDataDefinitionFieldLinkLocalServiceImpl#getDEDataDefinitionFieldLinks(
@@ -414,4 +410,4 @@ public interface DEDataDefinitionFieldLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:427665624
+// LIFERAY-SERVICE-BUILDER-HASH:-860418285

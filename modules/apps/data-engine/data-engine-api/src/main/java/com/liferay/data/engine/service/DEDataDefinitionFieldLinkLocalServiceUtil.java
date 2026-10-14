@@ -354,13 +354,6 @@ public class DEDataDefinitionFieldLinkLocalServiceUtil {
 		return getService().getDEDataDefinitionFieldLinks(ddmStructureId);
 	}
 
-	public static List<DEDataDefinitionFieldLink> getDEDataDefinitionFieldLinks(
-		long classNameId, long ddmStructureId) {
-
-		return getService().getDEDataDefinitionFieldLinks(
-			classNameId, ddmStructureId);
-	}
-
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 DEDataDefinitionFieldLinkLocalServiceImpl#getDEDataDefinitionFieldLinks(
@@ -500,4 +493,4 @@ public class DEDataDefinitionFieldLinkLocalServiceUtil {
 			DEDataDefinitionFieldLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:554362239
+// LIFERAY-SERVICE-BUILDER-HASH:277304681
