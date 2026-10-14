@@ -300,12 +300,6 @@ public class PLOEntryLocalServiceUtil {
 	}
 
 	public static List<PLOEntry> getPLOEntries(
-		long companyId, String languageId) {
-
-		return getService().getPLOEntries(companyId, languageId);
-	}
-
-	public static List<PLOEntry> getPLOEntries(
 		long companyId, String keywords, int start, int end,
 		OrderByComparator<PLOEntry> orderByComparator) {
 
@@ -389,4 +383,4 @@ public class PLOEntryLocalServiceUtil {
 			PLOEntryLocalServiceUtil.class, PLOEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2017307110
+// LIFERAY-SERVICE-BUILDER-HASH:-230616620

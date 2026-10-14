@@ -348,13 +348,6 @@ public class PLOEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.language.override.model.PLOEntry>
-		getPLOEntries(long companyId, String languageId) {
-
-		return _ploEntryLocalService.getPLOEntries(companyId, languageId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.language.override.model.PLOEntry>
 		getPLOEntries(
 			long companyId, String keywords, int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator
@@ -465,4 +458,4 @@ public class PLOEntryLocalServiceWrapper
 	private PLOEntryLocalService _ploEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-382069104
+// LIFERAY-SERVICE-BUILDER-HASH:-1052574815

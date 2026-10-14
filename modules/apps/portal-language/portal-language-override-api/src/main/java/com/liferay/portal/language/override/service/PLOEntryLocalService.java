@@ -258,9 +258,6 @@ public interface PLOEntryLocalService
 		OrderByComparator<PLOEntry> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<PLOEntry> getPLOEntries(long companyId, String languageId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PLOEntry> getPLOEntries(
 		long companyId, String keywords, int start, int end,
 		OrderByComparator<PLOEntry> orderByComparator);
@@ -318,4 +315,4 @@ public interface PLOEntryLocalService
 	public PLOEntry updatePLOEntry(PLOEntry ploEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:204467170
+// LIFERAY-SERVICE-BUILDER-HASH:-285005993
