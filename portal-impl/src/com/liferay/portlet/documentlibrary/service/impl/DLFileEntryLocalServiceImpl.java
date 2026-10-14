@@ -46,7 +46,6 @@ import com.liferay.document.library.kernel.util.DL;
 import com.liferay.document.library.kernel.util.DLAppHelperThreadLocal;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.kernel.util.DLValidatorUtil;
-import com.liferay.document.library.kernel.util.comparator.RepositoryModelModifiedDateComparator;
 import com.liferay.document.library.kernel.versioning.VersioningStrategy;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
 import com.liferay.dynamic.data.mapping.kernel.DDMStructure;
@@ -1086,53 +1085,6 @@ public class DLFileEntryLocalServiceImpl
 	}
 
 	@Override
-	public void deleteRepositoryFileEntries(long repositoryId, long folderId)
-		throws PortalException {
-
-		deleteRepositoryFileEntries(repositoryId, folderId, true);
-	}
-
-	@Override
-	public void deleteRepositoryFileEntries(
-			long repositoryId, long folderId, boolean includeTrashedEntries)
-		throws PortalException {
-
-		RepositoryEventTrigger repositoryEventTrigger =
-			RepositoryUtil.getRepositoryEventTrigger(repositoryId);
-
-		int total = dlFileEntryPersistence.countByR_F(repositoryId, folderId);
-
-		IntervalActionProcessor<Void> intervalActionProcessor =
-			new IntervalActionProcessor<>(total);
-
-		intervalActionProcessor.setPerformIntervalActionMethod(
-			(start, end) -> {
-				List<DLFileEntry> dlFileEntries =
-					dlFileEntryPersistence.findByR_F(
-						repositoryId, folderId, start, end);
-
-				for (DLFileEntry dlFileEntry : dlFileEntries) {
-					if (includeTrashedEntries ||
-						!_isInTrashExplicitly(dlFileEntry)) {
-
-						repositoryEventTrigger.trigger(
-							RepositoryEventType.Delete.class, FileEntry.class,
-							new LiferayFileEntry(dlFileEntry));
-
-						dlFileEntryLocalService.deleteFileEntry(dlFileEntry);
-					}
-					else {
-						intervalActionProcessor.incrementStart();
-					}
-				}
-
-				return null;
-			});
-
-		intervalActionProcessor.performIntervalActions();
-	}
-
-	@Override
 	public DLFileEntry fetchFileEntry(
 		long groupId, long folderId, String title) {
 
@@ -1576,46 +1528,6 @@ public class DLFileEntryLocalServiceImpl
 
 	@Override
 	public List<DLFileEntry> getGroupFileEntries(
-		long groupId, int start, int end) {
-
-		return getGroupFileEntries(
-			groupId, start, end, new RepositoryModelModifiedDateComparator<>());
-	}
-
-	@Override
-	public List<DLFileEntry> getGroupFileEntries(
-		long groupId, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator) {
-
-		return dlFileEntryPersistence.findByGroupId(
-			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DLFileEntry> getGroupFileEntries(
-		long groupId, long userId, int start, int end) {
-
-		return getGroupFileEntries(
-			groupId, userId, start, end,
-			new RepositoryModelModifiedDateComparator<>());
-	}
-
-	@Override
-	public List<DLFileEntry> getGroupFileEntries(
-		long groupId, long userId, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator) {
-
-		if (userId <= 0) {
-			return dlFileEntryPersistence.findByGroupId(
-				groupId, start, end, orderByComparator);
-		}
-
-		return dlFileEntryPersistence.findByG_U(
-			groupId, userId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DLFileEntry> getGroupFileEntries(
 		long groupId, long userId, long rootFolderId, int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
 
@@ -1667,20 +1579,6 @@ public class DLFileEntryLocalServiceImpl
 
 		return dlFileEntryFinder.findByG_U_R_F(
 			groupId, userId, repositoryIds, folderIds, queryDefinition);
-	}
-
-	@Override
-	public int getGroupFileEntriesCount(long groupId) {
-		return dlFileEntryPersistence.countByGroupId(groupId);
-	}
-
-	@Override
-	public int getGroupFileEntriesCount(long groupId, long userId) {
-		if (userId <= 0) {
-			return dlFileEntryPersistence.countByGroupId(groupId);
-		}
-
-		return dlFileEntryPersistence.countByG_U(groupId, userId);
 	}
 
 	@Override
