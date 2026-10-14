@@ -47,7 +47,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 					<clay:vertical-card
 						additionalProps='<%=
 							HashMapBuilder.<String, Object>put(
-								"addLayoutPageTemplateEntryUrl", selectLayoutPageTemplateEntryMasterLayoutVerticalCard.getAddLayoutPageTemplateEntryURL()
+								"addLayoutPageTemplateEntryURL", selectLayoutPageTemplateEntryMasterLayoutVerticalCard.getAddLayoutPageTemplateEntryURL()
 							).put(
 								"dialogTitle", LanguageUtil.get(request, "add-page-template")
 							).put(

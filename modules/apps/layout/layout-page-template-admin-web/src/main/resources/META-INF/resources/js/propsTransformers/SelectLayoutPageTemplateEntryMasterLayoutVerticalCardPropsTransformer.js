@@ -8,7 +8,7 @@ import {openSimpleInputModal} from 'frontend-js-components-web';
 
 export default function SelectLayoutPageTemplateEntryMasterLayoutVerticalCardPropsTransformer({
 	additionalProps: {
-		addLayoutPageTemplateEntryUrl,
+		addLayoutPageTemplateEntryURL,
 		dialogTitle,
 		mainFieldLabel,
 		mainFieldName,
@@ -24,7 +24,7 @@ export default function SelectLayoutPageTemplateEntryMasterLayoutVerticalCardPro
 
 			openSimpleInputModal({
 				dialogTitle,
-				formSubmitURL: addLayoutPageTemplateEntryUrl,
+				formSubmitURL: addLayoutPageTemplateEntryURL,
 				mainFieldLabel,
 				mainFieldName,
 				mainFieldPlaceholder,
