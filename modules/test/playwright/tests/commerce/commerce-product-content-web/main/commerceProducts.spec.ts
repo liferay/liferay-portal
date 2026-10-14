@@ -4,7 +4,7 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
-import {createReadStream} from 'fs';
+import {createReadStream, readFileSync} from 'fs';
 import path from 'node:path';
 
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
@@ -306,13 +306,7 @@ test('COMMERCE-12809 As a buyer, I want to be able to verify the included and ex
 	}
 });
 
-test('COMMERCE-8153 Verify the visibility rules', async ({
-	apiHelpers,
-	commerceAdminProductDetailsDiagramPage,
-	commerceAdminProductDetailsPage,
-	commerceAdminProductPage,
-	page,
-}) => {
+test('COMMERCE-8153 Verify the visibility rules', async ({apiHelpers}) => {
 	const account1 = await apiHelpers.headlessAdminUser.postAccount({
 		name: 'Account1',
 		type: 'person',
@@ -371,24 +365,18 @@ test('COMMERCE-8153 Verify the visibility rules', async ({
 	const productDiagram =
 		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 			catalogId: catalog.id,
+			diagram: {
+				attachmentBase64: {
+					attachment: readFileSync(
+						path.join(__dirname, '/dependencies/liferay.png')
+					).toString('base64'),
+					title: {en_US: getRandomString()},
+				},
+				radius: 1,
+			},
 			name: {en_US: 'Diagram'},
 			productType: 'diagram',
 		});
-
-	await commerceAdminProductPage.gotoProduct(productDiagram.name['en_US']);
-	await commerceAdminProductDetailsPage.goToProductDiagram();
-	await commerceAdminProductDetailsDiagramPage.goToDragAndDropImages();
-
-	await page
-		.frameLocator('iframe[title="Select File"]')
-		.getByRole('link', {name: 'Provided by Liferay'})
-		.click();
-	await page
-		.frameLocator('iframe[title="Select File"]')
-		.locator(
-			'[id="_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_repositoryEntriesSearchContainer_1"] img'
-		)
-		.click();
 
 	await apiHelpers.headlessCommerceAdminCatalog.postPin(
 		productDiagram.productId,
