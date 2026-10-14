@@ -400,80 +400,6 @@ public class FragmentEntryLinkUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the fragment entry links where rendererKey = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.fragment.model.impl.FragmentEntryLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param rendererKey the renderer key
-	 * @param start the lower bound of the range of fragment entry links
-	 * @param end the upper bound of the range of fragment entry links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching fragment entry links
-	 */
-	public static List<FragmentEntryLink> findByRendererKey(
-		String rendererKey, int start, int end,
-		OrderByComparator<FragmentEntryLink> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByRendererKey(
-			rendererKey, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first fragment entry link in the ordered set where rendererKey = &#63;.
-	 *
-	 * @param rendererKey the renderer key
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching fragment entry link
-	 * @throws NoSuchEntryLinkException if a matching fragment entry link could not be found
-	 */
-	public static FragmentEntryLink findByRendererKey_First(
-			String rendererKey,
-			OrderByComparator<FragmentEntryLink> orderByComparator)
-		throws com.liferay.fragment.exception.NoSuchEntryLinkException {
-
-		return getPersistence().findByRendererKey_First(
-			rendererKey, orderByComparator);
-	}
-
-	/**
-	 * Returns the first fragment entry link in the ordered set where rendererKey = &#63;.
-	 *
-	 * @param rendererKey the renderer key
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching fragment entry link, or <code>null</code> if a matching fragment entry link could not be found
-	 */
-	public static FragmentEntryLink fetchByRendererKey_First(
-		String rendererKey,
-		OrderByComparator<FragmentEntryLink> orderByComparator) {
-
-		return getPersistence().fetchByRendererKey_First(
-			rendererKey, orderByComparator);
-	}
-
-	/**
-	 * Removes all the fragment entry links where rendererKey = &#63; from the database.
-	 *
-	 * @param rendererKey the renderer key
-	 */
-	public static void removeByRendererKey(String rendererKey) {
-		getPersistence().removeByRendererKey(rendererKey);
-	}
-
-	/**
-	 * Returns the number of fragment entry links where rendererKey = &#63;.
-	 *
-	 * @param rendererKey the renderer key
-	 * @return the number of matching fragment entry links
-	 */
-	public static int countByRendererKey(String rendererKey) {
-		return getPersistence().countByRendererKey(rendererKey);
-	}
-
-	/**
 	 * Returns an ordered range of all the fragment entry links where type = &#63;.
 	 *
 	 * <p>
@@ -2459,57 +2385,6 @@ public class FragmentEntryLinkUtil {
 	}
 
 	/**
-	 * Returns all the fragment entry links where rendererKey = &#63;.
-	 *
-	 * @param rendererKey the renderer key
-	 * @return the matching fragment entry links
-	 */
-	public static List<FragmentEntryLink> findByRendererKey(
-		String rendererKey) {
-
-		return getPersistence().findByRendererKey(rendererKey);
-	}
-
-	/**
-	 * Returns a range of all the fragment entry links where rendererKey = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.fragment.model.impl.FragmentEntryLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param rendererKey the renderer key
-	 * @param start the lower bound of the range of fragment entry links
-	 * @param end the upper bound of the range of fragment entry links (not inclusive)
-	 * @return the range of matching fragment entry links
-	 */
-	public static List<FragmentEntryLink> findByRendererKey(
-		String rendererKey, int start, int end) {
-
-		return getPersistence().findByRendererKey(rendererKey, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the fragment entry links where rendererKey = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.fragment.model.impl.FragmentEntryLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param rendererKey the renderer key
-	 * @param start the lower bound of the range of fragment entry links
-	 * @param end the upper bound of the range of fragment entry links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching fragment entry links
-	 */
-	public static List<FragmentEntryLink> findByRendererKey(
-		String rendererKey, int start, int end,
-		OrderByComparator<FragmentEntryLink> orderByComparator) {
-
-		return getPersistence().findByRendererKey(
-			rendererKey, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the fragment entry links where type = &#63;.
 	 *
 	 * @param type the type
@@ -3744,4 +3619,4 @@ public class FragmentEntryLinkUtil {
 	private static volatile FragmentEntryLinkPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:730006519
+// LIFERAY-SERVICE-BUILDER-HASH:986856161

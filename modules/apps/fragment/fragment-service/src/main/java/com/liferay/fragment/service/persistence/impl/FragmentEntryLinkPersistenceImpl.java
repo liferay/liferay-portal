@@ -421,92 +421,6 @@ public class FragmentEntryLinkPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<FragmentEntryLink, NoSuchEntryLinkException>
-			_collectionPersistenceFinderByRendererKey;
-
-	/**
-	 * Returns an ordered range of all the fragment entry links where rendererKey = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param rendererKey the renderer key
-	 * @param start the lower bound of the range of fragment entry links
-	 * @param end the upper bound of the range of fragment entry links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching fragment entry links
-	 */
-	@Override
-	public List<FragmentEntryLink> findByRendererKey(
-		String rendererKey, int start, int end,
-		OrderByComparator<FragmentEntryLink> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByRendererKey.find(
-			finderCache, new Object[] {rendererKey}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first fragment entry link in the ordered set where rendererKey = &#63;.
-	 *
-	 * @param rendererKey the renderer key
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching fragment entry link
-	 * @throws NoSuchEntryLinkException if a matching fragment entry link could not be found
-	 */
-	@Override
-	public FragmentEntryLink findByRendererKey_First(
-			String rendererKey,
-			OrderByComparator<FragmentEntryLink> orderByComparator)
-		throws NoSuchEntryLinkException {
-
-		return _collectionPersistenceFinderByRendererKey.findFirst(
-			finderCache, new Object[] {rendererKey}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first fragment entry link in the ordered set where rendererKey = &#63;.
-	 *
-	 * @param rendererKey the renderer key
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching fragment entry link, or <code>null</code> if a matching fragment entry link could not be found
-	 */
-	@Override
-	public FragmentEntryLink fetchByRendererKey_First(
-		String rendererKey,
-		OrderByComparator<FragmentEntryLink> orderByComparator) {
-
-		return _collectionPersistenceFinderByRendererKey.fetchFirst(
-			finderCache, new Object[] {rendererKey}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the fragment entry links where rendererKey = &#63; from the database.
-	 *
-	 * @param rendererKey the renderer key
-	 */
-	@Override
-	public void removeByRendererKey(String rendererKey) {
-		_collectionPersistenceFinderByRendererKey.remove(
-			finderCache, new Object[] {rendererKey});
-	}
-
-	/**
-	 * Returns the number of fragment entry links where rendererKey = &#63;.
-	 *
-	 * @param rendererKey the renderer key
-	 * @return the number of matching fragment entry links
-	 */
-	@Override
-	public int countByRendererKey(String rendererKey) {
-		return _collectionPersistenceFinderByRendererKey.count(
-			finderCache, new Object[] {rendererKey});
-	}
-
-	private CollectionPersistenceFinder
-		<FragmentEntryLink, NoSuchEntryLinkException>
 			_collectionPersistenceFinderByType;
 
 	/**
@@ -3074,34 +2988,6 @@ public class FragmentEntryLinkPersistenceImpl
 					"fragmentEntryLink.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FragmentEntryLink::getGroupId));
 
-		_collectionPersistenceFinderByRendererKey =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByRendererKey",
-					new String[] {
-						String.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"rendererKey"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByRendererKey", new String[] {String.class.getName()},
-					new String[] {"rendererKey"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByRendererKey", new String[] {String.class.getName()},
-					new String[] {"rendererKey"}, 0, 1, false, null),
-				_SQL_SELECT_FRAGMENTENTRYLINK_WHERE,
-				_SQL_COUNT_FRAGMENTENTRYLINK_WHERE,
-				FragmentEntryLinkModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
-				new FinderColumn<>(
-					"fragmentEntryLink.", "rendererKey",
-					FinderColumn.Type.STRING, "=", true, true,
-					FragmentEntryLink::getRendererKey));
-
 		_collectionPersistenceFinderByType = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -3997,4 +3883,4 @@ public class FragmentEntryLinkPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-964846071
+// LIFERAY-SERVICE-BUILDER-HASH:-247331063
