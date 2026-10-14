@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.RequiredWorkflowDefinitionException;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowException;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
@@ -77,6 +79,8 @@ public class WorkflowEngineTest {
 	public void setUp() throws Exception {
 		_role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 		_role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		_user1 = UserTestUtil.addUser();
+		_user2 = UserTestUtil.addUser();
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition();
@@ -120,6 +124,7 @@ public class WorkflowEngineTest {
 				ServiceContextTestUtil.getServiceContext()));
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
 	@Test
 	public void testDeployWorkflowDefinition() throws Exception {
 		WorkflowDefinition workflowDefinition =
@@ -148,10 +153,8 @@ public class WorkflowEngineTest {
 		_workflowDefinitionLinkLocalService.deleteWorkflowDefinitionLink(
 			workflowDefinitionLink);
 
-		_user = UserTestUtil.addUser();
-
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
+				_user1)) {
 
 			WorkflowException workflowException = Assert.assertThrows(
 				WorkflowException.class,
@@ -159,7 +162,7 @@ public class WorkflowEngineTest {
 					RandomTestUtil.randomBytes(),
 					TestPropsValues.getCompanyId(), null,
 					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(), _user.getUserId()));
+					RandomTestUtil.randomString(), _user1.getUserId()));
 
 			Throwable throwable = workflowException.getCause();
 
@@ -170,6 +173,8 @@ public class WorkflowEngineTest {
 
 		_testDeployWorkflowDefinitionWithRoleExternalReferenceCode();
 		_testDeployWorkflowDefinitionWithRoleId();
+		_testDeployWorkflowDefinitionWithUserExternalReferenceCode();
+		_testDeployWorkflowDefinitionWithUserId();
 	}
 
 	private void _deleteWorkflowDefinition(
@@ -188,6 +193,36 @@ public class WorkflowEngineTest {
 		_workflowEngine.deleteWorkflowDefinition(
 			workflowDefinition.getName(), 1,
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private KaleoNotification _getKaleoNotification(
+		String kaleoClassName, KaleoDefinitionVersion kaleoDefinitionVersion) {
+
+		List<KaleoNotification> kaleoNotifications =
+			_kaleoNotificationLocalService.
+				getKaleoDefinitionVersionKaleoNotifications(
+					kaleoClassName,
+					kaleoDefinitionVersion.getKaleoDefinitionVersionId());
+
+		Assert.assertEquals(
+			kaleoNotifications.toString(), 1, kaleoNotifications.size());
+
+		return kaleoNotifications.get(0);
+	}
+
+	private long _getKaleoTimerId(
+		KaleoDefinitionVersion kaleoDefinitionVersion) {
+
+		List<KaleoTimer> kaleoTimers =
+			_kaleoTimerLocalService.getKaleoDefinitionVersionKaleoTimers(
+				KaleoNode.class.getName(),
+				kaleoDefinitionVersion.getKaleoDefinitionVersionId());
+
+		Assert.assertEquals(kaleoTimers.toString(), 1, kaleoTimers.size());
+
+		KaleoTimer kaleoTimer = kaleoTimers.get(0);
+
+		return kaleoTimer.getKaleoTimerId();
 	}
 
 	private InputStream _getResourceInputStream(String name) {
@@ -223,16 +258,8 @@ public class WorkflowEngineTest {
 				TestPropsValues.getCompanyId(), workflowDefinition.getName(),
 				workflowDefinition.getVersion() + StringPool.PERIOD + 0);
 
-		List<KaleoNotification> kaleoNotifications =
-			_kaleoNotificationLocalService.
-				getKaleoDefinitionVersionKaleoNotifications(
-					KaleoNode.class.getName(),
-					kaleoDefinitionVersion.getKaleoDefinitionVersionId());
-
-		Assert.assertEquals(
-			kaleoNotifications.toString(), 1, kaleoNotifications.size());
-
-		KaleoNotification kaleoNotification = kaleoNotifications.get(0);
+		KaleoNotification kaleoNotification = _getKaleoNotification(
+			KaleoNode.class.getName(), kaleoDefinitionVersion);
 
 		Assert.assertEquals(
 			List.of(_role1.getClassPK()),
@@ -252,16 +279,8 @@ public class WorkflowEngineTest {
 					kaleoTask.getKaleoTaskId()),
 				KaleoTaskAssignment::getAssigneeClassPK));
 
-		kaleoNotifications =
-			_kaleoNotificationLocalService.
-				getKaleoDefinitionVersionKaleoNotifications(
-					KaleoTimer.class.getName(),
-					kaleoDefinitionVersion.getKaleoDefinitionVersionId());
-
-		Assert.assertEquals(
-			kaleoNotifications.toString(), 1, kaleoNotifications.size());
-
-		kaleoNotification = kaleoNotifications.get(0);
+		kaleoNotification = _getKaleoNotification(
+			KaleoTimer.class.getName(), kaleoDefinitionVersion);
 
 		Assert.assertEquals(
 			List.of(_role1.getClassPK()),
@@ -271,20 +290,12 @@ public class WorkflowEngineTest {
 						kaleoNotification.getKaleoNotificationId()),
 				KaleoNotificationRecipient::getRecipientClassPK));
 
-		List<KaleoTimer> kaleoTimers =
-			_kaleoTimerLocalService.getKaleoDefinitionVersionKaleoTimers(
-				KaleoNode.class.getName(),
-				kaleoDefinitionVersion.getKaleoDefinitionVersionId());
-
-		Assert.assertEquals(kaleoTimers.toString(), 1, kaleoTimers.size());
-
-		KaleoTimer kaleoTimer = kaleoTimers.get(0);
-
 		Assert.assertEquals(
 			List.of(_role1.getRoleId()),
 			TransformUtil.transform(
 				_kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
-					KaleoTimer.class.getName(), kaleoTimer.getKaleoTimerId()),
+					KaleoTimer.class.getName(),
+					_getKaleoTimerId(kaleoDefinitionVersion)),
 				KaleoTaskAssignment::getAssigneeClassPK));
 
 		_deleteWorkflowDefinition(workflowDefinition);
@@ -313,6 +324,100 @@ public class WorkflowEngineTest {
 		Assert.assertTrue(
 			kaleoDefinitionVersionContent.contains(
 				_role1.getExternalReferenceCode()));
+
+		_deleteWorkflowDefinition(workflowDefinition);
+	}
+
+	private void _testDeployWorkflowDefinitionWithUserExternalReferenceCode()
+		throws Exception {
+
+		String content = StringUtil.replace(
+			StringUtil.read(
+				_getResourceInputStream(
+					"user-external-reference-code-workflow-definition.json")),
+			new String[] {"[$USER_EXTERNAL_REFERENCE_CODE$]", "[$USER_ID$]"},
+			new String[] {
+				_user1.getExternalReferenceCode(),
+				String.valueOf(_user2.getUserId())
+			});
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				content.getBytes(), TestPropsValues.getCompanyId(), null,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				TestPropsValues.getUserId());
+
+		KaleoDefinitionVersion kaleoDefinitionVersion =
+			_kaleoDefinitionVersionLocalService.getKaleoDefinitionVersion(
+				TestPropsValues.getCompanyId(), workflowDefinition.getName(),
+				workflowDefinition.getVersion() + StringPool.PERIOD + 0);
+
+		KaleoNotification kaleoNotification = _getKaleoNotification(
+			KaleoNode.class.getName(), kaleoDefinitionVersion);
+
+		Assert.assertEquals(
+			List.of(_user1.getUserId()),
+			TransformUtil.transform(
+				_kaleoNotificationRecipientLocalService.
+					getKaleoNotificationRecipients(
+						kaleoNotification.getKaleoNotificationId()),
+				KaleoNotificationRecipient::getRecipientClassPK));
+
+		KaleoTask kaleoTask = _kaleoTaskLocalService.getKaleoNodeKaleoTask(
+			kaleoNotification.getKaleoClassPK());
+
+		Assert.assertEquals(
+			List.of(_user1.getUserId()),
+			TransformUtil.transform(
+				_kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
+					kaleoTask.getKaleoTaskId()),
+				KaleoTaskAssignment::getAssigneeClassPK));
+
+		kaleoNotification = _getKaleoNotification(
+			KaleoTimer.class.getName(), kaleoDefinitionVersion);
+
+		Assert.assertEquals(
+			List.of(_user1.getUserId()),
+			TransformUtil.transform(
+				_kaleoNotificationRecipientLocalService.
+					getKaleoNotificationRecipients(
+						kaleoNotification.getKaleoNotificationId()),
+				KaleoNotificationRecipient::getRecipientClassPK));
+
+		Assert.assertEquals(
+			List.of(_user1.getUserId()),
+			TransformUtil.transform(
+				_kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
+					KaleoTimer.class.getName(),
+					_getKaleoTimerId(kaleoDefinitionVersion)),
+				KaleoTaskAssignment::getAssigneeClassPK));
+
+		_deleteWorkflowDefinition(workflowDefinition);
+	}
+
+	private void _testDeployWorkflowDefinitionWithUserId() throws Exception {
+		String content = StringUtil.replace(
+			StringUtil.read(
+				_getResourceInputStream("user-id-workflow-definition.json")),
+			"[$USER_ID$]", String.valueOf(_user1.getUserId()));
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				content.getBytes(), TestPropsValues.getCompanyId(), null,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				TestPropsValues.getUserId());
+
+		KaleoDefinitionVersion kaleoDefinitionVersion =
+			_kaleoDefinitionVersionLocalService.getKaleoDefinitionVersion(
+				TestPropsValues.getCompanyId(), workflowDefinition.getName(),
+				workflowDefinition.getVersion() + StringPool.PERIOD + 0);
+
+		String kaleoDefinitionVersionContent =
+			kaleoDefinitionVersion.getContent();
+
+		Assert.assertTrue(
+			kaleoDefinitionVersionContent.contains(
+				_user1.getExternalReferenceCode()));
 
 		_deleteWorkflowDefinition(workflowDefinition);
 	}
@@ -347,7 +452,10 @@ public class WorkflowEngineTest {
 	private Role _role2;
 
 	@DeleteAfterTestRun
-	private User _user;
+	private User _user1;
+
+	@DeleteAfterTestRun
+	private User _user2;
 
 	private WorkflowDefinition _workflowDefinition;
 	private WorkflowDefinitionLink _workflowDefinitionLink;
