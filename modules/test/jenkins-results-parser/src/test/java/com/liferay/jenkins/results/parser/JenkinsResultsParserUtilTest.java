@@ -563,6 +563,12 @@ public class JenkinsResultsParserUtilTest
 			Assert.assertTrue(
 				lockWaiterThreadDumpEntry.contains(
 					JenkinsResultsParserUtil.combine(
+						" on ", Object.class.getName(), "@",
+						Integer.toHexString(System.identityHashCode(lock)))));
+
+			Assert.assertTrue(
+				lockWaiterThreadDumpEntry.contains(
+					JenkinsResultsParserUtil.combine(
 						"owned by \"", lockOwnerThreadName, "\"")));
 
 			String lockOwnerThreadDumpEntry = _getThreadDumpEntry(
@@ -637,6 +643,12 @@ public class JenkinsResultsParserUtilTest
 			Assert.assertTrue(
 				deadlockSection.contains(
 					JenkinsResultsParserUtil.combine("\"", threadName1, "\"")));
+
+			String threadDumpEntry = _getThreadDumpEntry(
+				threadDump, threadName0);
+
+			Assert.assertTrue(
+				threadDumpEntry.contains("\tLocked synchronizers:\n"));
 		}
 		finally {
 			thread0.interrupt();
@@ -654,9 +666,15 @@ public class JenkinsResultsParserUtilTest
 		CountDownLatch deepStackCountDownLatch = new CountDownLatch(1);
 		CountDownLatch holdCountDownLatch = new CountDownLatch(1);
 
+		Object lock = new Object();
+
 		Thread thread = new Thread(
-			() -> _buildDeepStack(
-				deepStackCountDownLatch, 60, holdCountDownLatch),
+			() -> {
+				synchronized (lock) {
+					_buildDeepStack(
+						deepStackCountDownLatch, 60, holdCountDownLatch);
+				}
+			},
 			threadName);
 
 		thread.setDaemon(true);
@@ -669,7 +687,17 @@ public class JenkinsResultsParserUtilTest
 			String threadDumpEntry = _getThreadDumpEntry(
 				JenkinsResultsParserUtil.getThreadDump(), threadName);
 
-			Assert.assertTrue(threadDumpEntry.contains("\t..."));
+			int stackTraceElementsCount = 0;
+
+			for (String line : threadDumpEntry.split("\n")) {
+				if (line.startsWith("\tat ")) {
+					stackTraceElementsCount++;
+				}
+			}
+
+			Assert.assertEquals(40, stackTraceElementsCount);
+
+			Assert.assertTrue(threadDumpEntry.contains("\t...\n\t- locked "));
 		}
 		finally {
 			holdCountDownLatch.countDown();
