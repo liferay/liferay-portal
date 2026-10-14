@@ -7,7 +7,6 @@ create index IX_6C112D7C on WikiNode (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_B65BBC83 on WikiPage (companyId);
 create index IX_8DBCF518 on WikiPage (externalReferenceCode[$COLUMN_LENGTH:75$]);
-create index IX_A2001730 on WikiPage (format[$COLUMN_LENGTH:75$]);
 create unique index IX_7F58A2AD on WikiPage (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create unique index IX_45260458 on WikiPage (groupId, version, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_F8CFBCE8 on WikiPage (nodeId, head, groupId, title[$COLUMN_LENGTH:255$]);
@@ -24,7 +23,6 @@ create unique index IX_5AD01561 on WikiPage (nodeId, resourcePrimKey, version, c
 create index IX_6F9E3908 on WikiPage (nodeId, status, groupId, userId);
 create index IX_D1F6BA7F on WikiPage (nodeId, status, resourcePrimKey);
 create index IX_4A2D62C on WikiPage (nodeId, status, title[$COLUMN_LENGTH:255$]);
-create index IX_EF476996 on WikiPage (nodeId, status, userId);
 create unique index IX_149A1ED4 on WikiPage (nodeId, title[$COLUMN_LENGTH:255$], version, ctCollectionId);
 create index IX_85E7CC76 on WikiPage (resourcePrimKey);
 create index IX_5D2E2B50 on WikiPage (status, resourcePrimKey);
