@@ -24,12 +24,14 @@ import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -138,13 +140,20 @@ public class EditStructureDisplayPageStrutsActionTest {
 			_objectDefinition.getClassName());
 		HttpServletRequest httpServletRequest = _getMockHttpServletRequest();
 
-		_testExecute(classNameId, null, httpServletRequest);
-		_testExecute(
-			classNameId,
-			_layoutPageTemplateEntryLocalService.
-				fetchDefaultLayoutPageTemplateEntry(
-					_group.getGroupId(), classNameId, 0),
-			httpServletRequest);
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					_company.getCompanyId())) {
+
+			UserTestUtil.setUser(_user);
+
+			_testExecute(classNameId, null, httpServletRequest);
+			_testExecute(
+				classNameId,
+				_layoutPageTemplateEntryLocalService.
+					fetchDefaultLayoutPageTemplateEntry(
+						_group.getGroupId(), classNameId, 0),
+				httpServletRequest);
+		}
 	}
 
 	private HttpServletRequest _getMockHttpServletRequest() throws Exception {
