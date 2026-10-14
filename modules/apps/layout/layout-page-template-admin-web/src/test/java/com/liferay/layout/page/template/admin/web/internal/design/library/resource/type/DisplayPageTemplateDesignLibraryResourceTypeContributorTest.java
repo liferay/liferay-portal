@@ -19,6 +19,7 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.info.item.capability.DisplayPageInfoItemCapability;
 import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -74,6 +75,12 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+
+		Mockito.when(
+			_depotEntry.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
 
 		Mockito.when(
 			_depotEntry.getGroup()
@@ -145,6 +152,7 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 
 	@After
 	public void tearDown() {
+		_featureFlagManagerUtilMockedStatic.close();
 		_languageUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
 	}
@@ -404,10 +412,6 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 
 	@Test
 	public void testHasViewPermission() {
-		Assert.assertFalse(
-			_displayPageTemplateDesignLibraryResourceTypeContributor.
-				hasViewPermission(_permissionChecker, _depotEntry));
-
 		Mockito.when(
 			_portletResourcePermission.contains(
 				_permissionChecker, _GROUP_ID, ActionKeys.VIEW)
@@ -415,7 +419,28 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			true
 		);
 
+		Assert.assertFalse(
+			_displayPageTemplateDesignLibraryResourceTypeContributor.
+				hasViewPermission(_permissionChecker, _depotEntry));
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-81651")
+		).thenReturn(
+			true
+		);
+
 		Assert.assertTrue(
+			_displayPageTemplateDesignLibraryResourceTypeContributor.
+				hasViewPermission(_permissionChecker, _depotEntry));
+
+		Mockito.when(
+			_portletResourcePermission.contains(
+				_permissionChecker, _GROUP_ID, ActionKeys.VIEW)
+		).thenReturn(
+			false
+		);
+
+		Assert.assertFalse(
 			_displayPageTemplateDesignLibraryResourceTypeContributor.
 				hasViewPermission(_permissionChecker, _depotEntry));
 	}
@@ -517,6 +542,8 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 	private static final String _CLASS_NAME_LABEL =
 		RandomTestUtil.randomString();
 
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
+
 	private static final String _FORM_VARIATION_KEY =
 		RandomTestUtil.randomString();
 
@@ -535,6 +562,9 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			new DisplayPageTemplateDesignLibraryResourceTypeContributor();
 	private final LiferayPortletURL _editLiferayPortletURL = Mockito.mock(
 		LiferayPortletURL.class);
+	private final MockedStatic<FeatureFlagManagerUtil>
+		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+			FeatureFlagManagerUtil.class);
 	private final Group _group = Mockito.mock(Group.class);
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
