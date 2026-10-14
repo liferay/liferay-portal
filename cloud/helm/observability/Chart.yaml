@@ -8,7 +8,7 @@ dependencies:
         version: 1.8.1
     -   name: grafana
         repository: https://grafana-community.github.io/helm-charts
-        version: 12.3.0
+        version: 13.6.0
     -   condition: kube-state-metrics.enabled
         name: kube-state-metrics
         repository: https://prometheus-community.github.io/helm-charts

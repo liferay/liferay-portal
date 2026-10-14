@@ -681,6 +681,8 @@ grafana:
         logLevel: error
         plugins:
             enabled: true
+    testFramework:
+        enabled: false
 grafana-alloy:
     alloy:
         clustering:
