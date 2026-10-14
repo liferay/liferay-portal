@@ -11,10 +11,15 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.site.constants.SitemapConstants;
 import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.model.SiteSitemapRegenerationEntry;
 import com.liferay.site.service.SiteSitemapRegenerationEntryLocalService;
@@ -52,6 +57,36 @@ public class XMLSitemapRegenerationSchedulerJobConfiguration
 			1, TimeUnit.HOUR);
 	}
 
+	private Set<Long> _getPageLayoutGroupIds(
+		List<SiteSitemapRegenerationEntry> siteSitemapRegenerationEntries) {
+
+		Set<Long> pageLayoutGroupIds = new HashSet<>();
+
+		for (SiteSitemapRegenerationEntry siteSitemapRegenerationEntry :
+				siteSitemapRegenerationEntries) {
+
+			if (!StringUtil.equals(
+					siteSitemapRegenerationEntry.getAssetTypeKey(),
+					SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
+
+				continue;
+			}
+
+			Group group = _groupLocalService.fetchGroup(
+				siteSitemapRegenerationEntry.getGroupId());
+
+			if ((group != null) && group.isCompany()) {
+				pageLayoutGroupIds.add(GroupConstants.DEFAULT_PARENT_GROUP_ID);
+			}
+			else {
+				pageLayoutGroupIds.add(
+					siteSitemapRegenerationEntry.getGroupId());
+			}
+		}
+
+		return pageLayoutGroupIds;
+	}
+
 	private void _regenerateSitemaps(long companyId) {
 		List<SiteSitemapRegenerationEntry> siteSitemapRegenerationEntries =
 			_siteSitemapRegenerationEntryLocalService.
@@ -61,6 +96,8 @@ public class XMLSitemapRegenerationSchedulerJobConfiguration
 			return;
 		}
 
+		Set<Long> pageLayoutGroupIds = _getPageLayoutGroupIds(
+			siteSitemapRegenerationEntries);
 		Set<String> regeneratedKeys = new HashSet<>();
 
 		for (SiteSitemapRegenerationEntry siteSitemapRegenerationEntry :
@@ -69,6 +106,18 @@ public class XMLSitemapRegenerationSchedulerJobConfiguration
 			_siteSitemapRegenerationEntryLocalService.
 				deleteSiteSitemapRegenerationEntry(
 					siteSitemapRegenerationEntry);
+
+			if (StringUtil.startsWith(
+					siteSitemapRegenerationEntry.getAssetTypeKey(),
+					SitemapConstants.INDEX_MODE_PAGE_LAYOUT +
+						StringPool.SLASH) &&
+				(pageLayoutGroupIds.contains(
+					GroupConstants.DEFAULT_PARENT_GROUP_ID) ||
+				 pageLayoutGroupIds.contains(
+					 siteSitemapRegenerationEntry.getGroupId()))) {
+
+				continue;
+			}
 
 			try {
 				String regeneratedKey = StringBundler.concat(
@@ -96,6 +145,9 @@ public class XMLSitemapRegenerationSchedulerJobConfiguration
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private SiteSitemapRegenerationEntryLocalService
