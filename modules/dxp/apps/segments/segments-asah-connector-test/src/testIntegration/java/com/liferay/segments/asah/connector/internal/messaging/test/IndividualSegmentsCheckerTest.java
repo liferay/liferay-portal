@@ -6,6 +6,7 @@
 package com.liferay.segments.asah.connector.internal.messaging.test;
 
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
+import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeSupplier;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -43,6 +45,7 @@ import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsEntryRelLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -209,6 +212,59 @@ public class IndividualSegmentsCheckerTest {
 	}
 
 	@Test
+	public void testCheckIndividualSegmentsEntriesWhenUnchanged()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(), "123456789", true,
+						"http://localhost:" +
+							PortalUtil.getPortalServerPort(false));
+			ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.segments.asah.connector.internal." +
+						"configuration.SegmentsAsahConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"anonymousUserSegmentsCacheExpirationTime", "60"
+					).build())) {
+
+			_prepareAsahFaroBackendClient(StringUtil.randomString());
+
+			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+				_checkIndividualSegmentsSchedulerJobConfiguration.
+					getJobExecutorUnsafeRunnable();
+
+			jobExecutorUnsafeRunnable.run();
+
+			SegmentsEntry segmentsEntry = _getSegmentsEntry();
+
+			long mvccVersion = segmentsEntry.getMvccVersion();
+
+			long[] segmentsEntryRelIds = ListUtil.toLongArray(
+				_segmentsEntryRelLocalService.getSegmentsEntryRels(
+					segmentsEntry.getSegmentsEntryId()),
+				SegmentsEntryRel::getSegmentsEntryRelId);
+
+			Assert.assertEquals(
+				Arrays.toString(segmentsEntryRelIds), 1,
+				segmentsEntryRelIds.length);
+
+			jobExecutorUnsafeRunnable.run();
+
+			segmentsEntry = _getSegmentsEntry();
+
+			Assert.assertEquals(mvccVersion, segmentsEntry.getMvccVersion());
+			Assert.assertArrayEquals(
+				segmentsEntryRelIds,
+				ListUtil.toLongArray(
+					_segmentsEntryRelLocalService.getSegmentsEntryRels(
+						segmentsEntry.getSegmentsEntryId()),
+					SegmentsEntryRel::getSegmentsEntryRelId));
+		}
+	}
+
+	@Test
 	public void testIndividualSegmentsDeleteSegmentsEntries() throws Exception {
 		SegmentsTestUtil.addSegmentsEntry(
 			"1234567", "Test Segment 1", null, null,
@@ -282,6 +338,22 @@ public class IndividualSegmentsCheckerTest {
 				"Test Segment 1",
 				segmentsEntry.getName(LocaleUtil.getSiteDefault()));
 		}
+	}
+
+	private SegmentsEntry _getSegmentsEntry() {
+		List<SegmentsEntry> segmentsEntries =
+			_segmentsEntryLocalService.getSegmentsEntriesBySource(
+				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+				new int[] {
+					SegmentsEntryConstants.TYPE_BATCH,
+					SegmentsEntryConstants.TYPE_DEFAULT
+				},
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			segmentsEntries.toString(), 1, segmentsEntries.size());
+
+		return segmentsEntries.get(0);
 	}
 
 	private void _prepareAsahFaroBackendClient(String guestUserUuid) {
