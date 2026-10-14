@@ -82,8 +82,6 @@ public interface CPDVirtualSettingFileEntryLocalService
 			String fileName, String mimeType)
 		throws PortalException;
 
-	public int countByFileEntryId(long fileEntryId);
-
 	/**
 	 * Creates a new cpd virtual setting file entry with the primary key. Does not add the cpd virtual setting file entry to the database.
 	 *
@@ -363,4 +361,4 @@ public interface CPDVirtualSettingFileEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-624230247
+// LIFERAY-SERVICE-BUILDER-HASH:-1428912582

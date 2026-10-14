@@ -77,10 +77,6 @@ public class CPDVirtualSettingFileEntryLocalServiceUtil {
 			inputStream, fileName, mimeType);
 	}
 
-	public static int countByFileEntryId(long fileEntryId) {
-		return getService().countByFileEntryId(fileEntryId);
-	}
-
 	/**
 	 * Creates a new cpd virtual setting file entry with the primary key. Does not add the cpd virtual setting file entry to the database.
 	 *
@@ -454,4 +450,4 @@ public class CPDVirtualSettingFileEntryLocalServiceUtil {
 			CPDVirtualSettingFileEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:749144857
+// LIFERAY-SERVICE-BUILDER-HASH:-1766830834
