@@ -155,98 +155,11 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 	private void _checkIndividualSegmentMemberships(SegmentsEntry segmentsEntry)
 		throws Exception {
 
-		AnalyticsConfiguration analyticsConfiguration =
-			_analyticsSettingsManager.getAnalyticsConfiguration(
-				segmentsEntry.getCompanyId());
-
 		_segmentsEntryRelLocalService.deleteSegmentsEntryRels(
 			segmentsEntry.getSegmentsEntryId());
 
-		Results<Individual> individualResults;
-
 		try {
-			individualResults = _asahFaroBackendClient.getIndividualResults(
-				segmentsEntry.getCompanyId(),
-				segmentsEntry.getSegmentsEntryKey(), 1, _DELTA,
-				Collections.singletonList(OrderByField.desc("dateModified")));
-
-			int totalElements = individualResults.getTotal();
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					totalElements +
-						" individuals found for individual segment " +
-							segmentsEntry.getSegmentsEntryKey());
-			}
-
-			if (totalElements == 0) {
-				return;
-			}
-
-			Set<Long> userIds = new HashSet<>();
-
-			int totalPages = (int)Math.ceil((double)totalElements / _DELTA);
-
-			int curPage = 1;
-
-			while (true) {
-				List<Individual> individuals = individualResults.getItems();
-
-				individuals.forEach(
-					individual -> {
-						Long userId = _getUserId(
-							segmentsEntry.getCompanyId(),
-							analyticsConfiguration.
-								liferayAnalyticsDataSourceId(),
-							individual);
-
-						if (userId != null) {
-							userIds.add(userId);
-						}
-						else {
-							List<String> individualSegmentIds =
-								individual.getIndividualSegmentIds();
-
-							if (ListUtil.isNotEmpty(individualSegmentIds)) {
-								String individualPK = _getIndividualPK(
-									analyticsConfiguration.
-										liferayAnalyticsDataSourceId(),
-									individual);
-
-								if (individualPK != null) {
-									try {
-										_putSegmentsEntryIdsCache(
-											segmentsEntry.getCompanyId(),
-											individualPK, individualSegmentIds);
-									}
-									catch (PortalException portalException) {
-										StringBuilder sb = new StringBuilder();
-
-										sb.append("Unable to cache ");
-										sb.append("segments entry IDs ");
-										sb.append("for user ID ");
-										sb.append(userId);
-
-										_log.error(
-											sb.toString(), portalException);
-									}
-								}
-							}
-						}
-					});
-
-				curPage++;
-
-				if (curPage > totalPages) {
-					break;
-				}
-
-				individualResults = _asahFaroBackendClient.getIndividualResults(
-					segmentsEntry.getCompanyId(),
-					segmentsEntry.getSegmentsEntryKey(), curPage, _DELTA,
-					Collections.singletonList(
-						OrderByField.desc("dateModified")));
-			}
+			Set<Long> userIds = _getUserIds(segmentsEntry);
 
 			if (!userIds.isEmpty()) {
 				_addSegmentsEntryRels(segmentsEntry, userIds);
@@ -439,6 +352,96 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 		}
 
 		return null;
+	}
+
+	private Set<Long> _getUserIds(SegmentsEntry segmentsEntry)
+		throws Exception {
+
+		Results<Individual> individualResults =
+			_asahFaroBackendClient.getIndividualResults(
+				segmentsEntry.getCompanyId(),
+				segmentsEntry.getSegmentsEntryKey(), 1, _DELTA,
+				Collections.singletonList(OrderByField.desc("dateModified")));
+
+		int totalElements = individualResults.getTotal();
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				totalElements + " individuals found for individual segment " +
+					segmentsEntry.getSegmentsEntryKey());
+		}
+
+		Set<Long> userIds = new HashSet<>();
+
+		if (totalElements == 0) {
+			return userIds;
+		}
+
+		AnalyticsConfiguration analyticsConfiguration =
+			_analyticsSettingsManager.getAnalyticsConfiguration(
+				segmentsEntry.getCompanyId());
+
+		int totalPages = (int)Math.ceil((double)totalElements / _DELTA);
+
+		int curPage = 1;
+
+		while (true) {
+			List<Individual> individuals = individualResults.getItems();
+
+			individuals.forEach(
+				individual -> {
+					Long userId = _getUserId(
+						segmentsEntry.getCompanyId(),
+						analyticsConfiguration.liferayAnalyticsDataSourceId(),
+						individual);
+
+					if (userId != null) {
+						userIds.add(userId);
+
+						return;
+					}
+
+					List<String> individualSegmentIds =
+						individual.getIndividualSegmentIds();
+
+					if (ListUtil.isEmpty(individualSegmentIds)) {
+						return;
+					}
+
+					String individualPK = _getIndividualPK(
+						analyticsConfiguration.liferayAnalyticsDataSourceId(),
+						individual);
+
+					if (individualPK == null) {
+						return;
+					}
+
+					try {
+						_putSegmentsEntryIdsCache(
+							segmentsEntry.getCompanyId(), individualPK,
+							individualSegmentIds);
+					}
+					catch (PortalException portalException) {
+						_log.error(
+							"Unable to cache segments entry IDs for " +
+								"individual " + individual.getId(),
+							portalException);
+					}
+				});
+
+			curPage++;
+
+			if (curPage > totalPages) {
+				break;
+			}
+
+			individualResults = _asahFaroBackendClient.getIndividualResults(
+				segmentsEntry.getCompanyId(),
+				segmentsEntry.getSegmentsEntryKey(), curPage, _DELTA,
+				Collections.singletonList(OrderByField.desc("dateModified")));
+		}
+
+		return userIds;
 	}
 
 	private void _putSegmentsEntryIdsCache(
