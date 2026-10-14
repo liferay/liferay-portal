@@ -312,10 +312,6 @@
 			<finder-column name="commerceAccountId" />
 			<finder-column name="commerceDiscountId" />
 		</finder>
-		<finder name="COI_CDI" return-type="Collection">
-			<finder-column name="commerceOrderId" />
-			<finder-column name="commerceDiscountId" />
-		</finder>
 		<finder name="CAI_COI_CDI" return-type="Collection">
 			<finder-column name="commerceAccountId" />
 			<finder-column name="commerceOrderId" />
