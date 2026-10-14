@@ -52,16 +52,19 @@ public class CommerceOrderAttachmentTableFDSViewTest {
 
 	@Test
 	public void testGetFDSTableSchemaField() throws Exception {
-		_testGetFDSTableSchemaField(null, "extension", "extension", false);
-		_testGetFDSTableSchemaField(null, "type", "typeLabel", false);
-		_testGetFDSTableSchemaField(
-			"dateTime", "modified-date", "dateModified", true);
-		_testGetFDSTableSchemaField(null, "priority", "priority", true);
 		_testGetFDSTableSchemaField(
 			"commerceOrderAttachmentRestrictedDataRenderer", "restricted",
 			"restricted", false);
 		_testGetFDSTableSchemaField(
 			"commerceOrderAttachmentTitleDataRenderer", "title", "title", true);
+		_testGetFDSTableSchemaField(
+			"dateTime", "modified-date", "dateModified", true);
+		_testGetFDSTableSchemaField(
+			"dsRequestStatusDataRenderer", "signature-status",
+			"dsRequestStatus", false);
+		_testGetFDSTableSchemaField(null, "extension", "extension", false);
+		_testGetFDSTableSchemaField(null, "priority", "priority", true);
+		_testGetFDSTableSchemaField(null, "type", "typeLabel", false);
 	}
 
 	private void _testGetFDSTableSchemaField(
