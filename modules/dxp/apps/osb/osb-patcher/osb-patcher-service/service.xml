@@ -338,9 +338,6 @@
 		<finder name="PatcherFixComponentId" return-type="Collection">
 			<finder-column name="patcherFixComponentId" />
 		</finder>
-		<finder name="Version" return-type="Collection">
-			<finder-column name="version" />
-		</finder>
 		<finder name="PFCI_PPVI" return-type="Collection">
 			<finder-column name="patcherFixComponentId" />
 			<finder-column name="patcherProjectVersionId" />
@@ -466,10 +463,6 @@
 		</finder>
 		<finder name="Name" return-type="PatcherProjectVersion" unique="true">
 			<finder-column name="name" />
-		</finder>
-		<finder name="P_R" return-type="Collection">
-			<finder-column name="patcherProductVersionId" />
-			<finder-column name="rootPatcherProjectVersionId" />
 		</finder>
 		<finder name="P_RN" return-type="Collection">
 			<finder-column name="patcherProductVersionId" />
