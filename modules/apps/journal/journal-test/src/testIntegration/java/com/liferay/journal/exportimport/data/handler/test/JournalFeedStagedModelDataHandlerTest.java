@@ -221,7 +221,11 @@ public class JournalFeedStagedModelDataHandlerTest
 
 			ExportImportThreadLocal.setPortletImportInProcess(true);
 
-			try {
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.exportimport.internal.lifecycle." +
+						"LoggerExportImportLifecycleListener",
+					LoggerTestUtil.ERROR)) {
+
 				AssertUtils.assertFailure(
 					PortletDataException.class,
 					StringBundler.concat(
@@ -231,6 +235,21 @@ public class JournalFeedStagedModelDataHandlerTest
 						liveGroup.getGroupId(), "}"),
 					() -> StagedModelDataHandlerUtil.importStagedModel(
 						portletDataContext, exportedStagedModel));
+
+				List<LogEntry> logEntries = logCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+
+				LogEntry logEntry = logEntries.get(0);
+
+				String message = logEntry.getMessage();
+
+				Assert.assertTrue(
+					message,
+					message.startsWith(
+						"Staged model {class: " + JournalFeed.class.getName()));
+				Assert.assertTrue(message, message.endsWith("import failed"));
 			}
 			finally {
 				ExportImportThreadLocal.setPortletImportInProcess(false);
