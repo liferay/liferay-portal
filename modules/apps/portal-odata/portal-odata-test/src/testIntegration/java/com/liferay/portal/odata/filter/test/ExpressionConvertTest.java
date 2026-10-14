@@ -58,8 +58,8 @@ public class ExpressionConvertTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_addDocument("n45alpha9omega");
 		_addDocument("n45alpha*omega");
+		_addDocument("n45alpha9omega");
 		_addDocument("n45controlxyz");
 	}
 
@@ -84,14 +84,13 @@ public class ExpressionConvertTest {
 	private void _addDocument(String title) throws Exception {
 		Document document = new DocumentImpl();
 
-		document.addUID(_ENTRY_CLASS_NAME, RandomTestUtil.randomString());
-
-		document.addKeyword(_TITLE_FIELD_NAME, title);
 		document.addKeyword(Field.COMPANY_ID, TestPropsValues.getCompanyId());
 		document.addKeyword(Field.ENTRY_CLASS_NAME, _ENTRY_CLASS_NAME);
 		document.addKeyword(
 			Field.getSortableFieldName(_TITLE_FIELD_NAME),
 			StringUtil.toLowerCase(title));
+		document.addUID(_ENTRY_CLASS_NAME, RandomTestUtil.randomString());
+		document.addKeyword(_TITLE_FIELD_NAME, title);
 
 		IndexWriterHelperUtil.addDocument(
 			TestPropsValues.getCompanyId(), document, true);
