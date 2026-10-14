@@ -1,6 +1,0 @@
-// Sits inside the panel's stacking context, so -1 keeps it under the panel and
-// above the page.
-
-.modal-backdrop.side-panel-backdrop {
-	z-index: -1;
-}

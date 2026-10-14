@@ -160,6 +160,10 @@
 	}
 }
 
-.table-root.bar-comparison-root {
+.breakdown-table-root > .table-hover {
+	min-width: 0;
+}
+
+.table-root.bar-comparison-root .table {
 	min-width: 400px;
 }

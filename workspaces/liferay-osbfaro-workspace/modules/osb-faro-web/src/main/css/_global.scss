@@ -7,6 +7,17 @@ body {
 	font-size: 0.875rem;
 }
 
+// Clay components such as Picker portal a visually hidden live region for
+// screen readers to the end of the body. Clay positions it absolutely but
+// gives it no offset, so it lands below the page and adds 1px of scroll to
+// pages that fill the viewport. Pinning it to the top keeps it out of the
+// layout without hiding it from screen readers.
+
+body > [data-live-announcer] {
+	left: 0;
+	top: 0;
+}
+
 hr {
 	width: 100%;
 }

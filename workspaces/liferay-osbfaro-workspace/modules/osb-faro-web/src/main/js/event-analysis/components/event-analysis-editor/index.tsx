@@ -55,23 +55,28 @@ const EventAnalysisEditor: React.FC<IEventAnalysisEditorProps> = ({
 
 				<span className="align-self-stretch border-left" />
 
-				<ClayCheckbox
-					checked={compareToPrevious}
-					containerProps={{
-						className: 'compare-to-previous-checkbox mb-0 mt-2',
-					}}
-					label={Liferay.Language.get('compare-to-previous')}
-					onChange={(event) =>
-						onCompareToPreviousChange(event.currentTarget.checked)
-					}
-				/>
+				<div className="align-items-center c-gap-3 d-flex event-analysis-editor-period flex-wrap">
+					<ClayCheckbox
+						checked={compareToPrevious}
+						containerProps={{
+							className:
+								'compare-to-previous-checkbox flex-shrink-0 mb-0 mt-2',
+						}}
+						label={Liferay.Language.get('compare-to-previous')}
+						onChange={(event) =>
+							onCompareToPreviousChange(
+								event.currentTarget.checked
+							)
+						}
+					/>
 
-				<DropdownRangeKey
-					bordered
-					legacy={false}
-					onRangeSelectorChange={onRangeSelectorsChange}
-					rangeSelectors={rangeSelectors}
-				/>
+					<DropdownRangeKey
+						bordered
+						legacy={false}
+						onRangeSelectorChange={onRangeSelectorsChange}
+						rangeSelectors={rangeSelectors}
+					/>
+				</div>
 			</Canvas.Actions>
 		</Canvas.Header>
 

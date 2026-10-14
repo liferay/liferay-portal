@@ -221,7 +221,7 @@ const StageConditionRow: React.FC<IStageConditionRowProps> = ({
 	return (
 		<div
 			className={getCN(
-				'align-items-center bg-white c-gap-2 d-flex p-3 rounded stage-configuration-panel__condition',
+				'align-items-center bg-white c-gap-2 d-flex flex-wrap p-3 rounded stage-configuration-panel__condition',
 				{'has-error': incomplete}
 			)}
 		>
