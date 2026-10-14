@@ -308,7 +308,7 @@ describe('BaseLifecycle', () => {
 		).toBeInTheDocument();
 	});
 
-	it('shows the lifecycle in the breadcrumb under a link to the lifecycles', () => {
+	it('shows the lifecycle in the breadcrumb after the lifecycles', () => {
 		mockedUseRequest.mockImplementation(
 			useRequestImpl({
 				lifecycle: {id: '1', name: 'Growth Hub'},
@@ -337,7 +337,9 @@ describe('BaseLifecycle', () => {
 		it('renders the not found page', () => {
 			renderPage();
 
-			expect(screen.getByText(/lifecycle not found/i)).toBeInTheDocument();
+			expect(
+				screen.getByText(/lifecycle not found/i)
+			).toBeInTheDocument();
 			expect(screen.queryByTestId('overview-section')).toBeNull();
 		});
 
@@ -481,15 +483,13 @@ describe('BaseLifecycle', () => {
 	const openActionsMenu = () =>
 		fireEvent.click(screen.getByRole('button', {name: 'Menu'}));
 
-	describe('the Lifecycle Configuration action', () => {
+	describe('the Edit action', () => {
 		it('navigates to the edit route when clicked by an admin', () => {
 			renderPage();
 
 			openActionsMenu();
 
-			fireEvent.click(
-				screen.getByRole('menuitem', {name: 'Lifecycle Configuration'})
-			);
+			fireEvent.click(screen.getByRole('menuitem', {name: /^edit$/i}));
 
 			expect(screen.getByTestId('location')).toHaveTextContent(
 				toRoute(Routes.LIFECYCLE_EDIT, {
@@ -507,8 +507,18 @@ describe('BaseLifecycle', () => {
 
 			openActionsMenu();
 
-			expect(screen.queryByText('Lifecycle Configuration')).toBeNull();
+			expect(
+				screen.queryByRole('menuitem', {name: /^edit$/i})
+			).toBeNull();
 		});
+	});
+
+	it('does not offer the View action on the open dashboard', () => {
+		renderPage();
+
+		openActionsMenu();
+
+		expect(screen.queryByRole('menuitem', {name: /^view$/i})).toBeNull();
 	});
 
 	describe('the Manage Notifications action', () => {

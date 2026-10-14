@@ -1,6 +1,9 @@
 import sendRequest from 'shared/util/request';
+import {createMockLifecycleApi} from './lifecycle-mock';
+import {ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA} from 'shared/util/feature-flags';
 
 export interface ILifecycle {
+	default?: boolean;
 	description?: string;
 	id: string;
 	name?: string;
@@ -30,22 +33,12 @@ export interface ILifecycleDetail extends ILifecycle {
 
 export const getDefaultLifecycle = (
 	lifecycles: ILifecycle[]
-): ILifecycle | undefined => lifecycles[0];
+): ILifecycle | undefined =>
+	lifecycles.find((lifecycle) => lifecycle.default) ?? lifecycles[0];
 
 interface IFetchLifecycles {
 	channelId?: string;
 	groupId: string;
-}
-
-export async function fetchLifecycles({
-	channelId,
-	groupId,
-}: IFetchLifecycles): Promise<ILifecycle[]> {
-	return sendRequest({
-		data: {channelId},
-		method: 'GET',
-		path: `contacts/${groupId}/account-lifecycle`,
-	});
 }
 
 interface IFetchLifecycle {
@@ -53,15 +46,48 @@ interface IFetchLifecycle {
 	lifecycleId: string;
 }
 
-export async function fetchLifecycle({
+const requestLifecycles = ({
+	groupId,
+}: IFetchLifecycles): Promise<ILifecycle[]> =>
+	sendRequest({
+		method: 'GET',
+		path: `contacts/${groupId}/account-lifecycle`,
+	});
+
+const requestLifecycle = ({
 	groupId,
 	lifecycleId,
-}: IFetchLifecycle): Promise<ILifecycleDetail> {
-	return sendRequest({
+}: IFetchLifecycle): Promise<ILifecycleDetail> =>
+	sendRequest({
 		method: 'GET',
 		path: `contacts/${groupId}/account-lifecycle/${lifecycleId}`,
 	});
-}
+
+const requestDefaultLifecycle = ({
+	groupId,
+	lifecycleId,
+}: IFetchLifecycle): Promise<void> =>
+	sendRequest({
+		method: 'PUT',
+		path: `contacts/${groupId}/account-lifecycle/${lifecycleId}/default`,
+	});
+
+const realLifecycleApi = {
+	fetchLifecycle: requestLifecycle,
+	fetchLifecycles: requestLifecycles,
+	setDefaultLifecycle: requestDefaultLifecycle,
+};
+
+const lifecycleApi: typeof realLifecycleApi =
+	ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA
+		? createMockLifecycleApi({...realLifecycleApi, getDefaultLifecycle})
+		: realLifecycleApi;
+
+export const {
+	fetchLifecycle,
+	fetchLifecycles,
+	setDefaultLifecycle,
+} = lifecycleApi;
 
 interface ILifecycleStagePayload {
 	accountLifecycleStageRule: IAccountLifecycleStageRule;

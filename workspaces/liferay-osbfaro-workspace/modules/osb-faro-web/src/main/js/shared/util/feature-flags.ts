@@ -19,7 +19,8 @@ export type FeatureFlagKey =
 	| 'ENABLE_ASSET_CARD'
 	| 'ENABLE_BLOCKLIST_KEYWORDS'
 	| 'ENABLE_DELETE_DATA_SOURCE_BUTTON'
-	| 'ENABLE_FORM_ABANDONMENT';
+	| 'ENABLE_FORM_ABANDONMENT'
+	| 'ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA';
 
 export interface FeatureFlagDefinition {
 	defaultValue: boolean;
@@ -31,6 +32,7 @@ export const FEATURE_FLAGS: FeatureFlagDefinition[] = [
 	{defaultValue: false, key: 'ENABLE_BLOCKLIST_KEYWORDS'},
 	{defaultValue: true, key: 'ENABLE_DELETE_DATA_SOURCE_BUTTON'},
 	{defaultValue: false, key: 'ENABLE_FORM_ABANDONMENT'},
+	{defaultValue: false, key: 'ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA'},
 ];
 
 const DEFAULTS = FEATURE_FLAGS.reduce(
@@ -101,4 +103,8 @@ export const ENABLE_DELETE_DATA_SOURCE_BUTTON = isFeatureFlagEnabled(
 
 export const ENABLE_FORM_ABANDONMENT = isFeatureFlagEnabled(
 	'ENABLE_FORM_ABANDONMENT'
+);
+
+export const ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA = isFeatureFlagEnabled(
+	'ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA'
 );

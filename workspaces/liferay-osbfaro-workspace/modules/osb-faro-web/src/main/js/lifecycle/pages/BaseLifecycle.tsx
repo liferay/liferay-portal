@@ -17,8 +17,6 @@ import {
 	IAccountMetric,
 } from 'contacts/pages/account/utils/types';
 import {ChannelContext} from 'shared/context/channel';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {connect, ConnectedProps} from 'react-redux';
 import {
 	LifecycleContextProvider,
 	useLifecycle,
@@ -30,7 +28,7 @@ import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
-import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
+import {useLifecycleActions} from 'lifecycle/hooks/useLifecycleActions';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
 
@@ -130,15 +128,9 @@ const LifecycleAccounts = () => {
 	);
 };
 
-const connector = connect(null, {close, open});
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
+const BaseLifecycle = () => {
 	const currentUser = useCurrentUser();
 	const {selectedChannel} = useContext(ChannelContext);
-
-	const history = useHistoryAdapter();
 
 	const {channelId, groupId, lifecycleId} = useParams();
 
@@ -154,6 +146,10 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 	} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecycle,
 		variables: {groupId: groupId!, lifecycleId: lifecycleId!},
+	});
+
+	const actions = useLifecycleActions({
+		lifecycle,
 	});
 
 	const processing = lifecycle?.processedDate == null;
@@ -277,46 +273,11 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 							className="mb-3"
 							title={title}
 						>
-							<BasePage.Header.PageActionsToolbar
-								actions={[
-									...(authorized
-										? [
-												{
-													icon: {symbol: 'cog'},
-													label: Liferay.Language.get(
-														'lifecycle-configuration'
-													),
-													onClick: () =>
-														history.push(
-															toRoute(
-																Routes.LIFECYCLE_EDIT,
-																{
-																	channelId,
-																	groupId,
-																	lifecycleId,
-																}
-															)
-														),
-												},
-											]
-										: []),
-									{
-										icon: {symbol: 'bell-on'},
-										label: Liferay.Language.get(
-											'manage-notifications'
-										),
-										onClick: () =>
-											open(
-												modalTypes.MANAGE_LIFECYCLE_NOTIFICATIONS_MODAL,
-												{
-													groupId,
-													lifecycleId,
-													onClose: close,
-												}
-											),
-									},
-								]}
-							/>
+							{!!actions.length && (
+								<BasePage.Header.PageActionsToolbar
+									actions={actions}
+								/>
+							)}
 						</BasePage.Header.TitleSection>
 					</BasePage.Row>
 				</BasePage.Header>
@@ -361,4 +322,4 @@ const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 	);
 };
 
-export default connector(BaseLifecycle);
+export default BaseLifecycle;
