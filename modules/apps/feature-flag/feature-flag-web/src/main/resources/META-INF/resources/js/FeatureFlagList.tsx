@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayList from '@clayui/list';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
@@ -34,13 +35,13 @@ const FeatureFlagList: React.FC<IFeatureFlagListProps> = ({featureFlags}) => {
 					description={Liferay.Language.get(
 						'no-feature-flags-were-found'
 					)}
-					imgProps={{
-						alt: Liferay.Language.get(
-							'no-feature-flags-were-found'
-						),
-					}}
-					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
-					imgSrcReducedMotion={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state_reduced_motion.svg`}
+					image={
+						<ClayIcon
+							className="c-empty-state-icon c-empty-state-icon-search-state"
+							illustration
+							symbol="search-state"
+						/>
+					}
 				/>
 			)}
 
