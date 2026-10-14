@@ -35,6 +35,8 @@
 		dismissible="<%= true %>"
 		displayType="danger"
 	>
+		<liferay-ui:message key="the-database-state-verification-found-the-following-errors" />
+
 		<ul class="mb-0 mt-2">
 
 			<%
@@ -61,6 +63,8 @@
 		dismissible="<%= true %>"
 		displayType="warning"
 	>
+		<liferay-ui:message key="the-database-state-verification-found-the-following-warnings" />
+
 		<ul class="mb-0 mt-2">
 
 			<%
