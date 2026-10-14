@@ -155,89 +155,6 @@ public class CTCommentPersistenceImpl
 			finderCache, new Object[] {ctCollectionId});
 	}
 
-	private CollectionPersistenceFinder<CTComment, NoSuchCommentException>
-		_collectionPersistenceFinderByCtEntryId;
-
-	/**
-	 * Returns an ordered range of all the ct comments where ctEntryId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCommentModelImpl</code>.
-	 * </p>
-	 *
-	 * @param ctEntryId the ct entry ID
-	 * @param start the lower bound of the range of ct comments
-	 * @param end the upper bound of the range of ct comments (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ct comments
-	 */
-	@Override
-	public List<CTComment> findByCtEntryId(
-		long ctEntryId, int start, int end,
-		OrderByComparator<CTComment> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCtEntryId.find(
-			finderCache, new Object[] {ctEntryId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first ct comment in the ordered set where ctEntryId = &#63;.
-	 *
-	 * @param ctEntryId the ct entry ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct comment
-	 * @throws NoSuchCommentException if a matching ct comment could not be found
-	 */
-	@Override
-	public CTComment findByCtEntryId_First(
-			long ctEntryId, OrderByComparator<CTComment> orderByComparator)
-		throws NoSuchCommentException {
-
-		return _collectionPersistenceFinderByCtEntryId.findFirst(
-			finderCache, new Object[] {ctEntryId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first ct comment in the ordered set where ctEntryId = &#63;.
-	 *
-	 * @param ctEntryId the ct entry ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct comment, or <code>null</code> if a matching ct comment could not be found
-	 */
-	@Override
-	public CTComment fetchByCtEntryId_First(
-		long ctEntryId, OrderByComparator<CTComment> orderByComparator) {
-
-		return _collectionPersistenceFinderByCtEntryId.fetchFirst(
-			finderCache, new Object[] {ctEntryId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the ct comments where ctEntryId = &#63; from the database.
-	 *
-	 * @param ctEntryId the ct entry ID
-	 */
-	@Override
-	public void removeByCtEntryId(long ctEntryId) {
-		_collectionPersistenceFinderByCtEntryId.remove(
-			finderCache, new Object[] {ctEntryId});
-	}
-
-	/**
-	 * Returns the number of ct comments where ctEntryId = &#63;.
-	 *
-	 * @param ctEntryId the ct entry ID
-	 * @return the number of matching ct comments
-	 */
-	@Override
-	public int countByCtEntryId(long ctEntryId) {
-		return _collectionPersistenceFinderByCtEntryId.count(
-			finderCache, new Object[] {ctEntryId});
-	}
-
 	public CTCommentPersistenceImpl() {
 		setModelClass(CTComment.class);
 
@@ -460,32 +377,6 @@ public class CTCommentPersistenceImpl
 					"ctComment.", "ctCollectionId", FinderColumn.Type.LONG, "=",
 					true, true, CTComment::getCtCollectionId));
 
-		_collectionPersistenceFinderByCtEntryId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCtEntryId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"ctEntryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCtEntryId", new String[] {Long.class.getName()},
-					new String[] {"ctEntryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCtEntryId", new String[] {Long.class.getName()},
-					new String[] {"ctEntryId"}, false),
-				_SQL_SELECT_CTCOMMENT_WHERE, _SQL_COUNT_CTCOMMENT_WHERE,
-				CTCommentModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
-				new FinderColumn<>(
-					"ctComment.", "ctEntryId", FinderColumn.Type.LONG, "=",
-					true, true, CTComment::getCtEntryId));
-
 		CTCommentUtil.setPersistence(this);
 	}
 
@@ -546,4 +437,4 @@ public class CTCommentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-65209397
+// LIFERAY-SERVICE-BUILDER-HASH:-72855072
