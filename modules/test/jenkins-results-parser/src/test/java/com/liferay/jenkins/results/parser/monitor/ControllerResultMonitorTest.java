@@ -81,26 +81,26 @@ public class ControllerResultMonitorTest
 				"SUCCESS"));
 		_testExecute(
 			"Unable to find a result for job " + _JOB_NAME +
-				" in its last 1 builds",
+				" in its last 1 build",
 			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(
 				600, _newAlreadyRanDescription(), RandomTestUtil.randomInt(),
 				"SUCCESS"));
 		_testExecute(
 			"Unable to find a result for job " + _JOB_NAME +
-				" in its last 1 builds",
+				" in its last 1 build",
 			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(0, "", RandomTestUtil.randomInt(), null));
 		_testExecute(
 			"Unable to find a result for job " + _JOB_NAME +
-				" in its last 1 builds",
+				" in its last 1 build",
 			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(
 				600, "<strong>SKIPPED</strong> - Job is already running",
 				RandomTestUtil.randomInt(), "SUCCESS"));
 		_testExecute(
 			"Unable to find a result for job " + _JOB_NAME +
-				" in its last 1 builds",
+				" in its last 1 build",
 			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(
 				600, _newExpireDescription(), RandomTestUtil.randomInt(),
