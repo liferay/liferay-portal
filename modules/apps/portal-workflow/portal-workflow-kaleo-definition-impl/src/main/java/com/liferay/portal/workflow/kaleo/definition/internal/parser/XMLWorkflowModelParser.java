@@ -8,8 +8,10 @@ package com.liferay.portal.workflow.kaleo.definition.internal.parser;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -132,6 +134,36 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 				_addTextElement(element, "role-type", role.getTypeLabel());
 
 				_addTextElement(element, "role-id", String.valueOf(roleId));
+			}
+
+			for (Element element :
+					TransformUtil.transform(
+						document.selectNodes("//*[local-name()='user']"),
+						node -> (Element)node)) {
+
+				if (Validator.isNotNull(
+						element.elementTextTrim(
+							"user-external-reference-code"))) {
+
+					continue;
+				}
+
+				long userId = GetterUtil.getLong(
+					element.elementTextTrim("user-id"));
+
+				User user = _userLocalService.fetchUser(userId);
+
+				if ((user == null) || (user.getCompanyId() != companyId)) {
+					continue;
+				}
+
+				element.clearContent();
+
+				_addTextElement(
+					element, "user-external-reference-code",
+					user.getExternalReferenceCode());
+
+				_addTextElement(element, "user-id", String.valueOf(userId));
 			}
 
 			return _parse(document);
@@ -1306,6 +1338,9 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 
 	@Reference
 	private RoleLocalService _roleLocalService;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 	private boolean _validate;
 
