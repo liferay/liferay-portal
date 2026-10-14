@@ -1,0 +1,59 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-69290",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"deletionType": "disassociate",
+			"edge": false,
+			"externalReferenceCode": "L_USER_TO_L_DS_REQUEST_RECIPIENTS",
+			"label": {
+				"en_US": "User to DS Request Recipients"
+			},
+			"name": "userToDSRequestRecipients",
+			"objectDefinitionExternalReferenceCode1": "L_USER",
+			"objectDefinitionExternalReferenceCode2": "L_DS_REQUEST_RECIPIENT",
+			"objectDefinitionName2": "DSRequestRecipient",
+			"objectDefinitionSystem2": true,
+			"objectField": {
+				"DBType": "Long",
+				"businessType": "Relationship",
+				"externalReferenceCode": "USER_TO_DS_REQUEST_RECIPIENTS",
+				"indexed": true,
+				"indexedAsKeyword": false,
+				"label": {
+					"en_US": "User to DS Request Recipients"
+				},
+				"name": "r_userToDSRequestRecipients_userId",
+				"objectFieldSettings": [
+					{
+						"name": "objectDefinition1ShortName",
+						"value": "User"
+					},
+					{
+						"name": "objectRelationshipERCObjectFieldName",
+						"value": "r_userToDSRequestRecipients_userERC"
+					}
+				],
+				"relationshipType": "oneToMany",
+				"required": false,
+				"system": true,
+				"type": "Long"
+			},
+			"parameterObjectFieldId": 0,
+			"parameterObjectFieldName": "",
+			"reverse": false,
+			"system": true,
+			"type": "oneToMany"
+		}
+	]
+}
