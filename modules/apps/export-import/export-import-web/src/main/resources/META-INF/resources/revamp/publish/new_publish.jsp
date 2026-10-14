@@ -39,6 +39,7 @@ renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishPr
 
 <clay:container-fluid
 	cssClass="container-form-lg"
+	size="lg"
 >
 	<div class="sheet">
 		<span aria-hidden="true" class="loading-animation mb-9 mt-8"></span>
