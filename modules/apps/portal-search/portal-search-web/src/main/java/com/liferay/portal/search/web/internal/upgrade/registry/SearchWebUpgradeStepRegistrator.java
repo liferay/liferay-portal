@@ -24,6 +24,7 @@ import com.liferay.portal.search.web.internal.upgrade.v1_0_0.UpgradePortletId;
 import com.liferay.portal.search.web.internal.upgrade.v1_0_0.UpgradePortletPreferences;
 import com.liferay.portal.search.web.internal.upgrade.v2_0_0.SearchPortletUpgradeProcess;
 import com.liferay.portal.search.web.internal.upgrade.v2_1_0.CategoryFacetPortletUpgradeProcess;
+import com.liferay.portal.search.web.internal.upgrade.v2_1_2.DateFacetDDMTemplateUpgradeProcess;
 import com.liferay.portal.search.web.internal.user.facet.constants.UserFacetPortletKeys;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portlet.display.template.upgrade.BaseUpgradePortletPreferences;
@@ -105,6 +106,9 @@ public class SearchWebUpgradeStepRegistrator implements UpgradeStepRegistrator {
 				}
 
 			});
+
+		registry.register(
+			"2.1.1", "2.1.2", new DateFacetDDMTemplateUpgradeProcess());
 	}
 
 	@Reference
