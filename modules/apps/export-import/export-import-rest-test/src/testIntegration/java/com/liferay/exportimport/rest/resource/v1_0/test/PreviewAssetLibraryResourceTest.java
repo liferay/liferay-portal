@@ -85,7 +85,7 @@ public class PreviewAssetLibraryResourceTest
 			).build(),
 			type, ServiceContextTestUtil.getServiceContext());
 
-		_depotGroups.add(depotEntry.getGroup());
+		_groups.add(depotEntry.getGroup());
 
 		return depotEntry;
 	}
@@ -137,6 +137,8 @@ public class PreviewAssetLibraryResourceTest
 
 		group = GroupTestUtil.addGroup();
 
+		_groups.add(group);
+
 		Assert.assertNull(
 			_getExportPreviewAssetLibrary(group.getExternalReferenceCode()));
 	}
@@ -171,6 +173,6 @@ public class PreviewAssetLibraryResourceTest
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
-	private final List<Group> _depotGroups = new ArrayList<>();
+	private final List<Group> _groups = new ArrayList<>();
 
 }
