@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.search.spi.reindexer.BulkReindexer;
 import com.liferay.segments.configuration.SegmentsConfiguration;
+import com.liferay.segments.internal.constants.SegmentsDestinationNames;
 import com.liferay.segments.internal.helper.IndexerHelper;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.provider.SegmentsEntryProviderRegistry;
@@ -45,6 +46,11 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class SegmentsEntryRelIndexerSchedulerJobConfiguration
 	implements SchedulerJobConfiguration {
+
+	@Override
+	public String getDestinationName() {
+		return SegmentsDestinationNames.SEGMENTS_ENTRY_REL_INDEXER;
+	}
 
 	@Override
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {

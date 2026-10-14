@@ -13,4 +13,7 @@ public class SegmentsDestinationNames {
 	public static final String SEGMENTS_ENTRY_REINDEX =
 		"liferay/segments_entry_reindex";
 
+	public static final String SEGMENTS_ENTRY_REL_INDEXER =
+		"liferay/segments_entry_rel_indexer";
+
 }
