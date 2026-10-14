@@ -825,6 +825,19 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			layout = updateLayout(layout);
 		}
 
+		String layoutSetPrototypeLayoutERC = ParamUtil.getString(
+			serviceContext, "layoutSetPrototypeLayoutERC");
+
+		if (Validator.isNotNull(layoutSetPrototypeLayoutERC) &&
+			!Objects.equals(
+				layout.getLayoutSetPrototypeLayoutERC(),
+				layoutSetPrototypeLayoutERC)) {
+
+			layout.setLayoutSetPrototypeLayoutERC(layoutSetPrototypeLayoutERC);
+
+			layout = layoutLocalService.updateLayout(layout);
+		}
+
 		if (Objects.equals(type, LayoutConstants.TYPE_CONTENT)) {
 			layout = layoutLocalService.updateLayout(
 				layout.getGroupId(), layout.isPrivateLayout(),
