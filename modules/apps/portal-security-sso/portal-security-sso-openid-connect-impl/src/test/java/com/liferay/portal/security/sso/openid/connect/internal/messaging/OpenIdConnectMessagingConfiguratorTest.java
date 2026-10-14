@@ -80,14 +80,14 @@ public class OpenIdConnectMessagingConfiguratorTest {
 		DestinationConfiguration destinationConfiguration =
 			argumentCaptor.getValue();
 
+		Assert.assertEquals(1, destinationConfiguration.getMaximumQueueSize());
+		Assert.assertEquals(
+			DestinationConfiguration.DESTINATION_TYPE_SERIAL,
+			destinationConfiguration.getDestinationType());
 		Assert.assertEquals(
 			OpenIdConnectDestinationNames.
 				OPENID_CONNECT_TOKEN_REFRESH_SCHEDULER,
 			destinationConfiguration.getDestinationName());
-		Assert.assertEquals(
-			DestinationConfiguration.DESTINATION_TYPE_SERIAL,
-			destinationConfiguration.getDestinationType());
-		Assert.assertEquals(1, destinationConfiguration.getMaximumQueueSize());
 		Assert.assertTrue(
 			destinationConfiguration.getRejectedExecutionHandler() instanceof
 				ThreadPoolExecutor.DiscardPolicy);
