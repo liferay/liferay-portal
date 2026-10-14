@@ -6,6 +6,9 @@
 package com.liferay.layout.page.template.internal.exportimport.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
@@ -22,8 +25,10 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -31,12 +36,15 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.File;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -65,31 +73,91 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 		_importedGroup = GroupTestUtil.addGroup();
 	}
 
+	@FeatureFlag("LPD-57283")
+	@Test
+	@TestInfo("LPD-106595")
+	public void testExportImportDesignLibraryLayoutPageTemplates()
+		throws Exception {
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
+		Group designLibraryGroup = _addDesignLibraryGroup();
+
+		LayoutPageTemplateCollection basicLayoutPageTemplateCollection =
+			_addLayoutPageTemplateCollection(
+				designLibraryGroup.getGroupId(),
+				LayoutPageTemplateCollectionTypeConstants.BASIC);
+
+		LayoutPageTemplateEntry basicLayoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				0, designLibraryGroup.getGroupId(),
+				basicLayoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId(),
+				LayoutPageTemplateEntryTypeConstants.BASIC);
+
+		long journalArticleClassNameId = _portal.getClassNameId(
+			JournalArticle.class.getName());
+
+		LayoutPageTemplateEntry displayPageLayoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				journalArticleClassNameId, designLibraryGroup.getGroupId(),
+				LayoutPageTemplateConstants.
+					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+
+		Group importedDesignLibraryGroup = _addDesignLibraryGroup();
+
+		long importedDesignLibraryGroupId =
+			importedDesignLibraryGroup.getGroupId();
+
+		_importLayouts(
+			false, importedDesignLibraryGroupId,
+			_exportLayouts(false, designLibraryGroup.getGroupId()));
+
+		_assertExists(
+			importedDesignLibraryGroupId, basicLayoutPageTemplateCollection);
+		_assertExists(
+			importedDesignLibraryGroupId, basicLayoutPageTemplateEntry);
+		_assertExists(
+			importedDesignLibraryGroupId, displayPageLayoutPageTemplateEntry);
+	}
+
 	@Test
 	public void testExportImportLayoutPageTemplateCollectionsDeletions()
 		throws Exception {
 
 		LayoutPageTemplateCollection basicLayoutPageTemplateCollection1 =
 			_addLayoutPageTemplateCollection(
+				_group.getGroupId(),
 				LayoutPageTemplateCollectionTypeConstants.BASIC);
 		LayoutPageTemplateCollection basicLayoutPageTemplateCollection2 =
 			_addLayoutPageTemplateCollection(
+				_group.getGroupId(),
 				LayoutPageTemplateCollectionTypeConstants.BASIC);
 		LayoutPageTemplateCollection displayPageLayoutPageTemplateCollection1 =
 			_addLayoutPageTemplateCollection(
+				_group.getGroupId(),
 				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE);
 		LayoutPageTemplateCollection displayPageLayoutPageTemplateCollection2 =
 			_addLayoutPageTemplateCollection(
+				_group.getGroupId(),
 				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE);
 
 		_importLayouts(
 			false, _importedGroup.getGroupId(),
 			_exportLayouts(false, _group.getGroupId()));
 
-		_assertExists(basicLayoutPageTemplateCollection1);
-		_assertExists(basicLayoutPageTemplateCollection2);
-		_assertExists(displayPageLayoutPageTemplateCollection1);
-		_assertExists(displayPageLayoutPageTemplateCollection2);
+		_assertExists(
+			_importedGroup.getGroupId(), basicLayoutPageTemplateCollection1);
+		_assertExists(
+			_importedGroup.getGroupId(), basicLayoutPageTemplateCollection2);
+		_assertExists(
+			_importedGroup.getGroupId(),
+			displayPageLayoutPageTemplateCollection1);
+		_assertExists(
+			_importedGroup.getGroupId(),
+			displayPageLayoutPageTemplateCollection2);
 
 		_layoutPageTemplateCollectionLocalService.
 			deleteLayoutPageTemplateCollection(
@@ -102,10 +170,16 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 			true, _importedGroup.getGroupId(),
 			_exportLayouts(true, _group.getGroupId()));
 
-		_assertExists(basicLayoutPageTemplateCollection1);
-		_assertDoesNotExist(basicLayoutPageTemplateCollection2);
-		_assertExists(displayPageLayoutPageTemplateCollection1);
-		_assertDoesNotExist(displayPageLayoutPageTemplateCollection2);
+		_assertExists(
+			_importedGroup.getGroupId(), basicLayoutPageTemplateCollection1);
+		_assertDoesNotExist(
+			_importedGroup.getGroupId(), basicLayoutPageTemplateCollection2);
+		_assertExists(
+			_importedGroup.getGroupId(),
+			displayPageLayoutPageTemplateCollection1);
+		_assertDoesNotExist(
+			_importedGroup.getGroupId(),
+			displayPageLayoutPageTemplateCollection2);
 	}
 
 	@Test
@@ -114,17 +188,18 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
 			_addLayoutPageTemplateCollection(
+				_group.getGroupId(),
 				LayoutPageTemplateCollectionTypeConstants.BASIC);
 
 		LayoutPageTemplateEntry basicLayoutPageTemplateEntry1 =
 			_addLayoutPageTemplateEntry(
-				0,
+				0, _group.getGroupId(),
 				layoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId(),
 				LayoutPageTemplateEntryTypeConstants.BASIC);
 		LayoutPageTemplateEntry basicLayoutPageTemplateEntry2 =
 			_addLayoutPageTemplateEntry(
-				0,
+				0, _group.getGroupId(),
 				layoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId(),
 				LayoutPageTemplateEntryTypeConstants.BASIC);
@@ -134,26 +209,26 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 
 		LayoutPageTemplateEntry displayPageLayoutPageTemplateEntry1 =
 			_addLayoutPageTemplateEntry(
-				journalArticleClassNameId,
+				journalArticleClassNameId, _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
 		LayoutPageTemplateEntry displayPageLayoutPageTemplateEntry2 =
 			_addLayoutPageTemplateEntry(
-				journalArticleClassNameId,
+				journalArticleClassNameId, _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
 
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry1 =
 			_addLayoutPageTemplateEntry(
-				0,
+				0, _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry2 =
 			_addLayoutPageTemplateEntry(
-				0,
+				0, _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
@@ -162,12 +237,18 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 			false, _importedGroup.getGroupId(),
 			_exportLayouts(false, _group.getGroupId()));
 
-		_assertExists(basicLayoutPageTemplateEntry1);
-		_assertExists(basicLayoutPageTemplateEntry2);
-		_assertExists(displayPageLayoutPageTemplateEntry1);
-		_assertExists(displayPageLayoutPageTemplateEntry2);
-		_assertExists(masterLayoutPageTemplateEntry1);
-		_assertExists(masterLayoutPageTemplateEntry2);
+		_assertExists(
+			_importedGroup.getGroupId(), basicLayoutPageTemplateEntry1);
+		_assertExists(
+			_importedGroup.getGroupId(), basicLayoutPageTemplateEntry2);
+		_assertExists(
+			_importedGroup.getGroupId(), displayPageLayoutPageTemplateEntry1);
+		_assertExists(
+			_importedGroup.getGroupId(), displayPageLayoutPageTemplateEntry2);
+		_assertExists(
+			_importedGroup.getGroupId(), masterLayoutPageTemplateEntry1);
+		_assertExists(
+			_importedGroup.getGroupId(), masterLayoutPageTemplateEntry2);
 
 		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
 			basicLayoutPageTemplateEntry2);
@@ -180,80 +261,101 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 			true, _importedGroup.getGroupId(),
 			_exportLayouts(true, _group.getGroupId()));
 
-		_assertExists(basicLayoutPageTemplateEntry1);
-		_assertDoesNotExist(basicLayoutPageTemplateEntry2);
-		_assertExists(displayPageLayoutPageTemplateEntry1);
-		_assertDoesNotExist(displayPageLayoutPageTemplateEntry2);
-		_assertExists(masterLayoutPageTemplateEntry1);
-		_assertDoesNotExist(masterLayoutPageTemplateEntry2);
+		_assertExists(
+			_importedGroup.getGroupId(), basicLayoutPageTemplateEntry1);
+		_assertDoesNotExist(
+			_importedGroup.getGroupId(), basicLayoutPageTemplateEntry2);
+		_assertExists(
+			_importedGroup.getGroupId(), displayPageLayoutPageTemplateEntry1);
+		_assertDoesNotExist(
+			_importedGroup.getGroupId(), displayPageLayoutPageTemplateEntry2);
+		_assertExists(
+			_importedGroup.getGroupId(), masterLayoutPageTemplateEntry1);
+		_assertDoesNotExist(
+			_importedGroup.getGroupId(), masterLayoutPageTemplateEntry2);
+	}
+
+	private Group _addDesignLibraryGroup() throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		_depotEntries.add(depotEntry);
+
+		return depotEntry.getGroup();
 	}
 
 	private LayoutPageTemplateCollection _addLayoutPageTemplateCollection(
-			int type)
+			long groupId, int type)
 		throws Exception {
 
 		return _layoutPageTemplateCollectionLocalService.
 			addLayoutPageTemplateCollection(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				null, TestPropsValues.getUserId(), groupId,
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 				null, RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), type,
 				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
+					groupId, TestPropsValues.getUserId()));
 	}
 
 	private LayoutPageTemplateEntry _addLayoutPageTemplateEntry(
-			long classNameId, long layoutPageTemplateCollectionId, int type)
+			long classNameId, long groupId, long layoutPageTemplateCollectionId,
+			int type)
 		throws Exception {
 
 		return _layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_group.getGroupId(), layoutPageTemplateCollectionId, null,
-			classNameId, null, RandomTestUtil.randomString(), type, 0, false, 0,
-			0, 0, WorkflowConstants.STATUS_APPROVED,
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), groupId,
+			layoutPageTemplateCollectionId, null, classNameId, null,
+			RandomTestUtil.randomString(), type, 0, false, 0, 0, 0,
+			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+				groupId, TestPropsValues.getUserId()));
 	}
 
 	private void _assertDoesNotExist(
+		long groupId,
 		LayoutPageTemplateCollection layoutPageTemplateCollection) {
 
 		Assert.assertNull(
 			_layoutPageTemplateCollectionLocalService.
 				fetchLayoutPageTemplateCollectionByExternalReferenceCode(
 					layoutPageTemplateCollection.getExternalReferenceCode(),
-					_importedGroup.getGroupId()));
+					groupId));
 	}
 
 	private void _assertDoesNotExist(
-		LayoutPageTemplateEntry layoutPageTemplateEntry) {
+		long groupId, LayoutPageTemplateEntry layoutPageTemplateEntry) {
 
 		Assert.assertNull(
 			_layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByExternalReferenceCode(
 					layoutPageTemplateEntry.getExternalReferenceCode(),
-					_importedGroup.getGroupId()));
+					groupId));
 	}
 
 	private void _assertExists(
+		long groupId,
 		LayoutPageTemplateCollection layoutPageTemplateCollection) {
 
 		Assert.assertNotNull(
 			_layoutPageTemplateCollectionLocalService.
 				fetchLayoutPageTemplateCollectionByExternalReferenceCode(
 					layoutPageTemplateCollection.getExternalReferenceCode(),
-					_importedGroup.getGroupId()));
+					groupId));
 	}
 
 	private void _assertExists(
-		LayoutPageTemplateEntry layoutPageTemplateEntry) {
+		long groupId, LayoutPageTemplateEntry layoutPageTemplateEntry) {
 
 		Assert.assertNotNull(
 			_layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByExternalReferenceCode(
 					layoutPageTemplateEntry.getExternalReferenceCode(),
-					_importedGroup.getGroupId()));
+					groupId));
 	}
 
 	private File _exportLayouts(boolean deletions, long groupId)
@@ -305,6 +407,12 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 		_exportImportLocalService.importLayouts(
 			exportImportConfiguration, larFile);
 	}
+
+	@DeleteAfterTestRun
+	private final List<DepotEntry> _depotEntries = new ArrayList<>();
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private ExportImportConfigurationLocalService
