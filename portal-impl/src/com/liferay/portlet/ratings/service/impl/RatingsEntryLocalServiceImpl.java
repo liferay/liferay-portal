@@ -145,20 +145,6 @@ public class RatingsEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<RatingsEntry> getEntries(
-		String className, long classPK, double score) {
-
-		return ratingsEntryPersistence.findByC_C_S(
-			_classNameLocalService.getClassNameId(className), classPK, score);
-	}
-
-	@Override
-	public int getEntriesCount(String className, long classPK, double score) {
-		return ratingsEntryPersistence.countByC_C_S(
-			_classNameLocalService.getClassNameId(className), classPK, score);
-	}
-
-	@Override
 	public RatingsEntry getEntry(long userId, String className, long classPK)
 		throws PortalException {
 

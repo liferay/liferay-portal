@@ -59,8 +59,6 @@ import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.ratings.kernel.model.RatingsEntry;
-import com.liferay.ratings.kernel.service.RatingsEntryLocalServiceUtil;
 import com.liferay.ratings.test.util.RatingsTestUtil;
 
 import java.io.File;
@@ -1141,7 +1139,6 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 
 		validateImport(dependentStagedModelsMap, group);
 		validateImportedStagedModel(stagedModel, importedStagedModel);
-		validateRatings(stagedModel, importedStagedModel);
 	}
 
 	protected void validateImportedStagedModel(
@@ -1156,47 +1153,6 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 
 		Assert.assertEquals(
 			stagedModel.getUuid(), importedStagedModel.getUuid());
-	}
-
-	protected void validateRatings(
-			StagedModel stagedModel, StagedModel importedStagedModel)
-		throws Exception {
-
-		List<RatingsEntry> ratingsEntries =
-			RatingsEntryLocalServiceUtil.getEntries(
-				ExportImportClassedModelUtil.getClassName(stagedModel),
-				ExportImportClassedModelUtil.getClassPK(stagedModel),
-				WorkflowConstants.STATUS_ANY);
-
-		List<RatingsEntry> importedRatingsEntries =
-			RatingsEntryLocalServiceUtil.getEntries(
-				ExportImportClassedModelUtil.getClassName(importedStagedModel),
-				ExportImportClassedModelUtil.getClassPK(importedStagedModel),
-				WorkflowConstants.STATUS_ANY);
-
-		Assert.assertEquals(
-			importedRatingsEntries.toString(), ratingsEntries.size(),
-			importedRatingsEntries.size());
-
-		for (RatingsEntry ratingsEntry : ratingsEntries) {
-			Iterator<RatingsEntry> iterator = importedRatingsEntries.iterator();
-
-			while (iterator.hasNext()) {
-				RatingsEntry importedRatingsEntry = iterator.next();
-
-				if (ratingsEntry.getScore() ==
-						importedRatingsEntry.getScore()) {
-
-					iterator.remove();
-
-					break;
-				}
-			}
-		}
-
-		Assert.assertTrue(
-			importedRatingsEntries.toString(),
-			importedRatingsEntries.isEmpty());
 	}
 
 	@DeleteAfterTestRun
