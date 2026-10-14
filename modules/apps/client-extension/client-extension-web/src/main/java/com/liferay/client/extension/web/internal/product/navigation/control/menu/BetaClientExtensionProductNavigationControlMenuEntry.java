@@ -81,17 +81,9 @@ public class BetaClientExtensionProductNavigationControlMenuEntry
 	}
 
 	private boolean _isBeta(CET cet) {
-		if (Objects.equals(
-				cet.getType(),
-				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER) ||
-			Objects.equals(
-				cet.getType(),
-				ClientExtensionEntryConstants.TYPE_FDS_VISUALIZATION_MODE)) {
-
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			cet.getType(),
+			ClientExtensionEntryConstants.TYPE_FDS_VISUALIZATION_MODE);
 	}
 
 	@Reference(
