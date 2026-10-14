@@ -48,46 +48,50 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 			/>
 		</BaseEditPage.Toolbar>
 
-		<div className="justify-self-center d-inline-block mt-5 mx-auto">
-			<div className="mb-4">
-				<BaseEditPage.Title
-					id="lifecycleName"
-					label={Liferay.Language.get('title')}
-					onChange={(event) =>
-						onLifecycleNameChange(event.target.value)
-					}
-					placeholder={Liferay.Language.get('lifecycle-name')}
-					required
-					value={lifecycleName}
-				/>
-			</div>
+		<BaseEditPage.Body>
+			<BaseEditPage.Main>
+				<div className="mb-4">
+					<BaseEditPage.Title
+						id="lifecycleName"
+						label={Liferay.Language.get('title')}
+						onChange={(event) =>
+							onLifecycleNameChange(event.target.value)
+						}
+						placeholder={Liferay.Language.get('lifecycle-name')}
+						required
+						value={lifecycleName}
+					/>
+				</div>
 
-			<Card>
-				<Card.Body>
-					<Card.Title>
-						{Liferay.Language.get('stage-configuration')}
-					</Card.Title>
+				<Card>
+					<Card.Body>
+						<Card.Title>
+							{Liferay.Language.get('stage-configuration')}
+						</Card.Title>
 
-					<p className="mt-3 text-secondary">
-						{Liferay.Language.get(
-							'define-entry-conditions-for-each-lifecycle-stage-an-account-moves-to-a-stage-when-it-meets-the-selected-conditions'
-						)}
-					</p>
+						<p className="mt-3 text-secondary">
+							{Liferay.Language.get(
+								'define-entry-conditions-for-each-lifecycle-stage-an-account-moves-to-a-stage-when-it-meets-the-selected-conditions'
+							)}
+						</p>
 
-					{LIFECYCLE_STAGE_ORDER.map((stageType, index) => (
-						<StageConfigurationPanel
-							defaultExpanded={index === 0}
-							fields={catalogFields}
-							index={index + 1}
-							key={stageType}
-							onChange={(value) => onStageChange(index, value)}
-							stageType={stageType}
-							value={stageConfigs[index]}
-						/>
-					))}
-				</Card.Body>
-			</Card>
-		</div>
+						{LIFECYCLE_STAGE_ORDER.map((stageType, index) => (
+							<StageConfigurationPanel
+								defaultExpanded={index === 0}
+								fields={catalogFields}
+								index={index + 1}
+								key={stageType}
+								onChange={(value) =>
+									onStageChange(index, value)
+								}
+								stageType={stageType}
+								value={stageConfigs[index]}
+							/>
+						))}
+					</Card.Body>
+				</Card>
+			</BaseEditPage.Main>
+		</BaseEditPage.Body>
 	</BaseEditPage>
 );
 
