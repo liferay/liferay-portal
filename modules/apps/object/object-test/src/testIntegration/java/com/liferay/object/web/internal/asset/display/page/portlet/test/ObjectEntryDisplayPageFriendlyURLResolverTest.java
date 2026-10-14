@@ -77,10 +77,6 @@ public class ObjectEntryDisplayPageFriendlyURLResolverTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		_friendlyURLResolver =
-			FriendlyURLResolverRegistryUtil.
-				getFriendlyURLResolverByDefaultURLSeparator("/c_test/");
-
 		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
 			"Test",
 			Collections.singletonList(
@@ -101,6 +97,10 @@ public class ObjectEntryDisplayPageFriendlyURLResolverTest {
 			_objectDefinitionLocalService.updateTitleObjectFieldId(
 				_objectDefinition.getObjectDefinitionId(),
 				objectField.getObjectFieldId());
+
+		_friendlyURLResolver =
+			FriendlyURLResolverRegistryUtil.
+				getFriendlyURLResolverByDefaultURLSeparator("/c_test/");
 	}
 
 	@AfterClass
