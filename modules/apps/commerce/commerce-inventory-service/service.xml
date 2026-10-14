@@ -106,9 +106,6 @@
 		<finder name="CommerceInventoryWarehouseId" return-type="Collection">
 			<finder-column name="commerceInventoryWarehouseId" />
 		</finder>
-		<finder name="AvailabilityDate" return-type="Collection">
-			<finder-column name="availabilityDate" />
-		</finder>
 		<finder name="Sku" return-type="Collection">
 			<finder-column name="sku" />
 		</finder>
