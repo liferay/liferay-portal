@@ -28,9 +28,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
@@ -40,10 +37,6 @@
 		</finder>
 		<finder name="G_CN" return-type="Collection">
 			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-		</finder>
-		<finder name="U_C" return-type="Collection">
-			<finder-column name="userId" />
 			<finder-column name="classNameId" />
 		</finder>
 		<finder name="G_C_C" return-type="Collection">
