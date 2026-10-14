@@ -291,11 +291,6 @@ public class SitemapCompanyConfigurationDisplayContext {
 			_themeDisplay.getCompanyId());
 	}
 
-	public boolean isIndexModeAssetTypeEnabled() throws ConfigurationException {
-		return _sitemapConfigurationManager.isIndexModeAssetTypeCompanyEnabled(
-			_themeDisplay.getCompanyId());
-	}
-
 	public boolean isRegenerateSitemapInProgress() {
 		return _sitemapManager.isRegenerateSitemapInProgress(
 			_themeDisplay.getCompanyId());

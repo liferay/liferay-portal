@@ -102,7 +102,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 	</clay:content-row>
 </clay:sheet-section>
 
-<c:if test="<%= sitemapCompanyConfigurationDisplayContext.isIndexModeAssetTypeEnabled() %>">
+<c:if test="<%= sitemapCompanyConfigurationDisplayContext.isXMLSitemapIndexEnabled() %>">
 
 	<%
 	boolean cachedGenerationEnabled = sitemapCompanyConfigurationDisplayContext.isCachedGenerationEnabled();
