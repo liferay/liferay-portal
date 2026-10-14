@@ -187,6 +187,8 @@ public class SourceFormatBuild
 		WorkspaceGitRepository workspaceGitRepository =
 			workspace.getPrimaryWorkspaceGitRepository();
 
+		workspaceGitRepository.setUsePullRequestBaseRepository(true);
+
 		String upstreamBranchSHA = getParameterValue(
 			"GITHUB_UPSTREAM_BRANCH_SHA");
 
@@ -201,8 +203,6 @@ public class SourceFormatBuild
 		if (JenkinsResultsParserUtil.isSHA(senderBranchSHA)) {
 			workspaceGitRepository.setSenderBranchSHA(senderBranchSHA);
 		}
-
-		workspaceGitRepository.setUsePullRequestBaseRepository(true);
 
 		return workspace;
 	}
