@@ -63,12 +63,12 @@ public class RSSWebCacheItemTest {
 
 				Http.Response response = options.getResponse();
 
-				if (Objects.equals(location, _NOT_REDIRECTED_URL)) {
-					response.setRedirect(_LOCAL_URL);
+				if (Objects.equals(location, _URL_NOT_REDIRECTED)) {
+					response.setRedirect(_URL_LOCAL);
 					response.setResponseCode(HttpServletResponse.SC_OK);
 				}
 
-				if (Objects.equals(location, _PUBLIC_URL)) {
+				if (Objects.equals(location, _URL_PUBLIC)) {
 					response.setRedirect(_redirectURL);
 					response.setResponseCode(HttpServletResponse.SC_FOUND);
 				}
@@ -123,39 +123,39 @@ public class RSSWebCacheItemTest {
 		_testConvert(
 			IOException.class,
 			"Unable to exceed maximum number of allowed URL redirects: " +
-				_PUBLIC_URL,
-			_PUBLIC_URL, _PUBLIC_URL);
+				_URL_PUBLIC,
+			_URL_PUBLIC, _URL_PUBLIC);
 		_testConvert(
 			SecurityException.class,
-			"Local network URLs are not allowed: " + _LOCAL_URL, _LOCAL_URL,
-			_PUBLIC_URL);
+			"Local network URLs are not allowed: " + _URL_LOCAL, _URL_LOCAL,
+			_URL_PUBLIC);
 		_testConvert(
 			SecurityException.class,
-			"Local network URLs are not allowed: " + _LOCAL_URL, null,
-			_LOCAL_URL);
+			"Local network URLs are not allowed: " + _URL_LOCAL, null,
+			_URL_LOCAL);
 		_testConvert(
 			SecurityException.class,
-			"Local network URLs are not allowed: " + _SITE_LOCAL_URL, null,
-			_SITE_LOCAL_URL);
+			"Local network URLs are not allowed: " + _URL_SITE_LOCAL, null,
+			_URL_SITE_LOCAL);
 		_testConvert(
 			SecurityException.class,
-			"Only HTTP or HTTPS URLs are allowed: " + _FILE_URL, null,
-			_FILE_URL);
+			"Only HTTP or HTTPS URLs are allowed: " + _URL_FILE, null,
+			_URL_FILE);
 		_testConvert(
 			SecurityException.class,
 			"Unable to resolve host: " + _UNRESOLVED_HOST, null,
-			_UNRESOLVED_URL);
+			_URL_UNRESOLVED);
 		_testConvert(
 			null, null, "https://" + RandomTestUtil.randomString() + ".com",
-			_PUBLIC_URL);
-		_testConvert(null, null, null, _NOT_REDIRECTED_URL);
-		_testConvert(null, null, null, _PUBLIC_URL);
+			_URL_PUBLIC);
+		_testConvert(null, null, null, _URL_NOT_REDIRECTED);
+		_testConvert(null, null, null, _URL_PUBLIC);
 	}
 
 	private String _getFeedXML() {
 		return StringBundler.concat(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\">",
-			"<channel><title>", _FEED_TITLE, "</title><link>", _PUBLIC_URL,
+			"<channel><title>", _FEED_TITLE, "</title><link>", _URL_PUBLIC,
 			"</link><description>", RandomTestUtil.randomString(),
 			"</description></channel></rss>");
 	}
@@ -187,23 +187,23 @@ public class RSSWebCacheItemTest {
 
 	private static final String _FEED_TITLE = RandomTestUtil.randomString();
 
-	private static final String _FILE_URL =
-		"file:///" + RandomTestUtil.randomString();
-
-	private static final String _LOCAL_URL = "http://127.0.0.1/rss.xml";
-
-	private static final String _NOT_REDIRECTED_URL =
-		"http://" + RandomTestUtil.randomString() + ".com/not-redirected.xml";
-
-	private static final String _PUBLIC_URL =
-		"http://" + RandomTestUtil.randomString() + ".com/rss.xml";
-
-	private static final String _SITE_LOCAL_URL = "http://10.0.0.1/rss.xml";
-
 	private static final String _UNRESOLVED_HOST =
 		RandomTestUtil.randomString() + ".net";
 
-	private static final String _UNRESOLVED_URL =
+	private static final String _URL_FILE =
+		"file:///" + RandomTestUtil.randomString();
+
+	private static final String _URL_LOCAL = "http://127.0.0.1/rss.xml";
+
+	private static final String _URL_NOT_REDIRECTED =
+		"http://" + RandomTestUtil.randomString() + ".com/not-redirected.xml";
+
+	private static final String _URL_PUBLIC =
+		"http://" + RandomTestUtil.randomString() + ".com/rss.xml";
+
+	private static final String _URL_SITE_LOCAL = "http://10.0.0.1/rss.xml";
+
+	private static final String _URL_UNRESOLVED =
 		"http://" + _UNRESOLVED_HOST + "/rss.xml";
 
 	private MockedStatic<HttpUtil> _httpUtilMockedStatic;
