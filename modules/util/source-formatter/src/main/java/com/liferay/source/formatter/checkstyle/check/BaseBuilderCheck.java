@@ -1216,8 +1216,8 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 
 				String methodCall = fullIdent.getText();
 
-				if (!methodCall.equals("String.valueOf") &&
-					!methodCall.endsWith(".toString")) {
+				if (!methodCall.endsWith(".toString") &&
+					!methodCall.equals("String.valueOf")) {
 
 					continue;
 				}

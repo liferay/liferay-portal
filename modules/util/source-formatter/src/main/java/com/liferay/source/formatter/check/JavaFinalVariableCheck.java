@@ -68,9 +68,7 @@ public class JavaFinalVariableCheck extends BaseJavaTermCheck {
 
 			addMessage(
 				fileName,
-				StringBundler.concat(
-					"Keyword \"final\" not required for parameter \"", name,
-					"\""),
+				"Keyword \"final\" not required for parameter \"" + name + "\"",
 				javaTerm.getLineNumber());
 		}
 

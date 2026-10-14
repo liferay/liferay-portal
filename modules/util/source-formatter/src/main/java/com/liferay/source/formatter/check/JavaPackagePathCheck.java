@@ -370,8 +370,8 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 				continue;
 			}
 
-			if (packageName.endsWith("." + expectedPackagePath) ||
-				packageName.contains("." + expectedPackagePath + ".")) {
+			if (packageName.contains("." + expectedPackagePath + ".") ||
+				packageName.endsWith("." + expectedPackagePath)) {
 
 				continue;
 			}

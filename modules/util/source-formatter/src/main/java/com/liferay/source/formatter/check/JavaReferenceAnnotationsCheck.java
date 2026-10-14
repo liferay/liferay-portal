@@ -68,8 +68,8 @@ public class JavaReferenceAnnotationsCheck extends JavaAnnotationsCheck {
 		}
 
 		for (JavaTerm javaTerm : javaClass.getChildJavaTerms()) {
-			if (!javaTerm.isJavaMethod() ||
-				!javaTerm.hasAnnotation("Reference")) {
+			if (!javaTerm.hasAnnotation("Reference") ||
+				!javaTerm.isJavaMethod()) {
 
 				continue;
 			}
