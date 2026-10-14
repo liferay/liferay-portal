@@ -102,6 +102,14 @@ public class SegmentsEntryRelLocalServiceImpl
 	}
 
 	@Override
+	public SegmentsEntryRel fetchSegmentsEntryRel(
+		long segmentsEntryId, long classNameId, long classPK) {
+
+		return segmentsEntryRelPersistence.fetchByS_CN_CPK(
+			segmentsEntryId, classNameId, classPK);
+	}
+
+	@Override
 	public List<SegmentsEntryRel> getSegmentsEntryRels(long segmentsEntryId) {
 		return segmentsEntryRelPersistence.findBySegmentsEntryId(
 			segmentsEntryId);
@@ -154,16 +162,14 @@ public class SegmentsEntryRelLocalServiceImpl
 	public boolean hasSegmentsEntryRel(
 		long segmentsEntryId, long classNameId, long classPK) {
 
-		List<SegmentsEntryRel> segmentsEntryRels =
-			segmentsEntryRelPersistence.findByCN_CPK(classNameId, classPK);
+		SegmentsEntryRel segmentsEntryRel = fetchSegmentsEntryRel(
+			segmentsEntryId, classNameId, classPK);
 
-		for (SegmentsEntryRel segmentsEntryRel : segmentsEntryRels) {
-			if (segmentsEntryRel.getSegmentsEntryId() == segmentsEntryId) {
-				return true;
-			}
+		if (segmentsEntryRel == null) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	@Reference
