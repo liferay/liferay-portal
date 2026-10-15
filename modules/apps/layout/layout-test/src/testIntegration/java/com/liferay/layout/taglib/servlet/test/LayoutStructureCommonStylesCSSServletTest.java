@@ -198,10 +198,10 @@ public class LayoutStructureCommonStylesCSSServletTest {
 		_servlet.service(_getHttpServletRequest(), mockHttpServletResponse);
 
 		Assert.assertEquals(
+			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
+		Assert.assertEquals(
 			HttpServletResponse.SC_NOT_FOUND,
 			mockHttpServletResponse.getStatus());
-		Assert.assertEquals(
-			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
 	}
 
 	private HttpServletRequest _getHttpServletRequest() throws Exception {
