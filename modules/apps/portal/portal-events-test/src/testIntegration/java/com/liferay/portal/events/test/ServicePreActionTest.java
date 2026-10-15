@@ -325,6 +325,14 @@ public class ServicePreActionTest {
 		Assert.assertEquals(firstLayout.getPlid(), contentPageLayout.getPlid());
 
 		Assert.assertEquals(layouts.toString(), count + 1, layouts.size());
+
+		for (Layout layout : publishedLayouts) {
+			_layoutLocalService.deleteLayout(layout);
+		}
+
+		plid = _getThemeDisplayPlid(true, contentPageLayout.getPlid(), false);
+
+		Assert.assertEquals(contentPageLayout.getPlid(), plid);
 	}
 
 	@Test
