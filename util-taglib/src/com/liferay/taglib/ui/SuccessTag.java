@@ -46,6 +46,10 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 
 	@Override
 	public int doStartTag() throws JspException {
+		if (_key == null) {
+			throw new JspException("Key is null");
+		}
+
 		setAttributeNamespace(_ATTRIBUTE_NAMESPACE);
 
 		HttpServletRequest httpServletRequest = getRequest();
