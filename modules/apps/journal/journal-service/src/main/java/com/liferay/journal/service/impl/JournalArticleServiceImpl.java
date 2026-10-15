@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.File;
@@ -249,8 +250,10 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		DDMStructure ddmStructure = _ddmStructureService.getStructure(
 			ddmStructureId);
 
-		_ddmStructureModelResourcePermission.contains(
+		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), ddmStructure, ActionKeys.UPDATE);
+
+		_checkDefaultValuesArticle(classNameId, classPK, ddmStructureId);
 
 		return journalArticleLocalService.addArticleDefaultValues(
 			getUserId(), groupId, classNameId, classPK, titleMap,
@@ -360,8 +363,15 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		DDMStructure ddmStructure = _ddmStructureService.getStructure(
 			ddmStructureId);
 
-		_ddmStructureModelResourcePermission.contains(
+		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), ddmStructure, ActionKeys.UPDATE);
+
+		JournalArticle journalArticle = journalArticleLocalService.getArticle(
+			groupId, articleId);
+
+		_checkDefaultValuesArticle(
+			journalArticle.getClassNameId(), journalArticle.getClassPK(),
+			ddmStructureId);
 
 		journalArticleLocalService.deleteArticleDefaultValues(
 			groupId, articleId, ddmStructureId);
@@ -2206,8 +2216,12 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		DDMStructure ddmStructure = _ddmStructureService.getStructure(
 			journalArticle.getDDMStructureId());
 
-		_ddmStructureModelResourcePermission.contains(
+		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), ddmStructure, ActionKeys.UPDATE);
+
+		_checkDefaultValuesArticle(
+			journalArticle.getClassNameId(), journalArticle.getClassPK(),
+			journalArticle.getDDMStructureId());
 
 		return journalArticleLocalService.updateArticleDefaultValues(
 			getUserId(), groupId, articleId, titleMap, descriptionMap, content,
@@ -2290,6 +2304,19 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			new HashMap<String, Serializable>());
 	}
 
+	private void _checkDefaultValuesArticle(
+			long classNameId, long classPK, long ddmStructureId)
+		throws PortalException {
+
+		if ((classNameId != _portal.getClassNameId(DDMStructure.class)) ||
+			(classPK != ddmStructureId)) {
+
+			throw new PrincipalException.MustHavePermission(
+				getPermissionChecker(), DDMStructure.class.getName(),
+				ddmStructureId, ActionKeys.UPDATE);
+		}
+	}
+
 	private void _checkUserId(long userId) throws PortalException {
 		if (userId != getUserId()) {
 			throw new PrincipalException();
@@ -2319,6 +2346,9 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 
 	@Reference
 	private JournalFolderService _journalFolderService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(
 		target = "(resource.name=" + JournalConstants.RESOURCE_NAME + ")"
