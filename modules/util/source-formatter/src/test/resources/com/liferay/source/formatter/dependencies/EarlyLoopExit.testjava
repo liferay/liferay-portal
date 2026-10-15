@@ -192,17 +192,6 @@ public class EarlyLoopExit {
 		}
 	}
 
-	public void method18(List<String> keys) {
-		for (String key : keys) {
-			if (key.startsWith("a")) {
-				_print(key, key);
-			}
-			else {
-				continue;
-			}
-		}
-	}
-
 	private void _print(String key, String value) {
 		System.out.println(key + "=" + value);
 	}
