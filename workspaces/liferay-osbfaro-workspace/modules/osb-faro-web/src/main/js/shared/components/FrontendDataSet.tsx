@@ -157,12 +157,14 @@ export const columns = {
 };
 
 export function useSnapshots(fdsName: string, enabled = true) {
+	const fetchSnapshots = enabled && Liferay.FeatureFlags['LPS-164563'];
+
 	const [snapshots, setSnapshots] = useState<
 		IFrontendDataSetProps['snapshots'] | null
-	>(enabled ? null : []);
+	>(fetchSnapshots ? null : []);
 
 	useEffect(() => {
-		if (!enabled) {
+		if (!fetchSnapshots) {
 			return;
 		}
 
@@ -204,7 +206,7 @@ export function useSnapshots(fdsName: string, enabled = true) {
 
 				setSnapshots([]);
 			});
-	}, [enabled, fdsName]);
+	}, [fetchSnapshots, fdsName]);
 
 	return snapshots;
 }
