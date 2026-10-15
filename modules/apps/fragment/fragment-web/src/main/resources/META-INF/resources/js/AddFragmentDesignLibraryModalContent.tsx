@@ -5,7 +5,7 @@
 
 import {FragmentSetModalContent} from '@liferay/layout-js-components-web';
 import {openToast} from 'frontend-js-components-web';
-import {addParams, fetch, navigate} from 'frontend-js-web';
+import {fetch, navigate} from 'frontend-js-web';
 import React from 'react';
 
 type FragmentCollection = {fragmentCollectionId: number; name: string};
@@ -46,20 +46,9 @@ export default function AddFragmentDesignLibraryModalContent({
 
 		fetch(addFragmentEntryURL, {body: formData, method: 'POST'})
 			.then((response) => response.json())
-			.then(({redirectURL}: {redirectURL?: string}) => {
-				if (!redirectURL) {
-					navigate(location.href);
-
-					return;
-				}
-
-				navigate(
-					addParams(
-						{[`${namespace}redirect`]: location.href},
-						redirectURL
-					)
-				);
-			})
+			.then(({redirectURL}: {redirectURL?: string}) =>
+				navigate(redirectURL || location.href)
+			)
 			.catch(() =>
 				openToast({
 					message: Liferay.Language.get(
