@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.model.listener;
 
+import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -42,7 +43,10 @@ public class ObjectFieldModelListener extends BaseModelListener<ObjectField> {
 	public void onAfterRemove(ObjectField objectField)
 		throws ModelListenerException {
 
-		if (objectField.isRequired()) {
+		if (objectField.isRequired() &&
+			!ObjectDefinitionThreadLocal.isDeleteObjectDefinitionId(
+				objectField.getObjectDefinitionId())) {
+
 			_reindexObjectEntries(objectField);
 		}
 	}
