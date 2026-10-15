@@ -10,7 +10,7 @@ import ClayForm, {
 	ClayRadio,
 	ClayRadioGroup,
 } from '@clayui/form';
-import {useFormik} from 'formik';
+import {setNestedObjectValues, useFormik} from 'formik';
 import {openModal, openToast, useId} from 'frontend-js-components-web';
 import {navigate} from 'frontend-js-web';
 import React, {useState} from 'react';
@@ -63,6 +63,7 @@ export default function SpaceGeneralSettings({
 		handleSubmit,
 		setFieldError,
 		setFieldValue,
+		setTouched,
 		submitForm,
 		touched,
 		values,
@@ -198,8 +199,10 @@ export default function SpaceGeneralSettings({
 			),
 	});
 
-	const onSave = () => {
+	const onSave = async () => {
 		if (Object.keys(errors).length) {
+			await setTouched(setNestedObjectValues(errors, true));
+
 			focusInvalidElement();
 
 			return;
