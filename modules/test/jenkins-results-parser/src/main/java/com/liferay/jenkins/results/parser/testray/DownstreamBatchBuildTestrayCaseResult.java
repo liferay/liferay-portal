@@ -6,10 +6,13 @@
 package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.BuildReport;
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
+
+import java.net.URL;
 
 import java.util.Objects;
 
@@ -49,5 +52,32 @@ public class DownstreamBatchBuildTestrayCaseResult
 
 		return super.getStatus();
 	}
+
+	@Override
+	public synchronized URL getTestrayCaseResultURL() {
+		if (_testrayCaseResultURL != null) {
+			return _testrayCaseResultURL;
+		}
+
+		DownstreamBuildReport downstreamBuildReport =
+			getDownstreamBuildReport();
+
+		if (downstreamBuildReport != null) {
+			URL testrayCaseResultURL =
+				downstreamBuildReport.getTestrayCaseResultURL();
+
+			if (testrayCaseResultURL != null) {
+				_testrayCaseResultURL = testrayCaseResultURL;
+
+				return _testrayCaseResultURL;
+			}
+		}
+
+		_testrayCaseResultURL = super.getTestrayCaseResultURL();
+
+		return _testrayCaseResultURL;
+	}
+
+	private URL _testrayCaseResultURL;
 
 }

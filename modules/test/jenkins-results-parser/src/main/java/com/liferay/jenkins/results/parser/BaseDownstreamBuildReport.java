@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -158,6 +159,29 @@ public abstract class BaseDownstreamBuildReport
 		_testReports = testReports;
 
 		return _testReports;
+	}
+
+	@Override
+	public URL getTestrayCaseResultURL() {
+		JSONObject buildReportJSONObject = getBuildReportJSONObject();
+
+		if (buildReportJSONObject == null) {
+			return null;
+		}
+
+		String testrayCaseResultURL = buildReportJSONObject.optString(
+			"testrayCaseResultURL");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(testrayCaseResultURL)) {
+			return null;
+		}
+
+		try {
+			return new URL(testrayCaseResultURL);
+		}
+		catch (MalformedURLException malformedURLException) {
+			return null;
+		}
 	}
 
 	@Override

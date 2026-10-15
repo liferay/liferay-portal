@@ -7,6 +7,8 @@ package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.Build;
 import com.liferay.jenkins.results.parser.BuildDatabase;
+import com.liferay.jenkins.results.parser.DownstreamBuild;
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Retryable;
 import com.liferay.jenkins.results.parser.TopLevelBuild;
@@ -136,6 +138,65 @@ public class TestrayFactory {
 
 		return newBuildTestrayCaseResult(
 			axisTestClassGroup, null, null, testrayBuild, topLevelBuildReport);
+	}
+
+	public static TestrayCaseResult newDownstreamBuildTestrayCaseResult(
+		DownstreamBuild downstreamBuild, TestrayContext testrayContext) {
+
+		if ((testrayContext == null) || (downstreamBuild == null)) {
+			return null;
+		}
+
+		AxisTestClassGroup axisTestClassGroup =
+			downstreamBuild.getAxisTestClassGroup();
+
+		if (axisTestClassGroup == null) {
+			return null;
+		}
+
+		DownstreamBuildReport downstreamBuildReport =
+			downstreamBuild.getDownstreamBuildReport();
+
+		if (downstreamBuildReport == null) {
+			return null;
+		}
+
+		TestrayBuild testrayBuild = testrayContext.getTestrayBuild(
+			axisTestClassGroup.getTestBaseDir());
+
+		if (testrayBuild == null) {
+			return null;
+		}
+
+		TopLevelBuild topLevelBuild = downstreamBuild.getTopLevelBuild();
+
+		TopLevelBuildReport topLevelBuildReport =
+			topLevelBuild.getTopLevelBuildReport();
+
+		TestrayCaseResult testrayCaseResult = newBuildTestrayCaseResult(
+			axisTestClassGroup, testrayBuild, topLevelBuildReport);
+
+		if (testrayCaseResult instanceof BuildTestrayCaseResult) {
+			BuildTestrayCaseResult buildTestrayCaseResult =
+				(BuildTestrayCaseResult)testrayCaseResult;
+
+			buildTestrayCaseResult.setBuildReport(downstreamBuildReport);
+		}
+
+		TopLevelStandaloneBuildTestrayCaseResult
+			topLevelStandaloneBuildTestrayCaseResult =
+				newTopLevelStandaloneBuildTestrayCaseResult(
+					testrayBuild, topLevelBuildReport);
+
+		topLevelStandaloneBuildTestrayCaseResult.setTestrayCaseResultURL(
+			topLevelBuild.getTestrayCaseResultURL());
+
+		testrayCaseResult.setParentTestrayCaseResult(
+			topLevelStandaloneBuildTestrayCaseResult);
+
+		testrayCaseResult.setTestrayRun(axisTestClassGroup.getTestrayRun());
+
+		return testrayCaseResult;
 	}
 
 	public static TestrayCaseResult newJSONObjectTestrayCaseResult(

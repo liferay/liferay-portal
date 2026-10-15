@@ -7,6 +7,8 @@ package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 
+import java.net.URL;
+
 /**
  * @author Michael Hashimoto
  */
@@ -29,5 +31,7 @@ public interface DownstreamBuild extends Build {
 	public String getBatchName();
 
 	public DownstreamBuildReport getDownstreamBuildReport();
+
+	public URL getTestrayCaseResultURL();
 
 }
