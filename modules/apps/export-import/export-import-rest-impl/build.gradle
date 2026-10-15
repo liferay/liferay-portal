@@ -25,4 +25,6 @@ dependencies {
 	compileOnly project(":apps:staging:staging-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 }
