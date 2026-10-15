@@ -160,8 +160,14 @@ describe('ContributorConcentration', () => {
 
 		renderContributorConcentration();
 
-		expect(await screen.findByText('there-is-no-data')).toBeInTheDocument();
-		expect(screen.queryByRole('img')).not.toBeInTheDocument();
+		expect(
+			await screen.findByText('nothing-to-compare-yet')
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				'there-is-no-contributor-activity-to-measure-concentration-against'
+			)
+		).toBeInTheDocument();
 		expect(
 			screen.getByRole('button', {name: 'show-percentages'})
 		).toBeDisabled();
