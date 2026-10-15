@@ -40,8 +40,8 @@ import org.junit.BeforeClass;
 /**
  * @author Alberto Javier Moreno Lage
  */
-public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
-	extends BaseBatchEnginePortletDataHandlerTestCase<T> {
+public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase
+	extends BaseBatchEnginePortletDataHandlerTestCase {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {

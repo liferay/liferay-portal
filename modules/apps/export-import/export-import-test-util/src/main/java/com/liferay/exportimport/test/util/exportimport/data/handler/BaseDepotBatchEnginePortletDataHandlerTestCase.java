@@ -19,8 +19,8 @@ import java.util.Collections;
 /**
  * @author Alberto Javier Moreno Lage
  */
-public abstract class BaseDepotBatchEnginePortletDataHandlerTestCase<T>
-	extends BaseSiteBatchEnginePortletDataHandlerTestCase<T> {
+public abstract class BaseDepotBatchEnginePortletDataHandlerTestCase
+	extends BaseSiteBatchEnginePortletDataHandlerTestCase {
 
 	@Override
 	protected Group addGroup() throws Exception {

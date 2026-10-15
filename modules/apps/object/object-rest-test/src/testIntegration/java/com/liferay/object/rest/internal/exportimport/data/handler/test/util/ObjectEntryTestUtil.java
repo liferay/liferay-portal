@@ -65,22 +65,81 @@ public class ObjectEntryTestUtil {
 				objectDefinition.getCompanyId(), groupId, userId));
 	}
 
-	public static ObjectEntry fetchObjectEntry(
+	public static void deleteObjectEntry(
 			ObjectDefinition objectDefinition, String externalReferenceCode,
 			long groupId)
 		throws Exception {
 
-		objectDefinition = _getObjectDefinition(objectDefinition, groupId);
+		ObjectEntryLocalServiceUtil.deleteObjectEntry(
+			_getObjectEntry(objectDefinition, externalReferenceCode, groupId));
+	}
+
+	public static ObjectEntry fetchObjectEntry(
+		ObjectDefinition objectDefinition, String externalReferenceCode,
+		long groupId) {
+
+		objectDefinition = _fetchObjectDefinition(objectDefinition, groupId);
+
+		if (objectDefinition == null) {
+			return null;
+		}
 
 		return ObjectEntryLocalServiceUtil.fetchObjectEntry(
 			externalReferenceCode, _getGroupId(objectDefinition, groupId),
 			objectDefinition.getObjectDefinitionId());
 	}
 
+	public static long getCreatorUserId(
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId)
+		throws Exception {
+
+		ObjectEntry objectEntry = _getObjectEntry(
+			objectDefinition, externalReferenceCode, groupId);
+
+		return objectEntry.getUserId();
+	}
+
 	public static String getEntityClassName(ObjectDefinition objectDefinition) {
 		return StringBundler.concat(
 			com.liferay.object.rest.dto.v1_0.ObjectEntry.class.getName(), "#",
 			objectDefinition.getName());
+	}
+
+	public static long getObjectEntryId(
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId)
+		throws Exception {
+
+		ObjectEntry objectEntry = _getObjectEntry(
+			objectDefinition, externalReferenceCode, groupId);
+
+		return objectEntry.getObjectEntryId();
+	}
+
+	public static int getStatus(
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId)
+		throws Exception {
+
+		ObjectEntry objectEntry = _getObjectEntry(
+			objectDefinition, externalReferenceCode, groupId);
+
+		return objectEntry.getStatus();
+	}
+
+	public static boolean hasObjectEntry(
+		ObjectDefinition objectDefinition, String externalReferenceCode,
+		long groupId) {
+
+		ObjectEntry objectEntry = fetchObjectEntry(
+			objectDefinition, externalReferenceCode, groupId);
+
+		if ((objectEntry == null) || objectEntry.isInTrash()) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public static ObjectDefinition publishObjectDefinition(
@@ -123,17 +182,39 @@ public class ObjectEntryTestUtil {
 			userId, objectDefinition.getObjectDefinitionId());
 	}
 
-	public static ObjectEntry updateModifiedDate(
-			ObjectEntry objectEntry, Date modifiedDate)
+	public static ObjectEntry updateCreatorUserId(
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId, long userId)
 		throws Exception {
+
+		ObjectEntry objectEntry = _getObjectEntry(
+			objectDefinition, externalReferenceCode, groupId);
+
+		objectEntry.setUserId(userId);
+
+		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
+	}
+
+	public static ObjectEntry updateModifiedDate(
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId, Date modifiedDate)
+		throws Exception {
+
+		ObjectEntry objectEntry = _getObjectEntry(
+			objectDefinition, externalReferenceCode, groupId);
 
 		objectEntry.setModifiedDate(modifiedDate);
 
 		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
 	}
 
-	public static ObjectEntry updateObjectEntry(ObjectEntry objectEntry)
+	public static ObjectEntry updateObjectEntry(
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId)
 		throws Exception {
+
+		ObjectEntry objectEntry = _getObjectEntry(
+			objectDefinition, externalReferenceCode, groupId);
 
 		return ObjectEntryLocalServiceUtil.updateObjectEntry(
 			objectEntry.getUserId(), objectEntry.getObjectEntryId(),
@@ -145,12 +226,19 @@ public class ObjectEntryTestUtil {
 				objectEntry.getUserId()));
 	}
 
-	public static ObjectEntry updateUserId(ObjectEntry objectEntry, long userId)
-		throws Exception {
+	private static ObjectDefinition _fetchObjectDefinition(
+		ObjectDefinition objectDefinition, long groupId) {
 
-		objectEntry.setUserId(userId);
+		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
 
-		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
+		if (group == null) {
+			return null;
+		}
+
+		return ObjectDefinitionLocalServiceUtil.
+			fetchObjectDefinitionByExternalReferenceCode(
+				objectDefinition.getExternalReferenceCode(),
+				group.getCompanyId());
 	}
 
 	private static long _getGroupId(
@@ -176,6 +264,18 @@ public class ObjectEntryTestUtil {
 			getObjectDefinitionByExternalReferenceCode(
 				objectDefinition.getExternalReferenceCode(),
 				group.getCompanyId());
+	}
+
+	private static ObjectEntry _getObjectEntry(
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId)
+		throws Exception {
+
+		objectDefinition = _getObjectDefinition(objectDefinition, groupId);
+
+		return ObjectEntryLocalServiceUtil.getObjectEntry(
+			externalReferenceCode, _getGroupId(objectDefinition, groupId),
+			objectDefinition.getObjectDefinitionId());
 	}
 
 	private static final String _OBJECT_FIELD_NAME =
