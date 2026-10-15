@@ -21,10 +21,11 @@ const test = mergeTests(
 );
 
 test.afterEach(async ({apiHelpers}) => {
-	const {items} = await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
-		'pim/connectors',
-		new URLSearchParams({pageSize: '-1'})
-	);
+	const {items} =
+		await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+			'pim/connectors',
+			new URLSearchParams({pageSize: '-1'})
+		);
 
 	for (const {id} of items) {
 		await apiHelpers.objectEntry.deleteObjectEntry('pim/connectors', id);
