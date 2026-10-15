@@ -2056,3 +2056,30 @@ Read `descriptionRawText` when the text content is needed, and treat `descriptio
 Long Text stores plain text, so project and task descriptions could not carry headings, lists, tables or images. Rich Text is the Objects business type for HTML content and the one the CMS content fields already use, so the descriptions reuse the same editor and the same API contract instead of introducing a parallel field. The fields keep their names and external reference codes so that existing integrations keep addressing the same properties, which is why the change in the values' contract is documented here instead of going through a deprecation.
 
 ---------------------------------------
+
+## Renamed Columns Without Their Type
+- **Date:** 2026-Oct-22
+- **JIRA Ticket:** [LPD-4267](https://liferay.atlassian.net/browse/LPD-4267)
+
+### What changed?
+
+The column rename operation takes the new column name only. The third argument of `UpgradeProcessFactory.alterColumnName`, `BaseDBProcess.alterColumnName` and `DB.alterColumnName` was the new column definition, for example `"iFrameURL VARCHAR(1024) null"`, and is now the new column name, for example `"iFrameURL"`. The same applies to the second argument of `LiveUpgradeProcessFactory.alterColumnName`. A new column name that still contains a type throws an `IllegalArgumentException` before any SQL runs. On MySQL and MariaDB the rename now runs `rename column` instead of `change column`. The `alter_column_name <table> <old column> <new column>` statement that `runSQL` accepts also takes the new column name only and rejects a trailing type.
+### Who is affected?
+
+This affects developers whose upgrade processes rename a column with one of these methods. The code still compiles because the argument is still a `String`, but an upgrade step that passes a type fails when it runs.
+
+### How should I update my code?
+
+Pass the new column name only:
+
+```java
+UpgradeProcessFactory.alterColumnName("RemoteAppEntry", "url", "iFrameURL")
+```
+
+The column keeps its existing type, nullability and default value.
+
+### Why was this change made?
+
+The type was only needed for MySQL 5.7, which cannot rename a column without restating its definition. A type that did not match the column in the database failed the upgrade with `Type change is not allowed when altering column name`. Support for MySQL 5.7 and MariaDB 10.2 and 10.4 ends in 2026.Q4, so the type is no longer needed.
+
+---------------------------------------
