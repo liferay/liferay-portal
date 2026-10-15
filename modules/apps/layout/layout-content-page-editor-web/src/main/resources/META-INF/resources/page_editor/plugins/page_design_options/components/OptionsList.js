@@ -5,9 +5,33 @@
 
 import ClayCard from '@clayui/card';
 import ClayIcon from '@clayui/icon';
+import {ContentLabel} from '@clayui/label';
 import ClaySticker from '@clayui/sticker';
 import classNames from 'classnames';
 import React from 'react';
+
+export function DesignLibrarySubtitle({ariaLabel, designLibraryName, id}) {
+	return (
+		<ContentLabel
+			aria-label={ariaLabel}
+			className="mt-1"
+			displayType="content-5"
+			id={id}
+			large
+			withClose={false}
+		>
+			<ContentLabel.ItemBefore>
+				<ClaySticker className="bg-white rounded" inline size="xs">
+					<ClayIcon symbol="books" />
+				</ClaySticker>
+			</ContentLabel.ItemBefore>
+
+			<ContentLabel.ItemExpand>
+				{designLibraryName}
+			</ContentLabel.ItemExpand>
+		</ContentLabel>
+	);
+}
 
 export function Option({
 	ariaDescribedBy,

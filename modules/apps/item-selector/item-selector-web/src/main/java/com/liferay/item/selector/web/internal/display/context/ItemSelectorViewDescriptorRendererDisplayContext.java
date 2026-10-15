@@ -7,10 +7,10 @@ package com.liferay.item.selector.web.internal.display.context;
 
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
+import com.liferay.item.selector.taglib.GroupSelectorBreadcrumbUtil;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletException;
@@ -26,7 +27,7 @@ import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,9 +52,27 @@ public class ItemSelectorViewDescriptorRendererDisplayContext {
 	public List<BreadcrumbEntry> getBreadcrumbEntries(PortletURL currentURL)
 		throws PortalException, PortletException {
 
-		return Arrays.asList(
-			_getGroupSelectorBreadcrumbEntry(currentURL),
-			_getCurrentGroupBreadcrumbEntry(currentURL));
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletURL portletURL = PortletURLBuilder.create(
+			PortletURLUtil.clone(currentURL, _liferayPortletResponse)
+		).setParameter(
+			"groupTypes",
+			StringUtil.merge(_itemSelectorViewDescriptor.getGroupTypes()), false
+		).setParameter(
+			"scopeGroupOnly", _itemSelectorViewDescriptor.isScopeGroupOnly()
+		).buildPortletURL();
+
+		List<BreadcrumbEntry> breadcrumbEntries = new ArrayList<>(
+			GroupSelectorBreadcrumbUtil.getBreadcrumbEntries(
+				themeDisplay.getScopeGroup(), _httpServletRequest,
+				_liferayPortletResponse, portletURL));
+
+		breadcrumbEntries.add(_getCurrentGroupBreadcrumbEntry(currentURL));
+
+		return breadcrumbEntries;
 	}
 
 	public String getDisplayStyle() {
@@ -135,26 +154,6 @@ public class ItemSelectorViewDescriptorRendererDisplayContext {
 		breadcrumbEntry.setTitle(
 			scopeGroup.getDescriptiveName(_httpServletRequest.getLocale()));
 		breadcrumbEntry.setURL(currentURL.toString());
-
-		return breadcrumbEntry;
-	}
-
-	private BreadcrumbEntry _getGroupSelectorBreadcrumbEntry(
-			PortletURL currentURL)
-		throws PortletException {
-
-		BreadcrumbEntry breadcrumbEntry = new BreadcrumbEntry();
-
-		breadcrumbEntry.setTitle(
-			LanguageUtil.get(_httpServletRequest, "sites-and-libraries"));
-		breadcrumbEntry.setURL(
-			PortletURLBuilder.create(
-				PortletURLUtil.clone(currentURL, _liferayPortletResponse)
-			).setParameter(
-				"groupType", "site"
-			).setParameter(
-				"showGroupSelector", true
-			).buildString());
 
 		return breadcrumbEntry;
 	}

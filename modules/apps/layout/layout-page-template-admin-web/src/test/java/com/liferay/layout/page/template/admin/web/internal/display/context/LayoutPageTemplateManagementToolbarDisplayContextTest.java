@@ -109,7 +109,7 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-89086", "LPD-104842"})
+	@TestInfo({"LPD-89086", "LPD-104842", "LPD-109442"})
 	public void testGetCreationMenu() throws Exception {
 		LayoutPageTemplateManagementToolbarDisplayContext
 			layoutPageTemplateManagementToolbarDisplayContext =
@@ -128,6 +128,8 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 		}
 
 		_testGetCreationMenuInDesignLibraryGroup(
+			layoutPageTemplateManagementToolbarDisplayContext);
+		_testGetCreationMenuInDesignLibraryGroupWhenFeatureFlagIsEnabled(
 			layoutPageTemplateManagementToolbarDisplayContext);
 	}
 
@@ -269,6 +271,48 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 		Assert.assertTrue(data.containsKey("addPageTemplateURL"));
 
 		Assert.assertNull(primaryDropdownItem.get("href"));
+	}
+
+	private void
+		_testGetCreationMenuInDesignLibraryGroupWhenFeatureFlagIsEnabled(
+			LayoutPageTemplateManagementToolbarDisplayContext
+				layoutPageTemplateManagementToolbarDisplayContext) {
+
+		_designLibraryUtilMockedStatic.when(
+			() -> DesignLibraryUtil.isDesignLibraryScope(_group)
+		).thenReturn(
+			true
+		);
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-81022"))
+			).thenReturn(
+				true
+			);
+
+			List<DropdownItem> primaryDropdownItems = _getPrimaryDropdownItems(
+				layoutPageTemplateManagementToolbarDisplayContext);
+
+			Assert.assertEquals(
+				primaryDropdownItems.toString(), 1,
+				primaryDropdownItems.size());
+
+			DropdownItem primaryDropdownItem = primaryDropdownItems.get(0);
+
+			Assert.assertNull(primaryDropdownItem.get("data"));
+
+			String href = (String)primaryDropdownItem.get("href");
+
+			Assert.assertTrue(
+				href,
+				href.contains(
+					"select_layout_page_template_entry_master_layout.jsp"));
+		}
 	}
 
 	private final MockedStatic<DesignLibraryUtil>

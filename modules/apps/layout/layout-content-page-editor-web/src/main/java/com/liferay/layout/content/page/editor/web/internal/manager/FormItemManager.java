@@ -48,7 +48,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
-import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -988,9 +987,7 @@ public class FormItemManager {
 
 		try {
 			LayoutStructure masterLayoutStructure =
-				LayoutStructureUtil.getLayoutStructure(
-					layout.getGroupId(), layout.getMasterLayoutPlid(),
-					SegmentsExperienceConstants.KEY_DEFAULT);
+				LayoutStructureUtil.getMasterLayoutStructure(layout);
 
 			return (DropZoneLayoutStructureItem)
 				masterLayoutStructure.getDropZoneLayoutStructureItem();

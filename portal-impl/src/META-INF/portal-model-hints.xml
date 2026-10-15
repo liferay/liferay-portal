@@ -819,6 +819,7 @@
 		<field name="faviconFileEntryERC" type="String" />
 		<field name="faviconFileEntryScopeERC" type="String" />
 		<field name="masterLayoutPageTemplateEntryERC" type="String" />
+		<field name="masterLayoutPageTemplateEntryScopeERC" type="String" />
 		<field name="portletLayoutPageTemplateEntryERC" type="String" />
 		<field name="portletLayoutPageTemplateEntryScopeERC" type="String" />
 		<field name="portletLayoutPageTemplateEntryLinkEnabled" type="boolean" />

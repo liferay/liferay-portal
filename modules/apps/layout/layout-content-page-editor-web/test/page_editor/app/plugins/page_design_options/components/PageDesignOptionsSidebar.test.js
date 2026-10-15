@@ -36,6 +36,12 @@ const DEFAULT_CONFIG = {
 			masterLayoutPageTemplateEntryERC: '15',
 			name: 'Pablo Master Layout',
 		},
+		{
+			masterLayoutPageTemplateEntryERC: '15',
+			masterLayoutPageTemplateEntryScopeERC: 'gerardo-library-erc',
+			name: 'Library Master Layout',
+			subtitle: 'Gerardo Library',
+		},
 	],
 	portletNamespace: 'ContentPageEditorPortlet',
 	styleBookEnabled: true,
@@ -79,6 +85,10 @@ const renderComponent = ({masterLayoutPageTemplateEntryERC = ''} = {}) => {
 };
 
 describe('PageDesignOptionsSidebar', () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
 	it('has a sidebar panel title', () => {
 		renderComponent();
 
@@ -112,6 +122,57 @@ describe('PageDesignOptionsSidebar', () => {
 		expect(changeMasterLayout).toHaveBeenCalledWith(
 			expect.objectContaining({masterLayoutPageTemplateEntryERC: '15'})
 		);
+	});
+
+	it('selects a master layout from a connected design library', async () => {
+		renderComponent({masterLayoutPageTemplateEntryERC: '15'});
+
+		const siteMasterLayoutCard = screen.getByLabelText(
+			'Pablo Master Layout'
+		);
+
+		expect(siteMasterLayoutCard).not.toHaveAttribute('aria-describedby');
+		expect(
+			siteMasterLayoutCard.querySelector(
+				'.page-editor__sidebar__design-options__design-library-master-layout-icon'
+			)
+		).not.toBeInTheDocument();
+
+		const designLibraryMasterLayoutCard = screen.getByLabelText(
+			'Library Master Layout'
+		);
+
+		expect(
+			document.getElementById(
+				designLibraryMasterLayoutCard.getAttribute('aria-describedby')
+			)
+		).toHaveAttribute(
+			'aria-label',
+			'Library Master Layout-from-Gerardo Library-design-library'
+		);
+		expect(designLibraryMasterLayoutCard).toHaveTextContent(
+			'Gerardo Library'
+		);
+		expect(
+			designLibraryMasterLayoutCard.querySelector(
+				'.page-editor__sidebar__design-options__design-library-master-layout-icon'
+			)
+		).toBeInTheDocument();
+
+		await act(async () => {
+			await userEvent.click(siteMasterLayoutCard);
+		});
+
+		expect(changeMasterLayout).not.toHaveBeenCalled();
+
+		await act(async () => {
+			await userEvent.click(designLibraryMasterLayoutCard);
+		});
+
+		expect(changeMasterLayout).toHaveBeenCalledWith({
+			masterLayoutPageTemplateEntryERC: '15',
+			masterLayoutPageTemplateEntryScopeERC: 'gerardo-library-erc',
+		});
 	});
 
 	it('calls changeStyleBookEntry when a style is selected', async () => {

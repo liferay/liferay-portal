@@ -67,7 +67,7 @@ public class LayoutCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(95);
+		StringBundler sb = new StringBundler(97);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -143,6 +143,8 @@ public class LayoutCacheModel
 		sb.append(faviconFileEntryScopeERC);
 		sb.append(", masterLayoutPageTemplateEntryERC=");
 		sb.append(masterLayoutPageTemplateEntryERC);
+		sb.append(", masterLayoutPageTemplateEntryScopeERC=");
+		sb.append(masterLayoutPageTemplateEntryScopeERC);
 		sb.append(", portletLayoutPageTemplateEntryERC=");
 		sb.append(portletLayoutPageTemplateEntryERC);
 		sb.append(", portletLayoutPageTemplateEntryScopeERC=");
@@ -342,6 +344,14 @@ public class LayoutCacheModel
 				masterLayoutPageTemplateEntryERC);
 		}
 
+		if (masterLayoutPageTemplateEntryScopeERC == null) {
+			layoutImpl.setMasterLayoutPageTemplateEntryScopeERC("");
+		}
+		else {
+			layoutImpl.setMasterLayoutPageTemplateEntryScopeERC(
+				masterLayoutPageTemplateEntryScopeERC);
+		}
+
 		if (portletLayoutPageTemplateEntryERC == null) {
 			layoutImpl.setPortletLayoutPageTemplateEntryERC("");
 		}
@@ -461,6 +471,7 @@ public class LayoutCacheModel
 		faviconFileEntryERC = objectInput.readUTF();
 		faviconFileEntryScopeERC = objectInput.readUTF();
 		masterLayoutPageTemplateEntryERC = objectInput.readUTF();
+		masterLayoutPageTemplateEntryScopeERC = objectInput.readUTF();
 		portletLayoutPageTemplateEntryERC = objectInput.readUTF();
 		portletLayoutPageTemplateEntryScopeERC = objectInput.readUTF();
 
@@ -646,6 +657,13 @@ public class LayoutCacheModel
 			objectOutput.writeUTF(masterLayoutPageTemplateEntryERC);
 		}
 
+		if (masterLayoutPageTemplateEntryScopeERC == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(masterLayoutPageTemplateEntryScopeERC);
+		}
+
 		if (portletLayoutPageTemplateEntryERC == null) {
 			objectOutput.writeUTF("");
 		}
@@ -723,6 +741,7 @@ public class LayoutCacheModel
 	public String faviconFileEntryERC;
 	public String faviconFileEntryScopeERC;
 	public String masterLayoutPageTemplateEntryERC;
+	public String masterLayoutPageTemplateEntryScopeERC;
 	public String portletLayoutPageTemplateEntryERC;
 	public String portletLayoutPageTemplateEntryScopeERC;
 	public boolean portletLayoutPageTemplateEntryLinkEnabled;
@@ -735,4 +754,4 @@ public class LayoutCacheModel
 	public long statusDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1701508329
+// LIFERAY-SERVICE-BUILDER-HASH:-1058876911

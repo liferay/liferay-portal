@@ -7,7 +7,7 @@ import {openModal} from 'frontend-js-components-web';
 import {loadModule} from 'frontend-js-web';
 import React from 'react';
 
-import {DesignLibraryResourceCreationItem} from './types';
+import {DesignLibraryResourceModalCreationItem} from './types';
 
 type CreationModalComponent = React.ComponentType<
 	Record<string, unknown> & {closeModal: () => void}
@@ -16,7 +16,7 @@ type CreationModalComponent = React.ComponentType<
 export default async function openCreationModal({
 	module,
 	moduleProps,
-}: DesignLibraryResourceCreationItem) {
+}: DesignLibraryResourceModalCreationItem) {
 	let Component: CreationModalComponent;
 
 	try {

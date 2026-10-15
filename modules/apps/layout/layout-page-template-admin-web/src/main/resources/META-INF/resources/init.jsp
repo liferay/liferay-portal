@@ -40,6 +40,7 @@ page import="com.liferay.layout.page.template.admin.web.internal.display.context
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.MasterLayoutDisplayContext" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.MasterLayoutManagementToolbarDisplayContext" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.display.context.SelectDisplayPageMasterLayoutDisplayContext" %><%@
+page import="com.liferay.layout.page.template.admin.web.internal.display.context.SelectLayoutPageTemplateEntryMasterLayoutDisplayContext" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.DisplayPageTemplateCollectionHorizontalCard" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.DisplayPageVerticalCard" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.LayoutPageTemplateEntryVerticalCard" %><%@
@@ -97,6 +98,7 @@ page import="java.text.Format" %>
 <%@ page import="java.util.ArrayList" %><%@
 page import="java.util.Collections" %><%@
 page import="java.util.List" %><%@
+page import="java.util.Map" %><%@
 page import="java.util.Objects" %>
 
 <liferay-frontend:defineObjects />

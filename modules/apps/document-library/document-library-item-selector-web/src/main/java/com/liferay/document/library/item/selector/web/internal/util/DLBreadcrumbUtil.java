@@ -6,6 +6,7 @@
 package com.liferay.document.library.item.selector.web.internal.util;
 
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.item.selector.taglib.GroupSelectorBreadcrumbUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -13,11 +14,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortletURLUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.RepositoryServiceUtil;
+import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -42,7 +42,7 @@ public class DLBreadcrumbUtil {
 		throws Exception {
 
 		if (showGroupSelector) {
-			_addGroupSelectorBreadcrumbEntry(
+			_addGroupSelectorBreadcrumbEntries(
 				httpServletRequest, liferayPortletResponse, portletURL);
 		}
 
@@ -75,22 +75,25 @@ public class DLBreadcrumbUtil {
 		}
 	}
 
-	private static void _addGroupSelectorBreadcrumbEntry(
+	private static void _addGroupSelectorBreadcrumbEntries(
 			HttpServletRequest httpServletRequest,
 			LiferayPortletResponse liferayPortletResponse,
 			PortletURL portletURL)
 		throws Exception {
 
-		PortalUtil.addPortletBreadcrumbEntry(
-			httpServletRequest,
-			LanguageUtil.get(httpServletRequest, "sites-and-libraries"),
-			PortletURLBuilder.create(
-				PortletURLUtil.clone(portletURL, liferayPortletResponse)
-			).setParameter(
-				"groupType", "site"
-			).setParameter(
-				"showGroupSelector", true
-			).buildString());
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		for (BreadcrumbEntry breadcrumbEntry :
+				GroupSelectorBreadcrumbUtil.getBreadcrumbEntries(
+					themeDisplay.getScopeGroup(), httpServletRequest,
+					liferayPortletResponse, portletURL)) {
+
+			PortalUtil.addPortletBreadcrumbEntry(
+				httpServletRequest, breadcrumbEntry.getTitle(),
+				breadcrumbEntry.getURL());
+		}
 	}
 
 	private static void _addPortletBreadcrumbEntry(

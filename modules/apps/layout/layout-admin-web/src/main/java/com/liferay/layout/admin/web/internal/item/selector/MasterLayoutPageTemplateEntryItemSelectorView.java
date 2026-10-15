@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.language.Language;
 
 import jakarta.portlet.PortletURL;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -60,6 +62,12 @@ public class MasterLayoutPageTemplateEntryItemSelectorView
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
+		RequestDispatcher requestDispatcher =
+			_servletContext.getRequestDispatcher(
+				"/master_layout_page_template_entry_item_selector.jsp");
+
+		requestDispatcher.include(servletRequest, servletResponse);
+
 		_itemSelectorViewDescriptorRenderer.renderHTML(
 			servletRequest, servletResponse, masterLayoutItemSelectorCriterion,
 			portletURL, itemSelectedEventName, search,
@@ -78,5 +86,8 @@ public class MasterLayoutPageTemplateEntryItemSelectorView
 
 	@Reference
 	private Language _language;
+
+	@Reference(target = "(osgi.web.symbolicname=com.liferay.layout.admin.web)")
+	private ServletContext _servletContext;
 
 }

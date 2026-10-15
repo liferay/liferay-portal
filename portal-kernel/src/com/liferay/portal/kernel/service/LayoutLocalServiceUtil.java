@@ -1382,6 +1382,15 @@ public class LayoutLocalServiceUtil {
 			groupId, masterLayoutPageTemplateEntryERC);
 	}
 
+	public static int getMasterLayoutsCount(
+		long companyId, String masterLayoutPageTemplateEntryERC,
+		String masterLayoutPageTemplateEntryScopeERC) {
+
+		return getService().getMasterLayoutsCount(
+			companyId, masterLayoutPageTemplateEntryERC,
+			masterLayoutPageTemplateEntryScopeERC);
+	}
+
 	/**
 	 * Returns the layout ID to use for the next layout.
 	 *
@@ -1828,6 +1837,17 @@ public class LayoutLocalServiceUtil {
 			groupId, privateLayout, layoutId, themeId, colorSchemeId, css);
 	}
 
+	public static Layout updateMasterLayoutPageTemplateEntry(
+			long groupId, boolean privateLayout, long layoutId,
+			String masterLayoutPageTemplateEntryERC,
+			String masterLayoutPageTemplateEntryScopeERC)
+		throws PortalException {
+
+		return getService().updateMasterLayoutPageTemplateEntry(
+			groupId, privateLayout, layoutId, masterLayoutPageTemplateEntryERC,
+			masterLayoutPageTemplateEntryScopeERC);
+	}
+
 	/**
 	 * Updates the layout replacing its master layout page template entry
 	 * external reference code
@@ -2109,4 +2129,4 @@ public class LayoutLocalServiceUtil {
 	private static volatile LayoutLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-374945548
+// LIFERAY-SERVICE-BUILDER-HASH:-1204491496

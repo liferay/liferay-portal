@@ -6,13 +6,17 @@
 import {getSpritemap} from '@liferay/frontend-icons-web';
 import {openSimpleInputModal} from 'frontend-js-components-web';
 
+import openAddLayoutPageTemplateEntryDesignLibraryModal from '../commands/openAddLayoutPageTemplateEntryDesignLibraryModal';
+
 export default function SelectLayoutPageTemplateEntryMasterLayoutVerticalCardPropsTransformer({
 	additionalProps: {
-		addLayoutPageTemplateEntryUrl,
+		addLayoutPageTemplateEntryURL,
+		addPageTemplateSetURL,
 		dialogTitle,
 		mainFieldLabel,
 		mainFieldName,
 		mainFieldPlaceholder,
+		pageTemplateSets,
 	},
 	portletNamespace: namespace,
 	...otherProps
@@ -22,9 +26,20 @@ export default function SelectLayoutPageTemplateEntryMasterLayoutVerticalCardPro
 		onClick: (event) => {
 			event.preventDefault();
 
+			if (pageTemplateSets) {
+				openAddLayoutPageTemplateEntryDesignLibraryModal({
+					addLayoutPageTemplateEntryURL,
+					addPageTemplateSetURL,
+					namespace,
+					pageTemplateSets,
+				});
+
+				return;
+			}
+
 			openSimpleInputModal({
 				dialogTitle,
-				formSubmitURL: addLayoutPageTemplateEntryUrl,
+				formSubmitURL: addLayoutPageTemplateEntryURL,
 				mainFieldLabel,
 				mainFieldName,
 				mainFieldPlaceholder,

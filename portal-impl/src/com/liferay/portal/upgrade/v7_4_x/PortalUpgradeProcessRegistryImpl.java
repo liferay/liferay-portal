@@ -857,6 +857,11 @@ public class PortalUpgradeProcessRegistryImpl
 
 		upgradeVersionTreeMap.put(
 			new Version(39, 2, 0), new AssetTagGroupRelUpgradeProcess());
+
+		upgradeVersionTreeMap.put(
+			new Version(39, 3, 0),
+			UpgradeProcessFactory.addColumns(
+				"Layout", "masterLPTESERC VARCHAR(75) null"));
 	}
 
 }

@@ -6,6 +6,7 @@
 package com.liferay.layout.admin.web.internal.frontend.taglib.clay.servlet.taglib;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
+import com.liferay.layout.admin.web.internal.util.MasterLayoutUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -14,6 +15,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.RenderRequest;
@@ -37,14 +39,26 @@ public class SelectLayoutMasterLayoutVerticalCard implements VerticalCard {
 		_renderResponse = renderResponse;
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
+
 		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		_designLibraryMasterLayout = Validator.isNotNull(
+			MasterLayoutUtil.getMasterLayoutPageTemplateEntryScopeERC(
+				_themeDisplay.getScopeGroupId(), layoutPageTemplateEntry));
 	}
 
 	@Override
 	public String getCssClass() {
-		return "add-layout-action-option card-interactive " +
-			"card-interactive-primary";
+		String cssClass =
+			"add-layout-action-option card-interactive " +
+				"card-interactive-primary";
+
+		if (_designLibraryMasterLayout) {
+			cssClass += " design-library-master-layout";
+		}
+
+		return cssClass;
 	}
 
 	@Override
@@ -96,6 +110,26 @@ public class SelectLayoutMasterLayoutVerticalCard implements VerticalCard {
 	}
 
 	@Override
+	public String getStickerIcon() {
+		if (_designLibraryMasterLayout) {
+			return "books-brush";
+		}
+
+		return null;
+	}
+
+	@Override
+	public String getStickerTitle() {
+		if (_designLibraryMasterLayout) {
+			return MasterLayoutUtil.getMasterLayoutName(
+				_themeDisplay.getScopeGroupId(), _layoutPageTemplateEntry,
+				_themeDisplay.getLocale());
+		}
+
+		return null;
+	}
+
+	@Override
 	public String getTitle() {
 		return _layoutPageTemplateEntry.getName();
 	}
@@ -108,6 +142,7 @@ public class SelectLayoutMasterLayoutVerticalCard implements VerticalCard {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SelectLayoutMasterLayoutVerticalCard.class);
 
+	private final boolean _designLibraryMasterLayout;
 	private final HttpServletRequest _httpServletRequest;
 	private final LayoutPageTemplateEntry _layoutPageTemplateEntry;
 	private final RenderResponse _renderResponse;

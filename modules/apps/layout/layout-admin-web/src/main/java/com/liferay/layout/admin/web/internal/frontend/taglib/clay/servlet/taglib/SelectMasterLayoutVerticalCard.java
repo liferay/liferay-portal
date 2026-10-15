@@ -6,10 +6,12 @@
 package com.liferay.layout.admin.web.internal.frontend.taglib.clay.servlet.taglib;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
+import com.liferay.layout.admin.web.internal.util.MasterLayoutUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.RenderRequest;
@@ -23,11 +25,14 @@ import java.util.Objects;
 public class SelectMasterLayoutVerticalCard implements VerticalCard {
 
 	public SelectMasterLayoutVerticalCard(
+		boolean defaultTemplate,
 		LayoutPageTemplateEntry layoutPageTemplateEntry,
-		RenderRequest renderRequest) {
+		RenderRequest renderRequest, long scopeGroupId) {
 
+		_defaultTemplate = defaultTemplate;
 		_layoutPageTemplateEntry = layoutPageTemplateEntry;
 		_renderRequest = renderRequest;
+		_scopeGroupId = scopeGroupId;
 
 		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -46,6 +51,13 @@ public class SelectMasterLayoutVerticalCard implements VerticalCard {
 				_layoutPageTemplateEntry.getPlid(), masterLayoutPlid)) {
 
 			cssClass += " active";
+		}
+
+		if (Validator.isNotNull(
+				MasterLayoutUtil.getMasterLayoutPageTemplateEntryScopeERC(
+					_scopeGroupId, _layoutPageTemplateEntry))) {
+
+			cssClass += " design-library-master-layout";
 		}
 
 		return cssClass;
@@ -77,7 +89,7 @@ public class SelectMasterLayoutVerticalCard implements VerticalCard {
 
 	@Override
 	public String getStickerIcon() {
-		if (_layoutPageTemplateEntry.isDefaultTemplate()) {
+		if (_defaultTemplate) {
 			return "check-circle";
 		}
 
@@ -94,8 +106,10 @@ public class SelectMasterLayoutVerticalCard implements VerticalCard {
 		return false;
 	}
 
+	private final boolean _defaultTemplate;
 	private final LayoutPageTemplateEntry _layoutPageTemplateEntry;
 	private final RenderRequest _renderRequest;
+	private final long _scopeGroupId;
 	private final ThemeDisplay _themeDisplay;
 
 }

@@ -8,6 +8,7 @@ package com.liferay.item.selector.taglib.servlet.taglib;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -85,8 +86,10 @@ public class GroupSelectorTagTest {
 	}
 
 	@Test
+	@TestInfo("LPD-81022")
 	public void testSetAttributes() throws PortalException {
-		_testSetAttributes(Arrays.asList(_companyGroup), 1, _companyGroup);
+		_testSetAttributes(
+			Arrays.asList(_companyGroup), 1, _companyGroup, false);
 
 		Group group = _getGroup();
 
@@ -96,7 +99,9 @@ public class GroupSelectorTagTest {
 			group
 		);
 
-		_testSetAttributes(Arrays.asList(group, _companyGroup), 2, group);
+		_testSetAttributes(Arrays.asList(group), 1, group, true);
+		_testSetAttributes(
+			Arrays.asList(group, _companyGroup), 2, group, false);
 	}
 
 	private Group _getGroup() {
@@ -124,12 +129,13 @@ public class GroupSelectorTagTest {
 	}
 
 	private void _testSetAttributes(
-		List<Group> expectedGroups, long expectedGroupsCount, Group group) {
+		List<Group> expectedGroups, long expectedGroupsCount, Group group,
+		boolean scopeGroupOnly) {
 
 		GroupSelectorTag groupSelectorTag = new GroupSelectorTag();
 
-		HttpServletRequest httpServletRequest =
-			new TestMockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new TestMockHttpServletRequest(
+			scopeGroupOnly);
 
 		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
 
@@ -177,10 +183,18 @@ public class GroupSelectorTagTest {
 	private static class TestMockHttpServletRequest
 		extends MockHttpServletRequest {
 
+		public TestMockHttpServletRequest(boolean scopeGroupOnly) {
+			_scopeGroupOnly = scopeGroupOnly;
+		}
+
 		@Override
 		public String getParameter(String name) {
 			if (Objects.equals(name, "groupType")) {
 				return "site";
+			}
+
+			if (Objects.equals(name, "scopeGroupOnly")) {
+				return String.valueOf(_scopeGroupOnly);
 			}
 
 			if (Objects.equals(name, "scopeGroupType")) {
@@ -189,6 +203,8 @@ public class GroupSelectorTagTest {
 
 			return super.getParameter(name);
 		}
+
+		private final boolean _scopeGroupOnly;
 
 	}
 

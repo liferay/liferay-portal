@@ -24,8 +24,11 @@ import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import java.util.List;
 
@@ -111,6 +114,17 @@ public class LayoutStructureUtil {
 
 		return LayoutStructure.of(
 			layoutPageTemplateStructure.getData(segmentsExperienceKey));
+	}
+
+	public static LayoutStructure getMasterLayoutStructure(Layout layout)
+		throws PortalException {
+
+		Layout masterLayout = LayoutLocalServiceUtil.getLayout(
+			layout.getMasterLayoutPlid());
+
+		return getLayoutStructure(
+			masterLayout.getGroupId(), masterLayout.getPlid(),
+			SegmentsExperienceConstants.KEY_DEFAULT);
 	}
 
 	public static boolean hasMissingFragmentEntryFragmentEntryLinks(

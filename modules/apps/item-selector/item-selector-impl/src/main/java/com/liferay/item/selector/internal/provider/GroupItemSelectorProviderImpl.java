@@ -113,7 +113,12 @@ public class GroupItemSelectorProviderImpl
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "site");
+		return _language.get(locale, "sites");
+	}
+
+	@Override
+	public boolean isGroupType(Group group) {
+		return !group.isDepot();
 	}
 
 	private long[] _getClassNameIds() {

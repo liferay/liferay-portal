@@ -7,13 +7,15 @@ import {LayoutData} from '../../types/layout_data/LayoutData';
 import changeMasterLayout from '../actions/changeMasterLayout';
 import {CHANGE_MASTER_LAYOUT} from '../actions/types';
 
-type State =
+type State = (
 	| {masterLayoutData: null; masterLayoutPageTemplateEntryERC: ''}
-	| {masterLayoutData: LayoutData; masterLayoutPageTemplateEntryERC: string};
+	| {masterLayoutData: LayoutData; masterLayoutPageTemplateEntryERC: string}
+) & {masterLayoutPageTemplateEntryScopeERC: string};
 
 export const INITIAL_STATE: State = {
 	masterLayoutData: null,
 	masterLayoutPageTemplateEntryERC: '',
+	masterLayoutPageTemplateEntryScopeERC: '',
 };
 
 export default function languageReducer(
@@ -26,6 +28,8 @@ export default function languageReducer(
 				masterLayoutData: action.masterLayoutData,
 				masterLayoutPageTemplateEntryERC:
 					action.masterLayoutPageTemplateEntryERC,
+				masterLayoutPageTemplateEntryScopeERC:
+					action.masterLayoutPageTemplateEntryScopeERC,
 			};
 		}
 

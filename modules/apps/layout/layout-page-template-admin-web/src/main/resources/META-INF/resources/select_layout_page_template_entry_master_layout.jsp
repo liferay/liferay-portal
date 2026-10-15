@@ -26,6 +26,10 @@ portletDisplay.setURLBack(redirect);
 portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
 renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
+
+SelectLayoutPageTemplateEntryMasterLayoutDisplayContext selectLayoutPageTemplateEntryMasterLayoutDisplayContext = new SelectLayoutPageTemplateEntryMasterLayoutDisplayContext(request, renderResponse);
+
+Map<String, Object> pageTemplateSetsProps = selectLayoutPageTemplateEntryMasterLayoutDisplayContext.getPageTemplateSetsProps();
 %>
 
 <clay:container-fluid
@@ -47,7 +51,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 					<clay:vertical-card
 						additionalProps='<%=
 							HashMapBuilder.<String, Object>put(
-								"addLayoutPageTemplateEntryUrl", selectLayoutPageTemplateEntryMasterLayoutVerticalCard.getAddLayoutPageTemplateEntryURL()
+								"addLayoutPageTemplateEntryURL", selectLayoutPageTemplateEntryMasterLayoutVerticalCard.getAddLayoutPageTemplateEntryURL()
 							).put(
 								"dialogTitle", LanguageUtil.get(request, "add-page-template")
 							).put(
@@ -56,6 +60,8 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 								"mainFieldName", "name"
 							).put(
 								"mainFieldPlaceholder", LanguageUtil.get(request, "name")
+							).putAll(
+								pageTemplateSetsProps
 							).build()
 						%>'
 						propsTransformer="{SelectLayoutPageTemplateEntryMasterLayoutVerticalCardPropsTransformer} from layout-page-template-admin-web"

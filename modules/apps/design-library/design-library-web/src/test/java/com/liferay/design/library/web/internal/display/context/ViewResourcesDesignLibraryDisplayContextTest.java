@@ -256,7 +256,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 	}
 
 	@Test
-	@TestInfo("LPD-108834")
+	@TestInfo({"LPD-108834", "LPD-109440"})
 	public void testGetFDSAdditionalPropsAddsCreationItemsWithAddPermission()
 		throws Exception {
 
@@ -272,12 +272,25 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		List<Map<String, Object>> creationItems =
 			(List<Map<String, Object>>)resourceType.get("creationItems");
 
-		Assert.assertEquals(creationItems.toString(), 1, creationItems.size());
+		Assert.assertEquals(creationItems.toString(), 2, creationItems.size());
 
-		Map<String, Object> creationItem = creationItems.get(0);
+		Map<String, Object> creationItem1 = creationItems.get(0);
 
-		Assert.assertEquals("style-book-add", creationItem.get("id"));
-		Assert.assertEquals("style-book-add-label", creationItem.get("label"));
+		Assert.assertFalse(creationItem1.containsKey("href"));
+		Assert.assertEquals("style-book-add", creationItem1.get("id"));
+		Assert.assertEquals("style-book-add-label", creationItem1.get("label"));
+		Assert.assertEquals(
+			Collections.singletonMap("backURL", "backURL"),
+			creationItem1.get("moduleProps"));
+
+		Map<String, Object> creationItem2 = creationItems.get(1);
+
+		Assert.assertEquals("/style-book", creationItem2.get("href"));
+		Assert.assertEquals("style-book-select", creationItem2.get("id"));
+		Assert.assertEquals(
+			"style-book-select-label", creationItem2.get("label"));
+		Assert.assertFalse(creationItem2.containsKey("module"));
+		Assert.assertFalse(creationItem2.containsKey("moduleProps"));
 
 		Assert.assertEquals(
 			"style-book-creation-items-group-label",
@@ -474,11 +487,13 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			designLibraryResourceTypeContributor.getCreationItems(
 				Mockito.any(), Mockito.any(), Mockito.any())
 		).thenReturn(
-			Collections.singletonList(
+			Arrays.asList(
 				new DesignLibraryResourceCreationItem(
 					key + "-add", key + "-add-label",
 					"{Modal} from " + key + "-web",
-					Collections.singletonMap("backURL", "backURL")))
+					Collections.singletonMap("backURL", "backURL")),
+				new DesignLibraryResourceCreationItem(
+					"/" + key, key + "-select", key + "-select-label"))
 		);
 
 		Mockito.when(

@@ -12,12 +12,14 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -44,6 +46,34 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		Group group = _themeDisplay.getRefererGroup();
+
+		if (group == null) {
+			group = _themeDisplay.getScopeGroup();
+		}
+
+		if (group.isLayoutPrototype()) {
+			_designLibraryGroupIds = new long[0];
+
+			LayoutPageTemplateEntry layoutPrototypeLayoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					fetchFirstLayoutPageTemplateEntry(group.getClassPK());
+
+			_scopeGroupId = layoutPrototypeLayoutPageTemplateEntry.getGroupId();
+		}
+		else {
+			_designLibraryGroupIds =
+				LayoutPageTemplateEntryUtil.
+					fetchMasterLayoutDesignLibraryGroupIds(
+						group.getCompanyId(), group.getGroupId());
+			_scopeGroupId = group.getGroupId();
+		}
+
+		_defaultLayoutPageTemplateEntry =
+			LayoutPageTemplateEntryUtil.
+				fetchDefaultMasterLayoutPageTemplateEntry(
+					_designLibraryGroupIds, group.getGroupId());
 	}
 
 	@Override
@@ -57,11 +87,17 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 	}
 
 	@Override
+	public String[] getGroupTypes() {
+		return new String[] {"design-library", "site"};
+	}
+
+	@Override
 	public ItemDescriptor getItemDescriptor(
 		LayoutPageTemplateEntry layoutPageTemplateEntry) {
 
 		return new MasterLayoutPageTemplateEntryItemDescriptor(
-			layoutPageTemplateEntry);
+			_isDefaultTemplate(layoutPageTemplateEntry),
+			layoutPageTemplateEntry, _scopeGroupId);
 	}
 
 	@Override
@@ -85,6 +121,25 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 						JavaConstants.JAKARTA_PORTLET_REQUEST),
 					_portletURL, null, "there-are-no-master-pages");
 
+		long scopeGroupId = _themeDisplay.getScopeGroupId();
+
+		if (ArrayUtil.contains(_designLibraryGroupIds, scopeGroupId)) {
+			masterLayoutPageTemplateEntrySearchContainer.setResultsAndTotal(
+				LayoutPageTemplateEntryServiceUtil.getLayoutPageTemplateEntries(
+					scopeGroupId,
+					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null));
+
+			return masterLayoutPageTemplateEntrySearchContainer;
+		}
+
+		long refererGroupId = _themeDisplay.getRefererGroupId();
+
+		if ((refererGroupId > 0) && (refererGroupId != scopeGroupId)) {
+			return masterLayoutPageTemplateEntrySearchContainer;
+		}
+
 		List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries =
 			new ArrayList<>();
 
@@ -95,14 +150,7 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 		layoutPageTemplateEntry.setName(
 			LanguageUtil.get(_httpServletRequest, "blank"));
 
-		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
-			LayoutPageTemplateEntryServiceUtil.
-				fetchDefaultLayoutPageTemplateEntry(
-					_themeDisplay.getScopeGroupId(),
-					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-					WorkflowConstants.STATUS_APPROVED);
-
-		if (defaultLayoutPageTemplateEntry == null) {
+		if (_defaultLayoutPageTemplateEntry == null) {
 			layoutPageTemplateEntry.setDefaultTemplate(true);
 		}
 
@@ -110,21 +158,9 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 
 		masterLayoutPageTemplateEntries.add(layoutPageTemplateEntry);
 
-		Group scopeGroup = _themeDisplay.getScopeGroup();
-
-		long scopeGroupId = _themeDisplay.getScopeGroupId();
-
-		if (scopeGroup.isLayoutPrototype()) {
-			LayoutPageTemplateEntry layoutPrototypeLayoutPageTemplateEntry =
-				LayoutPageTemplateEntryLocalServiceUtil.
-					fetchFirstLayoutPageTemplateEntry(scopeGroup.getClassPK());
-
-			scopeGroupId = layoutPrototypeLayoutPageTemplateEntry.getGroupId();
-		}
-
 		masterLayoutPageTemplateEntries.addAll(
 			LayoutPageTemplateEntryServiceUtil.getLayoutPageTemplateEntries(
-				scopeGroupId,
+				_scopeGroupId,
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null));
@@ -136,8 +172,13 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 	}
 
 	@Override
+	public boolean isScopeGroupOnly() {
+		return true;
+	}
+
+	@Override
 	public boolean isShowBreadcrumb() {
-		return false;
+		return ArrayUtil.isNotEmpty(_designLibraryGroupIds);
 	}
 
 	@Override
@@ -145,8 +186,30 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 		return false;
 	}
 
+	private boolean _isDefaultTemplate(
+		LayoutPageTemplateEntry layoutPageTemplateEntry) {
+
+		if ((layoutPageTemplateEntry.getGroupId() == 0) ||
+			(layoutPageTemplateEntry.getGroupId() == _scopeGroupId)) {
+
+			return layoutPageTemplateEntry.isDefaultTemplate();
+		}
+
+		if ((_defaultLayoutPageTemplateEntry != null) &&
+			(_defaultLayoutPageTemplateEntry.getLayoutPageTemplateEntryId() ==
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private final LayoutPageTemplateEntry _defaultLayoutPageTemplateEntry;
+	private final long[] _designLibraryGroupIds;
 	private final HttpServletRequest _httpServletRequest;
 	private final PortletURL _portletURL;
+	private final long _scopeGroupId;
 	private final ThemeDisplay _themeDisplay;
 
 }

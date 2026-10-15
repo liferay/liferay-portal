@@ -18,8 +18,6 @@ import com.liferay.layout.content.page.editor.web.internal.constants.ContentPage
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentCollectionManager;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
-import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
@@ -46,7 +44,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -351,26 +348,13 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 
 		Layout layout = themeDisplay.getLayout();
 
-		if (Validator.isNull(layout.getMasterLayoutPageTemplateEntryERC())) {
-			return null;
-		}
-
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					layout.getMasterLayoutPageTemplateEntryERC(),
-					layout.getGroupId());
-
-		if (masterLayoutPageTemplateEntry == null) {
+		if (layout.getMasterLayoutPlid() <= 0) {
 			return null;
 		}
 
 		try {
 			LayoutStructure masterLayoutStructure =
-				LayoutStructureUtil.getLayoutStructure(
-					masterLayoutPageTemplateEntry.getGroupId(),
-					masterLayoutPageTemplateEntry.getPlid(),
-					SegmentsExperienceConstants.KEY_DEFAULT);
+				LayoutStructureUtil.getMasterLayoutStructure(layout);
 
 			return (DropZoneLayoutStructureItem)
 				masterLayoutStructure.getDropZoneLayoutStructureItem();
@@ -490,10 +474,6 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 	private Language _language;
 
 	private Map<String, Map<String, Object>> _layoutElementMaps;
-
-	@Reference
-	private LayoutPageTemplateEntryLocalService
-		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private Portal _portal;

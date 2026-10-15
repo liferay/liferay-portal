@@ -44,6 +44,10 @@ public interface ItemSelectorViewDescriptor<T> {
 		return null;
 	}
 
+	public default String[] getGroupTypes() {
+		return null;
+	}
+
 	public ItemDescriptor getItemDescriptor(T t);
 
 	public ItemSelectorReturnType getItemSelectorReturnType();
@@ -67,6 +71,10 @@ public interface ItemSelectorViewDescriptor<T> {
 	}
 
 	public default boolean isMultipleSelection() {
+		return false;
+	}
+
+	public default boolean isScopeGroupOnly() {
 		return false;
 	}
 

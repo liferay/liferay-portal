@@ -32,7 +32,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 		<ul class="card-page card-page-equal-height">
 
 			<%
-			for (LayoutPageTemplateEntry masterLayoutPageTemplateEntry : selectLayoutPageTemplateEntryDisplayContext.getMasterLayoutPageTemplateEntries()) {
+			for (LayoutPageTemplateEntry masterLayoutPageTemplateEntry : ListUtil.concat(selectLayoutPageTemplateEntryDisplayContext.getMasterLayoutPageTemplateEntries(), selectLayoutPageTemplateEntryDisplayContext.getDesignLibraryMasterLayoutPageTemplateEntries())) {
 			%>
 
 				<li class="card-page-item card-page-item-asset">

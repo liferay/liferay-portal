@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
@@ -227,6 +228,10 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 			String masterLayoutPageTemplateEntryERC = ParamUtil.getString(
 				uploadPortletRequest, "masterLayoutPageTemplateEntryERC",
 				layout.getMasterLayoutPageTemplateEntryERC());
+			String masterLayoutPageTemplateEntryScopeERC = ParamUtil.getString(
+				uploadPortletRequest, "masterLayoutPageTemplateEntryScopeERC",
+				GetterUtil.getString(
+					layout.getMasterLayoutPageTemplateEntryScopeERC()));
 
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				Layout.class.getName(), actionRequest);
@@ -264,6 +269,18 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 				styleBookEntryScopeERC, faviconFileEntryERC,
 				faviconFileEntryScopeERC, masterLayoutPageTemplateEntryERC,
 				serviceContext);
+
+			if (!StringUtil.equals(
+					masterLayoutPageTemplateEntryScopeERC,
+					GetterUtil.getString(
+						layout.getMasterLayoutPageTemplateEntryScopeERC()))) {
+
+				layout =
+					_layoutLocalService.updateMasterLayoutPageTemplateEntry(
+						groupId, layout.isPrivateLayout(), layout.getLayoutId(),
+						masterLayoutPageTemplateEntryERC,
+						masterLayoutPageTemplateEntryScopeERC);
+			}
 
 			_updateClientExtensionEntryRels(
 				actionRequest, layout, themeDisplay.getUserId());

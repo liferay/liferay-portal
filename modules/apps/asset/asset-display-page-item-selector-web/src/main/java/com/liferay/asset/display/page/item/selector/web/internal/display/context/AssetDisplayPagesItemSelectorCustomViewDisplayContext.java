@@ -7,6 +7,7 @@ package com.liferay.asset.display.page.item.selector.web.internal.display.contex
 
 import com.liferay.asset.display.page.item.selector.AssetDisplayPageItemSelectorCriterion;
 import com.liferay.item.selector.criteria.AssetEntryItemSelectorReturnType;
+import com.liferay.item.selector.taglib.GroupSelectorBreadcrumbUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
@@ -120,22 +121,13 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 				fetchLayoutPageTemplateCollection(
 					getLayoutPageTemplateCollectionId());
 
-		return BreadcrumbEntryListBuilder.add(
+		return BreadcrumbEntryListBuilder.addAll(
 			() -> FeatureFlagManagerUtil.isEnabled(
 				_themeDisplay.getCompanyId(), "LPD-57283"),
-			breadcrumbEntry -> {
-				breadcrumbEntry.setTitle(
-					LanguageUtil.get(
-						_httpServletRequest, "sites-and-libraries"));
-				breadcrumbEntry.setURL(
-					PortletURLBuilder.create(
-						_clonePortletURL()
-					).setParameter(
-						"groupType", "site"
-					).setParameter(
-						"showGroupSelector", true
-					).buildString());
-			}
+			() -> GroupSelectorBreadcrumbUtil.getBreadcrumbEntries(
+				_themeDisplay.getScopeGroup(), _httpServletRequest,
+				PortalUtil.getLiferayPortletResponse(_portletResponse),
+				_portletURL)
 		).add(
 			breadcrumbEntry -> {
 				breadcrumbEntry.setTitle(

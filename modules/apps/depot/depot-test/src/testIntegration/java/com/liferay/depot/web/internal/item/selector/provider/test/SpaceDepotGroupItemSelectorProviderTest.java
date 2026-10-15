@@ -42,6 +42,11 @@ public class SpaceDepotGroupItemSelectorProviderTest
 	}
 
 	@Override
+	protected String getIcon() {
+		return "box-container";
+	}
+
+	@Override
 	protected String getLabel() {
 		return "Spaces";
 	}

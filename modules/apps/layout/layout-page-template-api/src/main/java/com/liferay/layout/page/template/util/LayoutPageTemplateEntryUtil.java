@@ -5,14 +5,19 @@
 
 package com.liferay.layout.page.template.util;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistryUtil;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 /**
  * @author Mikel Lorza
@@ -48,6 +53,46 @@ public class LayoutPageTemplateEntryUtil {
 		}
 
 		return null;
+	}
+
+	public static LayoutPageTemplateEntry
+		fetchDefaultMasterLayoutPageTemplateEntry(
+			long[] designLibraryGroupIds, long groupId) {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryServiceUtil.
+				fetchDefaultLayoutPageTemplateEntry(
+					groupId, LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+					WorkflowConstants.STATUS_APPROVED);
+
+		if (layoutPageTemplateEntry != null) {
+			return layoutPageTemplateEntry;
+		}
+
+		for (long designLibraryGroupId : designLibraryGroupIds) {
+			layoutPageTemplateEntry =
+				LayoutPageTemplateEntryServiceUtil.
+					fetchDefaultLayoutPageTemplateEntry(
+						designLibraryGroupId,
+						LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+						WorkflowConstants.STATUS_APPROVED);
+
+			if (layoutPageTemplateEntry != null) {
+				return layoutPageTemplateEntry;
+			}
+		}
+
+		return null;
+	}
+
+	public static long[] fetchMasterLayoutDesignLibraryGroupIds(
+		long companyId, long groupId) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-81022")) {
+			return new long[0];
+		}
+
+		return DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(groupId);
 	}
 
 	public static long getClassTypeId(

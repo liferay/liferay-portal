@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {navigate} from 'frontend-js-web';
+
 import openCreationModal from './openCreationModal';
 import {DesignLibraryResourceType} from './types';
 
@@ -16,8 +18,18 @@ export default function getCreationMenuItems(
 			resourceType.creationItems?.map(
 				(designLibraryResourceCreationItem) => ({
 					label: designLibraryResourceCreationItem.label,
-					onClick: () =>
-						openCreationModal(designLibraryResourceCreationItem),
+					onClick: () => {
+						if (
+							designLibraryResourceCreationItem.href === undefined
+						) {
+							openCreationModal(
+								designLibraryResourceCreationItem
+							);
+						}
+						else {
+							navigate(designLibraryResourceCreationItem.href);
+						}
+					},
 				})
 			) ?? []
 	);

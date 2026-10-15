@@ -30,12 +30,15 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -218,6 +221,75 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			_FORM_VARIATION_KEY, subtypeJSONObject.getString("id"));
 		Assert.assertEquals(
 			_FORM_VARIATION_LABEL, subtypeJSONObject.getString("label"));
+	}
+
+	@Test
+	@TestInfo("LPD-109441")
+	public void testGetCreationItemsWhenFeatureFlagIsEnabled()
+		throws Exception {
+
+		Mockito.when(
+			_liferayPortletURL.toString()
+		).thenReturn(
+			"http://localhost/select_display_page_master_layout"
+		);
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-81022"))
+			).thenReturn(
+				true
+			);
+
+			List<DesignLibraryResourceCreationItem>
+				designLibraryResourceCreationItems =
+					_displayPageTemplateDesignLibraryResourceTypeContributor.
+						getCreationItems(
+							_httpServletRequest, _depotEntry, _BACK_URL);
+
+			Assert.assertEquals(
+				designLibraryResourceCreationItems.toString(), 1,
+				designLibraryResourceCreationItems.size());
+
+			DesignLibraryResourceCreationItem
+				designLibraryResourceCreationItem =
+					designLibraryResourceCreationItems.get(0);
+
+			Assert.assertEquals(
+				"http://localhost/select_display_page_master_layout",
+				designLibraryResourceCreationItem.getHref());
+			Assert.assertEquals(
+				"add-display-page-template",
+				designLibraryResourceCreationItem.getId());
+			Assert.assertEquals(
+				"new-display-page-template",
+				designLibraryResourceCreationItem.getLabel());
+			Assert.assertNull(designLibraryResourceCreationItem.getModule());
+			Assert.assertNull(
+				designLibraryResourceCreationItem.getModuleProps());
+		}
+
+		_portalUtilMockedStatic.verify(
+			() -> PortalUtil.getControlPanelPortletURL(
+				_httpServletRequest, _group,
+				LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, 0, 0,
+				PortletRequest.RENDER_PHASE));
+
+		Mockito.verify(
+			_liferayPortletURL
+		).setParameter(
+			"mvcPath", "/select_display_page_master_layout.jsp"
+		);
+
+		Mockito.verify(
+			_liferayPortletURL
+		).setParameter(
+			"redirect", _BACK_URL
+		);
 	}
 
 	@Test

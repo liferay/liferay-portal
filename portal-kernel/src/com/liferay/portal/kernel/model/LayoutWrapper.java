@@ -75,6 +75,9 @@ public class LayoutWrapper
 			"masterLayoutPageTemplateEntryERC",
 			getMasterLayoutPageTemplateEntryERC());
 		attributes.put(
+			"masterLayoutPageTemplateEntryScopeERC",
+			getMasterLayoutPageTemplateEntryScopeERC());
+		attributes.put(
 			"portletLayoutPageTemplateEntryERC",
 			getPortletLayoutPageTemplateEntryERC());
 		attributes.put(
@@ -323,6 +326,14 @@ public class LayoutWrapper
 		if (masterLayoutPageTemplateEntryERC != null) {
 			setMasterLayoutPageTemplateEntryERC(
 				masterLayoutPageTemplateEntryERC);
+		}
+
+		String masterLayoutPageTemplateEntryScopeERC = (String)attributes.get(
+			"masterLayoutPageTemplateEntryScopeERC");
+
+		if (masterLayoutPageTemplateEntryScopeERC != null) {
+			setMasterLayoutPageTemplateEntryScopeERC(
+				masterLayoutPageTemplateEntryScopeERC);
 		}
 
 		String portletLayoutPageTemplateEntryERC = (String)attributes.get(
@@ -1024,6 +1035,16 @@ public class LayoutWrapper
 	@Override
 	public String getMasterLayoutPageTemplateEntryERC() {
 		return model.getMasterLayoutPageTemplateEntryERC();
+	}
+
+	/**
+	 * Returns the master layout page template entry scope erc of this layout.
+	 *
+	 * @return the master layout page template entry scope erc of this layout
+	 */
+	@Override
+	public String getMasterLayoutPageTemplateEntryScopeERC() {
+		return model.getMasterLayoutPageTemplateEntryScopeERC();
 	}
 
 	@Override
@@ -2360,6 +2381,19 @@ public class LayoutWrapper
 	}
 
 	/**
+	 * Sets the master layout page template entry scope erc of this layout.
+	 *
+	 * @param masterLayoutPageTemplateEntryScopeERC the master layout page template entry scope erc of this layout
+	 */
+	@Override
+	public void setMasterLayoutPageTemplateEntryScopeERC(
+		String masterLayoutPageTemplateEntryScopeERC) {
+
+		model.setMasterLayoutPageTemplateEntryScopeERC(
+			masterLayoutPageTemplateEntryScopeERC);
+	}
+
+	/**
 	 * Sets the modified date of this layout.
 	 *
 	 * @param modifiedDate the modified date of this layout
@@ -2866,4 +2900,4 @@ public class LayoutWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1482886270
+// LIFERAY-SERVICE-BUILDER-HASH:-1251051066

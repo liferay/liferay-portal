@@ -42,6 +42,11 @@ public class AssetLibraryDepotGroupItemSelectorProviderTest
 	}
 
 	@Override
+	protected String getIcon() {
+		return "books";
+	}
+
+	@Override
 	protected String getLabel() {
 		return "Asset Library";
 	}

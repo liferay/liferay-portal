@@ -433,16 +433,18 @@ public class ViewResourcesDesignLibraryDisplayContext
 
 			maps.add(
 				HashMapBuilder.<String, Object>put(
+					"href", designLibraryResourceCreationItem::getHref
+				).put(
 					"id", designLibraryResourceCreationItem.getId()
 				).put(
 					"label", designLibraryResourceCreationItem.getLabel()
 				).put(
 					"module",
-					_resolveESImport(
+					() -> _resolveESImport(
 						designLibraryResourceCreationItem.getModule())
 				).put(
 					"moduleProps",
-					designLibraryResourceCreationItem.getModuleProps()
+					designLibraryResourceCreationItem::getModuleProps
 				).build());
 		}
 

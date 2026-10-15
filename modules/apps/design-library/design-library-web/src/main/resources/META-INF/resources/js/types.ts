@@ -54,7 +54,16 @@ export interface DesignLibraryItemData {
 	type?: string | number;
 }
 
-export type DesignLibraryResourceCreationItem = {
+export type DesignLibraryResourceCreationItem =
+	| {
+			href: string;
+			id: string;
+			label: string;
+	  }
+	| DesignLibraryResourceModalCreationItem;
+
+export type DesignLibraryResourceModalCreationItem = {
+	href?: undefined;
 	id: string;
 	label: string;
 	module: string;

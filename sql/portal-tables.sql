@@ -702,6 +702,7 @@ create table Layout (
 	faviconFileEntryERC VARCHAR(75) null,
 	faviconFileEntryScopeERC VARCHAR(75) null,
 	masterLPTEERC VARCHAR(75) null,
+	masterLPTESERC VARCHAR(75) null,
 	portletLPTEERC VARCHAR(75) null,
 	portletLPTESERC VARCHAR(75) null,
 	portletLPTELE BOOLEAN,
