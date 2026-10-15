@@ -21,7 +21,14 @@ public class FragmentCollectionItemDescriptor
 	public FragmentCollectionItemDescriptor(
 		FragmentCollection fragmentCollection) {
 
+		this(fragmentCollection, fragmentCollection.getName());
+	}
+
+	public FragmentCollectionItemDescriptor(
+		FragmentCollection fragmentCollection, String name) {
+
 		_fragmentCollection = fragmentCollection;
+		_name = name;
 	}
 
 	@Override
@@ -50,7 +57,7 @@ public class FragmentCollectionItemDescriptor
 		).put(
 			"groupId", _fragmentCollection.getGroupId()
 		).put(
-			"name", _fragmentCollection.getName()
+			"name", _name
 		).toString();
 	}
 
@@ -80,5 +87,6 @@ public class FragmentCollectionItemDescriptor
 	}
 
 	private final FragmentCollection _fragmentCollection;
+	private final String _name;
 
 }

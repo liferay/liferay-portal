@@ -7,6 +7,7 @@ package com.liferay.fragment.collection.item.selector.web.internal;
 
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.search.ResultRow;
 import com.liferay.portal.kernel.dao.search.ResultRowSplitter;
 import com.liferay.portal.kernel.dao.search.ResultRowSplitterEntry;
@@ -48,6 +49,22 @@ public class FragmentCollectionDesignLibraryItemSelectorViewDescriptor
 				WebKeys.THEME_DISPLAY);
 
 		_locale = themeDisplay.getLocale();
+	}
+
+	@Override
+	public ItemDescriptor getItemDescriptor(
+		FragmentCollection fragmentCollection) {
+
+		String groupName = _getGroupName(fragmentCollection.getGroupId());
+
+		if (groupName == null) {
+			return super.getItemDescriptor(fragmentCollection);
+		}
+
+		return new FragmentCollectionItemDescriptor(
+			fragmentCollection,
+			StringBundler.concat(
+				"[", groupName, "] ", fragmentCollection.getName()));
 	}
 
 	@Override

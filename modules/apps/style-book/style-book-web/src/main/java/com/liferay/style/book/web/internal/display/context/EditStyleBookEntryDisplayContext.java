@@ -307,7 +307,9 @@ public class EditStyleBookEntryDisplayContext {
 						(JSONObject[])TransformUtil.transformToArray(
 							fragmentCollections,
 							fragmentCollection -> JSONUtil.put(
-								"name", fragmentCollection.getName()
+								"name",
+								_getName(
+									designLibraryGroupIds, fragmentCollection)
 							).put(
 								"url",
 								_getFragmentCollectionPreviewURL(
@@ -411,16 +413,26 @@ public class EditStyleBookEntryDisplayContext {
 			return layoutName;
 		}
 
-		try {
-			return StringBundler.concat(
-				"[", group.getDescriptiveName(_themeDisplay.getLocale()), "] ",
-				layoutName);
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
+		return _getPrefixedName(group, layoutName);
+	}
 
-			return layoutName;
+	private String _getName(
+		long[] designLibraryGroupIds, FragmentCollection fragmentCollection) {
+
+		if (!ArrayUtil.contains(
+				designLibraryGroupIds, fragmentCollection.getGroupId())) {
+
+			return fragmentCollection.getName();
 		}
+
+		Group group = GroupLocalServiceUtil.fetchGroup(
+			fragmentCollection.getGroupId());
+
+		if (group == null) {
+			return fragmentCollection.getName();
+		}
+
+		return _getPrefixedName(group, fragmentCollection.getName());
 	}
 
 	private JSONObject _getOptionJSONObject(int... layoutTypes) {
@@ -556,6 +568,19 @@ public class EditStyleBookEntryDisplayContext {
 		).put(
 			"totalLayouts", total
 		);
+	}
+
+	private String _getPrefixedName(Group group, String name) {
+		try {
+			return StringBundler.concat(
+				"[", group.getDescriptiveName(_themeDisplay.getLocale()), "] ",
+				name);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return name;
+		}
 	}
 
 	private long _getPreviewItemsGroupId() {
