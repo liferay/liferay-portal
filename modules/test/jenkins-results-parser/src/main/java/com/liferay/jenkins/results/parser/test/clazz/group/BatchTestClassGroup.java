@@ -1464,22 +1464,6 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 					continue;
 				}
 
-				String axisName = downstreamBuildReport.getAxisName();
-
-				if ((axisName != null) &&
-					!Objects.equals(
-						getBatchName(),
-						axisName.replaceAll("([^/]+)/.*", "$1"))) {
-
-					System.out.println(
-						JenkinsResultsParserUtil.combine(
-							"Ignoring cached build report for axis \"",
-							axisName, "\" because it is not from batch \"",
-							getBatchName(), "\""));
-
-					continue;
-				}
-
 				List<DownstreamBuildReport> cachedDownstreamBuildReports =
 					_cachedDownstreamBuildReportsMap.computeIfAbsent(
 						downstreamBuildReport.getAxisName(),
