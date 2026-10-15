@@ -87,35 +87,43 @@ public abstract class BasePIMConnector implements PIMConnector {
 
 		Map<String, List<ObjectEntry>> objectEntriesMap = new LinkedHashMap<>();
 
-		Map<Long, Map<String, String>> clusterKeysMap = new HashMap<>();
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
 					companyId);
+		Map<Long, Map<String, Map<String, Serializable>>> valuesMaps =
+			new HashMap<>();
 
 		for (ObjectEntry objectEntry : _getPIMProductObjectEntries(companyId)) {
 			long groupId = objectEntry.getGroupId();
 
-			Map<String, String> clusterKeys = clusterKeysMap.get(groupId);
+			Map<String, Map<String, Serializable>> valuesMap = valuesMaps.get(
+				groupId);
 
-			if (clusterKeys == null) {
-				clusterKeys = _getVariantPIMLinkClusterKeys(
+			if (valuesMap == null) {
+				valuesMap = _getVariantPIMLinkValuesMap(
 					companyId, groupId, objectDefinition);
 
-				clusterKeysMap.put(groupId, clusterKeys);
+				valuesMaps.put(groupId, valuesMap);
 			}
 
 			String externalReferenceCode =
 				objectEntry.getExternalReferenceCode();
 
+			Map<String, Serializable> values = valuesMap.getOrDefault(
+				externalReferenceCode, Collections.emptyMap());
+
 			List<ObjectEntry> objectEntries = objectEntriesMap.computeIfAbsent(
-				GetterUtil.getString(
-					clusterKeys.get(externalReferenceCode),
-					externalReferenceCode),
+				MapUtil.getString(values, "clusterKey", externalReferenceCode),
 				key -> new ArrayList<>());
 
-			objectEntries.add(objectEntry);
+			if (MapUtil.getBoolean(values, "primary")) {
+				objectEntries.add(0, objectEntry);
+			}
+			else {
+				objectEntries.add(objectEntry);
+			}
 		}
 
 		return objectEntriesMap;
@@ -179,14 +187,14 @@ public abstract class BasePIMConnector implements PIMConnector {
 		return objectEntries;
 	}
 
-	private Map<String, String> _getVariantPIMLinkClusterKeys(
+	private Map<String, Map<String, Serializable>> _getVariantPIMLinkValuesMap(
 			long companyId, long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
-		Map<String, String> clusterKeys = new HashMap<>();
+		Map<String, Map<String, Serializable>> valuesMap = new HashMap<>();
 
 		if (objectDefinition == null) {
-			return clusterKeys;
+			return valuesMap;
 		}
 
 		for (Map<String, Serializable> values :
@@ -199,18 +207,16 @@ public abstract class BasePIMConnector implements PIMConnector {
 						objectDefinition),
 					null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 
-			String clusterKey = MapUtil.getString(values, "clusterKey");
-
-			if (Validator.isNull(clusterKey)) {
+			if (Validator.isNull(MapUtil.getString(values, "clusterKey"))) {
 				continue;
 			}
 
-			clusterKeys.put(
+			valuesMap.put(
 				MapUtil.getString(values, "sourceClassExternalReferenceCode"),
-				clusterKey);
+				values);
 		}
 
-		return clusterKeys;
+		return valuesMap;
 	}
 
 	private List<Document> _search(long companyId, long entryClassPK) {
