@@ -85,27 +85,7 @@ public class LayoutStructureCommonStylesCSSServletTest {
 	}
 
 	@Test
-	public void testDoesNotRender() throws Exception {
-		_layoutPageTemplateStructureLocalService.
-			updateLayoutPageTemplateStructureData(
-				TestPropsValues.getUserId(), _group.getGroupId(),
-				_layout.getPlid(),
-				_read("layout_structure_container_fixed.json"));
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_servlet.service(_getHttpServletRequest(), mockHttpServletResponse);
-
-		Assert.assertEquals(
-			_normalize(mockHttpServletResponse.getContentAsString()),
-			_normalize(
-				COMMON_CSS_STYLE +
-					_read("expected_style_container_fixed.css")));
-	}
-
-	@Test
-	public void testRenderCommonStyles() throws Exception {
+	public void testService() throws Exception {
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
 				TestPropsValues.getUserId(), _group.getGroupId(),
@@ -122,7 +102,7 @@ public class LayoutStructureCommonStylesCSSServletTest {
 	}
 
 	@Test
-	public void testRenderCommonStylesWithCustomCSS() throws Exception {
+	public void testServiceWithCustomCSS() throws Exception {
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
 				TestPropsValues.getUserId(), _group.getGroupId(),
@@ -142,7 +122,27 @@ public class LayoutStructureCommonStylesCSSServletTest {
 	}
 
 	@Test
-	public void testRenderCommonStylesWithResponsive() throws Exception {
+	public void testServiceWithFixedContainer() throws Exception {
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructureData(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_layout.getPlid(),
+				_read("layout_structure_container_fixed.json"));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_servlet.service(_getHttpServletRequest(), mockHttpServletResponse);
+
+		Assert.assertEquals(
+			_normalize(mockHttpServletResponse.getContentAsString()),
+			_normalize(
+				COMMON_CSS_STYLE +
+					_read("expected_style_container_fixed.css")));
+	}
+
+	@Test
+	public void testServiceWithResponsiveStyles() throws Exception {
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
 				TestPropsValues.getUserId(), _group.getGroupId(),
@@ -159,6 +159,24 @@ public class LayoutStructureCommonStylesCSSServletTest {
 			_normalize(
 				COMMON_CSS_STYLE +
 					_read("expected_style_with_responsive_styles.css")));
+	}
+
+	@Test
+	public void testServiceWithoutStyles() throws Exception {
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructureData(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_layout.getPlid(),
+				_read("layout_structure_without_styles.json"));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_servlet.service(_getHttpServletRequest(), mockHttpServletResponse);
+
+		Assert.assertEquals(
+			_normalize(mockHttpServletResponse.getContentAsString()),
+			_normalize(COMMON_CSS_STYLE));
 	}
 
 	@Test
@@ -184,24 +202,6 @@ public class LayoutStructureCommonStylesCSSServletTest {
 			mockHttpServletResponse.getStatus());
 		Assert.assertEquals(
 			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
-	}
-
-	@Test
-	public void testRenderEmptyTagWhenItDoesNotHaveStyles() throws Exception {
-		_layoutPageTemplateStructureLocalService.
-			updateLayoutPageTemplateStructureData(
-				TestPropsValues.getUserId(), _group.getGroupId(),
-				_layout.getPlid(),
-				_read("layout_structure_without_styles.json"));
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_servlet.service(_getHttpServletRequest(), mockHttpServletResponse);
-
-		Assert.assertEquals(
-			_normalize(mockHttpServletResponse.getContentAsString()),
-			_normalize(COMMON_CSS_STYLE));
 	}
 
 	private HttpServletRequest _getHttpServletRequest() throws Exception {
