@@ -57,6 +57,19 @@ const pimPages = test.extend<{
 			);
 
 			await use();
+
+			const {items} =
+				await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+					'pim/connectors',
+					new URLSearchParams({pageSize: '-1'})
+				);
+
+			for (const {id} of items) {
+				await apiHelpers.objectEntry.deleteObjectEntry(
+					'pim/connectors',
+					id
+				);
+			}
 		},
 		{auto: true},
 	],
