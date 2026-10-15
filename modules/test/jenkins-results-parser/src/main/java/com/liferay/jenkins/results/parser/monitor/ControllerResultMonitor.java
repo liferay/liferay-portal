@@ -132,8 +132,8 @@ public class ControllerResultMonitor extends BaseMonitor {
 	}
 
 	private void _checkDownstreamBuild(
-		long ageSeconds, String buildURL, List<String> messages, int number,
-		List<MonitorResult.Status> statuses) {
+		String buildURL, long currentTimeMillis, List<String> messages,
+		int number, List<MonitorResult.Status> statuses) {
 
 		if (buildURL == null) {
 			messages.add(
@@ -151,7 +151,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 		try {
 			buildJSONObject = JenkinsResultsParserUtil.toJSONObject(
 				JenkinsResultsParserUtil.getLocalURL(
-					buildURL + "/api/json?tree=building,result"),
+					buildURL + "/api/json?tree=building,result,timestamp"),
 				false, _RETRIES_SIZE_MAX, null, null, _SECONDS_RETRY_PERIOD,
 				getAttemptTimeoutMillis(_RETRIES_SIZE_MAX), null);
 		}
@@ -168,6 +168,10 @@ public class ControllerResultMonitor extends BaseMonitor {
 		}
 
 		if (buildJSONObject.optBoolean("building")) {
+			long ageSeconds =
+				(currentTimeMillis - buildJSONObject.optLong("timestamp")) /
+					1000;
+
 			if (ageSeconds > _pendingMaximumSeconds) {
 				messages.add(
 					JenkinsResultsParserUtil.combine(
@@ -233,10 +237,11 @@ public class ControllerResultMonitor extends BaseMonitor {
 			return;
 		}
 
-		long ageSeconds =
-			(currentTimeMillis - buildJSONObject.optLong("timestamp")) / 1000;
-
 		if (status.equals("IN QUEUE")) {
+			long ageSeconds =
+				(currentTimeMillis - buildJSONObject.optLong("timestamp")) /
+					1000;
+
 			if (ageSeconds > _pendingMaximumSeconds) {
 				messages.add(
 					JenkinsResultsParserUtil.combine(
@@ -256,7 +261,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 
 		if (status.equals("IN PROGRESS")) {
 			_checkDownstreamBuild(
-				ageSeconds, buildURL, messages, number, statuses);
+				buildURL, currentTimeMillis, messages, number, statuses);
 
 			return;
 		}
