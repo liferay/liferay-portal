@@ -21,6 +21,9 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.client.WebTarget;
 
+import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
+import org.apache.cxf.rs.security.jose.jwt.JwtConstants;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +62,16 @@ public class JWTAssertAuthorizationGrantTest
 			getJsonWebTarget("wrongPath"), TEST_CLIENT_ID_1, user.getUuid());
 
 		Assert.assertEquals("invalid_grant", jsonObject.getString("error"));
+	}
+
+	@Test
+	public void testGrantWithoutAudience() throws Exception {
+		_testGrantWithoutClaim(JwtConstants.CLAIM_AUDIENCE);
+	}
+
+	@Test
+	public void testGrantWithoutExpirationTime() throws Exception {
+		_testGrantWithoutClaim(JwtConstants.CLAIM_EXPIRY);
 	}
 
 	@Test
@@ -128,6 +141,24 @@ public class JWTAssertAuthorizationGrantTest
 		Assert.assertEquals(user.getUserId(), jsonObject.getLong("sub"));
 		Assert.assertEquals(
 			user.getScreenName(), jsonObject.getString("username"));
+	}
+
+	private void _testGrantWithoutClaim(String claimName) throws Exception {
+		User user = UserTestUtil.getAdminUser(TestPropsValues.getCompanyId());
+
+		WebTarget webTarget = getTokenWebTarget();
+
+		JwtClaims jwtClaims = JWTAssertionUtil.getJWTClaims(
+			webTarget.getUri(), TEST_CLIENT_ID_1, user.getUuid());
+
+		jwtClaims.removeProperty(claimName);
+
+		JSONObject jsonObject = parseJSONObject(
+			getTokenResponse(
+				new JWTAssertionAuthorizationGrant(jwtClaims),
+				clientAuthentications.get(TEST_CLIENT_ID_1)));
+
+		Assert.assertEquals("invalid_grant", jsonObject.getString("error"));
 	}
 
 	private class JWTBearerGrantTestPreparatorBundleActivator

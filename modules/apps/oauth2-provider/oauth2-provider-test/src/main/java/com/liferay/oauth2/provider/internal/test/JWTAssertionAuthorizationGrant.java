@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.List;
 
+import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
 import org.apache.cxf.rs.security.oauth2.grants.jwt.Constants;
 
 /**
@@ -20,17 +21,22 @@ import org.apache.cxf.rs.security.oauth2.grants.jwt.Constants;
  */
 public class JWTAssertionAuthorizationGrant implements AuthorizationGrant {
 
+	public JWTAssertionAuthorizationGrant(JwtClaims jwtClaims) {
+		_authorizationGrantParameters.add(
+			"assertion",
+			JWTAssertionUtil.getJWTAssertionRS256(
+				jwtClaims, JWTAssertionUtil.JWKS));
+		_authorizationGrantParameters.add(
+			"grant_type", Constants.JWT_BEARER_GRANT);
+	}
+
 	public JWTAssertionAuthorizationGrant(
 		String issuer, List<String> scopes, String subject,
 		WebTarget audienceWebTarget) {
 
-		_authorizationGrantParameters.add(
-			"assertion",
-			JWTAssertionUtil.getJWTAssertionRS256(
-				audienceWebTarget.getUri(), issuer, JWTAssertionUtil.JWKS,
-				subject));
-		_authorizationGrantParameters.add(
-			"grant_type", Constants.JWT_BEARER_GRANT);
+		this(
+			JWTAssertionUtil.getJWTClaims(
+				audienceWebTarget.getUri(), issuer, subject));
 
 		if (scopes != null) {
 			_authorizationGrantParameters.put("scope", scopes);

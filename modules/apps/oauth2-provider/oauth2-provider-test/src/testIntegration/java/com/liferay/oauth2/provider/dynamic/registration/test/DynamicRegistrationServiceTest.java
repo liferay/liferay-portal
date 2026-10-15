@@ -543,6 +543,19 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	@Test
 	public void testRegisterInOpenModeWithInvalidRequest() throws Exception {
 
+		// Deny when the application type is neither web nor native
+
+		_testRegisterInOpenModeWithInvalidRequest(
+			_createOpenRegistrationJSONObject(
+				true, _getRandomRedirectURI()
+			).put(
+				"application_type", RandomTestUtil.randomString()
+			).toString(),
+			"invalid_client_metadata", 400,
+			"oauth2.dynamic.registration.maximum.number.of.registrations.per." +
+				"hour",
+			0);
+
 		// Deny when the grant type is not allowed
 
 		_testRegisterInOpenModeWithInvalidRequest(

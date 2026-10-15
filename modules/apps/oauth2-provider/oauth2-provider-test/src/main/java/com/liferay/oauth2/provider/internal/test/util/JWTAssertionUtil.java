@@ -42,13 +42,13 @@ public class JWTAssertionUtil {
 
 		JwsJwtCompactProducer jwsJwtCompactProducer = new JwsJwtCompactProducer(
 			new JwtToken(
-				jwsHeaders, _getJWTClaims(audienceURI, issuer, subject)));
+				jwsHeaders, getJWTClaims(audienceURI, issuer, subject)));
 
 		return jwsJwtCompactProducer.signWith(CryptoUtils.decodeSequence(key));
 	}
 
 	public static String getJWTAssertionRS256(
-		URI audienceURI, String issuer, String jwks, String subject) {
+		JwtClaims jwtClaims, String jwks) {
 
 		JwsHeaders jwsHeaders = new JwsHeaders(
 			JoseType.JWT, SignatureAlgorithm.RS256);
@@ -56,13 +56,33 @@ public class JWTAssertionUtil {
 		jwsHeaders.setKeyId(_KEY_ID);
 
 		JwsJwtCompactProducer jwsJwtCompactProducer = new JwsJwtCompactProducer(
-			new JwtToken(
-				jwsHeaders, _getJWTClaims(audienceURI, issuer, subject)));
+			new JwtToken(jwsHeaders, jwtClaims));
 
 		JsonWebKeys jsonWebKeys = JwkUtils.readJwkSet(jwks);
 
 		return jwsJwtCompactProducer.signWith(
 			jsonWebKeys.getKey(jwsHeaders.getKeyId()));
+	}
+
+	public static String getJWTAssertionRS256(
+		URI audienceURI, String issuer, String jwks, String subject) {
+
+		return getJWTAssertionRS256(
+			getJWTClaims(audienceURI, issuer, subject), jwks);
+	}
+
+	public static JwtClaims getJWTClaims(
+		URI audienceURI, String issuer, String subject) {
+
+		JwtClaims jwtClaims = new JwtClaims();
+
+		jwtClaims.setAudience(audienceURI.toString());
+		jwtClaims.setIssuedAt(OAuthUtils.getIssuedAt());
+		jwtClaims.setExpiryTime(jwtClaims.getIssuedAt() + 3600L);
+		jwtClaims.setIssuer(issuer);
+		jwtClaims.setSubject(subject);
+
+		return jwtClaims;
 	}
 
 	private static JSONObject _createAsymmetricPrivateKeyJSONObject(
@@ -189,20 +209,6 @@ public class JWTAssertionUtil {
 				"WwPlqKvvMxRamTxlzofXMex52zYyfI-AWJhCW2djpX-wU7ifWyAx7VLiPDfMq",
 				"ljb2eeolRKoywK3zu4EU_OI8doOG3kAyjunNOU96tfy4XbLuUM0Cr_BRlDp4c",
 				"HuA2s"),  "sig");
-	}
-
-	private static JwtClaims _getJWTClaims(
-		URI audienceURI, String issuer, String subject) {
-
-		JwtClaims jwtClaims = new JwtClaims();
-
-		jwtClaims.setAudience(audienceURI.toString());
-		jwtClaims.setIssuedAt(OAuthUtils.getIssuedAt());
-		jwtClaims.setExpiryTime(jwtClaims.getIssuedAt() + 3600L);
-		jwtClaims.setIssuer(issuer);
-		jwtClaims.setSubject(subject);
-
-		return jwtClaims;
 	}
 
 	private JWTAssertionUtil() {
