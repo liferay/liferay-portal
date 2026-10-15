@@ -550,15 +550,15 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 						new HashSet<>(
 							Arrays.asList(LocaleUtil.SPAIN, LocaleUtil.US)));
 
-				Assert.assertEquals(
-					layoutSEOLinks.toString(), 4, layoutSEOLinks.size());
-
 				for (LayoutSEOLink layoutSEOLink : layoutSEOLinks) {
 					String href = layoutSEOLink.getHref();
 
 					Assert.assertFalse(
 						href, href.contains(customAssetDisplayPageFriendlyURL));
 				}
+
+				Assert.assertEquals(
+					layoutSEOLinks.toString(), 4, layoutSEOLinks.size());
 			});
 	}
 
