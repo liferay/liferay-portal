@@ -2441,11 +2441,11 @@ public class UserLocalServiceTest {
 		auditRequestContext.setSessionID(sessionID);
 
 		try {
+			User user1 = _addUserWithWorkflow();
+
 			WorkflowHandler<User> workflowHandler =
 				WorkflowHandlerRegistryUtil.getWorkflowHandler(
 					User.class.getName());
-
-			User user1 = _addUserWithWorkflow();
 
 			user1 = workflowHandler.updateStatus(
 				WorkflowConstants.STATUS_APPROVED, _getWorkflowContext(user1));
