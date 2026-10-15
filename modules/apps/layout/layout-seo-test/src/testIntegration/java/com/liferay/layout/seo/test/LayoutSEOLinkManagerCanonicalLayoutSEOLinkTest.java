@@ -308,30 +308,38 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	@Test
 	@TestInfo("LPD-108942")
 	public void testGetCanonicalLayoutSEOLink() throws Exception {
-		_testGetCanonicalLayoutSEOLink(
-			true, _group,
-			_addJournalArticle(
-				ServiceContextTestUtil.getServiceContext(
-					_addConnectedDepotGroup(DepotConstants.TYPE_ASSET_LIBRARY),
-					TestPropsValues.getUserId())),
-			false);
-		_testGetCanonicalLayoutSEOLink(
-			true, _group,
-			_addJournalArticle(
-				ServiceContextTestUtil.getServiceContext(
-					_groupLocalService.getCompanyGroup(_group.getCompanyId()),
-					TestPropsValues.getUserId())),
-			false);
+		_testWithLayoutSEOCompanyConfiguration(
+			() -> {
+				_testGetCanonicalLayoutSEOLink(
+					true, _group,
+					_addJournalArticle(
+						ServiceContextTestUtil.getServiceContext(
+							_addConnectedDepotGroup(
+								DepotConstants.TYPE_ASSET_LIBRARY),
+							TestPropsValues.getUserId())),
+					false);
+				_testGetCanonicalLayoutSEOLink(
+					true, _group,
+					_addJournalArticle(
+						ServiceContextTestUtil.getServiceContext(
+							_groupLocalService.getCompanyGroup(
+								_group.getCompanyId()),
+							TestPropsValues.getUserId())),
+					false);
 
-		JournalArticle journalArticle = _addJournalArticle(
-			ServiceContextTestUtil.getServiceContext(
-				_addConnectedDepotGroup(DepotConstants.TYPE_SPACE),
-				TestPropsValues.getUserId()));
+				JournalArticle journalArticle = _addJournalArticle(
+					ServiceContextTestUtil.getServiceContext(
+						_addConnectedDepotGroup(DepotConstants.TYPE_SPACE),
+						TestPropsValues.getUserId()));
 
-		_testGetCanonicalLayoutSEOLink(false, _group, journalArticle, false);
-		_testGetCanonicalLayoutSEOLink(true, _group, journalArticle, false);
-		_testGetCanonicalLayoutSEOLink(
-			true, _addConnectedDesignLibraryGroup(), journalArticle, true);
+				_testGetCanonicalLayoutSEOLink(
+					false, _group, journalArticle, false);
+				_testGetCanonicalLayoutSEOLink(
+					true, _group, journalArticle, false);
+				_testGetCanonicalLayoutSEOLink(
+					true, _addConnectedDesignLibraryGroup(), journalArticle,
+					true);
+			});
 	}
 
 	@Test
@@ -731,26 +739,21 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		_pushServiceContext(themeDisplay, url);
 
-		_testWithLayoutSEOCompanyConfiguration(
-			() -> {
-				LayoutSEOLink canonicalLayoutSEOLink =
-					_layoutSEOLinkManager.getCanonicalLayoutSEOLink(
-						layout, LocaleUtil.getSiteDefault(), url, themeDisplay);
+		LayoutSEOLink canonicalLayoutSEOLink =
+			_layoutSEOLinkManager.getCanonicalLayoutSEOLink(
+				layout, LocaleUtil.getSiteDefault(), url, themeDisplay);
 
-				String expectedHref = url;
+		String expectedHref = url;
 
-				if (addDefaultTemplate) {
-					expectedHref =
-						_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-							new InfoItemReference(
-								JournalArticle.class.getName(),
-								journalArticle.getResourcePrimKey()),
-							journalArticle, themeDisplay);
-				}
+		if (addDefaultTemplate) {
+			expectedHref = _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+				new InfoItemReference(
+					JournalArticle.class.getName(),
+					journalArticle.getResourcePrimKey()),
+				journalArticle, themeDisplay);
+		}
 
-				Assert.assertEquals(
-					expectedHref, canonicalLayoutSEOLink.getHref());
-			});
+		Assert.assertEquals(expectedHref, canonicalLayoutSEOLink.getHref());
 
 		if (defaultLayoutPageTemplateEntry != null) {
 			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
