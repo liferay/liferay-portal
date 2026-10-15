@@ -533,7 +533,7 @@ approximateCountsDisabledTest.describe(
 					await expect(limitCheckbox).not.toBeChecked();
 					await expect(
 						page.getByText(
-							/This setting requires the .+ feature flag/
+							/Enable the .+ feature flag in Instance Settings/
 						)
 					).toBeVisible();
 				});
