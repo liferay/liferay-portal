@@ -1,13 +1,13 @@
 {{- $runtimeConfigs := list
-    (dict "cpuRequest" "23m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-backup-config" "provider" "provider-aws-backup" "serviceAccountName" "crossplane-data")
-    (dict "cpuRequest" "25m" "memoryLimit" "1Gi" "memoryRequest" "512Mi" "name" "aws-cloudwatchlogs-config" "provider" "provider-aws-cloudwatchlogs" "serviceAccountName" "crossplane-data")
-    (dict "cpuRequest" "49m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-ec2-config" "provider" "provider-aws-ec2" "serviceAccountName" "crossplane-data")
-    (dict "cpuRequest" "23m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-family-config" "provider" "provider-family-aws" "serviceAccountName" "crossplane-data")
-    (dict "cpuRequest" "35m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-iam-config" "provider" "provider-aws-iam" "serviceAccountName" "crossplane-iam")
-    (dict "cpuRequest" "23m" "memoryLimit" "1Gi" "memoryRequest" "768Mi" "name" "aws-kms-config" "provider" "provider-aws-kms" "serviceAccountName" "crossplane-data")
-    (dict "cpuRequest" "23m" "memoryLimit" "1Gi" "memoryRequest" "768Mi" "name" "aws-opensearch-config" "provider" "provider-aws-opensearch" "serviceAccountName" "crossplane-data")
-    (dict "cpuRequest" "49m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-rds-config" "provider" "provider-aws-rds" "serviceAccountName" "crossplane-data")
-    (dict "cpuRequest" "126m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-s3-config" "provider" "provider-aws-s3" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-backup-config" "provider" "provider-aws-backup" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "1Gi" "memoryRequest" "512Mi" "name" "aws-cloudwatchlogs-config" "provider" "provider-aws-cloudwatchlogs" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "1Gi" "name" "aws-ec2-config" "provider" "provider-aws-ec2" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-family-config" "provider" "provider-family-aws" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-iam-config" "provider" "provider-aws-iam" "serviceAccountName" "crossplane-iam")
+    (dict "cpuRequest" "200m" "memoryLimit" "1Gi" "memoryRequest" "768Mi" "name" "aws-kms-config" "provider" "provider-aws-kms" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "1Gi" "memoryRequest" "768Mi" "name" "aws-opensearch-config" "provider" "provider-aws-opensearch" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-rds-config" "provider" "provider-aws-rds" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "768Mi" "name" "aws-s3-config" "provider" "provider-aws-s3" "serviceAccountName" "crossplane-data")
 -}}
 {{- range $runtimeConfig := $runtimeConfigs }}
 ---
