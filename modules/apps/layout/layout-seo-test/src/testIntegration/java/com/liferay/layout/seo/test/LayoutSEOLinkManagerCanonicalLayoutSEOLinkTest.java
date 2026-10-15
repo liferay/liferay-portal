@@ -97,6 +97,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_classNameId = _portal.getClassNameId(JournalArticle.class.getName());
+
 		_group = GroupTestUtil.addGroup();
 
 		LayoutTestUtil.addTypePortletLayout(_group);
@@ -184,9 +186,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				designLibraryGroup.getGroupId(),
-				_portal.getClassNameId(JournalArticle.class.getName()), null,
-				true, WorkflowConstants.STATUS_APPROVED);
+				designLibraryGroup.getGroupId(), _classNameId, null, true,
+				WorkflowConstants.STATUS_APPROVED);
 
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
@@ -212,7 +213,6 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		AssetDisplayPageEntry assetDisplayPageEntry =
 			_addJournalArticleAssetDisplayPageEntry(
-				_portal.getClassNameId(JournalArticle.class.getName()),
 				journalArticle, AssetDisplayPageConstants.TYPE_SPECIFIC);
 
 		Layout layout = _layoutLocalService.getLayout(
@@ -244,13 +244,9 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		JournalArticle journalArticle = _addJournalArticle();
 
-		long classNameId = _portal.getClassNameId(
-			JournalArticle.class.getName());
-
 		AssetDisplayPageEntry assetDisplayPageEntry =
 			_addJournalArticleAssetDisplayPageEntry(
-				classNameId, journalArticle,
-				AssetDisplayPageConstants.TYPE_SPECIFIC);
+				journalArticle, AssetDisplayPageConstants.TYPE_SPECIFIC);
 
 		Layout layout = _layoutLocalService.getLayout(
 			assetDisplayPageEntry.getPlid());
@@ -258,7 +254,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
 		String url = _getCustomAssetDisplayPageURL(
-			classNameId, journalArticle, layout, themeDisplay);
+			journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
 
@@ -284,13 +280,9 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		JournalArticle journalArticle = _addJournalArticle();
 
-		long classNameId = _portal.getClassNameId(
-			JournalArticle.class.getName());
-
 		AssetDisplayPageEntry assetDisplayPageEntry =
 			_addJournalArticleAssetDisplayPageEntry(
-				classNameId, journalArticle,
-				AssetDisplayPageConstants.TYPE_NONE);
+				journalArticle, AssetDisplayPageConstants.TYPE_NONE);
 
 		Layout layout = _layoutLocalService.getLayout(
 			assetDisplayPageEntry.getPlid());
@@ -298,7 +290,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
 		String url = _getCustomAssetDisplayPageURL(
-			classNameId, journalArticle, layout, themeDisplay);
+			journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
 
@@ -405,9 +397,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				designLibraryGroup.getGroupId(),
-				_portal.getClassNameId(JournalArticle.class.getName()), null,
-				true, WorkflowConstants.STATUS_APPROVED);
+				designLibraryGroup.getGroupId(), _classNameId, null, true,
+				WorkflowConstants.STATUS_APPROVED);
 
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
@@ -470,9 +461,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				designLibraryGroup.getGroupId(),
-				_portal.getClassNameId(JournalArticle.class.getName()), null,
-				true, WorkflowConstants.STATUS_APPROVED);
+				designLibraryGroup.getGroupId(), _classNameId, null, true,
+				WorkflowConstants.STATUS_APPROVED);
 
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
@@ -519,17 +509,14 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 			ServiceContextTestUtil.getServiceContext(
 				group.getGroupId(), TestPropsValues.getUserId()));
 
-		long classNameId = _portal.getClassNameId(
-			JournalArticle.class.getName());
-
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			_group.getGroupId(), classNameId,
+			_group.getGroupId(), _classNameId,
 			journalArticle.getDDMStructureKey(), true,
 			WorkflowConstants.STATUS_APPROVED);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_group.getGroupId(), classNameId,
+				_group.getGroupId(), _classNameId,
 				journalArticle.getDDMStructureKey(), false,
 				WorkflowConstants.STATUS_APPROVED);
 
@@ -539,7 +526,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
 		String url = _getCustomAssetDisplayPageURL(
-			classNameId, journalArticle, layout, themeDisplay);
+			journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
 
@@ -612,24 +599,24 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	}
 
 	private AssetDisplayPageEntry _addJournalArticleAssetDisplayPageEntry(
-			long classNameId, JournalArticle journalArticle, int type)
+			JournalArticle journalArticle, int type)
 		throws Exception {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_group.getGroupId(), classNameId,
+				_group.getGroupId(), _classNameId,
 				journalArticle.getDDMStructureKey(), true,
 				WorkflowConstants.STATUS_APPROVED);
 
 		return _assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(), classNameId,
+			TestPropsValues.getUserId(), _group.getGroupId(), _classNameId,
 			journalArticle.getResourcePrimKey(),
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(), type,
 			_serviceContext);
 	}
 
 	private String _getCustomAssetDisplayPageURL(
-			long classNameId, JournalArticle journalArticle, Layout layout,
+			JournalArticle journalArticle, Layout layout,
 			ThemeDisplay themeDisplay)
 		throws Exception {
 
@@ -638,7 +625,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 				_group.getPublicLayoutSet(), themeDisplay, false, false),
 			FriendlyURLResolverConstants.URL_SEPARATOR_X_CUSTOM_ASSET,
 			layout.getFriendlyURL(LocaleUtil.getSiteDefault()),
-			StringPool.SLASH, classNameId, StringPool.SLASH,
+			StringPool.SLASH, _classNameId, StringPool.SLASH,
 			journalArticle.getResourcePrimKey());
 	}
 
@@ -714,22 +701,19 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 			JournalArticle journalArticle, boolean virtualLayout)
 		throws Exception {
 
-		long classNameId = _portal.getClassNameId(
-			JournalArticle.class.getName());
-
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry = null;
 
 		if (addDefaultTemplate) {
 			defaultLayoutPageTemplateEntry =
 				DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-					group.getGroupId(), classNameId,
+					group.getGroupId(), _classNameId,
 					journalArticle.getDDMStructureKey(), true,
 					WorkflowConstants.STATUS_APPROVED);
 		}
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				group.getGroupId(), classNameId,
+				group.getGroupId(), _classNameId,
 				journalArticle.getDDMStructureKey(), false,
 				WorkflowConstants.STATUS_APPROVED);
 
@@ -743,7 +727,7 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		ThemeDisplay themeDisplay = _getThemeDisplay(journalArticle, layout);
 
 		String url = _getCustomAssetDisplayPageURL(
-			classNameId, journalArticle, layout, themeDisplay);
+			journalArticle, layout, themeDisplay);
 
 		_pushServiceContext(themeDisplay, url);
 
@@ -807,6 +791,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 	@Inject
 	private AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
+
+	private long _classNameId;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
