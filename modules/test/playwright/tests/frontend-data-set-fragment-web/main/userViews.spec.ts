@@ -21,6 +21,7 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	dataSetManagerApiHelpersTest,
 	featureFlagsTest({
+		'LPS-164563': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedLayoutTest({publish: false}),

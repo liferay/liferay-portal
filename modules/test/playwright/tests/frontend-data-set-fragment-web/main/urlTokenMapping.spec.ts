@@ -24,6 +24,7 @@ export const test = mergeTests(
 	displayPageTemplatesPagesTest,
 	featureFlagsTest({
 		'LPD-38564': {enabled: true},
+		'LPS-164563': {enabled: true},
 	}),
 	isolatedLayoutTest({publish: false}),
 	isolatedSiteTest,

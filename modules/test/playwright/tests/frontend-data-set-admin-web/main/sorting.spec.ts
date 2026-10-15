@@ -19,6 +19,7 @@ export const test = mergeTests(
 	dataSetManagerApiHelpersTest,
 	customDataSetsPageTest,
 	featureFlagsTest({
+		'LPS-164563': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	globalMenuPagesTest,
@@ -725,6 +726,7 @@ export const applicationPageTest = mergeTests(
 	dataSetManagerApiHelpersTest,
 	customDataSetsPageTest,
 	featureFlagsTest({
+		'LPS-164563': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	loginTest()
