@@ -9,6 +9,8 @@ import com.google.common.collect.Lists;
 
 import java.io.IOException;
 
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -513,6 +518,8 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 			String status = downstreamBuild.getStatus();
 
 			if (status.equals("completed")) {
+				_generateTestrayCaseResult(downstreamBuild);
+
 				continue;
 			}
 
@@ -745,6 +752,14 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 		return tableRowElements;
 	}
 
+	protected void removeTestrayCaseResultURL(String axisName) {
+		if (axisName == null) {
+			return;
+		}
+
+		_testrayCaseResultURLFutures.remove(axisName);
+	}
+
 	@Override
 	protected boolean skipUpdate() {
 		boolean skipUpdate = super.skipUpdate();
@@ -759,6 +774,32 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 	protected void sortDownstreamBuilds() {
 		Collections.sort(
 			_downstreamBuilds, new BaseBuild.BuildDisplayNameComparator());
+	}
+
+	private void _generateTestrayCaseResult(Build build) {
+		if (!(build instanceof DownstreamBuild) || build.isFromArchive()) {
+			return;
+		}
+
+		final DownstreamBuild downstreamBuild = (DownstreamBuild)build;
+
+		String axisName = downstreamBuild.getAxisName();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(axisName)) {
+			return;
+		}
+
+		_testrayCaseResultURLFutures.computeIfAbsent(
+			axisName,
+			key -> _testrayCaseResultExecutorService.submit(
+				new Callable<URL>() {
+
+					@Override
+					public URL call() {
+						return downstreamBuild.getTestrayCaseResultURL();
+					}
+
+				}));
 	}
 
 	private int _getInvokedGroupSize() {
@@ -781,7 +822,11 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 
 	private static final Pattern _buildURLPattern = Pattern.compile(
 		"http[s]?\\:\\/\\/(?<hostname>[^\\/]+)\\/.*");
+	private static final ExecutorService _testrayCaseResultExecutorService =
+		JenkinsResultsParserUtil.getNewThreadPoolExecutor(10, true);
 
 	private List<Build> _downstreamBuilds;
+	private final Map<String, Future<URL>> _testrayCaseResultURLFutures =
+		new ConcurrentHashMap<>();
 
 }
