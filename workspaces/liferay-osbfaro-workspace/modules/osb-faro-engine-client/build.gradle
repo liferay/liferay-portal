@@ -21,9 +21,15 @@ dependencies {
 	compileOnly group: "org.springframework", name: "spring-core", version: "7.0.9"
 	compileOnly project(":modules:osb-faro-api")
 	compileOnly project(":modules:osb-faro-contacts-api")
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation group: "org.apache.httpcomponents.client5", name: "httpclient5", version: "5.6.4"
+	testImplementation group: "org.apache.logging.log4j", name: "log4j-api", version: "2.20.0"
+	testImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "5.14.2"
+	testImplementation group: "org.springframework", name: "spring-context", version: "7.0.9"
 	testImplementation group: "org.springframework", name: "spring-web", version: "7.0.9"
+	testImplementation group: "org.springframework.hateoas", name: "spring-hateoas", version: "2.5.3"
 	testImplementation project(":modules:osb-faro-api")
 }

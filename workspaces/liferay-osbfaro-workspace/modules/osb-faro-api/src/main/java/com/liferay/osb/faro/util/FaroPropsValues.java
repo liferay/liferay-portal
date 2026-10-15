@@ -69,6 +69,26 @@ public class FaroPropsValues {
 	public static final String OSB_API_URL = GetterUtil.getString(
 		PropsUtil.get("osb.api.url"), System.getenv("OSB_API_URL"));
 
+	public static final long OSB_ASAH_BACKEND_CONNECT_TIMEOUT_MILLIS =
+		GetterUtil.getLong(
+			PropsUtil.get("osb.asah.backend.connect.timeout.millis"),
+			GetterUtil.getLong(
+				System.getenv("OSB_ASAH_BACKEND_CONNECT_TIMEOUT_MILLIS"),
+				Time.SECOND * 5));
+
+	public static final int OSB_ASAH_BACKEND_MAX_CONNECTIONS =
+		GetterUtil.getInteger(
+			PropsUtil.get("osb.asah.backend.max.connections"),
+			GetterUtil.getInteger(
+				System.getenv("OSB_ASAH_BACKEND_MAX_CONNECTIONS"), 200));
+
+	public static final long OSB_ASAH_BACKEND_RESPONSE_TIMEOUT_MILLIS =
+		GetterUtil.getLong(
+			PropsUtil.get("osb.asah.backend.response.timeout.millis"),
+			GetterUtil.getLong(
+				System.getenv("OSB_ASAH_BACKEND_RESPONSE_TIMEOUT_MILLIS"),
+				Time.SECOND * 50));
+
 	public static final String OSB_ASAH_BACKEND_URL = GetterUtil.getString(
 		PropsUtil.get("osb.asah.backend.url"),
 		System.getenv("OSB_ASAH_BACKEND_URL"));
