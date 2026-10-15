@@ -62,8 +62,11 @@ readOnlyRootFilesystem: false
 {{- printf "%s-search-secret-reader" .Release.Name -}}
 {{- end -}}
 
-{{- define "search.validateEngine" -}}
-{{- if not (has .Values.search.engine (list "elasticsearch" "opensearch")) -}}
-{{- fail (printf "Unsupported search engine: %s" .Values.search.engine) -}}
+{{- define "search.engine" -}}
+{{- $supportedEngines := .Values.search.supportedEngines -}}
+{{- $engine := .Values.search.engine | default (has "opensearch" $supportedEngines | ternary "opensearch" (first $supportedEngines)) -}}
+{{- if not (has $engine $supportedEngines) -}}
+{{- fail (printf "Search engine %s is not available on this cloud, which supports: %s" $engine (join ", " $supportedEngines)) -}}
 {{- end -}}
+{{- $engine -}}
 {{- end -}}

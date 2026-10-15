@@ -1,5 +1,4 @@
-{{- include "search.validateEngine" . -}}
-{{- if and .Values.enabled (eq .Values.search.engine "elasticsearch") }}
+{{- if and .Values.enabled (eq (include "search.engine" .) "elasticsearch") }}
 {{- $search := .Values.search.elasticsearch -}}
 {{- $env := list -}}
 {{- range $name, $value := $search.env -}}

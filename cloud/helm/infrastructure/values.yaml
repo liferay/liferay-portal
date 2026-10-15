@@ -43,6 +43,8 @@ search:
                 memory: 4Gi
         version: 8.19.11
         volumeSize: 10Gi
-    engine: elasticsearch
+    engine: ""
     opensearch: {}
+    supportedEngines:
+        -   elasticsearch
 storage: {}

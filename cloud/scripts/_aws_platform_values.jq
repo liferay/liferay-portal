@@ -61,6 +61,10 @@ $configuration[0] as $configuration
 					{
 						name: "persistence.storageClassName",
 						value: "gp3"
+					},
+					{
+						name: "search.supportedEngines",
+						value: "{elasticsearch,opensearch}"
 					}
 				]
 			},

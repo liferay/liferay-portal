@@ -6,6 +6,36 @@ templates:
     -   templates/liferayinfrastructure.yaml
 tests:
     -   asserts:
+            -   equal:
+                    path: spec.search.engine
+                    value: opensearch
+        it: Defaults the search engine to OpenSearch when the cloud supports it
+        set:
+            search.supportedEngines:
+                -   elasticsearch
+                -   opensearch
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: "Search engine opensearch is not available on this cloud, which supports: elasticsearch"
+        it: Fails when the chosen search engine is not available on the cloud
+        set:
+            search.engine: opensearch
+    -   asserts:
+            -   equal:
+                    path: spec.search.engine
+                    value: elasticsearch
+        it: Falls back to the supported search engine when the cloud cannot run OpenSearch
+    -   asserts:
+            -   equal:
+                    path: spec.search.engine
+                    value: elasticsearch
+        it: Keeps the chosen search engine when the cloud supports it
+        set:
+            search.engine: elasticsearch
+            search.supportedEngines:
+                -   elasticsearch
+                -   opensearch
+    -   asserts:
             -   isEmpty:
                     path: spec.backup
             -   notExists:
@@ -37,6 +67,7 @@ tests:
                     path: spec.search.opensearch
         it: Omits the OpenSearch settings when the engine is Elasticsearch
         set:
+            search.engine: elasticsearch
             search.opensearch.instanceType: t3.small.search
     -   asserts:
             -   notExists:
@@ -73,6 +104,9 @@ tests:
                     instanceType: m6g.large.search
                     version: "2.19"
                     volumeSizeGB: 50
+                supportedEngines:
+                    -   elasticsearch
+                    -   opensearch
     -   asserts:
             -   equal:
                     path: spec.backup.dayOfWeek

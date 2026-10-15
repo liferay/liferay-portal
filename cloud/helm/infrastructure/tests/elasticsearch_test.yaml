@@ -1,6 +1,8 @@
 release:
     name: my-release
     namespace: my-namespace
+set:
+    search.engine: elasticsearch
 suite: Elasticsearch
 templates:
     -   templates/elasticsearch.yaml
@@ -54,12 +56,6 @@ tests:
                     value: "-25"
         it: Assigns the Elasticsearch resources their sync waves
     -   asserts:
-            -   failedTemplate:
-                    errorPattern: "Unsupported search engine: typo"
-        it: Fails when the search engine is unsupported
-        set:
-            search.engine: typo
-    -   asserts:
             -   equal:
                     path: metadata.name
                     value: my-release-es
@@ -90,6 +86,9 @@ tests:
         it: Omits the Elasticsearch resources when the engine is OpenSearch
         set:
             search.engine: opensearch
+            search.supportedEngines:
+                -   elasticsearch
+                -   opensearch
     -   asserts:
             -   notExists:
                     path: spec.nodeSets[0].volumeClaimTemplates[0].spec.storageClassName

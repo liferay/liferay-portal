@@ -1,4 +1,5 @@
 {{- if .Values.enabled -}}
+{{- $searchEngine := include "search.engine" . -}}
 apiVersion: liferay.com/v1alpha1
 kind: LiferayInfrastructure
 metadata:
@@ -29,8 +30,8 @@ spec:
         {{- .Values.overlayAccess | toYaml | nindent 8 }}
     projectId: {{ .Values.projectId | quote }}
     search:
-        engine: {{ .Values.search.engine }}
-        {{- if and (eq .Values.search.engine "opensearch") .Values.search.opensearch }}
+        engine: {{ $searchEngine }}
+        {{- if and (eq $searchEngine "opensearch") .Values.search.opensearch }}
         opensearch:
             {{- .Values.search.opensearch | toYaml | nindent 12 }}
         {{- end }}

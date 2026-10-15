@@ -169,7 +169,6 @@ spec:
                                     default: {}
                                     properties:
                                         engine:
-                                            default: elasticsearch
                                             enum:
                                                 -   elasticsearch
                                                 -   opensearch
