@@ -3798,16 +3798,8 @@ public class BatchEnginePortletDataHandlerTest {
 
 				Assert.fail();
 			}
-			catch (Exception exception) {
-				Throwable throwable = exception;
-
-				while ((throwable != null) &&
-					   !(throwable instanceof PortletDataException)) {
-
-					throwable = throwable.getCause();
-				}
-
-				String message = throwable.getMessage();
+			catch (PortletDataException portletDataException) {
+				String message = portletDataException.getMessage();
 
 				Assert.assertTrue(
 					message,
