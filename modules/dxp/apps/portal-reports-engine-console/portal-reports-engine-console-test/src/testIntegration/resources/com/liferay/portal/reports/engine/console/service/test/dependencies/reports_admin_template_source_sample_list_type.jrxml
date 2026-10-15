@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<jasperReport bottomMargin="20" columnWidth="555" language="groovy" leftMargin="20" name="reports_admin_template_source_sample" pageHeight="842" pageWidth="595" rightMargin="20" topMargin="20" xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd">
+<jasperReport bottomMargin="20" columnWidth="555" language="java" leftMargin="20" name="reports_admin_template_source_sample" pageHeight="842" pageWidth="595" rightMargin="20" topMargin="20" xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd">
 	<property name="ireport.zoom" value="3.0" />
 	<property name="ireport.x" value="0" />
 	<property name="ireport.y" value="0" />
