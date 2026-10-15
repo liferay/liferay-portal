@@ -82,7 +82,7 @@ describe('MappingFields', () => {
 			'Text with default value'
 		).parentElement;
 
-		await userEvent.click(within(inputField!).getByTitle('map'));
+		await userEvent.click(within(inputField!).getByTitle('map[verb]'));
 
 		expect(screen.getAllByRole('option')).toHaveLength(2);
 	});
@@ -93,7 +93,7 @@ describe('MappingFields', () => {
 		const inputField: HTMLElement | null =
 			screen.getByText('SEO description').parentElement;
 
-		await userEvent.click(within(inputField!).getByTitle('map'));
+		await userEvent.click(within(inputField!).getByTitle('map[verb]'));
 
 		expect(screen.getAllByRole('option')).toHaveLength(4);
 		expect(
@@ -107,7 +107,7 @@ describe('MappingFields', () => {
 		const inputField: HTMLElement | null =
 			screen.getByText('Image for sharing').parentElement;
 
-		await userEvent.click(within(inputField!).getByTitle('map'));
+		await userEvent.click(within(inputField!).getByTitle('map[verb]'));
 
 		expect(screen.getAllByRole('option')).toHaveLength(3);
 	});

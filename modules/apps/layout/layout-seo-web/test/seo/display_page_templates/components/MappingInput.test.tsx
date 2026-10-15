@@ -45,7 +45,7 @@ describe('MappingInput', () => {
 		expect(input.name).toBe('testMappingInput');
 		expect(input.type).toBe('text');
 		expect(input).toHaveValue('');
-		expect(screen.getByTitle('map')).toBeInTheDocument();
+		expect(screen.getByTitle('map[verb]')).toBeInTheDocument();
 		expect(
 			screen.getByText('Map a text field, it will be used as Title.')
 		).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe('MappingInput', () => {
 			document.querySelector('.dpt-mapping-panel')
 		).not.toBeInTheDocument();
 
-		await userEvent.click(screen.getByTitle('map'));
+		await userEvent.click(screen.getByTitle('map[verb]'));
 
 		expect(
 			document.querySelector('.dpt-mapping-panel')
@@ -78,7 +78,7 @@ describe('MappingInput', () => {
 	it('selects a field, adding a new field ${key:label} to the input', async () => {
 		renderComponent();
 
-		await userEvent.click(screen.getByTitle('map'));
+		await userEvent.click(screen.getByTitle('map[verb]'));
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('field'),
@@ -97,7 +97,7 @@ describe('MappingInput', () => {
 	it('selects a field, adding a new field ${key:label} sanitized to the input', async () => {
 		renderComponent();
 
-		await userEvent.click(screen.getByTitle('map'));
+		await userEvent.click(screen.getByTitle('map[verb]'));
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('field'),

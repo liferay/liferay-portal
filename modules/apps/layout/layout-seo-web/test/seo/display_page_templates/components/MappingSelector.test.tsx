@@ -84,7 +84,7 @@ describe('MappingSelector', () => {
 			document.querySelector('.dpt-mapping-panel')
 		).not.toBeInTheDocument();
 
-		const mappingButton = screen.getByTitle('map');
+		const mappingButton = screen.getByTitle('map[verb]');
 
 		await userEvent.click(mappingButton);
 
@@ -116,7 +116,7 @@ describe('MappingSelector', () => {
 			'Label source type: Field 2'
 		);
 
-		await userEvent.click(screen.getByTitle('map'));
+		await userEvent.click(screen.getByTitle('map[verb]'));
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('field'),
@@ -138,7 +138,7 @@ describe('MappingSelector', () => {
 			'Label source type: Field 2'
 		);
 
-		await userEvent.click(screen.getByTitle('map'));
+		await userEvent.click(screen.getByTitle('map[verb]'));
 
 		await userEvent.selectOptions(
 			screen.getByLabelText('field'),
@@ -154,7 +154,7 @@ describe('MappingSelector', () => {
 	it('closes the panel clicking outside', async () => {
 		renderComponent();
 
-		await userEvent.click(screen.getByTitle('map'));
+		await userEvent.click(screen.getByTitle('map[verb]'));
 
 		expect(
 			document.querySelector('.dpt-mapping-panel')

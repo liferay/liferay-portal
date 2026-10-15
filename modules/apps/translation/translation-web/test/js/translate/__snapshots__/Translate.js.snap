@@ -83,7 +83,7 @@ exports[`Translate renders with auto-translate disabled 1`] = `
               <div
                 class="autofit-col"
               >
-                to
+                to[direction]
               </div>
               <div
                 class="autofit-col"
@@ -695,7 +695,7 @@ exports[`Translate renders with auto-translate enabled 1`] = `
               <div
                 class="autofit-col"
               >
-                to
+                to[direction]
               </div>
               <div
                 class="autofit-col"
@@ -1582,7 +1582,7 @@ exports[`Translate renders with experiences selector 1`] = `
               <div
                 class="autofit-col"
               >
-                to
+                to[direction]
               </div>
               <div
                 class="autofit-col"
