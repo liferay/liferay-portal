@@ -993,17 +993,27 @@ public class BatchEngineImportTaskExecutorTest
 			AuditRequestContextThreadLocal.getAuditRequestContext();
 
 		String clientHost = RandomTestUtil.randomString();
-		String clientIP = RandomTestUtil.randomString();
-		long realUserId = RandomTestUtil.randomLong();
-		String serverName = RandomTestUtil.randomString();
-		int serverPort = RandomTestUtil.randomInt();
-		String sessionID = RandomTestUtil.randomString();
 
 		auditRequestContext.setClientHost(clientHost);
+
+		String clientIP = RandomTestUtil.randomString();
+
 		auditRequestContext.setClientIP(clientIP);
+
+		long realUserId = RandomTestUtil.randomLong();
+
 		auditRequestContext.setRealUserId(realUserId);
+
+		String serverName = RandomTestUtil.randomString();
+
 		auditRequestContext.setServerName(serverName);
+
+		int serverPort = RandomTestUtil.randomInt();
+
 		auditRequestContext.setServerPort(serverPort);
+
+		String sessionID = RandomTestUtil.randomString();
+
 		auditRequestContext.setSessionID(sessionID);
 
 		try {
