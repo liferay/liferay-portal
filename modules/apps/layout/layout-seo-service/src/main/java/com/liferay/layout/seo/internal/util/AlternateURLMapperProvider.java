@@ -229,7 +229,7 @@ public class AlternateURLMapperProvider {
 
 	}
 
-	private AssetDisplayPageFriendlyURLProvider
+	private final AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
 	private final Portal _portal;
 
