@@ -268,11 +268,13 @@ public class PortalReleasePortalTopLevelBuild
 		List<String> nontomcatURLParameterNames = new ArrayList<>();
 
 		for (String parameterName : _NONTOMCAT_URL_PARAMETER_NAMES) {
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+			if (JenkinsResultsParserUtil.isNullOrEmpty(
 					getParameterValue(parameterName))) {
 
-				nontomcatURLParameterNames.add(parameterName);
+				continue;
 			}
+
+			nontomcatURLParameterNames.add(parameterName);
 		}
 
 		if (!nontomcatURLParameterNames.isEmpty()) {

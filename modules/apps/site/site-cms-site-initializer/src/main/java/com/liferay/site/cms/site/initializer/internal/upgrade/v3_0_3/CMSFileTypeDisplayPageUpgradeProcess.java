@@ -108,9 +108,11 @@ public class CMSFileTypeDisplayPageUpgradeProcess extends UpgradeProcess {
 				_objectDefinitionLocalService.getObjectFolderObjectDefinitions(
 					objectFolder.getObjectFolderId())) {
 
-			if (CMSFileTypeUtil.hasFileObjectField(objectDefinition)) {
-				_upgradeObjectDefinition(group, objectDefinition);
+			if (!CMSFileTypeUtil.hasFileObjectField(objectDefinition)) {
+				continue;
 			}
+
+			_upgradeObjectDefinition(group, objectDefinition);
 		}
 	}
 

@@ -690,9 +690,11 @@ public class JenkinsResultsParserUtilTest
 				JenkinsResultsParserUtil.getThreadDump(), threadName);
 
 			for (String line : threadDumpEntry.split("\n")) {
-				if (line.startsWith("\tat ")) {
-					stackTraceElementsCount++;
+				if (!line.startsWith("\tat ")) {
+					continue;
 				}
+
+				stackTraceElementsCount++;
 			}
 
 			Assert.assertEquals(40, stackTraceElementsCount);
@@ -1081,10 +1083,12 @@ public class JenkinsResultsParserUtilTest
 				break;
 			}
 
-			if (matched) {
-				sb.append(line);
-				sb.append("\n");
+			if (!matched) {
+				continue;
 			}
+
+			sb.append(line);
+			sb.append("\n");
 		}
 
 		return sb.toString();

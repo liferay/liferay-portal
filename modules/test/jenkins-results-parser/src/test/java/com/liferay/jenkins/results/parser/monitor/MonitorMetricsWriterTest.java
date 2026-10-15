@@ -620,9 +620,11 @@ public class MonitorMetricsWriterTest
 		int messageInfoLinesCount = 0;
 
 		for (String line : content.split("\n")) {
-			if (line.startsWith("monitor_message_info{")) {
-				messageInfoLinesCount++;
+			if (!line.startsWith("monitor_message_info{")) {
+				continue;
 			}
+
+			messageInfoLinesCount++;
 		}
 
 		if (expectedMessage == null) {

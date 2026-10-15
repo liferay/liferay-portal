@@ -42,9 +42,11 @@ public class ThrowableUtil {
 			}
 
 			for (Throwable suppressedThrowable : curThrowable.getSuppressed()) {
-				if (!throwables.contains(suppressedThrowable)) {
-					throwables.add(suppressedThrowable);
+				if (throwables.contains(suppressedThrowable)) {
+					continue;
 				}
+
+				throwables.add(suppressedThrowable);
 			}
 		}
 
