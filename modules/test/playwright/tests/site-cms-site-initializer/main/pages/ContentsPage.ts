@@ -375,6 +375,12 @@ export class ContentsPage {
 			'aria-selected',
 			'true'
 		);
+
+		await expect(
+			this.page.locator(
+				'.content-editor__side-panel .sidebar-header .component-title'
+			)
+		).toHaveText([panelName]);
 	}
 
 	async viewShowDetails(title: string) {
