@@ -64,12 +64,18 @@ if (wikiPage.getAttachmentsFolderId() != DLFolderConstants.DEFAULT_PARENT_FOLDER
 	}
 	else {
 		if (ArrayUtil.isNotEmpty(mimeTypes)) {
-			portletFileEntries.addAll(wikiPage.getAttachmentsFileEntries(mimeTypes, start, end, wikiAttachmentItemSelectorViewDisplayContext.getOrderByComparator()));
 			portletFileEntriesCount = wikiPage.getAttachmentsFileEntriesCount(mimeTypes);
+
+			startAndEnd = SearchPaginationUtil.calculateStartAndEnd(start, end, portletFileEntriesCount);
+
+			portletFileEntries.addAll(wikiPage.getAttachmentsFileEntries(mimeTypes, startAndEnd[0], startAndEnd[1], wikiAttachmentItemSelectorViewDisplayContext.getOrderByComparator()));
 		}
 		else {
-			portletFileEntries.addAll(wikiPage.getAttachmentsFileEntries(start, end, wikiAttachmentItemSelectorViewDisplayContext.getOrderByComparator()));
 			portletFileEntriesCount = wikiPage.getAttachmentsFileEntriesCount();
+
+			startAndEnd = SearchPaginationUtil.calculateStartAndEnd(start, end, portletFileEntriesCount);
+
+			portletFileEntries.addAll(wikiPage.getAttachmentsFileEntries(startAndEnd[0], startAndEnd[1], wikiAttachmentItemSelectorViewDisplayContext.getOrderByComparator()));
 		}
 	}
 }
