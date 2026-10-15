@@ -12,8 +12,11 @@ import com.liferay.object.model.ObjectEntry;
  */
 public class PIMLinkRelatedEntry {
 
-	public PIMLinkRelatedEntry(ObjectEntry objectEntry, String type) {
+	public PIMLinkRelatedEntry(
+		ObjectEntry objectEntry, boolean primary, String type) {
+
 		_objectEntry = objectEntry;
+		_primary = primary;
 		_type = type;
 	}
 
@@ -25,7 +28,12 @@ public class PIMLinkRelatedEntry {
 		return _type;
 	}
 
+	public boolean isPrimary() {
+		return _primary;
+	}
+
 	private final ObjectEntry _objectEntry;
+	private final boolean _primary;
 	private final String _type;
 
 }

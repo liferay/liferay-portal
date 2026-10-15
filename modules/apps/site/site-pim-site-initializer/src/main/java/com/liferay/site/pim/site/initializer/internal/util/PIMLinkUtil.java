@@ -14,6 +14,7 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
@@ -99,7 +100,8 @@ public class PIMLinkUtil {
 		return ObjectEntryLocalServiceUtil.getValuesList(
 			groupId, companyId, 0, objectDefinition.getObjectDefinitionId(),
 			filterFactory.create(filterString, objectDefinition), null,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			new Sort[] {new Sort("id", Sort.LONG_TYPE, false)});
 	}
 
 	public static List<Map<String, Serializable>>

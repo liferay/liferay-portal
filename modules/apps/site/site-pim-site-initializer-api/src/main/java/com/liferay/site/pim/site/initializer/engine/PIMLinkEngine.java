@@ -31,4 +31,7 @@ public interface PIMLinkEngine {
 			String filterString, ObjectEntry objectEntry)
 		throws PortalException;
 
+	public void setPrimaryPIMLink(ObjectEntry objectEntry, String type)
+		throws PortalException;
+
 }

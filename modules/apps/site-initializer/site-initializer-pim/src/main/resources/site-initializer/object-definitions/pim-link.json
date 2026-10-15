@@ -48,6 +48,21 @@
 			"system": true
 		},
 		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "PRIMARY",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Primary"
+			},
+			"name": "primary",
+			"required": false,
+			"system": true
+		},
+		{
 			"DBType": "String",
 			"businessType": "Text",
 			"externalReferenceCode": "SOURCE_CLASS_EXTERNAL_REFERENCE_CODE",
