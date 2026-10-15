@@ -43,6 +43,19 @@ tests:
                     path: spec.hostnames
                     value:
                         -   able.example.com
+                        -   www.able.example.com
+        it: Routes additional hostnames as well as the domain
+        set:
+            clientExtension:
+                domain: able.example.com
+            network:
+                hostnames:
+                    -   www.able.example.com
+    -   asserts:
+            -   equal:
+                    path: spec.hostnames
+                    value:
+                        -   able.example.com
             -   equal:
                     path: spec.parentRefs[0].name
                     value: liferay-gateway
@@ -62,16 +75,3 @@ tests:
                 endpointRef: https
             service:
                 port: 8080
-    -   asserts:
-            -   equal:
-                    path: spec.hostnames
-                    value:
-                        -   able.example.com
-                        -   www.able.example.com
-        it: Routes the given hostnames as well as the domain
-        set:
-            clientExtension:
-                domain: able.example.com
-            network:
-                hostnames:
-                    -   www.able.example.com
