@@ -54,6 +54,8 @@ public class AccountEntryUserRelModelListener
 		if (accountEntryUserRel.getAccountUserId() ==
 				UserConstants.USER_ID_DEFAULT) {
 
+			_reindexAccountEntry(accountEntryUserRel.getAccountEntryId());
+
 			return;
 		}
 

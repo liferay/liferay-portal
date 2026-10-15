@@ -12,7 +12,10 @@ import com.liferay.account.service.base.AccountEntryOrganizationRelLocalServiceB
 import com.liferay.account.service.persistence.AccountEntryPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
@@ -78,16 +81,48 @@ public class AccountEntryOrganizationRelLocalServiceImpl
 		}
 	}
 
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	public AccountEntryOrganizationRel deleteAccountEntryOrganizationRel(
+		AccountEntryOrganizationRel accountEntryOrganizationRel) {
+
+		accountEntryOrganizationRelPersistence.remove(
+			accountEntryOrganizationRel);
+
+		try {
+			_reindexAccountEntry(
+				accountEntryOrganizationRel.getAccountEntryId());
+			_reindexOrganization(
+				accountEntryOrganizationRel.getOrganizationId());
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+
+		return accountEntryOrganizationRel;
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	public AccountEntryOrganizationRel deleteAccountEntryOrganizationRel(
+			long accountEntryOrganizationRelId)
+		throws PortalException {
+
+		return accountEntryOrganizationRelLocalService.
+			deleteAccountEntryOrganizationRel(
+				accountEntryOrganizationRelPersistence.findByPrimaryKey(
+					accountEntryOrganizationRelId));
+	}
+
 	@Override
 	public void deleteAccountEntryOrganizationRel(
 			long accountEntryId, long organizationId)
 		throws PortalException {
 
-		accountEntryOrganizationRelPersistence.removeByA_O(
-			accountEntryId, organizationId);
-
-		_reindexAccountEntry(accountEntryId);
-		_reindexOrganization(organizationId);
+		accountEntryOrganizationRelLocalService.
+			deleteAccountEntryOrganizationRel(
+				accountEntryOrganizationRelPersistence.findByA_O(
+					accountEntryId, organizationId));
 	}
 
 	@Override
@@ -104,16 +139,26 @@ public class AccountEntryOrganizationRelLocalServiceImpl
 	public void deleteAccountEntryOrganizationRelsByAccountEntryId(
 		long accountEntryId) {
 
-		accountEntryOrganizationRelPersistence.removeByAccountEntryId(
-			accountEntryId);
+		for (AccountEntryOrganizationRel accountEntryOrganizationRel :
+				accountEntryOrganizationRelPersistence.findByAccountEntryId(
+					accountEntryId)) {
+
+			accountEntryOrganizationRelLocalService.
+				deleteAccountEntryOrganizationRel(accountEntryOrganizationRel);
+		}
 	}
 
 	@Override
 	public void deleteAccountEntryOrganizationRelsByOrganizationId(
 		long organizationId) {
 
-		accountEntryOrganizationRelPersistence.removeByOrganizationId(
-			organizationId);
+		for (AccountEntryOrganizationRel accountEntryOrganizationRel :
+				accountEntryOrganizationRelPersistence.findByOrganizationId(
+					organizationId)) {
+
+			accountEntryOrganizationRelLocalService.
+				deleteAccountEntryOrganizationRel(accountEntryOrganizationRel);
+		}
 	}
 
 	@Override
