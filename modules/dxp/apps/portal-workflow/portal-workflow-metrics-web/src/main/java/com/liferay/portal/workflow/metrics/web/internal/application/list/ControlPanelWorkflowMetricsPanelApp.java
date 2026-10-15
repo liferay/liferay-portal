@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
-import com.liferay.portal.workflow.metrics.web.internal.constants.WorkflowMetricsPortletKeys;
+import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,7 +42,7 @@ public class ControlPanelWorkflowMetricsPanelApp extends BasePanelApp {
 
 	@Override
 	public String getPortletId() {
-		return WorkflowMetricsPortletKeys.WORKFLOW_METRICS;
+		return WorkflowPortletKeys.WORKFLOW_METRICS;
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ControlPanelWorkflowMetricsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(jakarta.portlet.name=" + WorkflowMetricsPortletKeys.WORKFLOW_METRICS + ")"
+		target = "(jakarta.portlet.name=" + WorkflowPortletKeys.WORKFLOW_METRICS + ")"
 	)
 	private Portlet _portlet;
 

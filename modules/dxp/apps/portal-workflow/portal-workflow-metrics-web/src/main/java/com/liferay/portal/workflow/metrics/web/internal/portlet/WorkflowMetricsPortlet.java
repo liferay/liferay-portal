@@ -6,7 +6,7 @@
 package com.liferay.portal.workflow.metrics.web.internal.portlet;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portal.workflow.metrics.web.internal.constants.WorkflowMetricsPortletKeys;
+import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
 
 import jakarta.portlet.Portlet;
 
@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/view.jsp",
-		"jakarta.portlet.name=" + WorkflowMetricsPortletKeys.WORKFLOW_METRICS,
+		"jakarta.portlet.name=" + WorkflowPortletKeys.WORKFLOW_METRICS,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=power-user,user",
 		"jakarta.portlet.version=4.0"
