@@ -76,11 +76,13 @@ public class JUnitTestClassTest
 
 	@Test
 	public void testGetCachedTestClassReportsBuildCachingDisabled() {
-		BatchTestClassGroup batchTestClassGroup = Mockito.mock(
-			BatchTestClassGroup.class);
+		String testClassName = RandomTestUtil.randomString();
+
+		BatchTestClassGroup batchTestClassGroup = _getBatchTestClassGroup(
+			Collections.emptyList(), testClassName, _getTestClassReport());
 
 		JUnitTestClass jUnitTestClass = _getJUnitTestClass(
-			batchTestClassGroup, RandomTestUtil.randomString());
+			batchTestClassGroup, testClassName);
 
 		Mockito.doReturn(
 			false
