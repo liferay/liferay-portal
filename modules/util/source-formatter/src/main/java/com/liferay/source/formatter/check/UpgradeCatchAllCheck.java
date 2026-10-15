@@ -1135,9 +1135,9 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		else if (!_newMessage) {
 			Set<String> keys = jsonObject.keySet();
 
-			String from = jsonObject.getString("from");
-
 			boolean validatedSignature = false;
+
+			String from = jsonObject.getString("from");
 
 			if (from.contains(StringPool.OPEN_PARENTHESIS) &&
 				!from.startsWith("regex:") &&
