@@ -50,7 +50,9 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 		_hasError = true;
 
-		if (!MultiSessionErrors.contains(portletRequest, _key)) {
+		if ((_key == null) ||
+			!MultiSessionErrors.contains(portletRequest, _key)) {
+
 			return SKIP_BODY;
 		}
 
@@ -186,7 +188,9 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 			"liferay-ui:error:embed", String.valueOf(_embed));
 		httpServletRequest.setAttribute("liferay-ui:error:rowBreak", _rowBreak);
 
-		if (MultiSessionErrors.contains(portletRequest, _key)) {
+		if ((_key != null) &&
+			MultiSessionErrors.contains(portletRequest, _key)) {
+
 			String errorMarkerKey = (String)httpServletRequest.getAttribute(
 				"liferay-ui:error-marker:key");
 			String errorMarkerValue = (String)httpServletRequest.getAttribute(
