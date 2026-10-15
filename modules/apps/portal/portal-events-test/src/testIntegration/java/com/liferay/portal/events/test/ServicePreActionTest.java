@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.InstancePool;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -293,6 +294,18 @@ public class ServicePreActionTest {
 		plid = _getThemeDisplayPlid(true, contentPageLayout.getPlid(), false);
 
 		Assert.assertEquals(contentPageLayout.getPlid(), plid);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_mockHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		List<Layout> publishedLayouts = themeDisplay.getLayouts();
+
+		for (Layout layout : publishedLayouts) {
+			Assert.assertTrue(layout.isPublished());
+		}
+
+		Assert.assertTrue(ListUtil.isNotEmpty(publishedLayouts));
 
 		_mockHttpServletRequest.setRequestURI(
 			_portal.getPathMain() + "/portal/layout");
