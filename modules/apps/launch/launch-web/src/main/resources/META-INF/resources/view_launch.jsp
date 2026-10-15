@@ -50,6 +50,10 @@ if (Validator.isNotNull(launchSetName)) {
 						"published", viewLaunchDisplayContext.isPublished()
 					).put(
 						"publishLaunchURL", viewLaunchDisplayContext.getPublishLaunchURL()
+					).put(
+						"scheduledDate", viewLaunchDisplayContext.getScheduledDate()
+					).put(
+						"scheduleLaunchURL", viewLaunchDisplayContext.getScheduleLaunchURL()
 					).build()
 				%>'
 			/>

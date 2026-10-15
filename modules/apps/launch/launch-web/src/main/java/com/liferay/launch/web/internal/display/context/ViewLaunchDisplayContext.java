@@ -11,6 +11,7 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
+import com.liferay.launch.set.scheduler.LaunchSetScheduler;
 import com.liferay.launch.web.internal.constants.LaunchFDSNames;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
@@ -18,6 +19,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -34,6 +36,9 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.time.Instant;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -46,12 +51,14 @@ public class ViewLaunchDisplayContext {
 	public ViewLaunchDisplayContext(
 		HttpServletRequest httpServletRequest, ItemSelector itemSelector,
 		LaunchEntryManagerRegistry launchEntryManagerRegistry,
+		LaunchSetScheduler launchSetScheduler,
 		LiferayPortletResponse liferayPortletResponse,
 		ObjectEntryLocalService objectEntryLocalService) {
 
 		_httpServletRequest = httpServletRequest;
 		_itemSelector = itemSelector;
 		_launchEntryManagerRegistry = launchEntryManagerRegistry;
+		_launchSetScheduler = launchSetScheduler;
 		_liferayPortletResponse = liferayPortletResponse;
 		_objectEntryLocalService = objectEntryLocalService;
 	}
@@ -184,6 +191,31 @@ public class ViewLaunchDisplayContext {
 		).buildString();
 	}
 
+	public String getScheduleLaunchURL() {
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/launch/schedule_launch"
+		).setRedirect(
+			PortalUtil.getCurrentCompleteURL(_httpServletRequest)
+		).setParameter(
+			"launchSetId", getLaunchSetId()
+		).buildString();
+	}
+
+	public String getScheduledDate() throws PortalException {
+		Date scheduledDate = _launchSetScheduler.fetchScheduledDate(
+			getLaunchSetId());
+
+		if (scheduledDate == null) {
+			return null;
+		}
+
+		Instant instant = scheduledDate.toInstant();
+
+		return instant.toString();
+	}
+
 	public boolean isPublished() {
 		if (_published == null) {
 			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
@@ -273,6 +305,7 @@ public class ViewLaunchDisplayContext {
 	private final ItemSelector _itemSelector;
 	private final LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 	private Long _launchSetId;
+	private final LaunchSetScheduler _launchSetScheduler;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private Boolean _published;
