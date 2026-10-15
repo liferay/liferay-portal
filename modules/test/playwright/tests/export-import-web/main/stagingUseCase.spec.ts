@@ -891,11 +891,13 @@ test(
 
 		await journalPage.goto(site.friendlyUrlPath);
 
+		await reloadUntilVisible({
+			myLocator: page.getByText(selectedTitle1, {exact: true}),
+			page,
+		});
+
 		for (const title of [selectedTitle1, selectedTitle2]) {
-			await reloadUntilVisible({
-				myLocator: page.getByText(title, {exact: true}),
-				page,
-			});
+			await expect(page.getByText(title, {exact: true})).toBeVisible();
 		}
 
 		await expect(

@@ -571,11 +571,15 @@ test(
 			`/group${remoteSite.friendlyUrlPath}${PORTLET_URLS.journal}`
 		);
 
+		await reloadUntilVisible({
+			myLocator: remotePage.getByText(selectedTitle1, {exact: true}),
+			page: remotePage,
+		});
+
 		for (const title of [selectedTitle1, selectedTitle2]) {
-			await reloadUntilVisible({
-				myLocator: remotePage.getByText(title, {exact: true}),
-				page: remotePage,
-			});
+			await expect(
+				remotePage.getByText(title, {exact: true})
+			).toBeVisible();
 		}
 
 		await expect(
