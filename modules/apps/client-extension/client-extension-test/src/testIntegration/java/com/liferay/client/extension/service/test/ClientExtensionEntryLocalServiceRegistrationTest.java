@@ -6,7 +6,6 @@
 package com.liferay.client.extension.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
 import com.liferay.client.extension.service.persistence.ClientExtensionEntryPersistence;
@@ -22,7 +21,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -74,7 +72,6 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 		Assert.assertNotNull(_bundle);
 	}
 
-	@FeatureFlag(enable = false, value = "LPS-177027")
 	@Test
 	public void testSetAopProxyNotInterrupted() throws Throwable {
 		TransactionConfig.Builder builder = new TransactionConfig.Builder();
@@ -105,8 +102,7 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()));
 			clientExtensionEntry.setProperties(StringPool.BLANK);
 			clientExtensionEntry.setSourceCodeURL("http://foo.test/index.js");
-			clientExtensionEntry.setType(
-				ClientExtensionEntryConstants.TYPE_STATIC_CONTENT);
+			clientExtensionEntry.setType(RandomTestUtil.randomString());
 			clientExtensionEntry.setTypeSettings(StringPool.BLANK);
 			clientExtensionEntry.setStatus(WorkflowConstants.STATUS_APPROVED);
 			clientExtensionEntry.setStatusByUserId(user.getUserId());
