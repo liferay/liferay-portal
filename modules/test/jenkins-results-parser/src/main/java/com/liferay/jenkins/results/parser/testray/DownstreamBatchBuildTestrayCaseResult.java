@@ -78,6 +78,13 @@ public class DownstreamBatchBuildTestrayCaseResult
 		return _testrayCaseResultURL;
 	}
 
+	@Override
+	public synchronized void setTestrayCaseResultURL(URL testrayCaseResultURL) {
+		super.setTestrayCaseResultURL(testrayCaseResultURL);
+
+		_testrayCaseResultURL = testrayCaseResultURL;
+	}
+
 	private URL _testrayCaseResultURL;
 
 }

@@ -20,8 +20,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -602,6 +604,48 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 		super.update();
 	}
 
+	@Override
+	public void waitForDownstreamTestrayCaseResultURLs() {
+		long timeout =
+			JenkinsResultsParserUtil.getCurrentTimeMillis() +
+				_TESTRAY_CASE_RESULT_URLS_TIMEOUT;
+
+		Map<String, Future<URL>> downstreamTestrayCaseResultURLFutures =
+			_getDownstreamTestrayCaseResultURLFutures();
+
+		for (Map.Entry<String, Future<URL>> entry :
+				downstreamTestrayCaseResultURLFutures.entrySet()) {
+
+			Future<URL> future = entry.getValue();
+
+			long remaining =
+				timeout - JenkinsResultsParserUtil.getCurrentTimeMillis();
+
+			try {
+				future.get(Math.max(remaining, 0), TimeUnit.MILLISECONDS);
+			}
+			catch (ExecutionException executionException) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Unable to create Testray case result for ",
+						entry.getKey(), ":\n",
+						String.valueOf(executionException.getCause())));
+			}
+			catch (InterruptedException interruptedException) {
+				Thread currentThread = Thread.currentThread();
+
+				currentThread.interrupt();
+
+				return;
+			}
+			catch (TimeoutException timeoutException) {
+				System.out.println(
+					"Timed out waiting for the Testray case result for " +
+						entry.getKey());
+			}
+		}
+	}
+
 	protected BaseParentBuild(String buildURL) {
 		super(buildURL);
 	}
@@ -757,7 +801,10 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 			return;
 		}
 
-		_testrayCaseResultURLFutures.remove(axisName);
+		Map<String, Future<URL>> downstreamTestrayCaseResultURLFutures =
+			_getDownstreamTestrayCaseResultURLFutures();
+
+		downstreamTestrayCaseResultURLFutures.remove(axisName);
 	}
 
 	@Override
@@ -789,7 +836,10 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 			return;
 		}
 
-		_testrayCaseResultURLFutures.computeIfAbsent(
+		Map<String, Future<URL>> downstreamTestrayCaseResultURLFutures =
+			_getDownstreamTestrayCaseResultURLFutures();
+
+		downstreamTestrayCaseResultURLFutures.computeIfAbsent(
 			axisName,
 			key -> _testrayCaseResultExecutorService.submit(
 				new Callable<URL>() {
@@ -800,6 +850,23 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 					}
 
 				}));
+	}
+
+	private Map<String, Future<URL>>
+		_getDownstreamTestrayCaseResultURLFutures() {
+
+		if (_downstreamTestrayCaseResultURLFutures != null) {
+			return _downstreamTestrayCaseResultURLFutures;
+		}
+
+		synchronized (_downstreamTestrayCaseResultURLFuturesLock) {
+			if (_downstreamTestrayCaseResultURLFutures == null) {
+				_downstreamTestrayCaseResultURLFutures =
+					new ConcurrentHashMap<>();
+			}
+
+			return _downstreamTestrayCaseResultURLFutures;
+		}
 	}
 
 	private int _getInvokedGroupSize() {
@@ -820,13 +887,17 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 
 	private static final int _INVOKED_GROUP_SIZE_DEFAULT = 500;
 
+	private static final long _TESTRAY_CASE_RESULT_URLS_TIMEOUT = 5 * 60 * 1000;
+
 	private static final Pattern _buildURLPattern = Pattern.compile(
 		"http[s]?\\:\\/\\/(?<hostname>[^\\/]+)\\/.*");
+	private static final Object _downstreamTestrayCaseResultURLFuturesLock =
+		new Object();
 	private static final ExecutorService _testrayCaseResultExecutorService =
 		JenkinsResultsParserUtil.getNewThreadPoolExecutor(10, true);
 
 	private List<Build> _downstreamBuilds;
-	private final Map<String, Future<URL>> _testrayCaseResultURLFutures =
-		new ConcurrentHashMap<>();
+	private volatile Map<String, Future<URL>>
+		_downstreamTestrayCaseResultURLFutures;
 
 }

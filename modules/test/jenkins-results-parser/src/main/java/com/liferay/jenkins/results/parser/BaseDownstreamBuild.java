@@ -543,22 +543,22 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			return null;
 		}
 
-		TestrayCaseResult testrayCaseResult =
-			TestrayFactory.newDownstreamBuildTestrayCaseResult(
-				this, topLevelBuild.getTestrayContext());
-
-		if (testrayCaseResult == null) {
-			return null;
-		}
-
 		try {
+			TestrayCaseResult testrayCaseResult =
+				TestrayFactory.newDownstreamBuildTestrayCaseResult(
+					this, topLevelBuild.getTestrayContext());
+
+			if (testrayCaseResult == null) {
+				return null;
+			}
+
 			_testrayCaseResultURL = testrayCaseResult.getTestrayCaseResultURL();
 		}
-		catch (RuntimeException runtimeException) {
+		catch (Exception exception) {
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					"Unable to create Testray case result for ", getBuildURL(),
-					":\n", runtimeException.getMessage()));
+					":\n", exception.getMessage()));
 		}
 
 		return _testrayCaseResultURL;
@@ -1419,6 +1419,6 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 	private String _axisName;
 	private DownstreamBuildReport _downstreamBuildReport;
 	private Element _gitHubMessageElement;
-	private URL _testrayCaseResultURL;
+	private volatile URL _testrayCaseResultURL;
 
 }
