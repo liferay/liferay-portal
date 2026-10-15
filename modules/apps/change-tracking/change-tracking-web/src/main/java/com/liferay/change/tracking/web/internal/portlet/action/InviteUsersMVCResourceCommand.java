@@ -217,7 +217,7 @@ public class InviteUsersMVCResourceCommand
 				continue;
 			}
 
-			Role role = _publicationHelper.getRole(
+			Role role = _publicationHelper.getPublicationRole(
 				themeDisplay.getCompanyId(), roleValues[i]);
 
 			boolean addUserGroupRole = true;

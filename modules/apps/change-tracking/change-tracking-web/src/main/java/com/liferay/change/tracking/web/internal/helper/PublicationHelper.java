@@ -62,7 +62,8 @@ public class PublicationHelper {
 				continue;
 			}
 
-			Role role = getRole(ctCollection.getCompanyId(), roleValues[i]);
+			Role role = getPublicationRole(
+				ctCollection.getCompanyId(), roleValues[i]);
 
 			if (_userGroupRoleLocalService.hasUserGroupRole(
 					user.getUserId(), group.getGroupId(), role.getRoleId())) {
@@ -100,7 +101,9 @@ public class PublicationHelper {
 			true, null);
 	}
 
-	public Role getRole(long companyId, int roleValue) throws PortalException {
+	public Role getPublicationRole(long companyId, int roleValue)
+		throws PortalException {
+
 		String name = PublicationRoleConstants.getRoleName(roleValue);
 
 		Role role = _roleLocalService.fetchRole(companyId, name);
