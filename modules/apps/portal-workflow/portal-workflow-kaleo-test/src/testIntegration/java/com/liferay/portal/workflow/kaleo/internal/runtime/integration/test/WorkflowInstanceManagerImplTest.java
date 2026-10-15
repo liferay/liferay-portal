@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -235,6 +236,29 @@ public class WorkflowInstanceManagerImplTest
 				() -> workflowInstanceManager.getWorkflowInstance(
 					RandomTestUtil.randomLong(),
 					workflowInstanceLink.getWorkflowInstanceId()));
+		}
+	}
+
+	@Test
+	public void testLiberalStartWorkflowInstance() throws Exception {
+		try (ServiceRegistrationHolder serviceRegistrationHolder =
+				registryWorkflowHandler()) {
+
+			User user = UserTestUtil.addUser(TestPropsValues.getCompanyId());
+
+			Class<?> clazz = getClass();
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					user)) {
+
+				WorkflowHandlerRegistryUtil.startWorkflowInstance(
+					TestPropsValues.getCompanyId(), 0, user.getUserId(),
+					clazz.getName(), 1, null, new ServiceContext());
+			}
+
+			Assert.assertNotNull(
+				workflowInstanceLinkLocalService.getWorkflowInstanceLink(
+					TestPropsValues.getCompanyId(), 0, clazz.getName(), 1));
 		}
 	}
 

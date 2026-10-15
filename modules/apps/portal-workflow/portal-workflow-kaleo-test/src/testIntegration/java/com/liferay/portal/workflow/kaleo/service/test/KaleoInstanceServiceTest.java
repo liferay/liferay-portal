@@ -14,6 +14,8 @@ import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -24,6 +26,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
@@ -31,6 +34,7 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -45,6 +49,7 @@ import com.liferay.portal.kernel.workflow.WorkflowInstanceManager;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.workflow.configuration.WorkflowDefinitionConfiguration;
+import com.liferay.portal.workflow.constants.WorkflowActionKeys;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
 import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalService;
@@ -183,6 +188,62 @@ public class KaleoInstanceServiceTest {
 	}
 
 	@Test
+	public void testAddKaleoInstanceWithStartWorkflowInstancePermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		_addStartWorkflowInstancePermission(user);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			Assert.assertNotNull(
+				_kaleoInstanceService.addKaleoInstance(
+					"Single Approver", 1, null,
+					HashMapBuilder.<String, Serializable>put(
+						WorkflowConstants.CONTEXT_SERVICE_CONTEXT,
+						serviceContext
+					).build(),
+					serviceContext, false));
+		}
+	}
+
+	@Test
+	public void testAddKaleoInstanceWithoutStartWorkflowInstancePermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			AssertUtils.assertFailure(
+				PrincipalException.MustHavePermission.class,
+				StringBundler.concat(
+					"User ", user.getUserId(), " must have ",
+					WorkflowActionKeys.START_WORKFLOW_INSTANCE,
+					" permission for ", WorkflowConstants.RESOURCE_NAME,
+					StringPool.SPACE),
+				() -> _kaleoInstanceService.addKaleoInstance(
+					"Single Approver", 1, null,
+					HashMapBuilder.<String, Serializable>put(
+						WorkflowConstants.CONTEXT_SERVICE_CONTEXT,
+						serviceContext
+					).build(),
+					serviceContext, false));
+		}
+	}
+
+	@Test
 	public void testDeleteKaleoInstance() throws Exception {
 		KaleoInstance kaleoInstance = _addKaleoInstance();
 
@@ -306,6 +367,18 @@ public class KaleoInstanceServiceTest {
 			workflowInstanceLink.getWorkflowInstanceId());
 	}
 
+	private void _addStartWorkflowInstancePermission(User user)
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			WorkflowConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
+			String.valueOf(TestPropsValues.getGroupId()),
+			WorkflowActionKeys.START_WORKFLOW_INSTANCE);
+
+		_roleLocalService.addUserRole(user.getUserId(), role);
+	}
+
 	private User _addUser() throws Exception {
 		User user = UserTestUtil.addUser();
 
@@ -347,6 +420,9 @@ public class KaleoInstanceServiceTest {
 
 	private String _originalName;
 	private PermissionChecker _originalPermissionChecker;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private WorkflowDefinitionLinkLocalService
