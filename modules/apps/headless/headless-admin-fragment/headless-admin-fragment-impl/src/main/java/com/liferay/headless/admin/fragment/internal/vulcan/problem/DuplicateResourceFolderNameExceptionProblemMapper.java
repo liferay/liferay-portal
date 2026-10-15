@@ -6,14 +6,10 @@
 package com.liferay.headless.admin.fragment.internal.vulcan.problem;
 
 import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderNameException;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
-import java.util.Locale;
-
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Rubén Pulido
@@ -27,34 +23,9 @@ public class DuplicateResourceFolderNameExceptionProblemMapper
 		DuplicateResourceFolderNameException
 			duplicateResourceFolderNameException) {
 
-		return new Problem() {
-
-			@Override
-			public String getDetail(Locale locale) {
-				return _language.get(
-					locale, "a-resource-folder-with-that-name-already-exists");
-			}
-
-			@Override
-			public Status getStatus() {
-				return Status.CONFLICT;
-			}
-
-			@Override
-			public String getTitle(Locale locale) {
-				return _language.get(
-					locale, "a-resource-folder-with-that-name-already-exists");
-			}
-
-			@Override
-			public String getType() {
-				return DuplicateResourceFolderNameException.class.getName();
-			}
-
-		};
+		return ProblemUtil.getProblem(
+			Problem.Status.CONFLICT, duplicateResourceFolderNameException,
+			"a-resource-folder-with-that-name-already-exists");
 	}
-
-	@Reference
-	private Language _language;
 
 }
