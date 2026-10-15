@@ -20,6 +20,7 @@ import com.liferay.headless.admin.fragment.client.pagination.Pagination;
 import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFileResource;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFolderResource;
+import com.liferay.headless.admin.fragment.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -225,7 +226,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-88395")
+	@TestInfo({"LPD-88395", "LPD-107149"})
 	public void testPostSiteResourceFile() throws Exception {
 		super.testPostSiteResourceFile();
 
@@ -255,7 +256,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-102182"})
+	@TestInfo({"LPD-88395", "LPD-102182", "LPD-107149"})
 	public void testPutSiteResourceFile() throws Exception {
 		_testPutSiteResourceFile();
 		_testPutSiteResourceFileBatch();
@@ -723,8 +724,11 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		resourceFile.setFileURLReference(fileURLReference);
 
 		ResourceFile postResourceFile =
-			resourceFileResource.postSiteResourceFile(
-				testGroup.getExternalReferenceCode(), resourceFile);
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> resourceFileResource.postSiteResourceFile(
+						testGroup.getExternalReferenceCode(), resourceFile));
 
 		_assertContent(
 			expectedBytes, postResourceFile.getExternalReferenceCode(),
@@ -1610,8 +1614,15 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		String url = "http://127.0.0.1:1/" + RandomTestUtil.randomString();
 
-		_testPostSiteResourceFileFileURLReferenceProblemException(
-			"Unable to download file from " + url, url);
+		URLFetchSecurityCompanyConfigurationUtil.
+			swapURLLocalNetworkAccessEnabled(
+				true,
+				() -> {
+					_testPostSiteResourceFileFileURLReferenceProblemException(
+						"Unable to download file from " + url, url);
+
+					return null;
+				});
 	}
 
 	private void _testPostSiteResourceFileFileURLReferenceURLUnsupportedProtocolProblemException()
@@ -2143,9 +2154,13 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		updatedResourceFile.setFileURLReference(fileURLReference);
 
-		resourceFileResource.putSiteResourceFile(
-			testGroup.getExternalReferenceCode(),
-			postResourceFile.getExternalReferenceCode(), updatedResourceFile);
+		URLFetchSecurityCompanyConfigurationUtil.
+			swapURLLocalNetworkAccessEnabled(
+				true,
+				() -> resourceFileResource.putSiteResourceFile(
+					testGroup.getExternalReferenceCode(),
+					postResourceFile.getExternalReferenceCode(),
+					updatedResourceFile));
 
 		_assertContent(
 			_content2Bytes, postResourceFile.getExternalReferenceCode(),

@@ -43,6 +43,7 @@ import com.liferay.headless.admin.fragment.client.pagination.Pagination;
 import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.FragmentResource;
 import com.liferay.headless.admin.fragment.client.serdes.v1_0.ConfigurationSerDes;
+import com.liferay.headless.admin.fragment.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.info.collection.provider.InfoCollectionProvider;
@@ -283,8 +284,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
-			"LPD-107087", "LPD-107088", "LPD-107185", "LPD-107186",
-			"LPD-107187", "LPD-107188", "LPD-107189", "LPD-107706"
+			"LPD-107087", "LPD-107088", "LPD-107149", "LPD-107185",
+			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189", "LPD-107706"
 		}
 	)
 	public void testPostSiteFragment() throws Exception {
@@ -353,8 +354,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		{
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
-			"LPD-107087", "LPD-107088", "LPD-107185", "LPD-107186",
-			"LPD-107187", "LPD-107188", "LPD-107189", "LPD-107706"
+			"LPD-107087", "LPD-107088", "LPD-107149", "LPD-107185",
+			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189", "LPD-107706"
 		}
 	)
 	public void testPutSiteFragment() throws Exception {
@@ -1263,8 +1264,11 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		fragment.setThumbnailURLReference(thumbnailURLReference);
 
-		Fragment postFragment = _postSiteFragment(
-			fragment, "thumbnailURLReference");
+		Fragment postFragment =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> _postSiteFragment(fragment, "thumbnailURLReference"));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -1315,9 +1319,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		fragment.setThumbnailURLReference(thumbnailURLReference);
 
-		Fragment putFragment = _putSiteFragment(
-			fragment.getExternalReferenceCode(), fragment,
-			"thumbnailURLReference");
+		Fragment putFragment =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> _putSiteFragment(
+						fragment.getExternalReferenceCode(), fragment,
+						"thumbnailURLReference"));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =
@@ -2969,7 +2977,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"http://invalid.example.test/" + RandomTestUtil.randomString();
 
 		_testPostFragmentThumbnailURLReferenceProblemException(
-			"Unable to download file from " + url,
+			"Unable to download file from " + url +
+				" because of restricted host invalid.example.test",
 			RandomTestUtil.randomString(), url);
 	}
 
