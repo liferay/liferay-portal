@@ -128,18 +128,30 @@ public class WorkflowInstanceResourceImpl
 			WorkflowInstanceSubmit workflowInstanceSubmit)
 		throws Exception {
 
-		return _toWorkflowInstance(
-			_workflowInstanceManager.startWorkflowInstance(
-				contextCompany.getCompanyId(),
-				GetterUtil.getLong(workflowInstanceSubmit.getSiteId()),
-				contextUser.getUserId(),
-				workflowInstanceSubmit.getWorkflowDefinitionName(),
-				GetterUtil.getInteger(
-					workflowInstanceSubmit.getWorkflowDefinitionVersion()),
-				workflowInstanceSubmit.getTransitionName(),
-				_toWorkflowContext(
-					workflowInstanceSubmit.getContext(), false,
-					GetterUtil.getLong(workflowInstanceSubmit.getSiteId()))));
+		try {
+			return _toWorkflowInstance(
+				_workflowInstanceManager.startWorkflowInstance(
+					contextCompany.getCompanyId(),
+					GetterUtil.getLong(workflowInstanceSubmit.getSiteId()),
+					contextUser.getUserId(),
+					workflowInstanceSubmit.getWorkflowDefinitionName(),
+					GetterUtil.getInteger(
+						workflowInstanceSubmit.getWorkflowDefinitionVersion()),
+					workflowInstanceSubmit.getTransitionName(),
+					_toWorkflowContext(
+						workflowInstanceSubmit.getContext(), false,
+						GetterUtil.getLong(
+							workflowInstanceSubmit.getSiteId()))));
+		}
+		catch (WorkflowException workflowException) {
+			Throwable throwable = workflowException.getCause();
+
+			if (throwable instanceof PrincipalException) {
+				throw (PrincipalException)throwable;
+			}
+
+			throw workflowException;
+		}
 	}
 
 	private Map<String, Serializable> _getWorkflowContext(
