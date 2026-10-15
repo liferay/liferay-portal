@@ -63,13 +63,16 @@ public class JUnitTestClass extends BaseTestClass {
 
 		String batchName = batchTestClassGroup.getBatchName();
 
-		if (_cachedTestClassReportsMap.containsKey(batchName)) {
-			return _cachedTestClassReportsMap.get(batchName);
+		List<TestClassReport> cachedTestClassReports =
+			_cachedTestClassReportsMap.get(batchName);
+
+		if (cachedTestClassReports != null) {
+			return cachedTestClassReports;
 		}
 
 		String testClassName = getTestClassName();
 
-		List<TestClassReport> cachedTestClassReports = new ArrayList<>();
+		cachedTestClassReports = new ArrayList<>();
 
 		TestClassReport testClassReport =
 			batchTestClassGroup.getCachedTestClassReport(testClassName);
