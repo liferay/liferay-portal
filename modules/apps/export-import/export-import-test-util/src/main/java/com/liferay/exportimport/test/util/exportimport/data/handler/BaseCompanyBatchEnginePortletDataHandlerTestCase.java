@@ -44,8 +44,8 @@ import org.osgi.framework.FrameworkUtil;
 /**
  * @author Alberto Javier Moreno Lage
  */
-public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase
-	extends BaseBatchEnginePortletDataHandlerTestCase {
+public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
+	extends BaseBatchEnginePortletDataHandlerTestCase<T> {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {

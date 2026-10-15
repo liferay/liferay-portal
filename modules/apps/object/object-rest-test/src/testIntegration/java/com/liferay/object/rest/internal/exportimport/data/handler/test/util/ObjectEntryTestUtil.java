@@ -35,38 +35,34 @@ import java.util.Objects;
 public class ObjectEntryTestUtil {
 
 	public static ObjectEntry addEmptyObjectEntry(
-			ObjectDefinition objectDefinition, long groupId, long userId)
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId, long userId)
 		throws Exception {
 
 		objectDefinition = _getObjectDefinition(objectDefinition, groupId);
 
 		return ObjectEntryLocalServiceUtil.getOrAddEmptyObjectEntry(
-			RandomTestUtil.randomString(),
-			_getGroupId(objectDefinition, groupId), userId,
-			objectDefinition.getObjectDefinitionId());
+			externalReferenceCode, _getGroupId(objectDefinition, groupId),
+			userId, objectDefinition.getObjectDefinitionId());
 	}
 
 	public static ObjectEntry addObjectEntry(
-			ObjectDefinition objectDefinition, long groupId, Date modifiedDate,
-			long userId)
+			ObjectDefinition objectDefinition, String externalReferenceCode,
+			long groupId, long userId)
 		throws Exception {
 
 		objectDefinition = _getObjectDefinition(objectDefinition, groupId);
 
 		groupId = _getGroupId(objectDefinition, groupId);
 
-		ObjectEntry objectEntry = ObjectEntryLocalServiceUtil.addObjectEntry(
-			groupId, userId, objectDefinition.getObjectDefinitionId(),
+		return ObjectEntryLocalServiceUtil.addOrUpdateObjectEntry(
+			externalReferenceCode, groupId, userId,
+			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
 			Collections.singletonMap(
 				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()),
 			ServiceContextTestUtil.getServiceContext(
 				objectDefinition.getCompanyId(), groupId, userId));
-
-		objectEntry.setModifiedDate(modifiedDate);
-
-		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
 	}
 
 	public static ObjectEntry fetchObjectEntry(
@@ -128,6 +124,15 @@ public class ObjectEntryTestUtil {
 			userId, objectDefinition.getObjectDefinitionId());
 	}
 
+	public static ObjectEntry updateModifiedDate(
+			ObjectEntry objectEntry, Date modifiedDate)
+		throws Exception {
+
+		objectEntry.setModifiedDate(modifiedDate);
+
+		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
+	}
+
 	public static ObjectEntry updateObjectEntry(ObjectEntry objectEntry)
 		throws Exception {
 
@@ -139,6 +144,14 @@ public class ObjectEntryTestUtil {
 			ServiceContextTestUtil.getServiceContext(
 				objectEntry.getCompanyId(), objectEntry.getGroupId(),
 				objectEntry.getUserId()));
+	}
+
+	public static ObjectEntry updateUserId(ObjectEntry objectEntry, long userId)
+		throws Exception {
+
+		objectEntry.setUserId(userId);
+
+		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
 	}
 
 	private static long _getGroupId(

@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 @FeatureFlags(featureFlags = @FeatureFlag("LPD-43996"))
 @RunWith(Arquillian.class)
 public class DepotObjectEntryBatchEnginePortletDataHandlerTest
-	extends BaseDepotBatchEnginePortletDataHandlerTestCase {
+	extends BaseDepotBatchEnginePortletDataHandlerTestCase<ObjectEntry> {
 
 	@ClassRule
 	@Rule
@@ -65,21 +65,19 @@ public class DepotObjectEntryBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected String addEmptyEntry(long groupId, long userId) throws Exception {
-		ObjectEntry objectEntry = ObjectEntryTestUtil.addEmptyObjectEntry(
-			_objectDefinition, groupId, userId);
+	protected void addEmptyEntry(String externalReferenceCode)
+		throws Exception {
 
-		return objectEntry.getExternalReferenceCode();
+		ObjectEntryTestUtil.addEmptyObjectEntry(
+			_objectDefinition, externalReferenceCode, group.getGroupId(),
+			TestPropsValues.getUserId());
 	}
 
 	@Override
-	protected String addEntry(long groupId, Date modifiedDate, long userId)
-		throws Exception {
-
-		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			_objectDefinition, groupId, modifiedDate, userId);
-
-		return objectEntry.getExternalReferenceCode();
+	protected void addEntry(String externalReferenceCode) throws Exception {
+		ObjectEntryTestUtil.addObjectEntry(
+			_objectDefinition, externalReferenceCode, group.getGroupId(),
+			TestPropsValues.getUserId());
 	}
 
 	@Override
@@ -87,19 +85,16 @@ public class DepotObjectEntryBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected void deleteEntry(String externalReferenceCode, long groupId)
-		throws Exception {
-
-		_objectEntryLocalService.deleteObjectEntry(
-			_fetchObjectEntry(externalReferenceCode, groupId));
+	protected void deleteEntry(ObjectEntry objectEntry) throws Exception {
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 	}
 
 	@Override
-	protected Object fetchEntry(String externalReferenceCode, long groupId)
+	protected ObjectEntry fetchEntry(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		ObjectEntry objectEntry = _fetchObjectEntry(
-			externalReferenceCode, groupId);
+		ObjectEntry objectEntry = ObjectEntryTestUtil.fetchObjectEntry(
+			_objectDefinition, externalReferenceCode, groupId);
 
 		if ((objectEntry == null) || objectEntry.isInTrash()) {
 			return null;
@@ -109,12 +104,7 @@ public class DepotObjectEntryBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected long getCreatorUserId(String externalReferenceCode, long groupId)
-		throws Exception {
-
-		ObjectEntry objectEntry = _fetchObjectEntry(
-			externalReferenceCode, groupId);
-
+	protected long getCreatorUserId(ObjectEntry objectEntry) {
 		return objectEntry.getUserId();
 	}
 
@@ -129,22 +119,12 @@ public class DepotObjectEntryBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected long getPrimaryKey(String externalReferenceCode, long groupId)
-		throws Exception {
-
-		ObjectEntry objectEntry = _fetchObjectEntry(
-			externalReferenceCode, groupId);
-
+	protected long getPrimaryKey(ObjectEntry objectEntry) {
 		return objectEntry.getObjectEntryId();
 	}
 
 	@Override
-	protected int getStatus(String externalReferenceCode, long groupId)
-		throws Exception {
-
-		ObjectEntry objectEntry = _fetchObjectEntry(
-			externalReferenceCode, groupId);
-
+	protected int getStatus(ObjectEntry objectEntry) {
 		return objectEntry.getStatus();
 	}
 
@@ -164,19 +144,23 @@ public class DepotObjectEntryBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected void updateEntry(String externalReferenceCode, long groupId)
-		throws Exception {
-
-		ObjectEntryTestUtil.updateObjectEntry(
-			_fetchObjectEntry(externalReferenceCode, groupId));
+	protected void updateEntry(ObjectEntry objectEntry) throws Exception {
+		ObjectEntryTestUtil.updateObjectEntry(objectEntry);
 	}
 
-	private ObjectEntry _fetchObjectEntry(
-			String externalReferenceCode, long groupId)
+	@Override
+	protected void updateModifiedDate(
+			ObjectEntry objectEntry, Date modifiedDate)
 		throws Exception {
 
-		return ObjectEntryTestUtil.fetchObjectEntry(
-			_objectDefinition, externalReferenceCode, groupId);
+		ObjectEntryTestUtil.updateModifiedDate(objectEntry, modifiedDate);
+	}
+
+	@Override
+	protected void updateUserId(ObjectEntry objectEntry, long userId)
+		throws Exception {
+
+		ObjectEntryTestUtil.updateUserId(objectEntry, userId);
 	}
 
 	@DeleteAfterTestRun

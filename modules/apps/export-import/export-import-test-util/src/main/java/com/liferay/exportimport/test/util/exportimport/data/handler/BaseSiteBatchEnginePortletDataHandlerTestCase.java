@@ -30,8 +30,8 @@ import org.junit.Before;
 /**
  * @author Alberto Javier Moreno Lage
  */
-public abstract class BaseSiteBatchEnginePortletDataHandlerTestCase
-	extends BaseBatchEnginePortletDataHandlerTestCase {
+public abstract class BaseSiteBatchEnginePortletDataHandlerTestCase<T>
+	extends BaseBatchEnginePortletDataHandlerTestCase<T> {
 
 	@Before
 	@Override
