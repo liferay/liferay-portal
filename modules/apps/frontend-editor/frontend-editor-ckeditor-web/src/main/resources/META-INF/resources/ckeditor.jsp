@@ -460,9 +460,11 @@ name = HtmlUtil.escapeJS(name);
 		if (!editorNode) {
 			editorContainer.setHTML('');
 
-			editorNode = A.Node.create('<%= HtmlUtil.escapeJS(editor) %>');
+			editorContainer.appendChild(
+				A.Node.create('<%= HtmlUtil.escapeJS(editor) %>')
+			);
 
-			editorContainer.appendChild(editorNode);
+			editorNode = A.one('#<%= textareaName %>');
 		}
 
 		if (editorNode) {
