@@ -330,11 +330,11 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	private List<String> _getRoleNames(RoleResource roleResource)
 		throws Exception {
 
-		Page<Role> rolesPage = roleResource.getAssetLibraryRolesPage(
+		Page<Role> page = roleResource.getAssetLibraryRolesPage(
 			testDepotEntryGroup.getExternalReferenceCode(),
 			Pagination.of(1, 100));
 
-		return TransformUtil.transform(rolesPage.getItems(), Role::getName);
+		return TransformUtil.transform(page.getItems(), Role::getName);
 	}
 
 	private RoleResource _getRoleResource(String roleName) throws Exception {
