@@ -164,6 +164,7 @@ public class GroupSelectorDisplayContextTest {
 	public void testGetGroupTypes() {
 		_testGetGroupTypesWithDefaultSelectedTabRequestAttribute();
 		_testGetGroupTypesWithFileItemSelectorCriterion();
+		_testGetGroupTypesWithGroupTypesParameter();
 		_testGetGroupTypesWithJournalArticleInfoItemItemSelectorCriterion();
 		_testGetGroupTypesWithLegacyItemSelectorViewSelectedTab();
 		_testGetGroupTypesWithObjectEntryItemSelectorViewSelectedTab();
@@ -278,6 +279,21 @@ public class GroupSelectorDisplayContextTest {
 
 		Assert.assertEquals(
 			Collections.singleton("test"),
+			groupSelectorDisplayContext.getGroupTypes());
+	}
+
+	private void _testGetGroupTypesWithGroupTypesParameter() {
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.addParameter(
+			"groupTypes", RandomTestUtil.randomString() + ",space-depot");
+
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(mockLiferayResourceRequest);
+
+		Assert.assertEquals(
+			Collections.singleton("space-depot"),
 			groupSelectorDisplayContext.getGroupTypes());
 	}
 
