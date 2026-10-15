@@ -17,6 +17,7 @@ import com.liferay.document.library.kernel.exception.InvalidFileEntryTypeExcepti
 import com.liferay.document.library.kernel.exception.InvalidFileVersionException;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.exception.NoSuchFileException;
+import com.liferay.document.library.kernel.exception.NoSuchFileVersionException;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.expiration.ExpireAllVersions;
 import com.liferay.document.library.kernel.model.DLFileEntry;
@@ -2581,6 +2582,12 @@ public class DLFileEntryLocalServiceImpl
 				DLFileVersion existingDLFileVersion =
 					_dlFileVersionPersistence.findByPrimaryKey(
 						existingDLFileVersionId);
+
+				if (existingDLFileVersion.getFileEntryId() != fileEntryId) {
+					throw new NoSuchFileVersionException(
+						"No DLFileVersion exists with the primary key " +
+							existingDLFileVersionId);
+				}
 
 				dlFileVersion = _updateFileVersion(
 					user, existingDLFileVersion, null,
