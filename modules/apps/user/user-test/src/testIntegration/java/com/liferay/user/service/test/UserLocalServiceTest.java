@@ -2413,9 +2413,6 @@ public class UserLocalServiceTest {
 			GroupConstants.DEFAULT_LIVE_GROUP_ID, User.class.getName(), 0, 0,
 			"Single Approver", 1);
 
-		User user1 = _addUserWithWorkflow();
-		User user2 = _addUserWithWorkflow();
-
 		AuditRequestContext auditRequestContext =
 			AuditRequestContextThreadLocal.getAuditRequestContext();
 
@@ -2448,6 +2445,8 @@ public class UserLocalServiceTest {
 				WorkflowHandlerRegistryUtil.getWorkflowHandler(
 					User.class.getName());
 
+			User user1 = _addUserWithWorkflow();
+
 			user1 = workflowHandler.updateStatus(
 				WorkflowConstants.STATUS_APPROVED, _getWorkflowContext(user1));
 
@@ -2478,6 +2477,8 @@ public class UserLocalServiceTest {
 					null);
 
 			try {
+				User user2 = _addUserWithWorkflow();
+
 				Assert.assertThrows(
 					ModelListenerException.class,
 					() -> workflowHandler.updateStatus(
