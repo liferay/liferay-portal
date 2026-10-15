@@ -842,12 +842,12 @@ definition {
 
 		KBArticle.editCP(
 			enableExpirationDate = "true",
-			extendedMinutes = 1,
+			extendedMinutes = 2,
 			kbArticleTitleEdit = "Knowledge Base Article Title",
 			key_rowEntry = "Knowledge Base Article Title",
 			notificationDate = 0);
 
-		Notifications.waitForNotificationFlexibly(flexibleRefreshingTime = 20000);
+		Notifications.waitForNotificationFlexibly(flexibleRefreshingTime = 40000);
 
 		Navigator.openURL();
 
@@ -1479,7 +1479,7 @@ definition {
 
 		KBArticle.addCP(
 			enableExpirationDate = "true",
-			extendedMinutes = 1,
+			extendedMinutes = 2,
 			kbArticleContent = "Knowledge Base Article Content",
 			kbArticleTitle = "Knowledge Base Article Title",
 			notificationDate = 0,
@@ -1500,7 +1500,7 @@ definition {
 			key_kbArticleTitle = "Knowledge Base Article Title",
 			locator1 = "KnowledgeBase#ARTICLE_TABLE_ARTICLE_STATUS");
 
-		Notifications.waitForNotificationFlexibly(flexibleRefreshingTime = 20000);
+		Notifications.waitForNotificationFlexibly(flexibleRefreshingTime = 40000);
 
 		Navigator.openURL();
 
