@@ -115,6 +115,12 @@ public class GroupSelectorDisplayContext {
 		).setParameter(
 			"groupType", groupType
 		).setParameter(
+			"groupTypes",
+			ParamUtil.getString(_liferayPortletRequest, "groupTypes"), false
+		).setParameter(
+			"scopeGroupOnly",
+			ParamUtil.getString(_liferayPortletRequest, "scopeGroupOnly"), false
+		).setParameter(
 			"scopeGroupType", _isScopeGroupType()
 		).setParameter(
 			"selectedTab", _getSelectedTab()
@@ -141,6 +147,13 @@ public class GroupSelectorDisplayContext {
 		_groupTypes =
 			GroupItemSelectorProviderRegistryUtil.
 				getGroupItemSelectorProviderTypes();
+
+		List<String> groupTypes = StringUtil.split(
+			ParamUtil.getString(_liferayPortletRequest, "groupTypes"));
+
+		if (!groupTypes.isEmpty()) {
+			_groupTypes.retainAll(groupTypes);
+		}
 
 		for (String criterion :
 				ParamUtil.getStringValues(_liferayPortletRequest, "criteria")) {

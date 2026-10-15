@@ -15,9 +15,11 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntryListBuilder;
 
@@ -56,7 +58,18 @@ public class ItemSelectorViewDescriptorRendererDisplayContext {
 		return BreadcrumbEntryListBuilder.addAll(
 			() -> GroupSelectorBreadcrumbUtil.getBreadcrumbEntries(
 				themeDisplay.getScopeGroup(), _httpServletRequest,
-				_liferayPortletResponse, currentURL)
+				_liferayPortletResponse,
+				PortletURLBuilder.create(
+					PortletURLUtil.clone(currentURL, _liferayPortletResponse)
+				).setParameter(
+					"groupTypes",
+					StringUtil.merge(
+						_itemSelectorViewDescriptor.getGroupTypes()),
+					false
+				).setParameter(
+					"scopeGroupOnly",
+					_itemSelectorViewDescriptor.isScopeGroupOnly()
+				).buildPortletURL())
 		).add(
 			_getCurrentGroupBreadcrumbEntry(currentURL)
 		).build();
