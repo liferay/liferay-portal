@@ -174,7 +174,8 @@ public abstract class BaseDB implements DB {
 			String newColumnName)
 		throws Exception {
 
-		validateColumnName(tableName, oldColumnName, newColumnName);
+		newColumnName = getNewColumnName(
+			newColumnName, oldColumnName, tableName);
 
 		StringBundler sb = new StringBundler(6);
 
@@ -1534,6 +1535,26 @@ public abstract class BaseDB implements DB {
 		return null;
 	}
 
+	protected String getNewColumnName(
+		String newColumnName, String oldColumnName, String tableName) {
+
+		int index = newColumnName.indexOf(CharPool.SPACE);
+
+		if (index == -1) {
+			return newColumnName;
+		}
+
+		if (_log.isWarnEnabled()) {
+			_log.warn(
+				StringBundler.concat(
+					"Ignoring column definition \"", newColumnName,
+					"\" passed as the new name of ", tableName,
+					StringPool.PERIOD, oldColumnName));
+		}
+
+		return newColumnName.substring(0, index);
+	}
+
 	protected List<QueryInfo> getQueryInfos(
 			Connection connection, String sql, long threshold)
 		throws SQLException {
@@ -1642,20 +1663,6 @@ public abstract class BaseDB implements DB {
 
 	protected abstract String reword(String data)
 		throws IOException, SQLException;
-
-	protected void validateColumnName(
-		String tableName, String oldColumnName, String newColumnName) {
-
-		if (newColumnName.indexOf(CharPool.SPACE) == -1) {
-			return;
-		}
-
-		throw new IllegalArgumentException(
-			StringBundler.concat(
-				"Column ", tableName, StringPool.PERIOD, oldColumnName,
-				" must be renamed with the new column name only, not \"",
-				newColumnName, "\""));
-	}
 
 	protected static final String ALTER_COLUMN_NAME = "alter_column_name ";
 

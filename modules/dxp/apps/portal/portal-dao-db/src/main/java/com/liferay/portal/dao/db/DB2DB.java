@@ -55,7 +55,8 @@ public class DB2DB extends BaseDB {
 			String newColumnName)
 		throws Exception {
 
-		validateColumnName(tableName, oldColumnName, newColumnName);
+		newColumnName = getNewColumnName(
+			newColumnName, oldColumnName, tableName);
 
 		List<IndexMetadata> indexMetadatas = dropIndexes(
 			connection, tableName, oldColumnName);

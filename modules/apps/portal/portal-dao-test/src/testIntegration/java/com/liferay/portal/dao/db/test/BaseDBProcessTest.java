@@ -257,26 +257,23 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	public void testAlterColumnNameWithType() throws Exception {
 		_addIndex(new String[] {"typeVarchar", "typeBoolean"});
 
-		try {
-			alterColumnName(
-				_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
+		alterColumnName(
+			_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
 
-			Assert.fail();
-		}
-		catch (IllegalArgumentException illegalArgumentException) {
-			Assert.assertTrue(
-				_dbInspector.hasColumnType(
-					_TABLE_NAME, "typeVarchar", "VARCHAR(75) null"));
+		alterColumnName(
+			_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
 
-			Assert.assertFalse(
-				_dbInspector.hasColumn(_TABLE_NAME, "typeVarcharTest"));
+		Assert.assertFalse(_dbInspector.hasColumn(_TABLE_NAME, "typeVarchar"));
 
-			_validateIndex(
-				new String[] {
-					_dbInspector.normalizeName("typeVarchar"),
-					_dbInspector.normalizeName("typeBoolean")
-				});
-		}
+		Assert.assertTrue(
+			_dbInspector.hasColumnType(
+				_TABLE_NAME, "typeVarcharTest", "VARCHAR(75) null"));
+
+		_validateIndex(
+			new String[] {
+				_dbInspector.normalizeName("typeVarcharTest"),
+				_dbInspector.normalizeName("typeBoolean")
+			});
 	}
 
 	@Test

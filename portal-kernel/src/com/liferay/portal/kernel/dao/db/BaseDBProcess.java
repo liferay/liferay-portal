@@ -10,6 +10,7 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
@@ -194,6 +195,20 @@ public abstract class BaseDBProcess implements DBProcess {
 	protected void alterColumnName(
 			String tableName, String oldColumnName, String newColumnName)
 		throws Exception {
+
+		int index = newColumnName.indexOf(CharPool.SPACE);
+
+		if (index != -1) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Ignoring column definition \"", newColumnName,
+						"\" passed as the new name of ", tableName,
+						StringPool.PERIOD, oldColumnName));
+			}
+
+			newColumnName = newColumnName.substring(0, index);
+		}
 
 		if (!hasColumn(tableName, oldColumnName)) {
 			if (hasColumn(tableName, newColumnName)) {

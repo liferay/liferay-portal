@@ -2063,10 +2063,11 @@ Long Text stores plain text, so project and task descriptions could not carry he
 
 ### What changed?
 
-The column rename operation takes the new column name only. The third argument of `UpgradeProcessFactory.alterColumnName`, `BaseDBProcess.alterColumnName` and `DB.alterColumnName` was the new column definition, for example `"iFrameURL VARCHAR(1024) null"`, and is now the new column name, for example `"iFrameURL"`. The same applies to the second argument of `LiveUpgradeProcessFactory.alterColumnName`. A new column name that still contains a type throws an `IllegalArgumentException` before any SQL runs. On MySQL and MariaDB the rename now runs `rename column` instead of `change column`. The `alter_column_name <table> <old column> <new column>` statement that `runSQL` accepts also takes the new column name only and rejects a trailing type.
+The column rename operation takes the new column name only. The third argument of `UpgradeProcessFactory.alterColumnName`, `BaseDBProcess.alterColumnName` and `DB.alterColumnName` was the new column definition, for example `"iFrameURL VARCHAR(1024) null"`, and is now the new column name, for example `"iFrameURL"`. The same applies to the second argument of `LiveUpgradeProcessFactory.alterColumnName`. A new column name that still contains a type is renamed to its first word, and a warning is logged. On MySQL and MariaDB the rename now runs `rename column` instead of `change column`. The `alter_column_name <table> <old column> <new column>` statement that `runSQL` accepts also takes the new column name only and rejects a trailing type.
+
 ### Who is affected?
 
-This affects developers whose upgrade processes rename a column with one of these methods. The code still compiles because the argument is still a `String`, but an upgrade step that passes a type fails when it runs.
+This affects developers whose upgrade processes rename a column with one of these methods. The code still compiles because the argument is still a `String`, and an upgrade step that passes a type logs a warning when it runs.
 
 ### How should I update my code?
 
