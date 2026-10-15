@@ -172,15 +172,15 @@ test('The user can configure feeds on rss publisher widget', async ({
 		createReadStream(path.join(__dirname, '/dependencies/rss2.0.xml'))
 	);
 
-	await configurationIFrame
-		.getByLabel('URL')
-		.fill(liferayConfig.environment.baseUrl + file.contentUrl);
+	const feedURL = liferayConfig.environment.baseUrl + file.contentUrl;
+
+	await configurationIFrame.getByLabel('URL').fill(feedURL);
 
 	await widgetPagePage.saveAndClose('RSS Publisher');
 
-	// Assert feed title
+	// Assert local network feed is refused
 
-	await expect(page.getByText('LA Times: Technology News')).toBeVisible();
+	await expect(page.getByText(`${feedURL} cannot be found.`)).toBeVisible();
 
 	// Delete feed
 
