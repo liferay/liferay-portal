@@ -1,4 +1,7 @@
 {{- if .Values.service.enabled }}
+{{- if not (and .Values.workload.enabled (eq .Values.workload.kind "Deployment")) }}
+{{- fail "workload.kind must be an enabled Deployment when service.enabled is true" }}
+{{- end }}
 apiVersion: v1
 kind: Service
 metadata:

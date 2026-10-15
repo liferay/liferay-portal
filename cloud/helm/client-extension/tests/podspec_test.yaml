@@ -10,10 +10,18 @@ set:
         virtualInstanceId: other.test
     image:
         repository: liferay/jar-runner
+        tag: 1.0.0
 suite: Pod spec
 templates:
     -   templates/deployment.yaml
 tests:
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: image.tag is required
+        it: Fails without an image tag
+        set:
+            image:
+                tag: ""
     -   asserts:
             -   contains:
                     content:
@@ -31,6 +39,10 @@ tests:
                         name: LIFERAY_ROUTES_CLIENT_EXTENSION
                     path: spec.template.spec.containers[0].env
         it: Mounts no OAuth2 credentials when the configs declare no OAuth2 application
+        set:
+            clientExtension:
+                configs:
+                    com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration: {}
     -   asserts:
             -   notExists:
                     path: spec.template.spec.volumes[?(@.name == "artifact")]

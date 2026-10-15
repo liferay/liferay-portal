@@ -12,6 +12,7 @@ clientExtension:
     serviceId: able
 image:
     repository: liferay/jar-runner
+    tag: 1.0.0
 network:
     enabled: true
     gatewayName: liferay-gateway

@@ -9,6 +9,7 @@ set:
         serviceId: able
     image:
         repository: liferay/batch
+        tag: 1.0.0
 suite: Workload
 templates:
     -   templates/cronjob.yaml

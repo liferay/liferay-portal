@@ -12,7 +12,7 @@ fullnameOverride: ""
 image:
     pullPolicy: IfNotPresent
     repository: ""
-    tag: latest
+    tag: ""
 imagePullSecrets: []
 labels: {}
 nameOverride: ""

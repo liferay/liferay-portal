@@ -34,8 +34,7 @@ helm.sh/chart: {{ include "liferay-client-extension.chart" . }}
 
 {{- define "liferay-client-extension.requiresExtInit" -}}
 {{- range $configurationKey, $_ := .Values.clientExtension.configs }}
-{{- if or (hasPrefix "com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationHeadlessServerConfiguration" $configurationKey) (hasPrefix
-"com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration" $configurationKey) -}}
+{{- if regexMatch "^com\\.liferay\\.oauth2\\.provider\\.configuration\\.OAuth2ProviderApplication(HeadlessServer|UserAgent)Configuration(~[^/]+|_[^~/]+|-[^~_/]+)(/.*)?$" $configurationKey -}}
 true
 {{- end }}
 {{- end }}
@@ -43,7 +42,7 @@ true
 
 {{- define "liferay-client-extension.selectorLabels" -}}
 app.kubernetes.io/instance: {{ include "liferay-client-extension.fullname" . }}
-app.kubernetes.io/name: {{ include "liferay-client-extension.serviceId" . }}
+app.kubernetes.io/name: {{ include "liferay-client-extension.serviceId" . | quote }}
 {{- end }}
 
 {{- define "liferay-client-extension.serviceAccountName" -}}

@@ -68,11 +68,10 @@ tests:
                     value:
                         -   able.example.com
                         -   www.able.example.com
-        it: Routes the given hostnames instead of the domain
+        it: Routes the given hostnames as well as the domain
         set:
             clientExtension:
-                domain: ignored.example.com
+                domain: able.example.com
             network:
                 hostnames:
-                    -   able.example.com
                     -   www.able.example.com

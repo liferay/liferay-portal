@@ -51,6 +51,7 @@ tests:
         set:
             image:
                 repository: liferay/batch
+                tag: 1.0.0
             workload:
                 kind: Job
     -   asserts:
@@ -60,6 +61,17 @@ tests:
         set:
             workload:
                 enabled: false
+    -   asserts:
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: "123"
+            -   equal:
+                    path: spec.serviceId
+                    value: "123"
+        it: Renders a numeric serviceId as a string
+        set:
+            clientExtension:
+                serviceId: "123"
     -   asserts:
             -   equal:
                     path: spec.configs

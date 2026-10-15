@@ -1,15 +1,3 @@
-{{- define "liferay-client-extension.podTemplateMetadata" -}}
-{{- with .Values.podAnnotations }}
-annotations:
-    {{- toYaml . | nindent 4 }}
-{{- end }}
-labels:
-    {{- include "liferay-client-extension.selectorLabels" . | nindent 4 }}
-    {{- with .Values.podLabels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-{{- end }}
-
 {{- define "liferay-client-extension.podSpec" -}}
 {{- $extInit := include "liferay-client-extension.requiresExtInit" . -}}
 {{- with .Values.workload.affinity }}
@@ -30,7 +18,7 @@ containers:
                 value: {{ $value | quote }}
             {{- end }}
             {{- end }}
-        image: "{{ required "image.repository is required" .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ required "image.repository is required" .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- with .Values.workload.livenessProbe }}
         livenessProbe:
@@ -119,6 +107,18 @@ volumes:
         name: lxc-ext-init-metadata
     {{- end }}
     {{- with .Values.workload.volumes }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}
+
+{{- define "liferay-client-extension.podTemplateMetadata" -}}
+{{- with .Values.podAnnotations }}
+annotations:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+labels:
+    {{- include "liferay-client-extension.selectorLabels" . | nindent 4 }}
+    {{- with .Values.podLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 {{- end }}

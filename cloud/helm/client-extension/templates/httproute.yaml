@@ -2,7 +2,7 @@
 {{- if not .Values.service.enabled }}
 {{- fail "service.enabled must be true when network.enabled is true" }}
 {{- end }}
-{{- $hostnames := .Values.network.hostnames | default (compact (list .Values.clientExtension.domain)) }}
+{{- $hostnames := concat (compact (list .Values.clientExtension.domain)) .Values.network.hostnames | uniq }}
 {{- if not $hostnames }}
 {{- fail "network.hostnames or clientExtension.domain is required when network.enabled is true" }}
 {{- end }}

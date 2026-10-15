@@ -1,3 +1,6 @@
+{{- if not .Values.clientExtension.configs }}
+{{- fail "clientExtension.configs is required" }}
+{{- end }}
 apiVersion: cx.liferay.com/v1alpha1
 kind: ClientExtension
 metadata:
@@ -8,14 +11,14 @@ metadata:
     name: {{ include "liferay-client-extension.fullname" . }}
 spec:
     configs:
-        {{- required "clientExtension.configs is required" .Values.clientExtension.configs | toYaml | nindent 8 }}
+        {{- toYaml .Values.clientExtension.configs | nindent 8 }}
     {{- with .Values.clientExtension.domain }}
     domain: {{ . | quote }}
     {{- end }}
     {{- with .Values.clientExtension.dxpNamespace }}
     dxpNamespace: {{ . | quote }}
     {{- end }}
-    serviceId: {{ include "liferay-client-extension.serviceId" . }}
+    serviceId: {{ include "liferay-client-extension.serviceId" . | quote }}
     virtualInstanceId: {{ .Values.clientExtension.virtualInstanceId | quote }}
     {{- if .Values.workload.enabled }}
     workloadRef:
