@@ -1,24 +1,19 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.fragment.collection.item.selector.web.internal;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorCriterion;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
-import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
@@ -30,7 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,13 +33,14 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Rubén Pulido
+ * @author Gabriel Lima
+ * @author Thiago Buarque
  */
 @Component(
-	property = "item.selector.view.order:Integer=300",
+	property = "item.selector.view.order:Integer=400",
 	service = ItemSelectorView.class
 )
-public class FragmentCollectionSiteItemSelectorView
+public class DesignLibraryFragmentCollectionItemSelectorView
 	implements ItemSelectorView<FragmentCollectionItemSelectorCriterion> {
 
 	@Override
@@ -61,31 +57,18 @@ public class FragmentCollectionSiteItemSelectorView
 
 	@Override
 	public String getTitle(Locale locale) {
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
+		return _language.get(locale, "design-libraries");
+	}
 
-		String title = _language.get(locale, "site");
+	@Override
+	public boolean isVisible(
+		FragmentCollectionItemSelectorCriterion
+			fragmentCollectionItemSelectorCriterion,
+		ThemeDisplay themeDisplay) {
 
-		if (serviceContext == null) {
-			return title;
-		}
-
-		Group scopeGroup = null;
-
-		try {
-			scopeGroup = serviceContext.getScopeGroup();
-
-			if (scopeGroup == null) {
-				return title;
-			}
-
-			return scopeGroup.getDescriptiveName(locale);
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-
-			return title;
-		}
+		return ArrayUtil.isNotEmpty(
+			DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+				themeDisplay.getSiteGroupId()));
 	}
 
 	@Override
@@ -103,18 +86,15 @@ public class FragmentCollectionSiteItemSelectorView
 			servletRequest, servletResponse,
 			fragmentCollectionItemSelectorCriterion, portletURL,
 			itemSelectedEventName, search,
-			new SiteFragmentCollectionItemSelectorViewDescriptor(
-				new long[] {themeDisplay.getSiteGroupId()},
+			new DesignLibraryFragmentCollectionItemSelectorViewDescriptor(
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+					themeDisplay.getSiteGroupId()),
 				(HttpServletRequest)servletRequest, portletURL));
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		FragmentCollectionSiteItemSelectorView.class);
-
 	private static final List<ItemSelectorReturnType>
-		_supportedItemSelectorReturnTypes = Arrays.asList(
-			new FragmentCollectionItemSelectorReturnType(),
-			new UUIDItemSelectorReturnType());
+		_supportedItemSelectorReturnTypes = Collections.singletonList(
+			new FragmentCollectionItemSelectorReturnType());
 
 	@Reference
 	private ItemSelectorViewDescriptorRenderer

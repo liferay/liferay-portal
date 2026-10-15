@@ -32,12 +32,13 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Rubén Pulido
+ * @author Thiago Buarque
  */
 @Component(
 	property = "item.selector.view.order:Integer=200",
 	service = ItemSelectorView.class
 )
-public class FragmentCollectionGlobalItemSelectorView
+public class GlobalFragmentCollectionItemSelectorView
 	implements ItemSelectorView<FragmentCollectionItemSelectorCriterion> {
 
 	@Override

@@ -42,10 +42,11 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Gabriel Lima
+ * @author Thiago Buarque
  */
 @FeatureFlag("LPD-57283")
 @RunWith(Arquillian.class)
-public class FragmentCollectionDesignLibraryItemSelectorViewTest {
+public class DesignLibraryFragmentCollectionItemSelectorViewTest {
 
 	@ClassRule
 	@Rule
@@ -111,7 +112,7 @@ public class FragmentCollectionDesignLibraryItemSelectorViewTest {
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject(
-		filter = "component.name=com.liferay.fragment.collection.item.selector.web.internal.FragmentCollectionDesignLibraryItemSelectorView"
+		filter = "component.name=com.liferay.fragment.collection.item.selector.web.internal.DesignLibraryFragmentCollectionItemSelectorView"
 	)
 	private ItemSelectorView<FragmentCollectionItemSelectorCriterion>
 		_fragmentCollectionDesignLibraryItemSelectorView;

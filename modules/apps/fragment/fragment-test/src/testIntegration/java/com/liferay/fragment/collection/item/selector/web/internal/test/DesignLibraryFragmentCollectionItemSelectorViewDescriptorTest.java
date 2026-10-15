@@ -378,7 +378,7 @@ public class DesignLibraryFragmentCollectionItemSelectorViewDescriptorTest {
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject(
-		filter = "component.name=com.liferay.fragment.collection.item.selector.web.internal.FragmentCollectionDesignLibraryItemSelectorView"
+		filter = "component.name=com.liferay.fragment.collection.item.selector.web.internal.DesignLibraryFragmentCollectionItemSelectorView"
 	)
 	private ItemSelectorView<FragmentCollectionItemSelectorCriterion>
 		_fragmentCollectionDesignLibraryItemSelectorView;
@@ -388,7 +388,7 @@ public class DesignLibraryFragmentCollectionItemSelectorViewDescriptorTest {
 			new FragmentCollectionItemSelectorCriterion();
 
 	@Inject(
-		filter = "component.name=com.liferay.fragment.collection.item.selector.web.internal.FragmentCollectionSiteItemSelectorView"
+		filter = "component.name=com.liferay.fragment.collection.item.selector.web.internal.SiteFragmentCollectionItemSelectorView"
 	)
 	private ItemSelectorView<FragmentCollectionItemSelectorCriterion>
 		_fragmentCollectionSiteItemSelectorView;
