@@ -108,13 +108,11 @@ public class LinkEditableElementParser extends BaseEditableElementParser {
 		if (StringUtil.equalsIgnoreCase(target, "_parent") ||
 			StringUtil.equalsIgnoreCase(target, "_top")) {
 
-			configJSONObject.put("target", "_self");
+			target = "_self";
 		}
 
-		String targetValue = configJSONObject.getString("target");
-
-		if (Validator.isNotNull(targetValue)) {
-			element.attr("target", targetValue);
+		if (Validator.isNotNull(target)) {
+			element.attr("target", target);
 		}
 
 		String buttonType = configJSONObject.getString("buttonType");
