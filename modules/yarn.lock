@@ -3081,10 +3081,10 @@
   resolved "https://registry.yarnpkg.com/@liferay/amd-loader/-/amd-loader-5.4.4.tgz#b9ccdf383168d732c448ee606934b1613d98e6b4"
   integrity sha512-SPV8ANh3t3+QeE1urkInGMixbTxIt40THLgX3x08XIJJzqwK5K0McEvae5QM10uMBLpqUZxqH7WokJaoLJFaWQ==
 
-"@liferay/js-api@0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@liferay/js-api/-/js-api-0.9.1.tgz#724f99b90d12822e0f56415abe49a534cd568923"
-  integrity sha512-bQj9EslCWoMcAenmUlAkCifUMJtyeAZTUch7v3RZY/kvW3+Gf4wBJKV9KULY6QIoxaen1grRqvKZ6exkeoHNHA==
+"@liferay/js-api@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@liferay/js-api/-/js-api-0.10.0.tgz#6e6ae2caa194011e437024f3ba416d85c3920986"
+  integrity sha512-vcWELF4VpZahHossWhwluseL5iGmucb1bjHVeAJIjBukwwVsPQA9CiVPa7hkcSGZbF0hJLRKLmVa1GoUyqOlVw==
   dependencies:
     "@ckeditor/ckeditor5-word-count" "*"
 
