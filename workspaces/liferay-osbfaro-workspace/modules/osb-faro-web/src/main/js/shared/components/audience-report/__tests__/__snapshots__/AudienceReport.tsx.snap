@@ -122,7 +122,7 @@ exports[`AudienceReport should render 1`] = `
                         <text
                           class="recharts-text"
                           fill="#808080"
-                          style="fill: black; font: Symbol" 14px 14px; font-size: 1rem; font-weight: 600;"
+                          style="fill: black; font: "Segoe UI Symbol" 14px 14px; font-size: 1rem; font-weight: 600;"
                           text-anchor="middle"
                           x="402.8393874272831"
                           y="265.96612071946277"
@@ -141,7 +141,7 @@ exports[`AudienceReport should render 1`] = `
                         <text
                           class="recharts-text"
                           fill="#808080"
-                          style="fill: black; font: Symbol" 14px 14px; font-size: 1rem; font-weight: 600;"
+                          style="fill: black; font: "Segoe UI Symbol" 14px 14px; font-size: 1rem; font-weight: 600;"
                           text-anchor="middle"
                           x="397.16061257271696"
                           y="28.033879280537235"
@@ -381,7 +381,7 @@ exports[`AudienceReport should render 1`] = `
                         <text
                           class="recharts-text"
                           fill="#808080"
-                          style="fill: black; font: Symbol" 14px 14px; font-size: 1rem; font-weight: 600;"
+                          style="fill: black; font: "Segoe UI Symbol" 14px 14px; font-size: 1rem; font-weight: 600;"
                           text-anchor="middle"
                           x="407.62435617770484"
                           y="28.244498262709982"
@@ -400,7 +400,7 @@ exports[`AudienceReport should render 1`] = `
                         <text
                           class="recharts-text"
                           fill="#808080"
-                          style="fill: black; font: Symbol" 14px 14px; font-size: 1rem; font-weight: 600;"
+                          style="fill: black; font: "Segoe UI Symbol" 14px 14px; font-size: 1rem; font-weight: 600;"
                           text-anchor="middle"
                           x="392.37564382229516"
                           y="265.75550173729005"

@@ -17,7 +17,7 @@ export const ANIMATION_DURATION = {
 
 export const AXIS = {
 	borderStroke: '#E7E7ED',
-	font: '14px "Source Sans Pro", "Source Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+	font: '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
 	gridStroke: '#E7E7ED',
 	textColor: '#6B6C7E',
 };
@@ -45,7 +45,7 @@ export interface ChartTooltipRow {
 
 export const getTextWidth: (text: any, font?: string) => number = (
 	text,
-	font = '14px Source Sans Pro'
+	font = AXIS.font
 ) => {
 	const canvas =
 		(getTextWidth as any).canvas ||
