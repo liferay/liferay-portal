@@ -93,7 +93,7 @@ KBArticle kbArticle = (KBArticle)request.getAttribute(KBWebKeys.KNOWLEDGE_BASE_K
 									<span class="kb-info">
 										<c:choose>
 											<c:when test="<%= assetEntry.getViewCount() == 1 %>">
-												<%= assetEntry.getViewCount() %> <liferay-ui:message key="view" />
+												<%= assetEntry.getViewCount() %> <liferay-ui:message key="view[count]" />
 											</c:when>
 											<c:otherwise>
 												<%= assetEntry.getViewCount() %> <liferay-ui:message key="views" />

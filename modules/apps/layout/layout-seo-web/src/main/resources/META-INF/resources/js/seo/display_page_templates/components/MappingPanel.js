@@ -75,7 +75,7 @@ function MappingPanel({
 					setIsPanelOpen((state) => !state);
 				}}
 				symbol="bolt"
-				title={Liferay.Language.get('map')}
+				title={Liferay.Language.get('map[verb]')}
 			/>
 
 			{isPanelOpen && (

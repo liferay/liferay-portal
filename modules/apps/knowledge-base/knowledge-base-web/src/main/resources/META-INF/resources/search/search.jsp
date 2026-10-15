@@ -85,7 +85,7 @@ KBSearchDisplayContext kbSearchDisplayContext = new KBSearchDisplayContext(reque
 				buffer.append(viewCount);
 
 				buffer.append(StringPool.SPACE);
-				buffer.append((viewCount == 1) ? LanguageUtil.get(request, "view") : LanguageUtil.get(request, "views"));
+				buffer.append((viewCount == 1) ? LanguageUtil.get(request, "view[count]") : LanguageUtil.get(request, "views"));
 				%>
 
 			</liferay-ui:search-container-column-text>

@@ -42,7 +42,7 @@ const TranslateLanguagesSelector = ({
 			</ClayLayout.ContentCol>
 
 			<ClayLayout.ContentCol>
-				{Liferay.Language.get('to').toLowerCase()}
+				{Liferay.Language.get('to[direction]').toLowerCase()}
 			</ClayLayout.ContentCol>
 
 			<ClayLayout.ContentCol>

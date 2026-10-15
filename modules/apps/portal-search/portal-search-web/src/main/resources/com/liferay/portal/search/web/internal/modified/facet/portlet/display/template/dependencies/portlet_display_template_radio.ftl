@@ -123,7 +123,7 @@
 
 				<div class="col-md-6" id="${namespace}customRangeTo">
 					<@liferay_aui["field-wrapper"]
-						label="to"
+						label="to[date-time]"
 						name="toInput"
 					>
 						<@liferay_ui["input-date"]
