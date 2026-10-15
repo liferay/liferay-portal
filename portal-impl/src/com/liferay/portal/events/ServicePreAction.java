@@ -553,9 +553,9 @@ public class ServicePreAction extends Action {
 			_getDefaultVirtualHostLayoutComposite(httpServletRequest);
 
 		defaultLayoutComposite = _getViewableLayoutComposite(
-			httpServletRequest, user, permissionChecker,
+			httpServletRequest, ignoreHiddenLayouts,
 			defaultLayoutComposite.getLayout(),
-			defaultLayoutComposite.getLayouts(), ignoreHiddenLayouts);
+			defaultLayoutComposite.getLayouts(), permissionChecker, user);
 
 		if (ListUtil.isNotEmpty(defaultLayoutComposite.getLayouts())) {
 			return defaultLayoutComposite;
@@ -571,9 +571,9 @@ public class ServicePreAction extends Action {
 			}
 
 			defaultLayoutComposite = _getViewableLayoutComposite(
-				httpServletRequest, user, permissionChecker,
+				httpServletRequest, ignoreHiddenLayouts,
 				defaultLayoutComposite.getLayout(),
-				defaultLayoutComposite.getLayouts(), ignoreHiddenLayouts);
+				defaultLayoutComposite.getLayouts(), permissionChecker, user);
 
 			if (ListUtil.isNotEmpty(defaultLayoutComposite.getLayouts())) {
 				return defaultLayoutComposite;
@@ -583,9 +583,9 @@ public class ServicePreAction extends Action {
 		defaultLayoutComposite = _getGuestSiteLayoutComposite(user);
 
 		return _getViewableLayoutComposite(
-			httpServletRequest, user, permissionChecker,
+			httpServletRequest, ignoreHiddenLayouts,
 			defaultLayoutComposite.getLayout(),
-			defaultLayoutComposite.getLayouts(), ignoreHiddenLayouts);
+			defaultLayoutComposite.getLayouts(), permissionChecker, user);
 	}
 
 	private LayoutComposite _getDefaultVirtualHostLayoutComposite(
@@ -682,9 +682,9 @@ public class ServicePreAction extends Action {
 	}
 
 	private LayoutComposite _getViewableLayoutComposite(
-			HttpServletRequest httpServletRequest, User user,
-			PermissionChecker permissionChecker, Layout layout,
-			List<Layout> layouts, boolean ignoreHiddenLayouts)
+			HttpServletRequest httpServletRequest, boolean ignoreHiddenLayouts,
+			Layout layout, List<Layout> layouts,
+			PermissionChecker permissionChecker, User user)
 		throws Exception {
 
 		if (ListUtil.isEmpty(layouts)) {
@@ -1222,8 +1222,8 @@ public class ServicePreAction extends Action {
 		}
 		else {
 			viewableLayoutComposite = _getViewableLayoutComposite(
-				httpServletRequest, user, permissionChecker, layout, layouts,
-				false);
+				httpServletRequest, false, layout, layouts, permissionChecker,
+				user);
 		}
 
 		String layoutSetLogo = null;
@@ -1891,8 +1891,8 @@ public class ServicePreAction extends Action {
 
 			LayoutComposite viewableLayoutComposite =
 				_getViewableLayoutComposite(
-					httpServletRequest, user, permissionChecker, layout,
-					guestLayouts, false);
+					httpServletRequest, false, layout, guestLayouts,
+					permissionChecker, user);
 
 			guestLayouts = viewableLayoutComposite.getLayouts();
 
@@ -1943,8 +1943,8 @@ public class ServicePreAction extends Action {
 
 				LayoutComposite viewableLayoutComposite =
 					_getViewableLayoutComposite(
-						httpServletRequest, user, permissionChecker, layout,
-						previousLayouts, false);
+						httpServletRequest, false, layout, previousLayouts,
+						permissionChecker, user);
 
 				previousLayouts = viewableLayoutComposite.getLayouts();
 
