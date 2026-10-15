@@ -7,7 +7,9 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {fragmentsPagesTest} from '../../../fixtures/fragmentPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {designLibrariesPageTest} from './fixtures/designLibrariesPageTest';
 
@@ -19,7 +21,73 @@ const test = mergeTests(
 		'LPD-57283': {enabled: true},
 		'LPD-76864': {enabled: true},
 	}),
+	fragmentsPagesTest,
 	loginTest()
+);
+
+test(
+	'Publishing a new Design Library fragment returns to its fragment set',
+	{tag: '@LPD-110093'},
+	async ({apiHelpers, designLibrariesPage, fragmentEditorPage, page}) => {
+
+		// Create a design library
+
+		const designLibraryName = getRandomString();
+
+		const createdDesignLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
+			});
+
+		try {
+
+			// Add a fragment in a new fragment set
+
+			await designLibrariesPage.goToDesignLibrary(designLibraryName);
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {
+					name: 'New Basic Fragment',
+				}),
+				trigger: page.getByRole('button', {
+					exact: true,
+					name: 'New',
+				}),
+			});
+
+			const fragmentEntryName = getRandomString();
+			const modal = page.getByRole('dialog', {name: 'Add Fragment'});
+
+			await modal.getByLabel('Fragment Name').fill(fragmentEntryName);
+
+			await modal.getByLabel('Fragment Set Name').fill(getRandomString());
+
+			await modal.getByRole('button', {name: 'Save'}).click();
+
+			await expect(page).toHaveURL(/fragment_entry/);
+
+			// Publish and check the fragment set
+
+			await fragmentEditorPage.publish();
+
+			await expect(page).not.toHaveURL(/view_resources_design_library/);
+
+			await expect(
+				page.getByRole('link', {exact: true, name: fragmentEntryName})
+			).toBeVisible();
+		}
+		finally {
+
+			// Delete the design library
+
+			await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(
+				createdDesignLibrary.externalReferenceCode
+			);
+		}
+	}
 );
 
 test(
