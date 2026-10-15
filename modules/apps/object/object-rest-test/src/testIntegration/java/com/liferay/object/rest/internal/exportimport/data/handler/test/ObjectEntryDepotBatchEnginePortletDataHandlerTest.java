@@ -6,13 +6,16 @@
 package com.liferay.object.rest.internal.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.exportimport.test.util.exportimport.data.handler.BaseSiteBatchEnginePortletDataHandlerTestCase;
+import com.liferay.exportimport.test.util.exportimport.data.handler.BaseDepotBatchEnginePortletDataHandlerTestCase;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.internal.exportimport.data.handler.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -35,8 +38,8 @@ import org.junit.runner.RunWith;
  */
 @FeatureFlags(featureFlags = @FeatureFlag("LPD-43996"))
 @RunWith(Arquillian.class)
-public class SiteObjectEntryBatchEnginePortletDataHandlerTest
-	extends BaseSiteBatchEnginePortletDataHandlerTestCase<ObjectEntry> {
+public class ObjectEntryDepotBatchEnginePortletDataHandlerTest
+	extends BaseDepotBatchEnginePortletDataHandlerTestCase<ObjectEntry> {
 
 	@ClassRule
 	@Rule
@@ -48,8 +51,14 @@ public class SiteObjectEntryBatchEnginePortletDataHandlerTest
 	public void setUp() throws Exception {
 		_objectDefinition = ObjectEntryTestUtil.publishObjectDefinition(
 			null, ObjectDefinitionTestUtil.getRandomName(),
-			Collections.emptyList(), ObjectDefinitionConstants.SCOPE_SITE,
-			TestPropsValues.getUserId());
+			Collections.singletonList(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS
+				).value(
+					StringPool.TRUE
+				).build()),
+			ObjectDefinitionConstants.SCOPE_DEPOT, TestPropsValues.getUserId());
 
 		super.setUp();
 	}

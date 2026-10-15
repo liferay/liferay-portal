@@ -46,6 +46,9 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		_targetCompany = CompanyTestUtil.addCompany();
+
+		_targetCompanyAdminUser = UserTestUtil.addCompanyAdminUser(
+			_targetCompany);
 	}
 
 	@AfterClass
@@ -64,13 +67,18 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 			_targetCompany.getCompanyId());
 	}
 
+	protected static User getTargetCompanyAdminUser() {
+		return _targetCompanyAdminUser;
+	}
+
 	@Override
 	protected Role addRole() throws Exception {
 		Role role = super.addRole();
 
 		_roleLocalService.addRole(
-			role.getExternalReferenceCode(), _targetUser.getUserId(), null, 0,
-			role.getName(), null, null, RoleConstants.TYPE_REGULAR, null, null);
+			role.getExternalReferenceCode(),
+			_targetCompanyAdminUser.getUserId(), null, 0, role.getName(), null,
+			null, RoleConstants.TYPE_REGULAR, null, null);
 
 		return role;
 	}
@@ -79,7 +87,7 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 	protected User addUser() throws Exception {
 		User user = super.addUser();
 
-		_targetUser = _userLocalService.updateExternalReferenceCode(
+		_userLocalService.updateExternalReferenceCode(
 			UserTestUtil.addUser(_targetCompany),
 			user.getExternalReferenceCode());
 
@@ -109,15 +117,15 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 
 		try {
 			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_targetUser));
+				PermissionCheckerFactoryUtil.create(_targetCompanyAdminUser));
 
 			exportImportConfiguration = updateExportImportConfiguration(
 				exportImportConfiguration,
 				ExportImportConfigurationSettingsMapFactoryUtil.
 					buildImportLayoutSettingsMap(
-						_targetUser, _targetGroup.getGroupId(), false, null,
-						parameterMap),
-				_targetGroup.getGroupId(), _targetUser);
+						_targetCompanyAdminUser, _targetGroup.getGroupId(),
+						false, null, parameterMap),
+				_targetGroup.getGroupId(), _targetCompanyAdminUser);
 
 			_exportImportLocalService.importLayoutsDataDeletions(
 				exportImportConfiguration, larFile);
@@ -147,14 +155,11 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 		return _targetGroup;
 	}
 
-	protected User getTargetUser() {
-		return _targetUser;
-	}
-
 	@Inject
 	private static CompanyLocalService _companyLocalService;
 
 	private static Company _targetCompany;
+	private static User _targetCompanyAdminUser;
 
 	@Inject
 	private ExportImportLocalService _exportImportLocalService;
@@ -168,7 +173,6 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 	private StagingGroupHelper _stagingGroupHelper;
 
 	private Group _targetGroup;
-	private User _targetUser;
 
 	@Inject
 	private UserLocalService _userLocalService;

@@ -6,7 +6,7 @@
 package com.liferay.object.rest.internal.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.exportimport.test.util.exportimport.data.handler.BaseCompanyBatchEnginePortletDataHandlerTestCase;
+import com.liferay.exportimport.test.util.exportimport.data.handler.BaseSiteBatchEnginePortletDataHandlerTestCase;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -35,8 +35,8 @@ import org.junit.runner.RunWith;
  */
 @FeatureFlags(featureFlags = @FeatureFlag("LPD-43996"))
 @RunWith(Arquillian.class)
-public class CompanyObjectEntryBatchEnginePortletDataHandlerTest
-	extends BaseCompanyBatchEnginePortletDataHandlerTestCase<ObjectEntry> {
+public class ObjectEntrySiteBatchEnginePortletDataHandlerTest
+	extends BaseSiteBatchEnginePortletDataHandlerTestCase<ObjectEntry> {
 
 	@ClassRule
 	@Rule
@@ -46,20 +46,12 @@ public class CompanyObjectEntryBatchEnginePortletDataHandlerTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		super.setUp();
-
 		_objectDefinition = ObjectEntryTestUtil.publishObjectDefinition(
 			null, ObjectDefinitionTestUtil.getRandomName(),
-			Collections.emptyList(), ObjectDefinitionConstants.SCOPE_COMPANY,
+			Collections.emptyList(), ObjectDefinitionConstants.SCOPE_SITE,
 			TestPropsValues.getUserId());
 
-		Group targetGroup = getTargetGroup();
-
-		_targetObjectDefinition = ObjectEntryTestUtil.publishObjectDefinition(
-			_objectDefinition.getExternalReferenceCode(),
-			_objectDefinition.getShortName(), Collections.emptyList(),
-			ObjectDefinitionConstants.SCOPE_COMPANY,
-			targetGroup.getCreatorUserId());
+		super.setUp();
 	}
 
 	@Override
@@ -123,11 +115,6 @@ public class CompanyObjectEntryBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected String getTargetModelClassName() {
-		return _targetObjectDefinition.getClassName();
-	}
-
-	@Override
 	protected long getUserId(ObjectEntry objectEntry) {
 		return objectEntry.getUserId();
 	}
@@ -172,8 +159,5 @@ public class CompanyObjectEntryBatchEnginePortletDataHandlerTest
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@DeleteAfterTestRun
-	private ObjectDefinition _targetObjectDefinition;
 
 }

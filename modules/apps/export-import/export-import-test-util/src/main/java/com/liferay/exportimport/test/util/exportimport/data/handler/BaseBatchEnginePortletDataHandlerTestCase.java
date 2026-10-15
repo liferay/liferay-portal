@@ -73,8 +73,6 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		super.setUp();
-
 		ExportImportVulcanBatchEngineTaskItemDelegate<?>
 			exportImportVulcanBatchEngineTaskItemDelegate =
 				(ExportImportVulcanBatchEngineTaskItemDelegate<?>)
@@ -86,6 +84,8 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 		_exportImportDescriptor =
 			exportImportVulcanBatchEngineTaskItemDelegate.
 				getExportImportDescriptor();
+
+		super.setUp();
 	}
 
 	@Test
