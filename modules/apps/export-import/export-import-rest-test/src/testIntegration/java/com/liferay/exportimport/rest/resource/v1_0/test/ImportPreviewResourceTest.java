@@ -533,8 +533,10 @@ public class ImportPreviewResourceTest
 
 		Group group = GroupTestUtil.addGroup();
 
-		ImportPreview importPreview = _postImportPreview(
-			_exportLayoutAsFile(companyGroup.getGroupId(), _depotGroup, group));
+		File file = _exportLayoutAsFile(
+			companyGroup.getGroupId(), _depotGroup, group);
+
+		ImportPreview importPreview = _postImportPreview(file);
 
 		PreviewAssetLibrary previewAssetLibrary = _getPreviewAssetLibrary(
 			importPreview, _depotGroup.getExternalReferenceCode());
@@ -554,6 +556,21 @@ public class ImportPreviewResourceTest
 				importPreview, _depotGroup.getExternalReferenceCode()));
 		Assert.assertNotNull(
 			_getSite(importPreview, group.getExternalReferenceCode()));
+
+		String externalReferenceCode = _depotGroup.getExternalReferenceCode();
+
+		_depotGroup.setExternalReferenceCode(RandomTestUtil.randomString());
+
+		_depotGroup = _groupLocalService.updateGroup(_depotGroup);
+
+		group.setExternalReferenceCode(externalReferenceCode);
+
+		_groupLocalService.updateGroup(group);
+
+		previewAssetLibrary = _getPreviewAssetLibrary(
+			_postImportPreview(file), externalReferenceCode);
+
+		Assert.assertFalse(previewAssetLibrary.getExistsInInstance());
 	}
 
 	private void _testPostImportPreviewWithInvalidFile(

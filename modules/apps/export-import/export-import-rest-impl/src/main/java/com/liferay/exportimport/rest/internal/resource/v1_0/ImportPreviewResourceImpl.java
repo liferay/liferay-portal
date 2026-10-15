@@ -150,7 +150,9 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 			exportImportGroup.getExternalReferenceCode(),
 			contextCompany.getCompanyId());
 
-		if (group != null) {
+		if ((group != null) &&
+			_exportImportHelper.isGroupMatching(exportImportGroup, group)) {
+
 			return true;
 		}
 
