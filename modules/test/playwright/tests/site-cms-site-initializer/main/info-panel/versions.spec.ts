@@ -32,396 +32,345 @@ test(
 	async ({apiHelpers, assetsPage, contentsPage, infoPanelPage, page}) => {
 		const contentApplicationName = 'cms/basic-web-contents';
 		const fileApplicationName = 'cms/basic-documents';
-		let objectEntryContent;
-		let objectEntryFile;
 		const spaceName = 'Default';
 
 		const content1 = `title ${getRandomString()}`;
 		const fileNameImg = `file_${getRandomString()}.png`;
 		const image1 = `title ${getRandomString()}`;
 
-		try {
-			objectEntryContent = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: content1,
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: content1,
+			},
+			contentApplicationName,
+			spaceName
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				file: {
+					fileBase64:
+						'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII=',
+					name: fileNameImg,
 				},
-				contentApplicationName,
-				spaceName
-			);
+				objectEntryFolderExternalReferenceCode: 'L_FILES',
+				title: image1,
+			},
+			fileApplicationName,
+			'Default'
+		);
 
-			objectEntryFile = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					file: {
-						fileBase64:
-							'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII=',
-						name: fileNameImg,
-					},
-					objectEntryFolderExternalReferenceCode: 'L_FILES',
-					title: image1,
-				},
-				fileApplicationName,
-				'Default'
-			);
-
-			await test.step('Go to All Assets and update all the assets', async () => {
-				await assetsPage.gotoAll();
-				await assetsPage.execItemAction({
-					action: 'Edit',
-					filter: content1,
-				});
-
-				await contentsPage.publishButton.click();
-				await assetsPage.execItemAction({
-					action: 'Edit',
-					filter: image1,
-				});
-
-				await contentsPage.publishButton.click();
+		await test.step('Go to All Assets and update all the assets', async () => {
+			await assetsPage.gotoAll();
+			await assetsPage.execItemAction({
+				action: 'Edit',
+				filter: content1,
 			});
 
-			await test.step('Open the Info Panel Versions of a content asset and check that the versions actions are visible', async () => {
-				await assetsPage.execItemAction({
-					action: 'Show Details',
-					filter: content1,
-				});
-
-				await expect(
-					page.getByRole('heading', {name: content1})
-				).toBeVisible();
-
-				await infoPanelPage.selectTab('Versions').click();
-
-				await expect(page.getByRole('tabpanel')).toContainText(
-					'Version 1'
-				);
-				await expect(page.getByRole('tabpanel')).toContainText(
-					'Version 2'
-				);
-
-				await infoPanelPage.dropdownVersionAction('Version 2').click();
-
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Expire')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Make a Copy')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('View')
-				).toBeVisible();
-
-				await infoPanelPage.dropdownVersionAction('Version 2').click();
-
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem(
-						'Restore Version'
-					)
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Expire')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Make a Copy')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Delete')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('View')
-				).toBeVisible();
+			await contentsPage.publishButton.click();
+			await assetsPage.execItemAction({
+				action: 'Edit',
+				filter: image1,
 			});
 
-			await test.step('Click on the asset content version and check the functionality of the actions', async () => {
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('View')
-					.click();
+			await contentsPage.publishButton.click();
+		});
 
-				await expect(
-					page.getByRole('heading', {name: `${content1} (Version 1)`})
-				).toBeVisible();
+		await test.step('Open the Info Panel Versions of a content asset and check that the versions actions are visible', async () => {
+			await assetsPage.execItemAction({
+				action: 'Show Details',
+				filter: content1,
+			});
 
-				await page
-					.getByLabel(`${content1} (Version 1)`)
-					.getByLabel('Close')
-					.click();
+			await expect(
+				page.getByRole('heading', {name: content1})
+			).toBeVisible();
 
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Make a Copy')
-					.click();
+			await infoPanelPage.selectTab('Versions').click();
 
-				await expect(
-					assetsPage
-						.getItem(`${content1} (Copy)`)
-						.locator('input[title="Select Item"]')
-				).toBeVisible();
+			await expect(page.getByRole('tabpanel')).toContainText('Version 1');
+			await expect(page.getByRole('tabpanel')).toContainText('Version 2');
 
-				await page.reload();
+			await infoPanelPage.dropdownVersionAction('Version 2').click();
 
-				await assetsPage.execItemAction({
-					action: 'Delete',
-					filter: `${content1} (Copy)`,
-				});
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Expire')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Make a Copy')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('View')
+			).toBeVisible();
 
-				await waitForAlert(
-					page,
-					`${content1} (Copy) was moved to the Recycle Bin.`
-				);
+			await infoPanelPage.dropdownVersionAction('Version 2').click();
 
-				await assetsPage.execItemAction({
-					action: 'Show Details',
-					filter: `${content1}`,
-				});
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
 
-				await infoPanelPage.selectTab('Versions').click();
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Restore Version')
-					.click();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Restore Version')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Expire')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Make a Copy')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Delete')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('View')
+			).toBeVisible();
+		});
 
-				await waitForAlert(
-					page,
-					'Version 1 of the content has been successfully restored.'
-				);
+		await test.step('Click on the asset content version and check the functionality of the actions', async () => {
+			await infoPanelPage.dropdownVersionActionMenuItem('View').click();
 
-				await expect(infoPanelPage.selectTab('Versions')).toBeVisible();
-				await expect(page.getByRole('tabpanel')).toContainText(
-					'Version 3'
-				);
+			await expect(
+				page.getByRole('heading', {name: `${content1} (Version 1)`})
+			).toBeVisible();
 
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Expire')
-					.click();
+			await page
+				.getByLabel(`${content1} (Version 1)`)
+				.getByLabel('Close')
+				.click();
 
-				await waitForAlert(
-					page,
-					'Version 1 of the content has been successfully expired.'
-				);
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+			await infoPanelPage
+				.dropdownVersionActionMenuItem('Make a Copy')
+				.click();
 
-				await expect(page.getByRole('tabpanel')).toContainText(
-					'Expire'
-				);
-
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Delete')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('View')
-				).toBeVisible();
-
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Delete')
-					.click();
-
-				await assetsPage.modalDeleteButton.click();
-
-				await waitForAlert(
-					page,
-					'Version 1 of the content has been successfully deleted.'
-				);
-
-				await expect(
-					infoPanelPage.dropdownVersionAction('Version 1')
-				).not.toBeVisible();
-
-				await assetsPage
-					.getItem(content1)
+			await expect(
+				assetsPage
+					.getItem(`${content1} (Copy)`)
 					.locator('input[title="Select Item"]')
-					.uncheck();
+			).toBeVisible();
+
+			await page.reload();
+
+			await assetsPage.execItemAction({
+				action: 'Delete',
+				filter: `${content1} (Copy)`,
 			});
 
-			await test.step('Open the Info Panel Versions of a file asset and check that the versions actions are visible', async () => {
-				await assetsPage.execItemAction({
-					action: 'Show Details',
-					filter: image1,
-				});
+			await waitForAlert(
+				page,
+				`${content1} (Copy) was moved to the Recycle Bin.`
+			);
 
-				await expect(
-					page.getByRole('heading', {name: image1})
-				).toBeVisible();
-
-				await infoPanelPage.selectTab('Versions').click();
-
-				await expect(page.getByRole('tabpanel')).toContainText(
-					'Version 1'
-				);
-				await expect(page.getByRole('tabpanel')).toContainText(
-					'Version 2'
-				);
-
-				await infoPanelPage.dropdownVersionAction('Version 2').click();
-
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Expire')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Make a Copy')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Download')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('View')
-				).toBeVisible();
-
-				await infoPanelPage.dropdownVersionAction('Version 2').click();
-
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem(
-						'Restore Version'
-					)
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Expire')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Make a Copy')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Download')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Delete')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('View')
-				).toBeVisible();
+			await assetsPage.execItemAction({
+				action: 'Show Details',
+				filter: `${content1}`,
 			});
 
-			await test.step('Click on the version and check the functionality of the actions', async () => {
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('View')
-					.click();
+			await infoPanelPage.selectTab('Versions').click();
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+			await infoPanelPage
+				.dropdownVersionActionMenuItem('Restore Version')
+				.click();
 
-				await expect(
-					page.getByRole('heading', {name: `${image1} (Version 1)`})
-				).toBeVisible();
+			await waitForAlert(
+				page,
+				'Version 1 of the content has been successfully restored.'
+			);
 
-				await page
-					.getByLabel(`${image1} (Version 1)`)
-					.getByLabel('Close')
-					.click();
+			await expect(infoPanelPage.selectTab('Versions')).toBeVisible();
+			await expect(page.getByRole('tabpanel')).toContainText('Version 3');
 
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+			await infoPanelPage.dropdownVersionActionMenuItem('Expire').click();
 
-				const downloadPromise = page.waitForEvent('download');
+			await waitForAlert(
+				page,
+				'Version 1 of the content has been successfully expired.'
+			);
 
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Download')
-					.click();
+			await expect(page.getByRole('tabpanel')).toContainText('Expire');
 
-				const download = await downloadPromise;
-				expect(download.suggestedFilename()).toBe(`${fileNameImg}`);
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
 
-				const downloadStat = await fs.stat(await download.path());
-				expect(downloadStat.size).toBeGreaterThan(10);
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Delete')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('View')
+			).toBeVisible();
 
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Make a Copy')
-					.click();
+			await infoPanelPage.dropdownVersionActionMenuItem('Delete').click();
 
-				await page.reload();
+			await assetsPage.modalDeleteButton.click();
 
-				await expect(
-					assetsPage
-						.getItem(`${image1} (Copy)`)
-						.locator('input[title="Select Item"]')
-				).toBeVisible();
+			await waitForAlert(
+				page,
+				'Version 1 of the content has been successfully deleted.'
+			);
 
-				await assetsPage.execItemAction({
-					action: 'Delete',
-					filter: `${image1} (Copy)`,
-				});
+			await expect(
+				infoPanelPage.dropdownVersionAction('Version 1')
+			).not.toBeVisible();
 
-				await waitForAlert(
-					page,
-					`${image1} (Copy) was moved to the Recycle Bin.`
-				);
+			await assetsPage
+				.getItem(content1)
+				.locator('input[title="Select Item"]')
+				.uncheck();
+		});
 
-				await assetsPage.execItemAction({
-					action: 'Show Details',
-					filter: `${image1}`,
-				});
-
-				await infoPanelPage.selectTab('Versions').click();
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Restore Version')
-					.click();
-
-				await waitForAlert(
-					page,
-					'Version 1 of the content has been successfully restored.'
-				);
-
-				await expect(infoPanelPage.selectTab('Versions')).toBeVisible();
-				await expect(page.getByRole('tabpanel')).toContainText(
-					'Version 3'
-				);
-
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Expire')
-					.click();
-
-				await waitForAlert(
-					page,
-					'Version 1 of the content has been successfully expired.'
-				);
-
-				await expect(page.getByRole('tabpanel')).toContainText(
-					'Expire'
-				);
-
-				await infoPanelPage.dropdownVersionAction('Version 1').click();
-
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('Delete')
-				).toBeVisible();
-				await expect(
-					infoPanelPage.dropdownVersionActionMenuItem('View')
-				).toBeVisible();
-
-				await infoPanelPage
-					.dropdownVersionActionMenuItem('Delete')
-					.click();
-
-				await assetsPage.modalDeleteButton.click();
-
-				await waitForAlert(
-					page,
-					'Version 1 of the content has been successfully deleted.'
-				);
-
-				await expect(
-					infoPanelPage.dropdownVersionAction('Version 1')
-				).not.toBeVisible();
+		await test.step('Open the Info Panel Versions of a file asset and check that the versions actions are visible', async () => {
+			await assetsPage.execItemAction({
+				action: 'Show Details',
+				filter: image1,
 			});
-		}
-		finally {
-			if (objectEntryContent) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					contentApplicationName,
-					String(objectEntryContent.id)
-				);
-			}
 
-			if (objectEntryFile) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					fileApplicationName,
-					String(objectEntryFile.id)
-				);
-			}
-		}
+			await expect(
+				page.getByRole('heading', {name: image1})
+			).toBeVisible();
+
+			await infoPanelPage.selectTab('Versions').click();
+
+			await expect(page.getByRole('tabpanel')).toContainText('Version 1');
+			await expect(page.getByRole('tabpanel')).toContainText('Version 2');
+
+			await infoPanelPage.dropdownVersionAction('Version 2').click();
+
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Expire')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Make a Copy')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Download')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('View')
+			).toBeVisible();
+
+			await infoPanelPage.dropdownVersionAction('Version 2').click();
+
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Restore Version')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Expire')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Make a Copy')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Download')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Delete')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('View')
+			).toBeVisible();
+		});
+
+		await test.step('Click on the version and check the functionality of the actions', async () => {
+			await infoPanelPage.dropdownVersionActionMenuItem('View').click();
+
+			await expect(
+				page.getByRole('heading', {name: `${image1} (Version 1)`})
+			).toBeVisible();
+
+			await page
+				.getByLabel(`${image1} (Version 1)`)
+				.getByLabel('Close')
+				.click();
+
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+
+			const downloadPromise = page.waitForEvent('download');
+
+			await infoPanelPage
+				.dropdownVersionActionMenuItem('Download')
+				.click();
+
+			const download = await downloadPromise;
+			expect(download.suggestedFilename()).toBe(`${fileNameImg}`);
+
+			const downloadStat = await fs.stat(await download.path());
+			expect(downloadStat.size).toBeGreaterThan(10);
+
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+			await infoPanelPage
+				.dropdownVersionActionMenuItem('Make a Copy')
+				.click();
+
+			await page.reload();
+
+			await expect(
+				assetsPage
+					.getItem(`${image1} (Copy)`)
+					.locator('input[title="Select Item"]')
+			).toBeVisible();
+
+			await assetsPage.execItemAction({
+				action: 'Delete',
+				filter: `${image1} (Copy)`,
+			});
+
+			await waitForAlert(
+				page,
+				`${image1} (Copy) was moved to the Recycle Bin.`
+			);
+
+			await assetsPage.execItemAction({
+				action: 'Show Details',
+				filter: `${image1}`,
+			});
+
+			await infoPanelPage.selectTab('Versions').click();
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+			await infoPanelPage
+				.dropdownVersionActionMenuItem('Restore Version')
+				.click();
+
+			await waitForAlert(
+				page,
+				'Version 1 of the content has been successfully restored.'
+			);
+
+			await expect(infoPanelPage.selectTab('Versions')).toBeVisible();
+			await expect(page.getByRole('tabpanel')).toContainText('Version 3');
+
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+			await infoPanelPage.dropdownVersionActionMenuItem('Expire').click();
+
+			await waitForAlert(
+				page,
+				'Version 1 of the content has been successfully expired.'
+			);
+
+			await expect(page.getByRole('tabpanel')).toContainText('Expire');
+
+			await infoPanelPage.dropdownVersionAction('Version 1').click();
+
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('Delete')
+			).toBeVisible();
+			await expect(
+				infoPanelPage.dropdownVersionActionMenuItem('View')
+			).toBeVisible();
+
+			await infoPanelPage.dropdownVersionActionMenuItem('Delete').click();
+
+			await assetsPage.modalDeleteButton.click();
+
+			await waitForAlert(
+				page,
+				'Version 1 of the content has been successfully deleted.'
+			);
+
+			await expect(
+				infoPanelPage.dropdownVersionAction('Version 1')
+			).not.toBeVisible();
+		});
 	}
 );
 
@@ -430,14 +379,13 @@ test(
 	{tag: '@LPD-86002'},
 	async ({apiHelpers, assetsPage, infoPanelPage, page, spaceSummaryPage}) => {
 		const contentApplicationName = 'cms/basic-web-contents';
-		let objectEntryContent;
 		const spaceName = 'Default';
 		let user;
 
 		const content = `title ${getRandomString()}`;
 
 		try {
-			objectEntryContent = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 					title: content,
@@ -486,13 +434,6 @@ test(
 			await performLogout(page);
 
 			await performLogin(page, 'test');
-
-			if (objectEntryContent) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					contentApplicationName,
-					String(objectEntryContent.id)
-				);
-			}
 		}
 	}
 );

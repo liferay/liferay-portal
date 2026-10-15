@@ -33,7 +33,6 @@ test(
 	async ({apiHelpers, assetsPage, infoPanelPage, page, spaceSummaryPage}) => {
 		const applicationName = 'cms/basic-web-contents';
 		const spaceName = `Space ${getRandomString()}`;
-		let objectEntry1;
 		let user;
 
 		const file1Title = `title ${getRandomString()}`;
@@ -113,7 +112,7 @@ test(
 		};
 
 		try {
-			objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 					title: file1Title,
@@ -236,14 +235,8 @@ test(
 		}
 		finally {
 			await performLogout(page);
-			await performLoginViaApi({page, screenName: 'test'});
 
-			if (objectEntry1) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry1.id)
-				);
-			}
+			await performLoginViaApi({page, screenName: 'test'});
 		}
 	}
 );

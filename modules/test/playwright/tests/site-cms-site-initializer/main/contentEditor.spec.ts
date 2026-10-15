@@ -44,25 +44,6 @@ const test = mergeTests(
 	structureBuilderPagesTest
 );
 
-interface IPostedObjectEntry {
-	applicationName: string;
-	id: string;
-}
-
-const postedObjectEntries: Array<IPostedObjectEntry> = [];
-
-test.afterEach(async ({apiHelpers}) => {
-	await test.step('Delete newly created object entries', async () => {
-		for (const postedObjectEntry of postedObjectEntries) {
-			const {applicationName, id} = postedObjectEntry;
-
-			await apiHelpers.objectEntry.deleteObjectEntry(applicationName, id);
-		}
-
-		postedObjectEntries.length = 0;
-	});
-});
-
 test(
 	'Friendly URL is taken into account when creating contents',
 	{tag: '@LPD-54566'},
@@ -2132,7 +2113,7 @@ test(
 		const fileNames = [...allowedFileNames, `${filePrefix}.pdf`];
 
 		for (const fileName of fileNames) {
-			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					file: {
 						fileBase64: validImageFileBase64,
@@ -2144,11 +2125,6 @@ test(
 				applicationName,
 				'Default'
 			);
-
-			postedObjectEntries.push({
-				applicationName,
-				id: String(objectEntry.id),
-			});
 		}
 
 		await contentsPage.goto();
@@ -2230,7 +2206,7 @@ test(
 
 		const fileName = `sample-${getRandomString()}.mp4`;
 
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: videoFileBase64,
@@ -2242,11 +2218,6 @@ test(
 			applicationName,
 			'Default'
 		);
-
-		postedObjectEntries.push({
-			applicationName,
-			id: String(objectEntry.id),
-		});
 
 		await contentsPage.goto();
 

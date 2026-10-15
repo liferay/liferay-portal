@@ -21,7 +21,7 @@ const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 const APPLICATION_NAME = 'cms/basic-web-contents';
 
 async function createContent(apiHelpers: DataApiHelpers, title: string) {
-	const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+	return apiHelpers.objectEntry.postObjectEntry(
 		{
 			objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 			title,
@@ -29,14 +29,6 @@ async function createContent(apiHelpers: DataApiHelpers, title: string) {
 		APPLICATION_NAME,
 		'Default'
 	);
-
-	apiHelpers.data.push({
-		applicationName: APPLICATION_NAME,
-		id: String(objectEntry.id),
-		type: 'objectEntry',
-	});
-
-	return objectEntry;
 }
 
 async function exportTranslationFile({

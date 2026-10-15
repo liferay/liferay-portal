@@ -32,39 +32,29 @@ for (const {externalReferenceCode, gotoSection, sectionLabel} of SECTIONS) {
 		async ({apiHelpers, assetsPage, page}) => {
 			const folderName = `Folder ${getRandomString()}`;
 
-			const folder =
-				await apiHelpers.objectFolder.createObjectEntryFolder({
-					parentObjectEntryFolderExternalReferenceCode:
-						externalReferenceCode,
-					scopeKey: 'Default',
-					title: folderName,
-				});
+			await apiHelpers.objectFolder.createObjectEntryFolder({
+				parentObjectEntryFolderExternalReferenceCode:
+					externalReferenceCode,
+				scopeKey: 'Default',
+				title: folderName,
+			});
 
-			try {
-				await assetsPage[gotoSection]();
+			await assetsPage[gotoSection]();
 
-				await assetsPage.changeVisualizationMode('Table');
+			await assetsPage.changeVisualizationMode('Table');
 
-				await page
-					.getByRole('row', {name: folderName})
-					.getByRole('checkbox')
-					.check();
+			await page
+				.getByRole('row', {name: folderName})
+				.getByRole('checkbox')
+				.check();
 
-				await page
-					.getByRole('button', {name: 'Show Info Panel'})
-					.click();
+			await page.getByRole('button', {name: 'Show Info Panel'}).click();
 
-				await expect(
-					page
-						.getByRole('navigation', {name: 'Breadcrumb'})
-						.getByText(sectionLabel, {exact: true})
-				).toBeVisible();
-			}
-			finally {
-				await apiHelpers.objectFolder.deleteObjectEntryFolder(
-					folder.id
-				);
-			}
+			await expect(
+				page
+					.getByRole('navigation', {name: 'Breadcrumb'})
+					.getByText(sectionLabel, {exact: true})
+			).toBeVisible();
 		}
 	);
 }

@@ -258,7 +258,6 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const file1Title = `Title ${getRandomString()}`;
 		const spaceName = `Space ${getRandomString()}`;
-		let objectEntry1;
 
 		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 			name: spaceName,
@@ -269,31 +268,23 @@ test(
 			type: 'Space',
 		});
 
-		try {
-			objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: file1Title,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file1Title,
+			},
+			applicationName,
+			spaceName
+		);
 
-			await assetsPage.gotoAll();
+		await assetsPage.gotoAll();
 
-			await assetsPage.execItemAction({
-				action: 'Share',
-				filter: file1Title,
-			});
+		await assetsPage.execItemAction({
+			action: 'Share',
+			filter: file1Title,
+		});
 
-			await expect(assetsPage.modal.title).toContainText(file1Title);
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
-		}
+		await expect(assetsPage.modal.title).toContainText(file1Title);
 	}
 );
 
@@ -493,61 +484,48 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const fileTitle = `Content ${getRandomString()}`;
 		const addFilterButton = page.getByRole('button', {name: 'Add Filter'});
-		let objectEntry;
 
-		try {
-			objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: fileTitle,
-				},
-				applicationName,
-				'Default'
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: fileTitle,
+			},
+			applicationName,
+			'Default'
+		);
 
-			await test.step('Go to All section', async () => {
-				await assetsPage.gotoAll();
-			});
+		await test.step('Go to All section', async () => {
+			await assetsPage.gotoAll();
+		});
 
-			await test.step('Choose to filter by Expiration Date', async () => {
-				await page.getByRole('button', {name: 'Filter'}).click();
+		await test.step('Choose to filter by Expiration Date', async () => {
+			await page.getByRole('button', {name: 'Filter'}).click();
 
-				await page
-					.getByRole('menuitem', {name: 'Expiration Date'})
-					.click();
-			});
+			await page.getByRole('menuitem', {name: 'Expiration Date'}).click();
+		});
 
-			const fromDateInput = page.getByLabel('From');
-			const toDateInput = page.getByLabel('To', {exact: true});
+		const fromDateInput = page.getByLabel('From');
+		const toDateInput = page.getByLabel('To', {exact: true});
 
-			const fromDate = new Date();
-			const toDate = new Date();
+		const fromDate = new Date();
+		const toDate = new Date();
 
-			fromDate.setDate(fromDate.getDate() + 1);
+		fromDate.setDate(fromDate.getDate() + 1);
 
-			await test.step('Set "from" date to a future date', async () => {
-				await fromDateInput.fill(formatDateTimeForUI(fromDate));
-			});
+		await test.step('Set "from" date to a future date', async () => {
+			await fromDateInput.fill(formatDateTimeForUI(fromDate));
+		});
 
-			await test.step('Check that the "Add filter" button is disabled if "to" date is before "from date"', async () => {
-				await toDateInput.fill(formatDateTimeForUI(toDate));
-				await expect(addFilterButton).toBeDisabled();
-			});
+		await test.step('Check that the "Add filter" button is disabled if "to" date is before "from date"', async () => {
+			await toDateInput.fill(formatDateTimeForUI(toDate));
+			await expect(addFilterButton).toBeDisabled();
+		});
 
-			await test.step('Check that the "Add filter" button is enabled if "to" date is after "from date"', async () => {
-				toDate.setDate(toDate.getDate() + 5);
-				await toDateInput.fill(formatDateTimeForUI(toDate));
-				await expect(addFilterButton).toBeEnabled();
-			});
-		}
-		finally {
-			if (objectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-		}
+		await test.step('Check that the "Add filter" button is enabled if "to" date is after "from date"', async () => {
+			toDate.setDate(toDate.getDate() + 5);
+			await toDateInput.fill(formatDateTimeForUI(toDate));
+			await expect(addFilterButton).toBeEnabled();
+		});
 	}
 );
 
@@ -558,62 +536,51 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const file1Title = `Title ${getRandomString()}`;
 		const spaceName = 'Default';
-		let objectEntry;
 
-		try {
-			await test.step('Create an object and go to All section', async () => {
-				objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-						title: file1Title,
-					},
-					applicationName,
-					spaceName
-				);
+		await test.step('Create an object and go to All section', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: file1Title,
+				},
+				applicationName,
+				spaceName
+			);
 
-				await assetsPage.gotoAll();
+			await assetsPage.gotoAll();
+		});
+
+		await test.step('Select the asset, open the Side Panel and then expire the asset', async () => {
+			await assetsPage.execItemAction({
+				action: 'Show Details',
+				filter: file1Title,
 			});
 
-			await test.step('Select the asset, open the Side Panel and then expire the asset', async () => {
-				await assetsPage.execItemAction({
-					action: 'Show Details',
-					filter: file1Title,
-				});
+			await expect(
+				page.getByRole('heading', {name: file1Title})
+			).toBeVisible();
 
-				await expect(
-					page.getByRole('heading', {name: file1Title})
-				).toBeVisible();
+			await page.getByLabel('Close the side panel.').click();
 
-				await page.getByLabel('Close the side panel.').click();
-
-				await assetsPage.execItemAction({
-					action: 'Expire',
-					filter: file1Title,
-				});
-
-				await waitForAlert(page);
+			await assetsPage.execItemAction({
+				action: 'Expire',
+				filter: file1Title,
 			});
 
-			await test.step('Expect that FDS table content is visible', async () => {
-				await expect(
-					assetsPage
-						.getItem(file1Title)
-						.getByRole('cell', {name: 'expired'})
-				).toBeVisible();
+			await waitForAlert(page);
+		});
 
-				await expect(
-					assetsPage.dataSetFragmentPage.assetLink(file1Title)
-				).toBeVisible();
-			});
-		}
-		finally {
-			if (objectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-		}
+		await test.step('Expect that FDS table content is visible', async () => {
+			await expect(
+				assetsPage
+					.getItem(file1Title)
+					.getByRole('cell', {name: 'expired'})
+			).toBeVisible();
+
+			await expect(
+				assetsPage.dataSetFragmentPage.assetLink(file1Title)
+			).toBeVisible();
+		});
 	}
 );
 
@@ -675,51 +642,36 @@ test(
 		const tomorrow = new Date();
 		tomorrow.setDate(tomorrow.getDate() + 1);
 
-		let noReviewEntry;
-		let reviewEntry;
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: noReviewDateTitle,
+			},
+			applicationName,
+			spaceName
+		);
 
-		try {
-			noReviewEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: noReviewDateTitle,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				reviewDate: toIsoDate(tomorrow),
+				title: reviewDateTitle,
+			},
+			applicationName,
+			spaceName
+		);
 
-			reviewEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					reviewDate: toIsoDate(tomorrow),
-					title: reviewDateTitle,
-				},
-				applicationName,
-				spaceName
-			);
+		await expect(async () => {
+			await assetsPage.gotoAll();
 
-			await expect(async () => {
-				await assetsPage.gotoAll();
+			await expect(
+				page.getByRole('row').filter({hasText: noReviewDateTitle})
+			).toContainText('--');
 
-				await expect(
-					page.getByRole('row').filter({hasText: noReviewDateTitle})
-				).toContainText('--');
-
-				await expect(
-					page.getByRole('row').filter({hasText: reviewDateTitle})
-				).not.toContainText('--');
-			}).toPass();
-		}
-		finally {
-			for (const entry of [noReviewEntry, reviewEntry]) {
-				if (entry) {
-					await apiHelpers.objectEntry.deleteObjectEntry(
-						applicationName,
-						String(entry.id)
-					);
-				}
-			}
-		}
+			await expect(
+				page.getByRole('row').filter({hasText: reviewDateTitle})
+			).not.toContainText('--');
+		}).toPass();
 	}
 );
 
@@ -729,57 +681,46 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-web-contents';
 		const fileTitle = `Content ${getRandomString()}`;
-		let objectEntry;
 
-		try {
-			await test.step('Create a content', async () => {
-				objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-						title: fileTitle,
-					},
-					applicationName,
-					'Default'
-				);
+		await test.step('Create a content', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: fileTitle,
+				},
+				applicationName,
+				'Default'
+			);
 
-				await assetsPage.gotoAll();
+			await assetsPage.gotoAll();
 
-				await expect(
-					page.getByRole('cell', {exact: true, name: fileTitle})
-				).toBeVisible();
+			await expect(
+				page.getByRole('cell', {exact: true, name: fileTitle})
+			).toBeVisible();
+		});
+
+		await test.step('Apply Create Date filter', async () => {
+			const fromDate = new Date();
+
+			fromDate.setDate(fromDate.getDate() - 1);
+
+			await applyFDSDateTimeRangeFilter(page, {
+				filter: 'Create Date',
+				from: fromDate,
 			});
+		});
 
-			await test.step('Apply Create Date filter', async () => {
-				const fromDate = new Date();
+		await test.step('Check filter chip and entry are visible', async () => {
+			await expect(
+				page
+					.getByRole('button', {name: /Create Date:/})
+					.locator('.label-section')
+			).toBeVisible();
 
-				fromDate.setDate(fromDate.getDate() - 1);
-
-				await applyFDSDateTimeRangeFilter(page, {
-					filter: 'Create Date',
-					from: fromDate,
-				});
-			});
-
-			await test.step('Check filter chip and entry are visible', async () => {
-				await expect(
-					page
-						.getByRole('button', {name: /Create Date:/})
-						.locator('.label-section')
-				).toBeVisible();
-
-				await expect(
-					page.getByRole('cell', {exact: true, name: fileTitle})
-				).toBeVisible();
-			});
-		}
-		finally {
-			if (objectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-		}
+			await expect(
+				page.getByRole('cell', {exact: true, name: fileTitle})
+			).toBeVisible();
+		});
 	}
 );
 
@@ -790,99 +731,81 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const matchingTitle = `Matching ${getRandomString()}`;
 		const otherTitle = `Other ${getRandomString()}`;
-		let matchingEntry;
-		let otherEntry;
 
-		try {
-			await test.step('Create matching and non-matching contents', async () => {
-				const matchingDisplayDate = new Date();
+		await test.step('Create matching and non-matching contents', async () => {
+			const matchingDisplayDate = new Date();
 
-				matchingDisplayDate.setDate(matchingDisplayDate.getDate() + 5);
+			matchingDisplayDate.setDate(matchingDisplayDate.getDate() + 5);
 
-				matchingEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{
-						displayDate: matchingDisplayDate.toISOString(),
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-						title: matchingTitle,
-					},
-					applicationName,
-					'Default'
-				);
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					displayDate: matchingDisplayDate.toISOString(),
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: matchingTitle,
+				},
+				applicationName,
+				'Default'
+			);
 
-				otherEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-						title: otherTitle,
-					},
-					applicationName,
-					'Default'
-				);
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: otherTitle,
+				},
+				applicationName,
+				'Default'
+			);
 
-				await assetsPage.gotoAll();
+			await assetsPage.gotoAll();
 
-				await expect(
-					page.getByRole('cell', {
-						exact: true,
-						name: matchingTitle,
-					})
-				).toBeVisible();
-				await expect(
-					page.getByRole('cell', {
-						exact: true,
-						name: otherTitle,
-					})
-				).toBeVisible();
+			await expect(
+				page.getByRole('cell', {
+					exact: true,
+					name: matchingTitle,
+				})
+			).toBeVisible();
+			await expect(
+				page.getByRole('cell', {
+					exact: true,
+					name: otherTitle,
+				})
+			).toBeVisible();
+		});
+
+		await test.step('Apply Display Date filter', async () => {
+			const fromDate = new Date();
+			const toDate = new Date();
+
+			fromDate.setDate(fromDate.getDate() + 4);
+			toDate.setDate(toDate.getDate() + 6);
+
+			await applyFDSDateTimeRangeFilter(page, {
+				filter: 'Display Date',
+				from: fromDate,
+				to: toDate,
 			});
+		});
 
-			await test.step('Apply Display Date filter', async () => {
-				const fromDate = new Date();
-				const toDate = new Date();
+		await test.step('Check only the matching content remains visible', async () => {
+			await expect(
+				page
+					.getByRole('button', {name: /Display Date:/})
+					.locator('.label-section')
+			).toBeVisible();
 
-				fromDate.setDate(fromDate.getDate() + 4);
-				toDate.setDate(toDate.getDate() + 6);
-
-				await applyFDSDateTimeRangeFilter(page, {
-					filter: 'Display Date',
-					from: fromDate,
-					to: toDate,
-				});
-			});
-
-			await test.step('Check only the matching content remains visible', async () => {
-				await expect(
-					page
-						.getByRole('button', {name: /Display Date:/})
-						.locator('.label-section')
-				).toBeVisible();
-
-				await expect(
-					page.getByRole('cell', {
-						exact: true,
-						name: matchingTitle,
-					})
-				).toBeVisible();
-				await expect(
-					page.getByRole('cell', {
-						exact: true,
-						name: otherTitle,
-					})
-				).not.toBeVisible();
-			});
-		}
-		finally {
-			if (matchingEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(matchingEntry.id)
-				);
-			}
-			if (otherEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(otherEntry.id)
-				);
-			}
-		}
+			await expect(
+				page.getByRole('cell', {
+					exact: true,
+					name: matchingTitle,
+				})
+			).toBeVisible();
+			await expect(
+				page.getByRole('cell', {
+					exact: true,
+					name: otherTitle,
+				})
+			).not.toBeVisible();
+		});
 	}
 );
 
@@ -892,57 +815,46 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-web-contents';
 		const fileTitle = `Content ${getRandomString()}`;
-		let objectEntry;
 
-		try {
-			await test.step('Create a content', async () => {
-				objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-						title: fileTitle,
-					},
-					applicationName,
-					'Default'
-				);
+		await test.step('Create a content', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: fileTitle,
+				},
+				applicationName,
+				'Default'
+			);
 
-				await assetsPage.gotoAll();
+			await assetsPage.gotoAll();
 
-				await expect(
-					page.getByRole('cell', {exact: true, name: fileTitle})
-				).toBeVisible();
+			await expect(
+				page.getByRole('cell', {exact: true, name: fileTitle})
+			).toBeVisible();
+		});
+
+		await test.step('Apply Modified Date filter', async () => {
+			const fromDate = new Date();
+
+			fromDate.setDate(fromDate.getDate() - 1);
+
+			await applyFDSDateTimeRangeFilter(page, {
+				filter: 'Modified Date',
+				from: fromDate,
 			});
+		});
 
-			await test.step('Apply Modified Date filter', async () => {
-				const fromDate = new Date();
+		await test.step('Check filter chip and entry are visible', async () => {
+			await expect(
+				page
+					.getByRole('button', {name: /Modified Date:/})
+					.locator('.label-section')
+			).toBeVisible();
 
-				fromDate.setDate(fromDate.getDate() - 1);
-
-				await applyFDSDateTimeRangeFilter(page, {
-					filter: 'Modified Date',
-					from: fromDate,
-				});
-			});
-
-			await test.step('Check filter chip and entry are visible', async () => {
-				await expect(
-					page
-						.getByRole('button', {name: /Modified Date:/})
-						.locator('.label-section')
-				).toBeVisible();
-
-				await expect(
-					page.getByRole('cell', {exact: true, name: fileTitle})
-				).toBeVisible();
-			});
-		}
-		finally {
-			if (objectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-		}
+			await expect(
+				page.getByRole('cell', {exact: true, name: fileTitle})
+			).toBeVisible();
+		});
 	}
 );
 
@@ -1669,7 +1581,7 @@ test(
 		const contentTitle = `Content ${sharedToken}`;
 		const documentTitle = `Document ${sharedToken}`;
 
-		const contentObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 				title: contentTitle,
@@ -1692,67 +1604,55 @@ test(
 				'Default'
 			);
 
-		try {
-			apiHelpers.data.push({
-				id: documentObjectEntry.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: documentObjectEntry.file.id,
+			type: 'document',
+		});
 
-			await assetsPage.gotoAll();
+		await assetsPage.gotoAll();
 
-			// Other tests share the Default space, so narrow the section down
-			// to the two entries this test created before navigating between
-			// them.
+		// Other tests share the Default space, so narrow the section down
+		// to the two entries this test created before navigating between
+		// them.
 
-			await assetsPage.search(sharedToken);
+		await assetsPage.search(sharedToken);
 
-			await assetsPage.execItemAction({
-				action: 'View',
-				filter: documentTitle,
-			});
+		await assetsPage.execItemAction({
+			action: 'View',
+			filter: documentTitle,
+		});
 
-			const contentPreview = assetsPage.modal.body.locator(
-				'iframe[title="Preview"]'
+		const contentPreview = assetsPage.modal.body.locator(
+			'iframe[title="Preview"]'
+		);
+
+		const downloadLink = page.getByRole('link', {name: 'Download'});
+
+		const itemCounter =
+			assetsPage.modal.container.getByText(/^\d+ of \d+$/);
+
+		await test.step('The file opens in a preview listing both entries', async () => {
+			await expect(page.getByTestId('modal-header-name')).toHaveText(
+				documentTitle
 			);
 
-			const downloadLink = page.getByRole('link', {name: 'Download'});
+			await expect(downloadLink).toBeVisible();
 
-			const itemCounter =
-				assetsPage.modal.container.getByText(/^\d+ of \d+$/);
+			await expect(itemCounter).toHaveText('1 of 2');
+		});
 
-			await test.step('The file opens in a preview listing both entries', async () => {
-				await expect(page.getByTestId('modal-header-name')).toHaveText(
-					documentTitle
-				);
+		await test.step('The modal navigates from the file to the content', async () => {
+			await assetsPage.modal.body.getByLabel('Next').click();
 
-				await expect(downloadLink).toBeVisible();
-
-				await expect(itemCounter).toHaveText('1 of 2');
-			});
-
-			await test.step('The modal navigates from the file to the content', async () => {
-				await assetsPage.modal.body.getByLabel('Next').click();
-
-				await expect(page.getByTestId('modal-header-name')).toHaveText(
-					contentTitle
-				);
-
-				await expect(itemCounter).toHaveText('2 of 2');
-
-				await expect(contentPreview).toBeVisible();
-
-				await expect(downloadLink).toBeHidden();
-			});
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				'cms/basic-documents',
-				String(documentObjectEntry.id)
+			await expect(page.getByTestId('modal-header-name')).toHaveText(
+				contentTitle
 			);
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				'cms/basic-web-contents',
-				String(contentObjectEntry.id)
-			);
-		}
+
+			await expect(itemCounter).toHaveText('2 of 2');
+
+			await expect(contentPreview).toBeVisible();
+
+			await expect(downloadLink).toBeHidden();
+		});
 	}
 );

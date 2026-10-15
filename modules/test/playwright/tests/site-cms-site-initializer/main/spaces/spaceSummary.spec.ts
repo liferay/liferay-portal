@@ -24,7 +24,7 @@ test(
 
 		const file1Title = `title ${getRandomString()}`;
 
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: 'R0lGODlhAQABAAAAACw=',
@@ -37,28 +37,18 @@ test(
 			spaceName
 		);
 
-		try {
-			await spaceSummaryPage.goto(spaceName);
-			await spaceSummaryPage.viewAllFilesLink.click();
+		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.viewAllFilesLink.click();
 
-			await expect(
-				page.getByRole('combobox', {name: 'Gallery View Selected'})
-			).toBeVisible();
+		await expect(
+			page.getByRole('combobox', {name: 'Gallery View Selected'})
+		).toBeVisible();
 
-			await expect(
-				spaceSummaryPage.galleryPreview.getByText(
-					'No Preview Available'
-				)
-			).toBeVisible();
+		await expect(
+			spaceSummaryPage.galleryPreview.getByText('No Preview Available')
+		).toBeVisible();
 
-			await expect(page.getByText(file1Title)).toBeVisible();
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
-		}
+		await expect(page.getByText(file1Title)).toBeVisible();
 	}
 );
 
@@ -145,7 +135,7 @@ test(
 
 		const fileTitle = `title ${getRandomString()}`;
 
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: 'R0lGODlhAQABAAAAACw=',
@@ -158,25 +148,13 @@ test(
 			spaceName
 		);
 
-		try {
-			await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(spaceName);
 
-			await expect(page.getByText(fileTitle)).toBeVisible();
+		await expect(page.getByText(fileTitle)).toBeVisible();
 
-			await page.getByText(fileTitle).click();
+		await page.getByText(fileTitle).click();
 
-			await expect(
-				page.getByRole('textbox', {name: 'Title'})
-			).toBeVisible();
-		}
-		finally {
-			if (objectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-		}
+		await expect(page.getByRole('textbox', {name: 'Title'})).toBeVisible();
 	}
 );
 
@@ -254,7 +232,7 @@ test(
 
 		const contentTitle = `title ${getRandomString()}`;
 
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 				title: contentTitle,
@@ -263,27 +241,15 @@ test(
 			spaceName
 		);
 
-		try {
-			await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(spaceName);
 
-			await expect(
-				page.getByRole('link', {name: contentTitle})
-			).toBeVisible();
+		await expect(
+			page.getByRole('link', {name: contentTitle})
+		).toBeVisible();
 
-			await page.getByRole('link', {name: contentTitle}).click();
+		await page.getByRole('link', {name: contentTitle}).click();
 
-			await expect(
-				page.getByRole('textbox', {name: 'Title'})
-			).toBeVisible();
-		}
-		finally {
-			if (objectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-		}
+		await expect(page.getByRole('textbox', {name: 'Title'})).toBeVisible();
 	}
 );
 
@@ -367,7 +333,6 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const file1Title = `Title ${getRandomString()}`;
 		const spaceName = `Space ${getRandomString()}`;
-		let objectEntry1;
 
 		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 			name: spaceName,
@@ -378,33 +343,23 @@ test(
 			type: 'Space',
 		});
 
-		try {
-			objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: file1Title,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file1Title,
+			},
+			applicationName,
+			spaceName
+		);
 
-			await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(spaceName);
 
-			await assetsPage.execItemAction({
-				action: 'Share',
-				filter: file1Title,
-			});
+		await assetsPage.execItemAction({
+			action: 'Share',
+			filter: file1Title,
+		});
 
-			await expect(page.locator('.modal-title')).toContainText(
-				file1Title
-			);
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
-		}
+		await expect(page.locator('.modal-title')).toContainText(file1Title);
 	}
 );
 

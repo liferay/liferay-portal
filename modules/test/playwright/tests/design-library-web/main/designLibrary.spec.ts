@@ -5,7 +5,7 @@
 
 import {Page, expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
@@ -14,7 +14,7 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 import {designLibrariesPageTest} from './fixtures/designLibrariesPageTest';
 
 const test = mergeTests(
-	apiHelpersTest,
+	dataApiHelpersTest,
 	designLibrariesPageTest,
 	featureFlagsTest({
 		'LPD-11235': {enabled: true},
@@ -82,16 +82,13 @@ test(
 	async ({apiHelpers, designLibrariesPage, page}) => {
 		const designLibraryName = getRandomString();
 
-		const createdDesignLibrary =
-			await test.step('Create temporary design library via headless', async () => {
-				return await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-					{
-						name: designLibraryName,
-						settings: {},
-						type: 'DesignLibrary',
-					}
-				);
+		await test.step('Create temporary design library via headless', async () => {
+			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
 			});
+		});
 
 		await test.step('Navigate to a design library dashboard', async () => {
 			await designLibrariesPage.goto();
@@ -155,12 +152,6 @@ test(
 			await expect(
 				page.getByRole('menu').getByRole('menuitem', {name: 'Delete'})
 			).toBeVisible();
-		});
-
-		await test.step('Remove temporary design library', async () => {
-			await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(
-				createdDesignLibrary.externalReferenceCode
-			);
 		});
 	}
 );
@@ -258,16 +249,13 @@ test(
 
 		const connectedSitesDialog = page.getByRole('dialog');
 
-		const createdDesignLibrary =
-			await test.step('Create a new design library via headless', async () => {
-				return await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-					{
-						name: designLibraryName,
-						settings: {},
-						type: 'DesignLibrary',
-					}
-				);
+		await test.step('Create a new design library via headless', async () => {
+			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
 			});
+		});
 
 		await test.step('Connect a site to design library', async () => {
 			await designLibrariesPage.goToDesignLibrary(designLibraryName);
@@ -324,12 +312,6 @@ test(
 				{autoClose: false}
 			);
 		});
-
-		await test.step('Remove created design library', async () => {
-			await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(
-				createdDesignLibrary.externalReferenceCode
-			);
-		});
 	}
 );
 
@@ -339,16 +321,13 @@ test(
 	async ({apiHelpers, designLibrariesPage, page}) => {
 		const designLibraryName = getRandomString();
 
-		const createdDesignLibrary =
-			await test.step('Create temporary design library via headless', async () => {
-				return await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-					{
-						name: designLibraryName,
-						settings: {},
-						type: 'DesignLibrary',
-					}
-				);
+		await test.step('Create temporary design library via headless', async () => {
+			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
 			});
+		});
 
 		const openRowActions = async () => {
 			await page
@@ -369,74 +348,57 @@ test(
 			await expect(breadcrumb.getByText(designLibraryName)).toBeVisible();
 		};
 
-		try {
-			await test.step('Listing row ellipsis exposes Export and Import actions', async () => {
-				await designLibrariesPage.goto();
+		await test.step('Listing row ellipsis exposes Export and Import actions', async () => {
+			await designLibrariesPage.goto();
 
-				await openRowActions();
+			await openRowActions();
 
-				await expect(
-					page
-						.getByRole('menu')
-						.getByRole('menuitem', {name: 'Export'})
-				).toBeVisible();
+			await expect(
+				page.getByRole('menu').getByRole('menuitem', {name: 'Export'})
+			).toBeVisible();
 
-				await expect(
-					page
-						.getByRole('menu')
-						.getByRole('menuitem', {name: 'Import'})
-				).toBeVisible();
-			});
+			await expect(
+				page.getByRole('menu').getByRole('menuitem', {name: 'Import'})
+			).toBeVisible();
+		});
 
-			await test.step('Clicking Export navigates to the Export portlet scoped to the design library with a back URL', async () => {
-				await page
-					.getByRole('menu')
-					.getByRole('menuitem', {name: 'Export'})
-					.click();
+		await test.step('Clicking Export navigates to the Export portlet scoped to the design library with a back URL', async () => {
+			await page
+				.getByRole('menu')
+				.getByRole('menuitem', {name: 'Export'})
+				.click();
 
-				await expect(page).toHaveURL(
-					/p_p_id=com_liferay_exportimport_web_portlet_ExportPortlet/
-				);
+			await expect(page).toHaveURL(/asset-library-\d+/);
+			await expect(page).toHaveURL(/backURL=/);
+			await expect(page).toHaveURL(
+				/p_p_id=com_liferay_exportimport_web_portlet_ExportPortlet/
+			);
+		});
 
-				await expect(page).toHaveURL(/asset-library-\d+/);
+		await test.step('Export portlet breadcrumb omits Asset Libraries and includes the design library', async () => {
+			await expectCleanBreadcrumb();
+		});
 
-				await expect(page).toHaveURL(/backURL=/);
-			});
+		await test.step('Clicking Import navigates to the Import portlet scoped to the design library with a back URL', async () => {
+			await designLibrariesPage.goto();
 
-			await test.step('Export portlet breadcrumb omits Asset Libraries and includes the design library', async () => {
-				await expectCleanBreadcrumb();
-			});
+			await openRowActions();
 
-			await test.step('Clicking Import navigates to the Import portlet scoped to the design library with a back URL', async () => {
-				await designLibrariesPage.goto();
+			await page
+				.getByRole('menu')
+				.getByRole('menuitem', {name: 'Import'})
+				.click();
 
-				await openRowActions();
+			await expect(page).toHaveURL(/asset-library-\d+/);
+			await expect(page).toHaveURL(/backURL=/);
+			await expect(page).toHaveURL(
+				/p_p_id=com_liferay_exportimport_web_portlet_ImportPortlet/
+			);
+		});
 
-				await page
-					.getByRole('menu')
-					.getByRole('menuitem', {name: 'Import'})
-					.click();
-
-				await expect(page).toHaveURL(
-					/p_p_id=com_liferay_exportimport_web_portlet_ImportPortlet/
-				);
-
-				await expect(page).toHaveURL(/asset-library-\d+/);
-
-				await expect(page).toHaveURL(/backURL=/);
-			});
-
-			await test.step('Import portlet breadcrumb omits Asset Libraries and includes the design library', async () => {
-				await expectCleanBreadcrumb();
-			});
-		}
-		finally {
-			await test.step('Remove temporary design library', async () => {
-				await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(
-					createdDesignLibrary.externalReferenceCode
-				);
-			});
-		}
+		await test.step('Import portlet breadcrumb omits Asset Libraries and includes the design library', async () => {
+			await expectCleanBreadcrumb();
+		});
 	}
 );
 
@@ -448,16 +410,13 @@ test(
 		const editedDesignLibraryName = getRandomString();
 		const editedDesignLibraryDescription = getRandomString();
 
-		const createdDesignLibrary =
-			await test.step('Create a new design library via headless', async () => {
-				return await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-					{
-						name: designLibraryName,
-						settings: {},
-						type: 'DesignLibrary',
-					}
-				);
+		await test.step('Create a new design library via headless', async () => {
+			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
 			});
+		});
 
 		await test.step('View the design library settings', async () => {
 			await designLibrariesPage.goToDesignLibrary(designLibraryName);
@@ -526,12 +485,6 @@ test(
 				selectors: ['.portlet-body'],
 			});
 		});
-
-		await test.step('Remove created design library', async () => {
-			await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(
-				createdDesignLibrary.externalReferenceCode
-			);
-		});
 	}
 );
 
@@ -543,16 +496,13 @@ test(
 
 		const manageMembersDialog = page.getByRole('dialog');
 
-		const createdDesignLibrary =
-			await test.step('Create a new design library via headless', async () => {
-				return await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-					{
-						name: designLibraryName,
-						settings: {},
-						type: 'DesignLibrary',
-					}
-				);
+		await test.step('Create a new design library via headless', async () => {
+			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
 			});
+		});
 
 		await test.step('Open the design library actions menu', async () => {
 			await designLibrariesPage.goToDesignLibrary(designLibraryName);
@@ -595,12 +545,6 @@ test(
 			expect(ownerItem).toHaveText('Test Test(You)(Owner)', {
 				ignoreCase: true,
 			});
-		});
-
-		await test.step('Remove created design library', async () => {
-			await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(
-				createdDesignLibrary.externalReferenceCode
-			);
 		});
 	}
 );

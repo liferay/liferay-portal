@@ -39,7 +39,7 @@ async function createCustomMask(
 	apiHelpers: DataApiHelpers,
 	name: string
 ): Promise<ObjectEntry> {
-	const dataMask = await apiHelpers.objectEntry.postObjectEntry(
+	return apiHelpers.objectEntry.postObjectEntry(
 		{
 			description: 'Created by Playwright',
 			detectionRegex: '\\bzz\\b',
@@ -49,14 +49,6 @@ async function createCustomMask(
 		},
 		DATA_MASKS_API
 	);
-
-	apiHelpers.data.push({
-		applicationName: DATA_MASKS_API,
-		id: dataMask.id,
-		type: 'objectEntry',
-	});
-
-	return dataMask;
 }
 
 async function associateMaskWithProfile(
@@ -67,7 +59,7 @@ async function associateMaskWithProfile(
 		`${apiHelpers.baseUrl}mcp/server-profiles?pageSize=1`
 	);
 
-	const association = await apiHelpers.objectEntry.postObjectEntry(
+	return apiHelpers.objectEntry.postObjectEntry(
 		{
 			dataMaskExternalReferenceCode,
 			mcpServerProfileExternalReferenceCode:
@@ -75,14 +67,6 @@ async function associateMaskWithProfile(
 		},
 		PROFILE_DATA_MASKS_API
 	);
-
-	apiHelpers.data.push({
-		applicationName: PROFILE_DATA_MASKS_API,
-		id: association.id,
-		type: 'objectEntry',
-	});
-
-	return association;
 }
 
 const test = baseTest.extend<{

@@ -37,7 +37,7 @@ async function createPrompt(
 	name: string,
 	promptStatusKey: 'active' | 'inactive' = 'active'
 ): Promise<ObjectEntry> {
-	const prompt = await apiHelpers.objectEntry.postObjectEntry(
+	return apiHelpers.objectEntry.postObjectEntry(
 		{
 			description: `Created by Playwright ${name}`,
 			identifier: name,
@@ -47,14 +47,6 @@ async function createPrompt(
 		},
 		PROMPTS_API
 	);
-
-	apiHelpers.data.push({
-		applicationName: PROMPTS_API,
-		id: prompt.id,
-		type: 'objectEntry',
-	});
-
-	return prompt;
 }
 
 const test = baseTest.extend<{

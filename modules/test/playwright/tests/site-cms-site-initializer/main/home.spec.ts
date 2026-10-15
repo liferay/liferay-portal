@@ -348,36 +348,19 @@ test(
 			});
 		}
 		finally {
-			if (objectEntry1) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry1.id)
-				);
-			}
-
-			if (objectEntry2) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry2.id)
-				);
-			}
-
-			if (objectEntry3) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry3.id)
-				);
-			}
 
 			// Teardown for created web content workflow
 
 			await processBuilderPage.goto('/test');
+
 			await configurationTabPage.configurationTabLink.waitFor({
 				state: 'visible',
 			});
+
 			await configurationTabPage.configurationTabLink.click({
 				force: true,
 			});
+
 			await configurationTabPage.page.waitForURL((url) =>
 				url.href.includes('=configuration')
 			);
@@ -459,22 +442,19 @@ test(
 			).toBeVisible();
 		}
 		finally {
-			if (objectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
 
 			// Teardown for created web content workflow
 
 			await processBuilderPage.goto('/test');
+
 			await configurationTabPage.configurationTabLink.waitFor({
 				state: 'visible',
 			});
+
 			await configurationTabPage.configurationTabLink.click({
 				force: true,
 			});
+
 			await configurationTabPage.page.waitForURL((url) =>
 				url.href.includes('=configuration')
 			);
@@ -496,49 +476,34 @@ test(
 	async ({apiHelpers, homePage, page}) => {
 		const applicationName = 'cms/basic-web-contents';
 		const spaceName = 'Default';
-		let objectEntry1;
-		let objectEntry2;
 
 		const file1Title = `title ${getRandomString()}`;
 
-		try {
-			objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: file1Title,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file1Title,
+			},
+			applicationName,
+			spaceName
+		);
 
-			objectEntry2 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: `some content ${getRandomString()}`,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: `some content ${getRandomString()}`,
+			},
+			applicationName,
+			spaceName
+		);
 
-			await homePage.goto();
+		await homePage.goto();
 
-			const dataSetFragmentPage: DataSetPage = new DataSetPage(page);
+		const dataSetFragmentPage: DataSetPage = new DataSetPage(page);
 
-			const row =
-				dataSetFragmentPage.table.bodyRows.getByLabel(file1Title);
+		const row = dataSetFragmentPage.table.bodyRows.getByLabel(file1Title);
 
-			await expect(row.getByText(file1Title)).toBeVisible();
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry2.id)
-			);
-		}
+		await expect(row.getByText(file1Title)).toBeVisible();
 	}
 );
 
@@ -548,48 +513,32 @@ test(
 	async ({apiHelpers, homePage, page}) => {
 		const applicationName = 'cms/basic-web-contents';
 		const spaceName = 'Default';
-		let objectEntry1;
-		let objectEntry2;
 
 		const file1Title = `title ${getRandomString()}`;
 
-		try {
-			objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: file1Title,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file1Title,
+			},
+			applicationName,
+			spaceName
+		);
 
-			objectEntry2 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: `some content ${getRandomString()}`,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: `some content ${getRandomString()}`,
+			},
+			applicationName,
+			spaceName
+		);
 
-			await homePage.goto();
+		await homePage.goto();
 
-			await homePage.viewAllButton.click();
+		await homePage.viewAllButton.click();
 
-			await expect(
-				page.getByRole('heading', {name: 'All'})
-			).toBeVisible();
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry2.id)
-			);
-		}
+		await expect(page.getByRole('heading', {name: 'All'})).toBeVisible();
 	}
 );
 
@@ -600,49 +549,34 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const spaceName = 'Default';
 
-		const objectEntries = [];
-
 		const oldestAssetTitle = `recent asset ${getRandomString()}`;
 
-		try {
-			for (let index = 0; index < 17; index++) {
-				objectEntries.push(
-					await apiHelpers.objectEntry.postObjectEntry(
-						{
-							objectEntryFolderExternalReferenceCode:
-								'L_CONTENTS',
-							title:
-								index === 0
-									? oldestAssetTitle
-									: `recent asset ${getRandomString()}`,
-						},
-						applicationName,
-						spaceName
-					)
-				);
-			}
-
-			await homePage.goto();
-
-			const recentAssets = page.locator('.recent-assets-fds');
-
-			await expect(recentAssets.locator('tbody tr')).toHaveCount(16);
-			await expect(
-				recentAssets.locator('.pagination-bar')
-			).not.toBeAttached();
-
-			await expect(
-				recentAssets.getByText(oldestAssetTitle, {exact: true})
-			).toHaveCount(0);
+		for (let index = 0; index < 17; index++) {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title:
+						index === 0
+							? oldestAssetTitle
+							: `recent asset ${getRandomString()}`,
+				},
+				applicationName,
+				spaceName
+			);
 		}
-		finally {
-			for (const objectEntry of objectEntries) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-		}
+
+		await homePage.goto();
+
+		const recentAssets = page.locator('.recent-assets-fds');
+
+		await expect(recentAssets.locator('tbody tr')).toHaveCount(16);
+		await expect(
+			recentAssets.locator('.pagination-bar')
+		).not.toBeAttached();
+
+		await expect(
+			recentAssets.getByText(oldestAssetTitle, {exact: true})
+		).toHaveCount(0);
 	}
 );
 
@@ -664,11 +598,8 @@ test(
 				type: 'Space',
 			});
 
-		let restrictedEntry;
-		let visibleEntry;
-
 		try {
-			restrictedEntry = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 					title: restrictedTitle,
@@ -677,7 +608,7 @@ test(
 				restrictedSpace.name
 			);
 
-			visibleEntry = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 					title: visibleTitle,
@@ -716,20 +647,6 @@ test(
 		}
 		finally {
 			await performUserSwitch(page, 'test');
-
-			if (restrictedEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(restrictedEntry.id)
-				);
-			}
-
-			if (visibleEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(visibleEntry.id)
-				);
-			}
 		}
 	}
 );
@@ -744,137 +661,115 @@ test(
 		const fileName = `file_${getRandomString()}.png`;
 		const fileTitle = `file ${getRandomString()}`;
 
-		let contentEntry;
-		let fileEntry;
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: contentTitle,
+			},
+			contentApplicationName,
+			'Default'
+		);
 
-		try {
-			contentEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: contentTitle,
+		const fileEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				file: {
+					fileBase64: 'R0lGODlhAQABAAAAACw=',
+					name: fileName,
 				},
-				contentApplicationName,
-				'Default'
-			);
+				objectEntryFolderExternalReferenceCode: 'L_FILES',
+				title: fileTitle,
+			},
+			fileApplicationName,
+			'Default'
+		);
 
-			fileEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					file: {
-						fileBase64: 'R0lGODlhAQABAAAAACw=',
-						name: fileName,
-					},
-					objectEntryFolderExternalReferenceCode: 'L_FILES',
-					title: fileTitle,
-				},
-				fileApplicationName,
-				'Default'
-			);
+		apiHelpers.data.push({
+			id: fileEntry.file.id,
+			type: 'document',
+		});
 
-			apiHelpers.data.push({
-				id: fileEntry.file.id,
-				type: 'document',
-			});
+		const dataSetFragmentPage: DataSetPage = new DataSetPage(page);
 
-			const dataSetFragmentPage: DataSetPage = new DataSetPage(page);
+		await homePage.goto();
 
-			await homePage.goto();
+		await test.step('Recent Assets shows the content and file rows', async () => {
+			await expect(
+				dataSetFragmentPage.getRow(contentTitle)
+			).toBeVisible();
 
-			await test.step('Recent Assets shows the content and file rows', async () => {
+			await expect(dataSetFragmentPage.getRow(fileTitle)).toBeVisible();
+		});
+
+		await test.step('File row action menu shows Download and inherited actions', async () => {
+			await dataSetFragmentPage
+				.getRow(fileTitle)
+				.getByRole('button', {name: `${fileTitle} Actions`})
+				.click();
+
+			for (const action of [
+				'Delete',
+				'Download',
+				'Edit',
+				'Permissions',
+				'Share',
+				'View History',
+			]) {
 				await expect(
-					dataSetFragmentPage.getRow(contentTitle)
-				).toBeVisible();
-
-				await expect(
-					dataSetFragmentPage.getRow(fileTitle)
-				).toBeVisible();
-			});
-
-			await test.step('File row action menu shows Download and inherited actions', async () => {
-				await dataSetFragmentPage
-					.getRow(fileTitle)
-					.getByRole('button', {name: `${fileTitle} Actions`})
-					.click();
-
-				for (const action of [
-					'Delete',
-					'Download',
-					'Edit',
-					'Permissions',
-					'Share',
-					'View History',
-				]) {
-					await expect(
-						page.getByRole('menuitem', {
-							exact: true,
-							name: action,
-						})
-					).toBeVisible();
-				}
-
-				await page.keyboard.press('Escape');
-			});
-
-			await test.step('Content row action menu shows inherited actions but no Download', async () => {
-				await dataSetFragmentPage
-					.getRow(contentTitle)
-					.getByRole('button', {
-						name: `${contentTitle} Actions`,
-					})
-					.click();
-
-				for (const action of [
-					'Delete',
-					'Edit',
-					'Permissions',
-					'Share',
-					'View History',
-				]) {
-					await expect(
-						page.getByRole('menuitem', {
-							exact: true,
-							name: action,
-						})
-					).toBeVisible();
-				}
-
-				await expect(
-					page.getByRole('menu').getByRole('menuitem', {
+					page.getByRole('menuitem', {
 						exact: true,
-						name: 'Download',
+						name: action,
 					})
-				).toBeHidden();
-
-				await page.keyboard.press('Escape');
-			});
-
-			await test.step('Can download a file asset from Recent Assets', async () => {
-				const downloadPromise = page.waitForEvent('download');
-
-				await dataSetFragmentPage.execItemAction({
-					action: 'Download',
-					filter: fileTitle,
-				});
-
-				const download = await downloadPromise;
-
-				expect(download.suggestedFilename()).toBe(fileName);
-			});
-		}
-		finally {
-			if (contentEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					contentApplicationName,
-					String(contentEntry.id)
-				);
+				).toBeVisible();
 			}
 
-			if (fileEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					fileApplicationName,
-					String(fileEntry.id)
-				);
+			await page.keyboard.press('Escape');
+		});
+
+		await test.step('Content row action menu shows inherited actions but no Download', async () => {
+			await dataSetFragmentPage
+				.getRow(contentTitle)
+				.getByRole('button', {
+					name: `${contentTitle} Actions`,
+				})
+				.click();
+
+			for (const action of [
+				'Delete',
+				'Edit',
+				'Permissions',
+				'Share',
+				'View History',
+			]) {
+				await expect(
+					page.getByRole('menuitem', {
+						exact: true,
+						name: action,
+					})
+				).toBeVisible();
 			}
-		}
+
+			await expect(
+				page.getByRole('menu').getByRole('menuitem', {
+					exact: true,
+					name: 'Download',
+				})
+			).toBeHidden();
+
+			await page.keyboard.press('Escape');
+		});
+
+		await test.step('Can download a file asset from Recent Assets', async () => {
+			const downloadPromise = page.waitForEvent('download');
+
+			await dataSetFragmentPage.execItemAction({
+				action: 'Download',
+				filter: fileTitle,
+			});
+
+			const download = await downloadPromise;
+
+			expect(download.suggestedFilename()).toBe(fileName);
+		});
 	}
 );
 
@@ -885,51 +780,39 @@ test(
 		const contentApplicationName = 'cms/basic-web-contents';
 		const contentTitle = `content ${getRandomString()}`;
 
-		let contentEntry;
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: contentTitle,
+			},
+			contentApplicationName,
+			'Default'
+		);
 
-		try {
-			contentEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: contentTitle,
-				},
-				contentApplicationName,
-				'Default'
+		const dataSetFragmentPage: DataSetPage = new DataSetPage(page);
+
+		await homePage.goto();
+
+		await test.step('Can open the asset navigation modal with the View action', async () => {
+			await dataSetFragmentPage.execItemAction({
+				action: 'View',
+				filter: contentTitle,
+			});
+
+			await expect(page.getByTestId('modal-header-name')).toHaveText(
+				contentTitle
+			);
+		});
+
+		await test.step('Details panel shows the metadata with the location breadcrumb', async () => {
+			await page.getByRole('button', {name: 'Show Details'}).click();
+
+			const spaceBreadcrumb = page.locator(
+				'.asset-metadata .space-breadcrumb'
 			);
 
-			const dataSetFragmentPage: DataSetPage = new DataSetPage(page);
-
-			await homePage.goto();
-
-			await test.step('Can open the asset navigation modal with the View action', async () => {
-				await dataSetFragmentPage.execItemAction({
-					action: 'View',
-					filter: contentTitle,
-				});
-
-				await expect(page.getByTestId('modal-header-name')).toHaveText(
-					contentTitle
-				);
-			});
-
-			await test.step('Details panel shows the metadata with the location breadcrumb', async () => {
-				await page.getByRole('button', {name: 'Show Details'}).click();
-
-				const spaceBreadcrumb = page.locator(
-					'.asset-metadata .space-breadcrumb'
-				);
-
-				await expect(spaceBreadcrumb).toBeVisible();
-			});
-		}
-		finally {
-			if (contentEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					contentApplicationName,
-					String(contentEntry.id)
-				);
-			}
-		}
+			await expect(spaceBreadcrumb).toBeVisible();
+		});
 	}
 );
 
@@ -1053,66 +936,48 @@ test(
 	async ({apiHelpers, assetsPage, homePage, page}) => {
 		const applicationName = 'cms/basic-web-contents';
 		const spaceName = 'Default';
-		let objectEntry1;
-		let objectEntry2;
 
 		const file1Title = `title ${getRandomString()}`;
 
-		try {
-			objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: file1Title,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file1Title,
+			},
+			applicationName,
+			spaceName
+		);
 
-			objectEntry2 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: `some content ${getRandomString()}`,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: `some content ${getRandomString()}`,
+			},
+			applicationName,
+			spaceName
+		);
 
-			await homePage.goto();
+		await homePage.goto();
 
-			const searchInput = await page.getByPlaceholder('Search');
+		const searchInput = await page.getByPlaceholder('Search');
 
-			await searchInput.fill('title');
+		await searchInput.fill('title');
 
-			await searchInput.press('Enter');
+		await searchInput.press('Enter');
 
-			await test.step('Verify URL uses the FDS pretty format', async () => {
-				await expect(page).toHaveURL(/_fdsConfig=\(q:title\)(?:&|$)/);
-			});
+		await test.step('Verify URL uses the FDS pretty format', async () => {
+			await expect(page).toHaveURL(/_fdsConfig=\(q:title\)(?:&|$)/);
+		});
 
-			const row = assetsPage.table.bodyRows.filter({hasText: file1Title});
+		const row = assetsPage.table.bodyRows.filter({hasText: file1Title});
 
-			await expect(
-				row.getByRole('link', {name: file1Title})
-			).toBeVisible();
+		await expect(row.getByRole('link', {name: file1Title})).toBeVisible();
 
-			await test.step('Verify search input contains the search value', async () => {
-				const searchInput = page.getByRole('searchbox', {
-					name: 'Search',
-				});
+		await test.step('Verify search input contains the search value', async () => {
+			const searchInput = page.getByRole('searchbox', {name: 'Search'});
 
-				await expect(searchInput).toHaveValue('title');
-			});
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry2.id)
-			);
-		}
+			await expect(searchInput).toHaveValue('title');
+		});
 	}
 );
 

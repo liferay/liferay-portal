@@ -796,16 +796,10 @@ projectVocabularyTest.describe('Project selection tests', () => {
 				type: 'Project',
 			});
 
-			const projectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{title: approvedProjectTitle},
 				'cmp/projects'
 			);
-
-			apiHelpers.data.push({
-				applicationName: 'cmp/projects',
-				id: projectEntry.id,
-				type: 'objectEntry',
-			});
 
 			await editVocabularyPage.goto();
 
@@ -854,16 +848,10 @@ projectVocabularyTest.describe('Project selection tests', () => {
 		async ({apiHelpers, editVocabularyPage, page, vocabulariesPage}) => {
 			const projectName = getRandomString();
 
-			const projectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{title: projectName},
 				'cmp/projects'
 			);
-
-			apiHelpers.data.push({
-				applicationName: 'cmp/projects',
-				id: projectEntry.id,
-				type: 'objectEntry',
-			});
 
 			const name = `Vocabulary${getRandomInt()}`;
 

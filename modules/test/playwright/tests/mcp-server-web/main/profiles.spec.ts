@@ -52,21 +52,13 @@ async function createProfile(
 	apiHelpers: DataApiHelpers,
 	name: string
 ): Promise<ObjectEntry> {
-	const profile = await apiHelpers.objectEntry.postObjectEntry(
+	return apiHelpers.objectEntry.postObjectEntry(
 		{
 			description: `Created by Playwright ${name}`,
 			name,
 		},
 		PROFILES_API
 	);
-
-	apiHelpers.data.push({
-		applicationName: PROFILES_API,
-		id: profile.id,
-		type: 'objectEntry',
-	});
-
-	return profile;
 }
 
 async function trackUIProfileForCleanup(
@@ -101,7 +93,7 @@ async function createProfileTool(
 	toolName: string,
 	toolSetName: string = TOOL_SET_NAME
 ): Promise<ObjectEntry> {
-	const profileTool = await apiHelpers.objectEntry.postObjectEntry(
+	return apiHelpers.objectEntry.postObjectEntry(
 		{
 			r_mcpServerProfileToTools_l_mcpServerProfileERC: profileERC,
 			toolName,
@@ -109,14 +101,6 @@ async function createProfileTool(
 		},
 		PROFILE_TOOLS_API
 	);
-
-	apiHelpers.data.push({
-		applicationName: PROFILE_TOOLS_API,
-		id: profileTool.id,
-		type: 'objectEntry',
-	});
-
-	return profileTool;
 }
 
 async function getToolSetToolNames(
@@ -153,7 +137,7 @@ async function createDataMask(
 	apiHelpers: DataApiHelpers,
 	name: string
 ): Promise<ObjectEntry> {
-	const dataMask = await apiHelpers.objectEntry.postObjectEntry(
+	return apiHelpers.objectEntry.postObjectEntry(
 		{
 			description: `Created by Playwright ${name}`,
 			detectionRegex: 'a+',
@@ -163,14 +147,6 @@ async function createDataMask(
 		},
 		DATA_MASKS_API
 	);
-
-	apiHelpers.data.push({
-		applicationName: DATA_MASKS_API,
-		id: dataMask.id,
-		type: 'objectEntry',
-	});
-
-	return dataMask;
 }
 
 test.describe('Profiles - FDS Table', () => {

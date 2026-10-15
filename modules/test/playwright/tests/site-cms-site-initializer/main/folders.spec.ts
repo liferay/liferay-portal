@@ -26,11 +26,10 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const folderTitle = getRandomString();
 
-		const folderData =
-			await apiHelpers.objectFolder.createObjectEntryFolder({
-				scopeKey: 'Default',
-				title: folderTitle,
-			});
+		await apiHelpers.objectFolder.createObjectEntryFolder({
+			scopeKey: 'Default',
+			title: folderTitle,
+		});
 
 		await assetsPage.gotoFiles();
 
@@ -57,8 +56,6 @@ test(
 		await expect(
 			page.getByLabel(newFolderTitle, {exact: true})
 		).toBeVisible();
-
-		await apiHelpers.objectFolder.deleteObjectEntryFolder(folderData.id);
 	}
 );
 
@@ -90,11 +87,10 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const folderTitle = getRandomString();
 
-		const folderData =
-			await apiHelpers.objectFolder.createObjectEntryFolder({
-				scopeKey: 'Default',
-				title: folderTitle,
-			});
+		await apiHelpers.objectFolder.createObjectEntryFolder({
+			scopeKey: 'Default',
+			title: folderTitle,
+		});
 
 		await assetsPage.gotoFiles();
 
@@ -109,8 +105,6 @@ test(
 		expect(
 			page.getByRole('menuitem', {exact: true, name: 'View Folder'})
 		).toBeVisible();
-
-		await apiHelpers.objectFolder.deleteObjectEntryFolder(folderData.id);
 	}
 );
 
@@ -126,47 +120,42 @@ test(
 			title: folderName,
 		});
 
-		try {
-			await apiHelpers.objectEntry.postObjectEntry(
-				{
-					file: {
-						fileBase64: 'R0lGODlhAQABAAAAACw=',
-						name: `file_${getRandomString()}.png`,
-					},
-					objectEntryFolderExternalReferenceCode:
-						folder.externalReferenceCode,
-					title: `Content ${getRandomInt()}`,
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				file: {
+					fileBase64: 'R0lGODlhAQABAAAAACw=',
+					name: `file_${getRandomString()}.png`,
 				},
-				'cms/basic-documents',
-				'Default'
-			);
-
-			await apiHelpers.objectFolder.createObjectEntryFolder({
-				parentObjectEntryFolderExternalReferenceCode:
+				objectEntryFolderExternalReferenceCode:
 					folder.externalReferenceCode,
-				scopeKey: 'Default',
-				title: `Subfolder ${getRandomInt()}`,
-			});
+				title: `Content ${getRandomInt()}`,
+			},
+			'cms/basic-documents',
+			'Default'
+		);
 
-			await assetsPage.gotoFiles();
+		await apiHelpers.objectFolder.createObjectEntryFolder({
+			parentObjectEntryFolderExternalReferenceCode:
+				folder.externalReferenceCode,
+			scopeKey: 'Default',
+			title: `Subfolder ${getRandomInt()}`,
+		});
 
-			await page.getByLabel(/View Selected/i).click();
-			await page.getByRole('option', {name: 'Table'}).click();
+		await assetsPage.gotoFiles();
 
-			await page
-				.getByRole('row', {name: folderName})
-				.getByRole('checkbox')
-				.check();
+		await page.getByLabel(/View Selected/i).click();
+		await page.getByRole('option', {name: 'Table'}).click();
 
-			await page.getByRole('button', {name: 'Show Info Panel'}).click();
+		await page
+			.getByRole('row', {name: folderName})
+			.getByRole('checkbox')
+			.check();
 
-			expect(
-				await page.getByTestId('number-of-assets').textContent()
-			).toContain('2');
-		}
-		finally {
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(folder.id);
-		}
+		await page.getByRole('button', {name: 'Show Info Panel'}).click();
+
+		expect(
+			await page.getByTestId('number-of-assets').textContent()
+		).toContain('2');
 	}
 );
 
@@ -240,79 +229,65 @@ test(
 				title: folderTitle1,
 			});
 
-		const objectEntryFolder2 =
-			await apiHelpers.objectFolder.createObjectEntryFolder({
-				parentObjectEntryFolderExternalReferenceCode: 'L_FILES',
-				scopeKey: space.assetLibraryKey,
-				title: folderTitle2,
-			});
+		await apiHelpers.objectFolder.createObjectEntryFolder({
+			parentObjectEntryFolderExternalReferenceCode: 'L_FILES',
+			scopeKey: space.assetLibraryKey,
+			title: folderTitle2,
+		});
 
-		try {
-			const user = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-			userData[user.alternateName] = {
-				name: user.givenName,
-				password: 'test',
-				surname: user.familyName,
-			};
+		userData[user.alternateName] = {
+			name: user.givenName,
+			password: 'test',
+			surname: user.familyName,
+		};
 
-			const cmsAdminRole =
-				await apiHelpers.headlessAdminUser.getRoleByName(
-					'CMS Administrator'
-				);
-
-			await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
-				cmsAdminRole.id,
-				Number(user.id)
+		const cmsAdminRole =
+			await apiHelpers.headlessAdminUser.getRoleByName(
+				'CMS Administrator'
 			);
 
-			await apiHelpers.objectFolder.postObjectEntryFolderCollaborators(
-				[
-					{
-						actionIds: ['VIEW'],
-						id: user.id,
-						share: true,
-						type: 'User',
-					},
-				],
-				objectEntryFolder1.id
-			);
+		await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
+			cmsAdminRole.id,
+			Number(user.id)
+		);
 
-			await performUserSwitch(page, user.alternateName);
+		await apiHelpers.objectFolder.postObjectEntryFolderCollaborators(
+			[
+				{
+					actionIds: ['VIEW'],
+					id: user.id,
+					share: true,
+					type: 'User',
+				},
+			],
+			objectEntryFolder1.id
+		);
 
-			await assetsPage.gotoFiles();
+		await performUserSwitch(page, user.alternateName);
 
-			await assetsPage.changeVisualizationMode('Table');
+		await assetsPage.gotoFiles();
 
-			const folderRow1 = page
-				.getByRole('row')
-				.filter({has: page.getByRole('link', {name: folderTitle1})});
+		await assetsPage.changeVisualizationMode('Table');
 
-			await expect(folderRow1).toBeVisible();
+		const folderRow1 = page
+			.getByRole('row')
+			.filter({has: page.getByRole('link', {name: folderTitle1})});
 
-			await expect(
-				folderRow1.locator('.lexicon-icon-users').first()
-			).toBeVisible();
+		await expect(folderRow1).toBeVisible();
 
-			const folderRow2 = page
-				.getByRole('row')
-				.filter({has: page.getByRole('link', {name: folderTitle2})});
+		await expect(
+			folderRow1.locator('.lexicon-icon-users').first()
+		).toBeVisible();
 
-			await expect(folderRow2).toBeVisible();
+		const folderRow2 = page
+			.getByRole('row')
+			.filter({has: page.getByRole('link', {name: folderTitle2})});
 
-			await expect(folderRow2.locator('.lexicon-icon-users')).toHaveCount(
-				0
-			);
-		}
-		finally {
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				objectEntryFolder1.id
-			);
+		await expect(folderRow2).toBeVisible();
 
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				objectEntryFolder2.id
-			);
-		}
+		await expect(folderRow2.locator('.lexicon-icon-users')).toHaveCount(0);
 	}
 );
 
@@ -352,33 +327,26 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const folderTitle = getRandomString();
 
-		const folder = await apiHelpers.objectFolder.createObjectEntryFolder({
+		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_FILES',
 			scopeKey: 'Default',
 			title: folderTitle,
 		});
 
-		try {
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await assetsPage.changeVisualizationMode('Table');
+		await assetsPage.changeVisualizationMode('Table');
 
-			await assetsPage.execItemAction({
-				action: 'Delete',
-				filter: folderTitle,
-			});
+		await assetsPage.execItemAction({
+			action: 'Delete',
+			filter: folderTitle,
+		});
 
-			await waitForAlert(page, `Success:${folderTitle} was moved`, {
-				autoClose: false,
-			});
+		await waitForAlert(page, `Success:${folderTitle} was moved`, {
+			autoClose: false,
+		});
 
-			await expect(
-				page.getByRole('link', {name: folderTitle})
-			).toBeHidden();
-		}
-		finally {
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(folder.id);
-		}
+		await expect(page.getByRole('link', {name: folderTitle})).toBeHidden();
 	}
 );
 
@@ -422,42 +390,37 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const folderTitle = getRandomString();
 
-		const folder = await apiHelpers.objectFolder.createObjectEntryFolder({
+		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 			scopeKey: 'Default',
 			title: folderTitle,
 		});
 
-		try {
-			await assetsPage.gotoContents();
+		await assetsPage.gotoContents();
 
-			await assetsPage.execItemAction({
-				action: 'Edit',
-				filter: folderTitle,
-			});
+		await assetsPage.execItemAction({
+			action: 'Edit',
+			filter: folderTitle,
+		});
 
-			const newFolderTitle = getRandomString();
+		const newFolderTitle = getRandomString();
 
-			const nameInput = page.getByLabel('Name');
+		const nameInput = page.getByLabel('Name');
 
-			await expect(nameInput).toHaveValue(folderTitle);
+		await expect(nameInput).toHaveValue(folderTitle);
 
-			await nameInput.fill(newFolderTitle);
+		await nameInput.fill(newFolderTitle);
 
-			await page.getByRole('button', {name: 'Save'}).click();
+		await page.getByRole('button', {name: 'Save'}).click();
 
-			await waitForAlert(
-				page,
-				`Success:${newFolderTitle} was updated successfully.`
-			);
+		await waitForAlert(
+			page,
+			`Success:${newFolderTitle} was updated successfully.`
+		);
 
-			await expect(
-				page.getByRole('link', {name: newFolderTitle})
-			).toBeVisible();
-		}
-		finally {
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(folder.id);
-		}
+		await expect(
+			page.getByRole('link', {name: newFolderTitle})
+		).toBeVisible();
 	}
 );
 
@@ -713,56 +676,50 @@ test(
 			title: folderTitle,
 		});
 
-		try {
-			const subfolder =
-				await apiHelpers.objectFolder.createObjectEntryFolder({
-					parentObjectEntryFolderExternalReferenceCode:
-						folder.externalReferenceCode,
-					scopeKey: 'Default',
-					title: getRandomString(),
-				});
+		const subfolder = await apiHelpers.objectFolder.createObjectEntryFolder(
+			{
+				parentObjectEntryFolderExternalReferenceCode:
+					folder.externalReferenceCode,
+				scopeKey: 'Default',
+				title: getRandomString(),
+			}
+		);
 
-			const subfolderContentTitle = getRandomString();
+		const subfolderContentTitle = getRandomString();
 
-			await apiHelpers.objectEntry.postObjectEntry(
-				{
-					file: {
-						fileBase64:
-							Buffer.from(getRandomString()).toString('base64'),
-						name: `${getRandomString()}.txt`,
-					},
-					objectEntryFolderExternalReferenceCode:
-						subfolder.externalReferenceCode,
-					title: subfolderContentTitle,
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				file: {
+					fileBase64:
+						Buffer.from(getRandomString()).toString('base64'),
+					name: `${getRandomString()}.txt`,
 				},
-				'cms/basic-documents',
-				'Default'
-			);
+				objectEntryFolderExternalReferenceCode:
+					subfolder.externalReferenceCode,
+				title: subfolderContentTitle,
+			},
+			'cms/basic-documents',
+			'Default'
+		);
 
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await assetsPage.changeVisualizationMode('Table');
+		await assetsPage.changeVisualizationMode('Table');
 
-			await assetsPage.search(folderTitle);
+		await assetsPage.search(folderTitle);
 
-			await expect(assetsPage.getItem(folderTitle)).toBeVisible();
+		await expect(assetsPage.getItem(folderTitle)).toBeVisible();
 
-			await assetsPage.gotoFolder(folder.id, folderTitle);
+		await assetsPage.gotoFolder(folder.id, folderTitle);
 
-			await assetsPage.changeVisualizationMode('Table');
+		await assetsPage.changeVisualizationMode('Table');
 
-			await assetsPage.search(subfolderContentTitle);
+		await assetsPage.search(subfolderContentTitle);
 
-			await expect(
-				assetsPage.getItem(subfolderContentTitle)
-			).toBeVisible();
+		await expect(assetsPage.getItem(subfolderContentTitle)).toBeVisible();
 
-			await assetsPage.search(folderTitle);
+		await assetsPage.search(folderTitle);
 
-			await expect(assetsPage.getItem(folderTitle)).toBeHidden();
-		}
-		finally {
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(folder.id);
-		}
+		await expect(assetsPage.getItem(folderTitle)).toBeHidden();
 	}
 );

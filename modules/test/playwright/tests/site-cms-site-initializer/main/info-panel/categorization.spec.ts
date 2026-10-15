@@ -32,7 +32,6 @@ test(
 		let categoryLabel;
 		const categoryName = getRandomString();
 		const file1Title = `title ${getRandomString()}`;
-		let objectEntry;
 		const spaceName = 'Default';
 		const tagName = getRandomString();
 		let tagLabel;
@@ -77,7 +76,7 @@ test(
 		);
 
 		try {
-			objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 					title: file1Title,
@@ -234,13 +233,6 @@ test(
 		finally {
 			await performUserSwitchViaApi(page, 'test');
 
-			if (objectEntry?.id) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-
 			await apiHelpers.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
 				vocabularyId
 			);
@@ -366,7 +358,6 @@ test(
 		let categoryLabel;
 		const categoryName = `category ${getRandomString()}`;
 		const file1Title = `title ${getRandomString()}`;
-		let objectEntry;
 		const spaceName = `Space ${getRandomString()}`;
 		let spaceExternalReferenceCode: string;
 		const vocabularyName = `vocabulary ${getRandomString()}`;
@@ -409,7 +400,7 @@ test(
 			.then((response) => response.id);
 
 		try {
-			objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					file: {
 						fileBase64:
@@ -478,13 +469,6 @@ test(
 			});
 		}
 		finally {
-			if (objectEntry?.id) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-
 			await apiHelpers.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
 				vocabularyId
 			);

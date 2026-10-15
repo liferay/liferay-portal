@@ -25,106 +25,80 @@ test(
 	async ({apiHelpers, editProjectPage, page, projectPage, projectsPage}) => {
 		const projectTitle = getRandomString();
 
-		const project = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{title: projectTitle},
 			'cmp/projects'
 		);
 
-		try {
-			await test.step('Open the project', async () => {
-				await projectsPage.goto();
+		await test.step('Open the project', async () => {
+			await projectsPage.goto();
 
-				await projectsPage.getProject(projectTitle).click();
-			});
+			await projectsPage.getProject(projectTitle).click();
+		});
 
-			await test.step('Assign a persona and a funnel stage', async () => {
-				await projectPage.editProject();
+		await test.step('Assign a persona and a funnel stage', async () => {
+			await projectPage.editProject();
 
-				await editProjectPage.selectCategory(
-					'Personas',
-					'Decision Maker'
-				);
+			await editProjectPage.selectCategory('Personas', 'Decision Maker');
 
-				await editProjectPage.selectCategory(
-					'Funnel Stages',
-					'Awareness'
-				);
+			await editProjectPage.selectCategory('Funnel Stages', 'Awareness');
 
-				await editProjectPage.saveButton.click();
+			await editProjectPage.saveButton.click();
 
-				await waitForAlert(
-					page,
-					`Success:${projectTitle} was updated successfully.`
-				);
-			});
-
-			await test.step('Read the assigned categories', async () => {
-				await expect(
-					projectPage.getInfoCategory('Decision Maker')
-				).toBeVisible();
-
-				await expect(
-					projectPage.getInfoCategory('Awareness')
-				).toBeVisible();
-			});
-
-			await test.step('Update the assigned categories', async () => {
-				await projectPage.editProject();
-
-				await editProjectPage.selectCategory('Personas', 'Champion');
-
-				await editProjectPage.removeCategory(
-					'Funnel Stages',
-					'Awareness'
-				);
-
-				await editProjectPage.saveButton.click();
-
-				await waitForAlert(
-					page,
-					`Success:${projectTitle} was updated successfully.`
-				);
-
-				await expect(
-					projectPage.getInfoCategory('Champion')
-				).toBeVisible();
-
-				await expect(
-					projectPage.getInfoCategory('Awareness')
-				).toBeHidden();
-			});
-
-			await test.step('Remove the remaining categories', async () => {
-				await projectPage.editProject();
-
-				await editProjectPage.removeCategory(
-					'Personas',
-					'Decision Maker'
-				);
-
-				await editProjectPage.removeCategory('Personas', 'Champion');
-
-				await editProjectPage.saveButton.click();
-
-				await waitForAlert(
-					page,
-					`Success:${projectTitle} was updated successfully.`
-				);
-
-				await expect(
-					projectPage.getInfoCategory('Decision Maker')
-				).toBeHidden();
-
-				await expect(
-					projectPage.getInfoCategory('Champion')
-				).toBeHidden();
-			});
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				'cmp/projects',
-				String(project.id)
+			await waitForAlert(
+				page,
+				`Success:${projectTitle} was updated successfully.`
 			);
-		}
+		});
+
+		await test.step('Read the assigned categories', async () => {
+			await expect(
+				projectPage.getInfoCategory('Decision Maker')
+			).toBeVisible();
+
+			await expect(
+				projectPage.getInfoCategory('Awareness')
+			).toBeVisible();
+		});
+
+		await test.step('Update the assigned categories', async () => {
+			await projectPage.editProject();
+
+			await editProjectPage.selectCategory('Personas', 'Champion');
+
+			await editProjectPage.removeCategory('Funnel Stages', 'Awareness');
+
+			await editProjectPage.saveButton.click();
+
+			await waitForAlert(
+				page,
+				`Success:${projectTitle} was updated successfully.`
+			);
+
+			await expect(projectPage.getInfoCategory('Champion')).toBeVisible();
+
+			await expect(projectPage.getInfoCategory('Awareness')).toBeHidden();
+		});
+
+		await test.step('Remove the remaining categories', async () => {
+			await projectPage.editProject();
+
+			await editProjectPage.removeCategory('Personas', 'Decision Maker');
+
+			await editProjectPage.removeCategory('Personas', 'Champion');
+
+			await editProjectPage.saveButton.click();
+
+			await waitForAlert(
+				page,
+				`Success:${projectTitle} was updated successfully.`
+			);
+
+			await expect(
+				projectPage.getInfoCategory('Decision Maker')
+			).toBeHidden();
+
+			await expect(projectPage.getInfoCategory('Champion')).toBeHidden();
+		});
 	}
 );

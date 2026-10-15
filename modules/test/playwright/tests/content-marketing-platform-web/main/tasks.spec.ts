@@ -65,13 +65,6 @@ test.beforeEach(async ({apiHelpers}) => {
 });
 
 test.afterEach(async ({apiHelpers}) => {
-	if (project) {
-		await apiHelpers.objectEntry.deleteObjectEntry(
-			cmpProject,
-			String(project.id)
-		);
-	}
-
 	const bulkActionTasks = 'cms/bulk-action-tasks';
 
 	const bulkTasks =

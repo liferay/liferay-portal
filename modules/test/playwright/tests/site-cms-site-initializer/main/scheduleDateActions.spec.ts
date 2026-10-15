@@ -21,7 +21,7 @@ const DATE_ACTIONS = ['Update Expiration Date', 'Update Review Date'];
 async function createContent(apiHelpers: DataApiHelpers, scope = 'Default') {
 	const title = getRandomString();
 
-	const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+	await apiHelpers.objectEntry.postObjectEntry(
 		{
 			objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 			title,
@@ -29,12 +29,6 @@ async function createContent(apiHelpers: DataApiHelpers, scope = 'Default') {
 		APPLICATION_NAME,
 		scope
 	);
-
-	apiHelpers.data.push({
-		applicationName: APPLICATION_NAME,
-		id: objectEntry.id,
-		type: 'objectEntry',
-	});
 
 	return title;
 }
@@ -126,28 +120,23 @@ test(
 
 		const folderTitle = getRandomString();
 
-		const folder = await apiHelpers.objectFolder.createObjectEntryFolder({
+		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 			scopeKey: 'Default',
 			title: folderTitle,
 		});
 
-		try {
-			await assetsPage.gotoContents();
+		await assetsPage.gotoContents();
 
-			await expectDateActionsInMenu(
-				page,
-				assetsPage
-					.getItem(contentTitle)
-					.getByRole('button', {name: `${contentTitle} Actions`})
-			);
+		await expectDateActionsInMenu(
+			page,
+			assetsPage
+				.getItem(contentTitle)
+				.getByRole('button', {name: `${contentTitle} Actions`})
+		);
 
-			for (const action of DATE_ACTIONS) {
-				await assetsPage.expectItemActionHidden(action, folderTitle);
-			}
-		}
-		finally {
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(folder.id);
+		for (const action of DATE_ACTIONS) {
+			await assetsPage.expectItemActionHidden(action, folderTitle);
 		}
 	}
 );
@@ -160,27 +149,22 @@ test(
 
 		const folderTitle = getRandomString();
 
-		const folder = await apiHelpers.objectFolder.createObjectEntryFolder({
+		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 			scopeKey: 'Default',
 			title: folderTitle,
 		});
 
-		try {
-			await assetsPage.gotoContents();
+		await assetsPage.gotoContents();
 
-			await assetsPage.selectItems([contentTitle]);
+		await assetsPage.selectItems([contentTitle]);
 
-			await expectDateActionsInMenu(page, getBulkActionsTrigger(page));
+		await expectDateActionsInMenu(page, getBulkActionsTrigger(page));
 
-			await assetsPage.selectItems([folderTitle]);
+		await assetsPage.selectItems([folderTitle]);
 
-			for (const action of DATE_ACTIONS) {
-				await assetsPage.expectBulkItemActionHidden(action);
-			}
-		}
-		finally {
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(folder.id);
+		for (const action of DATE_ACTIONS) {
+			await assetsPage.expectBulkItemActionHidden(action);
 		}
 	}
 );

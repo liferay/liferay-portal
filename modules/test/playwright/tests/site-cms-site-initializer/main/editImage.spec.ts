@@ -81,39 +81,31 @@ test(
 			spaceName
 		);
 
-		try {
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await assetsPage.changeVisualizationMode('Gallery');
+		await assetsPage.changeVisualizationMode('Gallery');
 
-			const thumbnail = assetsPage.getCardItem(title).locator('img');
+		const thumbnail = assetsPage.getCardItem(title).locator('img');
 
-			await expect(thumbnail).toHaveAttribute('src', /imageThumbnail=1/);
+		await expect(thumbnail).toHaveAttribute('src', /imageThumbnail=1/);
 
-			const thumbnailSrc = await thumbnail.getAttribute('src');
+		const thumbnailSrc = await thumbnail.getAttribute('src');
 
-			await editImage(assetsPage, page, title, objectEntry.file.name);
+		await editImage(assetsPage, page, title, objectEntry.file.name);
 
-			await expect(thumbnail).toHaveAttribute('src', /imageThumbnail=1/);
-			await expect(thumbnail).not.toHaveAttribute('src', thumbnailSrc);
+		await expect(thumbnail).toHaveAttribute('src', /imageThumbnail=1/);
+		await expect(thumbnail).not.toHaveAttribute('src', thumbnailSrc);
 
-			const editedObjectEntry =
-				await apiHelpers.objectEntry.getObjectEntryById(
-					applicationName,
-					String(objectEntry.id)
-				);
-
-			expect(editedObjectEntry.systemProperties.version.number).toBe(2);
-			expect(editedObjectEntry.file.link.href).not.toBe(
-				objectEntry.file.link.href
-			);
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
+		const editedObjectEntry =
+			await apiHelpers.objectEntry.getObjectEntryById(
 				applicationName,
 				String(objectEntry.id)
 			);
-		}
+
+		expect(editedObjectEntry.systemProperties.version.number).toBe(2);
+		expect(editedObjectEntry.file.link.href).not.toBe(
+			objectEntry.file.link.href
+		);
 	}
 );
 
@@ -125,7 +117,7 @@ test(
 		const textTitle = `text ${getRandomString()}`;
 		const vectorTitle = `vector ${getRandomString()}`;
 
-		const imageObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: imageFileBase64,
@@ -138,7 +130,7 @@ test(
 			spaceName
 		);
 
-		const textObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64:
@@ -152,7 +144,7 @@ test(
 			spaceName
 		);
 
-		const vectorObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: Buffer.from(
@@ -197,33 +189,19 @@ test(
 			}
 		};
 
-		try {
-			await homePage.goto();
+		await homePage.goto();
 
-			await expectEditImageOnlyOnTheImage();
+		await expectEditImageOnlyOnTheImage();
 
-			await assetsPage.gotoAll();
+		await assetsPage.gotoAll();
 
-			await expectEditImageOnlyOnTheImage();
+		await expectEditImageOnlyOnTheImage();
 
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await assetsPage.changeVisualizationMode('Gallery');
+		await assetsPage.changeVisualizationMode('Gallery');
 
-			await expectEditImageOnlyOnTheImage();
-		}
-		finally {
-			for (const objectEntry of [
-				imageObjectEntry,
-				textObjectEntry,
-				vectorObjectEntry,
-			]) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					applicationName,
-					String(objectEntry.id)
-				);
-			}
-		}
+		await expectEditImageOnlyOnTheImage();
 	}
 );
 
@@ -328,7 +306,7 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const title = `image ${getRandomString()}`;
 
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: imageFileBase64,
@@ -374,11 +352,6 @@ test(
 			await performLogout(page);
 
 			await performLoginViaApi({page, screenName: 'test'});
-
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
 		}
 	}
 );

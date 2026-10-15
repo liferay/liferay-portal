@@ -1641,17 +1641,16 @@ test(
 		const fileAssetTitle2 = `title ${getRandomString()}`;
 		const fileNameImg = `file_${getRandomString()}.png`;
 
-		const contentObjectEntry1 =
-			await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: content1,
-				},
-				contentApplicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: content1,
+			},
+			contentApplicationName,
+			spaceName
+		);
 
-		const fileObjectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: imageFileBase64,
@@ -1664,7 +1663,7 @@ test(
 			'Default'
 		);
 
-		const fileObjectEntry2 = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: imageFileBase64,
@@ -1743,21 +1742,6 @@ test(
 			const download = await downloadPromise;
 
 			expect(download.suggestedFilename()).toBeDefined();
-		});
-
-		await test.step('Remove generated files', async () => {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				contentApplicationName,
-				String(contentObjectEntry1.id)
-			);
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				fileApplicationName,
-				String(fileObjectEntry1.id)
-			);
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				fileApplicationName,
-				String(fileObjectEntry2.id)
-			);
 		});
 	}
 );

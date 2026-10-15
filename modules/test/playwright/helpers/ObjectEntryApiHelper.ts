@@ -4,7 +4,7 @@
  */
 
 import {liferayConfig} from '../liferay.config';
-import {ApiHelpers} from './ApiHelpers';
+import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
 export class ObjectEntryApiHelper {
 	readonly apiHelpers: ApiHelpers;
@@ -164,17 +164,22 @@ export class ObjectEntryApiHelper {
 		applicationName: string,
 		scopeKey?: string
 	): Promise<ObjectEntry> {
-		if (scopeKey) {
-			return this.apiHelpers.post(
-				`${this.apiHelpers.baseUrl}${applicationName}/scopes/${scopeKey}`,
-				{data}
-			);
-		}
-
-		return this.apiHelpers.post(
-			`${this.apiHelpers.baseUrl}${applicationName}/`,
+		const objectEntry = await this.apiHelpers.post(
+			scopeKey
+				? `${this.apiHelpers.baseUrl}${applicationName}/scopes/${scopeKey}`
+				: `${this.apiHelpers.baseUrl}${applicationName}`,
 			{data}
 		);
+
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				applicationName,
+				id: objectEntry.id,
+				type: 'objectEntry',
+			});
+		}
+
+		return objectEntry;
 	}
 
 	async postObjectEntryCopy(

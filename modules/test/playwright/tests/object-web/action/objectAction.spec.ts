@@ -1819,8 +1819,6 @@ test.describe('Object Action Cross-Object Behavior', () => {
 				'headless-commerce-admin-catalog/v1.0/product-groups'
 			);
 
-			apiHelpers.data.push({id: productGroup.id, type: 'objectEntry'});
-
 			await expect(async () => {
 				const updatedGroup =
 					await apiHelpers.objectEntry.getObjectEntryById(

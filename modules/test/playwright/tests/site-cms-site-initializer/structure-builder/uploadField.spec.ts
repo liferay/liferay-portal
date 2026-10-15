@@ -29,7 +29,7 @@ test(
 
 		// Seed a file in the Default space so it can be found in the selector
 
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: 'R0lGODlhAQABAAAAACw=',
@@ -41,12 +41,6 @@ test(
 			'cms/basic-documents',
 			'Default'
 		);
-
-		apiHelpers.data.push({
-			applicationName: 'cms/basic-documents',
-			id: objectEntry.id,
-			type: 'objectEntry',
-		});
 
 		// Create a structure whose upload field selects from the item selector
 		// and is a repeatable group

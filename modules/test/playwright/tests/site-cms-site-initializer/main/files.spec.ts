@@ -115,49 +115,38 @@ test(
 			'Default'
 		);
 
-		try {
-			apiHelpers.data.push({
-				id: objectEntry.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: objectEntry.file.id,
+			type: 'document',
+		});
 
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await page.getByRole('link', {name: parentFolderTitle}).click();
+		await page.getByRole('link', {name: parentFolderTitle}).click();
 
-			await expect(
-				page.getByRole('combobox', {name: 'Gallery View Selected'})
-			).toBeVisible();
+		await expect(
+			page.getByRole('combobox', {name: 'Gallery View Selected'})
+		).toBeVisible();
 
-			await expect(
-				assetsPage.galleryPreview.getByRole('img', {
-					name: `file_${fileName}.png`,
-				})
-			).toBeVisible();
+		await expect(
+			assetsPage.galleryPreview.getByRole('img', {
+				name: `file_${fileName}.png`,
+			})
+		).toBeVisible();
 
-			await expect(
-				assetsPage.galleryNavigation.getByRole('button', {
-					name: 'Previous',
-				})
-			).toBeDisabled();
+		await expect(
+			assetsPage.galleryNavigation.getByRole('button', {
+				name: 'Previous',
+			})
+		).toBeDisabled();
 
-			await expect(
-				assetsPage.galleryNavigation.getByRole('button', {name: 'Next'})
-			).toBeDisabled();
+		await expect(
+			assetsPage.galleryNavigation.getByRole('button', {name: 'Next'})
+		).toBeDisabled();
 
-			await expect(
-				assetsPage.galleryThumbnails.locator('.card')
-			).toHaveCount(1);
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				parentFolder.id
-			);
-		}
+		await expect(assetsPage.galleryThumbnails.locator('.card')).toHaveCount(
+			1
+		);
 	}
 );
 
@@ -214,105 +203,87 @@ test(
 				title: folder,
 			});
 
-		try {
-			apiHelpers.data.push({
-				id: objectEntry1.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: objectEntry1.file.id,
+			type: 'document',
+		});
 
-			apiHelpers.data.push({
-				id: objectEntry2.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: objectEntry2.file.id,
+			type: 'document',
+		});
 
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await assetsPage.changeVisualizationMode('Table');
+		await assetsPage.changeVisualizationMode('Table');
 
-			await folderPage.clickOption(parentFolderTitle, 'View Folder');
+		await folderPage.clickOption(parentFolderTitle, 'View Folder');
 
-			const carouselItems = [
-				{
-					label: 'image1',
-					locator: assetsPage.galleryPreview.getByRole('img', {
-						name: `${image1}.png`,
-					}),
-				},
-				{
-					label: 'image2',
-					locator: assetsPage.galleryPreview.getByRole('img', {
-						name: `${image2}.png`,
-					}),
-				},
-				{
-					label: 'folder',
-					locator: assetsPage.galleryPreview.getByText(folder, {
-						exact: true,
-					}),
-				},
-			];
+		const carouselItems = [
+			{
+				label: 'image1',
+				locator: assetsPage.galleryPreview.getByRole('img', {
+					name: `${image1}.png`,
+				}),
+			},
+			{
+				label: 'image2',
+				locator: assetsPage.galleryPreview.getByRole('img', {
+					name: `${image2}.png`,
+				}),
+			},
+			{
+				label: 'folder',
+				locator: assetsPage.galleryPreview.getByText(folder, {
+					exact: true,
+				}),
+			},
+		];
 
-			const anyCarouselItem = carouselItems
-				.map((item) => item.locator)
-				.reduce((acc, locator) => acc.or(locator));
+		const anyCarouselItem = carouselItems
+			.map((item) => item.locator)
+			.reduce((acc, locator) => acc.or(locator));
 
-			const currentLabel = async () => {
-				for (const item of carouselItems) {
-					if (await item.locator.isVisible()) {
-						return item.label;
-					}
+		const currentLabel = async () => {
+			for (const item of carouselItems) {
+				if (await item.locator.isVisible()) {
+					return item.label;
 				}
-
-				return null;
-			};
-
-			const locatorFor = (label: string) =>
-				carouselItems.find((item) => item.label === label)!.locator;
-
-			await expect(anyCarouselItem).toBeVisible();
-
-			const visitedOrder: string[] = [];
-
-			for (let i = 0; i < carouselItems.length; i++) {
-				const label = await currentLabel();
-
-				expect(label).not.toBeNull();
-
-				visitedOrder.push(label!);
-
-				await assetsPage.navigateByGalleryArrows('Next');
-
-				await expect(anyCarouselItem).toBeVisible();
 			}
 
-			expect(new Set(visitedOrder)).toEqual(
-				new Set(['image1', 'image2', 'folder'])
-			);
+			return null;
+		};
 
-			await expect(locatorFor(visitedOrder[0])).toBeVisible();
+		const locatorFor = (label: string) =>
+			carouselItems.find((item) => item.label === label)!.locator;
 
-			await assetsPage.navigateByGalleryArrows('Previous');
+		await expect(anyCarouselItem).toBeVisible();
 
-			await expect(
-				locatorFor(visitedOrder[visitedOrder.length - 1])
-			).toBeVisible();
+		const visitedOrder: string[] = [];
+
+		for (let i = 0; i < carouselItems.length; i++) {
+			const label = await currentLabel();
+
+			expect(label).not.toBeNull();
+
+			visitedOrder.push(label!);
+
+			await assetsPage.navigateByGalleryArrows('Next');
+
+			await expect(anyCarouselItem).toBeVisible();
 		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry2.id)
-			);
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				folderData.id
-			);
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				parentFolder.id
-			);
-		}
+
+		expect(new Set(visitedOrder)).toEqual(
+			new Set(['image1', 'image2', 'folder'])
+		);
+
+		await expect(locatorFor(visitedOrder[0])).toBeVisible();
+
+		await assetsPage.navigateByGalleryArrows('Previous');
+
+		await expect(
+			locatorFor(visitedOrder[visitedOrder.length - 1])
+		).toBeVisible();
 	}
 );
 
@@ -335,32 +306,24 @@ test(
 			'Default'
 		);
 
-		try {
-			apiHelpers.data.push({
-				id: objectEntry.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: objectEntry.file.id,
+			type: 'document',
+		});
 
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			const downloadPromise = page.waitForEvent('download');
-			await assetsPage.execCardItemAction({
-				action: 'Download',
-				filter: objectEntry.title,
-			});
+		const downloadPromise = page.waitForEvent('download');
+		await assetsPage.execCardItemAction({
+			action: 'Download',
+			filter: objectEntry.title,
+		});
 
-			const download = await downloadPromise;
-			expect(download.suggestedFilename()).toBe(objectEntry.file.name);
+		const download = await downloadPromise;
+		expect(download.suggestedFilename()).toBe(objectEntry.file.name);
 
-			const downloadStat = await fs.stat(await download.path());
-			expect(downloadStat.size).toBeGreaterThan(10);
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
-		}
+		const downloadStat = await fs.stat(await download.path());
+		expect(downloadStat.size).toBeGreaterThan(10);
 	}
 );
 
@@ -447,38 +410,28 @@ test(
 			'Default'
 		);
 
-		try {
-			apiHelpers.data.push({
-				id: objectEntry.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: objectEntry.file.id,
+			type: 'document',
+		});
 
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await assetsPage.execCardItemAction({
-				action: 'View',
-				filter: objectEntry.title,
-			});
+		await assetsPage.execCardItemAction({
+			action: 'View',
+			filter: objectEntry.title,
+		});
 
-			await expect(page.getByRole('dialog')).toBeVisible();
+		await expect(page.getByRole('dialog')).toBeVisible();
 
-			await expect(page.getByTestId('modal-header-name')).toHaveText(
-				imageName
-			);
-			await expect(
-				page.getByRole('link', {name: 'Download'})
-			).toBeVisible();
+		await expect(page.getByTestId('modal-header-name')).toHaveText(
+			imageName
+		);
+		await expect(page.getByRole('link', {name: 'Download'})).toBeVisible();
 
-			await expect(
-				assetsPage.modal.body.getByText('No preview available')
-			).toBeVisible();
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
-		}
+		await expect(
+			assetsPage.modal.body.getByText('No preview available')
+		).toBeVisible();
 	}
 );
 
@@ -529,103 +482,80 @@ test(
 			'Default'
 		);
 
-		const folderData =
-			await apiHelpers.objectFolder.createObjectEntryFolder({
-				parentObjectEntryFolderExternalReferenceCode:
-					parentFolder.externalReferenceCode,
-				scopeKey: 'Default',
-				title: folder,
-			});
+		await apiHelpers.objectFolder.createObjectEntryFolder({
+			parentObjectEntryFolderExternalReferenceCode:
+				parentFolder.externalReferenceCode,
+			scopeKey: 'Default',
+			title: folder,
+		});
 
-		try {
-			apiHelpers.data.push({
-				id: objectEntry1.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: objectEntry1.file.id,
+			type: 'document',
+		});
 
-			apiHelpers.data.push({
-				id: objectEntry2.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: objectEntry2.file.id,
+			type: 'document',
+		});
 
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await assetsPage.changeVisualizationMode('Table');
+		await assetsPage.changeVisualizationMode('Table');
 
-			await folderPage.clickOption(parentFolderTitle, 'View Folder');
+		await folderPage.clickOption(parentFolderTitle, 'View Folder');
 
-			await assetsPage.execCardItemAction({
-				action: 'View',
-				filter: image2,
-			});
+		await assetsPage.execCardItemAction({
+			action: 'View',
+			filter: image2,
+		});
 
-			await test.step('folders are excluded from the navigation list', async () => {
-				await expect(page.getByText(/\d+ of 2/)).toBeVisible();
-			});
+		await test.step('folders are excluded from the navigation list', async () => {
+			await expect(page.getByText(/\d+ of 2/)).toBeVisible();
+		});
 
-			await test.step('Can navigate to the next item', async () => {
-				const modalTitle = page.locator('.modal-title');
+		await test.step('Can navigate to the next item', async () => {
+			const modalTitle = page.locator('.modal-title');
 
-				await expect(modalTitle).not.toBeEmpty();
+			await expect(modalTitle).not.toBeEmpty();
 
-				const initialTitle = await modalTitle.innerText();
+			const initialTitle = await modalTitle.innerText();
 
-				const otherTitle = initialTitle.includes(image1)
-					? image2
-					: image1;
+			const otherTitle = initialTitle.includes(image1) ? image2 : image1;
 
-				await assetsPage.modal.body.getByLabel('Next').click();
+			await assetsPage.modal.body.getByLabel('Next').click();
 
-				await expect(modalTitle.getByText(otherTitle)).toBeVisible();
+			await expect(modalTitle.getByText(otherTitle)).toBeVisible();
 
-				await expect(page.getByText(/\d+ of 2/)).toBeVisible();
-			});
+			await expect(page.getByText(/\d+ of 2/)).toBeVisible();
+		});
 
-			await test.step('Can open the info panel', async () => {
-				await page.getByLabel('Show Details').click();
-				await expect(
-					page.getByRole('tab', {name: 'Comments'})
-				).toBeInViewport();
-				await expect(page.getByText('Metadata')).toBeVisible();
-				await expect(page.getByLabel('Show Details')).toHaveClass(
-					/active/
-				);
-			});
+		await test.step('Can open the info panel', async () => {
+			await page.getByLabel('Show Details').click();
+			await expect(
+				page.getByRole('tab', {name: 'Comments'})
+			).toBeInViewport();
+			await expect(page.getByText('Metadata')).toBeVisible();
+			await expect(page.getByLabel('Show Details')).toHaveClass(/active/);
+		});
 
-			await test.step('Can add a comment from the comments tab', async () => {
-				await expect(page.getByLabel('Show Comments')).toHaveCount(0);
+		await test.step('Can add a comment from the comments tab', async () => {
+			await expect(page.getByLabel('Show Comments')).toHaveCount(0);
 
-				await page.getByRole('tab', {name: 'Comments'}).click();
+			await page.getByRole('tab', {name: 'Comments'}).click();
 
-				await expect(
-					page.getByRole('tab', {name: 'Details'})
-				).toBeVisible();
+			await expect(
+				page.getByRole('tab', {name: 'Details'})
+			).toBeVisible();
 
-				const commentText = getRandomString();
-				await assetsPage.modal.body
-					.getByRole('paragraph')
-					.fill(commentText);
-				await page.getByRole('button', {name: 'Save'}).click();
+			const commentText = getRandomString();
+			await assetsPage.modal.body
+				.getByRole('paragraph')
+				.fill(commentText);
+			await page.getByRole('button', {name: 'Save'}).click();
 
-				await expect(page.getByText(commentText)).toBeVisible();
-			});
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry2.id)
-			);
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				folderData.id
-			);
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				parentFolder.id
-			);
-		}
+			await expect(page.getByText(commentText)).toBeVisible();
+		});
 	}
 );
 
@@ -666,12 +596,8 @@ test(
 			).toBeVisible();
 		}
 		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
-
 			await page.getByLabel('Back').click();
+
 			await assetsPage.changeVisualizationMode('Gallery');
 		}
 	}
@@ -753,11 +679,6 @@ test(
 			await performLogout(page);
 
 			await performLoginViaApi({page, screenName: 'test'});
-
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
 		}
 	}
 );
@@ -805,75 +726,60 @@ test(
 			spaceName
 		);
 
-		try {
-			const user = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-			userData[user.alternateName] = {
-				name: user.givenName,
-				password: 'test',
-				surname: user.familyName,
-			};
+		userData[user.alternateName] = {
+			name: user.givenName,
+			password: 'test',
+			surname: user.familyName,
+		};
 
-			const cmsAdminRole =
-				await apiHelpers.headlessAdminUser.getRoleByName(
-					'CMS Administrator'
-				);
-
-			await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
-				cmsAdminRole.id,
-				Number(user.id)
+		const cmsAdminRole =
+			await apiHelpers.headlessAdminUser.getRoleByName(
+				'CMS Administrator'
 			);
 
-			await apiHelpers.objectEntry.postObjectEntryCollaborators(
-				[
-					{
-						actionIds: ['VIEW'],
-						id: user.id,
-						share: true,
-						type: 'User',
-					},
-				],
-				applicationName,
-				objectEntry1.id
-			);
+		await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
+			cmsAdminRole.id,
+			Number(user.id)
+		);
 
-			await performUserSwitch(page, user.alternateName);
+		await apiHelpers.objectEntry.postObjectEntryCollaborators(
+			[
+				{
+					actionIds: ['VIEW'],
+					id: user.id,
+					share: true,
+					type: 'User',
+				},
+			],
+			applicationName,
+			objectEntry1.id
+		);
 
-			await assetsPage.gotoFiles();
+		await performUserSwitch(page, user.alternateName);
 
-			await assetsPage.changeVisualizationMode('Table');
+		await assetsPage.gotoFiles();
 
-			const fileRow1 = page
-				.getByRole('row')
-				.filter({has: page.getByRole('link', {name: fileTitle1})});
+		await assetsPage.changeVisualizationMode('Table');
 
-			await expect(fileRow1).toBeVisible();
+		const fileRow1 = page
+			.getByRole('row')
+			.filter({has: page.getByRole('link', {name: fileTitle1})});
 
-			await expect(
-				fileRow1.locator('.lexicon-icon-users').first()
-			).toBeVisible();
+		await expect(fileRow1).toBeVisible();
 
-			const fileRow2 = page
-				.getByRole('row')
-				.filter({has: page.getByRole('link', {name: fileTitle2})});
+		await expect(
+			fileRow1.locator('.lexicon-icon-users').first()
+		).toBeVisible();
 
-			await expect(fileRow2).toBeVisible();
+		const fileRow2 = page
+			.getByRole('row')
+			.filter({has: page.getByRole('link', {name: fileTitle2})});
 
-			await expect(fileRow2.locator('.lexicon-icon-users')).toHaveCount(
-				0
-			);
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
+		await expect(fileRow2).toBeVisible();
 
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry2.id)
-			);
-		}
+		await expect(fileRow2.locator('.lexicon-icon-users')).toHaveCount(0);
 	}
 );
 
@@ -990,13 +896,6 @@ test(
 					String(document.id)
 				);
 			}
-
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				targetFolder.id
-			);
-			await apiHelpers.objectFolder.deleteObjectEntryFolder(
-				parentFolder.id
-			);
 		}
 	}
 );
@@ -1020,30 +919,22 @@ test(
 			'Default'
 		);
 
-		try {
-			await assetsPage.gotoFiles();
+		await assetsPage.gotoFiles();
 
-			await assetsPage.execCardItemAction({
-				action: 'View',
-				filter: objectEntry.title,
-			});
+		await assetsPage.execCardItemAction({
+			action: 'View',
+			filter: objectEntry.title,
+		});
 
-			await expect(page.getByTestId('modal-header-name')).toHaveText(
-				videoTitle
-			);
+		await expect(page.getByTestId('modal-header-name')).toHaveText(
+			videoTitle
+		);
 
-			await expect(
-				assetsPage.modal.body.locator(
-					`div.video-preview:has(iframe[src*="${VIDEO_ID}"])`
-				)
-			).toBeVisible();
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
-		}
+		await expect(
+			assetsPage.modal.body.locator(
+				`div.video-preview:has(iframe[src*="${VIDEO_ID}"])`
+			)
+		).toBeVisible();
 	}
 );
 
@@ -1067,63 +958,55 @@ test(
 			'Default'
 		);
 
-		try {
-			apiHelpers.data.push({
-				id: objectEntry.file.id,
-				type: 'document',
-			});
+		apiHelpers.data.push({
+			id: objectEntry.file.id,
+			type: 'document',
+		});
 
-			const pageIndicator = assetsPage.modal.body.getByRole('button', {
-				name: 'Click to jump to a page.',
-			});
+		const pageIndicator = assetsPage.modal.body.getByRole('button', {
+			name: 'Click to jump to a page.',
+		});
 
-			const previewImage = assetsPage.modal.body.locator(
-				'img.preview-file-document'
-			);
+		const previewImage = assetsPage.modal.body.locator(
+			'img.preview-file-document'
+		);
 
-			await test.step('The modal opens on the first page of the PDF', async () => {
+		await test.step('The modal opens on the first page of the PDF', async () => {
 
-				// The portal rasterizes the PDF asynchronously and renders "No
-				// Preview Available" until it finishes, so reload the section
-				// until the preview is served.
+			// The portal rasterizes the PDF asynchronously and renders "No
+			// Preview Available" until it finishes, so reload the section
+			// until the preview is served.
 
-				await expect(async () => {
-					await assetsPage.gotoFiles();
+			await expect(async () => {
+				await assetsPage.gotoFiles();
 
-					await assetsPage.execCardItemAction({
-						action: 'View',
-						filter: objectEntry.title,
-					});
-
-					await expect(previewImage).toHaveAttribute(
-						'src',
-						/previewFileIndex=1/,
-						{timeout: 5000}
-					);
-				}).toPass({timeout: 90000});
-
-				await expect(pageIndicator).toHaveText(/^Page 1 \/ \d+$/);
-			});
-
-			await test.step('The modal moves to the second page of the PDF', async () => {
-				await assetsPage.modal.body
-					.getByRole('button', {name: 'Page Below'})
-					.click();
+				await assetsPage.execCardItemAction({
+					action: 'View',
+					filter: objectEntry.title,
+				});
 
 				await expect(previewImage).toHaveAttribute(
 					'src',
-					/previewFileIndex=2/
+					/previewFileIndex=1/,
+					{timeout: 5000}
 				);
+			}).toPass({timeout: 90000});
 
-				await expect(pageIndicator).toHaveText(/^Page 2 \/ \d+$/);
-			});
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
+			await expect(pageIndicator).toHaveText(/^Page 1 \/ \d+$/);
+		});
+
+		await test.step('The modal moves to the second page of the PDF', async () => {
+			await assetsPage.modal.body
+				.getByRole('button', {name: 'Page Below'})
+				.click();
+
+			await expect(previewImage).toHaveAttribute(
+				'src',
+				/previewFileIndex=2/
 			);
-		}
+
+			await expect(pageIndicator).toHaveText(/^Page 2 \/ \d+$/);
+		});
 	}
 );
 

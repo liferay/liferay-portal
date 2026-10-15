@@ -45,11 +45,6 @@ test(
 			objectEntry.title,
 			'Table'
 		);
-
-		await apiHelpers.objectEntry.deleteObjectEntry(
-			applicationName,
-			String(objectEntry.id)
-		);
 	}
 );
 
@@ -89,11 +84,6 @@ test(
 			page,
 			objectEntry.title,
 			'Gallery'
-		);
-
-		await apiHelpers.objectEntry.deleteObjectEntry(
-			applicationName,
-			String(objectEntry.id)
 		);
 	}
 );
@@ -286,11 +276,6 @@ test(
 		await expect(
 			page.getByRole('menuitem', {exact: true, name: 'Delete'})
 		).toHaveCount(0);
-
-		await apiHelpers.objectEntry.deleteObjectEntry(
-			applicationName,
-			String(objectEntry.id)
-		);
 	}
 );
 
@@ -302,7 +287,7 @@ test(
 		const spaceName = 'Default';
 		const title = `title ${getRandomString()}`;
 
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 				title,
@@ -334,11 +319,6 @@ test(
 		await expect(
 			page.getByRole('menuitem', {exact: true, name: 'Download'})
 		).toHaveCount(0);
-
-		await apiHelpers.objectEntry.deleteObjectEntry(
-			applicationName,
-			String(objectEntry.id)
-		);
 	}
 );
 

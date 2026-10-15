@@ -96,9 +96,5 @@ test(
 		await page.goto(cmsViewerURL(objectEntry.id));
 
 		await expect(page.getByText(entryTitle).first()).toBeAttached();
-
-		await apiHelpers.objectFolder.deleteObjectEntryFolder(
-			objectEntryFolder.id
-		);
 	}
 );

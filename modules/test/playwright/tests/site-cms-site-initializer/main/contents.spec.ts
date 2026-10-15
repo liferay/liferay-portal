@@ -560,13 +560,6 @@ test(
 				page.getByRole('button', {name: 'Clear'})
 			).toBeVisible();
 		});
-
-		await test.step('Delete file', async () => {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
-		});
 	}
 );
 
@@ -580,56 +573,40 @@ test(
 		const secondTitle = getRandomString();
 		const thirdTitle = getRandomString();
 
-		let firstEntry;
-		let secondEntry;
-		let thirdEntry;
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: firstTitle,
+			},
+			applicationName,
+			spaceName
+		);
 
-		try {
-			firstEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: firstTitle,
-				},
-				applicationName,
-				spaceName
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: secondTitle,
+			},
+			applicationName,
+			spaceName
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: thirdTitle,
+			},
+			applicationName,
+			spaceName
+		);
+
+		await expect(async () => {
+			await contentsPage.goto();
+
+			await expect(page.locator('tbody tr').first()).toContainText(
+				thirdTitle
 			);
-
-			secondEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: secondTitle,
-				},
-				applicationName,
-				spaceName
-			);
-
-			thirdEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: thirdTitle,
-				},
-				applicationName,
-				spaceName
-			);
-
-			await expect(async () => {
-				await contentsPage.goto();
-
-				await expect(page.locator('tbody tr').first()).toContainText(
-					thirdTitle
-				);
-			}).toPass();
-		}
-		finally {
-			for (const entry of [firstEntry, secondEntry, thirdEntry]) {
-				if (entry) {
-					await apiHelpers.objectEntry.deleteObjectEntry(
-						applicationName,
-						String(entry.id)
-					);
-				}
-			}
-		}
+		}).toPass();
 	}
 );
 
@@ -791,51 +768,36 @@ test(
 		const tomorrow = new Date();
 		tomorrow.setDate(tomorrow.getDate() + 1);
 
-		let noReviewEntry;
-		let reviewEntry;
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: noReviewDateTitle,
+			},
+			applicationName,
+			spaceName
+		);
 
-		try {
-			noReviewEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: noReviewDateTitle,
-				},
-				applicationName,
-				spaceName
-			);
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				reviewDate: toIsoDate(tomorrow),
+				title: reviewDateTitle,
+			},
+			applicationName,
+			spaceName
+		);
 
-			reviewEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					reviewDate: toIsoDate(tomorrow),
-					title: reviewDateTitle,
-				},
-				applicationName,
-				spaceName
-			);
+		await expect(async () => {
+			await contentsPage.goto();
 
-			await expect(async () => {
-				await contentsPage.goto();
+			await expect(
+				page.getByRole('row').filter({hasText: noReviewDateTitle})
+			).toContainText('--');
 
-				await expect(
-					page.getByRole('row').filter({hasText: noReviewDateTitle})
-				).toContainText('--');
-
-				await expect(
-					page.getByRole('row').filter({hasText: reviewDateTitle})
-				).not.toContainText('--');
-			}).toPass();
-		}
-		finally {
-			for (const entry of [noReviewEntry, reviewEntry]) {
-				if (entry) {
-					await apiHelpers.objectEntry.deleteObjectEntry(
-						applicationName,
-						String(entry.id)
-					);
-				}
-			}
-		}
+			await expect(
+				page.getByRole('row').filter({hasText: reviewDateTitle})
+			).not.toContainText('--');
+		}).toPass();
 	}
 );
 
@@ -863,7 +825,7 @@ test(
 			spaceName
 		);
 
-		const objectEntry2 = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 				title: contentTitle2,
@@ -872,73 +834,58 @@ test(
 			spaceName
 		);
 
-		try {
-			const user = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-			userData[user.alternateName] = {
-				name: user.givenName,
-				password: 'test',
-				surname: user.familyName,
-			};
+		userData[user.alternateName] = {
+			name: user.givenName,
+			password: 'test',
+			surname: user.familyName,
+		};
 
-			const cmsAdminRole =
-				await apiHelpers.headlessAdminUser.getRoleByName(
-					'CMS Administrator'
-				);
-
-			await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
-				cmsAdminRole.id,
-				Number(user.id)
+		const cmsAdminRole =
+			await apiHelpers.headlessAdminUser.getRoleByName(
+				'CMS Administrator'
 			);
 
-			await apiHelpers.objectEntry.postObjectEntryCollaborators(
-				[
-					{
-						actionIds: ['VIEW'],
-						id: user.id,
-						share: true,
-						type: 'User',
-					},
-				],
-				applicationName,
-				objectEntry1.id
-			);
+		await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
+			cmsAdminRole.id,
+			Number(user.id)
+		);
 
-			await performUserSwitch(page, user.alternateName);
+		await apiHelpers.objectEntry.postObjectEntryCollaborators(
+			[
+				{
+					actionIds: ['VIEW'],
+					id: user.id,
+					share: true,
+					type: 'User',
+				},
+			],
+			applicationName,
+			objectEntry1.id
+		);
 
-			await assetsPage.gotoContents();
+		await performUserSwitch(page, user.alternateName);
 
-			const contentRow1 = page
-				.getByRole('row')
-				.filter({has: page.getByRole('link', {name: contentTitle1})});
+		await assetsPage.gotoContents();
 
-			await expect(contentRow1).toBeVisible();
+		const contentRow1 = page
+			.getByRole('row')
+			.filter({has: page.getByRole('link', {name: contentTitle1})});
 
-			await expect(
-				contentRow1.locator('.lexicon-icon-users').first()
-			).toBeVisible();
+		await expect(contentRow1).toBeVisible();
 
-			const contentRow2 = page
-				.getByRole('row')
-				.filter({has: page.getByRole('link', {name: contentTitle2})});
+		await expect(
+			contentRow1.locator('.lexicon-icon-users').first()
+		).toBeVisible();
 
-			await expect(contentRow2).toBeVisible();
+		const contentRow2 = page
+			.getByRole('row')
+			.filter({has: page.getByRole('link', {name: contentTitle2})});
 
-			await expect(
-				contentRow2.locator('.lexicon-icon-users')
-			).toHaveCount(0);
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry1.id)
-			);
+		await expect(contentRow2).toBeVisible();
 
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry2.id)
-			);
-		}
+		await expect(contentRow2.locator('.lexicon-icon-users')).toHaveCount(0);
 	}
 );
 
@@ -949,7 +896,7 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const contentTitle = `Content ${getRandomString()}`;
 
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		await apiHelpers.objectEntry.postObjectEntry(
 			{
 				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 				title: contentTitle,
@@ -958,26 +905,18 @@ test(
 			'Default'
 		);
 
-		try {
-			await assetsPage.gotoContents();
+		await assetsPage.gotoContents();
 
-			await assetsPage.execItemAction({
-				action: 'View',
-				filter: contentTitle,
-			});
+		await assetsPage.execItemAction({
+			action: 'View',
+			filter: contentTitle,
+		});
 
-			await expect(page.getByRole('dialog')).toBeVisible();
+		await expect(page.getByRole('dialog')).toBeVisible();
 
-			await expect(page.getByTestId('modal-header-name')).toHaveText(
-				contentTitle
-			);
-		}
-		finally {
-			await apiHelpers.objectEntry.deleteObjectEntry(
-				applicationName,
-				String(objectEntry.id)
-			);
-		}
+		await expect(page.getByTestId('modal-header-name')).toHaveText(
+			contentTitle
+		);
 	}
 );
 

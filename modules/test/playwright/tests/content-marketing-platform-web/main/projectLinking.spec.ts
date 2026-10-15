@@ -29,69 +29,49 @@ test(
 		const contentTitle = `Content ${getRandomString()}`;
 		const projectTitle = `Project ${getRandomString()}`;
 
-		let contentEntry;
-		let projectEntry;
+		await test.step('Create a project and a content item', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{title: projectTitle},
+				CMP_PROJECTS
+			);
 
-		try {
-			await test.step('Create a project and a content item', async () => {
-				projectEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{title: projectTitle},
-					CMP_PROJECTS
-				);
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: contentTitle,
+				},
+				BASIC_WEB_CONTENTS,
+				'Default'
+			);
+		});
 
-				contentEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-						title: contentTitle,
-					},
-					BASIC_WEB_CONTENTS,
-					'Default'
-				);
-			});
+		await test.step('Link the project from the Projects panel', async () => {
+			await contentsPage.goto();
 
-			await test.step('Link the project from the Projects panel', async () => {
-				await contentsPage.goto();
+			await contentsPage.editContent(contentTitle);
 
-				await contentsPage.editContent(contentTitle);
+			await contentsPage.openSidePanel('Projects');
 
-				await contentsPage.openSidePanel('Projects');
+			await page.getByRole('combobox', {name: 'Projects'}).click();
 
-				await page.getByRole('combobox', {name: 'Projects'}).click();
+			await page.getByRole('option', {name: projectTitle}).click();
 
-				await page.getByRole('option', {name: projectTitle}).click();
+			await expect(
+				page.getByRole('link', {name: projectTitle})
+			).toBeVisible();
+		});
 
-				await expect(
-					page.getByRole('link', {name: projectTitle})
-				).toBeVisible();
-			});
+		await test.step('Reopen the content and assert the link persisted', async () => {
+			await contentsPage.goto();
 
-			await test.step('Reopen the content and assert the link persisted', async () => {
-				await contentsPage.goto();
+			await contentsPage.editContent(contentTitle);
 
-				await contentsPage.editContent(contentTitle);
+			await contentsPage.openSidePanel('Projects');
 
-				await contentsPage.openSidePanel('Projects');
-
-				await expect(
-					page.getByRole('link', {name: projectTitle})
-				).toBeVisible();
-			});
-		}
-		finally {
-			if (contentEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					BASIC_WEB_CONTENTS,
-					String(contentEntry.id)
-				);
-			}
-
-			if (projectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					CMP_PROJECTS,
-					String(projectEntry.id)
-				);
-			}
-		}
+			await expect(
+				page.getByRole('link', {name: projectTitle})
+			).toBeVisible();
+		});
 	}
 );
 
@@ -102,82 +82,62 @@ test(
 		const contentTitle = `Content ${getRandomString()}`;
 		const projectTitle = `Project ${getRandomString()}`;
 
-		let contentEntry;
-		let projectEntry;
+		await test.step('Create a past-due project and a content item', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{dueDate: '2020-01-01', title: projectTitle},
+				CMP_PROJECTS
+			);
 
-		try {
-			await test.step('Create a past-due project and a content item', async () => {
-				projectEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{dueDate: '2020-01-01', title: projectTitle},
-					CMP_PROJECTS
-				);
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: contentTitle,
+				},
+				BASIC_WEB_CONTENTS,
+				'Default'
+			);
+		});
 
-				contentEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-						title: contentTitle,
-					},
-					BASIC_WEB_CONTENTS,
-					'Default'
-				);
-			});
+		await test.step('Link the project from the Projects panel', async () => {
+			await contentsPage.goto();
 
-			await test.step('Link the project from the Projects panel', async () => {
-				await contentsPage.goto();
+			await contentsPage.editContent(contentTitle);
 
-				await contentsPage.editContent(contentTitle);
+			await contentsPage.openSidePanel('Projects');
 
-				await contentsPage.openSidePanel('Projects');
+			await page.getByRole('combobox', {name: 'Projects'}).click();
 
-				await page.getByRole('combobox', {name: 'Projects'}).click();
+			await page.getByRole('option', {name: projectTitle}).click();
+		});
 
-				await page.getByRole('option', {name: projectTitle}).click();
-			});
+		await test.step('Assert the linked project card and overdue badge', async () => {
+			await expect(
+				page.getByRole('link', {name: projectTitle})
+			).toBeVisible();
 
-			await test.step('Assert the linked project card and overdue badge', async () => {
-				await expect(
-					page.getByRole('link', {name: projectTitle})
-				).toBeVisible();
+			await expect(page.getByText('Overdue')).toBeVisible();
+		});
 
-				await expect(page.getByText('Overdue')).toBeVisible();
-			});
+		await test.step('Assert the project cannot be linked twice', async () => {
+			await page.getByRole('combobox', {name: 'Projects'}).click();
 
-			await test.step('Assert the project cannot be linked twice', async () => {
-				await page.getByRole('combobox', {name: 'Projects'}).click();
+			await expect(
+				page.getByRole('option', {name: projectTitle})
+			).toBeHidden();
 
-				await expect(
-					page.getByRole('option', {name: projectTitle})
-				).toBeHidden();
+			await page.keyboard.press('Escape');
+		});
 
-				await page.keyboard.press('Escape');
-			});
+		await test.step('Remove the linked project', async () => {
+			await page
+				.locator('.cms-linked-projects')
+				.getByLabel('Remove', {exact: true})
+				.click();
 
-			await test.step('Remove the linked project', async () => {
-				await page
-					.locator('.cms-linked-projects')
-					.getByLabel('Remove', {exact: true})
-					.click();
-
-				await expect(
-					page.getByRole('link', {name: projectTitle})
-				).toBeHidden();
-			});
-		}
-		finally {
-			if (contentEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					BASIC_WEB_CONTENTS,
-					String(contentEntry.id)
-				);
-			}
-
-			if (projectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					CMP_PROJECTS,
-					String(projectEntry.id)
-				);
-			}
-		}
+			await expect(
+				page.getByRole('link', {name: projectTitle})
+			).toBeHidden();
+		});
 	}
 );
 
@@ -188,72 +148,52 @@ test(
 		const contentTitle = `Content ${getRandomString()}`;
 		const projectTitle = `Project ${getRandomString()}`;
 
-		let contentEntry;
-		let projectEntry;
+		await test.step('Create a past-due project and a content item', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{dueDate: '2020-01-01', title: projectTitle},
+				CMP_PROJECTS
+			);
 
-		try {
-			await test.step('Create a past-due project and a content item', async () => {
-				projectEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{dueDate: '2020-01-01', title: projectTitle},
-					CMP_PROJECTS
-				);
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: contentTitle,
+				},
+				BASIC_WEB_CONTENTS,
+				'Default'
+			);
+		});
 
-				contentEntry = await apiHelpers.objectEntry.postObjectEntry(
-					{
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-						title: contentTitle,
-					},
-					BASIC_WEB_CONTENTS,
-					'Default'
-				);
-			});
+		await test.step('Open the info panel Projects tab', async () => {
+			await contentsPage.goto();
 
-			await test.step('Open the info panel Projects tab', async () => {
-				await contentsPage.goto();
+			await contentsPage.viewShowDetails(contentTitle);
 
-				await contentsPage.viewShowDetails(contentTitle);
+			await infoPanelPage.selectTab('Projects').click();
+		});
 
-				await infoPanelPage.selectTab('Projects').click();
-			});
+		await test.step('Link the project and assert the card', async () => {
+			await page.getByRole('combobox', {name: 'Projects'}).click();
 
-			await test.step('Link the project and assert the card', async () => {
-				await page.getByRole('combobox', {name: 'Projects'}).click();
+			await page.getByRole('option', {name: projectTitle}).click();
 
-				await page.getByRole('option', {name: projectTitle}).click();
+			await expect(
+				page.getByRole('link', {name: projectTitle})
+			).toBeVisible();
 
-				await expect(
-					page.getByRole('link', {name: projectTitle})
-				).toBeVisible();
+			await expect(page.getByText('Overdue')).toBeVisible();
+		});
 
-				await expect(page.getByText('Overdue')).toBeVisible();
-			});
+		await test.step('Remove the linked project', async () => {
+			await page
+				.locator('.cms-linked-projects')
+				.getByLabel('Remove', {exact: true})
+				.click();
 
-			await test.step('Remove the linked project', async () => {
-				await page
-					.locator('.cms-linked-projects')
-					.getByLabel('Remove', {exact: true})
-					.click();
-
-				await expect(
-					page.getByRole('link', {name: projectTitle})
-				).toBeHidden();
-			});
-		}
-		finally {
-			if (contentEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					BASIC_WEB_CONTENTS,
-					String(contentEntry.id)
-				);
-			}
-
-			if (projectEntry) {
-				await apiHelpers.objectEntry.deleteObjectEntry(
-					CMP_PROJECTS,
-					String(projectEntry.id)
-				);
-			}
-		}
+			await expect(
+				page.getByRole('link', {name: projectTitle})
+			).toBeHidden();
+		});
 	}
 );
 
@@ -272,36 +212,21 @@ test(
 
 		await test.step('Create two projects and two content items', async () => {
 			for (const projectTitle of projectTitles) {
-				const projectEntry =
-					await apiHelpers.objectEntry.postObjectEntry(
-						{title: projectTitle},
-						CMP_PROJECTS
-					);
-
-				apiHelpers.data.push({
-					applicationName: CMP_PROJECTS,
-					id: projectEntry.id,
-					type: 'objectEntry',
-				});
+				await apiHelpers.objectEntry.postObjectEntry(
+					{title: projectTitle},
+					CMP_PROJECTS
+				);
 			}
 
 			for (const contentTitle of contentTitles) {
-				const contentEntry =
-					await apiHelpers.objectEntry.postObjectEntry(
-						{
-							objectEntryFolderExternalReferenceCode:
-								'L_CONTENTS',
-							title: contentTitle,
-						},
-						BASIC_WEB_CONTENTS,
-						'Default'
-					);
-
-				apiHelpers.data.push({
-					applicationName: BASIC_WEB_CONTENTS,
-					id: contentEntry.id,
-					type: 'objectEntry',
-				});
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+						title: contentTitle,
+					},
+					BASIC_WEB_CONTENTS,
+					'Default'
+				);
 			}
 		});
 

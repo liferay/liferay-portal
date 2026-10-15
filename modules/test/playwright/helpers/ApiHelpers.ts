@@ -662,6 +662,9 @@ export class DataApiHelpers extends ApiHelpers {
 						item.id
 					);
 				}
+				else if (item.type === 'objectEntryFolder') {
+					await this.objectFolder.deleteObjectEntryFolder(item.id);
+				}
 				else if (item.type === 'objectFolder') {
 					const objectFolderRESTClient =
 						await this.buildRestClient(ObjectFolderAPI);
