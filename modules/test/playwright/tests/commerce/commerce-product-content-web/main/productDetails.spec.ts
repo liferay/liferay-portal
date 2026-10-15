@@ -1554,18 +1554,9 @@ test(
 			await productDetailsPage.optionSelector('Color')
 		).toBeVisible();
 
-		await productDetailsPage.optionSelector('Color').click();
-
-		let optionSelectorOptionValues = await productDetailsPage
-			.optionSelector('Color')
-			.locator('option')
-			.allTextContents();
-
-		expect(optionSelectorOptionValues).toEqual([
-			'Choose an Option',
-			'Black',
-			'White',
-		]);
+		await expect(
+			productDetailsPage.optionSelectorValues('Color')
+		).toHaveText(['Choose an Option']);
 
 		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
 
@@ -1574,6 +1565,14 @@ test(
 		await expect(
 			page.getByText('Showing 1 to 3 of 3 entries.')
 		).toBeVisible();
+
+		await page.goto(`/web/${site.name}/p/${product.name['en_US']}`, {
+			waitUntil: 'networkidle',
+		});
+
+		await expect(
+			productDetailsPage.optionSelectorValues('Color')
+		).toHaveText(['Choose an Option', 'Black', 'White']);
 
 		const blackSku =
 			await apiHelpers.headlessCommerceAdminCatalog.getSkuByName('BLACK');
@@ -1590,15 +1589,9 @@ test(
 			await productDetailsPage.optionSelector('Color')
 		).toBeVisible();
 
-		optionSelectorOptionValues = await productDetailsPage
-			.optionSelector('Color')
-			.locator('option')
-			.allTextContents();
-
-		expect(optionSelectorOptionValues).toEqual([
-			'Choose an Option',
-			'White',
-		]);
+		await expect(
+			productDetailsPage.optionSelectorValues('Color')
+		).toHaveText(['Choose an Option', 'White']);
 	}
 );
 
