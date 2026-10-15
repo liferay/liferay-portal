@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.VirtualLayoutConstants;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
@@ -324,6 +325,21 @@ public class FriendlyURLServlet extends HttpServlet {
 
 						if (AuthLoginGroupSettingsUtil.isPromptEnabled(
 								group.getGroupId())) {
+
+							if (layout.isTypeURL()) {
+								long pvlsgid = 0;
+
+								if (layout instanceof VirtualLayout) {
+									pvlsgid = layout.getGroupId();
+								}
+
+								return new Redirect(
+									StringBundler.concat(
+										Portal.PATH_MAIN,
+										"/portal/layout?p_l_id=",
+										layout.getPlid(), "&p_v_l_s_g_id=",
+										pvlsgid));
+							}
 
 							return new Redirect(
 								portal.getLayoutActualURL(
