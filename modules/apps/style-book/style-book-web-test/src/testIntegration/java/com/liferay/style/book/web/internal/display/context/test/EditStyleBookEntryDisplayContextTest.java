@@ -155,16 +155,16 @@ public class EditStyleBookEntryDisplayContextTest {
 			JSONObject jsonObject = _getFragmentCollectionOptionJSONObject(
 				editStyleBookEntryDisplayContext);
 
+			Assert.assertEquals(
+				disconnectedJSONObject.getInt("totalLayouts"),
+				jsonObject.getInt("totalLayouts"));
+
 			fragmentCollectionNames = _getFragmentCollectionNames(jsonObject);
 
 			Assert.assertFalse(
 				fragmentCollectionNames.toString(),
 				fragmentCollectionNames.contains(
 					connectedFragmentCollectionName));
-
-			Assert.assertEquals(
-				disconnectedJSONObject.getInt("totalLayouts"),
-				jsonObject.getInt("totalLayouts"));
 		}
 	}
 

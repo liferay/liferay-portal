@@ -231,18 +231,18 @@ public class DesignLibraryFragmentCollectionItemSelectorViewDescriptorTest {
 			depotEntry2.getGroupId(), "Delta");
 
 		_assertSearchContainer(
-			Collections.emptyMap(),
 			Arrays.asList(
 				Arrays.asList("Alpha", "Charlie"),
-				Arrays.asList("Bravo", "Delta")));
+				Arrays.asList("Bravo", "Delta")),
+			Collections.emptyMap());
 		_assertSearchContainer(
-			Collections.singletonMap("keywords", "ar"),
-			Arrays.asList(Arrays.asList("Charlie")));
+			Arrays.asList(Arrays.asList("Charlie")),
+			Collections.singletonMap("keywords", "ar"));
 		_assertSearchContainer(
-			Collections.singletonMap("orderByType", "desc"),
 			Arrays.asList(
 				Arrays.asList("Charlie", "Alpha"),
-				Arrays.asList("Delta", "Bravo")));
+				Arrays.asList("Delta", "Bravo")),
+			Collections.singletonMap("orderByType", "desc"));
 	}
 
 	private DepotEntry _addConnectedDesignLibraryDepotEntry() throws Exception {
@@ -265,7 +265,7 @@ public class DesignLibraryFragmentCollectionItemSelectorViewDescriptorTest {
 	}
 
 	private void _assertSearchContainer(
-			Map<String, String> parameters, List<List<String>> expectedPages)
+			List<List<String>> expectedPages, Map<String, String> parameters)
 		throws Exception {
 
 		for (int i = 0; i < expectedPages.size(); i++) {
