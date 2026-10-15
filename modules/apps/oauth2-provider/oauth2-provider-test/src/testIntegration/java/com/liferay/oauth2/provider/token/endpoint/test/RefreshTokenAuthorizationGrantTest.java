@@ -101,6 +101,38 @@ public class RefreshTokenAuthorizationGrantTest
 
 			Assert.assertEquals(401, response.getStatus());
 		}
+
+		jsonObject = getToken(
+			_CLIENT_ID, null,
+			getResourceOwnerPasswordBiFunction(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
+			this::parseJSONObject);
+
+		accessTokenString = jsonObject.getString("access_token");
+
+		formData.putSingle("client_id", TEST_CLIENT_ID_1);
+		formData.putSingle(
+			"refresh_token", jsonObject.getString("refresh_token"));
+
+		Response response = tokenBuilder.post(Entity.form(formData));
+
+		Assert.assertEquals(400, response.getStatus());
+
+		formData.putSingle("client_id", _CLIENT_ID);
+
+		response = tokenBuilder.post(Entity.form(formData));
+
+		Assert.assertEquals(400, response.getStatus());
+
+		invocationBuilder = authorize(webTarget.request(), accessTokenString);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
+
+			response = invocationBuilder.get();
+
+			Assert.assertEquals(401, response.getStatus());
+		}
 	}
 
 	@Override
