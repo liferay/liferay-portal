@@ -16,13 +16,16 @@ import com.liferay.headless.delivery.client.pagination.Pagination;
 import com.liferay.headless.delivery.client.resource.v1_0.AssetEntryResource;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -57,6 +60,7 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 		_testGetAssetEntriesPageWithClassPKFilter();
 		_testGetAssetEntriesPageWithClassTypeIdFilter();
 		_testGetAssetEntriesPageWithGroupIdFilter();
+		_testGetAssetEntriesPageWithGroupIdFilterAndLayoutScope();
 		_testGetAssetEntriesPageWithMultipleClassNameIdsFilter();
 		_testGetAssetEntriesPageWithMultipleGroupIds();
 		_testGetAssetEntriesPageWithStatusFilter();
@@ -316,6 +320,33 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 			_hasClassPK(assetEntries, journalArticle1.getResourcePrimKey()));
 		Assert.assertTrue(
 			_hasClassPK(assetEntries, journalArticle2.getResourcePrimKey()));
+	}
+
+	private void _testGetAssetEntriesPageWithGroupIdFilterAndLayoutScope()
+		throws Exception {
+
+		Group layoutGroup = GroupTestUtil.addGroup(
+			TestPropsValues.getUserId(),
+			LayoutTestUtil.addTypePortletLayout(testGroup));
+
+		Long groupId = layoutGroup.getGroupId();
+
+		BlogsEntry blogsEntry = _addBlogsEntry(groupId);
+
+		Page<AssetEntry> page = assetEntryResource.getAssetEntriesPage(
+			new Long[] {groupId}, null, null, null, Pagination.of(1, 50), null);
+
+		Assert.assertTrue(
+			_hasClassPK(
+				(List<AssetEntry>)page.getItems(), blogsEntry.getEntryId()));
+
+		page = assetEntryResource.getAssetEntriesPage(
+			new Long[] {groupId}, null, null, "groupId eq " + groupId,
+			Pagination.of(1, 50), null);
+
+		Assert.assertTrue(
+			_hasClassPK(
+				(List<AssetEntry>)page.getItems(), blogsEntry.getEntryId()));
 	}
 
 	private void _testGetAssetEntriesPageWithMultipleClassNameIdsFilter()

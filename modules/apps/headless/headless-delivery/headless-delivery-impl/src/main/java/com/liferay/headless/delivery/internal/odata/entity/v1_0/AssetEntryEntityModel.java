@@ -36,7 +36,7 @@ public class AssetEntryEntityModel implements EntityModel {
 			new IntegerEntityField("classPK", locale -> Field.ENTRY_CLASS_PK),
 			new IntegerEntityField(
 				"classTypeId", locale -> Field.CLASS_TYPE_ID),
-			new IntegerEntityField("groupId", locale -> Field.GROUP_ID));
+			new IntegerEntityField("groupId", locale -> Field.SCOPE_GROUP_ID));
 	}
 
 	@Override
