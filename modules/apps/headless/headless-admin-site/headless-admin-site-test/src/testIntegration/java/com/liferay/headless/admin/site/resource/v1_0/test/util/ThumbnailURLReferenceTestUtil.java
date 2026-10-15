@@ -39,6 +39,13 @@ public class ThumbnailURLReferenceTestUtil {
 			UnsafeSupplier<T, Exception> unsafeSupplier)
 		throws Exception {
 
+		_assertAllowedHost(
+			new String[0], true, assertUnsafeBiConsumer, unsafeSupplier.get(),
+			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
+		_assertAllowedHost(
+			new String[] {"127.0.0.1"}, true, assertUnsafeBiConsumer,
+			unsafeSupplier.get(), thumbnailURLReferenceUnsafeFunction,
+			unsafeFunction);
 		_assertRestrictedHost(
 			new String[0], false, unsafeSupplier.get(),
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
@@ -48,13 +55,6 @@ public class ThumbnailURLReferenceTestUtil {
 		_assertRestrictedHost(
 			new String[] {"example.test"}, false, unsafeSupplier.get(),
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
-		_assertAllowedHost(
-			new String[0], true, assertUnsafeBiConsumer, unsafeSupplier.get(),
-			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
-		_assertAllowedHost(
-			new String[] {"127.0.0.1"}, true, assertUnsafeBiConsumer,
-			unsafeSupplier.get(), thumbnailURLReferenceUnsafeFunction,
-			unsafeFunction);
 		_assertRestrictedHost(
 			new String[] {"example.test"}, true, unsafeSupplier.get(),
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
