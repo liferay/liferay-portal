@@ -17,11 +17,13 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Ticket;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -37,6 +39,41 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = PublicationHelper.class)
 public class PublicationHelper {
+
+	public void addCollaborators(
+			CTCollection ctCollection, long[] publicationsUserRoleUserIds,
+			int[] roleValues, long[] userIds)
+		throws PortalException {
+
+		if (publicationsUserRoleUserIds.length > 0) {
+			Role publicationsUserRole = _roleLocalService.getRole(
+				ctCollection.getCompanyId(), RoleConstants.PUBLICATIONS_USER);
+
+			_userLocalService.addRoleUsers(
+				publicationsUserRole.getRoleId(), publicationsUserRoleUserIds);
+		}
+
+		Group group = getOrAddGroup(ctCollection);
+
+		for (int i = 0; i < userIds.length; i++) {
+			User user = _userLocalService.fetchUser(userIds[i]);
+
+			if ((user == null) || (roleValues[i] < 0)) {
+				continue;
+			}
+
+			Role role = getRole(ctCollection.getCompanyId(), roleValues[i]);
+
+			if (_userGroupRoleLocalService.hasUserGroupRole(
+					user.getUserId(), group.getGroupId(), role.getRoleId())) {
+
+				continue;
+			}
+
+			_userGroupRoleLocalService.addUserGroupRole(
+				user.getUserId(), group.getGroupId(), role.getRoleId());
+		}
+	}
 
 	public Group getOrAddGroup(CTCollection ctCollection)
 		throws PortalException {
@@ -140,6 +177,9 @@ public class PublicationHelper {
 
 	@Reference
 	private RoleLocalService _roleLocalService;
+
+	@Reference
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
