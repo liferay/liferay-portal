@@ -116,12 +116,11 @@ public class BatchEngineTaskContentSanitizerTest {
 
 	@Test
 	public void testSanitizeCSVWithoutHeaders() throws Exception {
+		String login = StringUtil.randomString();
 		Map<String, Serializable> parameters =
 			HashMapBuilder.<String, Serializable>put(
 				"containsHeaders", "false"
 			).build();
-
-		String login = StringUtil.randomString();
 		String password = StringUtil.randomString();
 
 		byte[] bytes = _sanitize(
@@ -203,7 +202,6 @@ public class BatchEngineTaskContentSanitizerTest {
 			).put(
 				"secret", "password"
 			).build();
-
 		String login = StringUtil.randomString();
 		String password = StringUtil.randomString();
 
