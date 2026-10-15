@@ -218,6 +218,7 @@ test.describe('Freshness section', () => {
 			const firstSpaceName = `space ${getRandomString()}`;
 			const secondSpaceName = `space ${getRandomString()}`;
 			const secondSpaceTitle = `overdue ${getRandomString()}`;
+			const listTitle = `overdue ${getRandomString()}`;
 			const remainingTitles = [
 				`overdue ${getRandomString()}`,
 				`overdue ${getRandomString()}`,
@@ -265,6 +266,7 @@ test.describe('Freshness section', () => {
 						`overdue ${getRandomString()}`
 					),
 					await postOverdueContent(secondSpaceName, secondSpaceTitle),
+					await postOverdueContent(secondSpaceName, listTitle),
 					await postOverdueContent(
 						secondSpaceName,
 						remainingTitles[0]
@@ -294,17 +296,33 @@ test.describe('Freshness section', () => {
 
 				await selectSpace(page, secondSpaceName);
 
-				await expect(overdueReviewsCount).toHaveText('3');
+				await expect(overdueReviewsCount).toHaveText('4');
+			});
+
+			const overdueReviewsList = page.getByRole('region', {
+				name: 'Overdue Reviews',
 			});
 
 			await test.step('Open the overdue reviews list', async () => {
 				await overdueReviewsCard.click();
 
 				await expect(
-					page
-						.getByRole('region', {name: 'Overdue Reviews'})
-						.getByText(secondSpaceTitle, {exact: true})
+					overdueReviewsList.getByText(secondSpaceTitle, {
+						exact: true,
+					})
 				).toBeVisible();
+			});
+
+			await test.step('Update a review date from the list', async () => {
+				await updateReviewDate(page, listTitle, DATE_INPUT);
+
+				await pollDate(apiHelpers, overdueContents[2].id, 'reviewDate');
+
+				await expect(
+					overdueReviewsList.getByText(listTitle, {exact: true})
+				).toBeHidden();
+
+				await expect(overdueReviewsCount).toHaveText('3');
 			});
 
 			await test.step('Open the overdue reviews page from the list', async () => {
@@ -349,7 +367,7 @@ test.describe('Freshness section', () => {
 
 				await fillScheduleDateModal(page, DATE_INPUT);
 
-				for (const overdueContent of overdueContents.slice(2)) {
+				for (const overdueContent of overdueContents.slice(3)) {
 					await pollDate(apiHelpers, overdueContent.id, 'reviewDate');
 				}
 
@@ -371,6 +389,7 @@ test.describe('Freshness section', () => {
 			const firstSpaceName = `space ${getRandomString()}`;
 			const secondSpaceName = `space ${getRandomString()}`;
 			const secondSpaceTitle = `expired ${getRandomString()}`;
+			const listTitle = `expired ${getRandomString()}`;
 			const remainingTitles = [
 				`expired ${getRandomString()}`,
 				`expired ${getRandomString()}`,
@@ -421,6 +440,7 @@ test.describe('Freshness section', () => {
 						`expired ${getRandomString()}`
 					),
 					await postExpiredContent(secondSpaceName, secondSpaceTitle),
+					await postExpiredContent(secondSpaceName, listTitle),
 					await postExpiredContent(
 						secondSpaceName,
 						remainingTitles[0]
@@ -458,22 +478,40 @@ test.describe('Freshness section', () => {
 
 				await selectSpace(page, secondSpaceName);
 
-				await expect(expiredAssetsCount).toHaveText('3');
+				await expect(expiredAssetsCount).toHaveText('4');
+			});
+
+			const expiredAssetsList = page.getByRole('region', {
+				name: 'Expired Assets',
 			});
 
 			await test.step('Open the expired assets list from its card', async () => {
 				await expiredAssetsCard.click();
 
 				await expect(
-					page
-						.getByRole('region', {name: 'Expired'})
-						.getByText(secondSpaceTitle, {exact: true})
+					expiredAssetsList.getByText(secondSpaceTitle, {exact: true})
 				).toBeVisible();
+			});
+
+			await test.step('Update an expiration date from the list', async () => {
+				await updateExpirationDate(page, listTitle, DATE_INPUT);
+
+				await pollDate(
+					apiHelpers,
+					expiredContents[2].id,
+					'expirationDate'
+				);
+
+				await expect(
+					expiredAssetsList.getByText(listTitle, {exact: true})
+				).toBeHidden();
+
+				await expect(expiredAssetsCount).toHaveText('3');
 			});
 
 			await test.step('Open the expired assets page from the list', async () => {
 				await page
-					.getByRole('link', {name: 'View All Expired'})
+					.getByRole('link', {name: 'View All Expired Assets'})
 					.click();
 
 				await expect(page).toHaveURL(/cms\/expired-assets/);
@@ -523,7 +561,7 @@ test.describe('Freshness section', () => {
 
 				await fillScheduleDateModal(page, DATE_INPUT);
 
-				for (const expiredContent of expiredContents.slice(2)) {
+				for (const expiredContent of expiredContents.slice(3)) {
 					await pollDate(
 						apiHelpers,
 						expiredContent.id,

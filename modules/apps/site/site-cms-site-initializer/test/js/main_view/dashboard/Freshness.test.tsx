@@ -13,6 +13,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {
+	FDS_EVENT_UPDATE_DISPLAY,
 	FDS_FILTER_ID,
 	WORKFLOW_STATUS,
 } from '../../../../src/main/resources/META-INF/resources/js/common/utils/constants';
@@ -74,6 +75,8 @@ const NOW = Date.UTC(2026, 9, 8, 12, 0);
 
 const SPACE = {label: 'My Space', siteId: 12345, value: '999'};
 
+const reloadStatistics = jest.fn();
+
 const STATISTICS = {
 	expiredCount: 8,
 	expiringSoonCount: 9,
@@ -94,7 +97,7 @@ function renderFreshness({
 			value={
 				{
 					loadingStatistics: false,
-					reloadStatistics: jest.fn(),
+					reloadStatistics,
 					space,
 					statistics,
 				} as any
@@ -308,7 +311,7 @@ describe('[CMS Dashboard] Freshness', () => {
 		);
 	});
 
-	it('offers the update expiration date action on the expiration lists', async () => {
+	it('offers the update expiration date action before delete on the expiration lists', async () => {
 		renderFreshness();
 
 		await expandList('expiring-soon');
@@ -319,14 +322,14 @@ describe('[CMS Dashboard] Freshness', () => {
 			)
 		).toEqual([
 			'actionLink',
-			'delete',
 			'view-content',
 			'view-file',
 			'update-expiration-date',
+			'delete',
 		]);
 	});
 
-	it('offers the update review date action on the review lists', async () => {
+	it('offers the update review date action before delete on the review lists', async () => {
 		renderFreshness();
 
 		await expandList('overdue-reviews');
@@ -337,10 +340,10 @@ describe('[CMS Dashboard] Freshness', () => {
 			)
 		).toEqual([
 			'actionLink',
-			'delete',
 			'view-content',
 			'view-file',
 			'update-review-date',
+			'delete',
 		]);
 	});
 
@@ -444,6 +447,29 @@ describe('[CMS Dashboard] Freshness', () => {
 		expect(sorts).toEqual([
 			{direction: 'asc', key: FDS_FILTER_ID.DATE_REVIEW},
 		]);
+	});
+
+	it('reloads the statistics when a bulk action refreshes the open list', async () => {
+		const handlers: Record<string, (event?: {id?: string}) => void> = {};
+
+		jest.spyOn(Liferay, 'on').mockImplementation(((
+			name: string,
+			handler: (event?: {id?: string}) => void
+		) => {
+			handlers[name] = handler;
+		}) as any);
+
+		renderFreshness();
+
+		await expandList('expired');
+
+		handlers[FDS_EVENT_UPDATE_DISPLAY]({id: 'upcomingReviews'});
+
+		expect(reloadStatistics).not.toHaveBeenCalled();
+
+		handlers[FDS_EVENT_UPDATE_DISPLAY]({id: 'expiredAssets'});
+
+		expect(reloadStatistics).toHaveBeenCalledTimes(1);
 	});
 
 	it('shows how many of the assets are listed', async () => {

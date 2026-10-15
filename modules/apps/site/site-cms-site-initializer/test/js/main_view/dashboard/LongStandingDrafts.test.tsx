@@ -238,7 +238,7 @@ describe('[CMS Dashboard] LongStandingDrafts', () => {
 
 		expect(
 			itemsActions.map(({data}: {data: {id: string}}) => data.id)
-		).toEqual(['actionLink', 'delete', 'view-content', 'view-file']);
+		).toEqual(['actionLink', 'view-content', 'view-file', 'delete']);
 	});
 
 	it('reloads the statistics when the list data changes', async () => {

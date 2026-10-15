@@ -25,9 +25,9 @@ import {PercentageOfTotal} from './PercentageOfTotal';
 
 const ITEM_ACTION_IDS: IItemActionsData['id'][] = [
 	'actionLink',
-	'delete',
 	'view-content',
 	'view-file',
+	'delete',
 ];
 
 const LIST_ID = 'longStandingDrafts';

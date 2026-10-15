@@ -59,7 +59,6 @@ type FreshnessCard = {
 
 const BASE_ITEM_ACTION_IDS: IItemActionsData['id'][] = [
 	'actionLink',
-	'delete',
 	'view-content',
 	'view-file',
 ];
@@ -67,11 +66,13 @@ const BASE_ITEM_ACTION_IDS: IItemActionsData['id'][] = [
 const EXPIRATION_ITEM_ACTION_IDS: IItemActionsData['id'][] = [
 	...BASE_ITEM_ACTION_IDS,
 	'update-expiration-date',
+	'delete',
 ];
 
 const REVIEW_ITEM_ACTION_IDS: IItemActionsData['id'][] = [
 	...BASE_ITEM_ACTION_IDS,
 	'update-review-date',
+	'delete',
 ];
 
 function formatDate(value?: string) {

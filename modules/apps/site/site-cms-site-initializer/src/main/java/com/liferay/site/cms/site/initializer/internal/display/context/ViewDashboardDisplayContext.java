@@ -11,6 +11,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.document.library.configuration.DLConfiguration;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
@@ -213,8 +214,16 @@ public class ViewDashboardDisplayContext {
 				_httpServletRequest, _themeDisplay)
 		).put(
 			"fdsActionDropdownItems",
-			() -> SectionDisplayContextUtil.getFDSActionDropdownItems(
-				_httpServletRequest)
+			() -> {
+				List<FDSActionDropdownItem> fdsActionDropdownItems =
+					SectionDisplayContextUtil.getFDSActionDropdownItems(
+						_httpServletRequest);
+
+				SectionDisplayContextUtil.addScheduleDateFDSActionDropdownItems(
+					fdsActionDropdownItems, _httpServletRequest);
+
+				return fdsActionDropdownItems;
+			}
 		).put(
 			"fileMimeTypeCssClasses",
 			() -> {

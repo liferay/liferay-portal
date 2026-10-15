@@ -10,9 +10,10 @@ import {
 	IItemActionsData,
 } from '@liferay/frontend-data-set-web';
 import {sub} from 'frontend-js-web';
-import React, {useContext, useMemo} from 'react';
+import React, {useContext, useEffect, useMemo} from 'react';
 
 import {ISearchAssetObjectEntry} from '../../../../common/types/AssetType';
+import {FDS_EVENT_UPDATE_DISPLAY} from '../../../../common/utils/constants';
 import getDashboardAssetListFDSProps from '../../../props_transformer/getDashboardAssetListFDSProps';
 import {GovernanceContext} from '../GovernanceContext';
 import {GOVERNANCE_ASSET_LIST_PAGE_SIZE} from '../GovernanceService';
@@ -71,14 +72,30 @@ export function GovernanceAssetList({
 }) {
 	const {reloadStatistics} = useContext(GovernanceContext);
 
+	useEffect(() => {
+		const handleUpdateDisplay = (event?: {id?: string}) => {
+			if (event?.id === id) {
+				reloadStatistics();
+			}
+		};
+
+		Liferay.on(FDS_EVENT_UPDATE_DISPLAY, handleUpdateDisplay);
+
+		return () => {
+			Liferay.detach(FDS_EVENT_UPDATE_DISPLAY, handleUpdateDisplay);
+		};
+	}, [id, reloadStatistics]);
+
 	const fdsProps = useMemo(
 		() =>
 			getDashboardAssetListFDSProps({
 				additionalProps,
 				apiURL,
 				id,
-				itemsActions: additionalProps.fdsActionDropdownItems.filter(
-					(action) => itemActionIds.includes(action.data?.id)
+				itemsActions: itemActionIds.flatMap((actionId) =>
+					additionalProps.fdsActionDropdownItems.filter(
+						(action) => action.data?.id === actionId
+					)
 				),
 				onDataChange: reloadStatistics,
 				renderSubtitle,
