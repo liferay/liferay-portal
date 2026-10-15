@@ -8,7 +8,12 @@ package com.liferay.portal.workflow.metrics.rest.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
@@ -20,6 +25,7 @@ import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.StartNodeKeys;
 import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.StopNodeKeys;
 import com.liferay.portal.workflow.metrics.rest.client.pagination.Page;
 import com.liferay.portal.workflow.metrics.rest.client.pagination.Pagination;
+import com.liferay.portal.workflow.metrics.rest.client.resource.v1_0.SLAResource;
 import com.liferay.portal.workflow.metrics.rest.resource.v1_0.test.helper.WorkflowMetricsRESTTestHelper;
 
 import java.util.ArrayList;
@@ -29,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -74,6 +81,14 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 
 	@Override
 	@Test
+	public void testDeleteSLA() throws Exception {
+		super.testDeleteSLA();
+
+		_testDeleteSLAWithoutPermission();
+	}
+
+	@Override
+	@Test
 	public void testGetProcessSLAsPage() throws Exception {
 		super.testGetProcessSLAsPage();
 
@@ -96,6 +111,22 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 	@Test
 	public void testGraphQLPostProcessSLA() throws Exception {
 		super.testGraphQLPostProcessSLA();
+	}
+
+	@Override
+	@Test
+	public void testPostProcessSLA() throws Exception {
+		super.testPostProcessSLA();
+
+		_testPostProcessSLAWithoutPermission();
+	}
+
+	@Override
+	@Test
+	public void testPutSLA() throws Exception {
+		super.testPutSLA();
+
+		_testPutSLAWithoutPermission();
 	}
 
 	@Rule
@@ -215,6 +246,36 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 		}
 	}
 
+	private SLAResource _getUserWithoutPermissionsSLAResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		return SLAResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
+	private void _testDeleteSLAWithoutPermission() throws Exception {
+		SLA sla = testGetSLA_addSLA();
+
+		SLAResource userSLAResource = _getUserWithoutPermissionsSLAResource();
+
+		assertHttpResponseStatusCode(
+			403, userSLAResource.deleteSLAHttpResponse(sla.getId()));
+
+		assertHttpResponseStatusCode(
+			200, slaResource.getSLAHttpResponse(sla.getId()));
+	}
+
 	private void _testGetProcessSLAsPage(
 			Integer status,
 			UnsafeTriConsumer<SLA, SLA, Page<SLA>, Exception> unsafeTriConsumer)
@@ -234,6 +295,36 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 			_process.getId(), status, Pagination.of(1, 2));
 
 		unsafeTriConsumer.accept(sla1, sla2, page);
+	}
+
+	private void _testPostProcessSLAWithoutPermission() throws Exception {
+		Page<SLA> page = slaResource.getProcessSLAsPage(
+			_process.getId(), null, Pagination.of(1, 1));
+
+		long totalCount = page.getTotalCount();
+
+		SLAResource userSLAResource = _getUserWithoutPermissionsSLAResource();
+
+		assertHttpResponseStatusCode(
+			403,
+			userSLAResource.postProcessSLAHttpResponse(
+				_process.getId(), randomSLA()));
+
+		page = slaResource.getProcessSLAsPage(
+			_process.getId(), null, Pagination.of(1, 1));
+
+		Assert.assertEquals(totalCount, page.getTotalCount());
+	}
+
+	private void _testPutSLAWithoutPermission() throws Exception {
+		SLA sla = testPutSLA_addSLA();
+
+		SLAResource userSLAResource = _getUserWithoutPermissionsSLAResource();
+
+		assertHttpResponseStatusCode(
+			403, userSLAResource.putSLAHttpResponse(sla.getId(), randomSLA()));
+
+		assertEquals(sla, slaResource.getSLA(sla.getId()));
 	}
 
 	private Node _node;

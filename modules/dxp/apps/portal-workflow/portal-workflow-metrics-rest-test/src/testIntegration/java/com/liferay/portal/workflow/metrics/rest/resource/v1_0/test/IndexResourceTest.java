@@ -7,11 +7,17 @@ package com.liferay.portal.workflow.metrics.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.Index;
 import com.liferay.portal.workflow.metrics.rest.client.http.HttpInvoker;
 import com.liferay.portal.workflow.metrics.rest.client.pagination.Page;
+import com.liferay.portal.workflow.metrics.rest.client.resource.v1_0.IndexResource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,18 +44,24 @@ public class IndexResourceTest extends BaseIndexResourceTestCase {
 		Assert.assertEquals(indexes.toString(), 7, indexes.size());
 
 		assertEqualsIgnoringOrder(indexes, _getDefaultIndexes());
+
+		_testGetIndexesPageWithoutPermission();
 	}
 
 	@Override
 	@Test
 	public void testPatchIndexRefresh() throws Exception {
 		_assertPatchIndexes(indexResource::patchIndexRefreshHttpResponse);
+
+		_testPatchIndexRefreshWithoutPermission();
 	}
 
 	@Override
 	@Test
 	public void testPatchIndexReindex() throws Exception {
 		_assertPatchIndexes(indexResource::patchIndexReindexHttpResponse);
+
+		_testPatchIndexReindexWithoutPermission();
 	}
 
 	@Rule
@@ -145,6 +157,60 @@ public class IndexResourceTest extends BaseIndexResourceTestCase {
 					key = "transition";
 				}
 			});
+	}
+
+	private IndexResource _getUserWithoutPermissionsIndexResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		return IndexResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
+	private void _testGetIndexesPageWithoutPermission() throws Exception {
+		IndexResource userIndexResource =
+			_getUserWithoutPermissionsIndexResource();
+
+		assertHttpResponseStatusCode(
+			404, userIndexResource.getIndexesPageHttpResponse());
+	}
+
+	private void _testPatchIndexRefreshWithoutPermission() throws Exception {
+		IndexResource userIndexResource =
+			_getUserWithoutPermissionsIndexResource();
+
+		assertHttpResponseStatusCode(
+			403,
+			userIndexResource.patchIndexRefreshHttpResponse(
+				new Index() {
+					{
+						key = Index.Group.ALL.getValue();
+					}
+				}));
+	}
+
+	private void _testPatchIndexReindexWithoutPermission() throws Exception {
+		IndexResource userIndexResource =
+			_getUserWithoutPermissionsIndexResource();
+
+		assertHttpResponseStatusCode(
+			403,
+			userIndexResource.patchIndexReindexHttpResponse(
+				new Index() {
+					{
+						key = Index.Group.ALL.getValue();
+					}
+				}));
 	}
 
 }
