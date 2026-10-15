@@ -62,6 +62,23 @@ describe('FieldValueMessageBalloon', () => {
 		await checkAccessibility({context: container});
 	});
 
+	it('renders each value in its own element', () => {
+		render(
+			<FieldValueMessageBalloon
+				onApply={jest.fn()}
+				onRegenerate={jest.fn()}
+				values={{
+					content: '<p>An easy app.</p>',
+					title: 'Live Energy',
+				}}
+			/>
+		);
+
+		expect(screen.getByText('Live Energy')).not.toContainElement(
+			screen.getByText('An easy app.')
+		);
+	});
+
 	it('renders a plain text value as is', () => {
 		render(
 			<FieldValueMessageBalloon
