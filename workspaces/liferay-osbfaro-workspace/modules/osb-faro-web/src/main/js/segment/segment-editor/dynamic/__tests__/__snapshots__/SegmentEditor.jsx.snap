@@ -124,30 +124,26 @@ exports[`SegmentEditor should render 1`] = `
               />
             </div>
             <div
-              class="mb-4 mt-4"
+              class="mb-4 mt-4 segment-details"
             >
               <div
-                class="row align-items-center mb-2"
+                class="mb-2 segment-details-row"
               >
-                <div
-                  class="col-lg-2 col-md-3 col-sm-12"
+                <span
+                  class="font-weight-semi-bold segment-details-label text-secondary"
                 >
-                  <span
-                    class="align-items-center d-flex font-weight-semi-bold text-nowrap text-secondary"
+                  <svg
+                    class="lexicon-icon lexicon-icon-plus-squares mr-2"
+                    role="presentation"
                   >
-                    <svg
-                      class="lexicon-icon lexicon-icon-plus-squares mr-2"
-                      role="presentation"
-                    >
-                      <use
-                        href="#plus-squares"
-                      />
-                    </svg>
-                    Segment Type
-                  </span>
-                </div>
+                    <use
+                      href="#plus-squares"
+                    />
+                  </svg>
+                  Segment Type
+                </span>
                 <div
-                  class="col"
+                  class="segment-details-value"
                 >
                   <span
                     class="label label-inverse-secondary"
@@ -173,13 +169,13 @@ exports[`SegmentEditor should render 1`] = `
                 class="form-group mb-0"
               >
                 <div
-                  class="row align-items-center"
+                  class="segment-details-row"
                 >
                   <div
-                    class="align-items-center d-flex col-lg-2 col-md-3 col-sm-12"
+                    class="segment-details-label"
                   >
                     <label
-                      class="align-items-center d-flex font-weight-semi-bold mb-0 text-nowrap text-secondary"
+                      class="font-weight-semi-bold mb-0 text-secondary"
                       for="externalReferenceCode"
                     >
                       <svg
@@ -216,7 +212,7 @@ exports[`SegmentEditor should render 1`] = `
                     </button>
                   </div>
                   <div
-                    class="col-lg-4 col-md-6"
+                    class="segment-details-value"
                   >
                     <input
                       class="form-control form-control-sm"

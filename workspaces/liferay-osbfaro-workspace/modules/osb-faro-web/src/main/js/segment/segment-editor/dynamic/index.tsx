@@ -4,7 +4,6 @@ import Canvas from 'shared/components/canvas/Canvas';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from 'shared/components/Icon';
 import ClayLabel from '@clayui/label';
-import ClayLayout from '@clayui/layout';
 import ClayPopover from '@clayui/popover';
 import CriteriaBuilder from './criteria-builder';
 import CriteriaDragPreview from './criteria-sidebar/CriteriaDragPreview';
@@ -156,17 +155,15 @@ const SegmentDetails: React.FC<{
 	});
 
 	return (
-		<div className="mb-4 mt-4">
-			<ClayLayout.Row className="align-items-center mb-2">
-				<ClayLayout.Col lg={2} md={3} sm={12}>
-					<span className="align-items-center d-flex font-weight-semi-bold text-nowrap text-secondary">
-						<ClayIcon className="mr-2" symbol="plus-squares" />
+		<div className="mb-4 mt-4 segment-details">
+			<div className="mb-2 segment-details-row">
+				<span className="font-weight-semi-bold segment-details-label text-secondary">
+					<ClayIcon className="mr-2" symbol="plus-squares" />
 
-						{Liferay.Language.get('segment-type')}
-					</span>
-				</ClayLayout.Col>
+					{Liferay.Language.get('segment-type')}
+				</span>
 
-				<ClayLayout.Col>
+				<div className="segment-details-value">
 					<ClayLabel displayType="secondary" inverse>
 						{getSegmentCategoryLabel(segmentCategory)}
 					</ClayLabel>
@@ -174,21 +171,16 @@ const SegmentDetails: React.FC<{
 					<ClayLabel displayType="info" inverse>
 						{getSegmentTypeLabel(type)}
 					</ClayLabel>
-				</ClayLayout.Col>
-			</ClayLayout.Row>
+				</div>
+			</div>
 
 			<ClayForm.Group
 				className={error && touched ? 'has-error mb-0' : 'mb-0'}
 			>
-				<ClayLayout.Row className="align-items-center">
-					<ClayLayout.Col
-						className="align-items-center d-flex"
-						lg={2}
-						md={3}
-						sm={12}
-					>
+				<div className="segment-details-row">
+					<div className="segment-details-label">
 						<label
-							className="align-items-center d-flex font-weight-semi-bold mb-0 text-nowrap text-secondary"
+							className="font-weight-semi-bold mb-0 text-secondary"
 							htmlFor="externalReferenceCode"
 						>
 							<ClayIcon className="mr-2" symbol="link" />
@@ -232,9 +224,9 @@ const SegmentDetails: React.FC<{
 								)}
 							</span>
 						</ClayPopover>
-					</ClayLayout.Col>
+					</div>
 
-					<ClayLayout.Col lg={4} md={6}>
+					<div className="segment-details-value">
 						<ClayInput
 							id="externalReferenceCode"
 							name="externalReferenceCode"
@@ -245,8 +237,8 @@ const SegmentDetails: React.FC<{
 							type="text"
 							value={value ?? ''}
 						/>
-					</ClayLayout.Col>
-				</ClayLayout.Row>
+					</div>
+				</div>
 
 				{error && touched && (
 					<p
