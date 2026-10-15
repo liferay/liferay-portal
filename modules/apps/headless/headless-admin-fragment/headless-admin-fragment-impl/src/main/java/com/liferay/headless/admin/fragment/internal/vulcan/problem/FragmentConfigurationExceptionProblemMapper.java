@@ -6,14 +6,10 @@
 package com.liferay.headless.admin.fragment.internal.vulcan.problem;
 
 import com.liferay.fragment.exception.FragmentEntryConfigurationException;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
-import java.util.Locale;
-
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Rubén Pulido
@@ -27,34 +23,9 @@ public class FragmentConfigurationExceptionProblemMapper
 		FragmentEntryConfigurationException
 			fragmentEntryConfigurationException) {
 
-		return new Problem() {
-
-			@Override
-			public String getDetail(Locale locale) {
-				return _language.get(
-					locale, "fragment-configuration-is-invalid");
-			}
-
-			@Override
-			public Status getStatus() {
-				return Status.BAD_REQUEST;
-			}
-
-			@Override
-			public String getTitle(Locale locale) {
-				return _language.get(
-					locale, "fragment-configuration-is-invalid");
-			}
-
-			@Override
-			public String getType() {
-				return FragmentEntryConfigurationException.class.getName();
-			}
-
-		};
+		return ProblemUtil.getProblem(
+			Problem.Status.BAD_REQUEST, fragmentEntryConfigurationException,
+			"fragment-configuration-is-invalid");
 	}
-
-	@Reference
-	private Language _language;
 
 }

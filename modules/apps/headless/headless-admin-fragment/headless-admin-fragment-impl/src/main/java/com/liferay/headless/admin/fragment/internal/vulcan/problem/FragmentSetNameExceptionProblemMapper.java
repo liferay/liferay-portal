@@ -6,14 +6,10 @@
 package com.liferay.headless.admin.fragment.internal.vulcan.problem;
 
 import com.liferay.fragment.exception.FragmentCollectionNameException;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
-import java.util.Locale;
-
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Rubén Pulido
@@ -26,32 +22,9 @@ public class FragmentSetNameExceptionProblemMapper
 	public Problem getProblem(
 		FragmentCollectionNameException fragmentCollectionNameException) {
 
-		return new Problem() {
-
-			@Override
-			public String getDetail(Locale locale) {
-				return _language.get(locale, "fragment-set-name-is-invalid");
-			}
-
-			@Override
-			public Status getStatus() {
-				return Status.BAD_REQUEST;
-			}
-
-			@Override
-			public String getTitle(Locale locale) {
-				return _language.get(locale, "fragment-set-name-is-invalid");
-			}
-
-			@Override
-			public String getType() {
-				return FragmentCollectionNameException.class.getName();
-			}
-
-		};
+		return ProblemUtil.getProblem(
+			Problem.Status.BAD_REQUEST, fragmentCollectionNameException,
+			"fragment-set-name-is-invalid");
 	}
-
-	@Reference
-	private Language _language;
 
 }
