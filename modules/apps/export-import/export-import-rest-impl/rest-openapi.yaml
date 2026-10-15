@@ -1,6 +1,8 @@
 components:
     schemas:
         ExportPreview:
+            description:
+                Represents the portlet data handlers an export can cover, with the number of items each one covers in the requested date range.
             properties:
                 additionCount:
                     format: int64
@@ -10,9 +12,9 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
-                previewPortletDataHandlerSections:
+                portletDataHandlers:
                     items:
-                        $ref: "#/components/schemas/PreviewPortletDataHandlerSection"
+                        $ref: "#/components/schemas/PortletDataHandler"
                     readOnly: true
                     type: array
             type: object
@@ -71,51 +73,55 @@ components:
                     type: string
                 deletions:
                     default: false
+                    description:
+                        A flag that indicates whether the deletions recorded in the date range are exported, so that an import removes the same items.
                     type: boolean
                 endDate:
+                    description:
+                        The export window's end date.
                     format: date-time
                     type: string
-                logo:
-                    default: false
-                    type: boolean
                 name:
+                    description:
+                        The export process's name, also used as the file name.
                     type: string
                 permissions:
                     default: false
                     type: boolean
+                portletDataHandlers:
+                    description:
+                        The portlet data handlers to export, taken from the export preview.
+                    items:
+                        $ref: "#/components/schemas/PortletDataHandler"
+                    type: array
                 ratings:
                     default: false
                     type: boolean
-                requestPortletDataHandlers:
-                    items:
-                        $ref: "#/components/schemas/RequestPortletDataHandler"
-                    type: array
                 siteExternalReferenceCodes:
+                    description:
+                        The external reference codes of the sites to export in full, as listed by the export preview sites. Applies only to the instance.
                     items:
                         type: string
                     type: array
-                sitePagesSettings:
-                    default: false
-                    type: boolean
-                siteTemplateSettings:
-                    default: false
-                    type: boolean
                 startDate:
+                    description:
+                        The export window's start date.
                     format: date-time
                     type: string
-                themeSettings:
-                    default: false
-                    type: boolean
             required:
                 -   name
             type: object
         ImportPreview:
+            description:
+                Represents what an uploaded file can import, with its counts.
             properties:
                 additionCount:
                     format: int64
                     readOnly: true
                     type: integer
                 author:
+                    description:
+                        The name of the user who exported the file.
                     readOnly: true
                     type: string
                 deletionCount:
@@ -130,15 +136,19 @@ components:
                     readOnly: true
                     type: string
                 fileSize:
+                    description:
+                        The uploaded file's size in bytes.
                     format: int64
                     readOnly: true
                     type: integer
-                previewPortletDataHandlerSections:
+                portletDataHandlers:
                     items:
-                        $ref: "#/components/schemas/PreviewPortletDataHandlerSection"
+                        $ref: "#/components/schemas/PortletDataHandler"
                     readOnly: true
                     type: array
                 previewSites:
+                    description:
+                        The sites the file contains, when it was exported from an instance.
                     items:
                         $ref: "#/components/schemas/PreviewSite"
                     readOnly: true
@@ -194,53 +204,57 @@ components:
                     type: boolean
                 dataStrategy:
                     default: MIRROR
+                    description:
+                        How imported items match existing ones. MIRROR updates existing items and adds the rest, MIRROR_OVERWRITE also overwrites their content, and COPY_AS_NEW adds every item as new.
                     enum: [MIRROR, MIRROR_OVERWRITE, COPY_AS_NEW]
                     type: string
                 deletions:
                     default: false
-                    type: boolean
-                logo:
-                    default: false
+                    description:
+                        A flag that indicates whether the file's deletions are applied.
                     type: boolean
                 name:
+                    description:
+                        The import process's name. Defaults to the name of the uploaded file.
                     type: string
                 permissions:
                     default: false
                     type: boolean
+                portletDataHandlers:
+                    description:
+                        The portlet data handlers to import, taken from the import preview.
+                    items:
+                        $ref: "#/components/schemas/PortletDataHandler"
+                    type: array
                 ratings:
                     default: false
                     type: boolean
-                requestPortletDataHandlers:
-                    items:
-                        $ref: "#/components/schemas/RequestPortletDataHandler"
-                    type: array
                 siteExternalReferenceCodes:
+                    description:
+                        The external reference codes of the sites to import in full, as listed in the previewSites of the import preview. Applies only to the instance.
                     items:
                         type: string
                     type: array
-                sitePagesSettings:
-                    default: false
-                    type: boolean
-                siteTemplateSettings:
-                    default: false
-                    type: boolean
-                themeSettings:
-                    default: false
-                    type: boolean
                 userIdStrategy:
                     default: CURRENT_USER_ID
+                    description:
+                        Who owns the imported items. CURRENT_USER_ID keeps the original owner when it exists, and ALWAYS_CURRENT_USER_ID assigns every item to the current user.
                     enum: [CURRENT_USER_ID, ALWAYS_CURRENT_USER_ID]
                     type: string
             type: object
         Origin:
             properties:
                 code:
+                    description:
+                        The code of the process step that reported the entry.
                     format: int32
                     type: integer
                 label:
                     type: string
             type: object
-        PreviewPortletDataHandler:
+        PortletDataHandler:
+            description:
+                Represents a kind of content a process can cover, with the controls that refine it.
             properties:
                 additionCount:
                     format: int64
@@ -258,43 +272,66 @@ components:
                     type: string
                 name:
                     description:
-                        The handler's portlet ID.
+                        The handler's key (e.g., PORTLET_DATA_com_liferay_journal_web_portlet_JournalPortlet).
+                    type: string
+                portletDataHandlerControls:
+                    description:
+                        The handler's controls. Controls left out are not selected.
+                    items:
+                        $ref: "#/components/schemas/PortletDataHandlerControl"
+                    type: array
+                sectionKey:
+                    description:
+                        The key of the section that groups the handler (e.g., category.content).
                     readOnly: true
                     type: string
-                previewPortletDataHandlerControls:
-                    items:
-                        $ref: "#/components/schemas/PreviewPortletDataHandlerControl"
+                sectionLabel:
                     readOnly: true
-                    type: array
+                    type: string
+                selected:
+                    default: true
+                    description:
+                        A flag that indicates whether the handler's content is processed.
+                    type: boolean
                 tag:
                     readOnly: true
                     type: string
+            required:
+                -   name
             type: object
-        PreviewPortletDataHandlerBoolean:
+        PortletDataHandlerBoolean:
             allOf:
-                -   $ref: "#/components/schemas/PreviewPortletDataHandlerControl"
+                -   $ref: "#/components/schemas/PortletDataHandlerControl"
                 -   properties:
                         additionCount:
                             format: int64
                             readOnly: true
                             type: integer
-                        defaultState:
-                            readOnly: true
-                            type: boolean
                         deletionCount:
                             format: int64
                             readOnly: true
                             type: integer
-                        previewPortletDataHandlerControls:
+                        portletDataHandlerControls:
+                            description:
+                                The nested controls, which apply only when the control is selected.
                             items:
-                                $ref: "#/components/schemas/PreviewPortletDataHandlerControl"
-                            readOnly: true
+                                $ref: "#/components/schemas/PortletDataHandlerControl"
                             type: array
+                        selected:
+                            description:
+                                A flag that indicates whether the control is on. The preview returns the default.
+                            type: boolean
+            description:
+                Represents a control that switches items or a behavior on or off.
             type: object
-        PreviewPortletDataHandlerChoice:
+        PortletDataHandlerChoice:
             allOf:
-                -   $ref: "#/components/schemas/PreviewPortletDataHandlerControl"
+                -   $ref: "#/components/schemas/PortletDataHandlerControl"
                 -   properties:
+                        choice:
+                            description:
+                                The selected option's name. The preview returns the default.
+                            type: string
                         choices:
                             items:
                                 properties:
@@ -307,76 +344,98 @@ components:
                                         readOnly: true
                                         type: integer
                                     label:
+                                        description:
+                                            The option's localized label.
                                         readOnly: true
                                         type: string
                                     name:
+                                        description:
+                                            The option's key, used as the control's choice.
                                         readOnly: true
                                         type: string
                                 type: object
                             readOnly: true
                             type: array
-                        defaultChoice:
-                            readOnly: true
-                            type: string
+                        portletDataHandlerControls:
+                            description:
+                                The nested controls, which apply to the selected option.
+                            items:
+                                $ref: "#/components/schemas/PortletDataHandlerControl"
+                            type: array
+            description:
+                Represents a control that selects one of its options.
             type: object
-        PreviewPortletDataHandlerControl:
+        PortletDataHandlerControl:
+            description:
+                Represents a control that refines a portlet data handler. The type determines the other properties.
             discriminator:
                 mapping:
-                    Boolean: "#/components/schemas/PreviewPortletDataHandlerBoolean"
-                    Choice: "#/components/schemas/PreviewPortletDataHandlerChoice"
-                    Setting: "#/components/schemas/PreviewPortletDataHandlerSetting"
+                    Boolean: "#/components/schemas/PortletDataHandlerBoolean"
+                    Choice: "#/components/schemas/PortletDataHandlerChoice"
+                    TreeSelection: "#/components/schemas/PortletDataHandlerTreeSelection"
                 propertyName: type
             properties:
-                disabled:
-                    readOnly: true
-                    type: boolean
                 label:
                     readOnly: true
                     type: string
                 name:
-                    readOnly: true
+                    description:
+                        The control's key (e.g., _journal_web-content).
                     type: string
                 type:
-                    enum: [Boolean, Choice, Setting]
-                    readOnly: true
+                    enum: [Boolean, Choice, TreeSelection]
                     type: string
             required:
+                -   name
                 -   type
             type: object
-        PreviewPortletDataHandlerSection:
-            properties:
-                additionCount:
-                    format: int64
-                    readOnly: true
-                    type: integer
-                deletionCount:
-                    format: int64
-                    readOnly: true
-                    type: integer
-                label:
-                    readOnly: true
-                    type: string
-                name:
-                    readOnly: true
-                    type: string
-                previewPortletDataHandlers:
-                    items:
-                        $ref: "#/components/schemas/PreviewPortletDataHandler"
-                    readOnly: true
-                    type: array
-            type: object
-        PreviewPortletDataHandlerSetting:
+        PortletDataHandlerTreeSelection:
             allOf:
-                -   $ref: "#/components/schemas/PreviewPortletDataHandlerControl"
+                -   $ref: "#/components/schemas/PortletDataHandlerControl"
                 -   properties:
-                        defaultState:
+                        additionCount:
+                            format: int64
                             readOnly: true
-                            type: boolean
-                        previewPortletDataHandlerControls:
+                            type: integer
+                        deletionCount:
+                            format: int64
+                            readOnly: true
+                            type: integer
+                        excludedItemExternalReferenceCodes:
+                            description:
+                                The external reference codes of the items to exclude.
                             items:
-                                $ref: "#/components/schemas/PreviewPortletDataHandlerControl"
-                            readOnly: true
+                                type: string
                             type: array
+                        excludedSubtreeExternalReferenceCodes:
+                            description:
+                                The external reference codes of the items to exclude with their descendants.
+                            items:
+                                type: string
+                            type: array
+                        itemExternalReferenceCodes:
+                            description:
+                                The external reference codes of the items to include.
+                            items:
+                                type: string
+                            type: array
+                        selectAll:
+                            default: true
+                            description:
+                                A flag that indicates whether every item is selected before the lists apply.
+                            type: boolean
+                        selected:
+                            description:
+                                A flag that indicates whether the control's items are processed.
+                            type: boolean
+                        subtreeExternalReferenceCodes:
+                            description:
+                                The external reference codes of the items to include with their descendants.
+                            items:
+                                type: string
+                            type: array
+            description:
+                Represents a control that selects items of a tree by external reference code. The most specific rule wins, in the order of an item list, a subtree list, the closest ancestor's subtree list, and the selectAll flag. An included list wins over the excluded one at the same level. The pages control takes the external reference codes of the Headless Admin Site API's site pages.
             type: object
         PreviewSite:
             properties:
@@ -389,7 +448,7 @@ components:
                     type: string
                 existsInInstance:
                     description:
-                        Whether the instance being imported into already has a site of the same external reference code. Set only when previewing a file to import.
+                        A flag that indicates whether the instance already has the site. Set only in the import preview.
                     readOnly: true
                     type: boolean
                 externalReferenceCode:
@@ -397,7 +456,7 @@ components:
                     type: string
                 path:
                     description:
-                        Site's path in the site hierarchy.
+                        The site's path in the site hierarchy.
                     readOnly: true
                     type: string
             type: object
@@ -411,6 +470,8 @@ components:
                     type: integer
             type: object
         PublishPreview:
+            description:
+                Represents the portlet data handlers a Publish to Live process can cover, with the number of changes each one covers in the requested date range.
             properties:
                 additionCount:
                     format: int64
@@ -420,9 +481,9 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
-                previewPortletDataHandlerSections:
+                portletDataHandlers:
                     items:
-                        $ref: "#/components/schemas/PreviewPortletDataHandlerSection"
+                        $ref: "#/components/schemas/PortletDataHandler"
                     readOnly: true
                     type: array
             type: object
@@ -491,25 +552,28 @@ components:
                     type: string
                 deletions:
                     default: false
+                    description:
+                        A flag that indicates whether the deletions recorded in the date range are published, so that the live site removes the same items.
                     type: boolean
                 endDate:
+                    description:
+                        The publish window's end date.
                     format: date-time
                     type: string
-                logo:
-                    default: false
-                    type: boolean
                 name:
                     type: string
                 permissions:
                     default: false
                     type: boolean
+                portletDataHandlers:
+                    description:
+                        The portlet data handlers to publish, taken from the publish preview.
+                    items:
+                        $ref: "#/components/schemas/PortletDataHandler"
+                    type: array
                 ratings:
                     default: false
                     type: boolean
-                requestPortletDataHandlers:
-                    items:
-                        $ref: "#/components/schemas/RequestPortletDataHandler"
-                    type: array
                 scheduleEndDate:
                     description:
                         When the scheduled publish stops recurring. Applies only when a cron expression is given.
@@ -520,18 +584,11 @@ components:
                         When the scheduled publish starts. Applies only when a cron expression is given. Defaults to now.
                     format: date-time
                     type: string
-                sitePagesSettings:
-                    default: false
-                    type: boolean
-                siteTemplateSettings:
-                    default: false
-                    type: boolean
                 startDate:
+                    description:
+                        The publish window's start date.
                     format: date-time
                     type: string
-                themeSettings:
-                    default: false
-                    type: boolean
                 timeZoneId:
                     description:
                         The time zone the cron expression is evaluated in. Defaults to the server time zone.
@@ -567,6 +624,8 @@ components:
                     type: integer
                 creator:
                     $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    description:
+                        The user who started the process the entry belongs to.
                     readOnly: true
                 dateCreated:
                     description:
@@ -622,40 +681,11 @@ components:
                         The report entry's type.
                     readOnly: true
             type: object
-        RequestPortletDataHandler:
-            properties:
-                name:
-                    description:
-                        The handler's portlet ID.
-                    type: string
-                requestPortletDataHandlerControls:
-                    items:
-                        $ref: "#/components/schemas/RequestPortletDataHandlerControl"
-                    type: array
-            type: object
-        RequestPortletDataHandlerControl:
-            properties:
-                name:
-                    type: string
-                requestPortletDataHandlerControls:
-                    items:
-                        $ref: "#/components/schemas/RequestPortletDataHandlerControl"
-                    type: array
-                values:
-                    items:
-                        type: string
-                    type: array
-            type: object
         ScheduledPublishProcess:
             properties:
                 creator:
                     $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     readOnly: true
-                cronExpression:
-                    description:
-                        The cron expression that fires the scheduled publication.
-                    readOnly: true
-                    type: string
                 dateCreated:
                     description:
                         The scheduled publish process's creation date.
@@ -679,15 +709,11 @@ components:
                     format: date-time
                     readOnly: true
                     type: string
-                publishParameters:
-                    additionalProperties:
-                        items:
-                            type: string
-                        type: array
+                publishProcessRequest:
+                    $ref: "#/components/schemas/PublishProcessRequest"
                     description:
-                        The raw export import parameters the scheduled publication was created with.
+                        The publish process request the scheduled publication was created with, including its cron expression and time zone, which can be reused to create a new scheduled publication.
                     readOnly: true
-                    type: object
                 scheduleEndDate:
                     description:
                         The date the scheduled publication stops firing.
@@ -728,6 +754,8 @@ openapi: 3.0.1
 paths:
     "/asset-libraries/{assetLibraryExternalReferenceCode}/export-preview":
         get:
+            description:
+                Retrieves the portlet data handlers and counts an export of the specified asset library, or of one of its portlets when a portlet ID is given, would cover in the given date range.
             operationId: getAssetLibraryExportPreview
             parameters:
                 -   in: path
@@ -836,6 +864,8 @@ paths:
                                 type: array
             tags: ["ExportProcess"]
         post:
+            description:
+                Starts an export process on the specified asset library, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview.
             operationId: postAssetLibraryExportProcess
             parameters:
                 -   in: path
@@ -872,6 +902,8 @@ paths:
             tags: ["ExportProcess"]
     "/asset-libraries/{assetLibraryExternalReferenceCode}/import-preview":
         post:
+            description:
+                Uploads a file to import into the specified asset library and retrieves the portlet data handlers and counts it contains. The import process then imports the uploaded file.
             operationId: postAssetLibraryImportPreview
             parameters:
                 -   in: path
@@ -974,6 +1006,8 @@ paths:
                                 type: array
             tags: ["ImportProcess"]
         post:
+            description:
+                Imports the file uploaded through the import preview into the specified asset library, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview.
             operationId: postAssetLibraryImportProcess
             parameters:
                 -   in: path
@@ -1010,6 +1044,8 @@ paths:
             tags: ["ImportProcess"]
     "/export-preview":
         get:
+            description:
+                Retrieves the portlet data handlers and counts an export of the instance, or of one of its portlets when a portlet ID is given, would cover in the given date range.
             operationId: getExportPreview
             parameters:
                 -   in: query
@@ -1145,6 +1181,8 @@ paths:
                                 type: array
             tags: ["ExportProcess"]
         post:
+            description:
+                Starts an export process on the instance, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview and the external reference codes of the sites to export in full.
             operationId: postExportProcess
             parameters:
                 -   in: query
@@ -1291,6 +1329,8 @@ paths:
             tags: ["ExportProcess"]
     "/import-preview":
         post:
+            description:
+                Uploads a file to import into the instance and retrieves the portlet data handlers, counts, and sites it contains. The import process then imports the uploaded file.
             operationId: postImportPreview
             parameters:
                 -   in: query
@@ -1383,6 +1423,8 @@ paths:
                                 type: array
             tags: ["ImportProcess"]
         post:
+            description:
+                Imports the file uploaded through the import preview into the instance, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview and the external reference codes of the sites to import in full.
             operationId: postImportProcess
             parameters:
                 -   in: query
@@ -1732,6 +1774,8 @@ paths:
             tags: ["ReportEntry"]
     "/sites/{siteExternalReferenceCode}/export-preview":
         get:
+            description:
+                Retrieves the portlet data handlers and counts an export of the specified site, or of one of its portlets when a portlet ID is given, would cover in the given date range.
             operationId: getSiteExportPreview
             parameters:
                 -   in: path
@@ -1841,7 +1885,7 @@ paths:
             tags: ["ExportProcess"]
         post:
             description:
-                Starts an export process on the specified site. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
+                Starts an export process on the specified site, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
             operationId: postSiteExportProcess
             parameters:
                 -   in: path
@@ -1878,6 +1922,8 @@ paths:
             tags: ["ExportProcess"]
     "/sites/{siteExternalReferenceCode}/import-preview":
         post:
+            description:
+                Uploads a file to import into the specified site and retrieves the portlet data handlers and counts it contains. The import process then imports the uploaded file.
             operationId: postSiteImportPreview
             parameters:
                 -   in: path
@@ -1980,6 +2026,8 @@ paths:
                                 type: array
             tags: ["ImportProcess"]
         post:
+            description:
+                Imports the file uploaded through the import preview into the specified site, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview.
             operationId: postSiteImportProcess
             parameters:
                 -   in: path
@@ -2114,7 +2162,7 @@ paths:
             tags: ["PublishProcess"]
         post:
             description:
-                Starts a Publish to Live process on the specified site. The date range type and dates select the content and are resolved every time the process runs, including relaunches and scheduled occurrences. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run. When a cron expression is given, the publish is scheduled to recur instead of running immediately.
+                Starts a Publish to Live process on the specified site with the portlet data handlers returned by the publish preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches and scheduled occurrences. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run. When a cron expression is given, the publish is scheduled to recur instead of running immediately.
             operationId: postSitePublishProcess
             parameters:
                 -   in: path
