@@ -5,35 +5,18 @@
 
 package com.liferay.portal.workflow.kaleo.service.impl;
 
-import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.kernel.workflow.WorkflowException;
-import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
-import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
-import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
-import com.liferay.portal.workflow.kaleo.model.KaleoNode;
-import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
-import com.liferay.portal.workflow.kaleo.runtime.KaleoSignaler;
-import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoInstanceServiceBaseImpl;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoDefinitionPersistence;
-import com.liferay.portal.workflow.kaleo.service.persistence.KaleoDefinitionVersionPersistence;
 
 import java.io.Serializable;
 
@@ -74,82 +57,9 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 				ActionKeys.ADD_INSTANCE);
 		}
 
-		if (!kaleoDefinition.isActive()) {
-			throw new WorkflowException(
-				StringBundler.concat(
-					"Inactive workflow definition with name ",
-					kaleoDefinitionName, " and version ",
-					kaleoDefinitionVersion));
-		}
-
-		KaleoDefinitionVersion serviceBuilderKaleoDefinitionVersion =
-			_kaleoDefinitionVersionPersistence.findByC_N_V(
-				serviceContext.getCompanyId(), kaleoDefinitionName,
-				_getVersion(kaleoDefinitionVersion));
-
-		KaleoNode kaleoStartNode =
-			serviceBuilderKaleoDefinitionVersion.getKaleoStartNode();
-
-		if (Validator.isNotNull(transitionName)) {
-
-			// Validate that the transition actually exists before moving
-			// forward
-
-			kaleoStartNode.getKaleoTransition(transitionName);
-		}
-
-		long scopeGroupId = serviceContext.getScopeGroupId();
-
-		if (scopeGroupId != WorkflowConstants.DEFAULT_GROUP_ID) {
-			Group group = _groupLocalService.getGroup(scopeGroupId);
-
-			if (group.isLayout()) {
-				group = _groupLocalService.getGroup(group.getParentGroupId());
-
-				serviceContext.setScopeGroupId(group.getGroupId());
-			}
-		}
-
-		KaleoInstance kaleoInstance =
-			kaleoInstanceLocalService.addKaleoInstance(
-				kaleoDefinition.getKaleoDefinitionId(),
-				serviceBuilderKaleoDefinitionVersion.
-					getKaleoDefinitionVersionId(),
-				serviceBuilderKaleoDefinitionVersion.getName(),
-				_getVersion(serviceBuilderKaleoDefinitionVersion.getVersion()),
-				workflowContext, serviceContext);
-
-		KaleoInstanceToken rootKaleoInstanceToken =
-			kaleoInstance.getRootKaleoInstanceToken(
-				workflowContext, serviceContext);
-
-		rootKaleoInstanceToken.setCurrentKaleoNode(kaleoStartNode);
-
-		_kaleoLogLocalService.addInstanceStartKaleoLog(
-			rootKaleoInstanceToken, serviceContext);
-
-		ExecutionContext executionContext = new ExecutionContext(
-			rootKaleoInstanceToken, workflowContext, serviceContext);
-
-		TransactionCallbackUtil.registerCommitCallback(
-			() -> {
-				try (SafeCloseable safeCloseable =
-						WorkflowThreadLocal.
-							setWaitForCompletionWithSafeCloseable(
-								waitForCompletion)) {
-
-					_kaleoSignaler.signalEntry(
-						transitionName, executionContext, waitForCompletion);
-				}
-				catch (Exception exception) {
-					throw new WorkflowException(
-						"Unable to start workflow", exception);
-				}
-
-				return null;
-			});
-
-		return kaleoInstance;
+		return kaleoInstanceLocalService.addKaleoInstance(
+			kaleoDefinitionName, kaleoDefinitionVersion, transitionName,
+			workflowContext, serviceContext, waitForCompletion);
 	}
 
 	@Override
@@ -187,37 +97,14 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 			kaleoInstanceId, workflowContext);
 	}
 
-	private String _getVersion(int version) {
-		return version + StringPool.PERIOD + 0;
-	}
-
-	private int _getVersion(String version) {
-		int[] versionParts = StringUtil.split(version, StringPool.PERIOD, 0);
-
-		return versionParts[0];
-	}
-
-	@Reference
-	private GroupLocalService _groupLocalService;
-
 	@Reference
 	private KaleoDefinitionPersistence _kaleoDefinitionPersistence;
-
-	@Reference
-	private KaleoDefinitionVersionPersistence
-		_kaleoDefinitionVersionPersistence;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.portal.workflow.kaleo.model.KaleoInstance)"
 	)
 	private ModelResourcePermission<KaleoInstance>
 		_kaleoInstanceModelResourcePermission;
-
-	@Reference
-	private KaleoLogLocalService _kaleoLogLocalService;
-
-	@Reference
-	private KaleoSignaler _kaleoSignaler;
 
 	@Reference(
 		target = "(resource.name=" + WorkflowConstants.RESOURCE_NAME + ")"

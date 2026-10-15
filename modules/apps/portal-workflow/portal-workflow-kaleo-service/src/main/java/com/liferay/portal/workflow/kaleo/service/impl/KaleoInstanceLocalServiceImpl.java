@@ -7,6 +7,7 @@ package com.liferay.portal.workflow.kaleo.service.impl;
 
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -14,7 +15,9 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -25,24 +28,37 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ExceptionRetryAcceptor;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.spring.aop.Property;
 import com.liferay.portal.kernel.spring.aop.Retry;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowException;
+import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 import com.liferay.portal.workflow.kaleo.internal.search.KaleoInstanceTokenField;
+import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
+import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
+import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
+import com.liferay.portal.workflow.kaleo.model.KaleoNode;
+import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
+import com.liferay.portal.workflow.kaleo.runtime.KaleoSignaler;
 import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
 import com.liferay.portal.workflow.kaleo.service.KaleoInstanceTokenLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoTimerInstanceTokenLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoInstanceLocalServiceBaseImpl;
+import com.liferay.portal.workflow.kaleo.service.persistence.KaleoDefinitionPersistence;
+import com.liferay.portal.workflow.kaleo.service.persistence.KaleoDefinitionVersionPersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoInstanceQuery;
 
 import java.io.Serializable;
@@ -119,6 +135,96 @@ public class KaleoInstanceLocalServiceImpl
 			WorkflowContextUtil.convert(workflowContext));
 
 		return kaleoInstancePersistence.update(kaleoInstance);
+	}
+
+	@Override
+	public KaleoInstance addKaleoInstance(
+			String kaleoDefinitionName, Integer kaleoDefinitionVersion,
+			String transitionName, Map<String, Serializable> workflowContext,
+			ServiceContext serviceContext, boolean waitForCompletion)
+		throws PortalException {
+
+		KaleoDefinition kaleoDefinition = _kaleoDefinitionPersistence.findByC_N(
+			serviceContext.getCompanyId(), kaleoDefinitionName);
+
+		if (!kaleoDefinition.isActive()) {
+			throw new WorkflowException(
+				StringBundler.concat(
+					"Inactive workflow definition with name ",
+					kaleoDefinitionName, " and version ",
+					kaleoDefinitionVersion));
+		}
+
+		KaleoDefinitionVersion serviceBuilderKaleoDefinitionVersion =
+			_kaleoDefinitionVersionPersistence.findByC_N_V(
+				serviceContext.getCompanyId(), kaleoDefinitionName,
+				_getVersion(kaleoDefinitionVersion));
+
+		KaleoNode kaleoStartNode =
+			serviceBuilderKaleoDefinitionVersion.getKaleoStartNode();
+
+		if (Validator.isNotNull(transitionName)) {
+
+			// Validate that the transition actually exists before moving
+			// forward
+
+			kaleoStartNode.getKaleoTransition(transitionName);
+		}
+
+		long scopeGroupId = serviceContext.getScopeGroupId();
+
+		if (scopeGroupId != WorkflowConstants.DEFAULT_GROUP_ID) {
+			Group group = _groupLocalService.getGroup(scopeGroupId);
+
+			if (group.isLayout()) {
+				group = _groupLocalService.getGroup(group.getParentGroupId());
+
+				serviceContext.setScopeGroupId(group.getGroupId());
+			}
+		}
+
+		KaleoInstance kaleoInstance =
+			kaleoInstanceLocalService.addKaleoInstance(
+				kaleoDefinition.getKaleoDefinitionId(),
+				serviceBuilderKaleoDefinitionVersion.
+					getKaleoDefinitionVersionId(),
+				serviceBuilderKaleoDefinitionVersion.getName(),
+				_getVersion(serviceBuilderKaleoDefinitionVersion.getVersion()),
+				workflowContext, serviceContext);
+
+		KaleoInstanceToken rootKaleoInstanceToken =
+			kaleoInstance.getRootKaleoInstanceToken(
+				workflowContext, serviceContext);
+
+		rootKaleoInstanceToken.setCurrentKaleoNode(kaleoStartNode);
+
+		_kaleoLogLocalService.addInstanceStartKaleoLog(
+			rootKaleoInstanceToken, serviceContext);
+
+		ExecutionContext executionContext = new ExecutionContext(
+			rootKaleoInstanceToken, workflowContext, serviceContext);
+
+		TransactionCallbackUtil.registerCommitCallback(
+			() -> {
+				try (SafeCloseable safeCloseable =
+						WorkflowThreadLocal.
+							setWaitForCompletionWithSafeCloseable(
+								waitForCompletion)) {
+
+					KaleoSignaler kaleoSignaler = _kaleoSignalerSnapshot.get();
+
+					kaleoSignaler.signalEntry(
+						transitionName, executionContext, waitForCompletion);
+				}
+				catch (Exception exception) {
+					throw new WorkflowException(
+						"Unable to start workflow", exception);
+				}
+
+				return null;
+			});
+
+		return kaleoInstance;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -522,6 +628,16 @@ public class KaleoInstanceLocalServiceImpl
 			Sort.class);
 	}
 
+	private String _getVersion(int version) {
+		return version + StringPool.PERIOD + 0;
+	}
+
+	private int _getVersion(String version) {
+		int[] versionParts = StringUtil.split(version, StringPool.PERIOD, 0);
+
+		return versionParts[0];
+	}
+
 	private Hits _search(
 			Long userId, Boolean active, String assetTitle,
 			String assetDescription, String currentKaleoNodeName,
@@ -642,6 +758,19 @@ public class KaleoInstanceLocalServiceImpl
 		).put(
 			KaleoInstanceTokenField.COMPLETION_DATE, Sort.LONG_TYPE
 		).build();
+	private static final Snapshot<KaleoSignaler> _kaleoSignalerSnapshot =
+		new Snapshot<>(
+			KaleoInstanceLocalServiceImpl.class, KaleoSignaler.class);
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private KaleoDefinitionPersistence _kaleoDefinitionPersistence;
+
+	@Reference
+	private KaleoDefinitionVersionPersistence
+		_kaleoDefinitionVersionPersistence;
 
 	@Reference
 	private KaleoInstanceTokenLocalService _kaleoInstanceTokenLocalService;
