@@ -407,6 +407,15 @@ public class ExportImportHelperUtil {
 		return exportImportHelper.isExportPortletData(portletDataContext);
 	}
 
+	public static boolean isGroupMatching(
+		ExportImportGroup exportImportGroup, Group group) {
+
+		ExportImportHelper exportImportHelper =
+			_exportImportHelperSnapshot.get();
+
+		return exportImportHelper.isGroupMatching(exportImportGroup, group);
+	}
+
 	public static boolean isGroupSupported(Group group) {
 		ExportImportHelper exportImportHelper =
 			_exportImportHelperSnapshot.get();

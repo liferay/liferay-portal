@@ -189,6 +189,9 @@ public interface ExportImportHelper {
 
 	public boolean isExportPortletData(PortletDataContext portletDataContext);
 
+	public boolean isGroupMatching(
+		ExportImportGroup exportImportGroup, Group group);
+
 	public boolean isGroupSupported(Group group);
 
 	public boolean isLayoutRevisionInReview(Layout layout);
