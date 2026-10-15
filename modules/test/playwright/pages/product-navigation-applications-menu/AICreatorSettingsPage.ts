@@ -6,6 +6,7 @@
 import {Locator, Page, expect} from '@playwright/test';
 
 import {waitForAlert} from '../../utils/waitForAlert';
+import {waitForSPAToBeLoaded} from '../../utils/waitForSPAToBeLoaded';
 import {GlobalMenuPage} from './GlobalMenuPage';
 
 const MOCK_API_KEY = 'VALID_API_KEY';
@@ -38,6 +39,12 @@ export class AICreatorInstanceSettingsPage {
 			'Instance Settings',
 			'AI Creator'
 		);
+
+		await this.page.waitForURL(
+			/configurationScreenKey=ai-creator-openai-company-configuration/
+		);
+
+		await waitForSPAToBeLoaded(this.page);
 	}
 
 	async disableChatGPTCreateContent() {
