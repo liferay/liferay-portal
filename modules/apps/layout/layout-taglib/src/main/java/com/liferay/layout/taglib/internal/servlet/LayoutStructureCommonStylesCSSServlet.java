@@ -17,10 +17,13 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -60,6 +63,8 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
+		PermissionChecker permissionChecker = null;
+
 		try {
 			User user = _portal.getUser(httpServletRequest);
 
@@ -82,19 +87,27 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 				}
 			}
 
-			if (user != null) {
-				PrincipalThreadLocal.setName(user.getUserId());
-				PrincipalThreadLocal.setPassword(
-					_portal.getUserPassword(httpServletRequest));
-
-				PermissionThreadLocal.setPermissionChecker(
-					_permissionCheckerFactory.create(user));
+			if (user == null) {
+				user = _userLocalService.getGuestUser(
+					_portal.getCompanyId(httpServletRequest));
 			}
+
+			PrincipalThreadLocal.setName(user.getUserId());
+			PrincipalThreadLocal.setPassword(
+				_portal.getUserPassword(httpServletRequest));
+
+			permissionChecker = _permissionCheckerFactory.create(user);
+
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(portalException);
 			}
+
+			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+			return;
 		}
 
 		long previewCTCollectionId = ParamUtil.getLong(
@@ -105,14 +118,23 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					previewCTCollectionId)) {
 
-			_generateCSS(httpServletRequest, httpServletResponse);
+			_generateCSS(
+				httpServletRequest, httpServletResponse, permissionChecker);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 
 	private void _generateCSS(
 			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws IOException {
+			HttpServletResponse httpServletResponse,
+			PermissionChecker permissionChecker)
+		throws IOException, PortalException {
 
 		httpServletResponse.setContentType(ContentTypes.TEXT_CSS_UTF8);
 		httpServletResponse.setStatus(HttpServletResponse.SC_OK);
@@ -129,7 +151,9 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 			(!layout.isTypeAssetDisplay() && !layout.isTypeContent() &&
 			 !layout.isTypeUtility() &&
 			 ((layout.getMasterLayoutPlid() == 0) ||
-			  !layout.isTypePortlet()))) {
+			  !layout.isTypePortlet())) ||
+			!LayoutPermissionUtil.contains(
+				permissionChecker, layout, ActionKeys.VIEW)) {
 
 			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
