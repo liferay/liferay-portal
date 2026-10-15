@@ -36,8 +36,8 @@ public class JUnitTestClassTest
 
 	@Test
 	public void testGetCachedDownstreamBuildReport() {
-		TestClassReport nestedTestClassReport = _getTestClassReport();
 		TestClassReport testClassReport = _getTestClassReport();
+		TestClassReport nestedTestClassReport = _getTestClassReport();
 
 		_testGetCachedDownstreamBuildReport(
 			nestedTestClassReport.getDownstreamBuildReport(),
@@ -45,15 +45,16 @@ public class JUnitTestClassTest
 		_testGetCachedDownstreamBuildReport(
 			testClassReport.getDownstreamBuildReport(),
 			Collections.singletonList(nestedTestClassReport), testClassReport);
+
 		_testGetCachedDownstreamBuildReport(
 			null, Collections.emptyList(), null);
 	}
 
 	@Test
 	public void testGetCachedTestClassReports() {
+		TestClassReport testClassReport = _getTestClassReport();
 		TestClassReport nestedTestClassReport1 = _getTestClassReport();
 		TestClassReport nestedTestClassReport2 = _getTestClassReport();
-		TestClassReport testClassReport = _getTestClassReport();
 
 		_testGetCachedTestClassReports(
 			Arrays.asList(nestedTestClassReport1, nestedTestClassReport2),
@@ -65,9 +66,11 @@ public class JUnitTestClassTest
 				nestedTestClassReport2),
 			Arrays.asList(nestedTestClassReport1, nestedTestClassReport2),
 			testClassReport);
+
 		_testGetCachedTestClassReports(
 			Collections.singletonList(testClassReport), Collections.emptyList(),
 			testClassReport);
+
 		_testGetCachedTestClassReports(null, Collections.emptyList(), null);
 	}
 
@@ -121,11 +124,8 @@ public class JUnitTestClassTest
 		JUnitTestClass jUnitTestClass = _getJUnitTestClass(
 			batchTestClassGroup, testClassName);
 
-		List<TestClassReport> cachedTestClassReports =
-			jUnitTestClass.getCachedTestClassReports(batchTestClassGroup);
-
 		testSame(
-			cachedTestClassReports,
+			jUnitTestClass.getCachedTestClassReports(batchTestClassGroup),
 			jUnitTestClass.getCachedTestClassReports(batchTestClassGroup));
 
 		Mockito.verify(
