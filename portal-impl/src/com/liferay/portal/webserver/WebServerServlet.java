@@ -1587,6 +1587,10 @@ public class WebServerServlet extends HttpServlet {
 			httpServletRequest.getContextPath() +
 				httpServletRequest.getServletPath();
 
+		if (requestURI.length() <= path.length()) {
+			return StringPool.BLANK;
+		}
+
 		return requestURI.substring(path.length() + 1);
 	}
 
