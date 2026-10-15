@@ -33,7 +33,8 @@ public class JUnitAxisTestClassGroup extends AxisTestClassGroup {
 
 		for (JUnitTestClass jUnitTestClass : getJUnitTestClasses()) {
 			DownstreamBuildReport downstreamBuildReport =
-				jUnitTestClass.getCachedDownstreamBuildReport();
+				jUnitTestClass.getCachedDownstreamBuildReport(
+					getBatchTestClassGroup());
 
 			cachedDownstreamBuildReports.add(downstreamBuildReport);
 		}
@@ -63,7 +64,8 @@ public class JUnitAxisTestClassGroup extends AxisTestClassGroup {
 
 		for (JUnitTestClass jUnitTestClass : getJUnitTestClasses()) {
 			List<TestClassReport> cachedTestClassReports =
-				jUnitTestClass.getCachedTestClassReports();
+				jUnitTestClass.getCachedTestClassReports(
+					getBatchTestClassGroup());
 
 			if ((cachedTestClassReports == null) ||
 				cachedTestClassReports.isEmpty()) {

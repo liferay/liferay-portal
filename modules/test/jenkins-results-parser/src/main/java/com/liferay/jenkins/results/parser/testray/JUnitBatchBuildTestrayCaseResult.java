@@ -343,8 +343,11 @@ public class JUnitBatchBuildTestrayCaseResult
 		JUnitTestClass jUnitTestClass = getTestClass();
 
 		if (jUnitTestClass.isBuildCachingEnabled()) {
+			AxisTestClassGroup axisTestClassGroup = getAxisTestClassGroup();
+
 			List<TestClassReport> cachedTestClassReports =
-				jUnitTestClass.getCachedTestClassReports();
+				jUnitTestClass.getCachedTestClassReports(
+					axisTestClassGroup.getBatchTestClassGroup());
 
 			if ((cachedTestClassReports != null) &&
 				!cachedTestClassReports.isEmpty()) {
@@ -426,8 +429,11 @@ public class JUnitBatchBuildTestrayCaseResult
 		JUnitTestClass jUnitTestClass = getTestClass();
 
 		if (jUnitTestClass.isBuildCachingEnabled()) {
+			AxisTestClassGroup axisTestClassGroup = getAxisTestClassGroup();
+
 			DownstreamBuildReport cachedDownstreamBuildReport =
-				jUnitTestClass.getCachedDownstreamBuildReport();
+				jUnitTestClass.getCachedDownstreamBuildReport(
+					axisTestClassGroup.getBatchTestClassGroup());
 
 			if (cachedDownstreamBuildReport != null) {
 				setBuildReport(cachedDownstreamBuildReport);
