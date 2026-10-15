@@ -4,6 +4,7 @@
  */
 
 import {Option, Picker} from '@clayui/core';
+import ClayEmptyState from '@clayui/empty-state';
 import {BarChart, BarDatum, ChartState} from '@liferay/frontend-js-charts-web';
 import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
@@ -13,6 +14,7 @@ import {
 	WORKFLOW_STATUS,
 	WorkflowStatus,
 } from '../../../../common/utils/constants';
+import {getImage} from '../../../../common/utils/getImage';
 import {getStatusSelectedData} from '../../../quick_filters/quickFilterUpdates';
 import {BaseCard} from '../../common/BaseCard';
 import PickerTrigger from '../../common/PickerTrigger';
@@ -167,22 +169,34 @@ export function ContentProgress({
 			title={Liferay.Language.get('content-progress')}
 			uppercaseTitle={false}
 		>
-			<ChartState
-				empty={!segments.length}
-				error={error}
-				height={CHART_HEIGHT}
-				loading={!buckets && !error}
-			>
-				<BarChart
-					data={segments}
-					height={CHART_HEIGHT}
-					legend="list"
-					rounded
-					size="inline"
-					stacked
-					title=""
+			{buckets && !segments.length ? (
+				<ClayEmptyState
+					description={Liferay.Language.get(
+						'there-is-no-content-movement-to-measure-progress-against'
+					)}
+					imgSrc={getImage(
+						'content_progress_empty_state_illustration.svg'
+					)}
+					imgSrcReducedMotion={null}
+					title={Liferay.Language.get('nothing-to-track-yet')}
 				/>
-			</ChartState>
+			) : (
+				<ChartState
+					error={error}
+					height={CHART_HEIGHT}
+					loading={!buckets && !error}
+				>
+					<BarChart
+						data={segments}
+						height={CHART_HEIGHT}
+						legend="list"
+						rounded
+						size="inline"
+						stacked
+						title=""
+					/>
+				</ChartState>
+			)}
 		</BaseCard>
 	);
 }

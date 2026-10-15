@@ -292,8 +292,14 @@ describe('ContentProgress', () => {
 
 		renderContentProgress();
 
-		expect(await screen.findByText('there-is-no-data')).toBeInTheDocument();
-		expect(screen.queryByRole('img')).not.toBeInTheDocument();
+		expect(
+			await screen.findByText('nothing-to-track-yet')
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				'there-is-no-content-movement-to-measure-progress-against'
+			)
+		).toBeInTheDocument();
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
 	});
 
