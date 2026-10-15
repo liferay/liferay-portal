@@ -241,9 +241,7 @@ export class JournalPage {
 			target: this.page.getByRole('menuitem', {
 				name: 'Publish Selected Elements',
 			}),
-			trigger: this.page
-				.locator('.management-bar')
-				.getByRole('button', {name: 'Actions'}),
+			trigger: this.page.getByTitle('Actions', {exact: true}),
 		});
 
 		const dialog = this.page.getByRole('dialog');
@@ -271,13 +269,7 @@ export class JournalPage {
 	}
 
 	async selectItemByTitle(title: string) {
-		await this.page
-			.locator(
-				'[id^="_com_liferay_journal_web_portlet_JournalPortlet_articles_"]',
-				{hasText: title}
-			)
-			.getByRole('checkbox')
-			.check();
+		await this.page.getByRole('checkbox', {name: title}).check();
 	}
 
 	async selectPage(index: number) {
