@@ -16,6 +16,7 @@ import com.liferay.osb.faro.engine.client.http.client.AuthenticationClientHttpRe
 import com.liferay.osb.faro.engine.client.http.client.AuthorClientHttpRequestInterceptor;
 import com.liferay.osb.faro.engine.client.http.client.CacheClientHttpRequestInterceptor;
 import com.liferay.osb.faro.engine.client.http.client.LoggingClientHttpRequestInterceptor;
+import com.liferay.osb.faro.engine.client.http.client.OriginClientHttpRequestInterceptor;
 import com.liferay.osb.faro.engine.client.http.client.SSLHandshakeExceptionHttpRequestInterceptor;
 import com.liferay.osb.faro.engine.client.mixin.ResourceMixin;
 import com.liferay.osb.faro.engine.client.model.BulkRequest;
@@ -383,6 +384,8 @@ public abstract class BaseEngineClient {
 
 		clientHttpRequestInterceptors.add(
 			new LoggingClientHttpRequestInterceptor());
+		clientHttpRequestInterceptors.add(
+			new OriginClientHttpRequestInterceptor());
 		clientHttpRequestInterceptors.add(
 			new SSLHandshakeExceptionHttpRequestInterceptor());
 

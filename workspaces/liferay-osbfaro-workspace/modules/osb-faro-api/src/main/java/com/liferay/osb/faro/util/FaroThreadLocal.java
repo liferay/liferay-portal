@@ -20,6 +20,10 @@ public class FaroThreadLocal {
 		return _faroRequestAudit.get();
 	}
 
+	public static String getOrigin() {
+		return _origin.get();
+	}
+
 	public static boolean isCacheEnabled() {
 		Boolean cacheEnabled = _cacheEnabled.get();
 
@@ -42,6 +46,10 @@ public class FaroThreadLocal {
 		_faroRequestAudit.set(faroRequestAudit);
 	}
 
+	public static void setOrigin(String origin) {
+		_origin.set(origin);
+	}
+
 	private static final ThreadLocal<Object> _cache =
 		new CentralizedThreadLocal<>(FaroThreadLocal.class + "._cache");
 	private static final ThreadLocal<Boolean> _cacheEnabled =
@@ -49,5 +57,7 @@ public class FaroThreadLocal {
 	private static final ThreadLocal<FaroRequestAudit> _faroRequestAudit =
 		new CentralizedThreadLocal<>(
 			FaroThreadLocal.class + "._faroRequestAudit");
+	private static final ThreadLocal<String> _origin =
+		new CentralizedThreadLocal<>(FaroThreadLocal.class + "._origin");
 
 }

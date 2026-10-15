@@ -23,4 +23,7 @@ dependencies {
 	compileOnly project(":modules:osb-faro-contacts-api")
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation group: "org.mockito", name: "mockito-core", version: "5.14.2"
+	testImplementation group: "org.springframework", name: "spring-web", version: "7.0.9"
+	testImplementation project(":modules:osb-faro-api")
 }
