@@ -7,6 +7,7 @@ package com.liferay.document.library.preview.video.internal.processor;
 
 import com.liferay.document.library.kernel.background.task.DLBackgroundTaskExecutorNames;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.exception.NoSuchFileException;
 import com.liferay.document.library.kernel.model.DLProcessorConstants;
 import com.liferay.document.library.kernel.processor.DLProcessor;
 import com.liferay.document.library.kernel.processor.VideoProcessor;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -108,12 +110,16 @@ public class VideoPreviewableDLProcessor
 	public InputStream getPreviewAsStream(FileVersion fileVersion, String type)
 		throws Exception {
 
+		_validatePreviewType(type);
+
 		return doGetPreviewAsStream(fileVersion, type);
 	}
 
 	@Override
 	public long getPreviewFileSize(FileVersion fileVersion, String type)
 		throws Exception {
+
+		_validatePreviewType(type);
 
 		return doGetPreviewFileSize(fileVersion, type);
 	}
@@ -583,6 +589,12 @@ public class VideoPreviewableDLProcessor
 		sendGenerationMessage(
 			DestinationNames.DOCUMENT_LIBRARY_VIDEO_PROCESSOR,
 			sourceFileVersion, destinationFileVersion);
+	}
+
+	private void _validatePreviewType(String type) throws Exception {
+		if (!ArrayUtil.contains(_PREVIEW_TYPES, type)) {
+			throw new NoSuchFileException("Invalid preview type " + type);
+		}
 	}
 
 	private static final String[] _PREVIEW_TYPES =
