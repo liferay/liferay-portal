@@ -34,13 +34,6 @@ export default function WritingAssistantActions({
 					symbolLeft: 'check',
 					type: EActionType.FIX_SPELLING_AND_GRAMMAR,
 				},
-				{
-					disabled: true,
-					name: Liferay.Language.get('translate-to'),
-					symbolLeft: 'automatic-translate',
-					symbolRight: 'angle-right-small',
-					type: EActionType.TRANSLATE_TO,
-				},
 			],
 			name: Liferay.Language.get('ai-writing-tools'),
 		},

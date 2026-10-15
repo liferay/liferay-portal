@@ -10,7 +10,6 @@ export enum EActionType {
 	IMPROVE_WRITING = 'L_IMPROVE_WRITING',
 	MAKE_LONGER = 'L_MAKE_LONGER',
 	MAKE_SHORTER = 'L_MAKE_SHORTER',
-	TRANSLATE_TO = 'L_TRANSLATE_TO',
 }
 
 export interface IAction {
