@@ -45,9 +45,9 @@ public class JUnitTestClass extends BaseTestClass {
 			return null;
 		}
 
-		TestClassReport cachedTestClassReport = cachedTestClassReports.get(0);
+		TestClassReport testClassReport = cachedTestClassReports.get(0);
 
-		return cachedTestClassReport.getDownstreamBuildReport();
+		return testClassReport.getDownstreamBuildReport();
 	}
 
 	public List<TestClassReport> getCachedTestClassReports() {
