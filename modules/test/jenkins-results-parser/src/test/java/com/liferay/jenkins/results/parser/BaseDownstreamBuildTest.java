@@ -333,17 +333,17 @@ public class BaseDownstreamBuildTest
 
 		PrintStream printStream = System.out;
 
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+
+		System.setOut(new PrintStream(byteArrayOutputStream));
+
 		try {
 			Assert.assertNull(baseDownstreamBuild.getTestrayCaseResultURL());
 		}
 		finally {
 			System.setOut(printStream);
 		}
-
-		ByteArrayOutputStream byteArrayOutputStream =
-			new ByteArrayOutputStream();
-
-		System.setOut(new PrintStream(byteArrayOutputStream));
 
 		String output = byteArrayOutputStream.toString();
 
