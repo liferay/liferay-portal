@@ -44,15 +44,16 @@ public class PasswordFieldUtilTest {
 
 	@Test
 	public void testToString() throws Exception {
-		String password = StringUtil.randomString();
-
 		TestEntity testEntity = new TestEntity();
+
+		String password = StringUtil.randomString();
 
 		testEntity.credential = new Credential("login1", password);
 		testEntity.credentials = new Credential[] {
 			new Credential("login2", password),
 			new Credential("login3", password)
 		};
+
 		testEntity.name = "login4";
 		testEntity.password = password;
 
