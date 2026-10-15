@@ -58,24 +58,7 @@ public class ObjectFieldModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		ObjectFolder objectFolder =
-			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
-				ObjectFolderConstants.
-					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-				TestPropsValues.getCompanyId());
-
-		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
-			true, false, true, ObjectDefinitionTestUtil.getRandomName(),
-			Collections.singletonList(
-				new TextObjectFieldBuilder(
-				).labelMap(
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString())
-				).name(
-					"text"
-				).build()),
-			objectFolder.getObjectFolderId(),
-			ObjectDefinitionConstants.SCOPE_DEPOT, TestPropsValues.getUserId());
+		_objectDefinition = _publishObjectDefinition();
 
 		IndexWriterHelper indexWriterHelper = ReflectionTestUtil.getFieldValue(
 			_modelListener, "_indexWriterHelper");
@@ -106,18 +89,18 @@ public class ObjectFieldModelListenerTest {
 
 	@Test
 	public void testOnAfterCreate() throws Exception {
-		_addObjectField(false);
+		_addObjectField(_objectDefinition, false);
 
 		_assertClassNames();
 
-		_addObjectField(true);
+		_addObjectField(_objectDefinition, true);
 
 		_assertClassNames(_objectDefinition.getClassName());
 	}
 
 	@Test
 	public void testOnAfterRemove() throws Exception {
-		ObjectField objectField = _addObjectField(true);
+		ObjectField objectField = _addObjectField(_objectDefinition, true);
 
 		_classNames.clear();
 
@@ -127,18 +110,29 @@ public class ObjectFieldModelListenerTest {
 
 		_assertClassNames();
 
-		_addObjectField(true);
+		_addObjectField(_objectDefinition, true);
 
 		_classNames.clear();
 
 		_objectFieldLocalService.deleteObjectField(objectField);
 
 		_assertClassNames(_objectDefinition.getClassName());
+
+		ObjectDefinition objectDefinition = _publishObjectDefinition();
+
+		_addObjectField(objectDefinition, true);
+
+		_classNames.clear();
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
+
+		_assertClassNames();
 	}
 
 	@Test
 	public void testOnAfterUpdate() throws Exception {
-		ObjectField objectField = _addObjectField(true);
+		ObjectField objectField = _addObjectField(_objectDefinition, true);
 
 		_classNames.clear();
 
@@ -156,10 +150,13 @@ public class ObjectFieldModelListenerTest {
 		_assertClassNames(_objectDefinition.getClassName());
 	}
 
-	private ObjectField _addObjectField(boolean required) throws Exception {
+	private ObjectField _addObjectField(
+			ObjectDefinition objectDefinition, boolean required)
+		throws Exception {
+
 		return _objectFieldLocalService.addCustomObjectField(
 			null, TestPropsValues.getUserId(), 0,
-			_objectDefinition.getObjectDefinitionId(),
+			objectDefinition.getObjectDefinitionId(),
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 			ObjectFieldConstants.DB_TYPE_STRING, null, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -171,6 +168,27 @@ public class ObjectFieldModelListenerTest {
 		Assert.assertEquals(Arrays.asList(classNames), _classNames);
 
 		_classNames.clear();
+	}
+
+	private ObjectDefinition _publishObjectDefinition() throws Exception {
+		ObjectFolder objectFolder =
+			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+				TestPropsValues.getCompanyId());
+
+		return ObjectDefinitionTestUtil.publishObjectDefinition(
+			true, false, true, ObjectDefinitionTestUtil.getRandomName(),
+			Collections.singletonList(
+				new TextObjectFieldBuilder(
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).name(
+					"text"
+				).build()),
+			objectFolder.getObjectFolderId(),
+			ObjectDefinitionConstants.SCOPE_DEPOT, TestPropsValues.getUserId());
 	}
 
 	private AutoCloseable _autoCloseable;

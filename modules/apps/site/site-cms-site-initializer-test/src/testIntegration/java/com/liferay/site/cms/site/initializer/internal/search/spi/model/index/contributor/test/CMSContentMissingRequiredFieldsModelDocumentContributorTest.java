@@ -9,6 +9,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -35,6 +39,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -49,6 +54,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -127,6 +133,7 @@ public class CMSContentMissingRequiredFieldsModelDocumentContributorTest {
 	public void testContribute() throws Exception {
 		_testContributeWhenObjectDefinitionIsNotCMS();
 		_testContributeWhenRepeatableGroupRequiredObjectFieldIsAdded();
+		_testContributeWhenRequiredAttachmentObjectFieldIsSet();
 		_testContributeWhenRequiredObjectFieldsAreAddedAfterApproval();
 	}
 
@@ -315,6 +322,64 @@ public class CMSContentMissingRequiredFieldsModelDocumentContributorTest {
 		_assertMissingRequiredFieldsCount(4, objectEntry);
 	}
 
+	private void _testContributeWhenRequiredAttachmentObjectFieldIsSet()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null, null,
+			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT, null,
+			null, new ByteArrayInputStream(TestDataConstants.TEST_BYTE_ARRAY),
+			TestDataConstants.TEST_BYTE_ARRAY.length, null, null, null,
+			ServiceContextTestUtil.getServiceContext());
+
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.
+				getObjectEntryFolderByExternalReferenceCode(
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
+					_group.getGroupId(), TestPropsValues.getCompanyId());
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			objectEntryFolder.getObjectEntryFolderId(), null,
+			HashMapBuilder.<String, Serializable>put(
+				"file", dlFileEntry.getFileEntryId()
+			).put(
+				"title_i18n",
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build()
+			).build(),
+			_getServiceContext(WorkflowConstants.ACTION_PUBLISH));
+
+		_assertMissingRequiredFieldsCount(null, objectEntry);
+
+		ObjectField objectField = _objectFieldLocalService.addCustomObjectField(
+			null, TestPropsValues.getUserId(), 0,
+			objectDefinition.getObjectDefinitionId(),
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, null, false, false, null,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			false, "requiredText", null, null, true, false,
+			Collections.emptyList());
+
+		try {
+			_assertMissingRequiredFieldsCount(1, objectEntry);
+		}
+		finally {
+			_objectFieldLocalService.deleteObjectField(
+				objectField.getObjectFieldId());
+		}
+	}
+
 	private void _testContributeWhenRequiredObjectFieldsAreAddedAfterApproval()
 		throws Exception {
 
@@ -400,6 +465,9 @@ public class CMSContentMissingRequiredFieldsModelDocumentContributorTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 	private Group _group;
 
