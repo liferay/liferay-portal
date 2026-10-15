@@ -3573,6 +3573,140 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
 	@Test
+	@TestInfo("LPD-109013")
+	public void testExportImportWorkflowDefinitionsWithMissingKaleoNotificationRecipients()
+		throws Exception {
+
+		User user1 = UserTestUtil.addUser();
+		User user2 = UserTestUtil.addUser();
+		User user3 = UserTestUtil.addUser();
+		User user4 = UserTestUtil.addUser();
+
+		WorkflowDefinition workflowDefinition = _addWorkflowDefinition(
+			user1, user2, user3, user4);
+
+		File larFile = _exportWorkflowDefinitions();
+
+		_deleteWorkflowDefinition(workflowDefinition);
+
+		_userLocalService.deleteUser(user3);
+		_userLocalService.deleteUser(user4);
+
+		ExportImportConfiguration exportImportConfiguration =
+			new ExportImportExecutor(
+			).withGroupId(
+				_getCompanyGroupId()
+			).withIncludeWorkflowDefinitions(
+			).withLARFile(
+				larFile
+			).executeImport();
+
+		KaleoNotification kaleoNotification = _getKaleoNotification(
+			workflowDefinition);
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_kaleoNotificationRecipientLocalService.
+				getKaleoNotificationRecipients(
+					kaleoNotification.getKaleoNotificationId()));
+
+		KaleoTask kaleoTask = _kaleoTaskLocalService.getKaleoNodeKaleoTask(
+			kaleoNotification.getKaleoClassPK());
+
+		Assert.assertEquals(
+			List.of(user1.getUserId(), user2.getUserId()),
+			ListUtil.sort(
+				TransformUtil.transform(
+					_kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
+						kaleoTask.getKaleoTaskId()),
+					KaleoTaskAssignment::getAssigneeClassPK)));
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 1,
+			exportImportReportEntries.size());
+
+		_assertExportImportReportEntry(
+			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0L,
+			workflowDefinition.getExternalReferenceCode(), 0L,
+			"workflow-definitions",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+			exportImportReportEntries.get(0));
+
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
+	@Test
+	@TestInfo("LPD-109013")
+	public void testExportImportWorkflowDefinitionsWithMissingKaleoTaskAssignees()
+		throws Exception {
+
+		User user1 = UserTestUtil.addUser();
+		User user2 = UserTestUtil.addUser();
+		User user3 = UserTestUtil.addUser();
+		User user4 = UserTestUtil.addUser();
+
+		WorkflowDefinition workflowDefinition = _addWorkflowDefinition(
+			user1, user2, user3, user4);
+
+		File larFile = _exportWorkflowDefinitions();
+
+		_deleteWorkflowDefinition(workflowDefinition);
+
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user2);
+
+		ExportImportConfiguration exportImportConfiguration =
+			new ExportImportExecutor(
+			).withGroupId(
+				_getCompanyGroupId()
+			).withIncludeWorkflowDefinitions(
+			).withLARFile(
+				larFile
+			).executeImport();
+
+		Assert.assertNull(
+			_fetchWorkflowDefinition(
+				workflowDefinition.getExternalReferenceCode()));
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 2,
+			exportImportReportEntries.size());
+
+		_assertExportImportReportEntry(
+			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0L,
+			workflowDefinition.getExternalReferenceCode(), 0L,
+			"workflow-definitions",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+			exportImportReportEntries.get(0));
+		_assertExportImportReportEntry(
+			_classNameLocalService.getClassNameId(KaleoDefinition.class),
+			workflowDefinition.getWorkflowDefinitionId(),
+			workflowDefinition.getExternalReferenceCode(), 0L,
+			"workflow-definitions",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_ERROR,
+			exportImportReportEntries.get(1));
+
+		_userLocalService.deleteUser(user3);
+		_userLocalService.deleteUser(user4);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
+	@Test
 	@TestInfo("LPD-103799")
 	public void testExportImportWorkflowDefinitionsWithMissingOriginalCreator()
 		throws Exception {
@@ -3699,6 +3833,78 @@ public class BatchEnginePortletDataHandlerTest {
 
 		_roleLocalService.deleteRole(importedRole1);
 		_roleLocalService.deleteRole(importedRole2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
+	@Test
+	@TestInfo("LPD-109013")
+	public void testExportImportWorkflowDefinitionsWithMissingUsers()
+		throws Exception {
+
+		User user1 = UserTestUtil.addUser();
+		User user2 = UserTestUtil.addUser();
+		User user3 = UserTestUtil.addUser();
+		User user4 = UserTestUtil.addUser();
+
+		WorkflowDefinition workflowDefinition = _addWorkflowDefinition(
+			user1, user2, user3, user4);
+
+		File larFile = _exportWorkflowDefinitions();
+
+		_deleteWorkflowDefinition(workflowDefinition);
+
+		_userLocalService.deleteUser(user2);
+		_userLocalService.deleteUser(user4);
+
+		ExportImportConfiguration exportImportConfiguration =
+			new ExportImportExecutor(
+			).withGroupId(
+				_getCompanyGroupId()
+			).withIncludeWorkflowDefinitions(
+			).withLARFile(
+				larFile
+			).executeImport();
+
+		KaleoNotification kaleoNotification = _getKaleoNotification(
+			workflowDefinition);
+
+		Assert.assertEquals(
+			List.of(user3.getUserId()),
+			TransformUtil.transform(
+				_kaleoNotificationRecipientLocalService.
+					getKaleoNotificationRecipients(
+						kaleoNotification.getKaleoNotificationId()),
+				KaleoNotificationRecipient::getRecipientClassPK));
+
+		KaleoTask kaleoTask = _kaleoTaskLocalService.getKaleoNodeKaleoTask(
+			kaleoNotification.getKaleoClassPK());
+
+		Assert.assertEquals(
+			List.of(user1.getUserId()),
+			TransformUtil.transform(
+				_kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
+					kaleoTask.getKaleoTaskId()),
+				KaleoTaskAssignment::getAssigneeClassPK));
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 1,
+			exportImportReportEntries.size());
+
+		_assertExportImportReportEntry(
+			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0L,
+			workflowDefinition.getExternalReferenceCode(), 0L,
+			"workflow-definitions",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+			exportImportReportEntries.get(0));
+
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user3);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
@@ -4893,6 +5099,40 @@ public class BatchEnginePortletDataHandlerTest {
 		return workflowDefinition;
 	}
 
+	private WorkflowDefinition _addWorkflowDefinition(
+			User user1, User user2, User user3, User user4)
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+
+		String content = StringUtil.replace(
+			new String(
+				FileUtil.getBytes(
+					getClass(),
+					"dependencies/user-recipients-and-assignments-workflow-" +
+						"definition.json")),
+			new String[] {
+				"[$EMAIL_ADDRESS_1$]", "[$EMAIL_ADDRESS_2$]", "[$USER_ID_1$]",
+				"[$USER_ID_2$]", "[$WORKFLOW_DEFINITION_NAME$]"
+			},
+			new String[] {
+				user1.getEmailAddress(), user2.getEmailAddress(),
+				String.valueOf(user3.getUserId()),
+				String.valueOf(user4.getUserId()), name
+			});
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				content.getBytes(), TestPropsValues.getCompanyId(),
+				RandomTestUtil.randomString(), 0, name,
+				WorkflowDefinitionConstants.SCOPE_ALL, false,
+				RandomTestUtil.randomString(), TestPropsValues.getUserId());
+
+		_workflowDefinitions.add(workflowDefinition);
+
+		return workflowDefinition;
+	}
+
 	private void _assertComments(
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
 			ObjectEntryComment... objectEntryComments)
@@ -5554,6 +5794,28 @@ public class BatchEnginePortletDataHandlerTest {
 
 	private String _getImgTag(String previewURL) {
 		return String.format("<p><img alt=\"\" src=\"%s\" /></p>", previewURL);
+	}
+
+	private KaleoNotification _getKaleoNotification(
+			WorkflowDefinition workflowDefinition)
+		throws Exception {
+
+		KaleoDefinitionVersion kaleoDefinitionVersion =
+			_kaleoDefinitionVersionLocalService.
+				fetchLatestKaleoDefinitionVersion(
+					TestPropsValues.getCompanyId(),
+					workflowDefinition.getName());
+
+		List<KaleoNotification> kaleoNotifications =
+			_kaleoNotificationLocalService.
+				getKaleoDefinitionVersionKaleoNotifications(
+					KaleoNode.class.getName(),
+					kaleoDefinitionVersion.getKaleoDefinitionVersionId());
+
+		Assert.assertEquals(
+			kaleoNotifications.toString(), 1, kaleoNotifications.size());
+
+		return kaleoNotifications.get(0);
 	}
 
 	private LogCapture _getLogCapture(boolean expectError) {
