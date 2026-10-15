@@ -25,6 +25,7 @@ import java.sql.Connection;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -356,10 +357,10 @@ public class UpgradeProcessFactoryTest {
 
 			Assert.assertTrue(
 				message,
-				message.startsWith(
+				message.matches(
 					StringBundler.concat(
-						"Upgrading ", callerClass.getName(), " - ",
-						expectedMessage)));
+						"Upgrading ", Pattern.quote(callerClass.getName()),
+						":\\d+ - ", Pattern.quote(expectedMessage), ".*")));
 		}
 	}
 
