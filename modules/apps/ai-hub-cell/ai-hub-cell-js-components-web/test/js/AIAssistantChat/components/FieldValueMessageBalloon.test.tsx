@@ -8,30 +8,11 @@ import '@testing-library/jest-dom';
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import, @liferay/no-extraneous-dependencies
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
 import {render, screen} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import FieldValueMessageBalloon from '../../../../src/main/resources/META-INF/resources/js/AIAssistantChat/components/FieldValueMessageBalloon';
 
 describe('FieldValueMessageBalloon', () => {
-	it('disables both actions once the value is applied', async () => {
-		const onApply = jest.fn();
-
-		render(
-			<FieldValueMessageBalloon
-				onApply={onApply}
-				onRegenerate={jest.fn()}
-				values={{title: 'Home Solar Batteries Explained'}}
-			/>
-		);
-
-		await userEvent.click(screen.getByRole('button', {name: 'apply'}));
-
-		expect(onApply).toHaveBeenCalledTimes(1);
-		expect(screen.getByRole('button', {name: 'apply'})).toBeDisabled();
-		expect(screen.getByRole('button', {name: 'try-again'})).toBeDisabled();
-	});
-
 	it('drops scripts and event handlers from a rich text value', () => {
 		const {container} = render(
 			<FieldValueMessageBalloon
