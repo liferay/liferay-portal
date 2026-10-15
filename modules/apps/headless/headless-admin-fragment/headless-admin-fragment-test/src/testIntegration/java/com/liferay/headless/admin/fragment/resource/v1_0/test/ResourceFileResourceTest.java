@@ -117,6 +117,19 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			"/content_2.txt",
 			httpExchange -> _writeBytes(_content2Bytes, httpExchange));
 
+		_httpServer.createContext(
+			"/redirect",
+			httpExchange -> {
+				Headers responseHeaders = httpExchange.getResponseHeaders();
+
+				responseHeaders.set(
+					HttpHeaders.LOCATION, _localhostContent1URL);
+
+				httpExchange.sendResponseHeaders(302, -1);
+
+				httpExchange.close();
+			});
+
 		_httpServer.start();
 
 		_content1Base64 = Base64.encode(_content1Bytes);
@@ -127,6 +140,12 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		_content1URL = baseURL + "/content_1.txt";
 		_content2URL = baseURL + "/content_2.txt";
+
+		_localhostContent1URL =
+			"http://localhost:" + inetSocketAddress.getPort() +
+				"/content_1.txt";
+
+		_redirectURL = baseURL + "/redirect";
 	}
 
 	@AfterClass
@@ -257,7 +276,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-102182", "LPD-107149"})
+	@TestInfo({"LPD-88395", "LPD-102182", "LPD-107149", "LPD-110076"})
 	public void testPutSiteResourceFile() throws Exception {
 		_testPutSiteResourceFile();
 		_testPutSiteResourceFileBatch();
@@ -266,6 +285,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPutSiteResourceFileFileURLReferenceFileBase64AndURLNullProblemException();
 		_testPutSiteResourceFileFileURLReferenceNullProblemException();
 		_testPutSiteResourceFileFileURLReferenceURL();
+		_testPutSiteResourceFileFileURLReferenceURLFetchSecurity();
 		_testPutSiteResourceFileName();
 		_testPutSiteResourceFileNameNullProblemException();
 		_testPutSiteResourceFilePortletFileProblemException();
@@ -586,21 +606,31 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	}
 
 	private void _assertRestrictedHost(
-			String expectedHost, String url, String[] urlHostsAllowed,
-			boolean urlLocalNetworkAccessEnabled)
+			String expectedHost, String expectedURL, String url,
+			String[] urlHostsAllowed, boolean urlLocalNetworkAccessEnabled)
 		throws Exception {
 
 		URLFetchSecurityCompanyConfigurationUtil.swap(
 			() -> {
 				_testPostSiteResourceFileFileURLReferenceProblemException(
 					StringBundler.concat(
-						"Unable to download file from ", url,
+						"Unable to download file from ", expectedURL,
 						" because of restricted host ", expectedHost),
 					url);
 
 				return null;
 			},
 			urlHostsAllowed, urlLocalNetworkAccessEnabled);
+	}
+
+	private void _assertRestrictedHost(
+			String expectedHost, String url, String[] urlHostsAllowed,
+			boolean urlLocalNetworkAccessEnabled)
+		throws Exception {
+
+		_assertRestrictedHost(
+			expectedHost, url, url, urlHostsAllowed,
+			urlLocalNetworkAccessEnabled);
 	}
 
 	private void _assertURLContent(byte[] expectedBytes, String urlString)
@@ -1650,6 +1680,8 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_assertAllowedHost(_content1Bytes, _content1URL, new String[0], true);
 		_assertAllowedHost(
 			_content2Bytes, _content2URL, new String[] {"127.0.0.1"}, true);
+		_assertRestrictedHost(
+			"10.0.0.1", "http://10.0.0.1/", new String[0], false);
 		_assertRestrictedHost("127.0.0.1", _content1URL, new String[0], false);
 		_assertRestrictedHost(
 			"127.0.0.1", _content1URL, new String[] {"127.0.0.1"}, false);
@@ -1657,6 +1689,14 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			"127.0.0.1", _content1URL, new String[] {"example.test"}, false);
 		_assertRestrictedHost(
 			"127.0.0.1", _content1URL, new String[] {"example.test"}, true);
+		_assertRestrictedHost(
+			"169.254.169.254", "http://169.254.169.254/latest/meta-data/",
+			new String[0], false);
+		_assertRestrictedHost(
+			"localhost", _localhostContent1URL, new String[0], false);
+		_assertRestrictedHost(
+			"localhost", _localhostContent1URL, _redirectURL,
+			new String[] {"127.0.0.1"}, true);
 	}
 
 	private void _testPostSiteResourceFileFileURLReferenceURLLARProblemException()
@@ -2226,6 +2266,52 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			testGroup.getGroupId());
 	}
 
+	private void _testPutSiteResourceFileFileURLReferenceURLFetchSecurity()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile resourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		byte[] bytes = RandomTestUtil.randomBytes();
+
+		resourceFile.setFileURLReference(_toFileURLReference(bytes));
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(), resourceFile);
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		FileURLReference fileURLReference = new FileURLReference();
+
+		fileURLReference.setUrl(_content2URL);
+
+		updatedResourceFile.setFileURLReference(fileURLReference);
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				postResourceFile.getExternalReferenceCode(),
+				updatedResourceFile));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		Assert.assertEquals(
+			"Unable to download file from " + _content2URL +
+				" because of restricted host 127.0.0.1",
+			problem.getTitle());
+
+		_assertContent(
+			bytes, postResourceFile.getExternalReferenceCode(),
+			testGroup.getGroupId());
+	}
+
 	private void _testPutSiteResourceFileName() throws Exception {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
@@ -2444,6 +2530,8 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	private static byte[] _content2Bytes;
 	private static String _content2URL;
 	private static HttpServer _httpServer;
+	private static String _localhostContent1URL;
+	private static String _redirectURL;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
