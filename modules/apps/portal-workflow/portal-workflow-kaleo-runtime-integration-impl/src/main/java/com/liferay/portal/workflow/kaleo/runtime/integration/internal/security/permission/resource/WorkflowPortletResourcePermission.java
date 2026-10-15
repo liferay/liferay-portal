@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.workflow.configuration.WorkflowDefinitionConfiguration;
+import com.liferay.portal.workflow.constants.WorkflowActionKeys;
 
 import java.util.Map;
 import java.util.Objects;
@@ -70,6 +71,14 @@ public class WorkflowPortletResourcePermission
 		PermissionChecker permissionChecker, long groupId, String actionId) {
 
 		try {
+			if (Objects.equals(
+					actionId, WorkflowActionKeys.START_WORKFLOW_INSTANCE)) {
+
+				return permissionChecker.hasPermission(
+					groupId, WorkflowConstants.RESOURCE_NAME, groupId,
+					actionId);
+			}
+
 			return _contains(permissionChecker, groupId);
 		}
 		catch (PortalException portalException) {
