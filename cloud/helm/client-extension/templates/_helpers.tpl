@@ -46,6 +46,14 @@ app.kubernetes.io/instance: {{ include "liferay-client-extension.fullname" . }}
 app.kubernetes.io/name: {{ include "liferay-client-extension.serviceId" . }}
 {{- end }}
 
+{{- define "liferay-client-extension.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "liferay-client-extension.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
 {{- define "liferay-client-extension.serviceId" -}}
 {{- required "clientExtension.serviceId is required" .Values.clientExtension.serviceId }}
 {{- end }}

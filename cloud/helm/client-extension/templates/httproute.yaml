@@ -1,0 +1,33 @@
+{{- if .Values.network.enabled }}
+{{- if not .Values.service.enabled }}
+{{- fail "service.enabled must be true when network.enabled is true" }}
+{{- end }}
+{{- $hostnames := .Values.network.hostnames | default (compact (list .Values.clientExtension.domain)) }}
+{{- if not $hostnames }}
+{{- fail "network.hostnames or clientExtension.domain is required when network.enabled is true" }}
+{{- end }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+    labels:
+        {{- include "liferay-client-extension.labels" . | nindent 8 }}
+    name: {{ include "liferay-client-extension.fullname" . }}
+spec:
+    hostnames:
+        {{- range $hostnames }}
+        -   {{ . | quote }}
+        {{- end }}
+    parentRefs:
+        -   group: gateway.networking.k8s.io
+            kind: Gateway
+            name: {{ required "network.gatewayName is required when network.enabled is true" .Values.network.gatewayName }}
+            sectionName: {{ .Values.network.endpointRef }}
+    rules:
+        -   backendRefs:
+                -   name: {{ include "liferay-client-extension.fullname" . }}
+                    port: {{ .Values.service.port }}
+            matches:
+                -   path:
+                        type: PathPrefix
+                        value: /
+{{- end }}

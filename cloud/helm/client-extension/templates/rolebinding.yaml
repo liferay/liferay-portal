@@ -1,0 +1,16 @@
+{{- if and .Values.clientExtension.dxpNamespace (ne .Values.clientExtension.dxpNamespace .Release.Namespace) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+    labels:
+        {{- include "liferay-client-extension.labels" . | nindent 8 }}
+    name: {{ include "liferay-client-extension.fullname" . }}-delivery
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: client-extension-delivery-cluster-role
+subjects:
+    -   kind: ServiceAccount
+        name: {{ .Values.operatorServiceAccount.name }}
+        namespace: {{ .Values.operatorServiceAccount.namespace }}
+{{- end }}

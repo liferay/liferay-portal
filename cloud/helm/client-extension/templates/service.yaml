@@ -1,0 +1,17 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+    labels:
+        {{- include "liferay-client-extension.labels" . | nindent 8 }}
+    name: {{ include "liferay-client-extension.fullname" . }}
+spec:
+    ports:
+        -   name: http
+            port: {{ .Values.service.port }}
+            protocol: TCP
+            targetPort: http
+    selector:
+        {{- include "liferay-client-extension.selectorLabels" . | nindent 8 }}
+    type: {{ .Values.service.type }}
+{{- end }}

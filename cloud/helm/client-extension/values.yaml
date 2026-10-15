@@ -16,8 +16,24 @@ image:
 imagePullSecrets: []
 labels: {}
 nameOverride: ""
+network:
+    enabled: false
+    endpointRef: http
+    gatewayName: ""
+    hostnames: []
+operatorServiceAccount:
+    name: dxp-operator
+    namespace: dxp-operator-system
 podAnnotations: {}
 podLabels: {}
+service:
+    enabled: false
+    port: 80
+    type: ClusterIP
+serviceAccount:
+    annotations: {}
+    create: false
+    name: ""
 workload:
     affinity: {}
     backoffLimit: 6

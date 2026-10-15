@@ -96,6 +96,9 @@ restartPolicy: Never
 securityContext:
     {{- toYaml . | nindent 4 }}
 {{- end }}
+{{- with include "liferay-client-extension.serviceAccountName" . }}
+serviceAccountName: {{ . }}
+{{- end }}
 {{- with .Values.workload.tolerations }}
 tolerations:
     {{- toYaml . | nindent 4 }}
