@@ -8,10 +8,8 @@ export function itemSelectorValueFromLayout(value) {
 
 	url.searchParams.set('styleBookEntryPreview', 'true');
 
-	const id = value.plid ?? value.layoutPageTemplateEntryId;
-
 	return {
-		id: id === undefined || id === null ? undefined : String(id),
+		id: String(value.plid ?? value.layoutPageTemplateEntryId),
 		name: value.name,
 		private: value.private,
 		url: url.toString(),
