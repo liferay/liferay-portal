@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -393,7 +392,6 @@ public class DesignLibraryFragmentCollectionItemSelectorViewDescriptorTest {
 	private ItemSelectorView<FragmentCollectionItemSelectorCriterion>
 		_fragmentCollectionSiteItemSelectorView;
 
-	@DeleteAfterTestRun
 	private Group _group;
 
 	@Inject

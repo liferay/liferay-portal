@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -120,10 +119,7 @@ public class DesignLibraryFragmentCollectionItemSelectorViewTest {
 	private final FragmentCollectionItemSelectorCriterion
 		_fragmentCollectionItemSelectorCriterion =
 			new FragmentCollectionItemSelectorCriterion();
-
-	@DeleteAfterTestRun
 	private Group _group;
-
 	private final ThemeDisplay _themeDisplay = new ThemeDisplay();
 
 }
