@@ -741,7 +741,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		ServiceContext serviceContext = _createServiceContext(userAccount);
 
 		user = _userService.updateUser(
-			userAccountId, null, null, null, false, null, null,
+			userAccountId, userAccount.getCurrentPassword(), null, null, false,
+			null, null,
 			GetterUtil.getString(
 				userAccount.getAlternateName(), user.getScreenName()),
 			GetterUtil.getString(
@@ -1197,9 +1198,9 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		ServiceContext serviceContext = _createServiceContext(userAccount);
 
 		user = _userService.updateUser(
-			userAccountId, null, null, null, false, null, null,
-			userAccount.getAlternateName(), userAccount.getEmailAddress(),
-			_hasPortrait(null, userAccount),
+			userAccountId, userAccount.getCurrentPassword(), null, null, false,
+			null, null, userAccount.getAlternateName(),
+			userAccount.getEmailAddress(), _hasPortrait(null, userAccount),
 			_getPortraitBytes(false, user, userAccount),
 			GetterUtil.getString(
 				userAccount.getLanguageId(), user.getLanguageId()),

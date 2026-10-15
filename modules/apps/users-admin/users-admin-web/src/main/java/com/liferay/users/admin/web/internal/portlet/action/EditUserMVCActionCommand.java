@@ -76,7 +76,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portlet.InvokerPortletUtil;
-import com.liferay.portlet.admin.util.AdminUtil;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
@@ -354,8 +353,7 @@ public class EditUserMVCActionCommand
 
 		Contact contact = user.getContact();
 
-		String oldPassword = AdminUtil.getUpdateUserPassword(
-			actionRequest, user.getUserId());
+		String oldPassword = ParamUtil.getString(actionRequest, "password");
 
 		String oldScreenName = user.getScreenName();
 		String screenName = BeanParamUtil.getString(
@@ -383,8 +381,7 @@ public class EditUserMVCActionCommand
 
 			int authResult = _userLocalService.authenticateByUserId(
 				themeDisplay.getCompanyId(), portal.getUserId(actionRequest),
-				ParamUtil.getString(actionRequest, "password"), new HashMap<>(),
-				new HashMap<>(), new HashMap<>());
+				oldPassword, new HashMap<>(), new HashMap<>(), new HashMap<>());
 
 			if (authResult != Authenticator.SUCCESS) {
 				throw new PrincipalException();

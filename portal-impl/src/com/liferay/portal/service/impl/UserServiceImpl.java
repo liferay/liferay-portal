@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredUserException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserFieldException;
+import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceMode;
 import com.liferay.portal.kernel.log.Log;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.model.Website;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.security.auth.Authenticator;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyUtil;
@@ -64,6 +66,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.comparator.UserIdComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
@@ -79,6 +82,7 @@ import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -2134,6 +2138,8 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
+		_validateCurrentPassword(
+			emailAddress2, null, null, password, user.getScreenName(), user);
 		validateEmailAddress(user, emailAddress2);
 
 		return userLocalService.updateEmailAddress(
@@ -2623,6 +2629,9 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			}
 		}
 
+		_validateCurrentPassword(
+			emailAddress, newPassword1, newPassword2, oldPassword, screenName,
+			user);
 		validateUpdatePermission(
 			user, screenName, emailAddress, firstName, middleName, lastName,
 			prefixListTypeId, suffixListTypeId, birthdayMonth, birthdayDay,
@@ -2992,6 +3001,9 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			}
 		}
 
+		_validateCurrentPassword(
+			emailAddress, newPassword1, newPassword2, oldPassword, screenName,
+			user);
 		validateUpdatePermission(
 			user, screenName, emailAddress, firstName, middleName, lastName,
 			prefixListTypeId, suffixListTypeId, birthdayMonth, birthdayDay,
@@ -3968,6 +3980,46 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	protected void validateUserIds(long[] userIds) throws PortalException {
 		for (long userId : userIds) {
 			getUserById(userId);
+		}
+	}
+
+	private void _validateCurrentPassword(
+			String emailAddress, String newPassword1, String newPassword2,
+			String password, String screenName, User user)
+		throws PortalException {
+
+		if (user.getUserId() != getUserId()) {
+			return;
+		}
+
+		if (Validator.isNull(newPassword1) && Validator.isNull(newPassword2)) {
+			Company company = _companyPersistence.findByPrimaryKey(
+				user.getCompanyId());
+
+			if (!company.isUpdatePasswordRequired()) {
+				return;
+			}
+
+			String oldEmailAddress = user.getEmailAddress();
+
+			if (StringUtil.equalsIgnoreCase(screenName, user.getScreenName()) &&
+				(!user.isEmailAddressVerificationComplete() ||
+				 StringUtil.endsWith(
+					 oldEmailAddress,
+					 UserConstants.USERS_EMAIL_ADDRESS_AUTO_SUFFIX) ||
+				 StringUtil.equalsIgnoreCase(emailAddress, oldEmailAddress))) {
+
+				return;
+			}
+		}
+
+		int authResult = userLocalService.authenticateByUserId(
+			user.getCompanyId(), user.getUserId(), password, new HashMap<>(),
+			new HashMap<>(), new HashMap<>());
+
+		if (authResult != Authenticator.SUCCESS) {
+			throw new UserPasswordException.MustMatchCurrentPassword(
+				user.getUserId());
 		}
 	}
 
