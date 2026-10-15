@@ -52,6 +52,9 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -251,6 +254,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		_testPostSiteResourceFile();
 		_testPostSiteResourceFileBatch();
+		_testPostSiteResourceFileBatchFileURLReferenceURLFetchSecurity();
 		_testPostSiteResourceFileDuplicateExternalReferenceCodeProblemException();
 		_testPostSiteResourceFileFileURLReferenceFileBase64();
 		_testPostSiteResourceFileFileURLReferenceFileBase64AndURL();
@@ -1562,6 +1566,53 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_assertContent(
 			bytes, postResourceFile.getExternalReferenceCode(),
 			irrelevantGroup.getGroupId());
+	}
+
+	private void _testPostSiteResourceFileBatchFileURLReferenceURLFetchSecurity()
+		throws Exception {
+
+		ResourceFile resourceFile = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		FileURLReference fileURLReference = new FileURLReference();
+
+		fileURLReference.setUrl(_content1URL);
+
+		resourceFile.setFileURLReference(fileURLReference);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			waitForFinish(
+				"FAILED",
+				HTTPTestUtil.invokeToJSONObject(
+					"[" + resourceFile + "]",
+					"headless-admin-fragment/v1.0/sites/" +
+						testGroup.getExternalReferenceCode() +
+							"/resource-files/batch?createStrategy=INSERT",
+					Http.Method.POST));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertFalse(logEntries.toString(), logEntries.isEmpty());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				"Unable to download file from " + _content1URL +
+					" because of restricted host 127.0.0.1",
+				throwable.getMessage());
+		}
+
+		Assert.assertNull(
+			PortletFileRepositoryUtil.
+				fetchPortletFileEntryByExternalReferenceCode(
+					resourceFile.getExternalReferenceCode(),
+					testGroup.getGroupId()));
 	}
 
 	private void _testPostSiteResourceFileDuplicateExternalReferenceCodeProblemException()
