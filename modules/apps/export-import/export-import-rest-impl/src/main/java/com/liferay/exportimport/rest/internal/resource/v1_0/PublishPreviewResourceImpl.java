@@ -9,19 +9,17 @@ import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactory;
 import com.liferay.exportimport.lar.DeletionSystemEventExporter;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
-import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandler;
+import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PublishPreview;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
-import com.liferay.exportimport.rest.internal.util.PreviewPortletDataHandlerUtil;
+import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.PublishPreviewResource;
 import com.liferay.portal.kernel.model.Group;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -49,37 +47,30 @@ public class PublishPreviewResourceImpl extends BasePublishPreviewResourceImpl {
 
 		PermissionUtil.checkPublishPermission(stagingGroup.getGroupId());
 
-		Locale locale = contextAcceptLanguage.getPreferredLocale();
-
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
 				dateRangeType, startDate, endDate, new LinkedHashMap<>(),
 				contextUser);
 
-		Map<String, List<PreviewPortletDataHandler>>
-			previewPortletDataHandlersMap =
-				PreviewPortletDataHandlerUtil.getPreviewPortletDataHandlersMap(
-					_deletionSystemEventExporter, stagingGroup, locale,
-					parameterMap, 0, _portletDataContextFactory,
-					_portletDataHandlerProvider,
-					_exportImportHelper.getExportablePortlets(
-						stagingGroup.getCompanyId(), false,
-						stagingGroup.getGroupId()),
-					false, contextUser.getTimeZone());
+		PortletDataHandler[] exportPortletDataHandlers =
+			PortletDataHandlerUtil.getExportPortletDataHandlers(
+				_deletionSystemEventExporter, stagingGroup,
+				contextAcceptLanguage.getPreferredLocale(), parameterMap, 0,
+				_portletDataContextFactory, _portletDataHandlerProvider,
+				_exportImportHelper.getExportablePortlets(
+					stagingGroup.getCompanyId(), false,
+					stagingGroup.getGroupId()),
+				false, contextUser.getTimeZone());
 
 		return new PublishPreview() {
 			{
 				setAdditionCount(
-					() -> PreviewPortletDataHandlerUtil.getAdditionCount(
-						previewPortletDataHandlersMap));
+					() -> PortletDataHandlerUtil.getAdditionCount(
+						exportPortletDataHandlers));
 				setDeletionCount(
-					() -> PreviewPortletDataHandlerUtil.getDeletionCount(
-						previewPortletDataHandlersMap));
-				setPreviewPortletDataHandlerSections(
-					() ->
-						PreviewPortletDataHandlerUtil.
-							toPreviewPortletDataHandlerSections(
-								locale, previewPortletDataHandlersMap));
+					() -> PortletDataHandlerUtil.getDeletionCount(
+						exportPortletDataHandlers));
+				setPortletDataHandlers(() -> exportPortletDataHandlers);
 			}
 		};
 	}

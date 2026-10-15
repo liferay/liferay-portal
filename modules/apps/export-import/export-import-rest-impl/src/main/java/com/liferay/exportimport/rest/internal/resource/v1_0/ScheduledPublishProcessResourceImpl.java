@@ -5,13 +5,18 @@
 
 package com.liferay.exportimport.rest.internal.resource.v1_0;
 
+import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.staging.Staging;
+import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
+import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
+import com.liferay.exportimport.rest.dto.v1_0.PublishProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcess;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
+import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ScheduledPublishProcessResource;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.string.StringPool;
@@ -40,7 +45,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -97,6 +104,7 @@ public class ScheduledPublishProcessResourceImpl
 		Group liveGroup = GroupUtil.getLiveGroup(stagingGroup);
 
 		return _toScheduledPublishProcess(
+			_getExportPortletDataHandlers(stagingGroup),
 			_getSchedulerResponse(
 				_staging.getSchedulerGroupName(
 					DestinationNames.LAYOUTS_LOCAL_PUBLISHER,
@@ -116,6 +124,8 @@ public class ScheduledPublishProcessResourceImpl
 
 		PermissionUtil.checkPublishPermission(stagingGroup.getGroupId());
 
+		PortletDataHandler[] exportPortletDataHandlers =
+			_getExportPortletDataHandlers(stagingGroup);
 		Group liveGroup = GroupUtil.getLiveGroup(stagingGroup);
 
 		List<ScheduledPublishProcess> scheduledPublishProcesses =
@@ -126,7 +136,8 @@ public class ScheduledPublishProcessResourceImpl
 							DestinationNames.LAYOUTS_LOCAL_PUBLISHER,
 							liveGroup.getGroupId()),
 						StorageType.PERSISTED),
-					this::_toScheduledPublishProcess));
+					schedulerResponse -> _toScheduledPublishProcess(
+						exportPortletDataHandlers, schedulerResponse)));
 
 		if (!Validator.isBlank(search)) {
 			scheduledPublishProcesses.removeIf(
@@ -182,6 +193,19 @@ public class ScheduledPublishProcessResourceImpl
 		}
 
 		return comparator;
+	}
+
+	private PortletDataHandler[] _getExportPortletDataHandlers(
+			Group stagingGroup)
+		throws Exception {
+
+		return PortletDataHandlerUtil.getExportPortletDataHandlers(
+			stagingGroup, contextAcceptLanguage.getPreferredLocale(), 0,
+			_portletDataHandlerProvider,
+			_exportImportHelper.getExportablePortlets(
+				contextCompany.getCompanyId(), false,
+				stagingGroup.getGroupId()),
+			false);
 	}
 
 	private Comparator<ScheduledPublishProcess> _getFieldComparator(
@@ -250,6 +274,7 @@ public class ScheduledPublishProcessResourceImpl
 	}
 
 	private ScheduledPublishProcess _toScheduledPublishProcess(
+		PortletDataHandler[] exportPortletDataHandlers,
 		SchedulerResponse schedulerResponse) {
 
 		Message message = schedulerResponse.getMessage();
@@ -277,19 +302,6 @@ public class ScheduledPublishProcessResourceImpl
 							_userLocalService.fetchUser(
 								exportImportConfiguration.getUserId()));
 					});
-				setCronExpression(
-					() -> {
-						if (parameterMap == null) {
-							return null;
-						}
-
-						return GetterUtil.getString(
-							ArrayUtil.getValue(
-								parameterMap.get(
-									ParameterMapUtil.CRON_EXPRESSION),
-								0),
-							null);
-					});
 				setDateCreated(
 					() -> {
 						if (exportImportConfiguration == null) {
@@ -303,7 +315,32 @@ public class ScheduledPublishProcessResourceImpl
 				setNextFireDate(
 					() -> _schedulerEngineHelper.getNextFireDate(
 						schedulerResponse));
-				setPublishParameters(() -> parameterMap);
+				setPublishProcessRequest(
+					() -> {
+						if (parameterMap == null) {
+							return null;
+						}
+
+						Map<String, Serializable> settingsMap =
+							exportImportConfiguration.getSettingsMap();
+
+						PublishProcessRequest publishProcessRequest =
+							ParameterMapUtil.toPublishProcessRequest(
+								exportPortletDataHandlers,
+								(Locale)settingsMap.get("locale"), parameterMap,
+								(TimeZone)settingsMap.get("timezone"));
+
+						publishProcessRequest.setName(
+							schedulerResponse::getDescription);
+						publishProcessRequest.setScheduleEndDate(
+							() -> _schedulerEngineHelper.getEndDate(
+								schedulerResponse));
+						publishProcessRequest.setScheduleStartDate(
+							() -> _schedulerEngineHelper.getStartDate(
+								schedulerResponse));
+
+						return publishProcessRequest;
+					});
 				setScheduleEndDate(
 					() -> _schedulerEngineHelper.getEndDate(schedulerResponse));
 				setScheduleStartDate(
@@ -318,10 +355,16 @@ public class ScheduledPublishProcessResourceImpl
 		_exportImportConfigurationLocalService;
 
 	@Reference
+	private ExportImportHelper _exportImportHelper;
+
+	@Reference
 	private LayoutService _layoutService;
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private PortletDataHandlerProvider _portletDataHandlerProvider;
 
 	@Reference
 	private SchedulerEngineHelper _schedulerEngineHelper;

@@ -9,19 +9,17 @@ import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSe
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.ManifestSummary;
-import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.rest.dto.v1_0.ImportPreview;
-import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandler;
+import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewSite;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
-import com.liferay.exportimport.rest.internal.util.PreviewPortletDataHandlerUtil;
+import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ImportPreviewResource;
-import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -40,10 +38,8 @@ import com.liferay.portal.vulcan.multipart.MultipartBody;
 import jakarta.ws.rs.BadRequestException;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -160,9 +156,6 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 		_validateImportFile(fileEntry, groupId, plid, portletId);
 
-		Map<String, List<PreviewPortletDataHandler>>
-			previewPortletDataHandlersMap = new LinkedHashMap<>();
-
 		Locale locale = contextAcceptLanguage.getPreferredLocale();
 
 		ManifestSummary manifestSummary =
@@ -179,60 +172,23 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 					contextCompany.getCompanyId(), portletId));
 		}
 
-		for (Portlet portlet : portlets) {
-			PortletDataHandler portletDataHandler =
-				portlet.getPortletDataHandlerInstance();
-
-			if ((portletDataHandler == null) ||
-				(portletDataHandler.isHidden() &&
-				 !LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS.equals(
-					 portlet.getPortletId()))) {
-
-				continue;
-			}
-
-			PreviewPortletDataHandlerUtil.addPreviewPortletDataHandler(
-				contextCompany.getCompanyId(), locale, manifestSummary, portlet,
-				portletDataHandler,
-				PortletDataHandler::getImportPortletDataHandlerControls,
-				portletScoped, previewPortletDataHandlersMap);
-		}
-
-		if (portletScoped) {
-			Portlet portlet = _portletLocalService.getPortletById(
-				contextCompany.getCompanyId(), portletId);
-
-			PortletDataHandler portletDataHandler =
-				portlet.getPortletDataHandlerInstance();
-
-			if (portletDataHandler != null) {
-				PreviewPortletDataHandlerUtil.
-					addConfigurationPreviewPortletDataHandler(
-						locale, portlet,
-						portletDataHandler.
-							getImportConfigurationPortletDataHandlerControls(
-								portlet, manifestSummary),
-						previewPortletDataHandlersMap);
-			}
-		}
+		PortletDataHandler[] importPortletDataHandlers =
+			PortletDataHandlerUtil.getImportPortletDataHandlers(
+				true, group, locale, manifestSummary, portlets, portletScoped);
 
 		return new ImportPreview() {
 			{
 				setAdditionCount(
-					() -> PreviewPortletDataHandlerUtil.getAdditionCount(
-						previewPortletDataHandlersMap));
+					() -> PortletDataHandlerUtil.getAdditionCount(
+						importPortletDataHandlers));
 				setAuthor(fileEntry::getUserName);
 				setDeletionCount(
-					() -> PreviewPortletDataHandlerUtil.getDeletionCount(
-						previewPortletDataHandlersMap));
+					() -> PortletDataHandlerUtil.getDeletionCount(
+						importPortletDataHandlers));
 				setExportDate(manifestSummary::getExportDate);
 				setFileName(fileEntry::getFileName);
 				setFileSize(fileEntry::getSize);
-				setPreviewPortletDataHandlerSections(
-					() ->
-						PreviewPortletDataHandlerUtil.
-							toPreviewPortletDataHandlerSections(
-								locale, previewPortletDataHandlersMap));
+				setPortletDataHandlers(() -> importPortletDataHandlers);
 				setPreviewSites(() -> _getPreviewSites(fileEntry));
 			}
 		};

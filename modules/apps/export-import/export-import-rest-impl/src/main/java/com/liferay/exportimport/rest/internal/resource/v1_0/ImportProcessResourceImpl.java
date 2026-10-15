@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNam
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactory;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
+import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
@@ -20,6 +21,7 @@ import com.liferay.exportimport.rest.internal.util.BackgroundTaskUtil;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
+import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ImportPreviewResource;
 import com.liferay.exportimport.rest.resource.v1_0.ImportProcessResource;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
@@ -35,8 +37,10 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
@@ -55,6 +59,7 @@ import jakarta.ws.rs.NotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -353,8 +358,16 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			name = fileEntry.getFileName();
 		}
 
+		ManifestSummary manifestSummary =
+			_exportImportHelper.getManifestSummary(
+				contextUser.getUserId(), groupId, new HashMap<>(), fileEntry);
+
 		Map<String, String[]> parameterMap = ParameterMapUtil.toParameterMap(
-			importProcessRequest, false);
+			importProcessRequest,
+			PortletDataHandlerUtil.getImportPortletDataHandlers(
+				false, group, contextAcceptLanguage.getPreferredLocale(),
+				manifestSummary, manifestSummary.getDataPortlets(), false),
+			false);
 
 		Map<String, Serializable> settingsMap =
 			_exportImportConfigurationSettingsMapFactory.
@@ -406,7 +419,17 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 		}
 
 		Map<String, String[]> parameterMap = ParameterMapUtil.toParameterMap(
-			importProcessRequest, true);
+			importProcessRequest,
+			PortletDataHandlerUtil.getImportPortletDataHandlers(
+				false, group, contextAcceptLanguage.getPreferredLocale(),
+				_exportImportHelper.getManifestSummary(
+					contextUser.getUserId(), groupId, new HashMap<>(),
+					fileEntry),
+				ListUtil.fromArray(
+					_portletLocalService.getPortletById(
+						contextCompany.getCompanyId(), portletId)),
+				true),
+			true);
 
 		Map<String, Serializable> settingsMap =
 			_exportImportConfigurationSettingsMapFactory.
@@ -499,6 +522,9 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private PortletLocalService _portletLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;

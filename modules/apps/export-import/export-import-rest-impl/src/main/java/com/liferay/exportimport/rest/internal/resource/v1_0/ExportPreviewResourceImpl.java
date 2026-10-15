@@ -10,11 +10,11 @@ import com.liferay.exportimport.kernel.lar.PortletDataContextFactory;
 import com.liferay.exportimport.lar.DeletionSystemEventExporter;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
 import com.liferay.exportimport.rest.dto.v1_0.ExportPreview;
-import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandler;
+import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
-import com.liferay.exportimport.rest.internal.util.PreviewPortletDataHandlerUtil;
+import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ExportPreviewResource;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
@@ -113,27 +113,21 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 				dateRangeType, startDate, endDate, new LinkedHashMap<>(),
 				contextUser);
 
-		Map<String, List<PreviewPortletDataHandler>>
-			previewPortletDataHandlersMap =
-				PreviewPortletDataHandlerUtil.getPreviewPortletDataHandlersMap(
-					_deletionSystemEventExporter, group, locale, parameterMap,
-					plid, _portletDataContextFactory,
-					_portletDataHandlerProvider, portlets, portletScoped,
-					contextUser.getTimeZone());
+		PortletDataHandler[] exportPortletDataHandlers =
+			PortletDataHandlerUtil.getExportPortletDataHandlers(
+				_deletionSystemEventExporter, group, locale, parameterMap, plid,
+				_portletDataContextFactory, _portletDataHandlerProvider,
+				portlets, portletScoped, contextUser.getTimeZone());
 
 		return new ExportPreview() {
 			{
 				setAdditionCount(
-					() -> PreviewPortletDataHandlerUtil.getAdditionCount(
-						previewPortletDataHandlersMap));
+					() -> PortletDataHandlerUtil.getAdditionCount(
+						exportPortletDataHandlers));
 				setDeletionCount(
-					() -> PreviewPortletDataHandlerUtil.getDeletionCount(
-						previewPortletDataHandlersMap));
-				setPreviewPortletDataHandlerSections(
-					() ->
-						PreviewPortletDataHandlerUtil.
-							toPreviewPortletDataHandlerSections(
-								locale, previewPortletDataHandlersMap));
+					() -> PortletDataHandlerUtil.getDeletionCount(
+						exportPortletDataHandlers));
+				setPortletDataHandlers(() -> exportPortletDataHandlers);
 			}
 		};
 	}
