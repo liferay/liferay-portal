@@ -1,9 +1,12 @@
-apply plugin: "com.liferay.node"
+allprojects {
+	plugins.withId("com.liferay.node") {
+		node {
+			nodeVersion = "24.22.0"
+			npmVersion = "11.19.1"
+		}
+	}
+}
 
 createDockerContainer {
 	hostConfig.network = "host"
-}
-
-node {
-	nodeVersion = "16.15.1"
 }
