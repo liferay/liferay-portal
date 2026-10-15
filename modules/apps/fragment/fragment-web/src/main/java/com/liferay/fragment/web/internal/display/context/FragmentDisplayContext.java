@@ -14,7 +14,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
-import com.liferay.fragment.service.FragmentEntryServiceUtil;
+import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.fragment.util.comparator.FragmentCollectionContributorNameComparator;
 import com.liferay.fragment.util.comparator.FragmentCompositionFragmentEntryNameComparator;
 import com.liferay.fragment.web.internal.constants.FragmentTypeConstants;
@@ -542,7 +542,7 @@ public class FragmentDisplayContext {
 		if (isSearch()) {
 			fragmentEntriesSearchContainer.setResultsAndTotal(
 				() ->
-					FragmentEntryServiceUtil.
+					FragmentEntryLocalServiceUtil.
 						getFragmentCompositionsAndFragmentEntries(
 							fragmentCollection.getGroupId(),
 							fragmentCollection.getFragmentCollectionId(),
@@ -551,7 +551,7 @@ public class FragmentDisplayContext {
 							fragmentEntriesSearchContainer.getEnd(),
 							fragmentEntriesSearchContainer.
 								getOrderByComparator()),
-				FragmentEntryServiceUtil.
+				FragmentEntryLocalServiceUtil.
 					getFragmentCompositionsAndFragmentEntriesCount(
 						fragmentCollection.getGroupId(),
 						fragmentCollection.getFragmentCollectionId(),
@@ -560,7 +560,7 @@ public class FragmentDisplayContext {
 		else {
 			fragmentEntriesSearchContainer.setResultsAndTotal(
 				() ->
-					FragmentEntryServiceUtil.
+					FragmentEntryLocalServiceUtil.
 						getFragmentCompositionsAndFragmentEntries(
 							fragmentCollection.getGroupId(),
 							fragmentCollection.getFragmentCollectionId(),
@@ -569,7 +569,7 @@ public class FragmentDisplayContext {
 							fragmentEntriesSearchContainer.getEnd(),
 							fragmentEntriesSearchContainer.
 								getOrderByComparator()),
-				FragmentEntryServiceUtil.
+				FragmentEntryLocalServiceUtil.
 					getFragmentCompositionsAndFragmentEntriesCount(
 						fragmentCollection.getGroupId(),
 						fragmentCollection.getFragmentCollectionId(),
