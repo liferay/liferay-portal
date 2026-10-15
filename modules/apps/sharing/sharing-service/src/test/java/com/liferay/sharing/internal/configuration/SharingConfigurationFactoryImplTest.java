@@ -68,12 +68,6 @@ public class SharingConfigurationFactoryImplTest {
 			boolean companyEnabled, boolean systemEnabled)
 		throws Exception {
 
-		Mockito.when(
-			group.getTypeSettingsProperties()
-		).thenReturn(
-			new UnicodeProperties()
-		);
-
 		ConfigurationProvider configurationProvider = Mockito.mock(
 			ConfigurationProvider.class);
 
@@ -137,6 +131,12 @@ public class SharingConfigurationFactoryImplTest {
 			group.getGroupId()
 		).thenReturn(
 			groupId
+		);
+
+		Mockito.when(
+			group.getTypeSettingsProperties()
+		).thenReturn(
+			new UnicodeProperties()
 		);
 
 		return sharingConfigurationFactoryImpl.getGroupSharingConfiguration(
