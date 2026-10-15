@@ -101,6 +101,11 @@ public class LayoutSetPrototypeVerticalCard extends BaseVerticalCard {
 		return _layoutSetPrototype.getName(themeDisplay.getLocale());
 	}
 
+	@Override
+	public boolean isTranslated() {
+		return false;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutSetPrototypeVerticalCard.class);
 

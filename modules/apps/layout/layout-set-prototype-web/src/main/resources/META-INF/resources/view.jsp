@@ -87,6 +87,7 @@ String executeLayoutSetPrototypeSyncInfoMessage = (String)SessionMessages.get(re
 								href="<%= rowURL %>"
 								label="<%= layoutSetPrototype.getName(locale) %>"
 								target="_blank"
+								translated="<%= false %>"
 							/>
 						</div>
 
@@ -129,6 +130,7 @@ String executeLayoutSetPrototypeSyncInfoMessage = (String)SessionMessages.get(re
 							iconAfter="shortcut"
 							label="<%= layoutSetPrototype.getName(locale) %>"
 							target="_blank"
+							translated="<%= false %>"
 						/>
 					</liferay-ui:search-container-column-text>
 
