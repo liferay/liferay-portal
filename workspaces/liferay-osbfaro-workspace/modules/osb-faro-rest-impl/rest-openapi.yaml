@@ -2027,7 +2027,7 @@ paths:
     "/workspace/{groupId}/individual-segments/{individualSegmentId}/membership-changes":
         get:
             description:
-                "List the individuals who entered or left an individual segment over a date range, most recent change first, with each individual's name and email resolved. Use this to answer 'who has exited this segment recently'. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For the current membership list, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+                "List the individuals who entered or left an individual segment over a date range, most recent change first, with each individual's name and email resolved. Use this to answer 'who has exited this segment recently'. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. `rangeStart` and `rangeEnd` must be given together; a request with only one of them fails. LAST_30_DAYS is used when neither `rangeKey` nor the dates are given. For the current membership list, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
             operationId: getWorkspaceGroupIndividualSegmentMembershipChangesPage
             parameters:
                 -   in: path
@@ -2065,7 +2065,7 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as date (e.g. 2026-01-01). Must be set together with rangeStart, as a rangeKey alternative."
                     name: rangeEnd
                     schema:
                         type: string
@@ -2079,7 +2079,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as date (e.g. 2026-01-01). Must be set together with rangeEnd, as a rangeKey alternative."
                     name: rangeStart
                     schema:
                         type: string

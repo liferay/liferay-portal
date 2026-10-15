@@ -47,6 +47,15 @@ public class IndividualSegmentMembershipChangeResourceImpl
 				String search, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
+		if (Validator.isNull(rangeEnd) != Validator.isNull(rangeStart)) {
+			throw new IllegalArgumentException(
+				"\"rangeEnd\" and \"rangeStart\" must be set together");
+		}
+
+		if (Validator.isNull(rangeKey) && Validator.isNull(rangeStart)) {
+			rangeKey = TimeRange.LAST_30_DAYS.name();
+		}
+
 		List<OrderByField> orderByFields = FaroPaginationUtil.toOrderByFields(
 			sorts);
 
