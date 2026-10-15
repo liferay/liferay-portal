@@ -243,6 +243,14 @@ public class ProductRelationshipsDisplayContextTest {
 
 		Mockito.when(
 			language.get(
+				Mockito.any(HttpServletRequest.class),
+				Mockito.eq("set-as-primary"))
+		).thenReturn(
+			"Set as Primary"
+		);
+
+		Mockito.when(
+			language.get(
 				Mockito.any(HttpServletRequest.class), Mockito.eq("view"))
 		).thenReturn(
 			"View"
@@ -284,7 +292,7 @@ public class ProductRelationshipsDisplayContextTest {
 				productRelationshipsDisplayContext.getFDSActionDropdownItems();
 
 			Assert.assertEquals(
-				fdsActionDropdownItems.toString(), 2,
+				fdsActionDropdownItems.toString(), 3,
 				fdsActionDropdownItems.size());
 
 			FDSActionDropdownItem fdsActionDropdownItem =
@@ -307,6 +315,23 @@ public class ProductRelationshipsDisplayContextTest {
 			Assert.assertEquals("get", data.get("permissionKey"));
 
 			fdsActionDropdownItem = fdsActionDropdownItems.get(1);
+
+			Assert.assertEquals(
+				"{actions.setPrimary.href}", fdsActionDropdownItem.get("href"));
+			Assert.assertEquals(
+				"check-circle", fdsActionDropdownItem.get("icon"));
+			Assert.assertEquals(
+				"Set as Primary", fdsActionDropdownItem.get("label"));
+			Assert.assertEquals(
+				"headless", fdsActionDropdownItem.get("target"));
+
+			data = (Map<?, ?>)fdsActionDropdownItem.get("data");
+
+			Assert.assertEquals("setPrimary", data.get("id"));
+			Assert.assertEquals("put", data.get("method"));
+			Assert.assertEquals("setPrimary", data.get("permissionKey"));
+
+			fdsActionDropdownItem = fdsActionDropdownItems.get(2);
 
 			Assert.assertNull(fdsActionDropdownItem.get("href"));
 			Assert.assertEquals(

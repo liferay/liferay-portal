@@ -52,6 +52,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -307,7 +308,8 @@ public class BasePIMConnectorTest {
 	}
 
 	private void _mockVariantPIMLinks(
-			Map<String, String> clusterKeysByExternalReferenceCode)
+			Map<String, String> clusterKeysByExternalReferenceCode,
+			String primaryExternalReferenceCode)
 		throws Exception {
 
 		ObjectDefinition objectDefinition = Mockito.mock(
@@ -333,6 +335,9 @@ public class BasePIMConnectorTest {
 				clusterKeysByExternalReferenceCode.entrySet(),
 				entry -> HashMapBuilder.<String, Serializable>put(
 					"clusterKey", entry.getValue()
+				).put(
+					"primary",
+					Objects.equals(entry.getKey(), primaryExternalReferenceCode)
 				).put(
 					"sourceClassExternalReferenceCode", entry.getKey()
 				).build())
@@ -475,7 +480,8 @@ public class BasePIMConnectorTest {
 				"SKU-1", "CLUSTER-1"
 			).put(
 				"SKU-2", "CLUSTER-1"
-			).build());
+			).build(),
+			"SKU-2");
 
 		Map<String, List<ObjectEntry>> pimProductObjectEntriesMap =
 			_pimConnector.getPIMProductObjectEntriesMap(_COMPANY_ID);
@@ -485,7 +491,7 @@ public class BasePIMConnectorTest {
 			new ArrayList<>(pimProductObjectEntriesMap.keySet()));
 
 		_assertPIMProductObjectEntriesMap(
-			"CLUSTER-1", pimProductObjectEntriesMap, "SKU-1", "SKU-2");
+			"CLUSTER-1", pimProductObjectEntriesMap, "SKU-2", "SKU-1");
 		_assertPIMProductObjectEntriesMap(
 			"SKU-3", pimProductObjectEntriesMap, "SKU-3");
 		_assertPIMProductObjectEntriesMap(
