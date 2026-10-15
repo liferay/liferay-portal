@@ -40,6 +40,10 @@ public class MonitorFactory {
 				return new ResourceThresholdMonitor(monitorConfig);
 			}
 
+			if (type.equals("running-build-duration")) {
+				return new RunningBuildDurationMonitor(monitorConfig);
+			}
+
 			if (type.equals("smtp-endpoint")) {
 				return new SMTPEndpointMonitor(monitorConfig);
 			}

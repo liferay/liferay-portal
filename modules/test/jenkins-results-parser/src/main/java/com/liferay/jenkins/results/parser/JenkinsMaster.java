@@ -1006,6 +1006,31 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return false;
 	}
 
+	public List<RunningBuild> readRunningBuilds(
+			int maxRetries, int retryPeriodSeconds, int timeoutMillis)
+		throws IOException {
+
+		JSONObject computerAPIJSONObject =
+			JenkinsResultsParserUtil.toJSONObject(
+				getURL() + _COMPUTER_API_TREE_QUERY, false, maxRetries,
+				retryPeriodSeconds, timeoutMillis);
+
+		List<RunningBuild> runningBuilds = new ArrayList<>();
+
+		JSONArray computerJSONArray = computerAPIJSONObject.getJSONArray(
+			"computer");
+
+		for (int i = 0; i < computerJSONArray.length(); i++) {
+			JSONObject computerJSONObject = computerJSONArray.getJSONObject(i);
+
+			_addRunningBuilds(
+				computerJSONObject,
+				JenkinsSlave.getDisplayName(computerJSONObject), runningBuilds);
+		}
+
+		return runningBuilds;
+	}
+
 	public void reloadJenkinsUser(String jenkinsUserName) {
 		JenkinsUser jenkinsUser = JenkinsUserFactory.getJenkinsUser(
 			this, jenkinsUserName);
@@ -1073,15 +1098,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 				"offlineCauseReason]");
 
 			if (!minimal) {
-				treeQuery = JenkinsResultsParserUtil.combine(
-					"/computer/api/json?tree=busyExecutors,computer",
-					"[assignedLabels[name],displayName,executors",
-					"[currentExecutable[building,estimatedDuration,",
-					"fullDisplayName,timestamp,url],likelyStuck],idle,",
-					"offline,offlineCause[timestamp],offlineCauseReason,",
-					"oneOffExecutors[currentExecutable[building,",
-					"estimatedDuration,fullDisplayName,timestamp,url],",
-					"likelyStuck],temporarilyOffline]");
+				treeQuery = _COMPUTER_API_TREE_QUERY;
 			}
 
 			computerAPIJSONObject = JenkinsResultsParserUtil.toJSONObject(
@@ -2095,6 +2112,17 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 	private static final long _AWS_FLEET_CLOUD_UPDATE_DURATION =
 		15 * 1000 * 1000;
+
+	private static final String _COMPUTER_API_TREE_QUERY =
+		JenkinsResultsParserUtil.combine(
+			"/computer/api/json?tree=busyExecutors,computer",
+			"[assignedLabels[name],displayName,executors",
+			"[currentExecutable[building,estimatedDuration,",
+			"fullDisplayName,timestamp,url],likelyStuck],idle,",
+			"offline,offlineCause[timestamp],offlineCauseReason,",
+			"oneOffExecutors[currentExecutable[building,",
+			"estimatedDuration,fullDisplayName,timestamp,url],",
+			"likelyStuck],temporarilyOffline]");
 
 	private static final long _MAXIMUM_BUILD_AGE = 24 * 60 * 60 * 1000;
 
