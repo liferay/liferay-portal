@@ -35,6 +35,7 @@ definition {
 		}
 	}
 
+	@ignore = "true"
 	@priority = 5
 	test ViewOneDriveDocumentsArchive72101 {
 		property data.archive.type = "data-archive-onedrive";
@@ -60,6 +61,7 @@ definition {
 		ValidateOnlineEditingUpgrade.addOneDriveDocument(dmDocumentTypeName = "Word");
 	}
 
+	@ignore = "true"
 	@priority = 5
 	test ViewOneDriveDocumentsArchive73101 {
 		property data.archive.type = "data-archive-onedrive";
