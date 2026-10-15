@@ -69,7 +69,6 @@
 		"@ckeditor/ckeditor5-undo": "46.0.3",
 		"@ckeditor/ckeditor5-upload": "46.0.3",
 		"@ckeditor/ckeditor5-utils": "46.0.3",
-		"@ckeditor/ckeditor5-watchdog": "46.0.3",
 		"@ckeditor/ckeditor5-widget": "46.0.3",
 		"@ckeditor/ckeditor5-word-count": "46.0.3",
 		"@clayui/drop-down": "^3.166.0",
