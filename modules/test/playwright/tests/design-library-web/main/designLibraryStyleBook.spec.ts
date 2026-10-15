@@ -57,69 +57,70 @@ test(
 	'Can create a style book within a design library',
 	{tag: '@LPD-88092'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
 
-		await test.step('Create a design library via headless', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: designLibraryName,
+			settings: {},
+			type: 'DesignLibrary',
 		});
 
-		await test.step('Open the design library resources view', async () => {
-			await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		// Go to the design library
 
-			await expect(
-				page.getByRole('button', {exact: true, name: 'New'})
-			).toBeVisible();
-		});
+		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+
+		await expect(
+			page.getByRole('button', {exact: true, name: 'New'})
+		).toBeVisible();
+
+		// Cancel the modal
+
+		await designLibrariesPage.clickNewStyleBook();
 
 		const modal = page.getByRole('dialog');
 
-		await test.step('Cancelling the modal does not create an entry', async () => {
-			await designLibrariesPage.clickNewStyleBook();
+		await expect(
+			modal.getByRole('heading', {name: 'Add Style Book'})
+		).toBeVisible();
 
-			await expect(
-				modal.getByRole('heading', {name: 'Add Style Book'})
-			).toBeVisible();
+		await modal.getByRole('button', {name: 'Cancel'}).click();
 
-			await modal.getByRole('button', {name: 'Cancel'}).click();
+		await expect(modal).toBeHidden();
 
-			await expect(modal).toBeHidden();
-		});
+		// Add a style book
 
-		await test.step('Submitting the modal redirects to the style book editor', async () => {
-			await designLibrariesPage.clickNewStyleBook();
+		await designLibrariesPage.clickNewStyleBook();
 
-			await expect(modal).toBeVisible();
+		await expect(modal).toBeVisible();
 
-			const styleBookName = getRandomString();
+		const styleBookName = getRandomString();
 
-			await modal.getByLabel('Name').fill(styleBookName);
+		await modal.getByLabel('Name').fill(styleBookName);
 
-			await modal.getByRole('button', {name: 'Save'}).click();
+		await modal.getByRole('button', {name: 'Save'}).click();
 
-			await expect(modal).toBeHidden();
-			await expect(page).toHaveURL(/style_book.+edit/);
+		await expect(modal).toBeHidden();
+		await expect(page).toHaveURL(/style_book.+edit/);
 
-			const breadcrumb = page
-				.getByRole('navigation', {name: 'Breadcrumb'})
-				.last();
+		const breadcrumb = page
+			.getByRole('navigation', {name: 'Breadcrumb'})
+			.last();
 
-			await expect(breadcrumb.getByText(styleBookName)).toBeVisible();
-		});
+		await expect(breadcrumb.getByText(styleBookName)).toBeVisible();
 
-		await test.step('Clicking the back button returns to the design library', async () => {
-			await page
-				.locator('.control-menu-nav-item')
-				.getByTitle(`Go to ${designLibraryName}`)
-				.click();
+		// Click the back button
 
-			await expect(
-				page.getByRole('heading', {name: 'Design Libraries'})
-			).toBeVisible();
-		});
+		await page
+			.locator('.control-menu-nav-item')
+			.getByTitle(`Go to ${designLibraryName}`)
+			.click();
+
+		await expect(
+			page.getByRole('heading', {name: 'Design Libraries'})
+		).toBeVisible();
 	}
 );
 
@@ -127,55 +128,48 @@ test(
 	'New button is not visible without permissions',
 	{tag: '@LPD-88092'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
 
-		await test.step('Create a design library via headless', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: designLibraryName,
+			settings: {},
+			type: 'DesignLibrary',
 		});
 
-		const unprivilegedUser =
-			await test.step('Create an unprivileged user', async () => {
-				const user =
-					await apiHelpers.headlessAdminUser.postUserAccount();
+		// Create an unprivileged user
 
-				userData[user.alternateName] = {
-					name: user.givenName,
-					password: 'test',
-					surname: user.familyName,
-				};
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-				return user;
-			});
+		userData[user.alternateName] = {
+			name: user.givenName,
+			password: 'test',
+			surname: user.familyName,
+		};
+
+		// Go to the design library
+
+		await designLibrariesPage.goToDesignLibrary(designLibraryName);
 
 		const newButton = page.getByRole('button', {name: 'New'});
 
-		const designLibraryURL =
-			await test.step('Open the design library resources view as admin', async () => {
-				await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await expect(newButton).toBeVisible();
 
-				await expect(newButton).toBeVisible();
+		const designLibraryURL = page.url();
 
-				return page.url();
-			});
+		// Switch to the unprivileged user
 
-		await test.step('Switch to the unprivileged user', async () => {
-			await performLogout(page);
+		await performLogout(page);
 
-			await performLoginViaApi({
-				page,
-				screenName: unprivilegedUser.alternateName,
-			});
-		});
+		await performLoginViaApi({page, screenName: user.alternateName});
 
-		await test.step('New Style Book button is not visible without permissions', async () => {
-			await page.goto(designLibraryURL);
+		// Check the hidden New button
 
-			await expect(newButton).toBeHidden();
-		});
+		await page.goto(designLibraryURL);
+
+		await expect(newButton).toBeHidden();
 	}
 );
 
@@ -183,70 +177,50 @@ test(
 	'Design Library content screen lists the style books added to it',
 	{tag: '@LPD-74829'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: designLibraryName,
+			settings: {},
+			type: 'DesignLibrary',
+		});
+
+		// Add a style book
+
 		const styleBookName = getRandomString();
 
-		await test.step('Create a new design library via headless', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
-		});
+		await designLibrariesPage.createStyleBook(
+			designLibraryName,
+			styleBookName
+		);
 
-		await test.step('Add a style book to the design library via UI', async () => {
-			await designLibrariesPage.createStyleBook(
-				designLibraryName,
-				styleBookName
-			);
-		});
+		// Check the style book row
 
-		await test.step('Check that the style book is listed', async () => {
-			const contentTable = page.locator(
-				'.design-library-fds-wrapper--resources table'
-			);
+		const styleBookRow = page
+			.locator('.design-library-fds-wrapper--resources table')
+			.getByRole('row', {name: styleBookName});
 
-			await expect(
-				contentTable.getByRole('row', {name: styleBookName})
-			).toBeVisible();
-		});
+		await expect(
+			styleBookRow.getByRole('cell', {name: 'Test Test'})
+		).toBeVisible();
 
-		await test.step('Check that the author column shows the creator name', async () => {
-			const contentTable = page.locator(
-				'.design-library-fds-wrapper--resources table'
-			);
+		// Check the row actions
 
-			const styleBookRow = contentTable.getByRole('row', {
-				name: styleBookName,
-			});
+		await styleBookRow.getByRole('button', {name: /Actions$/}).click();
 
-			await expect(
-				styleBookRow.getByRole('cell', {name: 'Test Test'})
-			).toBeVisible();
-		});
+		await expect(
+			page.getByRole('menuitem', {
+				exact: true,
+				name: 'Edit in Style Book Editor',
+			})
+		).toBeVisible();
 
-		await test.step('Check that the row action menu exposes Edit and Delete', async () => {
-			const contentTable = page.locator(
-				'.design-library-fds-wrapper--resources table'
-			);
-
-			const styleBookRow = contentTable.getByRole('row', {
-				name: styleBookName,
-			});
-
-			await styleBookRow.getByRole('button', {name: /Actions$/}).click();
-
-			await expect(
-				page.getByRole('menuitem', {
-					exact: true,
-					name: 'Edit in Style Book Editor',
-				})
-			).toBeVisible();
-
-			await expect(
-				page.getByRole('menuitem', {exact: true, name: 'Delete'})
-			).toBeVisible();
-		});
+		await expect(
+			page.getByRole('menuitem', {exact: true, name: 'Delete'})
+		).toBeVisible();
 	}
 );
 
@@ -254,120 +228,106 @@ test(
 	'Editing a Design Library style book opens the editor with Design-Library-aware experience',
 	{tag: '@LPD-74829'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
-		const connectedSiteName = getRandomString();
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
-		const pageName = getRandomString();
-		const styleBookName = getRandomString();
 
 		const designLibrary =
-			await test.step('Create a new design library via headless', async () => {
-				return await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-					{
-						name: designLibraryName,
-						settings: {},
-						type: 'DesignLibrary',
-					}
-				);
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
 			});
 
-		const connectedSite =
-			await test.step('Create a connected site with a public page via headless', async () => {
-				const site = await apiHelpers.headlessAdminSite.postSite({
-					name: connectedSiteName,
-				});
+		// Create a site with a page
 
-				await apiHelpers.headlessAdminSite.createPage(
-					site.externalReferenceCode,
-					{
-						name_i18n: {en_US: pageName},
-						type: 'WidgetPage',
-					}
-				);
+		const siteName = getRandomString();
 
-				return site;
-			});
-
-		await test.step('Connect the site to the design library', async () => {
-			await apiHelpers.jsonWebServicesDepotGroupRel.addDepotEntryGroupRel(
-				designLibrary.id,
-				connectedSite.id
-			);
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: siteName,
 		});
 
-		await test.step('Add a style book to the design library via UI', async () => {
-			await designLibrariesPage.createStyleBook(
-				designLibraryName,
-				styleBookName
-			);
-		});
+		const pageName = getRandomString();
 
-		await test.step('Open the style book editor from the design library content screen', async () => {
-			await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await apiHelpers.headlessAdminSite.createPage(
+			site.externalReferenceCode,
+			{
+				name_i18n: {en_US: pageName},
+				type: 'WidgetPage',
+			}
+		);
 
-			const styleBookRow = page
-				.locator('.design-library-fds-wrapper--resources table')
-				.getByRole('row', {name: styleBookName});
+		// Connect the site
 
-			await styleBookRow.getByRole('button', {name: /Actions$/}).click();
+		await apiHelpers.jsonWebServicesDepotGroupRel.addDepotEntryGroupRel(
+			designLibrary.id,
+			site.id
+		);
 
-			await page
-				.getByRole('menuitem', {
-					exact: true,
-					name: 'Edit in Style Book Editor',
-				})
-				.click();
+		// Add a style book
 
-			await expect(page).toHaveURL(/edit_style_book_entry/);
-		});
+		const styleBookName = getRandomString();
+
+		await designLibrariesPage.createStyleBook(
+			designLibraryName,
+			styleBookName
+		);
+
+		// Open the style book editor
+
+		const styleBookRow = page
+			.locator('.design-library-fds-wrapper--resources table')
+			.getByRole('row', {name: styleBookName});
+
+		await styleBookRow.getByRole('button', {name: /Actions$/}).click();
+
+		await page
+			.getByRole('menuitem', {
+				exact: true,
+				name: 'Edit in Style Book Editor',
+			})
+			.click();
+
+		await expect(page).toHaveURL(/edit_style_book_entry/);
+
+		// Check the editor breadcrumb
 
 		const breadcrumb = page
 			.getByRole('navigation', {name: 'Breadcrumb'})
 			.last();
 
-		await test.step('Verify the editor breadcrumb structure', async () => {
-			await expect(breadcrumb).toBeVisible();
+		await expect(breadcrumb).toBeVisible();
 
-			const items = breadcrumb.getByRole('listitem');
+		const items = breadcrumb.getByRole('listitem');
 
-			await expect(items).toHaveCount(2);
+		await expect(items).toHaveCount(2);
+		await expect(items.first()).toContainText(designLibraryName);
+		await expect(items.last()).toContainText(styleBookName);
+		await expect(items.last()).toHaveClass(/active/);
 
-			await expect(items.first()).toContainText(designLibraryName);
+		// Check the preview pages
 
-			await expect(items.last()).toContainText(styleBookName);
+		await page
+			.getByRole('button', {name: 'Pages'})
+			.or(page.getByRole('button', {name: 'Fragments'}))
+			.or(page.getByRole('button', {name: 'Masters'}))
+			.first()
+			.click();
 
-			await expect(items.last()).toHaveClass(/active/);
-		});
+		await page.getByRole('menuitem', {name: 'Pages'}).click();
 
-		await test.step('Check that the preview dropdown lists the connected site page', async () => {
-			await page
-				.getByRole('button', {name: 'Pages'})
-				.or(page.getByRole('button', {name: 'Fragments'}))
-				.or(page.getByRole('button', {name: 'Masters'}))
-				.first()
-				.click();
+		await expect(
+			page.getByRole('button', {name: `[${siteName}] ${pageName}`})
+		).toBeVisible();
 
-			await page.getByRole('menuitem', {name: 'Pages'}).click();
+		// Go back to the listing
 
-			await expect(
-				page.getByRole('button', {
-					name: `[${connectedSiteName}] ${pageName}`,
-				})
-			).toBeVisible();
-		});
+		await breadcrumb.getByRole('link', {name: designLibraryName}).click();
 
-		await test.step('Click back and verify the design library content screen is restored', async () => {
-			await breadcrumb
-				.getByRole('link', {name: designLibraryName})
-				.click();
+		await expect(page).toHaveURL(/view_resources_design_library/);
 
-			await expect(page).toHaveURL(/view_resources_design_library/);
-
-			await expect(
-				page
-					.locator('.design-library-fds-wrapper--resources table')
-					.getByRole('row', {name: styleBookName})
-			).toBeVisible();
-		});
+		await expect(styleBookRow).toBeVisible();
 	}
 );
 
@@ -377,124 +337,97 @@ testWithSite(
 	'Design library style books are filtered by page theme in the style book selector',
 	{tag: '@LPD-83671'},
 	async ({apiHelpers, designLibrariesPage, page, pagesAdminPage, site}) => {
-		const classicStyleBookName = getRandomString();
-		const cmsStyleBookName = getRandomString();
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
+
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
+			});
+
+		// Add a widget page
+
 		const pageName = getRandomString();
 
-		const designLibrary = await testWithSite.step(
-			'Create a design library via headless',
-			async () => {
-				return await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-					{
-						name: designLibraryName,
-						settings: {},
-						type: 'DesignLibrary',
-					}
-				);
-			}
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: String(site.id),
+			options: {type: 'portlet'},
+			title: pageName,
+		});
+
+		// Add the Classic style book
+
+		const classicStyleBookName = getRandomString();
+
+		await designLibrariesPage.createStyleBook(
+			designLibraryName,
+			classicStyleBookName,
+			'Classic Theme'
 		);
 
-		await testWithSite.step(
-			'Create a widget page in the site',
-			async () => {
-				await apiHelpers.jsonWebServicesLayout.addLayout({
-					groupId: String(site.id),
-					options: {type: 'portlet'},
-					title: pageName,
-				});
-			}
+		// Add the CMS style book
+
+		const cmsStyleBookName = getRandomString();
+
+		await designLibrariesPage.createStyleBook(
+			designLibraryName,
+			cmsStyleBookName,
+			'CMS Theme'
 		);
 
-		await testWithSite.step(
-			'Create a Classic Theme style book in the design library',
-			async () => {
-				await designLibrariesPage.createStyleBook(
-					designLibraryName,
-					classicStyleBookName,
-					'Classic Theme'
-				);
-			}
+		// Check the selector before connecting
+
+		let selectStyleBookDialog = await openSelectStyleBookDialog(
+			page,
+			pageName,
+			pagesAdminPage,
+			site.friendlyUrlPath
 		);
 
-		await testWithSite.step(
-			'Create a CMS Theme style book in the design library',
-			async () => {
-				await designLibrariesPage.createStyleBook(
-					designLibraryName,
-					cmsStyleBookName,
-					'CMS Theme'
-				);
-			}
+		await expect(
+			selectStyleBookDialog.getByText('Styles from Classic Theme', {
+				exact: true,
+			})
+		).toBeVisible();
+
+		await expect(
+			selectStyleBookDialog.getByText(classicStyleBookName, {exact: true})
+		).toBeHidden();
+
+		await expect(
+			selectStyleBookDialog.getByText(cmsStyleBookName, {exact: true})
+		).toBeHidden();
+
+		await selectStyleBookDialog.getByLabel('Close').click();
+
+		// Connect the design library
+
+		await apiHelpers.jsonWebServicesDepotGroupRel.addDepotEntryGroupRel(
+			designLibrary.id,
+			site.id
 		);
 
-		await testWithSite.step(
-			'Assert no design library style books are visible when not connected to the site',
-			async () => {
-				const selectStyleBookDialog = await openSelectStyleBookDialog(
-					page,
-					pageName,
-					pagesAdminPage,
-					site.friendlyUrlPath
-				);
+		// Check the selector after connecting
 
-				await expect(
-					selectStyleBookDialog.getByText(
-						'Styles from Classic Theme',
-						{exact: true}
-					)
-				).toBeVisible();
-
-				await expect(
-					selectStyleBookDialog.getByText(classicStyleBookName, {
-						exact: true,
-					})
-				).toBeHidden();
-
-				await expect(
-					selectStyleBookDialog.getByText(cmsStyleBookName, {
-						exact: true,
-					})
-				).toBeHidden();
-
-				await selectStyleBookDialog.getByLabel('Close').click();
-			}
+		selectStyleBookDialog = await openSelectStyleBookDialog(
+			page,
+			pageName,
+			pagesAdminPage,
+			site.friendlyUrlPath
 		);
 
-		await testWithSite.step(
-			'Connect the design library to the site',
-			async () => {
-				await apiHelpers.jsonWebServicesDepotGroupRel.addDepotEntryGroupRel(
-					designLibrary.id,
-					site.id
-				);
-			}
-		);
+		await expect(
+			selectStyleBookDialog.getByText(classicStyleBookName, {exact: true})
+		).toBeVisible();
 
-		await testWithSite.step(
-			'Assert only the Classic Theme style book is visible in the selector after connecting',
-			async () => {
-				const selectStyleBookDialog = await openSelectStyleBookDialog(
-					page,
-					pageName,
-					pagesAdminPage,
-					site.friendlyUrlPath
-				);
+		await expect(
+			selectStyleBookDialog.getByText(cmsStyleBookName, {exact: true})
+		).toBeHidden();
 
-				await expect(
-					selectStyleBookDialog.getByText(classicStyleBookName, {
-						exact: true,
-					})
-				).toBeVisible();
-
-				await expect(
-					selectStyleBookDialog.getByText(cmsStyleBookName, {
-						exact: true,
-					})
-				).toBeHidden();
-
-				await selectStyleBookDialog.getByLabel('Close').click();
-			}
-		);
+		await selectStyleBookDialog.getByLabel('Close').click();
 	}
 );

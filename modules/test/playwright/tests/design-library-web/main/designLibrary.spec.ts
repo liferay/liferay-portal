@@ -9,6 +9,7 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {designLibrariesPageTest} from './fixtures/designLibrariesPageTest';
@@ -42,37 +43,32 @@ test(
 	'Check if design library is working correctly',
 	{tag: '@LPD-79427'},
 	async ({designLibrariesPage, page}) => {
-		await test.step('Can navigate to design libraries page', async () => {
-			await designLibrariesPage.goto();
 
-			await expect(page.getByTestId('header')).toHaveText(
-				'Design Libraries'
-			);
-		});
+		// Go to the design libraries
 
-		await test.step('Check that the empty state labels are correct', async () => {
-			await expect(
-				page.getByText('No Design Libraries Yet')
-			).toBeVisible();
+		await designLibrariesPage.goto();
 
-			await expect(
-				page.getByText(
-					'Click "New" to create your first Design Library.'
-				)
-			).toBeVisible();
+		await expect(page.getByTestId('header')).toHaveText('Design Libraries');
 
-			await expect(
-				page.getByRole('button', {name: 'New Design Library'})
-			).toBeVisible();
-		});
+		// Check the empty state labels
 
-		await test.step('Check that the "/states/design_library_empty_state.svg" image is displayed', async () => {
-			await expect(
-				designLibrariesPage.emptyStateContainer.locator(
-					'img[src$="/states/design_library_empty_state.svg"]'
-				)
-			).toBeVisible();
-		});
+		await expect(page.getByText('No Design Libraries Yet')).toBeVisible();
+
+		await expect(
+			page.getByText('Click "New" to create your first Design Library.')
+		).toBeVisible();
+
+		await expect(
+			page.getByRole('button', {name: 'New Design Library'})
+		).toBeVisible();
+
+		// Check the empty state image
+
+		await expect(
+			designLibrariesPage.emptyStateContainer.locator(
+				'img[src$="/states/design_library_empty_state.svg"]'
+			)
+		).toBeVisible();
 	}
 );
 
@@ -80,79 +76,54 @@ test(
 	'Can navigate to a design library dashboard',
 	{tag: ['@LPD-79427', '@LPD-81219']},
 	async ({apiHelpers, designLibrariesPage, page}) => {
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
 
-		await test.step('Create temporary design library via headless', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: designLibraryName,
+			settings: {},
+			type: 'DesignLibrary',
 		});
 
-		await test.step('Navigate to a design library dashboard', async () => {
-			await designLibrariesPage.goto();
+		// Go to the design library
 
-			const designLibraryLink = page.getByRole('link', {
-				name: designLibraryName,
-			});
+		await designLibrariesPage.goToDesignLibrary(designLibraryName);
 
-			await expect(designLibraryLink).toBeVisible();
+		// Check the dashboard elements
 
-			await designLibraryLink.click();
-		});
+		await expectRedirectionToLibrary(designLibraryName, page);
 
-		await test.step('Check dashboard elements', async () => {
-			const breadcrumb = page.getByRole('navigation', {
-				name: 'Breadcrumb',
-			});
+		await page.getByRole('button', {name: 'More Actions'}).click();
 
-			await expect(breadcrumb).toBeVisible();
+		await expect(
+			page.getByRole('menu').getByRole('menuitem', {name: 'Settings'})
+		).toBeVisible();
 
-			const links = breadcrumb.getByRole('link');
+		await expect(
+			page
+				.getByRole('menu')
+				.getByRole('menuitem', {name: 'Connected Sites'})
+		).toBeVisible();
 
-			expect(await links.count()).toEqual(2);
+		await expect(
+			page
+				.getByRole('menu')
+				.getByRole('menuitem', {name: 'Manage Members'})
+		).toBeVisible();
 
-			expect(links.first()).toHaveText('Design Libraries');
+		await expect(
+			page.getByRole('menu').getByRole('menuitem', {name: 'Import'})
+		).toBeVisible();
 
-			expect(links.last()).toHaveText(designLibraryName);
+		await expect(
+			page.getByRole('menu').getByRole('menuitem', {name: 'Export'})
+		).toBeVisible();
 
-			const moreActionsButton = page.getByRole('button', {
-				name: 'More Actions',
-			});
-
-			await moreActionsButton.click();
-
-			await expect(page.getByRole('menu')).toBeVisible();
-
-			await expect(
-				page.getByRole('menu').getByRole('menuitem', {name: 'Settings'})
-			).toBeVisible();
-
-			await expect(
-				page
-					.getByRole('menu')
-					.getByRole('menuitem', {name: 'Connected Sites'})
-			).toBeVisible();
-
-			await expect(
-				page
-					.getByRole('menu')
-					.getByRole('menuitem', {name: 'Manage Members'})
-			).toBeVisible();
-
-			await expect(
-				page.getByRole('menu').getByRole('menuitem', {name: 'Import'})
-			).toBeVisible();
-
-			await expect(
-				page.getByRole('menu').getByRole('menuitem', {name: 'Export'})
-			).toBeVisible();
-
-			await expect(
-				page.getByRole('menu').getByRole('menuitem', {name: 'Delete'})
-			).toBeVisible();
-		});
+		await expect(
+			page.getByRole('menu').getByRole('menuitem', {name: 'Delete'})
+		).toBeVisible();
 	}
 );
 
@@ -160,83 +131,76 @@ test(
 	'Should allow managing design libraries through creation, validation, and deletion',
 	{tag: '@LPD-79452'},
 	async ({designLibrariesPage, page}) => {
+
+		// Create the design libraries
+
 		const mainDesignLibraryName = getRandomString();
 
 		const successScenarios = [
 			{
 				description: getRandomString(),
 				name: mainDesignLibraryName,
-				stepName: 'Create a design library with all fields populated',
 			},
 			{
 				name: getRandomString(),
-				stepName: 'Create a design library with only mandatory fields',
 			},
 		];
 
 		for (const scenario of successScenarios) {
-			await test.step(scenario.stepName, async () => {
-				await designLibrariesPage.goto();
+			await designLibrariesPage.goto();
 
-				await designLibrariesPage.create(scenario);
+			await designLibrariesPage.create(scenario);
 
-				await waitForAlert(
-					page,
-					`Success:${scenario.name} was created successfully.`
-				);
+			await waitForAlert(
+				page,
+				`Success:${scenario.name} was created successfully.`
+			);
 
-				await expectRedirectionToLibrary(scenario.name, page);
-			});
+			await expectRedirectionToLibrary(scenario.name, page);
 		}
 
-		await test.step('Prevent creation of design library with empty name', async () => {
-			await designLibrariesPage.goto();
+		// Check the empty name error
 
-			await designLibrariesPage.create({
-				name: '',
-			});
+		await designLibrariesPage.goto();
 
-			await expect(
-				page
-					.locator('.form-feedback-item')
-					.getByText('Error: This field is required.')
-			).toBeVisible();
+		await designLibrariesPage.create({name: ''});
 
-			await expect(
-				page.getByRole('button', {name: 'Save'})
-			).toBeDisabled();
+		await expect(
+			page
+				.locator('.form-feedback-item')
+				.getByText('Error: This field is required.')
+		).toBeVisible();
+
+		await expect(page.getByRole('button', {name: 'Save'})).toBeDisabled();
+
+		// Check the duplicate name error
+
+		await designLibrariesPage.goto();
+
+		await designLibrariesPage.create({name: mainDesignLibraryName});
+
+		await waitForAlert(page, 'Error:Please enter a unique name.', {
+			timeout: 5000,
+			type: 'danger',
 		});
 
-		await test.step('Prevent creation of duplicate design libraries and maintain modal state', async () => {
-			await designLibrariesPage.goto();
+		await expect(
+			page
+				.locator('.form-feedback-item')
+				.getByText('Error: Please enter a unique name.')
+		).toBeVisible();
 
-			await designLibrariesPage.create({
-				name: mainDesignLibraryName,
-			});
+		await expect(page.getByLabel('Name')).toHaveValue(
+			mainDesignLibraryName
+		);
 
-			await waitForAlert(page, 'Error:Please enter a unique name.', {
-				timeout: 5000,
-				type: 'danger',
-			});
+		// Delete the design libraries
 
-			await expect(
-				page
-					.locator('.form-feedback-item')
-					.getByText('Error: Please enter a unique name.')
-			).toBeVisible();
+		await designLibrariesPage.goto();
 
-			await expect(page.getByLabel('Name')).toHaveValue(
-				mainDesignLibraryName
-			);
-		});
-
-		await test.step('Delete created design libraries', async () => {
-			await designLibrariesPage.goto();
-
-			for (const {name} of successScenarios) {
-				await designLibrariesPage.delete(name);
-			}
-		});
+		for (const {name} of successScenarios) {
+			await designLibrariesPage.delete(name);
+		}
 	}
 );
 
@@ -244,74 +208,67 @@ test(
 	'Can connect and disconnect a site from a design library',
 	{tag: '@LPD-79453'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
-		const siteName = 'Liferay DXP Site';
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: designLibraryName,
+			settings: {},
+			type: 'DesignLibrary',
+		});
+
+		// Connect a site
+
+		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page
+				.getByRole('menu')
+				.getByRole('menuitem', {name: 'Connected Sites'}),
+			trigger: page.getByRole('button', {name: 'More Actions'}),
+		});
 
 		const connectedSitesDialog = page.getByRole('dialog');
+		const siteName = 'Liferay DXP Site';
 
-		await test.step('Create a new design library via headless', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
-		});
+		await connectedSitesDialog
+			.getByPlaceholder('Select a Site')
+			.fill(siteName);
 
-		await test.step('Connect a site to design library', async () => {
-			await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await page.getByRole('option', {name: siteName}).click();
 
-			const connectedSitesMenuItem = page
-				.getByRole('menu')
-				.getByRole('menuitem', {name: 'Connected Sites'});
+		await expect(
+			connectedSitesDialog.getByRole('button', {name: 'Connect'})
+		).toBeEnabled();
 
-			await page
-				.getByRole('button', {
-					name: 'More Actions',
-				})
-				.click();
+		await connectedSitesDialog
+			.getByRole('button', {name: 'Connect'})
+			.click();
 
-			await expect(page.getByRole('menu')).toBeVisible();
+		await waitForAlert(
+			page,
+			`Success:Site ${siteName} was successfully connected to the design library.`,
+			{autoClose: false}
+		);
 
-			await expect(connectedSitesMenuItem).toBeVisible();
+		// Disconnect the site
 
-			await connectedSitesMenuItem.click();
+		await expect(
+			connectedSitesDialog.getByRole('button', {name: 'Disconnect'})
+		).toBeVisible();
 
-			await connectedSitesDialog
-				.getByPlaceholder('Select a Site')
-				.fill(siteName);
+		await connectedSitesDialog
+			.getByRole('button', {name: 'Disconnect'})
+			.click();
 
-			await page.getByRole('option', {name: siteName}).click();
-
-			await expect(
-				connectedSitesDialog.getByRole('button', {name: 'Connect'})
-			).toBeEnabled();
-
-			await connectedSitesDialog
-				.getByRole('button', {name: 'Connect'})
-				.click();
-
-			await waitForAlert(
-				page,
-				`Success:Site ${siteName} was successfully connected to the design library.`,
-				{autoClose: false}
-			);
-		});
-
-		await test.step('Disconnect a site from a design library', async () => {
-			await expect(
-				connectedSitesDialog.getByRole('button', {name: 'Disconnect'})
-			).toBeVisible();
-
-			await connectedSitesDialog
-				.getByRole('button', {name: 'Disconnect'})
-				.click();
-
-			await waitForAlert(
-				page,
-				`Success:Site ${siteName} was successfully disconnected from the design library.`,
-				{autoClose: false}
-			);
-		});
+		await waitForAlert(
+			page,
+			`Success:Site ${siteName} was successfully disconnected from the design library.`,
+			{autoClose: false}
+		);
 	}
 );
 
@@ -319,14 +276,15 @@ test(
 	'Can export and import a design library from the listing row',
 	{tag: ['@LPD-79455']},
 	async ({apiHelpers, designLibrariesPage, page}) => {
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
 
-		await test.step('Create temporary design library via headless', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: designLibraryName,
+			settings: {},
+			type: 'DesignLibrary',
 		});
 
 		const openRowActions = async () => {
@@ -348,57 +306,57 @@ test(
 			await expect(breadcrumb.getByText(designLibraryName)).toBeVisible();
 		};
 
-		await test.step('Listing row ellipsis exposes Export and Import actions', async () => {
-			await designLibrariesPage.goto();
+		// Check the row actions
 
-			await openRowActions();
+		await designLibrariesPage.goto();
 
-			await expect(
-				page.getByRole('menu').getByRole('menuitem', {name: 'Export'})
-			).toBeVisible();
+		await openRowActions();
 
-			await expect(
-				page.getByRole('menu').getByRole('menuitem', {name: 'Import'})
-			).toBeVisible();
-		});
+		await expect(
+			page.getByRole('menu').getByRole('menuitem', {name: 'Export'})
+		).toBeVisible();
 
-		await test.step('Clicking Export navigates to the Export portlet scoped to the design library with a back URL', async () => {
-			await page
-				.getByRole('menu')
-				.getByRole('menuitem', {name: 'Export'})
-				.click();
+		await expect(
+			page.getByRole('menu').getByRole('menuitem', {name: 'Import'})
+		).toBeVisible();
 
-			await expect(page).toHaveURL(/asset-library-\d+/);
-			await expect(page).toHaveURL(/backURL=/);
-			await expect(page).toHaveURL(
-				/p_p_id=com_liferay_exportimport_web_portlet_ExportPortlet/
-			);
-		});
+		// Go to Export
 
-		await test.step('Export portlet breadcrumb omits Asset Libraries and includes the design library', async () => {
-			await expectCleanBreadcrumb();
-		});
+		await page
+			.getByRole('menu')
+			.getByRole('menuitem', {name: 'Export'})
+			.click();
 
-		await test.step('Clicking Import navigates to the Import portlet scoped to the design library with a back URL', async () => {
-			await designLibrariesPage.goto();
+		await expect(page).toHaveURL(/asset-library-\d+/);
+		await expect(page).toHaveURL(/backURL=/);
+		await expect(page).toHaveURL(
+			/p_p_id=com_liferay_exportimport_web_portlet_ExportPortlet/
+		);
 
-			await openRowActions();
+		// Check the Export breadcrumb
 
-			await page
-				.getByRole('menu')
-				.getByRole('menuitem', {name: 'Import'})
-				.click();
+		await expectCleanBreadcrumb();
 
-			await expect(page).toHaveURL(/asset-library-\d+/);
-			await expect(page).toHaveURL(/backURL=/);
-			await expect(page).toHaveURL(
-				/p_p_id=com_liferay_exportimport_web_portlet_ImportPortlet/
-			);
-		});
+		// Go to Import
 
-		await test.step('Import portlet breadcrumb omits Asset Libraries and includes the design library', async () => {
-			await expectCleanBreadcrumb();
-		});
+		await designLibrariesPage.goto();
+
+		await openRowActions();
+
+		await page
+			.getByRole('menu')
+			.getByRole('menuitem', {name: 'Import'})
+			.click();
+
+		await expect(page).toHaveURL(/asset-library-\d+/);
+		await expect(page).toHaveURL(/backURL=/);
+		await expect(page).toHaveURL(
+			/p_p_id=com_liferay_exportimport_web_portlet_ImportPortlet/
+		);
+
+		// Check the Import breadcrumb
+
+		await expectCleanBreadcrumb();
 	}
 );
 
@@ -406,84 +364,76 @@ test(
 	'Can view and edit a design library settings',
 	{tag: '@LPD-79533'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: designLibraryName,
+			settings: {},
+			type: 'DesignLibrary',
+		});
+
+		// Check the design library settings
+
+		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page
+				.getByRole('menu')
+				.getByRole('menuitem', {name: 'Settings'}),
+			trigger: page.getByRole('button', {name: 'More Actions'}),
+		});
+
+		const headerTitle = page.getByTestId('headerTitle');
+
+		await expect(headerTitle).toBeVisible();
+		await expect(headerTitle).toHaveText(`${designLibraryName} Settings`);
+
+		await expect(page.getByRole('textbox', {name: 'Name'})).toHaveValue(
+			designLibraryName
+		);
+
+		await expect(
+			page.getByRole('textbox', {name: 'Description'})
+		).toHaveValue('');
+
+		// Edit the design library settings
+
 		const editedDesignLibraryName = getRandomString();
+
+		await page
+			.getByRole('textbox', {name: 'Name'})
+			.fill(editedDesignLibraryName);
+
 		const editedDesignLibraryDescription = getRandomString();
 
-		await test.step('Create a new design library via headless', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
-		});
+		await page
+			.getByRole('textbox', {name: 'Description'})
+			.fill(editedDesignLibraryDescription);
 
-		await test.step('View the design library settings', async () => {
-			await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await page.getByRole('button', {name: 'Save'}).click();
 
-			const settingsMenuItem = page
-				.getByRole('menu')
-				.getByRole('menuitem', {name: 'Settings'});
+		await waitForAlert(
+			page,
+			`Success:${editedDesignLibraryName} was saved successfully.`
+		);
 
-			await page
-				.getByRole('button', {
-					name: 'More Actions',
-				})
-				.click();
+		await expect(page.getByRole('textbox', {name: 'Name'})).toHaveValue(
+			editedDesignLibraryName
+		);
 
-			await expect(page.getByRole('menu')).toBeVisible();
+		await expect(
+			page.getByRole('textbox', {name: 'Description'})
+		).toHaveValue(editedDesignLibraryDescription);
 
-			await expect(settingsMenuItem).toBeVisible();
+		// Check the accessibility
 
-			await settingsMenuItem.click();
-
-			const headerTitle = page.getByTestId('headerTitle');
-
-			await expect(headerTitle).toBeVisible();
-
-			await expect(headerTitle).toHaveText(
-				`${designLibraryName} Settings`
-			);
-
-			await expect(page.getByRole('textbox', {name: 'Name'})).toHaveValue(
-				designLibraryName
-			);
-
-			await expect(
-				page.getByRole('textbox', {name: 'Description'})
-			).toHaveValue('');
-		});
-
-		await test.step('Edit the design library settings', async () => {
-			await page
-				.getByRole('textbox', {name: 'Name'})
-				.fill(editedDesignLibraryName);
-
-			await page
-				.getByRole('textbox', {name: 'Description'})
-				.fill(editedDesignLibraryDescription);
-
-			await page.getByRole('button', {name: 'Save'}).click();
-
-			await waitForAlert(
-				page,
-				`Success:${editedDesignLibraryName} was saved successfully.`
-			);
-
-			await expect(page.getByRole('textbox', {name: 'Name'})).toHaveValue(
-				editedDesignLibraryName
-			);
-
-			await expect(
-				page.getByRole('textbox', {name: 'Description'})
-			).toHaveValue(editedDesignLibraryDescription);
-		});
-
-		await test.step('Check the accessibility for the design library settings page', async () => {
-			await checkAccessibility({
-				page,
-				selectors: ['.portlet-body'],
-			});
+		await checkAccessibility({
+			page,
+			selectors: ['.portlet-body'],
 		});
 	}
 );
@@ -492,59 +442,53 @@ test(
 	'Can open the manage members modal from a design library',
 	{tag: '@LPD-79454'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
+
+		// Create a design library
+
 		const designLibraryName = getRandomString();
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: designLibraryName,
+			settings: {},
+			type: 'DesignLibrary',
+		});
+
+		// Open the Manage Members modal
+
+		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page
+				.getByRole('menu')
+				.getByRole('menuitem', {name: 'Manage Members'}),
+			trigger: page.getByRole('button', {name: 'More Actions'}),
+		});
 
 		const manageMembersDialog = page.getByRole('dialog');
 
-		await test.step('Create a new design library via headless', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
+		await expect(
+			manageMembersDialog.getByText('Manage Members')
+		).toBeVisible();
+
+		// Check the form and members
+
+		await expect(
+			manageMembersDialog.getByRole('combobox', {
+				name: 'Add People to Collaborate',
+			})
+		).toBeVisible();
+
+		const membersList = manageMembersDialog.getByRole('list', {
+			name: 'Who Has Access',
 		});
 
-		await test.step('Open the design library actions menu', async () => {
-			await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		const ownerItem = membersList.getByRole('listitem');
 
-			await page.getByRole('button', {name: 'More Actions'}).click();
+		await expect(ownerItem).toBeVisible();
 
-			await expect(page.getByRole('menu')).toBeVisible();
-		});
-
-		await test.step('Open the manage members modal from the menu', async () => {
-			await page
-				.getByRole('menu')
-				.getByRole('menuitem', {name: 'Manage Members'})
-				.click();
-
-			await expect(manageMembersDialog).toBeVisible();
-
-			await expect(
-				manageMembersDialog.getByText('Manage Members')
-			).toBeVisible();
-		});
-
-		await test.step('Check the add people to collaborate form and member list', async () => {
-			await expect(
-				manageMembersDialog.getByRole('combobox', {
-					name: 'Add People to Collaborate',
-				})
-			).toBeVisible();
-
-			const membersList = manageMembersDialog.getByRole('list', {
-				name: 'Who Has Access',
-			});
-
-			await expect(membersList).toBeVisible();
-
-			const ownerItem = membersList.getByRole('listitem');
-
-			await expect(ownerItem).toBeVisible();
-
-			expect(ownerItem).toHaveText('Test Test(You)(Owner)', {
-				ignoreCase: true,
-			});
+		await expect(ownerItem).toHaveText('Test Test(You)(Owner)', {
+			ignoreCase: true,
 		});
 	}
 );

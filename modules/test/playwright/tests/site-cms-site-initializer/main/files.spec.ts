@@ -334,58 +334,54 @@ test(
 		const assetLibraryName = getRandomString();
 		const folderTitle = getRandomString();
 
-		let folder: {id: string};
+		// Create a Space
 
-		await test.step('Create a new Space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: assetLibraryName,
-				settings: {},
-				type: 'Space',
-			});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: assetLibraryName,
+			settings: {},
+			type: 'Space',
 		});
 
-		await test.step('Check number of existing Spaces', async () => {
-			const assetLibraries =
-				await apiHelpers.headlessAssetLibrary.getAssetLibrariesPage(
-					"type eq 'Space'"
-				);
+		// Check the number of Spaces
 
-			expect(
-				assetLibraries.length,
-				'At least 2 Spaces should exist'
-			).toBeGreaterThan(1);
-		});
-
-		await test.step('Create a folder', async () => {
-			folder = await apiHelpers.objectFolder.createObjectEntryFolder({
-				scopeKey: assetLibraryName,
-				title: folderTitle,
-			});
-		});
-
-		await test.step('Navigate into the folder', async () => {
-			await assetsPage.gotoFolder(folder.id, folderTitle);
-		});
-
-		await test.step('Create a Basic Document', async () => {
-			await assetsPage.createContent('Single File');
-		});
-
-		await test.step('Check the Space selector dialog', async () => {
-			await expect(page.getByRole('dialog')).not.toBeVisible();
-		});
-
-		await test.step('Check the Space name in the Basic Document creation page', async () => {
-			await page
-				.getByRole('heading', {name: 'New Basic Document'})
-				.waitFor();
-
-			const spaceSpan = page.locator(
-				'//span[contains(@class,"sticker")]//following-sibling::span[1]'
+		const assetLibraries =
+			await apiHelpers.headlessAssetLibrary.getAssetLibrariesPage(
+				"type eq 'Space'"
 			);
 
-			await expect(spaceSpan).toContainText(assetLibraryName);
+		expect(
+			assetLibraries.length,
+			'At least 2 Spaces should exist'
+		).toBeGreaterThan(1);
+
+		// Create a folder
+
+		const folder = await apiHelpers.objectFolder.createObjectEntryFolder({
+			scopeKey: assetLibraryName,
+			title: folderTitle,
 		});
+
+		// Go to the folder
+
+		await assetsPage.gotoFolder(folder.id, folderTitle);
+
+		// Create a Basic Document
+
+		await assetsPage.createContent('Single File');
+
+		// Check the Space selector dialog
+
+		await expect(page.getByRole('dialog')).not.toBeVisible();
+
+		// Check the Space name
+
+		await page.getByRole('heading', {name: 'New Basic Document'}).waitFor();
+
+		const spaceSpan = page.locator(
+			'//span[contains(@class,"sticker")]//following-sibling::span[1]'
+		);
+
+		await expect(spaceSpan).toContainText(assetLibraryName);
 	}
 );
 
@@ -510,52 +506,48 @@ test(
 			filter: image2,
 		});
 
-		await test.step('folders are excluded from the navigation list', async () => {
-			await expect(page.getByText(/\d+ of 2/)).toBeVisible();
-		});
+		// Check that the navigation skips the folder
 
-		await test.step('Can navigate to the next item', async () => {
-			const modalTitle = page.locator('.modal-title');
+		await expect(page.getByText(/\d+ of 2/)).toBeVisible();
 
-			await expect(modalTitle).not.toBeEmpty();
+		// Go to the next item
 
-			const initialTitle = await modalTitle.innerText();
+		const modalTitle = page.locator('.modal-title');
 
-			const otherTitle = initialTitle.includes(image1) ? image2 : image1;
+		await expect(modalTitle).not.toBeEmpty();
 
-			await assetsPage.modal.body.getByLabel('Next').click();
+		const initialTitle = await modalTitle.innerText();
 
-			await expect(modalTitle.getByText(otherTitle)).toBeVisible();
+		const otherTitle = initialTitle.includes(image1) ? image2 : image1;
 
-			await expect(page.getByText(/\d+ of 2/)).toBeVisible();
-		});
+		await assetsPage.modal.body.getByLabel('Next').click();
 
-		await test.step('Can open the info panel', async () => {
-			await page.getByLabel('Show Details').click();
-			await expect(
-				page.getByRole('tab', {name: 'Comments'})
-			).toBeInViewport();
-			await expect(page.getByText('Metadata')).toBeVisible();
-			await expect(page.getByLabel('Show Details')).toHaveClass(/active/);
-		});
+		await expect(modalTitle.getByText(otherTitle)).toBeVisible();
 
-		await test.step('Can add a comment from the comments tab', async () => {
-			await expect(page.getByLabel('Show Comments')).toHaveCount(0);
+		await expect(page.getByText(/\d+ of 2/)).toBeVisible();
 
-			await page.getByRole('tab', {name: 'Comments'}).click();
+		// Open the info panel
 
-			await expect(
-				page.getByRole('tab', {name: 'Details'})
-			).toBeVisible();
+		await page.getByLabel('Show Details').click();
+		await expect(
+			page.getByRole('tab', {name: 'Comments'})
+		).toBeInViewport();
+		await expect(page.getByText('Metadata')).toBeVisible();
+		await expect(page.getByLabel('Show Details')).toHaveClass(/active/);
 
-			const commentText = getRandomString();
-			await assetsPage.modal.body
-				.getByRole('paragraph')
-				.fill(commentText);
-			await page.getByRole('button', {name: 'Save'}).click();
+		// Add a comment from the Comments tab
 
-			await expect(page.getByText(commentText)).toBeVisible();
-		});
+		await expect(page.getByLabel('Show Comments')).toHaveCount(0);
+
+		await page.getByRole('tab', {name: 'Comments'}).click();
+
+		await expect(page.getByRole('tab', {name: 'Details'})).toBeVisible();
+
+		const commentText = getRandomString();
+		await assetsPage.modal.body.getByRole('paragraph').fill(commentText);
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		await expect(page.getByText(commentText)).toBeVisible();
 	}
 );
 
@@ -630,50 +622,48 @@ test(
 				type: 'document',
 			});
 
-			let user;
+			// Add a user to the Space
 
-			await test.step('Create an user and add to the Space', async () => {
-				user = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-				userData[user.alternateName] = {
-					name: user.givenName,
-					password: 'test',
-					surname: user.familyName,
-				};
+			userData[user.alternateName] = {
+				name: user.givenName,
+				password: 'test',
+				surname: user.familyName,
+			};
 
-				await spaceSummaryPage.goto(spaceName);
+			await spaceSummaryPage.goto(spaceName);
 
-				await spaceSummaryPage.addUserOrUserGroup(user.name, 'users');
+			await spaceSummaryPage.addUserOrUserGroup(user.name, 'users');
+
+			// Log in as the Space member
+
+			await performLogout(page);
+
+			await performLogin(page, user.alternateName);
+
+			await assetsPage.gotoFiles();
+
+			// Check the image preview
+
+			await assetsPage.changeVisualizationMode('Table');
+
+			await assetsPage.execItemAction({
+				action: 'View',
+				filter: objectEntry.title,
 			});
 
-			await test.step('Login as a space member and go to Files tab', async () => {
-				await performLogout(page);
+			await expect(page.getByRole('dialog')).toBeVisible();
 
-				await performLogin(page, user.alternateName);
+			await expect(
+				page.getByRole('link', {name: fileTitle})
+			).toBeVisible();
 
-				await assetsPage.gotoFiles();
-			});
+			const imgageSrc = await page
+				.getByRole('img', {name: fileTitle})
+				.getAttribute('src');
 
-			await test.step('Check that a space member can preview image files', async () => {
-				await assetsPage.changeVisualizationMode('Table');
-
-				await assetsPage.execItemAction({
-					action: 'View',
-					filter: objectEntry.title,
-				});
-
-				await expect(page.getByRole('dialog')).toBeVisible();
-
-				await expect(
-					page.getByRole('link', {name: fileTitle})
-				).toBeVisible();
-
-				const imgageSrc = await page
-					.getByRole('img', {name: fileTitle})
-					.getAttribute('src');
-
-				expect(imgageSrc.includes(fileTitle)).toBeTruthy();
-			});
+			expect(imgageSrc.includes(fileTitle)).toBeTruthy();
 		}
 		finally {
 			await performLogout(page);
@@ -806,17 +796,18 @@ test(
 			});
 
 		try {
-			await test.step('Open the parent folder in Gallery View', async () => {
-				await assetsPage.gotoFiles();
 
-				await page.getByRole('link', {name: parentFolderTitle}).click();
+			// Open the parent folder in Gallery View
 
-				await expect(
-					page.getByRole('combobox', {
-						name: 'Gallery View Selected',
-					})
-				).toBeVisible();
-			});
+			await assetsPage.gotoFiles();
+
+			await page.getByRole('link', {name: parentFolderTitle}).click();
+
+			await expect(
+				page.getByRole('combobox', {
+					name: 'Gallery View Selected',
+				})
+			).toBeVisible();
 
 			const folderThumbnail = assetsPage.galleryThumbnails.locator(
 				'.fds-gallery-view__thumbnail',
@@ -845,46 +836,46 @@ test(
 				)
 			);
 
-			await test.step('Highlight the folder as the drop target', async () => {
-				await folderThumbnail.dispatchEvent('dragenter', {
-					dataTransfer,
-				});
-				await folderThumbnail.dispatchEvent('dragover', {dataTransfer});
+			// Drag the file over the folder
 
-				await expect(folderThumbnail).toHaveClass(/drop-target/);
+			await folderThumbnail.dispatchEvent('dragenter', {
+				dataTransfer,
+			});
+			await folderThumbnail.dispatchEvent('dragover', {dataTransfer});
+
+			await expect(folderThumbnail).toHaveClass(/drop-target/);
+
+			// Drop the file onto the folder
+
+			await folderThumbnail.dispatchEvent('drop', {dataTransfer});
+
+			await expect(assetsPage.modal.container).toBeVisible();
+
+			await expect(assetsPage.modal.title).toContainText(
+				'Upload Multiple Files'
+			);
+
+			await expect(assetsPage.modal.body).toContainText(fileName);
+
+			// Check the file in the target folder
+
+			await assetsPage.modal.footer
+				.getByRole('button', {name: /^Upload/})
+				.click();
+
+			await waitForAlert(
+				page,
+				'1 file was successfully uploaded to Default space.'
+			);
+
+			const [document] = await getBasicDocuments({
+				apiHelpers,
+				titles: [fileName],
 			});
 
-			await test.step('Drop the file onto the folder', async () => {
-				await folderThumbnail.dispatchEvent('drop', {dataTransfer});
-
-				await expect(assetsPage.modal.container).toBeVisible();
-
-				await expect(assetsPage.modal.title).toContainText(
-					'Upload Multiple Files'
-				);
-
-				await expect(assetsPage.modal.body).toContainText(fileName);
-			});
-
-			await test.step('The uploaded file lands in the target folder', async () => {
-				await assetsPage.modal.footer
-					.getByRole('button', {name: /^Upload/})
-					.click();
-
-				await waitForAlert(
-					page,
-					'1 file was successfully uploaded to Default space.'
-				);
-
-				const [document] = await getBasicDocuments({
-					apiHelpers,
-					titles: [fileName],
-				});
-
-				expect(document.objectEntryFolderExternalReferenceCode).toBe(
-					targetFolder.externalReferenceCode
-				);
-			});
+			expect(document.objectEntryFolderExternalReferenceCode).toBe(
+				targetFolder.externalReferenceCode
+			);
 		}
 		finally {
 			for (const document of await getBasicDocuments({
@@ -971,42 +962,38 @@ test(
 			'img.preview-file-document'
 		);
 
-		await test.step('The modal opens on the first page of the PDF', async () => {
+		// Check the first page of the PDF
 
-			// The portal rasterizes the PDF asynchronously and renders "No
-			// Preview Available" until it finishes, so reload the section
-			// until the preview is served.
+		// The portal rasterizes the PDF asynchronously and renders "No
+		// Preview Available" until it finishes, so reload the section
+		// until the preview is served.
 
-			await expect(async () => {
-				await assetsPage.gotoFiles();
+		await expect(async () => {
+			await assetsPage.gotoFiles();
 
-				await assetsPage.execCardItemAction({
-					action: 'View',
-					filter: objectEntry.title,
-				});
-
-				await expect(previewImage).toHaveAttribute(
-					'src',
-					/previewFileIndex=1/,
-					{timeout: 5000}
-				);
-			}).toPass({timeout: 90000});
-
-			await expect(pageIndicator).toHaveText(/^Page 1 \/ \d+$/);
-		});
-
-		await test.step('The modal moves to the second page of the PDF', async () => {
-			await assetsPage.modal.body
-				.getByRole('button', {name: 'Page Below'})
-				.click();
+			await assetsPage.execCardItemAction({
+				action: 'View',
+				filter: objectEntry.title,
+			});
 
 			await expect(previewImage).toHaveAttribute(
 				'src',
-				/previewFileIndex=2/
+				/previewFileIndex=1/,
+				{timeout: 5000}
 			);
+		}).toPass({timeout: 90000});
 
-			await expect(pageIndicator).toHaveText(/^Page 2 \/ \d+$/);
-		});
+		await expect(pageIndicator).toHaveText(/^Page 1 \/ \d+$/);
+
+		// Go to the second page of the PDF
+
+		await assetsPage.modal.body
+			.getByRole('button', {name: 'Page Below'})
+			.click();
+
+		await expect(previewImage).toHaveAttribute('src', /previewFileIndex=2/);
+
+		await expect(pageIndicator).toHaveText(/^Page 2 \/ \d+$/);
 	}
 );
 
