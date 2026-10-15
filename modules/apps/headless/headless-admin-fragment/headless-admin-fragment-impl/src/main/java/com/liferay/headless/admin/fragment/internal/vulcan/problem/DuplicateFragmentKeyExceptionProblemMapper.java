@@ -10,8 +10,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
-import java.util.Locale;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -29,33 +27,11 @@ public class DuplicateFragmentKeyExceptionProblemMapper
 		String fragmentEntryKey =
 			duplicateFragmentEntryKeyException.getFragmentEntryKey();
 
-		return new Problem() {
-
-			@Override
-			public String getDetail(Locale locale) {
-				return _language.format(
-					locale, "a-fragment-entry-with-the-key-x-already-exists",
-					fragmentEntryKey);
-			}
-
-			@Override
-			public Status getStatus() {
-				return Status.CONFLICT;
-			}
-
-			@Override
-			public String getTitle(Locale locale) {
-				return _language.format(
-					locale, "a-fragment-entry-with-the-key-x-already-exists",
-					fragmentEntryKey);
-			}
-
-			@Override
-			public String getType() {
-				return DuplicateFragmentEntryKeyException.class.getName();
-			}
-
-		};
+		return ProblemUtil.getProblem(
+			Problem.Status.CONFLICT, duplicateFragmentEntryKeyException,
+			locale -> _language.format(
+				locale, "a-fragment-entry-with-the-key-x-already-exists",
+				fragmentEntryKey));
 	}
 
 	@Reference

@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.vulcan.problem.Problem;
 
 import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * @author Lourdes Fernández Besada
@@ -16,7 +17,8 @@ import java.util.Locale;
 public class ProblemUtil {
 
 	public static Problem getProblem(
-		Problem.Status status, Throwable throwable, String titleKey) {
+		Problem.Status status, Throwable throwable,
+		Function<Locale, String> titleFunction) {
 
 		return new Problem() {
 
@@ -25,7 +27,7 @@ public class ProblemUtil {
 				String localizedMessage = throwable.getLocalizedMessage();
 
 				if (localizedMessage == null) {
-					return LanguageUtil.get(locale, titleKey);
+					return titleFunction.apply(locale);
 				}
 
 				return localizedMessage;
@@ -38,7 +40,7 @@ public class ProblemUtil {
 
 			@Override
 			public String getTitle(Locale locale) {
-				return LanguageUtil.get(locale, titleKey);
+				return titleFunction.apply(locale);
 			}
 
 			@Override
@@ -50,6 +52,13 @@ public class ProblemUtil {
 			}
 
 		};
+	}
+
+	public static Problem getProblem(
+		Problem.Status status, Throwable throwable, String titleKey) {
+
+		return getProblem(
+			status, throwable, locale -> LanguageUtil.get(locale, titleKey));
 	}
 
 }
