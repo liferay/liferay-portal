@@ -177,6 +177,56 @@ test('can publish and delete an article', async ({
 	await expect(kbArticle).toBeHidden();
 });
 
+test(
+	'can publish an article after the editor is rebuilt on resize',
+	{tag: '@LPD-110257'},
+	async ({knowledgeBaseEditArticlePage, page, site}) => {
+		const content = getRandomString();
+		const title = getRandomString();
+
+		await page.setViewportSize({height: 1080, width: 1920});
+
+		await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
+
+		await knowledgeBaseEditArticlePage.titlePlaceholder.fill(title);
+		await knowledgeBaseEditArticlePage.contentTextBox.fill(content);
+
+		const editorName =
+			'_com_liferay_knowledge_base_web_portlet_AdminPortlet_contentEditor';
+
+		const editorId = await page.evaluate(
+			(name) => window['CKEDITOR'].instances[name].id,
+			editorName
+		);
+
+		await page.setViewportSize({height: 1080, width: 900});
+
+		await page.waitForFunction(
+			([name, id]) => {
+				const editor = window['CKEDITOR'].instances[name];
+
+				return editor && editor.id !== id && editor.status === 'ready';
+			},
+			[editorName, editorId]
+		);
+
+		await expect(knowledgeBaseEditArticlePage.contentTextBox).toHaveText(
+			content
+		);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: knowledgeBaseEditArticlePage.publishMenuItem,
+			trigger: knowledgeBaseEditArticlePage.publishButton,
+		});
+
+		await waitForAlert(
+			page,
+			`Success:${title} was successfully published.`
+		);
+	}
+);
+
 test('can delete all articles (recycle bin enabled)', async ({
 	knowledgeBaseEditArticlePage,
 	knowledgeBasePage,

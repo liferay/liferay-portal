@@ -29,7 +29,10 @@ export class KnowledgeBaseEditArticlePage {
 		this.contentTextBox = this.contentFrameLocator.getByRole('textbox');
 		this.knowledgeBasePage = new KnowledgeBasePage(page);
 		this.publishButton = page.getByRole('button', {name: 'Publish'});
-		this.publishMenuItem = page.getByRole('menuitem', {name: 'Publish'});
+		this.publishMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Publish',
+		});
 		this.scheduleButton = page.getByRole('button', {name: 'Schedule'});
 		this.scheduleDatePlaceholder =
 			page.getByPlaceholder('yyyy-MM-dd HH:mm');
