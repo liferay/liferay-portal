@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@ckeditor/ckeditor5-word-count": "49.0.0",
 		"@liferay/js-api": "0.8.0"
 	},
 	"description": "Liferay Sample Editor Config Contributor CKEditor 5 WordCount",

@@ -1,14 +1,14 @@
 {
 	"dependencies": {
-		"@ckeditor/ckeditor5-core": "46.0.3",
-		"@ckeditor/ckeditor5-email": "46.0.3",
-		"@ckeditor/ckeditor5-export-inline-styles": "46.0.3",
-		"@ckeditor/ckeditor5-html-support": "46.0.3",
-		"@ckeditor/ckeditor5-mention": "46.0.3",
-		"@ckeditor/ckeditor5-merge-fields": "46.0.3",
-		"@ckeditor/ckeditor5-table": "46.0.3",
-		"@ckeditor/ckeditor5-template": "46.0.3",
-		"@ckeditor/ckeditor5-ui": "46.0.3",
+		"@ckeditor/ckeditor5-core": "49.0.0",
+		"@ckeditor/ckeditor5-email": "49.0.0",
+		"@ckeditor/ckeditor5-export-inline-styles": "49.0.0",
+		"@ckeditor/ckeditor5-html-support": "49.0.0",
+		"@ckeditor/ckeditor5-mention": "49.0.0",
+		"@ckeditor/ckeditor5-merge-fields": "49.0.0",
+		"@ckeditor/ckeditor5-table": "49.0.0",
+		"@ckeditor/ckeditor5-template": "49.0.0",
+		"@ckeditor/ckeditor5-ui": "49.0.0",
 		"@liferay/js-api": "0.8.0"
 	},
 	"description": "Liferay Sample Editor Config Contributor CKEditor 5 Email Editing",

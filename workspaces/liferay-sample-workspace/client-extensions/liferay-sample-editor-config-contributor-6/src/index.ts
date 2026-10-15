@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Plugin} from '@ckeditor/ckeditor5-core/dist/index.js';
-import {EmailConfigurationHelper} from '@ckeditor/ckeditor5-email/dist/index.js';
-import {ExportInlineStyles} from '@ckeditor/ckeditor5-export-inline-styles/dist/index.js';
-import {EmptyBlock} from '@ckeditor/ckeditor5-html-support/dist/index.js';
-import {Mention} from '@ckeditor/ckeditor5-mention/dist/index.js';
-import {MergeFields} from '@ckeditor/ckeditor5-merge-fields/dist/index.js';
-import {Table, TableLayout} from '@ckeditor/ckeditor5-table/dist/index.js';
-import {Template} from '@ckeditor/ckeditor5-template/dist/index.js';
-import {ButtonView} from '@ckeditor/ckeditor5-ui/dist/index.js';
+import {Plugin} from '@ckeditor/ckeditor5-core';
+import {EmailConfigurationHelper} from '@ckeditor/ckeditor5-email';
+import {ExportInlineStyles} from '@ckeditor/ckeditor5-export-inline-styles';
+import {EmptyBlock} from '@ckeditor/ckeditor5-html-support';
+import {Mention} from '@ckeditor/ckeditor5-mention';
+import {MergeFields} from '@ckeditor/ckeditor5-merge-fields';
+import {Table, TableLayout} from '@ckeditor/ckeditor5-table';
+import {Template} from '@ckeditor/ckeditor5-template';
+import {ButtonView} from '@ckeditor/ckeditor5-ui';
 import {
 	EditorConfigTransformer,
 	EditorTransformer,
