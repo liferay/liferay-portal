@@ -238,7 +238,7 @@ export class AudiencesPage {
 		await expect(
 			this.page
 				.locator('.c-empty-state', {hasText: 'No Criteria Yet'})
-				.locator('img')
+				.locator('.c-empty-state-icon')
 				.first()
 		).toBeVisible();
 	}
