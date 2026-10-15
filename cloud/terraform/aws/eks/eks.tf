@@ -39,7 +39,7 @@ module "eks" {
 			most_recent=true
 		}
 		metrics-server={
-			most_recent=true
+			addon_version="v0.9.0-eksbuild.11"
 		}
 		vpc-cni={
 			before_compute=true
