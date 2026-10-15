@@ -19,23 +19,31 @@ tests:
         set:
             licensing.enabled: true
     -   asserts:
-            -   equal:
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].restartPolicy
-                    value: Always
+            -   contains:
+                    any: true
+                    content:
+                        name: liferay-license
+                        secret:
+                            items:
+                                -   key: license.xml
+                                    path: license.xml
+                            optional: true
+                            secretName: custom-entitlements
+                    path: spec.template.spec.volumes
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Runs the license sync sidecar as a native sidecar
+        it: Honors an overridden license secret name
         set:
             licensing.enabled: true
+            licensing.secretName: custom-entitlements
     -   asserts:
             -   contains:
                     any: true
                     content:
-                        mountPath: /liferay-init-scripts/deploy-sync.sh
-                        name: liferay-init-scripts-default
-                        subPath: deploy-sync.sh
+                        mountPath: /liferay-init-scripts
+                        name: liferay-deploy-sync
                     path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].volumeMounts
             -   contains:
                     any: true
@@ -61,41 +69,42 @@ tests:
             -   contains:
                     any: true
                     content:
-                        name: liferay-license
+                        name: liferay-deploy-sync
                         secret:
-                            items:
-                                -   key: license.xml
-                                    path: license.xml
                             optional: true
-                            secretName: liferay-default-entitlements
+                            secretName: liferay-default-deploy-sync
                     path: spec.template.spec.volumes
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Projects the operator entitlements license as an optional volume
+        it: Mounts the operator deploy sync secret as an optional volume
         set:
             licensing.enabled: true
     -   asserts:
-            -   contains:
+            -   notContains:
                     any: true
                     content:
-                        name: liferay-license
-                        secret:
-                            items:
-                                -   key: license.xml
-                                    path: license.xml
-                            optional: true
-                            secretName: custom-entitlements
+                        name: liferay-deploy-sync
                     path: spec.template.spec.volumes
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Honors an overridden license secret name
+        it: Omits the deploy sync volume when the license is disabled
+    -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        name: liferay-license-sync
+                    path: spec.template.spec.initContainers
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Omits the license sync sidecar when the license is disabled
         set:
-            licensing.enabled: true
-            licensing.secretName: custom-entitlements
+            licensing.enabled: false
     -   asserts:
             -   notContains:
                     any: true
@@ -123,23 +132,32 @@ tests:
             licensing.enabled: true
             licensing.syncInterval: 120
     -   asserts:
-            -   notContains:
+            -   contains:
                     any: true
                     content:
-                        name: liferay-license-sync
-                    path: spec.template.spec.initContainers
+                        name: liferay-license
+                        secret:
+                            items:
+                                -   key: license.xml
+                                    path: license.xml
+                            optional: true
+                            secretName: liferay-default-entitlements
+                    path: spec.template.spec.volumes
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Omits the license sync sidecar when the license is disabled
+        it: Projects the operator entitlements license as an optional volume
         set:
-            licensing.enabled: false
+            licensing.enabled: true
     -   asserts:
-            -   isNotEmpty:
-                    path: data['deploy-sync.sh']
+            -   equal:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].restartPolicy
+                    value: Always
         documentSelector:
-            path: metadata.name
+            path: kind
             skipEmptyTemplates: true
-            value: liferay-init-scripts-default
-        it: Publishes the deploy sync script in the init scripts ConfigMap
+            value: StatefulSet
+        it: Runs the license sync sidecar as a native sidecar
+        set:
+            licensing.enabled: true

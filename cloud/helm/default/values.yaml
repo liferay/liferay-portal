@@ -84,9 +84,8 @@ customInitContainers:
                         seccompProfile:
                             type: RuntimeDefault
                     volumeMounts:
-                        -   mountPath: /liferay-init-scripts/deploy-sync.sh
-                            name: {{ .licensing.initScriptsVolumeName }}
-                            subPath: deploy-sync.sh
+                        -   mountPath: /liferay-init-scripts
+                            name: liferay-deploy-sync
                         -   mountPath: /secret
                             name: liferay-license
                         -   mountPath: /opt/liferay
@@ -297,9 +296,8 @@ customInitContainers:
                         seccompProfile:
                             type: RuntimeDefault
                     volumeMounts:
-                        -   mountPath: /liferay-init-scripts/deploy-sync.sh
-                            name: {{ .marketplace.initScriptsVolumeName }}
-                            subPath: deploy-sync.sh
+                        -   mountPath: /liferay-init-scripts
+                            name: liferay-deploy-sync
                         -   mountPath: /marketplace
                             name: liferay-marketplace
                             readOnly: true
@@ -395,7 +393,6 @@ licensing:
     activationCodeSecretName: ""
     dxpVersion: ""
     enabled: false
-    initScriptsVolumeName: liferay-init-scripts-default
     offline: false
     offlineActivationBundle: ""
     onlineActivationWorkflow:
@@ -425,7 +422,6 @@ marketplace:
         volumeAttributes: {}
         volumeHandle: ""
     enabled: false
-    initScriptsVolumeName: liferay-init-scripts-default
     size: 10Gi
     syncInterval: 600
 nameOverride: ""

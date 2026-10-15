@@ -4,6 +4,8 @@
     {{- if eq .name "http" -}}{{- $backendPort = .port -}}{{- end -}}
 {{- end -}}
 {{- $suffix := ternary "" (printf "-%s" .name) (eq .name "") }}
+{{- $deploySyncSecretName := printf "%s-deploy-sync" (include "liferay.name" .root) }}
+{{- $deploySyncVolumeName := "liferay-deploy-sync" }}
 {{- $licensing := .statefulset.licensing | default dict }}
 {{- $licenseSecretName := $licensing.secretName | default (printf "%s-entitlements" (include "liferay.name" .root)) }}
 {{- $licenseVolumeName := "liferay-license" }}
@@ -185,6 +187,7 @@ spec:
                 {{- toYaml $v | nindent 16 }}
                 {{- end }}
                 {{- if $licensing.enabled }}
+                {{- list (dict "name" $deploySyncVolumeName "secret" (dict "optional" true "secretName" $deploySyncSecretName)) | toYaml | nindent 16 }}
                 {{- list (dict "name" $licenseVolumeName "secret" (dict "items" (list (dict "key" "license.xml" "path" "license.xml")) "optional" true "secretName" $licenseSecretName)) | toYaml | nindent 16 }}
                 {{- end }}
                 {{- if $marketplace.enabled }}

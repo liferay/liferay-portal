@@ -13,11 +13,22 @@ function main {
 
 	_log_json "Watching \"${source}\" every ${interval}s. Syncing to \"${dest}\" on content change."
 
+	local script_hash
+
+	script_hash=$(sha256sum "${0}" | awk '{print $1}')
+
 	while true
 	do
 		_sync "${dest}" "${marker}" "${pattern}" "${source}"
 
 		sleep "${interval}"
+
+		if [ "$(sha256sum "${0}" | awk '{print $1}')" != "${script_hash}" ]
+		then
+			_log_json "Content of \"${0}\" was changed. Restarting."
+
+			exec bash "${0}"
+		fi
 	done
 }
 

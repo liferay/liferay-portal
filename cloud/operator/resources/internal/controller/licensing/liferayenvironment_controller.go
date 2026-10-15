@@ -9,6 +9,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	_ "embed"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -58,6 +59,7 @@ const (
 	conditionProvisioningGracePeriodExpired  = "ProvisioningGracePeriodExpired"
 	conditionProvisioningReachable           = "ProvisioningReachable"
 	conditionReplicasCountValid              = "ReplicasCountValid"
+	deploySyncSecretSuffix                   = "-deploy-sync"
 	entitlementsSecretSuffix                 = "-entitlements"
 	environmentLabel                         = "licensing.liferay.com/environment"
 	expirationGracePeriodReplicaCeiling      = 1
@@ -85,6 +87,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		context, request.NamespacedName, liferayEnvironment,
 	); error != nil {
 		return controllerruntime.Result{}, client.IgnoreNotFound(error)
+	}
+
+	if error := liferayEnvironmentReconciler.ensureDeploySyncSecret(
+		context, liferayEnvironment,
+	); error != nil {
+		return controllerruntime.Result{}, error
 	}
 
 	meta.RemoveStatusCondition(
@@ -1040,6 +1048,16 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enqueueScaleTa
 	return requests
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureDeploySyncSecret(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) error {
+	return liferayEnvironmentReconciler.ensureOwnedSecret(
+		context, map[string][]byte{"deploy-sync.sh": deploySyncScript}, liferayEnvironment,
+		liferayEnvironment.Name+deploySyncSecretSuffix,
+	)
+}
+
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
@@ -1835,6 +1853,8 @@ var (
 		Kind:    "CustomResourceDefinition",
 		Version: "v1",
 	}
+	//go:embed deploy-sync.sh
+	deploySyncScript             []byte
 	scaledObjectGroupVersionKind = schema.GroupVersionKind{
 		Group:   "keda.sh",
 		Kind:    "ScaledObject",
