@@ -275,7 +275,6 @@ const TranslateFieldEditor = ({
 								// LPS-139363
 
 								editor?.setData?.(content, {
-									internal: true,
 									noSnapshot: true,
 								});
 							}}
