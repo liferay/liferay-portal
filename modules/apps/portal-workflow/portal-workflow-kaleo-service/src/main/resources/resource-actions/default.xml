@@ -3,6 +3,23 @@
 
 <resource-action-mapping>
 	<model-resource>
+		<model-name>com.liferay.portal.workflow</model-name>
+		<portlet-ref>
+			<portlet-name>com_liferay_portal_workflow_web_internal_portlet_ControlPanelWorkflowInstancePortlet</portlet-name>
+		</portlet-ref>
+		<root>true</root>
+		<permissions>
+			<supports>
+				<action-key>START_WORKFLOW_INSTANCE</action-key>
+			</supports>
+			<site-member-defaults />
+			<guest-defaults />
+			<guest-unsupported>
+				<action-key>START_WORKFLOW_INSTANCE</action-key>
+			</guest-unsupported>
+		</permissions>
+	</model-resource>
+	<model-resource>
 		<model-name>com.liferay.portal.workflow.kaleo.designer</model-name>
 		<portlet-ref>
 			<portlet-name>com_liferay_portal_workflow_kaleo_designer_web_portlet_KaleoDesignerPortlet</portlet-name>
