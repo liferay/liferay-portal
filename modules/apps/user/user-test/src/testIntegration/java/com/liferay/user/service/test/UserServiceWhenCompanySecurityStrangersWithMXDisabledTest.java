@@ -54,6 +54,8 @@ public class UserServiceWhenCompanySecurityStrangersWithMXDisabledTest {
 		_safeCloseable = PrefsPropsTestUtil.swapWithSafeCloseable(
 			TestPropsValues.getCompanyId(),
 			PropsKeys.COMPANY_SECURITY_STRANGERS_WITH_MX,
+			Boolean.FALSE.toString(),
+			PropsKeys.COMPANY_SECURITY_UPDATE_PASSWORD_REQUIRED,
 			Boolean.FALSE.toString());
 	}
 

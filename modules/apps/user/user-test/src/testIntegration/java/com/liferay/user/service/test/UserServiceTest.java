@@ -7,10 +7,13 @@ package com.liferay.user.service.test;
 
 import com.liferay.announcements.kernel.model.AnnouncementsDelivery;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.EmailAddress;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Organization;
@@ -26,6 +29,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -39,12 +43,15 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
+import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
@@ -334,6 +341,70 @@ public class UserServiceTest {
 	}
 
 	@Test
+	public void testUpdateCredentialsWithCurrentPassword() throws Exception {
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()),
+			password);
+
+		_userLocalService.updateEmailAddressVerified(user.getUserId(), true);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			String emailAddress =
+				RandomTestUtil.randomString() + "@liferay.com";
+
+			Assert.assertThrows(
+				UserPasswordException.MustMatchCurrentPassword.class,
+				() -> _userService.updateEmailAddress(
+					user.getUserId(), RandomTestUtil.randomString(),
+					emailAddress, emailAddress, new ServiceContext()));
+
+			_userService.updateEmailAddress(
+				user.getUserId(), password, emailAddress, emailAddress,
+				new ServiceContext());
+
+			String newPassword = RandomTestUtil.randomString();
+
+			Assert.assertThrows(
+				UserPasswordException.MustMatchCurrentPassword.class,
+				() -> _updateUser(
+					newPassword, RandomTestUtil.randomString(),
+					user.getUserId()));
+
+			_updateUser(newPassword, password, user.getUserId());
+
+			_updateUser(null, null, user.getUserId());
+		}
+
+		_userLocalService.updateEmailAddressVerified(user.getUserId(), false);
+
+		try (SafeCloseable safeCloseable =
+				PrefsPropsTestUtil.swapWithSafeCloseable(
+					TestPropsValues.getCompanyId(),
+					PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY,
+					Boolean.TRUE.toString());
+			ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			String emailAddress =
+				RandomTestUtil.randomString() + "@liferay.com";
+
+			_userService.updateEmailAddress(
+				user.getUserId(), null, emailAddress, emailAddress,
+				new ServiceContext());
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				TestPropsValues.getUser())) {
+
+			_updateUser(RandomTestUtil.randomString(), null, user.getUserId());
+		}
+	}
+
+	@Test
 	public void testUpdateOrganizationsWithoutPermission() throws Exception {
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -371,6 +442,34 @@ public class UserServiceTest {
 						" must have MANAGE_USERS permission"));
 		}
 	}
+
+	private User _updateUser(
+			String newPassword, String oldPassword, long userId)
+		throws Exception {
+
+		User user = _userLocalService.getUser(userId);
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+		Contact contact = user.getContact();
+
+		calendar.setTime(contact.getBirthday());
+
+		return _userService.updateUser(
+			user.getUserId(), oldPassword, newPassword, newPassword, false,
+			user.getReminderQueryQuestion(), user.getReminderQueryAnswer(),
+			user.getScreenName(), user.getEmailAddress(), user.getLanguageId(),
+			user.getTimeZoneId(), user.getGreeting(), user.getComments(),
+			user.getFirstName(), user.getMiddleName(), user.getLastName(),
+			contact.getPrefixListTypeId(), contact.getSuffixListTypeId(),
+			contact.isMale(), calendar.get(Calendar.MONTH),
+			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
+			contact.getSmsSn(), contact.getFacebookSn(), contact.getJabberSn(),
+			contact.getSkypeSn(), contact.getTwitterSn(), user.getJobTitle(),
+			null, null, null, null, null, new ServiceContext());
+	}
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private OrganizationLocalService _organizationLocalService;
