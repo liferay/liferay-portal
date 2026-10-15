@@ -7,29 +7,29 @@ import {render} from '@testing-library/react';
 import React from 'react';
 
 import ContentSection from '../../../../../../src/main/resources/META-INF/resources/revamp/js/components/forms/content_selector/ContentSection';
-import {PreviewPortletDataHandlerSection} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/types/portletDataHandler';
+import {PortletDataHandlerSection} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/types/portletDataHandler';
 import {SECTION_KEY_CONTENT} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/utils/contentSelection';
 
-function getPreviewPortletDataHandlerSection(
-	name: string,
+function getPortletDataHandlerSection(
+	key: string,
 	counts: {additionCount?: number; deletionCount?: number} = {}
-): PreviewPortletDataHandlerSection {
+): PortletDataHandlerSection {
 	return {
 		...counts,
-		label: name,
-		name,
-		previewPortletDataHandlers: [{label: 'Handler', name: 'handler'}],
+		key,
+		label: key,
+		portletDataHandlers: [{label: 'Handler', name: 'handler'}],
 	};
 }
 
-const previewPortletDataHandlerSection: PreviewPortletDataHandlerSection = {
+const portletDataHandlerSection: PortletDataHandlerSection = {
+	key: SECTION_KEY_CONTENT,
 	label: SECTION_KEY_CONTENT,
-	name: SECTION_KEY_CONTENT,
-	previewPortletDataHandlers: [
+	portletDataHandlers: [
 		{
 			label: 'Handler',
 			name: 'handler',
-			previewPortletDataHandlerControls: [
+			portletDataHandlerControls: [
 				{label: 'Child 1', name: 'child1', type: 'Boolean'},
 				{label: 'Child 2', name: 'child2', type: 'Boolean'},
 			],
@@ -38,11 +38,11 @@ const previewPortletDataHandlerSection: PreviewPortletDataHandlerSection = {
 };
 
 describe('ContentSection', () => {
-	it('renders a compact scrollable body for sections in COMPACT_SECTION_NAMES', () => {
+	it('renders a compact scrollable body for sections in SECTION_KEYS_COMPACT', () => {
 		const {container} = render(
 			<ContentSection
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={getPreviewPortletDataHandlerSection(
+				portletDataHandlerSection={getPortletDataHandlerSection(
 					'objects'
 				)}
 				sectionSelection={undefined}
@@ -54,11 +54,11 @@ describe('ContentSection', () => {
 		).not.toBeNull();
 	});
 
-	it('renders a regular body for sections not in COMPACT_SECTION_NAMES', () => {
+	it('renders a regular body for sections not in SECTION_KEYS_COMPACT', () => {
 		const {container} = render(
 			<ContentSection
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={getPreviewPortletDataHandlerSection(
+				portletDataHandlerSection={getPortletDataHandlerSection(
 					'web-content'
 				)}
 				sectionSelection={undefined}
@@ -72,7 +72,7 @@ describe('ContentSection', () => {
 		const {queryByText} = render(
 			<ContentSection
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={getPreviewPortletDataHandlerSection(
+				portletDataHandlerSection={getPortletDataHandlerSection(
 					'web-content',
 					{
 						additionCount: 1,
@@ -94,7 +94,7 @@ describe('ContentSection', () => {
 		const {queryByText} = render(
 			<ContentSection
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={getPreviewPortletDataHandlerSection(
+				portletDataHandlerSection={getPortletDataHandlerSection(
 					'web-content',
 					{additionCount: 1, deletionCount: 1}
 				)}
@@ -110,10 +110,10 @@ describe('ContentSection', () => {
 		const {queryByText} = render(
 			<ContentSection
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={{
+				portletDataHandlerSection={{
+					key: SECTION_KEY_CONTENT,
 					label: SECTION_KEY_CONTENT,
-					name: SECTION_KEY_CONTENT,
-					previewPortletDataHandlers: [
+					portletDataHandlers: [
 						{
 							additionCount: 2,
 							deletionCount: 1,
@@ -136,9 +136,7 @@ describe('ContentSection', () => {
 			<ContentSection
 				commentsAndRatingsEnabled
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={
-					previewPortletDataHandlerSection
-				}
+				portletDataHandlerSection={portletDataHandlerSection}
 				sectionSelection={undefined}
 			/>
 		);
@@ -151,9 +149,7 @@ describe('ContentSection', () => {
 			<ContentSection
 				commentsAndRatingsEnabled
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={
-					previewPortletDataHandlerSection
-				}
+				portletDataHandlerSection={portletDataHandlerSection}
 				sectionSelection={{handler: {child1: true, child2: true}}}
 			/>
 		);
@@ -166,9 +162,7 @@ describe('ContentSection', () => {
 			<ContentSection
 				commentsAndRatingsEnabled
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={
-					previewPortletDataHandlerSection
-				}
+				portletDataHandlerSection={portletDataHandlerSection}
 				sectionSelection={{handler: {child1: true}}}
 			/>
 		);
@@ -181,9 +175,7 @@ describe('ContentSection', () => {
 			<ContentSection
 				commentsAndRatingsEnabled={false}
 				onChange={jest.fn()}
-				previewPortletDataHandlerSection={
-					previewPortletDataHandlerSection
-				}
+				portletDataHandlerSection={portletDataHandlerSection}
 				sectionSelection={{handler: {child1: true, child2: true}}}
 			/>
 		);

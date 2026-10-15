@@ -4,10 +4,15 @@
  */
 
 import {Preview} from '../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
-import {mockPreviewPortletDataHandlerSections} from './mockPortletDataHandlerSections';
+import {
+	mockPortletDataHandlerSections,
+	toMockPortletDataHandlers,
+} from './mockPortletDataHandlerSections';
 
 export const mockPreview: Preview = {
 	additionCount: 42,
 	deletionCount: 5,
-	previewPortletDataHandlerSections: mockPreviewPortletDataHandlerSections,
+	portletDataHandlers: toMockPortletDataHandlers(
+		mockPortletDataHandlerSections
+	),
 };

@@ -17,7 +17,7 @@ const baseImportPreview: ImportPreview = {
 	exportDate: '2026-05-01T00:00:00Z',
 	fileName: 'site.lar',
 	fileSize: 1024,
-	previewPortletDataHandlerSections: [],
+	portletDataHandlers: [],
 };
 
 const valueOf = (label: string) =>

@@ -17,16 +17,15 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import {NewPublish} from '../../../../../src/main/resources/META-INF/resources/revamp/js/pages/publish/NewPublish';
-import {ScheduledPublishProcess} from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportProcess';
+import {
+	PublishProcessRequest,
+	ScheduledPublishProcess,
+} from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportProcess';
 import {
 	toDateTimeParts,
 	toWallClockDateTime,
 } from '../../../../../src/main/resources/META-INF/resources/revamp/js/utils/dateTime';
 import {mockPreview} from '../../mocks/mockPreview';
-
-jest.mock('staging-taglib', () => ({
-	PagesTree: require('../../mocks/MockPagesTree').MockPagesTree,
-}));
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -49,17 +48,24 @@ const FUTURE_DISPLAY_DATE = toDisplayDate(FUTURE_DATE);
 
 const FUTURE_DISPLAY_DATE_TIME = `${FUTURE_DISPLAY_DATE} 03:30 PM`;
 
-const SCHEDULED_PUBLISH_PROCESS: ScheduledPublishProcess = {
+const PUBLISH_PROCESS_REQUEST: PublishProcessRequest = {
 	cronExpression: '0 30 9 ? * MON/1 *',
+	dateRangeType: 'FROM_LAST_PUBLISH_DATE',
+	deletions: true,
+	name: 'Weekly Content Sync',
+	permissions: false,
+	portletDataHandlers: [
+		{
+			name: 'PORTLET_DATA_com_liferay_journal_web_portlet_JournalPortlet',
+		},
+	],
+	timeZoneId: 'UTC',
+};
+
+const SCHEDULED_PUBLISH_PROCESS: ScheduledPublishProcess = {
 	id: 1234,
 	name: 'Weekly Content Sync',
-	publishParameters: {
-		DELETIONS: ['true'],
-		PERMISSIONS: ['false'],
-		PORTLET_DATA_com_liferay_journal_web_portlet_JournalPortlet: ['true'],
-		range: ['fromLastPublishDate'],
-		timeZoneId: ['UTC'],
-	},
+	publishProcessRequest: PUBLISH_PROCESS_REQUEST,
 	scheduleStartDate: FUTURE_DATE.toISOString(),
 };
 
@@ -184,7 +190,7 @@ describe('NewPublish', () => {
 		expect(body.deletions).toBe(false);
 		expect(body.name).toBe('My Publication');
 		expect(body.permissions).toBe(false);
-		expect(body.requestPortletDataHandlers.length).toBeGreaterThan(0);
+		expect(body.portletDataHandlers.length).toBeGreaterThan(0);
 
 		expect(Liferay.Util.navigate).toHaveBeenCalledWith(
 			DEFAULT_PROPS.processesBackURL
@@ -614,7 +620,10 @@ describe('NewPublish', () => {
 		mockAPIRoutes({
 			scheduledPublishProcess: {
 				...SCHEDULED_PUBLISH_PROCESS,
-				cronExpression: `0 ${minute} ${hour} ${day} ${month} ? ${year}`,
+				publishProcessRequest: {
+					...PUBLISH_PROCESS_REQUEST,
+					cronExpression: `0 ${minute} ${hour} ${day} ${month} ? ${year}`,
+				},
 				scheduleEndDate,
 			},
 		});
@@ -672,21 +681,12 @@ describe('NewPublish', () => {
 		mockAPIRoutes({
 			scheduledPublishProcess: {
 				...SCHEDULED_PUBLISH_PROCESS,
-				publishParameters: {
-					...SCHEDULED_PUBLISH_PROCESS.publishParameters,
-					endDateAmPm: ['0'],
-					endDateDay: ['1'],
-					endDateHour: ['9'],
-					endDateMinute: ['30'],
-					endDateMonth: ['8'],
-					endDateYear: ['2026'],
-					range: ['dateRange'],
-					startDateAmPm: ['1'],
-					startDateDay: ['22'],
-					startDateHour: ['3'],
-					startDateMinute: ['5'],
-					startDateMonth: ['7'],
-					startDateYear: ['2026'],
+				publishProcessRequest: {
+					...PUBLISH_PROCESS_REQUEST,
+					dateRangeType: 'DATE_RANGE',
+					endDate: '2026-09-01T07:30:00Z',
+					name: SCHEDULED_PUBLISH_PROCESS.name!,
+					startDate: '2026-08-22T13:05:00Z',
 				},
 			},
 		});
@@ -744,7 +744,10 @@ describe('NewPublish', () => {
 		mockAPIRoutes({
 			scheduledPublishProcess: {
 				...SCHEDULED_PUBLISH_PROCESS,
-				cronExpression: '0 0 0 ? * MON,FRI *',
+				publishProcessRequest: {
+					...PUBLISH_PROCESS_REQUEST,
+					cronExpression: '0 0 0 ? * MON,FRI *',
+				},
 				scheduleStartDate: midnight.toISOString(),
 			},
 		});
@@ -778,7 +781,10 @@ describe('NewPublish', () => {
 		mockAPIRoutes({
 			scheduledPublishProcess: {
 				...SCHEDULED_PUBLISH_PROCESS,
-				cronExpression: '0 0 0 ? * MON,FRI *',
+				publishProcessRequest: {
+					...PUBLISH_PROCESS_REQUEST,
+					cronExpression: '0 0 0 ? * MON,FRI *',
+				},
 				scheduleStartDate: FUTURE_DATE.toISOString(),
 			},
 		});
@@ -812,7 +818,10 @@ describe('NewPublish', () => {
 		mockAPIRoutes({
 			scheduledPublishProcess: {
 				...SCHEDULED_PUBLISH_PROCESS,
-				cronExpression: '0 0 0 ? * MON,FRI *',
+				publishProcessRequest: {
+					...PUBLISH_PROCESS_REQUEST,
+					cronExpression: '0 0 0 ? * MON,FRI *',
+				},
 				scheduleStartDate: FUTURE_DATE.toISOString(),
 			},
 		});
@@ -837,7 +846,10 @@ describe('NewPublish', () => {
 		mockAPIRoutes({
 			scheduledPublishProcess: {
 				...SCHEDULED_PUBLISH_PROCESS,
-				cronExpression: '0 0 0 ? * MON,FRI *',
+				publishProcessRequest: {
+					...PUBLISH_PROCESS_REQUEST,
+					cronExpression: '0 0 0 ? * MON,FRI *',
+				},
 				scheduleStartDate: FUTURE_DATE.toISOString(),
 			},
 		});

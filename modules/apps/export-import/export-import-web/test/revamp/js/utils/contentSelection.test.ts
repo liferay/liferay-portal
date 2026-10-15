@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {PreviewPortletDataHandlerSection} from '../../../../src/main/resources/META-INF/resources/revamp/js/types/portletDataHandler';
+import {PortletDataHandlerSection} from '../../../../src/main/resources/META-INF/resources/revamp/js/types/portletDataHandler';
 import {
-	LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
-	PRIVATE_PAGES_CONTROL_NAME,
-	PUBLIC_PAGES_CONTROL_NAME,
-	SECTION_KEY_SITE_BUILDER,
+	CHOICE_NAME_PRIVATE_PAGES,
+	CHOICE_NAME_PUBLIC_PAGES,
+	CONTROL_NAME_VISIBILITY,
+	PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS,
 	getLayoutSetCount,
 	getSelectedDeletionCount,
 	getSelectedItemsCount,
 	isPrivateLayoutSelected,
+	toPortletDataHandlerSections,
 	withSelectedLayoutSetCount,
 } from '../../../../src/main/resources/META-INF/resources/revamp/js/utils/contentSelection';
 
@@ -26,37 +27,37 @@ function mockLayoutSetSections({
 	privateDeletionCount?: number;
 	publicAdditionCount?: number;
 	publicDeletionCount?: number;
-} = {}): PreviewPortletDataHandlerSection[] {
+} = {}): PortletDataHandlerSection[] {
 	return [
 		{
 			additionCount: publicAdditionCount,
 			deletionCount: publicDeletionCount,
+			key: 'category.site_administration.build',
 			label: 'Site Builder',
-			name: SECTION_KEY_SITE_BUILDER,
-			previewPortletDataHandlers: [
+			portletDataHandlers: [
 				{
 					additionCount: publicAdditionCount,
 					deletionCount: publicDeletionCount,
 					label: 'Static Pages',
-					name: LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
-					previewPortletDataHandlerControls: [
+					name: PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS,
+					portletDataHandlerControls: [
 						{
 							choices: [
 								{
 									additionCount: publicAdditionCount,
 									deletionCount: publicDeletionCount,
 									label: 'Public Pages',
-									name: PUBLIC_PAGES_CONTROL_NAME,
+									name: CHOICE_NAME_PUBLIC_PAGES,
 								},
 								{
 									additionCount: privateAdditionCount,
 									deletionCount: privateDeletionCount,
 									label: 'Private Pages',
-									name: PRIVATE_PAGES_CONTROL_NAME,
+									name: CHOICE_NAME_PRIVATE_PAGES,
 								},
 							],
-							label: 'Static Pages',
-							name: 'layoutSet',
+							label: 'Visibility',
+							name: CONTROL_NAME_VISIBILITY,
 							type: 'Choice',
 						},
 					],
@@ -67,48 +68,40 @@ function mockLayoutSetSections({
 }
 
 const privateSelection = {
-	[SECTION_KEY_SITE_BUILDER]: {
-		[LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY]: {privateLayout: true},
+	'category.site_administration.build': {
+		[PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS]: {privateLayout: true},
 	},
 };
 
 const publicSelection = {
-	[SECTION_KEY_SITE_BUILDER]: {
-		[LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY]: {privateLayout: false},
+	'category.site_administration.build': {
+		[PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS]: {privateLayout: false},
 	},
 };
 
 describe('contentSelection layout set counts', () => {
 	it('reads the public and private addition counts from the choices', () => {
-		const previewPortletDataHandlerSections = mockLayoutSetSections();
+		const portletDataHandlerSections = mockLayoutSetSections();
 
-		expect(
-			getLayoutSetCount(previewPortletDataHandlerSections, false)
-		).toBe(2);
-		expect(getLayoutSetCount(previewPortletDataHandlerSections, true)).toBe(
-			5
-		);
+		expect(getLayoutSetCount(portletDataHandlerSections, false)).toBe(2);
+		expect(getLayoutSetCount(portletDataHandlerSections, true)).toBe(5);
 	});
 
 	it('reads the public and private deletion counts from the choices', () => {
-		const previewPortletDataHandlerSections = mockLayoutSetSections({
+		const portletDataHandlerSections = mockLayoutSetSections({
 			privateDeletionCount: 3,
 			publicDeletionCount: 1,
 		});
 
 		expect(
 			getLayoutSetCount(
-				previewPortletDataHandlerSections,
+				portletDataHandlerSections,
 				false,
 				'deletionCount'
 			)
 		).toBe(1);
 		expect(
-			getLayoutSetCount(
-				previewPortletDataHandlerSections,
-				true,
-				'deletionCount'
-			)
+			getLayoutSetCount(portletDataHandlerSections, true, 'deletionCount')
 		).toBe(3);
 	});
 
@@ -119,7 +112,7 @@ describe('contentSelection layout set counts', () => {
 	});
 
 	it('keeps the public counts in the totals when the public set is selected', () => {
-		const previewPortletDataHandlerSections = mockLayoutSetSections({
+		const portletDataHandlerSections = mockLayoutSetSections({
 			privateDeletionCount: 3,
 			publicDeletionCount: 1,
 		});
@@ -127,21 +120,21 @@ describe('contentSelection layout set counts', () => {
 		expect(
 			getSelectedItemsCount(
 				10,
-				previewPortletDataHandlerSections,
+				portletDataHandlerSections,
 				publicSelection
 			)
 		).toBe(10);
 		expect(
 			getSelectedDeletionCount(
 				4,
-				previewPortletDataHandlerSections,
+				portletDataHandlerSections,
 				publicSelection
 			)
 		).toBe(4);
 	});
 
 	it('swaps in the private counts in the totals when private is selected', () => {
-		const previewPortletDataHandlerSections = mockLayoutSetSections({
+		const portletDataHandlerSections = mockLayoutSetSections({
 			privateDeletionCount: 3,
 			publicDeletionCount: 1,
 		});
@@ -149,53 +142,100 @@ describe('contentSelection layout set counts', () => {
 		expect(
 			getSelectedItemsCount(
 				10,
-				previewPortletDataHandlerSections,
+				portletDataHandlerSections,
 				privateSelection
 			)
 		).toBe(13);
 		expect(
 			getSelectedDeletionCount(
 				4,
-				previewPortletDataHandlerSections,
+				portletDataHandlerSections,
 				privateSelection
 			)
 		).toBe(6);
 	});
 
 	it('leaves the sections untouched when the public set is selected', () => {
-		const previewPortletDataHandlerSections = mockLayoutSetSections({
+		const portletDataHandlerSections = mockLayoutSetSections({
 			privateDeletionCount: 3,
 			publicDeletionCount: 1,
 		});
 
 		expect(
 			withSelectedLayoutSetCount(
-				previewPortletDataHandlerSections,
+				portletDataHandlerSections,
 				publicSelection
 			)
-		).toBe(previewPortletDataHandlerSections);
+		).toBe(portletDataHandlerSections);
 	});
 
 	it('adjusts the section and handler counts when private is selected', () => {
-		const previewPortletDataHandlerSections = mockLayoutSetSections({
+		const portletDataHandlerSections = mockLayoutSetSections({
 			privateDeletionCount: 3,
 			publicDeletionCount: 1,
 		});
 
-		const [previewPortletDataHandlerSection] = withSelectedLayoutSetCount(
-			previewPortletDataHandlerSections,
+		const [portletDataHandlerSection] = withSelectedLayoutSetCount(
+			portletDataHandlerSections,
 			privateSelection
 		);
 
-		expect(previewPortletDataHandlerSection.additionCount).toBe(5);
-		expect(previewPortletDataHandlerSection.deletionCount).toBe(3);
+		expect(portletDataHandlerSection.additionCount).toBe(5);
+		expect(portletDataHandlerSection.deletionCount).toBe(3);
 
-		const previewPortletDataHandler =
-			previewPortletDataHandlerSection.previewPortletDataHandlers.find(
-				({name}) => name === LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+		const portletDataHandler =
+			portletDataHandlerSection.portletDataHandlers.find(
+				({name}) => name === PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS
 			);
 
-		expect(previewPortletDataHandler?.additionCount).toBe(5);
-		expect(previewPortletDataHandler?.deletionCount).toBe(3);
+		expect(portletDataHandler?.additionCount).toBe(5);
+		expect(portletDataHandler?.deletionCount).toBe(3);
+	});
+});
+
+describe('toPortletDataHandlerSections', () => {
+	it('groups the handlers by section in order of first appearance and sums the counts', () => {
+		expect(
+			toPortletDataHandlerSections([
+				{
+					additionCount: 2,
+					deletionCount: 1,
+					name: 'a',
+					sectionKey: 'category.content',
+					sectionLabel: 'Content',
+				},
+				{
+					additionCount: 3,
+					name: 'b',
+					sectionKey: 'category.site_administration.build',
+					sectionLabel: 'Site Builder',
+				},
+				{
+					additionCount: 4,
+					deletionCount: 2,
+					name: 'c',
+					sectionKey: 'category.content',
+					sectionLabel: 'Content',
+				},
+			])
+		).toEqual([
+			{
+				additionCount: 6,
+				deletionCount: 3,
+				key: 'category.content',
+				label: 'Content',
+				portletDataHandlers: [
+					expect.objectContaining({name: 'a'}),
+					expect.objectContaining({name: 'c'}),
+				],
+			},
+			{
+				additionCount: 3,
+				deletionCount: 0,
+				key: 'category.site_administration.build',
+				label: 'Site Builder',
+				portletDataHandlers: [expect.objectContaining({name: 'b'})],
+			},
+		]);
 	});
 });
