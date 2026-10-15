@@ -21,7 +21,7 @@ gradle.allprojects {
 
 		List<String> disabledTaskNames = []
 
-		if (project.name.endsWith("-test")) {
+		if (project.name.endsWith("-test") || project.name.endsWith("-test-util")) {
 			disabledTaskNames.addAll(["deploy", "dockerCopy", "dockerDeploy"])
 		}
 
