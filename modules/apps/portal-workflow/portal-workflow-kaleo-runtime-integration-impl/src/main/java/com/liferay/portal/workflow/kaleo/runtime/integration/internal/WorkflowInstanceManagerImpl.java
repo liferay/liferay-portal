@@ -5,6 +5,7 @@
 
 package com.liferay.portal.workflow.kaleo.runtime.integration.internal;
 
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -213,6 +214,20 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 	}
 
 	@Override
+	public WorkflowInstance liberalStartWorkflowInstance(
+			long companyId, long groupId, long userId,
+			String workflowDefinitionName, Integer workflowDefinitionVersion,
+			String transitionName, Map<String, Serializable> workflowContext,
+			boolean waitForCompletion)
+		throws WorkflowException {
+
+		return _startWorkflowInstance(
+			companyId, groupId, userId, workflowDefinitionName,
+			workflowDefinitionVersion, transitionName, workflowContext, true,
+			waitForCompletion);
+	}
+
+	@Override
 	public List<WorkflowInstance> search(
 			long companyId, Long userId, Boolean active, String assetClassName,
 			String assetTitle, String assetDescription, String nodeName,
@@ -314,28 +329,10 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 			boolean waitForCompletion)
 		throws WorkflowException {
 
-		String className = WorkflowDefinition.class.getName();
-		String key = WorkflowLockUtil.encodeKey(
-			workflowDefinitionName, workflowDefinitionVersion);
-
-		if (_lockLocalService.isLocked(className, key)) {
-			throw new WorkflowException(
-				StringBundler.concat(
-					"Workflow definition name ", workflowDefinitionName,
-					" and version ", workflowDefinitionVersion,
-					" is being undeployed"));
-		}
-
-		ServiceContext serviceContext = (ServiceContext)workflowContext.get(
-			WorkflowConstants.CONTEXT_SERVICE_CONTEXT);
-
-		serviceContext.setCompanyId(companyId);
-		serviceContext.setScopeGroupId(groupId);
-		serviceContext.setUserId(userId);
-
-		return _workflowEngine.startWorkflowInstance(
-			workflowDefinitionName, workflowDefinitionVersion, transitionName,
-			workflowContext, serviceContext, waitForCompletion);
+		return _startWorkflowInstance(
+			companyId, groupId, userId, workflowDefinitionName,
+			workflowDefinitionVersion, transitionName, workflowContext, false,
+			waitForCompletion);
 	}
 
 	@Override
@@ -369,6 +366,66 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		return _workflowEngine.updateContext(
 			workflowInstanceId, workflowContext, serviceContext);
+	}
+
+	private <T> T _get(
+			boolean liberal,
+			UnsafeSupplier<T, PortalException> localServiceUnsafeSupplier,
+			UnsafeSupplier<T, PortalException> serviceUnsafeSupplier)
+		throws PortalException {
+
+		if (liberal) {
+			return localServiceUnsafeSupplier.get();
+		}
+
+		return serviceUnsafeSupplier.get();
+	}
+
+	private WorkflowInstance _startWorkflowInstance(
+			long companyId, long groupId, long userId,
+			String workflowDefinitionName, Integer workflowDefinitionVersion,
+			String transitionName, Map<String, Serializable> workflowContext,
+			boolean liberal, boolean waitForCompletion)
+		throws WorkflowException {
+
+		String className = WorkflowDefinition.class.getName();
+
+		String key = WorkflowLockUtil.encodeKey(
+			workflowDefinitionName, workflowDefinitionVersion);
+
+		if (_lockLocalService.isLocked(className, key)) {
+			throw new WorkflowException(
+				StringBundler.concat(
+					"Workflow definition name ", workflowDefinitionName,
+					" and version ", workflowDefinitionVersion,
+					" is being undeployed"));
+		}
+
+		ServiceContext serviceContext = (ServiceContext)workflowContext.get(
+			WorkflowConstants.CONTEXT_SERVICE_CONTEXT);
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setUserId(userId);
+
+		try {
+			return _get(
+				liberal,
+				() -> _workflowEngine.liberalStartWorkflowInstance(
+					workflowDefinitionName, workflowDefinitionVersion,
+					transitionName, workflowContext, serviceContext,
+					waitForCompletion),
+				() -> _workflowEngine.startWorkflowInstance(
+					workflowDefinitionName, workflowDefinitionVersion,
+					transitionName, workflowContext, serviceContext,
+					waitForCompletion));
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (PortalException portalException) {
+			throw new WorkflowException(portalException);
+		}
 	}
 
 	@Reference

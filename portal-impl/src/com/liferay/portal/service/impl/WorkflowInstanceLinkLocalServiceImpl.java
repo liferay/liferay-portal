@@ -322,7 +322,7 @@ public class WorkflowInstanceLinkLocalServiceImpl
 					waitForCompletion)) {
 
 			workflowInstance =
-				WorkflowInstanceManagerUtil.startWorkflowInstance(
+				WorkflowInstanceManagerUtil.liberalStartWorkflowInstance(
 					companyId, groupId, userId,
 					workflowDefinitionLink.getWorkflowDefinitionName(),
 					workflowDefinitionLink.getWorkflowDefinitionVersion(), null,

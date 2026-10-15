@@ -101,6 +101,12 @@ public interface WorkflowEngine {
 			ServiceContext serviceContext)
 		throws WorkflowException;
 
+	public WorkflowInstance liberalStartWorkflowInstance(
+			String workflowDefinitionName, Integer workflowDefinitionVersion,
+			String transitionName, Map<String, Serializable> workflowContext,
+			ServiceContext serviceContext, boolean waitForCompletion)
+		throws WorkflowException;
+
 	public WorkflowDefinition saveWorkflowDefinition(
 			String externalReferenceCode, String title, String name,
 			String scope, boolean system, byte[] bytes,

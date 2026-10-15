@@ -165,6 +165,22 @@ public class WorkflowInstanceManagerUtil {
 			completed, start, end, orderByComparator);
 	}
 
+	public static WorkflowInstance liberalStartWorkflowInstance(
+			long companyId, long groupId, long userId,
+			String workflowDefinitionName, Integer workflowDefinitionVersion,
+			String transitionName, Map<String, Serializable> workflowContext,
+			boolean waitForCompletion)
+		throws WorkflowException {
+
+		WorkflowInstanceManager workflowInstanceManager =
+			_workflowInstanceManagerSnapshot.get();
+
+		return workflowInstanceManager.liberalStartWorkflowInstance(
+			companyId, groupId, userId, workflowDefinitionName,
+			workflowDefinitionVersion, transitionName, workflowContext,
+			waitForCompletion);
+	}
+
 	public static List<WorkflowInstance> search(
 			long companyId, Long userId, Boolean active, String assetClassName,
 			String assetTitle, String assetDescription, String nodeName,

@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.workflow.constants.WorkflowActionKeys;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
@@ -55,6 +56,11 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 			_portletResourcePermission.check(
 				getPermissionChecker(), serviceContext.getScopeGroupId(),
 				ActionKeys.ADD_INSTANCE);
+		}
+		else {
+			_portletResourcePermission.check(
+				getPermissionChecker(), serviceContext.getScopeGroupId(),
+				WorkflowActionKeys.START_WORKFLOW_INSTANCE);
 		}
 
 		return kaleoInstanceLocalService.addKaleoInstance(

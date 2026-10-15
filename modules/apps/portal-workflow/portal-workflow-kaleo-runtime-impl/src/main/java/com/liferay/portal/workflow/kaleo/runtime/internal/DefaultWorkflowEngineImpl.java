@@ -486,6 +486,29 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	public WorkflowInstance liberalStartWorkflowInstance(
+			String workflowDefinitionName, Integer workflowDefinitionVersion,
+			String transitionName, Map<String, Serializable> workflowContext,
+			ServiceContext serviceContext, boolean waitForCompletion)
+		throws WorkflowException {
+
+		try {
+			return _kaleoWorkflowModelConverter.toWorkflowInstance(
+				kaleoInstanceLocalService.addKaleoInstance(
+					workflowDefinitionName, workflowDefinitionVersion,
+					transitionName, workflowContext, serviceContext,
+					waitForCompletion),
+				workflowContext);
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
+	}
+
+	@Override
 	public WorkflowDefinition saveWorkflowDefinition(
 			String externalReferenceCode, String title, String name,
 			String scope, boolean system, byte[] bytes,
