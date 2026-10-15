@@ -8,7 +8,6 @@ package com.liferay.fragment.collection.item.selector.web.internal;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorReturnType;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
-import com.liferay.fragment.util.comparator.FragmentCollectionNameComparator;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -27,24 +26,18 @@ import java.util.Collections;
 
 /**
  * @author Rubén Pulido
+ * @author Thiago Buarque
  */
-public class FragmentCollectionItemSelectorViewDescriptor
+public abstract class BaseFragmentCollectionItemSelectorViewDescriptor
 	implements ItemSelectorViewDescriptor<FragmentCollection> {
 
-	public FragmentCollectionItemSelectorViewDescriptor(
+	public BaseFragmentCollectionItemSelectorViewDescriptor(
 		long[] groupIds, HttpServletRequest httpServletRequest,
 		PortletURL portletURL) {
 
 		_groupIds = groupIds;
 		_httpServletRequest = httpServletRequest;
 		_portletURL = portletURL;
-	}
-
-	@Override
-	public ItemDescriptor getItemDescriptor(
-		FragmentCollection fragmentCollection) {
-
-		return new FragmentCollectionItemDescriptor(fragmentCollection);
 	}
 
 	@Override
@@ -118,11 +111,8 @@ public class FragmentCollectionItemSelectorViewDescriptor
 		return true;
 	}
 
-	protected OrderByComparator<FragmentCollection> getOrderByComparator(
-		boolean orderByAsc) {
-
-		return FragmentCollectionNameComparator.getInstance(orderByAsc);
-	}
+	protected abstract OrderByComparator<FragmentCollection>
+		getOrderByComparator(boolean orderByAsc);
 
 	private PortletRequest _getPortletRequest() {
 		return (PortletRequest)_httpServletRequest.getAttribute(

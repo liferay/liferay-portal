@@ -85,7 +85,7 @@ public class FragmentCollectionDesignLibraryItemSelectorView
 			servletRequest, servletResponse,
 			fragmentCollectionItemSelectorCriterion, portletURL,
 			itemSelectedEventName, search,
-			new FragmentCollectionDesignLibraryItemSelectorViewDescriptor(
+			new DesignLibraryFragmentCollectionItemSelectorViewDescriptor(
 				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
 					themeDisplay.getSiteGroupId()),
 				(HttpServletRequest)servletRequest, portletURL));

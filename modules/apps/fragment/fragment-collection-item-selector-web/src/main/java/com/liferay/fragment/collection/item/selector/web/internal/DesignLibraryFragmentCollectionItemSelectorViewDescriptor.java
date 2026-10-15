@@ -34,11 +34,12 @@ import java.util.Map;
 
 /**
  * @author Gabriel Lima
+ * @author Thiago Buarque
  */
-public class FragmentCollectionDesignLibraryItemSelectorViewDescriptor
-	extends FragmentCollectionItemSelectorViewDescriptor {
+public class DesignLibraryFragmentCollectionItemSelectorViewDescriptor
+	extends BaseFragmentCollectionItemSelectorViewDescriptor {
 
-	public FragmentCollectionDesignLibraryItemSelectorViewDescriptor(
+	public DesignLibraryFragmentCollectionItemSelectorViewDescriptor(
 		long[] groupIds, HttpServletRequest httpServletRequest,
 		PortletURL portletURL) {
 
@@ -58,7 +59,7 @@ public class FragmentCollectionDesignLibraryItemSelectorViewDescriptor
 		String groupName = _getGroupName(fragmentCollection.getGroupId());
 
 		if (groupName == null) {
-			return super.getItemDescriptor(fragmentCollection);
+			return new FragmentCollectionItemDescriptor(fragmentCollection);
 		}
 
 		return new FragmentCollectionItemDescriptor(
@@ -117,7 +118,7 @@ public class FragmentCollectionDesignLibraryItemSelectorViewDescriptor
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		FragmentCollectionDesignLibraryItemSelectorViewDescriptor.class);
+		DesignLibraryFragmentCollectionItemSelectorViewDescriptor.class);
 
 	private final Locale _locale;
 

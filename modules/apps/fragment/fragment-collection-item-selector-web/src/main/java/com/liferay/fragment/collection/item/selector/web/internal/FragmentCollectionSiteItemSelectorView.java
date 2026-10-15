@@ -103,7 +103,7 @@ public class FragmentCollectionSiteItemSelectorView
 			servletRequest, servletResponse,
 			fragmentCollectionItemSelectorCriterion, portletURL,
 			itemSelectedEventName, search,
-			new FragmentCollectionItemSelectorViewDescriptor(
+			new SiteFragmentCollectionItemSelectorViewDescriptor(
 				new long[] {themeDisplay.getSiteGroupId()},
 				(HttpServletRequest)servletRequest, portletURL));
 	}

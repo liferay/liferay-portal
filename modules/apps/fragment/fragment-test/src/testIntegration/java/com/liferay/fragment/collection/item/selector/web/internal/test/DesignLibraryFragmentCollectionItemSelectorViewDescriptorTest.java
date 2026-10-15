@@ -66,10 +66,11 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Gabriel Lima
+ * @author Thiago Buarque
  */
 @FeatureFlag("LPD-57283")
 @RunWith(Arquillian.class)
-public class FragmentCollectionDesignLibraryItemSelectorViewDescriptorTest {
+public class DesignLibraryFragmentCollectionItemSelectorViewDescriptorTest {
 
 	@ClassRule
 	@Rule

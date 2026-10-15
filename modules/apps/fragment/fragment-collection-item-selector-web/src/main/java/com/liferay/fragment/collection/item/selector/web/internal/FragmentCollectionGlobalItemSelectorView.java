@@ -72,7 +72,7 @@ public class FragmentCollectionGlobalItemSelectorView
 			servletRequest, servletResponse,
 			fragmentCollectionItemSelectorCriterion, portletURL,
 			itemSelectedEventName, search,
-			new FragmentCollectionItemSelectorViewDescriptor(
+			new SiteFragmentCollectionItemSelectorViewDescriptor(
 				new long[] {themeDisplay.getCompanyGroupId()},
 				(HttpServletRequest)servletRequest, portletURL));
 	}
