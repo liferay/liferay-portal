@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.exception.NoSuchOAuth2AuthorizationException;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.oauth2.provider.model.OAuth2ScopeGrant;
 import com.liferay.oauth2.provider.service.base.OAuth2AuthorizationLocalServiceBaseImpl;
+import com.liferay.oauth2.provider.util.OAuth2TokenContentUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -65,14 +66,16 @@ public class OAuth2AuthorizationLocalServiceImpl
 		oAuth2Authorization.setOAuth2ApplicationId(oAuth2ApplicationId);
 		oAuth2Authorization.setOAuth2ApplicationScopeAliasesId(
 			oAuth2ApplicationScopeAliasesId);
-		oAuth2Authorization.setAccessTokenContent(accessTokenContent);
+		oAuth2Authorization.setAccessTokenContent(
+			OAuth2TokenContentUtil.getTokenContent(accessTokenContent));
 		oAuth2Authorization.setAccessTokenCreateDate(accessTokenCreateDate);
 		oAuth2Authorization.setAccessTokenExpirationDate(
 			accessTokenExpirationDate);
 		oAuth2Authorization.setAudiencesList(audiencesList);
 		oAuth2Authorization.setRemoteHostInfo(remoteHostInfo);
 		oAuth2Authorization.setRemoteIPInfo(remoteIPInfo);
-		oAuth2Authorization.setRefreshTokenContent(refreshTokenContent);
+		oAuth2Authorization.setRefreshTokenContent(
+			OAuth2TokenContentUtil.getTokenContent(refreshTokenContent));
 		oAuth2Authorization.setRefreshTokenCreateDate(refreshTokenCreateDate);
 		oAuth2Authorization.setRefreshTokenExpirationDate(
 			refreshTokenExpirationDate);
@@ -131,6 +134,9 @@ public class OAuth2AuthorizationLocalServiceImpl
 	public OAuth2Authorization fetchOAuth2AuthorizationByAccessTokenContent(
 		String accessTokenContent) {
 
+		accessTokenContent = OAuth2TokenContentUtil.getTokenContent(
+			accessTokenContent);
+
 		List<OAuth2Authorization> oAuth2Authorizations =
 			oAuth2AuthorizationPersistence.findByC_ATCH(
 				CompanyThreadLocal.getCompanyId(),
@@ -155,6 +161,9 @@ public class OAuth2AuthorizationLocalServiceImpl
 	@Override
 	public OAuth2Authorization fetchOAuth2AuthorizationByRefreshTokenContent(
 		String refreshTokenContent) {
+
+		refreshTokenContent = OAuth2TokenContentUtil.getTokenContent(
+			refreshTokenContent);
 
 		List<OAuth2Authorization> oAuth2Authorizations =
 			oAuth2AuthorizationPersistence.findByC_RTCH(

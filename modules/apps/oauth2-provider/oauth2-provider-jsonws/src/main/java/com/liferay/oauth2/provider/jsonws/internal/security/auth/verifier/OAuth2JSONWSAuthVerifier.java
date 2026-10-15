@@ -81,7 +81,7 @@ public class OAuth2JSONWSAuthVerifier implements AuthVerifier {
 
 		try {
 			BearerTokenProvider.AccessToken accessToken = _getAccessToken(
-				oAuth2Authorization);
+				accessTokenContent, oAuth2Authorization);
 
 			OAuth2Application oAuth2Application = null;
 
@@ -160,17 +160,12 @@ public class OAuth2JSONWSAuthVerifier implements AuthVerifier {
 	}
 
 	private BearerTokenProvider.AccessToken _getAccessToken(
-			OAuth2Authorization oAuth2Authorization)
+			String accessTokenContent, OAuth2Authorization oAuth2Authorization)
 		throws PortalException {
 
-		if (oAuth2Authorization == null) {
-			return null;
-		}
-
-		String accessTokenContent = oAuth2Authorization.getAccessTokenContent();
-
-		if (OAuth2AuthorizationConstants.ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN.
-				equals(accessTokenContent)) {
+		if ((oAuth2Authorization == null) ||
+			OAuth2AuthorizationConstants.ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN.
+				equals(oAuth2Authorization.getAccessTokenContent())) {
 
 			return null;
 		}

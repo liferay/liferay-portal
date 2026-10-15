@@ -6,9 +6,12 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.access.token.grant.handler;
 
 import com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration;
+import com.liferay.oauth2.provider.constants.OAuth2AuthorizationConstants;
 import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDataProvider;
 import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2ErrorUtil;
+import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -111,14 +114,21 @@ public class LiferayRefreshTokenAccessTokenGrantHandler
 			// refresh a token belonging to a client other than the
 			// authenticated client
 
-			_liferayOAuthDataProvider.doRevokeRefreshToken(refreshToken);
+			OAuth2Authorization oAuth2Authorization =
+				_oAuth2AuthorizationLocalService.
+					fetchOAuth2AuthorizationByRefreshTokenContent(
+						refreshTokenString);
 
-			for (String accessToken : refreshToken.getAccessTokens()) {
-				ServerAccessToken serverAccessToken =
-					_liferayOAuthDataProvider.getAccessToken(accessToken);
+			if (oAuth2Authorization != null) {
+				oAuth2Authorization.setAccessTokenContent(
+					OAuth2AuthorizationConstants.
+						ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN);
+				oAuth2Authorization.setRefreshTokenContent(
+					OAuth2AuthorizationConstants.
+						ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN);
 
-				_liferayOAuthDataProvider.doRevokeAccessToken(
-					serverAccessToken);
+				_oAuth2AuthorizationLocalService.updateOAuth2Authorization(
+					oAuth2Authorization);
 			}
 
 			if (_log.isDebugEnabled()) {
@@ -150,6 +160,9 @@ public class LiferayRefreshTokenAccessTokenGrantHandler
 
 	@Reference
 	private LiferayOAuthDataProvider _liferayOAuthDataProvider;
+
+	@Reference
+	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
 
 	private OAuth2ProviderConfiguration _oAuth2ProviderConfiguration;
 	private RefreshTokenGrantHandler _refreshTokenGrantHandler;

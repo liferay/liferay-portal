@@ -11,6 +11,8 @@ import com.liferay.oauth2.provider.internal.test.AuthorizationGrant;
 import com.liferay.oauth2.provider.internal.test.PasswordAuthorizationGrant;
 import com.liferay.oauth2.provider.internal.test.RefreshTokenAuthorizationGrant;
 import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
+import com.liferay.oauth2.provider.model.OAuth2Authorization;
+import com.liferay.oauth2.provider.util.OAuth2TokenContentUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -77,6 +79,13 @@ public class RefreshTokenAuthorizationGrantTest
 			tokenBuilder.post(Entity.form(formData)));
 
 		Assert.assertNotEquals(tokenString, accessTokenString);
+
+		OAuth2Authorization oAuth2Authorization =
+			fetchOAuth2AuthorizationByAccessTokenContent(tokenString);
+
+		Assert.assertEquals(
+			OAuth2TokenContentUtil.getTokenContent(tokenString),
+			oAuth2Authorization.getAccessTokenContent());
 
 		invocationBuilder = authorize(webTarget.request(), tokenString);
 

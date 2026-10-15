@@ -138,14 +138,9 @@ public class OAuth2RESTAuthVerifier implements AuthVerifier {
 				fetchOAuth2AuthorizationByAccessTokenContent(
 					accessTokenContent);
 
-		if (oAuth2Authorization == null) {
-			return null;
-		}
-
-		accessTokenContent = oAuth2Authorization.getAccessTokenContent();
-
-		if (OAuth2AuthorizationConstants.ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN.
-				equals(accessTokenContent)) {
+		if ((oAuth2Authorization == null) ||
+			OAuth2AuthorizationConstants.ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN.
+				equals(oAuth2Authorization.getAccessTokenContent())) {
 
 			return null;
 		}
