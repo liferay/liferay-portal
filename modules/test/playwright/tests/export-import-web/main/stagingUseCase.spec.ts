@@ -879,9 +879,7 @@ test(
 
 		await journalPage.goto(site.friendlyUrlPath);
 
-		for (const title of [selectedTitle1, selectedTitle2, unselectedTitle]) {
-			await expect(page.getByText(title, {exact: true})).toBeHidden();
-		}
+		await expect(page.getByText('No web content was found.')).toBeVisible();
 
 		await journalPage.goto(stagingSite.friendlyUrlPath);
 
