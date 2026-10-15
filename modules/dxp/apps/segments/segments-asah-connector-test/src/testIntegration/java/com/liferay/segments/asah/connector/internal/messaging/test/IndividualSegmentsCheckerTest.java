@@ -106,11 +106,11 @@ public class IndividualSegmentsCheckerTest {
 
 			_prepareAsahFaroBackendClient(_user.getUuid(), guestUserUuid);
 
-			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+			UnsafeRunnable<Exception> unsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
 					getJobExecutorUnsafeRunnable();
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			SegmentsEntry segmentsEntry = _getSegmentsEntry();
 
@@ -165,11 +165,11 @@ public class IndividualSegmentsCheckerTest {
 
 			_prepareAsahFaroBackendClient(user.getUuid());
 
-			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+			UnsafeRunnable<Exception> unsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
 					getJobExecutorUnsafeRunnable();
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			long segmentsEntryRelId = _getSegmentsEntryRelId(
 				_getSegmentsEntry(), user);
@@ -179,7 +179,7 @@ public class IndividualSegmentsCheckerTest {
 					throw new IllegalStateException();
 				});
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			Assert.assertEquals(
 				segmentsEntryRelId,
@@ -210,11 +210,11 @@ public class IndividualSegmentsCheckerTest {
 
 			_prepareAsahFaroBackendClient(user1.getUuid(), user2.getUuid());
 
-			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+			UnsafeRunnable<Exception> unsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
 					getJobExecutorUnsafeRunnable();
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			SegmentsEntry segmentsEntry = _getSegmentsEntry();
 
@@ -230,7 +230,7 @@ public class IndividualSegmentsCheckerTest {
 
 			_prepareAsahFaroBackendClient(user2.getUuid(), user3.getUuid());
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			segmentsEntry = _getSegmentsEntry();
 
@@ -264,11 +264,11 @@ public class IndividualSegmentsCheckerTest {
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
 
-			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+			UnsafeRunnable<Exception> unsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
 					getJobExecutorUnsafeRunnable();
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			List<SegmentsEntry> segmentsEntries =
 				_segmentsEntryLocalService.getSegmentsEntriesBySource(
@@ -305,11 +305,11 @@ public class IndividualSegmentsCheckerTest {
 			_prepareAsahFaroBackendClient(
 				_user.getUuid(), StringUtil.randomString());
 
-			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+			UnsafeRunnable<Exception> unsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
 					getJobExecutorUnsafeRunnable();
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			SegmentsEntry segmentsEntry = _getSegmentsEntry();
 
@@ -324,7 +324,7 @@ public class IndividualSegmentsCheckerTest {
 				Arrays.toString(segmentsEntryRelIds), 1,
 				segmentsEntryRelIds.length);
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			segmentsEntry = _getSegmentsEntry();
 
@@ -378,11 +378,11 @@ public class IndividualSegmentsCheckerTest {
 			_prepareAsahFaroBackendClient(
 				_user.getUuid(), StringUtil.randomString());
 
-			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+			UnsafeRunnable<Exception> unsafeRunnable =
 				_checkIndividualSegmentsSchedulerJobConfiguration.
 					getJobExecutorUnsafeRunnable();
 
-			jobExecutorUnsafeRunnable.run();
+			unsafeRunnable.run();
 
 			SegmentsEntry segmentsEntry = _getSegmentsEntry();
 
