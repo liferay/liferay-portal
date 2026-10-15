@@ -1,0 +1,38 @@
+release:
+    name: my-release
+    namespace: my-namespace
+set:
+    clientExtension:
+        configs:
+            com.liferay.client.extension.type.configuration.CETConfiguration~able:
+                name: Able
+        serviceId: able
+suite: RoleBinding
+templates:
+    -   templates/rolebinding.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Binds nothing when DXP runs in the release's namespace
+        set:
+            clientExtension:
+                dxpNamespace: my-namespace
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Binds nothing when dxpNamespace is empty
+    -   asserts:
+            -   equal:
+                    path: subjects
+                    value:
+                        -   kind: ServiceAccount
+                            name: liferay-dxp-operator
+                            namespace: liferay-system
+        it: Binds the DXP operator when DXP runs in another namespace
+        set:
+            clientExtension:
+                dxpNamespace: liferay
+            operatorServiceAccount:
+                name: liferay-dxp-operator
+                namespace: liferay-system

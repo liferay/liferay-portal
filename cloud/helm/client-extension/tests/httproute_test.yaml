@@ -1,0 +1,78 @@
+release:
+    name: my-release
+    namespace: my-namespace
+set:
+    clientExtension:
+        configs:
+            com.liferay.client.extension.type.configuration.CETConfiguration~able:
+                name: Able
+        serviceId: able
+    network:
+        enabled: true
+        gatewayName: liferay-gateway
+    service:
+        enabled: true
+suite: HTTPRoute
+templates:
+    -   templates/httproute.yaml
+tests:
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: network.gatewayName is required when network.enabled is true
+        it: Fails without a gatewayName
+        set:
+            clientExtension:
+                domain: able.example.com
+            network:
+                gatewayName: ""
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: network.hostnames or clientExtension.domain is required when network.enabled is true
+        it: Fails without a hostname or domain
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: service.enabled must be true when network.enabled is true
+        it: Fails without the Service
+        set:
+            clientExtension:
+                domain: able.example.com
+            service:
+                enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.hostnames
+                    value:
+                        -   able.example.com
+            -   equal:
+                    path: spec.parentRefs[0].name
+                    value: liferay-gateway
+            -   equal:
+                    path: spec.parentRefs[0].sectionName
+                    value: https
+            -   equal:
+                    path: spec.rules[0].backendRefs
+                    value:
+                        -   name: my-release-liferay-client-extension
+                            port: 8080
+        it: Routes the client extension's domain to the Service
+        set:
+            clientExtension:
+                domain: able.example.com
+            network:
+                endpointRef: https
+            service:
+                port: 8080
+    -   asserts:
+            -   equal:
+                    path: spec.hostnames
+                    value:
+                        -   able.example.com
+                        -   www.able.example.com
+        it: Routes the given hostnames instead of the domain
+        set:
+            clientExtension:
+                domain: ignored.example.com
+            network:
+                hostnames:
+                    -   able.example.com
+                    -   www.able.example.com

@@ -7,6 +7,15 @@ clientExtension:
     configs:
         com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent:
             name: Able
+    domain: able.example.com
+    dxpNamespace: liferay
     serviceId: able
 image:
     repository: liferay/jar-runner
+network:
+    enabled: true
+    gatewayName: liferay-gateway
+service:
+    enabled: true
+serviceAccount:
+    create: true
