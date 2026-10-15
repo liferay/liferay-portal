@@ -137,6 +137,31 @@ public class TestrayCaseResultTest
 		testEquals(_DURATION, requestJSONObject.getLong("duration"));
 	}
 
+	@Test
+	public void testSetTestrayCaseResultURL() throws Exception {
+		TestrayServer testrayServer = _mockTestrayServer();
+
+		TestrayCaseResult testrayCaseResult = _mockTestrayCaseResult(
+			testrayServer);
+
+		Mockito.doCallRealMethod(
+		).when(
+			testrayCaseResult
+		).setTestrayCaseResultURL(
+			Mockito.any()
+		);
+
+		URL testrayCaseResultURL = new URL(
+			_TESTRAY_URL + "/case-result/" + RandomTestUtil.randomLong());
+
+		testrayCaseResult.setTestrayCaseResultURL(testrayCaseResultURL);
+
+		testSame(
+			testrayCaseResultURL, testrayCaseResult.getTestrayCaseResultURL());
+
+		Mockito.verifyNoInteractions(testrayServer);
+	}
+
 	private TestrayAttachment _mockTestrayAttachment() {
 		TestrayAttachment testrayAttachment = Mockito.mock(
 			TestrayAttachment.class);

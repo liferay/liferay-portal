@@ -5,9 +5,22 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
+import com.liferay.jenkins.results.parser.testray.TestrayBuild;
+import com.liferay.jenkins.results.parser.testray.TestrayContext;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.PrintStream;
+
+import java.net.URL;
+
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.dom4j.Element;
+
+import org.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,6 +43,34 @@ public class BaseDownstreamBuildTest
 
 		_testGetAxisName(axisVariable, null, null);
 		_testGetAxisName(null, null, jobVariant);
+	}
+
+	@Test
+	public void testGetBuildReportJSONObject() throws Exception {
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getBuildReportJSONObject();
+
+		JSONObject buildReportJSONObject =
+			baseDownstreamBuild.getBuildReportJSONObject();
+
+		Assert.assertFalse(buildReportJSONObject.has("testrayCaseResultURL"));
+
+		URL testrayCaseResultURL = new URL(
+			"https://" + RandomTestUtil.randomString());
+
+		ReflectionTestUtil.setFieldValue(
+			baseDownstreamBuild, "_testrayCaseResultURL", testrayCaseResultURL);
+
+		buildReportJSONObject = baseDownstreamBuild.getBuildReportJSONObject();
+
+		Assert.assertEquals(
+			String.valueOf(testrayCaseResultURL),
+			buildReportJSONObject.getString("testrayCaseResultURL"));
 	}
 
 	@Test
@@ -61,6 +102,83 @@ public class BaseDownstreamBuildTest
 		);
 
 		Assert.assertEquals(axisName, baseDownstreamBuild.getDisplayName());
+	}
+
+	@Test
+	public void testGetDownstreamBuildReport() {
+		BaseDownstreamBuild cachedBaseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			cachedBaseDownstreamBuild
+		).getDownstreamBuildReport();
+
+		DownstreamBuildReport cachedDownstreamBuildReport = Mockito.mock(
+			DownstreamBuildReport.class);
+
+		Mockito.when(
+			cachedBaseDownstreamBuild.getCachedDownstreamBuildReport()
+		).thenReturn(
+			cachedDownstreamBuildReport
+		);
+
+		Assert.assertSame(
+			cachedDownstreamBuildReport,
+			cachedBaseDownstreamBuild.getDownstreamBuildReport());
+
+		Mockito.verify(
+			cachedBaseDownstreamBuild, Mockito.never()
+		).getBuildReportJSONObject();
+
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.when(
+			baseDownstreamBuild.getBatchName()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getDownstreamBuildReport();
+
+		JSONObject buildReportJSONObject = new JSONObject();
+
+		Mockito.when(
+			baseDownstreamBuild.getBuildReportJSONObject()
+		).thenReturn(
+			buildReportJSONObject
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getBuildURL()
+		).thenReturn(
+			"https://test-1-1.liferay.com/job/" +
+				RandomTestUtil.randomString() + "/1/"
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.isCompleted()
+		).thenReturn(
+			false
+		).thenReturn(
+			true
+		);
+
+		Assert.assertNull(baseDownstreamBuild.getDownstreamBuildReport());
+
+		DownstreamBuildReport downstreamBuildReport =
+			baseDownstreamBuild.getDownstreamBuildReport();
+
+		Assert.assertSame(
+			buildReportJSONObject,
+			downstreamBuildReport.getBuildReportJSONObject());
+		Assert.assertSame(
+			downstreamBuildReport,
+			baseDownstreamBuild.getDownstreamBuildReport());
 	}
 
 	@Test
@@ -152,6 +270,213 @@ public class BaseDownstreamBuildTest
 	}
 
 	@Test
+	public void testGetTestrayCaseResultURL() throws Exception {
+		BaseDownstreamBuild heldBaseDownstreamBuild =
+			_mockGetTestrayCaseResultURL();
+
+		URL testrayCaseResultURL = new URL(
+			"https://" + RandomTestUtil.randomString());
+
+		ReflectionTestUtil.setFieldValue(
+			heldBaseDownstreamBuild, "_testrayCaseResultURL",
+			testrayCaseResultURL);
+
+		Assert.assertSame(
+			testrayCaseResultURL,
+			heldBaseDownstreamBuild.getTestrayCaseResultURL());
+
+		Mockito.verify(
+			heldBaseDownstreamBuild, Mockito.never()
+		).getTopLevelBuild();
+
+		mockEnvironment(
+			Collections.singletonMap("TESTRAY_IMPORT_DISABLED", "true"));
+
+		BaseDownstreamBuild disabledBaseDownstreamBuild =
+			_mockGetTestrayCaseResultURL();
+
+		Assert.assertNull(
+			disabledBaseDownstreamBuild.getTestrayCaseResultURL());
+
+		Mockito.verify(
+			disabledBaseDownstreamBuild, Mockito.never()
+		).getTopLevelBuild();
+
+		mockEnvironment(Collections.<String, String>emptyMap());
+
+		BaseDownstreamBuild baseDownstreamBuild =
+			_mockGetTestrayCaseResultURL();
+
+		Assert.assertNull(baseDownstreamBuild.getTestrayCaseResultURL());
+
+		Mockito.verify(
+			baseDownstreamBuild
+		).getTopLevelBuild();
+
+		TopLevelBuild topLevelBuild = Mockito.mock(TopLevelBuild.class);
+
+		Mockito.when(
+			baseDownstreamBuild.getTopLevelBuild()
+		).thenReturn(
+			topLevelBuild
+		);
+
+		Assert.assertNull(baseDownstreamBuild.getTestrayCaseResultURL());
+
+		String message = RandomTestUtil.randomString();
+
+		Mockito.when(
+			topLevelBuild.getTestrayContext()
+		).thenThrow(
+			new RuntimeException(message)
+		);
+
+		PrintStream printStream = System.out;
+
+		try {
+			Assert.assertNull(baseDownstreamBuild.getTestrayCaseResultURL());
+		}
+		finally {
+			System.setOut(printStream);
+		}
+
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+
+		System.setOut(new PrintStream(byteArrayOutputStream));
+
+		String output = byteArrayOutputStream.toString();
+
+		Assert.assertTrue(output.contains(baseDownstreamBuild.getBuildURL()));
+		Assert.assertTrue(output.contains(message));
+
+		mockEnvironment(
+			Collections.singletonMap(
+				"WORKSPACE", RandomTestUtil.randomString()));
+
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		File testBaseDir = new File(RandomTestUtil.randomString());
+
+		Mockito.when(
+			axisTestClassGroup.getTestBaseDir()
+		).thenReturn(
+			testBaseDir
+		);
+
+		BaseDownstreamBuild createdBaseDownstreamBuild =
+			_mockGetTestrayCaseResultURL();
+
+		Mockito.when(
+			createdBaseDownstreamBuild.getAxisTestClassGroup()
+		).thenReturn(
+			axisTestClassGroup
+		);
+
+		DownstreamBuildReport downstreamBuildReport = Mockito.mock(
+			DownstreamBuildReport.class);
+
+		Mockito.when(
+			createdBaseDownstreamBuild.getDownstreamBuildReport()
+		).thenReturn(
+			downstreamBuildReport
+		);
+
+		Mockito.when(
+			downstreamBuildReport.getTestrayCaseResultURL()
+		).thenReturn(
+			testrayCaseResultURL
+		);
+
+		TestrayContext testrayContext = Mockito.mock(TestrayContext.class);
+
+		Mockito.when(
+			testrayContext.getTestrayBuild(testBaseDir)
+		).thenReturn(
+			Mockito.mock(TestrayBuild.class)
+		);
+
+		TopLevelBuild createdTopLevelBuild = Mockito.mock(TopLevelBuild.class);
+
+		Mockito.when(
+			createdBaseDownstreamBuild.getTopLevelBuild()
+		).thenReturn(
+			createdTopLevelBuild
+		);
+
+		Mockito.when(
+			createdTopLevelBuild.getTestrayContext()
+		).thenReturn(
+			testrayContext
+		);
+
+		Mockito.when(
+			createdTopLevelBuild.getTopLevelBuildReport()
+		).thenReturn(
+			Mockito.mock(TopLevelBuildReport.class)
+		);
+
+		Assert.assertSame(
+			testrayCaseResultURL,
+			createdBaseDownstreamBuild.getTestrayCaseResultURL());
+	}
+
+	@Test
+	public void testReset() throws Exception {
+		String axisName = RandomTestUtil.randomString();
+
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.when(
+			baseDownstreamBuild.getAxisName()
+		).thenReturn(
+			axisName
+		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).reset();
+
+		BaseParentBuild baseParentBuild = Mockito.mock(BaseParentBuild.class);
+
+		Mockito.when(
+			baseDownstreamBuild.getParentBuild()
+		).thenReturn(
+			baseParentBuild
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			baseDownstreamBuild, "_buildJSONObject", new JSONObject());
+		ReflectionTestUtil.setFieldValue(
+			baseDownstreamBuild, "_downstreamBuildReport",
+			Mockito.mock(DownstreamBuildReport.class));
+		ReflectionTestUtil.setFieldValue(
+			baseDownstreamBuild, "_testrayCaseResultURL",
+			new URL("https://" + RandomTestUtil.randomString()));
+
+		baseDownstreamBuild.reset();
+
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				baseDownstreamBuild, "_buildJSONObject"));
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				baseDownstreamBuild, "_downstreamBuildReport"));
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				baseDownstreamBuild, "_testrayCaseResultURL"));
+
+		Mockito.verify(
+			baseParentBuild
+		).removeTestrayCaseResultURL(
+			axisName
+		);
+	}
+
+	@Test
 	public void testSaveBadBuildURLsInBuildDatabase() {
 		String axisVariable = RandomTestUtil.randomString();
 		String buildURL = RandomTestUtil.randomString();
@@ -236,6 +561,24 @@ public class BaseDownstreamBuildTest
 			RandomTestUtil.randomString(), null, false);
 		_testSaveBuildURLInBuildDatabase(
 			null, RandomTestUtil.randomString(), false);
+	}
+
+	private BaseDownstreamBuild _mockGetTestrayCaseResultURL() {
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getTestrayCaseResultURL();
+
+		Mockito.when(
+			baseDownstreamBuild.getBuildURL()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		return baseDownstreamBuild;
 	}
 
 	private void _testGetAxisName(
