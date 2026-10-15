@@ -62,6 +62,17 @@ public class ProductRelationshipsDisplayContext {
 			URLCodec.encodeURL(objectEntry.getExternalReferenceCode()));
 	}
 
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"objectEntryId",
+			() -> {
+				ObjectEntry objectEntry = _getObjectEntry();
+
+				return String.valueOf(objectEntry.getObjectEntryId());
+			}
+		).build();
+	}
+
 	public CreationMenu getCreationMenu() {
 		CreationMenu creationMenu = new CreationMenu();
 
@@ -140,6 +151,21 @@ public class ProductRelationshipsDisplayContext {
 				"get"
 			).build(
 				"view"
+			),
+			FDSActionDropdownItemBuilder.setHref(
+				"{actions.setPrimary.href}"
+			).setIcon(
+				"check-circle"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "set-as-primary")
+			).setMethod(
+				"put"
+			).setPermissionKey(
+				"setPrimary"
+			).setTarget(
+				"headless"
+			).build(
+				"setPrimary"
 			),
 			FDSActionDropdownItemBuilder.setIcon(
 				"times-circle"

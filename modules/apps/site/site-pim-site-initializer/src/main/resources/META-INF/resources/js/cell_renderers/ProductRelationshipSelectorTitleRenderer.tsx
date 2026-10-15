@@ -4,12 +4,15 @@
  */
 
 import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
 export default function ProductRelationshipSelectorTitleRenderer({
+	current = false,
 	value,
 }: {
+	current?: boolean;
 	value: string;
 }) {
 	return (
@@ -19,6 +22,12 @@ export default function ProductRelationshipSelectorTitleRenderer({
 			</ClaySticker>
 
 			<span>{value}</span>
+
+			{current && (
+				<ClayLabel className="c-ml-auto" displayType="info" inverse>
+					{Liferay.Language.get('viewing')}
+				</ClayLabel>
+			)}
 		</span>
 	);
 }

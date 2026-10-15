@@ -14,6 +14,7 @@ ProductRelationshipsDisplayContext productRelationshipsDisplayContext = (Product
 <div class="pim-product-relationships">
 	<div class="cms-section custom-empty-state">
 		<frontend-data-set:headless-display
+			additionalProps="<%= productRelationshipsDisplayContext.getAdditionalProps() %>"
 			apiURL="<%= productRelationshipsDisplayContext.getAPIURL() %>"
 			creationMenu="<%= productRelationshipsDisplayContext.getCreationMenu() %>"
 			emptyState="<%= productRelationshipsDisplayContext.getEmptyState() %>"
@@ -22,6 +23,7 @@ ProductRelationshipsDisplayContext productRelationshipsDisplayContext = (Product
 			id="<%= PIMFDSNames.PRODUCT_RELATIONSHIPS %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{ProductRelationshipsFDSPropsTransformer} from site-pim-site-initializer"
+			uniformActionsDisplay="<%= true %>"
 		/>
 	</div>
 </div>
