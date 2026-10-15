@@ -6,12 +6,14 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {PermissionsPage} from '../../permissions/pages/PermissionsPage';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
+import {spaceSettingsPagesTest} from '../fixtures/spaceSettingsPagesTest';
 
 const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
@@ -159,5 +161,43 @@ test(
 		await expect(
 			page.getByRole('dialog').getByRole('heading', {name: 'Permissions'})
 		).toBeVisible();
+	}
+);
+
+const locationProviderTest = mergeTests(
+	test,
+	featureFlagsTest({'LPD-11388': {enabled: true}}),
+	spaceSettingsPagesTest
+);
+
+locationProviderTest(
+	'Location provider option and Google Maps API key is saved',
+	{tag: '@LPD-106772'},
+	async ({apiHelpers, page, spaceSettingsPage}) => {
+		const googleMapsAPIKey = getRandomString();
+
+		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: `Space ${getRandomString()}`,
+			settings: {},
+			type: 'Space',
+		});
+
+		await spaceSettingsPage.goto(space.id);
+
+		await spaceSettingsPage.googleMapsRadio.check();
+
+		await spaceSettingsPage.googleMapsAPIKeyField.fill(googleMapsAPIKey);
+
+		await spaceSettingsPage.saveButton.click();
+
+		await waitForAlert(page, 'Success');
+
+		await spaceSettingsPage.goto(space.id);
+
+		await expect(spaceSettingsPage.googleMapsRadio).toBeChecked();
+
+		await expect(spaceSettingsPage.googleMapsAPIKeyField).toHaveValue(
+			googleMapsAPIKey
+		);
 	}
 );
