@@ -23,6 +23,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.workflow.metrics.rest.dto.v1_0.Index;
 import com.liferay.portal.workflow.metrics.rest.internal.dto.v1_0.util.IndexUtil;
 import com.liferay.portal.workflow.metrics.rest.internal.resource.exception.IndexKeyException;
+import com.liferay.portal.workflow.metrics.rest.internal.security.permission.WorkflowMetricsPermissionUtil;
 import com.liferay.portal.workflow.metrics.rest.resource.v1_0.IndexResource;
 import com.liferay.portal.workflow.metrics.search.background.task.WorkflowMetricsBackgroundTaskExecutorNames;
 import com.liferay.portal.workflow.metrics.search.index.constants.WorkflowMetricsIndexNameConstants;
@@ -49,6 +50,8 @@ public class IndexResourceImpl extends BaseIndexResourceImpl {
 
 	@Override
 	public Page<Index> getIndexesPage() throws Exception {
+		WorkflowMetricsPermissionUtil.check();
+
 		return Page.of(
 			transform(
 				_workflowMetricsReindexerRegistry.getIndexEntityNames(),
@@ -61,6 +64,8 @@ public class IndexResourceImpl extends BaseIndexResourceImpl {
 
 	@Override
 	public void patchIndexRefresh(Index index) throws Exception {
+		WorkflowMetricsPermissionUtil.check();
+
 		if (!_searchCapabilities.isWorkflowMetricsSupported()) {
 			return;
 		}
@@ -91,6 +96,8 @@ public class IndexResourceImpl extends BaseIndexResourceImpl {
 
 	@Override
 	public void patchIndexReindex(Index index) throws Exception {
+		WorkflowMetricsPermissionUtil.check();
+
 		if (Objects.isNull(index) || Validator.isNull(index.getKey())) {
 			throw new IndexKeyException();
 		}

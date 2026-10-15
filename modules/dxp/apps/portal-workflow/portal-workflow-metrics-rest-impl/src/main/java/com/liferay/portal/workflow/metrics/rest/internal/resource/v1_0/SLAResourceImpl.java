@@ -23,6 +23,7 @@ import com.liferay.portal.workflow.metrics.rest.dto.v1_0.PauseNodeKeys;
 import com.liferay.portal.workflow.metrics.rest.dto.v1_0.SLA;
 import com.liferay.portal.workflow.metrics.rest.dto.v1_0.StartNodeKeys;
 import com.liferay.portal.workflow.metrics.rest.dto.v1_0.StopNodeKeys;
+import com.liferay.portal.workflow.metrics.rest.internal.security.permission.WorkflowMetricsPermissionUtil;
 import com.liferay.portal.workflow.metrics.rest.resource.v1_0.SLAResource;
 import com.liferay.portal.workflow.metrics.service.WorkflowMetricsSLADefinitionLocalService;
 
@@ -44,6 +45,8 @@ public class SLAResourceImpl extends BaseSLAResourceImpl {
 
 	@Override
 	public void deleteSLA(Long slaId) throws Exception {
+		WorkflowMetricsPermissionUtil.check();
+
 		_workflowMetricsSLADefinitionLocalService.
 			deactivateWorkflowMetricsSLADefinition(
 				slaId, _createServiceContext());
@@ -130,6 +133,8 @@ public class SLAResourceImpl extends BaseSLAResourceImpl {
 
 	@Override
 	public SLA postProcessSLA(Long processId, SLA sla) throws Exception {
+		WorkflowMetricsPermissionUtil.check();
+
 		return _toSLA(
 			_workflowMetricsSLADefinitionLocalService.
 				addWorkflowMetricsSLADefinition(
@@ -143,6 +148,8 @@ public class SLAResourceImpl extends BaseSLAResourceImpl {
 
 	@Override
 	public SLA putSLA(Long slaId, SLA sla) throws Exception {
+		WorkflowMetricsPermissionUtil.check();
+
 		return _toSLA(
 			_workflowMetricsSLADefinitionLocalService.
 				updateWorkflowMetricsSLADefinition(
