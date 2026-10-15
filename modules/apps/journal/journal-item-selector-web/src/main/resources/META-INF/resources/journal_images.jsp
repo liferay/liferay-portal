@@ -24,8 +24,11 @@ List<RepositoryEntry> portletFileEntries = new ArrayList<>();
 int portletFileEntriesCount = 0;
 
 if (journalArticle != null) {
-	portletFileEntries.addAll(journalArticle.getImagesFileEntries(start, end, (OrderByComparator<FileEntry>)journalItemSelectorViewDisplayContext.getOrderByComparator()));
 	portletFileEntriesCount = journalArticle.getImagesFileEntriesCount();
+
+	startAndEnd = SearchPaginationUtil.calculateStartAndEnd(start, end, portletFileEntriesCount);
+
+	portletFileEntries.addAll(journalArticle.getImagesFileEntries(startAndEnd[0], startAndEnd[1], (OrderByComparator<FileEntry>)journalItemSelectorViewDisplayContext.getOrderByComparator()));
 }
 %>
 
