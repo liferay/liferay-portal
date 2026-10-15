@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.change.tracking.web.internal.portlet.action;
+package com.liferay.change.tracking.web.internal.helper;
 
 import com.liferay.change.tracking.constants.CTActionKeys;
 import com.liferay.change.tracking.constants.PublicationRoleConstants;
@@ -20,7 +20,7 @@ import org.junit.Test;
 /**
  * @author Samuel Trong Tran
  */
-public class InviteUsersMVCResourceCommandTest {
+public class PublicationHelperTest {
 
 	@ClassRule
 	@Rule
@@ -101,7 +101,7 @@ public class InviteUsersMVCResourceCommandTest {
 
 	private String[] _getModelResourceActions(int role) {
 		return ReflectionTestUtil.invoke(
-			new InviteUsersMVCResourceCommand(), "_getModelResourceActions",
+			new PublicationHelper(), "_getModelResourceActions",
 			new Class<?>[] {int.class}, role);
 	}
 
