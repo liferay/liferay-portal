@@ -406,7 +406,7 @@ public class SearchResponseResourceImplTest {
 
 		Assert.assertEquals(
 			"{field1st={\"values\": [\"Lone Value\"]}, field2nd={\"values\": " +
-				"[\"4\", \"8\", \"15\", \"16\", \"23\", \"42\"]}}",
+				"[4, 8, 15, 16, 23, 42]}}",
 			String.valueOf(hit.getDocumentFields()));
 		Assert.assertEquals(
 			portalSearchHit.getExplanation(), hit.getExplanation());
