@@ -726,9 +726,9 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		ResourceFile postResourceFile =
 			URLFetchSecurityCompanyConfigurationUtil.
 				swapURLLocalNetworkAccessEnabled(
-					true,
 					() -> resourceFileResource.postSiteResourceFile(
-						testGroup.getExternalReferenceCode(), resourceFile));
+						testGroup.getExternalReferenceCode(), resourceFile),
+					true);
 
 		_assertContent(
 			expectedBytes, postResourceFile.getExternalReferenceCode(),
@@ -1616,13 +1616,13 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		URLFetchSecurityCompanyConfigurationUtil.
 			swapURLLocalNetworkAccessEnabled(
-				true,
 				() -> {
 					_testPostSiteResourceFileFileURLReferenceProblemException(
 						"Unable to download file from " + url, url);
 
 					return null;
-				});
+				},
+				true);
 	}
 
 	private void _testPostSiteResourceFileFileURLReferenceURLUnsupportedProtocolProblemException()
@@ -2156,11 +2156,11 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		URLFetchSecurityCompanyConfigurationUtil.
 			swapURLLocalNetworkAccessEnabled(
-				true,
 				() -> resourceFileResource.putSiteResourceFile(
 					testGroup.getExternalReferenceCode(),
 					postResourceFile.getExternalReferenceCode(),
-					updatedResourceFile));
+					updatedResourceFile),
+				true);
 
 		_assertContent(
 			_content2Bytes, postResourceFile.getExternalReferenceCode(),
