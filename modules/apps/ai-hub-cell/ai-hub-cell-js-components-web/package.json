@@ -1,8 +1,8 @@
 {
 	"dependencies": {
-		"@ckeditor/ckeditor5-core": "46.0.3",
-		"@ckeditor/ckeditor5-engine": "46.0.3",
-		"@ckeditor/ckeditor5-ui": "46.0.3",
+		"@ckeditor/ckeditor5-core": "49.0.0",
+		"@ckeditor/ckeditor5-engine": "49.0.0",
+		"@ckeditor/ckeditor5-ui": "49.0.0",
 		"@clayui/alert": "^3.166.0",
 		"@clayui/button": "^3.166.0",
 		"@clayui/card": "^3.166.0",
@@ -23,7 +23,7 @@
 		"@clayui/tooltip": "^3.166.0",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/layout-js-components-web": "*",
-		"ckeditor5": "46.0.3",
+		"ckeditor5": "49.0.0",
 		"classnames": "2.3.1",
 		"dompurify": "3.2.6",
 		"eventsource": "4.0.0",

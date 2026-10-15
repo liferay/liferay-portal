@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Command, Plugin} from '@ckeditor/ckeditor5-core/dist/index.js';
-import {ButtonView} from '@ckeditor/ckeditor5-ui/dist/index.js';
+import {Command, Plugin} from '@ckeditor/ckeditor5-core';
+import {ButtonView} from '@ckeditor/ckeditor5-ui';
 import {openCMSFileSelectorModal} from '@liferay/frontend-js-item-selector-web';
 
 import getIcon from '../utils/getIcon';

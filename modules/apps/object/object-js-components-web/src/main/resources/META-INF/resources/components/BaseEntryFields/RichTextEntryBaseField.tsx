@@ -6,7 +6,6 @@
 import {
 	CKEditor5ClassicEditor,
 	LiferayEditorConfig,
-	TEditor,
 } from 'frontend-editor-ckeditor-web';
 import {FieldBase} from 'frontend-js-components-web';
 import React from 'react';
@@ -15,7 +14,9 @@ interface RichTextEntryBaseFieldProps {
 	ckEditor5Config?: LiferayEditorConfig;
 	error?: string;
 	label: string;
-	onChange: (event: Event, editor: TEditor) => void;
+	onChange: NonNullable<
+		React.ComponentProps<typeof CKEditor5ClassicEditor>['onChange']
+	>;
 	required?: boolean;
 	value: string;
 }

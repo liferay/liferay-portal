@@ -14,6 +14,10 @@ import {IAssetObjectEntry} from '../../../../src/main/resources/META-INF/resourc
 import AssetNavigationModalContent from '../../../../src/main/resources/META-INF/resources/js/main_view/modal/asset_navigation_view/AssetNavigationModalContent';
 import {addParams} from '../../__mocks__/frontend-js-web';
 
+jest.mock('@ckeditor/ckeditor5-react', () => ({
+	CKEditor: () => <div />,
+}));
+
 const ACTIONS = {
 	get: {href: '/link-to-get-action', method: 'GET'},
 	update: {href: '/link-to-update-action', method: 'PATCH'},
