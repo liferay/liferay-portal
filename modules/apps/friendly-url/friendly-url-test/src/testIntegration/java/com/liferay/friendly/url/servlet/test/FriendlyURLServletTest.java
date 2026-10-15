@@ -18,6 +18,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
@@ -50,6 +51,7 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -64,6 +66,7 @@ import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -476,6 +479,71 @@ public class FriendlyURLServletTest {
 		mockHttpServletRequest.setParameter("doAsUserId", encryptedDoAsUserId);
 
 		testGetRedirect(mockHttpServletRequest, path, expectedRedirect);
+	}
+
+	@Test
+	public void testGetRedirectOnLinkToURLLayoutWithoutViewPermission()
+		throws Throwable {
+
+		Layout linkToURLLayout = LayoutTestUtil.addTypeLinkToURLLayout(
+			_group.getGroupId(),
+			"https://" + RandomTestUtil.randomString() + ".com");
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(linkToURLLayout.getPlid()), ActionKeys.VIEW);
+
+		_user = UserTestUtil.addUser();
+
+		List<User> users = Arrays.asList(
+			_userLocalService.getGuestUser(_group.getCompanyId()), _user);
+
+		List<String> paths = Arrays.asList(
+			getPath(_group, linkToURLLayout),
+			_group.getFriendlyURL() + StringPool.SLASH +
+				linkToURLLayout.getLayoutId());
+
+		for (User user : users) {
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest();
+
+			mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+
+			for (String path : paths) {
+				MockHttpServletResponse mockHttpServletResponse =
+					new MockHttpServletResponse();
+
+				testGetRedirect(
+					mockHttpServletRequest, mockHttpServletResponse, path,
+					_redirectConstructor1.newInstance(getURL(_layout)));
+
+				Assert.assertEquals(404, mockHttpServletResponse.getStatus());
+			}
+		}
+
+		Object expectedRedirect = _redirectConstructor1.newInstance(
+			getURL(linkToURLLayout));
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build())) {
+
+			for (User user : users) {
+				MockHttpServletRequest mockHttpServletRequest =
+					new MockHttpServletRequest();
+
+				mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+
+				for (String path : paths) {
+					testGetRedirect(
+						mockHttpServletRequest, path, expectedRedirect);
+				}
+			}
+		}
 	}
 
 	@Test
@@ -1561,6 +1629,9 @@ public class FriendlyURLServletTest {
 		}
 	}
 
+	private static final String _PID =
+		"com.liferay.login.web.internal.configuration.AuthLoginConfiguration";
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
@@ -1623,5 +1694,8 @@ public class FriendlyURLServletTest {
 
 	@Inject
 	private UserGroupLocalService _userGroupLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
