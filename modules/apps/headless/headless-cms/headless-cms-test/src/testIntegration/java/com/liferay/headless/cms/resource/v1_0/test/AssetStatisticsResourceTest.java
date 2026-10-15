@@ -141,7 +141,7 @@ public class AssetStatisticsResourceTest
 		_assertAssetStatistics(groupId, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 		ObjectDefinition objectDefinition =
-			_getCMSBasicWebContentObjectDefinition();
+			_getBasicWebContentObjectDefinition();
 
 		Date date = new Date();
 
@@ -460,7 +460,7 @@ public class AssetStatisticsResourceTest
 		).build();
 	}
 
-	private ObjectDefinition _getCMSBasicWebContentObjectDefinition()
+	private ObjectDefinition _getBasicWebContentObjectDefinition()
 		throws Exception {
 
 		return _objectDefinitionLocalService.
@@ -525,7 +525,7 @@ public class AssetStatisticsResourceTest
 
 		try {
 			ObjectDefinition objectDefinition =
-				_getCMSBasicWebContentObjectDefinition();
+				_getBasicWebContentObjectDefinition();
 
 			ObjectEntry targetObjectEntry = _addObjectEntry(
 				depotEntry, objectDefinition);
@@ -620,7 +620,7 @@ public class AssetStatisticsResourceTest
 		DepotEntry depotEntry2 = _addSpaceDepotEntry(serviceContext);
 
 		ObjectDefinition objectDefinition =
-			_getCMSBasicWebContentObjectDefinition();
+			_getBasicWebContentObjectDefinition();
 
 		Date date = new Date();
 
@@ -803,7 +803,7 @@ public class AssetStatisticsResourceTest
 		DepotEntry depotEntry2 = _addSpaceDepotEntry(serviceContext);
 
 		ObjectDefinition objectDefinition =
-			_getCMSBasicWebContentObjectDefinition();
+			_getBasicWebContentObjectDefinition();
 
 		for (DepotEntry depotEntry :
 				new DepotEntry[] {depotEntry1, depotEntry2}) {
