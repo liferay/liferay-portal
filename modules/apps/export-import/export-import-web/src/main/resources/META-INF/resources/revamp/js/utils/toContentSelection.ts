@@ -3,74 +3,118 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {PublishProcessRequest} from '../types/exportImportProcess';
 import {
-	PreviewPortletDataHandlerControl,
-	PreviewPortletDataHandlerSection,
+	PortletDataHandler,
+	PortletDataHandlerControl,
+	PortletDataHandlerSection,
 } from '../types/portletDataHandler';
 import {
-	LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
+	CHOICE_NAME_PRIVATE_PAGES,
+	CONTROL_NAME_PAGES,
+	CONTROL_NAME_VISIBILITY,
 	LayoutSetSelection,
-	PRIVATE_PAGES_CONTROL_NAME,
-	PUBLIC_PAGES_CONTROL_NAME,
+	PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS,
 	PortletDataHandlerSelection,
 	SECTION_KEY_CONTENT,
 	SECTION_KEY_CONTENT_AND_DATA,
-	SECTION_KEY_SITE_BUILDER,
+	getNestedPortletDataHandlerControls,
 } from './contentSelection';
 
 import type {ContentSelection} from '../components/forms/content_selector/ContentSelector';
 
-function isTrue(values: string[] | undefined): boolean {
-	return values?.[0] === 'true';
-}
-
 function toLayoutSetSelection(
-	publishParameters: Record<string, string[]>
-): LayoutSetSelection {
-	const privateLayout = PRIVATE_PAGES_CONTROL_NAME in publishParameters;
+	portletDataHandler: PortletDataHandler
+): LayoutSetSelection | undefined {
+	const portletDataHandlerControls =
+		portletDataHandler.portletDataHandlerControls ?? [];
 
-	const values =
-		publishParameters[PRIVATE_PAGES_CONTROL_NAME] ??
-		publishParameters[PUBLIC_PAGES_CONTROL_NAME] ??
-		[];
+	const visibilityPortletDataHandlerControl = portletDataHandlerControls.find(
+		(portletDataHandlerControl) =>
+			portletDataHandlerControl.name === CONTROL_NAME_VISIBILITY
+	);
 
-	const layoutIds = values.map(Number).filter((layoutId) => !isNaN(layoutId));
+	const pagesPortletDataHandlerControl = [
+		...portletDataHandlerControls,
+		...((visibilityPortletDataHandlerControl?.type === 'Choice' &&
+			visibilityPortletDataHandlerControl.portletDataHandlerControls) ||
+			[]),
+	].find(
+		(portletDataHandlerControl) =>
+			portletDataHandlerControl.name === CONTROL_NAME_PAGES
+	);
 
-	return {
-		...(layoutIds.length && {layoutIds}),
-		privateLayout,
-	};
+	if (
+		pagesPortletDataHandlerControl?.type === 'TreeSelection' &&
+		pagesPortletDataHandlerControl.selected === false
+	) {
+		return undefined;
+	}
+
+	const privateLayout =
+		visibilityPortletDataHandlerControl?.type === 'Choice' &&
+		visibilityPortletDataHandlerControl.choice ===
+			CHOICE_NAME_PRIVATE_PAGES;
+
+	return {privateLayout};
 }
 
 function toPortletDataHandlerSelection(
-	previewPortletDataHandlerControls:
-		| PreviewPortletDataHandlerControl[]
-		| undefined,
-	publishParameters: Record<string, string[]>
+	portletDataHandlerControls: PortletDataHandlerControl[] | undefined,
+	requestPortletDataHandlerControls: PortletDataHandlerControl[] | undefined
 ): PortletDataHandlerSelection {
-	if (!previewPortletDataHandlerControls?.length) {
+	if (!portletDataHandlerControls?.length) {
 		return true;
 	}
 
 	const selections: Record<string, PortletDataHandlerSelection> = {};
 
-	for (const previewPortletDataHandlerControl of previewPortletDataHandlerControls) {
-		const values = publishParameters[previewPortletDataHandlerControl.name];
+	const requestPortletDataHandlerControlsMap = new Map(
+		(requestPortletDataHandlerControls ?? []).map(
+			(requestPortletDataHandlerControl) => [
+				requestPortletDataHandlerControl.name,
+				requestPortletDataHandlerControl,
+			]
+		)
+	);
 
-		if (!values) {
+	for (const portletDataHandlerControl of portletDataHandlerControls) {
+		const requestPortletDataHandlerControl =
+			requestPortletDataHandlerControlsMap.get(
+				portletDataHandlerControl.name
+			);
+
+		if (portletDataHandlerControl.type === 'Choice') {
+			const choiceName =
+				requestPortletDataHandlerControl?.type === 'Choice'
+					? requestPortletDataHandlerControl.choice
+					: undefined;
+
+			selections[portletDataHandlerControl.name] =
+				choiceName ??
+				portletDataHandlerControl.choice ??
+				portletDataHandlerControl.choices?.[0]?.name ??
+				'';
+
 			continue;
 		}
 
-		if (previewPortletDataHandlerControl.type === 'Choice') {
-			selections[previewPortletDataHandlerControl.name] = values[0];
+		const selected =
+			requestPortletDataHandlerControl?.type !== 'Choice' &&
+			!!requestPortletDataHandlerControl?.selected;
 
+		if (!selected) {
 			continue;
 		}
 
-		selections[previewPortletDataHandlerControl.name] =
+		selections[portletDataHandlerControl.name] =
 			toPortletDataHandlerSelection(
-				previewPortletDataHandlerControl.previewPortletDataHandlerControls,
-				publishParameters
+				getNestedPortletDataHandlerControls(portletDataHandlerControl),
+				requestPortletDataHandlerControl
+					? getNestedPortletDataHandlerControls(
+							requestPortletDataHandlerControl
+						)
+					: undefined
 			);
 	}
 
@@ -78,96 +122,90 @@ function toPortletDataHandlerSelection(
 }
 
 function toSelectedFlags(
-	parameterNames: Record<string, string>,
-	publishParameters: Record<string, string[]>
+	flags: Record<string, boolean | undefined>
 ): Record<string, boolean> {
 	return Object.fromEntries(
-		Object.entries(parameterNames)
-			.filter(([, parameterName]) =>
-				isTrue(publishParameters[parameterName])
-			)
+		Object.entries(flags)
+			.filter(([, value]) => value)
 			.map(([name]) => [name, true])
 	);
 }
 
 export function toContentSelection(
-	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[],
-	publishParameters: Record<string, string[]>,
+	portletDataHandlerSections: PortletDataHandlerSection[],
+	publishProcessRequest: PublishProcessRequest,
 	{
 		commentsAndRatingsEnabled = false,
-		lookAndFeelEnabled = false,
-	}: {commentsAndRatingsEnabled?: boolean; lookAndFeelEnabled?: boolean} = {}
+	}: {commentsAndRatingsEnabled?: boolean} = {}
 ): ContentSelection | undefined {
 	const contentSelection: ContentSelection = {};
 
-	for (const previewPortletDataHandlerSection of previewPortletDataHandlerSections) {
+	const requestPortletDataHandlersMap = new Map(
+		(publishProcessRequest.portletDataHandlers ?? [])
+			.filter(
+				(requestPortletDataHandler) =>
+					requestPortletDataHandler.selected !== false
+			)
+			.map((requestPortletDataHandler) => [
+				requestPortletDataHandler.name,
+				requestPortletDataHandler,
+			])
+	);
+
+	for (const portletDataHandlerSection of portletDataHandlerSections) {
 		const sectionSelection: Record<string, PortletDataHandlerSelection> =
 			{};
 
-		for (const previewPortletDataHandler of previewPortletDataHandlerSection.previewPortletDataHandlers ??
-			[]) {
-			if (!isTrue(publishParameters[previewPortletDataHandler.name])) {
+		for (const portletDataHandler of portletDataHandlerSection.portletDataHandlers) {
+			const requestPortletDataHandler = requestPortletDataHandlersMap.get(
+				portletDataHandler.name
+			);
+
+			if (!requestPortletDataHandler) {
 				continue;
 			}
 
 			if (
-				previewPortletDataHandler.name ===
-				LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY
+				portletDataHandler.name === PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS
 			) {
-				sectionSelection[previewPortletDataHandler.name] =
-					toLayoutSetSelection(
-						publishParameters
-					) as PortletDataHandlerSelection;
+				const layoutSetSelection = toLayoutSetSelection(
+					requestPortletDataHandler
+				);
+
+				if (layoutSetSelection) {
+					sectionSelection[portletDataHandler.name] =
+						layoutSetSelection as PortletDataHandlerSelection;
+				}
 
 				continue;
 			}
 
-			sectionSelection[previewPortletDataHandler.name] =
+			sectionSelection[portletDataHandler.name] =
 				toPortletDataHandlerSelection(
-					previewPortletDataHandler.previewPortletDataHandlerControls,
-					publishParameters
+					portletDataHandler.portletDataHandlerControls,
+					requestPortletDataHandler.portletDataHandlerControls
 				);
 		}
 
 		if (Object.keys(sectionSelection).length) {
-			contentSelection[previewPortletDataHandlerSection.name] =
-				sectionSelection;
-		}
-	}
-
-	if (lookAndFeelEnabled) {
-		const lookAndFeel = toSelectedFlags(
-			{
-				logo: 'LOGO',
-				sitePagesSettings: 'LAYOUT_SET_SETTINGS',
-				siteTemplateSettings: 'LAYOUT_SET_PROTOTYPE_SETTINGS',
-				themeSettings: 'THEME_REFERENCE',
-			},
-			publishParameters
-		);
-
-		if (Object.keys(lookAndFeel).length) {
-			contentSelection[SECTION_KEY_SITE_BUILDER] = {
-				...contentSelection[SECTION_KEY_SITE_BUILDER],
-				lookAndFeel,
-			};
+			contentSelection[portletDataHandlerSection.key] = sectionSelection;
 		}
 	}
 
 	if (commentsAndRatingsEnabled) {
-		const commentsAndRatings = toSelectedFlags(
-			{comments: 'COMMENTS', ratings: 'RATINGS'},
-			publishParameters
-		);
+		const commentsAndRatings = toSelectedFlags({
+			comments: publishProcessRequest.comments,
+			ratings: publishProcessRequest.ratings,
+		});
 
-		const sectionName = [
+		const sectionKey = [
 			SECTION_KEY_CONTENT,
 			SECTION_KEY_CONTENT_AND_DATA,
-		].find((contentSectionName) => contentSelection[contentSectionName]);
+		].find((contentSectionKey) => contentSelection[contentSectionKey]);
 
-		if (Object.keys(commentsAndRatings).length && sectionName) {
-			contentSelection[sectionName] = {
-				...contentSelection[sectionName],
+		if (Object.keys(commentsAndRatings).length && sectionKey) {
+			contentSelection[sectionKey] = {
+				...contentSelection[sectionKey],
 				commentsAndRatings,
 			};
 		}

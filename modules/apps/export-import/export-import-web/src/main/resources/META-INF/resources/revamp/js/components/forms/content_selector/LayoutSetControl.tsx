@@ -3,18 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
 import {ClayCheckbox, ClayRadio} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
-import {sub} from 'frontend-js-web';
-import React, {useId, useState} from 'react';
+import React, {useId} from 'react';
 
 import {
 	LayoutSetSelection,
 	PortletDataHandlerSelection,
-	isAllLayoutsSelected,
 } from '../../../utils/contentSelection';
-import PageTreeModal, {PageTreeModalConfiguration} from '../../PageTreeModal';
+import {PageTreeModalConfiguration} from '../../PageTreeModal';
 import SectionTags from './SectionTags';
 
 interface Props {
@@ -24,35 +21,6 @@ interface Props {
 	onChange: (value: PortletDataHandlerSelection | undefined) => void;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
 	portletDataHandlerSelection: PortletDataHandlerSelection | undefined;
-}
-
-function SelectPagesButton({
-	onClick,
-	privateLayout,
-}: {
-	onClick: () => void;
-	privateLayout?: boolean;
-}) {
-	return (
-		<ClayButton
-			aria-label={
-				privateLayout === undefined
-					? undefined
-					: sub(
-							Liferay.Language.get('select-x'),
-							privateLayout
-								? Liferay.Language.get('private-pages')
-								: Liferay.Language.get('public-pages')
-						)
-			}
-			className="font-weight-semi-bold"
-			displayType="link"
-			onClick={onClick}
-			size="sm"
-		>
-			{Liferay.Language.get('select-layouts')}
-		</ClayButton>
-	);
 }
 
 function LayoutVisibilitySelector({
@@ -99,61 +67,43 @@ export default function LayoutSetControl({
 	pageTreeModalConfiguration,
 	portletDataHandlerSelection,
 }: Props) {
-	const {
-		defaultPrivateLayout = false,
-		privateLayoutsAvailable,
-		...modalConfiguration
-	} = pageTreeModalConfiguration;
+	const {privateLayoutsAvailable} = pageTreeModalConfiguration;
 
 	const checkboxId = useId();
 
-	const [showModal, setShowModal] = useState(false);
-
-	const {layoutIds = [], privateLayout = defaultPrivateLayout} = (
+	const {privateLayout = false} = (
 		typeof portletDataHandlerSelection === 'object'
 			? portletDataHandlerSelection
 			: {}
 	) as LayoutSetSelection;
 
-	const isAll = isAllLayoutsSelected(portletDataHandlerSelection);
-
 	const selected = typeof portletDataHandlerSelection === 'object';
-
-	const openModal = () => setShowModal(true);
 
 	return (
 		<div className="p-3">
 			<ClayLayout.ContentRow className="align-items-center">
 				<ClayLayout.ContentCol className="pr-2" expand={false}>
 					<ClayCheckbox
-						checked={isAll}
+						checked={selected}
 						id={checkboxId}
-						indeterminate={!isAll && !!layoutIds.length}
 						onChange={() =>
-							onChange(isAll ? undefined : {privateLayout})
+							onChange(selected ? undefined : {privateLayout})
 						}
 					/>
 				</ClayLayout.ContentCol>
 
 				<ClayLayout.ContentCol expand>
-					<div className="align-items-center d-flex justify-content-between">
-						<div className="align-items-center d-flex">
-							<label
-								className="cursor-pointer font-weight-semi-bold mb-0 small"
-								htmlFor={checkboxId}
-							>
-								{label}
-							</label>
+					<div className="align-items-center d-flex">
+						<label
+							className="cursor-pointer font-weight-semi-bold mb-0 small"
+							htmlFor={checkboxId}
+						>
+							{label}
+						</label>
 
-							<SectionTags
-								additionCount={additionCount}
-								deletionCount={deletionCount}
-							/>
-						</div>
-
-						<SelectPagesButton
-							onClick={openModal}
-							privateLayout={privateLayout}
+						<SectionTags
+							additionCount={additionCount}
+							deletionCount={deletionCount}
 						/>
 					</div>
 				</ClayLayout.ContentCol>
@@ -165,23 +115,6 @@ export default function LayoutSetControl({
 					onSetMode={(nextPrivateLayout) =>
 						onChange({privateLayout: nextPrivateLayout})
 					}
-					privateLayout={privateLayout}
-				/>
-			)}
-
-			{showModal && (
-				<PageTreeModal
-					{...modalConfiguration}
-					initialAll={isAll}
-					initialSelectedIds={layoutIds.map(String)}
-					onClose={() => setShowModal(false)}
-					onSubmit={(selectedPortletDataHandlerSelection) => {
-						setShowModal(false);
-
-						onChange(
-							selectedPortletDataHandlerSelection ?? undefined
-						);
-					}}
 					privateLayout={privateLayout}
 				/>
 			)}

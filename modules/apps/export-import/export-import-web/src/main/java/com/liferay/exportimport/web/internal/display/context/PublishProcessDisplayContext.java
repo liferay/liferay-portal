@@ -134,10 +134,6 @@ public class PublishProcessDisplayContext {
 		return ScopeUtil.isCommentsAndRatingsEnabled(_liveGroup);
 	}
 
-	public boolean isLookAndFeelEnabled() {
-		return ScopeUtil.isLookAndFeelEnabled(_liveGroup);
-	}
-
 	private String _getTimeZoneLabel(TimeZone timeZone) {
 		Date date = new Date();
 

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {PreviewPortletDataHandlerSection} from './portletDataHandler';
+import {PortletDataHandler} from './portletDataHandler';
 
 export interface Preview {
 	additionCount: number;
 	deletionCount: number;
-	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[];
+	portletDataHandlers: PortletDataHandler[];
 }
 
 export interface ImportPreview {
@@ -18,7 +18,7 @@ export interface ImportPreview {
 	exportDate: string;
 	fileName: string;
 	fileSize: number;
-	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[];
+	portletDataHandlers: PortletDataHandler[];
 	previewSites?: PreviewSite[];
 }
 

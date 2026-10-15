@@ -18,7 +18,6 @@ const GET_LAYOUTS_TREE_URL = `${PATH_MAIN}/portal/get_layouts_tree`;
 const SESSION_TREE_JS_CLICK_URL = `${PATH_MAIN}/portal/session_tree_js_click`;
 
 export interface PageTreeModalConfiguration {
-	defaultPrivateLayout?: boolean;
 	groupId: number;
 	pageSize: number;
 	privateLayoutsAvailable: boolean;
@@ -26,10 +25,7 @@ export interface PageTreeModalConfiguration {
 }
 
 interface Props
-	extends Omit<
-		PageTreeModalConfiguration,
-		'defaultPrivateLayout' | 'privateLayoutsAvailable'
-	> {
+	extends Omit<PageTreeModalConfiguration, 'privateLayoutsAvailable'> {
 	initialAll?: boolean;
 	initialSelectedIds: string[];
 	onClose: () => void;

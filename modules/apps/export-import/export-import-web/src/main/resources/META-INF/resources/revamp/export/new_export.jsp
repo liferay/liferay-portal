@@ -60,8 +60,6 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 					).put(
 						"exportProcessAPIURL", exportImportProcessDisplayContext.getExportProcessAPIURL()
 					).put(
-						"lookAndFeelEnabled", exportImportProcessDisplayContext.isLookAndFeelEnabled()
-					).put(
 						"pageTreeModalConfiguration", exportImportProcessDisplayContext.getPageTreeModalConfiguration()
 					).put(
 						"siteSelectionEnabled", exportImportProcessDisplayContext.isSiteSelectionEnabled()

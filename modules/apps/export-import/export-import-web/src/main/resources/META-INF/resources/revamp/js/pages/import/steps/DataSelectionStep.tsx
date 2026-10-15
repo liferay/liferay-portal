@@ -12,18 +12,17 @@ import {
 	FormikFieldContentSelector,
 } from '../../../components/forms/formik';
 import {ImportPreview} from '../../../types/exportImportPreview';
+import {toPortletDataHandlerSections} from '../../../utils/contentSelection';
 import FileSummary from './FileSummary';
 import SiteSelection from './SiteSelection';
 
 export default function DataSelectionStep({
 	commentsAndRatingsEnabled = false,
 	importPreview,
-	lookAndFeelEnabled = false,
 	siteSelectionEnabled = false,
 }: {
 	commentsAndRatingsEnabled?: boolean;
 	importPreview?: ImportPreview;
-	lookAndFeelEnabled?: boolean;
 	siteSelectionEnabled?: boolean;
 }) {
 	const labelId = useId();
@@ -74,11 +73,10 @@ export default function DataSelectionStep({
 				<FormikFieldContentSelector
 					aria-labelledby={labelId}
 					commentsAndRatingsEnabled={commentsAndRatingsEnabled}
-					lookAndFeelEnabled={lookAndFeelEnabled}
 					name="contentSelection"
-					previewPortletDataHandlerSections={
-						importPreview.previewPortletDataHandlerSections
-					}
+					portletDataHandlerSections={toPortletDataHandlerSections(
+						importPreview.portletDataHandlers
+					)}
 					process="import"
 				/>
 			</div>

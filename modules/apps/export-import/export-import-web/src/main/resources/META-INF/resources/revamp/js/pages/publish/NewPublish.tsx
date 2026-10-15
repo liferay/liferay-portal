@@ -23,6 +23,7 @@ import {postPublishProcess} from '../../services/postPublishProcess';
 import {
 	getSelectedDeletionCount,
 	getSelectedItemsCount,
+	toPortletDataHandlerSections,
 	toProcessRequestFlags,
 	withSelectedLayoutSetCount,
 } from '../../utils/contentSelection';
@@ -30,7 +31,7 @@ import {toWallClockDateTime, toZonedDate} from '../../utils/dateTime';
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
 import {toContentSelection} from '../../utils/toContentSelection';
 import {toDateFilterValues} from '../../utils/toDateFilterValues';
-import {toRequestPortletDataHandlers} from '../../utils/toRequestPortletDataHandlers';
+import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
 import {FormikFieldPublishScheduler} from './components/scheduler/FormikFieldPublishScheduler';
 import {
 	fromCronExpression,
@@ -57,7 +58,6 @@ export function NewPublish({
 	commentsAndRatingsEnabled = false,
 	defaultScheduled = false,
 	lastPublishDate,
-	lookAndFeelEnabled = false,
 	pageTreeModalConfiguration,
 	processesBackURL,
 	publishPreviewAPIURL,
@@ -72,7 +72,6 @@ export function NewPublish({
 	commentsAndRatingsEnabled?: boolean;
 	defaultScheduled?: boolean;
 	lastPublishDate?: string;
-	lookAndFeelEnabled?: boolean;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
 	processesBackURL: string;
 	publishPreviewAPIURL: string;
@@ -127,15 +126,18 @@ export function NewPublish({
 			const scheduledPublishProcess =
 				scheduledPublishProcessResponse.data;
 
-			const publishParameters =
-				scheduledPublishProcess.publishParameters ?? {};
+			const publishProcessRequest =
+				scheduledPublishProcess.publishProcessRequest ?? {name: ''};
 
-			const dateFilter = toDateFilterValues(publishParameters);
+			const dateFilter = toDateFilterValues(
+				publishProcessRequest,
+				timeZoneId
+			);
 
 			handleApplyFilter(dateFilter);
 
 			const scheduledTimeZoneId =
-				publishParameters.timeZoneId?.[0] ?? timeZoneId;
+				publishProcessRequest.timeZoneId ?? timeZoneId;
 
 			const scheduleStartDate = scheduledPublishProcess.scheduleStartDate;
 
@@ -145,14 +147,16 @@ export function NewPublish({
 
 			setInitialFormValues((currentInitialFormValues) => ({
 				contentSelection: toContentSelection(
-					preview.previewPortletDataHandlerSections ?? [],
-					publishParameters,
-					{commentsAndRatingsEnabled, lookAndFeelEnabled}
+					toPortletDataHandlerSections(
+						preview.portletDataHandlers ?? []
+					),
+					publishProcessRequest,
+					{commentsAndRatingsEnabled}
 				),
 				dateFilter,
-				deletions: publishParameters.DELETIONS?.[0] === 'true',
+				deletions: !!publishProcessRequest.deletions,
 				name: scheduledPublishProcess.name ?? '',
-				permissions: publishParameters.PERMISSIONS?.[0] === 'true',
+				permissions: !!publishProcessRequest.permissions,
 				scheduleValues: {
 					...currentInitialFormValues.scheduleValues,
 					enabled: true,
@@ -165,9 +169,9 @@ export function NewPublish({
 					neverEnd: !scheduledPublishProcess.scheduleEndDate,
 					startDateTime: scheduleStartDateTime,
 					timeZoneId: scheduledTimeZoneId,
-					...(scheduledPublishProcess.cronExpression
+					...(publishProcessRequest.cronExpression
 						? fromCronExpression(
-								scheduledPublishProcess.cronExpression,
+								publishProcessRequest.cronExpression,
 								scheduleStartDateTime
 							)
 						: {}),
@@ -180,7 +184,6 @@ export function NewPublish({
 		commentsAndRatingsEnabled,
 		editedScheduledPublishProcessId,
 		handleApplyFilter,
-		lookAndFeelEnabled,
 		preview,
 		scheduledPublishProcessAPIURL,
 		setError,
@@ -202,8 +205,9 @@ export function NewPublish({
 		);
 	}
 
-	const previewPortletDataHandlerSections =
-		preview?.previewPortletDataHandlerSections ?? [];
+	const portletDataHandlerSections = toPortletDataHandlerSections(
+		preview?.portletDataHandlers ?? []
+	);
 
 	return (
 		<Formik
@@ -238,11 +242,10 @@ export function NewPublish({
 						deletions: values.deletions,
 						name: values.name,
 						permissions: values.permissions,
-						requestPortletDataHandlers:
-							toRequestPortletDataHandlers(
-								previewPortletDataHandlerSections,
-								values.contentSelection
-							),
+						portletDataHandlers: toPortletDataHandlers(
+							portletDataHandlerSections,
+							values.contentSelection
+						),
 					},
 					url: publishProcessAPIURL,
 				});
@@ -323,7 +326,7 @@ export function NewPublish({
 							}
 							deletionCount={getSelectedDeletionCount(
 								preview?.deletionCount,
-								previewPortletDataHandlerSections,
+								portletDataHandlerSections,
 								contentSelection
 							)}
 							deletionsDescription={Liferay.Language.get(
@@ -334,25 +337,23 @@ export function NewPublish({
 							)}
 							itemsCount={getSelectedItemsCount(
 								preview?.additionCount,
-								previewPortletDataHandlerSections,
+								portletDataHandlerSections,
 								contentSelection
 							)}
 							lastPublishDate={lastPublishDate}
 							loading={loading}
-							lookAndFeelEnabled={lookAndFeelEnabled}
 							onApplyFilter={handleApplyFilter}
-							pageTreeModalConfiguration={{
-								...pageTreeModalConfiguration,
-								title: Liferay.Language.get('pages-to-publish'),
-							}}
+							pageTreeModalConfiguration={
+								pageTreeModalConfiguration
+							}
 							permissionsDescription={Liferay.Language.get(
 								'publish-permissions-help'
 							)}
 							permissionsLabel={Liferay.Language.get(
 								'publish-permissions'
 							)}
-							previewPortletDataHandlerSections={withSelectedLayoutSetCount(
-								previewPortletDataHandlerSections,
+							portletDataHandlerSections={withSelectedLayoutSetCount(
+								portletDataHandlerSections,
 								contentSelection
 							)}
 							process="publish"

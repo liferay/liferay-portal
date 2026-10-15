@@ -13,8 +13,11 @@ import {postImportProcess} from '../../services/postImportProcess';
 import {ImportPreview} from '../../types/exportImportPreview';
 import {DataStrategy, UserIdStrategy} from '../../types/exportImportProcess';
 import {Scope} from '../../types/scope';
-import {toProcessRequestFlags} from '../../utils/contentSelection';
-import {toRequestPortletDataHandlers} from '../../utils/toRequestPortletDataHandlers';
+import {
+	toPortletDataHandlerSections,
+	toProcessRequestFlags,
+} from '../../utils/contentSelection';
+import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
 import DataSelectionStep from './steps/DataSelectionStep';
 import FileSelectionStep from './steps/FileSelectionStep';
 import SettingsStep, {SETTINGS_STEP_INITIAL_VALUES} from './steps/SettingsStep';
@@ -24,7 +27,6 @@ export function NewImport({
 	commentsAndRatingsEnabled = false,
 	importPreviewAPIURL,
 	importProcessAPIURL,
-	lookAndFeelEnabled = false,
 	scope,
 	siteSelectionEnabled = false,
 }: {
@@ -32,7 +34,6 @@ export function NewImport({
 	commentsAndRatingsEnabled?: boolean;
 	importPreviewAPIURL: string;
 	importProcessAPIURL: string;
-	lookAndFeelEnabled?: boolean;
 	scope: Scope;
 	siteSelectionEnabled?: boolean;
 }) {
@@ -76,7 +77,6 @@ export function NewImport({
 				<DataSelectionStep
 					commentsAndRatingsEnabled={commentsAndRatingsEnabled}
 					importPreview={importPreview}
-					lookAndFeelEnabled={lookAndFeelEnabled}
 					siteSelectionEnabled={siteSelectionEnabled}
 				/>
 			</WizardStep>
@@ -115,12 +115,12 @@ export function NewImport({
 							deletions: !!values.deletions,
 							name: values.name,
 							permissions: !!values.permissions,
-							requestPortletDataHandlers:
-								toRequestPortletDataHandlers(
-									importPreview.previewPortletDataHandlerSections ??
-										[],
-									values.contentSelection
+							portletDataHandlers: toPortletDataHandlers(
+								toPortletDataHandlerSections(
+									importPreview.portletDataHandlers ?? []
 								),
+								contentSelection
+							),
 							siteExternalReferenceCodes:
 								values.siteExternalReferenceCodes,
 							userIdStrategy:

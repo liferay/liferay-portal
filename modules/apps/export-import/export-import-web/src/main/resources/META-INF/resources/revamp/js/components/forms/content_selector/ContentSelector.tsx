@@ -7,7 +7,7 @@ import ClayAlert from '@clayui/alert';
 import React from 'react';
 
 import {ExportImportProcess} from '../../../types/exportImportProcess';
-import {PreviewPortletDataHandlerSection} from '../../../types/portletDataHandler';
+import {PortletDataHandlerSection} from '../../../types/portletDataHandler';
 import {
 	getVisibleSections,
 	updateSelection,
@@ -22,11 +22,10 @@ interface ContentSelectorProps {
 	'commentsAndRatingsEnabled'?: boolean;
 	'contentSelection': ContentSelection | undefined;
 	'errorMessage'?: string;
-	'lookAndFeelEnabled'?: boolean;
 	'name': string;
 	'onChange': (value: ContentSelection | undefined) => void;
 	'pageTreeModalConfiguration'?: PageTreeModalConfiguration;
-	'previewPortletDataHandlerSections': PreviewPortletDataHandlerSection[];
+	'portletDataHandlerSections': PortletDataHandlerSection[];
 	'process'?: ExportImportProcess;
 	'showDeletions'?: boolean;
 }
@@ -36,23 +35,18 @@ export default function ContentSelector({
 	commentsAndRatingsEnabled = false,
 	contentSelection = {},
 	errorMessage,
-	lookAndFeelEnabled = false,
 	name,
 	onChange,
 	pageTreeModalConfiguration,
 	process = 'export',
-	previewPortletDataHandlerSections,
+	portletDataHandlerSections,
 	showDeletions,
 }: ContentSelectorProps) {
 	const errorId = errorMessage ? `${name}-error-message` : undefined;
 
-	const visibleSections = getVisibleSections(
-		previewPortletDataHandlerSections,
-		{
-			lookAndFeelEnabled,
-			showDeletions,
-		}
-	);
+	const visibleSections = getVisibleSections(portletDataHandlerSections, {
+		showDeletions,
+	});
 
 	return (
 		<div
@@ -63,31 +57,24 @@ export default function ContentSelector({
 			role="group"
 		>
 			{visibleSections.map(
-				(
-					previewPortletDataHandlerSection: PreviewPortletDataHandlerSection
-				) => (
+				(portletDataHandlerSection: PortletDataHandlerSection) => (
 					<ContentSection
 						commentsAndRatingsEnabled={commentsAndRatingsEnabled}
-						key={previewPortletDataHandlerSection.name}
-						lookAndFeelEnabled={lookAndFeelEnabled}
+						key={portletDataHandlerSection.key}
 						onChange={(sectionSelection) =>
 							onChange(
 								updateSelection(
 									contentSelection,
-									previewPortletDataHandlerSection.name,
+									portletDataHandlerSection.key,
 									sectionSelection
 								)
 							)
 						}
 						pageTreeModalConfiguration={pageTreeModalConfiguration}
-						previewPortletDataHandlerSection={
-							previewPortletDataHandlerSection
-						}
+						portletDataHandlerSection={portletDataHandlerSection}
 						process={process}
 						sectionSelection={
-							contentSelection[
-								previewPortletDataHandlerSection.name
-							]
+							contentSelection[portletDataHandlerSection.key]
 						}
 						showDeletions={showDeletions}
 					/>

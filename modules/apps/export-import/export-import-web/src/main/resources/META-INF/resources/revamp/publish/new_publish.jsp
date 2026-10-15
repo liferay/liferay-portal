@@ -57,8 +57,6 @@ renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishPr
 			).put(
 				"lastPublishDate", (lastPublishDate == null) ? null : String.valueOf(lastPublishDate.toInstant())
 			).put(
-				"lookAndFeelEnabled", publishProcessDisplayContext.isLookAndFeelEnabled()
-			).put(
 				"pageTreeModalConfiguration", publishProcessDisplayContext.getPageTreeModalConfiguration()
 			).put(
 				"processesBackURL", HttpComponentsUtil.setParameter(backURL, liferayPortletResponse.getNamespace() + "tabs1", "processes")

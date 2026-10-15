@@ -23,11 +23,12 @@ import {Preview} from '../../types/exportImportPreview';
 import {
 	getSelectedDeletionCount,
 	getSelectedItemsCount,
+	toPortletDataHandlerSections,
 	toProcessRequestFlags,
 	withSelectedLayoutSetCount,
 } from '../../utils/contentSelection';
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
-import {toRequestPortletDataHandlers} from '../../utils/toRequestPortletDataHandlers';
+import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
 import SiteSelection from './components/SiteSelection';
 
 type ExportFormValues = {
@@ -46,7 +47,6 @@ export function NewExport({
 	exportPreviewAPIURL,
 	exportPreviewSitesAPIURL,
 	exportProcessAPIURL,
-	lookAndFeelEnabled = false,
 	pageTreeModalConfiguration,
 	siteSelectionEnabled = false,
 	timeZoneId,
@@ -57,7 +57,6 @@ export function NewExport({
 	exportPreviewAPIURL: string;
 	exportPreviewSitesAPIURL?: string;
 	exportProcessAPIURL: string;
-	lookAndFeelEnabled?: boolean;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
 	siteSelectionEnabled?: boolean;
 	timeZoneId: string;
@@ -69,8 +68,9 @@ export function NewExport({
 		return <ClayAlert displayType="danger">{error}</ClayAlert>;
 	}
 
-	const previewPortletDataHandlerSections =
-		preview?.previewPortletDataHandlerSections ?? [];
+	const portletDataHandlerSections = toPortletDataHandlerSections(
+		preview?.portletDataHandlers ?? []
+	);
 
 	const initialFormValues: ExportFormValues = {
 		contentSelection: undefined,
@@ -92,11 +92,10 @@ export function NewExport({
 						deletions: values.deletions,
 						name: values.name,
 						permissions: values.permissions,
-						requestPortletDataHandlers:
-							toRequestPortletDataHandlers(
-								previewPortletDataHandlerSections,
-								values.contentSelection
-							),
+						portletDataHandlers: toPortletDataHandlers(
+							portletDataHandlerSections,
+							values.contentSelection
+						),
 						siteExternalReferenceCodes:
 							values.siteExternalReferenceCodes,
 					},
@@ -158,7 +157,7 @@ export function NewExport({
 							}
 							deletionCount={getSelectedDeletionCount(
 								preview?.deletionCount,
-								previewPortletDataHandlerSections,
+								portletDataHandlerSections,
 								contentSelection
 							)}
 							deletionsDescription={Liferay.Language.get(
@@ -169,11 +168,10 @@ export function NewExport({
 							)}
 							itemsCount={getSelectedItemsCount(
 								preview?.additionCount,
-								previewPortletDataHandlerSections,
+								portletDataHandlerSections,
 								contentSelection
 							)}
 							loading={loading}
-							lookAndFeelEnabled={lookAndFeelEnabled}
 							onApplyFilter={handleApplyFilter}
 							pageTreeModalConfiguration={
 								pageTreeModalConfiguration
@@ -184,8 +182,8 @@ export function NewExport({
 							permissionsLabel={Liferay.Language.get(
 								'export-permissions'
 							)}
-							previewPortletDataHandlerSections={withSelectedLayoutSetCount(
-								previewPortletDataHandlerSections,
+							portletDataHandlerSections={withSelectedLayoutSetCount(
+								portletDataHandlerSections,
 								contentSelection
 							)}
 							subtitle={Liferay.Language.get(

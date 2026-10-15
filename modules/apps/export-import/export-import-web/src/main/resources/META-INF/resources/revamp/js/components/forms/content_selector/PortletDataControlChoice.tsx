@@ -6,32 +6,32 @@
 import classnames from 'classnames';
 import React from 'react';
 
-import {PreviewPortletDataHandlerChoice} from '../../../types/portletDataHandler';
+import {PortletDataHandlerChoice} from '../../../types/portletDataHandler';
 import FieldSelectWithOption from '../FieldSelectWithOption';
 
 interface PortletDataControlChoiceProps {
 	className?: string;
 	onChange: (value: string) => void;
-	previewPortletDataHandlerChoice: PreviewPortletDataHandlerChoice;
+	portletDataHandlerChoice: PortletDataHandlerChoice;
 	value: string;
 }
 
 export default function PortletDataControlChoice({
 	className = 'ml-1',
 	onChange,
-	previewPortletDataHandlerChoice,
+	portletDataHandlerChoice,
 	value,
 }: PortletDataControlChoiceProps) {
 	return (
 		<FieldSelectWithOption
 			className="w-auto"
 			formGroupProps={{className: classnames('mb-0', className)}}
-			label={previewPortletDataHandlerChoice.label}
-			name={previewPortletDataHandlerChoice.name}
+			label={portletDataHandlerChoice.label ?? ''}
+			name={portletDataHandlerChoice.name}
 			onChange={(event) => {
 				onChange(event.target.value);
 			}}
-			options={previewPortletDataHandlerChoice.choices.map(
+			options={(portletDataHandlerChoice.choices ?? []).map(
 				({label, name}) => ({
 					label,
 					value: name,

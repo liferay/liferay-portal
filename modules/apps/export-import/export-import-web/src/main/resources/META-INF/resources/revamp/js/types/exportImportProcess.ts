@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {RequestPortletDataHandler} from './portletDataHandler';
+import {PortletDataHandler} from './portletDataHandler';
 
 export type ExportImportProcess = 'export' | 'import' | 'publish';
 
@@ -26,16 +26,12 @@ export interface ExportProcessRequest {
 	dateRangeType?: DateRangeType;
 	deletions?: boolean;
 	endDate?: string;
-	logo?: boolean;
 	name: string;
 	permissions?: boolean;
+	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
-	requestPortletDataHandlers?: RequestPortletDataHandler[];
 	siteExternalReferenceCodes?: string[];
-	sitePagesSettings?: boolean;
-	siteTemplateSettings?: boolean;
 	startDate?: string;
-	themeSettings?: boolean;
 }
 
 export const DATA_STRATEGIES = {
@@ -66,15 +62,11 @@ export interface ImportProcessRequest {
 	comments?: boolean;
 	dataStrategy?: DataStrategy;
 	deletions?: boolean;
-	logo?: boolean;
 	name?: string;
 	permissions?: boolean;
+	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
-	requestPortletDataHandlers?: RequestPortletDataHandler[];
 	siteExternalReferenceCodes?: string[];
-	sitePagesSettings?: boolean;
-	siteTemplateSettings?: boolean;
-	themeSettings?: boolean;
 	userIdStrategy?: UserIdStrategy;
 }
 
@@ -92,27 +84,22 @@ export interface PublishProcessRequest {
 	dateRangeType?: DateRangeType;
 	deletions?: boolean;
 	endDate?: string;
-	logo?: boolean;
 	name: string;
 	permissions?: boolean;
+	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
-	requestPortletDataHandlers?: RequestPortletDataHandler[];
 	scheduleEndDate?: string;
 	scheduleStartDate?: string;
-	sitePagesSettings?: boolean;
-	siteTemplateSettings?: boolean;
 	startDate?: string;
-	themeSettings?: boolean;
 	timeZoneId?: string;
 }
 
 export interface ScheduledPublishProcess {
-	cronExpression?: string;
 	dateCreated?: string;
 	id?: number;
 	name?: string;
 	nextFireDate?: string;
-	publishParameters?: Record<string, string[]>;
+	publishProcessRequest?: PublishProcessRequest;
 	scheduleEndDate?: string;
 	scheduleStartDate?: string;
 }

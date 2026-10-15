@@ -9,10 +9,11 @@ import classnames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {ReactNode, useId} from 'react';
 
-import {PreviewPortletDataHandlerControl} from '../../../types/portletDataHandler';
+import {PortletDataHandlerControl} from '../../../types/portletDataHandler';
 import {
-	LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
+	PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS,
 	PortletDataHandlerSelection,
+	getNestedPortletDataHandlerControls,
 	getPortletDataHandlerSelection,
 	getSelectionSummary,
 	isSelected,
@@ -29,40 +30,40 @@ export default function PortletDataControl({
 	compact = false,
 	onChange,
 	pageTreeModalConfiguration,
+	portletDataHandlerControl,
 	portletDataHandlerSelection,
-	previewPortletDataHandlerControl,
 	showDeletions,
 	topLevel = false,
 }: {
 	compact?: boolean;
 	onChange: (value: PortletDataHandlerSelection | undefined) => void;
 	pageTreeModalConfiguration?: PageTreeModalConfiguration;
+	portletDataHandlerControl: PortletDataHandlerControl;
 	portletDataHandlerSelection: PortletDataHandlerSelection | undefined;
-	previewPortletDataHandlerControl: PreviewPortletDataHandlerControl;
 	showDeletions?: boolean;
 	topLevel?: boolean;
 }) {
 	const checkboxId = useId();
 
 	if (
-		previewPortletDataHandlerControl.name ===
-			LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY &&
+		portletDataHandlerControl.name ===
+			PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS &&
 		pageTreeModalConfiguration
 	) {
 		return (
 			<LayoutSetControl
 				additionCount={
-					previewPortletDataHandlerControl.type === 'Boolean'
-						? previewPortletDataHandlerControl.additionCount
+					portletDataHandlerControl.type === 'Boolean'
+						? portletDataHandlerControl.additionCount
 						: undefined
 				}
 				deletionCount={
-					previewPortletDataHandlerControl.type === 'Boolean' &&
+					portletDataHandlerControl.type === 'Boolean' &&
 					showDeletions
-						? previewPortletDataHandlerControl.deletionCount
+						? portletDataHandlerControl.deletionCount
 						: undefined
 				}
-				label={previewPortletDataHandlerControl.label}
+				label={portletDataHandlerControl.label ?? ''}
 				onChange={onChange}
 				pageTreeModalConfiguration={pageTreeModalConfiguration}
 				portletDataHandlerSelection={portletDataHandlerSelection}
@@ -70,13 +71,11 @@ export default function PortletDataControl({
 		);
 	}
 
-	if (previewPortletDataHandlerControl.type === 'Choice') {
+	if (portletDataHandlerControl.type === 'Choice') {
 		return (
 			<PortletDataControlChoice
 				onChange={onChange}
-				previewPortletDataHandlerChoice={
-					previewPortletDataHandlerControl
-				}
+				portletDataHandlerChoice={portletDataHandlerControl}
 				value={
 					typeof portletDataHandlerSelection === 'string'
 						? portletDataHandlerSelection
@@ -88,7 +87,7 @@ export default function PortletDataControl({
 
 	const selected = isSelected(
 		portletDataHandlerSelection,
-		previewPortletDataHandlerControl
+		portletDataHandlerControl
 	);
 	const portletDataHandlerSelections =
 		typeof portletDataHandlerSelection === 'object'
@@ -97,32 +96,32 @@ export default function PortletDataControl({
 					PortletDataHandlerSelection
 				>)
 			: {};
-	const previewPortletDataHandlerControls =
-		previewPortletDataHandlerControl.previewPortletDataHandlerControls ??
-		[];
+	const portletDataHandlerControls = getNestedPortletDataHandlerControls(
+		portletDataHandlerControl
+	);
 
 	const additionCount =
-		previewPortletDataHandlerControl.type === 'Boolean'
-			? previewPortletDataHandlerControl.additionCount
+		portletDataHandlerControl.type === 'Boolean'
+			? portletDataHandlerControl.additionCount
 			: undefined;
 	const deletionCount =
-		previewPortletDataHandlerControl.type === 'Boolean' && showDeletions
-			? previewPortletDataHandlerControl.deletionCount
+		portletDataHandlerControl.type === 'Boolean' && showDeletions
+			? portletDataHandlerControl.deletionCount
 			: undefined;
 	const description =
-		topLevel && previewPortletDataHandlerControl.type === 'Boolean'
-			? previewPortletDataHandlerControl.description
+		topLevel && portletDataHandlerControl.type === 'Boolean'
+			? portletDataHandlerControl.description
 			: undefined;
 	const tag =
-		topLevel && previewPortletDataHandlerControl.type === 'Boolean'
-			? previewPortletDataHandlerControl.tag
+		topLevel && portletDataHandlerControl.type === 'Boolean'
+			? portletDataHandlerControl.tag
 			: undefined;
 
 	const rowProps = {
 		checkboxId,
 		description,
 		indeterminate: !!portletDataHandlerSelection && !selected,
-		label: previewPortletDataHandlerControl.label,
+		label: portletDataHandlerControl.label ?? '',
 		labelClassName: topLevel
 			? 'font-weight-semi-bold'
 			: 'font-weight-normal',
@@ -130,13 +129,7 @@ export default function PortletDataControl({
 			onChange(
 				selected
 					? undefined
-					: getPortletDataHandlerSelection(
-							previewPortletDataHandlerControl,
-							{
-								privateLayout:
-									pageTreeModalConfiguration?.defaultPrivateLayout,
-							}
-						)
+					: getPortletDataHandlerSelection(portletDataHandlerControl)
 			),
 		selected,
 		tags: (
@@ -148,32 +141,30 @@ export default function PortletDataControl({
 		),
 	};
 
-	const body = previewPortletDataHandlerControls
+	const body = portletDataHandlerControls
 		.filter(
-			(nestedPreviewPortletDataHandlerControl) =>
-				nestedPreviewPortletDataHandlerControl.type !== 'Choice' ||
+			(nestedPortletDataHandlerControl) =>
+				nestedPortletDataHandlerControl.type !== 'Choice' ||
 				!!portletDataHandlerSelection
 		)
-		.map((nestedPreviewPortletDataHandlerControl) => (
+		.map((nestedPortletDataHandlerControl) => (
 			<PortletDataControl
-				key={nestedPreviewPortletDataHandlerControl.name}
+				key={nestedPortletDataHandlerControl.name}
 				onChange={(nestedPortletDataHandlerSelection) =>
 					onChange(
 						updateSelection(
 							portletDataHandlerSelections,
-							nestedPreviewPortletDataHandlerControl.name,
+							nestedPortletDataHandlerControl.name,
 							nestedPortletDataHandlerSelection
 						)
 					)
 				}
 				pageTreeModalConfiguration={pageTreeModalConfiguration}
+				portletDataHandlerControl={nestedPortletDataHandlerControl}
 				portletDataHandlerSelection={
 					portletDataHandlerSelections[
-						nestedPreviewPortletDataHandlerControl.name
+						nestedPortletDataHandlerControl.name
 					]
-				}
-				previewPortletDataHandlerControl={
-					nestedPreviewPortletDataHandlerControl
 				}
 			/>
 		));
@@ -186,10 +177,8 @@ export default function PortletDataControl({
 				bodyChildren={body}
 				compact={compact}
 				expandable={expandable}
+				portletDataHandlerControls={portletDataHandlerControls}
 				portletDataHandlerSelections={portletDataHandlerSelections}
-				previewPortletDataHandlerControls={
-					previewPortletDataHandlerControls
-				}
 				rowProps={rowProps}
 			/>
 		);
@@ -210,15 +199,15 @@ function PortletDataHandlerPanel({
 	bodyChildren,
 	compact = false,
 	expandable,
+	portletDataHandlerControls,
 	portletDataHandlerSelections,
-	previewPortletDataHandlerControls,
 	rowProps,
 }: {
 	bodyChildren: ReactNode;
 	compact?: boolean;
 	expandable: boolean;
+	portletDataHandlerControls: PortletDataHandlerControl[];
 	portletDataHandlerSelections: Record<string, PortletDataHandlerSelection>;
-	previewPortletDataHandlerControls: PreviewPortletDataHandlerControl[];
 	rowProps: React.ComponentProps<typeof ControlRow>;
 }) {
 	return (
@@ -262,7 +251,7 @@ function PortletDataHandlerPanel({
 						</ClayButton>
 					)}
 					summary={getSelectionSummary(
-						previewPortletDataHandlerControls,
+						portletDataHandlerControls,
 						portletDataHandlerSelections
 					)}
 				>

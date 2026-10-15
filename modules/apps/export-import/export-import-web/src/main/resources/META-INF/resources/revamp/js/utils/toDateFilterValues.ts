@@ -4,8 +4,10 @@
  */
 
 import {DateFilterValues, LastRange, Range} from '../components/date_filter';
+import {PublishProcessRequest} from '../types/exportImportProcess';
+import {toWallClockDateTime} from './dateTime';
 
-const EPOCH_YEAR = 1970;
+const HOUR = 60 * 60 * 1000;
 
 const LAST_RANGES: Array<{hours: number; lastRange: LastRange}> = [
 	{hours: 12, lastRange: LastRange.H12},
@@ -28,49 +30,39 @@ function toLastRange(hours: number): LastRange | null {
 }
 
 function toDateTime(
-	publishParameters: Record<string, string[]>,
-	prefix: string
+	isoDateTime: string | undefined,
+	timeZoneId: string
 ): string {
-	const getNumber = (name: string) =>
-		Number(publishParameters[`${prefix}${name}`]?.[0] ?? 0);
-
-	const year = getNumber('Year');
-
-	if (Number.isNaN(year) || year <= EPOCH_YEAR) {
+	if (!isoDateTime || Number.isNaN(Date.parse(isoDateTime))) {
 		return '';
 	}
 
-	const hour = (getNumber('Hour') % 12) + (getNumber('AmPm') ? 12 : 0);
-
-	const pad = (value: number) => String(value).padStart(2, '0');
-
-	return `${year}-${pad(getNumber('Month') + 1)}-${pad(
-		getNumber('Day')
-	)} ${pad(hour)}:${pad(getNumber('Minute'))}`;
+	return toWallClockDateTime(isoDateTime, timeZoneId);
 }
 
 export function toDateFilterValues(
-	publishParameters: Record<string, string[]>
+	{dateRangeType, endDate, startDate}: PublishProcessRequest,
+	timeZoneId: string
 ): DateFilterValues {
-	const range = publishParameters.range?.[0];
-
-	if (range === 'dateRange') {
+	if (dateRangeType === 'DATE_RANGE') {
 		return {
-			endDate: toDateTime(publishParameters, 'endDate'),
+			endDate: toDateTime(endDate, timeZoneId),
 			range: Range.DateRange,
-			startDate: toDateTime(publishParameters, 'startDate'),
+			startDate: toDateTime(startDate, timeZoneId),
 		};
 	}
 
-	if (range === 'last') {
-		const lastRange = toLastRange(Number(publishParameters.last?.[0]));
+	if (dateRangeType === 'LAST' && startDate) {
+		const lastRange = toLastRange(
+			Math.round((Date.now() - Date.parse(startDate)) / HOUR)
+		);
 
 		if (lastRange) {
 			return {last: lastRange, range: Range.Last};
 		}
 	}
 
-	if (range === 'fromLastPublishDate') {
+	if (dateRangeType === 'FROM_LAST_PUBLISH_DATE') {
 		return {range: Range.FromLastPublishDate};
 	}
 

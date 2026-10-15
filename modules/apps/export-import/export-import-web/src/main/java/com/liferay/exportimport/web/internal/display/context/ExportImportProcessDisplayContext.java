@@ -232,8 +232,6 @@ public class ExportImportProcessDisplayContext {
 		Group liveGroup = StagingUtil.getLiveGroup(_group);
 
 		return HashMapBuilder.<String, Object>put(
-			"defaultPrivateLayout", liveGroup.isLayoutSetPrototype()
-		).put(
 			"groupId", liveGroup.getGroupId()
 		).put(
 			"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
@@ -262,16 +260,6 @@ public class ExportImportProcessDisplayContext {
 
 	public boolean isCommentsAndRatingsEnabled() {
 		return ScopeUtil.isCommentsAndRatingsEnabled(_group);
-	}
-
-	public boolean isLookAndFeelEnabled() {
-		if ((getScope() != Scope.PORTLET) &&
-			ScopeUtil.isLookAndFeelEnabled(_group)) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	public boolean isSiteSelectionEnabled() {
