@@ -14,7 +14,7 @@ A generated file carries the `@generated` Javadoc marker that Service Builder an
 
 Anchor that match to a Javadoc tag or an annotation rather than searching the whole file for the bare word, or a class that only mentions `@generated` in prose drops out of the scan entirely.
 
-A `ConcurrentReferenceKeyHashMap` also pays on every write, so the scan reports each added `compute`, `computeIfAbsent`, or `merge` call on a name the file assigns a `ConcurrentReferenceKeyHashMap` to, even when the line does not name the class. When the file assigns none, that pattern falls back to the class name, which the first pattern already matches. Each finding starts with the path of its file.
+A `ConcurrentReferenceKeyHashMap` also registers with `FinalizeManager` on every write, so the scan reports each added `compute`, `computeIfAbsent`, or `merge` call on a name the file assigns a `ConcurrentReferenceKeyHashMap` to, even when the line does not name the class. When the file assigns none, that pattern falls back to the class name, which the first pattern already matches. Each finding starts with the path of its file.
 
 ```bash
 FINDINGS=$(
@@ -47,9 +47,9 @@ FINDINGS=$(
 			| command grep \
 				--extended-regexp \
 				--label="${FILE}" \
-				--with-filename \
 				--regexp='Concurrent(Identity|Mapper|ReferenceKey|ReferenceValue)HashMap' \
-				--regexp="(^|[^[:alnum:]_])(${NAMES:-ConcurrentReferenceKeyHashMap})\.(compute|computeIfAbsent|merge)\("
+				--regexp="(^|[^[:alnum:]_])(${NAMES:-ConcurrentReferenceKeyHashMap})\.(compute|computeIfAbsent|merge)\(" \
+				--with-filename
 	done
 )
 
@@ -64,15 +64,15 @@ Use `while read` rather than a `for` over an unquoted substitution, so a path ho
 
 When `${FINDINGS}` is empty, the branch adds no new `ConcurrentMapperHashMap` usage, so the validation passes.
 
-Otherwise, read each finding in its file and check it against the known mistakes below, whoever runs pr-check. An import, or a line that only names a type, is not a mistake. Neither is a line that only renames, reformats, or moves existing code. When the branch newly constructs a `ConcurrentReferenceKeyHashMap`, also check the existing `compute`, `computeIfAbsent`, and `merge` calls on it, including those in files the branch does not change.
+Otherwise, read each finding in its file and check it against the known mistakes below. This step applies to everyone, including the logins on the whitelist. An import, or a line that only names a type, is not a mistake. Neither is a line that only renames, reformats, or moves existing code. When the branch newly constructs a `ConcurrentReferenceKeyHashMap`, also check the existing `compute`, `computeIfAbsent`, and `merge` calls on it, including those in files the branch does not change.
 
-1. **A write on every access.** A `compute`, `computeIfAbsent`, or `merge` call on a `ConcurrentReferenceKeyHashMap`, unless it runs only after `get` on the same map returned `null`. Like `put` and `putIfAbsent`, these calls register the key with `FinalizeManager` every time, even when the key is present. Read with `get` first, and build the value and `putIfAbsent` it only on a miss.
+1. **A write on every access.** The branch calls `compute`, `computeIfAbsent`, or `merge` on a `ConcurrentReferenceKeyHashMap` without first getting `null` from `get` on the same map. Like `put` and `putIfAbsent`, these calls register the key with `FinalizeManager` every time, even when the key is present. Read with `get` first, and build the value and `putIfAbsent` it only on a miss.
 
-1. **A key with nothing else holding it.** A `ConcurrentReferenceKeyHashMap` or a `ConcurrentIdentityHashMap` keyed by `String` or by a boxed primitive such as `Integer` or `Long`. A literal, an interned string, or a cached box is never collected. A key built for each call is held only by the map, so a weak reference drops it at the next garbage collection and a soft reference turns the map into an unbounded cache. Use a `ConcurrentHashMap` over a bounded key set, or keep the value on the object that owns the key.
+1. **A key with nothing else holding it.** The branch keys a `ConcurrentReferenceKeyHashMap` or a `ConcurrentIdentityHashMap` by `String` or by a boxed primitive such as `Integer` or `Long`. A literal, an interned string, or a cached box is never collected. A key built for each call is held only by the map, so a weak reference drops it at the next garbage collection and a soft reference turns the map into an unbounded cache. Use a `ConcurrentHashMap` over a bounded key set, or keep the value on the object that owns the key.
 
-1. **A value that holds its key.** A value in a `ConcurrentReferenceKeyHashMap` that strongly references its key, such as a dom4j `QName` and its name, or a class loader whose parent is the key. The key is never collected, so the map is a plain map that pays for references. Use a `ConcurrentHashMap`, or keep the value on the object that owns the key.
+1. **A value that holds its key.** The branch stores a value in a `ConcurrentReferenceKeyHashMap` that strongly references its key, such as a dom4j `QName` and its name, or a class loader whose parent is the key. The key is never collected, so the map is a plain map that pays for references. Use a `ConcurrentHashMap`, or keep the value on the object that owns the key.
 
-1. **A mutable value changed in place.** A value that is not thread safe, such as a `HashMap`, an `ArrayList`, or an array, changed after it is stored in the map, so a reader can see it half written. Store an immutable or thread safe value.
+1. **A mutable value changed in place.** The branch changes a value that is not thread safe, such as a `HashMap`, an `ArrayList`, or an array, after storing it in the map, so a reader can see it half written. Store an immutable or thread safe value.
 
 When any finding repeats a known mistake, the validation fails for everyone and the whitelist below does not apply. Report the message below to the developer with one row for each mistake, giving the path as the finding prints it and the line number in that file, and return it as the failure note.
 
