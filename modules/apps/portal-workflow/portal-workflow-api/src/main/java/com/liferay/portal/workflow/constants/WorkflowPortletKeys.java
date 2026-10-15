@@ -32,4 +32,8 @@ public class WorkflowPortletKeys {
 		"com_liferay_portal_workflow_instance_tracker_web_internal_portlet_" +
 			"WorkflowInstanceTrackerPortlet";
 
+	public static final String WORKFLOW_METRICS =
+		"com_liferay_portal_workflow_metrics_web_internal_portlet_" +
+			"WorkflowMetricsPortlet";
+
 }
