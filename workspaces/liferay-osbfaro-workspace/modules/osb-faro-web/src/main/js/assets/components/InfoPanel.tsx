@@ -225,8 +225,10 @@ const CategoriesInfoPanelContent: React.FC<CategoriesInfoPanelContentProps> = ({
 								{categories.map(
 									({id: categoryId, name: categoryName}) => (
 										<ClayLabel
-											className="label-lg"
+											displayType="secondary"
+											inverse
 											key={categoryId}
+											size="lg"
 										>
 											{categoryName}
 										</ClayLabel>
@@ -286,7 +288,12 @@ const TagsInfoPanelContent: React.FC<TagsInfoPanelContentProps> = ({items}) => {
 
 				{!!items?.length &&
 					items.map(({id, name}) => (
-						<ClayLabel className="label-lg" key={id}>
+						<ClayLabel
+							displayType="secondary"
+							inverse
+							key={id}
+							size="lg"
+						>
 							{name}
 						</ClayLabel>
 					))}

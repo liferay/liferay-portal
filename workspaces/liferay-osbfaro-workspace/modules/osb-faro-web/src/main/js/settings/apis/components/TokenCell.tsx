@@ -1,5 +1,5 @@
+import ClayLabel from '@clayui/label';
 import getCN from 'classnames';
-import Label from 'shared/components/Label';
 import React from 'react';
 import {AccessToken} from '../types';
 import {isExpired} from '../pages/AccessTokenList';
@@ -21,9 +21,14 @@ const TokenCell: React.FC<
 			<strong className="font-weight-bold">{token.slice(-4)}</strong>
 
 			{expired && (
-				<Label className="ml-2" display="danger" size="lg" uppercase>
+				<ClayLabel
+					className="ml-2"
+					displayType="danger"
+					inverse
+					size="lg"
+				>
 					{Liferay.Language.get('expired')}
-				</Label>
+				</ClayLabel>
 			)}
 		</td>
 	);

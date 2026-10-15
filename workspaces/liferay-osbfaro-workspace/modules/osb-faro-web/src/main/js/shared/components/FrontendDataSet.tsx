@@ -110,8 +110,9 @@ export const columns = {
 		label: React.ReactNode;
 	}) => (
 		<Label
-			className="fds-label font-weight-semi-bold rounded"
+			className="font-weight-semi-bold rounded"
 			displayType={displayType}
+			inverse
 		>
 			{label}
 		</Label>

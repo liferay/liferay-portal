@@ -1,4 +1,4 @@
-import Label from 'shared/components/Label';
+import ClayLabel from '@clayui/label';
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import React from 'react';
@@ -61,14 +61,15 @@ export default (timeZoneId) => [
 	{
 		accessor: 'status',
 		dataFormatter: (value) => (
-			<Label
+			<ClayLabel
 				className="experiment-status"
-				display={getStatusColor(value)}
+				displayType={getStatusColor(value) || 'secondary'}
+				inverse
 				key="status"
 				size="lg"
 			>
 				{getStatusName(value)}
-			</Label>
+			</ClayLabel>
 		),
 		label: Liferay.Language.get('status'),
 	},

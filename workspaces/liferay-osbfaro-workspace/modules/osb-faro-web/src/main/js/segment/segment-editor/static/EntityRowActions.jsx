@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
-import Label from 'shared/components/Label';
+import ClayLabel from '@clayui/label';
 import React from 'react';
 import {Map, Set} from 'immutable';
 import {noop} from 'lodash';
@@ -91,15 +91,15 @@ export default class EntityRowActions extends React.Component {
 						</ClayButton>
 					)}
 
-					<Label
-						display={addStaged ? 'success' : 'warning'}
+					<ClayLabel
+						displayType={addStaged ? 'success' : 'warning'}
+						inverse
 						size='lg'
-						uppercase
 					>
 						{addStaged
 							? Liferay.Language.get('added')
 							: Liferay.Language.get('removed')}
-					</Label>
+					</ClayLabel>
 				</>
 			);
 		} else if (!itemsSelected) {

@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
-import Label from 'shared/components/Label';
+import ClayLabel from '@clayui/label';
 import React from 'react';
 import SubnavTbar from 'shared/components/SubnavTbar';
 import {noop} from 'lodash';
@@ -52,9 +52,13 @@ class StagedSubnav extends React.Component {
 					{showStaged ? (
 						<span>{stagedMessage}</span>
 					) : (
-						<Label display='success' size='lg' uppercase>
+						<ClayLabel
+							displayType='success'
+							inverse
+							size='lg'
+						>
 							{selectedCountMessage}
-						</Label>
+						</ClayLabel>
 					)}
 				</SubnavTbar.Item>
 

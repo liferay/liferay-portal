@@ -74,6 +74,7 @@ const MarketoCampaignEntities: React.FC<IMarketoCampaignEntitiesProps> = ({
 					<ClayList.ItemField className="justify-content-center">
 						<Label
 							displayType={configured ? 'success' : 'secondary'}
+							inverse
 						>
 							{configured
 								? Liferay.Language.get('configured')

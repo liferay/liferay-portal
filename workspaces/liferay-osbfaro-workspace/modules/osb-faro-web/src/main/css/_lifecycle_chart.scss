@@ -1,5 +1,3 @@
-@use 'sass:math';
-
 .stage-metrics {
 	min-width: 0;
 
@@ -54,24 +52,9 @@
 			display: none;
 		}
 
-		.label-info {
+		.label-inverse-info {
 			position: relative;
 			z-index: 1;
-		}
-	}
-
-	.label-info {
-		background-color: $cadmin-info-l2;
-		border-color: $cadmin-info-l2;
-		color: $cadmin-info-d1;
-
-		> .label-item {
-			border-radius: 0.25rem;
-			border-width: 0.0625rem;
-			display: inline-block;
-			font-size: 0.75rem;
-			letter-spacing: math.div($fontSizeExtraSmall * -0.2, 13);
-			text-transform: none;
 		}
 	}
 }

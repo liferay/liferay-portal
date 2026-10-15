@@ -1,4 +1,4 @@
-import Label from 'shared/components/Label';
+import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import Popover from 'shared/components/Popover';
 import React, {useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
@@ -32,9 +32,13 @@ const VariantTitle: React.FC<IVariantTitleProps> = ({labels = [], title}) => {
 
 			{!!labels.length &&
 				labels.map(({status, value}, index) => (
-					<Label display={status} key={index}>
+					<ClayLabel
+						displayType={status as LabelDisplayType}
+						inverse
+						key={index}
+					>
 						{value}
-					</Label>
+					</ClayLabel>
 				))}
 
 			{ReactDOM.createPortal(

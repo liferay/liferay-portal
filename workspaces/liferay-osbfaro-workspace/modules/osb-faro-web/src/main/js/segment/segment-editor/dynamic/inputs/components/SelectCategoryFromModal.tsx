@@ -1,8 +1,8 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
+import ClayLabel from '@clayui/label';
 import Form from 'shared/components/form';
-import Label from 'shared/components/Label';
 import React from 'react';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {connect, ConnectedProps} from 'react-redux';
@@ -126,15 +126,18 @@ const SelectCategoryFromModal: React.FC<ISelectCategoryFromModalProps> = ({
 						}}
 					>
 						{selectedCategories.map((category) => (
-							<Label
-								display="secondary"
+							<ClayLabel
+								closeButtonProps={{
+									'aria-label': Liferay.Language.get('close'),
+									onClick: () =>
+										handleRemoveCategory(category.id),
+								}}
+								displayType="secondary"
+								inverse
 								key={category.id}
-								onRemove={() =>
-									handleRemoveCategory(category.id)
-								}
 							>
 								{category.name}
-							</Label>
+							</ClayLabel>
 						))}
 
 						<ClayButton

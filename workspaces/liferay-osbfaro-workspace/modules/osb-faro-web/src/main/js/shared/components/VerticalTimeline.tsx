@@ -12,6 +12,7 @@ import moment from 'moment';
 import React, {FC, useState} from 'react';
 import RowMain from 'shared/components/RowMain';
 import TextTruncate from './TextTruncate';
+import {capitalize} from 'lodash';
 import {Colors} from 'shared/util/colors-size';
 import {formatDateToTimeZone, TIME_FORMAT} from 'shared/util/date';
 import {
@@ -50,7 +51,9 @@ const DEVICE_ICONS_MAP = {
 };
 
 const normalizeApplicationId = (applicationId: string): string =>
-	LIFERAY_DXP_APPLICATION_IDS.has(applicationId) ? 'DXP' : applicationId;
+	LIFERAY_DXP_APPLICATION_IDS.has(applicationId)
+		? 'DXP'
+		: capitalize(applicationId);
 
 type ITEM_SHAPE = VerticalTimelineItem;
 
@@ -77,6 +80,7 @@ const RowIconLabel: FC<{
 		<ClayLabel
 			className={`${rootClassName} flex-shrink-0 font-weight-semi-bold m-0`}
 			displayType={displayType}
+			inverse
 			withClose={false}
 		>
 			<ClayLabel.ItemBefore>
@@ -137,10 +141,9 @@ const DataSourceLabel: FC<{applicationId?: string; isWebhook: boolean}> = ({
 				'm-0'
 			)}
 			displayType={isWebhook ? 'success' : 'info'}
+			inverse
 		>
-			<strong>
-				{normalizeApplicationId(applicationId).toUpperCase()}
-			</strong>
+			<strong>{normalizeApplicationId(applicationId)}</strong>
 		</ClayLabel>
 	) : null;
 
@@ -148,6 +151,7 @@ const BecameKnownLabel: FC = () => (
 	<ClayLabel
 		className="became-known-label flex-shrink-0 font-weight-semi-bold m-0"
 		displayType="success"
+		inverse
 		withClose={false}
 	>
 		<ClayLabel.ItemBefore>

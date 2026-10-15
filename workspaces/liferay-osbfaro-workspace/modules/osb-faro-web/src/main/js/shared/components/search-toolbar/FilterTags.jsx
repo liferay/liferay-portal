@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Label from 'shared/components/Label';
+import ClayLabel from '@clayui/label';
 import React from 'react';
 import SubnavTbar from 'shared/components/SubnavTbar';
 import {PropTypes} from 'prop-types';
@@ -22,16 +22,20 @@ class FilterTagItem extends React.Component {
 		const {label} = this.props;
 
 		return (
-			<Label
+			<ClayLabel
 				className={
 					this.props.className ? ` ${this.props.className}` : ''
 				}
-				display='info'
-				onRemove={this.handleRemove}
+				closeButtonProps={{
+					'aria-label': Liferay.Language.get('close'),
+					onClick: this.handleRemove
+				}}
+				displayType='info'
+				inverse
 				size='lg'
 			>
 				{label}
-			</Label>
+			</ClayLabel>
 		);
 	}
 }

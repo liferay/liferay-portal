@@ -331,9 +331,9 @@ const DxpSyncTable: FC<React.HTMLAttributes<HTMLElement>> = () => {
 
 					<ClayList.ItemField>
 						<ClayLabel
-							className="text-uppercase"
 							displayType={sitesDisplay as any}
-							large
+							inverse
+							size="lg"
 						>
 							{sitesLabel}
 						</ClayLabel>
@@ -349,9 +349,9 @@ const DxpSyncTable: FC<React.HTMLAttributes<HTMLElement>> = () => {
 
 					<ClayList.ItemField>
 						<ClayLabel
-							className="text-uppercase"
 							displayType={contactsDisplay as any}
-							large
+							inverse
+							size="lg"
 						>
 							{contactslabel}
 						</ClayLabel>

@@ -1,6 +1,6 @@
 import ClayIcon from 'shared/components/Icon';
+import ClayLabel from '@clayui/label';
 import getCN from 'classnames';
-import Label from 'shared/components/Label';
 import React, {FC, useState} from 'react';
 import {BACKSPACE, COMMA, ENTER, SPACE} from 'shared/util/key-constants';
 import {noop, partition} from 'lodash';
@@ -182,14 +182,23 @@ const InputList: FC<IInputListProps> = ({
 				{items &&
 					items.length > 0 &&
 					items.map((item: string, i: number) => (
-						<Label
-							display="secondary"
-							index={i}
+						<ClayLabel
+							closeButtonProps={
+								!disabled
+									? {
+											'aria-label':
+												Liferay.Language.get('close'),
+											onClick: () =>
+												handleRemoveItem(i),
+										}
+									: undefined
+							}
+							displayType="secondary"
+							inverse
 							key={i}
-							onRemove={!disabled ? handleRemoveItem : undefined}
 						>
 							{item}
-						</Label>
+						</ClayLabel>
 					))}
 
 				<input

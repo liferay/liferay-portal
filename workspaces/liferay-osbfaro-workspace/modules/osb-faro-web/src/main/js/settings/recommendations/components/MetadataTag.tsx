@@ -1,10 +1,15 @@
-import Label from 'shared/components/Label';
+import ClayLabel from '@clayui/label';
 import React from 'react';
 
 const MetadataTag: React.FC<{value: string}> = ({value}) => (
-	<Label className="metadata-tag-root" size="lg">
+	<ClayLabel
+		className="metadata-tag-root"
+		displayType="secondary"
+		inverse
+		size="lg"
+	>
 		{value}
-	</Label>
+	</ClayLabel>
 );
 
 export default MetadataTag;

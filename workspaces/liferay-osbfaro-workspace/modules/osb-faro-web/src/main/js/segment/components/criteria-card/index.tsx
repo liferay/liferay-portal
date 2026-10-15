@@ -1,6 +1,6 @@
 import Card from 'shared/components/Card';
+import ClayLabel from '@clayui/label';
 import CriteriaView from './CriteriaView';
-import Label from 'shared/components/Label';
 import Panel from '@clayui/panel';
 import React, {useContext, useEffect, useMemo} from 'react';
 import {extractRemoteCriterionEntries} from 'segment/segment-editor/dynamic/criterion-types/extract';
@@ -63,17 +63,17 @@ const CriteriaCard: React.FC<ICriteriaCardProps> = ({
 			>
 				<Panel.Body className="criteria-card-root">
 					{includeAnonymousUsers && (
-						<Label display="info" size="lg" uppercase>
+						<ClayLabel displayType="info" inverse size="lg">
 							{Liferay.Language.get(
 								'includes-anonymous-individuals'
 							)}
-						</Label>
+						</ClayLabel>
 					)}
 
 					{segmentType === SegmentTypes.RealTime && sequential && (
-						<Label display="info" size="lg" uppercase>
+						<ClayLabel displayType="info" inverse size="lg">
 							{Liferay.Language.get('sequential-events')}
-						</Label>
+						</ClayLabel>
 					)}
 
 					{criteria && (

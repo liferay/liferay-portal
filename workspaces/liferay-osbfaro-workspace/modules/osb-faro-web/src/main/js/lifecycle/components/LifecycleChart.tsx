@@ -166,7 +166,7 @@ const StageProgression = ({
 
 	return (
 		<div className="align-items-center align-items-lg-stretch border-light col-12 col-lg-auto d-flex flex-lg-column flex-row justify-content-center justify-content-lg-start px-2 py-3 stage-progression">
-			<Label className="mt-lg-auto p-0" displayType="info">
+			<Label className="mt-lg-auto p-0" displayType="info" inverse>
 				<span className="inline-item ml-1">
 					{formatPercent(percentage, 0)}
 					<span className="d-lg-none ml-1">

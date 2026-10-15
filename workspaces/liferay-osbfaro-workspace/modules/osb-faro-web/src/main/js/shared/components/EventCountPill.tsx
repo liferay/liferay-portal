@@ -10,10 +10,11 @@ const EventCountPill: FC<{symbol?: string; totalEvents?: number}> = ({
 		<ClayLabel
 			className="event-count-pill flex-shrink-0 m-0"
 			displayType="secondary"
+			inverse
 			withClose={false}
 		>
 			<ClayLabel.ItemBefore>
-				<ClayIcon className="text-secondary" symbol={symbol} />
+				<ClayIcon symbol={symbol} />
 			</ClayLabel.ItemBefore>
 
 			<ClayLabel.ItemExpand>{totalEvents}</ClayLabel.ItemExpand>

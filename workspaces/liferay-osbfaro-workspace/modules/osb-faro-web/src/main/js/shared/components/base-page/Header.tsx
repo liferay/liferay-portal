@@ -9,7 +9,6 @@ import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
 import ClayToolbar from '@clayui/toolbar';
 import getCN from 'classnames';
-import Label from 'shared/components/Label';
 import NotificationAlertList, {
 	useNotificationsAPI,
 } from '../NotificationAlertList';
@@ -278,9 +277,9 @@ const TitleSection: React.FC<ITitleSectionProps> = ({
 	<Section className={getCN('title-section', className, {subtitle})}>
 		{topLabel && (
 			<div className="mb-1">
-				<Label display="secondary" size="lg" uppercase>
+				<ClayLabel displayType="secondary" inverse size="lg">
 					{topLabel}
-				</Label>
+				</ClayLabel>
 			</div>
 		)}
 
@@ -294,7 +293,7 @@ const TitleSection: React.FC<ITitleSectionProps> = ({
 
 		{subtitle &&
 			(label ? (
-				<ClayLabel className="mb-4" displayType="info">
+				<ClayLabel className="mb-4" displayType="info" inverse>
 					{subtitle}
 				</ClayLabel>
 			) : (

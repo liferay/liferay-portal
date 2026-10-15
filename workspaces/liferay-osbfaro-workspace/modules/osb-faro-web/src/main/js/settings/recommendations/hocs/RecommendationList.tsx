@@ -1,5 +1,6 @@
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
+import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import ClayLink from '@clayui/link';
 import Constants, {
 	JobRunDataPeriods,
@@ -9,7 +10,6 @@ import Constants, {
 	OrderByDirections,
 } from 'shared/util/constants';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
-import Label from 'shared/components/Label';
 import Nav from 'shared/components/Nav';
 import React from 'react';
 import RecommendationListQuery from '../queries/RecommendationListQuery';
@@ -315,14 +315,18 @@ const RecommendationList: React.FC<IRecommendationListProps> = ({
 							data: {status: JobStatuses};
 						}) => (
 							<td className={className}>
-								<Label
+								<ClayLabel
 									className="status"
-									display={JOB_STATUSES_DISPLAY_MAP[status]}
+									displayType={
+										JOB_STATUSES_DISPLAY_MAP[
+											status
+										] as LabelDisplayType
+									}
+									inverse
 									size="lg"
-									uppercase
 								>
 									{JOB_STATUSES_LABEL_MAP[status]}
-								</Label>
+								</ClayLabel>
 							</td>
 						),
 						label: Liferay.Language.get('status'),

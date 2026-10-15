@@ -1,4 +1,4 @@
-import Label from 'shared/components/Label';
+import ClayLabel from '@clayui/label';
 import React from 'react';
 import {PropTypes} from 'prop-types';
 import {UserStatuses} from 'shared/util/constants';
@@ -24,7 +24,7 @@ class StatusRenderer extends React.Component {
 			case UserStatuses.Pending:
 				return 'warning';
 			default:
-				return '';
+				return 'secondary';
 		}
 	}
 
@@ -38,7 +38,9 @@ class StatusRenderer extends React.Component {
 
 		return (
 			<td className={className}>
-				<Label display={displayType}>{STATUS_LANG_MAP[status]}</Label>
+				<ClayLabel displayType={displayType} inverse>
+					{STATUS_LANG_MAP[status]}
+				</ClayLabel>
 			</td>
 		);
 	}

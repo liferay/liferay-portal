@@ -71,6 +71,7 @@ const DataSourceEditableTitle = ({
 						| 'unstyled'
 						| undefined
 				}
+				inverse
 			>
 				{label}
 			</ClayLabel>

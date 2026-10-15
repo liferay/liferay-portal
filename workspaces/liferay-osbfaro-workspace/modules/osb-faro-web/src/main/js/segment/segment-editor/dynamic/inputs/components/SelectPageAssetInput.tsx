@@ -1,9 +1,9 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
+import ClayLabel from '@clayui/label';
 import Form from 'shared/components/form';
 import getCN from 'classnames';
-import Label from 'shared/components/Label';
 import Loading, {Align} from 'shared/components/Loading';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {close, modalTypes, open} from 'shared/actions/modals';
@@ -586,19 +586,23 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 								}}
 							>
 								{selectedItems.map((item) => (
-									<Label
-										display="secondary"
+									<ClayLabel
+										closeButtonProps={{
+											'aria-label':
+												Liferay.Language.get('close'),
+											onClick: () =>
+												emit(
+													selectedItems.filter(
+														({id}) => id !== item.id
+													)
+												),
+										}}
+										displayType="secondary"
+										inverse
 										key={item.id}
-										onRemove={() =>
-											emit(
-												selectedItems.filter(
-													({id}) => id !== item.id
-												)
-											)
-										}
 									>
 										{item.name}
-									</Label>
+									</ClayLabel>
 								))}
 
 								<ClayButton

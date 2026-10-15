@@ -1,11 +1,11 @@
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
+import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import ClayLink from '@clayui/link';
 import Constants, {OrderByDirections, Sizes} from 'shared/util/constants';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import DataControlRequest from '../queries/DataControlRequestMutation';
 import getCN from 'classnames';
-import Label from 'shared/components/Label';
 import moment from 'moment';
 import Nav from 'shared/components/Nav';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
@@ -367,14 +367,18 @@ const RequestList: React.FC<IRequestListProps> = ({
 							data: {status: GDPRRequestStatuses};
 						}) => (
 							<td>
-								<Label
+								<ClayLabel
 									className="status"
-									display={REQUEST_STATUS_DISPLAY_MAP[status]}
+									displayType={
+										REQUEST_STATUS_DISPLAY_MAP[
+											status
+										] as LabelDisplayType
+									}
+									inverse
 									size="lg"
-									uppercase
 								>
 									{REQUEST_STATUS_LABEL_MAP[status]}
-								</Label>
+								</ClayLabel>
 							</td>
 						),
 						label: Liferay.Language.get('request-status'),

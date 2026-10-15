@@ -3,9 +3,9 @@ import BasePage from 'settings/components/base-page/BasePage';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
+import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import ClayLink from '@clayui/link';
 import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
-import Label from 'shared/components/Label';
 import ListComponent from 'shared/hoc/ListComponent';
 import NoResultsDisplay, {
 	getFormattedTitle,
@@ -102,9 +102,9 @@ export const StatusRenderer: React.FC<ICellProps> = ({data}) => {
 
 	return (
 		<td>
-			<Label display={display} uppercase>
+			<ClayLabel displayType={display as LabelDisplayType} inverse>
 				{label}
-			</Label>
+			</ClayLabel>
 		</td>
 	);
 };

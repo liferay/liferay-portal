@@ -349,6 +349,7 @@ const SegmentActivationCard: React.FC<
 							<Label
 								className="align-self-start"
 								displayType="info"
+								inverse
 							>
 								{labelMessage}
 							</Label>

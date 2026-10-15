@@ -1,5 +1,5 @@
 import Card from 'shared/components/Card';
-import Label from 'shared/components/Label';
+import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import moment from 'moment';
 import React from 'react';
 import RecommendationJobRunsQuery from '../queries/RecommendationJobRunsQuery';
@@ -168,16 +168,18 @@ const OutputVersionsCard: React.FC<IOutputVersionsCardProps> = ({
 							data: {status: JobRunStatuses};
 						}) => (
 							<td className={className}>
-								<Label
+								<ClayLabel
 									className="status"
-									display={
-										JOB_RUN_STATUSES_DISPLAY_MAP[status]
+									displayType={
+										JOB_RUN_STATUSES_DISPLAY_MAP[
+											status
+										] as LabelDisplayType
 									}
+									inverse
 									size="lg"
-									uppercase
 								>
 									{JOB_RUN_STATUSES_LABEL_MAP[status]}
-								</Label>
+								</ClayLabel>
 							</td>
 						),
 						label: Liferay.Language.get('status'),

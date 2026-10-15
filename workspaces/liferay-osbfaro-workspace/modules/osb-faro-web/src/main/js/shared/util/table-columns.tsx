@@ -1,10 +1,10 @@
 import AccountName from 'shared/components/table/cell-components/AccountName';
 import Checkbox from 'shared/components/Checkbox';
 import ClayIcon from 'shared/components/Icon';
+import ClayLabel from '@clayui/label';
 import getCN from 'classnames';
 import IndividualType from 'shared/components/table/cell-components/IndividualTypes';
 import InfoPopover from 'shared/components/InfoPopover';
-import Label from 'shared/components/Label';
 import MemberCell from 'shared/components/table/cell-components/MemberCell';
 import MembershipChanges from 'shared/components/table/cell-components/MembershipChanges';
 import moment from 'moment';
@@ -34,7 +34,7 @@ import {
 } from './date';
 import {Colors} from './colors-size';
 import {formatTime} from './time';
-import {get, isNil, noop, pickBy} from 'lodash';
+import {capitalize, get, isNil, noop, pickBy} from 'lodash';
 import {getSafeDecodedURIComponent} from './util';
 import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {SegmentTypes} from './constants';
@@ -184,9 +184,9 @@ export const attributeListColumns = {
 		accessor: 'dataType',
 		cellRenderer: ({data: {dataType}}: {data: {dataType: string}}) => (
 			<td>
-				<Label display="info" size="lg" uppercase>
-					{dataType}
-				</Label>
+				<ClayLabel displayType="info" inverse size="lg">
+					{capitalize(dataType)}
+				</ClayLabel>
 			</td>
 		),
 		label: Liferay.Language.get('data-typecast'),
@@ -421,14 +421,17 @@ export const changesListColumns = {
 				<span key="MEMBERSHIP_CHANGE">
 					{formatCalendar(applyTimeZone(dateChanged, timeZoneId))}
 
-					<Label
+					<ClayLabel
 						className="membership-operation"
-						display={operation === 'ADDED' ? 'success' : 'warning'}
+						displayType={
+							operation === 'ADDED' ? 'success' : 'warning'
+						}
+						inverse
 						key="OPERATION"
 						size="lg"
 					>
-						{operation}
-					</Label>
+						{capitalize(operation)}
+					</ClayLabel>
 				</span>,
 			],
 		label: Liferay.Language.get('membership-change'),

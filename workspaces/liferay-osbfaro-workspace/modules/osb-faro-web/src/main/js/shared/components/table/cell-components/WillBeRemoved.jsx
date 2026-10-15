@@ -1,4 +1,4 @@
-import Label from 'shared/components/Label';
+import ClayLabel from '@clayui/label';
 import React from 'react';
 import {PropTypes} from 'prop-types';
 import {toPairs} from 'lodash';
@@ -22,9 +22,13 @@ export default class WillBeRemovedCell extends React.Component {
 				}
 			>
 				{toPairs(dataSourceIndividualPKs).length === 1 && (
-					<Label display='danger' size='lg' uppercase>
+					<ClayLabel
+						displayType='danger'
+						inverse
+						size='lg'
+					>
 						{Liferay.Language.get('will-be-removed')}
-					</Label>
+					</ClayLabel>
 				)}
 			</td>
 		);

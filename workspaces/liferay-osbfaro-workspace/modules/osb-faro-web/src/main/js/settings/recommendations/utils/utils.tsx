@@ -48,7 +48,7 @@ export type Job = {
 export const JOB_RUN_STATUSES_DISPLAY_MAP = {
 	[JobRunStatuses.Completed]: 'success',
 	[JobRunStatuses.Failed]: 'danger',
-	[JobRunStatuses.Published]: 'primary',
+	[JobRunStatuses.Published]: 'secondary',
 	[JobRunStatuses.Running]: 'warning',
 };
 

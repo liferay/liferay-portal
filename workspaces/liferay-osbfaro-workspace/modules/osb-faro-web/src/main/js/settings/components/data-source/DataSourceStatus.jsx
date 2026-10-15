@@ -1,4 +1,4 @@
-import Label from 'shared/components/Label';
+import ClayLabel from '@clayui/label';
 import Panel from 'shared/components/Panel';
 import React from 'react';
 import {PropTypes} from 'prop-types';
@@ -20,9 +20,13 @@ export default class DataSourceStatus extends React.Component {
 					this.props.className ? ` ${this.props.className}` : ''
 				}`}
 				label={
-					<Label display={display} size='lg' uppercase>
+					<ClayLabel
+						displayType={display}
+						inverse
+						size='lg'
+					>
 						{label}
-					</Label>
+					</ClayLabel>
 				}
 				title={
 					<div>{Liferay.Language.get('current-status-colon')}</div>

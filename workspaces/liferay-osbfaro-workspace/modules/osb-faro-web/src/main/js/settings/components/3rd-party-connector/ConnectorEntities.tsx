@@ -54,6 +54,7 @@ const ConnectorEntities: React.FC<IConnectorEntitiesProps> = ({
 					<ClayList.ItemField className="justify-content-center">
 						<Label
 							displayType={configured ? 'success' : 'secondary'}
+							inverse
 						>
 							{configured
 								? Liferay.Language.get('configured')

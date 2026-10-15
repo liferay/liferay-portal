@@ -46,7 +46,10 @@ const MembershipChanges: React.FC<IMembershipChanges> = ({
 	<td className={getCN('name-cell-root', className)}>
 		<div>{formatUTCDate(createDateTime)}</div>
 		{type && MAP_LABEL_TYPE.includes(type) && (
-			<Label displayType={MEMBERSHIP_CHANGE_MAP[type].displayType}>
+			<Label
+				displayType={MEMBERSHIP_CHANGE_MAP[type].displayType}
+				inverse
+			>
 				{MEMBERSHIP_CHANGE_MAP[type].label}
 			</Label>
 		)}

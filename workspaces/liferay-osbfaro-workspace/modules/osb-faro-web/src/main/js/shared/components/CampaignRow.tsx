@@ -7,6 +7,7 @@ import getCN from 'classnames';
 import React, {FC, useState} from 'react';
 import RowMain from 'shared/components/RowMain';
 import {CampaignTouch, CampaignTouchMember} from 'shared/util/activities';
+import {capitalize} from 'lodash';
 import {Text} from '@clayui/core';
 
 const TouchRow: FC<{
@@ -47,6 +48,7 @@ const TouchRow: FC<{
 				<ClayLabel
 					className="touch-status ml-auto flex-shrink-0 m-0"
 					displayType="info"
+					inverse
 					withClose={false}
 				>
 					{status}
@@ -103,7 +105,7 @@ const CampaignRow: FC<{
 						inverse
 						withClose={false}
 					>
-						<strong>{origin.toUpperCase()}</strong>
+						<strong>{capitalize(origin)}</strong>
 					</ClayLabel>
 
 					<EventCountPill

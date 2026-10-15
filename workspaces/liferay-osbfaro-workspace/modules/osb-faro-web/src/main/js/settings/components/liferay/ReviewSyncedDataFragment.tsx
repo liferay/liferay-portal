@@ -94,7 +94,7 @@ const ReviewSyncedDataFragment: React.FC<IReviewSyncedDataFragmentProps> = ({
 					</ClayList.ItemField>
 
 					<ClayList.ItemField className="justify-content-center">
-						<ClayLabel displayType={sitesDisplay as any}>
+						<ClayLabel displayType={sitesDisplay as any} inverse>
 							{sitesLabel}
 						</ClayLabel>
 					</ClayList.ItemField>
@@ -127,7 +127,7 @@ const ReviewSyncedDataFragment: React.FC<IReviewSyncedDataFragmentProps> = ({
 					</ClayList.ItemField>
 
 					<ClayList.ItemField className="justify-content-center">
-						<ClayLabel displayType={sitesDisplay as any}>
+						<ClayLabel displayType={sitesDisplay as any} inverse>
 							{sitesLabel}
 						</ClayLabel>
 					</ClayList.ItemField>
@@ -160,7 +160,7 @@ const ReviewSyncedDataFragment: React.FC<IReviewSyncedDataFragmentProps> = ({
 					</ClayList.ItemField>
 
 					<ClayList.ItemField className="justify-content-center">
-						<ClayLabel displayType={contactsDisplay as any}>
+						<ClayLabel displayType={contactsDisplay as any} inverse>
 							{contactslabel}
 						</ClayLabel>
 					</ClayList.ItemField>

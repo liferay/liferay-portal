@@ -1,4 +1,5 @@
 import BasePage from 'settings/components/base-page/BasePage';
+import ClayLabel from '@clayui/label';
 import ClayLink from '@clayui/link';
 import EVENT_ATTRIBUTE_DEFINITION_QUERY, {
 	EVENT_ATTRIBUTE_DEFINITION_WITH_RECENT_VALUES_QUERY,
@@ -6,12 +7,12 @@ import EVENT_ATTRIBUTE_DEFINITION_QUERY, {
 	EventAttributeDefinitionVariables,
 	UPDATE_EVENT_ATTRIBUTE_DEFINITION,
 } from 'event-analysis/queries/EventAttributeDefinitionQuery';
-import Label from 'shared/components/Label';
 import React from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import Table from 'shared/components/table';
 import URLConstants from 'shared/util/url-constants';
 import {Attribute} from 'event-analysis/utils/types';
+import {capitalize} from 'lodash';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {connect} from 'react-redux';
 import {DateCell} from 'shared/components/table/cell-components';
@@ -87,9 +88,9 @@ const AttributeView: React.FC<IAttributeViewProps> = ({
 								</div>
 							)}
 
-							<Label display="primary" uppercase>
-								{dataType}
-							</Label>
+							<ClayLabel displayType="secondary" inverse>
+								{capitalize(dataType)}
+							</ClayLabel>
 						</>
 					}
 					pageTitle={name}
