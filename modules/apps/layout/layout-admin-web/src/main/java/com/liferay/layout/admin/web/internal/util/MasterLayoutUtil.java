@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
 
@@ -28,29 +29,21 @@ public class MasterLayoutUtil {
 		long groupId, LayoutPageTemplateEntry masterLayoutPageTemplateEntry,
 		Locale locale) {
 
-		Group designLibraryGroup = _getDesignLibraryGroup(
-			groupId, masterLayoutPageTemplateEntry);
+		String masterLayoutPageTemplateEntryScopeLabel =
+			getMasterLayoutPageTemplateEntryScopeLabel(
+				groupId, masterLayoutPageTemplateEntry, locale);
 
-		if (designLibraryGroup == null) {
+		if (Validator.isNull(masterLayoutPageTemplateEntryScopeLabel)) {
 			return masterLayoutPageTemplateEntry.getName();
 		}
 
-		try {
-			return LanguageUtil.format(
-				locale, "x-from-x-design-library",
-				new String[] {
-					masterLayoutPageTemplateEntry.getName(),
-					designLibraryGroup.getDescriptiveName(locale)
-				},
-				false);
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-
-			return masterLayoutPageTemplateEntry.getName();
-		}
+		return LanguageUtil.format(
+			locale, "x-from-x-design-library",
+			new String[] {
+				masterLayoutPageTemplateEntry.getName(),
+				masterLayoutPageTemplateEntryScopeLabel
+			},
+			false);
 	}
 
 	public static String getMasterLayoutPageTemplateEntryScopeERC(
@@ -85,6 +78,29 @@ public class MasterLayoutUtil {
 		}
 
 		return designLibraryGroup.getExternalReferenceCode();
+	}
+
+	public static String getMasterLayoutPageTemplateEntryScopeLabel(
+		long groupId, LayoutPageTemplateEntry masterLayoutPageTemplateEntry,
+		Locale locale) {
+
+		Group designLibraryGroup = _getDesignLibraryGroup(
+			groupId, masterLayoutPageTemplateEntry);
+
+		if (designLibraryGroup == null) {
+			return StringPool.BLANK;
+		}
+
+		try {
+			return designLibraryGroup.getDescriptiveName(locale);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return StringPool.BLANK;
+		}
 	}
 
 	private static Group _getDesignLibraryGroup(

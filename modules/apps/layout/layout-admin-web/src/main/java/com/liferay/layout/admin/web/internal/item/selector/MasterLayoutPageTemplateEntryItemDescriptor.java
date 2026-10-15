@@ -54,10 +54,12 @@ public class MasterLayoutPageTemplateEntryItemDescriptor
 			MasterLayoutUtil.getMasterLayoutPageTemplateEntryScopeERC(
 				_scopeGroupId, _layoutPageTemplateEntry)
 		).put(
-			"name",
-			MasterLayoutUtil.getMasterLayoutName(
+			"masterLayoutPageTemplateEntryScopeLabel",
+			MasterLayoutUtil.getMasterLayoutPageTemplateEntryScopeLabel(
 				_scopeGroupId, _layoutPageTemplateEntry,
 				LocaleThreadLocal.getThemeDisplayLocale())
+		).put(
+			"name", _layoutPageTemplateEntry.getName()
 		).put(
 			"plid", String.valueOf(_layoutPageTemplateEntry.getPlid())
 		).toString();

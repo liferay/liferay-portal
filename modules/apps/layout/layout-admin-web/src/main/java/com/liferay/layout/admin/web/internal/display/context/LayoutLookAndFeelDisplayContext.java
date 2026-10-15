@@ -202,6 +202,29 @@ public class LayoutLookAndFeelDisplayContext {
 
 				return StringPool.BLANK;
 			}
+		).put(
+			"masterLayoutPageTemplateEntryScopeLabel",
+			() -> {
+				if (!hasMasterLayout()) {
+					return StringPool.BLANK;
+				}
+
+				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+				LayoutPageTemplateEntry layoutPageTemplateEntry =
+					LayoutPageTemplateEntryLocalServiceUtil.
+						fetchLayoutPageTemplateEntryByPlid(
+							selLayout.getMasterLayoutPlid());
+
+				if (layoutPageTemplateEntry == null) {
+					return StringPool.BLANK;
+				}
+
+				return MasterLayoutUtil.
+					getMasterLayoutPageTemplateEntryScopeLabel(
+						selLayout.getGroupId(), layoutPageTemplateEntry,
+						_themeDisplay.getLocale());
+			}
 		).build();
 	}
 
@@ -223,9 +246,7 @@ public class LayoutLookAndFeelDisplayContext {
 					fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
 
 			if (layoutPageTemplateEntry != null) {
-				masterLayoutName = MasterLayoutUtil.getMasterLayoutName(
-					selLayout.getGroupId(), layoutPageTemplateEntry,
-					_themeDisplay.getLocale());
+				masterLayoutName = layoutPageTemplateEntry.getName();
 			}
 		}
 
