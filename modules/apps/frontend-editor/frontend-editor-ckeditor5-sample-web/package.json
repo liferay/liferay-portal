@@ -1,9 +1,9 @@
 {
 	"dependencies": {
-		"@ckeditor/ckeditor5-basic-styles": "46.0.3",
-		"@ckeditor/ckeditor5-bookmark": "46.0.3",
-		"@ckeditor/ckeditor5-core": "46.0.3",
-		"@ckeditor/ckeditor5-ui": "46.0.3",
+		"@ckeditor/ckeditor5-basic-styles": "49.0.0",
+		"@ckeditor/ckeditor5-bookmark": "49.0.0",
+		"@ckeditor/ckeditor5-core": "49.0.0",
+		"@ckeditor/ckeditor5-ui": "49.0.0",
 		"@clayui/button": "^3.166.0",
 		"frontend-editor-ckeditor-web": "*",
 		"react": "18.2.0"

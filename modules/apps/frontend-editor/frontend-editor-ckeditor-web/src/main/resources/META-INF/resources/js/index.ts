@@ -28,9 +28,9 @@ export {
 	BalloonEditor as BaseCKEditor5BalloonEditor,
 	BalloonEditorUI,
 	BalloonEditorUIView,
-} from '@ckeditor/ckeditor5-editor-balloon/dist/index.js';
+} from '@ckeditor/ckeditor5-editor-balloon';
 export {
 	ClassicEditor as BaseCKEditor5ClassicEditor,
 	ClassicEditorUI,
 	ClassicEditorUIView,
-} from '@ckeditor/ckeditor5-editor-classic/dist/index.js';
+} from '@ckeditor/ckeditor5-editor-classic';

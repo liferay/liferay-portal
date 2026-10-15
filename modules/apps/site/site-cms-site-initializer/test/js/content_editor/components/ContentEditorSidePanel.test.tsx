@@ -16,6 +16,10 @@ import {mockFetch} from '../../__mocks__/frontend-js-web';
 const EXPIRATION_DATE = '2025-08-14T00:01';
 const REVIEW_DATE = '2025-08-15T00:01';
 
+jest.mock('@ckeditor/ckeditor5-react', () => ({
+	CKEditor: () => <div />,
+}));
+
 jest.mock('frontend-js-web', () => ({
 	...(jest.requireActual('frontend-js-web') as object),
 	dateUtils: {

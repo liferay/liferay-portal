@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Command, Editor, Plugin} from '@ckeditor/ckeditor5-core/dist/index.js';
-import {Model} from '@ckeditor/ckeditor5-engine/dist/index.js';
-import {ContextualBalloon, View} from '@ckeditor/ckeditor5-ui/dist/index.js';
+import {Command, Editor, Plugin} from '@ckeditor/ckeditor5-core';
+import {Model} from '@ckeditor/ckeditor5-engine';
+import {ContextualBalloon, View} from '@ckeditor/ckeditor5-ui';
 import {ModelText, ModelTextProxy, ModelWriter} from 'ckeditor5';
 import {cancelDebounce, debounce} from 'frontend-js-web';
 import React from 'react';

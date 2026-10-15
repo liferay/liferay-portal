@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@ckeditor/ckeditor5-source-editing": "46.0.3",
+		"@ckeditor/ckeditor5-source-editing": "49.0.0",
 		"@clayui/alert": "^3.166.0",
 		"@clayui/button": "^3.166.0",
 		"@clayui/drop-down": "^3.166.0",

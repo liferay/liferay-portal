@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Alignment} from '@ckeditor/ckeditor5-alignment/dist/index.js';
+import {Alignment} from '@ckeditor/ckeditor5-alignment';
 import {
 	Bold,
 	Italic,
 	Strikethrough,
 	Underline,
-} from '@ckeditor/ckeditor5-basic-styles/dist/index.js';
-import {BlockQuote} from '@ckeditor/ckeditor5-block-quote/dist/index.js';
-import {EditorConfig} from '@ckeditor/ckeditor5-core/dist/index.js';
-import {Essentials} from '@ckeditor/ckeditor5-essentials/dist/index.js';
-import {FindAndReplace} from '@ckeditor/ckeditor5-find-and-replace/dist/index.js';
-import {Font} from '@ckeditor/ckeditor5-font/dist/index.js';
-import {Heading} from '@ckeditor/ckeditor5-heading/dist/index.js';
-import {HorizontalLine} from '@ckeditor/ckeditor5-horizontal-line/dist/index.js';
+} from '@ckeditor/ckeditor5-basic-styles';
+import {BlockQuote} from '@ckeditor/ckeditor5-block-quote';
+import {EditorConfig} from '@ckeditor/ckeditor5-core';
+import {Essentials} from '@ckeditor/ckeditor5-essentials';
+import {FindAndReplace} from '@ckeditor/ckeditor5-find-and-replace';
+import {Font} from '@ckeditor/ckeditor5-font';
+import {Heading} from '@ckeditor/ckeditor5-heading';
+import {HorizontalLine} from '@ckeditor/ckeditor5-horizontal-line';
 import {
 	GeneralHtmlSupport,
 	GeneralHtmlSupportConfig,
-} from '@ckeditor/ckeditor5-html-support/dist/index.js';
+} from '@ckeditor/ckeditor5-html-support';
 import {
 	Image,
 	ImageBlock,
@@ -29,25 +29,25 @@ import {
 	ImageResize,
 	ImageStyle,
 	ImageToolbar,
-} from '@ckeditor/ckeditor5-image/dist/index.js';
-import {Indent} from '@ckeditor/ckeditor5-indent/dist/index.js';
-import {Link, LinkImage} from '@ckeditor/ckeditor5-link/dist/index.js';
-import {List} from '@ckeditor/ckeditor5-list/dist/index.js';
-import {MediaEmbed} from '@ckeditor/ckeditor5-media-embed/dist/index.js';
-import {Paragraph} from '@ckeditor/ckeditor5-paragraph/dist/index.js';
-import {PasteFromOfficeEnhanced} from '@ckeditor/ckeditor5-paste-from-office-enhanced/dist/index.js';
-import {PasteFromOffice} from '@ckeditor/ckeditor5-paste-from-office/dist/index.js';
-import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format/dist/index.js';
-import {SourceEditingEnhanced} from '@ckeditor/ckeditor5-source-editing-enhanced/dist/index.js';
-import {SourceEditing} from '@ckeditor/ckeditor5-source-editing/dist/index.js';
-import {Style} from '@ckeditor/ckeditor5-style/dist/index.js';
+} from '@ckeditor/ckeditor5-image';
+import {Indent} from '@ckeditor/ckeditor5-indent';
+import {Link, LinkImage} from '@ckeditor/ckeditor5-link';
+import {List} from '@ckeditor/ckeditor5-list';
+import {MediaEmbed} from '@ckeditor/ckeditor5-media-embed';
+import {Paragraph} from '@ckeditor/ckeditor5-paragraph';
+import {PasteFromOffice} from '@ckeditor/ckeditor5-paste-from-office';
+import {PasteFromOfficeEnhanced} from '@ckeditor/ckeditor5-paste-from-office-enhanced';
+import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format';
+import {SourceEditing} from '@ckeditor/ckeditor5-source-editing';
+import {SourceEditingEnhanced} from '@ckeditor/ckeditor5-source-editing-enhanced';
+import {Style} from '@ckeditor/ckeditor5-style';
 import {
 	Table,
 	TableCaption,
 	TableProperties,
 	TableToolbar,
-} from '@ckeditor/ckeditor5-table/dist/index.js';
-import {BlockToolbar} from '@ckeditor/ckeditor5-ui/dist/index.js';
+} from '@ckeditor/ckeditor5-table';
+import {BlockToolbar} from '@ckeditor/ckeditor5-ui';
 import {WritingAssistant} from '@liferay/ai-hub-cell-js-components-web';
 import {sub} from 'frontend-js-web';
 
