@@ -22,7 +22,13 @@ public class ProblemUtil {
 
 			@Override
 			public String getDetail(Locale locale) {
-				return LanguageUtil.get(locale, titleKey);
+				String localizedMessage = throwable.getLocalizedMessage();
+
+				if (localizedMessage == null) {
+					return LanguageUtil.get(locale, titleKey);
+				}
+
+				return localizedMessage;
 			}
 
 			@Override
