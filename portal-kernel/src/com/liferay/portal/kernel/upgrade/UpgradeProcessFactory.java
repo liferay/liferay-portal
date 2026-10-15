@@ -133,14 +133,28 @@ public class UpgradeProcessFactory {
 		};
 	}
 
+	private static String _getCallerClassName() {
+		Thread thread = Thread.currentThread();
+
+		for (StackTraceElement stackTraceElement : thread.getStackTrace()) {
+			String className = stackTraceElement.getClassName();
+
+			if (!className.equals(Thread.class.getName()) &&
+				!className.equals(UpgradeProcessFactory.class.getName())) {
+
+				return className;
+			}
+		}
+
+		return UpgradeProcessFactory.class.getName();
+	}
+
 	private static String _getUpgradeInfo(String message) {
 		return _getUpgradeInfo(null, "Modifying schema to " + message);
 	}
 
 	private static String _getUpgradeInfo(String tableName, String message) {
-		Thread thread = Thread.currentThread();
-
-		String callerClassName = thread.getStackTrace()[3].getClassName();
+		String callerClassName = _getCallerClassName();
 
 		if (tableName == null) {
 			return callerClassName + " - " + message;
