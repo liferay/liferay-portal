@@ -345,11 +345,11 @@ const store = mockStore(mockStoreDataLDP);
 
 // Helper: wrap List in the minimum context providers it needs.
 
-const renderList = async ({
+const renderList = ({
 	queryString = '',
 	store: storeOverride = store,
-}: {queryString?: string; store?: typeof store} = {}) => {
-	const result = render(
+}: {queryString?: string; store?: typeof store} = {}) =>
+	render(
 		<Provider store={storeOverride}>
 			<ChannelContext.Provider value={mockChannelContext() as any}>
 				<MemoryRouter
@@ -362,14 +362,6 @@ const renderList = async ({
 			</ChannelContext.Provider>
 		</Provider>
 	);
-
-	// The data set wrapper withholds the data set until its view snapshots
-	// are fetched, so wait for it before asserting.
-
-	await screen.findByTestId('fds-component');
-
-	return result;
-};
 
 // Obtain the mocked useNavigate so we can configure it per test.
 
@@ -388,16 +380,16 @@ describe('List', () => {
 	afterEach(cleanup);
 
 	describe('empty state', () => {
-		it('should pass the correct title to the FDS empty state', async () => {
-			await renderList();
+		it('should pass the correct title to the FDS empty state', () => {
+			renderList();
 
 			expect(
 				screen.getByTestId('fds-empty-state-title')
 			).toHaveTextContent('No assets were found.');
 		});
 
-		it('should include the check-back-later text in the empty state description', async () => {
-			await renderList();
+		it('should include the check-back-later text in the empty state description', () => {
+			renderList();
 
 			expect(
 				screen.getByTestId('fds-empty-state-description')
@@ -406,8 +398,8 @@ describe('List', () => {
 			);
 		});
 
-		it('should render a learn-more-about-assets link in the empty state description', async () => {
-			await renderList();
+		it('should render a learn-more-about-assets link in the empty state description', () => {
+			renderList();
 
 			const link = screen.getByRole('link', {
 				exact: false,
@@ -423,26 +415,26 @@ describe('List', () => {
 	});
 
 	describe('rendering', () => {
-		it('should render without crashing', async () => {
-			const {container} = await renderList();
+		it('should render without crashing', () => {
+			const {container} = renderList();
 
 			expect(container).toBeInTheDocument();
 		});
 
-		it('should render the page title "Assets"', async () => {
-			await renderList();
+		it('should render the page title "Assets"', () => {
+			renderList();
 
 			expect(screen.getByText('Assets')).toBeInTheDocument();
 		});
 
-		it('should render the FrontendDataSet component', async () => {
-			await renderList();
+		it('should render the FrontendDataSet component', () => {
+			renderList();
 
 			expect(screen.getByTestId('fds-component')).toBeInTheDocument();
 		});
 
-		it('should render the FrontendDataSet with id "assetTable"', async () => {
-			await renderList();
+		it('should render the FrontendDataSet with id "assetTable"', () => {
+			renderList();
 
 			expect(screen.getByTestId('fds-component')).toHaveAttribute(
 				'id',
@@ -450,8 +442,8 @@ describe('List', () => {
 			);
 		});
 
-		it('should pass the cmpProjects filter to FrontendDataSet', async () => {
-			await renderList();
+		it('should pass the cmpProjects filter to FrontendDataSet', () => {
+			renderList();
 
 			const filters = JSON.parse(
 				screen.getByTestId('fds-filters').textContent
@@ -475,8 +467,8 @@ describe('List', () => {
 			expect(groupedFilters[0].filters).toContain('cmpProjects/id');
 		});
 
-		it('should pass the mimeType filter to FrontendDataSet', async () => {
-			await renderList();
+		it('should pass the mimeType filter to FrontendDataSet', () => {
+			renderList();
 
 			const filters = JSON.parse(
 				screen.getByTestId('fds-filters').textContent
@@ -492,24 +484,24 @@ describe('List', () => {
 			expect(mimeTypeFilter.apiURL).toContain('asset-summary-mime-types');
 		});
 
-		it('should render the DropdownRangeKey', async () => {
-			await renderList();
+		it('should render the DropdownRangeKey', () => {
+			renderList();
 
 			expect(
 				screen.getByTestId('dropdown-range-key')
 			).toBeInTheDocument();
 		});
 
-		it('should render the DropdownRangeKey as bordered', async () => {
-			await renderList();
+		it('should render the DropdownRangeKey as bordered', () => {
+			renderList();
 
 			expect(
 				screen.getByTestId('dropdown-range-key-bordered')
 			).toHaveTextContent('true');
 		});
 
-		it('should render the DropdownRangeKey before the Download CSV button, separated by a divider', async () => {
-			const {container} = await renderList();
+		it('should render the DropdownRangeKey before the Download CSV button, separated by a divider', () => {
+			const {container} = renderList();
 
 			const dropdownRangeKey = screen.getByTestId('dropdown-range-key');
 			const downloadCSV = screen.getByTestId('download-csv');
@@ -525,8 +517,8 @@ describe('List', () => {
 			).toBeTruthy();
 		});
 
-		it('should match the snapshot', async () => {
-			const {container} = await renderList();
+		it('should match the snapshot', () => {
+			const {container} = renderList();
 
 			expect(container).toMatchSnapshot();
 		});
@@ -538,8 +530,8 @@ describe('List', () => {
 				(filter: {id: string}) => filter.id === 'mimeType'
 			).apiURL;
 
-		it('should omit the range key and send the range bounds for a custom range', async () => {
-			await renderList({
+		it('should omit the range key and send the range bounds for a custom range', () => {
+			renderList({
 				queryString:
 					'?rangeKey=CUSTOM&rangeStart=2024-01-01&rangeEnd=2024-03-01',
 			});
@@ -551,8 +543,8 @@ describe('List', () => {
 			expect(apiURL).toContain('rangeStart=2024-01-01');
 		});
 
-		it('should send the range key for a preset range', async () => {
-			await renderList({queryString: '?rangeKey=7'});
+		it('should send the range key for a preset range', () => {
+			renderList({queryString: '?rangeKey=7'});
 
 			const apiURL = getMimeTypeFilterApiURL();
 
@@ -563,8 +555,8 @@ describe('List', () => {
 
 		// The endpoints want a custom range without its key; links need it.
 
-		it('should keep the range key on the asset link for a custom range', async () => {
-			await renderList({
+		it('should keep the range key on the asset link for a custom range', () => {
+			renderList({
 				queryString:
 					'?rangeKey=CUSTOM&rangeStart=2024-01-01&rangeEnd=2024-03-01',
 			});
@@ -578,8 +570,8 @@ describe('List', () => {
 			expect(pushedPath).toContain('rangeStart=2024-01-01');
 		});
 
-		it('should put only the range key on the asset link for a preset range', async () => {
-			await renderList({queryString: '?rangeKey=7'});
+		it('should put only the range key on the asset link for a preset range', () => {
+			renderList({queryString: '?rangeKey=7'});
 
 			fireEvent.click(screen.getByTestId('trigger-view-asset'));
 
@@ -594,50 +586,46 @@ describe('List', () => {
 		const getFilters = () =>
 			JSON.parse(screen.getByTestId('fds-filters').textContent);
 
-		const getAccountFilter = async () => {
-			await renderList();
+		const getAccountFilter = () => {
+			renderList();
 
 			return getFilters().find(
 				(filter: {id: string}) => filter.id === 'accountIds'
 			);
 		};
 
-		it('should pass the account filter to FrontendDataSet', async () => {
-			expect(await getAccountFilter()).toBeDefined();
+		it('should pass the account filter to FrontendDataSet', () => {
+			expect(getAccountFilter()).toBeDefined();
 		});
 
-		it('should set the account filter as the first filter', async () => {
-			await renderList();
+		it('should set the account filter as the first filter', () => {
+			renderList();
 
 			expect(getFilters()[0].id).toBe('accountIds');
 		});
 
-		it('should use the account search endpoint in the account filter apiURL', async () => {
-			expect((await getAccountFilter()).apiURL).toContain(
-				'account/search'
-			);
+		it('should use the account search endpoint in the account filter apiURL', () => {
+			expect(getAccountFilter().apiURL).toContain('account/search');
 		});
 
-		it('should include the channelId in the account filter apiURL', async () => {
-			expect((await getAccountFilter()).apiURL).toContain(
-				'channelId=123'
-			);
+		it('should include the channelId in the account filter apiURL', () => {
+			expect(getAccountFilter().apiURL).toContain('channelId=123');
 		});
 
-		it('should set itemKey to "id" in the account filter', async () => {
-			expect((await getAccountFilter()).itemKey).toBe('id');
+		it('should set itemKey to "id" in the account filter', () => {
+			expect(getAccountFilter().itemKey).toBe('id');
 		});
 
-		it('should set itemLabel to "accountName" in the account filter', async () => {
-			expect((await getAccountFilter()).itemLabel).toBe('accountName');
+		it('should set itemLabel to "accountName" in the account filter', () => {
+			expect(getAccountFilter().itemLabel).toBe('accountName');
 		});
 
-		it('should not preload the account filter when no accountId is in the URL', async () => {
-			expect((await getAccountFilter()).preloadedData).toBeUndefined();
+		it('should not preload the account filter when no accountId is in the URL', () => {
+			expect(getAccountFilter().preloadedData).toBeUndefined();
 		});
 
-		it('should preload the account filter from the accountId URL param', async () => {
-			await renderList({queryString: '?accountId=acc-1'});
+		it('should preload the account filter from the accountId URL param', () => {
+			renderList({queryString: '?accountId=acc-1'});
 
 			const accountFilter = getFilters().find(
 				(filter: {id: string}) => filter.id === 'accountIds'
@@ -648,8 +636,8 @@ describe('List', () => {
 			});
 		});
 
-		it('should use the accountName from the URL as the preloaded label', async () => {
-			await renderList({
+		it('should use the accountName from the URL as the preloaded label', () => {
+			renderList({
 				queryString: '?accountId=acc-1&accountName=Acme%20Corp',
 			});
 
@@ -667,8 +655,8 @@ describe('List', () => {
 		const getFields = () =>
 			JSON.parse(screen.getByTestId('fds-fields').textContent);
 
-		it('should not show an object type column', async () => {
-			await renderList();
+		it('should not show an object type column', () => {
+			renderList();
 
 			const fieldNames = getFields().map(
 				(field: {fieldName: string}) => field.fieldName
@@ -688,37 +676,35 @@ describe('List', () => {
 		const getFilters = () =>
 			JSON.parse(screen.getByTestId('fds-filters').textContent);
 
-		const getObjectTypeFilter = async (queryString?: string) => {
-			await renderList({queryString});
+		const getObjectTypeFilter = (queryString?: string) => {
+			renderList({queryString});
 
 			return getFilters().find(
 				(filter: {id: string}) => filter.id === 'objectType'
 			);
 		};
 
-		it('should pass the object type filter to FrontendDataSet', async () => {
-			expect(await getObjectTypeFilter()).toBeDefined();
+		it('should pass the object type filter to FrontendDataSet', () => {
+			expect(getObjectTypeFilter()).toBeDefined();
 		});
 
-		it('should label the object type filter "Asset Structure Type"', async () => {
-			expect((await getObjectTypeFilter()).label).toBe(
-				'Asset Structure Type'
-			);
+		it('should label the object type filter "Asset Structure Type"', () => {
+			expect(getObjectTypeFilter().label).toBe('Asset Structure Type');
 		});
 
-		it('should offer Content and File as the only options', async () => {
-			expect((await getObjectTypeFilter()).items).toEqual([
+		it('should offer Content and File as the only options', () => {
+			expect(getObjectTypeFilter().items).toEqual([
 				{label: 'Content', value: 'content'},
 				{label: 'File', value: 'file'},
 			]);
 		});
 
-		it('should only allow one object type at a time', async () => {
-			expect((await getObjectTypeFilter()).multiple).toBe(false);
+		it('should only allow one object type at a time', () => {
+			expect(getObjectTypeFilter().multiple).toBe(false);
 		});
 
-		it('should group the object type filter under "Filter By"', async () => {
-			await renderList();
+		it('should group the object type filter under "Filter By"', () => {
+			renderList();
 
 			const groupedFilters = JSON.parse(
 				screen.getByTestId('fds-grouped-filters').textContent
@@ -734,60 +720,60 @@ describe('List', () => {
 			]);
 		});
 
-		it('should not preload the filter when no objectType is in the URL', async () => {
-			expect((await getObjectTypeFilter()).preloadedData).toBeUndefined();
+		it('should not preload the filter when no objectType is in the URL', () => {
+			expect(getObjectTypeFilter().preloadedData).toBeUndefined();
 		});
 
-		it('should preload Content from the objectType URL param', async () => {
+		it('should preload Content from the objectType URL param', () => {
 			expect(
-				(await getObjectTypeFilter('?objectType=content')).preloadedData
+				getObjectTypeFilter('?objectType=content').preloadedData
 			).toEqual({
 				selectedItems: [{label: 'Content', value: 'content'}],
 			});
 		});
 
-		it('should preload File from the objectType URL param', async () => {
+		it('should preload File from the objectType URL param', () => {
 			expect(
-				(await getObjectTypeFilter('?objectType=file')).preloadedData
+				getObjectTypeFilter('?objectType=file').preloadedData
 			).toEqual({
 				selectedItems: [{label: 'File', value: 'file'}],
 			});
 		});
 
-		it('should ignore an unknown objectType URL param', async () => {
+		it('should ignore an unknown objectType URL param', () => {
 			expect(
-				(await getObjectTypeFilter('?objectType=folder')).preloadedData
+				getObjectTypeFilter('?objectType=folder').preloadedData
 			).toBeUndefined();
 		});
 	});
 
 	describe('Download CSV', () => {
-		it('should render the Download CSV button for the asset type', async () => {
-			await renderList();
+		it('should render the Download CSV button for the asset type', () => {
+			renderList();
 
 			expect(screen.getByTestId('download-csv-type')).toHaveTextContent(
 				'asset'
 			);
 		});
 
-		it('should render the Download CSV button as bordered', async () => {
-			await renderList();
+		it('should render the Download CSV button as bordered', () => {
+			renderList();
 
 			expect(
 				screen.getByTestId('download-csv-bordered')
 			).toHaveTextContent('true');
 		});
 
-		it('should pass the current rangeSelectors to the Download CSV button', async () => {
-			await renderList();
+		it('should pass the current rangeSelectors to the Download CSV button', () => {
+			renderList();
 
 			expect(
 				screen.getByTestId('download-csv-range-selectors')
 			).toHaveTextContent(RangeKeyTimeRanges.Last30Days);
 		});
 
-		it('should return an empty filter and query before the data set reports any', async () => {
-			await renderList();
+		it('should return an empty filter and query before the data set reports any', () => {
+			renderList();
 
 			fireEvent.click(
 				screen.getByTestId('download-csv-call-get-fds-query')
@@ -798,8 +784,8 @@ describe('List', () => {
 			).toHaveTextContent(JSON.stringify({filter: '', query: ''}));
 		});
 
-		it('should capture the filter and query the data set reports and expose them via getFDSQuery', async () => {
-			await renderList();
+		it('should capture the filter and query the data set reports and expose them via getFDSQuery', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('fds-run-transformer'));
 			fireEvent.click(
@@ -816,8 +802,8 @@ describe('List', () => {
 			);
 		});
 
-		it('should pass the additionalAPIURLParameters through unchanged', async () => {
-			await renderList();
+		it('should pass the additionalAPIURLParameters through unchanged', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('fds-run-transformer'));
 
@@ -839,20 +825,20 @@ describe('List', () => {
 		const getSorts = () =>
 			JSON.parse(screen.getByTestId('fds-sorts').textContent);
 
-		it('should not pass any sort when no orderBy is in the URL', async () => {
-			await renderList();
+		it('should not pass any sort when no orderBy is in the URL', () => {
+			renderList();
 
 			expect(getSorts()).toBeNull();
 		});
 
-		it('should ignore an unknown orderBy value', async () => {
-			await renderList({queryString: '?orderBy=bogusMetric'});
+		it('should ignore an unknown orderBy value', () => {
+			renderList({queryString: '?orderBy=bogusMetric'});
 
 			expect(getSorts()).toBeNull();
 		});
 
-		it('should offer every sortable column as a sort option', async () => {
-			await renderList({queryString: '?orderBy=viewsMetric'});
+		it('should offer every sortable column as a sort option', () => {
+			renderList({queryString: '?orderBy=viewsMetric'});
 
 			const sorts = getSorts();
 
@@ -868,8 +854,8 @@ describe('List', () => {
 
 		['viewsMetric', 'impressionsMetric', 'downloadsMetric'].forEach(
 			(metric) => {
-				it(`should mark only the ${metric} column active when it is the orderBy`, async () => {
-					await renderList({queryString: `?orderBy=${metric}`});
+				it(`should mark only the ${metric} column active when it is the orderBy`, () => {
+					renderList({queryString: `?orderBy=${metric}`});
 
 					const activeSorts = getSorts().filter(
 						(sort: {active: boolean}) => sort.active
@@ -897,8 +883,8 @@ describe('List', () => {
 			JSON.parse(screen.getByTestId('fds-grouped-filters').textContent);
 
 		describe('when LDP is enabled', () => {
-			it('should include the account and segment filters', async () => {
-				await renderList();
+			it('should include the account and segment filters', () => {
+				renderList();
 
 				const ids = getFilterIds();
 
@@ -906,8 +892,8 @@ describe('List', () => {
 				expect(ids).toContain('segmentIds');
 			});
 
-			it('should render the "Filter by People" grouped filter', async () => {
-				await renderList();
+			it('should render the "Filter by People" grouped filter', () => {
+				renderList();
 
 				const labels = getGroupedFilters().map(
 					(group: {label: string}) => group.label
@@ -920,20 +906,20 @@ describe('List', () => {
 		describe('when LDP is not enabled', () => {
 			const nonLDPStore = mockStore();
 
-			it('should not include the account filter', async () => {
-				await renderList({store: nonLDPStore});
+			it('should not include the account filter', () => {
+				renderList({store: nonLDPStore});
 
 				expect(getFilterIds()).not.toContain('accountIds');
 			});
 
-			it('should not include the segment filter', async () => {
-				await renderList({store: nonLDPStore});
+			it('should not include the segment filter', () => {
+				renderList({store: nonLDPStore});
 
 				expect(getFilterIds()).not.toContain('segmentIds');
 			});
 
-			it('should not render the "Filter by People" grouped filter', async () => {
-				await renderList({store: nonLDPStore});
+			it('should not render the "Filter by People" grouped filter', () => {
+				renderList({store: nonLDPStore});
 
 				const labels = getGroupedFilters().map(
 					(group: {label: string}) => group.label
@@ -942,8 +928,8 @@ describe('List', () => {
 				expect(labels).not.toContain('Filter by People');
 			});
 
-			it('should keep the "Filter by" grouped filter with its filters', async () => {
-				await renderList({store: nonLDPStore});
+			it('should keep the "Filter by" grouped filter with its filters', () => {
+				renderList({store: nonLDPStore});
 
 				const groupedFilters = getGroupedFilters();
 
@@ -962,21 +948,21 @@ describe('List', () => {
 	});
 
 	describe('initial range selector state', () => {
-		it('should default to Last30Days when no query string is present', async () => {
-			await renderList();
+		it('should default to Last30Days when no query string is present', () => {
+			renderList();
 
 			expect(screen.getByTestId('current-range-key')).toHaveTextContent(
 				RangeKeyTimeRanges.Last30Days
 			);
 		});
 
-		it('should pick up rangeKey from the URL query string', async () => {
+		it('should pick up rangeKey from the URL query string', () => {
 
 			// The real useQueryRangeSelectors reads from the URL; we provide a
 			// URL carrying a rangeKey to verify the initial state is seeded
 			// from the query params.
 
-			await renderList({
+			renderList({
 				queryString: `?rangeKey=${RangeKeyTimeRanges.Last7Days}`,
 			});
 
@@ -987,22 +973,22 @@ describe('List', () => {
 	});
 
 	describe('onRangeSelectorChange', () => {
-		it('should call history.push when the range selector changes', async () => {
-			await renderList();
+		it('should call history.push when the range selector changes', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('change-range-btn'));
 
 			expect(mockHistoryPush).toHaveBeenCalledTimes(1);
 		});
 
-		it('should update the displayed range key after a change', async () => {
+		it('should update the displayed range key after a change', () => {
 
 			// List calls setRangeSelectors in the onRangeSelectorChange
 			// handler, which causes a re-render passing the new rangeSelectors
 			// to the stub DropdownRangeKey. Since history.push is mocked and
 			// does not navigate, the state update drives the re-render.
 
-			await renderList();
+			renderList();
 
 			fireEvent.click(screen.getByTestId('change-range-btn'));
 
@@ -1011,8 +997,8 @@ describe('List', () => {
 			);
 		});
 
-		it('should include the new rangeKey in the URL pushed to history', async () => {
-			await renderList();
+		it('should include the new rangeKey in the URL pushed to history', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('change-range-btn'));
 
@@ -1021,8 +1007,8 @@ describe('List', () => {
 			expect(pushedPath).toContain(RangeKeyTimeRanges.Last7Days);
 		});
 
-		it('should reset page to DEFAULT_CUR (1) when the range changes', async () => {
-			await renderList();
+		it('should reset page to DEFAULT_CUR (1) when the range changes', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('change-range-btn'));
 
@@ -1033,12 +1019,12 @@ describe('List', () => {
 			expect(pushedPath).toContain('page=1');
 		});
 
-		it('should strip rangeEnd and rangeStart from the URL when switching to a preset range', async () => {
+		it('should strip rangeEnd and rangeStart from the URL when switching to a preset range', () => {
 
 			// Start with a custom range in the URL so the strip logic is
 			// exercised by removeUriQueryParam.
 
-			await renderList({
+			renderList({
 				queryString:
 					'?rangeKey=CUSTOM&rangeStart=2024-01-01&rangeEnd=2024-03-01',
 			});
@@ -1051,8 +1037,8 @@ describe('List', () => {
 			expect(pushedPath).not.toContain('rangeStart=2024-01-01');
 		});
 
-		it('should include rangeEnd and rangeStart in the URL for a custom range', async () => {
-			await renderList();
+		it('should include rangeEnd and rangeStart in the URL for a custom range', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('change-range-custom-btn'));
 
@@ -1065,8 +1051,8 @@ describe('List', () => {
 			expect(pushedPath).toContain('rangeStart=2024-01-01');
 		});
 
-		it('should update the displayed range key to CustomRange after a custom range change', async () => {
-			await renderList();
+		it('should update the displayed range key to CustomRange after a custom range change', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('change-range-custom-btn'));
 
@@ -1077,7 +1063,7 @@ describe('List', () => {
 	});
 
 	describe('breadcrumbs', () => {
-		it('should build the home breadcrumb using the selected channel name', async () => {
+		it('should build the home breadcrumb using the selected channel name', () => {
 
 			// mockChannelContext() returns selectedChannel = mockChannel(1),
 			// whose name is "Channel 1".
@@ -1085,7 +1071,7 @@ describe('List', () => {
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
 			const breadcrumbs = require('shared/util/breadcrumbs');
 
-			await renderList();
+			renderList();
 
 			expect(breadcrumbs.getHome).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -1127,14 +1113,14 @@ describe('List', () => {
 	});
 
 	describe('FDS remount key', () => {
-		it('should reflect the updated rangeKey in component state after change, triggering FDS remount', async () => {
+		it('should reflect the updated rangeKey in component state after change, triggering FDS remount', () => {
 
 			// List passes key={Object.values(rangeSelectors).join()} to FDS.
 			// After setRangeSelectors is called the key changes, forcing FDS
 			// to remount. We verify via the DropdownRangeKey stub that the
 			// state was updated.
 
-			await renderList();
+			renderList();
 
 			fireEvent.click(screen.getByTestId('change-range-btn'));
 
@@ -1145,16 +1131,16 @@ describe('List', () => {
 	});
 
 	describe('info panel', () => {
-		it('should display the asset title in the panel header when opened', async () => {
-			await renderList();
+		it('should display the asset title in the panel header when opened', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
 			expect(screen.getByText('Test Asset Title')).toBeInTheDocument();
 		});
 
-		it('should fall back to asset id when assetTitle is absent', async () => {
-			await renderList();
+		it('should fall back to asset id when assetTitle is absent', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel-no-title'));
 
@@ -1163,8 +1149,8 @@ describe('List', () => {
 			);
 		});
 
-		it('should render AssetIcon when mimeType is present', async () => {
-			const {container} = await renderList();
+		it('should render AssetIcon when mimeType is present', () => {
+			const {container} = renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
@@ -1174,16 +1160,16 @@ describe('List', () => {
 			expect(container.querySelector('.sticker')).toBeInTheDocument();
 		});
 
-		it('should render a default AssetIcon when mimeType is absent', async () => {
-			const {container} = await renderList();
+		it('should render a default AssetIcon when mimeType is absent', () => {
+			const {container} = renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel-no-mime'));
 
 			expect(container.querySelector('.sticker')).toBeInTheDocument();
 		});
 
-		it('should add the sidebar-opened class to the page when the panel is open', async () => {
-			const {container} = await renderList();
+		it('should add the sidebar-opened class to the page when the panel is open', () => {
+			const {container} = renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
@@ -1192,14 +1178,14 @@ describe('List', () => {
 			).toBeInTheDocument();
 		});
 
-		it('should not have the sidebar-opened class before the panel is opened', async () => {
-			const {container} = await renderList();
+		it('should not have the sidebar-opened class before the panel is opened', () => {
+			const {container} = renderList();
 
 			expect(container.querySelector('.sidebar-opened')).toBeNull();
 		});
 
-		it('should remove the sidebar-opened class after the panel is closed', async () => {
-			const {container} = await renderList();
+		it('should remove the sidebar-opened class after the panel is closed', () => {
+			const {container} = renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
@@ -1221,8 +1207,8 @@ describe('List', () => {
 			}
 		});
 
-		it('should render the Categorization tab', async () => {
-			await renderList();
+		it('should render the Categorization tab', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
@@ -1231,8 +1217,8 @@ describe('List', () => {
 	});
 
 	describe('CategoriesInfoPanelContent', () => {
-		it('should display empty state when there are no categories', async () => {
-			await renderList();
+		it('should display empty state when there are no categories', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 			fireEvent.click(screen.getByText('Categorization'));
@@ -1242,8 +1228,8 @@ describe('List', () => {
 			).toBeInTheDocument();
 		});
 
-		it('should group categories under their vocabulary name', async () => {
-			await renderList();
+		it('should group categories under their vocabulary name', () => {
+			renderList();
 
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
@@ -1255,8 +1241,8 @@ describe('List', () => {
 			expect(screen.getByText('Category Two')).toBeInTheDocument();
 		});
 
-		it('should not render a vocabulary that has no matching categories', async () => {
-			await renderList();
+		it('should not render a vocabulary that has no matching categories', () => {
+			renderList();
 
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-empty-vocab')
@@ -1267,8 +1253,8 @@ describe('List', () => {
 			expect(screen.queryByText('Genres')).not.toBeInTheDocument();
 		});
 
-		it('should group all categories from the same vocabulary under one header', async () => {
-			await renderList();
+		it('should group all categories from the same vocabulary under one header', () => {
+			renderList();
 
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
@@ -1280,8 +1266,8 @@ describe('List', () => {
 			expect(screen.getByText('Category Two')).toBeInTheDocument();
 		});
 
-		it('should not show empty state when categories are present', async () => {
-			await renderList();
+		it('should not show empty state when categories are present', () => {
+			renderList();
 
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
@@ -1295,8 +1281,8 @@ describe('List', () => {
 	});
 
 	describe('TagsInfoPanelContent', () => {
-		it('should display empty state when there are no tags', async () => {
-			await renderList();
+		it('should display empty state when there are no tags', () => {
+			renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 			fireEvent.click(screen.getByText('Categorization'));
@@ -1306,8 +1292,8 @@ describe('List', () => {
 			).toBeInTheDocument();
 		});
 
-		it('should render tags as labels', async () => {
-			await renderList();
+		it('should render tags as labels', () => {
+			renderList();
 
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
@@ -1317,8 +1303,8 @@ describe('List', () => {
 			expect(screen.getByText('Tag One')).toBeInTheDocument();
 		});
 
-		it('should not show empty state when tags are present', async () => {
-			await renderList();
+		it('should not show empty state when tags are present', () => {
+			renderList();
 
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')

@@ -1,6 +1,6 @@
 import AccountsDataSet from '../AccountsDataSet';
 import React from 'react';
-import {cleanup, render, screen, waitFor} from '@testing-library/react';
+import {cleanup, render, screen} from '@testing-library/react';
 import {CatalogFieldDataCategory, ICatalogField} from 'shared/api/catalog';
 import {IViewField} from '../utils';
 import {LifecycleStages} from 'contacts/pages/account/utils/constants';
@@ -167,14 +167,6 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 	},
 }));
 
-const renderAccountsDataSet = async (ui: React.ReactElement) => {
-	const result = render(ui);
-
-	await screen.findByTestId('fds-component');
-
-	return result;
-};
-
 beforeAll(warmFrontendDataSet);
 
 describe('AccountsDataSet', () => {
@@ -190,8 +182,8 @@ describe('AccountsDataSet', () => {
 
 	afterEach(cleanup);
 
-	it('should render the FrontendDataSet with id "accounts-list-dataset"', async () => {
-		await renderAccountsDataSet(
+	it('should render the FrontendDataSet with id "accounts-list-dataset"', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -201,16 +193,16 @@ describe('AccountsDataSet', () => {
 		);
 	});
 
-	it('should pass the apiURL directly to FrontendDataSet without appending range params', async () => {
-		await renderAccountsDataSet(
+	it('should pass the apiURL directly to FrontendDataSet without appending range params', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
 		expect(lastApiURL).toBe('fake-url');
 	});
 
-	it('should leave the rangeKey filter without preloadedData when rangeKeyFilter is not provided', async () => {
-		await renderAccountsDataSet(
+	it('should leave the rangeKey filter without preloadedData when rangeKeyFilter is not provided', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -219,8 +211,8 @@ describe('AccountsDataSet', () => {
 		expect(rangeKeyFilter?.preloadedData).toBeUndefined();
 	});
 
-	it('should preload the rangeKey filter when rangeKeyFilter prop is provided', async () => {
-		await renderAccountsDataSet(
+	it('should preload the rangeKey filter when rangeKeyFilter prop is provided', () => {
+		render(
 			<AccountsDataSet
 				apiURL="fake-url"
 				channelId="123"
@@ -242,8 +234,8 @@ describe('AccountsDataSet', () => {
 		});
 	});
 
-	it('should include all 8 time range options in the rangeKey filter', async () => {
-		await renderAccountsDataSet(
+	it('should include all 8 time range options in the rangeKey filter', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -262,8 +254,8 @@ describe('AccountsDataSet', () => {
 		]);
 	});
 
-	it('should leave country and industry filters without preloadedData when no props are passed', async () => {
-		await renderAccountsDataSet(
+	it('should leave country and industry filters without preloadedData when no props are passed', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -274,8 +266,8 @@ describe('AccountsDataSet', () => {
 		expect(industryFilter?.preloadedData).toBeUndefined();
 	});
 
-	it('should omit the lifecycleStatus filter when accountLifecycleId is not provided', async () => {
-		await renderAccountsDataSet(
+	it('should omit the lifecycleStatus filter when accountLifecycleId is not provided', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -286,8 +278,8 @@ describe('AccountsDataSet', () => {
 		expect(lifecycleStatusFilter).toBeUndefined();
 	});
 
-	it('should preload the country filter when countryFilter prop is provided', async () => {
-		await renderAccountsDataSet(
+	it('should preload the country filter when countryFilter prop is provided', () => {
+		render(
 			<AccountsDataSet
 				apiURL="fake-url"
 				channelId="123"
@@ -304,8 +296,8 @@ describe('AccountsDataSet', () => {
 		});
 	});
 
-	it('should preload the industry filter when industryFilter prop is provided', async () => {
-		await renderAccountsDataSet(
+	it('should preload the industry filter when industryFilter prop is provided', () => {
+		render(
 			<AccountsDataSet
 				apiURL="fake-url"
 				channelId="123"
@@ -322,8 +314,8 @@ describe('AccountsDataSet', () => {
 		});
 	});
 
-	it('should build the lifecycleStatus items from the fetched stages with localized labels', async () => {
-		await renderAccountsDataSet(
+	it('should build the lifecycleStatus items from the fetched stages with localized labels', () => {
+		render(
 			<AccountsDataSet
 				accountLifecycleId="al-1"
 				apiURL="fake-url"
@@ -344,8 +336,8 @@ describe('AccountsDataSet', () => {
 		]);
 	});
 
-	it('should preload the lifecycleStatus filter with the stage id and localized label when lifecycleStageFilter prop is provided', async () => {
-		await renderAccountsDataSet(
+	it('should preload the lifecycleStatus filter with the stage id and localized label when lifecycleStageFilter prop is provided', () => {
+		render(
 			<AccountsDataSet
 				accountLifecycleId="al-1"
 				apiURL="fake-url"
@@ -365,10 +357,10 @@ describe('AccountsDataSet', () => {
 		});
 	});
 
-	it('should leave the lifecycleStatus preloadedData undefined when stages have not loaded yet', async () => {
+	it('should leave the lifecycleStatus preloadedData undefined when stages have not loaded yet', () => {
 		mockStages(undefined);
 
-		await renderAccountsDataSet(
+		render(
 			<AccountsDataSet
 				accountLifecycleId="al-1"
 				apiURL="fake-url"
@@ -385,8 +377,8 @@ describe('AccountsDataSet', () => {
 		expect(lifecycleStatusFilter?.preloadedData).toBeUndefined();
 	});
 
-	it('should render the account name link with channelId in the href', async () => {
-		await renderAccountsDataSet(
+	it('should render the account name link with channelId in the href', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -403,8 +395,8 @@ describe('AccountsDataSet', () => {
 		);
 	});
 
-	it('should render 0 recent activities when the account has no events', async () => {
-		await renderAccountsDataSet(
+	it('should render 0 recent activities when the account has no events', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -417,8 +409,8 @@ describe('AccountsDataSet', () => {
 		expect(container).toHaveTextContent('0');
 	});
 
-	it('should render the recent activities count when the account has events', async () => {
-		await renderAccountsDataSet(
+	it('should render the recent activities count when the account has events', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -429,8 +421,8 @@ describe('AccountsDataSet', () => {
 		expect(container).toHaveTextContent('42');
 	});
 
-	it('should render an empty annual revenue when the account annual revenue is 0', async () => {
-		await renderAccountsDataSet(
+	it('should render an empty annual revenue when the account annual revenue is 0', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -441,8 +433,8 @@ describe('AccountsDataSet', () => {
 		expect(container.textContent).toBe('');
 	});
 
-	it('should render an empty annual revenue when the account annual revenue is unknown', async () => {
-		await renderAccountsDataSet(
+	it('should render an empty annual revenue when the account annual revenue is unknown', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -453,8 +445,8 @@ describe('AccountsDataSet', () => {
 		expect(container.textContent).toBe('');
 	});
 
-	it('should render the annual revenue in thousands when the account has annual revenue', async () => {
-		await renderAccountsDataSet(
+	it('should render the annual revenue in thousands when the account has annual revenue', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -465,8 +457,8 @@ describe('AccountsDataSet', () => {
 		expect(container).toHaveTextContent('120M');
 	});
 
-	it('should not expose a filter for recent activities', async () => {
-		await renderAccountsDataSet(
+	it('should not expose a filter for recent activities', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -477,8 +469,8 @@ describe('AccountsDataSet', () => {
 		expect(activitiesCountFilter).toBeUndefined();
 	});
 
-	it('should not append segmentFilter as a query param on the apiURL', async () => {
-		await renderAccountsDataSet(
+	it('should not append segmentFilter as a query param on the apiURL', () => {
+		render(
 			<AccountsDataSet
 				apiURL="fake-url"
 				channelId="123"
@@ -490,8 +482,8 @@ describe('AccountsDataSet', () => {
 		expect(lastApiURL).toBe('fake-url');
 	});
 
-	it('should leave the segment filter without preloadedData when no segmentFilter prop is passed', async () => {
-		await renderAccountsDataSet(
+	it('should leave the segment filter without preloadedData when no segmentFilter prop is passed', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -500,8 +492,8 @@ describe('AccountsDataSet', () => {
 		expect(segmentFilter?.preloadedData).toBeUndefined();
 	});
 
-	it('should preload the segment filter with the segment name when segmentFilter and segmentName props are provided', async () => {
-		await renderAccountsDataSet(
+	it('should preload the segment filter with the segment name when segmentFilter and segmentName props are provided', () => {
+		render(
 			<AccountsDataSet
 				apiURL="fake-url"
 				channelId="123"
@@ -519,8 +511,8 @@ describe('AccountsDataSet', () => {
 		});
 	});
 
-	it('should point the segment filter apiURL at the individual segment search endpoint', async () => {
-		await renderAccountsDataSet(
+	it('should point the segment filter apiURL at the individual segment search endpoint', () => {
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -531,8 +523,8 @@ describe('AccountsDataSet', () => {
 		);
 	});
 
-	it('should remount the FrontendDataSet when segmentFilter changes', async () => {
-		const {rerender} = await renderAccountsDataSet(
+	it('should remount the FrontendDataSet when segmentFilter changes', () => {
+		const {rerender} = render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -547,11 +539,11 @@ describe('AccountsDataSet', () => {
 			/>
 		);
 
-		await waitFor(() => expect(mountCount).toBe(2));
+		expect(mountCount).toBe(2);
 	});
 
-	it('should remount the FrontendDataSet when stageSelectionNonce changes even if lifecycleStageFilter is unchanged', async () => {
-		const {rerender} = await renderAccountsDataSet(
+	it('should remount the FrontendDataSet when stageSelectionNonce changes even if lifecycleStageFilter is unchanged', () => {
+		const {rerender} = render(
 			<AccountsDataSet
 				accountLifecycleId="al-1"
 				apiURL="fake-url"
@@ -575,10 +567,10 @@ describe('AccountsDataSet', () => {
 			/>
 		);
 
-		await waitFor(() => expect(mountCount).toBe(2));
+		expect(mountCount).toBe(2);
 	});
 
-	it('should mount the FrontendDataSet only once, once the lifecycle stages have arrived', async () => {
+	it('should mount the FrontendDataSet only once, once the lifecycle stages have arrived', () => {
 		mockStagesLoading();
 
 		const {rerender} = render(
@@ -604,14 +596,14 @@ describe('AccountsDataSet', () => {
 			/>
 		);
 
-		expect(await screen.findByTestId('fds-component')).toBeInTheDocument();
+		expect(screen.getByTestId('fds-component')).toBeInTheDocument();
 		expect(mountCount).toBe(1);
 	});
 
-	it('should mount the FrontendDataSet right away when accountLifecycleId is not provided, since the stages request is skipped', async () => {
+	it('should mount the FrontendDataSet right away when accountLifecycleId is not provided, since the stages request is skipped', () => {
 		mockStagesLoading();
 
-		await renderAccountsDataSet(
+		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
@@ -620,8 +612,8 @@ describe('AccountsDataSet', () => {
 	});
 
 	describe('when fieldCatalog is not provided', () => {
-		it('should build only the Default View', async () => {
-			await renderAccountsDataSet(
+		it('should build only the Default View', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -644,8 +636,8 @@ describe('AccountsDataSet', () => {
 	});
 
 	describe('when fieldCatalog is provided', () => {
-		it('should build two views', async () => {
-			await renderAccountsDataSet(
+		it('should build two views', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -657,8 +649,8 @@ describe('AccountsDataSet', () => {
 			expect(lastViews).toHaveLength(2);
 		});
 
-		it('should build only the Default View when every catalog field is already curated', async () => {
-			await renderAccountsDataSet(
+		it('should build only the Default View when every catalog field is already curated', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -671,8 +663,8 @@ describe('AccountsDataSet', () => {
 			expect(lastViews![0].name).toBe('table');
 		});
 
-		it('should resolve the date renderer whatever case the catalog reports', async () => {
-			await renderAccountsDataSet(
+		it('should resolve the date renderer whatever case the catalog reports', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -698,8 +690,8 @@ describe('AccountsDataSet', () => {
 			);
 		});
 
-		it('should carry a calculated catalog field through verbatim', async () => {
-			await renderAccountsDataSet(
+		it('should carry a calculated catalog field through verbatim', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -715,8 +707,8 @@ describe('AccountsDataSet', () => {
 			expect(field?.contentRenderer).toBeUndefined();
 		});
 
-		it('should build the Default View with the 8 fixed fields in order, with the correct renderers', async () => {
-			await renderAccountsDataSet(
+		it('should build the Default View with the 8 fixed fields in order, with the correct renderers', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -757,8 +749,8 @@ describe('AccountsDataSet', () => {
 			expect(firstActiveField?.label).toBe('First Active');
 		});
 
-		it('should build the All Attributes View from the full catalog, resolving renderers by type and letting known overrides win', async () => {
-			await renderAccountsDataSet(
+		it('should build the All Attributes View from the full catalog, resolving renderers by type and letting known overrides win', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -792,8 +784,8 @@ describe('AccountsDataSet', () => {
 			expect(byFieldName('isPartner')?.contentRenderer).toBeUndefined();
 		});
 
-		it('should order the All Attributes View with the default columns first, then the remaining catalog fields in catalog order', async () => {
-			await renderAccountsDataSet(
+		it('should order the All Attributes View with the default columns first, then the remaining catalog fields in catalog order', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -815,8 +807,8 @@ describe('AccountsDataSet', () => {
 			).toEqual([...ALL_ATTRIBUTES_FIXED_FIELD_NAMES, 'website', 'city']);
 		});
 
-		it('should build only the Default View when the catalog comes back empty', async () => {
-			await renderAccountsDataSet(
+		it('should build only the Default View when the catalog comes back empty', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -829,8 +821,8 @@ describe('AccountsDataSet', () => {
 			expect(lastViews![0].name).toBe('table');
 		});
 
-		it('should not repeat a catalog field that appears twice', async () => {
-			await renderAccountsDataSet(
+		it('should not repeat a catalog field that appears twice', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -849,8 +841,8 @@ describe('AccountsDataSet', () => {
 			).toHaveLength(1);
 		});
 
-		it('should leave catalog columns unsortable, since the engine does not know their names', async () => {
-			await renderAccountsDataSet(
+		it('should leave catalog columns unsortable, since the engine does not know their names', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -863,8 +855,8 @@ describe('AccountsDataSet', () => {
 			expect(byFieldName('accountName')?.sortable).toBe(true);
 		});
 
-		it('should label catalog fields with displayName, falling back to the field name when the catalog omits it', async () => {
-			await renderAccountsDataSet(
+		it('should label catalog fields with displayName, falling back to the field name when the catalog omits it', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -879,8 +871,8 @@ describe('AccountsDataSet', () => {
 	});
 
 	describe('the Last Enriched column', () => {
-		it('should be left out of the Default View', async () => {
-			await renderAccountsDataSet(
+		it('should be left out of the Default View', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -896,8 +888,8 @@ describe('AccountsDataSet', () => {
 			).not.toContain('lastEnriched');
 		});
 
-		it('should sit at the end of the fixed columns in the All Attributes View, still curated', async () => {
-			await renderAccountsDataSet(
+		it('should sit at the end of the fixed columns in the All Attributes View, still curated', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"
@@ -919,8 +911,8 @@ describe('AccountsDataSet', () => {
 			expect(field?.label).toMatch(/last.enriched/i);
 		});
 
-		it('should not be duplicated when the catalog also reports it', async () => {
-			await renderAccountsDataSet(
+		it('should not be duplicated when the catalog also reports it', () => {
+			render(
 				<AccountsDataSet
 					apiURL="fake-url"
 					channelId="123"

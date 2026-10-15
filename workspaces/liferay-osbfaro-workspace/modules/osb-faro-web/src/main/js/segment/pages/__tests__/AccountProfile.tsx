@@ -131,10 +131,8 @@ describe('AccountProfile', () => {
 		).toMatch(/\/segments\/0\/edit$/);
 	});
 
-	it('should list the accounts matching the segment', async () => {
+	it('should list the accounts matching the segment', () => {
 		renderAccountProfile();
-
-		await screen.findByTestId('fds-component');
 
 		expect(screen.getByText('SEGMENT MEMBERSHIP')).toBeTruthy();
 		expect(lastApiURL).toBe(
@@ -143,10 +141,8 @@ describe('AccountProfile', () => {
 		expect(lastDataSetId).toBe('segment-accounts-dataset');
 	});
 
-	it('should list the accounts matching the segment without any filter applied', async () => {
+	it('should list the accounts matching the segment without any filter applied', () => {
 		renderAccountProfile();
-
-		await screen.findByTestId('fds-component');
 
 		const preloadedFilters = lastFilters?.filter(
 			({preloadedData}) => preloadedData
