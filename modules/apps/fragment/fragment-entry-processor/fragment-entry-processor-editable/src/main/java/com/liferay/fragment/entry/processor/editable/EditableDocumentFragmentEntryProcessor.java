@@ -173,9 +173,15 @@ public class EditableDocumentFragmentEntryProcessor
 					fragmentEntryProcessorContext.getLocale());
 			}
 
-			JSONObject configJSONObject = JSONUtil.merge(
-				editableValueJSONObject.getJSONObject("config"),
-				mappedValueConfigJSONObject);
+			JSONObject configJSONObject = editableValueJSONObject.getJSONObject(
+				"config");
+
+			if ((configJSONObject == null) ||
+				(mappedValueConfigJSONObject.length() > 0)) {
+
+				configJSONObject = JSONUtil.merge(
+					configJSONObject, mappedValueConfigJSONObject);
+			}
 
 			JSONObject localizedJSONObject = configJSONObject.getJSONObject(
 				LocaleUtil.toLanguageId(
