@@ -94,7 +94,32 @@ jest.mock('frontend-editor-ckeditor-web', () => {
 				</div>
 			);
 		},
-		ClassicEditor: () => null,
+		ClassicEditor: ({onInstanceReady}: any) => {
+			const [data, setData] = React.useState('');
+
+			React.useEffect(() => {
+				onInstanceReady({
+					editor: {
+
+						// CKEditor 4 only renders data that is not set as internal
+
+						setData: (newData: string, options: any) => {
+							if (!options?.internal) {
+								setData(newData);
+							}
+						},
+					},
+				});
+
+				// eslint-disable-next-line react-hooks/exhaustive-deps
+			}, []);
+
+			return (
+				<div aria-label="editor" role="textbox">
+					{data}
+				</div>
+			);
+		},
 	};
 });
 
@@ -220,5 +245,23 @@ describe('TranslateFieldSetEntries', () => {
 
 			expect(textarea).toHaveValue('');
 		}
+	});
+});
+
+describe('TranslateFieldSetEntries with CKEditor 4', () => {
+	beforeAll(() => {
+		Liferay.FeatureFlags['LPD-11235'] = true;
+	});
+
+	afterAll(() => {
+		delete Liferay.FeatureFlags['LPD-11235'];
+	});
+
+	it('shows the target content in the editor', () => {
+		render(buildComponent(ORIGINAL_TARGET));
+
+		expect(screen.getByRole('textbox', {name: 'editor'})).toHaveTextContent(
+			'contenido original'
+		);
 	});
 });
