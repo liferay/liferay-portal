@@ -39,37 +39,15 @@ func TestCRDAcceptsConfigurationOnlyClientExtension(t *testing.T) {
 	}
 }
 
-func TestCRDAcceptsDomainsThatAreHostAndPort(t *testing.T) {
+func TestCRDAcceptsDomain(t *testing.T) {
 	testClient := startEnvironment(t)
 
-	testCases := map[string]struct {
-		domain       string
-		resourceName string
-	}{
-		"a host": {
-			domain:       "liferay-sample-etc-spring-boot.example.com",
-			resourceName: "host",
-		},
-		"a host and port": {
-			domain:       "localhost:8080",
-			resourceName: "host-and-port",
-		},
-		"an address and port": {
-			domain:       "10.0.0.1:8443",
-			resourceName: "address-and-port",
-		},
-	}
+	clientExtension := validClientExtension("domain")
 
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			clientExtension := validClientExtension(testCase.resourceName)
+	clientExtension.Spec.Domain = "liferay-sample-etc-spring-boot.example.com"
 
-			clientExtension.Spec.Domain = testCase.domain
-
-			if error := testClient.Create(context.Background(), clientExtension); error != nil {
-				t.Errorf("Expected domain %q to be accepted, got %v", testCase.domain, error)
-			}
-		})
+	if error := testClient.Create(context.Background(), clientExtension); error != nil {
+		t.Errorf("Expected a ClientExtension naming its domain to be accepted, got %v", error)
 	}
 }
 
@@ -168,6 +146,11 @@ func TestCRDRejectsInvalidClientExtensions(t *testing.T) {
 		"a domain with a path": {
 			mutate: func(object map[string]any) {
 				spec(object)["domain"] = "liferay-sample.example.com/o/sample"
+			},
+		},
+		"a domain with a port": {
+			mutate: func(object map[string]any) {
+				spec(object)["domain"] = "liferay-sample.example.com:8443"
 			},
 		},
 		"a domain with uppercase letters": {
