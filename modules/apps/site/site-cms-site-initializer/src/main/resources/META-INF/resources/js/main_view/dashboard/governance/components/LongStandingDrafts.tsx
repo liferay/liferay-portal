@@ -214,11 +214,11 @@ export function LongStandingDraftsList({
 				<FrontendDataSet
 					{...fdsProps}
 					emptyState={{
-						description: '',
-						image: EMPTY_STATE_IMAGE,
-						title: Liferay.Language.get(
-							'there-are-no-long-standing-drafts'
+						description: Liferay.Language.get(
+							'no-content-has-stayed-in-draft-longer-than-expected'
 						),
+						image: EMPTY_STATE_IMAGE,
+						title: Liferay.Language.get('no-long-standing-drafts'),
 					}}
 					id={LIST_ID}
 					showManagementBar={false}

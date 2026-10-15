@@ -4,7 +4,10 @@
  */
 
 import '@testing-library/jest-dom';
-import {serializeFDSConfig} from '@liferay/frontend-data-set-web';
+import {
+	FrontendDataSet,
+	serializeFDSConfig,
+} from '@liferay/frontend-data-set-web';
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
@@ -31,7 +34,7 @@ jest.mock('frontend-js-web', () => ({
 }));
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
-	FrontendDataSet: () => null,
+	FrontendDataSet: jest.fn(() => null),
 	getConfigParamName: (fdsName: string) => `${fdsName}_fdsConfig`,
 	serializeFDSConfig: jest.fn(() => 'SERIALIZED_CONFIG'),
 }));
@@ -304,13 +307,22 @@ describe('[CMS Dashboard] LongStandingDrafts', () => {
 		expect(screen.getByText('Showing 8 of 9 Items')).toBeInTheDocument();
 	});
 
-	it('hides the listed count when there are no long-standing drafts', async () => {
+	it('describes the empty state when there are no long-standing drafts', async () => {
 		renderOperations({
 			statistics: {longStandingDraftsCount: 0, totalCount: 350},
 		});
 
 		await expandList();
 
+		const [{emptyState}] = (FrontendDataSet as jest.Mock).mock.calls.at(-1);
+
+		expect(emptyState).toEqual(
+			expect.objectContaining({
+				description:
+					'no-content-has-stayed-in-draft-longer-than-expected',
+				title: 'no-long-standing-drafts',
+			})
+		);
 		expect(screen.queryByText(/^Showing/)).not.toBeInTheDocument();
 	});
 
