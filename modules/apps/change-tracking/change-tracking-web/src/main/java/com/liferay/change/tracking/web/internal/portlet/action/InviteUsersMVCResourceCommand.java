@@ -9,9 +9,9 @@ import com.liferay.change.tracking.configuration.CTCollectionEmailConfiguration;
 import com.liferay.change.tracking.constants.CTActionKeys;
 import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.constants.CTPortletKeys;
-import com.liferay.change.tracking.constants.PublicationRoleConstants;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.web.internal.helper.PublicationHelper;
 import com.liferay.change.tracking.web.internal.security.permission.resource.CTCollectionPermission;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroupRole;
@@ -40,9 +39,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -50,8 +47,6 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -70,8 +65,6 @@ import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -181,42 +174,19 @@ public class InviteUsersMVCResourceCommand
 		if (ctCollectionId == CTConstants.CT_COLLECTION_ID_PRODUCTION) {
 			group = _groupLocalService.fetchUserGroup(
 				themeDisplay.getCompanyId(), themeDisplay.getUserId());
+
+			if (group == null) {
+				group = _groupLocalService.addGroup(
+					StringPool.BLANK, themeDisplay.getGuestUserId(),
+					GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
+					GroupConstants.DEFAULT_LIVE_GROUP_ID, new HashMap<>(), null,
+					GroupConstants.TYPE_SITE_PRIVATE, null, false,
+					GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
+					false, true, null);
+			}
 		}
 		else {
-			group = _groupLocalService.fetchGroup(
-				ctCollection.getCompanyId(),
-				_portal.getClassNameId(CTCollection.class),
-				ctCollection.getCtCollectionId());
-		}
-
-		if (group == null) {
-			long userId = 0;
-			String className = null;
-			long classPK = 0;
-			Map<Locale, String> nameMap = null;
-
-			if (ctCollectionId == CTConstants.CT_COLLECTION_ID_PRODUCTION) {
-				userId = themeDisplay.getGuestUserId();
-				className = null;
-				classPK = 0;
-				nameMap = new HashMap<>();
-			}
-			else {
-				userId = ctCollection.getUserId();
-				className = CTCollection.class.getName();
-				classPK = ctCollection.getCtCollectionId();
-				nameMap = HashMapBuilder.put(
-					LocaleUtil.getDefault(), ctCollection.getName()
-				).build();
-			}
-
-			group = _groupLocalService.addGroup(
-				StringPool.BLANK, userId,
-				GroupConstants.DEFAULT_PARENT_GROUP_ID, className, classPK,
-				GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null,
-				GroupConstants.TYPE_SITE_PRIVATE, null, false,
-				GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
-				false, true, null);
+			group = _publicationHelper.getOrAddGroup(ctCollection);
 		}
 
 		long[] publicationsUserRoleUserIds = ParamUtil.getLongValues(
@@ -247,7 +217,8 @@ public class InviteUsersMVCResourceCommand
 				continue;
 			}
 
-			Role role = _getRole(roleValues[i], themeDisplay);
+			Role role = _publicationHelper.getRole(
+				themeDisplay.getCompanyId(), roleValues[i]);
 
 			boolean addUserGroupRole = true;
 
@@ -282,50 +253,6 @@ public class InviteUsersMVCResourceCommand
 				"successMessage",
 				_language.get(
 					httpServletRequest, "users-were-invited-successfully")));
-	}
-
-	private String[] _getModelResourceActions(int role) {
-		if (role == PublicationRoleConstants.ROLE_ADMIN) {
-			return new String[] {
-				ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
-				ActionKeys.VIEW, CTActionKeys.INVITE_USERS, CTActionKeys.PUBLISH
-			};
-		}
-		else if (role == PublicationRoleConstants.ROLE_EDITOR) {
-			return new String[] {ActionKeys.UPDATE, ActionKeys.VIEW};
-		}
-		else if (role == PublicationRoleConstants.ROLE_PUBLISHER) {
-			return new String[] {
-				ActionKeys.UPDATE, ActionKeys.VIEW, CTActionKeys.PUBLISH
-			};
-		}
-
-		return new String[] {ActionKeys.VIEW};
-	}
-
-	private Role _getRole(int roleValue, ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		String name = PublicationRoleConstants.getRoleName(roleValue);
-
-		Role role = _roleLocalService.fetchRole(
-			themeDisplay.getCompanyId(), name);
-
-		if (role == null) {
-			role = _roleLocalService.addRole(
-				null, themeDisplay.getGuestUserId(), null, 0, name, null, null,
-				RoleConstants.TYPE_PUBLICATIONS, null, null);
-
-			for (String actionId : _getModelResourceActions(roleValue)) {
-				_resourcePermissionLocalService.addResourcePermission(
-					themeDisplay.getCompanyId(), CTCollection.class.getName(),
-					ResourceConstants.SCOPE_GROUP_TEMPLATE,
-					String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
-					role.getRoleId(), actionId);
-			}
-		}
-
-		return role;
 	}
 
 	private void _sendEmail(
@@ -473,7 +400,7 @@ public class InviteUsersMVCResourceCommand
 	private Portal _portal;
 
 	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
+	private PublicationHelper _publicationHelper;
 
 	@Reference
 	private RoleLocalService _roleLocalService;
