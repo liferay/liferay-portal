@@ -50,7 +50,7 @@ public class ProductRelationshipsTableFDSViewTest {
 			fdsTableSchema.getFDSTableSchemaFieldsMap();
 
 		Assert.assertEquals(
-			Arrays.asList("title", "sku", "type", "status"),
+			Arrays.asList("title", "sku", "type", "primary", "status"),
 			new ArrayList<>(fdsTableSchemaFieldsMap.keySet()));
 
 		FDSTableSchemaField statusFDSTableSchemaField =

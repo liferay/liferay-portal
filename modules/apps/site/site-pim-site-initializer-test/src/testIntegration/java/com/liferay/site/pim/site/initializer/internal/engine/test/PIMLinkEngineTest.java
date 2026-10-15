@@ -142,9 +142,7 @@ public class PIMLinkEngineTest {
 			null, sourceObjectEntry);
 
 		Assert.assertEquals(
-			pimLinkRelatedEntries.toString(), 2, pimLinkRelatedEntries.size());
-		Assert.assertFalse(
-			_containsPIMLink(pimLinkRelatedEntries, sourceObjectEntry));
+			pimLinkRelatedEntries.toString(), 3, pimLinkRelatedEntries.size());
 		Assert.assertTrue(
 			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry1));
 		Assert.assertTrue(
@@ -154,7 +152,7 @@ public class PIMLinkEngineTest {
 			"type in ('" + _TYPE + "')", sourceObjectEntry);
 
 		Assert.assertEquals(
-			pimLinkRelatedEntries.toString(), 2, pimLinkRelatedEntries.size());
+			pimLinkRelatedEntries.toString(), 3, pimLinkRelatedEntries.size());
 
 		pimLinkRelatedEntries = _pimLinkEngine.getPIMLinkRelatedEntries(
 			"type in ('" + RandomTestUtil.randomString() + "')",
@@ -174,13 +172,13 @@ public class PIMLinkEngineTest {
 			null, sourceObjectEntry);
 
 		Assert.assertEquals(
-			pimLinkRelatedEntries.toString(), 3, pimLinkRelatedEntries.size());
+			pimLinkRelatedEntries.toString(), 5, pimLinkRelatedEntries.size());
 
 		pimLinkRelatedEntries = _pimLinkEngine.getPIMLinkRelatedEntries(
 			"type in ('" + _TYPE + "')", sourceObjectEntry);
 
 		Assert.assertEquals(
-			pimLinkRelatedEntries.toString(), 2, pimLinkRelatedEntries.size());
+			pimLinkRelatedEntries.toString(), 3, pimLinkRelatedEntries.size());
 		Assert.assertTrue(
 			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry1));
 		Assert.assertFalse(
@@ -190,7 +188,7 @@ public class PIMLinkEngineTest {
 			"not (type in ('" + _TYPE + "'))", sourceObjectEntry);
 
 		Assert.assertEquals(
-			pimLinkRelatedEntries.toString(), 1, pimLinkRelatedEntries.size());
+			pimLinkRelatedEntries.toString(), 2, pimLinkRelatedEntries.size());
 		Assert.assertFalse(
 			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry1));
 		Assert.assertTrue(
