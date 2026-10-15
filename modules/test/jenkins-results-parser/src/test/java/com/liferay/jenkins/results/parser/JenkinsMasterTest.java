@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.junit.After;
@@ -481,6 +482,104 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testReadRunningBuilds() throws Exception {
+		String agentBuildURL =
+			"http://test-9-3/job/" + RandomTestUtil.randomString() + "/1/";
+		String agentFullDisplayName = RandomTestUtil.randomString();
+		String agentJenkinsSlaveName = RandomTestUtil.randomString();
+		long agentTimestamp = _getTimestamp();
+		String flyweightBuildURL =
+			"http://test-9-3/job/" + RandomTestUtil.randomString() + "/2/";
+		String flyweightFullDisplayName = RandomTestUtil.randomString();
+		long flyweightTimestamp = _getTimestamp();
+
+		_setUpMaster(
+			String.valueOf(
+				JenkinsMasterTestUtil.getComputerAPIJSONObject(
+					RandomTestUtil.randomInt(),
+					JenkinsMasterTestUtil.getBuiltInComputerJSONObject(
+						JenkinsMasterTestUtil.getExecutorJSONObject(
+							flyweightBuildURL, RandomTestUtil.randomLong(),
+							flyweightFullDisplayName, false,
+							flyweightTimestamp)),
+					JenkinsMasterTestUtil.getComputerJSONObject(
+						agentJenkinsSlaveName,
+						JenkinsMasterTestUtil.getExecutorJSONObject(
+							agentBuildURL, RandomTestUtil.randomLong(),
+							agentFullDisplayName, false, agentTimestamp)))),
+			"test-9-3");
+
+		JenkinsMaster jenkinsMaster = JenkinsMasterTestUtil.getJenkinsMaster(
+			"test-9-3", "http://test-9-3");
+
+		List<JenkinsMaster.RunningBuild> runningBuilds =
+			jenkinsMaster.readRunningBuilds(1, 1, 7000);
+
+		verifyURLReaderRead(false, 1, 7000);
+
+		Assert.assertEquals(runningBuilds.toString(), 2, runningBuilds.size());
+
+		long currentTimeMillis =
+			JenkinsResultsParserUtil.getCurrentTimeMillis();
+
+		JenkinsMaster.RunningBuild agentRunningBuild = _getRunningBuild(
+			agentBuildURL, runningBuilds);
+
+		Assert.assertEquals(
+			currentTimeMillis - agentTimestamp,
+			agentRunningBuild.getDuration(currentTimeMillis));
+		Assert.assertEquals(
+			agentFullDisplayName, agentRunningBuild.getFullDisplayName());
+		Assert.assertSame(jenkinsMaster, agentRunningBuild.getJenkinsMaster());
+		Assert.assertEquals(
+			agentJenkinsSlaveName, agentRunningBuild.getJenkinsSlaveName());
+
+		JenkinsMaster.RunningBuild flyweightRunningBuild = _getRunningBuild(
+			flyweightBuildURL, runningBuilds);
+
+		Assert.assertEquals(
+			currentTimeMillis - flyweightTimestamp,
+			flyweightRunningBuild.getDuration(currentTimeMillis));
+		Assert.assertEquals(
+			flyweightFullDisplayName,
+			flyweightRunningBuild.getFullDisplayName());
+		Assert.assertSame(
+			jenkinsMaster, flyweightRunningBuild.getJenkinsMaster());
+		Assert.assertEquals(
+			"Built-In Node", flyweightRunningBuild.getJenkinsSlaveName());
+
+		Assert.assertEquals(0, jenkinsMaster.getMaxRunningBuildsCount());
+
+		List<JenkinsMaster.RunningBuild> cachedRunningBuilds =
+			jenkinsMaster.getRunningBuilds();
+
+		Assert.assertTrue(
+			cachedRunningBuilds.toString(), cachedRunningBuilds.isEmpty());
+
+		Assert.assertEquals(
+			-1L,
+			(long)ReflectionTestUtil.getFieldValue(
+				jenkinsMaster, "_updateTimestamp"));
+	}
+
+	@Test
+	public void testReadRunningBuildsFailure() throws Exception {
+		setURLReaderException(
+			new IOException(RandomTestUtil.randomString()),
+			"http://test-9-1/computer/api/json");
+
+		Assert.assertThrows(
+			IOException.class,
+			() -> _jenkinsMaster.readRunningBuilds(1, 1, 7000));
+
+		setURLReaderOutput("{}", "http://test-9-1/computer/api/json");
+
+		Assert.assertThrows(
+			JSONException.class,
+			() -> _jenkinsMaster.readRunningBuilds(1, 1, 7000));
+	}
+
+	@Test
 	public void testUpdate() {
 		_jenkinsMaster.update();
 
@@ -601,6 +700,11 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 	private String _getSSHCommand(Shell.ExecutionRequest executionRequest) {
 		return executionRequest.getCommands()[0];
+	}
+
+	private long _getTimestamp() {
+		return JenkinsResultsParserUtil.getCurrentTimeMillis() -
+			Math.abs(RandomTestUtil.randomInt());
 	}
 
 	private void _setQueueItemIds(long... queueIds) throws Exception {

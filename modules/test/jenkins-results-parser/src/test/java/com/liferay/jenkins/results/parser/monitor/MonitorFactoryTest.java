@@ -153,6 +153,23 @@ public class MonitorFactoryTest
 	}
 
 	@Test
+	public void testNewMonitorRunningBuildDuration() {
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[cohort.name]", RandomTestUtil.randomString());
+		monitorProperties.setProperty(
+			"monitor[a].type", "running-build-duration");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof RunningBuildDurationMonitor);
+	}
+
+	@Test
 	public void testNewMonitorSMTPEndpoint() {
 		Properties monitorProperties = new Properties();
 
