@@ -31,6 +31,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -87,7 +89,8 @@ public class EditableDocumentFragmentEntryProcessor
 			new HashMap<>();
 
 		boolean analyticsEnabled = _isAnalyticsEnabled(
-			fragmentEntryLink.getCompanyId());
+			fragmentEntryLink.getCompanyId(),
+			fragmentEntryProcessorContext.getHttpServletRequest());
 
 		Elements elements = Collector.collect(
 			new Evaluator() {
@@ -298,6 +301,27 @@ public class EditableDocumentFragmentEntryProcessor
 		}
 	}
 
+	private boolean _isAnalyticsEnabled(
+		long companyId, HttpServletRequest httpServletRequest) {
+
+		if (httpServletRequest == null) {
+			return _isAnalyticsEnabled(companyId);
+		}
+
+		Boolean analyticsEnabled = (Boolean)httpServletRequest.getAttribute(
+			_ANALYTICS_ENABLED);
+
+		if (analyticsEnabled != null) {
+			return analyticsEnabled;
+		}
+
+		analyticsEnabled = _isAnalyticsEnabled(companyId);
+
+		httpServletRequest.setAttribute(_ANALYTICS_ENABLED, analyticsEnabled);
+
+		return analyticsEnabled;
+	}
+
 	private void _setAnalyticsAttributes(
 		Element element, Map<String, Object> analyticsAttributes) {
 
@@ -317,6 +341,10 @@ public class EditableDocumentFragmentEntryProcessor
 			element.attr("data-" + entry.getKey(), stringValue);
 		}
 	}
+
+	private static final String _ANALYTICS_ENABLED =
+		EditableDocumentFragmentEntryProcessor.class.getName() +
+			"#ANALYTICS_ENABLED";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		EditableDocumentFragmentEntryProcessor.class);
