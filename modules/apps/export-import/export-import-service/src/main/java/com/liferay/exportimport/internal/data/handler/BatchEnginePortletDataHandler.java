@@ -524,7 +524,7 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 					BatchEngineExportTask batchEngineExportTask =
 						result.getBatchEngineExportTask();
 
-					if (_isFailed(batchEngineExportTask)) {
+					if (_isFailedBatchEngineExportTask(batchEngineExportTask)) {
 						throw new PortletDataException(
 							StringBundler.concat(
 								"Unable to export batch data for ",
@@ -680,7 +680,7 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 				BatchEngineExportTask batchEngineExportTask =
 					result.getBatchEngineExportTask();
 
-				if (_isFailed(batchEngineExportTask)) {
+				if (_isFailedBatchEngineExportTask(batchEngineExportTask)) {
 					if (_log.isWarnEnabled()) {
 						_log.warn(
 							StringBundler.concat(
@@ -929,7 +929,9 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 		return permissionChecker.getUserId();
 	}
 
-	private boolean _isFailed(BatchEngineExportTask batchEngineExportTask) {
+	private boolean _isFailedBatchEngineExportTask(
+		BatchEngineExportTask batchEngineExportTask) {
+
 		BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus =
 			BatchEngineTaskExecuteStatus.valueOf(
 				batchEngineExportTask.getExecuteStatus());
