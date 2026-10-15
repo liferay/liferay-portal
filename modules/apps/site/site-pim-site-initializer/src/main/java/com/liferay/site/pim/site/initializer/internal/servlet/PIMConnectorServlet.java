@@ -135,8 +135,9 @@ public class PIMConnectorServlet extends HttpServlet {
 					DispatchPortletKeys.DISPATCH);
 
 				httpServletResponse.sendRedirect(
-					_portal.getControlPanelFullURL(
-						group.getGroupId(), DispatchPortletKeys.DISPATCH,
+					_portal.getSiteAdminURL(
+						_portal.getPortalURL(httpServletRequest), group,
+						DispatchPortletKeys.DISPATCH,
 						HashMapBuilder.put(
 							portletNamespace.concat("backURL"),
 							new String[] {
