@@ -6,7 +6,7 @@
 		],
 		"module": "ESNext",
 		"moduleDetection": "force",
-		"moduleResolution": "Node",
+		"moduleResolution": "bundler",
 		"noEmit": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true,
