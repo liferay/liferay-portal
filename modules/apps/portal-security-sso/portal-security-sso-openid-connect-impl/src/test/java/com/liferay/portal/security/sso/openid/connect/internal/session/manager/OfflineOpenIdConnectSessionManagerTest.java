@@ -203,8 +203,8 @@ public class OfflineOpenIdConnectSessionManagerTest {
 		);
 
 		List<OpenIdConnectSession> openIdConnectSessions = List.of(
-			_createOpenIdConnectSession(RandomTestUtil.randomLong()),
 			_createOpenIdConnectSession(expiringOpenIdConnectSessionId),
+			_createOpenIdConnectSession(RandomTestUtil.randomLong()),
 			_createOpenIdConnectSession(refreshedOpenIdConnectSessionId));
 
 		Mockito.when(
