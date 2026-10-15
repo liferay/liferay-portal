@@ -67,7 +67,7 @@ public class SourceDriverPasswordUtilTest {
 			new KeyReference(
 				StringBundler.concat(
 					Source.class.getSimpleName(), StringPool.SLASH, companyId,
-					StringPool.SLASH, sourceId),
+					StringPool.SLASH, sourceId, "/driverPassword"),
 				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 
 		String driverPassword = RandomTestUtil.randomString();

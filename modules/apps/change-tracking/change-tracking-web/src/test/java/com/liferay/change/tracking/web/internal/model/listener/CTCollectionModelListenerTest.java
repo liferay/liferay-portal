@@ -92,7 +92,7 @@ public class CTCollectionModelListenerTest {
 			new KeyReference(
 				StringBundler.concat(
 					CTRemote.class.getSimpleName(), StringPool.SLASH, companyId,
-					StringPool.SLASH, ctRemoteId),
+					StringPool.SLASH, ctRemoteId, "/clientSecret"),
 				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 	}
 

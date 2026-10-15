@@ -154,7 +154,7 @@ public class DDMRESTDataProviderTest {
 				StringBundler.concat(
 					DDMDataProviderInstance.class.getSimpleName(),
 					StringPool.SLASH, companyId, StringPool.SLASH,
-					dataProviderInstanceId),
+					dataProviderInstanceId, "/password"),
 				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 	}
 

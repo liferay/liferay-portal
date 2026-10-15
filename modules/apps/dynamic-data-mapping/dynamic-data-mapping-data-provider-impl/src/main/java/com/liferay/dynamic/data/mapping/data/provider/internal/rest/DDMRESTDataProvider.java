@@ -423,7 +423,8 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 			StringBundler.concat(
 				DDMDataProviderInstance.class.getSimpleName(), StringPool.SLASH,
 				ddmDataProviderInstance.getCompanyId(), StringPool.SLASH,
-				ddmDataProviderInstance.getDataProviderInstanceId()),
+				ddmDataProviderInstance.getDataProviderInstanceId(),
+				"/password"),
 			ddmRESTDataProviderSettings.password());
 
 		JSONWebServiceClient jsonWebServiceClient =

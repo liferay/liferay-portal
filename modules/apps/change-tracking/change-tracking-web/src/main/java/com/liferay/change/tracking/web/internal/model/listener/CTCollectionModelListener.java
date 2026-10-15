@@ -136,7 +136,7 @@ public class CTCollectionModelListener extends BaseModelListener<CTCollection> {
 				StringBundler.concat(
 					CTRemote.class.getSimpleName(), StringPool.SLASH,
 					ctRemote.getCompanyId(), StringPool.SLASH,
-					ctRemote.getCtRemoteId()),
+					ctRemote.getCtRemoteId(), "/clientSecret"),
 				ctRemote.getClientSecret()));
 		options.addPart("grant_type", "client_credentials");
 

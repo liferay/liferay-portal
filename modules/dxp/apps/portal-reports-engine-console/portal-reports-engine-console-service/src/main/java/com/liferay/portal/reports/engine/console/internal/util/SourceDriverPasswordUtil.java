@@ -22,7 +22,7 @@ public class SourceDriverPasswordUtil {
 			companyId,
 			StringBundler.concat(
 				Source.class.getSimpleName(), StringPool.SLASH, companyId,
-				StringPool.SLASH, sourceId),
+				StringPool.SLASH, sourceId, "/driverPassword"),
 			driverPassword);
 	}
 

@@ -62,7 +62,7 @@ public class WebhookObjectActionExecutorImpl implements ObjectActionExecutor {
 				companyId,
 				StringBundler.concat(
 					ObjectAction.class.getSimpleName(), StringPool.SLASH,
-					companyId, StringPool.SLASH, objectActionId),
+					companyId, StringPool.SLASH, objectActionId, "/secret"),
 				parametersUnicodeProperties.get("secret")));
 		options.setBody(
 			payloadJSONObject.toString(), ContentTypes.APPLICATION_JSON,

@@ -51,7 +51,7 @@ public class TestDataSourceMVCActionCommand extends BaseMVCActionCommand {
 				StringBundler.concat(
 					Source.class.getSimpleName(), StringPool.SLASH,
 					source.getCompanyId(), StringPool.SLASH,
-					source.getSourceId()),
+					source.getSourceId(), "/driverPassword"),
 				source.getDriverPassword()));
 	}
 

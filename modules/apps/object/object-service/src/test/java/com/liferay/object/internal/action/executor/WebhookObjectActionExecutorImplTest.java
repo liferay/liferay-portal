@@ -94,7 +94,7 @@ public class WebhookObjectActionExecutorImplTest {
 			new KeyReference(
 				StringBundler.concat(
 					ObjectAction.class.getSimpleName(), StringPool.SLASH,
-					companyId, StringPool.SLASH, objectActionId),
+					companyId, StringPool.SLASH, objectActionId, "/secret"),
 				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
 	}
 
