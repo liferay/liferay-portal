@@ -15,6 +15,8 @@ export type LogoColor =
 	| 'outline-8'
 	| 'outline-9';
 
+export type MapProviderKey = 'GoogleMaps' | 'OpenStreetMap';
+
 export type Space = {
 	assetLibraryKey: string;
 	creatorUserId: string;
@@ -30,7 +32,9 @@ export type Space = {
 export type SpaceSettings = {
 	availableLanguageIds?: string[];
 	defaultLanguageId?: string;
+	googleMapsAPIKey?: string;
 	logoColor?: LogoColor;
+	mapProviderKey?: MapProviderKey;
 	sharingEnabled?: boolean;
 	trashEnabled?: boolean;
 	trashEntriesMaxAge?: number;
