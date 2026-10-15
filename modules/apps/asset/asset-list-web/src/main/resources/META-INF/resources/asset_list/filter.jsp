@@ -17,8 +17,6 @@
 			module="{CollectionFilterBuilder} from asset-list-web"
 			props='<%=
 				HashMapBuilder.<String, Object>put(
-					"categorySelectorURL", editAssetListDisplayContext.getCategorySelectorURL()
-				).put(
 					"groupIds", ListUtil.fromArray(editAssetListDisplayContext.getReferencedModelsGroupIds())
 				).put(
 					"initialConditions", editAssetListDisplayContext.getFilterMaps()

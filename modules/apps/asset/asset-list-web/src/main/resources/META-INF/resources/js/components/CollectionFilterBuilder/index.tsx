@@ -88,7 +88,6 @@ interface CollectionFilterBuilderProps extends Config {
  * picks it up on form submit.
  */
 export default function CollectionFilterBuilder({
-	categorySelectorURL,
 	groupIds,
 	initialConditions,
 	namespace,
@@ -98,7 +97,6 @@ export default function CollectionFilterBuilder({
 	vocabularyIds,
 }: CollectionFilterBuilderProps) {
 	initializeConfig({
-		categorySelectorURL,
 		groupIds,
 		namespace,
 		tagSelectorURL,

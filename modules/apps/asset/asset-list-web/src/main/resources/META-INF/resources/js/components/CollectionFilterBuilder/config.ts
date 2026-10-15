@@ -4,7 +4,6 @@
  */
 
 export type Config = {
-	categorySelectorURL?: string;
 	groupIds?: string[];
 	namespace: string;
 	tagSelectorURL?: string;

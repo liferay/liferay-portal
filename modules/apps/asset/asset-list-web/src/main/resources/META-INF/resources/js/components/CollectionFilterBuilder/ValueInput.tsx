@@ -68,13 +68,7 @@ export default function ValueInput({
 	property,
 	value,
 }: ValueInputProps) {
-	const {
-		categorySelectorURL,
-		groupIds,
-		namespace,
-		tagSelectorURL,
-		vocabularyIds,
-	} = config;
+	const {groupIds, namespace, tagSelectorURL, vocabularyIds} = config;
 
 	const {options, type} = property;
 
