@@ -24,31 +24,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _toRequestPortletDataHandlers(preview = null) {
-		Variables.assertDefined(parameterList = ${preview});
-
-		var requestPortletDataHandlers = "";
-		var portletDataHandlerNames = JSONUtil.getWithJSONPath(${preview}, "$..previewPortletDataHandlers[*].name");
-
-		for (var portletDataHandlerName : list ${portletDataHandlerNames}) {
-			var requestPortletDataHandlerControls = "";
-			var controlNames = JSONUtil.getWithJSONPath(${preview}, "$..previewPortletDataHandlers[?(@.name == '${portletDataHandlerName}')]..previewPortletDataHandlerControls[?(@.defaultState == true)].name");
-
-			if (${controlNames} != "") {
-				var controlNames = StringUtil.replace(${controlNames}, ",", "\"},{\"name\":\"");
-
-				var requestPortletDataHandlerControls = "{\"name\":\"${controlNames}\"}";
-			}
-
-			var requestPortletDataHandlers = ",{\"name\":\"${portletDataHandlerName}\",\"requestPortletDataHandlerControls\":[${requestPortletDataHandlerControls}]}${requestPortletDataHandlers}";
-		}
-
-		var requestPortletDataHandlers = StringUtil.regexReplaceAll(${requestPortletDataHandlers}, "^,", "");
-
-		return "[${requestPortletDataHandlers}]";
-	}
-
-	@summary = "Default summary"
 	macro _waitForProcess(processId = null, processType = null) {
 		Variables.assertDefined(parameterList = "${processId},${processType}");
 
@@ -86,13 +61,13 @@ definition {
 			portletId = ${portletId},
 			siteExternalReferenceCode = ${siteExternalReferenceCode});
 
-		var requestPortletDataHandlers = HeadlessExportImport._toRequestPortletDataHandlers(preview = ${exportPreview});
+		var portletDataHandlers = JSONUtil.getWithJSONPath(${exportPreview}, "$.portletDataHandlers", "false");
 
 		var exportProcessId = HeadlessExportImportAPI._postExportProcess(
 			exportProcessName = ${larFileName},
 			plid = ${plid},
+			portletDataHandlers = ${portletDataHandlers},
 			portletId = ${portletId},
-			requestPortletDataHandlers = ${requestPortletDataHandlers},
 			siteExternalReferenceCode = ${siteExternalReferenceCode});
 
 		HeadlessExportImport._waitForProcess(
@@ -135,14 +110,14 @@ definition {
 			portletId = ${portletId},
 			siteExternalReferenceCode = ${siteExternalReferenceCode});
 
-		var requestPortletDataHandlers = HeadlessExportImport._toRequestPortletDataHandlers(preview = ${importPreview});
+		var portletDataHandlers = JSONUtil.getWithJSONPath(${importPreview}, "$.portletDataHandlers", "false");
 
 		var importProcessId = HeadlessExportImportAPI._postImportProcess(
 			dataStrategy = ${dataStrategy},
 			importProcessName = ${larFileName},
 			plid = ${plid},
+			portletDataHandlers = ${portletDataHandlers},
 			portletId = ${portletId},
-			requestPortletDataHandlers = ${requestPortletDataHandlers},
 			siteExternalReferenceCode = ${siteExternalReferenceCode});
 
 		HeadlessExportImport._waitForProcess(

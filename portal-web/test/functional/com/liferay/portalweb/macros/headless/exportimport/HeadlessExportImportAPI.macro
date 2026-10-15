@@ -81,8 +81,8 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _postExportProcess(exportProcessName = null, plid = null, portletId = null, requestPortletDataHandlers = null, siteExternalReferenceCode = null) {
-		Variables.assertDefined(parameterList = "${exportProcessName},${plid},${portletId},${requestPortletDataHandlers},${siteExternalReferenceCode}");
+	macro _postExportProcess(exportProcessName = null, plid = null, portletDataHandlers = null, portletId = null, siteExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${exportProcessName},${plid},${portletDataHandlers},${portletId},${siteExternalReferenceCode}");
 
 		var portalURL = JSONCompany.getPortalURL();
 		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
@@ -97,8 +97,8 @@ definition {
 					"comments": true,
 					"dateRangeType": "ALL",
 					"name": "${exportProcessName}",
-					"ratings": true,
-					"requestPortletDataHandlers": ${requestPortletDataHandlers}
+					"portletDataHandlers": ${portletDataHandlers},
+					"ratings": true
 				}
 		''';
 
@@ -148,8 +148,8 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _postImportProcess(dataStrategy = null, importProcessName = null, plid = null, portletId = null, requestPortletDataHandlers = null, siteExternalReferenceCode = null) {
-		Variables.assertDefined(parameterList = "${dataStrategy},${importProcessName},${plid},${portletId},${requestPortletDataHandlers},${siteExternalReferenceCode}");
+	macro _postImportProcess(dataStrategy = null, importProcessName = null, plid = null, portletDataHandlers = null, portletId = null, siteExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${dataStrategy},${importProcessName},${plid},${portletDataHandlers},${portletId},${siteExternalReferenceCode}");
 
 		var portalURL = JSONCompany.getPortalURL();
 		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
@@ -164,8 +164,8 @@ definition {
 					"comments": true,
 					"dataStrategy": "${dataStrategy}",
 					"name": "${importProcessName}",
-					"ratings": true,
-					"requestPortletDataHandlers": ${requestPortletDataHandlers}
+					"portletDataHandlers": ${portletDataHandlers},
+					"ratings": true
 				}
 		''';
 
