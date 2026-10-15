@@ -157,9 +157,6 @@ public class SegmentsEntryRelLocalServiceTest {
 
 		SegmentsEntry segmentsEntry1 = SegmentsTestUtil.addSegmentsEntry(
 			_group.getGroupId());
-		SegmentsEntry segmentsEntry2 = SegmentsTestUtil.addSegmentsEntry(
-			_group.getGroupId());
-
 		int classNameId = RandomTestUtil.randomInt();
 		int classPK = RandomTestUtil.randomInt();
 
@@ -170,6 +167,10 @@ public class SegmentsEntryRelLocalServiceTest {
 		Assert.assertTrue(
 			_segmentsEntryRelLocalService.hasSegmentsEntryRel(
 				segmentsEntry1.getSegmentsEntryId(), classNameId, classPK));
+
+		SegmentsEntry segmentsEntry2 = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+
 		Assert.assertFalse(
 			_segmentsEntryRelLocalService.hasSegmentsEntryRel(
 				segmentsEntry2.getSegmentsEntryId(), classNameId, classPK));

@@ -475,6 +475,9 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 		SegmentsEntry segmentsEntry, Set<Long> userIds) {
 
 		try {
+			Set<Long> addUserIds = new HashSet<>(userIds);
+			Set<Long> deleteUserIds = new HashSet<>();
+
 			long segmentsEntryId = segmentsEntry.getSegmentsEntryId();
 
 			Set<Long> oldUserIds = SetUtil.fromList(
@@ -482,9 +485,6 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 					_segmentsEntryRelLocalService.getSegmentsEntryRels(
 						segmentsEntryId),
 					SegmentsEntryRel::getClassPK));
-
-			Set<Long> addUserIds = new HashSet<>(userIds);
-			Set<Long> deleteUserIds = new HashSet<>();
 
 			for (Long oldUserId : oldUserIds) {
 				if (!addUserIds.remove(oldUserId)) {
