@@ -100,51 +100,6 @@ public class ScheduledPublishProcess implements Serializable {
 	private Supplier<Creator> _creatorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The cron expression that fires the scheduled publication."
-	)
-	public String getCronExpression() {
-		if (_cronExpressionSupplier != null) {
-			cronExpression = _cronExpressionSupplier.get();
-
-			_cronExpressionSupplier = null;
-		}
-
-		return cronExpression;
-	}
-
-	public void setCronExpression(String cronExpression) {
-		this.cronExpression = cronExpression;
-
-		_cronExpressionSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setCronExpression(
-		UnsafeSupplier<String, Exception> cronExpressionUnsafeSupplier) {
-
-		_cronExpressionSupplier = () -> {
-			try {
-				return cronExpressionUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The cron expression that fires the scheduled publication."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String cronExpression;
-
-	@JsonIgnore
-	private Supplier<String> _cronExpressionSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The scheduled publish process's creation date."
 	)
 	public Date getDateCreated() {
@@ -317,32 +272,35 @@ public class ScheduledPublishProcess implements Serializable {
 	private Supplier<Date> _nextFireDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The raw export import parameters the scheduled publication was created with."
+		description = "The publish process request the scheduled publication was created with, including its cron expression and time zone, which can be reused to create a new scheduled publication."
 	)
 	@Valid
-	public Object getPublishParameters() {
-		if (_publishParametersSupplier != null) {
-			publishParameters = _publishParametersSupplier.get();
+	public PublishProcessRequest getPublishProcessRequest() {
+		if (_publishProcessRequestSupplier != null) {
+			publishProcessRequest = _publishProcessRequestSupplier.get();
 
-			_publishParametersSupplier = null;
+			_publishProcessRequestSupplier = null;
 		}
 
-		return publishParameters;
+		return publishProcessRequest;
 	}
 
-	public void setPublishParameters(Object publishParameters) {
-		this.publishParameters = publishParameters;
+	public void setPublishProcessRequest(
+		PublishProcessRequest publishProcessRequest) {
 
-		_publishParametersSupplier = null;
+		this.publishProcessRequest = publishProcessRequest;
+
+		_publishProcessRequestSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setPublishParameters(
-		UnsafeSupplier<Object, Exception> publishParametersUnsafeSupplier) {
+	public void setPublishProcessRequest(
+		UnsafeSupplier<PublishProcessRequest, Exception>
+			publishProcessRequestUnsafeSupplier) {
 
-		_publishParametersSupplier = () -> {
+		_publishProcessRequestSupplier = () -> {
 			try {
-				return publishParametersUnsafeSupplier.get();
+				return publishProcessRequestUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -354,13 +312,13 @@ public class ScheduledPublishProcess implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The raw export import parameters the scheduled publication was created with."
+		description = "The publish process request the scheduled publication was created with, including its cron expression and time zone, which can be reused to create a new scheduled publication."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected Object publishParameters;
+	protected PublishProcessRequest publishProcessRequest;
 
 	@JsonIgnore
-	private Supplier<Object> _publishParametersSupplier;
+	private Supplier<PublishProcessRequest> _publishProcessRequestSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The date the scheduled publication stops firing."
@@ -495,22 +453,6 @@ public class ScheduledPublishProcess implements Serializable {
 			sb.append(creator);
 		}
 
-		String cronExpression = getCronExpression();
-
-		if (cronExpression != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"cronExpression\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(cronExpression));
-
-			sb.append("\"");
-		}
-
 		Date dateCreated = getDateCreated();
 
 		if (dateCreated != null) {
@@ -571,16 +513,17 @@ public class ScheduledPublishProcess implements Serializable {
 			sb.append("\"");
 		}
 
-		Object publishParameters = getPublishParameters();
+		PublishProcessRequest publishProcessRequest =
+			getPublishProcessRequest();
 
-		if (publishParameters != null) {
+		if (publishProcessRequest != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"publishParameters\": ");
+			sb.append("\"publishProcessRequest\": ");
 
-			sb.append(_toJSON(publishParameters));
+			sb.append(String.valueOf(publishProcessRequest));
 		}
 
 		Date scheduleEndDate = getScheduleEndDate();
@@ -737,4 +680,4 @@ public class ScheduledPublishProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1619903734
+// LIFERAY-REST-BUILDER-HASH:1355833038

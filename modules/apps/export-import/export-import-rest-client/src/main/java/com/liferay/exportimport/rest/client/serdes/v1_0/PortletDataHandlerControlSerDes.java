@@ -5,10 +5,10 @@
 
 package com.liferay.exportimport.rest.client.serdes.v1_0;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerBoolean;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerChoice;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerControl;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSetting;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerBoolean;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerChoice;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerTreeSelection;
 import com.liferay.exportimport.rest.client.dto.v1_0.Type;
 import com.liferay.exportimport.rest.client.json.BaseJSONParser;
 
@@ -26,53 +26,50 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class PreviewPortletDataHandlerControlSerDes {
+public class PortletDataHandlerControlSerDes {
 
-	public static PreviewPortletDataHandlerControl toDTO(String json) {
-		PreviewPortletDataHandlerControlJSONParser
-			previewPortletDataHandlerControlJSONParser =
-				new PreviewPortletDataHandlerControlJSONParser();
+	public static PortletDataHandlerControl toDTO(String json) {
+		PortletDataHandlerControlJSONParser
+			portletDataHandlerControlJSONParser =
+				new PortletDataHandlerControlJSONParser();
 
-		return previewPortletDataHandlerControlJSONParser.parseToDTO(json);
+		return portletDataHandlerControlJSONParser.parseToDTO(json);
 	}
 
-	public static PreviewPortletDataHandlerControl[] toDTOs(String json) {
-		PreviewPortletDataHandlerControlJSONParser
-			previewPortletDataHandlerControlJSONParser =
-				new PreviewPortletDataHandlerControlJSONParser();
+	public static PortletDataHandlerControl[] toDTOs(String json) {
+		PortletDataHandlerControlJSONParser
+			portletDataHandlerControlJSONParser =
+				new PortletDataHandlerControlJSONParser();
 
-		return previewPortletDataHandlerControlJSONParser.parseToDTOs(json);
+		return portletDataHandlerControlJSONParser.parseToDTOs(json);
 	}
 
 	public static String toJSON(
-		PreviewPortletDataHandlerControl previewPortletDataHandlerControl) {
+		PortletDataHandlerControl portletDataHandlerControl) {
 
-		if (previewPortletDataHandlerControl == null) {
+		if (portletDataHandlerControl == null) {
 			return "null";
 		}
 
-		PreviewPortletDataHandlerControl.Type type =
-			previewPortletDataHandlerControl.getType();
+		PortletDataHandlerControl.Type type =
+			portletDataHandlerControl.getType();
 
 		if (type != null) {
 			String typeString = type.toString();
 
 			if (typeString.equals("Boolean")) {
-				return PreviewPortletDataHandlerBooleanSerDes.toJSON(
-					(PreviewPortletDataHandlerBoolean)
-						previewPortletDataHandlerControl);
+				return PortletDataHandlerBooleanSerDes.toJSON(
+					(PortletDataHandlerBoolean)portletDataHandlerControl);
 			}
 
 			if (typeString.equals("Choice")) {
-				return PreviewPortletDataHandlerChoiceSerDes.toJSON(
-					(PreviewPortletDataHandlerChoice)
-						previewPortletDataHandlerControl);
+				return PortletDataHandlerChoiceSerDes.toJSON(
+					(PortletDataHandlerChoice)portletDataHandlerControl);
 			}
 
-			if (typeString.equals("Setting")) {
-				return PreviewPortletDataHandlerSettingSerDes.toJSON(
-					(PreviewPortletDataHandlerSetting)
-						previewPortletDataHandlerControl);
+			if (typeString.equals("TreeSelection")) {
+				return PortletDataHandlerTreeSelectionSerDes.toJSON(
+					(PortletDataHandlerTreeSelection)portletDataHandlerControl);
 			}
 
 			throw new IllegalArgumentException("Unknown type " + typeString);
@@ -83,80 +80,65 @@ public class PreviewPortletDataHandlerControlSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		PreviewPortletDataHandlerControlJSONParser
-			previewPortletDataHandlerControlJSONParser =
-				new PreviewPortletDataHandlerControlJSONParser();
+		PortletDataHandlerControlJSONParser
+			portletDataHandlerControlJSONParser =
+				new PortletDataHandlerControlJSONParser();
 
-		return previewPortletDataHandlerControlJSONParser.parseToMap(json);
+		return portletDataHandlerControlJSONParser.parseToMap(json);
 	}
 
 	public static Map<String, String> toMap(
-		PreviewPortletDataHandlerControl previewPortletDataHandlerControl) {
+		PortletDataHandlerControl portletDataHandlerControl) {
 
-		if (previewPortletDataHandlerControl == null) {
+		if (portletDataHandlerControl == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (previewPortletDataHandlerControl.getDisabled() == null) {
-			map.put("disabled", null);
-		}
-		else {
-			map.put(
-				"disabled",
-				String.valueOf(previewPortletDataHandlerControl.getDisabled()));
-		}
-
-		if (previewPortletDataHandlerControl.getLabel() == null) {
+		if (portletDataHandlerControl.getLabel() == null) {
 			map.put("label", null);
 		}
 		else {
 			map.put(
-				"label",
-				String.valueOf(previewPortletDataHandlerControl.getLabel()));
+				"label", String.valueOf(portletDataHandlerControl.getLabel()));
 		}
 
-		if (previewPortletDataHandlerControl.getName() == null) {
+		if (portletDataHandlerControl.getName() == null) {
 			map.put("name", null);
 		}
 		else {
 			map.put(
-				"name",
-				String.valueOf(previewPortletDataHandlerControl.getName()));
+				"name", String.valueOf(portletDataHandlerControl.getName()));
 		}
 
-		if (previewPortletDataHandlerControl.getType() == null) {
+		if (portletDataHandlerControl.getType() == null) {
 			map.put("type", null);
 		}
 		else {
 			map.put(
-				"type",
-				String.valueOf(previewPortletDataHandlerControl.getType()));
+				"type", String.valueOf(portletDataHandlerControl.getType()));
 		}
 
 		return map;
 	}
 
-	public static class PreviewPortletDataHandlerControlJSONParser
-		extends BaseJSONParser<PreviewPortletDataHandlerControl> {
+	public static class PortletDataHandlerControlJSONParser
+		extends BaseJSONParser<PortletDataHandlerControl> {
 
 		@Override
-		protected PreviewPortletDataHandlerControl createDTO() {
+		protected PortletDataHandlerControl createDTO() {
 			return null;
 		}
 
 		@Override
-		protected PreviewPortletDataHandlerControl[] createDTOArray(int size) {
-			return new PreviewPortletDataHandlerControl[size];
+		protected PortletDataHandlerControl[] createDTOArray(int size) {
+			return new PortletDataHandlerControl[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "disabled")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "label")) {
+			if (Objects.equals(jsonParserFieldName, "label")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
@@ -170,7 +152,7 @@ public class PreviewPortletDataHandlerControlSerDes {
 		}
 
 		@Override
-		public PreviewPortletDataHandlerControl parseToDTO(String json) {
+		public PortletDataHandlerControl parseToDTO(String json) {
 			Map<String, Object> jsonMap = parseToMap(json);
 
 			Object type = jsonMap.get("type");
@@ -179,15 +161,15 @@ public class PreviewPortletDataHandlerControlSerDes {
 				String typeString = type.toString();
 
 				if (typeString.equals("Boolean")) {
-					return PreviewPortletDataHandlerBoolean.toDTO(json);
+					return PortletDataHandlerBoolean.toDTO(json);
 				}
 
 				if (typeString.equals("Choice")) {
-					return PreviewPortletDataHandlerChoice.toDTO(json);
+					return PortletDataHandlerChoice.toDTO(json);
 				}
 
-				if (typeString.equals("Setting")) {
-					return PreviewPortletDataHandlerSetting.toDTO(json);
+				if (typeString.equals("TreeSelection")) {
+					return PortletDataHandlerTreeSelection.toDTO(json);
 				}
 
 				throw new IllegalArgumentException(
@@ -200,31 +182,25 @@ public class PreviewPortletDataHandlerControlSerDes {
 
 		@Override
 		protected void setField(
-			PreviewPortletDataHandlerControl previewPortletDataHandlerControl,
+			PortletDataHandlerControl portletDataHandlerControl,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "disabled")) {
+			if (Objects.equals(jsonParserFieldName, "label")) {
 				if (jsonParserFieldValue != null) {
-					previewPortletDataHandlerControl.setDisabled(
-						(Boolean)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "label")) {
-				if (jsonParserFieldValue != null) {
-					previewPortletDataHandlerControl.setLabel(
+					portletDataHandlerControl.setLabel(
 						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
-					previewPortletDataHandlerControl.setName(
+					portletDataHandlerControl.setName(
 						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
 				if (jsonParserFieldValue != null) {
-					previewPortletDataHandlerControl.setType(
-						PreviewPortletDataHandlerControl.Type.create(
+					portletDataHandlerControl.setType(
+						PortletDataHandlerControl.Type.create(
 							(String)jsonParserFieldValue));
 				}
 			}
@@ -315,4 +291,4 @@ public class PreviewPortletDataHandlerControlSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1225805541
+// LIFERAY-REST-BUILDER-HASH:-106646777

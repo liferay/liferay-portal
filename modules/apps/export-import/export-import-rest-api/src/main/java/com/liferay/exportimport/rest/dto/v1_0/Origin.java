@@ -49,7 +49,9 @@ public class Origin implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Origin.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The code of the process step that reported the entry."
+	)
 	public Integer getCode() {
 		if (_codeSupplier != null) {
 			code = _codeSupplier.get();
@@ -81,7 +83,9 @@ public class Origin implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The code of the process step that reported the entry."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer code;
 
@@ -306,4 +310,4 @@ public class Origin implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1542576458
+// LIFERAY-REST-BUILDER-HASH:614422998

@@ -38,7 +38,13 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("ExportPreview")
+@GraphQLName(
+	description = "Represents the portlet data handlers an export can cover, with the number of items each one covers in the requested date range.",
+	value = "ExportPreview"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "Represents the portlet data handlers an export can cover, with the number of items each one covers in the requested date range."
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "ExportPreview")
 public class ExportPreview implements Serializable {
@@ -135,36 +141,32 @@ public class ExportPreview implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
-	public PreviewPortletDataHandlerSection[]
-		getPreviewPortletDataHandlerSections() {
+	public PortletDataHandler[] getPortletDataHandlers() {
+		if (_portletDataHandlersSupplier != null) {
+			portletDataHandlers = _portletDataHandlersSupplier.get();
 
-		if (_previewPortletDataHandlerSectionsSupplier != null) {
-			previewPortletDataHandlerSections =
-				_previewPortletDataHandlerSectionsSupplier.get();
-
-			_previewPortletDataHandlerSectionsSupplier = null;
+			_portletDataHandlersSupplier = null;
 		}
 
-		return previewPortletDataHandlerSections;
+		return portletDataHandlers;
 	}
 
-	public void setPreviewPortletDataHandlerSections(
-		PreviewPortletDataHandlerSection[] previewPortletDataHandlerSections) {
+	public void setPortletDataHandlers(
+		PortletDataHandler[] portletDataHandlers) {
 
-		this.previewPortletDataHandlerSections =
-			previewPortletDataHandlerSections;
+		this.portletDataHandlers = portletDataHandlers;
 
-		_previewPortletDataHandlerSectionsSupplier = null;
+		_portletDataHandlersSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setPreviewPortletDataHandlerSections(
-		UnsafeSupplier<PreviewPortletDataHandlerSection[], Exception>
-			previewPortletDataHandlerSectionsUnsafeSupplier) {
+	public void setPortletDataHandlers(
+		UnsafeSupplier<PortletDataHandler[], Exception>
+			portletDataHandlersUnsafeSupplier) {
 
-		_previewPortletDataHandlerSectionsSupplier = () -> {
+		_portletDataHandlersSupplier = () -> {
 			try {
-				return previewPortletDataHandlerSectionsUnsafeSupplier.get();
+				return portletDataHandlersUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -177,12 +179,10 @@ public class ExportPreview implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected PreviewPortletDataHandlerSection[]
-		previewPortletDataHandlerSections;
+	protected PortletDataHandler[] portletDataHandlers;
 
 	@JsonIgnore
-	private Supplier<PreviewPortletDataHandlerSection[]>
-		_previewPortletDataHandlerSectionsSupplier;
+	private Supplier<PortletDataHandler[]> _portletDataHandlersSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -235,22 +235,21 @@ public class ExportPreview implements Serializable {
 			sb.append(deletionCount);
 		}
 
-		PreviewPortletDataHandlerSection[] previewPortletDataHandlerSections =
-			getPreviewPortletDataHandlerSections();
+		PortletDataHandler[] portletDataHandlers = getPortletDataHandlers();
 
-		if (previewPortletDataHandlerSections != null) {
+		if (portletDataHandlers != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"previewPortletDataHandlerSections\": ");
+			sb.append("\"portletDataHandlers\": ");
 
 			sb.append("[");
 
-			for (int i = 0; i < previewPortletDataHandlerSections.length; i++) {
-				sb.append(String.valueOf(previewPortletDataHandlerSections[i]));
+			for (int i = 0; i < portletDataHandlers.length; i++) {
+				sb.append(String.valueOf(portletDataHandlers[i]));
 
-				if ((i + 1) < previewPortletDataHandlerSections.length) {
+				if ((i + 1) < portletDataHandlers.length) {
 					sb.append(", ");
 				}
 			}
@@ -380,4 +379,4 @@ public class ExportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:68130295
+// LIFERAY-REST-BUILDER-HASH:-480642478

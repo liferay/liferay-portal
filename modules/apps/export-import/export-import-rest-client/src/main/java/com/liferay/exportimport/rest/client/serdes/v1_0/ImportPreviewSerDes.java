@@ -6,7 +6,7 @@
 package com.liferay.exportimport.rest.client.serdes.v1_0;
 
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSection;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewSite;
 import com.liferay.exportimport.rest.client.json.BaseJSONParser;
 
@@ -128,29 +128,22 @@ public class ImportPreviewSerDes {
 			sb.append(importPreview.getFileSize());
 		}
 
-		if (importPreview.getPreviewPortletDataHandlerSections() != null) {
+		if (importPreview.getPortletDataHandlers() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"previewPortletDataHandlerSections\": ");
+			sb.append("\"portletDataHandlers\": ");
 
 			sb.append("[");
 
-			for (int i = 0;
-				 i <
-					 importPreview.
-						 getPreviewPortletDataHandlerSections().length;
+			for (int i = 0; i < importPreview.getPortletDataHandlers().length;
 				 i++) {
 
 				sb.append(
-					String.valueOf(
-						importPreview.getPreviewPortletDataHandlerSections()
-							[i]));
+					String.valueOf(importPreview.getPortletDataHandlers()[i]));
 
-				if ((i + 1) < importPreview.
-						getPreviewPortletDataHandlerSections().length) {
-
+				if ((i + 1) < importPreview.getPortletDataHandlers().length) {
 					sb.append(", ");
 				}
 			}
@@ -248,14 +241,13 @@ public class ImportPreviewSerDes {
 			map.put("fileSize", String.valueOf(importPreview.getFileSize()));
 		}
 
-		if (importPreview.getPreviewPortletDataHandlerSections() == null) {
-			map.put("previewPortletDataHandlerSections", null);
+		if (importPreview.getPortletDataHandlers() == null) {
+			map.put("portletDataHandlers", null);
 		}
 		else {
 			map.put(
-				"previewPortletDataHandlerSections",
-				String.valueOf(
-					importPreview.getPreviewPortletDataHandlerSections()));
+				"portletDataHandlers",
+				String.valueOf(importPreview.getPortletDataHandlers()));
 		}
 
 		if (importPreview.getPreviewSites() == null) {
@@ -304,8 +296,7 @@ public class ImportPreviewSerDes {
 				return false;
 			}
 			else if (Objects.equals(
-						jsonParserFieldName,
-						"previewPortletDataHandlerSections")) {
+						jsonParserFieldName, "portletDataHandlers")) {
 
 				return false;
 			}
@@ -356,29 +347,23 @@ public class ImportPreviewSerDes {
 				}
 			}
 			else if (Objects.equals(
-						jsonParserFieldName,
-						"previewPortletDataHandlerSections")) {
+						jsonParserFieldName, "portletDataHandlers")) {
 
 				if (jsonParserFieldValue != null) {
 					Object[] jsonParserFieldValues =
 						(Object[])jsonParserFieldValue;
 
-					PreviewPortletDataHandlerSection[]
-						previewPortletDataHandlerSectionsArray =
-							new PreviewPortletDataHandlerSection
-								[jsonParserFieldValues.length];
+					PortletDataHandler[] portletDataHandlersArray =
+						new PortletDataHandler[jsonParserFieldValues.length];
 
-					for (int i = 0;
-						 i < previewPortletDataHandlerSectionsArray.length;
-						 i++) {
-
-						previewPortletDataHandlerSectionsArray[i] =
-							PreviewPortletDataHandlerSectionSerDes.toDTO(
+					for (int i = 0; i < portletDataHandlersArray.length; i++) {
+						portletDataHandlersArray[i] =
+							PortletDataHandlerSerDes.toDTO(
 								(String)jsonParserFieldValues[i]);
 					}
 
-					importPreview.setPreviewPortletDataHandlerSections(
-						previewPortletDataHandlerSectionsArray);
+					importPreview.setPortletDataHandlers(
+						portletDataHandlersArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "previewSites")) {
@@ -484,4 +469,4 @@ public class ImportPreviewSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1202981042
+// LIFERAY-REST-BUILDER-HASH:1751105534

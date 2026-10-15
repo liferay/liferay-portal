@@ -47,27 +47,6 @@ public class ScheduledPublishProcess implements Cloneable, Serializable {
 
 	protected Creator creator;
 
-	public String getCronExpression() {
-		return cronExpression;
-	}
-
-	public void setCronExpression(String cronExpression) {
-		this.cronExpression = cronExpression;
-	}
-
-	public void setCronExpression(
-		UnsafeSupplier<String, Exception> cronExpressionUnsafeSupplier) {
-
-		try {
-			cronExpression = cronExpressionUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String cronExpression;
-
 	public Date getDateCreated() {
 		return dateCreated;
 	}
@@ -148,26 +127,29 @@ public class ScheduledPublishProcess implements Cloneable, Serializable {
 
 	protected Date nextFireDate;
 
-	public Object getPublishParameters() {
-		return publishParameters;
+	public PublishProcessRequest getPublishProcessRequest() {
+		return publishProcessRequest;
 	}
 
-	public void setPublishParameters(Object publishParameters) {
-		this.publishParameters = publishParameters;
+	public void setPublishProcessRequest(
+		PublishProcessRequest publishProcessRequest) {
+
+		this.publishProcessRequest = publishProcessRequest;
 	}
 
-	public void setPublishParameters(
-		UnsafeSupplier<Object, Exception> publishParametersUnsafeSupplier) {
+	public void setPublishProcessRequest(
+		UnsafeSupplier<PublishProcessRequest, Exception>
+			publishProcessRequestUnsafeSupplier) {
 
 		try {
-			publishParameters = publishParametersUnsafeSupplier.get();
+			publishProcessRequest = publishProcessRequestUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Object publishParameters;
+	protected PublishProcessRequest publishProcessRequest;
 
 	public Date getScheduleEndDate() {
 		return scheduleEndDate;
@@ -244,4 +226,4 @@ public class ScheduledPublishProcess implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-735704498
+// LIFERAY-REST-BUILDER-HASH:-81337665

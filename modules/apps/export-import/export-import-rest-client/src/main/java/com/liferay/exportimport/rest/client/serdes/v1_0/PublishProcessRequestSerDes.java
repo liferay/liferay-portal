@@ -5,8 +5,8 @@
 
 package com.liferay.exportimport.rest.client.serdes.v1_0;
 
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PublishProcessRequest;
-import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandler;
 import com.liferay.exportimport.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -116,16 +116,6 @@ public class PublishProcessRequestSerDes {
 			sb.append("\"");
 		}
 
-		if (publishProcessRequest.getLogo() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"logo\": ");
-
-			sb.append(publishProcessRequest.getLogo());
-		}
-
 		if (publishProcessRequest.getName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -150,6 +140,33 @@ public class PublishProcessRequestSerDes {
 			sb.append(publishProcessRequest.getPermissions());
 		}
 
+		if (publishProcessRequest.getPortletDataHandlers() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"portletDataHandlers\": ");
+
+			sb.append("[");
+
+			for (int i = 0;
+				 i < publishProcessRequest.getPortletDataHandlers().length;
+				 i++) {
+
+				sb.append(
+					String.valueOf(
+						publishProcessRequest.getPortletDataHandlers()[i]));
+
+				if ((i + 1) <
+						publishProcessRequest.getPortletDataHandlers().length) {
+
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (publishProcessRequest.getRatings() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -158,36 +175,6 @@ public class PublishProcessRequestSerDes {
 			sb.append("\"ratings\": ");
 
 			sb.append(publishProcessRequest.getRatings());
-		}
-
-		if (publishProcessRequest.getRequestPortletDataHandlers() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"requestPortletDataHandlers\": ");
-
-			sb.append("[");
-
-			for (int i = 0;
-				 i <
-					 publishProcessRequest.
-						 getRequestPortletDataHandlers().length;
-				 i++) {
-
-				sb.append(
-					String.valueOf(
-						publishProcessRequest.getRequestPortletDataHandlers()
-							[i]));
-
-				if ((i + 1) < publishProcessRequest.
-						getRequestPortletDataHandlers().length) {
-
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
 		}
 
 		if (publishProcessRequest.getScheduleEndDate() != null) {
@@ -222,26 +209,6 @@ public class PublishProcessRequestSerDes {
 			sb.append("\"");
 		}
 
-		if (publishProcessRequest.getSitePagesSettings() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"sitePagesSettings\": ");
-
-			sb.append(publishProcessRequest.getSitePagesSettings());
-		}
-
-		if (publishProcessRequest.getSiteTemplateSettings() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"siteTemplateSettings\": ");
-
-			sb.append(publishProcessRequest.getSiteTemplateSettings());
-		}
-
 		if (publishProcessRequest.getStartDate() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -256,16 +223,6 @@ public class PublishProcessRequestSerDes {
 					publishProcessRequest.getStartDate()));
 
 			sb.append("\"");
-		}
-
-		if (publishProcessRequest.getThemeSettings() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"themeSettings\": ");
-
-			sb.append(publishProcessRequest.getThemeSettings());
 		}
 
 		if (publishProcessRequest.getTimeZoneId() != null) {
@@ -352,13 +309,6 @@ public class PublishProcessRequestSerDes {
 					publishProcessRequest.getEndDate()));
 		}
 
-		if (publishProcessRequest.getLogo() == null) {
-			map.put("logo", null);
-		}
-		else {
-			map.put("logo", String.valueOf(publishProcessRequest.getLogo()));
-		}
-
 		if (publishProcessRequest.getName() == null) {
 			map.put("name", null);
 		}
@@ -375,22 +325,21 @@ public class PublishProcessRequestSerDes {
 				String.valueOf(publishProcessRequest.getPermissions()));
 		}
 
+		if (publishProcessRequest.getPortletDataHandlers() == null) {
+			map.put("portletDataHandlers", null);
+		}
+		else {
+			map.put(
+				"portletDataHandlers",
+				String.valueOf(publishProcessRequest.getPortletDataHandlers()));
+		}
+
 		if (publishProcessRequest.getRatings() == null) {
 			map.put("ratings", null);
 		}
 		else {
 			map.put(
 				"ratings", String.valueOf(publishProcessRequest.getRatings()));
-		}
-
-		if (publishProcessRequest.getRequestPortletDataHandlers() == null) {
-			map.put("requestPortletDataHandlers", null);
-		}
-		else {
-			map.put(
-				"requestPortletDataHandlers",
-				String.valueOf(
-					publishProcessRequest.getRequestPortletDataHandlers()));
 		}
 
 		if (publishProcessRequest.getScheduleEndDate() == null) {
@@ -413,25 +362,6 @@ public class PublishProcessRequestSerDes {
 					publishProcessRequest.getScheduleStartDate()));
 		}
 
-		if (publishProcessRequest.getSitePagesSettings() == null) {
-			map.put("sitePagesSettings", null);
-		}
-		else {
-			map.put(
-				"sitePagesSettings",
-				String.valueOf(publishProcessRequest.getSitePagesSettings()));
-		}
-
-		if (publishProcessRequest.getSiteTemplateSettings() == null) {
-			map.put("siteTemplateSettings", null);
-		}
-		else {
-			map.put(
-				"siteTemplateSettings",
-				String.valueOf(
-					publishProcessRequest.getSiteTemplateSettings()));
-		}
-
 		if (publishProcessRequest.getStartDate() == null) {
 			map.put("startDate", null);
 		}
@@ -440,15 +370,6 @@ public class PublishProcessRequestSerDes {
 				"startDate",
 				liferayToJSONDateFormat.format(
 					publishProcessRequest.getStartDate()));
-		}
-
-		if (publishProcessRequest.getThemeSettings() == null) {
-			map.put("themeSettings", null);
-		}
-		else {
-			map.put(
-				"themeSettings",
-				String.valueOf(publishProcessRequest.getThemeSettings()));
 		}
 
 		if (publishProcessRequest.getTimeZoneId() == null) {
@@ -493,21 +414,18 @@ public class PublishProcessRequestSerDes {
 			else if (Objects.equals(jsonParserFieldName, "endDate")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "logo")) {
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "ratings")) {
+			else if (Objects.equals(
+						jsonParserFieldName, "portletDataHandlers")) {
+
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "requestPortletDataHandlers")) {
-
+			else if (Objects.equals(jsonParserFieldName, "ratings")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "scheduleEndDate")) {
@@ -516,18 +434,7 @@ public class PublishProcessRequestSerDes {
 			else if (Objects.equals(jsonParserFieldName, "scheduleStartDate")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "sitePagesSettings")) {
-				return false;
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "siteTemplateSettings")) {
-
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "startDate")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "themeSettings")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "timeZoneId")) {
@@ -573,12 +480,6 @@ public class PublishProcessRequestSerDes {
 						toDate((String)jsonParserFieldValue));
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "logo")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setLogo(
-						(Boolean)jsonParserFieldValue);
-				}
-			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					publishProcessRequest.setName((String)jsonParserFieldValue);
@@ -590,34 +491,30 @@ public class PublishProcessRequestSerDes {
 						(Boolean)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "ratings")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setRatings(
-						(Boolean)jsonParserFieldValue);
-				}
-			}
 			else if (Objects.equals(
-						jsonParserFieldName, "requestPortletDataHandlers")) {
+						jsonParserFieldName, "portletDataHandlers")) {
 
 				if (jsonParserFieldValue != null) {
 					Object[] jsonParserFieldValues =
 						(Object[])jsonParserFieldValue;
 
-					RequestPortletDataHandler[]
-						requestPortletDataHandlersArray =
-							new RequestPortletDataHandler
-								[jsonParserFieldValues.length];
+					PortletDataHandler[] portletDataHandlersArray =
+						new PortletDataHandler[jsonParserFieldValues.length];
 
-					for (int i = 0; i < requestPortletDataHandlersArray.length;
-						 i++) {
-
-						requestPortletDataHandlersArray[i] =
-							RequestPortletDataHandlerSerDes.toDTO(
+					for (int i = 0; i < portletDataHandlersArray.length; i++) {
+						portletDataHandlersArray[i] =
+							PortletDataHandlerSerDes.toDTO(
 								(String)jsonParserFieldValues[i]);
 					}
 
-					publishProcessRequest.setRequestPortletDataHandlers(
-						requestPortletDataHandlersArray);
+					publishProcessRequest.setPortletDataHandlers(
+						portletDataHandlersArray);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "ratings")) {
+				if (jsonParserFieldValue != null) {
+					publishProcessRequest.setRatings(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "scheduleEndDate")) {
@@ -632,30 +529,10 @@ public class PublishProcessRequestSerDes {
 						toDate((String)jsonParserFieldValue));
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "sitePagesSettings")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setSitePagesSettings(
-						(Boolean)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "siteTemplateSettings")) {
-
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setSiteTemplateSettings(
-						(Boolean)jsonParserFieldValue);
-				}
-			}
 			else if (Objects.equals(jsonParserFieldName, "startDate")) {
 				if (jsonParserFieldValue != null) {
 					publishProcessRequest.setStartDate(
 						toDate((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "themeSettings")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setThemeSettings(
-						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "timeZoneId")) {
@@ -751,4 +628,4 @@ public class PublishProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1829882138
+// LIFERAY-REST-BUILDER-HASH:-1914358814

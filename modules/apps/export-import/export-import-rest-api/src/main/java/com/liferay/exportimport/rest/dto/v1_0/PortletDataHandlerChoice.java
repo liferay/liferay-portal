@@ -38,43 +38,53 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("RequestPortletDataHandlerControl")
+@GraphQLName(
+	description = "Represents a control that selects one of its options.",
+	value = "PortletDataHandlerChoice"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "Represents a control that selects one of its options."
+)
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "RequestPortletDataHandlerControl")
-public class RequestPortletDataHandlerControl implements Serializable {
+@XmlRootElement(name = "PortletDataHandlerChoice")
+public class PortletDataHandlerChoice
+	extends PortletDataHandlerControl implements Serializable {
 
-	public static RequestPortletDataHandlerControl toDTO(String json) {
-		return ObjectMapperUtil.readValue(
-			RequestPortletDataHandlerControl.class, json);
+	public static PortletDataHandlerChoice toDTO(String json) {
+		return ObjectMapperUtil.readValue(PortletDataHandlerChoice.class, json);
 	}
 
-	public static RequestPortletDataHandlerControl unsafeToDTO(String json) {
+	public static PortletDataHandlerChoice unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(
-			RequestPortletDataHandlerControl.class, json);
+			PortletDataHandlerChoice.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	public String getName() {
-		if (_nameSupplier != null) {
-			name = _nameSupplier.get();
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The selected option's name. The preview returns the default."
+	)
+	public String getChoice() {
+		if (_choiceSupplier != null) {
+			choice = _choiceSupplier.get();
 
-			_nameSupplier = null;
+			_choiceSupplier = null;
 		}
 
-		return name;
+		return choice;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setChoice(String choice) {
+		this.choice = choice;
 
-		_nameSupplier = null;
+		_choiceSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
-		_nameSupplier = () -> {
+	public void setChoice(
+		UnsafeSupplier<String, Exception> choiceUnsafeSupplier) {
+
+		_choiceSupplier = () -> {
 			try {
-				return nameUnsafeSupplier.get();
+				return choiceUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -85,45 +95,40 @@ public class RequestPortletDataHandlerControl implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The selected option's name. The preview returns the default."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String name;
+	protected String choice;
 
 	@JsonIgnore
-	private Supplier<String> _nameSupplier;
+	private Supplier<String> _choiceSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
-	public RequestPortletDataHandlerControl[]
-		getRequestPortletDataHandlerControls() {
+	public Choice[] getChoices() {
+		if (_choicesSupplier != null) {
+			choices = _choicesSupplier.get();
 
-		if (_requestPortletDataHandlerControlsSupplier != null) {
-			requestPortletDataHandlerControls =
-				_requestPortletDataHandlerControlsSupplier.get();
-
-			_requestPortletDataHandlerControlsSupplier = null;
+			_choicesSupplier = null;
 		}
 
-		return requestPortletDataHandlerControls;
+		return choices;
 	}
 
-	public void setRequestPortletDataHandlerControls(
-		RequestPortletDataHandlerControl[] requestPortletDataHandlerControls) {
+	public void setChoices(Choice[] choices) {
+		this.choices = choices;
 
-		this.requestPortletDataHandlerControls =
-			requestPortletDataHandlerControls;
-
-		_requestPortletDataHandlerControlsSupplier = null;
+		_choicesSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setRequestPortletDataHandlerControls(
-		UnsafeSupplier<RequestPortletDataHandlerControl[], Exception>
-			requestPortletDataHandlerControlsUnsafeSupplier) {
+	public void setChoices(
+		UnsafeSupplier<Choice[], Exception> choicesUnsafeSupplier) {
 
-		_requestPortletDataHandlerControlsSupplier = () -> {
+		_choicesSupplier = () -> {
 			try {
-				return requestPortletDataHandlerControlsUnsafeSupplier.get();
+				return choicesUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -135,38 +140,43 @@ public class RequestPortletDataHandlerControl implements Serializable {
 	}
 
 	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected RequestPortletDataHandlerControl[]
-		requestPortletDataHandlerControls;
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Choice[] choices;
 
 	@JsonIgnore
-	private Supplier<RequestPortletDataHandlerControl[]>
-		_requestPortletDataHandlerControlsSupplier;
+	private Supplier<Choice[]> _choicesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	public String[] getValues() {
-		if (_valuesSupplier != null) {
-			values = _valuesSupplier.get();
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The nested controls, which apply to the selected option."
+	)
+	@Valid
+	public PortletDataHandlerControl[] getPortletDataHandlerControls() {
+		if (_portletDataHandlerControlsSupplier != null) {
+			portletDataHandlerControls =
+				_portletDataHandlerControlsSupplier.get();
 
-			_valuesSupplier = null;
+			_portletDataHandlerControlsSupplier = null;
 		}
 
-		return values;
+		return portletDataHandlerControls;
 	}
 
-	public void setValues(String[] values) {
-		this.values = values;
+	public void setPortletDataHandlerControls(
+		PortletDataHandlerControl[] portletDataHandlerControls) {
 
-		_valuesSupplier = null;
+		this.portletDataHandlerControls = portletDataHandlerControls;
+
+		_portletDataHandlerControlsSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setValues(
-		UnsafeSupplier<String[], Exception> valuesUnsafeSupplier) {
+	public void setPortletDataHandlerControls(
+		UnsafeSupplier<PortletDataHandlerControl[], Exception>
+			portletDataHandlerControlsUnsafeSupplier) {
 
-		_valuesSupplier = () -> {
+		_portletDataHandlerControlsSupplier = () -> {
 			try {
-				return valuesUnsafeSupplier.get();
+				return portletDataHandlerControlsUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -177,12 +187,15 @@ public class RequestPortletDataHandlerControl implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The nested controls, which apply to the selected option."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String[] values;
+	protected PortletDataHandlerControl[] portletDataHandlerControls;
 
 	@JsonIgnore
-	private Supplier<String[]> _valuesSupplier;
+	private Supplier<PortletDataHandlerControl[]>
+		_portletDataHandlerControlsSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -190,15 +203,14 @@ public class RequestPortletDataHandlerControl implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof RequestPortletDataHandlerControl)) {
+		if (!(object instanceof PortletDataHandlerChoice)) {
 			return false;
 		}
 
-		RequestPortletDataHandlerControl requestPortletDataHandlerControl =
-			(RequestPortletDataHandlerControl)object;
+		PortletDataHandlerChoice portletDataHandlerChoice =
+			(PortletDataHandlerChoice)object;
 
-		return Objects.equals(
-			toString(), requestPortletDataHandlerControl.toString());
+		return Objects.equals(toString(), portletDataHandlerChoice.toString());
 	}
 
 	@Override
@@ -212,6 +224,83 @@ public class RequestPortletDataHandlerControl implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		String choice = getChoice();
+
+		if (choice != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"choice\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(choice));
+
+			sb.append("\"");
+		}
+
+		Choice[] choices = getChoices();
+
+		if (choices != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"choices\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < choices.length; i++) {
+				sb.append(String.valueOf(choices[i]));
+
+				if ((i + 1) < choices.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		PortletDataHandlerControl[] portletDataHandlerControls =
+			getPortletDataHandlerControls();
+
+		if (portletDataHandlerControls != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"portletDataHandlerControls\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < portletDataHandlerControls.length; i++) {
+				sb.append(String.valueOf(portletDataHandlerControls[i]));
+
+				if ((i + 1) < portletDataHandlerControls.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		String label = getLabel();
+
+		if (label != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"label\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(label));
+
+			sb.append("\"");
+		}
 
 		String name = getName();
 
@@ -229,53 +318,18 @@ public class RequestPortletDataHandlerControl implements Serializable {
 			sb.append("\"");
 		}
 
-		RequestPortletDataHandlerControl[] requestPortletDataHandlerControls =
-			getRequestPortletDataHandlerControls();
+		Type type = getType();
 
-		if (requestPortletDataHandlerControls != null) {
+		if (type != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"requestPortletDataHandlerControls\": ");
+			sb.append("\"type\": ");
 
-			sb.append("[");
-
-			for (int i = 0; i < requestPortletDataHandlerControls.length; i++) {
-				sb.append(String.valueOf(requestPortletDataHandlerControls[i]));
-
-				if ((i + 1) < requestPortletDataHandlerControls.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
-		String[] values = getValues();
-
-		if (values != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"values\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < values.length; i++) {
-				sb.append("\"");
-
-				sb.append(_escape(values[i]));
-
-				sb.append("\"");
-
-				if ((i + 1) < values.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
+			sb.append("\"");
+			sb.append(type);
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -285,7 +339,7 @@ public class RequestPortletDataHandlerControl implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.RequestPortletDataHandlerControl",
+		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerChoice",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -400,4 +454,4 @@ public class RequestPortletDataHandlerControl implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:750323300
+// LIFERAY-REST-BUILDER-HASH:-569210412

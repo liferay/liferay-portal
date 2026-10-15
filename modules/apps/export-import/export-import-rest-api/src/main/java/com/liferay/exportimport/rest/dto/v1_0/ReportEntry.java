@@ -232,7 +232,9 @@ public class ReportEntry implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _configurationIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The user who started the process the entry belongs to."
+	)
 	@Valid
 	public Creator getCreator() {
 		if (_creatorSupplier != null) {
@@ -267,7 +269,9 @@ public class ReportEntry implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The user who started the process the entry belongs to."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Creator creator;
 
@@ -1063,4 +1067,4 @@ public class ReportEntry implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:32897712
+// LIFERAY-REST-BUILDER-HASH:575295946

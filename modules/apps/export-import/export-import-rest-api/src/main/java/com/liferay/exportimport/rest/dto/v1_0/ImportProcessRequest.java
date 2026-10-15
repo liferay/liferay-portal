@@ -96,7 +96,9 @@ public class ImportProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _commentsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "How imported items match existing ones. MIRROR updates existing items and adds the rest, MIRROR_OVERWRITE also overwrites their content, and COPY_AS_NEW adds every item as new."
+	)
 	@JsonGetter("dataStrategy")
 	@Valid
 	public DataStrategy getDataStrategy() {
@@ -143,14 +145,18 @@ public class ImportProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "How imported items match existing ones. MIRROR updates existing items and adds the rest, MIRROR_OVERWRITE also overwrites their content, and COPY_AS_NEW adds every item as new."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected DataStrategy dataStrategy;
 
 	@JsonIgnore
 	private Supplier<DataStrategy> _dataStrategySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A flag that indicates whether the file's deletions are applied."
+	)
 	public Boolean getDeletions() {
 		if (_deletionsSupplier != null) {
 			deletions = _deletionsSupplier.get();
@@ -184,53 +190,18 @@ public class ImportProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "A flag that indicates whether the file's deletions are applied."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean deletions;
 
 	@JsonIgnore
 	private Supplier<Boolean> _deletionsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getLogo() {
-		if (_logoSupplier != null) {
-			logo = _logoSupplier.get();
-
-			_logoSupplier = null;
-		}
-
-		return logo;
-	}
-
-	public void setLogo(Boolean logo) {
-		this.logo = logo;
-
-		_logoSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setLogo(UnsafeSupplier<Boolean, Exception> logoUnsafeSupplier) {
-		_logoSupplier = () -> {
-			try {
-				return logoUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean logo;
-
-	@JsonIgnore
-	private Supplier<Boolean> _logoSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The import process's name. Defaults to the name of the uploaded file."
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -262,7 +233,9 @@ public class ImportProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The import process's name. Defaults to the name of the uploaded file."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
@@ -310,6 +283,55 @@ public class ImportProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _permissionsSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The portlet data handlers to import, taken from the import preview."
+	)
+	@Valid
+	public PortletDataHandler[] getPortletDataHandlers() {
+		if (_portletDataHandlersSupplier != null) {
+			portletDataHandlers = _portletDataHandlersSupplier.get();
+
+			_portletDataHandlersSupplier = null;
+		}
+
+		return portletDataHandlers;
+	}
+
+	public void setPortletDataHandlers(
+		PortletDataHandler[] portletDataHandlers) {
+
+		this.portletDataHandlers = portletDataHandlers;
+
+		_portletDataHandlersSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPortletDataHandlers(
+		UnsafeSupplier<PortletDataHandler[], Exception>
+			portletDataHandlersUnsafeSupplier) {
+
+		_portletDataHandlersSupplier = () -> {
+			try {
+				return portletDataHandlersUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The portlet data handlers to import, taken from the import preview."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected PortletDataHandler[] portletDataHandlers;
+
+	@JsonIgnore
+	private Supplier<PortletDataHandler[]> _portletDataHandlersSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getRatings() {
 		if (_ratingsSupplier != null) {
@@ -351,54 +373,9 @@ public class ImportProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _ratingsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	@Valid
-	public RequestPortletDataHandler[] getRequestPortletDataHandlers() {
-		if (_requestPortletDataHandlersSupplier != null) {
-			requestPortletDataHandlers =
-				_requestPortletDataHandlersSupplier.get();
-
-			_requestPortletDataHandlersSupplier = null;
-		}
-
-		return requestPortletDataHandlers;
-	}
-
-	public void setRequestPortletDataHandlers(
-		RequestPortletDataHandler[] requestPortletDataHandlers) {
-
-		this.requestPortletDataHandlers = requestPortletDataHandlers;
-
-		_requestPortletDataHandlersSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setRequestPortletDataHandlers(
-		UnsafeSupplier<RequestPortletDataHandler[], Exception>
-			requestPortletDataHandlersUnsafeSupplier) {
-
-		_requestPortletDataHandlersSupplier = () -> {
-			try {
-				return requestPortletDataHandlersUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected RequestPortletDataHandler[] requestPortletDataHandlers;
-
-	@JsonIgnore
-	private Supplier<RequestPortletDataHandler[]>
-		_requestPortletDataHandlersSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The external reference codes of the sites to import in full, as listed in the previewSites of the import preview. Applies only to the instance."
+	)
 	public String[] getSiteExternalReferenceCodes() {
 		if (_siteExternalReferenceCodesSupplier != null) {
 			siteExternalReferenceCodes =
@@ -436,137 +413,18 @@ public class ImportProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The external reference codes of the sites to import in full, as listed in the previewSites of the import preview. Applies only to the instance."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String[] siteExternalReferenceCodes;
 
 	@JsonIgnore
 	private Supplier<String[]> _siteExternalReferenceCodesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSitePagesSettings() {
-		if (_sitePagesSettingsSupplier != null) {
-			sitePagesSettings = _sitePagesSettingsSupplier.get();
-
-			_sitePagesSettingsSupplier = null;
-		}
-
-		return sitePagesSettings;
-	}
-
-	public void setSitePagesSettings(Boolean sitePagesSettings) {
-		this.sitePagesSettings = sitePagesSettings;
-
-		_sitePagesSettingsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSitePagesSettings(
-		UnsafeSupplier<Boolean, Exception> sitePagesSettingsUnsafeSupplier) {
-
-		_sitePagesSettingsSupplier = () -> {
-			try {
-				return sitePagesSettingsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean sitePagesSettings;
-
-	@JsonIgnore
-	private Supplier<Boolean> _sitePagesSettingsSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSiteTemplateSettings() {
-		if (_siteTemplateSettingsSupplier != null) {
-			siteTemplateSettings = _siteTemplateSettingsSupplier.get();
-
-			_siteTemplateSettingsSupplier = null;
-		}
-
-		return siteTemplateSettings;
-	}
-
-	public void setSiteTemplateSettings(Boolean siteTemplateSettings) {
-		this.siteTemplateSettings = siteTemplateSettings;
-
-		_siteTemplateSettingsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSiteTemplateSettings(
-		UnsafeSupplier<Boolean, Exception> siteTemplateSettingsUnsafeSupplier) {
-
-		_siteTemplateSettingsSupplier = () -> {
-			try {
-				return siteTemplateSettingsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean siteTemplateSettings;
-
-	@JsonIgnore
-	private Supplier<Boolean> _siteTemplateSettingsSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getThemeSettings() {
-		if (_themeSettingsSupplier != null) {
-			themeSettings = _themeSettingsSupplier.get();
-
-			_themeSettingsSupplier = null;
-		}
-
-		return themeSettings;
-	}
-
-	public void setThemeSettings(Boolean themeSettings) {
-		this.themeSettings = themeSettings;
-
-		_themeSettingsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setThemeSettings(
-		UnsafeSupplier<Boolean, Exception> themeSettingsUnsafeSupplier) {
-
-		_themeSettingsSupplier = () -> {
-			try {
-				return themeSettingsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean themeSettings;
-
-	@JsonIgnore
-	private Supplier<Boolean> _themeSettingsSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Who owns the imported items. CURRENT_USER_ID keeps the original owner when it exists, and ALWAYS_CURRENT_USER_ID assigns every item to the current user."
+	)
 	@JsonGetter("userIdStrategy")
 	@Valid
 	public UserIdStrategy getUserIdStrategy() {
@@ -614,7 +472,9 @@ public class ImportProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Who owns the imported items. CURRENT_USER_ID keeps the original owner when it exists, and ALWAYS_CURRENT_USER_ID assigns every item to the current user."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected UserIdStrategy userIdStrategy;
 
@@ -687,18 +547,6 @@ public class ImportProcessRequest implements Serializable {
 			sb.append(deletions);
 		}
 
-		Boolean logo = getLogo();
-
-		if (logo != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"logo\": ");
-
-			sb.append(logo);
-		}
-
 		String name = getName();
 
 		if (name != null) {
@@ -727,6 +575,28 @@ public class ImportProcessRequest implements Serializable {
 			sb.append(permissions);
 		}
 
+		PortletDataHandler[] portletDataHandlers = getPortletDataHandlers();
+
+		if (portletDataHandlers != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"portletDataHandlers\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < portletDataHandlers.length; i++) {
+				sb.append(String.valueOf(portletDataHandlers[i]));
+
+				if ((i + 1) < portletDataHandlers.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		Boolean ratings = getRatings();
 
 		if (ratings != null) {
@@ -737,29 +607,6 @@ public class ImportProcessRequest implements Serializable {
 			sb.append("\"ratings\": ");
 
 			sb.append(ratings);
-		}
-
-		RequestPortletDataHandler[] requestPortletDataHandlers =
-			getRequestPortletDataHandlers();
-
-		if (requestPortletDataHandlers != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"requestPortletDataHandlers\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < requestPortletDataHandlers.length; i++) {
-				sb.append(String.valueOf(requestPortletDataHandlers[i]));
-
-				if ((i + 1) < requestPortletDataHandlers.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
 		}
 
 		String[] siteExternalReferenceCodes = getSiteExternalReferenceCodes();
@@ -786,42 +633,6 @@ public class ImportProcessRequest implements Serializable {
 			}
 
 			sb.append("]");
-		}
-
-		Boolean sitePagesSettings = getSitePagesSettings();
-
-		if (sitePagesSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"sitePagesSettings\": ");
-
-			sb.append(sitePagesSettings);
-		}
-
-		Boolean siteTemplateSettings = getSiteTemplateSettings();
-
-		if (siteTemplateSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"siteTemplateSettings\": ");
-
-			sb.append(siteTemplateSettings);
-		}
-
-		Boolean themeSettings = getThemeSettings();
-
-		if (themeSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"themeSettings\": ");
-
-			sb.append(themeSettings);
 		}
 
 		UserIdStrategy userIdStrategy = getUserIdStrategy();
@@ -1038,4 +849,4 @@ public class ImportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-423617885
+// LIFERAY-REST-BUILDER-HASH:-251623681

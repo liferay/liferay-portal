@@ -420,12 +420,9 @@ public abstract class BaseImportPreviewResourceTestCase {
 			}
 
 			if (Objects.equals(
-					"previewPortletDataHandlerSections",
-					additionalAssertFieldName)) {
+					"portletDataHandlers", additionalAssertFieldName)) {
 
-				if (importPreview.getPreviewPortletDataHandlerSections() ==
-						null) {
-
+				if (importPreview.getPortletDataHandlers() == null) {
 					valid = false;
 				}
 
@@ -634,13 +631,11 @@ public abstract class BaseImportPreviewResourceTestCase {
 			}
 
 			if (Objects.equals(
-					"previewPortletDataHandlerSections",
-					additionalAssertFieldName)) {
+					"portletDataHandlers", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
-						importPreview1.getPreviewPortletDataHandlerSections(),
-						importPreview2.
-							getPreviewPortletDataHandlerSections())) {
+						importPreview1.getPortletDataHandlers(),
+						importPreview2.getPortletDataHandlers())) {
 
 					return false;
 				}
@@ -902,7 +897,7 @@ public abstract class BaseImportPreviewResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("previewPortletDataHandlerSections")) {
+		if (entityFieldName.equals("portletDataHandlers")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -1199,4 +1194,4 @@ public abstract class BaseImportPreviewResourceTestCase {
 		_importPreviewResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-977278757
+// LIFERAY-REST-BUILDER-HASH:764045565

@@ -65,20 +65,6 @@ public class ScheduledPublishProcessSerDes {
 			sb.append(scheduledPublishProcess.getCreator());
 		}
 
-		if (scheduledPublishProcess.getCronExpression() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"cronExpression\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(scheduledPublishProcess.getCronExpression()));
-
-			sb.append("\"");
-		}
-
 		if (scheduledPublishProcess.getDateCreated() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -135,14 +121,16 @@ public class ScheduledPublishProcessSerDes {
 			sb.append("\"");
 		}
 
-		if (scheduledPublishProcess.getPublishParameters() != null) {
+		if (scheduledPublishProcess.getPublishProcessRequest() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"publishParameters\": ");
+			sb.append("\"publishProcessRequest\": ");
 
-			sb.append(_toJSON(scheduledPublishProcess.getPublishParameters()));
+			sb.append(
+				String.valueOf(
+					scheduledPublishProcess.getPublishProcessRequest()));
 		}
 
 		if (scheduledPublishProcess.getScheduleEndDate() != null) {
@@ -210,15 +198,6 @@ public class ScheduledPublishProcessSerDes {
 				String.valueOf(scheduledPublishProcess.getCreator()));
 		}
 
-		if (scheduledPublishProcess.getCronExpression() == null) {
-			map.put("cronExpression", null);
-		}
-		else {
-			map.put(
-				"cronExpression",
-				String.valueOf(scheduledPublishProcess.getCronExpression()));
-		}
-
 		if (scheduledPublishProcess.getDateCreated() == null) {
 			map.put("dateCreated", null);
 		}
@@ -253,13 +232,14 @@ public class ScheduledPublishProcessSerDes {
 					scheduledPublishProcess.getNextFireDate()));
 		}
 
-		if (scheduledPublishProcess.getPublishParameters() == null) {
-			map.put("publishParameters", null);
+		if (scheduledPublishProcess.getPublishProcessRequest() == null) {
+			map.put("publishProcessRequest", null);
 		}
 		else {
 			map.put(
-				"publishParameters",
-				String.valueOf(scheduledPublishProcess.getPublishParameters()));
+				"publishProcessRequest",
+				String.valueOf(
+					scheduledPublishProcess.getPublishProcessRequest()));
 		}
 
 		if (scheduledPublishProcess.getScheduleEndDate() == null) {
@@ -303,9 +283,6 @@ public class ScheduledPublishProcessSerDes {
 			if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "cronExpression")) {
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				return false;
 			}
@@ -318,7 +295,9 @@ public class ScheduledPublishProcessSerDes {
 			else if (Objects.equals(jsonParserFieldName, "nextFireDate")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "publishParameters")) {
+			else if (Objects.equals(
+						jsonParserFieldName, "publishProcessRequest")) {
+
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "scheduleEndDate")) {
@@ -340,12 +319,6 @@ public class ScheduledPublishProcessSerDes {
 				if (jsonParserFieldValue != null) {
 					scheduledPublishProcess.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "cronExpression")) {
-				if (jsonParserFieldValue != null) {
-					scheduledPublishProcess.setCronExpression(
-						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
@@ -372,10 +345,13 @@ public class ScheduledPublishProcessSerDes {
 						toDate((String)jsonParserFieldValue));
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "publishParameters")) {
+			else if (Objects.equals(
+						jsonParserFieldName, "publishProcessRequest")) {
+
 				if (jsonParserFieldValue != null) {
-					scheduledPublishProcess.setPublishParameters(
-						(Object)jsonParserFieldValue);
+					scheduledPublishProcess.setPublishProcessRequest(
+						PublishProcessRequestSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "scheduleEndDate")) {
@@ -477,4 +453,4 @@ public class ScheduledPublishProcessSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1307010682
+// LIFERAY-REST-BUILDER-HASH:1983231032

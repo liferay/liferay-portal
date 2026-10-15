@@ -42,7 +42,13 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("ImportPreview")
+@GraphQLName(
+	description = "Represents what an uploaded file can import, with its counts.",
+	value = "ImportPreview"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "Represents what an uploaded file can import, with its counts."
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "ImportPreview")
 public class ImportPreview implements Serializable {
@@ -96,7 +102,9 @@ public class ImportPreview implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _additionCountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The name of the user who exported the file."
+	)
 	public String getAuthor() {
 		if (_authorSupplier != null) {
 			author = _authorSupplier.get();
@@ -130,7 +138,7 @@ public class ImportPreview implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The name of the user who exported the file.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String author;
 
@@ -260,7 +268,9 @@ public class ImportPreview implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _fileNameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The uploaded file's size in bytes."
+	)
 	public Long getFileSize() {
 		if (_fileSizeSupplier != null) {
 			fileSize = _fileSizeSupplier.get();
@@ -294,7 +304,7 @@ public class ImportPreview implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The uploaded file's size in bytes.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long fileSize;
 
@@ -303,36 +313,32 @@ public class ImportPreview implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
-	public PreviewPortletDataHandlerSection[]
-		getPreviewPortletDataHandlerSections() {
+	public PortletDataHandler[] getPortletDataHandlers() {
+		if (_portletDataHandlersSupplier != null) {
+			portletDataHandlers = _portletDataHandlersSupplier.get();
 
-		if (_previewPortletDataHandlerSectionsSupplier != null) {
-			previewPortletDataHandlerSections =
-				_previewPortletDataHandlerSectionsSupplier.get();
-
-			_previewPortletDataHandlerSectionsSupplier = null;
+			_portletDataHandlersSupplier = null;
 		}
 
-		return previewPortletDataHandlerSections;
+		return portletDataHandlers;
 	}
 
-	public void setPreviewPortletDataHandlerSections(
-		PreviewPortletDataHandlerSection[] previewPortletDataHandlerSections) {
+	public void setPortletDataHandlers(
+		PortletDataHandler[] portletDataHandlers) {
 
-		this.previewPortletDataHandlerSections =
-			previewPortletDataHandlerSections;
+		this.portletDataHandlers = portletDataHandlers;
 
-		_previewPortletDataHandlerSectionsSupplier = null;
+		_portletDataHandlersSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setPreviewPortletDataHandlerSections(
-		UnsafeSupplier<PreviewPortletDataHandlerSection[], Exception>
-			previewPortletDataHandlerSectionsUnsafeSupplier) {
+	public void setPortletDataHandlers(
+		UnsafeSupplier<PortletDataHandler[], Exception>
+			portletDataHandlersUnsafeSupplier) {
 
-		_previewPortletDataHandlerSectionsSupplier = () -> {
+		_portletDataHandlersSupplier = () -> {
 			try {
-				return previewPortletDataHandlerSectionsUnsafeSupplier.get();
+				return portletDataHandlersUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -345,14 +351,14 @@ public class ImportPreview implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected PreviewPortletDataHandlerSection[]
-		previewPortletDataHandlerSections;
+	protected PortletDataHandler[] portletDataHandlers;
 
 	@JsonIgnore
-	private Supplier<PreviewPortletDataHandlerSection[]>
-		_previewPortletDataHandlerSectionsSupplier;
+	private Supplier<PortletDataHandler[]> _portletDataHandlersSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The sites the file contains, when it was exported from an instance."
+	)
 	@Valid
 	public PreviewSite[] getPreviewSites() {
 		if (_previewSitesSupplier != null) {
@@ -387,7 +393,9 @@ public class ImportPreview implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The sites the file contains, when it was exported from an instance."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected PreviewSite[] previewSites;
 
@@ -508,22 +516,21 @@ public class ImportPreview implements Serializable {
 			sb.append(fileSize);
 		}
 
-		PreviewPortletDataHandlerSection[] previewPortletDataHandlerSections =
-			getPreviewPortletDataHandlerSections();
+		PortletDataHandler[] portletDataHandlers = getPortletDataHandlers();
 
-		if (previewPortletDataHandlerSections != null) {
+		if (portletDataHandlers != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"previewPortletDataHandlerSections\": ");
+			sb.append("\"portletDataHandlers\": ");
 
 			sb.append("[");
 
-			for (int i = 0; i < previewPortletDataHandlerSections.length; i++) {
-				sb.append(String.valueOf(previewPortletDataHandlerSections[i]));
+			for (int i = 0; i < portletDataHandlers.length; i++) {
+				sb.append(String.valueOf(portletDataHandlers[i]));
 
-				if ((i + 1) < previewPortletDataHandlerSections.length) {
+				if ((i + 1) < portletDataHandlers.length) {
 					sb.append(", ");
 				}
 			}
@@ -675,4 +682,4 @@ public class ImportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:594564194
+// LIFERAY-REST-BUILDER-HASH:-163968113

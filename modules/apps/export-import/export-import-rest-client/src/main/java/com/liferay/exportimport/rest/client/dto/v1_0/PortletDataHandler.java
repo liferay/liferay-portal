@@ -6,7 +6,7 @@
 package com.liferay.exportimport.rest.client.dto.v1_0;
 
 import com.liferay.exportimport.rest.client.function.UnsafeSupplier;
-import com.liferay.exportimport.rest.client.serdes.v1_0.PreviewPortletDataHandlerSerDes;
+import com.liferay.exportimport.rest.client.serdes.v1_0.PortletDataHandlerSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,10 +19,10 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class PreviewPortletDataHandler implements Cloneable, Serializable {
+public class PortletDataHandler implements Cloneable, Serializable {
 
-	public static PreviewPortletDataHandler toDTO(String json) {
-		return PreviewPortletDataHandlerSerDes.toDTO(json);
+	public static PortletDataHandler toDTO(String json) {
+		return PortletDataHandlerSerDes.toDTO(json);
 	}
 
 	public Long getAdditionCount() {
@@ -128,34 +128,93 @@ public class PreviewPortletDataHandler implements Cloneable, Serializable {
 
 	protected String name;
 
-	public PreviewPortletDataHandlerControl[]
-		getPreviewPortletDataHandlerControls() {
-
-		return previewPortletDataHandlerControls;
+	public PortletDataHandlerControl[] getPortletDataHandlerControls() {
+		return portletDataHandlerControls;
 	}
 
-	public void setPreviewPortletDataHandlerControls(
-		PreviewPortletDataHandlerControl[] previewPortletDataHandlerControls) {
+	public void setPortletDataHandlerControls(
+		PortletDataHandlerControl[] portletDataHandlerControls) {
 
-		this.previewPortletDataHandlerControls =
-			previewPortletDataHandlerControls;
+		this.portletDataHandlerControls = portletDataHandlerControls;
 	}
 
-	public void setPreviewPortletDataHandlerControls(
-		UnsafeSupplier<PreviewPortletDataHandlerControl[], Exception>
-			previewPortletDataHandlerControlsUnsafeSupplier) {
+	public void setPortletDataHandlerControls(
+		UnsafeSupplier<PortletDataHandlerControl[], Exception>
+			portletDataHandlerControlsUnsafeSupplier) {
 
 		try {
-			previewPortletDataHandlerControls =
-				previewPortletDataHandlerControlsUnsafeSupplier.get();
+			portletDataHandlerControls =
+				portletDataHandlerControlsUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected PreviewPortletDataHandlerControl[]
-		previewPortletDataHandlerControls;
+	protected PortletDataHandlerControl[] portletDataHandlerControls;
+
+	public String getSectionKey() {
+		return sectionKey;
+	}
+
+	public void setSectionKey(String sectionKey) {
+		this.sectionKey = sectionKey;
+	}
+
+	public void setSectionKey(
+		UnsafeSupplier<String, Exception> sectionKeyUnsafeSupplier) {
+
+		try {
+			sectionKey = sectionKeyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String sectionKey;
+
+	public String getSectionLabel() {
+		return sectionLabel;
+	}
+
+	public void setSectionLabel(String sectionLabel) {
+		this.sectionLabel = sectionLabel;
+	}
+
+	public void setSectionLabel(
+		UnsafeSupplier<String, Exception> sectionLabelUnsafeSupplier) {
+
+		try {
+			sectionLabel = sectionLabelUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String sectionLabel;
+
+	public Boolean getSelected() {
+		return selected;
+	}
+
+	public void setSelected(Boolean selected) {
+		this.selected = selected;
+	}
+
+	public void setSelected(
+		UnsafeSupplier<Boolean, Exception> selectedUnsafeSupplier) {
+
+		try {
+			selected = selectedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean selected;
 
 	public String getTag() {
 		return tag;
@@ -177,8 +236,8 @@ public class PreviewPortletDataHandler implements Cloneable, Serializable {
 	protected String tag;
 
 	@Override
-	public PreviewPortletDataHandler clone() throws CloneNotSupportedException {
-		return (PreviewPortletDataHandler)super.clone();
+	public PortletDataHandler clone() throws CloneNotSupportedException {
+		return (PortletDataHandler)super.clone();
 	}
 
 	@Override
@@ -187,14 +246,13 @@ public class PreviewPortletDataHandler implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof PreviewPortletDataHandler)) {
+		if (!(object instanceof PortletDataHandler)) {
 			return false;
 		}
 
-		PreviewPortletDataHandler previewPortletDataHandler =
-			(PreviewPortletDataHandler)object;
+		PortletDataHandler portletDataHandler = (PortletDataHandler)object;
 
-		return Objects.equals(toString(), previewPortletDataHandler.toString());
+		return Objects.equals(toString(), portletDataHandler.toString());
 	}
 
 	@Override
@@ -205,8 +263,8 @@ public class PreviewPortletDataHandler implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return PreviewPortletDataHandlerSerDes.toJSON(this);
+		return PortletDataHandlerSerDes.toJSON(this);
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-248876666
+// LIFERAY-REST-BUILDER-HASH:83091401

@@ -20,6 +20,7 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -38,19 +39,24 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("PreviewPortletDataHandler")
+@GraphQLName(
+	description = "Represents a kind of content a process can cover, with the controls that refine it.",
+	value = "PortletDataHandler"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "Represents a kind of content a process can cover, with the controls that refine it.",
+	requiredProperties = {"name"}
+)
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "PreviewPortletDataHandler")
-public class PreviewPortletDataHandler implements Serializable {
+@XmlRootElement(name = "PortletDataHandler")
+public class PortletDataHandler implements Serializable {
 
-	public static PreviewPortletDataHandler toDTO(String json) {
-		return ObjectMapperUtil.readValue(
-			PreviewPortletDataHandler.class, json);
+	public static PortletDataHandler toDTO(String json) {
+		return ObjectMapperUtil.readValue(PortletDataHandler.class, json);
 	}
 
-	public static PreviewPortletDataHandler unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(
-			PreviewPortletDataHandler.class, json);
+	public static PortletDataHandler unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PortletDataHandler.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
@@ -218,7 +224,7 @@ public class PreviewPortletDataHandler implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The handler's portlet ID."
+		description = "The handler's key (e.g., PORTLET_DATA_com_liferay_journal_web_portlet_JournalPortlet)."
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -251,45 +257,136 @@ public class PreviewPortletDataHandler implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The handler's portlet ID.")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@GraphQLField(
+		description = "The handler's key (e.g., PORTLET_DATA_com_liferay_journal_web_portlet_JournalPortlet)."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	@NotEmpty
 	protected String name;
 
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The handler's controls. Controls left out are not selected."
+	)
 	@Valid
-	public PreviewPortletDataHandlerControl[]
-		getPreviewPortletDataHandlerControls() {
+	public PortletDataHandlerControl[] getPortletDataHandlerControls() {
+		if (_portletDataHandlerControlsSupplier != null) {
+			portletDataHandlerControls =
+				_portletDataHandlerControlsSupplier.get();
 
-		if (_previewPortletDataHandlerControlsSupplier != null) {
-			previewPortletDataHandlerControls =
-				_previewPortletDataHandlerControlsSupplier.get();
-
-			_previewPortletDataHandlerControlsSupplier = null;
+			_portletDataHandlerControlsSupplier = null;
 		}
 
-		return previewPortletDataHandlerControls;
+		return portletDataHandlerControls;
 	}
 
-	public void setPreviewPortletDataHandlerControls(
-		PreviewPortletDataHandlerControl[] previewPortletDataHandlerControls) {
+	public void setPortletDataHandlerControls(
+		PortletDataHandlerControl[] portletDataHandlerControls) {
 
-		this.previewPortletDataHandlerControls =
-			previewPortletDataHandlerControls;
+		this.portletDataHandlerControls = portletDataHandlerControls;
 
-		_previewPortletDataHandlerControlsSupplier = null;
+		_portletDataHandlerControlsSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setPreviewPortletDataHandlerControls(
-		UnsafeSupplier<PreviewPortletDataHandlerControl[], Exception>
-			previewPortletDataHandlerControlsUnsafeSupplier) {
+	public void setPortletDataHandlerControls(
+		UnsafeSupplier<PortletDataHandlerControl[], Exception>
+			portletDataHandlerControlsUnsafeSupplier) {
 
-		_previewPortletDataHandlerControlsSupplier = () -> {
+		_portletDataHandlerControlsSupplier = () -> {
 			try {
-				return previewPortletDataHandlerControlsUnsafeSupplier.get();
+				return portletDataHandlerControlsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The handler's controls. Controls left out are not selected."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected PortletDataHandlerControl[] portletDataHandlerControls;
+
+	@JsonIgnore
+	private Supplier<PortletDataHandlerControl[]>
+		_portletDataHandlerControlsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The key of the section that groups the handler (e.g., category.content)."
+	)
+	public String getSectionKey() {
+		if (_sectionKeySupplier != null) {
+			sectionKey = _sectionKeySupplier.get();
+
+			_sectionKeySupplier = null;
+		}
+
+		return sectionKey;
+	}
+
+	public void setSectionKey(String sectionKey) {
+		this.sectionKey = sectionKey;
+
+		_sectionKeySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSectionKey(
+		UnsafeSupplier<String, Exception> sectionKeyUnsafeSupplier) {
+
+		_sectionKeySupplier = () -> {
+			try {
+				return sectionKeyUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The key of the section that groups the handler (e.g., category.content)."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String sectionKey;
+
+	@JsonIgnore
+	private Supplier<String> _sectionKeySupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getSectionLabel() {
+		if (_sectionLabelSupplier != null) {
+			sectionLabel = _sectionLabelSupplier.get();
+
+			_sectionLabelSupplier = null;
+		}
+
+		return sectionLabel;
+	}
+
+	public void setSectionLabel(String sectionLabel) {
+		this.sectionLabel = sectionLabel;
+
+		_sectionLabelSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSectionLabel(
+		UnsafeSupplier<String, Exception> sectionLabelUnsafeSupplier) {
+
+		_sectionLabelSupplier = () -> {
+			try {
+				return sectionLabelUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -302,12 +399,55 @@ public class PreviewPortletDataHandler implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected PreviewPortletDataHandlerControl[]
-		previewPortletDataHandlerControls;
+	protected String sectionLabel;
 
 	@JsonIgnore
-	private Supplier<PreviewPortletDataHandlerControl[]>
-		_previewPortletDataHandlerControlsSupplier;
+	private Supplier<String> _sectionLabelSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A flag that indicates whether the handler's content is processed."
+	)
+	public Boolean getSelected() {
+		if (_selectedSupplier != null) {
+			selected = _selectedSupplier.get();
+
+			_selectedSupplier = null;
+		}
+
+		return selected;
+	}
+
+	public void setSelected(Boolean selected) {
+		this.selected = selected;
+
+		_selectedSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSelected(
+		UnsafeSupplier<Boolean, Exception> selectedUnsafeSupplier) {
+
+		_selectedSupplier = () -> {
+			try {
+				return selectedUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "A flag that indicates whether the handler's content is processed."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean selected;
+
+	@JsonIgnore
+	private Supplier<Boolean> _selectedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getTag() {
@@ -354,14 +494,13 @@ public class PreviewPortletDataHandler implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof PreviewPortletDataHandler)) {
+		if (!(object instanceof PortletDataHandler)) {
 			return false;
 		}
 
-		PreviewPortletDataHandler previewPortletDataHandler =
-			(PreviewPortletDataHandler)object;
+		PortletDataHandler portletDataHandler = (PortletDataHandler)object;
 
-		return Objects.equals(toString(), previewPortletDataHandler.toString());
+		return Objects.equals(toString(), portletDataHandler.toString());
 	}
 
 	@Override
@@ -448,27 +587,71 @@ public class PreviewPortletDataHandler implements Serializable {
 			sb.append("\"");
 		}
 
-		PreviewPortletDataHandlerControl[] previewPortletDataHandlerControls =
-			getPreviewPortletDataHandlerControls();
+		PortletDataHandlerControl[] portletDataHandlerControls =
+			getPortletDataHandlerControls();
 
-		if (previewPortletDataHandlerControls != null) {
+		if (portletDataHandlerControls != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"previewPortletDataHandlerControls\": ");
+			sb.append("\"portletDataHandlerControls\": ");
 
 			sb.append("[");
 
-			for (int i = 0; i < previewPortletDataHandlerControls.length; i++) {
-				sb.append(String.valueOf(previewPortletDataHandlerControls[i]));
+			for (int i = 0; i < portletDataHandlerControls.length; i++) {
+				sb.append(String.valueOf(portletDataHandlerControls[i]));
 
-				if ((i + 1) < previewPortletDataHandlerControls.length) {
+				if ((i + 1) < portletDataHandlerControls.length) {
 					sb.append(", ");
 				}
 			}
 
 			sb.append("]");
+		}
+
+		String sectionKey = getSectionKey();
+
+		if (sectionKey != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"sectionKey\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(sectionKey));
+
+			sb.append("\"");
+		}
+
+		String sectionLabel = getSectionLabel();
+
+		if (sectionLabel != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"sectionLabel\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(sectionLabel));
+
+			sb.append("\"");
+		}
+
+		Boolean selected = getSelected();
+
+		if (selected != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"selected\": ");
+
+			sb.append(selected);
 		}
 
 		String tag = getTag();
@@ -494,7 +677,7 @@ public class PreviewPortletDataHandler implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandler",
+		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -609,4 +792,4 @@ public class PreviewPortletDataHandler implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:50281805
+// LIFERAY-REST-BUILDER-HASH:-871309906

@@ -131,7 +131,9 @@ public class Choice implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _deletionCountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The option's localized label."
+	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
 			label = _labelSupplier.get();
@@ -165,14 +167,16 @@ public class Choice implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The option's localized label.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
 
 	@JsonIgnore
 	private Supplier<String> _labelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The option's key, used as the control's choice."
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -204,7 +208,9 @@ public class Choice implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The option's key, used as the control's choice."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
@@ -416,4 +422,4 @@ public class Choice implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:287586552
+// LIFERAY-REST-BUILDER-HASH:-1773933116

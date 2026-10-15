@@ -6,7 +6,7 @@
 package com.liferay.exportimport.rest.client.dto.v1_0;
 
 import com.liferay.exportimport.rest.client.function.UnsafeSupplier;
-import com.liferay.exportimport.rest.client.serdes.v1_0.PreviewPortletDataHandlerControlSerDes;
+import com.liferay.exportimport.rest.client.serdes.v1_0.PortletDataHandlerControlSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,33 +19,12 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public abstract class PreviewPortletDataHandlerControl
+public abstract class PortletDataHandlerControl
 	implements Cloneable, Serializable {
 
-	public static PreviewPortletDataHandlerControl toDTO(String json) {
-		return PreviewPortletDataHandlerControlSerDes.toDTO(json);
+	public static PortletDataHandlerControl toDTO(String json) {
+		return PortletDataHandlerControlSerDes.toDTO(json);
 	}
-
-	public Boolean getDisabled() {
-		return disabled;
-	}
-
-	public void setDisabled(Boolean disabled) {
-		this.disabled = disabled;
-	}
-
-	public void setDisabled(
-		UnsafeSupplier<Boolean, Exception> disabledUnsafeSupplier) {
-
-		try {
-			disabled = disabledUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Boolean disabled;
 
 	public String getLabel() {
 		return label;
@@ -115,10 +94,8 @@ public abstract class PreviewPortletDataHandlerControl
 	protected Type type;
 
 	@Override
-	public PreviewPortletDataHandlerControl clone()
-		throws CloneNotSupportedException {
-
-		return (PreviewPortletDataHandlerControl)super.clone();
+	public PortletDataHandlerControl clone() throws CloneNotSupportedException {
+		return (PortletDataHandlerControl)super.clone();
 	}
 
 	@Override
@@ -127,15 +104,14 @@ public abstract class PreviewPortletDataHandlerControl
 			return true;
 		}
 
-		if (!(object instanceof PreviewPortletDataHandlerControl)) {
+		if (!(object instanceof PortletDataHandlerControl)) {
 			return false;
 		}
 
-		PreviewPortletDataHandlerControl previewPortletDataHandlerControl =
-			(PreviewPortletDataHandlerControl)object;
+		PortletDataHandlerControl portletDataHandlerControl =
+			(PortletDataHandlerControl)object;
 
-		return Objects.equals(
-			toString(), previewPortletDataHandlerControl.toString());
+		return Objects.equals(toString(), portletDataHandlerControl.toString());
 	}
 
 	@Override
@@ -146,12 +122,12 @@ public abstract class PreviewPortletDataHandlerControl
 	}
 
 	public String toString() {
-		return PreviewPortletDataHandlerControlSerDes.toJSON(this);
+		return PortletDataHandlerControlSerDes.toJSON(this);
 	}
 
 	public static enum Type {
 
-		BOOLEAN("Boolean"), CHOICE("Choice"), SETTING("Setting");
+		BOOLEAN("Boolean"), CHOICE("Choice"), TREE_SELECTION("TreeSelection");
 
 		public static Type create(String value) {
 			for (Type type : values()) {
@@ -183,4 +159,4 @@ public abstract class PreviewPortletDataHandlerControl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1110324476
+// LIFERAY-REST-BUILDER-HASH:1227654922

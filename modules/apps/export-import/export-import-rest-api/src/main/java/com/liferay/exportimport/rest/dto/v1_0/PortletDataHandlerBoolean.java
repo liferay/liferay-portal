@@ -38,19 +38,26 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("PreviewPortletDataHandlerSection")
+@GraphQLName(
+	description = "Represents a control that switches items or a behavior on or off.",
+	value = "PortletDataHandlerBoolean"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "Represents a control that switches items or a behavior on or off."
+)
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "PreviewPortletDataHandlerSection")
-public class PreviewPortletDataHandlerSection implements Serializable {
+@XmlRootElement(name = "PortletDataHandlerBoolean")
+public class PortletDataHandlerBoolean
+	extends PortletDataHandlerControl implements Serializable {
 
-	public static PreviewPortletDataHandlerSection toDTO(String json) {
+	public static PortletDataHandlerBoolean toDTO(String json) {
 		return ObjectMapperUtil.readValue(
-			PreviewPortletDataHandlerSection.class, json);
+			PortletDataHandlerBoolean.class, json);
 	}
 
-	public static PreviewPortletDataHandlerSection unsafeToDTO(String json) {
+	public static PortletDataHandlerBoolean unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(
-			PreviewPortletDataHandlerSection.class, json);
+			PortletDataHandlerBoolean.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
@@ -135,115 +142,37 @@ public class PreviewPortletDataHandlerSection implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _deletionCountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	public String getLabel() {
-		if (_labelSupplier != null) {
-			label = _labelSupplier.get();
-
-			_labelSupplier = null;
-		}
-
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-
-		_labelSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setLabel(
-		UnsafeSupplier<String, Exception> labelUnsafeSupplier) {
-
-		_labelSupplier = () -> {
-			try {
-				return labelUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String label;
-
-	@JsonIgnore
-	private Supplier<String> _labelSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public String getName() {
-		if (_nameSupplier != null) {
-			name = _nameSupplier.get();
-
-			_nameSupplier = null;
-		}
-
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-
-		_nameSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
-		_nameSupplier = () -> {
-			try {
-				return nameUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String name;
-
-	@JsonIgnore
-	private Supplier<String> _nameSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The nested controls, which apply only when the control is selected."
+	)
 	@Valid
-	public PreviewPortletDataHandler[] getPreviewPortletDataHandlers() {
-		if (_previewPortletDataHandlersSupplier != null) {
-			previewPortletDataHandlers =
-				_previewPortletDataHandlersSupplier.get();
+	public PortletDataHandlerControl[] getPortletDataHandlerControls() {
+		if (_portletDataHandlerControlsSupplier != null) {
+			portletDataHandlerControls =
+				_portletDataHandlerControlsSupplier.get();
 
-			_previewPortletDataHandlersSupplier = null;
+			_portletDataHandlerControlsSupplier = null;
 		}
 
-		return previewPortletDataHandlers;
+		return portletDataHandlerControls;
 	}
 
-	public void setPreviewPortletDataHandlers(
-		PreviewPortletDataHandler[] previewPortletDataHandlers) {
+	public void setPortletDataHandlerControls(
+		PortletDataHandlerControl[] portletDataHandlerControls) {
 
-		this.previewPortletDataHandlers = previewPortletDataHandlers;
+		this.portletDataHandlerControls = portletDataHandlerControls;
 
-		_previewPortletDataHandlersSupplier = null;
+		_portletDataHandlerControlsSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setPreviewPortletDataHandlers(
-		UnsafeSupplier<PreviewPortletDataHandler[], Exception>
-			previewPortletDataHandlersUnsafeSupplier) {
+	public void setPortletDataHandlerControls(
+		UnsafeSupplier<PortletDataHandlerControl[], Exception>
+			portletDataHandlerControlsUnsafeSupplier) {
 
-		_previewPortletDataHandlersSupplier = () -> {
+		_portletDataHandlerControlsSupplier = () -> {
 			try {
-				return previewPortletDataHandlersUnsafeSupplier.get();
+				return portletDataHandlerControlsUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -254,13 +183,60 @@ public class PreviewPortletDataHandlerSection implements Serializable {
 		};
 	}
 
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected PreviewPortletDataHandler[] previewPortletDataHandlers;
+	@GraphQLField(
+		description = "The nested controls, which apply only when the control is selected."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected PortletDataHandlerControl[] portletDataHandlerControls;
 
 	@JsonIgnore
-	private Supplier<PreviewPortletDataHandler[]>
-		_previewPortletDataHandlersSupplier;
+	private Supplier<PortletDataHandlerControl[]>
+		_portletDataHandlerControlsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A flag that indicates whether the control is on. The preview returns the default."
+	)
+	public Boolean getSelected() {
+		if (_selectedSupplier != null) {
+			selected = _selectedSupplier.get();
+
+			_selectedSupplier = null;
+		}
+
+		return selected;
+	}
+
+	public void setSelected(Boolean selected) {
+		this.selected = selected;
+
+		_selectedSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSelected(
+		UnsafeSupplier<Boolean, Exception> selectedUnsafeSupplier) {
+
+		_selectedSupplier = () -> {
+			try {
+				return selectedUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "A flag that indicates whether the control is on. The preview returns the default."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean selected;
+
+	@JsonIgnore
+	private Supplier<Boolean> _selectedSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -268,15 +244,14 @@ public class PreviewPortletDataHandlerSection implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof PreviewPortletDataHandlerSection)) {
+		if (!(object instanceof PortletDataHandlerBoolean)) {
 			return false;
 		}
 
-		PreviewPortletDataHandlerSection previewPortletDataHandlerSection =
-			(PreviewPortletDataHandlerSection)object;
+		PortletDataHandlerBoolean portletDataHandlerBoolean =
+			(PortletDataHandlerBoolean)object;
 
-		return Objects.equals(
-			toString(), previewPortletDataHandlerSection.toString());
+		return Objects.equals(toString(), portletDataHandlerBoolean.toString());
 	}
 
 	@Override
@@ -315,6 +290,41 @@ public class PreviewPortletDataHandlerSection implements Serializable {
 			sb.append(deletionCount);
 		}
 
+		PortletDataHandlerControl[] portletDataHandlerControls =
+			getPortletDataHandlerControls();
+
+		if (portletDataHandlerControls != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"portletDataHandlerControls\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < portletDataHandlerControls.length; i++) {
+				sb.append(String.valueOf(portletDataHandlerControls[i]));
+
+				if ((i + 1) < portletDataHandlerControls.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		Boolean selected = getSelected();
+
+		if (selected != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"selected\": ");
+
+			sb.append(selected);
+		}
+
 		String label = getLabel();
 
 		if (label != null) {
@@ -347,27 +357,18 @@ public class PreviewPortletDataHandlerSection implements Serializable {
 			sb.append("\"");
 		}
 
-		PreviewPortletDataHandler[] previewPortletDataHandlers =
-			getPreviewPortletDataHandlers();
+		Type type = getType();
 
-		if (previewPortletDataHandlers != null) {
+		if (type != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"previewPortletDataHandlers\": ");
+			sb.append("\"type\": ");
 
-			sb.append("[");
-
-			for (int i = 0; i < previewPortletDataHandlers.length; i++) {
-				sb.append(String.valueOf(previewPortletDataHandlers[i]));
-
-				if ((i + 1) < previewPortletDataHandlers.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
+			sb.append("\"");
+			sb.append(type);
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -377,7 +378,7 @@ public class PreviewPortletDataHandlerSection implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandlerSection",
+		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerBoolean",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -492,4 +493,4 @@ public class PreviewPortletDataHandlerSection implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1269605970
+// LIFERAY-REST-BUILDER-HASH:-1251232003

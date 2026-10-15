@@ -205,7 +205,9 @@ public class PublishProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<DateRangeType> _dateRangeTypeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A flag that indicates whether the deletions recorded in the date range are published, so that the live site removes the same items."
+	)
 	public Boolean getDeletions() {
 		if (_deletionsSupplier != null) {
 			deletions = _deletionsSupplier.get();
@@ -239,14 +241,18 @@ public class PublishProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "A flag that indicates whether the deletions recorded in the date range are published, so that the live site removes the same items."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean deletions;
 
 	@JsonIgnore
 	private Supplier<Boolean> _deletionsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The publish window's end date."
+	)
 	public Date getEndDate() {
 		if (_endDateSupplier != null) {
 			endDate = _endDateSupplier.get();
@@ -280,51 +286,12 @@ public class PublishProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The publish window's end date.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date endDate;
 
 	@JsonIgnore
 	private Supplier<Date> _endDateSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getLogo() {
-		if (_logoSupplier != null) {
-			logo = _logoSupplier.get();
-
-			_logoSupplier = null;
-		}
-
-		return logo;
-	}
-
-	public void setLogo(Boolean logo) {
-		this.logo = logo;
-
-		_logoSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setLogo(UnsafeSupplier<Boolean, Exception> logoUnsafeSupplier) {
-		_logoSupplier = () -> {
-			try {
-				return logoUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean logo;
-
-	@JsonIgnore
-	private Supplier<Boolean> _logoSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getName() {
@@ -407,6 +374,55 @@ public class PublishProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _permissionsSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The portlet data handlers to publish, taken from the publish preview."
+	)
+	@Valid
+	public PortletDataHandler[] getPortletDataHandlers() {
+		if (_portletDataHandlersSupplier != null) {
+			portletDataHandlers = _portletDataHandlersSupplier.get();
+
+			_portletDataHandlersSupplier = null;
+		}
+
+		return portletDataHandlers;
+	}
+
+	public void setPortletDataHandlers(
+		PortletDataHandler[] portletDataHandlers) {
+
+		this.portletDataHandlers = portletDataHandlers;
+
+		_portletDataHandlersSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPortletDataHandlers(
+		UnsafeSupplier<PortletDataHandler[], Exception>
+			portletDataHandlersUnsafeSupplier) {
+
+		_portletDataHandlersSupplier = () -> {
+			try {
+				return portletDataHandlersUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The portlet data handlers to publish, taken from the publish preview."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected PortletDataHandler[] portletDataHandlers;
+
+	@JsonIgnore
+	private Supplier<PortletDataHandler[]> _portletDataHandlersSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getRatings() {
 		if (_ratingsSupplier != null) {
@@ -447,53 +463,6 @@ public class PublishProcessRequest implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Boolean> _ratingsSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	@Valid
-	public RequestPortletDataHandler[] getRequestPortletDataHandlers() {
-		if (_requestPortletDataHandlersSupplier != null) {
-			requestPortletDataHandlers =
-				_requestPortletDataHandlersSupplier.get();
-
-			_requestPortletDataHandlersSupplier = null;
-		}
-
-		return requestPortletDataHandlers;
-	}
-
-	public void setRequestPortletDataHandlers(
-		RequestPortletDataHandler[] requestPortletDataHandlers) {
-
-		this.requestPortletDataHandlers = requestPortletDataHandlers;
-
-		_requestPortletDataHandlersSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setRequestPortletDataHandlers(
-		UnsafeSupplier<RequestPortletDataHandler[], Exception>
-			requestPortletDataHandlersUnsafeSupplier) {
-
-		_requestPortletDataHandlersSupplier = () -> {
-			try {
-				return requestPortletDataHandlersUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected RequestPortletDataHandler[] requestPortletDataHandlers;
-
-	@JsonIgnore
-	private Supplier<RequestPortletDataHandler[]>
-		_requestPortletDataHandlersSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "When the scheduled publish stops recurring. Applies only when a cron expression is given."
@@ -585,89 +554,9 @@ public class PublishProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Date> _scheduleStartDateSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSitePagesSettings() {
-		if (_sitePagesSettingsSupplier != null) {
-			sitePagesSettings = _sitePagesSettingsSupplier.get();
-
-			_sitePagesSettingsSupplier = null;
-		}
-
-		return sitePagesSettings;
-	}
-
-	public void setSitePagesSettings(Boolean sitePagesSettings) {
-		this.sitePagesSettings = sitePagesSettings;
-
-		_sitePagesSettingsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSitePagesSettings(
-		UnsafeSupplier<Boolean, Exception> sitePagesSettingsUnsafeSupplier) {
-
-		_sitePagesSettingsSupplier = () -> {
-			try {
-				return sitePagesSettingsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean sitePagesSettings;
-
-	@JsonIgnore
-	private Supplier<Boolean> _sitePagesSettingsSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSiteTemplateSettings() {
-		if (_siteTemplateSettingsSupplier != null) {
-			siteTemplateSettings = _siteTemplateSettingsSupplier.get();
-
-			_siteTemplateSettingsSupplier = null;
-		}
-
-		return siteTemplateSettings;
-	}
-
-	public void setSiteTemplateSettings(Boolean siteTemplateSettings) {
-		this.siteTemplateSettings = siteTemplateSettings;
-
-		_siteTemplateSettingsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSiteTemplateSettings(
-		UnsafeSupplier<Boolean, Exception> siteTemplateSettingsUnsafeSupplier) {
-
-		_siteTemplateSettingsSupplier = () -> {
-			try {
-				return siteTemplateSettingsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean siteTemplateSettings;
-
-	@JsonIgnore
-	private Supplier<Boolean> _siteTemplateSettingsSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The publish window's start date."
+	)
 	public Date getStartDate() {
 		if (_startDateSupplier != null) {
 			startDate = _startDateSupplier.get();
@@ -701,53 +590,12 @@ public class PublishProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The publish window's start date.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date startDate;
 
 	@JsonIgnore
 	private Supplier<Date> _startDateSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getThemeSettings() {
-		if (_themeSettingsSupplier != null) {
-			themeSettings = _themeSettingsSupplier.get();
-
-			_themeSettingsSupplier = null;
-		}
-
-		return themeSettings;
-	}
-
-	public void setThemeSettings(Boolean themeSettings) {
-		this.themeSettings = themeSettings;
-
-		_themeSettingsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setThemeSettings(
-		UnsafeSupplier<Boolean, Exception> themeSettingsUnsafeSupplier) {
-
-		_themeSettingsSupplier = () -> {
-			try {
-				return themeSettingsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean themeSettings;
-
-	@JsonIgnore
-	private Supplier<Boolean> _themeSettingsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The time zone the cron expression is evaluated in. Defaults to the server time zone."
@@ -895,18 +743,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append("\"");
 		}
 
-		Boolean logo = getLogo();
-
-		if (logo != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"logo\": ");
-
-			sb.append(logo);
-		}
-
 		String name = getName();
 
 		if (name != null) {
@@ -935,6 +771,28 @@ public class PublishProcessRequest implements Serializable {
 			sb.append(permissions);
 		}
 
+		PortletDataHandler[] portletDataHandlers = getPortletDataHandlers();
+
+		if (portletDataHandlers != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"portletDataHandlers\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < portletDataHandlers.length; i++) {
+				sb.append(String.valueOf(portletDataHandlers[i]));
+
+				if ((i + 1) < portletDataHandlers.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		Boolean ratings = getRatings();
 
 		if (ratings != null) {
@@ -945,29 +803,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append("\"ratings\": ");
 
 			sb.append(ratings);
-		}
-
-		RequestPortletDataHandler[] requestPortletDataHandlers =
-			getRequestPortletDataHandlers();
-
-		if (requestPortletDataHandlers != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"requestPortletDataHandlers\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < requestPortletDataHandlers.length; i++) {
-				sb.append(String.valueOf(requestPortletDataHandlers[i]));
-
-				if ((i + 1) < requestPortletDataHandlers.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
 		}
 
 		Date scheduleEndDate = getScheduleEndDate();
@@ -1002,30 +837,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append("\"");
 		}
 
-		Boolean sitePagesSettings = getSitePagesSettings();
-
-		if (sitePagesSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"sitePagesSettings\": ");
-
-			sb.append(sitePagesSettings);
-		}
-
-		Boolean siteTemplateSettings = getSiteTemplateSettings();
-
-		if (siteTemplateSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"siteTemplateSettings\": ");
-
-			sb.append(siteTemplateSettings);
-		}
-
 		Date startDate = getStartDate();
 
 		if (startDate != null) {
@@ -1040,18 +851,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append(liferayToJSONDateFormat.format(startDate));
 
 			sb.append("\"");
-		}
-
-		Boolean themeSettings = getThemeSettings();
-
-		if (themeSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"themeSettings\": ");
-
-			sb.append(themeSettings);
 		}
 
 		String timeZoneId = getTimeZoneId();
@@ -1231,4 +1030,4 @@ public class PublishProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1354855161
+// LIFERAY-REST-BUILDER-HASH:508001307

@@ -132,7 +132,7 @@ public class PreviewSite implements Serializable {
 	private Supplier<String> _descriptiveNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Whether the instance being imported into already has a site of the same external reference code. Set only when previewing a file to import."
+		description = "A flag that indicates whether the instance already has the site. Set only in the import preview."
 	)
 	public Boolean getExistsInInstance() {
 		if (_existsInInstanceSupplier != null) {
@@ -168,7 +168,7 @@ public class PreviewSite implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Whether the instance being imported into already has a site of the same external reference code. Set only when previewing a file to import."
+		description = "A flag that indicates whether the instance already has the site. Set only in the import preview."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean existsInInstance;
@@ -218,7 +218,7 @@ public class PreviewSite implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Site's path in the site hierarchy."
+		description = "The site's path in the site hierarchy."
 	)
 	public String getPath() {
 		if (_pathSupplier != null) {
@@ -251,7 +251,7 @@ public class PreviewSite implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Site's path in the site hierarchy.")
+	@GraphQLField(description = "The site's path in the site hierarchy.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String path;
 
@@ -479,4 +479,4 @@ public class PreviewSite implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1927714923
+// LIFERAY-REST-BUILDER-HASH:1600542281

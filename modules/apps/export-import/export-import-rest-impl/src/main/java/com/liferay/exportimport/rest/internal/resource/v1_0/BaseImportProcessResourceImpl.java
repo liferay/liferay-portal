@@ -501,8 +501,11 @@ public abstract class BaseImportProcessResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "logo": ___, "name": ___, "permissions": ___, "ratings": ___, "requestPortletDataHandlers": ___, "siteExternalReferenceCodes": ___, "sitePagesSettings": ___, "siteTemplateSettings": ___, "themeSettings": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Imports the file uploaded through the import preview into the specified asset library, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -551,7 +554,7 @@ public abstract class BaseImportProcessResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/import-processes/batch' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "logo": ___, "name": ___, "permissions": ___, "ratings": ___, "requestPortletDataHandlers": ___, "siteExternalReferenceCodes": ___, "sitePagesSettings": ___, "siteTemplateSettings": ___, "themeSettings": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/import-processes/batch' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -729,8 +732,11 @@ public abstract class BaseImportProcessResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "logo": ___, "name": ___, "permissions": ___, "ratings": ___, "requestPortletDataHandlers": ___, "siteExternalReferenceCodes": ___, "sitePagesSettings": ___, "siteTemplateSettings": ___, "themeSettings": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Imports the file uploaded through the import preview into the instance, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview and the external reference codes of the sites to import in full."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -769,7 +775,7 @@ public abstract class BaseImportProcessResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/import-processes/batch' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "logo": ___, "name": ___, "permissions": ___, "ratings": ___, "requestPortletDataHandlers": ___, "siteExternalReferenceCodes": ___, "sitePagesSettings": ___, "siteTemplateSettings": ___, "themeSettings": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/import-processes/batch' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -927,8 +933,11 @@ public abstract class BaseImportProcessResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "logo": ___, "name": ___, "permissions": ___, "ratings": ___, "requestPortletDataHandlers": ___, "siteExternalReferenceCodes": ___, "sitePagesSettings": ___, "siteTemplateSettings": ___, "themeSettings": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Imports the file uploaded through the import preview into the specified site, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -975,7 +984,7 @@ public abstract class BaseImportProcessResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/import-processes/batch' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "logo": ___, "name": ___, "permissions": ___, "ratings": ___, "requestPortletDataHandlers": ___, "siteExternalReferenceCodes": ___, "sitePagesSettings": ___, "siteTemplateSettings": ___, "themeSettings": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/import-processes/batch' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1923,4 +1932,4 @@ public abstract class BaseImportProcessResourceImpl
 		LogFactoryUtil.getLog(BaseImportProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1131705072
+// LIFERAY-REST-BUILDER-HASH:163782177

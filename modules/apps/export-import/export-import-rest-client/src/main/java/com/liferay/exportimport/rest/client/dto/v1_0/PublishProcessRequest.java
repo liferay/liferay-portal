@@ -139,25 +139,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 
 	protected Date endDate;
 
-	public Boolean getLogo() {
-		return logo;
-	}
-
-	public void setLogo(Boolean logo) {
-		this.logo = logo;
-	}
-
-	public void setLogo(UnsafeSupplier<Boolean, Exception> logoUnsafeSupplier) {
-		try {
-			logo = logoUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Boolean logo;
-
 	public String getName() {
 		return name;
 	}
@@ -198,6 +179,30 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean permissions;
 
+	public PortletDataHandler[] getPortletDataHandlers() {
+		return portletDataHandlers;
+	}
+
+	public void setPortletDataHandlers(
+		PortletDataHandler[] portletDataHandlers) {
+
+		this.portletDataHandlers = portletDataHandlers;
+	}
+
+	public void setPortletDataHandlers(
+		UnsafeSupplier<PortletDataHandler[], Exception>
+			portletDataHandlersUnsafeSupplier) {
+
+		try {
+			portletDataHandlers = portletDataHandlersUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected PortletDataHandler[] portletDataHandlers;
+
 	public Boolean getRatings() {
 		return ratings;
 	}
@@ -218,31 +223,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 	}
 
 	protected Boolean ratings;
-
-	public RequestPortletDataHandler[] getRequestPortletDataHandlers() {
-		return requestPortletDataHandlers;
-	}
-
-	public void setRequestPortletDataHandlers(
-		RequestPortletDataHandler[] requestPortletDataHandlers) {
-
-		this.requestPortletDataHandlers = requestPortletDataHandlers;
-	}
-
-	public void setRequestPortletDataHandlers(
-		UnsafeSupplier<RequestPortletDataHandler[], Exception>
-			requestPortletDataHandlersUnsafeSupplier) {
-
-		try {
-			requestPortletDataHandlers =
-				requestPortletDataHandlersUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected RequestPortletDataHandler[] requestPortletDataHandlers;
 
 	public Date getScheduleEndDate() {
 		return scheduleEndDate;
@@ -286,48 +266,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 
 	protected Date scheduleStartDate;
 
-	public Boolean getSitePagesSettings() {
-		return sitePagesSettings;
-	}
-
-	public void setSitePagesSettings(Boolean sitePagesSettings) {
-		this.sitePagesSettings = sitePagesSettings;
-	}
-
-	public void setSitePagesSettings(
-		UnsafeSupplier<Boolean, Exception> sitePagesSettingsUnsafeSupplier) {
-
-		try {
-			sitePagesSettings = sitePagesSettingsUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Boolean sitePagesSettings;
-
-	public Boolean getSiteTemplateSettings() {
-		return siteTemplateSettings;
-	}
-
-	public void setSiteTemplateSettings(Boolean siteTemplateSettings) {
-		this.siteTemplateSettings = siteTemplateSettings;
-	}
-
-	public void setSiteTemplateSettings(
-		UnsafeSupplier<Boolean, Exception> siteTemplateSettingsUnsafeSupplier) {
-
-		try {
-			siteTemplateSettings = siteTemplateSettingsUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Boolean siteTemplateSettings;
-
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -348,27 +286,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 	}
 
 	protected Date startDate;
-
-	public Boolean getThemeSettings() {
-		return themeSettings;
-	}
-
-	public void setThemeSettings(Boolean themeSettings) {
-		this.themeSettings = themeSettings;
-	}
-
-	public void setThemeSettings(
-		UnsafeSupplier<Boolean, Exception> themeSettingsUnsafeSupplier) {
-
-		try {
-			themeSettings = themeSettingsUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Boolean themeSettings;
 
 	public String getTimeZoneId() {
 		return timeZoneId;
@@ -458,4 +375,4 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:814828940
+// LIFERAY-REST-BUILDER-HASH:-1195671275

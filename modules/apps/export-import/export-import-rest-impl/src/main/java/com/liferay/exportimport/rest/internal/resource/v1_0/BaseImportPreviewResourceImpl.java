@@ -76,6 +76,7 @@ public abstract class BaseImportPreviewResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/import-preview'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
+		description = "Uploads a file to import into the specified asset library and retrieves the portlet data handlers and counts it contains. The import process then imports the uploaded file.",
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostAssetLibraryImportPreviewRequestBody.class)))
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -200,6 +201,7 @@ public abstract class BaseImportPreviewResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/import-preview'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
+		description = "Uploads a file to import into the instance and retrieves the portlet data handlers, counts, and sites it contains. The import process then imports the uploaded file.",
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostImportPreviewRequestBody.class)))
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -304,6 +306,7 @@ public abstract class BaseImportPreviewResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/import-preview'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
+		description = "Uploads a file to import into the specified site and retrieves the portlet data handlers and counts it contains. The import process then imports the uploaded file.",
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostSiteImportPreviewRequestBody.class)))
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -1165,4 +1168,4 @@ public abstract class BaseImportPreviewResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1754486788
+// LIFERAY-REST-BUILDER-HASH:-1470571630
