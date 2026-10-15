@@ -16,6 +16,7 @@ jest.mock(
 );
 
 global.Liferay = {
+	FeatureFlags: {},
 	Language: {
 		get: (key) => key,
 	},
@@ -27,18 +28,14 @@ describe('NavBar', () => {
 		showInfoPanel: false,
 	};
 
-	const renderNavBar = (
-		props = {},
-		filters = [],
-		{snapshotsEnabled = true} = {}
-	) => {
+	const mockViewsContext = [{snapshotsEnabled: true, sorts: [], views: []}];
+
+	const renderNavBar = (props = {}, filters = []) => {
 		return render(
 			<FrontendDataSetContext.Provider
 				value={{...mockFDSContext, globalFDSState: {filters}}}
 			>
-				<ViewsContext.Provider
-					value={[{snapshotsEnabled, sorts: [], views: []}]}
-				>
+				<ViewsContext.Provider value={mockViewsContext}>
 					<NavBar {...props} />
 				</ViewsContext.Provider>
 			</FrontendDataSetContext.Provider>
@@ -47,7 +44,9 @@ describe('NavBar', () => {
 
 	const FILTERS = [{id: 'status', label: 'Status', type: 'selection'}];
 
-	it('renders SnapshotsControls component when snapshots are enabled', () => {
+	it('renders SnapshotsControls component when data set manager feature flag LPS-164563 is enabled', () => {
+		global.Liferay.FeatureFlags['LPS-164563'] = true;
+
 		renderNavBar();
 
 		expect(
@@ -55,8 +54,10 @@ describe('NavBar', () => {
 		).toBeInTheDocument();
 	});
 
-	it('does not render SnapshotsControls component when snapshots are disabled', () => {
-		renderNavBar({}, [], {snapshotsEnabled: false});
+	it('does not render SnapshotsControls component when data set manager feature flag LPS-164563 is disabled', () => {
+		global.Liferay.FeatureFlags['LPS-164563'] = false;
+
+		renderNavBar();
 
 		expect(
 			screen.queryByTestId('snapshots-controls-mock')

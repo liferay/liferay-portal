@@ -74,7 +74,7 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 		Assert.assertNotNull(_bundle);
 	}
 
-	@FeatureFlag(enable = false, value = "LPS-177027")
+	@FeatureFlag(enable = false, value = "LPS-164563")
 	@Test
 	public void testSetAopProxyNotInterrupted() throws Throwable {
 		TransactionConfig.Builder builder = new TransactionConfig.Builder();
@@ -106,7 +106,7 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 			clientExtensionEntry.setProperties(StringPool.BLANK);
 			clientExtensionEntry.setSourceCodeURL("http://foo.test/index.js");
 			clientExtensionEntry.setType(
-				ClientExtensionEntryConstants.TYPE_STATIC_CONTENT);
+				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER);
 			clientExtensionEntry.setTypeSettings(StringPool.BLANK);
 			clientExtensionEntry.setStatus(WorkflowConstants.STATUS_APPROVED);
 			clientExtensionEntry.setStatusByUserId(user.getUserId());
