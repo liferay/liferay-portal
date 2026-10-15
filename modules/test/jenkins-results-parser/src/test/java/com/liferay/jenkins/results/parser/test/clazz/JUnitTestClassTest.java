@@ -40,11 +40,11 @@ public class JUnitTestClassTest
 		TestClassReport testClassReport = _getTestClassReport();
 
 		_testGetCachedDownstreamBuildReport(
-			testClassReport.getDownstreamBuildReport(),
-			Collections.singletonList(nestedTestClassReport), testClassReport);
-		_testGetCachedDownstreamBuildReport(
 			nestedTestClassReport.getDownstreamBuildReport(),
 			Collections.singletonList(nestedTestClassReport), null);
+		_testGetCachedDownstreamBuildReport(
+			testClassReport.getDownstreamBuildReport(),
+			Collections.singletonList(nestedTestClassReport), testClassReport);
 		_testGetCachedDownstreamBuildReport(
 			null, Collections.emptyList(), null);
 	}
@@ -56,15 +56,15 @@ public class JUnitTestClassTest
 		TestClassReport testClassReport = _getTestClassReport();
 
 		_testGetCachedTestClassReports(
+			Arrays.asList(nestedTestClassReport1, nestedTestClassReport2),
+			Arrays.asList(nestedTestClassReport1, nestedTestClassReport2),
+			null);
+		_testGetCachedTestClassReports(
 			Arrays.asList(
 				testClassReport, nestedTestClassReport1,
 				nestedTestClassReport2),
 			Arrays.asList(nestedTestClassReport1, nestedTestClassReport2),
 			testClassReport);
-		_testGetCachedTestClassReports(
-			Arrays.asList(nestedTestClassReport1, nestedTestClassReport2),
-			Arrays.asList(nestedTestClassReport1, nestedTestClassReport2),
-			null);
 		_testGetCachedTestClassReports(
 			Collections.singletonList(testClassReport), Collections.emptyList(),
 			testClassReport);
@@ -183,12 +183,12 @@ public class JUnitTestClassTest
 			dbPartitionBatchTestClassGroup, testClassName);
 
 		testEquals(
-			Collections.singletonList(testClassReport),
-			jUnitTestClass.getCachedTestClassReports(batchTestClassGroup));
-		testEquals(
 			Collections.singletonList(dbPartitionTestClassReport),
 			jUnitTestClass.getCachedTestClassReports(
 				dbPartitionBatchTestClassGroup));
+		testEquals(
+			Collections.singletonList(testClassReport),
+			jUnitTestClass.getCachedTestClassReports(batchTestClassGroup));
 		testEquals(
 			Collections.singletonList(testClassReport),
 			jUnitTestClass.getCachedTestClassReports(batchTestClassGroup));
@@ -271,6 +271,12 @@ public class JUnitTestClassTest
 
 		JUnitTestClass jUnitTestClass = Mockito.mock(JUnitTestClass.class);
 
+		Mockito.doReturn(
+			batchTestClassGroup
+		).when(
+			jUnitTestClass
+		).getBatchTestClassGroup();
+
 		Mockito.doCallRealMethod(
 		).when(
 			jUnitTestClass
@@ -294,12 +300,6 @@ public class JUnitTestClassTest
 		).getCachedTestClassReports(
 			Mockito.any(BatchTestClassGroup.class)
 		);
-
-		Mockito.doReturn(
-			batchTestClassGroup
-		).when(
-			jUnitTestClass
-		).getBatchTestClassGroup();
 
 		Mockito.doReturn(
 			testClassName
