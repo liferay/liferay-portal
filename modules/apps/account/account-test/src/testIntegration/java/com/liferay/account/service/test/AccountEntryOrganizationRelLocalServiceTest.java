@@ -11,16 +11,20 @@ import com.liferay.account.exception.NoSuchEntryOrganizationRelException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryOrganizationRel;
 import com.liferay.account.model.AccountEntryOrganizationRelModel;
+import com.liferay.account.retriever.AccountOrganizationRetriever;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.test.util.AccountEntryTestUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -145,6 +149,9 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 					_accountEntry.getAccountEntryId(),
 					_organization.getOrganizationId()));
 
+		_assertSearchAccountEntries(true);
+		_assertSearchAccountOrganizations(true);
+
 		_accountEntryOrganizationRelLocalService.
 			deleteAccountEntryOrganizationRel(
 				_accountEntry.getAccountEntryId(),
@@ -155,6 +162,52 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 				hasAccountEntryOrganizationRel(
 					_accountEntry.getAccountEntryId(),
 					_organization.getOrganizationId()));
+
+		_assertSearchAccountEntries(false);
+		_assertSearchAccountOrganizations(false);
+
+		AccountEntryOrganizationRel accountEntryOrganizationRel =
+			_accountEntryOrganizationRelLocalService.
+				addAccountEntryOrganizationRel(
+					_accountEntry.getAccountEntryId(),
+					_organization.getOrganizationId());
+
+		_assertSearchAccountEntries(true);
+		_assertSearchAccountOrganizations(true);
+
+		_accountEntryOrganizationRelLocalService.
+			deleteAccountEntryOrganizationRel(accountEntryOrganizationRel);
+
+		Assert.assertFalse(
+			_accountEntryOrganizationRelLocalService.
+				hasAccountEntryOrganizationRel(
+					_accountEntry.getAccountEntryId(),
+					_organization.getOrganizationId()));
+
+		_assertSearchAccountEntries(false);
+		_assertSearchAccountOrganizations(false);
+
+		accountEntryOrganizationRel =
+			_accountEntryOrganizationRelLocalService.
+				addAccountEntryOrganizationRel(
+					_accountEntry.getAccountEntryId(),
+					_organization.getOrganizationId());
+
+		_assertSearchAccountEntries(true);
+		_assertSearchAccountOrganizations(true);
+
+		_accountEntryOrganizationRelLocalService.
+			deleteAccountEntryOrganizationRel(
+				accountEntryOrganizationRel.getAccountEntryOrganizationRelId());
+
+		Assert.assertFalse(
+			_accountEntryOrganizationRelLocalService.
+				hasAccountEntryOrganizationRel(
+					_accountEntry.getAccountEntryId(),
+					_organization.getOrganizationId()));
+
+		_assertSearchAccountEntries(false);
+		_assertSearchAccountOrganizations(false);
 	}
 
 	@Test(expected = NoSuchEntryOrganizationRelException.class)
@@ -194,6 +247,56 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 			_accountEntryOrganizationRelLocalService.
 				getAccountEntryOrganizationRelsCount(
 					_accountEntry.getAccountEntryId()));
+	}
+
+	@Test
+	public void testDeleteAccountEntryOrganizationRelsByAccountEntryId()
+		throws Exception {
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			_accountEntry.getAccountEntryId(),
+			_organization.getOrganizationId());
+
+		_assertSearchAccountEntries(true);
+		_assertSearchAccountOrganizations(true);
+
+		_accountEntryOrganizationRelLocalService.
+			deleteAccountEntryOrganizationRelsByAccountEntryId(
+				_accountEntry.getAccountEntryId());
+
+		Assert.assertFalse(
+			_accountEntryOrganizationRelLocalService.
+				hasAccountEntryOrganizationRel(
+					_accountEntry.getAccountEntryId(),
+					_organization.getOrganizationId()));
+
+		_assertSearchAccountEntries(false);
+		_assertSearchAccountOrganizations(false);
+	}
+
+	@Test
+	public void testDeleteAccountEntryOrganizationRelsByOrganizationId()
+		throws Exception {
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			_accountEntry.getAccountEntryId(),
+			_organization.getOrganizationId());
+
+		_assertSearchAccountEntries(true);
+		_assertSearchAccountOrganizations(true);
+
+		_accountEntryOrganizationRelLocalService.
+			deleteAccountEntryOrganizationRelsByOrganizationId(
+				_organization.getOrganizationId());
+
+		Assert.assertFalse(
+			_accountEntryOrganizationRelLocalService.
+				hasAccountEntryOrganizationRel(
+					_accountEntry.getAccountEntryId(),
+					_organization.getOrganizationId()));
+
+		_assertSearchAccountEntries(false);
+		_assertSearchAccountOrganizations(false);
 	}
 
 	@Test
@@ -238,6 +341,42 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 		_testSetAccountEntryOrganizationRels(_organizations.subList(3, 7));
 	}
 
+	private void _assertSearchAccountEntries(boolean expected) {
+		BaseModelSearchResult<AccountEntry> baseModelSearchResult =
+			_accountEntryLocalService.searchAccountEntries(
+				_accountEntry.getCompanyId(), null,
+				LinkedHashMapBuilder.<String, Object>put(
+					"organizationIds",
+					new long[] {_organization.getOrganizationId()}
+				).build(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null, false);
+
+		List<Long> accountEntryIds = ListUtil.toList(
+			baseModelSearchResult.getBaseModels(),
+			AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
+
+		Assert.assertEquals(
+			accountEntryIds.toString(), expected,
+			accountEntryIds.contains(_accountEntry.getAccountEntryId()));
+	}
+
+	private void _assertSearchAccountOrganizations(boolean expected)
+		throws Exception {
+
+		BaseModelSearchResult<Organization> baseModelSearchResult =
+			_accountOrganizationRetriever.searchAccountOrganizations(
+				_accountEntry.getAccountEntryId(), null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, "organizationId", false);
+
+		List<Long> organizationIds = ListUtil.toList(
+			baseModelSearchResult.getBaseModels(),
+			Organization.ORGANIZATION_ID_ACCESSOR);
+
+		Assert.assertEquals(
+			organizationIds.toString(), expected,
+			organizationIds.contains(_organization.getOrganizationId()));
+	}
+
 	private void _testSetAccountEntryOrganizationRels(
 			List<Organization> organizations)
 		throws Exception {
@@ -280,6 +419,9 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 	@DeleteAfterTestRun
 	private final List<AccountEntryOrganizationRel>
 		_accountEntryOrganizationRels = new ArrayList<>();
+
+	@Inject
+	private AccountOrganizationRetriever _accountOrganizationRetriever;
 
 	@DeleteAfterTestRun
 	private Organization _organization;

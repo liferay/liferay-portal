@@ -7,14 +7,18 @@ package com.liferay.account.internal.model.listener.test;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryOrganizationRel;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.test.util.AccountEntryArgs;
 import com.liferay.account.service.test.util.AccountEntryTestUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -57,6 +61,10 @@ public class OrganizationModelListenerTest {
 			accountEntryOrganizationRels.toString(), accountEntries.size(),
 			accountEntryOrganizationRels.size());
 
+		for (AccountEntry accountEntry : accountEntries) {
+			_assertSearchAccountEntry(accountEntry, true, organization);
+		}
+
 		_organizationLocalService.deleteOrganization(organization);
 
 		accountEntryOrganizationRels =
@@ -65,6 +73,10 @@ public class OrganizationModelListenerTest {
 					organization.getOrganizationId());
 
 		Assert.assertTrue(ListUtil.isEmpty(accountEntryOrganizationRels));
+
+		for (AccountEntry accountEntry : accountEntries) {
+			_assertSearchAccountEntry(accountEntry, false, organization);
+		}
 	}
 
 	@Test
@@ -76,6 +88,8 @@ public class OrganizationModelListenerTest {
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry(
 			AccountEntryArgs.withOrganizations(organization));
 
+		_assertSearchAccountEntry(accountEntry, true, organization);
+
 		_organizationLocalService.deleteOrganization(organization);
 
 		Assert.assertFalse(
@@ -83,7 +97,34 @@ public class OrganizationModelListenerTest {
 				hasAccountEntryOrganizationRel(
 					accountEntry.getAccountEntryId(),
 					organization.getOrganizationId()));
+
+		_assertSearchAccountEntry(accountEntry, false, organization);
 	}
+
+	private void _assertSearchAccountEntry(
+		AccountEntry accountEntry, boolean expected,
+		Organization organization) {
+
+		BaseModelSearchResult<AccountEntry> baseModelSearchResult =
+			_accountEntryLocalService.searchAccountEntries(
+				accountEntry.getCompanyId(), null,
+				LinkedHashMapBuilder.<String, Object>put(
+					"organizationIds",
+					new long[] {organization.getOrganizationId()}
+				).build(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null, false);
+
+		List<Long> accountEntryIds = ListUtil.toList(
+			baseModelSearchResult.getBaseModels(),
+			AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
+
+		Assert.assertEquals(
+			accountEntryIds.toString(), expected,
+			accountEntryIds.contains(accountEntry.getAccountEntryId()));
+	}
+
+	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Inject
 	private AccountEntryOrganizationRelLocalService

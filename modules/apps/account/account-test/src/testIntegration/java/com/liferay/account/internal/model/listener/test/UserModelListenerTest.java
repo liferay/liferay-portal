@@ -7,14 +7,18 @@ package com.liferay.account.internal.model.listener.test;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryUserRel;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.test.util.AccountEntryArgs;
 import com.liferay.account.service.test.util.AccountEntryTestUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -54,6 +58,10 @@ public class UserModelListenerTest {
 			accountEntryUserRels.toString(), accountEntries.size(),
 			accountEntryUserRels.size());
 
+		for (AccountEntry accountEntry : accountEntries) {
+			_assertSearchAccountEntry(accountEntry, true, user);
+		}
+
 		_userLocalService.deleteUser(user);
 
 		accountEntryUserRels =
@@ -61,6 +69,10 @@ public class UserModelListenerTest {
 				getAccountEntryUserRelsByAccountUserId(user.getUserId());
 
 		Assert.assertTrue(ListUtil.isEmpty(accountEntryUserRels));
+
+		for (AccountEntry accountEntry : accountEntries) {
+			_assertSearchAccountEntry(accountEntry, false, user);
+		}
 	}
 
 	@Test
@@ -74,12 +86,39 @@ public class UserModelListenerTest {
 			_accountEntryUserRelLocalService.hasAccountEntryUserRel(
 				accountEntry.getAccountEntryId(), user.getUserId()));
 
+		_assertSearchAccountEntry(accountEntry, true, user);
+
 		_userLocalService.deleteUser(user);
 
 		Assert.assertFalse(
 			_accountEntryUserRelLocalService.hasAccountEntryUserRel(
 				accountEntry.getAccountEntryId(), user.getUserId()));
+
+		_assertSearchAccountEntry(accountEntry, false, user);
 	}
+
+	private void _assertSearchAccountEntry(
+		AccountEntry accountEntry, boolean expected, User user) {
+
+		BaseModelSearchResult<AccountEntry> baseModelSearchResult =
+			_accountEntryLocalService.searchAccountEntries(
+				accountEntry.getCompanyId(), null,
+				LinkedHashMapBuilder.<String, Object>put(
+					"accountUserIds", new long[] {user.getUserId()}
+				).build(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null, false);
+
+		List<Long> accountEntryIds = ListUtil.toList(
+			baseModelSearchResult.getBaseModels(),
+			AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
+
+		Assert.assertEquals(
+			accountEntryIds.toString(), expected,
+			accountEntryIds.contains(accountEntry.getAccountEntryId()));
+	}
+
+	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Inject
 	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
