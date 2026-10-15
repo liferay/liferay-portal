@@ -358,6 +358,7 @@ public class WebServerServletTest {
 		_testServiceGroupIdUUID("html", "video/mp4");
 		_testServicePortletFileEntry(ContentTypes.IMAGE_PNG);
 		_testServicePortletFileEntry(ContentTypes.TEXT_HTML);
+		_testServiceWithoutTrailingSlash();
 	}
 
 	@Test
@@ -721,6 +722,27 @@ public class WebServerServletTest {
 			_group.getCompanyId(), DLFileEntry.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(fileEntryId),
 			guestRole.getRoleId(), actionId);
+	}
+
+	private MockHttpServletResponse _service(
+			String requestURI, String servletPath)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.USER, TestPropsValues.getUser());
+		mockHttpServletRequest.setRequestURI(requestURI);
+		mockHttpServletRequest.setServletPath(servletPath);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_webServerServlet.service(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		return mockHttpServletResponse;
 	}
 
 	private MockHttpServletResponse _serviceDocumentRequest(
@@ -1187,6 +1209,19 @@ public class WebServerServletTest {
 			StringBundler.concat(
 				"/portlet_file_entry/", _group.getGroupId(), "/test.html/",
 				fileEntry.getUuid()));
+	}
+
+	private void _testServiceWithoutTrailingSlash() throws Exception {
+		for (String servletPath : new String[] {"/documents", "/image"}) {
+			MockHttpServletResponse expectedMockHttpServletResponse = _service(
+				servletPath + StringPool.SLASH, servletPath);
+			MockHttpServletResponse actualMockHttpServletResponse = _service(
+				servletPath, servletPath);
+
+			Assert.assertEquals(
+				expectedMockHttpServletResponse.getStatus(),
+				actualMockHttpServletResponse.getStatus());
+		}
 	}
 
 	private void _updateGroupToPrivateSite(Group group) throws Exception {
