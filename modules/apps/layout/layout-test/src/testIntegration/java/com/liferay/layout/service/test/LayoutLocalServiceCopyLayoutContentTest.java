@@ -1027,6 +1027,81 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			layout.getMasterLayoutPlid());
 	}
 
+	@FeatureFlag("LPD-57283")
+	@Test
+	@TestInfo("LPD-108827")
+	public void testCopyLayoutMasterLayoutWithDesignLibraryInAnotherGroup()
+		throws Exception {
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			_group.getCompanyId(), true, "LPD-57283");
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY, _serviceContext);
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		Group targetGroup = GroupTestUtil.addGroup();
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), targetGroup.getGroupId());
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				depotEntry.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout sourceLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Group depotGroup = depotEntry.getGroup();
+
+		sourceLayout = _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+			sourceLayout.getGroupId(), sourceLayout.isPrivateLayout(),
+			sourceLayout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			depotGroup.getExternalReferenceCode());
+
+		Layout targetLayout = LayoutTestUtil.addTypeContentLayout(targetGroup);
+
+		targetLayout = _layoutLocalService.copyLayoutContent(
+			sourceLayout, targetLayout);
+
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			targetLayout.getMasterLayoutPageTemplateEntryERC());
+		Assert.assertEquals(
+			depotGroup.getExternalReferenceCode(),
+			targetLayout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			targetLayout.getMasterLayoutPlid());
+
+		LayoutPageTemplateEntry siteMasterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		sourceLayout = _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+			sourceLayout.getGroupId(), sourceLayout.isPrivateLayout(),
+			sourceLayout.getLayoutId(),
+			siteMasterLayoutPageTemplateEntry.getExternalReferenceCode(), null);
+
+		targetLayout = _layoutLocalService.copyLayoutContent(
+			sourceLayout, targetLayout);
+
+		Assert.assertEquals(
+			siteMasterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			targetLayout.getMasterLayoutPageTemplateEntryERC());
+		Assert.assertEquals(
+			StringPool.BLANK,
+			targetLayout.getMasterLayoutPageTemplateEntryScopeERC());
+	}
+
 	@Test
 	public void testCopyLayoutPageTemplateStructureRelElementVariations()
 		throws Exception {
