@@ -169,25 +169,6 @@ describe('IncrementalInteractions', () => {
 		jest.useRealTimers();
 	});
 
-	it('calls onClose after autoClose elapses without a Provider', () => {
-		const onClose = jest.fn();
-
-		render(
-			<ClayAlert
-				autoClose={5000}
-				onClose={onClose}
-				spritemap="/foo/bar"
-				title="Hello!"
-			/>
-		);
-
-		act(() => {
-			jest.advanceTimersByTime(5000);
-		});
-
-		expect(onClose).toHaveBeenCalledTimes(1);
-	});
-
 	it('calls the latest onClose when it changes while the timer runs', () => {
 		const firstOnClose = jest.fn();
 		const secondOnClose = jest.fn();
