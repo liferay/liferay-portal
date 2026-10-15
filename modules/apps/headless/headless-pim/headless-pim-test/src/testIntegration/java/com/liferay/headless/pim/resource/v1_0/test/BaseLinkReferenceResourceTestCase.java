@@ -482,6 +482,14 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("primary", additionalAssertFieldName)) {
+				if (linkReference.getPrimary() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("sku", additionalAssertFieldName)) {
 				if (linkReference.getSku() == null) {
 					valid = false;
@@ -674,6 +682,17 @@ public abstract class BaseLinkReferenceResourceTestCase {
 			if (Objects.equals("id", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						linkReference1.getId(), linkReference2.getId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("primary", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						linkReference1.getPrimary(),
+						linkReference2.getPrimary())) {
 
 					return false;
 				}
@@ -931,6 +950,11 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("primary")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("sku")) {
 			Object object = linkReference.getSku();
 
@@ -1126,6 +1150,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
+				primary = RandomTestUtil.randomBoolean();
 				sku = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				title = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				type = StringUtil.toLowerCase(RandomTestUtil.randomString());
@@ -1353,4 +1378,4 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		_linkReferenceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1548559442
+// LIFERAY-REST-BUILDER-HASH:2023048826

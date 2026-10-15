@@ -49,6 +49,11 @@ public interface LinkResource {
 	public void postScopeScopeKeyLink(String scopeKey, Link link)
 		throws Exception;
 
+	public void putScopeScopeKeyLinkPrimary(
+			String scopeKey, String className, String externalReferenceCode,
+			String type)
+		throws Exception;
+
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}
@@ -137,4 +142,4 @@ public interface LinkResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2131325438
+// LIFERAY-REST-BUILDER-HASH:689463402

@@ -109,6 +109,27 @@ public class LinkReference implements Cloneable, Serializable {
 
 	protected Long id;
 
+	public Boolean getPrimary() {
+		return primary;
+	}
+
+	public void setPrimary(Boolean primary) {
+		this.primary = primary;
+	}
+
+	public void setPrimary(
+		UnsafeSupplier<Boolean, Exception> primaryUnsafeSupplier) {
+
+		try {
+			primary = primaryUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean primary;
+
 	public String getSku() {
 		return sku;
 	}
@@ -221,4 +242,4 @@ public class LinkReference implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1402009697
+// LIFERAY-REST-BUILDER-HASH:-1657957224

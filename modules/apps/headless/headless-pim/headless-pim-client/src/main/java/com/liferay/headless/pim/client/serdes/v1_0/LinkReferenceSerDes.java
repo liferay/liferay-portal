@@ -95,6 +95,16 @@ public class LinkReferenceSerDes {
 			sb.append(linkReference.getId());
 		}
 
+		if (linkReference.getPrimary() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"primary\": ");
+
+			sb.append(linkReference.getPrimary());
+		}
+
 		if (linkReference.getSku() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -196,6 +206,13 @@ public class LinkReferenceSerDes {
 			map.put("id", String.valueOf(linkReference.getId()));
 		}
 
+		if (linkReference.getPrimary() == null) {
+			map.put("primary", null);
+		}
+		else {
+			map.put("primary", String.valueOf(linkReference.getPrimary()));
+		}
+
 		if (linkReference.getSku() == null) {
 			map.put("sku", null);
 		}
@@ -256,6 +273,9 @@ public class LinkReferenceSerDes {
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "primary")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "sku")) {
 				return false;
 			}
@@ -300,6 +320,11 @@ public class LinkReferenceSerDes {
 				if (jsonParserFieldValue != null) {
 					linkReference.setId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "primary")) {
+				if (jsonParserFieldValue != null) {
+					linkReference.setPrimary((Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "sku")) {
@@ -410,4 +435,4 @@ public class LinkReferenceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1483747259
+// LIFERAY-REST-BUILDER-HASH:-1674665599

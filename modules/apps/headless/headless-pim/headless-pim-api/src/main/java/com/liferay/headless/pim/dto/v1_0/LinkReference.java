@@ -222,6 +222,47 @@ public class LinkReference implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Boolean getPrimary() {
+		if (_primarySupplier != null) {
+			primary = _primarySupplier.get();
+
+			_primarySupplier = null;
+		}
+
+		return primary;
+	}
+
+	public void setPrimary(Boolean primary) {
+		this.primary = primary;
+
+		_primarySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPrimary(
+		UnsafeSupplier<Boolean, Exception> primaryUnsafeSupplier) {
+
+		_primarySupplier = () -> {
+			try {
+				return primaryUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Boolean primary;
+
+	@JsonIgnore
+	private Supplier<Boolean> _primarySupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public String getSku() {
 		if (_skuSupplier != null) {
 			sku = _skuSupplier.get();
@@ -465,6 +506,18 @@ public class LinkReference implements Serializable {
 			sb.append(id);
 		}
 
+		Boolean primary = getPrimary();
+
+		if (primary != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"primary\": ");
+
+			sb.append(primary);
+		}
+
 		String sku = getSku();
 
 		if (sku != null) {
@@ -647,4 +700,4 @@ public class LinkReference implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:809726563
+// LIFERAY-REST-BUILDER-HASH:1066426246

@@ -191,6 +191,11 @@ public abstract class BaseLinkResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testPutScopeScopeKeyLinkPrimary() throws Exception {
+		Assert.assertTrue(false);
+	}
+
 	protected void assertContains(Link link, List<Link> links) {
 		boolean contains = false;
 
@@ -866,4 +871,4 @@ public abstract class BaseLinkResourceTestCase {
 	private com.liferay.headless.pim.resource.v1_0.LinkResource _linkResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-687791139
+// LIFERAY-REST-BUILDER-HASH:1399759161
