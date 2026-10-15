@@ -207,9 +207,6 @@ declare module '@ckeditor/ckeditor5-upload/dist/index.js' {
 declare module '@ckeditor/ckeditor5-utils/dist/index.js' {
 	export * from '@ckeditor/ckeditor5-utils';
 }
-declare module '@ckeditor/ckeditor5-watchdog/dist/index.js' {
-	export * from '@ckeditor/ckeditor5-watchdog';
-}
 declare module '@ckeditor/ckeditor5-widget/dist/index.js' {
 	export * from '@ckeditor/ckeditor5-widget';
 }
