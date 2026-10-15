@@ -197,13 +197,13 @@ public class ObjectDefinitionModelListenerTest {
 	}
 
 	private void _testOnAfterRemoveKeepsOAuth2Authorization() throws Exception {
+		User user = TestPropsValues.getUser();
+
 		ObjectDefinition objectDefinition = _addObjectDefinition();
 
 		String scopeAlias = _getScopeAlias(objectDefinition);
 
 		OAuth2Application oAuth2Application = _addOAuth2Application(scopeAlias);
-
-		User user = TestPropsValues.getUser();
 
 		Date date = new Date();
 
