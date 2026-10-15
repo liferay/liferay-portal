@@ -6,7 +6,7 @@ exports[`Recommendations should render 1`] = `
     class="settings-root"
   >
     <nav
-      class="align-items-center bg-white sticky-top toolbar-root mb-4 tbar component-tbar"
+      class="align-items-center bg-white sticky-top toolbar-root base-edit-page-toolbar mb-4 tbar component-tbar"
     >
       <ul
         class="align-items-center mx-3 tbar-nav"
@@ -46,8 +46,13 @@ exports[`Recommendations should render 1`] = `
           </div>
         </li>
         <li
-          class="tbar-item tbar-item-expand"
-        />
+          class="ml-auto tbar-item"
+        >
+          <ul
+            class="base-edit-page-toolbar-actions tbar-nav"
+            data-testid="toolbar-actions"
+          />
+        </li>
       </ul>
     </nav>
     <div

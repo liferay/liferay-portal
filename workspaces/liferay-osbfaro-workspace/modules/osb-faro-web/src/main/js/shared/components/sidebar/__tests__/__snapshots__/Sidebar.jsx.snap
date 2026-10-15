@@ -19,6 +19,10 @@ exports[`Sidebar should render 1`] = `
           data-focus-scope-start="true"
         />
         <div
+          class="modal-backdrop show side-panel-backdrop"
+          data-testid="side-panel-backdrop"
+        />
+        <div
           class="sidebar-header my-4 px-3 py-0"
         >
           <div

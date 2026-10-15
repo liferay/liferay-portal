@@ -7,7 +7,7 @@ exports[`Data Privacy Overview should render 1`] = `
   >
     <nav
       aria-hidden="true"
-      class="align-items-center bg-white sticky-top toolbar-root mb-4 tbar component-tbar"
+      class="align-items-center bg-white sticky-top toolbar-root base-edit-page-toolbar mb-4 tbar component-tbar"
       data-aria-hidden="true"
     >
       <ul
@@ -48,8 +48,13 @@ exports[`Data Privacy Overview should render 1`] = `
           </div>
         </li>
         <li
-          class="tbar-item tbar-item-expand"
-        />
+          class="ml-auto tbar-item"
+        >
+          <ul
+            class="base-edit-page-toolbar-actions tbar-nav"
+            data-testid="toolbar-actions"
+          />
+        </li>
       </ul>
     </nav>
     <div

@@ -253,7 +253,7 @@ describe('isToolbar', () => {
 	it('leaves the page toolbar out of the report', () => {
 		document.body.innerHTML =
 			'<nav class="sticky-top toolbar-root tbar"></nav>' +
-			'<aside class="event-analysis-conditions-panel"></aside>';
+			'<aside class="base-edit-page-sidebar"></aside>';
 
 		expect(isToolbar(document.querySelector('nav')!)).toBe(true);
 		expect(isToolbar(document.querySelector('aside')!)).toBe(false);

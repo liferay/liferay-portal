@@ -49,6 +49,53 @@ describe('BaseEditPage.Toolbar', () => {
 		);
 	});
 
+	it('groups the actions so they wrap together below the title', () => {
+		const {container} = renderToolbar(
+			<>
+				<Toolbar.Cancel href="/list" />
+
+				<Toolbar.Save label="Save" />
+			</>
+		);
+
+		const actions = screen.getByTestId('toolbar-actions');
+
+		expect(container.firstChild).toHaveClass('base-edit-page-toolbar');
+		expect(actions).toHaveClass('base-edit-page-toolbar-actions');
+		expect(actions).toContainElement(
+			screen.getByRole('link', {name: /cancel/i})
+		);
+		expect(actions).toContainElement(
+			screen.getByRole('button', {name: 'Save'})
+		);
+		expect(actions).not.toContainElement(
+			screen.getByRole('heading', {level: 1})
+		);
+	});
+
+	it('hides Cancel and the divider below the large breakpoint', () => {
+		renderToolbar(
+			<>
+				<Toolbar.Divider />
+
+				<Toolbar.Cancel href="/list" />
+
+				<Toolbar.Save label="Save" />
+			</>
+		);
+
+		expect(
+			screen.getByRole('link', {name: /cancel/i}).closest('li')
+		).toHaveClass('d-none', 'd-lg-flex');
+		expect(screen.getByTestId('toolbar-divider')).toHaveClass(
+			'd-none',
+			'd-lg-flex'
+		);
+		expect(
+			screen.getByRole('button', {name: 'Save'}).closest('li')
+		).not.toHaveClass('d-none');
+	});
+
 	it('renders Cancel as a link to the given URL', () => {
 		renderToolbar(<Toolbar.Cancel href="/list" />);
 

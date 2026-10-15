@@ -50,28 +50,32 @@ exports[`Event Analysis Editor render 1`] = `
           class="align-self-stretch border-left"
         />
         <div
-          class="custom-control custom-checkbox compare-to-previous-checkbox mb-0 mt-2 custom-control-outside"
+          class="align-items-center c-gap-3 d-flex event-analysis-editor-period flex-wrap"
         >
-          <label>
-            <input
-              class="custom-control-input"
-              type="checkbox"
-            />
-            <span
-              class="custom-control-label"
-            >
+          <div
+            class="custom-control custom-checkbox compare-to-previous-checkbox flex-shrink-0 mb-0 mt-2 custom-control-outside"
+          >
+            <label>
+              <input
+                class="custom-control-input"
+                type="checkbox"
+              />
               <span
-                class="custom-control-label-text"
+                class="custom-control-label"
               >
-                Compare to Previous
+                <span
+                  class="custom-control-label-text"
+                >
+                  Compare to Previous
+                </span>
               </span>
-            </span>
-          </label>
+            </label>
+          </div>
+          <span
+            aria-hidden="true"
+            class="loading-root loading-animation"
+          />
         </div>
-        <span
-          aria-hidden="true"
-          class="loading-root loading-animation"
-        />
       </div>
     </div>
     <div

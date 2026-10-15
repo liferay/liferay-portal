@@ -133,6 +133,15 @@ describe('StageConditionRow', () => {
 
 		expect(container.querySelector('.has-error')).toBeNull();
 	});
+
+	it('wraps its pickers onto new lines when they run out of room', () => {
+		const {container} = renderRow();
+
+		expect(
+			container.querySelector('.stage-configuration-panel__condition')
+		).toHaveClass('flex-wrap');
+	});
+
 	describe('with a date attribute', () => {
 		afterEach(() => {
 			jest.useRealTimers();

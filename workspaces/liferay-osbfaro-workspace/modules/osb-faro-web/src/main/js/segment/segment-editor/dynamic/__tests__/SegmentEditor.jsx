@@ -49,6 +49,17 @@ function blocksNavigation() {
 describe('SegmentEditor', () => {
 	afterEach(cleanup);
 
+	beforeAll(() => {
+		Object.defineProperty(document.body, 'clientWidth', {
+			configurable: true,
+			value: 1440
+		});
+	});
+
+	afterAll(() => {
+		delete document.body.clientWidth;
+	});
+
 	beforeEach(() => {
 		useBlocker.mockClear();
 	});
@@ -120,6 +131,29 @@ describe('SegmentEditor', () => {
 		expect(headings.indexOf('Membership')).toBeLessThan(
 			headings.indexOf('Segment Conditions')
 		);
+	});
+
+	it('places the segment content in the BaseEditPage main content region', () => {
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<DndProvider backend={HTML5Backend}>
+						<SegmentEditor
+							channelId='321'
+							groupId='23'
+							type='BATCH'
+						/>
+					</DndProvider>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		const main = screen
+			.getByRole('heading', {level: 2, name: 'Segment Conditions'})
+			.closest('.base-edit-page-main');
+
+		expect(main).toContainElement(screen.getByLabelText(/segment erc/i));
+		expect(main.parentElement).toHaveClass('criteria-builder-section-main');
 	});
 
 	it('renders the realtime segment with the sequential toggle in the conditions heading', () => {

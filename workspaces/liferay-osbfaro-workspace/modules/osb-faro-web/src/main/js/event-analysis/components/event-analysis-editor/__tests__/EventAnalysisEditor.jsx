@@ -98,4 +98,18 @@ describe('Event Analysis Editor', () => {
 
 		expect(onCompareToPreviousChange).toHaveBeenCalledWith(true);
 	});
+
+	it('keeps the comparison and the date range together so they wrap as one', () => {
+		const {getByLabelText} = renderEditor();
+
+		const checkbox = getByLabelText('Compare to Previous').closest(
+			'.compare-to-previous-checkbox'
+		);
+
+		const group = checkbox.parentElement;
+
+		expect(group).toHaveClass('event-analysis-editor-period');
+		expect(group.children).toHaveLength(2);
+		expect(group.firstElementChild).toBe(checkbox);
+	});
 });
