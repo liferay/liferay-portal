@@ -207,26 +207,14 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 				_log, tableName + ", column " + columnName, expectedColumnName,
 				"it was incorrectly cased");
 
-			int index = columnDefinition.indexOf(StringPool.SPACE);
-
-			String columnDataType =
-				(index != -1) ? columnDefinition.substring(index + 1) : "";
-
 			String tempColumnName = _getTempName(
 				maxColumnNameLength, expectedColumnName);
 
-			String tempColumnDefinition =
-				tempColumnName + StringPool.SPACE + columnDataType;
+			db.alterColumnName(
+				connection, tableName, columnName, tempColumnName);
 
 			db.alterColumnName(
-				connection, tableName, columnName, tempColumnDefinition);
-
-			String expectedColumnDefinition =
-				expectedColumnName + StringPool.SPACE + columnDataType;
-
-			db.alterColumnName(
-				connection, tableName, tempColumnName,
-				expectedColumnDefinition);
+				connection, tableName, tempColumnName, expectedColumnName);
 		}
 	}
 

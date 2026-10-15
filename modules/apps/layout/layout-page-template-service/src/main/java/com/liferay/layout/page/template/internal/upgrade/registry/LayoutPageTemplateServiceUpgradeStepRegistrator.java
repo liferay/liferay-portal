@@ -210,7 +210,7 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 		registry.register(
 			"5.1.1", "5.2.0",
 			UpgradeProcessFactory.alterColumnName(
-				"LayoutPageTemplateStructure", "classPK", "plid LONG"),
+				"LayoutPageTemplateStructure", "classPK", "plid"),
 			UpgradeProcessFactory.dropColumns(
 				"LayoutPageTemplateStructure", "classNameId"));
 

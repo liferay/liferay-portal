@@ -13,7 +13,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -70,12 +69,11 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 						objectDefinition.getObjectDefinitionId(), "productId"));
 
 				_updateDynamicObjectDefinitionTable(
-					objectDefinition.getExtensionDBTableName(), "LONG not null",
+					objectDefinition.getExtensionDBTableName(),
 					objectDefinition, _OLD_PK_OBJECT_FIELD_NAME);
 				_updateDynamicObjectDefinitionTable(
 					objectDefinition.getLocalizationDBTableName(),
-					"LONG not null", objectDefinition,
-					_OLD_PK_OBJECT_FIELD_NAME);
+					objectDefinition, _OLD_PK_OBJECT_FIELD_NAME);
 
 				List<ObjectRelationship> objectRelationships =
 					_objectRelationshipLocalService.getObjectRelationships(
@@ -85,7 +83,6 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 						objectRelationships) {
 
 					String dbTableName = null;
-					String dbType = "LONG";
 					String oldDBColumnName = null;
 
 					if (Objects.equals(
@@ -116,12 +113,11 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 							 !objectRelationship.isReverse()) {
 
 						dbTableName = objectRelationship.getDBTableName();
-						dbType += " not null";
 						oldDBColumnName = _OLD_PK_OBJECT_FIELD_NAME;
 					}
 
 					_updateDynamicObjectDefinitionTable(
-						dbTableName, dbType, objectDefinition, oldDBColumnName);
+						dbTableName, objectDefinition, oldDBColumnName);
 				}
 			});
 	}
@@ -132,8 +128,8 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _updateDynamicObjectDefinitionTable(
-			String dbTableName, String dbType,
-			ObjectDefinition objectDefinition, String oldDBColumnName)
+			String dbTableName, ObjectDefinition objectDefinition,
+			String oldDBColumnName)
 		throws Exception {
 
 		if ((dbTableName == null) || !hasTable(dbTableName) ||
@@ -151,8 +147,7 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 				oldDBColumnName, ")"));
 
 		alterColumnName(
-			dbTableName, oldDBColumnName,
-			_replaceLast(oldDBColumnName) + StringPool.SPACE + dbType);
+			dbTableName, oldDBColumnName, _replaceLast(oldDBColumnName));
 	}
 
 	private void _updateObjectField(

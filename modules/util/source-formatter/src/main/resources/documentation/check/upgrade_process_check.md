@@ -76,8 +76,7 @@ Incorrect:
 protected void doUpgrade() throws Exception {
 	alterTableAddColumn("CPDefinitionLink", "CProductId", "LONG");
 
-	alterColumnName(
-		"CPDefinitionLink", "CPDefinitionId1", "CPDefinitionId LONG");
+	alterColumnName("CPDefinitionLink", "CPDefinitionId1", "CPDefinitionId");
 
 	try (PreparedStatement preparedStatement = connection.prepareStatement(
 			"update CPDefinitionLink set CProductId = ? where " +
@@ -118,7 +117,7 @@ protected UpgradeStep[] getPreUpgradeSteps() {
 		UpgradeProcessFactory.addColumns(
 			"CPDefinitionLink", "CProductId LONG"),
 		UpgradeProcessFactory.alterColumnName(
-			"CPDefinitionLink", "CPDefinitionId1", "CPDefinitionId LONG")
+			"CPDefinitionLink", "CPDefinitionId1", "CPDefinitionId")
 	};
 }
 ```

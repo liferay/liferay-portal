@@ -55,7 +55,7 @@ public class CPDefinitionLinkUpgradeProcess extends UpgradeProcess {
 			UpgradeProcessFactory.addColumns(
 				"CPDefinitionLink", "CProductId LONG"),
 			UpgradeProcessFactory.alterColumnName(
-				"CPDefinitionLink", "CPDefinitionId1", "CPDefinitionId LONG")
+				"CPDefinitionLink", "CPDefinitionId1", "CPDefinitionId")
 		};
 	}
 

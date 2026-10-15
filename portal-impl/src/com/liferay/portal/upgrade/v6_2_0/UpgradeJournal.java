@@ -229,8 +229,7 @@ public class UpgradeJournal extends BaseUpgradePortletPreferences {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		alterColumnName(
-			"JournalFeed", "feedType", "feedFormat VARCHAR(75) null");
+		alterColumnName("JournalFeed", "feedType", "feedFormat");
 
 		setUpStrutureAttributesMappings();
 

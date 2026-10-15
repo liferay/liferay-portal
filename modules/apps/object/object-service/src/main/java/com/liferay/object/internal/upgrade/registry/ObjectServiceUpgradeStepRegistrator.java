@@ -92,7 +92,7 @@ public class ObjectServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.addColumns(
 				"ObjectField", "businessType VARCHAR(75) null"),
 			UpgradeProcessFactory.alterColumnName(
-				"ObjectField", "type_", "dbType VARCHAR(75) null"));
+				"ObjectField", "type_", "dbType"));
 
 		registry.register(
 			"2.0.0", "2.1.0", new ObjectFieldBusinessTypeUpgradeProcess());

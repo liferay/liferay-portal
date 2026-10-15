@@ -70,7 +70,7 @@ public class PatcherServiceUpgradeStepRegistrator
 		registry.register(
 			"7.4.5", "8.0.0",
 			UpgradeProcessFactory.alterColumnName(
-				"OSBPatcher_PatcherBuild", "originalName", "initialName TEXT"),
+				"OSBPatcher_PatcherBuild", "originalName", "initialName"),
 			UpgradeProcessFactory.alterColumnType(
 				"OSBPatcher_PatcherBuild", "name", "STRING null"));
 	}

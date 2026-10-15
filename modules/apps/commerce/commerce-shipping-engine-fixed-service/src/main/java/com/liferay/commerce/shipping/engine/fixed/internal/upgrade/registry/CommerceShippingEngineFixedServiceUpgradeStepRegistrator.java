@@ -35,16 +35,14 @@ public class CommerceShippingEngineFixedServiceUpgradeStepRegistrator
 			"1.0.0", "1.1.0",
 			UpgradeProcessFactory.alterColumnName(
 				"CShippingFixedOptionRel", "commerceWarehouseId",
-				"commerceInventoryWarehouseId LONG"));
+				"commerceInventoryWarehouseId"));
 
 		registry.register(
 			"1.1.0", "2.0.0",
 			UpgradeProcessFactory.alterColumnName(
-				"CShippingFixedOptionRel", "commerceCountryId",
-				"countryId LONG"),
+				"CShippingFixedOptionRel", "commerceCountryId", "countryId"),
 			UpgradeProcessFactory.alterColumnName(
-				"CShippingFixedOptionRel", "commerceRegionId",
-				"regionId LONG"));
+				"CShippingFixedOptionRel", "commerceRegionId", "regionId"));
 
 		registry.register(
 			"2.0.0", "2.1.0",

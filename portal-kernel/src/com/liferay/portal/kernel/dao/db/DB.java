@@ -46,7 +46,7 @@ public interface DB {
 
 	public void alterColumnName(
 			Connection connection, String tableName, String oldColumnName,
-			String newColumnDefinition)
+			String newColumnName)
 		throws Exception;
 
 	public void alterColumnType(

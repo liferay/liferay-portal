@@ -154,21 +154,8 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	}
 
 	@Test
-	public void testAlterColumnNameChangeType() throws Exception {
-		try {
-			alterColumnName(_TABLE_NAME, "typeBoolean", "typeChanged VARCHAR");
-
-			Assert.fail();
-		}
-		catch (SQLException sqlException) {
-			Assert.assertFalse(
-				_dbInspector.hasColumn(_TABLE_NAME, "typeChanged"));
-		}
-	}
-
-	@Test
 	public void testAlterColumnNameNoNeeded() throws Exception {
-		alterColumnName(_TABLE_NAME, "deletedColumn", "typeBoolean BOOLEAN");
+		alterColumnName(_TABLE_NAME, "deletedColumn", "typeBoolean");
 
 		Assert.assertFalse(
 			_dbInspector.hasColumn(_TABLE_NAME, "deletedColumn"));
@@ -180,7 +167,7 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	@Test
 	public void testAlterColumnNameNoNeededOldColumnExist() throws Exception {
 		try {
-			alterColumnName(_TABLE_NAME, "typeInteger", "typeBoolean BOOLEAN");
+			alterColumnName(_TABLE_NAME, "typeInteger", "typeBoolean");
 
 			Assert.fail();
 		}
@@ -195,54 +182,14 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	}
 
 	@Test
-	public void testAlterColumnNameNoNeededWithAlterType() throws Exception {
-		try {
-			alterColumnName(
-				_TABLE_NAME, "deletedColumn", "typeBoolean VARCHAR");
-
-			Assert.fail();
-		}
-		catch (SQLException sqlException) {
-			Assert.assertFalse(
-				_dbInspector.hasColumn(_TABLE_NAME, "deletedColumn"));
-
-			Assert.assertFalse(
-				_dbInspector.hasColumnType(
-					_TABLE_NAME, "typeBoolean", "VARCHAR"));
-		}
-	}
-
-	@Test
-	public void testAlterColumnNameNoNeededWithAlterTypeAndOldColumnExist()
-		throws Exception {
-
-		try {
-			alterColumnName(_TABLE_NAME, "typeInteger", "typeBoolean VARCHAR");
-
-			Assert.fail();
-		}
-		catch (SQLException sqlException) {
-			Assert.assertTrue(
-				_dbInspector.hasColumn(_TABLE_NAME, "typeInteger"));
-
-			Assert.assertFalse(
-				_dbInspector.hasColumnType(
-					_TABLE_NAME, "typeBoolean", "VARCHAR"));
-		}
-	}
-
-	@Test
 	public void testAlterColumnNameNoNullableChange() throws Exception {
-		alterColumnName(
-			_TABLE_NAME, "nilColumn", "nilColumnTest VARCHAR(75) null");
+		alterColumnName(_TABLE_NAME, "nilColumn", "nilColumnTest");
 
 		Assert.assertTrue(
 			_dbInspector.hasColumnType(
 				_TABLE_NAME, "nilColumnTest", "VARCHAR(75) null"));
 
-		alterColumnName(
-			_TABLE_NAME, "notNilColumn",
-			"notNilColumnTest VARCHAR(75) not null");
+		alterColumnName(_TABLE_NAME, "notNilColumn", "notNilColumnTest");
 
 		Assert.assertTrue(
 			_dbInspector.hasColumnType(
@@ -253,8 +200,7 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	public void testAlterColumnNameNonexistentColumn() throws Exception {
 		try {
 			alterColumnName(
-				_TABLE_NAME, "nonexistentColumn",
-				"newNonexistentColumn LONG null");
+				_TABLE_NAME, "nonexistentColumn", "newNonexistentColumn");
 
 			Assert.fail();
 		}
@@ -266,7 +212,7 @@ public class BaseDBProcessTest extends BaseDBProcess {
 
 	@Test
 	public void testAlterColumnNameSameColumnDifferentCase() throws Exception {
-		alterColumnName(_TABLE_NAME, "typeInteger", "TypeInteger INTEGER");
+		alterColumnName(_TABLE_NAME, "typeInteger", "TypeInteger");
 
 		if (StringUtil.equals(
 				_dbInspector.normalizeName("typeInteger"),
@@ -420,8 +366,7 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	public void testAlterIndexedColumnName() throws Exception {
 		_addIndex(new String[] {"typeVarchar", "typeBoolean"});
 
-		alterColumnName(
-			_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
+		alterColumnName(_TABLE_NAME, "typeVarchar", "typeVarcharTest");
 
 		Assert.assertTrue(
 			_dbInspector.hasColumn(_TABLE_NAME, "typeVarcharTest"));
@@ -452,7 +397,7 @@ public class BaseDBProcessTest extends BaseDBProcess {
 
 	@Test
 	public void testAlterPrimaryKeyName() throws Exception {
-		alterColumnName(_TABLE_NAME, "id", "idTest LONG not null");
+		alterColumnName(_TABLE_NAME, "id", "idTest");
 
 		String[] primaryKeyColumnNames = ReflectionTestUtil.invoke(
 			_db, "getPrimaryKeyColumnNames",

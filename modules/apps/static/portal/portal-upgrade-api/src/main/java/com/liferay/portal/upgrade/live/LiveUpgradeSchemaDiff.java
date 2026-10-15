@@ -95,13 +95,11 @@ public class LiveUpgradeSchemaDiff {
 	}
 
 	public void recordAlterColumnName(
-			String oldColumnName, String newColumnDefinition)
+			String oldColumnName, String newColumnName)
 		throws Exception {
 
 		oldColumnName = _dbInspector.normalizeName(oldColumnName);
-
-		String newColumnName = _dbInspector.normalizeName(
-			StringUtil.extractFirst(newColumnDefinition, StringPool.SPACE));
+		newColumnName = _dbInspector.normalizeName(newColumnName);
 
 		Column column = _resultColumnsMap.remove(oldColumnName);
 

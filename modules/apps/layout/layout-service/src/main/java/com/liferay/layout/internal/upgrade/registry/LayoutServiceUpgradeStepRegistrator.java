@@ -138,7 +138,7 @@ public class LayoutServiceUpgradeStepRegistrator
 			"1.5.1", "2.0.0",
 			UpgradeProcessFactory.alterColumnName(
 				"LayoutClassedModelUsage", "cmExternalReferenceCode",
-				"classExternalReferenceCode VARCHAR(75) null"));
+				"classExternalReferenceCode"));
 
 		registry.register(
 			"2.0.0", "3.0.0",

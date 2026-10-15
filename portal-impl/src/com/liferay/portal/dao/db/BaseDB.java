@@ -171,8 +171,10 @@ public abstract class BaseDB implements DB {
 	@Override
 	public void alterColumnName(
 			Connection connection, String tableName, String oldColumnName,
-			String newColumnDefinition)
+			String newColumnName)
 		throws Exception {
+
+		validateColumnName(tableName, oldColumnName, newColumnName);
 
 		StringBundler sb = new StringBundler(6);
 
@@ -181,7 +183,7 @@ public abstract class BaseDB implements DB {
 		sb.append(StringPool.SPACE);
 		sb.append(oldColumnName);
 		sb.append(StringPool.SPACE);
-		sb.append(newColumnDefinition);
+		sb.append(newColumnName);
 
 		runSQL(connection, sb.toString());
 	}
@@ -1169,23 +1171,9 @@ public abstract class BaseDB implements DB {
 				"Invalid alter column name statement");
 		}
 
-		String defaultValue = matcher.group(5);
-		String nullable = matcher.group(6);
-
-		if (defaultValue != null) {
-			nullable = "not null";
-		}
-		else {
-			defaultValue = StringPool.BLANK;
-
-			if (nullable == null) {
-				nullable = StringPool.BLANK;
-			}
-		}
-
 		return new String[] {
 			matcher.group(1), matcher.group(2), matcher.group(3),
-			matcher.group(4), defaultValue, StringUtil.toLowerCase(nullable)
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK
 		};
 	}
 
@@ -1655,6 +1643,20 @@ public abstract class BaseDB implements DB {
 	protected abstract String reword(String data)
 		throws IOException, SQLException;
 
+	protected void validateColumnName(
+		String tableName, String oldColumnName, String newColumnName) {
+
+		if (newColumnName.indexOf(CharPool.SPACE) == -1) {
+			return;
+		}
+
+		throw new IllegalArgumentException(
+			StringBundler.concat(
+				"Column ", tableName, StringPool.PERIOD, oldColumnName,
+				" must be renamed with the new column name only, not \"",
+				newColumnName, "\""));
+	}
+
 	protected static final String ALTER_COLUMN_NAME = "alter_column_name ";
 
 	protected static final String ALTER_COLUMN_TYPE = "alter_column_type ";
@@ -1879,9 +1881,7 @@ public abstract class BaseDB implements DB {
 			"(?:(?:DEFAULT\\s+('?.*[^']'?)\\s+NOT\\s+NULL)|((?:NOT\\s+)?NULL))";
 
 		_alterColumnNamePattern = Pattern.compile(
-			StringBundler.concat(
-				"^ALTER_COLUMN_NAME\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+",
-				dataTypeRegex, "\\s*", defaultAndNullableRegex, "?;?$"),
+			"^ALTER_COLUMN_NAME\\s+(\\S+)\\s+(\\S+)\\s+([^\\s;]+);?$",
 			Pattern.CASE_INSENSITIVE);
 		_alterColumnTypePattern = Pattern.compile(
 			StringBundler.concat(

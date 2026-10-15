@@ -64,8 +64,7 @@ public class CTConflictCheckerDispatchTriggerUpgradeProcessTest {
 			DB db = DBManagerUtil.getDB();
 
 			db.alterColumnName(
-				connection, "DispatchTrigger", columnName,
-				newColumnName + " TEXT null");
+				connection, "DispatchTrigger", columnName, newColumnName);
 		}
 	}
 

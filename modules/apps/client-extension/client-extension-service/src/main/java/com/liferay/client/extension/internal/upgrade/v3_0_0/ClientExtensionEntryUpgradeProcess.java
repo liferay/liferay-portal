@@ -30,8 +30,7 @@ public class ClientExtensionEntryUpgradeProcess extends UpgradeProcess {
 	protected UpgradeStep[] getPreUpgradeSteps() {
 		return new UpgradeStep[] {
 			UpgradeProcessFactory.alterColumnName(
-				"RemoteAppEntry", "remoteAppEntryId",
-				"clientExtensionEntryId LONG not null")
+				"RemoteAppEntry", "remoteAppEntryId", "clientExtensionEntryId")
 		};
 	}
 

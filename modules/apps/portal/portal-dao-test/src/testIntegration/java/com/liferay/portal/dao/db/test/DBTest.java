@@ -111,16 +111,14 @@ public class DBTest {
 	@Test
 	public void testAlterColumnNameNoNullableChange() throws Exception {
 		db.alterColumnName(
-			connection, TABLE_NAME_1, "nilColumn",
-			"nilColumnTest VARCHAR(75) null");
+			connection, TABLE_NAME_1, "nilColumn", "nilColumnTest");
 
 		Assert.assertTrue(
 			dbInspector.hasColumnType(
 				TABLE_NAME_1, "nilColumnTest", "VARCHAR(75) null"));
 
 		db.alterColumnName(
-			connection, TABLE_NAME_1, "notNilColumn",
-			"notNilColumnTest VARCHAR(75) not null");
+			connection, TABLE_NAME_1, "notNilColumn", "notNilColumnTest");
 
 		Assert.assertTrue(
 			dbInspector.hasColumnType(
@@ -308,8 +306,7 @@ public class DBTest {
 		addIndex(new String[] {"typeVarchar", "typeBoolean"});
 
 		db.alterColumnName(
-			connection, TABLE_NAME_1, "typeVarchar",
-			"typeVarcharTest VARCHAR(75) null");
+			connection, TABLE_NAME_1, "typeVarchar", "typeVarcharTest");
 
 		Assert.assertTrue(
 			dbInspector.hasColumn(TABLE_NAME_1, "typeVarcharTest"));
@@ -341,8 +338,7 @@ public class DBTest {
 
 	@Test
 	public void testAlterPrimaryKeyName() throws Exception {
-		db.alterColumnName(
-			connection, TABLE_NAME_1, "id", "idTest LONG not null");
+		db.alterColumnName(connection, TABLE_NAME_1, "id", "idTest");
 
 		Assert.assertTrue(
 			ArrayUtil.contains(

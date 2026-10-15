@@ -107,7 +107,9 @@ public abstract class BaseBadColumnNamesUpgradeProcess extends UpgradeProcess {
 				continue;
 			}
 
-			alterColumnName(tableName, alterColumnName[0], alterColumnName[1]);
+			alterColumnName(
+				tableName, alterColumnName[0],
+				alterColumnName[0].concat(StringPool.UNDERLINE));
 		}
 	}
 

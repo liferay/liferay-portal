@@ -35,7 +35,7 @@ public class LayoutSEOServiceUpgradeStepRegistrator
 		registry.register(
 			"1.0.0", "2.0.0",
 			UpgradeProcessFactory.alterColumnName(
-				"LayoutSEOEntry", "enabled", "canonicalURLEnabled BOOLEAN"),
+				"LayoutSEOEntry", "enabled", "canonicalURLEnabled"),
 			UpgradeProcessFactory.addColumns(
 				"LayoutSEOEntry", "openGraphTitleEnabled BOOLEAN",
 				"openGraphTitle STRING null",

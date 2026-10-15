@@ -78,7 +78,7 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 
 		alterColumnName(
 			dbTableName, oldPKObjectFieldDBColumnName,
-			newPKObjectFieldDBColumnName + " LONG not null");
+			newPKObjectFieldDBColumnName);
 	}
 
 }

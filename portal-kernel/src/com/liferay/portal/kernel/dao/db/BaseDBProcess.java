@@ -192,17 +192,11 @@ public abstract class BaseDBProcess implements DBProcess {
 	}
 
 	protected void alterColumnName(
-			String tableName, String oldColumnName, String newColumnDefinition)
+			String tableName, String oldColumnName, String newColumnName)
 		throws Exception {
 
-		String newColumnName = StringUtil.extractFirst(
-			newColumnDefinition, StringPool.SPACE);
-
-		String newColumnType = newColumnDefinition.substring(
-			newColumnName.length() + 1);
-
 		if (!hasColumn(tableName, oldColumnName)) {
-			if (hasColumnType(tableName, newColumnName, newColumnType)) {
+			if (hasColumn(tableName, newColumnName)) {
 				return;
 			}
 
@@ -210,14 +204,6 @@ public abstract class BaseDBProcess implements DBProcess {
 				StringBundler.concat(
 					"Column ", tableName, StringPool.PERIOD, oldColumnName,
 					" does not exist"));
-		}
-
-		if (!hasColumnType(tableName, oldColumnName, newColumnType)) {
-			throw new SQLException(
-				StringBundler.concat(
-					"Type change is not allowed when altering column name. ",
-					"Column ", tableName, StringPool.PERIOD, oldColumnName,
-					" has different type than ", newColumnType));
 		}
 
 		DBInspector dbInspector = new DBInspector(connection);
@@ -231,8 +217,7 @@ public abstract class BaseDBProcess implements DBProcess {
 
 		DB db = DBManagerUtil.getDB();
 
-		db.alterColumnName(
-			connection, tableName, oldColumnName, newColumnDefinition);
+		db.alterColumnName(connection, tableName, oldColumnName, newColumnName);
 	}
 
 	protected void alterColumnType(

@@ -185,7 +185,7 @@ public class CommerceProductServiceUpgradeStepRegistrator
 		registry.register(
 			"2.0.0", "2.1.0",
 			UpgradeProcessFactory.alterColumnName(
-				"CommerceCatalog", "system", "system_ BOOLEAN"),
+				"CommerceCatalog", "system", "system_"),
 			UpgradeProcessFactory.addColumns(
 				"CPDefinition", "deliverySubscriptionEnabled BOOLEAN",
 				"deliverySubscriptionLength INTEGER",
@@ -426,10 +426,9 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			"5.9.0", "5.10.0",
 			UpgradeProcessFactory.alterColumnName(
 				"CPDefinitionOptionRel", "DDMFormFieldTypeName",
-				"commerceOptionTypeKey VARCHAR(75) null"),
+				"commerceOptionTypeKey"),
 			UpgradeProcessFactory.alterColumnName(
-				"CPOption", "DDMFormFieldTypeName",
-				"commerceOptionTypeKey VARCHAR(75) null"));
+				"CPOption", "DDMFormFieldTypeName", "commerceOptionTypeKey"));
 
 		registry.register(
 			"5.10.0", "5.11.0",
@@ -650,8 +649,7 @@ public class CommerceProductServiceUpgradeStepRegistrator
 		registry.register(
 			"5.26.0", "5.27.0",
 			UpgradeProcessFactory.alterColumnName(
-				"CPConfigurationList", "masterCPConfigurationList",
-				"master BOOLEAN"));
+				"CPConfigurationList", "masterCPConfigurationList", "master"));
 
 		registry.register("5.27.0", "5.27.1", new DummyUpgradeStep());
 

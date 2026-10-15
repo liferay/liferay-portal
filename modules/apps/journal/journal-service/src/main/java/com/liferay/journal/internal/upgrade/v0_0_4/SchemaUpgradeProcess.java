@@ -31,21 +31,17 @@ public class SchemaUpgradeProcess extends UpgradeProcess {
 	protected UpgradeStep[] getPostUpgradeSteps() {
 		return new UpgradeStep[] {
 			UpgradeProcessFactory.alterColumnName(
-				"JournalArticle", "structureId",
-				"DDMStructureKey VARCHAR(75) null"),
+				"JournalArticle", "structureId", "DDMStructureKey"),
 			UpgradeProcessFactory.alterColumnName(
-				"JournalArticle", "templateId",
-				"DDMTemplateKey VARCHAR(75) null"),
+				"JournalArticle", "templateId", "DDMTemplateKey"),
 			UpgradeProcessFactory.alterColumnType(
 				"JournalArticle", "description", "TEXT null"),
 			UpgradeProcessFactory.alterColumnName(
-				"JournalFeed", "structureId",
-				"DDMStructureKey VARCHAR(75) null"),
+				"JournalFeed", "structureId", "DDMStructureKey"),
 			UpgradeProcessFactory.alterColumnName(
-				"JournalFeed", "templateId", "DDMTemplateKey VARCHAR(75) null"),
+				"JournalFeed", "templateId", "DDMTemplateKey"),
 			UpgradeProcessFactory.alterColumnName(
-				"JournalFeed", "rendererTemplateId",
-				"DDMRendererTemplateKey VARCHAR(75) null"),
+				"JournalFeed", "rendererTemplateId", "DDMRendererTemplateKey"),
 			UpgradeProcessFactory.alterColumnType(
 				"JournalFeed", "targetPortletId", "VARCHAR(200) null")
 		};

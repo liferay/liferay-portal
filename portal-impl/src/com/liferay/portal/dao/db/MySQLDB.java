@@ -297,23 +297,10 @@ public class MySQLDB extends BaseDB {
 				else if (line.startsWith(ALTER_COLUMN_NAME)) {
 					String[] template = buildColumnNameTokens(line);
 
-					String defaultValue = template[template.length - 2];
-
-					if (!Validator.isBlank(defaultValue)) {
-						line = StringUtil.replace(
-							"alter table @table@ change column @old-column@ " +
-								"@new-column@ @type@ default @default@ " +
-									"@nullable@;",
-							REWORD_TEMPLATE, template);
-					}
-					else {
-						line = StringUtil.replace(
-							"alter table @table@ change column @old-column@ " +
-								"@new-column@ @type@ @nullable@;",
-							REWORD_TEMPLATE, template);
-
-						line = StringUtil.replace(line, " ;", ";");
-					}
+					line = StringUtil.replace(
+						"alter table @table@ rename column @old-column@ to " +
+							"@new-column@;",
+						REWORD_TEMPLATE, template);
 				}
 				else if (line.startsWith(ALTER_COLUMN_TYPE)) {
 					String[] template = buildColumnTypeTokens(line);

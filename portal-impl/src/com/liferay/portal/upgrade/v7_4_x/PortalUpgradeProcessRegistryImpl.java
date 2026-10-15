@@ -232,7 +232,7 @@ public class PortalUpgradeProcessRegistryImpl
 		upgradeVersionTreeMap.put(
 			new Version(18, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
-				"Address", "typeId", "listTypeId LONG"));
+				"Address", "typeId", "listTypeId"));
 
 		upgradeVersionTreeMap.put(
 			new Version(18, 0, 1), new UpgradeVirtualHost());
@@ -240,37 +240,37 @@ public class PortalUpgradeProcessRegistryImpl
 		upgradeVersionTreeMap.put(
 			new Version(19, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
-				"Phone", "typeId", "listTypeId LONG"));
+				"Phone", "typeId", "listTypeId"));
 
 		upgradeVersionTreeMap.put(
 			new Version(20, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
-				"EmailAddress", "typeId", "listTypeId LONG"));
+				"EmailAddress", "typeId", "listTypeId"));
 
 		upgradeVersionTreeMap.put(
 			new Version(21, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
-				"Website", "typeId", "listTypeId LONG"));
+				"Website", "typeId", "listTypeId"));
 
 		upgradeVersionTreeMap.put(
 			new Version(22, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
-				"Organization_", "statusId", "statusListTypeId LONG"));
+				"Organization_", "statusId", "statusListTypeId"));
 
 		upgradeVersionTreeMap.put(
 			new Version(23, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
-				"Contact_", "prefixId", "prefixListTypeId LONG"));
+				"Contact_", "prefixId", "prefixListTypeId"));
 
 		upgradeVersionTreeMap.put(
 			new Version(24, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
-				"Contact_", "suffixId", "suffixListTypeId LONG"));
+				"Contact_", "suffixId", "suffixListTypeId"));
 
 		upgradeVersionTreeMap.put(
 			new Version(25, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
-				"OrgLabor", "typeId", "listTypeId LONG"));
+				"OrgLabor", "typeId", "listTypeId"));
 
 		upgradeVersionTreeMap.put(
 			new Version(25, 0, 1),
@@ -718,8 +718,7 @@ public class PortalUpgradeProcessRegistryImpl
 				"Layout", "portletLPTEERC VARCHAR(75) null",
 				"portletLPTESERC VARCHAR(75) null"),
 			UpgradeProcessFactory.alterColumnName(
-				"Layout", "layoutPrototypeLinkEnabled",
-				"portletLPTELE BOOLEAN"));
+				"Layout", "layoutPrototypeLinkEnabled", "portletLPTELE"));
 
 		upgradeVersionTreeMap.put(
 			new Version(38, 0, 1),

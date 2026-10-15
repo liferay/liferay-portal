@@ -160,7 +160,7 @@ public class MBServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 		registry.register(
 			"6.3.0", "6.4.0",
 			UpgradeProcessFactory.alterColumnName(
-				"MBSuspiciousActivity", "type_", "reason VARCHAR(75) null"),
+				"MBSuspiciousActivity", "type_", "reason"),
 			UpgradeProcessFactory.alterColumnType(
 				"MBSuspiciousActivity", "reason", "VARCHAR(255)"),
 			UpgradeProcessFactory.dropColumns(

@@ -70,7 +70,7 @@ public class CommerceDiscountServiceUpgradeStepRegistrator
 		registry.register(
 			"2.2.0", "2.3.0",
 			UpgradeProcessFactory.alterColumnName(
-				"CommerceDiscount", "level", "levelType VARCHAR(75)"));
+				"CommerceDiscount", "level", "levelType"));
 
 		registry.register(
 			"2.3.0", "2.4.0",

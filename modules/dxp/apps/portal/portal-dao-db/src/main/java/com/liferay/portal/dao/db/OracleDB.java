@@ -101,12 +101,9 @@ public class OracleDB extends BaseDB {
 			}
 
 			alterColumnName(
-				connection, tableName, columnName,
-				tempColumnName + "2 " + newColumnType);
+				connection, tableName, columnName, tempColumnName + "2");
 
-			alterColumnName(
-				connection, tableName, tempColumnName,
-				columnName + StringPool.SPACE + newColumnType);
+			alterColumnName(connection, tableName, tempColumnName, columnName);
 
 			if (!indexMetadatas.isEmpty()) {
 				addIndexes(connection, indexMetadatas);

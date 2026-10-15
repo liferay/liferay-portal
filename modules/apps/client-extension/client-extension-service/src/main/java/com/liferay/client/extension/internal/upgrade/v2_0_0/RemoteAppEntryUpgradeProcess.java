@@ -53,7 +53,7 @@ public class RemoteAppEntryUpgradeProcess extends UpgradeProcess {
 				"customElementHTMLElementName VARCHAR(255)",
 				"customElementURLs TEXT"),
 			UpgradeProcessFactory.alterColumnName(
-				"RemoteAppEntry", "url", "iFrameURL VARCHAR(1024) null")
+				"RemoteAppEntry", "url", "iFrameURL")
 		};
 	}
 

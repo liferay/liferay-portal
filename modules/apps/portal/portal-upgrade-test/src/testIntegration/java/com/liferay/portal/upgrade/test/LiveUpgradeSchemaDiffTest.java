@@ -89,8 +89,7 @@ public class LiveUpgradeSchemaDiffTest {
 
 	@Test
 	public void testRecordAlterColumnName() throws Exception {
-		_liveUpgradeSchemaDiff.recordAlterColumnName(
-			"name", "title VARCHAR(128) not null");
+		_liveUpgradeSchemaDiff.recordAlterColumnName("name", "title");
 
 		_checkSchemaDiff(
 			HashMapBuilder.put(

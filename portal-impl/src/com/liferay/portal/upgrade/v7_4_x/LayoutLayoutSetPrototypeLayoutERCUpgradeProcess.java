@@ -61,7 +61,7 @@ public class LayoutLayoutSetPrototypeLayoutERCUpgradeProcess
 		return new UpgradeStep[] {
 			UpgradeProcessFactory.alterColumnName(
 				"Layout", "sourcePrototypeLayoutUuid",
-				"layoutSetPrototypeLayoutERC VARCHAR(75) null")
+				"layoutSetPrototypeLayoutERC")
 		};
 	}
 
