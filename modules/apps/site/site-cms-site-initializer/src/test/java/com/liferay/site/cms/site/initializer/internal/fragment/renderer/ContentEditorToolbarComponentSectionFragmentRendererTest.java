@@ -144,12 +144,6 @@ public class ContentEditorToolbarComponentSectionFragmentRendererTest {
 		);
 
 		Mockito.when(
-			_metadataObjectField.isMetadata()
-		).thenReturn(
-			true
-		);
-
-		Mockito.when(
 			_objectDefinition.getObjectDefinitionId()
 		).thenReturn(
 			_OBJECT_DEFINITION_ID
@@ -195,7 +189,7 @@ public class ContentEditorToolbarComponentSectionFragmentRendererTest {
 		Mockito.when(
 			_objectFieldLocalService.getObjectFields(_OBJECT_DEFINITION_ID)
 		).thenReturn(
-			List.of(_metadataObjectField, _objectField)
+			List.of(_objectField)
 		);
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -270,9 +264,6 @@ public class ContentEditorToolbarComponentSectionFragmentRendererTest {
 	@Mock
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
-
-	@Mock
-	private ObjectField _metadataObjectField;
 
 	@Mock
 	private ObjectDefinition _objectDefinition;
