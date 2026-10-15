@@ -6,6 +6,7 @@
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {ApiHelpers} from '../../helpers/ApiHelpers';
+import {liferayConfig} from '../../liferay.config';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {NotificationsPage} from '../notifications-web/NotificationsPage';
 import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenuPage';
@@ -156,15 +157,19 @@ export class VirtualInstancesPage {
 
 		await this.submitAddInstanceForm();
 
-		// Only wait for Virtual Instance creation if there are no errors
-
-		if (await this.errorMessage.isHidden()) {
-			await expect(this.creationStartedMessage(name)).toBeVisible();
-
-			await this.waitForCreationNotification(name);
-
-			await this.goto();
+		if (await this.errorMessage.isVisible()) {
+			throw new Error(
+				`Unable to add virtual instance ${name}: ${await this.errorMessage.innerText()}`
+			);
 		}
+
+		await expect(this.creationStartedMessage(name)).toBeVisible();
+
+		await this.waitForCreationNotification(name);
+
+		await this.waitForVirtualInstanceToBeReady(name);
+
+		await this.goto();
 	}
 
 	async addNewVirtualInstanceAndSetupAdminUser(
@@ -207,6 +212,8 @@ export class VirtualInstancesPage {
 		await expect(this.creationStartedMessage(name)).toBeVisible();
 
 		await this.waitForCreationNotification(name);
+
+		await this.waitForVirtualInstanceToBeReady(name);
 	}
 
 	private async clickAddInstance() {
@@ -315,9 +322,9 @@ export class VirtualInstancesPage {
 			await notificationsPage.goto();
 
 			await expect(
-				notificationsPage.getNotificationByTitle(
-					`The instance ${name} was created.`
-				)
+				notificationsPage
+					.getNotificationByTitle(`The instance ${name} was created.`)
+					.first()
 			).toBeVisible({timeout: 10 * 1000});
 		}).toPass({timeout: 300 * 1000});
 	}
@@ -382,6 +389,36 @@ export class VirtualInstancesPage {
 				{intervals: [1000], timeout: 180 * 1000}
 			)
 			.toBe(exists);
+	}
+
+	async waitForVirtualInstanceToBeReady(name: string) {
+		const apiHelpers = new ApiHelpers(this.page);
+
+		// The creation notification is sent before the virtual instance
+		// finishes initializing its sites, and the default instance answers
+		// for the virtual host until the new one is registered, so wait for
+		// the new instance itself to render its guest site
+
+		await expect(async () => {
+			const portalInstances =
+				await apiHelpers.headlessPortalInstance.getVirtualInstances();
+
+			const portalInstance = portalInstances.find(
+				(portalInstance) => portalInstance.portalInstanceId === name
+			);
+
+			expect(portalInstance).toBeTruthy();
+
+			const response = await this.page.request.get(
+				`http://${name}:${liferayConfig.environment.port}/web/guest`,
+				{timeout: 10 * 1000}
+			);
+
+			expect(response.status()).toBe(200);
+			expect(await response.text()).toContain(
+				`getCompanyId: () => '${portalInstance.companyId}'`
+			);
+		}).toPass({intervals: [1000], timeout: 300 * 1000});
 	}
 
 	async startVirtualInstanceExport(name: string) {

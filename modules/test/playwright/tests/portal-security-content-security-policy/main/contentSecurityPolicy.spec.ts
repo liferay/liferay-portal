@@ -412,6 +412,8 @@ test('CSP frame-ancestors allows framing from specific domain', async ({
 	site,
 	virtualInstancesPage,
 }) => {
+	test.setTimeout(360000);
+
 	const layout = await apiHelpers.headlessDelivery.createSitePage({
 		pageDefinition: getPageDefinition([
 			getFragmentDefinition({
@@ -511,6 +513,8 @@ test('CSP frame-ancestors blocks framing from specific domain', async ({
 	site,
 	virtualInstancesPage,
 }) => {
+	test.setTimeout(360000);
+
 	const layout = await apiHelpers.headlessDelivery.createSitePage({
 		pageDefinition: getPageDefinition([
 			getFragmentDefinition({
