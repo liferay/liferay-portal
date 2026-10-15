@@ -397,6 +397,47 @@ public class FragmentEntryLocalServiceWrapper
 			portletDataContext);
 	}
 
+	@Override
+	public java.util.List<Object> getFragmentCompositionsAndFragmentEntries(
+		long groupId, long fragmentCollectionId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<?> orderByComparator) {
+
+		return _fragmentEntryLocalService.
+			getFragmentCompositionsAndFragmentEntries(
+				groupId, fragmentCollectionId, status, start, end,
+				orderByComparator);
+	}
+
+	@Override
+	public java.util.List<Object> getFragmentCompositionsAndFragmentEntries(
+		long groupId, long fragmentCollectionId, String name, int status,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<?> orderByComparator) {
+
+		return _fragmentEntryLocalService.
+			getFragmentCompositionsAndFragmentEntries(
+				groupId, fragmentCollectionId, name, status, start, end,
+				orderByComparator);
+	}
+
+	@Override
+	public int getFragmentCompositionsAndFragmentEntriesCount(
+		long groupId, long fragmentCollectionId, int status) {
+
+		return _fragmentEntryLocalService.
+			getFragmentCompositionsAndFragmentEntriesCount(
+				groupId, fragmentCollectionId, status);
+	}
+
+	@Override
+	public int getFragmentCompositionsAndFragmentEntriesCount(
+		long groupId, long fragmentCollectionId, String name, int status) {
+
+		return _fragmentEntryLocalService.
+			getFragmentCompositionsAndFragmentEntriesCount(
+				groupId, fragmentCollectionId, name, status);
+	}
+
 	/**
 	 * Returns a range of all the fragment entries.
 	 *
@@ -760,4 +801,4 @@ public class FragmentEntryLocalServiceWrapper
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1282295569
+// LIFERAY-SERVICE-BUILDER-HASH:-1493991405

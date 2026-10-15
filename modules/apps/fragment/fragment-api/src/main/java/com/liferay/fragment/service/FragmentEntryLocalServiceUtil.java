@@ -347,6 +347,38 @@ public class FragmentEntryLocalServiceUtil {
 		return getService().getExportActionableDynamicQuery(portletDataContext);
 	}
 
+	public static List<Object> getFragmentCompositionsAndFragmentEntries(
+		long groupId, long fragmentCollectionId, int status, int start, int end,
+		OrderByComparator<?> orderByComparator) {
+
+		return getService().getFragmentCompositionsAndFragmentEntries(
+			groupId, fragmentCollectionId, status, start, end,
+			orderByComparator);
+	}
+
+	public static List<Object> getFragmentCompositionsAndFragmentEntries(
+		long groupId, long fragmentCollectionId, String name, int status,
+		int start, int end, OrderByComparator<?> orderByComparator) {
+
+		return getService().getFragmentCompositionsAndFragmentEntries(
+			groupId, fragmentCollectionId, name, status, start, end,
+			orderByComparator);
+	}
+
+	public static int getFragmentCompositionsAndFragmentEntriesCount(
+		long groupId, long fragmentCollectionId, int status) {
+
+		return getService().getFragmentCompositionsAndFragmentEntriesCount(
+			groupId, fragmentCollectionId, status);
+	}
+
+	public static int getFragmentCompositionsAndFragmentEntriesCount(
+		long groupId, long fragmentCollectionId, String name, int status) {
+
+		return getService().getFragmentCompositionsAndFragmentEntriesCount(
+			groupId, fragmentCollectionId, name, status);
+	}
+
 	/**
 	 * Returns a range of all the fragment entries.
 	 *
@@ -632,4 +664,4 @@ public class FragmentEntryLocalServiceUtil {
 			FragmentEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1358558076
+// LIFERAY-SERVICE-BUILDER-HASH:895567308
