@@ -54,7 +54,7 @@ public class RankingIndexReindexerTest {
 	}
 
 	@Inject(
-		filter = "(component.name=com.liferay.portal.search.tuning.rankings.web.internal.index.RankingIndexReindexer)"
+		filter = "component.name=com.liferay.portal.search.tuning.rankings.web.internal.index.RankingIndexReindexer"
 	)
 	private IndexReindexer _indexReindexer;
 

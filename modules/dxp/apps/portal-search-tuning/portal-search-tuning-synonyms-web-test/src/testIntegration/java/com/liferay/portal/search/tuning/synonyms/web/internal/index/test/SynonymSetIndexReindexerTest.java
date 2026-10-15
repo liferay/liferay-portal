@@ -55,7 +55,7 @@ public class SynonymSetIndexReindexerTest {
 	}
 
 	@Inject(
-		filter = "(component.name=com.liferay.portal.search.tuning.synonyms.web.internal.index.SynonymSetIndexReindexer)"
+		filter = "component.name=com.liferay.portal.search.tuning.synonyms.web.internal.index.SynonymSetIndexReindexer"
 	)
 	private IndexReindexer _indexReindexer;
 
