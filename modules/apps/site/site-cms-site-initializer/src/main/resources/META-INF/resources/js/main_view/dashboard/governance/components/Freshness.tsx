@@ -4,7 +4,10 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import {IItemActionsData} from '@liferay/frontend-data-set-web';
+import {
+	IBaseFilterState,
+	IItemActionsData,
+} from '@liferay/frontend-data-set-web';
 import {sub} from 'frontend-js-web';
 import React, {useContext, useMemo, useState} from 'react';
 
@@ -19,7 +22,6 @@ import toDatePart from '../../../../common/utils/toDatePart';
 import {QUICK_FILTER_TYPES} from '../../../quick_filters/constants';
 import {QUICK_FILTER_UPDATES} from '../../../quick_filters/quickFilterUpdates';
 import {SectionHeader} from '../../common/SectionHeader';
-import {SpaceOption} from '../../common/SpacePicker';
 import InteractiveCard, {
 	MetricColor,
 } from '../../performance/components/InteractiveCard';
@@ -30,7 +32,6 @@ import GovernanceService, {
 	MILLISECONDS_PER_DAY,
 } from '../GovernanceService';
 import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
-import getCMSSectionURL from '../getCMSSectionURL';
 import {GovernanceAdditionalProps} from '../types';
 import {ContentAgeDistribution} from './ContentAgeDistribution';
 import {
@@ -44,10 +45,7 @@ type FreshnessCard = {
 	description: string;
 	emptyStateDescription: string;
 	emptyStateTitle: string;
-	getViewAllHref: (
-		additionalProps: GovernanceAdditionalProps,
-		space: SpaceOption
-	) => string;
+	getViewAllFilters: () => Record<string, IBaseFilterState['selectedData']>;
 	icon: string;
 	itemActionIds: IItemActionsData['id'][];
 	listTitle?: string;
@@ -55,6 +53,7 @@ type FreshnessCard = {
 	renderSubtitle: (item: ISearchAssetObjectEntry) => React.ReactNode;
 	statKey: keyof AssetStatistics;
 	title: string;
+	viewAllSortKey: string;
 };
 
 const BASE_ITEM_ACTION_IDS: IItemActionsData['id'][] = [
@@ -93,45 +92,19 @@ function formatDate(value?: string) {
 	);
 }
 
-function getUpcomingReviewsHref(
-	additionalProps: GovernanceAdditionalProps,
-	space: SpaceOption
-) {
-	return getAllSectionHref(additionalProps.allSectionFDSName, {
-		filters: [
-			{
-				id: FDS_FILTER_ID.DATE_REVIEW,
-				selectedData: {
-					exclude: false,
-					from: toDatePart(new Date(Date.now())),
-					to: toDatePart(
-						new Date(
-							Date.now() +
-								UPCOMING_REVIEW_THRESHOLD_DAYS *
-									MILLISECONDS_PER_DAY
-						)
-					),
-				},
-			},
-			...getSpaceFilters(space),
-		],
-		sorts: [{direction: 'asc', key: FDS_FILTER_ID.DATE_REVIEW}],
-	});
-}
-
-function getExpiringSoonHref(
-	additionalProps: GovernanceAdditionalProps,
-	space: SpaceOption
-) {
-	return getAllSectionHref(additionalProps.allSectionFDSName, {
-		filters: [
-			...Object.entries(
-				QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.EXPIRING_SOON]()
-			).map(([id, selectedData]) => ({id, selectedData})),
-			...getSpaceFilters(space),
-		],
-		sorts: [{direction: 'asc', key: FDS_FILTER_ID.DATE_EXPIRATION}],
-	});
+function getUpcomingReviewsFilters() {
+	return {
+		[FDS_FILTER_ID.DATE_REVIEW]: {
+			exclude: false,
+			from: toDatePart(new Date(Date.now())),
+			to: toDatePart(
+				new Date(
+					Date.now() +
+						UPCOMING_REVIEW_THRESHOLD_DAYS * MILLISECONDS_PER_DAY
+				)
+			),
+		},
+	};
 }
 
 function renderExpirationDate(item: ISearchAssetObjectEntry) {
@@ -165,8 +138,7 @@ const FRESHNESS_CARDS: FreshnessCard[] = [
 			'none-of-your-assets-have-passed-their-expiration-date'
 		),
 		emptyStateTitle: Liferay.Language.get('no-expired-assets'),
-		getViewAllHref: (_additionalProps, space) =>
-			getCMSSectionURL('expired-assets', space.siteId),
+		getViewAllFilters: QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.EXPIRED],
 		icon: 'warning-full',
 		itemActionIds: EXPIRATION_ITEM_ACTION_IDS,
 		listTitle: Liferay.Language.get('expired-assets'),
@@ -174,6 +146,7 @@ const FRESHNESS_CARDS: FreshnessCard[] = [
 		renderSubtitle: renderExpiredDate,
 		statKey: 'expiredCount',
 		title: Liferay.Language.get('expired'),
+		viewAllSortKey: FDS_FILTER_ID.DATE_EXPIRATION,
 	},
 	{
 		color: 'orange',
@@ -184,13 +157,15 @@ const FRESHNESS_CARDS: FreshnessCard[] = [
 			'no-approved-assets-are-about-to-reach-their-expiration-date'
 		),
 		emptyStateTitle: Liferay.Language.get('nothing-expiring-soon'),
-		getViewAllHref: getExpiringSoonHref,
+		getViewAllFilters:
+			QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.EXPIRING_SOON],
 		icon: 'flag-full',
 		itemActionIds: EXPIRATION_ITEM_ACTION_IDS,
 		listType: 'expiringSoon',
 		renderSubtitle: renderExpirationDate,
 		statKey: 'expiringSoonCount',
 		title: Liferay.Language.get('expiring-soon'),
+		viewAllSortKey: FDS_FILTER_ID.DATE_EXPIRATION,
 	},
 	{
 		color: 'cyan',
@@ -201,14 +176,15 @@ const FRESHNESS_CARDS: FreshnessCard[] = [
 			'all-review-dates-are-up-to-date'
 		),
 		emptyStateTitle: Liferay.Language.get('no-overdue-reviews'),
-		getViewAllHref: (_additionalProps, space) =>
-			getCMSSectionURL('overdue-reviews', space.siteId),
+		getViewAllFilters:
+			QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.REVIEW_DATE_OVERDUE],
 		icon: 'date-time',
 		itemActionIds: REVIEW_ITEM_ACTION_IDS,
 		listType: 'overdueReviews',
 		renderSubtitle: renderReviewDate,
 		statKey: 'reviewDateOverdueCount',
 		title: Liferay.Language.get('overdue-reviews'),
+		viewAllSortKey: FDS_FILTER_ID.DATE_REVIEW,
 	},
 	{
 		color: 'yellow',
@@ -219,13 +195,14 @@ const FRESHNESS_CARDS: FreshnessCard[] = [
 			'no-assets-are-approaching-their-review-date'
 		),
 		emptyStateTitle: Liferay.Language.get('no-upcoming-reviews'),
-		getViewAllHref: getUpcomingReviewsHref,
+		getViewAllFilters: getUpcomingReviewsFilters,
 		icon: 'date-time',
 		itemActionIds: REVIEW_ITEM_ACTION_IDS,
 		listType: 'upcomingReviews',
 		renderSubtitle: renderReviewDate,
 		statKey: 'upcomingReviewCount',
 		title: Liferay.Language.get('upcoming-reviews'),
+		viewAllSortKey: FDS_FILTER_ID.DATE_REVIEW,
 	},
 ];
 
@@ -245,7 +222,15 @@ function FreshnessList({
 				additionalProps.contentProgressFilter,
 				space.siteId
 			),
-			viewAllHref: card.getViewAllHref(additionalProps, space),
+			viewAllHref: getAllSectionHref(additionalProps.allSectionFDSName, {
+				filters: [
+					...Object.entries(card.getViewAllFilters()).map(
+						([id, selectedData]) => ({id, selectedData})
+					),
+					...getSpaceFilters(space),
+				],
+				sorts: [{direction: 'asc', key: card.viewAllSortKey}],
+			}),
 		}),
 		[additionalProps, card, space]
 	);

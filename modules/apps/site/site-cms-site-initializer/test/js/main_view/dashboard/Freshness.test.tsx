@@ -347,26 +347,69 @@ describe('[CMS Dashboard] Freshness', () => {
 		]);
 	});
 
-	it('opens the expired assets page scoped by the selected space', async () => {
+	it('opens the all section filtered by the expired status', async () => {
 		renderFreshness({space: SPACE});
 
 		await expandList('expired');
 
 		expect(getViewAllLink('expired-assets')).toHaveAttribute(
 			'href',
-			'/web/cms/expired-assets?groupId=12345'
+			'/web/cms/all?allSection_fdsConfig=SERIALIZED_CONFIG'
 		);
+
+		const {filters, sorts} = (serializeFDSConfig as jest.Mock).mock
+			.calls[0][0];
+
+		expect(filters).toEqual([
+			{
+				id: FDS_FILTER_ID.STATUS,
+				selectedData: expect.objectContaining({
+					selectedItems: [
+						expect.objectContaining({
+							value: WORKFLOW_STATUS.EXPIRED,
+						}),
+					],
+				}),
+			},
+			{
+				id: FDS_FILTER_ID.SCOPE_GROUP_ID,
+				selectedData: {
+					exclude: false,
+					selectedItems: [{label: 'My Space', value: 12345}],
+				},
+			},
+		]);
+		expect(sorts).toEqual([
+			{direction: 'asc', key: FDS_FILTER_ID.DATE_EXPIRATION},
+		]);
 	});
 
-	it('opens the overdue reviews page for all spaces', async () => {
+	it('opens the all section filtered by the review dates already passed', async () => {
 		renderFreshness();
 
 		await expandList('overdue-reviews');
 
 		expect(getViewAllLink('overdue-reviews')).toHaveAttribute(
 			'href',
-			'/web/cms/overdue-reviews'
+			'/web/cms/all?allSection_fdsConfig=SERIALIZED_CONFIG'
 		);
+
+		const {filters, sorts} = (serializeFDSConfig as jest.Mock).mock
+			.calls[0][0];
+
+		expect(filters).toEqual([
+			{
+				id: FDS_FILTER_ID.DATE_REVIEW,
+				selectedData: {
+					exclude: false,
+					from: null,
+					to: toDatePart(new Date(NOW)),
+				},
+			},
+		]);
+		expect(sorts).toEqual([
+			{direction: 'asc', key: FDS_FILTER_ID.DATE_REVIEW},
+		]);
 	});
 
 	it('opens the all section filtered by the expiring soon criteria', async () => {

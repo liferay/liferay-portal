@@ -203,7 +203,11 @@ test.describe('Freshness section', () => {
 
 			apiHelpers.data.push({id: overdueContent.id, type: 'document'});
 
-			await page.goto('/web/cms/overdue-reviews');
+			await page.goto('/web/cms/dashboard');
+
+			await selectSpace(page, spaceName);
+
+			await page.getByRole('button', {name: /^Overdue Reviews/}).click();
 
 			await updateReviewDate(page, title, DATE_INPUT);
 
@@ -325,12 +329,12 @@ test.describe('Freshness section', () => {
 				await expect(overdueReviewsCount).toHaveText('3');
 			});
 
-			await test.step('Open the overdue reviews page from the list', async () => {
+			await test.step('Open the all section from the list', async () => {
 				await page
 					.getByRole('link', {name: 'View All Overdue Reviews'})
 					.click();
 
-				await expect(page).toHaveURL(/cms\/overdue-reviews/);
+				await expect(page).toHaveURL(/cms\/all/);
 
 				await expect(
 					page.getByText(secondSpaceTitle, {exact: true})
@@ -509,12 +513,12 @@ test.describe('Freshness section', () => {
 				await expect(expiredAssetsCount).toHaveText('3');
 			});
 
-			await test.step('Open the expired assets page from the list', async () => {
+			await test.step('Open the all section from the list', async () => {
 				await page
 					.getByRole('link', {name: 'View All Expired Assets'})
 					.click();
 
-				await expect(page).toHaveURL(/cms\/expired-assets/);
+				await expect(page).toHaveURL(/cms\/all/);
 
 				await expect(async () => {
 					await page.reload();
