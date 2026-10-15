@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {render, screen} from '@testing-library/react';
+import React from 'react';
+
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/ProductRelationshipsFDSPropsTransformer';
-import ProductRelationshipSelectorTitleRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorTitleRenderer';
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	StatusLabel: jest.fn(),
@@ -50,15 +52,39 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		);
 	});
 
-	it('registers the product title cell renderer', () => {
-		const result = propsTransformer({});
+	it('marks the current product in the title cell', () => {
+		const result = propsTransformer({
+			additionalProps: {objectEntryId: '42986'},
+		});
 
-		const [renderer] = result.customRenderers.tableCell;
+		const [{component: TitleRenderer, name}] =
+			result.customRenderers.tableCell;
 
-		expect(renderer.component).toBe(
-			ProductRelationshipSelectorTitleRenderer
+		expect(name).toBe('titleTableCellRenderer');
+
+		const {rerender} = render(
+			<TitleRenderer itemData={{id: 42986}} value="Shirt" />
 		);
-		expect(renderer.name).toBe('titleTableCellRenderer');
+
+		expect(screen.getByText('Shirt')).toBeInTheDocument();
+		expect(screen.getByText('viewing')).toBeInTheDocument();
+
+		rerender(<TitleRenderer itemData={{id: 42994}} value="Shirt Red" />);
+
+		expect(screen.getByText('Shirt Red')).toBeInTheDocument();
+		expect(screen.queryByText('viewing')).not.toBeInTheDocument();
+	});
+
+	it('hides View on the row of the current product', () => {
+		const result = propsTransformer({
+			additionalProps: {objectEntryId: '42986'},
+			itemsActions: [{data: {id: 'view'}}],
+		});
+
+		const [viewItemsAction] = result.itemsActions;
+
+		expect(viewItemsAction.isVisible({id: 42986})).toBe(false);
+		expect(viewItemsAction.isVisible({id: 42994})).toBe(true);
 	});
 
 	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
