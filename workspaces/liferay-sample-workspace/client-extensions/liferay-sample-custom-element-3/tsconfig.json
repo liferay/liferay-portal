@@ -7,9 +7,7 @@
 	},
 	"compileOnSave": false,
 	"compilerOptions": {
-		"baseUrl": "./",
 		"declaration": false,
-		"downlevelIteration": true,
 		"experimentalDecorators": true,
 		"forceConsistentCasingInFileNames": true,
 		"importHelpers": true,
@@ -18,7 +16,7 @@
 			"dom"
 		],
 		"module": "ES2022",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,

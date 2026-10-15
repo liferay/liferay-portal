@@ -54,17 +54,17 @@
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
 					"options": {
-						"browserTarget": "liferay-sample-custom-element-3:build"
+						"buildTarget": "liferay-sample-custom-element-3:build"
 					}
 				},
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
 						"development": {
-							"browserTarget": "liferay-sample-custom-element-3:build:development"
+							"buildTarget": "liferay-sample-custom-element-3:build:development"
 						},
 						"production": {
-							"browserTarget": "liferay-sample-custom-element-3:build:production"
+							"buildTarget": "liferay-sample-custom-element-3:build:production"
 						}
 					},
 					"defaultConfiguration": "development"
