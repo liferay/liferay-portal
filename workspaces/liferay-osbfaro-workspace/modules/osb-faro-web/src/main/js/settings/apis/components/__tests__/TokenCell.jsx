@@ -30,7 +30,7 @@ describe('TokenCell', () => {
 		);
 
 		expect(
-			getByText(container.querySelector('.label-root'), 'Expired')
+			getByText(container.querySelector('.label'), 'Expired')
 		).toBeTruthy();
 
 		jest.restoreAllMocks();

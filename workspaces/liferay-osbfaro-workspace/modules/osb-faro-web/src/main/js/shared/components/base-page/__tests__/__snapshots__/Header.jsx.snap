@@ -285,7 +285,7 @@ exports[`BasePage.Header TitleSection renders TitleSection w/ subtitle & label 1
       Test Test
     </span>
     <span
-      class="label mb-4 label-info"
+      class="label mb-4 label-inverse-info"
     >
       <span
         class="label-item label-item-expand"

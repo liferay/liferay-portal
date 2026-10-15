@@ -50,15 +50,15 @@ exports[`AccessTokenList should display the "Generate Token" card  above the tab
             >
               4ABC
             </strong>
-            <div
-              class="label label-root ml-2 label-danger label-lg label-uppercase"
+            <span
+              class="label ml-2 label-lg label-inverse-danger"
             >
               <span
-                class="label-item"
+                class="label-item label-item-expand"
               >
                 Expired
               </span>
-            </div>
+            </span>
           </td>
           <td>
             Jul 10, 2018

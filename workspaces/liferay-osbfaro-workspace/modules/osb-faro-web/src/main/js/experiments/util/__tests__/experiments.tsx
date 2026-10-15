@@ -36,13 +36,13 @@ describe('getStatusColor', () => {
 
 describe('getMetricName', () => {
 	it('should return status name', () => {
-		expect(getStatusName('COMPLETED')).toEqual('COMPLETE');
-		expect(getStatusName('DRAFT')).toEqual('DRAFT');
-		expect(getStatusName('FINISHED_NO_WINNER')).toEqual('NO WINNER');
-		expect(getStatusName('FINISHED_WINNER')).toEqual('WINNER DECLARED');
-		expect(getStatusName('RUNNING')).toEqual('RUNNING');
-		expect(getStatusName('SCHEDULED')).toEqual('SCHEDULED');
-		expect(getStatusName('TERMINATED')).toEqual('TERMINATED');
+		expect(getStatusName('COMPLETED')).toEqual('Complete');
+		expect(getStatusName('DRAFT')).toEqual('Draft');
+		expect(getStatusName('FINISHED_NO_WINNER')).toEqual('No Winner');
+		expect(getStatusName('FINISHED_WINNER')).toEqual('Winner Declared');
+		expect(getStatusName('RUNNING')).toEqual('Running');
+		expect(getStatusName('SCHEDULED')).toEqual('Scheduled');
+		expect(getStatusName('TERMINATED')).toEqual('Terminated');
 	});
 });
 

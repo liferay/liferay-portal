@@ -32,15 +32,15 @@ exports[`InfoCardPopover render 1`] = `
       >
         Test description
       </div>
-      <div
-        class="label label-root label-info label-uppercase"
+      <span
+        class="label label-inverse-info"
       >
         <span
-          class="label-item"
+          class="label-item label-item-expand"
         >
           String
         </span>
-      </div>
+      </span>
     </div>
   </div>
 </div>

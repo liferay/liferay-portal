@@ -323,15 +323,15 @@ exports[`UserList should render 1`] = `
               test@liferay.com
             </td>
             <td>
-              <div
-                class="label label-root label-warning"
+              <span
+                class="label label-inverse-warning"
               >
                 <span
-                  class="label-item"
+                  class="label-item label-item-expand"
                 >
                   Pending
                 </span>
-              </div>
+              </span>
             </td>
             <td>
               <span>

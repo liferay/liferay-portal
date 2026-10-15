@@ -66,6 +66,8 @@ describe('AttributeList', () => {
 
 		await waitForLoadingToBeRemoved();
 
-		expect(getByText('STRING').parentElement).toHaveClass('label-info');
+		expect(getByText('String').closest('.label')).toHaveClass(
+			'label-inverse-info'
+		);
 	});
 });

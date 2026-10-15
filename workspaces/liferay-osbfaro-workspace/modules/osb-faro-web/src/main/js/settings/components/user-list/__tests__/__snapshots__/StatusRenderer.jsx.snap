@@ -3,15 +3,15 @@
 exports[`StatusRenderer should render 1`] = `
 <div>
   <td>
-    <div
-      class="label label-root label-success"
+    <span
+      class="label label-inverse-success"
     >
       <span
-        class="label-item"
+        class="label-item label-item-expand"
       >
         Approved
       </span>
-    </div>
+    </span>
   </td>
 </div>
 `;

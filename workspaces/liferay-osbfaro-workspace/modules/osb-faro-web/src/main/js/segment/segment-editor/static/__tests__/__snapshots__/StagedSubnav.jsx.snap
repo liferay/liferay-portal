@@ -17,13 +17,13 @@ exports[`StagedSubnav should render 1`] = `
           <div
             class="tbar-section text-truncate"
           >
-            <div
-              class="label label-root label-success label-lg label-uppercase"
+            <span
+              class="label label-lg label-inverse-success"
             >
               <span
-                class="label-item"
+                class="label-item label-item-expand"
               />
-            </div>
+            </span>
           </div>
         </div>
         <div

@@ -164,7 +164,7 @@ describe('TouchedAccountsCard', () => {
 		);
 
 		expect(container).toHaveTextContent('At Risk');
-		expect(container.querySelector('.label-danger')).toBeTruthy();
+		expect(container.querySelector('.label-inverse-danger')).toBeTruthy();
 	});
 
 	it('should abbreviate an amount and leave a missing one blank', () => {

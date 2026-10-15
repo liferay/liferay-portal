@@ -2,14 +2,14 @@
 
 exports[`MetadataTag should render 1`] = `
 <div>
-  <div
-    class="label label-root metadata-tag-root label-lg"
+  <span
+    class="label metadata-tag-root label-lg label-inverse-secondary"
   >
     <span
-      class="label-item"
+      class="label-item label-item-expand"
     >
       og:url
     </span>
-  </div>
+  </span>
 </div>
 `;

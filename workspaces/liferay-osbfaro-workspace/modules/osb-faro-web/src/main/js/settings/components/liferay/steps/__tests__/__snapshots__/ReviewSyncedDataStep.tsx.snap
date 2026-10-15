@@ -56,7 +56,7 @@ exports[`ReviewSyncedDataStep should render 1`] = `
           class="justify-content-center autofit-col"
         >
           <span
-            class="label label-secondary"
+            class="label label-inverse-secondary"
           >
             <span
               class="label-item label-item-expand"
@@ -107,7 +107,7 @@ exports[`ReviewSyncedDataStep should render 1`] = `
           class="justify-content-center autofit-col"
         >
           <span
-            class="label label-secondary"
+            class="label label-inverse-secondary"
           >
             <span
               class="label-item label-item-expand"
@@ -158,7 +158,7 @@ exports[`ReviewSyncedDataStep should render 1`] = `
           class="justify-content-center autofit-col"
         >
           <span
-            class="label label-secondary"
+            class="label label-inverse-secondary"
           >
             <span
               class="label-item label-item-expand"

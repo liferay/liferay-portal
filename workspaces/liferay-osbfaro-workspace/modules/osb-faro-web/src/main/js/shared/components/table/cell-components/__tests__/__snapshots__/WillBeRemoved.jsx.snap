@@ -13,15 +13,15 @@ exports[`WillBeRemovedCell should render as will be removed 1`] = `
   <td
     class=""
   >
-    <div
-      class="label label-root label-danger label-lg label-uppercase"
+    <span
+      class="label label-lg label-inverse-danger"
     >
       <span
-        class="label-item"
+        class="label-item label-item-expand"
       >
         Will Be Removed
       </span>
-    </div>
+    </span>
   </td>
 </div>
 `;

@@ -49,7 +49,7 @@ describe('SelectCategoryFromModal', () => {
 				<DefaultComponent selectedCategories={[]} />
 			);
 
-			expect(container.querySelectorAll('.label-root')).toHaveLength(0);
+			expect(container.querySelectorAll('.label')).toHaveLength(0);
 			expect(queryByLabelText('clear')).toBeNull();
 		});
 	});

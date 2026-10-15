@@ -267,7 +267,7 @@ describe('LifecycleChart', () => {
 		const {container} = renderChart({stages: sampleStages});
 
 		const labels = Array.from(
-			container.querySelectorAll('.label-info')
+			container.querySelectorAll('.label-inverse-info')
 		).map((el) => el.textContent);
 
 		expect(labels[0]).toContain('492%');

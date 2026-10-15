@@ -333,15 +333,15 @@ exports[`AttributeView should render 1`] = `
                 >
                   No Description
                 </div>
-                <div
-                  class="label label-root label-primary label-uppercase"
+                <span
+                  class="label label-inverse-secondary"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
-                    STRING
+                    String
                   </span>
-                </div>
+                </span>
               </div>
             </div>
             <div

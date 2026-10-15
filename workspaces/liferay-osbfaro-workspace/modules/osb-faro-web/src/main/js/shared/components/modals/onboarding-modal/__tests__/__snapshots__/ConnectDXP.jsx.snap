@@ -71,7 +71,7 @@ exports[`ConnectDXP should query dataSources without credentialsType 1`] = `
             class="autofit-col"
           >
             <span
-              class="label text-uppercase label-lg label-secondary"
+              class="label label-lg label-inverse-secondary"
             >
               <span
                 class="label-item label-item-expand"
@@ -97,7 +97,7 @@ exports[`ConnectDXP should query dataSources without credentialsType 1`] = `
             class="autofit-col"
           >
             <span
-              class="label text-uppercase label-lg label-secondary"
+              class="label label-lg label-inverse-secondary"
             >
               <span
                 class="label-item label-item-expand"
@@ -426,7 +426,7 @@ exports[`ConnectDXP should render connected state 1`] = `
             class="autofit-col"
           >
             <span
-              class="label text-uppercase label-lg label-secondary"
+              class="label label-lg label-inverse-secondary"
             >
               <span
                 class="label-item label-item-expand"
@@ -452,7 +452,7 @@ exports[`ConnectDXP should render connected state 1`] = `
             class="autofit-col"
           >
             <span
-              class="label text-uppercase label-lg label-secondary"
+              class="label label-lg label-inverse-secondary"
             >
               <span
                 class="label-item label-item-expand"

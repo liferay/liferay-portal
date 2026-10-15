@@ -38,7 +38,7 @@ exports[`SegmentActivationCard should render when frequency type is batch 1`] = 
               This syncs individual profiles to Liferay DXP to deliver personalization via pages, collections, A/B tests, and recommendations.
             </p>
             <span
-              class="label align-self-start label-info"
+              class="label align-self-start label-inverse-info"
             >
               <span
                 class="label-item label-item-expand"
@@ -116,7 +116,7 @@ exports[`SegmentActivationCard should render with dates when frequency type is b
               This syncs individual profiles to Liferay DXP to deliver personalization via pages, collections, A/B tests, and recommendations.
             </p>
             <span
-              class="label align-self-start label-info"
+              class="label align-self-start label-inverse-info"
             >
               <span
                 class="label-item label-item-expand"

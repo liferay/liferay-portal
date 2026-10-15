@@ -402,15 +402,15 @@ exports[`View should render 1`] = `
                                 123
                               </td>
                               <td>
-                                <div
-                                  class="label label-root status label-success label-lg label-uppercase"
+                                <span
+                                  class="label status label-lg label-inverse-success"
                                 >
                                   <span
-                                    class="label-item"
+                                    class="label-item label-item-expand"
                                   >
                                     Completed
                                   </span>
-                                </div>
+                                </span>
                               </td>
                             </tr>
                           </tbody>

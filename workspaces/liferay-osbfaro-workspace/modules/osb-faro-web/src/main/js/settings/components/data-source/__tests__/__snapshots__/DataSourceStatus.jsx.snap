@@ -20,15 +20,15 @@ exports[`DataSourceStatus should render 1`] = `
       <div
         class="panel-title-label"
       >
-        <div
-          class="label label-root label-info label-lg label-uppercase"
+        <span
+          class="label label-lg label-inverse-info"
         >
           <span
-            class="label-item"
+            class="label-item label-item-expand"
           >
             foo
           </span>
-        </div>
+        </span>
       </div>
     </div>
     <div

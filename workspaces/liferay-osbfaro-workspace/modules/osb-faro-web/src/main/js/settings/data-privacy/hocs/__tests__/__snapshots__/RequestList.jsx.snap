@@ -368,15 +368,15 @@ exports[`RequestList should render 1`] = `
                 Oct 9, 2019
               </td>
               <td>
-                <div
-                  class="label label-root status label-info label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-info"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Running
                   </span>
-                </div>
+                </span>
               </td>
               <td
                 class="row-inline-actions"
@@ -423,15 +423,15 @@ exports[`RequestList should render 1`] = `
                 Oct 9, 2019
               </td>
               <td>
-                <div
-                  class="label label-root status label-info label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-info"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Running
                   </span>
-                </div>
+                </span>
               </td>
               <td
                 class="row-inline-actions"
@@ -478,15 +478,15 @@ exports[`RequestList should render 1`] = `
                 Sep 9, 2019
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Done
                   </span>
-                </div>
+                </span>
               </td>
               <td
                 class="row-inline-actions"
@@ -536,15 +536,15 @@ exports[`RequestList should render 1`] = `
                 Nov 9, 2019
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Done
                   </span>
-                </div>
+                </span>
               </td>
               <td
                 class="row-inline-actions"
@@ -600,15 +600,15 @@ exports[`RequestList should render 1`] = `
                 Sep 9, 2019
               </td>
               <td>
-                <div
-                  class="label label-root status label-danger label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-danger"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Error
                   </span>
-                </div>
+                </span>
               </td>
               <td
                 class="row-inline-actions"
@@ -655,15 +655,15 @@ exports[`RequestList should render 1`] = `
                 Sep 9, 2019
               </td>
               <td>
-                <div
-                  class="label label-root status label-secondary label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-secondary"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Pending
                   </span>
-                </div>
+                </span>
               </td>
               <td
                 class="row-inline-actions"
@@ -709,15 +709,15 @@ exports[`RequestList should render 1`] = `
                 Dec 5, 2019
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Done
                   </span>
-                </div>
+                </span>
               </td>
               <td
                 class="row-inline-actions"

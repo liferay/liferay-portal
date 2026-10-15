@@ -19,15 +19,15 @@ exports[`EntityRowActions should render with a removed label and undo link 1`] =
   >
     Undo
   </button>
-  <div
-    class="label label-root label-warning label-lg label-uppercase"
+  <span
+    class="label label-lg label-inverse-warning"
   >
     <span
-      class="label-item"
+      class="label-item label-item-expand"
     >
       Removed
     </span>
-  </div>
+  </span>
 </div>
 `;
 
@@ -39,14 +39,14 @@ exports[`EntityRowActions should render with an added label and undo link 1`] = 
   >
     Undo
   </button>
-  <div
-    class="label label-root label-success label-lg label-uppercase"
+  <span
+    class="label label-lg label-inverse-success"
   >
     <span
-      class="label-item"
+      class="label-item label-item-expand"
     >
       Added
     </span>
-  </div>
+  </span>
 </div>
 `;

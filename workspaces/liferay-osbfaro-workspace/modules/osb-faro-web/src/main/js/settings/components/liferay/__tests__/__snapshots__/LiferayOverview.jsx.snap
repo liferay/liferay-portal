@@ -291,7 +291,7 @@ exports[`LiferayOverview should render 1`] = `
               class="mb-5"
             >
               <span
-                class="label mb-2 label-info"
+                class="label mb-2 label-inverse-info"
               >
                 <span
                   class="label-item label-item-expand"
@@ -537,7 +537,7 @@ exports[`LiferayOverview should render 1`] = `
                       class="justify-content-center autofit-col"
                     >
                       <span
-                        class="label label-secondary"
+                        class="label label-inverse-secondary"
                       >
                         <span
                           class="label-item label-item-expand"
@@ -593,7 +593,7 @@ exports[`LiferayOverview should render 1`] = `
                       class="justify-content-center autofit-col"
                     >
                       <span
-                        class="label label-secondary"
+                        class="label label-inverse-secondary"
                       >
                         <span
                           class="label-item label-item-expand"
@@ -649,7 +649,7 @@ exports[`LiferayOverview should render 1`] = `
                       class="justify-content-center autofit-col"
                     >
                       <span
-                        class="label label-secondary"
+                        class="label label-inverse-secondary"
                       >
                         <span
                           class="label-item label-item-expand"

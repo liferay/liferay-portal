@@ -163,15 +163,15 @@ exports[`EventDetailsCard should render 1`] = `
                 samplevalue-0
               </td>
               <td>
-                <div
-                  class="label label-root label-info label-lg label-uppercase"
+                <span
+                  class="label label-lg label-inverse-info"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
-                    STRING
+                    String
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -233,15 +233,15 @@ exports[`EventDetailsCard should render 1`] = `
                 samplevalue-1
               </td>
               <td>
-                <div
-                  class="label label-root label-info label-lg label-uppercase"
+                <span
+                  class="label label-lg label-inverse-info"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
-                    STRING
+                    String
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -303,15 +303,15 @@ exports[`EventDetailsCard should render 1`] = `
                 samplevalue-2
               </td>
               <td>
-                <div
-                  class="label label-root label-info label-lg label-uppercase"
+                <span
+                  class="label label-lg label-inverse-info"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
-                    STRING
+                    String
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -373,15 +373,15 @@ exports[`EventDetailsCard should render 1`] = `
                 samplevalue-3
               </td>
               <td>
-                <div
-                  class="label label-root label-info label-lg label-uppercase"
+                <span
+                  class="label label-lg label-inverse-info"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
-                    STRING
+                    String
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -443,15 +443,15 @@ exports[`EventDetailsCard should render 1`] = `
                 samplevalue-4
               </td>
               <td>
-                <div
-                  class="label label-root label-info label-lg label-uppercase"
+                <span
+                  class="label label-lg label-inverse-info"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
-                    STRING
+                    String
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
           </tbody>

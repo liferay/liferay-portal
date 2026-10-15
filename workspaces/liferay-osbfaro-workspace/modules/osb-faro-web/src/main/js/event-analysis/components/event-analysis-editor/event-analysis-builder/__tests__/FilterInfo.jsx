@@ -17,7 +17,7 @@ describe('FilterInfo', () => {
 		);
 
 		expect(container.querySelector('.description')).toBeTruthy();
-		expect(container.querySelector('.label-root')).toBeTruthy();
+		expect(container.querySelector('.label')).toBeTruthy();
 		expect(container).toMatchSnapshot();
 	});
 
@@ -44,6 +44,6 @@ describe('FilterInfo', () => {
 			/>
 		);
 
-		expect(container.querySelector('.label-root')).toBeNull();
+		expect(container.querySelector('.label')).toBeNull();
 	});
 });

@@ -291,7 +291,7 @@ exports[`MarketoCampaignOverview should render an error when the count requests 
               class="mb-5"
             >
               <span
-                class="label mb-2 label-success"
+                class="label mb-2 label-inverse-success"
               >
                 <span
                   class="label-item label-item-expand"
@@ -1001,7 +1001,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
               class="mb-5"
             >
               <span
-                class="label mb-2 label-success"
+                class="label mb-2 label-inverse-success"
               >
                 <span
                   class="label-item label-item-expand"
@@ -1320,7 +1320,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
                           class="justify-content-center autofit-col"
                         >
                           <span
-                            class="label label-success"
+                            class="label label-inverse-success"
                           >
                             <span
                               class="label-item label-item-expand"
@@ -1875,7 +1875,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
               class="mb-5"
             >
               <span
-                class="label mb-2 label-secondary"
+                class="label mb-2 label-inverse-secondary"
               >
                 <span
                   class="label-item label-item-expand"
@@ -2284,7 +2284,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                           class="justify-content-center autofit-col"
                         >
                           <span
-                            class="label label-success"
+                            class="label label-inverse-success"
                           >
                             <span
                               class="label-item label-item-expand"

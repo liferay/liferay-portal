@@ -373,15 +373,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -439,15 +439,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -505,15 +505,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -571,15 +571,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -637,15 +637,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -703,15 +703,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -769,15 +769,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -835,15 +835,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -901,15 +901,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
             <tr
@@ -967,15 +967,15 @@ exports[`RecommendationList should render 1`] = `
                 Jul 8, 2018
               </td>
               <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                <span
+                  class="label status label-lg label-inverse-success"
                 >
                   <span
-                    class="label-item"
+                    class="label-item label-item-expand"
                   >
                     Ready
                   </span>
-                </div>
+                </span>
               </td>
             </tr>
           </tbody>

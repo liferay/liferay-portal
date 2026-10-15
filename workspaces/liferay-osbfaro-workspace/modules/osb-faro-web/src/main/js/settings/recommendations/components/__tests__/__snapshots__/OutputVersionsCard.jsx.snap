@@ -85,15 +85,15 @@ exports[`OutputVersionsCard should render 1`] = `
                   123
                 </td>
                 <td>
-                  <div
-                    class="label label-root status label-success label-lg label-uppercase"
+                  <span
+                    class="label status label-lg label-inverse-success"
                   >
                     <span
-                      class="label-item"
+                      class="label-item label-item-expand"
                     >
                       Completed
                     </span>
-                  </div>
+                  </span>
                 </td>
               </tr>
               <tr
@@ -119,15 +119,15 @@ exports[`OutputVersionsCard should render 1`] = `
                   123
                 </td>
                 <td>
-                  <div
-                    class="label label-root status label-danger label-lg label-uppercase"
+                  <span
+                    class="label status label-lg label-inverse-danger"
                   >
                     <span
-                      class="label-item"
+                      class="label-item label-item-expand"
                     >
                       Failed
                     </span>
-                  </div>
+                  </span>
                 </td>
               </tr>
               <tr
@@ -153,15 +153,15 @@ exports[`OutputVersionsCard should render 1`] = `
                   123
                 </td>
                 <td>
-                  <div
-                    class="label label-root status label-primary label-lg label-uppercase"
+                  <span
+                    class="label status label-lg label-inverse-secondary"
                   >
                     <span
-                      class="label-item"
+                      class="label-item label-item-expand"
                     >
                       Live Version
                     </span>
-                  </div>
+                  </span>
                 </td>
               </tr>
               <tr
@@ -187,15 +187,15 @@ exports[`OutputVersionsCard should render 1`] = `
                   123
                 </td>
                 <td>
-                  <div
-                    class="label label-root status label-warning label-lg label-uppercase"
+                  <span
+                    class="label status label-lg label-inverse-warning"
                   >
                     <span
-                      class="label-item"
+                      class="label-item label-item-expand"
                     >
                       Training
                     </span>
-                  </div>
+                  </span>
                 </td>
               </tr>
             </tbody>

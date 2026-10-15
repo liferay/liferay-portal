@@ -40,15 +40,15 @@ exports[`TrainingItemsCard should render 1`] = `
           <b>
             Include:
           </b>
-          <div
-            class="label label-root metadata-tag-root label-lg"
+          <span
+            class="label metadata-tag-root label-lg label-inverse-secondary"
           >
             <span
-              class="label-item"
+              class="label-item label-item-expand"
             >
               url
             </span>
-          </div>
+          </span>
           <span
             class="rule-value"
           >

@@ -270,7 +270,7 @@ describe('VerticalTimeline', () => {
 				]
 			});
 
-			expect(screen.getByText('HUBSPOT')).toBeInTheDocument();
+			expect(screen.getByText('Hubspot')).toBeInTheDocument();
 			expect(screen.queryByText('DXP')).not.toBeInTheDocument();
 		});
 
