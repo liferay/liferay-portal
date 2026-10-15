@@ -9,6 +9,7 @@
 
 <%
 String oAuth2AccessToken = GetterUtil.getString(request.getAttribute(ScimWebKeys.SCIM_OAUTH2_ACCESS_TOKEN));
+String oAuth2AccessTokenExpirationDateString = GetterUtil.getString(request.getAttribute(ScimWebKeys.SCIM_OAUTH2_ACCESS_TOKEN_EXPIRATION_DATE));
 long oAuth2AccessTokenExpirationDays = GetterUtil.getLong(request.getAttribute(ScimWebKeys.SCIM_OAUTH2_ACCESS_TOKEN_EXPIRATION_DAYS));
 String oAuth2ApplicationName = GetterUtil.getString(request.getAttribute(ScimWebKeys.SCIM_OAUTH2_APPLICATION_NAME));
 %>
@@ -30,40 +31,48 @@ String oAuth2ApplicationName = GetterUtil.getString(request.getAttribute(ScimWeb
 		String oAuth2AccessTokenInputId = liferayPortletResponse.getNamespace() + "oAuth2AccessToken";
 		%>
 
-		<div class="form-group">
-			<label for="<%= oAuth2AccessTokenInputId %>">
-				<liferay-ui:message key="access-token" />
-			</label>
+		<c:if test="<%= !PropsValues.FIPS_ENABLED || Validator.isNotNull(oAuth2AccessToken) %>">
+			<div class="form-group">
+				<label for="<%= oAuth2AccessTokenInputId %>">
+					<liferay-ui:message key="access-token" />
+				</label>
 
-			<div class="input-group input-group-sm">
-				<div class="input-group-item input-group-prepend">
-					<input class="form-control" id="<%= oAuth2AccessTokenInputId %>" readonly value="<%= oAuth2AccessToken %>" />
+				<div class="input-group input-group-sm">
+					<div class="input-group-item input-group-prepend">
+						<input class="form-control" id="<%= oAuth2AccessTokenInputId %>" readonly value="<%= oAuth2AccessToken %>" />
+					</div>
+
+					<span class="input-group-append input-group-item input-group-item-shrink">
+						<clay:button
+							cssClass="lfr-portal-tooltip scim-infopanel-copy-clipboard"
+							data-clipboard-target='<%= "#" + oAuth2AccessTokenInputId %>'
+							displayType="secondary"
+							icon="paste"
+							id="copyAccessToken"
+							name="copyAccessToken"
+							title="copy-link"
+						/>
+					</span>
 				</div>
-
-				<span class="input-group-append input-group-item input-group-item-shrink">
-					<clay:button
-						cssClass="lfr-portal-tooltip scim-infopanel-copy-clipboard"
-						data-clipboard-target='<%= "#" + oAuth2AccessTokenInputId %>'
-						displayType="secondary"
-						icon="paste"
-						id="copyAccessToken"
-						name="copyAccessToken"
-						title="copy-link"
-					/>
-				</span>
 			</div>
-		</div>
+		</c:if>
 
-		<c:if test="<%= Validator.isNotNull(oAuth2AccessToken) %>">
+		<c:if test="<%= PropsValues.FIPS_ENABLED && Validator.isNotNull(oAuth2AccessTokenExpirationDateString) %>">
+			<div class="alert alert-info">
+				<liferay-ui:message key="the-access-token-is-shown-only-once-generate-a-new-one-if-you-did-not-copy-it" />
+			</div>
+		</c:if>
+
+		<c:if test="<%= Validator.isNotNull(oAuth2AccessTokenExpirationDateString) %>">
 			<c:choose>
 				<c:when test="<%= (oAuth2AccessTokenExpirationDays < 30) && (oAuth2AccessTokenExpirationDays > 0) %>">
 					<div class="alert alert-warning">
-						<liferay-ui:message arguments="<%= GetterUtil.getString(request.getAttribute(ScimWebKeys.SCIM_OAUTH2_ACCESS_TOKEN_EXPIRATION_DATE)) %>" key="the-access-token-for-the-scim-client-will-expire-at-x" translateArguments="<%= false %>" />
+						<liferay-ui:message arguments="<%= oAuth2AccessTokenExpirationDateString %>" key="the-access-token-for-the-scim-client-will-expire-at-x" translateArguments="<%= false %>" />
 					</div>
 				</c:when>
 				<c:when test="<%= oAuth2AccessTokenExpirationDays < 0 %>">
 					<div class="alert alert-danger">
-						<liferay-ui:message arguments="<%= GetterUtil.getString(request.getAttribute(ScimWebKeys.SCIM_OAUTH2_ACCESS_TOKEN_EXPIRATION_DATE)) %>" key="the-access-token-for-the-scim-client-expired-at-x" translateArguments="<%= false %>" />
+						<liferay-ui:message arguments="<%= oAuth2AccessTokenExpirationDateString %>" key="the-access-token-for-the-scim-client-expired-at-x" translateArguments="<%= false %>" />
 					</div>
 				</c:when>
 			</c:choose>
@@ -101,7 +110,7 @@ String oAuth2ApplicationName = GetterUtil.getString(request.getAttribute(ScimWeb
 			</div>
 		</div>
 
-		<c:if test="<%= Validator.isNotNull(oAuth2AccessToken) %>">
+		<c:if test="<%= Validator.isNotNull(oAuth2AccessTokenExpirationDateString) %>">
 			<div class="form-group">
 				<label for="<portlet:namespace />revokeAccessToken">
 					<liferay-ui:message key="scim-revoke-all" />

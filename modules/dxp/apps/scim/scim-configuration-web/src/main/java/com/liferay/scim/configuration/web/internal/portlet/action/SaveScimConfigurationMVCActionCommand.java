@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.scim.configuration.web.internal.constants.ScimWebKeys;
@@ -50,10 +51,7 @@ import com.liferay.scim.rest.util.ScimThreadLocal;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
-
-import java.nio.charset.StandardCharsets;
-
-import java.security.MessageDigest;
+import jakarta.portlet.PortletSession;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -115,6 +113,10 @@ public class SaveScimConfigurationMVCActionCommand
 
 			String accessToken = jsonObject.getString("access_token");
 
+			OAuth2Authorization generatedOAuth2Authorization =
+				_oAuth2AuthorizationLocalService.
+					fetchOAuth2AuthorizationByAccessTokenContent(accessToken);
+
 			List<OAuth2Authorization> oAuth2Authorizations =
 				_oAuth2AuthorizationLocalService.getOAuth2Authorizations(
 					oAuth2Application.getOAuth2ApplicationId(),
@@ -123,13 +125,8 @@ public class SaveScimConfigurationMVCActionCommand
 			for (OAuth2Authorization oAuth2Authorization :
 					oAuth2Authorizations) {
 
-				String accessTokenContent =
-					oAuth2Authorization.getAccessTokenContent();
-
-				if ((accessToken != null) &&
-					MessageDigest.isEqual(
-						accessToken.getBytes(StandardCharsets.UTF_8),
-						accessTokenContent.getBytes(StandardCharsets.UTF_8))) {
+				if (Objects.equals(
+						oAuth2Authorization, generatedOAuth2Authorization)) {
 
 					continue;
 				}
@@ -160,6 +157,14 @@ public class SaveScimConfigurationMVCActionCommand
 
 				_oAuth2AuthorizationLocalService.updateOAuth2Authorization(
 					oAuth2Authorization);
+			}
+
+			if (PropsValues.FIPS_ENABLED) {
+				PortletSession portletSession =
+					actionRequest.getPortletSession();
+
+				portletSession.setAttribute(
+					ScimWebKeys.SCIM_OAUTH2_ACCESS_TOKEN, accessToken);
 			}
 
 			actionRequest.setAttribute(
