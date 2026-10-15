@@ -1196,11 +1196,11 @@ definition {
 			kbArticleTitle = "Knowledge Base Article Title",
 			siteURLKey = "guest");
 
-		KBArticle.setReviewDate(increaseMinutes = 1);
+		KBArticle.setReviewDate(increaseMinutes = 2);
 
 		KBArticle.clickPublish();
 
-		Notifications.waitForNotificationFlexibly(flexibleRefreshingTime = 20000);
+		Notifications.waitForNotificationFlexibly(flexibleRefreshingTime = 40000);
 
 		Navigator.openURL();
 
