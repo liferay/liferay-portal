@@ -6,6 +6,7 @@
 package com.liferay.portal.workflow.kaleo.definition.internal.parser;
 
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -98,6 +99,10 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 	@Override
 	public Definition parse(long companyId, InputStream inputStream)
 		throws WorkflowException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-49856")) {
+			return parse(inputStream);
+		}
 
 		try {
 			Document document = SAXReaderUtil.read(

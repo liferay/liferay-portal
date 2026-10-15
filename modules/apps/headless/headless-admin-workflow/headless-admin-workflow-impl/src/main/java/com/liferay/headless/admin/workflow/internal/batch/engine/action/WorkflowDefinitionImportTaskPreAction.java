@@ -15,6 +15,7 @@ import com.liferay.exportimport.report.service.ExportImportReportEntryLocalServi
 import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowDefinition;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -49,7 +50,9 @@ public class WorkflowDefinitionImportTaskPreAction
 			ImportTaskContext importTaskContext, Object item)
 		throws Exception {
 
-		if (!ExportImportThreadLocal.isImportInProcess() ||
+		if (!FeatureFlagManagerUtil.isEnabled(
+				batchEngineImportTask.getCompanyId(), "LPD-49856") ||
+			!ExportImportThreadLocal.isImportInProcess() ||
 			!(item instanceof WorkflowDefinition)) {
 
 			return;

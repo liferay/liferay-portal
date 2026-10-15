@@ -7,6 +7,7 @@ package com.liferay.portal.workflow.kaleo.service.impl;
 
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -168,7 +169,10 @@ public class KaleoNotificationRecipientLocalServiceImpl
 
 			User user = null;
 
-			if (Validator.isNotNull(userRecipient.getExternalReferenceCode())) {
+			if (FeatureFlagManagerUtil.isEnabled(
+					serviceContext.getCompanyId(), "LPD-49856") &&
+				Validator.isNotNull(userRecipient.getExternalReferenceCode())) {
+
 				user = _userLocalService.getUserByExternalReferenceCode(
 					userRecipient.getExternalReferenceCode(),
 					serviceContext.getCompanyId());
