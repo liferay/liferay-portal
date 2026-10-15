@@ -894,6 +894,30 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 	}
 
 	@Override
+	public boolean isGroupMatching(
+		ExportImportGroup exportImportGroup, Group group) {
+
+		if (exportImportGroup.isDepot() != group.isDepot()) {
+			return false;
+		}
+
+		if (!group.isDepot()) {
+			return true;
+		}
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			group.getGroupId());
+
+		if ((depotEntry != null) &&
+			(depotEntry.getType() == exportImportGroup.getDepotType())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
 	public boolean isGroupSupported(Group group) {
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();

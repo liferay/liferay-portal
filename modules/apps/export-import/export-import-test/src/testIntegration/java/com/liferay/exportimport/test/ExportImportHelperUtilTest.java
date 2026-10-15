@@ -15,6 +15,7 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
 import com.liferay.exportimport.kernel.lar.DataLevel;
+import com.liferay.exportimport.kernel.lar.ExportImportGroup;
 import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
 import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.MissingReference;
@@ -1226,6 +1227,36 @@ public class ExportImportHelperUtilTest {
 		Assert.assertEquals(group, groups.get(0));
 	}
 
+	@Test
+	public void testIsGroupMatching() throws Exception {
+		Assert.assertTrue(
+			ExportImportHelperUtil.isGroupMatching(
+				_createExportImportGroup(false, 0), _liveGroup));
+		Assert.assertFalse(
+			ExportImportHelperUtil.isGroupMatching(
+				_createExportImportGroup(true, DepotConstants.TYPE_SPACE),
+				_liveGroup));
+
+		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		Group depotGroup = depotEntry.getGroup();
+
+		_depotGroups.add(depotGroup);
+
+		Assert.assertFalse(
+			ExportImportHelperUtil.isGroupMatching(
+				_createExportImportGroup(false, 0), depotGroup));
+		Assert.assertFalse(
+			ExportImportHelperUtil.isGroupMatching(
+				_createExportImportGroup(
+					true, DepotConstants.TYPE_ASSET_LIBRARY),
+				depotGroup));
+		Assert.assertTrue(
+			ExportImportHelperUtil.isGroupMatching(
+				_createExportImportGroup(true, DepotConstants.TYPE_SPACE),
+				depotGroup));
+	}
+
 	@FeatureFlags(
 		featureFlags = {
 			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
@@ -1374,6 +1405,15 @@ public class ExportImportHelperUtilTest {
 				rootPortletIds.toString(),
 				rootPortletIds.contains(unexpectedRootPortletId));
 		}
+	}
+
+	private ExportImportGroup _createExportImportGroup(
+		boolean depot, int depotType) {
+
+		return new ExportImportGroup(
+			0, depot, depotType, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong(), null,
+			RandomTestUtil.randomString());
 	}
 
 	private Group _deactivateGroup(Group group) throws Exception {

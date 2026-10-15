@@ -431,36 +431,35 @@ public class GroupExportImportTest {
 	}
 
 	@Test
+	public void testImportGroupsWithMismatchedGroup() throws Exception {
+		Group depotGroup = _addSpaceDepotGroup();
+
+		String externalReferenceCode = depotGroup.getExternalReferenceCode();
+
+		File file = _exportLayouts(depotGroup);
+
+		depotGroup.setExternalReferenceCode(RandomTestUtil.randomString());
+
+		_groupLocalService.updateGroup(depotGroup);
+
+		_group.setExternalReferenceCode(externalReferenceCode);
+
+		_group = _groupLocalService.updateGroup(_group);
+
+		_assertErrorReportEntry(
+			_importLayouts(file, externalReferenceCode), externalReferenceCode);
+	}
+
+	@Test
 	public void testImportGroupsWithMissingGroup() throws Exception {
 		String externalReferenceCode = RandomTestUtil.randomString();
 
 		File file = _exportLayouts(_group);
 
-		ExportImportConfiguration exportImportConfiguration = _importLayouts(
-			file, _group.getExternalReferenceCode(), externalReferenceCode);
-
-		List<ExportImportReportEntry> exportImportReportEntries =
-			_exportImportReportEntryLocalService.getExportImportReportEntries(
-				TestPropsValues.getCompanyId(),
-				exportImportConfiguration.getExportImportConfigurationId());
-
-		Assert.assertTrue(
-			exportImportReportEntries.toString(),
-			ListUtil.exists(
-				exportImportReportEntries,
-				exportImportReportEntry -> {
-					if (Objects.equals(
-							externalReferenceCode,
-							exportImportReportEntry.
-								getClassExternalReferenceCode()) &&
-						(exportImportReportEntry.getType() ==
-							ExportImportReportEntryConstants.TYPE_ERROR)) {
-
-						return true;
-					}
-
-					return false;
-				}));
+		_assertErrorReportEntry(
+			_importLayouts(
+				file, _group.getExternalReferenceCode(), externalReferenceCode),
+			externalReferenceCode);
 	}
 
 	@Test
@@ -555,6 +554,35 @@ public class GroupExportImportTest {
 		_depotGroup = depotEntry.getGroup();
 
 		return _depotGroup;
+	}
+
+	private void _assertErrorReportEntry(
+			ExportImportConfiguration exportImportConfiguration,
+			String externalReferenceCode)
+		throws Exception {
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertTrue(
+			exportImportReportEntries.toString(),
+			ListUtil.exists(
+				exportImportReportEntries,
+				exportImportReportEntry -> {
+					if (Objects.equals(
+							externalReferenceCode,
+							exportImportReportEntry.
+								getClassExternalReferenceCode()) &&
+						(exportImportReportEntry.getType() ==
+							ExportImportReportEntryConstants.TYPE_ERROR)) {
+
+						return true;
+					}
+
+					return false;
+				}));
 	}
 
 	private void _assertExportGroupsIsSkipped(Group group) throws Exception {

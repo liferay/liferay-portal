@@ -242,6 +242,22 @@ public class GroupImporter {
 				PermissionThreadLocal.getPermissionChecker(),
 				group.getGroupId(), ActionKeys.EXPORT_IMPORT_LAYOUTS);
 
+			if (!_exportImportHelper.isGroupMatching(
+					exportImportGroup, group)) {
+
+				String externalReferenceCode = group.getExternalReferenceCode();
+
+				_addReportEntry(
+					portletDataContext, externalReferenceCode,
+					StringBundler.concat(
+						"The group ", externalReferenceCode,
+						" in the target instance is of a different type than ",
+						"the group in the file"),
+					ExportImportReportEntryConstants.TYPE_ERROR);
+
+				return null;
+			}
+
 			if (!_exportImportHelper.isGroupSupported(group)) {
 				String externalReferenceCode = group.getExternalReferenceCode();
 

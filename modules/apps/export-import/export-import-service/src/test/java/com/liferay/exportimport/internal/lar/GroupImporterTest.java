@@ -97,6 +97,12 @@ public class GroupImporterTest {
 		);
 
 		Mockito.when(
+			_exportImportHelper.isGroupMatching(Mockito.any(), Mockito.any())
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
 			_portletDataContext.getGroupId()
 		).thenReturn(
 			_GROUP_ID
@@ -157,6 +163,34 @@ public class GroupImporterTest {
 		).setSourceUserPersonalSiteGroupId(
 			_SOURCE_USER_PERSONAL_SITE_GROUP_ID
 		);
+	}
+
+	@Test
+	public void testImportGroupsWhenGroupDoesNotMatch() throws Exception {
+		_setUpExportImportGroups(_createExportImportGroup("group", null));
+
+		Group group = _setUpGroup("group");
+
+		Mockito.when(
+			_exportImportHelper.isGroupMatching(
+				Mockito.any(), Mockito.eq(group))
+		).thenReturn(
+			false
+		);
+
+		Mockito.when(
+			group.getExternalReferenceCode()
+		).thenReturn(
+			"group"
+		);
+
+		List<String> groupExternalReferenceCodes = _importGroups("group");
+
+		Assert.assertTrue(groupExternalReferenceCodes.isEmpty());
+
+		_verifyReportEntry(
+			"group", ExportImportReportEntryConstants.TYPE_ERROR,
+			"is of a different type");
 	}
 
 	@Test
