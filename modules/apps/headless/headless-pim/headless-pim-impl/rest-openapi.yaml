@@ -32,6 +32,9 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                primary:
+                    readOnly: true
+                    type: boolean
                 sku:
                     readOnly: true
                     type: string
@@ -159,6 +162,36 @@ paths:
                     application/xml:
                         schema:
                             $ref: "#/components/schemas/Link"
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["Link"]
+    "/scopes/{scopeKey}/links/primary":
+        put:
+            operationId: putScopeScopeKeyLinkPrimary
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: className
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: type
+                    required: true
+                    schema:
+                        type: string
             responses:
                 204:
                     content:
