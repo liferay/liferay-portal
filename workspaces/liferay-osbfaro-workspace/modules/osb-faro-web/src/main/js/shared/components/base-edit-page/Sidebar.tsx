@@ -6,6 +6,10 @@ import {SidePanel} from '@clayui/core';
 import {sub} from 'shared/util/lang';
 import {useIsMobile} from 'shared/hooks/useIsMobile';
 
+// Matches `$criteriaSidebarWidth`, overriding Clay's narrower mobile default.
+
+const PANEL_WIDTH = 320;
+
 interface ISidebarProps {
 	children?: React.ReactNode;
 	className?: string;
@@ -68,6 +72,7 @@ const OverlaySidebar: React.FC<ISidebarProps> = ({
 				id={panelId}
 				onOpenChange={setOpen}
 				open={open}
+				panelWidth={PANEL_WIDTH}
 				position="fixed"
 				triggerRef={triggerRef}
 			>

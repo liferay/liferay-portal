@@ -103,6 +103,20 @@ describe('BaseEditPage.Sidebar', () => {
 			);
 		});
 
+		it('opens the side panel as wide as the inline sidebar', async () => {
+			renderOverlay();
+
+			fireEvent.click(
+				screen.getByRole('button', {name: `Open ${LABEL}`})
+			);
+
+			const panel = await screen.findByLabelText(LABEL, {
+				selector: '.sidebar',
+			});
+
+			expect(panel).toHaveStyle({width: '320px'});
+		});
+
 		it('closes from its close button and returns focus to the trigger', async () => {
 			renderOverlay();
 
