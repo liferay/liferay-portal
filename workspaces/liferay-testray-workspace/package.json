@@ -12,6 +12,7 @@
 	},
 	"private": true,
 	"resolutions": {
+		"billboard.js": "3.18.0",
 		"d3-color": "3.1.0"
 	},
 	"workspaces": {
