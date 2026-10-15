@@ -133,7 +133,7 @@ public class ControllerResultMonitorTest
 
 	@Test
 	public void testExecuteInProgress() throws Exception {
-		_setDownstreamBuildJSONObject(true, 2001, null);
+		_setDownstreamBuildJSONObject(86400, true, 2001, null);
 
 		_testExecute(
 			"Job " + _JOB_NAME + " is OK", MonitorResult.Status.OK,
@@ -141,10 +141,10 @@ public class ControllerResultMonitorTest
 				600, "<strong>SKIPPED</strong> - Job is already running",
 				RandomTestUtil.randomInt(), "SUCCESS"),
 			_newBuildJSONObject(
-				86400, _newInProgressDescription(2001),
+				432000, _newInProgressDescription(2001),
 				RandomTestUtil.randomInt(), "SUCCESS"));
 
-		_setDownstreamBuildJSONObject(true, 2002, null);
+		_setDownstreamBuildJSONObject(86401, true, 2002, null);
 
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
@@ -156,9 +156,10 @@ public class ControllerResultMonitorTest
 				600, "<strong>SKIPPED</strong> - Job is already running",
 				RandomTestUtil.randomInt(), "SUCCESS"),
 			_newBuildJSONObject(
-				86401, _newInProgressDescription(2002), 1002, "SUCCESS"));
+				600, _newInProgressDescription(2002), 1002, "SUCCESS"));
 
-		_setDownstreamBuildJSONObject(false, 2003, "ABORTED");
+		_setDownstreamBuildJSONObject(
+			RandomTestUtil.randomInt(), false, 2003, "ABORTED");
 
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
@@ -169,7 +170,8 @@ public class ControllerResultMonitorTest
 			_newBuildJSONObject(
 				600, _newInProgressDescription(2003), 1003, "SUCCESS"));
 
-		_setDownstreamBuildJSONObject(false, 2004, "SUCCESS");
+		_setDownstreamBuildJSONObject(
+			RandomTestUtil.randomInt(), false, 2004, "SUCCESS");
 
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
@@ -622,7 +624,7 @@ public class ControllerResultMonitorTest
 	}
 
 	private void _setDownstreamBuildJSONObject(
-			boolean building, int number, String result)
+			long ageSeconds, boolean building, int number, String result)
 		throws Exception {
 
 		setURLReaderOutput(
@@ -631,6 +633,8 @@ public class ControllerResultMonitorTest
 				"building", building
 			).put(
 				"result", (result == null) ? JSONObject.NULL : result
+			).put(
+				"timestamp", _currentTimeMillis - (ageSeconds * 1000)
 			).toString(),
 			_getDownstreamBuildAPIURL(number));
 	}
