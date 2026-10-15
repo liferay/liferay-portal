@@ -77,11 +77,10 @@ public class ObjectEntryTestUtil {
 			objectDefinition.getObjectDefinitionId());
 	}
 
-	public static String getFilterString(ObjectDefinition objectDefinition) {
+	public static String getEntityClassName(ObjectDefinition objectDefinition) {
 		return StringBundler.concat(
-			"(&(batch.engine.task.item.delegate.name=",
-			objectDefinition.getName(), ")(companyId=",
-			objectDefinition.getCompanyId(), "))");
+			com.liferay.object.rest.dto.v1_0.ObjectEntry.class.getName(), "#",
+			objectDefinition.getName());
 	}
 
 	public static ObjectDefinition publishObjectDefinition(

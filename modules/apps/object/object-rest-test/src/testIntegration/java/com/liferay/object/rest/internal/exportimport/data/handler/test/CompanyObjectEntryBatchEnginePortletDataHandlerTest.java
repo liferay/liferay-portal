@@ -7,14 +7,13 @@ package com.liferay.object.rest.internal.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.test.util.exportimport.data.handler.BaseCompanyBatchEnginePortletDataHandlerTestCase;
-import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.internal.exportimport.data.handler.test.util.ObjectEntryTestUtil;
-import com.liferay.object.rest.resource.v1_0.ObjectEntryResource;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -47,31 +46,40 @@ public class CompanyObjectEntryBatchEnginePortletDataHandlerTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
+
 		_objectDefinition = ObjectEntryTestUtil.publishObjectDefinition(
 			null, ObjectDefinitionTestUtil.getRandomName(),
 			Collections.emptyList(), ObjectDefinitionConstants.SCOPE_COMPANY,
 			TestPropsValues.getUserId());
 
-		super.setUp();
+		Group targetGroup = getTargetGroup();
 
 		_targetObjectDefinition = ObjectEntryTestUtil.publishObjectDefinition(
 			_objectDefinition.getExternalReferenceCode(),
 			_objectDefinition.getShortName(), Collections.emptyList(),
-			ObjectDefinitionConstants.SCOPE_COMPANY, targetUser.getUserId());
+			ObjectDefinitionConstants.SCOPE_COMPANY,
+			targetGroup.getCreatorUserId());
 	}
 
 	@Override
-	protected void addEmptyEntry(String externalReferenceCode)
+	protected ObjectEntry addEmptyEntry(String externalReferenceCode)
 		throws Exception {
 
-		ObjectEntryTestUtil.addEmptyObjectEntry(
+		Group group = getGroup();
+
+		return ObjectEntryTestUtil.addEmptyObjectEntry(
 			_objectDefinition, externalReferenceCode, group.getGroupId(),
 			TestPropsValues.getUserId());
 	}
 
 	@Override
-	protected void addEntry(String externalReferenceCode) throws Exception {
-		ObjectEntryTestUtil.addObjectEntry(
+	protected ObjectEntry addEntry(String externalReferenceCode)
+		throws Exception {
+
+		Group group = getGroup();
+
+		return ObjectEntryTestUtil.addObjectEntry(
 			_objectDefinition, externalReferenceCode, group.getGroupId(),
 			TestPropsValues.getUserId());
 	}
@@ -100,18 +108,8 @@ public class CompanyObjectEntryBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected long getCreatorUserId(ObjectEntry objectEntry) {
-		return objectEntry.getUserId();
-	}
-
-	@Override
-	protected ExportImportVulcanBatchEngineTaskItemDelegate<?>
-			getExportImportVulcanBatchEngineTaskItemDelegate()
-		throws Exception {
-
-		return getExportImportVulcanBatchEngineTaskItemDelegate(
-			ObjectEntryResource.class,
-			ObjectEntryTestUtil.getFilterString(_objectDefinition));
+	protected String getEntityClassName() {
+		return ObjectEntryTestUtil.getEntityClassName(_objectDefinition);
 	}
 
 	@Override
@@ -127,6 +125,11 @@ public class CompanyObjectEntryBatchEnginePortletDataHandlerTest
 	@Override
 	protected String getTargetModelClassName() {
 		return _targetObjectDefinition.getClassName();
+	}
+
+	@Override
+	protected long getUserId(ObjectEntry objectEntry) {
+		return objectEntry.getUserId();
 	}
 
 	@Override

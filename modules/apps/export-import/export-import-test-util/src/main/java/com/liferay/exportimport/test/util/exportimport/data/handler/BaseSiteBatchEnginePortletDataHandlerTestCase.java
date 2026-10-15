@@ -9,15 +9,17 @@ import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSe
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
-import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
+import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.test.rule.Inject;
 
 import java.io.File;
 
@@ -36,21 +38,21 @@ public abstract class BaseSiteBatchEnginePortletDataHandlerTestCase<T>
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		group = addGroup();
-		targetGroup = addGroup();
-		targetUser = TestPropsValues.getUser();
-
-		_layout = LayoutTestUtil.addTypePortletLayout(group.getGroupId());
-		_targetLayout = LayoutTestUtil.addTypePortletLayout(
-			targetGroup.getGroupId());
-
 		super.setUp();
+
+		_group = addGroup();
+		_targetGroup = addGroup();
+		_user = TestPropsValues.getUser();
+
+		_layout = LayoutTestUtil.addTypePortletLayout(_group.getGroupId());
+		_targetLayout = LayoutTestUtil.addTypePortletLayout(
+			_targetGroup.getGroupId());
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		GroupTestUtil.deleteGroup(targetGroup);
-		GroupTestUtil.deleteGroup(group);
+		GroupTestUtil.deleteGroup(_group);
+		GroupTestUtil.deleteGroup(_targetGroup);
 	}
 
 	protected Group addGroup() throws Exception {
@@ -59,7 +61,7 @@ public abstract class BaseSiteBatchEnginePortletDataHandlerTestCase<T>
 
 	@Override
 	protected void exportImport(
-			Map<String, String[]> parameterMap, Date startDate, Date endDate)
+			Date endDate, Map<String, String[]> parameterMap, Date startDate)
 		throws Exception {
 
 		parameterMap = HashMapBuilder.put(
@@ -70,30 +72,31 @@ public abstract class BaseSiteBatchEnginePortletDataHandlerTestCase<T>
 		).build();
 
 		ExportImportConfiguration exportImportConfiguration =
-			addExportConfiguration(
-				ExportImportConfigurationConstants.TYPE_PUBLISH_PORTLET_LOCAL,
+			addExportImportConfiguration(
+				endDate,
 				ExportImportConfigurationSettingsMapFactoryUtil.
 					buildExportPortletSettingsMap(
-						targetUser, _layout.getPlid(), _layout.getGroupId(),
+						_user, _layout.getPlid(), _layout.getGroupId(),
 						portletId, parameterMap, StringPool.BLANK),
-				startDate, endDate);
+				startDate,
+				ExportImportConfigurationConstants.TYPE_PUBLISH_PORTLET_LOCAL);
 
-		File larFile = ExportImportLocalServiceUtil.exportPortletInfoAsFile(
+		File larFile = _exportImportLocalService.exportPortletInfoAsFile(
 			exportImportConfiguration);
 
 		try {
-			exportImportConfiguration = updateImportConfiguration(
-				exportImportConfiguration, targetUser,
+			exportImportConfiguration = updateExportImportConfiguration(
+				exportImportConfiguration,
 				ExportImportConfigurationSettingsMapFactoryUtil.
 					buildImportPortletSettingsMap(
-						targetUser, _targetLayout.getPlid(),
+						_user, _targetLayout.getPlid(),
 						_targetLayout.getGroupId(), portletId, parameterMap),
-				_targetLayout.getGroupId());
+				_targetLayout.getGroupId(), _user);
 
-			ExportImportLocalServiceUtil.importPortletDataDeletions(
+			_exportImportLocalService.importPortletDataDeletions(
 				exportImportConfiguration, larFile);
 
-			ExportImportLocalServiceUtil.importPortletInfo(
+			_exportImportLocalService.importPortletInfo(
 				exportImportConfiguration, larFile);
 		}
 		finally {
@@ -101,7 +104,23 @@ public abstract class BaseSiteBatchEnginePortletDataHandlerTestCase<T>
 		}
 	}
 
+	@Override
+	protected Group getGroup() {
+		return _group;
+	}
+
+	@Override
+	protected Group getTargetGroup() {
+		return _targetGroup;
+	}
+
+	@Inject
+	private ExportImportLocalService _exportImportLocalService;
+
+	private Group _group;
 	private Layout _layout;
+	private Group _targetGroup;
 	private Layout _targetLayout;
+	private User _user;
 
 }

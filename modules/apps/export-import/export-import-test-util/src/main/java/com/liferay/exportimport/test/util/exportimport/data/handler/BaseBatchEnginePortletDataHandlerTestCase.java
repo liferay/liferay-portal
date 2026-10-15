@@ -14,7 +14,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerControl;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
-import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
+import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
@@ -49,13 +49,12 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateRegistry;
 
 import java.io.Serializable;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -64,11 +63,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Alberto Javier Moreno Lage
@@ -79,15 +73,19 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 	@Before
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
+
 		ExportImportVulcanBatchEngineTaskItemDelegate<?>
 			exportImportVulcanBatchEngineTaskItemDelegate =
-				getExportImportVulcanBatchEngineTaskItemDelegate();
+				(ExportImportVulcanBatchEngineTaskItemDelegate<?>)
+					_vulcanBatchEngineTaskItemDelegateRegistry.
+						getVulcanBatchEngineTaskItemDelegate(
+							TestPropsValues.getCompanyId(),
+							getEntityClassName());
 
 		_exportImportDescriptor =
 			exportImportVulcanBatchEngineTaskItemDelegate.
 				getExportImportDescriptor();
-
-		super.setUp();
 	}
 
 	@Test
@@ -96,18 +94,16 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			return;
 		}
 
-		long groupId = group.getGroupId();
-
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		addEntry(externalReferenceCode);
+		T entry = addEntry(externalReferenceCode);
 
 		String body = RandomTestUtil.randomString();
 
 		_commentManager.addComment(
-			TestPropsValues.getUserId(), groupId,
-			_exportImportDescriptor.getModelClassName(),
-			getPrimaryKey(fetchEntry(externalReferenceCode, groupId)), body,
+			TestPropsValues.getUserId(), _getGroupId(),
+			_exportImportDescriptor.getModelClassName(), getPrimaryKey(entry),
+			body,
 			className -> {
 				ServiceContext serviceContext = new ServiceContext();
 
@@ -118,14 +114,15 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			});
 
 		_exportImport(
+			null,
 			HashMapBuilder.put(
 				PortletDataHandlerKeys.COMMENTS,
 				new String[] {Boolean.TRUE.toString()}
 			).build(),
-			null, null);
+			null);
 
 		List<String> comments = _getComments(
-			externalReferenceCode, targetGroup.getGroupId());
+			externalReferenceCode, _getTargetGroupId());
 
 		Assert.assertTrue(
 			comments.toString(),
@@ -141,9 +138,9 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 		addEntry(externalReferenceCode1);
 		addEntry(externalReferenceCode2);
 
-		_exportImport(Collections.emptyMap(), null, null);
+		_exportImport(null, Collections.emptyMap(), null);
 
-		long targetGroupId = targetGroup.getGroupId();
+		long targetGroupId = _getTargetGroupId();
 
 		Assert.assertNotNull(fetchEntry(externalReferenceCode1, targetGroupId));
 		Assert.assertNotNull(fetchEntry(externalReferenceCode2, targetGroupId));
@@ -151,29 +148,29 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 	@Test
 	public void testExportImportDeletions() throws Exception {
-		long groupId = group.getGroupId();
-
 		String externalReferenceCode1 = RandomTestUtil.randomString();
 		String externalReferenceCode2 = RandomTestUtil.randomString();
 
-		addEntry(externalReferenceCode1);
+		T entry1 = addEntry(externalReferenceCode1);
+
 		addEntry(externalReferenceCode2);
 
-		_exportImport(Collections.emptyMap(), null, null);
+		_exportImport(null, Collections.emptyMap(), null);
 
-		long targetGroupId = targetGroup.getGroupId();
+		long targetGroupId = _getTargetGroupId();
 
 		Assert.assertNotNull(fetchEntry(externalReferenceCode1, targetGroupId));
 		Assert.assertNotNull(fetchEntry(externalReferenceCode2, targetGroupId));
 
-		deleteEntry(fetchEntry(externalReferenceCode1, groupId));
+		deleteEntry(entry1);
 
 		_exportImport(
+			null,
 			HashMapBuilder.put(
 				PortletDataHandlerKeys.DELETIONS,
 				new String[] {Boolean.TRUE.toString()}
 			).build(),
-			null, null);
+			null);
 
 		Assert.assertNull(fetchEntry(externalReferenceCode1, targetGroupId));
 		Assert.assertNotNull(fetchEntry(externalReferenceCode2, targetGroupId));
@@ -185,17 +182,16 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			return;
 		}
 
-		long groupId = group.getGroupId();
-
 		String externalReferenceCode1 = RandomTestUtil.randomString();
 		String externalReferenceCode2 = RandomTestUtil.randomString();
 
-		addEntry(externalReferenceCode1);
+		T entry1 = addEntry(externalReferenceCode1);
+
 		addEntry(externalReferenceCode2);
 
 		ChangesetCollection changesetCollection =
 			_changesetCollectionLocalService.fetchOrAddChangesetCollection(
-				groupId,
+				_getGroupId(),
 				StagingConstants.RANGE_FROM_LAST_PUBLISH_DATE_CHANGESET_NAME);
 
 		_changesetEntryLocalService.fetchOrAddChangesetEntry(
@@ -203,16 +199,17 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			externalReferenceCode1,
 			_classNameLocalService.getClassNameId(
 				_exportImportDescriptor.getModelClassName()),
-			getPrimaryKey(fetchEntry(externalReferenceCode1, groupId)));
+			getPrimaryKey(entry1));
 
 		_exportImport(
+			null,
 			HashMapBuilder.put(
 				ExportImportDateUtil.RANGE,
 				new String[] {ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE}
 			).build(),
-			null, null);
+			null);
 
-		long targetGroupId = targetGroup.getGroupId();
+		long targetGroupId = _getTargetGroupId();
 
 		Assert.assertNotNull(fetchEntry(externalReferenceCode1, targetGroupId));
 		Assert.assertNull(fetchEntry(externalReferenceCode2, targetGroupId));
@@ -224,22 +221,18 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		addEntry(externalReferenceCode);
-
-		updateUserId(
-			fetchEntry(externalReferenceCode, group.getGroupId()),
-			user.getUserId());
+		updateUserId(addEntry(externalReferenceCode), user.getUserId());
 
 		_exportImport(
+			null,
 			HashMapBuilder.put(
 				PortletDataHandlerKeys.USER_ID_STRATEGY,
 				new String[] {UserIdStrategy.CURRENT_USER_ID}
 			).build(),
-			null, null);
+			null);
 
 		User targetUser = _userLocalService.getUser(
-			getCreatorUserId(
-				fetchEntry(externalReferenceCode, targetGroup.getGroupId())));
+			getUserId(fetchEntry(externalReferenceCode, _getTargetGroupId())));
 
 		Assert.assertEquals(
 			user.getExternalReferenceCode(),
@@ -252,23 +245,22 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		addEntry(externalReferenceCode);
-
-		updateUserId(
-			fetchEntry(externalReferenceCode, group.getGroupId()),
-			user.getUserId());
+		updateUserId(addEntry(externalReferenceCode), user.getUserId());
 
 		_exportImport(
+			null,
 			HashMapBuilder.put(
 				PortletDataHandlerKeys.USER_ID_STRATEGY,
 				new String[] {UserIdStrategy.ALWAYS_CURRENT_USER_ID}
 			).build(),
-			null, null);
+			null);
+
+		User targetUser = _userLocalService.getUser(
+			getUserId(fetchEntry(externalReferenceCode, _getTargetGroupId())));
 
 		Assert.assertEquals(
 			targetUser.getUserId(),
-			getCreatorUserId(
-				fetchEntry(externalReferenceCode, targetGroup.getGroupId())));
+			getUserId(fetchEntry(externalReferenceCode, _getTargetGroupId())));
 	}
 
 	@Test
@@ -277,11 +269,9 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			return;
 		}
 
-		long groupId = group.getGroupId();
-
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		addEntry(externalReferenceCode);
+		T entry = addEntry(externalReferenceCode);
 
 		Role role = addRole();
 
@@ -289,16 +279,18 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			TestPropsValues.getCompanyId(),
 			_exportImportDescriptor.getModelClassName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(
-				getPrimaryKey(fetchEntry(externalReferenceCode, groupId))),
-			role.getRoleId(), new String[] {ActionKeys.VIEW});
+			String.valueOf(getPrimaryKey(entry)), role.getRoleId(),
+			new String[] {ActionKeys.VIEW});
 
 		_exportImport(
+			null,
 			HashMapBuilder.put(
 				PortletDataHandlerKeys.PERMISSIONS,
 				new String[] {Boolean.TRUE.toString()}
 			).build(),
-			null, null);
+			null);
+
+		Group targetGroup = getTargetGroup();
 
 		Role targetRole = _roleLocalService.getRoleByExternalReferenceCode(
 			role.getExternalReferenceCode(), targetGroup.getCompanyId());
@@ -316,33 +308,26 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 	@Test
 	public void testExportImportWithDateRange() throws Exception {
-		long groupId = group.getGroupId();
-
 		String externalReferenceCode1 = RandomTestUtil.randomString();
 		String externalReferenceCode2 = RandomTestUtil.randomString();
 		String externalReferenceCode3 = RandomTestUtil.randomString();
 
-		addEntry(externalReferenceCode1);
-		addEntry(externalReferenceCode2);
-		addEntry(externalReferenceCode3);
+		T entry1 = addEntry(externalReferenceCode1);
+		T entry2 = addEntry(externalReferenceCode2);
+		T entry3 = addEntry(externalReferenceCode3);
 
 		long time = System.currentTimeMillis();
 
-		updateModifiedDate(
-			fetchEntry(externalReferenceCode1, groupId),
-			new Date(time - (4 * Time.DAY)));
-		updateModifiedDate(
-			fetchEntry(externalReferenceCode2, groupId),
-			new Date(time - (2 * Time.DAY)));
-		updateModifiedDate(
-			fetchEntry(externalReferenceCode3, groupId), new Date(time));
+		updateModifiedDate(entry1, new Date(time - (4 * Time.DAY)));
+		updateModifiedDate(entry2, new Date(time - (2 * Time.DAY)));
+		updateModifiedDate(entry3, new Date(time));
 
 		Date startDate = new Date(time - (3 * Time.DAY));
 		Date endDate = new Date(time - Time.DAY);
 
-		_exportImport(Collections.emptyMap(), startDate, endDate);
+		_exportImport(endDate, Collections.emptyMap(), startDate);
 
-		long targetGroupId = targetGroup.getGroupId();
+		long targetGroupId = _getTargetGroupId();
 
 		Assert.assertNull(fetchEntry(externalReferenceCode1, targetGroupId));
 		Assert.assertNotNull(fetchEntry(externalReferenceCode2, targetGroupId));
@@ -355,27 +340,11 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			return;
 		}
 
-		long groupId = group.getGroupId();
-
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		try (SafeCloseable safeCloseable =
-				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
-					true)) {
+		T entry = _addEmptyEntry(externalReferenceCode);
 
-			ExportImportThreadLocal.setPortletImportInProcess(true);
-
-			try {
-				addEmptyEntry(externalReferenceCode);
-			}
-			finally {
-				ExportImportThreadLocal.setPortletImportInProcess(false);
-			}
-		}
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EMPTY,
-			getStatus(fetchEntry(externalReferenceCode, groupId)));
+		Assert.assertEquals(WorkflowConstants.STATUS_EMPTY, getStatus(entry));
 
 		ExportImportReportEntry exportImportReportEntry =
 			_getEmptyExportImportReportEntry(externalReferenceCode);
@@ -384,11 +353,11 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
 			exportImportReportEntry.getStatus());
 
-		updateEntry(fetchEntry(externalReferenceCode, groupId));
+		updateEntry(entry);
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED,
-			getStatus(fetchEntry(externalReferenceCode, groupId)));
+			getStatus(fetchEntry(externalReferenceCode, _getGroupId())));
 
 		exportImportReportEntry = _getEmptyExportImportReportEntry(
 			externalReferenceCode);
@@ -403,18 +372,16 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 		permissionCheckerMethodTestRule =
 			PermissionCheckerMethodTestRule.INSTANCE;
 
-	protected void addEmptyEntry(String externalReferenceCode)
-		throws Exception {
-
+	protected T addEmptyEntry(String externalReferenceCode) throws Exception {
 		throw new UnsupportedOperationException();
 	}
 
-	protected abstract void addEntry(String externalReferenceCode)
+	protected abstract T addEntry(String externalReferenceCode)
 		throws Exception;
 
-	protected ExportImportConfiguration addExportConfiguration(
-			int type, Map<String, Serializable> settingsMap, Date startDate,
-			Date endDate)
+	protected ExportImportConfiguration addExportImportConfiguration(
+			Date endDate, Map<String, Serializable> settingsMap, Date startDate,
+			int type)
 		throws Exception {
 
 		if ((endDate != null) && (startDate != null)) {
@@ -422,7 +389,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			settingsMap.put("startDate", startDate);
 		}
 
-		return ExportImportConfigurationLocalServiceUtil.
+		return _exportImportConfigurationLocalService.
 			addDraftExportImportConfiguration(
 				TestPropsValues.getUserId(), type, settingsMap);
 	}
@@ -438,35 +405,15 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 	protected abstract void deleteEntry(T entry) throws Exception;
 
 	protected abstract void exportImport(
-			Map<String, String[]> parameterMap, Date startDate, Date endDate)
+			Date endDate, Map<String, String[]> parameterMap, Date startDate)
 		throws Exception;
 
 	protected abstract T fetchEntry(String externalReferenceCode, long groupId)
 		throws Exception;
 
-	protected abstract long getCreatorUserId(T entry) throws Exception;
+	protected abstract String getEntityClassName();
 
-	protected abstract ExportImportVulcanBatchEngineTaskItemDelegate<?>
-			getExportImportVulcanBatchEngineTaskItemDelegate()
-		throws Exception;
-
-	protected <T> ExportImportVulcanBatchEngineTaskItemDelegate<?>
-			getExportImportVulcanBatchEngineTaskItemDelegate(
-				Class<T> clazz, String filterString)
-		throws Exception {
-
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		Collection<ServiceReference<T>> serviceReferences =
-			bundleContext.getServiceReferences(clazz, filterString);
-
-		Iterator<ServiceReference<T>> iterator = serviceReferences.iterator();
-
-		return (ExportImportVulcanBatchEngineTaskItemDelegate<?>)
-			bundleContext.getService(iterator.next());
-	}
+	protected abstract Group getGroup();
 
 	@Override
 	protected String getPortletId() {
@@ -479,16 +426,20 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 		throw new UnsupportedOperationException();
 	}
 
+	protected abstract Group getTargetGroup();
+
 	protected String getTargetModelClassName() {
 		return _exportImportDescriptor.getModelClassName();
 	}
+
+	protected abstract long getUserId(T entry) throws Exception;
 
 	@Override
 	protected void initContext() throws Exception {
 		super.initContext();
 
-		portletDataContext.setGroupId(group.getGroupId());
-		portletDataContext.setScopeGroupId(group.getGroupId());
+		portletDataContext.setGroupId(_getGroupId());
+		portletDataContext.setScopeGroupId(_getGroupId());
 	}
 
 	protected abstract boolean supportsComments();
@@ -499,13 +450,14 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 	protected abstract void updateEntry(T entry) throws Exception;
 
-	protected ExportImportConfiguration updateImportConfiguration(
-			ExportImportConfiguration exportImportConfiguration, User user,
-			Map<String, Serializable> settingsMap, long targetGroupId)
+	protected ExportImportConfiguration updateExportImportConfiguration(
+			ExportImportConfiguration exportImportConfiguration,
+			Map<String, Serializable> settingsMap, long targetGroupId,
+			User user)
 		throws Exception {
 
 		exportImportConfiguration =
-			ExportImportConfigurationLocalServiceUtil.
+			_exportImportConfigurationLocalService.
 				updateExportImportConfiguration(
 					user.getUserId(),
 					exportImportConfiguration.getExportImportConfigurationId(),
@@ -514,7 +466,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 		exportImportConfiguration.setGroupId(targetGroupId);
 
-		return ExportImportConfigurationLocalServiceUtil.
+		return _exportImportConfigurationLocalService.
 			updateExportImportConfiguration(exportImportConfiguration);
 	}
 
@@ -523,15 +475,28 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 	protected abstract void updateUserId(T entry, long userId) throws Exception;
 
-	protected Group group;
-	protected Group targetGroup;
-	protected User targetUser;
+	private T _addEmptyEntry(String externalReferenceCode) throws Exception {
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			ExportImportThreadLocal.setPortletImportInProcess(true);
+
+			try {
+				return addEmptyEntry(externalReferenceCode);
+			}
+			finally {
+				ExportImportThreadLocal.setPortletImportInProcess(false);
+			}
+		}
+	}
 
 	private void _exportImport(
-			Map<String, String[]> parameterMap, Date startDate, Date endDate)
+			Date endDate, Map<String, String[]> parameterMap, Date startDate)
 		throws Exception {
 
 		exportImport(
+			endDate,
 			HashMapBuilder.put(
 				ExportImportDateUtil.RANGE,
 				new String[] {ExportImportDateUtil.RANGE_ALL}
@@ -555,7 +520,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 			).putAll(
 				parameterMap
 			).build(),
-			startDate, endDate);
+			startDate);
 	}
 
 	private List<String> _getComments(
@@ -599,6 +564,18 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 		return null;
 	}
 
+	private long _getGroupId() {
+		Group group = getGroup();
+
+		return group.getGroupId();
+	}
+
+	private long _getTargetGroupId() {
+		Group group = getTargetGroup();
+
+		return group.getGroupId();
+	}
+
 	@Inject
 	private ChangesetCollectionLocalService _changesetCollectionLocalService;
 
@@ -610,6 +587,10 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 	@Inject
 	private CommentManager _commentManager;
+
+	@Inject
+	private ExportImportConfigurationLocalService
+		_exportImportConfigurationLocalService;
 
 	private ExportImportDescriptor<?> _exportImportDescriptor;
 
@@ -625,5 +606,9 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase<T>
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@Inject
+	private VulcanBatchEngineTaskItemDelegateRegistry
+		_vulcanBatchEngineTaskItemDelegateRegistry;
 
 }

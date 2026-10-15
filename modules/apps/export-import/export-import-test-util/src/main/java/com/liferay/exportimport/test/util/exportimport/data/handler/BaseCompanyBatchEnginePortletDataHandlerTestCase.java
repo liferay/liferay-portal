@@ -9,19 +9,19 @@ import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSe
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.DataLevel;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
-import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
+import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -37,10 +37,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-
 /**
  * @author Alberto Javier Moreno Lage
  */
@@ -54,28 +50,18 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-		CompanyLocalServiceUtil.deleteCompany(_targetCompany);
+		_companyLocalService.deleteCompany(_targetCompany);
 	}
 
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		Bundle bundle = FrameworkUtil.getBundle(
-			BaseCompanyBatchEnginePortletDataHandlerTestCase.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		StagingGroupHelper stagingGroupHelper = bundleContext.getService(
-			bundleContext.getServiceReference(StagingGroupHelper.class));
-
-		group = stagingGroupHelper.fetchCompanyGroup(
-			TestPropsValues.getCompanyId());
-		targetGroup = stagingGroupHelper.fetchCompanyGroup(
-			_targetCompany.getCompanyId());
-
-		targetUser = UserTestUtil.addCompanyAdminUser(_targetCompany);
-
 		super.setUp();
+
+		_group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+		_targetGroup = _stagingGroupHelper.fetchCompanyGroup(
+			_targetCompany.getCompanyId());
 	}
 
 	@Override
@@ -83,7 +69,7 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 		Role role = super.addRole();
 
 		_roleLocalService.addRole(
-			role.getExternalReferenceCode(), targetUser.getUserId(), null, 0,
+			role.getExternalReferenceCode(), _targetUser.getUserId(), null, 0,
 			role.getName(), null, null, RoleConstants.TYPE_REGULAR, null, null);
 
 		return role;
@@ -91,10 +77,9 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 
 	@Override
 	protected User addUser() throws Exception {
-		User user = _userLocalService.updateExternalReferenceCode(
-			super.addUser(), RandomTestUtil.randomString());
+		User user = super.addUser();
 
-		_userLocalService.updateExternalReferenceCode(
+		_targetUser = _userLocalService.updateExternalReferenceCode(
 			UserTestUtil.addUser(_targetCompany),
 			user.getExternalReferenceCode());
 
@@ -103,19 +88,20 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 
 	@Override
 	protected void exportImport(
-			Map<String, String[]> parameterMap, Date startDate, Date endDate)
+			Date endDate, Map<String, String[]> parameterMap, Date startDate)
 		throws Exception {
 
 		ExportImportConfiguration exportImportConfiguration =
-			addExportConfiguration(
-				ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT,
+			addExportImportConfiguration(
+				endDate,
 				ExportImportConfigurationSettingsMapFactoryUtil.
 					buildExportLayoutSettingsMap(
-						TestPropsValues.getUser(), group.getGroupId(), false,
+						TestPropsValues.getUser(), _group.getGroupId(), false,
 						new long[0], parameterMap),
-				startDate, endDate);
+				startDate,
+				ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT);
 
-		File larFile = ExportImportLocalServiceUtil.exportLayoutsAsFile(
+		File larFile = _exportImportLocalService.exportLayoutsAsFile(
 			exportImportConfiguration);
 
 		PermissionChecker permissionChecker =
@@ -123,20 +109,20 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 
 		try {
 			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(targetUser));
+				PermissionCheckerFactoryUtil.create(_targetUser));
 
-			exportImportConfiguration = updateImportConfiguration(
-				exportImportConfiguration, targetUser,
+			exportImportConfiguration = updateExportImportConfiguration(
+				exportImportConfiguration,
 				ExportImportConfigurationSettingsMapFactoryUtil.
 					buildImportLayoutSettingsMap(
-						targetUser, targetGroup.getGroupId(), false, null,
+						_targetUser, _targetGroup.getGroupId(), false, null,
 						parameterMap),
-				targetGroup.getGroupId());
+				_targetGroup.getGroupId(), _targetUser);
 
-			ExportImportLocalServiceUtil.importLayoutsDataDeletions(
+			_exportImportLocalService.importLayoutsDataDeletions(
 				exportImportConfiguration, larFile);
 
-			ExportImportLocalServiceUtil.importLayouts(
+			_exportImportLocalService.importLayouts(
 				exportImportConfiguration, larFile);
 		}
 		finally {
@@ -151,10 +137,38 @@ public abstract class BaseCompanyBatchEnginePortletDataHandlerTestCase<T>
 		return DataLevel.PORTAL;
 	}
 
+	@Override
+	protected Group getGroup() {
+		return _group;
+	}
+
+	@Override
+	protected Group getTargetGroup() {
+		return _targetGroup;
+	}
+
+	protected User getTargetUser() {
+		return _targetUser;
+	}
+
+	@Inject
+	private static CompanyLocalService _companyLocalService;
+
 	private static Company _targetCompany;
 
 	@Inject
+	private ExportImportLocalService _exportImportLocalService;
+
+	private Group _group;
+
+	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private StagingGroupHelper _stagingGroupHelper;
+
+	private Group _targetGroup;
+	private User _targetUser;
 
 	@Inject
 	private UserLocalService _userLocalService;
