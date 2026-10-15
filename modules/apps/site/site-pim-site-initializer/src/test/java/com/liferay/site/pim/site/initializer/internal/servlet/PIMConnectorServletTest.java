@@ -78,12 +78,6 @@ public class PIMConnectorServletTest {
 		);
 
 		Mockito.when(
-			_group.getGroupId()
-		).thenReturn(
-			_GROUP_ID
-		);
-
-		Mockito.when(
 			_groupLocalService.getGroup(
 				_COMPANY_ID, GroupConstants.CONTROL_PANEL)
 		).thenReturn(
@@ -128,17 +122,23 @@ public class PIMConnectorServletTest {
 			_pimConnectorServlet, "_portal", _portal);
 
 		Mockito.when(
-			_portal.getControlPanelFullURL(
-				Mockito.eq(_GROUP_ID), Mockito.eq(DispatchPortletKeys.DISPATCH),
-				Mockito.anyMap())
+			_portal.getPortalURL(Mockito.any(HttpServletRequest.class))
 		).thenReturn(
-			_CONTROL_PANEL_URL
+			_PORTAL_URL
 		);
 
 		Mockito.when(
 			_portal.getPortletNamespace(DispatchPortletKeys.DISPATCH)
 		).thenReturn(
 			"_namespace_"
+		);
+
+		Mockito.when(
+			_portal.getSiteAdminURL(
+				Mockito.eq(_PORTAL_URL), Mockito.eq(_group),
+				Mockito.eq(DispatchPortletKeys.DISPATCH), Mockito.anyMap())
+		).thenReturn(
+			_CONTROL_PANEL_URL
 		);
 
 		Mockito.when(
@@ -295,9 +295,9 @@ public class PIMConnectorServletTest {
 
 		Mockito.verify(
 			_portal
-		).getControlPanelFullURL(
-			Mockito.eq(_GROUP_ID), Mockito.eq(DispatchPortletKeys.DISPATCH),
-			argumentCaptor.capture()
+		).getSiteAdminURL(
+			Mockito.eq(_PORTAL_URL), Mockito.eq(_group),
+			Mockito.eq(DispatchPortletKeys.DISPATCH), argumentCaptor.capture()
 		);
 
 		Map<String, String[]> parameters = argumentCaptor.getValue();
@@ -349,14 +349,14 @@ public class PIMConnectorServletTest {
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final String _CONTROL_PANEL_URL =
-		"http://localhost:8080/group/control_panel/manage";
+		"http://www.liferay.com/group/control_panel/manage";
 
 	private static final long _DISPATCH_TRIGGER_ID =
 		RandomTestUtil.randomLong();
 
-	private static final long _GROUP_ID = RandomTestUtil.randomLong();
-
 	private static final long _OBJECT_ENTRY_ID = RandomTestUtil.randomLong();
+
+	private static final String _PORTAL_URL = "http://www.liferay.com";
 
 	private final MockedStatic<AuthTokenUtil> _authTokenUtilMockedStatic =
 		Mockito.mockStatic(AuthTokenUtil.class);
