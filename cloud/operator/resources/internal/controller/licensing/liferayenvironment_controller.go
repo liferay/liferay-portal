@@ -4,7 +4,6 @@
 package licensing
 
 import (
-	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
@@ -15,7 +14,6 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
-	"maps"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -42,6 +40,7 @@ import (
 	builder "sigs.k8s.io/controller-runtime/pkg/builder"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 	controller "sigs.k8s.io/controller-runtime/pkg/controller"
+	controllerutil "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	handler "sigs.k8s.io/controller-runtime/pkg/handler"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	predicate "sigs.k8s.io/controller-runtime/pkg/predicate"
@@ -1140,6 +1139,45 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureNamespac
 	return liferayEnvironmentReconciler.Update(context, namespace)
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureOwnedSecret(
+	context context.Context,
+	data map[string][]byte,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	name string,
+) error {
+	secret := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: liferayEnvironment.Namespace,
+		},
+	}
+
+	operationResult, error := controllerutil.CreateOrUpdate(
+		context, liferayEnvironmentReconciler.Client, secret,
+		func() error {
+			secret.Data = data
+
+			if secret.Labels == nil {
+				secret.Labels = map[string]string{}
+			}
+
+			secret.Labels["controller-watched"] = "yes"
+
+			return controllerruntime.SetControllerReference(liferayEnvironment, secret, liferayEnvironmentReconciler.Scheme())
+		},
+	)
+
+	if error != nil {
+		return error
+	}
+
+	if operationResult != controllerutil.OperationResultNone {
+		logf.FromContext(context).Info("Wrote owned secret", "operation", operationResult, "secret", name)
+	}
+
+	return nil
+}
+
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureScaledObjectWatch(
 	context context.Context,
 	object client.Object,
@@ -1578,8 +1616,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistEntitle
 	entitlements *provisioning.Entitlements,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) error {
-	entitlementsName := liferayEnvironment.Name + entitlementsSecretSuffix
-
 	addOns := entitlements.AddOns
 
 	if addOns == nil {
@@ -1592,60 +1628,15 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistEntitle
 		return error
 	}
 
-	data := map[string][]byte{
-		"add-ons.json":    addOnsJSON,
-		"license.xml":     entitlements.LicenseXML,
-		"maxClusterNodes": []byte(fmt.Sprintf("%d", entitlements.MaxClusterNodes)),
-	}
-
-	secret := &corev1.Secret{}
-
-	getError := liferayEnvironmentReconciler.Get(
-		context, types.NamespacedName{
-			Name:      entitlementsName,
-			Namespace: liferayEnvironment.Namespace,
-		}, secret)
-
-	if getError == nil {
-		if maps.EqualFunc(secret.Data, data, bytes.Equal) {
-			return nil
-		}
-
-		secret.Data = data
-
-		if error := liferayEnvironmentReconciler.Update(context, secret); error != nil {
-			return error
-		}
-
-		logf.FromContext(context).Info("Updated entitlements secret", "secret", entitlementsName)
-
-		return nil
-	}
-
-	if !errors.IsNotFound(getError) {
-		return getError
-	}
-
-	secret = &corev1.Secret{
-		Data: data,
-		ObjectMeta: metav1.ObjectMeta{
-			Labels:    map[string]string{"controller-watched": "yes"},
-			Name:      entitlementsName,
-			Namespace: liferayEnvironment.Namespace,
+	return liferayEnvironmentReconciler.ensureOwnedSecret(
+		context,
+		map[string][]byte{
+			"add-ons.json":    addOnsJSON,
+			"license.xml":     entitlements.LicenseXML,
+			"maxClusterNodes": []byte(fmt.Sprintf("%d", entitlements.MaxClusterNodes)),
 		},
-	}
-
-	if error := controllerruntime.SetControllerReference(liferayEnvironment, secret, liferayEnvironmentReconciler.Scheme()); error != nil {
-		return error
-	}
-
-	if error := liferayEnvironmentReconciler.Create(context, secret); error != nil {
-		return error
-	}
-
-	logf.FromContext(context).Info("Created entitlements secret", "secret", entitlementsName)
-
-	return nil
+		liferayEnvironment, liferayEnvironment.Name+entitlementsSecretSuffix,
+	)
 }
 
 func publicKeyBase64(privateKey *rsa.PrivateKey) (string, error) {

@@ -1409,6 +1409,40 @@ func TestExtractLiferayImageTag(t *testing.T) {
 	}
 }
 
+func TestReconcileAdoptsEntitlementsSecret(t *testing.T) {
+	licenseXML := virtualClusterLicenseXML(
+		"Friday, March 2, 2029 12:00:00 AM GMT", 1, "dev-namespace-uid",
+	)
+
+	objects := append(
+		developmentObjects(),
+		&corev1.Secret{
+			Data: map[string][]byte{
+				"license.xml": []byte("<license>stale</license>"),
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "dev-entitlements",
+				Namespace: "liferay-dev",
+			},
+		},
+	)
+
+	provisioningClient := &stubProvisioning{
+		entitlements: &provisioning.Entitlements{
+			LicenseXML:      []byte(licenseXML),
+			MaxClusterNodes: 1,
+		},
+	}
+
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(provisioningClient, t, objects...)
+
+	if got := getLicenseXML(liferayEnvironmentReconciler, t); got != licenseXML {
+		t.Errorf("license.xml = %q, want the provisioned license", got)
+	}
+
+	assertOwnedSecret(liferayEnvironmentReconciler, "dev-entitlements", t)
+}
+
 func TestReconcileAppliesExpirationWhileProvisioningUnreachable(t *testing.T) {
 	unreachableSince := metav1.NewTime(time.Now().Add(-time.Hour))
 	validUntil := metav1.NewTime(time.Now().Add(-100 * 24 * time.Hour))
@@ -3768,6 +3802,26 @@ func addOnEntitlements(checksum string) *provisioning.Entitlements {
 			"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
 		)),
 		MaxClusterNodes: 3,
+	}
+}
+
+func assertOwnedSecret(
+	liferayEnvironmentReconciler *LiferayEnvironmentReconciler,
+	name string,
+	t *testing.T,
+) {
+	t.Helper()
+
+	secret := getSecret(name, liferayEnvironmentReconciler, t)
+
+	owner := metav1.GetControllerOf(secret)
+
+	if owner == nil || owner.Kind != "LiferayEnvironment" || owner.Name != "dev" {
+		t.Errorf("GetControllerOf(%q) = %v, want LiferayEnvironment dev", name, owner)
+	}
+
+	if label := secret.Labels["controller-watched"]; label != "yes" {
+		t.Errorf("Labels[%q] = %q, want %q", "controller-watched", label, "yes")
 	}
 }
 
