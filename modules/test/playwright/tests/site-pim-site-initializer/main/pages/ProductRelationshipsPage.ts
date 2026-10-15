@@ -86,7 +86,15 @@ export class ProductRelationshipsPage {
 		await expect(this.getRelatedProduct(name)).toBeHidden();
 	}
 
+	getPrimaryCell(name: string) {
+		return this.getRelatedProduct(name).locator('.cell-primary');
+	}
+
 	getRelatedProduct(name: string) {
 		return this.rows.filter({hasText: name});
+	}
+
+	getViewingLabel(name: string) {
+		return this.getRelatedProduct(name).getByText('viewing', {exact: true});
 	}
 }

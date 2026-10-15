@@ -68,7 +68,7 @@ async function openRelationships(
 
 test(
 	'Relate a product to another one',
-	{tag: ['@LPD-105923']},
+	{tag: ['@LPD-105923', '@LPD-110088']},
 	async ({productPage, productRelationshipsPage, productsPage}) => {
 		const productTitle1 = getRandomString();
 		const productTitle2 = getRandomString();
@@ -87,7 +87,10 @@ test(
 			await productRelationshipsPage.addRelationships([productTitle2]);
 
 			await test.step('Both products list each other', async () => {
-				await expect(productRelationshipsPage.rows).toHaveCount(1);
+				await expect(productRelationshipsPage.rows).toHaveCount(2);
+				await expect(
+					productRelationshipsPage.getViewingLabel(productTitle1)
+				).toBeVisible();
 
 				await openRelationships(
 					productTitle2,
@@ -96,10 +99,21 @@ test(
 					productsPage
 				);
 
-				await expect(productRelationshipsPage.rows).toHaveCount(1);
+				await expect(productRelationshipsPage.rows).toHaveCount(2);
 				await expect(
 					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
+			});
+
+			await test.step('Set a product as primary', async () => {
+				await productRelationshipsPage.clickItemAction(
+					'Set as Primary',
+					productTitle1
+				);
+
+				await expect(
+					productRelationshipsPage.getPrimaryCell(productTitle1)
+				).toHaveText('Yes');
 			});
 		}
 		finally {
@@ -137,7 +151,7 @@ test(
 			]);
 
 			await test.step('Every product lists the other two', async () => {
-				await expect(productRelationshipsPage.rows).toHaveCount(2);
+				await expect(productRelationshipsPage.rows).toHaveCount(3);
 
 				await openRelationships(
 					productTitle2,
@@ -146,7 +160,7 @@ test(
 					productsPage
 				);
 
-				await expect(productRelationshipsPage.rows).toHaveCount(2);
+				await expect(productRelationshipsPage.rows).toHaveCount(3);
 				await expect(
 					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
@@ -161,7 +175,7 @@ test(
 					productsPage
 				);
 
-				await expect(productRelationshipsPage.rows).toHaveCount(2);
+				await expect(productRelationshipsPage.rows).toHaveCount(3);
 				await expect(
 					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
@@ -226,7 +240,7 @@ test(
 			await productRelationshipsPage.addRelationships([productTitle2]);
 
 			await test.step('Both products list each other', async () => {
-				await expect(productRelationshipsPage.rows).toHaveCount(1);
+				await expect(productRelationshipsPage.rows).toHaveCount(2);
 
 				await openRelationships(
 					productTitle2,
@@ -235,7 +249,7 @@ test(
 					productsPage
 				);
 
-				await expect(productRelationshipsPage.rows).toHaveCount(1);
+				await expect(productRelationshipsPage.rows).toHaveCount(2);
 				await expect(
 					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
@@ -278,7 +292,7 @@ test(
 			await productRelationshipsPage.removeRelationship(productTitle3);
 
 			await test.step('The removed product keeps no relationship', async () => {
-				await expect(productRelationshipsPage.rows).toHaveCount(1);
+				await expect(productRelationshipsPage.rows).toHaveCount(2);
 				await expect(
 					productRelationshipsPage.getRelatedProduct(productTitle2)
 				).toBeVisible();
@@ -290,7 +304,7 @@ test(
 					productsPage
 				);
 
-				await expect(productRelationshipsPage.rows).toHaveCount(1);
+				await expect(productRelationshipsPage.rows).toHaveCount(2);
 				await expect(
 					productRelationshipsPage.getRelatedProduct(productTitle1)
 				).toBeVisible();
