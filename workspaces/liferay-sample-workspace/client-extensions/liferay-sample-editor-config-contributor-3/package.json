@@ -1,7 +1,7 @@
 {
 	"dependencies": {
-		"@ckeditor/ckeditor5-core": "46.0.3",
-		"@ckeditor/ckeditor5-ui": "46.0.3",
+		"@ckeditor/ckeditor5-core": "49.0.0",
+		"@ckeditor/ckeditor5-ui": "49.0.0",
 		"@liferay/js-api": "0.8.0"
 	},
 	"description": "Liferay Sample Editor Config Contributor CKEditor 5 Timestamp",
