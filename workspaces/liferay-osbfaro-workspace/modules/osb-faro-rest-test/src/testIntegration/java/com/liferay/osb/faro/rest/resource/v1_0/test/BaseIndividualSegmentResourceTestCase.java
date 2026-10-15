@@ -243,7 +243,8 @@ public abstract class BaseIndividualSegmentResourceTestCase {
 		page =
 			individualSegmentResource.
 				getWorkspaceGroupChannelIndividualSegmentsPage(
-					groupId, channelId, null, null, null, Pagination.of(1, 10));
+					groupId, channelId, null, null, null,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -475,7 +476,7 @@ public abstract class BaseIndividualSegmentResourceTestCase {
 			individualSegmentResource.
 				getWorkspaceGroupIndividualIndividualSegmentsPage(
 					groupId, individualId, null, null, null,
-					Pagination.of(1, 10));
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2018,4 +2019,4 @@ public abstract class BaseIndividualSegmentResourceTestCase {
 		_individualSegmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1855285172
+// LIFERAY-REST-BUILDER-HASH:501007850

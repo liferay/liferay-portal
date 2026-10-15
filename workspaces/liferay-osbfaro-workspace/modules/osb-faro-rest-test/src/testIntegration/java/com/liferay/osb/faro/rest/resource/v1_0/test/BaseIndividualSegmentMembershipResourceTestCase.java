@@ -255,7 +255,8 @@ public abstract class BaseIndividualSegmentMembershipResourceTestCase {
 		page =
 			individualSegmentMembershipResource.
 				getWorkspaceGroupIndividualSegmentMembershipsPage(
-					groupId, individualSegmentId, Pagination.of(1, 10), null);
+					groupId, individualSegmentId,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1501,4 +1502,4 @@ public abstract class BaseIndividualSegmentMembershipResourceTestCase {
 				_individualSegmentMembershipResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:188514073
+// LIFERAY-REST-BUILDER-HASH:-1029492504

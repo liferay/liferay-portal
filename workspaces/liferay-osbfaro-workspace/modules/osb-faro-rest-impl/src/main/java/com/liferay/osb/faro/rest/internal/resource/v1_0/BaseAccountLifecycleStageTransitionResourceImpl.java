@@ -61,12 +61,12 @@ public abstract class BaseAccountLifecycleStageTransitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the account lifecycle whose stage transitions should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "accountLifecycleId"
+				name = "accountLifecycleId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Only include accounts headquartered in this country.",
@@ -637,4 +637,4 @@ public abstract class BaseAccountLifecycleStageTransitionResourceImpl
 			BaseAccountLifecycleStageTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1835229887
+// LIFERAY-REST-BUILDER-HASH:1554487101

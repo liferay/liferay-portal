@@ -61,12 +61,12 @@ public abstract class BaseAssetSummaryMetricResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of an account. When set, narrow the metrics to activity from the individuals in that account.",
@@ -623,4 +623,4 @@ public abstract class BaseAssetSummaryMetricResourceImpl
 		LogFactoryUtil.getLog(BaseAssetSummaryMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-632522432
+// LIFERAY-REST-BUILDER-HASH:1933969888

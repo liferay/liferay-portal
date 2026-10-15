@@ -61,12 +61,12 @@ public abstract class BaseAccountResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the account to fetch.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "accountId"
+				name = "accountId", required = true
 			)
 		}
 	)
@@ -104,12 +104,12 @@ public abstract class BaseAccountResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Lifecycle stage name. When set, narrow the results to the accounts currently in that stage of the workspace's account lifecycle. The name is resolved to the stage ID that backs the filter, so pass the name, not the ID.",
@@ -647,4 +647,4 @@ public abstract class BaseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1023387459
+// LIFERAY-REST-BUILDER-HASH:-1387646915

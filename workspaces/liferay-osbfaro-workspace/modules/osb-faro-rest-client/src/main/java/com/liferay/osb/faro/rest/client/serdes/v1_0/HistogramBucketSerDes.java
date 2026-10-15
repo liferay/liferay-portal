@@ -10,6 +10,7 @@ import com.liferay.osb.faro.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -196,6 +197,12 @@ public class HistogramBucketSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -228,4 +235,4 @@ public class HistogramBucketSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1094534140
+// LIFERAY-REST-BUILDER-HASH:751824006

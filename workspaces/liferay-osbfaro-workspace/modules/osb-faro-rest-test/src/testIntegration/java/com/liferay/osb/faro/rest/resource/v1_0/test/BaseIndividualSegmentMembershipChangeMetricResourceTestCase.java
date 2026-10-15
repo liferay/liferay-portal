@@ -973,4 +973,4 @@ public abstract class
 			_individualSegmentMembershipChangeMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-935606555
+// LIFERAY-REST-BUILDER-HASH:-322449649

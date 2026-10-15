@@ -57,12 +57,12 @@ public abstract class BaseEventResourceImpl implements EventResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the channel whose events should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of an account. When set, narrow the events to those from the individuals in that account.",
@@ -608,4 +608,4 @@ public abstract class BaseEventResourceImpl implements EventResource {
 		LogFactoryUtil.getLog(BaseEventResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1027244659
+// LIFERAY-REST-BUILDER-HASH:1719933401

@@ -58,17 +58,17 @@ public abstract class BaseUserSessionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the channel whose sessions should be listed should be returned.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the account whose individuals' sessions should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "accountId"
+				name = "accountId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Page number (starts at 1).",
@@ -156,17 +156,17 @@ public abstract class BaseUserSessionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the channel whose sessions should be listed should be returned.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the individual whose sessions should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "individualId"
+				name = "individualId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Page number (starts at 1).",
@@ -686,4 +686,4 @@ public abstract class BaseUserSessionResourceImpl
 		LogFactoryUtil.getLog(BaseUserSessionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1234996396
+// LIFERAY-REST-BUILDER-HASH:-1682084516

@@ -621,7 +621,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividualSegmentMembershipChanges(groupId: ___, individualSegmentId: ___, operation: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List the individuals who entered or left an individual segment over a date range, most recent change first, with each individual's name and email resolved. Use this to answer 'who has exited this segment recently'. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For the current membership list, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "List the individuals who entered or left an individual segment over a date range, most recent change first, with each individual's name and email resolved. Use this to answer 'who has exited this segment recently'. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. `rangeStart` and `rangeEnd` must be given together; a request with only one of them fails. LAST_30_DAYS is used when neither `rangeKey` nor the dates are given. For the current membership list, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	public IndividualSegmentMembershipChangePage
 			workspaceGroupIndividualSegmentMembershipChanges(
@@ -1684,4 +1684,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1807487212
+// LIFERAY-REST-BUILDER-HASH:-2030210914

@@ -55,12 +55,12 @@ public abstract class BaseIndividualSegmentMembershipChangeMetricResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the individual segment whose membership should be measured.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "individualSegmentId"
+				name = "individualSegmentId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Date range preset. LAST_30_DAYS when omitted. Custom windows are not supported on this operation: the range always ends today.",
@@ -547,4 +547,4 @@ public abstract class BaseIndividualSegmentMembershipChangeMetricResourceImpl
 			BaseIndividualSegmentMembershipChangeMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1287545478
+// LIFERAY-REST-BUILDER-HASH:1569699966

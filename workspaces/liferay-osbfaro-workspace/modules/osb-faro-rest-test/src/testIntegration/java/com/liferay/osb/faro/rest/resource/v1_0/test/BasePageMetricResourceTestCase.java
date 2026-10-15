@@ -236,7 +236,7 @@ public abstract class BasePageMetricResourceTestCase {
 
 		page = pageMetricResource.getWorkspaceGroupChannelPagesPage(
 			groupId, channelId, null, null, null, null, null, null, null, null,
-			Pagination.of(1, 10), null);
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1593,4 +1593,4 @@ public abstract class BasePageMetricResourceTestCase {
 		_pageMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1468395375
+// LIFERAY-REST-BUILDER-HASH:1959101948

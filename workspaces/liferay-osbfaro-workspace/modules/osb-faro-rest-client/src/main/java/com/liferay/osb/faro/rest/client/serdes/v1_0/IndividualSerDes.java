@@ -13,6 +13,7 @@ import jakarta.annotation.Generated;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -135,14 +136,7 @@ public class IndividualSerDes {
 
 			sb.append("\"demographics\": ");
 
-			if (individual.getDemographics() instanceof String) {
-				sb.append("\"");
-				sb.append((String)individual.getDemographics());
-				sb.append("\"");
-			}
-			else {
-				sb.append(individual.getDemographics());
-			}
+			sb.append(_toJSON(individual.getDemographics()));
 		}
 
 		if (individual.getEmailAddress() != null) {
@@ -649,6 +643,12 @@ public class IndividualSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -681,4 +681,4 @@ public class IndividualSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1289614337
+// LIFERAY-REST-BUILDER-HASH:-212953657

@@ -244,7 +244,7 @@ public abstract class BaseEventResourceTestCase {
 
 		page = eventResource.getWorkspaceGroupChannelEventsPage(
 			groupId, channelId, null, null, null, null, null, null, null, null,
-			Pagination.of(1, 10));
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1680,4 +1680,4 @@ public abstract class BaseEventResourceTestCase {
 		_eventResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1846481436
+// LIFERAY-REST-BUILDER-HASH:-1177331485

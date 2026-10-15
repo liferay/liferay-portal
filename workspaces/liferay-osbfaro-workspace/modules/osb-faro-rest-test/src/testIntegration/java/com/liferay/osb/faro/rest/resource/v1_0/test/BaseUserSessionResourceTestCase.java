@@ -245,7 +245,7 @@ public abstract class BaseUserSessionResourceTestCase {
 		page =
 			userSessionResource.getWorkspaceGroupChannelAccountUserSessionsPage(
 				groupId, channelId, accountId, null, null, null, null,
-				Pagination.of(1, 10));
+				Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -493,7 +493,7 @@ public abstract class BaseUserSessionResourceTestCase {
 			userSessionResource.
 				getWorkspaceGroupChannelIndividualUserSessionsPage(
 					groupId, channelId, individualId, null, null, null, null,
-					Pagination.of(1, 10));
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1530,4 +1530,4 @@ public abstract class BaseUserSessionResourceTestCase {
 		_userSessionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:991396656
+// LIFERAY-REST-BUILDER-HASH:29143094

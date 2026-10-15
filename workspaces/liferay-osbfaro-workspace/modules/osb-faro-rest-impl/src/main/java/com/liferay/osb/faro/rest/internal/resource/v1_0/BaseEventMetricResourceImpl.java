@@ -55,17 +55,17 @@ public abstract class BaseEventMetricResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the channel whose events should be counted should be returned.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the account whose individuals' events should be counted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "accountId"
+				name = "accountId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Histogram bucket size for the metrics' time series. DAY when omitted.",
@@ -151,17 +151,17 @@ public abstract class BaseEventMetricResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "groupId"
+				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the channel whose events should be counted should be returned.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "ID of the individual whose events should be counted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "individualId"
+				name = "individualId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Histogram bucket size for the metrics' time series. DAY when omitted.",
@@ -679,4 +679,4 @@ public abstract class BaseEventMetricResourceImpl
 		LogFactoryUtil.getLog(BaseEventMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1288149862
+// LIFERAY-REST-BUILDER-HASH:1812173030

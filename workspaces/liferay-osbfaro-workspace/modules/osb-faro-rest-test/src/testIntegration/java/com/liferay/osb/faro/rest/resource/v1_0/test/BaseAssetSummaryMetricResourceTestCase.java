@@ -248,7 +248,7 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 			assetSummaryMetricResource.
 				getWorkspaceGroupChannelAssetSummariesPage(
 					groupId, channelId, null, null, null, null, null, null,
-					null, Pagination.of(1, 10), null);
+					null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1627,4 +1627,4 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 		_assetSummaryMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1510061278
+// LIFERAY-REST-BUILDER-HASH:620178987

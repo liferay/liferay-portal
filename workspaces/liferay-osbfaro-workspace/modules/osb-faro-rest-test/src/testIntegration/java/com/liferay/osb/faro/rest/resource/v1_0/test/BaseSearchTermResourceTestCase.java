@@ -227,7 +227,8 @@ public abstract class BaseSearchTermResourceTestCase {
 				groupId, channelId, randomSearchTerm());
 
 		page = searchTermResource.getWorkspaceGroupChannelSearchTermsPage(
-			groupId, channelId, null, null, null, Pagination.of(1, 10));
+			groupId, channelId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1036,4 +1037,4 @@ public abstract class BaseSearchTermResourceTestCase {
 		_searchTermResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:496675771
+// LIFERAY-REST-BUILDER-HASH:1176559920

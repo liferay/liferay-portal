@@ -869,4 +869,4 @@ public abstract class BaseWorkspaceResourceTestCase {
 		_workspaceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1400158858
+// LIFERAY-REST-BUILDER-HASH:166483486
