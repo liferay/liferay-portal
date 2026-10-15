@@ -46,17 +46,20 @@ public class ThumbnailURLReferenceTestUtil {
 			new String[] {"127.0.0.1"}, true, assertUnsafeBiConsumer,
 			unsafeSupplier.get(), thumbnailURLReferenceUnsafeFunction,
 			unsafeFunction);
+
+		T t = unsafeSupplier.get();
+
 		_assertRestrictedHost(
-			new String[0], false, unsafeSupplier.get(),
+			new String[0], false, t, thumbnailURLReferenceUnsafeFunction,
+			unsafeFunction);
+		_assertRestrictedHost(
+			new String[] {"127.0.0.1"}, false, t,
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
 		_assertRestrictedHost(
-			new String[] {"127.0.0.1"}, false, unsafeSupplier.get(),
+			new String[] {"example.test"}, false, t,
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
 		_assertRestrictedHost(
-			new String[] {"example.test"}, false, unsafeSupplier.get(),
-			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
-		_assertRestrictedHost(
-			new String[] {"example.test"}, true, unsafeSupplier.get(),
+			new String[] {"example.test"}, true, t,
 			thumbnailURLReferenceUnsafeFunction, unsafeFunction);
 	}
 
