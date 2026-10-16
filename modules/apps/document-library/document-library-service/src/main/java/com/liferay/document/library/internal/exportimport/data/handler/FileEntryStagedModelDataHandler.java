@@ -561,7 +561,10 @@ public class FileEntryStagedModelDataHandler
 										fileVersionUuid,
 										existingFileEntry.getGroupId());
 
-							if (alreadyExistingFileVersion != null) {
+							if ((alreadyExistingFileVersion != null) &&
+								(alreadyExistingFileVersion.getFileEntryId() ==
+									existingFileEntry.getFileEntryId())) {
+
 								serviceContext.setAttribute(
 									"existingDLFileVersionId",
 									alreadyExistingFileVersion.
