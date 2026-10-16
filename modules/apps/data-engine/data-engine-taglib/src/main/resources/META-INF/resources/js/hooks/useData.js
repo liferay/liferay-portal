@@ -51,6 +51,7 @@ const parseDataDefinition = (originalDataDefinition) => {
 };
 
 const DEFAULT_ID = '0';
+const FETCH_TIMEOUT = 60000;
 const NOT_FOUND = 404;
 
 const customFetch =
@@ -103,6 +104,7 @@ export function useData({dataDefinitionId, dataLayoutId}) {
 		fetchRetry: {
 			attempts: 0,
 		},
+		fetchTimeout: FETCH_TIMEOUT,
 		link: `${window.location.origin}${pathContext}/o/data-engine/v2.0/data-definitions/${dataDefinitionId}`,
 	});
 
@@ -116,6 +118,7 @@ export function useData({dataDefinitionId, dataLayoutId}) {
 		fetchRetry: {
 			attempts: 0,
 		},
+		fetchTimeout: FETCH_TIMEOUT,
 		link: `${window.location.origin}${pathContext}/o/data-engine/v2.0/data-layouts/${dataLayoutId}`,
 	});
 
