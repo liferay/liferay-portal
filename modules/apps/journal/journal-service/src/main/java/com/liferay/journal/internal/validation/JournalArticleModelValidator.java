@@ -32,8 +32,10 @@ import com.liferay.journal.exception.ArticleTitleException;
 import com.liferay.journal.exception.DuplicateArticleExternalReferenceCodeException;
 import com.liferay.journal.exception.DuplicateArticleIdException;
 import com.liferay.journal.exception.InvalidDDMStructureException;
+import com.liferay.journal.exception.InvalidFolderException;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleLocalization;
+import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.persistence.JournalArticlePersistence;
 import com.liferay.journal.util.JournalConverter;
@@ -447,7 +449,13 @@ public class JournalArticleModelValidator
 		throws PortalException {
 
 		if (folderId != 0) {
-			_journalFolderLocalService.getFolder(folderId);
+			JournalFolder folder = _journalFolderLocalService.getFolder(
+				folderId);
+
+			if (folder.getGroupId() != groupId) {
+				throw new InvalidFolderException(
+					folder, InvalidFolderException.INVALID_GROUP);
+			}
 		}
 
 		_ddmStructureLocalService.getDDMStructure(ddmStructureId);
