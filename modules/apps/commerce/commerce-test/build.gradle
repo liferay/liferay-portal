@@ -39,6 +39,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:friendly-url:friendly-url-api")
 	testIntegrationImplementation project(":apps:frontend-data-set:frontend-data-set-api")
+	testIntegrationImplementation project(":apps:frontend-taglib:frontend-taglib-clay")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:layout:layout-display-page-api")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
