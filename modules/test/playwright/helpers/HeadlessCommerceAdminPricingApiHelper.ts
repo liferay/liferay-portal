@@ -274,7 +274,11 @@ export class HeadlessCommerceAdminPricingApiHelper {
 
 	async postBasePriceEntries(
 		catalogId: number,
-		priceEntries: Array<{price: number; skuId: number}>
+		priceEntries: Array<{
+			price: number;
+			priceOnApplication?: boolean;
+			skuId: number;
+		}>
 	) {
 		const basePriceLists = await this.getBasePriceListId(catalogId);
 

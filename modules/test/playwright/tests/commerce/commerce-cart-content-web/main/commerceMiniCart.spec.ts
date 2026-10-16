@@ -1573,6 +1573,83 @@ test(
 );
 
 test(
+	'As a buyer I can quick add to cart a SKU marked as price on application',
+	{tag: ['@COMMERCE-11551', '@LPD-110523']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceMiniCartPage,
+		page,
+	}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		await waitForAlert(page);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		const sku = product.skus[0];
+
+		await apiHelpers.headlessCommerceAdminPricing.postBasePriceEntries(
+			catalog.id,
+			[{price: 10, priceOnApplication: true, skuId: sku.id}]
+		);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await commerceMiniCartPage.quickAddToCart(sku.sku);
+
+		await expect(
+			commerceMiniCartPage.miniCartItem(product.name.en_US)
+		).toBeVisible();
+		await expect(
+			commerceMiniCartPage.miniCartItemPriceOnApplication(
+				product.name.en_US
+			)
+		).toHaveText('Price on Application');
+	}
+);
+
+test(
 	'Decimal unit of measure prices are converted for a bundled product in the mini cart Edit panel',
 	{tag: '@COMMERCE-12628'},
 	async ({
