@@ -5,13 +5,18 @@
 
 import {test} from '@playwright/test';
 
+import {ExportImportTranslationPage} from '../pages/ExportImportTranslationPage';
 import {TranslationsAdminPage} from '../pages/TranslationsAdminPage';
 import {WebContentTranslationPage} from '../pages/WebContentTranslationPage';
 
 const translationPagesTest = test.extend<{
+	exportImportTranslationPage: ExportImportTranslationPage;
 	translationsAdminPage: TranslationsAdminPage;
 	webContentTranslationPage: WebContentTranslationPage;
 }>({
+	exportImportTranslationPage: async ({page}, use) => {
+		await use(new ExportImportTranslationPage(page));
+	},
 	translationsAdminPage: async ({page}, use) => {
 		await use(new TranslationsAdminPage(page));
 	},

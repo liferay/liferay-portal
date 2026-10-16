@@ -91,6 +91,36 @@ export async function unzipFile(filePath: string): Promise<string> {
 	});
 }
 
+export async function getZipEntryNames(filePath: string): Promise<string[]> {
+	return new Promise((resolve, reject) => {
+		open(filePath, {lazyEntries: true}, (error, zip) => {
+			if (error) {
+				return reject(error);
+			}
+
+			const entryNames: string[] = [];
+
+			zip.readEntry();
+
+			zip.on('entry', (entry) => {
+				entryNames.push(entry.fileName);
+
+				zip.readEntry();
+			});
+
+			zip.on('end', () => {
+				zip.close();
+				resolve(entryNames);
+			});
+
+			zip.on('error', (error) => {
+				zip.close();
+				reject(error);
+			});
+		});
+	});
+}
+
 export async function readFileFromZip(
 	fileName: string,
 	filePath: string
