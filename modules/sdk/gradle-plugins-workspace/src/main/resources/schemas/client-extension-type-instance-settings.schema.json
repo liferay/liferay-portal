@@ -161,10 +161,22 @@
 					"title": "Enable ChatGPT to Create Content",
 					"type": "boolean"
 				},
-				"enableDALLEToCreateImages": {
+				"enableOpenAIImageGeneration": {
 					"default": true,
-					"title": "Enable DALL-E to Create Images",
+					"title": "Enable OpenAI Image Generation",
 					"type": "boolean"
+				},
+				"imageModel": {
+					"default": "gpt-image-2",
+					"description": "Enter the ID of the OpenAI model used to create images. Refer to OpenAI's documentation for the available models.",
+					"title": "Image Model",
+					"type": "string"
+				},
+				"imageSizes": {
+					"default": "1024x1024,1536x1024,1024x1536",
+					"description": "Enter the image sizes users can choose from, separated by commas. The first size is selected by default.",
+					"title": "Image Sizes",
+					"type": "string"
 				},
 				"pid": {
 					"const": "com.liferay.ai.creator.openai.configuration.AICreatorOpenAICompanyConfiguration",
