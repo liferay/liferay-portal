@@ -115,7 +115,7 @@ definition {
 
 		Type(
 			key_text = "secretKey",
-			locator1 = "TextArea#ANY",
+			locator1 = "TextInput#ANY_PASSWORD",
 			value1 = ${secretKey});
 
 		FormFields.enableCheckbox(fieldName = "enabled");
@@ -135,7 +135,7 @@ definition {
 
 		Type(
 			key_text = "subscriptionKey",
-			locator1 = "TextArea#ANY",
+			locator1 = "TextInput#ANY_PASSWORD",
 			value1 = ${subscriptionKey});
 
 		Type(
@@ -458,9 +458,10 @@ definition {
 			key_settingFieldName = "Enabled",
 			locator1 = "SystemSettings#SETTING_FIELD_NAME_CHECKBOX");
 
-		SystemSettings.editTextAreaSetting(
-			settingName = "Service Account Private Key",
-			settingValue = ${settingValue});
+		Type(
+			key_text = "serviceAccountPrivateKey",
+			locator1 = "TextInput#ANY_PASSWORD",
+			value1 = ${settingValue});
 
 		Button.clickSave();
 

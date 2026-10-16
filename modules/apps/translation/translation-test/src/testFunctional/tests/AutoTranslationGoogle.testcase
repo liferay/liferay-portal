@@ -16,11 +16,16 @@ definition {
 
 		var valueReference = Translations.setGoogleCloudTranslationServiceKey();
 
-		SystemSettings.configureSystemSetting(
-			enableSetting = "true",
-			settingFieldName = "Enabled",
-			settingName = "Service Account Private Key",
-			settingValue = ${valueReference});
+		Check.toggleSwitch(
+			key_settingFieldName = "Enabled",
+			locator1 = "SystemSettings#SETTING_FIELD_NAME_CHECKBOX");
+
+		Type(
+			key_text = "serviceAccountPrivateKey",
+			locator1 = "TextInput#ANY_PASSWORD",
+			value1 = ${valueReference});
+
+		SystemSettings.saveConfiguration();
 
 		JSONWebcontent.addWebContent(
 			content = "This is the content of a web article",
