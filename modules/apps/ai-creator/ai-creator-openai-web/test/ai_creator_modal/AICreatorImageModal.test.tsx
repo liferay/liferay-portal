@@ -31,6 +31,7 @@ async function renderModalWithRequest() {
 
 		<AICreatorImageModal
 			getGenerationsURL="/sample-url"
+			imageSizes={['1024x1024', '1536x1024']}
 			portletNamespace="namespace"
 			uploadGenerationsURL="/upload-url"
 		/>
@@ -40,7 +41,7 @@ async function renderModalWithRequest() {
 		screen.getByLabelText('description'),
 		'Sample image description'
 	);
-	userEvent.selectOptions(screen.getByLabelText('image-size'), '256x256');
+	userEvent.selectOptions(screen.getByLabelText('image-size'), '1536x1024');
 	userEvent.type(screen.getByLabelText('number-of-images-to-generate'), '4');
 
 	await act(async () => {
@@ -63,7 +64,7 @@ describe('AICreatorImageModal', () => {
 		expect(url).toBe('/sample-url');
 
 		expect(body.get('namespaceprompt')).toBe('Sample image description');
-		expect(body.get('namespacesize')).toBe('256x256');
+		expect(body.get('namespacesize')).toBe('1536x1024');
 		expect(body.get('namespacenumberOfImages')).toBe('4');
 	});
 
