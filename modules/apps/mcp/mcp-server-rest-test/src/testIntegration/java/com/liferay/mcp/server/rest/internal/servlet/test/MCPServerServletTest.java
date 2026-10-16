@@ -181,6 +181,7 @@ public class MCPServerServletTest {
 				_testServiceWithNoContentResponse(authorization);
 				_testServiceWithProfile(authorization);
 				_testServiceWithRestrictFields(authorization);
+				_testServiceWithUnknownMethod(authorization);
 				_testServiceWithoutAuthTokenCheck(authorization);
 				_testServiceWithoutProfile(authorization);
 				_testServiceWithoutSession(authorization);
@@ -1179,6 +1180,46 @@ public class MCPServerServletTest {
 		Assert.assertTrue(fieldsEnumValues.contains("description"));
 
 		mcpSyncClient.closeGracefully();
+	}
+
+	private void _testServiceWithUnknownMethod(String authorization)
+		throws Exception {
+
+		Http.Options options = new Http.Options();
+
+		options.addHeader("Accept", "application/json, text/event-stream");
+		options.addHeader("Authorization", authorization);
+		options.addHeader("Content-Type", ContentTypes.APPLICATION_JSON);
+		options.setBody(
+			JSONUtil.put(
+				"id", 1
+			).put(
+				"jsonrpc", "2.0"
+			).put(
+				"method", "server/discover"
+			).put(
+				"params", JSONFactoryUtil.createJSONObject()
+			).toString(),
+			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
+		options.setLocation(_getMCPURL());
+		options.setPost(true);
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			_http.URLtoString(options));
+
+		Http.Response response = options.getResponse();
+
+		Assert.assertEquals(200, response.getResponseCode());
+
+		Assert.assertEquals(
+			-32601,
+			jsonObject.getJSONObject(
+				"error"
+			).getInt(
+				"code"
+			));
+		Assert.assertEquals(1, jsonObject.getInt("id"));
+		Assert.assertFalse(jsonObject.has("result"));
 	}
 
 	private void _testServiceWithoutAuthTokenCheck(String authorization)
