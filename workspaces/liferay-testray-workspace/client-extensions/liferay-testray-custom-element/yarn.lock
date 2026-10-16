@@ -2192,7 +2192,7 @@ d3-shape@^3.2.0:
   dependencies:
     d3-path "^3.1.0"
 
-d3-time-format@2:
+d3-time-format@2, d3-time-format@^2.2.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/d3-time-format/-/d3-time-format-2.3.0.tgz#107bdc028667788a8924ba040faf1fbccd5a7850"
   integrity sha512-guv6b2H37s2Uq/GefleCDtbe0XZAuy7Wa49VGkPVPMfLL9qObgBST3lEHJBMUp8S7NdLQAGIvr2KXk8Hc98iKQ==
