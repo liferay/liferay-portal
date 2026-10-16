@@ -730,6 +730,22 @@ public class LiferayDynamicRegistrationService
 			return;
 		}
 
+		for (String allowedGrantType : allowedGrantTypes) {
+			if (!StringUtil.equalsIgnoreCase(
+					allowedGrantType,
+					OAuthConstants.CLIENT_CREDENTIALS_GRANT)) {
+
+				continue;
+			}
+
+			OAuth2ErrorUtil.reportInvalidRequestError(
+				"Grant type client_credentials is not allowed for dynamic " +
+					"registration",
+				OAuth2ProviderRESTEndpointConstants.
+					ERROR_INVALID_CLIENT_METADATA,
+				Response.Status.BAD_REQUEST);
+		}
+
 		List<String> redirectURIs = clientRegistration.getRedirectUris();
 
 		if (redirectURIs != null) {
