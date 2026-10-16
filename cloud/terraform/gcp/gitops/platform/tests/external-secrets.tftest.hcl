@@ -31,10 +31,10 @@ run "should_honor_a_custom_external_secrets_namespace" {
 		external_secrets_namespace="eso"
 	}
 }
-run "should_honor_custom_master_cidr_and_observability_config" {
+run "should_honor_custom_master_cidr_and_metrics_scrape_namespace" {
 	assert {
-		condition=[for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
-		error_message="A custom observability_config.namespace must flow into external-secrets-metrics-ingress"
+		condition=[for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-scrape"
+		error_message="A custom metrics_scrape_config.namespace must flow into external-secrets-metrics-ingress"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-webhook-ingress"][0].spec.ingress[0].from[0].ipBlock.cidr == "10.1.2.0/28"
@@ -51,7 +51,10 @@ run "should_honor_custom_master_cidr_and_observability_config" {
 	command=plan
 	variables {
 		master_ipv4_cidr_block="10.1.2.0/28"
-		observability_config={namespace="custom-observability"}
+		metrics_scrape_config={
+			enabled=true
+			namespace="custom-scrape"
+		}
 	}
 }
 run "should_scope_the_manual_network_policies_correctly" {
@@ -80,8 +83,8 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="external-secrets-metrics-ingress must apply to every pod in the namespace — the controller, the webhook and the cert-controller each expose a metrics port, and they share no single label that selects all three and nothing else"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_config.namespace
-		error_message="external-secrets-metrics-ingress must allow only the observability namespace"
+		condition=[for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "gmp-system"
+		error_message="external-secrets-metrics-ingress must allow only the scrape namespace"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-metrics-ingress"][0].spec.ingress[0].ports[0].port == "metrics"
@@ -100,6 +103,11 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="external-secrets-webhook-ingress must scope its allow to the webhook-named container port, not the 443 Service port, because a NetworkPolicy matches the port on the pod rather than on the Service"
 	}
 	command=plan
+	variables {
+		metrics_scrape_config={
+			enabled=true
+		}
+	}
 }
 variables {
 	argo_workflows_helm_chart_version="2.0.3"
@@ -110,4 +118,11 @@ variables {
 	keda_helm_chart_version="2.19.0"
 	project_id="liferay-test-project"
 	region="us-central1"
+}
+run "should_omit_the_metrics_rule_when_scraping_is_disabled" {
+	assert {
+		condition=length([for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-metrics-ingress"][0].spec.ingress) == 0
+		error_message="external-secrets-metrics-ingress must declare no ingress rule when scraping is disabled"
+	}
+	command=plan
 }

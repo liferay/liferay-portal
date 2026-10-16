@@ -57,13 +57,13 @@ resource "helm_release" "argo_workflows" {
 							name="argo-workflows-metrics-ingress"
 						}
 						spec={
-							ingress=[
+							ingress=var.metrics_scrape_config.enabled ? [
 								{
 									from=[
 										{
 											namespaceSelector={
 												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_config.namespace
+													"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 												}
 											}
 										},
@@ -75,7 +75,7 @@ resource "helm_release" "argo_workflows" {
 										},
 									]
 								},
-							]
+							] : []
 							podSelector={
 								matchLabels={
 									"app.kubernetes.io/instance"="argo-workflows"

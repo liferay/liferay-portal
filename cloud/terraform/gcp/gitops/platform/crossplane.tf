@@ -57,13 +57,13 @@ resource "helm_release" "crossplane" {
 							name="crossplane-metrics-ingress"
 						}
 						spec={
-							ingress=[
+							ingress=var.metrics_scrape_config.enabled ? [
 								{
 									from=[
 										{
 											namespaceSelector={
 												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_config.namespace
+													"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 												}
 											}
 										},
@@ -75,7 +75,7 @@ resource "helm_release" "crossplane" {
 										},
 									]
 								},
-							]
+							] : []
 							podSelector={}
 							policyTypes=["Ingress"]
 						}

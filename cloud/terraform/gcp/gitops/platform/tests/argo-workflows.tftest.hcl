@@ -46,15 +46,16 @@ run "should_honor_a_custom_argo_workflows_namespace" {
 		argo_workflows_namespace="workflows"
 	}
 }
-run "should_honor_a_custom_observability_config" {
+run "should_honor_a_custom_metrics_scrape_namespace" {
 	assert {
-		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
-		error_message="A custom observability_config.namespace must flow into argo-workflows-metrics-ingress"
+		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-scrape"
+		error_message="A custom metrics_scrape_config.namespace must flow into argo-workflows-metrics-ingress"
 	}
 	command=plan
 	variables {
-		observability_config={
-			namespace="custom-observability"
+		metrics_scrape_config={
+			enabled=true
+			namespace="custom-scrape"
 		}
 	}
 }
@@ -80,8 +81,8 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="argo-workflows-metrics-ingress must select only the workflow-controller pod — confirmed live that argo-workflows-server exposes no metrics port at all, only web:2746"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_config.namespace
-		error_message="argo-workflows-metrics-ingress must allow only the configured observability namespace"
+		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "gmp-system"
+		error_message="argo-workflows-metrics-ingress must allow only the configured scrape namespace"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].ports[0].port == "metrics"
@@ -96,6 +97,11 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="default-deny-ingress must declare zero ingress rules — any ingress key at all would allow something"
 	}
 	command=plan
+	variables {
+		metrics_scrape_config={
+			enabled=true
+		}
+	}
 }
 variables {
 	argo_workflows_helm_chart_version="2.0.3"
@@ -106,4 +112,11 @@ variables {
 	keda_helm_chart_version="2.19.0"
 	project_id="liferay-test-project"
 	region="us-central1"
+}
+run "should_omit_the_metrics_rule_when_scraping_is_disabled" {
+	assert {
+		condition=length([for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress) == 0
+		error_message="argo-workflows-metrics-ingress must declare no ingress rule when scraping is disabled"
+	}
+	command=plan
 }
