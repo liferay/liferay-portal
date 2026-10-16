@@ -73,11 +73,12 @@ public class PasswordFieldUtil {
 			JsonNode childJsonNode = objectNode.get(
 				passwordFieldName.substring(0, index));
 
-			if (childJsonNode != null) {
-				removePasswordFields(
-					childJsonNode,
-					Set.of(passwordFieldName.substring(index + 1)));
+			if (childJsonNode == null) {
+				continue;
 			}
+
+			removePasswordFields(
+				childJsonNode, Set.of(passwordFieldName.substring(index + 1)));
 		}
 	}
 

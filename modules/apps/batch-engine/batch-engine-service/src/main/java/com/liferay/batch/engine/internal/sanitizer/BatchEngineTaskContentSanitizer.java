@@ -182,10 +182,12 @@ public class BatchEngineTaskContentSanitizer {
 		String prefix = fieldName + StringPool.PERIOD;
 
 		for (String passwordFieldName : _passwordFieldNames) {
-			if (passwordFieldName.startsWith(prefix)) {
-				nestedPasswordFieldNames.add(
-					passwordFieldName.substring(prefix.length()));
+			if (!passwordFieldName.startsWith(prefix)) {
+				continue;
 			}
+
+			nestedPasswordFieldNames.add(
+				passwordFieldName.substring(prefix.length()));
 		}
 
 		return nestedPasswordFieldNames;
@@ -291,11 +293,13 @@ public class BatchEngineTaskContentSanitizer {
 			Set<Integer> indexes = new HashSet<>();
 
 			for (int i = 0; i < headers.size(); i++) {
-				if (_passwordFieldNames.contains(
+				if (!_passwordFieldNames.contains(
 						_getFieldName(headers.get(i)))) {
 
-					indexes.add(i);
+					continue;
 				}
+
+				indexes.add(i);
 			}
 
 			while (iterator.hasNext()) {
@@ -304,9 +308,11 @@ public class BatchEngineTaskContentSanitizer {
 				List<String> values = csvRecord.toList();
 
 				for (int index : indexes) {
-					if (index < values.size()) {
-						values.set(index, StringPool.BLANK);
+					if (index >= values.size()) {
+						continue;
 					}
+
+					values.set(index, StringPool.BLANK);
 				}
 
 				csvPrinter.printRecord(values);
@@ -386,10 +392,12 @@ public class BatchEngineTaskContentSanitizer {
 			Set<String> nestedPasswordFieldNames = _getNestedPasswordFieldNames(
 				fieldName);
 
-			if (!nestedPasswordFieldNames.isEmpty()) {
-				PasswordFieldUtil.removePasswordFields(
-					objectNode.get(name), nestedPasswordFieldNames);
+			if (nestedPasswordFieldNames.isEmpty()) {
+				continue;
 			}
+
+			PasswordFieldUtil.removePasswordFields(
+				objectNode.get(name), nestedPasswordFieldNames);
 		}
 
 		return jsonNode;
