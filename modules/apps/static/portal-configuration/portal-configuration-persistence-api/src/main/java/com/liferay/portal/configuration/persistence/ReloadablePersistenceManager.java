@@ -7,6 +7,8 @@ package com.liferay.portal.configuration.persistence;
 
 import java.io.IOException;
 
+import java.util.Dictionary;
+
 import org.apache.felix.cm.PersistenceManager;
 
 /**
@@ -15,7 +17,7 @@ import org.apache.felix.cm.PersistenceManager;
  */
 public interface ReloadablePersistenceManager extends PersistenceManager {
 
-	public void reload(String pid) throws IOException;
+	public Dictionary<?, ?> reload(String pid) throws IOException;
 
 	public String STORAGE_POLICY_KEY = ".persistenceManager.storagePolicy";
 

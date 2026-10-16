@@ -182,7 +182,7 @@ public class ConfigurationPersistenceManager
 	}
 
 	@Override
-	public void reload(String pid) throws IOException {
+	public Dictionary<?, ?> reload(String pid) throws IOException {
 		Lock lock = _readWriteLock.writeLock();
 
 		lock.lock();
@@ -197,6 +197,8 @@ public class ConfigurationPersistenceManager
 			else {
 				_dictionaries.put(pid, dictionary);
 			}
+
+			return dictionary;
 		}
 		finally {
 			lock.unlock();

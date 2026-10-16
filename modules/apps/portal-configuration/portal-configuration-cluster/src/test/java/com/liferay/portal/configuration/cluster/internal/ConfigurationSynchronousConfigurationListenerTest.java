@@ -222,10 +222,12 @@ public class ConfigurationSynchronousConfigurationListenerTest {
 			UnsafeConsumer<Configuration, Exception> unsafeConsumer)
 		throws Exception {
 
-		Mockito.when(
-			_reloadablePersistenceManager.load(Mockito.anyString())
-		).thenReturn(
+		Mockito.doReturn(
 			properties
+		).when(
+			_reloadablePersistenceManager
+		).reload(
+			Mockito.anyString()
 		);
 
 		Configuration configuration = Mockito.mock(Configuration.class);

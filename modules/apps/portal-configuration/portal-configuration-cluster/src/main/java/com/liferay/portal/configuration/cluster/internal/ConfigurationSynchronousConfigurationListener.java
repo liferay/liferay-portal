@@ -95,10 +95,8 @@ public class ConfigurationSynchronousConfigurationListener
 	}
 
 	private void _reloadConfiguration(String pid, int type) throws Exception {
-		_reloadablePersistenceManager.reload(pid);
-
-		Dictionary<String, ?> dictionary = _reloadablePersistenceManager.load(
-			pid);
+		Dictionary<String, ?> dictionary =
+			(Dictionary<String, ?>)_reloadablePersistenceManager.reload(pid);
 
 		try {
 			ConfigurationThreadLocal.setLocalUpdate(true);
