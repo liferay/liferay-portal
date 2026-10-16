@@ -24,7 +24,6 @@ create index IX_E7CC5585 on LayoutPageTemplateEntry (groupId, layoutPageTemplate
 create unique index IX_ECAFF217 on LayoutPageTemplateEntry (groupId, layoutPageTemplateEntryKey[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_FFE79984 on LayoutPageTemplateEntry (groupId, name[$COLUMN_LENGTH:75$], layoutPageTemplateCollectionId);
 create index IX_416DDC6A on LayoutPageTemplateEntry (groupId, name[$COLUMN_LENGTH:75$], status, layoutPageTemplateCollectionId);
-create index IX_22911887 on LayoutPageTemplateEntry (groupId, status, classNameId, classTypeKey[$COLUMN_LENGTH:75$], defaultTemplate);
 create index IX_DB1B076B on LayoutPageTemplateEntry (groupId, status, layoutPageTemplateCollectionId);
 create index IX_F516221F on LayoutPageTemplateEntry (groupId, type_, classNameId, classTypeKey[$COLUMN_LENGTH:75$]);
 create index IX_F406284D on LayoutPageTemplateEntry (groupId, type_, classNameId, defaultTemplate);

@@ -333,16 +333,6 @@ public class LayoutPageTemplateCollectionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_N_T() throws Exception {
-		_persistence.countByG_N_T(
-			RandomTestUtil.nextLong(), "", RandomTestUtil.nextInt());
-
-		_persistence.countByG_N_T(0L, "null", 0);
-
-		_persistence.countByG_N_T(0L, (String)null, 0);
-	}
-
-	@Test
 	public void testCountByG_LikeN_T() throws Exception {
 		_persistence.countByG_LikeN_T(
 			RandomTestUtil.nextLong(), "", RandomTestUtil.nextInt());
@@ -859,4 +849,4 @@ public class LayoutPageTemplateCollectionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-293153117
+// LIFERAY-SERVICE-BUILDER-HASH:-1525859578

@@ -373,15 +373,6 @@ public class LayoutPageTemplateEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_N() throws Exception {
-		_persistence.countByG_N(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByG_N(0L, "null");
-
-		_persistence.countByG_N(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByG_T() throws Exception {
 		_persistence.countByG_T(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
@@ -601,19 +592,6 @@ public class LayoutPageTemplateEntryPersistenceTest {
 			new long[] {RandomTestUtil.nextLong(), 0L},
 			RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
 			RandomTestUtil.nextInt(), RandomTestUtil.nextInt());
-	}
-
-	@Test
-	public void testCountByG_C_C_D_S() throws Exception {
-		_persistence.countByG_C_C_D_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "",
-			RandomTestUtil.randomBoolean(), RandomTestUtil.nextInt());
-
-		_persistence.countByG_C_C_D_S(
-			0L, 0L, "null", RandomTestUtil.randomBoolean(), 0);
-
-		_persistence.countByG_C_C_D_S(
-			0L, 0L, (String)null, RandomTestUtil.randomBoolean(), 0);
 	}
 
 	@Test
@@ -1145,4 +1123,4 @@ public class LayoutPageTemplateEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1613404101
+// LIFERAY-SERVICE-BUILDER-HASH:2037673519
