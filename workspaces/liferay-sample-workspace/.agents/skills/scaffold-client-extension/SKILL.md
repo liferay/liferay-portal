@@ -50,6 +50,10 @@ Additional source files depend on type (see templates below).
 #### `customElement` (React example)
 
 ```yaml
+assemble:
+  - from: <build-output-dir>
+    into: static
+
 <workspace-id>-<name>:
   cssURLs:
     - "css/main.css"
@@ -93,14 +97,38 @@ function App() {
 }
 ```
 
+##### Placing It on a Page Through a Fragment
+
+Verified on 2026.Q1:
+
+- **`<script src>` and `<link rel="stylesheet">` in a fragment's `html` are stored, then stripped at render.** The element's tag stays inert, with no error. Keep only the bare tag in `html` and inject the assets from the fragment's `js`, guarded by a `data-*` marker so a second placement does not load them twice. The paths are the yaml's `urls`/`cssURLs` (see "Asset URLs").
+- **A CET referenced as a fragment by its key** (`"fragment": {"key": "<cet-key>"}`) vanishes from the tree and the render, silently.
+- **`jsImportMapsEntry` variant**, when the configuration varies per placement or `htmlAttributes` does not reach the tag: the fragment's `js` runs `import('<bareSpecifier>')`, the module calls `customElements.define` with `observedAttributes`, and the fragment `html` sets those attributes from its configuration with `?has_content`, not `!`, because a never-configured value is `""`. A Vite library build also needs the `NODE_ENV` define (`react-custom-elements`).
+
+```javascript
+if (!document.head.querySelector('[data-<name>-assets]')) {
+	const script = Object.assign(document.createElement('script'), {src: '/o/<friendlyURLMapping-or-key>/<url>', type: 'module'});
+	const link = Object.assign(document.createElement('link'), {href: '/o/<friendlyURLMapping-or-key>/<css-url>', rel: 'stylesheet'});
+	script.setAttribute('data-<name>-assets', '');
+	document.head.append(script, link);
+}
+```
+
 #### `globalCSS`
 
 ```yaml
+assemble:
+  - from: css
+    into: static
+
 <workspace-id>-global-css:
   name: <Display Name> Global CSS
+  scope: company
   type: globalCSS
-  url: "css/main.css"
+  url: "main.css"
 ```
+
+`scope: company` injects it on every page. Without it the file is served but never injected; bind it per master instead when it belongs to one site (`rules/client-extension-types.md`). The same `assemble`/`scope` rules apply to `globalJS` below.
 
 ```
 client-extensions/<name>/
@@ -112,13 +140,20 @@ client-extensions/<name>/
 #### `globalJS`
 
 ```yaml
+assemble:
+  - from: js
+    into: static
+
 <workspace-id>-global-js:
   name: <Display Name> Global JS
+  scope: company
   scriptElementAttributes:
     async: true
   type: globalJS
-  url: "js/main.js"
+  url: "main.js"
 ```
+
+**Keep DOM listeners out of a `globalJS` file.** Its script tag carries `data-senna-track="temporary"`, so Senna re-executes it on every client-side navigation with `document.readyState` already `complete`. A `DOMContentLoaded`-gated init then never fires, `querySelector` finds nothing, and the feature silently does nothing. Put reusable logic (fetches, data shaping) in the CET. Attach listeners in the fragment's own `index.js`, which runs right after that instance's markup with `fragmentElement` bound. If a global script must touch the DOM, initialize at once when `document.readyState !== "loading"`, and wait for `DOMContentLoaded` only otherwise. Verified on 2026.Q3.
 
 #### `objectAction` (Spring Boot example)
 
@@ -141,6 +176,8 @@ client-extensions/<name>/
 ```
 client-extensions/<name>/
   client-extension.yaml
+  Dockerfile        # required, see below
+  LCP.json          # required, see below
   src/main/java/<package>/
     Application.java
     ObjectActionRestController.java
@@ -183,9 +220,11 @@ Required file "LCP.json" not found in project "<name>"
 
 Copy them from the matching sample on GitHub — [liferay-sample-etc-node](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-node) or [liferay-sample-etc-spring-boot](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-spring-boot) — and change the port in `LCP.json` to the one in `.serviceAddress`. Verified on 2026.Q1 with a Node project.
 
+This holds for every microservice type: `objectAction`, `objectValidationRule`, `objectEntryManager`, `workflowAction`, and the rest. The workspace plugin carries default templates only for the `batch`, `configuration`, and `frontend` classifications, so nothing fills them in. Verified on 2026.Q3.
+
 #### Run a Microservice Locally
 
-Deploying registers the CET with Liferay; it does not start the service. The deploy writes the service's configuration into `bundles/routes/default/<project>` and the portal's into `bundles/routes/default/dxp`. Point the service's config loader at both, as the [samples](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions) do.
+Deploying registers the CET with Liferay; it does not start the service. `dockerDeploy` runs after `deploy` and reports `BUILD SUCCESSFUL` even when Docker is not running, so a successful build is no sign the service is up (verified on 2026.Q3). The deploy writes the service's configuration into `bundles/routes/default/<project>` and the portal's into `bundles/routes/default/dxp`. Point the service's config loader at both, as the [samples](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions) do.
 
 **Start the service detached from the agent's session.** It has to keep running after the agent finishes or goes down — object actions keep firing at it, and anything that fires while it is down fails and is not retried. An agent's own background execution ties the process to the session, so it dies with it. Start it in a new session with `setsid nohup`, logging to the bundle's log directory (for Node, after `npm install` in the project):
 
@@ -273,6 +312,9 @@ Call `deploy-and-verify`. For microservice CETs, also start the microservice pro
 | Custom element not in Fragments panel | `htmlElementName` must be a valid custom element name (contains a hyphen) |
 | 401 from microservice CET | OAuth companion not deployed or scopes insufficient |
 | Site initializer not in template list | CET not `ACTIVE`; redeploy and recheck log |
+| CET `STARTED` but its CSS/JS returns 404 | `assemble` missing or not copying the build output into `static` (see `react-custom-elements`) |
+| `createClientExtensionConfig FAILED — Required file "Dockerfile"` / `"LCP.json"` | Microservice CET without its own Dockerfile or LCP.json (see "Every Microservice Project Needs a `Dockerfile` and `LCP.json`") |
+| `type: batch` CET deploys, but `batch/` is absent from the zip | `assemble` missing, or nested under the CET's key, reports `NO-SOURCE` silently; make it a **top level** key (see `batch` above) |
 
 ## CSS Architecture for Custom Elements
 
@@ -315,6 +357,16 @@ GET /o/headless-admin-user/v1.0/my-user-account
 ```
 
 Call this through `Liferay.Util.fetch` so the CSRF token is attached automatically.
+
+### Messaging Between Widgets: `Liferay.fire` / `Liferay.on`
+
+`Liferay.fire(name, payload)` and `Liferay.on(name, callback)` ship with the core JS, loaded in the `<head>` of every page before any fragment, so they need no CET and no import map. Verified on 2026.Q3:
+
+- **Use them between two separately placed widgets** with no DOM relation. A widget reporting its own state change to its ancestors dispatches a `CustomEvent` with `{bubbles: true, composed: true}` instead.
+- **The callback receives the payload itself**, with no `.detail` envelope.
+- **The namespace is page-wide.** Give each event a specific name (`<project>:<widget>:<event>`).
+- **Nothing is replayed or buffered.** An event fired before `Liferay.on()` is lost, as designed, so the subscriber renders a coherent initial state without waiting for a message.
+- **The subscriber updates its own element's attributes** rather than re-implementing the emitter's logic, and the emitter does not re-fire a state that has not changed.
 
 ### Never Use `roleBriefs` for Access Control
 

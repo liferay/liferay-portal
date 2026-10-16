@@ -57,7 +57,7 @@ curl \
 	--write-out "%{http_code}\n"
 ```
 
-A `200` means the portal is serving MCP. A `404` means nothing is registered at that path: the flag is not in effect, the 2026.Q3 configuration is off, or the URL does not match the DXP version. A `401` happens only on 2026.Q3 and later, and means the credentials were rejected.
+A `200` means the portal is serving MCP. A `404` means nothing is registered at that path: the flag is not in effect, the 2026.Q3 configuration is off, or the URL does not match the DXP version. A `401` happens only on 2026.Q3 and later, and means the credentials were missing or rejected.
 
 On 2026.Q1 and 2026.Q2, the probe says nothing about credentials. Verified on 2026.Q1 and 2026.Q2 with valid credentials, wrong credentials, and none: every call returned `200` with the flag on and `404` with it off. Connecting and listing tools also succeed with any credentials. Only a tool call checks them: `call-http-endpoint` on `/headless-admin-user/v1.0/my-user-account` returns the user with valid credentials, and `Status code: 401` (wrong) or `403` (none) inside a `200` response otherwise. Verified on 2026.Q1 and 2026.Q2.
 
@@ -79,6 +79,10 @@ printf \
 
 A file written only to `bundles/` is lost when the bundle is recreated. To keep it, put the same file in `configs/local/osgi/configs`. `blade server init` copies it into `bundles/osgi/configs`, verified on 2026.Q3. The workspace Docker image reads the same directory: the generated `build/docker/Dockerfile` sets `LIFERAY_WORKSPACE_ENVIRONMENT=local`, and its setup script copies `configs/local/*` into Liferay home. That was read from the files `blade gw createDockerfile` generates, not run in a container.
 
+The same switch is **Control Panel → Instance Settings → Platform → MCP Server → Enabled**, shown only while `LPD-63311` is on. Either route works; the file is the one an agent can apply.
+
+A `200` from `/o/mcp-server/v1.0/openapi.json` or `/o/mcp/server-profiles` proves nothing about this switch. Only `/o/mcp` checks it, so those paths answer either way. Only the `initialize` probe in "Audit the Current State First" tests the transport.
+
 ### Restart the CLI Session
 
 Most CLI based agents load MCP configuration at startup only and cannot pick up new settings midsession. Prompt the user to exit and restart their agent session **before starting the Liferay server** — so the restart costs nothing while the server is still down.
@@ -93,6 +97,8 @@ The CLI session restart kills any running Liferay server. If `blade server start
 ### Authentication
 
 Basic auth with base64-encoded credentials. Default: `test@liferay.com` / `test`. Update in your MCP client config if credentials differ.
+
+On 2026.Q3, `/o/mcp` also accepts an OAuth 2.0 Bearer token whose audience is the server's `/o/mcp` URL, and the transport is stateless, so no `Mcp-Session-Id` is carried between calls. A request with no `Authorization` header gets `401` with a `WWW-Authenticate: Bearer realm="mcp", resource_metadata="..."` challenge, which OAuth capable clients follow. Behind a proxy or tunnel, that URL is built from `web.server.host` and the port the request reached, so it can name the local port, such as `:8080`, which a client outside cannot reach. Configure such clients with Basic auth or an explicit token.
 
 ### Connection Check
 

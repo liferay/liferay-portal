@@ -107,7 +107,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Confirm the exact request bodies against the OpenAPI spec (`get-openapi` MCP tool, or fetch `GET /o/object-admin/v1.0/openapi.json` with curl). For source controlled migration, prefer a site-initializer `batch/` file (see `rules/site-initializer-format.md`).
+Confirm the exact request bodies against the OpenAPI spec (`get-openapi` MCP tool, or fetch `GET /o/object-admin/v1.0/openapi.json` with curl). For source controlled migration, prefer the site initializer's `object-definitions/` and `list-type-definitions/` directories (see `rules/site-initializer-format.md`), or a separate `type: batch` CET for bulk data (see `manage-objects` → the batch CET section). A `batch/` directory **inside** a site initializer is packaged and then never read — no initializer handler looks for it.
 
 ### Export Object Data (Batch)
 
@@ -174,7 +174,7 @@ curl \
 
 1. Trigger the deployment pipeline (CI/CD), or push to the UAT server and run `blade gw initBundle`.
 
-1. Bounce Tomcat on the UAT server to pick up the new properties.
+1. Bounce Tomcat on the UAT server to pick up the new properties, only after the user confirms — a non-local restart always needs confirmation (`liferay-rules.md` → "Server Restarts").
 
 ## Success Signal
 

@@ -1,6 +1,6 @@
 ---
 
-description: Audit, prompt, and enable Liferay feature flags required by a given workflow. Use when a skill needs a flag set (LPD-63311 for MCP, LPD-17564 for object collaborators, etc.), when the user asks to enable a flag, when an API returns 404, or when a Headless endpoint silently returns 400 UnsupportedOperationException.
+description: Audit, prompt, and enable Liferay feature flags required by a given workflow. Use when a skill needs a flag set (LPD-63311 for MCP, LPD-17564 for CMS and object collaborators on 2026.Q1 and 2026.Q2, etc.), when the user asks to enable a flag, when an API returns 404, or when a Headless endpoint silently returns 400 UnsupportedOperationException.
 name: feature-flags
 
 ---
@@ -42,13 +42,25 @@ Never edit `portal-ext.properties` (or `liferay.env`) without explicit confirmat
 
 ### Write per Environment
 
-Persist changes per the environment — see "Enabling a Flag" below. Then bounce or restart according to the environment.
+Persist changes per the environment — see "Enabling a Flag" below. Then bounce or restart according to the environment. Follow the restart policy in `liferay-rules.md` → "Server Restarts". Prefer the live runtime toggle below when it applies, since it needs no restart.
 
 ### Verify
 
 Reread the state and confirm every required flag is in the desired state. Report success or remaining gaps to the caller skill.
 
 ## Enabling a Flag
+
+### Live, No Restart (Runtime Toggle)
+
+A flag can be flipped on the running portal with `POST /o/com-liferay-feature-flag-web/set-enabled`, form params `key` and `enabled=true`. It takes **session auth only** (a browser session or `Liferay.Util.fetch`), not Basic auth or OAuth. `POST /o/com-liferay-feature-flag-web/is-enabled` with `key` reads one flag back. The change takes effect immediately with no restart and is stored as a portal preference, the same mechanism as the Feature Flags toggle in Instance Settings (System Settings for system flags). Prefer it for iterating, and still record the flag in `portal-ext.properties` so a fresh environment matches.
+
+### Gotcha: A Stored Toggle Overrides `portal-ext.properties`
+
+Once a flag has been toggled in the UI or through `set-enabled`, the stored preference wins over `feature.flag.<KEY>` in `portal-ext.properties` (or `liferay.env`) on every boot. The property is only the default when no preference exists. So a flag someone switched off in the UI stays off after a restart, whatever the properties file says. Fix it with the same toggle.
+
+A new database does this to every Deprecation flag. On the first start of each company, the portal stores every flag of type `deprecation` as off, so `feature.flag.<KEY>=true` in `portal-ext.properties` never applies to one. Turn it on with the toggle. See `rules/feature-flags-catalog.md` → "Gotcha: A New Database Stores Every Deprecation Flag as Off".
+
+System flags, marked `feature.flag.<KEY>.system=true` in `portal.properties` (for example `LPD-78863`), live on the **Deprecation** or **Developer** tab under **System Settings → Feature Flags**, not Instance Settings. The failure is silent: the gated feature behaves as if off. **Verify by effect, not by the properties file.**
 
 ### Tomcat
 
@@ -60,7 +72,7 @@ feature.flag.LPD-XXXXX=true
 
 - **Source**: `configs/local/portal-ext.properties` or `configs/common/portal-ext.properties` (or the active environment from `liferay.workspace.environment`).
 - **Runtime sync**: copy the changed file to `bundles/portal-ext.properties`. The destination is destructive — diff first if `bundles/portal-ext.properties` may have hand edits.
-- **Restart**: stop with `bundles/tomcat*/bin/shutdown.sh`, wait for the HTTP probe to fail, start with `bundles/tomcat*/bin/startup.sh`, wait for the HTTP probe to succeed.
+- **Restart** (per `liferay-rules.md` → "Server Restarts"): stop with `bundles/tomcat*/bin/shutdown.sh`, wait for the HTTP probe to fail, start with `bundles/tomcat*/bin/startup.sh`, wait for the HTTP probe to succeed.
 
 Do NOT use `blade gw initBundle` — it deletes and reinitializes the entire bundle directory.
 
@@ -98,8 +110,7 @@ For the full table see `rules/feature-flags-catalog.md`.
 | --- | --- | --- |
 | `LPD-63311` | off | MCP server (current path `/o/mcp`; `/o/mcp/sse` only on 2025.Q4); on 2026.Q3, only together with the `MCPServerConfiguration` `enabled` switch, which is not a flag (see `skills/mcp-server/SKILL.md`) |
 | `LPD-39244` | off | Headless Admin Fragment / composition API |
-| `LPD-17564` | off | Object collaborators API |
-| `LPD-52006` | off | Object entry folders |
+| `LPD-17564` | off | CMS, including the object collaborators API, on 2026.Q1 and 2026.Q2 (needs `LPD-34594`). The flag is gone from 2026.Q3, where neither needs a flag |
 | `LPD-32867` | off | Content provider for dynamic content sets (headless-delivery) |
 | `LPD-74328` | off | Page element / page-specification creation and update |
 

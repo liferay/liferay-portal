@@ -47,6 +47,8 @@ my-react-app:
     useESM: true
 ```
 
+**Vite library mode does not replace `process.env.NODE_ENV`.** With `build.lib` and `formats: ['es']` and no `define`, the literal expression survives into the bundle, and React, ReactDOM, and Clay ship their development builds. The symptom is dev-only console warnings with no functional breakage, such as `ClayIcon requires a spritemap`. Add `define: {'process.env.NODE_ENV': JSON.stringify('production')}` to the Vite config. One `jsImportMapsEntry` bundle dropped from 1,177 KB to 632 KB. To check a build, `grep -c "process\.env\.NODE_ENV"` on the output should return `0`. An app-mode (non-library) Vite build is not affected.
+
 **Home Page URL**: for associated OAuth2 applications, `homePageURL` must include the full protocol (e.g., `http://localhost:${PORT}`) to prevent interpolation errors.
 
 ## Implementation Patterns
@@ -88,7 +90,7 @@ if (!customElements.get(ELEMENT_ID)) {
 
 - **404 on assets**: usually a mismatch between the `assemble` block `from` path and the actual build output directory. Verify the path matches your bundler's output location.
 - **Multiple apps**: if deploying multiple React apps, ensure each has a unique `htmlElementName` and `friendlyURLMapping`.
-- **OSGi "deleted" loop**: if deployment logs show a repeating `IllegalStateException: Configuration [id] deleted`, the OSGi registry is stuck on a corrupted previous registration. Fastest fix: rename the extension ID in `client-extension.yaml` and redeploy — this forces a clean registration under a new ID. Deep debugging of OSGi config state is rarely faster.
+- **OSGi "deleted" loop**: if deployment logs show a repeating `IllegalStateException: Configuration [id] deleted`, the OSGi registry is stuck on a corrupted previous registration. **Do not rename the extension ID as the first move.** The yaml key is the CET's identity: `LXC:<key>` bindings in master pages, `function#<key>` object action executors, `oAuth2ApplicationExternalReferenceCode` references, and pages that placed the widget all point at it, and a rename orphans every one of them silently. Start with the least destructive step, deleting the stale deployed zip from `bundles/osgi/client-extensions` and redeploying clean; that is a first attempt, not a verified fix. Rename only after listing and updating every reference.
 
 ## Success Signal
 

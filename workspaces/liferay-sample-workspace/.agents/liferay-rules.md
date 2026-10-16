@@ -49,6 +49,28 @@ Use Blade as the primary CLI. Prefer `blade gw <task>` over invoking Gradle dire
 - **Verification**: success is defined by runtime activation (`STARTED` log status), not just a successful command exit code.
 - **CLI capability check**: before using a CLI tool to scaffold or initialize a project, verify what it supports (e.g., `blade --help`, `blade <command> --help`) rather than assuming. Do not assume a command supports a given task without checking first.
 
+## Server Restarts — Ask Once per Session
+
+Stopping a running Liferay server interrupts the user: sessions end, open editors lose work, and the MCP connection drops without reconnecting. So the **user** decides how restarts are handled, once per session.
+
+**Covered:** any stop, restart, or kill of a running Tomcat or Liferay container — `shutdown.sh`/`startup.sh`, `blade server stop`, `docker compose down`/`restart`. It also covers anything that requires one, such as clearing `bundles/osgi/state/`. **Not covered:** starting a server that is not running, when the user asked for it or a setup skill calls for it.
+
+**The first time a restart is needed in a session**, stop and ask which behavior the user wants for the rest of the session:
+
+1. **Confirm each time.** Before every restart, say what changed and why, then wait for a yes.
+2. **Permission to restart.** Restart when needed without asking again, but still say what is being restarted and why, before doing it.
+
+Keep the answer for the current session only. Do not write it to a file or to memory unless the user asks. A new session asks again.
+
+Whatever the choice:
+
+- **Check that a restart is really needed first.** Many changes take effect live (a flag toggled in the Feature Flags UI, OSGi `.config` files, CET redeploys). A change that did not work is more often the wrong endpoint or a stale zip than a missing restart. A Deprecation flag that a new database stored as off is not changed by a restart either (`rules/feature-flags-catalog.md`).
+- **Never stop a process this session did not start** — another workspace holding port 8080, for example — without asking, even under permission 2.
+- **Non-local environments always need confirmation** (dev, UAT, prod, Liferay Cloud), whatever was chosen; see `production-standards`.
+- **After any restart,** wait for the server to answer, then prompt the user to reconnect MCP if it is in use (`skills/mcp-server/SKILL.md`).
+
+Skills that restart the server (`feature-flags`, `deploy-and-verify`, `build-site`, `workspace-init`, `manage-environments`) apply this policy instead of restarting on their own.
+
 ## Preflight Rule for New Code Generation
 
 Before writing the **first line** of any artifact below, load its skill. Always, and before authoring — not after something fails. Glob based autoloading does not fire on an empty workspace, so nothing else will surface these.
@@ -103,7 +125,7 @@ Every skill lives under `skills/` and owns one workflow. Match the user's intent
 | Author a new workspace skill from source code or a spec doc | `author-skill` |
 | Commit a workspace skill to liferay-portal | `commit-skill` |
 
-Site building is **site initializer first**: the `siteInitializer` CET tree is the single source of truth. Build by triggering the initializer, then iterate by editing the source tree and applying each change live (theme, objects, fragments) or by reprovisioning (pages). See `rules/site-initializer-format.md`.
+Site building is **site initializer first**: the `siteInitializer` CET tree is the single source of truth. Build by triggering the initializer, then iterate by editing the source tree and applying each change live (theme, objects, fragments) or by firing the initializer again with a clean redeploy, which updates the existing site (pages). Reprovision only to remove pages. See `rules/site-initializer-format.md`.
 
 ## Reference Cards
 

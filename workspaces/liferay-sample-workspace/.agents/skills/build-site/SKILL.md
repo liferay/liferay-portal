@@ -24,7 +24,7 @@ These hold on every site build whether or not the user asks for them. Do not wai
 
 	Keep it to as few projects as the classification rules permit, but **a whole site cannot be one project**. `siteInitializer` is `batch`; `themeCSS` is `frontend`; handlers are `microservice`; those three can never share a `client-extension.yaml`. The initializer project carries the `siteInitializer` plus **exactly one** `oAuthApplicationHeadlessServer` and nothing else — a theme or an `objectAction` added to it fails at `createClientExtensionConfig`, *after* the assemble tasks have already printed success. See `rules/client-extension-types.md` → "Which Types May Share a Project".
 
-	So the reproducible unit is the workspace, not a single directory. Express what the tree can carry unaided — style book, master page, fragment CSS, `layout-set` settings — through the tree, since none of it needs reattaching. A rebrand also **ships a sibling `frontend` project** carrying `themeCSS` for the Clay level overrides that have no style book token, and `themeFavicon` for the browser tab icon — a favicon has no style book equivalent, so there is no other way to deliver one. Build and deploy it as part of the work; the only caveat is that selecting it in Site Administration → Design → Theme is a manual step, and the selection is lost on every reprovision (`skills/theme-and-design/SKILL.md` → "Apply to Site"). Say that plainly in the handover rather than skipping the project — an undelivered theme extension is a gap in the work, not a simplification.
+	So the reproducible unit is the workspace, not a single directory. Express the site's look through what the initializer tree can carry — style book, master page, fragment CSS, `layout-set` settings, and a `themeCSS` CET **bound in the master's `page-definition.json` `settings.themeCSSClientExtension`** (ERC `"LXC:" + <config-erc>`), which cascades to every page and survives reprovision (`rules/site-initializer-format.md` → "Binding design to the master via `settings`"). The theme is still a sibling project (type classification rule), but its application is tree expressible — no manual Design → Theme step.
 
 1. **Objects are the data layer.** Model entities as Liferay Object definitions. Do not reach for web content structures or a Service Builder module for structured application data, even when `modules/` exists in the workspace.
 
@@ -58,12 +58,13 @@ Proceed only after the user confirms or corrects the scope list.
 
 #### Settle the Reprovision Surface Before Provisioning Once
 
-**This is the single largest time sink in a site build.** The initializer runs only at site creation, so a whole class of change costs a delete and redeploy cycle each time it is discovered. Those cycles are almost never individually avoidable — but the *number* of them is, and it is decided here, before Phase 4, not later.
+**This is the single largest time sink in a site build.** A whole class of change costs an initializer re-fire each time it is discovered. "Reprovision" below means re-firing the initializer with a **clean redeploy** — the re-fire upserts pages, composition, and fragments onto the existing site (see `rules/site-initializer-format.md` → "Re-firing the initializer UPSERTS"); delete + redeploy is only needed to *remove* things or recover from a doubtful upsert. Each cycle still costs a full build-deploy-import wait, and the *number* of cycles is decided here, before Phase 4, not later.
 
 | Change | Cost after the first provision |
 | --- | --- |
 | Object definition, field, relationship, entry data | **Live** — `object-admin` API, no reprovision |
-| Theme CSS client extension | **Live** — `blade gw deploy` |
+| Theme CSS content (CET already bound to the master) | **Live** — `blade gw deploy` |
+| Binding a `themeCSS` CET or style book onto the master | **Reprovision** |
 | Fragment HTML / CSS / JS, or a new fragment | **Reprovision** |
 | New page, or recomposing an existing one | **Reprovision** |
 | Adding or changing a master page | **Reprovision, and it rewrites every page definition** |
@@ -74,7 +75,7 @@ So before writing the first fragment, answer these — each wrong guess is one c
 - **Is there a master page?** Retrofitting one later touches every `page-definition.json` (each needs `settings.masterPage.key` and `version: 1.1`). If the site has a branded header or footer — and almost every real site does — build it in Phase 5, not after the theme prompt.
 - **What is the complete page list**, including the ones that are not navigation items: thank you, confirmation, error, "no results" pages. A form almost always implies a landing page.
 - **Which fragments carry JavaScript**, and have they been reasoned through once for timezone, permissions, and number parsing? See the trap table below.
-- **Does the theme need anything the tree cannot express?** Decide now, because `themeCSS` is a sibling project and cannot be selected from the tree at all (`skills/theme-and-design/SKILL.md`).
+- **Does the theme need a `themeCSS` CET?** Decide now: it is a sibling project whose binding lives in the master's `page-definition.json` `settings` block, so adding or changing it later is a master composition change — one more reprovision (`skills/theme-and-design/SKILL.md`).
 
 Batch everything that costs a reprovision into as few passes as possible. A planned build provisions once or twice; a reactive one provisions five times.
 
@@ -99,10 +100,10 @@ Call `feature-flags` for the full set of flags the workflow needs:
 | Scenario | Required Flags |
 | --- | --- |
 | Fragment composition via API | `LPD-39244` |
-| Object entry permissions | `LPD-17564` |
+| Object entry shares (collaborators) | `LPD-17564` on 2026.Q1 and 2026.Q2; none on 2026.Q3 |
 | MCP transport | `LPD-63311`, plus the `MCPServerConfiguration` switch on 2026.Q3 (see `skills/mcp-server/SKILL.md`) |
 
-Report the gap table. Enable flags only after explicit user confirmation. Bounce Tomcat if any flags are written.
+Report the gap table. Enable flags only after explicit user confirmation. Bounce Tomcat if any flags are written, following `liferay-rules.md` → "Server Restarts".
 
 ### Phase 2: Transport Selection
 

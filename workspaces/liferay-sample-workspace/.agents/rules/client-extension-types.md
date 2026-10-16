@@ -36,6 +36,17 @@ grouped in a single project. The following groupings are allowed:
 
 Two further rules apply to a `batch`/`siteInitializer` project: it must contain **exactly one** `oAuthApplicationHeadlessServer`, and **at most one** `batch` or `siteInitializer` entry.
 
+### Where a `siteInitializer` Tree Comes From
+
+Verified on 2026.Q3 with workspace plugin 17.1.5:
+
+- **The project must have its own `site-initializer/` directory.** `validateClientExtensions` fails without one: `A "site-initializer" directory is required for client extension <id> with type siteInitializer` (`ClientExtensionProjectConfigurator._validateRequiredDirectory`).
+- **The portal imports only `site-initializer/site-initializer.json` and the inner `site-initializer/site-initializer.zip`** (`SiteInitializerClientExtension._initialize`). `buildSiteInitializerZip` builds that inner zip from `project.file("site-initializer")`, a fixed path. The tree an `assemble` block copies into the CX zip is never read, so `assemble: [{from: ../shared/site-initializer, into: site-initializer}]` cannot feed an import, even past validation.
+- **To deploy one tree to several sites** (one project per site, since each holds one `siteInitializer` entry with one ERC), give each project a **relative symlink** `site-initializer -> ../<shared>/site-initializer`. `File.isDirectory()` and the Zip task follow it: two projects linked to one shared tree built complete inner zips, and each imported the same pages onto its own site. A directory with no `client-extension.yaml` under `client-extensions/` is not a project, so the shared tree needs no yaml of its own. A 3-line `build.gradle` adding the shared directory to `buildSiteInitializerZip` (`tasks.named("buildSiteInitializerZip") { from("../<shared>/site-initializer") }`, beside a real `site-initializer/` holding at least one file) also builds a complete inner zip; it was built, not imported.
+- **Git and a fresh clone keep the link** (mode `120000`, checked out relative and resolving), and the import upserts the same pages onto each site. **But tooling that walks the tree does not follow it:** macOS's BSD `grep -r` given `client-extensions/*/site-initializer` reads nothing through a linked one (it follows no symlink by default, command line included), nor does Python's `Path.rglob`. A script that greps the trees for `LXC:` keys still finds the shared tree's only because the shared directory itself lies under `client-extensions/`, so keep it there. A dangling link fails the build only when that project is reached, after earlier initializers have run, so check it up front.
+- **A link deeper in a real tree is followed too.** To share one page, not a whole tree, link just its directory: `site-initializer/layouts/90-search -> <elsewhere>/layouts/90-search`. `buildSiteInitializerZip` packed the link's two files into the inner zip, and the page imported on each site (verified on 2026.Q2 with workspace plugin 17.1.5). A generator that rewrites the tree with Python's `shutil.rmtree` unlinks such a link and leaves its target alone, so it must write the link again on every run.
+- **A symlinked project directory is not a project at all.** The workspace plugin discovers projects with a `Files.walkFileTree` that does not follow links, so `client-extensions/<name> -> <other workspace>/client-extensions/<name>` gets no Gradle tasks in this workspace. Deploy it from the workspace that owns it, forcing the target: `(cd <owner> && ./gradlew :client-extensions:<name>:deploy -Pliferay.workspace.home.dir=<this workspace's bundle home>)`.
+
 Source: `CreateClientExtensionConfigTask` in `modules/sdk/gradle-plugins-workspace`.
 
 ## Frontend
@@ -54,9 +65,11 @@ These CETs inject UI artifacts into the browser.
 | `staticContent` | Static file(s) served from the portal's CDN path | — | No |
 | `jsImportMapsEntry` | Registers an ES module in the browser's import map | `bareSpecifier`, `url` | No |
 | `editorConfigContributor` | Adds toolbar buttons or config to CKEditor instances | `editorConfigKeys`, `url` | No |
-| `fdsCellRenderer` | Custom cell renderer for FDS (Frontend Data Set) tables | `name`, `url` | No |
-| `fdsFilter` | Custom filter component for FDS tables | `name`, `url` | No |
+| `fdsCellRenderer` | Custom cell renderer for FDS (Frontend Data Set) tables — a column references it as `renderer: "LXC:<key>"`, `rendererType: "clientExtension"` (`manage-data-sets`) | `name`, `url` | No |
+| `fdsFilter` | Custom filter component for FDS tables — referenced as `clientExtensionEntryERC: "LXC:<key>"`; without `LXC:` it is silently dropped | `name`, `url` | No |
 | `commerceCheckoutStep` | Custom step injected into the Commerce checkout flow | `label`, `name`, `order`, `url` | No |
+
+> **`globalJS`/`globalCSS` injection gotchas (verified on 2026.Q2):** (1) The resource is only injected instance-wide when the entry declares **`scope: company`** (the default is `layout`) — without it the file serves fine over HTTP and the CX registers, but no page ever loads it. Alternatively, bind it per site/master via the master page-definition's `settings.globalJSClientExtensions`/`globalCSSClientExtensions` (ERC `LXC:<key>`) — use that, not `scope: company`, when the JS/CSS belongs to one site. (2) **One project injects only ONE resource per type** — two `globalJS` (or two `globalCSS`) entries in one `client-extension.yaml` results in only the alphabetically-first ERC being injected; the other silently drops. Give each injected JS/CSS resource its own single-entry CX project.
 
 ## Microservice
 
@@ -66,7 +79,7 @@ These CETs expose an HTTP endpoint that Liferay calls inbound. They require an `
 | --- | --- | --- | --- |
 | `objectAction` | Handler called when an object action fires | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `objectValidationRule` | Server side validation for object entries | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
-| `objectEntryManager` | Full storage backend for an object with `storageType` `function#<cet-erc>` | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
+| `objectEntryManager` | Full storage backend for an object with `storageType` `function#<cet-erc>` (needs flag `LPS-135430`) | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `workflowAction` | Handler called at a Kaleo workflow action node | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Admin.Workflow.everything` if it transitions the task, plus `c_<name>.everything` for each object it calls |
 | `notificationType` | Custom notification channel (e.g. SMS, push) | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `captcha` | Custom CAPTCHA provider | `resourcePath` | No |

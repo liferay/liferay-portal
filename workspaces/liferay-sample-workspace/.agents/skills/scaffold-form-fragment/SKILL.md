@@ -149,6 +149,14 @@ Deploy exactly as a display fragment — the fragment lives in the site initiali
 
 Then bind it: open the page, select the Form Container's field, and choose the fragment from the field's input list. It appears only for fields whose type is in `typeOptions.fieldTypes`.
 
+When the field is placed through the live page API instead, send the fragment's real `html`, `css`, and `js` on the `FormFragment`'s `fragmentInstance`. With an empty `html`, the field renders empty and submits nothing, silently (verified 2026.Q3.2; see `manage-form-containers`).
+
+### A CMS File Picker Input
+
+DXP has no picker that browses CMS files from a site page (`manage-form-containers`, "Fields"). A custom `file` input can: browse a Space over `/o/search/v1.0/search` and write the picked file's DLFileEntry id (`embedded.file.id`) into a hidden input named `${input.name}`, which is what the stock input posts and what an edit form pre-fills (`input.value`, with the name in `input.attributes.fileName`). `input.attributes.allowedFileExtensions` (`.pdf,.txt,.srt`) and `maxFileSize` (MB, `0` for no limit) say what the field accepts. A hidden input is never validated by the browser, so check a required one yourself on the form's `submit`. Verified on 2026.Q3.5 with a Form Container, a DPT edit form and a form in a modal. liferay-base ships two, `base-cms-file-upload` and `base-cms-image-upload` (`base-form-fragment-site-initializer`), whose code is the import-map module `@liferay-base/cms-picker` (`base-cms-picker-js`).
+
+The viewer sees what search lets them see, which for a Space's depot-role grants means its members only.
+
 ## Patterns and Gotchas
 
 Four `fieldTypes` mistakes throw and **abort the fragment import** — the collection fails to load and the fragment never appears:

@@ -71,6 +71,8 @@ Required `parameters`:
 }
 ```
 
+> **`predefinedValues` cannot set a `DateTime` field.** The action's value parser only handles `DBType=Date`, so a DateTime string is silently dropped — the entry is created with the field empty and no error is logged. To timestamp entries created by an action, put a `currentDate` **expression-builder default value** on the DateTime field itself: the service layer stamps it (minute precision) on every create path, and only when the field is absent, so explicit values from imports still win. Inferred, not verified against source; verify against a running bundle.
+
 ### `update-object-entry`
 
 Updates an existing entry in the same or another object definition.
@@ -105,6 +107,8 @@ Required `parameters`:
 
 Liferay signs each request with `HMAC-SHA256` using the secret. The `X-Liferay-Webhook-Signature` header carries the hex digest.
 
+**Payload shape:** field values are NOT at the payload root — they sit under `objectEntry.values.<fieldName>` (including relationship FKs like `r_<rel>_c_<parent>Id`), and the acting user's details are under a per-object key `objectEntryDTO<ObjectName>.creator` (`givenName`, `familyName`, `email`). A receiver that reads fields off the root parses nothing and fails silently.
+
 ### `groovy`
 
 Executes a Groovy script on the portal JVM.
@@ -132,7 +136,7 @@ Also bound: `creator`, `currentDate`, `currentUserId`, `currentUserExternalRefer
 
 ### `function#<cet-erc>` (Client Extension)
 
-Calls a deployed `objectAction` CET microservice. The executor key is `function#` plus the CET entry's ERC, and `parameters` is empty:
+Calls a deployed `objectAction` CET microservice. The executor key is `function#` plus the CET entry's ERC, which is its top level key in `client-extension.yaml` with no `LXC:` prefix, and `parameters` is empty:
 
 ```json
 {
@@ -142,9 +146,14 @@ Calls a deployed `objectAction` CET microservice. The executor key is `function#
 }
 ```
 
-A bare `"objectAction"` key with the ERC in `parameters` also saves with a `200` but never fires. See `skills/manage-object-logic/SKILL.md` → "Object Action — Client Extension".
+A bare `"objectAction"` key with the ERC in `parameters`, or `function#LXC:<cet-erc>`, also saves with a `200` but never fires: every run fails with `No object action executor found with company ID … and key …`. Each deployed CET registers its own executor (`FunctionObjectActionExecutorImpl.java:80-83`), so deploy the CET before creating the action. See `skills/manage-object-logic/SKILL.md` → "Object Action — Client Extension".
 
-The microservice receives a POST with the object entry payload and a Bearer token. Implement via `scaffold-client-extension` with type `objectAction`.
+The microservice receives a POST with the object entry payload and a Bearer token. Implement via `scaffold-client-extension` with type `objectAction`. Facts about that payload (from source, `ObjectEntryVariablesUtil.java:195-215`, and verified on 2026.Q3):
+
+- **The entry ID is the top level `classPK`.** `id` appears only nested.
+- **Field values are under `objectEntryDTO<ObjectName>.properties`**, a key named per object (`objectEntryDTOBook`), mirrored raw in `objectEntry.values`. Nothing is flattened to the root.
+- **A system object sends a different payload.** `AccountEntry` sends `modelDTOAccount` and `modelAccountEntry` (and their `original*` twins) plus `extendedProperties`, with no `objectEntryDTO*` key. Route by the top level `objectDefinitionId`.
+- **The inbound Bearer token is for the user who triggered the entry**, and can call back into Liferay with the object's per object scope (`rules/oauth-scopes.md`). When the trigger is anonymous, the token is Guest's and every callback gets `403`, whatever the scopes. The microservice then needs its own `oAuthApplicationHeadlessServer` identity: `setup-oauth` → "A Microservice With Its Own Identity", and `manage-object-logic` → "Calling Back Into Liferay From the CX".
 
 ## REST Payload Shape
 
