@@ -33,20 +33,13 @@ test(
 		homePage,
 		page,
 	}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		const assetLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				settings: {},
-				type: 'Space',
-			});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const userFolderName = `User Folder ${getRandomString()}`;
 
 		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-			scopeKey: assetLibrary.siteId,
+			scopeKey: space.siteId,
 			title: userFolderName,
 		});
 
@@ -58,7 +51,7 @@ test(
 			trigger: page.getByRole('menuitem', {exact: true, name: 'Spaces'}),
 		});
 
-		await page.getByRole('link', {exact: true, name: spaceName}).click();
+		await page.getByRole('link', {exact: true, name: space.name}).click();
 
 		await page.getByRole('button', {name: 'More Actions'}).waitFor();
 

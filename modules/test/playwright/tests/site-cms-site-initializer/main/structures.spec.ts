@@ -853,27 +853,17 @@ test(
 	'Content Structure can be scoped to specific spaces',
 	{tag: '@LPD-89302'},
 	async ({apiHelpers, page, structureBuilderPage, structuresPage}) => {
-		const spaceName1 = `Space ${getRandomString()}`;
-		const spaceName2 = `Space ${getRandomString()}`;
 		const structureLabel = `Structure${getRandomInt()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName1,
-			settings: {},
-			type: 'Space',
-		});
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName2,
-			settings: {},
-			type: 'Space',
-		});
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await structureBuilderPage.createStructureFromData({
 			label: structureLabel,
 			name: structureLabel,
 			page: structureBuilderPage,
-			spaces: [spaceName1, spaceName2],
+			spaces: [space1.name, space2.name],
 		});
 
 		await structuresPage.goto();
@@ -886,10 +876,10 @@ test(
 		await page.getByRole('link', {name: structureLabel}).click();
 
 		await expect(
-			page.locator('.label-secondary', {hasText: spaceName1})
+			page.locator('.label-secondary', {hasText: space1.name})
 		).toBeVisible();
 		await expect(
-			page.locator('.label-secondary', {hasText: spaceName2})
+			page.locator('.label-secondary', {hasText: space2.name})
 		).toBeVisible();
 	}
 );
@@ -898,24 +888,16 @@ test(
 	'Content Structures list can be filtered by space with include and exclude',
 	{tag: ['@LPD-89342', '@LPD-91933']},
 	async ({apiHelpers, page, structureBuilderPage, structuresPage}) => {
-		const spaceName1 = `Space ${getRandomString()}`;
-		const spaceName2 = `Space ${getRandomString()}`;
 		const structureLabel = `Structure${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName1,
-			settings: {},
-		});
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName2,
-			settings: {},
-		});
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await structureBuilderPage.createStructureFromData({
 			label: structureLabel,
 			page: structureBuilderPage,
-			spaces: [spaceName1],
+			spaces: [space1.name],
 		});
 
 		const row = structuresPage.getItem(structureLabel);
@@ -923,14 +905,14 @@ test(
 		await structuresPage.goto();
 		await applyFDSSelectionFilter(page, {
 			filter: 'Space',
-			value: spaceName1,
+			value: space1.name,
 		});
 		await expect(row).toBeVisible();
 
 		await structuresPage.goto();
 		await applyFDSSelectionFilter(page, {
 			filter: 'Space',
-			value: spaceName2,
+			value: space2.name,
 		});
 		await expect(row).toBeHidden();
 
@@ -938,7 +920,7 @@ test(
 		await applyFDSSelectionFilter(page, {
 			exclude: true,
 			filter: 'Space',
-			value: spaceName1,
+			value: space1.name,
 		});
 		await expect(row).toBeHidden();
 
@@ -946,7 +928,7 @@ test(
 		await applyFDSSelectionFilter(page, {
 			exclude: true,
 			filter: 'Space',
-			value: spaceName2,
+			value: space2.name,
 		});
 		await expect(row).toBeVisible();
 	}

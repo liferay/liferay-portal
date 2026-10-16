@@ -41,11 +41,9 @@ test(
 		let pendingEntryId: number;
 
 		await test.step('Link Single Approver to the content type in a new Space', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: spaceName,
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace({
+				name: spaceName,
+			});
 
 			const objectDefinition =
 				await apiHelpers.objectAdmin.getObjectDefinitionByName(
@@ -136,9 +134,8 @@ test(
 		let content: string;
 
 		await test.step('Create a content embedding a document and an internal link', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				type: 'Space',
 			});
 
 			const fileEntry = await apiHelpers.objectEntry.postObjectEntry(
@@ -209,13 +206,9 @@ test(
 	'The Headless API duplicate action creates the suffixed draft copy',
 	{tag: '@LPD-103464'},
 	async ({apiHelpers}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const title = `Content ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const entry = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -223,7 +216,7 @@ test(
 				title,
 			},
 			_CONTENT_APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		expect(entry.actions.duplicate.method).toBe('POST');

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import getRandomString from '../utils/getRandomString';
 import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
 export class HeadlessAssetLibraryApiHelper {
@@ -15,39 +16,34 @@ export class HeadlessAssetLibraryApiHelper {
 	}
 
 	async createAssetLibrary({
-		description,
+		name = `Asset Library ${getRandomString()}`,
+	}: {name?: string} = {}) {
+		return this._createAssetLibrary({name, type: 'AssetLibrary'});
+	}
+
+	async createDesignLibrary({
+		name = `Design Library ${getRandomString()}`,
+	}: {name?: string} = {}) {
+		return this._createAssetLibrary({name, type: 'DesignLibrary'});
+	}
+
+	async createProject({
+		name = `Project ${getRandomString()}`,
+	}: {name?: string} = {}) {
+		return this._createAssetLibrary({name, type: 'Project'});
+	}
+
+	async createSpace({
 		externalReferenceCode,
-		name,
-		settings = {},
-		type = 'Space',
-	}: {
-		description?: string;
-		externalReferenceCode?: string;
-		name: string;
-		settings?: any;
-		type?: string;
-	}) {
-		const data = JSON.stringify({
-			description,
+		name = `Space ${getRandomString()}`,
+		settings,
+	}: {externalReferenceCode?: string; name?: string; settings?: any} = {}) {
+		return this._createAssetLibrary({
 			externalReferenceCode,
 			name,
 			settings,
-			type,
+			type: 'Space',
 		});
-
-		const assetLibrary = await this.apiHelpers.post(
-			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries`,
-			{data}
-		);
-
-		if (this.apiHelpers instanceof DataApiHelpers) {
-			this.apiHelpers.data.push({
-				id: assetLibrary.externalReferenceCode,
-				type: 'assetLibrary',
-			});
-		}
-
-		return assetLibrary;
 	}
 
 	async getAssetLibrariesPage(filter?: string, pageSize?: number) {
@@ -138,5 +134,38 @@ export class HeadlessAssetLibraryApiHelper {
 			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries/${assetLibraryExternalReferenceCode}/user-accounts/${userAccountExternalReferenceCode}/roles`,
 			{data: roleNames.map((name) => ({name}))}
 		);
+	}
+
+	private async _createAssetLibrary({
+		externalReferenceCode,
+		name,
+		settings = {},
+		type,
+	}: {
+		externalReferenceCode?: string;
+		name: string;
+		settings?: any;
+		type: string;
+	}) {
+		const data = JSON.stringify({
+			externalReferenceCode,
+			name,
+			settings,
+			type,
+		});
+
+		const assetLibrary = await this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries`,
+			{data}
+		);
+
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				id: assetLibrary.externalReferenceCode,
+				type: 'assetLibrary',
+			});
+		}
+
+		return assetLibrary;
 	}
 }

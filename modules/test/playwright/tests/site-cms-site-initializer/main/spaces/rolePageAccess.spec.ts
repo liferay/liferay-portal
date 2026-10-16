@@ -9,7 +9,6 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {addCMSAdministrator} from '../../../../utils/addCMSAdministrator';
-import getRandomString from '../../../../utils/getRandomString';
 import {performUserSwitchViaApi} from '../../../../utils/performLogin';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
@@ -31,14 +30,6 @@ const CMS_ADMIN_ONLY_SECTIONS = [
 	'Content Structures',
 	'Categorization',
 ];
-
-function createSpace(apiHelpers: DataApiHelpers, spaceName: string) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: spaceName,
-		settings: {},
-		type: 'Space',
-	});
-}
 
 async function expectSectionsVisibility(
 	page: Page,
@@ -143,9 +134,7 @@ test(
 	'A space role sees only the allowed CMS sections',
 	{tag: '@LPD-85681'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		await createSpace(apiHelpers, spaceName);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await test.step('A Space Member sees only the allowed CMS sections', () =>
 			expectAllowedSectionsForRole({
@@ -153,7 +142,7 @@ test(
 				hidden: CMS_ADMIN_ONLY_SECTIONS,
 				page,
 				role: null,
-				spaceName,
+				spaceName: space.name,
 				spaceSummaryPage,
 				visible: ALWAYS_VISIBLE_SECTIONS,
 			}));
@@ -164,7 +153,7 @@ test(
 				hidden: CMS_ADMIN_ONLY_SECTIONS,
 				page,
 				role: 'Space Content Reviewer',
-				spaceName,
+				spaceName: space.name,
 				spaceSummaryPage,
 				visible: ALWAYS_VISIBLE_SECTIONS,
 			}));
@@ -175,7 +164,7 @@ test(
 				hidden: CMS_ADMIN_ONLY_SECTIONS,
 				page,
 				role: 'Space Administrator',
-				spaceName,
+				spaceName: space.name,
 				spaceSummaryPage,
 				visible: ALWAYS_VISIBLE_SECTIONS,
 			}));
@@ -186,11 +175,8 @@ test(
 	'The Spaces Widget lists every space for a CMS Admin',
 	{tag: '@LPD-85681'},
 	async ({apiHelpers, page}) => {
-		const spaceName1 = `Space ${getRandomString()}`;
-		const spaceName2 = `Space ${getRandomString()}`;
-
-		await createSpace(apiHelpers, spaceName1);
-		await createSpace(apiHelpers, spaceName2);
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const cmsAdmin = await addCMSAdministrator(apiHelpers);
 
@@ -199,10 +185,10 @@ test(
 		await page.goto(PORTLET_URLS.cmsHome);
 
 		await expect(
-			page.getByRole('menuitem', {name: spaceName1})
+			page.getByRole('menuitem', {name: space1.name})
 		).toBeVisible();
 		await expect(
-			page.getByRole('menuitem', {name: spaceName2})
+			page.getByRole('menuitem', {name: space2.name})
 		).toBeVisible();
 	}
 );
@@ -211,17 +197,14 @@ test(
 	'The Spaces Widget lists only member spaces for each space role',
 	{tag: '@LPD-85681'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName1 = `Space ${getRandomString()}`;
-		const spaceName2 = `Space ${getRandomString()}`;
-
-		await createSpace(apiHelpers, spaceName1);
-		await createSpace(apiHelpers, spaceName2);
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await test.step('The Spaces Widget lists only member spaces for a Space Member', () =>
 			expectMemberSpacesOnlyForRole({
 				apiHelpers,
-				memberSpaceName: spaceName1,
-				nonMemberSpaceName: spaceName2,
+				memberSpaceName: space1.name,
+				nonMemberSpaceName: space2.name,
 				page,
 				role: null,
 				spaceSummaryPage,
@@ -230,8 +213,8 @@ test(
 		await test.step('The Spaces Widget lists only member spaces for a Content Reviewer', () =>
 			expectMemberSpacesOnlyForRole({
 				apiHelpers,
-				memberSpaceName: spaceName1,
-				nonMemberSpaceName: spaceName2,
+				memberSpaceName: space1.name,
+				nonMemberSpaceName: space2.name,
 				page,
 				role: 'Space Content Reviewer',
 				spaceSummaryPage,
@@ -240,8 +223,8 @@ test(
 		await test.step('The Spaces Widget lists only member spaces for a Space Admin', () =>
 			expectMemberSpacesOnlyForRole({
 				apiHelpers,
-				memberSpaceName: spaceName1,
-				nonMemberSpaceName: spaceName2,
+				memberSpaceName: space1.name,
+				nonMemberSpaceName: space2.name,
 				page,
 				role: 'Space Administrator',
 				spaceSummaryPage,

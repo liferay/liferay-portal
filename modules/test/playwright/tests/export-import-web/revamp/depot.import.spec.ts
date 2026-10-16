@@ -30,16 +30,10 @@ test(
 		const {document, sourceAssetLibrary, targetAssetLibrary} =
 			await test.step('Add a document to an asset library', async () => {
 				const sourceAssetLibrary =
-					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-						name: getRandomString(),
-						type: 'AssetLibrary',
-					});
+					await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 				const targetAssetLibrary =
-					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-						name: getRandomString(),
-						type: 'AssetLibrary',
-					});
+					await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 				const document =
 					await apiHelpers.headlessDelivery.postAssetLibraryDocument(

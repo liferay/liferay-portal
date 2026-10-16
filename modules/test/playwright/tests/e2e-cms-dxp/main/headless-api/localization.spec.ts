@@ -21,14 +21,10 @@ test(
 	async ({apiHelpers, browser, site}) => {
 		const englishBody = `English body ${getRandomString()}`;
 		const englishTitle = `English title ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 		const spanishBody = `Cuerpo español ${getRandomString()}`;
 		const spanishTitle = `Título español ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -49,7 +45,7 @@ test(
 				},
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		const {body, status} = await getWithBasicAuth(
@@ -71,12 +67,8 @@ test(
 	async ({apiHelpers, browser, site}) => {
 		const englishBody = `English body ${getRandomString()}`;
 		const englishTitle = `English title ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -91,7 +83,7 @@ test(
 				title: englishTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		const {body, status} = await getWithBasicAuth(

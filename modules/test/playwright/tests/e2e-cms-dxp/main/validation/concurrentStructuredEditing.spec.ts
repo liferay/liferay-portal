@@ -49,10 +49,7 @@ test(
 		const originalHeadline = `Headline ${getRandomString()}`;
 		const originalSummary = `Summary ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,

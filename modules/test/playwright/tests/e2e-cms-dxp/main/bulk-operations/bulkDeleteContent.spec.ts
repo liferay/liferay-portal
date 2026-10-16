@@ -41,15 +41,12 @@ test(
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
 		test.setTimeout(480000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const mappedTitle = `Title ${getRandomString()}`;
 		const mappedBody = `Body ${getRandomString()}`;
 		const secondTitle = `Title ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {trashEnabled: true},
-			type: 'Space',
 		});
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
@@ -70,7 +67,7 @@ test(
 				title: mappedTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -80,7 +77,7 @@ test(
 				title: secondTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.putObjectEntryPermissions(

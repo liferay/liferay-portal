@@ -54,14 +54,13 @@ test(
 	{tag: '@LPD-78868'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/external-videos';
-		const fileName = getRandomString();
 
 		const VIDEO_ID = 'IqCSx3omX4o';
 
 		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
 				objectEntryFolderExternalReferenceCode: 'L_FILES',
-				title: `title ${fileName}`,
+				title: `title ${getRandomString()}`,
 				videoURL: `https://www.youtube.com/watch?v=${VIDEO_ID}`,
 			},
 			applicationName,
@@ -93,12 +92,11 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-documents';
 		const fileName = getRandomString();
-		const parentFolderTitle = getRandomString();
 
 		const parentFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				scopeKey: 'Default',
-				title: parentFolderTitle,
+				title: getRandomString(),
 			});
 
 		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
@@ -122,7 +120,7 @@ test(
 
 		await assetsPage.gotoFiles();
 
-		await page.getByRole('link', {name: parentFolderTitle}).click();
+		await page.getByRole('link', {name: parentFolder.title}).click();
 
 		await expect(
 			page.getByRole('combobox', {name: 'Gallery View Selected'})
@@ -158,13 +156,11 @@ test(
 
 		const image1 = `image_${getRandomString()}`;
 		const image2 = `image_${getRandomString()}`;
-		const folder = `folder_${getRandomString()}`;
-		const parentFolderTitle = getRandomString();
 
 		const parentFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				scopeKey: 'Default',
-				title: parentFolderTitle,
+				title: getRandomString(),
 			});
 
 		const objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
@@ -200,7 +196,7 @@ test(
 				parentObjectEntryFolderExternalReferenceCode:
 					parentFolder.externalReferenceCode,
 				scopeKey: 'Default',
-				title: folder,
+				title: `folder_${getRandomString()}`,
 			});
 
 		apiHelpers.data.push({
@@ -217,7 +213,7 @@ test(
 
 		await assetsPage.changeVisualizationMode('Table');
 
-		await folderPage.clickOption(parentFolderTitle, 'View Folder');
+		await folderPage.clickOption(parentFolder.title, 'View Folder');
 
 		const carouselItems = [
 			{
@@ -234,7 +230,7 @@ test(
 			},
 			{
 				label: 'folder',
-				locator: assetsPage.galleryPreview.getByText(folder, {
+				locator: assetsPage.galleryPreview.getByText(folderData.title, {
 					exact: true,
 				}),
 			},
@@ -331,16 +327,7 @@ test(
 	'The Space selector dialog is not shown when creating a Basic Document inside a folder when multiple Spaces exist',
 	{tag: '@LPD-57827'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const assetLibraryName = getRandomString();
-		const folderTitle = getRandomString();
-
-		// Create a Space
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: assetLibraryName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		// Check the number of Spaces
 
@@ -357,13 +344,13 @@ test(
 		// Create a folder
 
 		const folder = await apiHelpers.objectFolder.createObjectEntryFolder({
-			scopeKey: assetLibraryName,
-			title: folderTitle,
+			scopeKey: space.name,
+			title: getRandomString(),
 		});
 
 		// Go to the folder
 
-		await assetsPage.gotoFolder(folder.id, folderTitle);
+		await assetsPage.gotoFolder(folder.id, folder.title);
 
 		// Create a Basic Document
 
@@ -381,7 +368,7 @@ test(
 			'//span[contains(@class,"sticker")]//following-sibling::span[1]'
 		);
 
-		await expect(spaceSpan).toContainText(assetLibraryName);
+		await expect(spaceSpan).toContainText(space.name);
 	}
 );
 
@@ -390,7 +377,6 @@ test(
 	{tag: '@LPD-58720'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-documents';
-		const imageName = `Image ${getRandomString()}`;
 
 		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -400,7 +386,7 @@ test(
 					name: `file_${getRandomString()}.png`,
 				},
 				objectEntryFolderExternalReferenceCode: 'L_FILES',
-				title: imageName,
+				title: `Image ${getRandomString()}`,
 			},
 			applicationName,
 			'Default'
@@ -421,7 +407,7 @@ test(
 		await expect(page.getByRole('dialog')).toBeVisible();
 
 		await expect(page.getByTestId('modal-header-name')).toHaveText(
-			imageName
+			objectEntry.title
 		);
 		await expect(page.getByRole('link', {name: 'Download'})).toBeVisible();
 
@@ -437,15 +423,10 @@ test(
 	async ({apiHelpers, assetsPage, folderPage, page}) => {
 		const applicationName = 'cms/basic-documents';
 
-		const image1 = `Image ${getRandomString()}`;
-		const image2 = `Image ${getRandomString()}`;
-		const folder = `Folder ${getRandomString()}`;
-		const parentFolderTitle = getRandomString();
-
 		const parentFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				scopeKey: 'Default',
-				title: parentFolderTitle,
+				title: getRandomString(),
 			});
 
 		const objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
@@ -457,7 +438,7 @@ test(
 				},
 				objectEntryFolderExternalReferenceCode:
 					parentFolder.externalReferenceCode,
-				title: image1,
+				title: `Image ${getRandomString()}`,
 			},
 			applicationName,
 			'Default'
@@ -472,7 +453,7 @@ test(
 				},
 				objectEntryFolderExternalReferenceCode:
 					parentFolder.externalReferenceCode,
-				title: image2,
+				title: `Image ${getRandomString()}`,
 			},
 			applicationName,
 			'Default'
@@ -482,7 +463,7 @@ test(
 			parentObjectEntryFolderExternalReferenceCode:
 				parentFolder.externalReferenceCode,
 			scopeKey: 'Default',
-			title: folder,
+			title: `Folder ${getRandomString()}`,
 		});
 
 		apiHelpers.data.push({
@@ -499,11 +480,11 @@ test(
 
 		await assetsPage.changeVisualizationMode('Table');
 
-		await folderPage.clickOption(parentFolderTitle, 'View Folder');
+		await folderPage.clickOption(parentFolder.title, 'View Folder');
 
 		await assetsPage.execCardItemAction({
 			action: 'View',
-			filter: image2,
+			filter: objectEntry2.title,
 		});
 
 		// Check that the navigation skips the folder
@@ -518,7 +499,9 @@ test(
 
 		const initialTitle = await modalTitle.innerText();
 
-		const otherTitle = initialTitle.includes(image1) ? image2 : image1;
+		const otherTitle = initialTitle.includes(objectEntry1.title)
+			? objectEntry2.title
+			: objectEntry1.title;
 
 		await assetsPage.modal.body.getByLabel('Next').click();
 
@@ -556,7 +539,6 @@ test(
 	{tag: '@LPD-67612'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-documents';
-		const fileTitle = `title ${getRandomString()}`;
 
 		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -566,7 +548,7 @@ test(
 					name: `file_${getRandomString()}.png`,
 				},
 				objectEntryFolderExternalReferenceCode: 'L_FILES',
-				title: fileTitle,
+				title: `title ${getRandomString()}`,
 			},
 			applicationName,
 			'Default'
@@ -581,10 +563,10 @@ test(
 			await assetsPage.gotoFiles();
 			await assetsPage.changeVisualizationMode('Cards');
 
-			await page.getByRole('link', {name: fileTitle}).click();
+			await page.getByRole('link', {name: objectEntry.title}).click();
 
 			await expect(
-				page.getByRole('heading', {name: `Edit ${fileTitle}`})
+				page.getByRole('heading', {name: `Edit ${objectEntry.title}`})
 			).toBeVisible();
 		}
 		finally {
@@ -678,15 +660,8 @@ test(
 	{tag: '@LPD-66045'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-documents';
-		const fileTitle1 = `File ${getRandomString()}`;
-		const fileTitle2 = `File ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -696,10 +671,10 @@ test(
 					name: `file_${getRandomString()}.png`,
 				},
 				objectEntryFolderExternalReferenceCode: 'L_FILES',
-				title: fileTitle1,
+				title: `File ${getRandomString()}`,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		const objectEntry2 = await apiHelpers.objectEntry.postObjectEntry(
@@ -710,10 +685,10 @@ test(
 					name: `file_${getRandomString()}.png`,
 				},
 				objectEntryFolderExternalReferenceCode: 'L_FILES',
-				title: fileTitle2,
+				title: `File ${getRandomString()}`,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
@@ -753,9 +728,9 @@ test(
 
 		await assetsPage.changeVisualizationMode('Table');
 
-		const fileRow1 = page
-			.getByRole('row')
-			.filter({has: page.getByRole('link', {name: fileTitle1})});
+		const fileRow1 = page.getByRole('row').filter({
+			has: page.getByRole('link', {name: objectEntry1.title}),
+		});
 
 		await expect(fileRow1).toBeVisible();
 
@@ -763,9 +738,9 @@ test(
 			fileRow1.locator('.lexicon-icon-users').first()
 		).toBeVisible();
 
-		const fileRow2 = page
-			.getByRole('row')
-			.filter({has: page.getByRole('link', {name: fileTitle2})});
+		const fileRow2 = page.getByRole('row').filter({
+			has: page.getByRole('link', {name: objectEntry2.title}),
+		});
 
 		await expect(fileRow2).toBeVisible();
 
@@ -778,13 +753,11 @@ test(
 	{tag: ['@LPD-87681', '@LPD-102030']},
 	async ({apiHelpers, assetsPage, page}) => {
 		const fileName = 'file_upload_image_1.jpeg';
-		const parentFolderTitle = getRandomString();
-		const targetFolderTitle = getRandomString();
 
 		const parentFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				scopeKey: 'Default',
-				title: parentFolderTitle,
+				title: getRandomString(),
 			});
 
 		const targetFolder =
@@ -792,7 +765,7 @@ test(
 				parentObjectEntryFolderExternalReferenceCode:
 					parentFolder.externalReferenceCode,
 				scopeKey: 'Default',
-				title: targetFolderTitle,
+				title: getRandomString(),
 			});
 
 		try {
@@ -801,7 +774,7 @@ test(
 
 			await assetsPage.gotoFiles();
 
-			await page.getByRole('link', {name: parentFolderTitle}).click();
+			await page.getByRole('link', {name: parentFolder.title}).click();
 
 			await expect(
 				page.getByRole('combobox', {
@@ -811,7 +784,7 @@ test(
 
 			const folderThumbnail = assetsPage.galleryThumbnails.locator(
 				'.fds-gallery-view__thumbnail',
-				{hasText: targetFolderTitle}
+				{hasText: targetFolder.title}
 			);
 
 			const dataTransfer = await page.evaluateHandle(
@@ -896,14 +869,13 @@ test(
 	{tag: ['@LPD-85555', '@LPD-90032']},
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/external-videos';
-		const videoTitle = `Video ${getRandomString()}`;
 
 		const VIDEO_ID = 'IqCSx3omX4o';
 
 		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
 				objectEntryFolderExternalReferenceCode: 'L_FILES',
-				title: videoTitle,
+				title: `Video ${getRandomString()}`,
 				videoURL: `https://www.youtube.com/watch?v=${VIDEO_ID}`,
 			},
 			applicationName,
@@ -918,7 +890,7 @@ test(
 		});
 
 		await expect(page.getByTestId('modal-header-name')).toHaveText(
-			videoTitle
+			objectEntry.title
 		);
 
 		await expect(
@@ -934,7 +906,6 @@ test(
 	{tag: ['@LPD-85555', '@LPD-90032']},
 	async ({apiHelpers, assetsPage}) => {
 		const applicationName = 'cms/basic-documents';
-		const documentTitle = `Document ${getRandomString()}`;
 
 		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -943,7 +914,7 @@ test(
 					name: `file_${getRandomString()}.pdf`,
 				},
 				objectEntryFolderExternalReferenceCode: 'L_FILES',
-				title: documentTitle,
+				title: `Document ${getRandomString()}`,
 			},
 			applicationName,
 			'Default'
@@ -1001,39 +972,32 @@ test(
 	'There is a View action for files in the Files section of a Space',
 	{tag: ['@LPD-85555', '@LPD-90032']},
 	async ({apiHelpers, assetsPage, page}) => {
-		const documentTitle = `Document ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
-
-		await apiHelpers.objectEntry.postObjectEntry(
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
 				file: {
 					fileBase64: validImageFileBase64,
 					name: `file_${getRandomString()}.png`,
 				},
 				objectEntryFolderExternalReferenceCode: 'L_FILES',
-				title: documentTitle,
+				title: `Document ${getRandomString()}`,
 			},
 			'cms/basic-documents',
-			spaceName
+			space.name
 		);
 
-		await assetsPage.gotoSpaceFiles(spaceName);
+		await assetsPage.gotoSpaceFiles(space.name);
 
 		await assetsPage.execItemAction({
 			action: 'View',
-			filter: documentTitle,
+			filter: objectEntry.title,
 		});
 
 		await expect(page.getByRole('dialog')).toBeVisible();
 
 		await expect(page.getByTestId('modal-header-name')).toHaveText(
-			documentTitle
+			objectEntry.title
 		);
 	}
 );

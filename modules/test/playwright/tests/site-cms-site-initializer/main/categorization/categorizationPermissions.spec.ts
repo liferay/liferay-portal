@@ -8,7 +8,6 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
-import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../../utils/performLogin';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {registerUserCredentials} from '../spaces/helpers/roleMembership';
@@ -19,10 +18,7 @@ async function createSpaceUserWithRole(
 	apiHelpers: DataApiHelpers,
 	roleName: string
 ) {
-	const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: `Space ${getRandomString()}`,
-		type: 'Space',
-	});
+	const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 	const user = await apiHelpers.headlessAdminUser.postUserAccount();
 

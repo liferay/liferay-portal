@@ -117,16 +117,12 @@ test(
 	'Can delete over a Select All expanded selection from a single space view with Recycle Bin disabled',
 	{tag: '@LPD-87393'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 				trashEnabled: false,
 			},
-			type: 'Space',
 		});
 
 		for (let i = 0; i < 21; i++) {
@@ -136,11 +132,11 @@ test(
 					title: `title ${getRandomString()}`,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		}
 
-		await assetsPage.gotoContents(spaceName);
+		await assetsPage.gotoContents(space.name);
 
 		await assetsPage.selectAllItems(true);
 
@@ -175,16 +171,12 @@ test(
 	'Can delete over a Select All expanded selection from a single space view with Recycle Bin enabled',
 	{tag: '@LPD-87393'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 				trashEnabled: true,
 			},
-			type: 'Space',
 		});
 
 		for (let i = 0; i < 21; i++) {
@@ -194,11 +186,11 @@ test(
 					title: `title ${getRandomString()}`,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		}
 
-		await assetsPage.gotoContents(spaceName);
+		await assetsPage.gotoContents(space.name);
 
 		await assetsPage.selectAllItems(true);
 
@@ -233,24 +225,22 @@ test(
 		const file1Title = `title ${getRandomString()}`;
 		const file2Title = `title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+		await apiHelpers.headlessAssetLibrary.createSpace({
 			name: spaceNameWithRecycleBin,
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 				trashEnabled: true,
 			},
-			type: 'Space',
 		});
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+		await apiHelpers.headlessAssetLibrary.createSpace({
 			name: spaceNameWithoutRecycleBin,
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 				trashEnabled: false,
 			},
-			type: 'Space',
 		});
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -314,18 +304,15 @@ test(
 	{tag: '@LPD-62787'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-web-contents';
-		const spaceName = `Space ${getRandomString()}`;
 		const file1Title = `title ${getRandomString()}`;
 		const file2Title = `title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 				trashEnabled: false,
 			},
-			type: 'Space',
 		});
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -334,7 +321,7 @@ test(
 				title: file1Title,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -343,7 +330,7 @@ test(
 				title: file2Title,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		await assetsPage.gotoAll();
@@ -381,18 +368,15 @@ test(
 	{tag: '@LPD-62787'},
 	async ({apiHelpers, assetsPage, page, recycleBinPage}) => {
 		const applicationName = 'cms/basic-web-contents';
-		const spaceName = `Space ${getRandomString()}`;
 		const file1Title = `title ${getRandomString()}`;
 		const file2Title = `title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 				trashEnabled: true,
 			},
-			type: 'Space',
 		});
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -401,7 +385,7 @@ test(
 				title: file1Title,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -410,7 +394,7 @@ test(
 				title: file2Title,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		await assetsPage.gotoAll();
@@ -2384,10 +2368,8 @@ test(
 		];
 
 		await test.step('Create a new Space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -2477,16 +2459,12 @@ test(
 		];
 
 		await test.step('Create source and destination Spaces', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: sourceSpaceName,
-				settings: {},
-				type: 'Space',
 			});
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: destinationSpaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -2585,7 +2563,6 @@ test(
 	'Warn users about limitations when bulk moving or copying',
 	{tag: '@LPD-86776'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitles = [
 			`Content ${getRandomString()}`,
 			`Content ${getRandomString()}`,
@@ -2593,11 +2570,7 @@ test(
 		const fileTitle = `File ${getRandomString()}`;
 
 		await test.step('Create a Space with two contents and one file', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				settings: {},
-				type: 'Space',
-			});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			for (const title of contentTitles) {
 				await apiHelpers.objectEntry.postObjectEntry(
@@ -2606,7 +2579,7 @@ test(
 						title,
 					},
 					'cms/basic-web-contents',
-					spaceName
+					space.name
 				);
 			}
 
@@ -2620,7 +2593,7 @@ test(
 					title: fileTitle,
 				},
 				'cms/basic-documents',
-				spaceName
+				space.name
 			);
 		});
 
@@ -2714,10 +2687,8 @@ test(
 		const folderBName = `Folder B ${getRandomString()}`;
 
 		await test.step('Create a Space with two content folders', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			for (const title of [folderAName, folderBName]) {
@@ -2779,18 +2750,14 @@ test(
 
 		await test.step('Create source and destination Spaces', async () => {
 			const sourceSpace =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: sourceSpaceName,
-					settings: {},
-					type: 'Space',
 				});
 
 			sourceSpaceERC = sourceSpace.externalReferenceCode;
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: destinationSpaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -2899,16 +2866,12 @@ test(
 		const contentTitle = `Content ${getRandomString()}`;
 
 		await test.step('Create source and destination Spaces', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: sourceSpaceName,
-				settings: {},
-				type: 'Space',
 			});
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: destinationSpaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -3002,16 +2965,12 @@ test(
 		const otherTitle = `Content ${getRandomString()}`;
 
 		await test.step('Create source and destination Spaces', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: sourceSpaceName,
-				settings: {},
-				type: 'Space',
 			});
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: destinationSpaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -3091,10 +3050,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a Space with two contents', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			for (const title of contentTitles) {
@@ -3173,10 +3130,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a Space with one content and one folder', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			await apiHelpers.objectEntry.postObjectEntry(
@@ -3247,13 +3202,7 @@ test(
 
 		const contentNames = [getRandomString(), getRandomString()];
 
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		for (const contentName of contentNames) {
 			await apiHelpers.objectEntry.postObjectEntry(
@@ -3262,7 +3211,7 @@ test(
 					title: contentName,
 				},
 				applicationName,
-				spaceName
+				space.name
 			);
 		}
 
@@ -3346,13 +3295,7 @@ test(
 
 		const contentNames = [getRandomString(), getRandomString()];
 
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		for (const contentName of contentNames) {
 			await apiHelpers.objectEntry.postObjectEntry(
@@ -3361,7 +3304,7 @@ test(
 					title: contentName,
 				},
 				applicationName,
-				spaceName
+				space.name
 			);
 		}
 
@@ -3433,9 +3376,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create two contents in a new Space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				type: 'Space',
 			});
 
 			for (const title of [firstTitle, secondTitle]) {

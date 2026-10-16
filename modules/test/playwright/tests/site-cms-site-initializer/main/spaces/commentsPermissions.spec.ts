@@ -29,20 +29,14 @@ test(
 	'Comment actions are restricted to users with permission over the content',
 	{tag: ['@LPD-90003', '@LPD-93064']},
 	async ({apiHelpers, contentsPage, page}) => {
-		const spaceName = getRandomString();
 		const commentBody = getRandomString();
 		const contentTitle = 'Untitled Asset';
 
-		const assetLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				settings: {},
-				type: 'Space',
-			});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await contentsPage.goto();
 
-		await contentsPage.createContent('Blog', spaceName);
+		await contentsPage.createContent('Blog', space.name);
 
 		await contentsPage.openSidePanel('Comments');
 
@@ -82,16 +76,16 @@ test(
 		};
 
 		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
-			assetLibrary.externalReferenceCode,
+			space.externalReferenceCode,
 			spaceAdmin.externalReferenceCode
 		);
 		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccountRoles(
-			assetLibrary.externalReferenceCode,
+			space.externalReferenceCode,
 			spaceAdmin.externalReferenceCode,
 			['Asset Library Administrator']
 		);
 		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
-			assetLibrary.externalReferenceCode,
+			space.externalReferenceCode,
 			spaceMember.externalReferenceCode
 		);
 

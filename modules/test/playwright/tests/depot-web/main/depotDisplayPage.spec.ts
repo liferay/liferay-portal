@@ -31,10 +31,7 @@ const DOCUMENT_PATH = path.join(__dirname, 'dependencies/Document.jpg');
 
 async function addConnectedDepot(apiHelpers: DataApiHelpers, site: Site) {
 	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: getRandomString(),
-			type: 'AssetLibrary',
-		});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 	await apiHelpers.headlessAssetLibrary.connectSite(
 		assetLibrary.externalReferenceCode,

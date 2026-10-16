@@ -78,13 +78,7 @@ testWithEnhancedFiltering.describe(
 					'Create a Space holding two basic web contents',
 					async () => {
 						const space =
-							await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-								{
-									name: `Space ${getRandomString()}`,
-									settings: {},
-									type: 'Space',
-								}
-							);
+							await apiHelpers.headlessAssetLibrary.createSpace();
 
 						spaceName = space.name;
 

@@ -24,13 +24,10 @@ test(
 	'Can connect and disconnect a site template alongside a connected site',
 	{tag: '@LPD-88037'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const siteTemplateName = `Site Template ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {logoColor: 'outline-3'},
-			type: 'Space',
 		});
 
 		const layoutSetPrototype =
@@ -61,7 +58,7 @@ test(
 			{exact: true}
 		);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await expect(globalRowLocator).toBeVisible();
 		await expect(templateRowLocator).not.toBeVisible();
@@ -91,13 +88,10 @@ test(
 	'Can toggle searchable content on a connected site template',
 	{tag: '@LPD-88037'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const siteTemplateName = `Site Template ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {logoColor: 'outline-3'},
-			type: 'Space',
 		});
 
 		const layoutSetPrototype =
@@ -110,7 +104,7 @@ test(
 			type: 'layoutSetPrototype',
 		});
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.connectSiteTemplate(siteTemplateName);
 
@@ -144,13 +138,10 @@ test(
 	'Read-only space member cannot connect or disconnect site templates',
 	{tag: ['@LPD-88037', '@LPD-92500']},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const siteTemplateName = `Site Template ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {logoColor: 'outline-3'},
-			type: 'Space',
 		});
 
 		const layoutSetPrototype =
@@ -171,7 +162,7 @@ test(
 			surname: user.familyName,
 		};
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.connectSiteTemplate(siteTemplateName);
 
@@ -180,7 +171,7 @@ test(
 		await performLogout(page);
 		await performLoginViaApi({page, screenName: user.alternateName});
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.openConnectedSitesModal();
 
@@ -206,13 +197,10 @@ test(
 	'Summary panel surfaces Make Unsearchable and Disconnect on a site template row',
 	{tag: '@LPD-88037'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const siteTemplateName = `Site Template ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {logoColor: 'outline-3'},
-			type: 'Space',
 		});
 
 		const layoutSetPrototype =
@@ -225,7 +213,7 @@ test(
 			type: 'layoutSetPrototype',
 		});
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.connectSiteTemplate(siteTemplateName);
 
@@ -253,14 +241,11 @@ test(
 	'Excludes already-connected sites and site templates from the autocomplete and clears the input',
 	{tag: '@LPD-91266'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const connectedTemplateName = `Site Template ${getRandomString()}`;
 		const otherTemplateName = `Site Template ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {logoColor: 'outline-3'},
-			type: 'Space',
 		});
 
 		for (const name of [connectedTemplateName, otherTemplateName]) {
@@ -280,7 +265,7 @@ test(
 			'L_GLOBAL'
 		);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.openConnectedSitesModal();
 

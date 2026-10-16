@@ -23,13 +23,9 @@ test(
 	'A paginated request returns the second page with accurate pagination metadata',
 	{tag: ['@LPD-95549', '@LPD-95549/TC-24.g']},
 	async ({apiHelpers, browser, site}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const titlePrefix = `Page Entry ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -50,14 +46,14 @@ test(
 					title,
 				},
 				APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 		}
 
 		await expect(async () => {
 			const {body, status} = await getWithBasicAuth(
 				browser,
-				`/o/${APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?page=2&pageSize=${PAGE_SIZE}&sort=id:asc`,
+				`/o/${APPLICATION_NAME}/scopes/${encodeURIComponent(space.name)}?page=2&pageSize=${PAGE_SIZE}&sort=id:asc`,
 				ADMIN_EMAIL_ADDRESS
 			);
 

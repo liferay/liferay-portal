@@ -238,12 +238,7 @@ test(
 		let space;
 
 		await expect(async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				externalReferenceCode: getRandomString(),
-				name: `Space ${getRandomString()}`,
-				settings: {},
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		}).toPass();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(

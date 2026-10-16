@@ -32,15 +32,11 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(360000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const originFolderName = `Origin ${getRandomString()}`;
 		const destinationFolderName = `Destination ${getRandomString()}`;
 		const fileTitle = `Image ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const spaceAdministrator = await addSpaceUserWithSession(
 			apiHelpers,
@@ -51,14 +47,14 @@ test(
 		const originFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_FILES',
-				scopeKey: spaceName,
+				scopeKey: space.name,
 				title: originFolderName,
 			});
 
 		const destinationFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_FILES',
-				scopeKey: spaceName,
+				scopeKey: space.name,
 				title: destinationFolderName,
 			});
 
@@ -73,7 +69,7 @@ test(
 				title: fileTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		const spaContext = await browser.newContext();
@@ -97,7 +93,7 @@ test(
 
 				await spaAssetsPage.selectCopyOrMoveDestination({
 					destinationFolder: destinationFolderName,
-					destinationSpace: spaceName,
+					destinationSpace: space.name,
 				});
 			});
 

@@ -176,10 +176,7 @@ test(
 	{tag: ['@LPD-109572', '@LPS-133904']},
 	async ({apiHelpers, page}) => {
 		const assetLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: getRandomString(),
-				type: 'AssetLibrary',
-			});
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 		const depotURL = `/asset-library-${assetLibrary.id}`;
 

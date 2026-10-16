@@ -255,13 +255,7 @@ test('Check space selection via modal in autocomplete input', async ({
 	itemSelectorSamplePage,
 	page,
 }) => {
-	const spaceName = `Space ${getRandomString()}`;
-
-	await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: spaceName,
-		settings: {},
-		type: 'Space',
-	});
+	const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 	const inputGroupLabel = 'Single Select (Spaces) - Open Modal Trigger';
 
@@ -271,7 +265,7 @@ test('Check space selection via modal in autocomplete input', async ({
 			.getByLabel('Select Items')
 			.click();
 
-		await page.getByText(spaceName, {exact: true}).first().click();
+		await page.getByText(space.name, {exact: true}).first().click();
 
 		await itemSelectorSamplePage.modal.selectButton.click();
 	});
@@ -281,7 +275,7 @@ test('Check space selection via modal in autocomplete input', async ({
 			itemSelectorSamplePage
 				.inputGroup(inputGroupLabel)
 				.getByRole('combobox')
-		).toHaveValue(spaceName);
+		).toHaveValue(space.name);
 	});
 });
 
@@ -290,13 +284,7 @@ test('Check space selection via modal in multiselect input', async ({
 	itemSelectorSamplePage,
 	page,
 }) => {
-	const spaceName = `Space ${getRandomString()}`;
-
-	await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: spaceName,
-		settings: {},
-		type: 'Space',
-	});
+	const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 	const inputGroupLabel = 'Multiple Select (Spaces) - Open Modal Trigger';
 
@@ -306,14 +294,14 @@ test('Check space selection via modal in multiselect input', async ({
 			.getByLabel('Select Items')
 			.click();
 
-		await page.getByText(spaceName, {exact: true}).first().click();
+		await page.getByText(space.name, {exact: true}).first().click();
 
 		await itemSelectorSamplePage.modal.selectButton.click();
 	});
 
 	await test.step('Assert that multiselect item is selected', async () => {
 		expect(
-			itemSelectorSamplePage.multiselectGridItem(spaceName)
+			itemSelectorSamplePage.multiselectGridItem(space.name)
 		).toBeVisible();
 	});
 });

@@ -10,7 +10,6 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
-import getRandomString from '../../../utils/getRandomString';
 import {hoverAndExpectToBeVisible} from '../../../utils/hoverAndExpectToBeVisible';
 import {designLibrariesPageTest} from './fixtures/designLibrariesPageTest';
 
@@ -30,17 +29,12 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Go to the design library
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		// Check the Design Assets section
 

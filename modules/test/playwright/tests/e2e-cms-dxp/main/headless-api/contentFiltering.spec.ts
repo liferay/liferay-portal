@@ -36,13 +36,9 @@ test(
 	async ({apiHelpers, browser, site}) => {
 		const categorizedTitle = `Categorized ${getRandomString()}`;
 		const otherCategorizedTitle = `Other Categorized ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 		const uncategorizedTitle = `Uncategorized ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -96,14 +92,14 @@ test(
 					title,
 				},
 				CONTENTS_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 		}
 
 		await expect(async () => {
 			const {body, status} = await getWithBasicAuth(
 				browser,
-				`/o/${CONTENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${encodeURIComponent(`taxonomyCategoryIds/any(t:t eq ${category.id})`)}`,
+				`/o/${CONTENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(space.name)}?filter=${encodeURIComponent(`taxonomyCategoryIds/any(t:t eq ${category.id})`)}`,
 				ADMIN_EMAIL_ADDRESS
 			);
 
@@ -122,17 +118,13 @@ test(
 	'A tag filter returns only the content entries and files carrying that tag',
 	{tag: ['@LPD-95549', '@LPD-95549/TC-24.e']},
 	async ({apiHelpers, browser, site}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const tag = `tag${getRandomString()}`;
 		const taggedFileTitle = `Tagged File ${getRandomString()}`;
 		const taggedTitle = `Tagged ${getRandomString()}`;
 		const untaggedFileTitle = `Untagged File ${getRandomString()}`;
 		const untaggedTitle = `Untagged ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -151,7 +143,7 @@ test(
 					title,
 				},
 				CONTENTS_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 		}
 
@@ -170,7 +162,7 @@ test(
 					title,
 				},
 				DOCUMENTS_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 		}
 
@@ -179,7 +171,7 @@ test(
 		await expect(async () => {
 			const contents = await getWithBasicAuth(
 				browser,
-				`/o/${CONTENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${filter}`,
+				`/o/${CONTENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(space.name)}?filter=${filter}`,
 				ADMIN_EMAIL_ADDRESS
 			);
 
@@ -194,7 +186,7 @@ test(
 		await expect(async () => {
 			const files = await getWithBasicAuth(
 				browser,
-				`/o/${DOCUMENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${filter}`,
+				`/o/${DOCUMENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(space.name)}?filter=${filter}`,
 				ADMIN_EMAIL_ADDRESS
 			);
 
@@ -217,14 +209,10 @@ test(
 		const matchingTitle = `Matching ${getRandomString()}`;
 		const nonMatchingTitle = `Non Matching ${getRandomString()}`;
 		const regionValue = `Region ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 		const structureLabel = `Article ${getRandomString()}`;
 		const structureName = `Article${getRandomInt()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -239,7 +227,7 @@ test(
 					name: structureName,
 					page: structureBuilderPage,
 					publish: false,
-					spaces: [spaceName],
+					spaces: [space.name],
 				});
 
 				await structureBuilderPage.addField('Text');
@@ -281,14 +269,14 @@ test(
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 				},
 				applicationName,
-				spaceName
+				space.name
 			);
 		}
 
 		await expect(async () => {
 			const {body, status} = await getWithBasicAuth(
 				browser,
-				`/o/${applicationName}/scopes/${encodeURIComponent(spaceName)}?filter=${encodeURIComponent(`${regionField.name} eq '${regionValue}'`)}`,
+				`/o/${applicationName}/scopes/${encodeURIComponent(space.name)}?filter=${encodeURIComponent(`${regionField.name} eq '${regionValue}'`)}`,
 				ADMIN_EMAIL_ADDRESS
 			);
 

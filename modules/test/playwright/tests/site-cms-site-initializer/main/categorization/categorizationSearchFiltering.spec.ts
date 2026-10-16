@@ -26,10 +26,7 @@ test(
 	'Content tagged with a child category appears when filtering by the parent category in a search widget',
 	{tag: ['@LPD-95543', '@LPD-95543/TC-20.d']},
 	async ({apiHelpers, browser, layout, page, searchPage}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const guestSite = await apiHelpers.headlessAdminSite.getSite('L_GUEST');
 

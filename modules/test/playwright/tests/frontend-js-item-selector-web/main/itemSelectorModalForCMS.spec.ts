@@ -71,17 +71,6 @@ function createObjectEntryData({title}: {title: string}) {
 	};
 }
 
-async function createSpace(
-	apiHelpers: DataApiHelpers,
-	name: string
-): Promise<SpaceTest> {
-	return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name,
-		settings: {},
-		type: 'Space',
-	});
-}
-
 async function uploadSampleFile(
 	apiHelpers: DataApiHelpers,
 	title: string,
@@ -103,8 +92,12 @@ async function uploadSampleFile(
 
 test.beforeEach(async ({apiHelpers, itemSelectorSamplePage, site}) => {
 	await test.step('Create Spaces', async () => {
-		firstSpace = await createSpace(apiHelpers, firstSpaceName);
-		secondSpace = await createSpace(apiHelpers, secondSpaceName);
+		firstSpace = await apiHelpers.headlessAssetLibrary.createSpace({
+			name: firstSpaceName,
+		});
+		secondSpace = await apiHelpers.headlessAssetLibrary.createSpace({
+			name: secondSpaceName,
+		});
 	});
 
 	await test.step('Upload sample files', async () => {

@@ -26,15 +26,6 @@ function textFile(name: string) {
 	};
 }
 
-async function createSpace(apiHelpers: DataApiHelpers) {
-	const {name} = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: getRandomString(),
-		type: 'Space',
-	});
-
-	return name;
-}
-
 async function getDocuments({
 	apiHelpers,
 	spaceName,
@@ -116,7 +107,7 @@ test(
 	'Uploads several files at once to the selected Space',
 	{tag: '@LPD-102002'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const titles = [
 			`${getRandomString()}.txt`,
@@ -130,19 +121,19 @@ test(
 
 		await queueFiles({assetsPage, files: titles.map(textFile)});
 
-		await selectSpace({assetsPage, page, spaceName});
+		await selectSpace({assetsPage, page, spaceName: space.name});
 
 		await submitUpload({assetsPage});
 
 		await waitForAlert(
 			page,
-			`3 files were successfully uploaded to ${spaceName} space.`
+			`3 files were successfully uploaded to ${space.name} space.`
 		);
 
 		await expect(assetsPage.modal.container).toBeHidden();
 
 		expect(
-			await getDocuments({apiHelpers, spaceName, titles})
+			await getDocuments({apiHelpers, spaceName: space.name, titles})
 		).toHaveLength(3);
 	}
 );
@@ -151,7 +142,7 @@ test(
 	'Requires a Space before uploading',
 	{tag: '@LPD-102002'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const title = `${getRandomString()}.txt`;
 
@@ -172,24 +163,32 @@ test(
 		await expect(assetsPage.modal.container).toBeVisible();
 
 		expect(
-			await getDocuments({apiHelpers, spaceName, titles: [title]})
+			await getDocuments({
+				apiHelpers,
+				spaceName: space.name,
+				titles: [title],
+			})
 		).toHaveLength(0);
 
 		// Submitting once a Space is selected
 
-		await selectSpace({assetsPage, page, spaceName});
+		await selectSpace({assetsPage, page, spaceName: space.name});
 
 		await submitUpload({assetsPage});
 
 		await waitForAlert(
 			page,
-			`1 file was successfully uploaded to ${spaceName} space.`
+			`1 file was successfully uploaded to ${space.name} space.`
 		);
 
 		await expect(assetsPage.modal.container).toBeHidden();
 
 		expect(
-			await getDocuments({apiHelpers, spaceName, titles: [title]})
+			await getDocuments({
+				apiHelpers,
+				spaceName: space.name,
+				titles: [title],
+			})
 		).toHaveLength(1);
 	}
 );
@@ -198,7 +197,7 @@ test(
 	'Reports the files the server rejects and keeps the valid ones',
 	{tag: '@LPD-102002'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const rejectedTitle = `${'x'.repeat(300)}.txt`;
 		const title = `${getRandomString()}.txt`;
@@ -215,7 +214,7 @@ test(
 			files: [textFile(rejectedTitle), textFile(title)],
 		});
 
-		await selectSpace({assetsPage, page, spaceName});
+		await selectSpace({assetsPage, page, spaceName: space.name});
 
 		await submitUpload({assetsPage});
 
@@ -236,7 +235,7 @@ test(
 		expect(
 			await getDocuments({
 				apiHelpers,
-				spaceName,
+				spaceName: space.name,
 				titles: [rejectedTitle, title],
 			})
 		).toHaveLength(1);
@@ -247,12 +246,12 @@ test(
 	'Does not ask for a Space when uploading inside a folder',
 	{tag: '@LPD-102002'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const folderTitle = getRandomString();
 
 		const folder = await apiHelpers.objectFolder.createObjectEntryFolder({
-			scopeKey: spaceName,
+			scopeKey: space.name,
 			title: folderTitle,
 		});
 
@@ -272,14 +271,14 @@ test(
 
 		await waitForAlert(
 			page,
-			`1 file was successfully uploaded to ${spaceName} space.`
+			`1 file was successfully uploaded to ${space.name} space.`
 		);
 
 		await expect(assetsPage.modal.container).toBeHidden();
 
 		const [document] = await getDocuments({
 			apiHelpers,
-			spaceName,
+			spaceName: space.name,
 			titles: [title],
 		});
 

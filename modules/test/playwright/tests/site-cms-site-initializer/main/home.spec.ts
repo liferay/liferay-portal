@@ -589,13 +589,11 @@ test(
 		const visibleTitle = `visible ${getRandomString()}`;
 
 		const restrictedSpace =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: `Space ${getRandomString()}`,
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				settings: {
 					logoColor: 'outline-3',
 					sharingEnabled: true,
 				},
-				type: 'Space',
 			});
 
 		try {
@@ -820,13 +818,11 @@ test(
 	'Can use Quick Actions to create new content',
 	{tag: '@LPD-58793'},
 	async ({apiHelpers, homePage, page}) => {
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
+		await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 			},
-			type: 'Space',
 		});
 
 		await test.step('Check redirection after clicking New Basic Web Content button', async () => {
@@ -1000,13 +996,11 @@ test(
 			[user.id]
 		);
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 			},
-			type: 'Space',
 		});
 
 		await apiHelpers.jsonWebServicesUserGroup.assignUserGroupsToGroup(
@@ -1038,10 +1032,8 @@ test(
 		const editorFullName = `${spaceAdminUser.givenName} ${spaceAdminUser.familyName}`;
 
 		const destinationSpace =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: destinationSpaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(

@@ -214,13 +214,8 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const folderTitle1 = `Folder ${getRandomString()}`;
 		const folderTitle2 = `Folder ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectEntryFolder1 =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
@@ -355,13 +350,8 @@ test(
 	{tag: '@LPD-92348'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const folderTitle = getRandomString();
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
@@ -369,7 +359,7 @@ test(
 			title: folderTitle,
 		});
 
-		await assetsPage.gotoSpaceContents(spaceName);
+		await assetsPage.gotoSpaceContents(space.name);
 
 		await assetsPage.execItemAction({
 			action: 'Delete',
@@ -429,13 +419,8 @@ test(
 	{tag: '@LPD-92348'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const folderTitle = getRandomString();
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
@@ -443,7 +428,7 @@ test(
 			title: folderTitle,
 		});
 
-		await assetsPage.gotoSpaceContents(spaceName);
+		await assetsPage.gotoSpaceContents(space.name);
 
 		await assetsPage.execItemAction({
 			action: 'Edit',
@@ -476,13 +461,8 @@ test(
 	{tag: '@LPD-92348'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const folderTitle = getRandomString();
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
@@ -514,7 +494,7 @@ test(
 
 		// Grant the Space member role permission to update the folder
 
-		await assetsPage.gotoSpaceContents(spaceName);
+		await assetsPage.gotoSpaceContents(space.name);
 
 		const permissionsMenuItem = page.getByRole('menuitem', {
 			exact: true,
@@ -545,7 +525,7 @@ test(
 
 		await performUserSwitch(page, user.alternateName);
 
-		await assetsPage.gotoSpaceContents(spaceName);
+		await assetsPage.gotoSpaceContents(space.name);
 
 		await clickAndExpectToBeVisible({
 			target: page.getByRole('menuitem', {

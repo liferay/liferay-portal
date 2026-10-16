@@ -30,7 +30,6 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(360000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitles = [
 			`Title ${getRandomString()}`,
 			`Title ${getRandomString()}`,
@@ -40,10 +39,7 @@ test(
 			`Image ${getRandomString()}`,
 		];
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const spaceMember = await addSpaceUserWithSession(
 			apiHelpers,
@@ -59,7 +55,7 @@ test(
 					title,
 				},
 				CONTENT_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 		}
 
@@ -74,7 +70,7 @@ test(
 					title,
 				},
 				FILE_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 		}
 

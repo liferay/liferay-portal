@@ -35,14 +35,10 @@ test(
 	async ({apiHelpers, page, recycleBinPage}) => {
 		test.setTimeout(180000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle1 = `Content ${getRandomString()}`;
 		const contentTitle2 = `Content ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		for (const title of [contentTitle1, contentTitle2]) {
 			const entry = await apiHelpers.objectEntry.postObjectEntry(
@@ -52,7 +48,7 @@ test(
 					title,
 				},
 				CONTENT_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 
 			await apiHelpers.objectEntry.deleteObjectEntry(
@@ -109,14 +105,10 @@ test(
 	async ({apiHelpers, page, recycleBinPage}) => {
 		test.setTimeout(180000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle = `Content ${getRandomString()}`;
 		const fileTitle = `File ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const contentEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -125,7 +117,7 @@ test(
 				title: contentTitle,
 			},
 			CONTENT_APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.deleteObjectEntry(
@@ -143,7 +135,7 @@ test(
 				title: fileTitle,
 			},
 			FILE_APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.deleteObjectEntry(
@@ -180,13 +172,9 @@ test(
 
 		const contentTitle = `Content ${getRandomString()}`;
 		const fileTitle = `File ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 		const structureLabel = `Structure${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -198,14 +186,14 @@ test(
 				title: fileTitle,
 			},
 			FILE_APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await structureBuilderPage.createStructureFromData({
 			label: structureLabel,
 			page: structureBuilderPage,
 			publish: false,
-			spaces: [spaceName],
+			spaces: [space.name],
 		});
 
 		await structureBuilderPage.addField('Select Related Content');
@@ -222,9 +210,9 @@ test(
 		await structureBuilderPage.publishStructure();
 
 		await test.step('Link the file from a content entry', async () => {
-			await assetsPage.gotoContents(spaceName);
+			await assetsPage.gotoContents(space.name);
 
-			await contentsPage.createContent(structureLabel, spaceName);
+			await contentsPage.createContent(structureLabel, space.name);
 
 			await page
 				.getByRole('textbox', {exact: true, name: 'Title'})

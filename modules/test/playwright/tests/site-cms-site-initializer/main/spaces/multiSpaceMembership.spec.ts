@@ -17,14 +17,6 @@ import {registerUserCredentials} from './helpers/roleMembership';
 
 const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
-function createSpace(apiHelpers: DataApiHelpers, spaceName: string) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: spaceName,
-		settings: {},
-		type: 'Space',
-	});
-}
-
 async function addMemberToSpaces({
 	apiHelpers,
 	page,
@@ -58,17 +50,14 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const memberSpace1ContentTitle = `Title ${getRandomString()}`;
 		const memberSpace2ContentTitle = `Title ${getRandomString()}`;
-		const memberSpaceName1 = `Space ${getRandomString()}`;
-		const memberSpaceName2 = `Space ${getRandomString()}`;
 		const nonMemberSpaceContentTitle = `Title ${getRandomString()}`;
-		const nonMemberSpaceName = `Space ${getRandomString()}`;
 
-		const memberSpace1 = await createSpace(apiHelpers, memberSpaceName1);
-		const memberSpace2 = await createSpace(apiHelpers, memberSpaceName2);
-		const nonMemberSpace = await createSpace(
-			apiHelpers,
-			nonMemberSpaceName
-		);
+		const memberSpace1 =
+			await apiHelpers.headlessAssetLibrary.createSpace();
+		const memberSpace2 =
+			await apiHelpers.headlessAssetLibrary.createSpace();
+		const nonMemberSpace =
+			await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -98,7 +87,7 @@ test(
 		await addMemberToSpaces({
 			apiHelpers,
 			page,
-			spaceNames: [memberSpaceName1, memberSpaceName2],
+			spaceNames: [memberSpace1.name, memberSpace2.name],
 			spaceSummaryPage,
 		});
 
@@ -106,10 +95,10 @@ test(
 			await page.goto(PORTLET_URLS.cmsHome);
 
 			await expect(
-				page.getByRole('menuitem', {name: memberSpaceName1})
+				page.getByRole('menuitem', {name: memberSpace1.name})
 			).toBeVisible();
 			await expect(
-				page.getByRole('menuitem', {name: memberSpaceName2})
+				page.getByRole('menuitem', {name: memberSpace2.name})
 			).toBeVisible();
 		});
 

@@ -32,19 +32,16 @@ test(
 	{tag: ['@LPD-62554', '@LPD-86000', '@LPD-93071']},
 	async ({apiHelpers, assetsPage, infoPanelPage, page, spaceSummaryPage}) => {
 		const applicationName = 'cms/basic-web-contents';
-		const spaceName = `Space ${getRandomString()}`;
 		let user;
 
 		const file1Title = `title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 				trashEnabled: false,
 			},
-			type: 'Space',
 		});
 
 		await test.step('Create an user and add to the Space', async () => {
@@ -56,7 +53,7 @@ test(
 				surname: user.familyName,
 			};
 
-			await spaceSummaryPage.goto(spaceName);
+			await spaceSummaryPage.goto(space.name);
 			await spaceSummaryPage.addUserOrUserGroup(user.name, 'users');
 		});
 
@@ -118,7 +115,7 @@ test(
 					title: file1Title,
 				},
 				applicationName,
-				spaceName
+				space.name
 			);
 
 			await test.step('Login as Space Member, go to All Assets, check the Details tab and open the Info Panel Comments', async () => {

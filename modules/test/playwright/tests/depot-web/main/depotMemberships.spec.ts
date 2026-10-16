@@ -13,7 +13,6 @@ import {
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {SiteMembershipsPage} from '../../../pages/users-admin-web/site-admin-web/SiteMembershipsPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
@@ -26,13 +25,6 @@ const SITE_MEMBERSHIPS_NAMESPACE =
 
 const USERS_ADMIN_NAMESPACE =
 	'_com_liferay_users_admin_web_portlet_UsersAdminPortlet_';
-
-async function addDepot(apiHelpers: DataApiHelpers) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: getRandomString(),
-		type: 'AssetLibrary',
-	});
-}
 
 async function assignMember(
 	page: Page,
@@ -75,7 +67,8 @@ test(
 	'Organizations, users and user groups can be added to and removed from the depot memberships',
 	{tag: '@LPD-109572'},
 	async ({apiHelpers, page}) => {
-		const assetLibrary = await addDepot(apiHelpers);
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 		const organization =
 			await apiHelpers.headlessAdminUser.postOrganization();
@@ -190,7 +183,8 @@ test(
 	'A depot is assigned from the user profile once, shown translated, and removed',
 	{tag: '@LPD-109572'},
 	async ({apiHelpers, page}) => {
-		const assetLibrary = await addDepot(apiHelpers);
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 		const translatedName = getRandomString();
 
@@ -278,7 +272,8 @@ test(
 	'The depot memberships paginate users and organizations',
 	{tag: '@LPD-109572'},
 	async ({apiHelpers, page}) => {
-		const assetLibrary = await addDepot(apiHelpers);
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 		const organizationIds = [];
 		const userIds = [];

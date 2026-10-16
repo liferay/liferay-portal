@@ -206,10 +206,8 @@ test.describe('CMS Object Entries', () => {
 		const spaceName = `Space ${cmsId}`;
 
 		await test.step('Create a new Space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 

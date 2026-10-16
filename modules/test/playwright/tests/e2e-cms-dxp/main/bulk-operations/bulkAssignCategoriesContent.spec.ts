@@ -35,16 +35,12 @@ test(
 	async ({apiHelpers, browser, structureBuilderPage}) => {
 		test.setTimeout(600000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const structureLabel = `Event ${getRandomString()}`;
 		const structureName = `Event${getRandomInt()}`;
 		const categoryName = `category${getRandomInt()}`;
 		const tagName = `tag${getRandomInt()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const guestSite = await apiHelpers.headlessAdminSite.getSite('L_GUEST');
 
@@ -103,7 +99,7 @@ test(
 						name: structureName,
 						page: structureBuilderPage,
 						publish: true,
-						spaces: [spaceName],
+						spaces: [space.name],
 					});
 				});
 
@@ -131,7 +127,7 @@ test(
 						[titleField]: `Title ${getRandomString()}`,
 					},
 					applicationName,
-					spaceName
+					space.name
 				);
 
 				await apiHelpers.objectEntry.putObjectEntryPermissions(

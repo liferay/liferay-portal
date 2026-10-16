@@ -43,10 +43,7 @@ async function addDepotContent({
 	site: Site;
 }) {
 	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: getRandomString(),
-			type: 'AssetLibrary',
-		});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 	const documentTitle = getRandomString();
 	const tagName = getRandomString().toLowerCase();

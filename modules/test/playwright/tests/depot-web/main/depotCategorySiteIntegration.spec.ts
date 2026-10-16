@@ -37,10 +37,7 @@ async function addConnectedDepotCategory(
 	site: Site
 ) {
 	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: getRandomString(),
-			type: 'AssetLibrary',
-		});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 	const vocabulary =
 		await apiHelpers.headlessAdminTaxonomy.postAssetLibraryTaxonomyVocabulary(

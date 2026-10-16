@@ -159,10 +159,9 @@ test(
 	async ({apiHelpers, page, productPage, productsPage, recycleBinPage}) => {
 		const spaceName = getRandomString();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+		await apiHelpers.headlessAssetLibrary.createSpace({
 			name: spaceName,
 			settings: {trashEnabled: true},
-			type: 'Space',
 		});
 
 		await productsPage.goto();
@@ -230,10 +229,9 @@ test(
 	async ({apiHelpers, page, productPage, productsPage, recycleBinPage}) => {
 		const spaceName = getRandomString();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+		await apiHelpers.headlessAssetLibrary.createSpace({
 			name: spaceName,
 			settings: {trashEnabled: true},
-			type: 'Space',
 		});
 
 		await productsPage.goto();
@@ -288,10 +286,9 @@ test(
 	}) => {
 		const spaceName = getRandomString();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+		await apiHelpers.headlessAssetLibrary.createSpace({
 			name: spaceName,
 			settings: {trashEnabled: true},
-			type: 'Space',
 		});
 
 		await productsPage.goto();

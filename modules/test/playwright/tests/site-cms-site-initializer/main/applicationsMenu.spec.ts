@@ -7,7 +7,6 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import getRandomString from '../../../utils/getRandomString';
 import performLogin, {
 	performLogout,
 	userData,
@@ -20,15 +19,10 @@ test(
 	'Admin section is not visible for non-admin space members',
 	{tag: '@LPD-83160'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 		let user = null;
 
-		space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -46,7 +40,7 @@ test(
 
 		await performLogin(page, user.alternateName, 'test');
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await expect(
 			page

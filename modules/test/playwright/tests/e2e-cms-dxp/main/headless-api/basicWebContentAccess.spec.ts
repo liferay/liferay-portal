@@ -19,15 +19,11 @@ test(
 	'An anonymous client can read a published Basic Web Content through the headless API',
 	{tag: ['@LPD-95541', '@LPD-95541/TC-18.a']},
 	async ({apiHelpers, browser, site}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle = `Title ${getRandomString()}`;
 		const bodyValue = `Body ${getRandomString()}`;
 		const friendlyUrlPath = `slug-${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -43,7 +39,7 @@ test(
 				title: contentTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.putObjectEntryPermissions(
@@ -68,13 +64,9 @@ test(
 	'An anonymous client cannot read an unpublished Basic Web Content through the headless API',
 	{tag: ['@LPD-95541', '@LPD-95541/TC-18.d']},
 	async ({apiHelpers, browser, site}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle = `Title ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -90,7 +82,7 @@ test(
 				title: contentTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		const {body, status} = await getAsGuest(

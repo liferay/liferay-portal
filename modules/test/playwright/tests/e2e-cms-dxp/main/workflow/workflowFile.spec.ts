@@ -58,15 +58,11 @@ test(
 	}) => {
 		test.setTimeout(600000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const structureLabel = `Doc ${getRandomString()}`;
 		const structureName = `Doc${getRandomInt()}`;
 		const titleValue = `Title ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -80,7 +76,7 @@ test(
 					name: structureName,
 					page: structureBuilderPage,
 					publish: true,
-					spaces: [spaceName],
+					spaces: [space.name],
 					type: 'file',
 				}));
 
@@ -121,7 +117,7 @@ test(
 					objectEntryFolderExternalReferenceCode: 'L_FILES',
 				},
 				applicationName,
-				spaceName
+				space.name
 			);
 
 			const companyId = String(

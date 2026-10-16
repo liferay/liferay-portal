@@ -41,14 +41,6 @@ const test = mergeTests(
 
 const TINY_FILE = 'R0lGODlhAQABAAAAACw=';
 
-async function createSpace(apiHelpers: DataApiHelpers) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: `Space ${getRandomString()}`,
-		settings: {},
-		type: 'Space',
-	});
-}
-
 async function connectSpace(
 	apiHelpers: DataApiHelpers,
 	space: {externalReferenceCode: string},
@@ -133,7 +125,7 @@ test(
 	'TC-7.a Manual collection of Basic Web Content renders the items in order for GUEST',
 	{tag: '@LPD-95530'},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const className = await getBasicWebContentClassName(apiHelpers);
 
@@ -208,7 +200,7 @@ test(
 	'TC-7.b Manual collection of custom structure content renders in order for GUEST',
 	{tag: '@LPD-95530'},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const {applicationName, definition} = await createEventStructure(
 			apiHelpers,
@@ -302,7 +294,7 @@ test(
 		pageEditorPage,
 		site,
 	}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const tag = `tag${getRandomString()}`.toLowerCase();
 		const taggedTitle = `Tagged ${getRandomString()}`;
@@ -375,7 +367,7 @@ test(
 		pageEditorPage,
 		site,
 	}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const category = await createCMSCategory(apiHelpers);
 
@@ -446,7 +438,7 @@ test(
 	'TC-7.e Dynamic collection filtered by Basic Web Content (CMS) shows only web content for GUEST',
 	{tag: '@LPD-95530'},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const className = await getBasicWebContentClassName(apiHelpers);
 		const classNameId = await getClassNameId(apiHelpers, className);
@@ -500,7 +492,7 @@ test(
 	'TC-7.f Dynamic collection filtered by the custom structure type shows only those entries for GUEST',
 	{tag: '@LPD-95530'},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const {applicationName, classNameId} = await createEventStructure(
 			apiHelpers,
@@ -557,7 +549,7 @@ test(
 	'TC-7.g Dynamic collection filtered by Basic Document (CMS) shows only files for GUEST',
 	{tag: '@LPD-95530'},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const className = await getBasicDocumentClassName(apiHelpers);
 		const classNameId = await getClassNameId(apiHelpers, className);
@@ -611,7 +603,7 @@ test(
 	'TC-7.i Editing a Basic Web Content title updates the published page live for GUEST',
 	{tag: '@LPD-95530'},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const className = await getBasicWebContentClassName(apiHelpers);
 
@@ -675,7 +667,7 @@ test(
 	'TC-7.j Editing a custom structure entry title updates the published page live for GUEST',
 	{tag: '@LPD-95530'},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const {applicationName, definition} = await createEventStructure(
 			apiHelpers,
@@ -749,7 +741,7 @@ test(
 	'TC-7.k Deleting a Basic Document removes it from the published page for GUEST',
 	{tag: '@LPD-95530'},
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const className = await getBasicDocumentClassName(apiHelpers);
 

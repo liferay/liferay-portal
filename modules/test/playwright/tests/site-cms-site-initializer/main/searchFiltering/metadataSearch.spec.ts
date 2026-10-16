@@ -94,11 +94,7 @@ test(
 		const descriptionKeyword = getRandomString();
 
 		await test.step('Create a File structure with a Description field and two files, one with a matching description', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			const {applicationName} = await createFileStructureWithDescription(
 				apiHelpers,

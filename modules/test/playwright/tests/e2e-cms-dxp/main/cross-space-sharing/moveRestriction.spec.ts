@@ -18,14 +18,10 @@ test(
 	'A Space Member cannot move content or files to another Space',
 	{tag: ['@LPD-95540', '@LPD-95540/TC-17.c']},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle = `Content ${getRandomString()}`;
 		const fileTitle = `File ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -34,7 +30,7 @@ test(
 				title: contentTitle,
 			},
 			'cms/basic-web-contents',
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -47,7 +43,7 @@ test(
 				title: fileTitle,
 			},
 			'cms/basic-documents',
-			spaceName
+			space.name
 		);
 
 		const spaceMember = await addSpaceUser(
@@ -64,13 +60,13 @@ test(
 		await performUserSwitchViaApi(page, spaceMember.alternateName);
 
 		await test.step('The Move action is not available on the content', async () => {
-			await assetsPage.gotoSpaceContents(spaceName);
+			await assetsPage.gotoSpaceContents(space.name);
 
 			await assetsPage.expectItemActionHidden('Move', contentTitle);
 		});
 
 		await test.step('The Move action is not available on the file', async () => {
-			await assetsPage.gotoSpaceFiles(spaceName);
+			await assetsPage.gotoSpaceFiles(space.name);
 
 			await assetsPage.expectItemActionHidden('Move', fileTitle);
 		});

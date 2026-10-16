@@ -51,10 +51,7 @@ async function addDepotContent({
 	documentCount: number;
 }) {
 	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: getRandomString(),
-			type: 'AssetLibrary',
-		});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 	const documentTitles = [];
 

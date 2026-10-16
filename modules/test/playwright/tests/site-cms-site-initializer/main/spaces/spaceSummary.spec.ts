@@ -106,17 +106,13 @@ test(
 	'View All Files link is not rendered when there are no files',
 	{tag: '@LPD-85991'},
 	async ({apiHelpers, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 			},
-			type: 'Space',
 		});
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await expect(spaceSummaryPage.viewAllFilesLink).not.toBeVisible();
 
@@ -179,17 +175,13 @@ test(
 	'View All Content link is not rendered when there is no content',
 	{tag: '@LPD-85991'},
 	async ({apiHelpers, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 			},
-			type: 'Space',
 		});
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await expect(spaceSummaryPage.viewAllContentLink).not.toBeVisible();
 
@@ -292,20 +284,14 @@ test(
 	'Space member without assign-members permission cannot see the Add Members button',
 	{tag: '@LPD-89584'},
 	async ({apiHelpers, spaceSummaryPage}) => {
-		const spaceName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 		const userFullName = `${user.givenName} ${user.familyName}`;
 
 		registerUserCredentials(user);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.addUserOrUserGroup(userFullName, 'users');
 
@@ -314,7 +300,7 @@ test(
 			user.alternateName
 		);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.usersTab.click();
 
@@ -332,15 +318,12 @@ test(
 	async ({apiHelpers, assetsPage, page, spaceSummaryPage}) => {
 		const applicationName = 'cms/basic-web-contents';
 		const file1Title = `Title ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 			},
-			type: 'Space',
 		});
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -349,10 +332,10 @@ test(
 				title: file1Title,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await assetsPage.execItemAction({
 			action: 'Share',
@@ -368,13 +351,8 @@ test(
 	{tag: '@LPD-85670'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
 		const applicationName = 'cms/basic-web-contents';
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const titles: string[] = [];
 
@@ -393,7 +371,7 @@ test(
 			);
 		}
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await expect(
 			page.getByRole('link', {
@@ -432,13 +410,8 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const newerFileTitle = `Newer ${getRandomString()}`;
 		const olderFileTitle = `Older ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -466,7 +439,7 @@ test(
 			space.name
 		);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		const firstFileTitle = await page
 			.getByRole('link', {name: /Newer|Older/})
@@ -484,13 +457,8 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const newerContentTitle = `Newer ${getRandomString()}`;
 		const olderContentTitle = `Older ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -510,7 +478,7 @@ test(
 			space.name
 		);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		const firstContentTitle = await page
 			.getByRole('link', {name: /Newer|Older/})
@@ -526,13 +494,8 @@ test(
 	{tag: '@LPD-85670'},
 	async ({apiHelpers, assetsPage, page, spaceSummaryPage}) => {
 		const applicationName = 'cms/basic-documents';
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const titles: string[] = [];
 
@@ -555,7 +518,7 @@ test(
 			);
 		}
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await expect(
 			page.getByRole('link', {
@@ -594,13 +557,8 @@ test(
 	{tag: '@LPD-85670'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
 		const applicationName = 'cms/basic-web-contents';
-		const spaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const folderTitles: string[] = [];
 		const entryTitles: string[] = [];
@@ -629,7 +587,7 @@ test(
 			);
 		}
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		const allTitles = [...folderTitles, ...entryTitles];
 

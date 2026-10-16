@@ -21,13 +21,9 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(180000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle = `Title ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const spaceMember = await addSpaceUser(
 			apiHelpers,
@@ -42,7 +38,7 @@ test(
 				title: contentTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await test.step('The Space Member has no Share action on the entry', async () => {

@@ -39,7 +39,6 @@ test(
 	}) => {
 		test.setTimeout(240000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const structureLabel = `Event ${getRandomString()}`;
 		const structureName = `Event${getRandomInt()}`;
 		const dptName = `DPT ${getRandomString()}`;
@@ -47,10 +46,7 @@ test(
 		const titleValue = `Title ${getRandomString()}`;
 		const friendlyUrlPath = `tc1c-${getRandomString()}`.toLowerCase();
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -64,7 +60,7 @@ test(
 					name: structureName,
 					page: structureBuilderPage,
 					publish: false,
-					spaces: [spaceName],
+					spaces: [space.name],
 				});
 
 				await structureBuilderPage.addField('Text');
@@ -154,7 +150,7 @@ test(
 				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		const companyId = String(

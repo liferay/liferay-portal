@@ -25,14 +25,10 @@ test(
 	'An anonymous client can read a published file and download it through the headless API',
 	{tag: ['@LPD-95541', '@LPD-95541/TC-18.c']},
 	async ({apiHelpers, browser, site}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const fileTitle = `File ${getRandomString()}`;
 		const fileName = `sample_${getRandomString()}.jpg`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -47,7 +43,7 @@ test(
 				title: fileTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.putObjectEntryPermissions(
@@ -89,13 +85,9 @@ test(
 	'An anonymous client cannot read an unpublished file through the headless API',
 	{tag: ['@LPD-95541', '@LPD-95541/TC-18.e']},
 	async ({apiHelpers, browser, site}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const fileTitle = `File ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -114,7 +106,7 @@ test(
 				title: fileTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		const {body, status} = await getAsGuest(

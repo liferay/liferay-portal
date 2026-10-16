@@ -64,20 +64,14 @@ test(
 	'Shared entries show the same read-only state in the View modal regardless of permissions',
 	{tag: '@LPD-89997'},
 	async ({apiHelpers, page, sharedWithMePage}) => {
-		const memberSpaceName = `Space ${getRandomString()}`;
 		let memberSpace = null;
 		const nonMemberSpaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create two spaces', async () => {
-			memberSpace =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: memberSpaceName,
-					type: 'Space',
-				});
+			memberSpace = await apiHelpers.headlessAssetLibrary.createSpace();
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: nonMemberSpaceName,
-				type: 'Space',
 			});
 		});
 
@@ -93,7 +87,7 @@ test(
 					title: editableObjectEntryTitle,
 				},
 				'cms/basic-web-contents',
-				memberSpaceName
+				memberSpace.name
 			);
 
 			viewOnlyObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
@@ -185,16 +179,13 @@ test(
 	'Shared entries show status "Not Visible" when assets are sent to the Recycle Bin',
 	{tag: '@LPD-83882'},
 	async ({apiHelpers, page, sharedWithMePage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 
 		await test.step('Create a new space with recycle bin enabled', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
+			space = await apiHelpers.headlessAssetLibrary.createSpace({
 				settings: {
 					trashEnabled: true,
 				},
-				type: 'Space',
 			});
 		});
 
@@ -208,7 +199,7 @@ test(
 					title: objectEntryTitle,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		});
 
@@ -219,7 +210,7 @@ test(
 			objectEntryFolder =
 				await apiHelpers.objectFolder.createObjectEntryFolder({
 					parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					scopeKey: spaceName,
+					scopeKey: space.name,
 					title: objectEntryFolderTitle,
 				});
 		});
@@ -314,14 +305,10 @@ test(
 	'Shared files open in a preview instead of a read-only form in the View modal',
 	{tag: ['@LPD-85555', '@LPD-90032']},
 	async ({apiHelpers, page, sharedWithMePage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 
 		await test.step('Create a space', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 
 		const objectEntryTitle = `Document ${getRandomString()}`;
@@ -338,7 +325,7 @@ test(
 					title: objectEntryTitle,
 				},
 				'cms/basic-documents',
-				spaceName
+				space.name
 			);
 		});
 
@@ -410,14 +397,10 @@ test(
 	'Content shared with Update can be edited from its title',
 	{tag: '@LPD-103028'},
 	async ({apiHelpers, contentsPage, page, sharedWithMePage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 
 		await test.step('Create a new space', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 
 		const editableTitle = `Content ${getRandomString()}`;
@@ -433,7 +416,7 @@ test(
 					title: editableTitle,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 
 			viewOnlyObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
@@ -442,7 +425,7 @@ test(
 					title: viewOnlyTitle,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		});
 
@@ -556,14 +539,10 @@ test(
 	'A shared folder opens from its title in Shared With Me',
 	{tag: '@LPD-103028'},
 	async ({apiHelpers, page, sharedWithMePage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 
 		await test.step('Create a new space', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 
 		const folderTitle = `Folder ${getRandomString()}`;
@@ -573,7 +552,7 @@ test(
 			objectEntryFolder =
 				await apiHelpers.objectFolder.createObjectEntryFolder({
 					parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					scopeKey: spaceName,
+					scopeKey: space.name,
 					title: folderTitle,
 				});
 		});

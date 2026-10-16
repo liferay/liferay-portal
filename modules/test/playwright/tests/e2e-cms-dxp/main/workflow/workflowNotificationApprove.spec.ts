@@ -27,13 +27,9 @@ test(
 
 		const notificationsPage = new NotificationsPage(page);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle = `Title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await assignWorkflowToStructure(
 			configurationTabPage,
@@ -49,7 +45,7 @@ test(
 					title: contentTitle,
 				},
 				APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 
 			await test.step('The approval notification is visible and links to the task', async () => {

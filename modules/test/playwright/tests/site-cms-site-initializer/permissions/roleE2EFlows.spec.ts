@@ -234,14 +234,6 @@ async function prepareUser(apiHelpers: DataApiHelpers) {
 	return user;
 }
 
-async function createSpace(apiHelpers: DataApiHelpers) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: getRandomString(),
-		settings: {},
-		type: 'Space',
-	});
-}
-
 async function addSpaceUser(
 	apiHelpers: DataApiHelpers,
 	spaceExternalReferenceCode: string,
@@ -344,7 +336,8 @@ test(
 	'A Space Member cannot create, edit, or delete content',
 	{tag: ['@LPD-95533', '@LPD-95533/TC-10.a']},
 	async ({apiHelpers, page}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
 		const title = `Content ${getRandomString()}`;
 
 		await createBasicWebContent(apiHelpers, space.name, title);
@@ -372,7 +365,7 @@ test(
 
 		const title = `Content ${getRandomString()}`;
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const entry = await createBasicWebContent(
 			apiHelpers,
@@ -466,7 +459,7 @@ test(
 		const body = `Body ${id}`;
 		const number = 1234567;
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const {applicationName, className, entity} = await createEventStructure(
 			apiHelpers,
@@ -580,7 +573,7 @@ test(
 
 		const title = `File ${getRandomString()}`;
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const entry = await createCmsFile(apiHelpers, space.name, title);
 
@@ -657,7 +650,8 @@ test(
 	'A Space Member cannot upload, edit, or delete files',
 	{tag: ['@LPD-95533', '@LPD-95533/TC-10.b']},
 	async ({apiHelpers, page}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
 		const title = `File ${getRandomString()}`;
 
 		await createCmsFile(apiHelpers, space.name, title);

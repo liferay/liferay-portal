@@ -190,13 +190,9 @@ test.describe('Freshness section', () => {
 		'Stores the review date the user picked in their account time zone rather than the browser one',
 		{tag: ['@LPD-98462', '@LPD-104263']},
 		async ({apiHelpers, page}) => {
-			const spaceName = `space ${getRandomString()}`;
 			const title = `overdue ${getRandomString()}`;
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			const overdueContent = await apiHelpers.objectEntry.postObjectEntry(
 				{
@@ -206,14 +202,14 @@ test.describe('Freshness section', () => {
 					title,
 				},
 				APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 
 			apiHelpers.data.push({id: overdueContent.id, type: 'document'});
 
 			await page.goto('/web/cms/dashboard');
 
-			await selectSpace(page, spaceName);
+			await selectSpace(page, space.name);
 
 			await page.getByRole('button', {name: /^Overdue Reviews/}).click();
 
@@ -249,14 +245,12 @@ test.describe('Freshness section', () => {
 			>[];
 
 			await test.step('Create overdue contents in two spaces', async () => {
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: firstSpaceName,
-					type: 'Space',
 				});
 
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: secondSpaceName,
-					type: 'Space',
 				});
 
 				const postOverdueContent = (spaceName: string, title: string) =>
@@ -412,14 +406,12 @@ test.describe('Freshness section', () => {
 			>[];
 
 			await test.step('Create and expire contents in two spaces', async () => {
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: firstSpaceName,
-					type: 'Space',
 				});
 
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: secondSpaceName,
-					type: 'Space',
 				});
 
 				const postExpiredContent = async (
@@ -612,9 +604,8 @@ test.describe('Quality section', () => {
 					expiredTitle: string,
 					referringTitle: string
 				) => {
-					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+					await apiHelpers.headlessAssetLibrary.createSpace({
 						name: spaceName,
-						type: 'Space',
 					});
 
 					const expiredContent =
@@ -737,12 +728,11 @@ test.describe('Quality section', () => {
 			let objectEntryId: number;
 
 			await test.step('Publish a content of a versioned content structure', async () => {
-				const space =
-					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				const space = await apiHelpers.headlessAssetLibrary.createSpace(
+					{
 						name: spaceName,
-						settings: {},
-						type: 'Space',
-					});
+					}
+				);
 
 				const objectDefinitionAPIClient =
 					await apiHelpers.buildRestClient(ObjectDefinitionAPI);
@@ -906,9 +896,8 @@ test.describe('Operations section', () => {
 			let draftTitle: string;
 
 			await test.step('Create contents in every status', async () => {
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: spaceName,
-					type: 'Space',
 				});
 
 				const postContent = async (body: object = {}) => {
@@ -1022,9 +1011,8 @@ test.describe('Operations section', () => {
 			const recentDraftTitle = `draft ${getRandomString()}`;
 
 			await test.step('Create a long-standing draft and a recent one', async () => {
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: spaceName,
-					type: 'Space',
 				});
 
 				const drafts = [];

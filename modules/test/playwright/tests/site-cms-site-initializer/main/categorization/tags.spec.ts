@@ -605,18 +605,10 @@ test(
 
 		// Create two Spaces, with one tag scoped to each one
 
-		const spaceName = getRandomString();
-
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const anotherSpace =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: getRandomString(),
-				type: 'Space',
-			});
+			await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const tagName = getRandomString();
 
@@ -649,7 +641,7 @@ test(
 
 		await applyFDSSelectionFilter(page, {
 			filter: 'Space',
-			value: spaceName,
+			value: space.name,
 		});
 
 		await expect(tagsPage.getItem(tagName)).toBeVisible();
@@ -803,9 +795,8 @@ cmpProjectScopeTest(
 		});
 
 		await cmpProjectScopeTest.step('Create a space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				type: 'Space',
 			});
 		});
 

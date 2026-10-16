@@ -133,10 +133,7 @@ test(
 		site,
 	}) => {
 		const assetLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: getRandomString(),
-				type: 'AssetLibrary',
-			});
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			assetLibrary.externalReferenceCode,

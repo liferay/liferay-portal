@@ -696,15 +696,12 @@ test(
 		page,
 		structureBuilderPage,
 	}) => {
-		const allowedSpace =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: `Allowed ${getRandomString()}`,
-				type: 'Space',
-			});
+		const allowedSpace = await apiHelpers.headlessAssetLibrary.createSpace({
+			name: `Allowed ${getRandomString()}`,
+		});
 		const forbiddenSpace =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: `Forbidden ${getRandomString()}`,
-				type: 'Space',
 			});
 
 		const structureLabel = `Restricted${getRandomInt()}`;
@@ -808,13 +805,8 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const contentTitle1 = `Content ${getRandomString()}`;
 		const contentTitle2 = `Content ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -822,7 +814,7 @@ test(
 				title: contentTitle1,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -831,7 +823,7 @@ test(
 				title: contentTitle2,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
@@ -924,10 +916,7 @@ test(
 	'Shows the title of custom structure contents whose title field has another name',
 	{tag: '@LPD-106249'},
 	async ({apiHelpers, assetsPage}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectDefinition =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({

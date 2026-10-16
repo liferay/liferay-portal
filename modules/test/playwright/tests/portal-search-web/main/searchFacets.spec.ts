@@ -88,9 +88,9 @@ test.describe('Category Facet', () => {
 		'Filters by a vocabulary selected from an asset library',
 		{tag: '@LPD-104381'},
 		async ({apiHelpers, layout, page, searchPage}) => {
-			const assetLibraryName = getRandomString();
 			const categoryNames = [getRandomString(), getRandomString()];
 			const keyword = getRandomString();
+			const spaceName = getRandomString();
 			const vocabularyNames = [getRandomString(), getRandomString()];
 
 			await test.step('Create an asset library with two vocabularies connected to the site', async () => {
@@ -105,13 +105,12 @@ test.describe('Category Facet', () => {
 						'Guest'
 					);
 
-				const assetLibrary =
-					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-						name: assetLibraryName,
-					});
+				const space = await apiHelpers.headlessAssetLibrary.createSpace(
+					{name: spaceName}
+				);
 
 				await apiHelpers.headlessAssetLibrary.connectSite(
-					assetLibrary.externalReferenceCode,
+					space.externalReferenceCode,
 					guestGroup.externalReferenceCode
 				);
 
@@ -124,7 +123,7 @@ test.describe('Category Facet', () => {
 					const vocabulary =
 						await apiHelpers.headlessAdminTaxonomy.postAssetLibraryTaxonomyVocabulary(
 							{
-								assetLibraryId: assetLibrary.siteId,
+								assetLibraryId: space.siteId,
 								name: vocabularyName,
 							}
 						);
@@ -175,7 +174,7 @@ test.describe('Category Facet', () => {
 
 				const assetLibraryTreeItem = searchPage.modalIFrame.getByRole(
 					'treeitem',
-					{name: assetLibraryName}
+					{name: spaceName}
 				);
 
 				await assetLibraryTreeItem
@@ -563,10 +562,8 @@ test.describe('Folder Facet', () => {
 		const cmsId = `CMS_${getRandomString()}`;
 
 		await test.step('Create a new Space', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			space = await apiHelpers.headlessAssetLibrary.createSpace({
 				name: `Space ${cmsId}`,
-				settings: {},
-				type: 'Space',
 			});
 		});
 

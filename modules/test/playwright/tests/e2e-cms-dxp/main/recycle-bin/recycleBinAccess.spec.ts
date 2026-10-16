@@ -51,21 +51,12 @@ test(
 	async ({apiHelpers, page, recycleBinPage}) => {
 		test.setTimeout(120000);
 
-		const spaceName1 = `Space ${getRandomString()}`;
-		const spaceName2 = `Space ${getRandomString()}`;
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName1,
-			type: 'Space',
-		});
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName2,
-			type: 'Space',
-		});
-
-		const title1 = await createTrashedContent(apiHelpers, spaceName1);
-		const title2 = await createTrashedContent(apiHelpers, spaceName2);
+		const title1 = await createTrashedContent(apiHelpers, space1.name);
+		const title2 = await createTrashedContent(apiHelpers, space2.name);
 
 		await expect(async () => {
 			await recycleBinPage.goto();
@@ -87,23 +78,12 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(120000);
 
-		const spaceName1 = `Space ${getRandomString()}`;
-		const spaceName2 = `Space ${getRandomString()}`;
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		const space1 = await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-			{
-				name: spaceName1,
-				type: 'Space',
-			}
-		);
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName2,
-			type: 'Space',
-		});
-
-		const title1 = await createTrashedContent(apiHelpers, spaceName1);
-		const title2 = await createTrashedContent(apiHelpers, spaceName2);
+		const title1 = await createTrashedContent(apiHelpers, space1.name);
+		const title2 = await createTrashedContent(apiHelpers, space2.name);
 
 		const spaceAdministrator = await addSpaceUserWithSession(
 			apiHelpers,
@@ -145,14 +125,9 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(120000);
 
-		const spaceName = `Space ${getRandomString()}`;
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
-
-		const title = await createTrashedContent(apiHelpers, spaceName);
+		const title = await createTrashedContent(apiHelpers, space.name);
 
 		const spaceMember = await addSpaceUserWithSession(
 			apiHelpers,
@@ -204,14 +179,9 @@ test(
 			"LPD-96455 (Won't Fix): the product allows a Space Content Reviewer to restore from the Recycle Bin, so the restore action is available."
 		);
 
-		const spaceName = `Space ${getRandomString()}`;
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
-
-		const title = await createTrashedContent(apiHelpers, spaceName);
+		const title = await createTrashedContent(apiHelpers, space.name);
 
 		const contentReviewer = await addSpaceUserWithSession(
 			apiHelpers,

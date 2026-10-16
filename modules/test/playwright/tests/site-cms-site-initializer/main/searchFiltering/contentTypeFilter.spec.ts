@@ -61,11 +61,7 @@ test(
 		const fileTitle = getRandomString();
 
 		await test.step('Create one Basic Web Content, one Structured Content, and one file', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			const {applicationName} = await createStructuredContentStructure(
 				apiHelpers,
@@ -137,11 +133,7 @@ test(
 		const folderTitle = getRandomString();
 
 		await test.step('Create a folder and a content in a fresh Space', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',

@@ -40,10 +40,8 @@ test(
 		let user;
 
 		await test.step('Create a new Space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -165,10 +163,8 @@ test(
 		let user;
 
 		await test.step('Create a new Space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -301,20 +297,14 @@ test(
 		page,
 		spaceSummaryPage,
 	}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const folderName = `Folder ${getRandomString()}`;
 		const contentTitle = `Content ${getRandomString()}`;
 
-		let assetLibrary;
+		let space;
 		let user;
 
 		await test.step('Create a new Space', async () => {
-			assetLibrary =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: spaceName,
-					settings: {},
-					type: 'Space',
-				});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 
 		await test.step('Create a user and add as content reviewer member to the space', async () => {
@@ -337,19 +327,19 @@ test(
 			);
 
 			await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
-				assetLibrary.externalReferenceCode,
+				space.externalReferenceCode,
 				user.externalReferenceCode
 			);
 
 			await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccountRoles(
-				assetLibrary.externalReferenceCode,
+				space.externalReferenceCode,
 				user.externalReferenceCode,
 				['Asset Library Content Reviewer']
 			);
 		});
 
 		await test.step('Create a folder and content inside the Space', async () => {
-			await spaceSummaryPage.goto(spaceName);
+			await spaceSummaryPage.goto(space.name);
 			await spaceSummaryPage.createContentFolder(folderName);
 
 			await apiHelpers.objectEntry.postObjectEntry(
@@ -358,7 +348,7 @@ test(
 					title: contentTitle,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		});
 
@@ -374,7 +364,7 @@ test(
 				parentAction: 'Copy',
 			});
 
-			await copyFolderModalPage.space(spaceName).click();
+			await copyFolderModalPage.space(space.name).click();
 
 			await expect(
 				page.getByRole('radio', {name: `Select ${folderName}`})
@@ -395,7 +385,7 @@ test(
 				parentAction: 'Copy',
 			});
 
-			await copyFolderModalPage.space(spaceName).click();
+			await copyFolderModalPage.space(space.name).click();
 
 			await expect(
 				page.getByRole('radio', {name: `Select ${folderName}`})
@@ -427,7 +417,7 @@ test(
 				filter: contentTitle,
 			});
 
-			await copyFolderModalPage.space(spaceName).click();
+			await copyFolderModalPage.space(space.name).click();
 
 			await expect(
 				page.getByRole('radio', {name: `Select ${folderName}`})

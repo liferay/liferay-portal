@@ -31,10 +31,7 @@ test(
 		editCategoryPage,
 		page,
 	}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const siteId = await apiHelpers.headlessAdminUser
 			.getSiteByFriendlyUrlPath('cms')
@@ -160,10 +157,7 @@ test(
 		page,
 		vocabulariesPage,
 	}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const siteId = await apiHelpers.headlessAdminUser
 			.getSiteByFriendlyUrlPath('cms')
@@ -293,10 +287,7 @@ test(
 	'Publishing content requires a category from a vocabulary marked required for that asset type',
 	{tag: ['@LPD-95543', '@LPD-95543/TC-20.c']},
 	async ({apiHelpers, contentsPage, page}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const siteId = await apiHelpers.headlessAdminUser
 			.getSiteByFriendlyUrlPath('cms')
@@ -378,10 +369,7 @@ test(
 	'Deleting a category assigned to content and file entries does not break either entry',
 	{tag: ['@LPD-95543', '@LPD-95543/TC-20.e']},
 	async ({apiHelpers, assetsPage, categoriesPage, infoPanelPage, page}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const siteId = await apiHelpers.headlessAdminUser
 			.getSiteByFriendlyUrlPath('cms')

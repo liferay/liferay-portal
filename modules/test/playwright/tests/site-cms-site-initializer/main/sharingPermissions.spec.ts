@@ -44,14 +44,10 @@ test(
 	'User with Reshare permission should not see Allow Resharing or Remove Access actions',
 	{tag: '@LPD-86111'},
 	async ({apiHelpers, page, sharedWithMePage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 
 		await test.step('Create a new space', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 
 		const objectEntryTitle = `Content ${getRandomString()}`;
@@ -64,7 +60,7 @@ test(
 					title: objectEntryTitle,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		});
 
@@ -134,14 +130,10 @@ test(
 	'User with Reshare and Update permission should see Allow Resharing and Remove Access actions',
 	{tag: '@LPD-86111'},
 	async ({apiHelpers, page, sharedWithMePage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 
 		await test.step('Create a new space', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 
 		const objectEntryTitle = `Content ${getRandomString()}`;
@@ -154,7 +146,7 @@ test(
 					title: objectEntryTitle,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		});
 
@@ -222,14 +214,10 @@ test(
 	'Removing access stops the collaborator from seeing the shared content',
 	{tag: '@LPD-102734'},
 	async ({apiHelpers, assetsPage, page, sharedWithMePage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 
 		await test.step('Create a new space', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 
 		const objectEntryTitle = `Content ${getRandomString()}`;
@@ -242,7 +230,7 @@ test(
 					title: objectEntryTitle,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		});
 
@@ -293,7 +281,7 @@ test(
 		await test.step('Remove the access as the administrator', async () => {
 			await performUserSwitchViaApi(page, 'test');
 
-			await assetsPage.gotoSpaceContents(spaceName);
+			await assetsPage.gotoSpaceContents(space.name);
 
 			await openShareModal(page, assetRow, objectEntryTitle);
 
@@ -320,14 +308,10 @@ test(
 	'The Share action is offered only to a collaborator allowed to reshare',
 	{tag: '@LPD-102734'},
 	async ({apiHelpers, page, sharedWithMePage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 
 		await test.step('Create a new space', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 
 		const resharableTitle = `Content ${getRandomString()}`;
@@ -343,7 +327,7 @@ test(
 						title: resharableTitle,
 					},
 					'cms/basic-web-contents',
-					spaceName
+					space.name
 				);
 
 			viewOnlyObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
@@ -352,7 +336,7 @@ test(
 					title: viewOnlyTitle,
 				},
 				'cms/basic-web-contents',
-				spaceName
+				space.name
 			);
 		});
 

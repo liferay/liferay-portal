@@ -34,19 +34,9 @@ test(
 		exportImportPage,
 		page,
 	}) => {
-		const assetLibrary1 =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: getRandomString(),
-				settings: {},
-				type: 'Space',
-			});
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		const assetLibrary2 =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: getRandomString(),
-				settings: {},
-				type: 'Space',
-			});
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -55,21 +45,21 @@ test(
 				title: getRandomString(),
 			},
 			'cms/basic-web-contents',
-			assetLibrary1.name
+			space1.name
 		);
 
 		await apiHelpers.headlessDelivery.postAssetLibraryDocument(
-			assetLibrary1.id,
+			space1.id,
 			createReadStream(path.join(__dirname, 'dependencies/Document.jpg'))
 		);
 
-		await exportImportPage.goToExport(assetLibrary1.friendlyURL);
+		await exportImportPage.goToExport(space1.friendlyURL);
 
 		await exportImportPage.clickNew();
 
 		const {folderPath, name} = await exportAndDownloadLar(exportImportPage);
 
-		await exportImportPage.goToImport(assetLibrary2.friendlyURL);
+		await exportImportPage.goToImport(space2.friendlyURL);
 
 		await assertImportWizardControls({
 			contentLabel: 'Basic Web Contents',

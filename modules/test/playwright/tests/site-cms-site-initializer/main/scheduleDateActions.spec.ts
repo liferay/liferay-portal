@@ -197,13 +197,7 @@ for (const role of ['Space Administrator', 'Space Content Reviewer'] as const) {
 		`A ${role} sees the date actions on their space content`,
 		{tag: '@LPD-103652'},
 		async ({apiHelpers, assetsPage, page, spaceSummaryPage}) => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
-
-			apiHelpers.data.push({id: space.id, type: 'assetLibrary'});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			const contentTitle = getRandomString();
 

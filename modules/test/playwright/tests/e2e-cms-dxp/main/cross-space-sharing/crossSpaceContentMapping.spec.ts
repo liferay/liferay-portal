@@ -45,14 +45,12 @@ test(
 		const bodyValue = `Body ${getRandomString()}`;
 
 		const destinationSpace =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: destinationSpaceName,
-				type: 'Space',
 			});
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+		await apiHelpers.headlessAssetLibrary.createSpace({
 			name: sourceSpaceName,
-			type: 'Space',
 		});
 
 		await apiHelpers.headlessAssetLibrary.connectSite(

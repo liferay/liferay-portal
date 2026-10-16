@@ -155,14 +155,6 @@ async function prepareUser(apiHelpers: DataApiHelpers) {
 	return user;
 }
 
-async function createSpace(apiHelpers: DataApiHelpers) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: getRandomString(),
-		settings: {},
-		type: 'Space',
-	});
-}
-
 async function addSpaceUser(
 	apiHelpers: DataApiHelpers,
 	spaceExternalReferenceCode: string,
@@ -212,7 +204,7 @@ test(
 
 		const title = `Content ${getRandomString()}`;
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const entry = await createBasicWebContent(
 			apiHelpers,
@@ -262,7 +254,7 @@ test(
 
 		const title = `Content ${getRandomString()}`;
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const entry = await createBasicWebContent(
 			apiHelpers,
@@ -324,7 +316,7 @@ test(
 
 		const title = `Content ${getRandomString()}`;
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const entry = await createBasicWebContent(
 			apiHelpers,
@@ -431,7 +423,8 @@ test(
 	'A Space Administrator can rename a Space and the new name is reflected in the navigation and header',
 	{tag: ['@LPD-95534', '@LPD-95534/TC-11.d']},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
 		const newName = `Renamed ${getRandomString()}`;
 
 		const spaceAdministrator = await addSpaceUser(
@@ -481,7 +474,7 @@ test(
 	'A removed Space member can no longer access the Space',
 	{tag: ['@LPD-95534', '@LPD-95534/TC-11.e']},
 	async ({apiHelpers, page}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const member = await addSpaceUser(
 			apiHelpers,
@@ -524,7 +517,7 @@ test(
 	async ({apiHelpers, page}) => {
 		const recycleBinPage = new RecycleBinPage(page);
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const contentTitle = `Content ${getRandomString()}`;
 

@@ -87,11 +87,7 @@ test(
 	{tag: ['@LPD-99451']},
 	async ({apiHelpers, page, tasksPage}) => {
 		const defaultSpace =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: `Space ${getRandomString()}`,
-				settings: {},
-				type: 'Space',
-			});
+			await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const user = await addSpaceUser(
 			apiHelpers,

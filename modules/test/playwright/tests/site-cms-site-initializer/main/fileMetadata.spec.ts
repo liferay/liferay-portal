@@ -34,13 +34,7 @@ test(
 	'File info panel buckets resolution and aspect ratio for image assets',
 	{tag: '@LPD-85195'},
 	async ({apiHelpers, assetsPage, infoPanelPage, page}) => {
-		const spaceName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const cases = [
 			{
@@ -76,7 +70,7 @@ test(
 					title,
 				},
 				APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 
 			await assetsPage.gotoAll();
@@ -105,13 +99,7 @@ test(
 	'Resolution and Aspect Ratio rows are hidden for non-image files',
 	{tag: '@LPD-85195'},
 	async ({apiHelpers, assetsPage, infoPanelPage}) => {
-		const spaceName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const title = getRandomString();
 
@@ -126,7 +114,7 @@ test(
 				title,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await assetsPage.gotoAll();
@@ -146,13 +134,7 @@ test(
 	'File metadata buckets are localized when the user switches to Spanish',
 	{tag: '@LPD-85195'},
 	async ({apiHelpers, assetsPage, infoPanelPage, page}) => {
-		const spaceName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const title = getRandomString();
 
@@ -166,7 +148,7 @@ test(
 				title,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		try {

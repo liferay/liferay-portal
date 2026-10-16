@@ -15,7 +15,6 @@ import {searchExperiencesPagesTest} from '../../../../fixtures/searchExperiences
 import {searchPageTest} from '../../../../fixtures/searchPageTest';
 import {DEFAULT_SXP_BLUEPRINT_CONFIGURATION} from '../../../../helpers/SearchExperiencesApiHelper';
 import {getRandomInt} from '../../../../utils/getRandomInt';
-import getRandomString from '../../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../../utils/structured-content/getBasicWebContentStructureId';
 
 export const test = mergeTests(
@@ -38,17 +37,9 @@ test.describe('Asset Library/Space Scope', () => {
 	test.beforeEach(async ({apiHelpers}) => {
 		await test.step('Create new asset libraries', async () => {
 			assetLibrary =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Asset Library ${getRandomString()}`,
-					settings: {},
-					type: 'AssetLibrary',
-				});
+				await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: `Space ${getRandomString()}`,
-				settings: {},
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 		});
 	});
 

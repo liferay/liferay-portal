@@ -30,14 +30,6 @@ const IMAGE_BASE64 = readFileSync(
 	path.join(__dirname, '../../dependencies/sample_small_wide_400x300.jpg')
 ).toString('base64');
 
-async function createSpace(apiHelpers: DataApiHelpers) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: getRandomString(),
-		settings: {},
-		type: 'Space',
-	});
-}
-
 async function prepareUser(apiHelpers: DataApiHelpers) {
 	const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -326,7 +318,7 @@ test(
 		const id = getRandomString();
 		const title = `File ${id}`;
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const {applicationName} = await createBasicFileStructure(
 			apiHelpers,
@@ -380,7 +372,7 @@ test(
 		const id = getRandomString();
 		const title = `Title ${id}`;
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const listTypeDefinition = await createPicklist(apiHelpers, [
 			'Apple',
@@ -434,7 +426,7 @@ test(
 	async ({apiHelpers, page}) => {
 		test.setTimeout(120000);
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const spaceAdministrator = await addSpaceUser(
 			apiHelpers,
@@ -468,8 +460,8 @@ test(
 	async ({apiHelpers, contentsPage, page, structureBuilderPage}) => {
 		test.setTimeout(120000);
 
-		const firstSpace = await createSpace(apiHelpers);
-		const secondSpace = await createSpace(apiHelpers);
+		const firstSpace = await apiHelpers.headlessAssetLibrary.createSpace();
+		const secondSpace = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const label = `Structure ${getRandomString()}`;
 
@@ -507,7 +499,7 @@ test(
 	}) => {
 		test.setTimeout(180000);
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const {applicationName, id, label} = await createSimpleContentStructure(
 			apiHelpers,
@@ -574,7 +566,7 @@ test(
 	async ({apiHelpers, assetsPage, page, structureBuilderPage}) => {
 		test.setTimeout(180000);
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const {applicationName, id} = await createBasicFileStructure(
 			apiHelpers,
@@ -664,7 +656,7 @@ test(
 	}) => {
 		test.setTimeout(180000);
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		// The CMS has no one-click structure duplication, so the duplicate is
 		// produced by recreating the original structure's fields.

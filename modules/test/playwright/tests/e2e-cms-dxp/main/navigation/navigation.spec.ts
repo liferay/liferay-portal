@@ -41,37 +41,24 @@ async function createSpaceMember(
 	apiHelpers: DataApiHelpers,
 	spaceRoleNames: string[] = []
 ) {
-	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: getRandomString(),
-			settings: {},
-			type: 'Space',
-		});
+	const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 	const user = await prepareUser(apiHelpers);
 
 	await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
-		assetLibrary.externalReferenceCode,
+		space.externalReferenceCode,
 		user.externalReferenceCode
 	);
 
 	if (spaceRoleNames.length) {
 		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccountRoles(
-			assetLibrary.externalReferenceCode,
+			space.externalReferenceCode,
 			user.externalReferenceCode,
 			spaceRoleNames
 		);
 	}
 
-	return {assetLibrary, user};
-}
-
-async function createSpace(apiHelpers: DataApiHelpers) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: getRandomString(),
-		settings: {},
-		type: 'Space',
-	});
+	return user;
 }
 
 async function addSpaceUser(
@@ -129,7 +116,7 @@ test(
 			members.push(await createSpaceMember(apiHelpers, [role]));
 		}
 
-		for (const {user} of members) {
+		for (const user of members) {
 			await startSessionAs(page, user.alternateName);
 
 			await page.goto(PORTLET_URLS.cmsStructures);
@@ -145,8 +132,8 @@ test(
 	'Content from one Space is not visible in another Space and members see only their Space',
 	{tag: ['@LPD-95532', '@LPD-95532/TC-9.f']},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceA = await createSpace(apiHelpers);
-		const spaceB = await createSpace(apiHelpers);
+		const spaceA = await apiHelpers.headlessAssetLibrary.createSpace();
+		const spaceB = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const titleA = `Content A ${getRandomString()}`;
 		const titleB = `Content B ${getRandomString()}`;
@@ -192,8 +179,8 @@ test(
 	'A Space Member can only access Spaces they are a member of',
 	{tag: ['@LPD-95532', '@LPD-95532/TC-9.h']},
 	async ({apiHelpers, page}) => {
-		const memberSpace = await createSpace(apiHelpers);
-		const otherSpace = await createSpace(apiHelpers);
+		const memberSpace = await apiHelpers.headlessAssetLibrary.createSpace();
+		const otherSpace = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const member = await addSpaceUser(
 			apiHelpers,
@@ -220,7 +207,7 @@ test(
 	async ({apiHelpers, contentsPage, page}) => {
 		const recycleBinPage = new RecycleBinPage(page);
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const id = getRandomString();
 		const adminTitle = `Restore SPA ${id}`;
@@ -281,7 +268,7 @@ test(
 	async ({apiHelpers, contentsPage, page}) => {
 		const recycleBinPage = new RecycleBinPage(page);
 
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const id = getRandomString();
 		const permittedTitle = `Restore SCR Permitted ${id}`;
@@ -350,7 +337,8 @@ test(
 	'A file uploaded with the Home quick action appears in the All section and Recent Assets',
 	{tag: ['@LPD-95532', '@LPD-95532/TC-9.c']},
 	async ({apiHelpers, assetsPage, homePage, page}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
 		const title = `File ${getRandomString()}`;
 
 		await test.step('Upload a file with the Home quick action', async () => {
@@ -403,7 +391,7 @@ test(
 	'A Space Administrator can assign member roles but a Content Reviewer and Member cannot see roles',
 	{tag: ['@LPD-95532', '@LPD-95532/TC-9.e']},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const space = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await test.step('Administrator adds a member and assigns a role', async () => {
 			const newUser =

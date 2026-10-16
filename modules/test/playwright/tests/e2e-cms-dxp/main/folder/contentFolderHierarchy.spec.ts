@@ -24,16 +24,12 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(360000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const parentFolderName = `Parent ${getRandomString()}`;
 		const childFolderNameA = `Child A ${getRandomString()}`;
 		const childFolderNameB = `Child B ${getRandomString()}`;
 		const contentTitle = `Title ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const spaceAdministrator = await addSpaceUserWithSession(
 			apiHelpers,
@@ -62,7 +58,10 @@ test(
 
 				await spaContentsPage.goto();
 
-				await spaContentsPage.createFolder(parentFolderName, spaceName);
+				await spaContentsPage.createFolder(
+					parentFolderName,
+					space.name
+				);
 
 				await openFolder(spaPage, parentFolderName);
 

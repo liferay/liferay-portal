@@ -37,9 +37,8 @@ test(
 			];
 
 			for (const spaceName of spaceNames) {
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: spaceName,
-					type: 'Space',
 				});
 			}
 

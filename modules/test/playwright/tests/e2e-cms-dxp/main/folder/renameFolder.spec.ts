@@ -48,7 +48,6 @@ test(
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
 		test.setTimeout(480000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const contentFolderName = `Contents ${getRandomString()}`;
 		const fileFolderName = `Files ${getRandomString()}`;
 		const renamedContentFolderName = `Renamed ${getRandomString()}`;
@@ -57,10 +56,7 @@ test(
 		const bodyValue = `Body ${getRandomString()}`;
 		const fileTitle = `Image ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -76,14 +72,14 @@ test(
 		const contentFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-				scopeKey: spaceName,
+				scopeKey: space.name,
 				title: contentFolderName,
 			});
 
 		const fileFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_FILES',
-				scopeKey: spaceName,
+				scopeKey: space.name,
 				title: fileFolderName,
 			});
 
@@ -95,7 +91,7 @@ test(
 				title: contentTitle,
 			},
 			CONTENT_APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		const fileEntry = await apiHelpers.objectEntry.postObjectEntry(
@@ -109,7 +105,7 @@ test(
 				title: fileTitle,
 			},
 			FILE_APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.putObjectEntryPermissions(

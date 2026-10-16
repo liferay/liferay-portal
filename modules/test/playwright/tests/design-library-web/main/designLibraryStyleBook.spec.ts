@@ -60,17 +60,12 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Go to the design library
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		await expect(
 			page.getByRole('button', {exact: true, name: 'New'})
@@ -115,7 +110,7 @@ test(
 
 		await page
 			.locator('.control-menu-nav-item')
-			.getByTitle(`Go to ${designLibraryName}`)
+			.getByTitle(`Go to ${designLibrary.name}`)
 			.click();
 
 		await expect(
@@ -131,13 +126,8 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Create an unprivileged user
 
@@ -151,7 +141,7 @@ test(
 
 		// Go to the design library
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		const newButton = page.getByRole('button', {name: 'New'});
 
@@ -180,20 +170,15 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Add a style book
 
 		const styleBookName = getRandomString();
 
 		await designLibrariesPage.createStyleBook(
-			designLibraryName,
+			designLibrary.name,
 			styleBookName
 		);
 
@@ -231,21 +216,13 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
 		const designLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Create a site with a page
 
-		const siteName = getRandomString();
-
 		const site = await apiHelpers.headlessAdminSite.postSite({
-			name: siteName,
+			name: getRandomString(),
 		});
 
 		const pageName = getRandomString();
@@ -270,7 +247,7 @@ test(
 		const styleBookName = getRandomString();
 
 		await designLibrariesPage.createStyleBook(
-			designLibraryName,
+			designLibrary.name,
 			styleBookName
 		);
 
@@ -302,7 +279,7 @@ test(
 		const items = breadcrumb.getByRole('listitem');
 
 		await expect(items).toHaveCount(2);
-		await expect(items.first()).toContainText(designLibraryName);
+		await expect(items.first()).toContainText(designLibrary.name);
 		await expect(items.last()).toContainText(styleBookName);
 		await expect(items.last()).toHaveClass(/active/);
 
@@ -318,12 +295,12 @@ test(
 		await page.getByRole('menuitem', {name: 'Pages'}).click();
 
 		await expect(
-			page.getByRole('button', {name: `[${siteName}] ${pageName}`})
+			page.getByRole('button', {name: `[${site.name}] ${pageName}`})
 		).toBeVisible();
 
 		// Go back to the listing
 
-		await breadcrumb.getByRole('link', {name: designLibraryName}).click();
+		await breadcrumb.getByRole('link', {name: designLibrary.name}).click();
 
 		await expect(page).toHaveURL(/view_resources_design_library/);
 
@@ -340,14 +317,8 @@ testWithSite(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
 		const designLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Add a widget page
 
@@ -364,7 +335,7 @@ testWithSite(
 		const classicStyleBookName = getRandomString();
 
 		await designLibrariesPage.createStyleBook(
-			designLibraryName,
+			designLibrary.name,
 			classicStyleBookName,
 			'Classic Theme'
 		);
@@ -374,7 +345,7 @@ testWithSite(
 		const cmsStyleBookName = getRandomString();
 
 		await designLibrariesPage.createStyleBook(
-			designLibraryName,
+			designLibrary.name,
 			cmsStyleBookName,
 			'CMS Theme'
 		);

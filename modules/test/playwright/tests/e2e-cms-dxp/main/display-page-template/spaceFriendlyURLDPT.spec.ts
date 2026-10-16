@@ -39,17 +39,13 @@ test(
 	}) => {
 		const contentTitle = `Content ${getRandomString()}`;
 		const friendlyUrlPath = `custom-${getRandomString()}`.toLowerCase();
-		const spaceName = `Space ${getRandomString()}`;
 		const untouchedContentTitle = `Content ${getRandomString()}`;
 		const untouchedFriendlyUrlPath =
 			`untouched-${getRandomString()}`.toLowerCase();
-		const untouchedSpaceName = `Space ${getRandomString()}`;
 
 		let customFriendlyURL: string;
 		let space: Awaited<
-			ReturnType<
-				typeof apiHelpers.headlessAssetLibrary.createAssetLibrary
-			>
+			ReturnType<typeof apiHelpers.headlessAssetLibrary.createSpace>
 		>;
 		let untouchedSpace: typeof space;
 
@@ -65,10 +61,7 @@ test(
 		});
 
 		await test.step('Create a content in a Space connected to the site', async () => {
-			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+			space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			await apiHelpers.headlessAssetLibrary.connectSite(
 				space.externalReferenceCode,
@@ -82,7 +75,7 @@ test(
 					title: contentTitle,
 				},
 				_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 		});
 
@@ -138,10 +131,7 @@ test(
 
 		await test.step('A Space whose friendly URL was never edited keeps resolving', async () => {
 			untouchedSpace =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: untouchedSpaceName,
-					type: 'Space',
-				});
+				await apiHelpers.headlessAssetLibrary.createSpace();
 
 			await apiHelpers.headlessAssetLibrary.connectSite(
 				untouchedSpace.externalReferenceCode,
@@ -155,7 +145,7 @@ test(
 					title: untouchedContentTitle,
 				},
 				_APPLICATION_NAME,
-				untouchedSpaceName
+				untouchedSpace.name
 			);
 
 			await _expectContentAt(
@@ -184,7 +174,6 @@ test(
 		const linkedFriendlyUrlPath =
 			`linked-${getRandomString()}`.toLowerCase();
 		const linkedTitle = `Content ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 		const title = `Content ${getRandomString()}`;
 
 		let content: string;
@@ -203,11 +192,7 @@ test(
 		});
 
 		await test.step('Link one content from another inside a Space with a custom friendly URL', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: spaceName,
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			const customFriendlyURL =
 				`/space-${getRandomString()}`.toLowerCase();
@@ -229,7 +214,7 @@ test(
 					title: linkedTitle,
 				},
 				_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 
 			linkURL = _buildDisplayURL(
@@ -247,7 +232,7 @@ test(
 					title,
 				},
 				_APPLICATION_NAME,
-				spaceName
+				space.name
 			);
 		});
 

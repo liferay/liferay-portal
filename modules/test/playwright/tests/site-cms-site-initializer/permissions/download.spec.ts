@@ -35,14 +35,9 @@ test(
 	{tag: '@LPD-102629'},
 	async ({apiHelpers, browser}) => {
 		const fileContent = `File content ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 		const title = `title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -54,7 +49,7 @@ test(
 				title,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		const fileURL = objectEntry.file.link.href;

@@ -44,10 +44,7 @@ async function addConnectedDepotFolder({
 	site: Site;
 }) {
 	const assetLibrary =
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: getRandomString(),
-			type: 'AssetLibrary',
-		});
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 	await apiHelpers.headlessAssetLibrary.connectSite(
 		assetLibrary.externalReferenceCode,

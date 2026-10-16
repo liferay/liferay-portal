@@ -32,16 +32,12 @@ test(
 	async ({apiHelpers, browser, structureBuilderPage}) => {
 		test.setTimeout(480000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const originFolderName = `Origin ${getRandomString()}`;
 		const destinationFolderName = `Destination ${getRandomString()}`;
 		const structureLabel = `Event ${getRandomString()}`;
 		const structureName = `Event${getRandomInt()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const spaceAdministrator = await addSpaceUserWithSession(
 			apiHelpers,
@@ -52,14 +48,14 @@ test(
 		const originFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-				scopeKey: spaceName,
+				scopeKey: space.name,
 				title: originFolderName,
 			});
 
 		const destinationFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-				scopeKey: spaceName,
+				scopeKey: space.name,
 				title: destinationFolderName,
 			});
 
@@ -70,7 +66,7 @@ test(
 					name: structureName,
 					page: structureBuilderPage,
 					publish: true,
-					spaces: [spaceName],
+					spaces: [space.name],
 				});
 
 				return id;
@@ -105,7 +101,7 @@ test(
 						[titleField]: `Title ${getRandomString()}`,
 					},
 					applicationName,
-					spaceName
+					space.name
 				),
 			});
 		}
@@ -133,7 +129,7 @@ test(
 
 				await bulkMoveToFolder(spaPage, {
 					destinationFolder: destinationFolderName,
-					destinationSpace: spaceName,
+					destinationSpace: space.name,
 				});
 			});
 

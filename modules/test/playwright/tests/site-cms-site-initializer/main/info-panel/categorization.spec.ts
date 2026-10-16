@@ -363,12 +363,9 @@ test(
 		const vocabularyName = `vocabulary ${getRandomString()}`;
 
 		await test.step('Create a new Space', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: spaceName,
-					settings: {},
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace({
+				name: spaceName,
+			});
 			spaceExternalReferenceCode = space.externalReferenceCode;
 		});
 

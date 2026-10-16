@@ -25,15 +25,11 @@ test(
 	async ({apiHelpers, page, structureBuilderPage}) => {
 		test.setTimeout(300000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const structureLabel = `Event ${getRandomString()}`;
 		const structureName = `Event${getRandomInt()}`;
 		const title = `Title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectDefinitionId =
 			await test.step('Build a custom structure with a localizable Body field', async () => {
@@ -42,7 +38,7 @@ test(
 					name: structureName,
 					page: structureBuilderPage,
 					publish: false,
-					spaces: [spaceName],
+					spaces: [space.name],
 				});
 
 				await structureBuilderPage.addField('Text');
@@ -82,7 +78,7 @@ test(
 				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		await test.step('Edit the entry twice to generate versions 2 and 3', async () => {

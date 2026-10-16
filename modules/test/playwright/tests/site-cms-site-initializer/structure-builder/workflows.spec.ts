@@ -33,10 +33,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		const {externalReferenceCode} =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 		// Create structure

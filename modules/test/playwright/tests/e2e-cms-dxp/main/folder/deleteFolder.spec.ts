@@ -32,16 +32,12 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(360000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const contentFolderName = `Contents ${getRandomString()}`;
 		const fileFolderName = `Files ${getRandomString()}`;
 		const contentTitle = `Title ${getRandomString()}`;
 		const fileTitle = `Image ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const spaceAdministrator = await addSpaceUserWithSession(
 			apiHelpers,
@@ -52,14 +48,14 @@ test(
 		const contentFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-				scopeKey: spaceName,
+				scopeKey: space.name,
 				title: contentFolderName,
 			});
 
 		const fileFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				parentObjectEntryFolderExternalReferenceCode: 'L_FILES',
-				scopeKey: spaceName,
+				scopeKey: space.name,
 				title: fileFolderName,
 			});
 
@@ -71,7 +67,7 @@ test(
 				title: contentTitle,
 			},
 			CONTENT_APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -85,7 +81,7 @@ test(
 				title: fileTitle,
 			},
 			FILE_APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		const spaContext = await browser.newContext();

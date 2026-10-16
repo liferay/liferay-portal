@@ -35,17 +35,12 @@ test(
 	async ({apiHelpers, browser, page, pageEditorPage, site}) => {
 		test.setTimeout(300000);
 
-		const spaceName = `Space ${getRandomString()}`;
-
 		const titleV1 = `Title ${getRandomString()}`;
 		const bodyV1 = `Body ${getRandomString()}`;
 		const titleV3 = `Title ${getRandomString()}`;
 		const bodyV3 = `Body ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
 			space.externalReferenceCode,
@@ -59,7 +54,7 @@ test(
 				title: titleV1,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.putObjectEntryPermissions(

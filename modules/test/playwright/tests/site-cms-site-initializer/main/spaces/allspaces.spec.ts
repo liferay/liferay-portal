@@ -21,10 +21,8 @@ test(
 		const spaceName = getRandomString();
 
 		await test.step('Create a new space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -71,10 +69,8 @@ test(
 		const siteName = 'Global';
 
 		await test.step('Create a new space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 
@@ -121,19 +117,13 @@ test(
 	'Export and Import actions open the space from All Spaces',
 	{tag: '@LPD-108842'},
 	async ({apiHelpers, page}) => {
-		const spaceName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		for (const action of ['Export', 'Import']) {
 			await page.goto(PORTLET_URLS.cmsAllSpaces);
 
 			await page
-				.getByRole('button', {name: `${spaceName} Actions`})
+				.getByRole('button', {name: `${space.name} Actions`})
 				.click();
 
 			await page.getByRole('menuitem', {name: action}).click();
@@ -142,7 +132,7 @@ test(
 				page.getByRole('heading', {name: action})
 			).toBeVisible();
 			await expect(
-				page.getByText(spaceName, {exact: true})
+				page.getByText(space.name, {exact: true})
 			).toBeVisible();
 		}
 	}

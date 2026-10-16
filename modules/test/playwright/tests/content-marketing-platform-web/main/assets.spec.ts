@@ -52,12 +52,9 @@ test(
 		});
 
 		await test.step('Associate an asset to the task', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: getRandomString(),
-					settings: {trashEnabled: true},
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace({
+				settings: {trashEnabled: true},
+			});
 
 			const asset = await apiHelpers.objectEntry.postObjectEntry(
 				{

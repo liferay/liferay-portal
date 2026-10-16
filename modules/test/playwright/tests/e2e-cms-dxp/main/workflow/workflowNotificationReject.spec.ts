@@ -40,15 +40,11 @@ test(
 
 		const notificationsPage = new NotificationsPage(page);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const structureLabel = `Event ${getRandomString()}`;
 		const structureName = `Event${getRandomInt()}`;
 		const titleValue = `Title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectDefinitionId =
 			await test.step('Build a custom Event structure (localizable Body text)', async () => {
@@ -57,7 +53,7 @@ test(
 					name: structureName,
 					page: structureBuilderPage,
 					publish: false,
-					spaces: [spaceName],
+					spaces: [space.name],
 				});
 
 				await structureBuilderPage.addField('Text');
@@ -104,7 +100,7 @@ test(
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 				},
 				applicationName,
-				spaceName
+				space.name
 			);
 
 			await test.step('The review notification is visible and links to the task', async () => {

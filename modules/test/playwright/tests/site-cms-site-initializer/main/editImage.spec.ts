@@ -210,12 +210,8 @@ test(
 	{tag: '@LPD-92181'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const title = `image ${getRandomString()}`;
-		const workflowSpaceName = `Space ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: workflowSpaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -227,7 +223,7 @@ test(
 				title,
 			},
 			applicationName,
-			workflowSpaceName
+			space.name
 		);
 
 		const objectDefinition =

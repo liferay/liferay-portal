@@ -22,11 +22,7 @@ test(
 		const textTitle = `${getRandomString()}.txt`;
 
 		await test.step('Upload a PNG image and a plain text file into a fresh Space', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			await apiHelpers.objectEntry.postObjectEntry(
 				{
@@ -87,11 +83,7 @@ test(
 		const folderTitle = getRandomString();
 
 		await test.step('Create a folder and a file in a fresh Space', async () => {
-			const space =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			await apiHelpers.objectFolder.createObjectEntryFolder({
 				scopeKey: space.name,

@@ -27,11 +27,9 @@ export const test = mergeTests(
 test('Setup: Create a space for Site CMS tests', async ({backendPage}) => {
 	const apiHelpers = new ApiHelpers(backendPage);
 
-	const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+	const space = await apiHelpers.headlessAssetLibrary.createSpace({
 		externalReferenceCode: SITE_CMS_SPACE_EXTERNAL_REFERENCE_CODE,
 		name: SITE_CMS_SPACE_NAME,
-		settings: {},
-		type: 'Space',
 	});
 
 	expect(space).toHaveProperty('name', SITE_CMS_SPACE_NAME);

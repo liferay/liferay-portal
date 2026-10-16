@@ -9,7 +9,6 @@ import path from 'path';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {DocumentLibraryEditFilePage} from '../../../pages/document-library-web/DocumentLibraryEditFilePage';
-import getRandomString from '../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {FileSizeMimetypesForm} from '../../document-library-web/main/pages/FileSizeMimetypesForm';
@@ -70,10 +69,7 @@ test(
 		const depot = await addEditableDepot(apiHelpers);
 
 		const anotherAssetLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: getRandomString(),
-				type: 'AssetLibrary',
-			});
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 		await test.step('Set limits for image/jpeg and application/*', async () => {
 			await page.goto(

@@ -21,14 +21,9 @@ async function createTwoSpacesWithKeywordContent(apiHelpers: DataApiHelpers) {
 	const ownSpaceTitle = `${keyword} Own Space`;
 	const otherSpaceTitle = `${keyword} Other Space`;
 
-	const ownSpace = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: `Space ${getRandomString()}`,
-		type: 'Space',
-	});
+	const ownSpace = await apiHelpers.headlessAssetLibrary.createSpace();
 
-	const otherSpace = await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-		{name: `Space ${getRandomString()}`, type: 'Space'}
-	);
+	const otherSpace = await apiHelpers.headlessAssetLibrary.createSpace();
 
 	await apiHelpers.objectEntry.postObjectEntry(
 		{

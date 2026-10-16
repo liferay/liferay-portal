@@ -7,7 +7,6 @@ import {Locator, Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {DocumentLibraryEditDocumentTypesPage} from '../../../pages/document-library-web/DocumentLibraryEditDocumentTypesPage';
 import {WebContentPage} from '../../../pages/journal-web/WebContentPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
@@ -31,13 +30,6 @@ const DEPOT_ADMIN_NAMESPACE =
 	'_com_liferay_depot_web_portlet_DepotAdminPortlet_';
 
 const LANGUAGE_IDS = /[a-z]{2}-[A-Z]{2}/g;
-
-async function addDepot(apiHelpers: DataApiHelpers) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: getRandomString(),
-		type: 'AssetLibrary',
-	});
-}
 
 async function getTranslationOrder(page: Page, trigger: Locator) {
 	const menu = page.locator('.dropdown-menu:visible');
@@ -92,7 +84,8 @@ test(
 	'The default language of a depot can be changed',
 	{tag: '@LPD-109097'},
 	async ({apiHelpers, page}) => {
-		const assetLibrary = await addDepot(apiHelpers);
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 		await gotoDepotSettings(page, assetLibrary.id, 'languages');
 
@@ -130,7 +123,8 @@ test(
 	'The custom language order of a depot is used by its localized fields',
 	{tag: '@LPD-109097'},
 	async ({apiHelpers, page}) => {
-		const assetLibrary = await addDepot(apiHelpers);
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
 
 		const webContentTitle = getRandomString();
 

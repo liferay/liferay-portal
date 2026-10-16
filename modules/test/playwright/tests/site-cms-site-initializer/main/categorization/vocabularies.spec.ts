@@ -554,20 +554,13 @@ test(
 			.getSiteByFriendlyUrlPath('cms')
 			.then((response) => response.id);
 
-		const spaceName = getRandomString();
-
-		const {id: spaceId} =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				settings: {},
-				type: 'Space',
-			});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const categoryName = getRandomString();
 
 		await createScopedVocabularyAndContent({
 			apiHelpers,
-			assetLibraries: [{id: spaceId, name: spaceName}],
+			assetLibraries: [{id: space.id, name: space.name}],
 			assetTypes: [{required: false, type: 'AllAssetTypes'}],
 			categoryName,
 			contentsPage,
@@ -787,14 +780,10 @@ projectVocabularyTest.describe('Project selection tests', () => {
 		'Does not list a ghost project in the project selector',
 		{tag: '@LPD-97935'},
 		async ({apiHelpers, editVocabularyPage, page}) => {
-			const approvedProjectTitle = getRandomString();
-			const ghostProjectName = getRandomString();
+			const ghostProject =
+				await apiHelpers.headlessAssetLibrary.createProject();
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: ghostProjectName,
-				settings: {},
-				type: 'Project',
-			});
+			const approvedProjectTitle = getRandomString();
 
 			await apiHelpers.objectEntry.postObjectEntry(
 				{title: approvedProjectTitle},
@@ -810,7 +799,7 @@ projectVocabularyTest.describe('Project selection tests', () => {
 			).toHaveCount(1);
 
 			await expect(
-				page.getByRole('option', {name: ghostProjectName})
+				page.getByRole('option', {name: ghostProject.name})
 			).toHaveCount(0);
 		}
 	);

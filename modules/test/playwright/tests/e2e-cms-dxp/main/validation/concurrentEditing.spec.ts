@@ -23,10 +23,7 @@ test(
 		const friendlyUrl = getRandomString();
 		const originalContent = `Original ${getRandomString()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const guestSite = await apiHelpers.headlessAdminSite.getSite('L_GUEST');
 

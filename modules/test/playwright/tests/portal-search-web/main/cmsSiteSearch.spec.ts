@@ -300,10 +300,8 @@ async function provisionBaseline(
 		.getSiteByFriendlyUrlPath('cms')
 		.then((r) => r.id);
 
-	const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+	const space = await apiHelpers.headlessAssetLibrary.createSpace({
 		name: `Space ${id}`,
-		settings: {},
-		type: 'Space',
 	});
 
 	const user = withUser

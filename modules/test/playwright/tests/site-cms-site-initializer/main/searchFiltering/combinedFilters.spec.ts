@@ -27,17 +27,9 @@ test(
 		let space1Name: string;
 
 		await test.step('Create two Spaces with content covering each filter combination', async () => {
-			const space1 =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-			const space2 =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			space1Name = space1.name;
 

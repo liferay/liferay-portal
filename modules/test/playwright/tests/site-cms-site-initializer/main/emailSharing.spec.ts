@@ -19,9 +19,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a new space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				type: 'Space',
 			});
 		});
 
@@ -115,9 +114,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a new space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				type: 'Space',
 			});
 		});
 
@@ -175,9 +173,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		const space = await test.step('Create a new space', async () => {
-			return await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			return await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				type: 'Space',
 			});
 		});
 
@@ -220,9 +217,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a new space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				type: 'Space',
 			});
 		});
 

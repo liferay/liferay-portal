@@ -23,16 +23,10 @@ const test = mergeTests(
 	loginTest()
 );
 
-function createSpace(apiHelpers: DataApiHelpers, name: string) {
-	return apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name,
-		settings: {},
-		type: 'Space',
-	});
-}
-
 function createSpaces(apiHelpers: DataApiHelpers, ...names: string[]) {
-	return Promise.all(names.map((name) => createSpace(apiHelpers, name)));
+	return Promise.all(
+		names.map((name) => apiHelpers.headlessAssetLibrary.createSpace({name}))
+	);
 }
 
 function createFolder(
@@ -131,7 +125,9 @@ test(
 		const contentTitle = `Content ${getRandomString()}`;
 
 		await test.step('Create a new Space', async () => {
-			await createSpace(apiHelpers, spaceName);
+			await apiHelpers.headlessAssetLibrary.createSpace({
+				name: spaceName,
+			});
 		});
 
 		let destinationFolderId: number;
@@ -714,7 +710,9 @@ test(
 		const fileTitle = `File ${getRandomString()}`;
 
 		await test.step('Create a new Space', async () => {
-			await createSpace(apiHelpers, spaceName);
+			await apiHelpers.headlessAssetLibrary.createSpace({
+				name: spaceName,
+			});
 		});
 
 		await test.step('Create a content in that Space', async () => {

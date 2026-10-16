@@ -180,11 +180,7 @@ const createSpaceAndConnectSites = async ({
 	spaceName: string;
 	spaceSummaryPage: SpaceSummaryPage;
 }) => {
-	await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: spaceName,
-		settings: {},
-		type: 'Space',
-	});
+	await apiHelpers.headlessAssetLibrary.createSpace({name: spaceName});
 
 	await spaceSummaryPage.goto(spaceName);
 	await spaceSummaryPage.connectSite('Global');

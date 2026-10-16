@@ -27,15 +27,11 @@ test(
 	async ({apiHelpers, browser, structureBuilderPage}) => {
 		test.setTimeout(300000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const structureLabel = `Event ${getRandomString()}`;
 		const structureName = `Event${getRandomInt()}`;
 		const titleValue = `Title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const userGroup = await apiHelpers.headlessAdminUser.postUserGroup();
 
@@ -54,7 +50,7 @@ test(
 					name: structureName,
 					page: structureBuilderPage,
 					publish: false,
-					spaces: [spaceName],
+					spaces: [space.name],
 				});
 
 				await structureBuilderPage.addField('Text');
@@ -94,7 +90,7 @@ test(
 				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntryCollaborators(

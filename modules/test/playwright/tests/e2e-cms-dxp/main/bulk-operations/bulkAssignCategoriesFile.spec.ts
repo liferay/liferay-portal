@@ -35,14 +35,10 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(600000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const categoryName = `category${getRandomInt()}`;
 		const tagName = `tag${getRandomInt()}`;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const guestSite = await apiHelpers.headlessAdminSite.getSite('L_GUEST');
 
@@ -107,7 +103,7 @@ test(
 						title: `Image ${getRandomString()}`,
 					},
 					APPLICATION_NAME,
-					spaceName
+					space.name
 				);
 
 				await apiHelpers.objectEntry.putObjectEntryPermissions(

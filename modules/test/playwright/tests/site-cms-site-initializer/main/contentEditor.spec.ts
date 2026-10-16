@@ -164,16 +164,12 @@ test(
 
 		// Create a space with Spanish as the only language and default language
 
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				availableLanguageIds: ['es_ES'],
 				defaultLanguageId: 'es_ES',
 				useCustomLanguages: true,
 			},
-			type: 'Space',
 		});
 
 		// Create a Blog in the space and save it
@@ -182,7 +178,7 @@ test(
 
 		await contentsPage.goto();
 
-		await contentsPage.createContent('Blog', spaceName);
+		await contentsPage.createContent('Blog', space.name);
 
 		await page.getByPlaceholder('New Blog').fill(blogTitle);
 
@@ -944,10 +940,8 @@ test.describe('Categorization Panel', () => {
 			const spaceName = getRandomString();
 
 			const {id: spaceId} =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				await apiHelpers.headlessAssetLibrary.createSpace({
 					name: spaceName,
-					settings: {},
-					type: 'Space',
 				});
 
 			// Create tags

@@ -112,18 +112,12 @@ test(
 			subtype: 'space',
 		});
 
-		const spaceName = 'Space' + getRandomInt();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 		const userFullName = `${user.givenName} ${user.familyName}`;
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.addUserOrUserGroup(userFullName, 'users');
 

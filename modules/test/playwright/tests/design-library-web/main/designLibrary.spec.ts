@@ -79,21 +79,16 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Go to the design library
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		// Check the dashboard elements
 
-		await expectRedirectionToLibrary(designLibraryName, page);
+		await expectRedirectionToLibrary(designLibrary.name, page);
 
 		await page.getByRole('button', {name: 'More Actions'}).click();
 
@@ -211,17 +206,12 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Connect a site
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -279,17 +269,12 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		const openRowActions = async () => {
 			await page
-				.getByRole('cell', {name: `${designLibraryName} Actions`})
+				.getByRole('cell', {name: `${designLibrary.name} Actions`})
 				.getByRole('button', {name: 'Actions'})
 				.click();
 
@@ -303,7 +288,9 @@ test(
 
 			await expect(breadcrumb.getByText('Asset Libraries')).toBeHidden();
 
-			await expect(breadcrumb.getByText(designLibraryName)).toBeVisible();
+			await expect(
+				breadcrumb.getByText(designLibrary.name)
+			).toBeVisible();
 		};
 
 		// Check the row actions
@@ -367,17 +354,12 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Check the design library settings
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -390,10 +372,10 @@ test(
 		const headerTitle = page.getByTestId('headerTitle');
 
 		await expect(headerTitle).toBeVisible();
-		await expect(headerTitle).toHaveText(`${designLibraryName} Settings`);
+		await expect(headerTitle).toHaveText(`${designLibrary.name} Settings`);
 
 		await expect(page.getByRole('textbox', {name: 'Name'})).toHaveValue(
-			designLibraryName
+			designLibrary.name
 		);
 
 		await expect(
@@ -445,17 +427,12 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Open the Manage Members modal
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,

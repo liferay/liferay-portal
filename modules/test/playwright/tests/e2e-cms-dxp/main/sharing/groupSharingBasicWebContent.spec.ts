@@ -23,13 +23,9 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(240000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const contentTitle = `Title ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const userGroup = await apiHelpers.headlessAdminUser.postUserGroup();
 
@@ -48,7 +44,7 @@ test(
 				title: contentTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntryCollaborators(

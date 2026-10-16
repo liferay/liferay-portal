@@ -8,7 +8,6 @@ import {Page, expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
-import getRandomString from '../../../../utils/getRandomString';
 import {
 	performUserSwitchViaApi,
 	userData,
@@ -55,17 +54,13 @@ test(
 	'A user can be added as a member of a space and removed afterwards',
 	{tag: '@LPD-85670'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
 		const userFullName = `${user.givenName} ${user.familyName}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.addUserOrUserGroup(userFullName, 'users');
 
@@ -91,15 +86,9 @@ test(
 	'A space member can be promoted to Space Administrator or Space Content Reviewer',
 	{tag: '@LPD-85670'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
-
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await test.step('Promote a member to Space Administrator', () =>
 			promoteNewMember({
@@ -218,11 +207,7 @@ test(
 	'A non-admin space member can search members in the space',
 	{tag: '@LPD-58201'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const viewer = await apiHelpers.headlessAdminUser.postUserAccount();
 		const viewerFullName = `${viewer.givenName} ${viewer.familyName}`;

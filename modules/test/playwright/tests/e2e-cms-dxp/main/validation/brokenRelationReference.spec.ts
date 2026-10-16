@@ -40,10 +40,7 @@ test(
 			name: RELATION_FIELD_LABEL,
 		});
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const fileEntry = await apiHelpers.objectEntry.postObjectEntry(
 			{

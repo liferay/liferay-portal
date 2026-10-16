@@ -32,17 +32,12 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Add a fragment in a new fragment set
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -85,17 +80,12 @@ test(
 
 		// Create a design library
 
-		const designLibraryName = getRandomString();
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		// Add a fragment set
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		await page
 			.getByRole('button', {name: 'New Fragment Set'})

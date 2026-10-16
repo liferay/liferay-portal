@@ -38,10 +38,8 @@ test(
 		const vocabularyName = getRandomString();
 
 		await test.step('Create a new space', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 		});
 

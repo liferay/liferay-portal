@@ -8,7 +8,6 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
-import getRandomString from '../../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
@@ -18,17 +17,11 @@ test(
 	'The Import dialog opens from More Actions for an existing Space',
 	{tag: '@LPD-85670'},
 	async ({apiHelpers, page}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await page.goto(PORTLET_URLS.cmsAllSpaces);
 
-		await page.getByRole('link', {exact: true, name: spaceName}).click();
+		await page.getByRole('link', {exact: true, name: space.name}).click();
 
 		await page.getByRole('button', {name: 'More Actions'}).waitFor();
 

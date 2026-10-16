@@ -29,13 +29,9 @@ test(
 	async ({apiHelpers, browser}) => {
 		test.setTimeout(240000);
 
-		const spaceName = `Space ${getRandomString()}`;
 		const fileTitle = `File ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const recipient = await createRecipient(apiHelpers);
 		const other = await createRecipient(apiHelpers);
@@ -47,7 +43,7 @@ test(
 				title: fileTitle,
 			},
 			APPLICATION_NAME,
-			spaceName
+			space.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntryCollaborators(

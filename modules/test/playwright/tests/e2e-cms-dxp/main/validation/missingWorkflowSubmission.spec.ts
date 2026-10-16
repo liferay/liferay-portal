@@ -28,10 +28,7 @@ test(
 		page,
 		structureBuilderPage,
 	}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const structureLabel = `Structure${getRandomString()}`;
 

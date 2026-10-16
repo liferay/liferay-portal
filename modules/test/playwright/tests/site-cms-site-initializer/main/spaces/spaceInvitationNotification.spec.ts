@@ -7,7 +7,6 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
-import getRandomString from '../../../../utils/getRandomString';
 import {performUserSwitchViaApi} from '../../../../utils/performLogin';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 import {registerUserCredentials} from './helpers/roleMembership';
@@ -18,13 +17,7 @@ test(
 	'Clicking the space-invite notification opens the assigned space',
 	{tag: '@LPD-85681'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 		const userFullName = `${user.givenName} ${user.familyName}`;
@@ -32,14 +25,14 @@ test(
 		registerUserCredentials(user);
 
 		await test.step('Add the user to the space and switch to them', async () => {
-			await spaceSummaryPage.goto(spaceName);
+			await spaceSummaryPage.goto(space.name);
 			await spaceSummaryPage.addUserOrUserGroup(userFullName, 'users');
 
 			await performUserSwitchViaApi(page, user.alternateName);
 		});
 
 		const notificationLink = page.getByRole('link', {
-			name: new RegExp(spaceName),
+			name: new RegExp(space.name),
 		});
 
 		await test.step('Open Notifications and see the space invitation', async () => {
@@ -56,7 +49,7 @@ test(
 			await notificationLink.click();
 
 			await expect(
-				page.getByRole('heading', {exact: true, name: spaceName})
+				page.getByRole('heading', {exact: true, name: space.name})
 			).toBeVisible();
 		});
 	}

@@ -82,13 +82,7 @@ test.beforeAll(async ({browser}) => {
 	);
 	spaceMemberUser = await addRoleUser();
 
-	const otherSpace = await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-		{
-			name: `Space ${getRandomString()}`,
-			settings: {},
-			type: 'Space',
-		}
-	);
+	const otherSpace = await apiHelpers.headlessAssetLibrary.createSpace();
 
 	otherSpaceName = otherSpace.name;
 

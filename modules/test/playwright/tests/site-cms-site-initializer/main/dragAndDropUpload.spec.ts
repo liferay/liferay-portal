@@ -17,15 +17,6 @@ const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
 const APPLICATION_NAME = 'cms/basic-documents';
 
-async function createSpace(apiHelpers: DataApiHelpers) {
-	const {name} = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-		name: getRandomString(),
-		type: 'Space',
-	});
-
-	return name;
-}
-
 async function dropFiles({
 	fileNames,
 	page,
@@ -95,7 +86,7 @@ test(
 	'Uploads the files dropped into the Files section',
 	{tag: '@LPD-102030'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const titles = [`${getRandomString()}.txt`, `${getRandomString()}.txt`];
 
@@ -119,19 +110,19 @@ test(
 
 		await assetsPage.modal.container.getByLabel(/^Space/).click();
 
-		await page.getByRole('option', {name: spaceName}).click();
+		await page.getByRole('option', {name: space.name}).click();
 
 		await submitUpload({assetsPage});
 
 		await waitForAlert(
 			page,
-			`2 files were successfully uploaded to ${spaceName} space.`
+			`2 files were successfully uploaded to ${space.name} space.`
 		);
 
 		await expect(assetsPage.modal.container).toBeHidden();
 
 		expect(
-			await getDocuments({apiHelpers, spaceName, titles})
+			await getDocuments({apiHelpers, spaceName: space.name, titles})
 		).toHaveLength(2);
 	}
 );
@@ -140,13 +131,13 @@ test(
 	'Uploads a drop into a Space Files section without asking for a Space',
 	{tag: '@LPD-102030'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const spaceName = await createSpace(apiHelpers);
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const title = `${getRandomString()}.txt`;
 
 		const rootFolder =
 			await apiHelpers.objectFolder.getObjectEntryFolderByExternalReferenceCode(
-				{externalReferenceCode: 'L_FILES', scopeKey: spaceName}
+				{externalReferenceCode: 'L_FILES', scopeKey: space.name}
 			);
 
 		await assetsPage.gotoFolder(rootFolder.id, rootFolder.title);
@@ -169,13 +160,17 @@ test(
 
 		await waitForAlert(
 			page,
-			`1 file was successfully uploaded to ${spaceName} space.`
+			`1 file was successfully uploaded to ${space.name} space.`
 		);
 
 		await expect(assetsPage.modal.container).toBeHidden();
 
 		expect(
-			await getDocuments({apiHelpers, spaceName, titles: [title]})
+			await getDocuments({
+				apiHelpers,
+				spaceName: space.name,
+				titles: [title],
+			})
 		).toHaveLength(1);
 	}
 );

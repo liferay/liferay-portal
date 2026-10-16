@@ -508,24 +508,17 @@ test(
 	'Can propagate Default Permissions from the Space actions menu',
 	{tag: '@LPD-104117'},
 	async ({apiHelpers, defaultPermissionsPage, page, spaceSummaryPage}) => {
-		const spaceName = 'Space' + getRandomInt();
-
-		const assetLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				settings: {},
-				type: 'Space',
-			});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const folderName = 'Folder' + getRandomInt();
 
 		await apiHelpers.objectFolder.createObjectEntryFolder({
 			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-			scopeKey: assetLibrary.siteId,
+			scopeKey: space.siteId,
 			title: folderName,
 		});
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await spaceSummaryPage.clickActionsMenuItem(
 			'Edit and Propagate Default Permissions'

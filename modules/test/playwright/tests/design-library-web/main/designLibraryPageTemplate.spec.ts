@@ -49,14 +49,8 @@ test(
 
 		// Create a design library and a site, and connect them
 
-		const designLibraryName = getRandomString();
-
 		const designLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: designLibraryName,
-				settings: {},
-				type: 'DesignLibrary',
-			});
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
 		const site = await apiHelpers.headlessAdminSite.postSite({
 			name: getRandomString(),
@@ -104,7 +98,7 @@ test(
 		// Check each template set opens its own content
 
 		await designLibrariesPage.goToPageTemplateCollection(
-			designLibraryName,
+			designLibrary.name,
 			emptyLayoutPageTemplateCollectionName
 		);
 
@@ -119,7 +113,7 @@ test(
 		).toBeVisible();
 
 		await designLibrariesPage.goToPageTemplateCollection(
-			designLibraryName,
+			designLibrary.name,
 			layoutPageTemplateCollectionName
 		);
 
@@ -188,12 +182,12 @@ test(
 
 		await expect(navItem).toHaveAttribute(
 			'data-title',
-			`${designLibraryName} Design Library`
+			`${designLibrary.name} Design Library`
 		);
 
 		await expect(
 			page.getByLabel(
-				`${layoutPageTemplateCollectionName} from ${designLibraryName} Design Library`
+				`${layoutPageTemplateCollectionName} from ${designLibrary.name} Design Library`
 			)
 		).toBeVisible();
 
@@ -253,15 +247,10 @@ test(
 
 		// Add a content page template in a new set from the design library
 
-		const designLibraryName = getRandomString();
+		const designLibrary =
+			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: designLibraryName,
-			settings: {},
-			type: 'DesignLibrary',
-		});
-
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -296,7 +285,7 @@ test(
 		await pageEditorPage.publishPage();
 
 		await expect(page).toHaveTitle(
-			`Page Templates - ${designLibraryName} - Liferay`
+			`Page Templates - ${designLibrary.name} - Liferay`
 		);
 
 		const card = page
@@ -307,7 +296,7 @@ test(
 
 		// Open the template from its card in the set
 
-		await designLibrariesPage.goToDesignLibrary(designLibraryName);
+		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
 		await page
 			.getByRole('link', {
@@ -331,7 +320,7 @@ test(
 		await page.getByRole('button', {name: 'Cancel'}).click();
 
 		await expect(page).toHaveTitle(
-			`${layoutPageTemplateEntryName} - ${designLibraryName} - Liferay (Editing)`
+			`${layoutPageTemplateEntryName} - ${designLibrary.name} - Liferay (Editing)`
 		);
 
 		// Check the page editor back button goes to the set
@@ -339,7 +328,7 @@ test(
 		await page.getByRole('link', {name: 'Go to Page Templates'}).click();
 
 		await expect(page).toHaveTitle(
-			`Page Templates - ${designLibraryName} - Liferay`
+			`Page Templates - ${designLibrary.name} - Liferay`
 		);
 
 		await expect(card).toBeVisible();

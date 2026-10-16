@@ -138,10 +138,8 @@ test(
 		const secondRelatedTitle = `second reference ${getRandomString()}`;
 
 		await test.step('Create a space with two contents to reference', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			for (const title of [firstRelatedTitle, secondRelatedTitle]) {
@@ -517,10 +515,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a space and a structure with a text field', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			await structureBuilderPage.createStructureFromData({
@@ -661,10 +657,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a space and a structure with a repeatable group', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			await structureBuilderPage.createStructureFromData({
@@ -846,10 +840,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a space and a structure with a rich text field', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			await structureBuilderPage.createStructureFromData({
@@ -944,10 +936,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a space and a structure with a text field', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			await structureBuilderPage.createStructureFromData({
@@ -1228,10 +1218,8 @@ test(
 		const spaceName = `Space ${getRandomString()}`;
 
 		await test.step('Create a space and a structure with a repeatable group', async () => {
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			await apiHelpers.headlessAssetLibrary.createSpace({
 				name: spaceName,
-				settings: {},
-				type: 'Space',
 			});
 
 			await structureBuilderPage.createStructureFromData({

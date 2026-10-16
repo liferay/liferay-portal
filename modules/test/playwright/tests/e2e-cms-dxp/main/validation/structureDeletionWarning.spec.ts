@@ -26,10 +26,7 @@ test(
 	async ({apiHelpers, page, structureBuilderPage, structuresPage}) => {
 		const entryCount = 3;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const structureLabel = `Structure${getRandomString()}`;
 
@@ -106,10 +103,7 @@ test(
 	async ({apiHelpers, page, structureBuilderPage, structuresPage}) => {
 		const entryCount = 2;
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const structureLabel = `Structure${getRandomString()}`;
 

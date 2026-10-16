@@ -8,7 +8,6 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
-import getRandomString from '../../../../utils/getRandomString';
 import {enableLocalStaging} from '../../../../utils/staging';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
@@ -23,12 +22,8 @@ test(
 	'Distinguishes live and staging rows in the connected sites list',
 	{tag: ['@LPD-91062']},
 	async ({apiHelpers, page, site, spaceSummaryPage}) => {
-		const spaceName = getRandomString();
-
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {logoColor: 'outline-3'},
-			type: 'Space',
 		});
 
 		await apiHelpers.headlessAssetLibrary.connectSite(
@@ -38,7 +33,7 @@ test(
 
 		await enableLocalStaging(apiHelpers, page, site);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		const stagingWord = await page.evaluate(() =>
 			Liferay.Language.get('staging')

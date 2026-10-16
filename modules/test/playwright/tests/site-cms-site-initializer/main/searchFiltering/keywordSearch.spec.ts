@@ -22,17 +22,9 @@ test(
 		const unrelatedTitle = getRandomString();
 
 		await test.step('Create a matching content and a matching file in different Spaces, and an unrelated content', async () => {
-			const space1 =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-			const space2 =
-				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-					name: `Space ${getRandomString()}`,
-					type: 'Space',
-				});
+			const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 			await apiHelpers.objectEntry.postObjectEntry(
 				{

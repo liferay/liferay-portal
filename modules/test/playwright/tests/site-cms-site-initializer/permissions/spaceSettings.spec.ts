@@ -9,7 +9,6 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {addCMSAdministrator} from '../../../utils/addCMSAdministrator';
 import {addSpaceUser} from '../../../utils/addSpaceUser';
-import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch} from '../../../utils/performLogin';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
@@ -19,18 +18,13 @@ test(
 	'CMS Administrator can edit the Friendly URL of any space',
 	{tag: '@LPD-88344'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const user = await addCMSAdministrator(apiHelpers);
 
 		await performUserSwitch(page, user.alternateName);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await page.getByRole('button', {name: 'More Actions'}).click();
 
@@ -46,12 +40,7 @@ test(
 	'Space Administrator can edit the Friendly URL of a space they administer',
 	{tag: '@LPD-88344'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const user = await addSpaceUser(
 			apiHelpers,
@@ -61,7 +50,7 @@ test(
 
 		await performUserSwitch(page, user.alternateName);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await page.getByRole('button', {name: 'More Actions'}).click();
 
@@ -77,12 +66,7 @@ test(
 	'Space Content Reviewer cannot access Space Settings',
 	{tag: '@LPD-88344'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const user = await addSpaceUser(
 			apiHelpers,
@@ -92,7 +76,7 @@ test(
 
 		await performUserSwitch(page, user.alternateName);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await page.getByRole('button', {name: 'More Actions'}).click();
 
@@ -106,12 +90,7 @@ test(
 	'Space Member cannot access Space Settings',
 	{tag: '@LPD-88344'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const spaceName = `Space ${getRandomString()}`;
-
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const user = await addSpaceUser(
 			apiHelpers,
@@ -121,7 +100,7 @@ test(
 
 		await performUserSwitch(page, user.alternateName);
 
-		await spaceSummaryPage.goto(spaceName);
+		await spaceSummaryPage.goto(space.name);
 
 		await page.getByRole('button', {name: 'More Actions'}).click();
 

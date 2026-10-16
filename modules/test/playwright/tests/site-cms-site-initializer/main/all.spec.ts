@@ -42,18 +42,15 @@ test(
 	{tag: '@LPD-64867'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-web-contents';
-		const spaceName = `Space ${getRandomString()}`;
 		const file1Title = `<b>Content ${getRandomString()}</b>`;
 		let space = null;
 
 		// Create a Space
 
-		space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				trashEnabled: false,
 			},
-			type: 'Space',
 		});
 
 		// Create a content
@@ -64,7 +61,7 @@ test(
 				title: file1Title,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		// Delete the content
@@ -110,15 +107,10 @@ test(
 	async ({apiHelpers, assetsPage, page}) => {
 		const file1Title = `Content ${getRandomString()}`;
 		const file2Title = `File ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
 		// Create a Space
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		// Create a content
 
@@ -128,7 +120,7 @@ test(
 				title: file1Title,
 			},
 			'cms/basic-web-contents',
-			spaceName
+			space.name
 		);
 
 		// Create a file
@@ -143,7 +135,7 @@ test(
 				title: file2Title,
 			},
 			'cms/basic-documents',
-			spaceName
+			space.name
 		);
 
 		// Copy the content
@@ -158,7 +150,7 @@ test(
 
 		// Check the content folders
 
-		await page.getByLabel(spaceName).click();
+		await page.getByLabel(space.name).click();
 		await expect(
 			page.getByText('Showing 1 to 1 of 1 entries.')
 		).toBeVisible();
@@ -177,7 +169,7 @@ test(
 
 		// Check the file folders
 
-		await page.getByLabel(spaceName).click();
+		await page.getByLabel(space.name).click();
 		await expect(
 			page.getByText('Showing 1 to 1 of 1 entries.')
 		).toBeVisible();
@@ -255,15 +247,12 @@ test(
 	async ({apiHelpers, assetsPage}) => {
 		const applicationName = 'cms/basic-web-contents';
 		const file1Title = `Title ${getRandomString()}`;
-		const spaceName = `Space ${getRandomString()}`;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
+		const space = await apiHelpers.headlessAssetLibrary.createSpace({
 			settings: {
 				logoColor: 'outline-3',
 				sharingEnabled: true,
 			},
-			type: 'Space',
 		});
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -272,7 +261,7 @@ test(
 				title: file1Title,
 			},
 			applicationName,
-			spaceName
+			space.name
 		);
 
 		await assetsPage.gotoAll();
@@ -858,21 +847,9 @@ test(
 	"Author filter lists only members of the current user's Spaces",
 	{tag: '@LPD-70773'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const space1 = await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-			{
-				name: `Space ${getRandomString()}`,
-				settings: {},
-				type: 'Space',
-			}
-		);
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		const space2 = await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-			{
-				name: `Space ${getRandomString()}`,
-				settings: {},
-				type: 'Space',
-			}
-		);
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const viewer = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -932,21 +909,9 @@ test(
 	"All section lists only content from the current user's Spaces",
 	{tag: '@LPD-76453'},
 	async ({apiHelpers, assetsPage, page}) => {
-		const space1 = await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-			{
-				name: `Space ${getRandomString()}`,
-				settings: {},
-				type: 'Space',
-			}
-		);
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		const space2 = await apiHelpers.headlessAssetLibrary.createAssetLibrary(
-			{
-				name: `Space ${getRandomString()}`,
-				settings: {},
-				type: 'Space',
-			}
-		);
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const insideTitle = getRandomString();
 		const outsideTitle = getRandomString();
@@ -1003,24 +968,14 @@ test(
 	{tag: '@LPD-91933'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const applicationName = 'cms/basic-web-contents';
-		const space1Name = `Space ${getRandomString()}`;
-		const space2Name = `Space ${getRandomString()}`;
 		const space1ContentTitle = `Content ${getRandomString()}`;
 		const space2ContentTitle = `Content ${getRandomString()}`;
 
 		// Create two Spaces
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: space1Name,
-			settings: {},
-			type: 'Space',
-		});
+		const space1 = await apiHelpers.headlessAssetLibrary.createSpace();
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: space2Name,
-			settings: {},
-			type: 'Space',
-		});
+		const space2 = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		await apiHelpers.objectEntry.postObjectEntry(
 			{
@@ -1028,7 +983,7 @@ test(
 				title: space1ContentTitle,
 			},
 			applicationName,
-			space1Name
+			space1.name
 		);
 
 		await apiHelpers.objectEntry.postObjectEntry(
@@ -1037,7 +992,7 @@ test(
 				title: space2ContentTitle,
 			},
 			applicationName,
-			space2Name
+			space2.name
 		);
 
 		// Check both contents
@@ -1051,7 +1006,7 @@ test(
 
 		await applyFDSSelectionFilter(page, {
 			filter: 'Space',
-			value: space1Name,
+			value: space1.name,
 		});
 
 		await expect(assetsPage.getItem(space1ContentTitle)).toBeVisible();
@@ -1316,11 +1271,7 @@ test(
 
 		// Create a Space with authors
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: getRandomString(),
-			settings: {},
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const authorA = await apiHelpers.headlessAdminUser.postUserAccount();
 

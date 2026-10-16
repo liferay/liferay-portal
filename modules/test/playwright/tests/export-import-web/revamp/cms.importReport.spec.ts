@@ -30,10 +30,7 @@ test(
 	async ({apiHelpers, exportImportPage, importReportPage, page}) => {
 		test.setTimeout(120000);
 
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: `Space ${getRandomString()}`,
-			type: 'Space',
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectDefinition =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
