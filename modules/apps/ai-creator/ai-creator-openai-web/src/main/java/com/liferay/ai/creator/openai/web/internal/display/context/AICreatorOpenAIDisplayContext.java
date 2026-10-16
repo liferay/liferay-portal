@@ -5,14 +5,18 @@
 
 package com.liferay.ai.creator.openai.web.internal.display.context;
 
+import com.liferay.ai.creator.openai.configuration.manager.AICreatorOpenAIConfigurationManager;
 import com.liferay.ai.creator.openai.web.internal.constants.AICreatorOpenAIPortletKeys;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ResourceURL;
 
@@ -28,9 +32,15 @@ import java.util.Map;
 public class AICreatorOpenAIDisplayContext {
 
 	public AICreatorOpenAIDisplayContext(
+		AICreatorOpenAIConfigurationManager aiCreatorOpenAIConfigurationManager,
 		HttpServletRequest httpServletRequest) {
 
+		_aiCreatorOpenAIConfigurationManager =
+			aiCreatorOpenAIConfigurationManager;
 		_httpServletRequest = httpServletRequest;
+
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public Map<String, Object> getCompletionProps() {
@@ -75,6 +85,13 @@ public class AICreatorOpenAIDisplayContext {
 				).buildString();
 			}
 		).put(
+			"imageSizes",
+			() -> StringUtil.split(
+				_aiCreatorOpenAIConfigurationManager.
+					getAICreatorOpenAIGroupImageSizes(
+						_themeDisplay.getCompanyId(),
+						_themeDisplay.getScopeGroupId()))
+		).put(
 			"learnResources",
 			LearnMessageUtil.getReactDataJSONObject("ai-creator-openai-web")
 		).put(
@@ -113,7 +130,10 @@ public class AICreatorOpenAIDisplayContext {
 		return _generations;
 	}
 
+	private final AICreatorOpenAIConfigurationManager
+		_aiCreatorOpenAIConfigurationManager;
 	private Boolean _generations;
 	private final HttpServletRequest _httpServletRequest;
+	private final ThemeDisplay _themeDisplay;
 
 }

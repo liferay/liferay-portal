@@ -18,12 +18,16 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletException;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -47,6 +51,20 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 			WebKeys.THEME_DISPLAY);
 
 		checkPermission(themeDisplay);
+
+		String imageSizes = ParamUtil.getString(actionRequest, "imageSizes");
+
+		if (!_isValidImageSizes(imageSizes)) {
+			SessionErrors.add(actionRequest, "imageSizesInvalid");
+
+			hideDefaultErrorMessage(actionRequest);
+
+			sendRedirect(
+				actionRequest, actionResponse,
+				_getRedirect(actionRequest, true, themeDisplay));
+
+			return;
+		}
 
 		String successMessageKey = "your-request-completed-successfully";
 
@@ -91,7 +109,8 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 
 		saveAICreatorOpenAIConfiguration(
 			apiKey, ParamUtil.getBoolean(actionRequest, "enableChatGPT"),
-			enableDALLE, imageModel, themeDisplay);
+			enableDALLE, imageModel,
+			imageSizes, themeDisplay);
 
 		SessionMessages.add(
 			actionRequest, "requestProcessed",
@@ -107,7 +126,7 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 
 	protected abstract void saveAICreatorOpenAIConfiguration(
 			String apiKey, boolean enableChatGPT, boolean enableDALLE,
-			String imageModel, ThemeDisplay themeDisplay)
+			String imageModel, String imageSizes, ThemeDisplay themeDisplay)
 		throws ConfigurationException;
 
 	@Reference(
@@ -166,6 +185,18 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 			ParamUtil.getBoolean(actionRequest, "enableOpenAI"));
 	}
 
+	private boolean _isValidImageSizes(String imageSizes) {
+		for (String imageSize : StringUtil.split(imageSizes)) {
+			Matcher matcher = _imageSizePattern.matcher(imageSize);
+
+			if (!matcher.matches()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private boolean _validateAPIKey(
 			ActionRequest actionRequest, ActionResponse actionResponse,
 			String apiKey, String model, ThemeDisplay themeDisplay)
@@ -191,6 +222,11 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 		}
 	}
 
-	private static final String[] _PARAMETER_NAMES = {"apiKey", "imageModel"};
+	private static final String[] _PARAMETER_NAMES = {
+		"apiKey", "imageModel", "imageSizes"
+	};
+
+	private static final Pattern _imageSizePattern = Pattern.compile(
+		"\\d+x\\d+");
 
 }

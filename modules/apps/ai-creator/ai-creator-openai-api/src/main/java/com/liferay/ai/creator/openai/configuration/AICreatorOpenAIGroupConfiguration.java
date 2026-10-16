@@ -46,4 +46,10 @@ public interface AICreatorOpenAIGroupConfiguration {
 	)
 	public String imageModel();
 
+	@Meta.AD(
+		deflt = "", description = "image-sizes-site-help", name = "image-sizes",
+		required = false
+	)
+	public String imageSizes();
+
 }

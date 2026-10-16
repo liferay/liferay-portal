@@ -46,4 +46,10 @@ public interface AICreatorOpenAICompanyConfiguration {
 	)
 	public String imageModel();
 
+	@Meta.AD(
+		deflt = "1024x1024,1536x1024,1024x1536",
+		description = "image-sizes-help", name = "image-sizes", required = false
+	)
+	public String imageSizes();
+
 }

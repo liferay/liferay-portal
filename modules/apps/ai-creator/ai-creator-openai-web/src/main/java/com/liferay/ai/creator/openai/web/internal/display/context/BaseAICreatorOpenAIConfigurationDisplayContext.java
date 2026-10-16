@@ -43,6 +43,17 @@ public abstract class BaseAICreatorOpenAIConfigurationDisplayContext {
 		return getAICreatorOpenAIImageModel();
 	}
 
+	public String getImageSizes() throws ConfigurationException {
+		String imageSizes = ParamUtil.getString(
+			httpServletRequest, "imageSizes", null);
+
+		if (imageSizes != null) {
+			return imageSizes;
+		}
+
+		return getAICreatorOpenAIImageSizes();
+	}
+
 	public boolean isChatGPTEnabled() throws ConfigurationException {
 		String enabled = ParamUtil.getString(
 			httpServletRequest, "enableChatGPT", null);
@@ -69,6 +80,9 @@ public abstract class BaseAICreatorOpenAIConfigurationDisplayContext {
 		throws ConfigurationException;
 
 	protected abstract String getAICreatorOpenAIImageModel()
+		throws ConfigurationException;
+
+	protected abstract String getAICreatorOpenAIImageSizes()
 		throws ConfigurationException;
 
 	protected abstract boolean isAICreatorChatGPTEnabled()

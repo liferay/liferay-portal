@@ -78,7 +78,7 @@ public class GetGenerationsMVCResourceCommand extends BaseMVCResourceCommand {
 					getAICreatorOpenAIGroupImageModel(
 						themeDisplay.getCompanyId(),
 						themeDisplay.getScopeGroupId()),
-				prompt, ParamUtil.getString(resourceRequest, "size", "256x256"),
+				prompt, ParamUtil.getString(resourceRequest, "size"),
 				ParamUtil.getInteger(resourceRequest, "numberOfImages", 1));
 
 			PortletSession portletSession = resourceRequest.getPortletSession();

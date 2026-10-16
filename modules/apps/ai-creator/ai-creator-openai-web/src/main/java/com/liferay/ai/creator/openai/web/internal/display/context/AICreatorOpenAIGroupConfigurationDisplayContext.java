@@ -56,6 +56,14 @@ public class AICreatorOpenAIGroupConfigurationDisplayContext
 	}
 
 	@Override
+	protected String getAICreatorOpenAIImageSizes()
+		throws ConfigurationException {
+
+		return _aiCreatorOpenAIConfigurationManager.
+			getAICreatorOpenAIGroupImageSizes(_themeDisplay.getScopeGroupId());
+	}
+
+	@Override
 	protected boolean isAICreatorChatGPTEnabled()
 		throws ConfigurationException {
 

@@ -9,6 +9,7 @@ import ClayLayout from '@clayui/layout';
 import React from 'react';
 
 interface Props {
+	imageSizes: string[];
 	portletNamespace: string;
 }
 
@@ -16,12 +17,7 @@ const NUMBER_OF_IMAGES_OPTIONS = ['1', '2', '3', '4'].map((option) => ({
 	label: option,
 }));
 
-const SIZE_OPTIONS = ['256x256', '512x512', '1024x1024'].map((label) => ({
-	label,
-	value: label,
-}));
-
-export function FormImage({portletNamespace}: Props) {
+export function FormImage({imageSizes, portletNamespace}: Props) {
 	const promptId = `${portletNamespace}prompt`;
 	const sizeId = `${portletNamespace}size`;
 	const numberOfImagesId = `${portletNamespace}numberOfImages`;
@@ -59,7 +55,10 @@ export function FormImage({portletNamespace}: Props) {
 						<ClaySelectWithOption
 							id={sizeId}
 							name={sizeId}
-							options={SIZE_OPTIONS}
+							options={imageSizes.map((label) => ({
+								label,
+								value: label,
+							}))}
 						/>
 					</ClayForm.Group>
 				</ClayLayout.Col>

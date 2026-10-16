@@ -79,6 +79,18 @@ boolean companyDALLEEnabled = aiCreatorOpenAIGroupConfigurationDisplayContext.is
 	</clay:content-col>
 </clay:content-row>
 
+<clay:content-row
+	cssClass="c-mb-4"
+>
+	<clay:content-col
+		expand="<%= true %>"
+	>
+		<liferay-ui:error key="imageSizesInvalid" message='<%= LanguageUtil.format(request, "each-image-size-must-be-a-width-and-height-in-pixels,-separated-by-x-(e.g.-x)", new Object[] {"x", "1536x1024"}, false) %>' />
+
+		<aui:input helpMessage='<%= StringBundler.concat(LanguageUtil.get(request, "image-sizes-site-help"), StringPool.SPACE, LanguageUtil.format(request, "each-image-size-must-be-a-width-and-height-in-pixels,-separated-by-x-(e.g.-x)", new Object[] {"x", "1536x1024"}, false)) %>' label="image-sizes" name="imageSizes" type="text" value="<%= aiCreatorOpenAIGroupConfigurationDisplayContext.getImageSizes() %>" />
+	</clay:content-col>
+</clay:content-row>
+
 <c:if test="<%= aiCreatorFeatureFlagEnabled %>">
 	<clay:content-row>
 		<clay:content-col

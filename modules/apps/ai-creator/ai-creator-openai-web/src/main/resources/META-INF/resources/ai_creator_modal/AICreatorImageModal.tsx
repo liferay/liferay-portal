@@ -19,6 +19,7 @@ import {LoadingMessage} from './LoadingMessage';
 interface Props {
 	eventName?: string;
 	getGenerationsURL: string;
+	imageSizes: string[];
 	learnResources: AICreatorModalLearnResources;
 	portletNamespace: string;
 	uploadGenerationsURL: string;
@@ -44,6 +45,7 @@ type RequestStatus =
 export default function AICreatorImageModal({
 	eventName,
 	getGenerationsURL,
+	imageSizes,
 	learnResources,
 	portletNamespace,
 	uploadGenerationsURL,
@@ -181,7 +183,10 @@ export default function AICreatorImageModal({
 						className="c-p-4 flex-grow-1 overflow-auto"
 						fluid
 					>
-						<FormImage portletNamespace={portletNamespace} />
+						<FormImage
+							imageSizes={imageSizes}
+							portletNamespace={portletNamespace}
+						/>
 
 						{imagesURL && (
 							<ImagesResult

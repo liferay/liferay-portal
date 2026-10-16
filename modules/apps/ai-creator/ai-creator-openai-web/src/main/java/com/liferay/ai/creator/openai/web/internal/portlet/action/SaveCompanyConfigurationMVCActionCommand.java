@@ -54,13 +54,13 @@ public class SaveCompanyConfigurationMVCActionCommand
 	@Override
 	protected void saveAICreatorOpenAIConfiguration(
 			String apiKey, boolean enableChatGPT, boolean enableDALLE,
-			String imageModel, ThemeDisplay themeDisplay)
+			String imageModel, String imageSizes, ThemeDisplay themeDisplay)
 		throws ConfigurationException {
 
 		aiCreatorOpenAIConfigurationManager.
 			saveAICreatorOpenAICompanyConfiguration(
 				themeDisplay.getCompanyId(), apiKey, enableChatGPT, enableDALLE,
-				imageModel);
+				imageModel, imageSizes);
 	}
 
 }

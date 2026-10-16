@@ -18,6 +18,9 @@ public interface AICreatorOpenAIConfigurationManager {
 	public String getAICreatorOpenAICompanyImageModel(long companyId)
 		throws ConfigurationException;
 
+	public String getAICreatorOpenAICompanyImageSizes(long companyId)
+		throws ConfigurationException;
+
 	public String getAICreatorOpenAIGroupAPIKey(long groupId)
 		throws ConfigurationException;
 
@@ -28,6 +31,13 @@ public interface AICreatorOpenAIConfigurationManager {
 		throws ConfigurationException;
 
 	public String getAICreatorOpenAIGroupImageModel(
+			long companyId, long groupId)
+		throws ConfigurationException;
+
+	public String getAICreatorOpenAIGroupImageSizes(long groupId)
+		throws ConfigurationException;
+
+	public String getAICreatorOpenAIGroupImageSizes(
 			long companyId, long groupId)
 		throws ConfigurationException;
 
@@ -45,12 +55,12 @@ public interface AICreatorOpenAIConfigurationManager {
 
 	public void saveAICreatorOpenAICompanyConfiguration(
 			long companyId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE, String imageModel)
+			boolean enableDALLE, String imageModel, String imageSizes)
 		throws ConfigurationException;
 
 	public void saveAICreatorOpenAIGroupConfiguration(
 			long groupId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE, String imageModel)
+			boolean enableDALLE, String imageModel, String imageSizes)
 		throws ConfigurationException;
 
 }
