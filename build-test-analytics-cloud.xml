@@ -479,6 +479,13 @@
 						Map osbFaroFrontendServiceMap = servicesMap.get("osbfarofrontend");
 
 						osbFaroFrontendServiceMap.put("container_name", project.getProperty("analytics.cloud.faro.container.name"));
+
+						List environment = osbFaroFrontendServiceMap.get("environment");
+
+						environment.add("FARO_DEMO_CREATOR_METHOD=" + project.getProperty("analytics.cloud.faro.demo.creator.method"));
+
+						osbFaroFrontendServiceMap.put("environment", environment);
+
 						osbFaroFrontendServiceMap.put("image", project.getProperty("analytics.cloud.faro.image.name"));
 
 						List ports = osbFaroFrontendServiceMap.get("ports");
