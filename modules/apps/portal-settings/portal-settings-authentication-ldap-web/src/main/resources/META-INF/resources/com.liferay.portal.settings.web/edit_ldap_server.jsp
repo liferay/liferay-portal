@@ -174,7 +174,7 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 			</aui:fieldset>
 
 			<aui:fieldset>
-				<h3><liferay-ui:message key="export" /></h3>
+				<h3><liferay-ui:message key="export[noun]" /></h3>
 
 				<aui:input cssClass="lfr-input-text-container" label="users-dn" name='<%= "ldap--" + LDAPConstants.USERS_DN + "--" %>' type="text" value="<%= ldapUsersDN %>" />
 

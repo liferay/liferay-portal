@@ -196,7 +196,7 @@ function Source({
 						<ClayToggle
 							label={
 								applyIndexerClauses
-									? Liferay.Language.get('on')
+									? Liferay.Language.get('on[toggle]')
 									: Liferay.Language.get('off')
 							}
 							onToggle={_handleApplyIndexerClausesChange}

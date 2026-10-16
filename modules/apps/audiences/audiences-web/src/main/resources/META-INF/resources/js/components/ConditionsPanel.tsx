@@ -63,8 +63,8 @@ function collectNodeNames(
 		if (isGroup(node)) {
 			const conjunction =
 				node.conjunction === 'OR'
-					? Liferay.Language.get('any')
-					: Liferay.Language.get('all');
+					? Liferay.Language.get('any[match]')
+					: Liferay.Language.get('all[match]');
 
 			namesById[node.id] = `${conjunction} ${Liferay.Language.get(
 				'of-these-criteria-are-met'
@@ -468,8 +468,8 @@ function ConjunctionBar({
 				className="form-control-sm w-auto"
 				id={`${conjunctionLabelId}-value`}
 				items={[
-					{label: Liferay.Language.get('all'), value: 'AND'},
-					{label: Liferay.Language.get('any'), value: 'OR'},
+					{label: Liferay.Language.get('all[match]'), value: 'AND'},
+					{label: Liferay.Language.get('any[match]'), value: 'OR'},
 				]}
 				onSelectionChange={(key) => onConjunctionChange(key as string)}
 				selectedKey={conjunction}

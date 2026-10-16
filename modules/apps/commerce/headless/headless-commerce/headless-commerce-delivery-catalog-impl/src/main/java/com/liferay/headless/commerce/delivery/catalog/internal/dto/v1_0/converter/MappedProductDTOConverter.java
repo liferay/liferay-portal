@@ -441,7 +441,7 @@ public class MappedProductDTOConverter
 					CommerceInventoryAvailabilityConstants.AVAILABLE)) {
 
 				availability.setLabel_i18n(
-					() -> _language.get(locale, "available"));
+					() -> _language.get(locale, "available[status]"));
 				availability.setLabel(() -> "available");
 			}
 			else {

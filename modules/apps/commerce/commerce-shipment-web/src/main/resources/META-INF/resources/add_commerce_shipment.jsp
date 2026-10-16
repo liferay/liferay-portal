@@ -47,7 +47,7 @@ CommerceShipmentDisplayContext commerceShipmentDisplayContext = (CommerceShipmen
 
 		</aui:select>
 
-		<aui:select label="address" name="commerceAddressId" required="<%= true %>" showEmptyOption="<%= true %>" />
+		<aui:select label="address[postal]" name="commerceAddressId" required="<%= true %>" showEmptyOption="<%= true %>" />
 	</aui:form>
 </commerce-ui:modal-content>
 

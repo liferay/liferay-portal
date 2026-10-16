@@ -91,7 +91,7 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 		</div>
 
 		<div class="form-group-autofit">
-			<aui:input disabled="<%= (commerceAddressId > 0) || !hasManageAddressesPermission %>" label="address" name="street1" placeholder="address" wrapperCssClass="form-group-item" />
+			<aui:input disabled="<%= (commerceAddressId > 0) || !hasManageAddressesPermission %>" label="address[postal]" name="street1" placeholder="address" wrapperCssClass="form-group-item" />
 
 			<aui:select disabled="<%= (commerceAddressId > 0) || !hasManageAddressesPermission %>" label="country" name="countryId" placeholder="country" title="country" wrapperCssClass="form-group-item">
 				<aui:validator errorMessage='<%= LanguageUtil.get(request, "please-enter-a-valid-country") %>' name="min">1</aui:validator>

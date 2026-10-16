@@ -241,7 +241,7 @@ public class SemanticSearchConfigurationFormRenderer
 		).put(
 			"middle", _language.get(httpServletRequest, "middle")
 		).put(
-			"end", _language.get(httpServletRequest, "end")
+			"end", _language.get(httpServletRequest, "end[position]")
 		).build();
 	}
 

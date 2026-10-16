@@ -44,7 +44,7 @@ if (Validator.isNotNull(script)) {
 <div class="alert alert-danger hide lfr-message-response" id="<portlet:namespace />messageContainer"></div>
 
 <liferay-ui:tabs
-	names='<%= LanguageUtil.get(request, "view[action]") + "," + LanguageUtil.get(request, "source") %>'
+	names='<%= LanguageUtil.get(request, "view[action]") + "," + LanguageUtil.get(request, "source[code]") %>'
 	refresh="<%= false %>"
 >
 	<div class="alert alert-info ddm-documents-and-media-field lfr-message-response <%= hasDDMDocumentLibraryDataType ? StringPool.BLANK : "hide" %>">

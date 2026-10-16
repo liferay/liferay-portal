@@ -15,7 +15,7 @@
 				onClose: function (event) {
 					window.location.reload();
 				},
-				title: '<liferay-ui:message key="import" />',
+				title: '<liferay-ui:message key="import[noun]" />',
 				url: '<%=
 					PortletURLBuilder.create(
 						PortalUtil.getControlPanelPortletURL(liferayPortletRequest, LayoutAdminPortletKeys.GROUP_PAGES, PortletRequest.RENDER_PHASE)

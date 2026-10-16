@@ -155,7 +155,7 @@ FormInstancePermissionCheckerHelper formInstancePermissionCheckerHelper = ddmFor
 												<c:when test="<%= ddmFormAdminDisplayContext.isFormPublished(formInstance) %>">
 													<clay:label
 														displayType="success"
-														label="available"
+														label="available[status]"
 													/>
 												</c:when>
 												<c:otherwise>

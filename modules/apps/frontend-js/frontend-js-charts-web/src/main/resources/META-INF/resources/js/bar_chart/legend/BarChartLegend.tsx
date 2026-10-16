@@ -87,7 +87,7 @@ export default function BarChartLegend({
 				render: (item) => data[item.id].value.toLocaleString(),
 			},
 			{
-				label: Liferay.Language.get('share'),
+				label: Liferay.Language.get('share[proportion]'),
 				render: (item) => formatShare(data[item.id].value, total),
 			},
 		],

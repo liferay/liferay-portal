@@ -104,7 +104,7 @@
 
 <#if show_home>
 	<#assign
-		home_text = languageUtil.get(locale, "home")
+		home_text = languageUtil.get(locale, "home[page]")
 		home_url = htmlUtil.escape(theme_display.getURLHome())
 	/>
 

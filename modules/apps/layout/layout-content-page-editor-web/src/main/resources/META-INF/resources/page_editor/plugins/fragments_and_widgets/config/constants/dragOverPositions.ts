@@ -9,8 +9,8 @@ export const DRAG_OVER_POSITIONS = {
 } as const;
 
 export const DRAG_OVER_POSITIONS_LABELS: Record<DragOverPosition, string> = {
-	[DRAG_OVER_POSITIONS.bottom]: Liferay.Language.get('bottom'),
-	[DRAG_OVER_POSITIONS.top]: Liferay.Language.get('top'),
+	[DRAG_OVER_POSITIONS.bottom]: Liferay.Language.get('bottom[position]'),
+	[DRAG_OVER_POSITIONS.top]: Liferay.Language.get('top[position]'),
 };
 
 export type DragOverPosition =

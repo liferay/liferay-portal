@@ -150,7 +150,7 @@ export const ACTIONS = {
 			onClose: () => {
 				window.location.reload();
 			},
-			title: Liferay.Language.get('import'),
+			title: Liferay.Language.get('import[noun]'),
 			url: viewImportURL,
 		});
 	},

@@ -25,8 +25,8 @@ export type Rule<T extends RuleType = RuleType> = T extends 'assetTags'
 		: never;
 
 export const QUERY_AND_OPERATOR_OPTIONS = [
-	{label: Liferay.Language.get('all'), value: 'true'},
-	{label: Liferay.Language.get('any'), value: 'false'},
+	{label: Liferay.Language.get('all[match]'), value: 'true'},
+	{label: Liferay.Language.get('any[match]'), value: 'false'},
 ];
 
 export const QUERY_CONTAINS_OPTIONS = [

@@ -129,7 +129,7 @@ ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(user
 							<%= HtmlUtil.escape(fileEntry.getTitle()) %>
 						</dd>
 						<dt>
-							<liferay-ui:message key="export" />
+							<liferay-ui:message key="export[noun]" />
 						</dt>
 						<dd>
 

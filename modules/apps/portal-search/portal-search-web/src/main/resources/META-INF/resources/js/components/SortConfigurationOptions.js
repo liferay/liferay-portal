@@ -32,7 +32,7 @@ const VIEWS = {
 		value: 'classic',
 	},
 	NEW: {
-		label: Liferay.Language.get('new'),
+		label: Liferay.Language.get('new[adjective]'),
 		value: 'new',
 	},
 };
@@ -395,7 +395,7 @@ function SortConfigurationOptions({
 									<ClayToggle
 										label={
 											relevanceOn
-												? Liferay.Language.get('on')
+												? Liferay.Language.get('on[toggle]')
 												: Liferay.Language.get('off')
 										}
 										onToggle={() =>

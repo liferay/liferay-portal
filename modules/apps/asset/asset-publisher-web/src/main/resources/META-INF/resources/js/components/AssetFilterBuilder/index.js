@@ -20,11 +20,11 @@ const DEFAULT_RULE = {
 
 const QUERY_AND_OPERATOR_OPTIONS = [
 	{
-		label: Liferay.Language.get('all'),
+		label: Liferay.Language.get('all[match]'),
 		value: true,
 	},
 	{
-		label: Liferay.Language.get('any'),
+		label: Liferay.Language.get('any[match]'),
 		value: false,
 	},
 ];

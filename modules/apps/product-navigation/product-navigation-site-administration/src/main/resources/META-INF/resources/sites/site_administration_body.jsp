@@ -79,7 +79,7 @@ SiteAdministrationPanelCategoryDisplayContext siteAdministrationPanelCategoryDis
 					cssClass='<%= "list-group-heading navigation-link panel-header-link" + (siteAdministrationPanelCategoryDisplayContext.isFirstLayout() ? " first-layout" : "") %>'
 					href="<%= siteAdministrationPanelCategoryDisplayContext.getGroupURL() %>"
 					icon="home"
-					label="home"
+					label="home[page]"
 				/>
 			</c:if>
 

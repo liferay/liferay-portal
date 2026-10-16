@@ -52,7 +52,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 								navigationItem -> {
 									navigationItem.setActive(tabs2.equals("import"));
 									navigationItem.setHref(portletURL.toString());
-									navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "import"));
+									navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "import[noun]"));
 								});
 						}
 					}
