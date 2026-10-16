@@ -3,14 +3,13 @@ apiVersion: kms.aws.m.upbound.io/v1beta1
 kind: Alias
 metadata:
     annotations:
-        crossplane.io/external-name: alias/{{ $baseName }}-backup-vault
         gotemplating.fn.crossplane.io/composition-resource-name: backup-vault-kms-alias
     labels:
         app: liferay
         component: backup-vault
         environmentId: {{ $environmentId }}
         projectId: {{ $projectId }}
-    name: {{ $baseName }}-backup-vault-kms-alias
+    name: {{ $baseName }}-backup-vault
 spec:
     forProvider:
         region: {{ $env.region }}
@@ -75,14 +74,13 @@ apiVersion: kms.aws.m.upbound.io/v1beta1
 kind: Alias
 metadata:
     annotations:
-        crossplane.io/external-name: alias/{{ $searchName }}
         gotemplating.fn.crossplane.io/composition-resource-name: search-kms-alias
     labels:
         app: liferay
         component: search
         environmentId: {{ $environmentId }}
         projectId: {{ $projectId }}
-    name: {{ $searchName }}-kms-alias
+    name: {{ $searchName }}
 spec:
     forProvider:
         region: {{ $env.region }}
