@@ -339,11 +339,15 @@ export function RuleBuilderConditionSection({
 									as={TriggerLabel}
 									items={[
 										{
-											label: Liferay.Language.get('any[match]'),
+											label: Liferay.Language.get(
+												'any[match]'
+											),
 											value: 'any',
 										},
 										{
-											label: Liferay.Language.get('all[match]'),
+											label: Liferay.Language.get(
+												'all[match]'
+											),
 											value: 'all',
 										},
 									]}
