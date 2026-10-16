@@ -29,12 +29,7 @@ spec:
                 schedule: {{ $backupSchedule | quote }}
                 scheduleExpressionTimezone: {{ $backup.timeZone | quote }}
                 startWindow: 60
-                targetVaultNameSelector:
-                    matchLabels:
-                        app: liferay
-                        component: backup-vault
-                        environmentId: {{ $environmentId }}
-                        projectId: {{ $projectId }}
+                targetVaultName: {{ $baseName }}-backup-vault
     managementPolicies: {{ $managementPolicies }}
 ---
 apiVersion: backup.aws.m.upbound.io/v1beta1
