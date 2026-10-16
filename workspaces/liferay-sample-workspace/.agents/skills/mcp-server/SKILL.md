@@ -9,7 +9,7 @@ name: mcp-server
 
 **MCP (Model Context Protocol)** is the AI agent integration standard that lets AI tools call Liferay APIs directly without manual REST auth setup.
 
-> Available on recent DXP quarterly releases (gated by feature flag `LPD-63311`, marked `beta`). Verify against your DXP version before relying on it.
+> Gated by feature flag `LPD-63311`: `beta` on 2026.Q1 and 2026.Q2, `release` from 2026.Q3, off by default on all of them. 2026.Q3 also needs the `MCPServerConfiguration` switch below.
 
 The server changed shape twice: at 2026.Q1 and at 2026.Q3. Find the row for your release, read from `liferay.workspace.product` in `gradle.properties`, before following anything below:
 

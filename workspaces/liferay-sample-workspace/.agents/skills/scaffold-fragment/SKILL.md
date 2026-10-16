@@ -451,7 +451,7 @@ Wrap each call in `[#attempt]…[#recover][/#attempt]`, because a denied or fail
 
 ### The Live Fragment API
 
-`headless-admin-fragment` exists and works. Base URI `/o/headless-admin-fragment/v1.0`, gated by `LPD-39244`. Verified end to end on a self hosted 2026.Q2 bundle — create, update and delete all returned `200`/`204` and round tripped correctly.
+`headless-admin-fragment` exists and works. Base URI `/o/headless-admin-fragment/v1.0`, gated by `LPD-39244` (beta on 2026.Q3, hidden dev on 2026.Q2). **It does not exist on 2026.Q1**, so reprovision there. Verified end to end on a self hosted 2026.Q2 bundle — create, update and delete all returned `200`/`204` and round tripped correctly.
 
 | Resource | Method | Path |
 | --- | --- | --- |

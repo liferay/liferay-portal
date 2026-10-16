@@ -39,14 +39,23 @@ Place it with the whole-page PUT (`manage-pages` → "Page Specification Workflo
 			},
 			"formContainerType": "Simple",
 			"numberOfSteps": 0,
-			"successFormContainerSubmissionResult": {"type": "EmbeddedMessage", "message": {"value_i18n": {"en-US": "Thank you."}}}
+			"successFormContainerSubmissionResult": {
+				"message": {
+					"value_i18n": {
+						"en-US": "Thank you."
+					}
+				},
+				"type": "EmbeddedMessage"
+			}
 		},
 		"type": "FormContainer"
 	},
-	"pageElements": [ /* FormFragment children, then the submit button */ ]
+	"pageElements": [
+	]
 }
 ```
 
+- **`pageElements` holds the fields, then the submit button.** Each field is a `FormFragment` (below).
 - **`className` is the definition's suffixed class name.** Read it from `GET /o/object-admin/v1.0/object-definitions/by-external-reference-code/<erc>` (`className`); never strip the `#<code>`.
 - **`numberOfSteps` must be present**, or the PUT returns `500` (NPE on `getNumberOfSteps()`). `0` and `1` both work for one step, whether `formContainerType` is `Simple` or `Multistep`.
 
@@ -59,8 +68,10 @@ Each field is a `FormFragment`:
 	"pageElementDefinition": {
 		"fieldKey": "ObjectField_<fieldName>",
 		"fragmentInstance": {
-			"fragmentConfigurationFieldValues": {},
-			"fragmentEditableElements": [],
+			"fragmentConfigurationFieldValues": {
+			},
+			"fragmentEditableElements": [
+			],
 			"fragmentReference": {
 				"defaultFragmentKey": "INPUTS-text-input",
 				"fragmentReferenceType": "DefaultFragmentReference"
@@ -68,7 +79,8 @@ Each field is a `FormFragment`:
 		},
 		"type": "FormFragment"
 	},
-	"pageElements": []
+	"pageElements": [
+	]
 }
 ```
 
@@ -107,12 +119,25 @@ Generating the form in the Page Editor also adds an `INPUTS-text-input` bound to
 	"pageElementDefinition": {
 		"fragmentInstance": {
 			"fragmentConfigurationFieldValues": {
-				"buttonSize": {"type": "Select", "value": "nm"},
-				"buttonType": {"type": "Select", "value": "primary"},
-				"submittedEntryStatus": {"type": "Select", "value": "0"},
-				"type": {"type": "Select", "value": "submit"}
+				"buttonSize": {
+					"type": "Select",
+					"value": "nm"
+				},
+				"buttonType": {
+					"type": "Select",
+					"value": "primary"
+				},
+				"submittedEntryStatus": {
+					"type": "Select",
+					"value": "0"
+				},
+				"type": {
+					"type": "Select",
+					"value": "submit"
+				}
 			},
-			"fragmentEditableElements": [],
+			"fragmentEditableElements": [
+			],
 			"fragmentReference": {
 				"defaultFragmentKey": "INPUTS-submit-button",
 				"fragmentReferenceType": "DefaultFragmentReference"
@@ -120,7 +145,8 @@ Generating the form in the Page Editor also adds an `INPUTS-text-input` bound to
 		},
 		"type": "FormFragment"
 	},
-	"pageElements": []
+	"pageElements": [
+	]
 }
 ```
 
@@ -138,10 +164,28 @@ A row, inside the `FormContainer`'s `pageElements` (give every element its `exte
 {
 	"pageElementDefinition": {
 		"gridViewports": [
-			{"gridViewportDefinition": {"modulesPerRow": 2}, "id": "Desktop"},
-			{"gridViewportDefinition": {"modulesPerRow": 1}, "id": "LandscapeMobile"},
-			{"gridViewportDefinition": {}, "id": "PortraitMobile"},
-			{"gridViewportDefinition": {}, "id": "Tablet"}
+			{
+				"gridViewportDefinition": {
+					"modulesPerRow": 2
+				},
+				"id": "Desktop"
+			},
+			{
+				"gridViewportDefinition": {
+					"modulesPerRow": 1
+				},
+				"id": "LandscapeMobile"
+			},
+			{
+				"gridViewportDefinition": {
+				},
+				"id": "PortraitMobile"
+			},
+			{
+				"gridViewportDefinition": {
+				},
+				"id": "Tablet"
+			}
 		],
 		"gutters": true,
 		"numberOfModules": 2,
@@ -152,12 +196,23 @@ A row, inside the `FormContainer`'s `pageElements` (give every element its `exte
 		{
 			"pageElementDefinition": {
 				"moduleViewports": [
-					{"id": "Desktop", "moduleViewportDefinition": {"size": 6}},
-					{"id": "LandscapeMobile", "moduleViewportDefinition": {"size": 12}}
+					{
+						"id": "Desktop",
+						"moduleViewportDefinition": {
+							"size": 6
+						}
+					},
+					{
+						"id": "LandscapeMobile",
+						"moduleViewportDefinition": {
+							"size": 12
+						}
+					}
 				],
 				"type": "Module"
 			},
-			"pageElements": []
+			"pageElements": [
+			]
 		}
 	]
 }
@@ -169,7 +224,12 @@ A spacer, anywhere a field can go — `height` takes `py-1`, `py-2`, or `py-3`:
 {
 	"pageElementDefinition": {
 		"fragmentInstance": {
-			"fragmentConfigurationFieldValues": {"height": {"type": "Select", "value": "py-2"}},
+			"fragmentConfigurationFieldValues": {
+				"height": {
+					"type": "Select",
+					"value": "py-2"
+				}
+			},
 			"fragmentReference": {
 				"defaultFragmentKey": "BASIC_COMPONENT-spacer",
 				"fragmentReferenceType": "DefaultFragmentReference"
@@ -242,8 +302,18 @@ Rows and spacers in the tree are `Row` → `Column` → `Fragment`, inside the `
 		"numberOfColumns": 3,
 		"reverseOrder": false,
 		"rowViewports": [
-			{"id": "landscapeMobile", "rowViewportDefinition": {"modulesPerRow": 1}},
-			{"id": "portraitMobile", "rowViewportDefinition": {"modulesPerRow": 1}}
+			{
+				"id": "landscapeMobile",
+				"rowViewportDefinition": {
+					"modulesPerRow": 1
+				}
+			},
+			{
+				"id": "portraitMobile",
+				"rowViewportDefinition": {
+					"modulesPerRow": 1
+				}
+			}
 		],
 		"verticalAlignment": "top"
 	},
@@ -251,13 +321,33 @@ Rows and spacers in the tree are `Row` → `Column` → `Fragment`, inside the `
 		{
 			"definition": {
 				"columnViewports": [
-					{"columnViewportDefinition": {"size": 12}, "id": "landscapeMobile"},
-					{"columnViewportDefinition": {"size": 12}, "id": "portraitMobile"}
+					{
+						"columnViewportDefinition": {
+							"size": 12
+						},
+						"id": "landscapeMobile"
+					},
+					{
+						"columnViewportDefinition": {
+							"size": 12
+						},
+						"id": "portraitMobile"
+					}
 				],
 				"size": 4
 			},
 			"pageElements": [
-				{"definition": {"fragment": {"key": "INPUTS-select-from-list"}, "fragmentConfig": {"inputFieldId": "ObjectField_<field>"}}, "type": "Fragment"}
+				{
+					"definition": {
+						"fragment": {
+							"key": "INPUTS-select-from-list"
+						},
+						"fragmentConfig": {
+							"inputFieldId": "ObjectField_<field>"
+						}
+					},
+					"type": "Fragment"
+				}
 			],
 			"type": "Column"
 		}
@@ -359,6 +449,7 @@ Use a native `successFormContainerSubmissionResult` whenever one fits. To track 
 "A teaser and a form, then the full content of the same entry", built in the site initializer tree only. Assembled and verified end to end as an anonymous visitor on 2026.Q3.2:
 
 1. **Two DPTs for the content type**, both with `"contentType": {"className": "[$OBJECT_DEFINITION_CLASS_NAME:<Content>$]"}` in `display-page-template.json`: the gated one `"defaultTemplate": true` (listing links with `displayPageURL` land on it), the full one `false`.
+
 1. **The gated DPT** holds one wrapper fragment (teaser editables mapped with `contextSource: "DisplayPageItem"`, plus `<lfr-drop-zone id="<zone>">` in its HTML). In the tree the drop zone's content must be explicit:
 
 	```text
@@ -371,8 +462,11 @@ Use a native `successFormContainerSubmissionResult` whenever one fits. To track 
 	```
 
 	Leave `formSuccessSubmissionResult` out: the default embedded message is the marker the watcher waits for.
+
 1. **The wrapper's `index.js` is the watcher** ("Reacting to Success in the Browser"). It reads the entry id (`INFO_ITEM.objectEntryId`, written as a data attribute), the site path (`${themeDisplay.getPathFriendlyURLPublic()}${themeDisplay.getScopeGroup().getFriendlyURL()}`) and the environment-specific `classNameId` and DPT URL (`fragmentConfig`, `manage-pages` → "Links, Forms, and Menus in the Tree"), then opens `<site>/e/<dpt-url>/<classNameId>/<entryId>`. To let the next page tell a gated arrival from a direct one, set a `sessionStorage` flag keyed by the entry id before redirecting.
+
 1. **The full DPT** maps the remaining fields. Any tracking runs in its own fragment JS on load (`manage-analytics`).
+
 1. **Guest grants** in `resource-permissions.json`, scope `"1"`: `VIEW` on the content's `[$OBJECT_DEFINITION_CLASS_NAME:…$]`, and `ADD_OBJECT_ENTRY` (no `VIEW`) on `com.liferay.object#[$OBJECT_DEFINITION_ID:<Target>$]`.
 
 The full DPT stays reachable by URL without the form. Say so to the user: this is a soft gate.

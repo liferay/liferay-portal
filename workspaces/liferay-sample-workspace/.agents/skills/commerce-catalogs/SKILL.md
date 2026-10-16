@@ -91,6 +91,7 @@ When onboarding accounts and users via `headless-admin-user` APIs, adhere to the
   - `addressType`: must be lowercase (e.g., "billing", "shipping").
 - **User association**: use the `by-email-address` endpoint to associate an existing user with an account: `POST /accounts/{accountId}/user-accounts/by-email-address/{email}`.
 - **Role assignment**: assign account roles by their ERC: `POST /accounts/{accountId}/account-roles/by-external-reference-code/{ROLE_ERC}/user-accounts/{userId}`.
+
 ## Account Membership and Logos
 
 - **Membership by ERC**: `POST /accounts/by-external-reference-code/{accountErc}/user-accounts/by-external-reference-code/{userErc}` answers `204`, and `204` again when the user is already a member, so it is safe to repeat. A user's own `GET /user-accounts/{id}` lists the result in `accountBriefs[].externalReferenceCode`. An account PUT that carries no `accountUserAccounts` keeps the members (verified on 2026.Q3).

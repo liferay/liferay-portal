@@ -25,8 +25,11 @@ This skill says **how** to track. When to fire belongs elsewhere: whether a Form
 DXP must be reachable on a public URL; on a local bundle, put a tunnel in front of it.
 
 1. In LDP, add this instance as a **Data Source** and copy its token.
+
 1. In DXP, Control Panel → Instance Settings → **Analytics Cloud**: paste the token and save.
+
 1. In LDP, select the sites to track.
+
 1. Rename the Data Source to something specific. In a shared LDP workspace, a generic name cannot be told apart from everyone else's.
 
 ## Workflow
@@ -92,7 +95,7 @@ In a shared LDP workspace or instance, suffix every custom event with an identif
 const ercs = await window.Analytics.segment.getRealTimeSegmentExternalReferenceCodes();
 ```
 
-The Promise resolves to an array of the ERCs of the visitor's real-time segments. **Confirmed live on 2026.Q3.2 but absent from the official documentation**, so detect `window.Analytics?.segment` before calling it, and say so to the user.
+The Promise resolves to an array of the ERCs of the visitor's real-time segments. The call exists from 2026.Q2; 2026.Q1 has no equivalent. **Confirmed live on 2026.Q3.2 but absent from the official documentation**, so detect `window.Analytics?.segment` before calling it, and say so to the user.
 
 In LDP, a segment's ERC is editable on its detail screen and accepts only lowercase letters and dashes. Set a readable one (`white-paper-readers`) before writing code against it, rather than keeping the generated value.
 
@@ -116,7 +119,9 @@ The LDP REST API (reports, segment creation) is not covered. Use the LDP interfa
 ## Success Signal
 
 1. In DevTools → Network, enable **Preserve log** (a redirect clears the panel) and filter on the Analytics Cloud domain.
+
 1. Trigger the event. Expect the request within about 2 s of the **next** page loading, not before the redirect.
+
 1. In LDP, Events → **Event Analysis**: Analyze = the suffixed event name, Breakdown = a useful property (such as `pageTitle`), Save Analysis, range "Last 24 hours", then **Download Reports**. Check the row in the downloaded file, not only on screen.
 
 An empty report proves nothing. Generate at least one real event first.

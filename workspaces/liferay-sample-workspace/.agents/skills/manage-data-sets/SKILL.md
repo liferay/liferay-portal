@@ -86,7 +86,9 @@ The child types are `TableSections`, `ListSections`, `CardsSections`, `Sorts`, `
 ```json
 {
 	"fieldName": "title",
-	"label_i18n": {"en_US": "Title"},
+	"label_i18n": {
+		"en_US": "Title"
+	},
 	"renderer": "default",
 	"rendererType": "internal",
 	"sortable": true,
@@ -113,7 +115,13 @@ Give every filter a label: **a date filter without `label_i18n` never appears**.
 **Date:**
 
 ```json
-{"fieldName": "publicationDate", "label_i18n": {"en_US": "Published"}, "type": "date"}
+{
+	"fieldName": "publicationDate",
+	"label_i18n": {
+		"en_US": "Published"
+	},
+	"type": "date"
+}
 ```
 
 It emits `filter=(publicationDate ge …) and (publicationDate le …)`.
@@ -121,7 +129,17 @@ It emits `filter=(publicationDate ge …) and (publicationDate le …)`.
 **Picklist** (`dataSetToDataSetSelectionFilters`):
 
 ```json
-{"fieldName": "genre", "include": true, "label_i18n": {"en_US": "Genre"}, "multiple": true, "preselectedValues": "[]", "source": "<LIST_TYPE_DEFINITION_ERC>", "sourceType": "OBJECT_PICKLIST"}
+{
+	"fieldName": "genre",
+	"include": true,
+	"label_i18n": {
+		"en_US": "Genre"
+	},
+	"multiple": true,
+	"preselectedValues": "[]",
+	"source": "<LIST_TYPE_DEFINITION_ERC>",
+	"sourceType": "OBJECT_PICKLIST"
+}
 ```
 
 It emits `filter=(genre in ('…'))`, and `multiple: false` gives radio buttons with `eq`.
@@ -129,7 +147,22 @@ It emits `filter=(genre in ('…'))`, and `multiple: false` gives radio buttons 
 **Relationship:**
 
 ```json
-{"fieldName": "r_<rel>_c_<parent>ERC", "include": true, "itemKey": "externalReferenceCode", "itemLabel": "<labelField>", "label_i18n": {"en_US": "Author"}, "multiple": true, "preselectedValues": "[]", "restApplication": "/c/<parent-plural>", "restEndpoint": "/", "restSchema": "<ParentName>", "source": "/o/c/<parent-plural>/", "sourceType": "API_REST_APPLICATION"}
+{
+	"fieldName": "r_<rel>_c_<parent>ERC",
+	"include": true,
+	"itemKey": "externalReferenceCode",
+	"itemLabel": "<labelField>",
+	"label_i18n": {
+		"en_US": "Author"
+	},
+	"multiple": true,
+	"preselectedValues": "[]",
+	"restApplication": "/c/<parent-plural>",
+	"restEndpoint": "/",
+	"restSchema": "<ParentName>",
+	"source": "/o/c/<parent-plural>/",
+	"sourceType": "API_REST_APPLICATION"
+}
 ```
 
 This is the UI's shape: filter on the `…ERC` twin with `itemKey: "externalReferenceCode"`. The numeric FK with `itemKey: "id"` also works, since the id is sent quoted.
@@ -137,7 +170,7 @@ This is the UI's shape: filter on the `…ERC` twin with `itemKey: "externalRefe
 - **`include: false` is not honored.** Visitors have a runtime Exclude toggle instead.
 - **`preselectedValues`** had no clear effect in testing; one form made the Filter button disappear.
 
-**Static parameters.** `additionalAPIURLParameters` (e.g. `filter=genre eq 'sf'`) is AND-merged with the visitor's own filters. On 2026.Q3.2 it was static: no native dynamic token mapping, so the known workaround was a `globalJS` CET that rewrites `fetch` for URLs carrying `liferaydds=true` (verified on 2026.Q2.11). **On 2026.Q3.5 the parameters take tokens, with `LPD-38564` off** (verified live): `FDSAPIURLBuilder._interpolateTokens` replaces, in order, the fragment's `apiURLTokenMappings` (behind `LPD-38564`), then whatever an `FDSAPIURLResolver` registered for `restApplication + "/" + restSchema` returns, then the defaults `{scopeKey}`, `{siteId}`, `{userExternalReferenceCode}` and `{userId}`. An unresolved `{token}` is still sent literally and matches nothing.
+**Static parameters.** `additionalAPIURLParameters` (e.g. `filter=genre eq 'sf'`) is AND-merged with the visitor's own filters. On 2026.Q3.2 it was static: no native dynamic token mapping, so the known workaround was a `globalJS` CET that rewrites `fetch` for URLs carrying `liferaydds=true` (verified on 2026.Q2.11). **On 2026.Q3.5 the parameters take tokens, with `LPD-38564` off** (verified live): `FDSAPIURLBuilder._interpolateTokens` replaces, in order, the fragment's `apiURLTokenMappings` (behind `LPD-38564`: release, off by default, on 2026.Q3; hidden dev on 2026.Q1 and 2026.Q2, so only `feature.flag.LPD-38564=true` enables it there), then whatever an `FDSAPIURLResolver` registered for `restApplication + "/" + restSchema` returns, then the defaults `{scopeKey}`, `{siteId}`, `{userExternalReferenceCode}` and `{userId}`. An unresolved `{token}` is still sent literally and matches nothing.
 
 - **A per-user filter on a custom object needs a resolver**, since no default token names the user's account or anything beyond the user. An OSGi component does it: `@Component(property = "fds.rest.application.key=/c/<plural>/<ObjectName>", service = FDSAPIURLResolver.class)`, `getSchema()` returning the object name, and `resolve(String baseURL, HttpServletRequest)` returning `StringUtil.replace(baseURL, "{myToken}", value)` (commerce's `AccountEntryFDSAPIURLResolver` is the pattern). Verified with `filter=r_<rel>_accountEntryERC eq '{agentAccountERC}'` filled with the signed-in user's person account ERC: each user's page fetched only their own rows.
 - **Read the result off the rendered page:** the fragment's props carry `"apiURL"` (the endpoint plus `nestedFields`) and, as a separate key present only when non-empty, `"additionalAPIURLParameters"` with the tokens already replaced; the browser fetches `apiURL + "&" + additionalAPIURLParameters`. `curl` the page as the user and read both keys; the rows themselves are fetched client-side.
@@ -145,7 +178,14 @@ This is the UI's shape: filter on the `…ERC` twin with `itemKey: "externalRefe
 ### Default Sort (`dataSetToDataSetSorts`)
 
 ```json
-{"default": true, "fieldName": "publicationDate", "label_i18n": {"en_US": "Newest"}, "orderType": "desc"}
+{
+	"default": true,
+	"fieldName": "publicationDate",
+	"label_i18n": {
+		"en_US": "Newest"
+	},
+	"orderType": "desc"
+}
 ```
 
 **A `Sorts` entry without `label` or `label_i18n` breaks the whole fragment** ("An unexpected error occurred."), with `NullPointerException: … "labelI18n" is null` at `CustomFDSSerializer.serializeSorts` in the log. Either field is enough, since the other is filled in. The initial request then carries `sort=<field>:<orderType>`. The UI always writes `orderType: "asc"`; set `desc` over the API.
@@ -153,7 +193,15 @@ This is the UI's shape: filter on the `…ERC` twin with `itemKey: "externalRefe
 ### Actions (`dataSetToDataSetActions`)
 
 ```json
-{"label_i18n": {"en_US": "View"}, "permissionKey": "", "target": "link", "type": "item", "url": "/web/<site>/c_<objectname>/{friendlyUrlPath}"}
+{
+	"label_i18n": {
+		"en_US": "View"
+	},
+	"permissionKey": "",
+	"target": "link",
+	"type": "item",
+	"url": "/web/<site>/c_<objectname>/{friendlyUrlPath}"
+}
 ```
 
 - **`type`:** `item` (per row; a lone row action shows as a button) or `creation` (a primary button in the management bar).
@@ -183,7 +231,9 @@ In the tree (`layouts/<page>/page-definition.json`):
 ```json
 {
 	"definition": {
-		"fragment": {"key": "com.liferay.frontend.data.set.fragment.web.internal.fragment.renderer.FDSFragmentRenderer"},
+		"fragment": {
+			"key": "com.liferay.frontend.data.set.fragment.web.internal.fragment.renderer.FDSFragmentRenderer"
+		},
 		"fragmentConfig": {
 			"itemSelector": {
 				"className": "[$OBJECT_DEFINITION_CLASS_NAME:DataSet$]",
@@ -212,9 +262,11 @@ In the tree (`layouts/<page>/page-definition.json`):
 `POST /data-sets/export-batch` exports the definition **without its children**. Instead:
 
 1. `GET /o/data-set-admin/data-sets/by-external-reference-code/<DS-ERC>?nestedFields=dataSetToDataSetTableSections,dataSetToDataSetActions,dataSetToDataSetCardsSections,dataSetToDataSetClientExtensionFilters,dataSetToDataSetDateFilters,dataSetToDataSetListSections,dataSetToDataSetSelectionFilters,dataSetToDataSetSorts`.
-2. Strip what is this instance's, not the definition's: `id`, `dateCreated`, `dateModified`, `creator`, the HATEOAS `actions`, `friendlyUrlPath` and `friendlyUrlPath_i18n`, `objectEntryFolderId` and `objectEntryFolderExternalReferenceCode`, `keywords`, `taxonomyCategoryBriefs`, `status`, `scopeId`, and on each child the `r_…_l_dataSetERC` / `r_…_l_dataSetId` back-references and the `dataSetToDataSet<Child>ERC` parent field. Keep every `externalReferenceCode` (and `label_i18n`, `defaultLanguageId`). All of these are in a 2025.Q3.2 GET body (verified against the database's `L_<companyId>_DataSet*` tables).
+
+1. Strip what is this instance's, not the definition's: `id`, `dateCreated`, `dateModified`, `creator`, the HATEOAS `actions`, `friendlyUrlPath` and `friendlyUrlPath_i18n`, `objectEntryFolderId` and `objectEntryFolderExternalReferenceCode`, `keywords`, `taxonomyCategoryBriefs`, `status`, `scopeId`, and on each child the `r_…_l_dataSetERC` / `r_…_l_dataSetId` back-references and the `dataSetToDataSet<Child>ERC` parent field. Keep every `externalReferenceCode` (and `label_i18n`, `defaultLanguageId`). All of these are in a 2025.Q3.2 GET body (verified against the database's `L_<companyId>_DataSet*` tables).
    - **An older instance's `tableSectionsOrder` holds numeric child ids**, not ERCs: a UI-built set on 2025.Q3.2 stored `47861,47857,…` (the `TableSections` entry ids). Map each id to its child's ERC before posting; the target takes ERCs there (§2, "Ordering").
-3. `POST` it to `/data-sets` (or `/data-sets/batch`) as one nested item.
+
+1. `POST` it to `/data-sets` (or `/data-sets/batch`) as one nested item.
 
 **Child ERCs are unique per instance.** Re-importing on the same instance with unchanged child ERCs fails as a whole (`No ObjectEntry exists with the key {r_dataSetToDataSet…_l_dataSetId=…}`), so rename them for a copy.
 

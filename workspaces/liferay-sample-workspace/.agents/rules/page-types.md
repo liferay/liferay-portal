@@ -120,7 +120,7 @@ com.liferay.object.internal.info.collection.provider.OneToManyObjectRelationship
 | Flag | Default | Unlocks |
 | --- | --- | --- |
 | `LPD-38869` | on | Private layout REST access |
-| `LPD-39244` | off | Fragment and page composition REST API |
+| `LPD-39244` | off | Fragment and page composition REST API (absent on 2026.Q1, hidden dev on 2026.Q2, beta on 2026.Q3) |
 | `LPD-74328` | off | Page element / page-specification creation and update |
 
 This table is the page-API subset; `rules/feature-flags-catalog.md` is canonical for each flag's default and status. Enable required flags via `feature-flags` skill before calling the page APIs.

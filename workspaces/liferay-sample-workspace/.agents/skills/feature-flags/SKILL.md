@@ -109,7 +109,7 @@ For the full table see `rules/feature-flags-catalog.md`.
 | Flag | Default | Unlocks |
 | --- | --- | --- |
 | `LPD-63311` | off | MCP server (current path `/o/mcp`; `/o/mcp/sse` only on 2025.Q4); on 2026.Q3, only together with the `MCPServerConfiguration` `enabled` switch, which is not a flag (see `skills/mcp-server/SKILL.md`) |
-| `LPD-39244` | off | Headless Admin Fragment / composition API |
+| `LPD-39244` | off | Headless Admin Fragment / composition API (absent on 2026.Q1, hidden dev on 2026.Q2, beta on 2026.Q3) |
 | `LPD-17564` | off | CMS, including the object collaborators API, on 2026.Q1 and 2026.Q2 (needs `LPD-34594`). The flag is gone from 2026.Q3, where neither needs a flag |
 | `LPD-32867` | off | Content provider for dynamic content sets (headless-delivery) |
 | `LPD-74328` | off | Page element / page-specification creation and update |

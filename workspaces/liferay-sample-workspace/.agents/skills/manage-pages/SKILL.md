@@ -497,7 +497,7 @@ Discriminators for fragment placement:
 
 ### Fragment Management API
 
-Fragment CRUD lives in its own module, `headless-admin-fragment` — not in `headless-admin-site`, which is why it looks absent when you check the page API's spec. It is verified working on 2026.Q2, but it does **not** propagate edits to fragments already placed on a page. See `skills/scaffold-fragment/SKILL.md` → "The Live Fragment API". For programmatic placement on pages, use the discriminators above.
+Fragment CRUD lives in its own module, `headless-admin-fragment` — not in `headless-admin-site`, which is why it looks absent when you check the page API's spec. It is verified working on 2026.Q2 and absent on 2026.Q1, but it does **not** propagate edits to fragments already placed on a page. See `skills/scaffold-fragment/SKILL.md` → "The Live Fragment API". For programmatic placement on pages, use the discriminators above.
 
 ## Success Signal
 
