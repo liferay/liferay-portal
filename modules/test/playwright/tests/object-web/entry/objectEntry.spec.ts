@@ -6757,19 +6757,15 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		// Upload first file from user computer
 
-		await viewObjectEntriesPage.selectFileFromUserComputer(
-			__dirname,
-			'sampleFile.txt'
-		);
+		const fileEntryId1 =
+			await viewObjectEntriesPage.selectFileFromUserComputerToDocumentsAndMedia(
+				__dirname,
+				'sampleFile.txt'
+			);
 
 		await page
 			.getByRole('button', {name: 'sampleFile.txt'})
 			.waitFor({state: 'visible'});
-
-		const fileEntryId1 = await page.getAttribute(
-			'input[data-field-name^="testAttachment"]',
-			'value'
-		);
 
 		expect(
 			await apiHelpers.headlessDelivery.getDocument(fileEntryId1)
@@ -6781,10 +6777,11 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		// Verify that the first file is removed after the second file is uploaded
 
-		await viewObjectEntriesPage.selectFileFromUserComputer(
-			__dirname,
-			'astronaut.png'
-		);
+		const fileEntryId2 =
+			await viewObjectEntriesPage.selectFileFromUserComputerToDocumentsAndMedia(
+				__dirname,
+				'astronaut.png'
+			);
 
 		await page
 			.getByRole('button', {name: 'astronaut.png'})
@@ -6797,11 +6794,6 @@ test.describe('Manage object entries through View Object Entries', () => {
 				{timeout: 30 * 1000}
 			)
 			.toEqual({status: 'NOT_FOUND'});
-
-		const fileEntryId2 = await page.getAttribute(
-			'input[data-field-name^="testAttachment"]',
-			'value'
-		);
 
 		expect(
 			await apiHelpers.headlessDelivery.getDocument(fileEntryId2)
@@ -6825,19 +6817,15 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		// Verify that the file is removed after page reload
 
-		await viewObjectEntriesPage.selectFileFromUserComputer(
-			__dirname,
-			'sampleFile.txt'
-		);
+		const fileEntryId3 =
+			await viewObjectEntriesPage.selectFileFromUserComputerToDocumentsAndMedia(
+				__dirname,
+				'sampleFile.txt'
+			);
 
 		await page
 			.getByRole('button', {name: 'sampleFile.txt'})
 			.waitFor({state: 'visible'});
-
-		const fileEntryId3 = await page.getAttribute(
-			'input[data-field-name^="testAttachment"]',
-			'value'
-		);
 
 		await page.reload();
 
