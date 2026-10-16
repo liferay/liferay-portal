@@ -863,7 +863,7 @@ test(
 
 		// Upload the valid files from the results
 
-		await exportImportTranslationPage.uploadAnotherFileLink.click();
+		await exportImportTranslationPage.uploadAnotherFile();
 
 		await exportImportTranslationPage.upload([
 			germanFilePath,

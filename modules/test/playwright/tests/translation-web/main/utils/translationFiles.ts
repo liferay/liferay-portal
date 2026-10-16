@@ -9,8 +9,7 @@ import * as path from 'path';
 import {zip} from 'zip-a-folder';
 
 import {ApiHelpers, getHeader} from '../../../../helpers/ApiHelpers';
-import getRandomString from '../../../../utils/getRandomString';
-import {getTempDir} from '../../../../utils/temp';
+import {createTempDir} from '../../../../utils/createTempFile';
 import {getZipEntryNames, readFileFromZip} from '../../../../utils/zip';
 
 export type TranslationValues = {
@@ -100,9 +99,7 @@ export async function readXliff(
 }
 
 export function writeFiles(files: {[fileName: string]: string}) {
-	const directory = path.join(getTempDir(), getRandomString());
-
-	fs.mkdirSync(directory, {recursive: true});
+	const directory = createTempDir();
 
 	return Object.entries(files).map(([fileName, content]) => {
 		const filePath = path.join(directory, fileName);
@@ -119,9 +116,7 @@ export async function writeZip(
 ) {
 	const [filePath] = writeFiles(files);
 
-	const zipPath = path.join(getTempDir(), getRandomString(), zipName);
-
-	fs.mkdirSync(path.dirname(zipPath), {recursive: true});
+	const zipPath = path.join(createTempDir(), zipName);
 
 	await zip(path.dirname(filePath), zipPath);
 

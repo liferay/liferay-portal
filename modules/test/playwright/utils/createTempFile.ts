@@ -41,6 +41,12 @@ export default function createTempFile(
 	return filePath;
 }
 
+export function createTempDir(): string {
+	fs.mkdirSync(TMP_DIR, {recursive: true});
+
+	return fs.mkdtempSync(path.join(TMP_DIR, 'dir-'));
+}
+
 export function readTempFile(name: string): string {
 	const filePath = path.join(TMP_DIR, name);
 

@@ -8,8 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
-import getRandomString from '../../../../utils/getRandomString';
-import {getTempDir} from '../../../../utils/temp';
+import {createTempDir} from '../../../../utils/createTempFile';
 import {JournalPage} from '../../../journal-web/main/pages/JournalPage';
 
 export class ExportImportTranslationPage {
@@ -22,7 +21,6 @@ export class ExportImportTranslationPage {
 	readonly failureTitle: Locator;
 	readonly importToolbar: Locator;
 	readonly journalPage: JournalPage;
-	readonly removeFilesButton: Locator;
 	readonly replaceFilesButton: Locator;
 	readonly selectFilesButton: Locator;
 	readonly successTitle: Locator;
@@ -46,9 +44,6 @@ export class ExportImportTranslationPage {
 		this.failureTitle = page.locator('.h4.text-danger');
 		this.importToolbar = page.locator('.management-bar');
 		this.journalPage = new JournalPage(page);
-		this.removeFilesButton = page.getByRole('button', {
-			name: 'Remove Files',
-		});
 		this.replaceFilesButton = page.getByRole('button', {
 			name: 'Replace Files',
 		});
@@ -192,6 +187,13 @@ export class ExportImportTranslationPage {
 		}).toPass({timeout: 15000});
 	}
 
+	async uploadAnotherFile() {
+		await clickAndExpectToBeVisible({
+			target: this.selectFilesButton,
+			trigger: this.uploadAnotherFileLink,
+		});
+	}
+
 	private async goToArticleAction(
 		siteUrl: Site['friendlyUrlPath'],
 		action: string,
@@ -214,8 +216,7 @@ export class ExportImportTranslationPage {
 
 	private async saveDownload(download: Download) {
 		const filePath = path.join(
-			getTempDir(),
-			getRandomString(),
+			createTempDir(),
 			download.suggestedFilename()
 		);
 
