@@ -36,8 +36,8 @@ public class JUnitTestClassTest
 
 	@Test
 	public void testGetCachedDownstreamBuildReport() {
-		TestClassReport testClassReport = _getTestClassReport();
 		TestClassReport nestedTestClassReport = _getTestClassReport();
+		TestClassReport testClassReport = _getTestClassReport();
 
 		_testGetCachedDownstreamBuildReport(
 			nestedTestClassReport.getDownstreamBuildReport(),
@@ -167,9 +167,8 @@ public class JUnitTestClassTest
 
 	@Test
 	public void testGetCachedTestClassReportsSharedBatches() {
-		String testClassName = RandomTestUtil.randomString();
-
 		TestClassReport dbPartitionTestClassReport = _getTestClassReport();
+		String testClassName = RandomTestUtil.randomString();
 
 		BatchTestClassGroup dbPartitionBatchTestClassGroup =
 			_getBatchTestClassGroup(
@@ -194,7 +193,6 @@ public class JUnitTestClassTest
 		testEquals(
 			Collections.singletonList(testClassReport),
 			jUnitTestClass.getCachedTestClassReports(batchTestClassGroup));
-
 		testSame(
 			dbPartitionTestClassReport.getDownstreamBuildReport(),
 			jUnitTestClass.getCachedDownstreamBuildReport(
