@@ -308,18 +308,6 @@ public class PullRequest {
 			forwardSenderUsername, getTitle());
 	}
 
-	public RemoteGitBranch getBaseRemoteGitBranch() {
-		if (_baseRemoteGitBranch == null) {
-			_baseRemoteGitBranch = GitUtil.getRemoteGitBranch(
-				getUpstreamRemoteGitBranchName(), new File("."),
-				JenkinsResultsParserUtil.combine(
-					"git@github.com:", getOwnerUsername(), "/",
-					getGitRepositoryName(), ".git"));
-		}
-
-		return _baseRemoteGitBranch;
-	}
-
 	public URL getBaseURL() {
 		try {
 			return new URL(
@@ -1482,7 +1470,6 @@ public class PullRequest {
 		"liferay/ci:test(:(?<testSuiteName>[^:]+))?");
 
 	private Boolean _autoCloseCommentAvailable;
-	private RemoteGitBranch _baseRemoteGitBranch;
 	private String _ciMergeSHA = "";
 	private List<Comment> _comments;
 	private String _commonParentSHA;

@@ -1044,12 +1044,8 @@ public abstract class BaseTopLevelBuild
 	}
 
 	protected Element getBaseBranchDetailsElement() {
-		String baseBranchURL = JenkinsResultsParserUtil.combine(
-			"https://github.com/liferay/", getBaseGitRepositoryName(), "/tree/",
-			getBranchName());
-
+		String baseBranchUsername = "liferay";
 		String baseGitRepositoryName = getBaseGitRepositoryName();
-
 		String baseGitRepositorySHA = null;
 
 		if ((this instanceof WorkspaceBuild) && !fromArchive) {
@@ -1060,6 +1056,7 @@ public abstract class BaseTopLevelBuild
 			WorkspaceGitRepository workspaceGitRepository =
 				workspace.getPrimaryWorkspaceGitRepository();
 
+			baseBranchUsername = workspaceGitRepository.getBaseBranchUsername();
 			baseGitRepositorySHA = workspaceGitRepository.getBaseBranchSHA();
 		}
 		else if (!baseGitRepositoryName.equals("liferay-jenkins-ee") &&
@@ -1074,14 +1071,19 @@ public abstract class BaseTopLevelBuild
 				baseGitRepositoryName);
 		}
 
+		String baseBranchURL = JenkinsResultsParserUtil.combine(
+			"https://github.com/", baseBranchUsername, "/",
+			baseGitRepositoryName, "/tree/", getBranchName());
+
 		Element baseGitBranchDetailsElement = Dom4JUtil.getNewElement(
 			"p", null, "Branch Name: ",
 			Dom4JUtil.getNewAnchorElement(baseBranchURL, getBranchName()));
 
 		if (baseGitRepositorySHA != null) {
 			String baseGitRepositoryCommitURL =
-				"https://github.com/liferay/" + baseGitRepositoryName +
-					"/commit/" + baseGitRepositorySHA;
+				JenkinsResultsParserUtil.combine(
+					"https://github.com/", baseBranchUsername, "/",
+					baseGitRepositoryName, "/commit/", baseGitRepositorySHA);
 
 			Dom4JUtil.addToElement(
 				baseGitBranchDetailsElement, Dom4JUtil.getNewElement("br"),

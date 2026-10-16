@@ -20,6 +20,8 @@ public interface WorkspaceGitRepository extends LocalGitRepository {
 
 	public String getBaseBranchSHAShort();
 
+	public String getBaseBranchUsername();
+
 	public String getBranchName();
 
 	public String getFileContent(String filePath);
@@ -42,6 +44,8 @@ public interface WorkspaceGitRepository extends LocalGitRepository {
 		List<LocalGitCommit> localGitCommits, int count);
 
 	public void setBaseBranchSHA(String branchSHA);
+
+	public void setBaseBranchUsername(String username);
 
 	public void setCommitFileIsSHA(boolean commitFileIsSHA);
 

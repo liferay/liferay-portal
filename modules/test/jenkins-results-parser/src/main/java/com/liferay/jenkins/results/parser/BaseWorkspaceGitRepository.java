@@ -105,6 +105,11 @@ public abstract class BaseWorkspaceGitRepository
 	}
 
 	@Override
+	public String getBaseBranchUsername() {
+		return getString("base_branch_username");
+	}
+
+	@Override
 	public String getBranchName() {
 		if (_branchName != null) {
 			return _branchName;
@@ -163,8 +168,8 @@ public abstract class BaseWorkspaceGitRepository
 		}
 
 		return GitHubDevSyncUtil.getCacheBranchName(
-			_getBaseBranchUsername(), getSenderBranchUsername(),
-			senderBranchSHA, baseBranchSHA);
+			getBaseBranchUsername(), getSenderBranchUsername(), senderBranchSHA,
+			baseBranchSHA);
 	}
 
 	@Override
@@ -293,6 +298,18 @@ public abstract class BaseWorkspaceGitRepository
 	}
 
 	@Override
+	public void setBaseBranchUsername(String username) {
+		if (username.equals(getBaseBranchUsername())) {
+			return;
+		}
+
+		_setBaseBranchUsername(username);
+		setUsePullRequestBaseRepository(true);
+
+		_upstreamRemoteGitRef = null;
+	}
+
+	@Override
 	public void setCommitFileIsSHA(boolean commitFileIsSHA) {
 		_commitFileIsSHA = commitFileIsSHA;
 	}
@@ -316,7 +333,7 @@ public abstract class BaseWorkspaceGitRepository
 				gitHubURL);
 
 			if (_isUsePullRequestBaseRepository()) {
-				_upstreamRemoteGitRef = pullRequest.getBaseRemoteGitBranch();
+				_upstreamRemoteGitRef = _getUpstreamRemoteGitRef();
 			}
 			else {
 				_upstreamRemoteGitRef =
@@ -1338,10 +1355,6 @@ public abstract class BaseWorkspaceGitRepository
 
 	private String _getBaseBranchHeadSHA() {
 		return getString("base_branch_head_sha");
-	}
-
-	private String _getBaseBranchUsername() {
-		return getString("base_branch_username");
 	}
 
 	private String _getDotGitArchiveName() {
