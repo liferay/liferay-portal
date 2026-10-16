@@ -76,7 +76,7 @@ portletDisplay.setURLBackTitle("bookmarks");
 					<liferay-ui:error key="emailEntryUpdatedSubject" message="please-enter-a-valid-subject" />
 
 					<%
-					Map<String, String> emailDefinitionTerms = BookmarksUtil.getEmailDefinitionTerms(renderRequest, bookmarksGroupServiceOverriddenConfiguration.emailFromAddress(), bookmarksGroupServiceOverriddenConfiguration.emailFromName());
+					Map<String, String> emailDefinitionTerms = BookmarksUtil.getEmailDefinitionTerms(renderRequest, bookmarksGroupServiceConfiguration.emailFromAddress(), bookmarksGroupServiceConfiguration.emailFromName());
 					%>
 
 					<c:choose>
@@ -107,9 +107,9 @@ portletDisplay.setURLBackTitle("bookmarks");
 									warningMessage='<%= rootFolderInTrash ? LanguageUtil.get(request, "the-selected-root-folder-is-in-the-recycle-bin-please-remove-it-or-select-another-one") : null %>'
 								/>
 
-								<aui:input label="show-search" name="preferences--showFoldersSearch--" type="checkbox" value="<%= bookmarksGroupServiceOverriddenConfiguration.showFoldersSearch() %>" />
+								<aui:input label="show-search" name="preferences--showFoldersSearch--" type="checkbox" value="<%= bookmarksGroupServiceConfiguration.showFoldersSearch() %>" />
 
-								<aui:input name="preferences--showSubfolders--" type="checkbox" value="<%= bookmarksGroupServiceOverriddenConfiguration.showSubfolders() %>" />
+								<aui:input name="preferences--showSubfolders--" type="checkbox" value="<%= bookmarksGroupServiceConfiguration.showSubfolders() %>" />
 
 								<aui:field-wrapper label="show-columns">
 
@@ -157,33 +157,33 @@ portletDisplay.setURLBackTitle("bookmarks");
 						<c:when test='<%= Objects.equals(bookmarksConfigurationDisplayContext.getNavigation(), "entry-added-email") %>'>
 							<div class="c-px-4">
 								<liferay-frontend:email-notification-settings
-									emailBodyLocalizedValuesMap="<%= bookmarksGroupServiceOverriddenConfiguration.emailEntryAddedBody() %>"
+									emailBodyLocalizedValuesMap="<%= bookmarksGroupServiceConfiguration.emailEntryAddedBody() %>"
 									emailDefinitionTerms="<%= emailDefinitionTerms %>"
-									emailEnabled="<%= bookmarksGroupServiceOverriddenConfiguration.emailEntryAddedEnabled() %>"
+									emailEnabled="<%= bookmarksGroupServiceConfiguration.emailEntryAddedEnabled() %>"
 									emailParam="emailEntryAdded"
-									emailSubjectLocalizedValuesMap="<%= bookmarksGroupServiceOverriddenConfiguration.emailEntryAddedSubject() %>"
+									emailSubjectLocalizedValuesMap="<%= bookmarksGroupServiceConfiguration.emailEntryAddedSubject() %>"
 								/>
 							</div>
 						</c:when>
 						<c:when test='<%= Objects.equals(bookmarksConfigurationDisplayContext.getNavigation(), "entry-updated-email") %>'>
 							<div class="c-px-4">
 								<liferay-frontend:email-notification-settings
-									emailBodyLocalizedValuesMap="<%= bookmarksGroupServiceOverriddenConfiguration.emailEntryUpdatedBody() %>"
+									emailBodyLocalizedValuesMap="<%= bookmarksGroupServiceConfiguration.emailEntryUpdatedBody() %>"
 									emailDefinitionTerms="<%= emailDefinitionTerms %>"
-									emailEnabled="<%= bookmarksGroupServiceOverriddenConfiguration.emailEntryUpdatedEnabled() %>"
+									emailEnabled="<%= bookmarksGroupServiceConfiguration.emailEntryUpdatedEnabled() %>"
 									emailParam="emailEntryUpdated"
-									emailSubjectLocalizedValuesMap="<%= bookmarksGroupServiceOverriddenConfiguration.emailEntryUpdatedSubject() %>"
+									emailSubjectLocalizedValuesMap="<%= bookmarksGroupServiceConfiguration.emailEntryUpdatedSubject() %>"
 								/>
 							</div>
 						</c:when>
 						<c:otherwise>
 							<div class="c-px-4">
 								<liferay-frontend:fieldset>
-									<aui:input cssClass="lfr-input-text-container" label="name" name="preferences--emailFromName--" value="<%= bookmarksGroupServiceOverriddenConfiguration.emailFromName() %>">
+									<aui:input cssClass="lfr-input-text-container" label="name" name="preferences--emailFromName--" value="<%= bookmarksGroupServiceConfiguration.emailFromName() %>">
 										<aui:validator errorMessage="please-enter-a-valid-name" name="required" />
 									</aui:input>
 
-									<aui:input cssClass="lfr-input-text-container" label="address" name="preferences--emailFromAddress--" value="<%= bookmarksGroupServiceOverriddenConfiguration.emailFromAddress() %>">
+									<aui:input cssClass="lfr-input-text-container" label="address" name="preferences--emailFromAddress--" value="<%= bookmarksGroupServiceConfiguration.emailFromAddress() %>">
 										<aui:validator errorMessage="please-enter-a-valid-email-address" name="required" />
 										<aui:validator name="email" />
 									</aui:input>
@@ -209,7 +209,7 @@ portletDisplay.setURLBackTitle("bookmarks");
 						</h3>
 
 						<div class="c-px-4">
-							<aui:input label="show-related-assets" name="preferences--enableRelatedAssets--" type="checkbox" value="<%= bookmarksGroupServiceOverriddenConfiguration.enableRelatedAssets() %>" />
+							<aui:input label="show-related-assets" name="preferences--enableRelatedAssets--" type="checkbox" value="<%= bookmarksGroupServiceConfiguration.enableRelatedAssets() %>" />
 
 							<aui:field-wrapper label="show-columns">
 

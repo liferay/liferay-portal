@@ -9,7 +9,7 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.link.constants.AssetLinkConstants;
 import com.liferay.asset.link.service.AssetLinkLocalService;
-import com.liferay.bookmarks.configuration.BookmarksGroupServiceOverriddenConfiguration;
+import com.liferay.bookmarks.configuration.BookmarksGroupServiceConfiguration;
 import com.liferay.bookmarks.constants.BookmarksConstants;
 import com.liferay.bookmarks.constants.BookmarksPortletKeys;
 import com.liferay.bookmarks.exception.EntryURLException;
@@ -767,19 +767,16 @@ public class BookmarksEntryLocalServiceImpl
 			return;
 		}
 
-		BookmarksGroupServiceOverriddenConfiguration
-			bookmarksGroupServiceOverriddenConfiguration =
-				_configurationProvider.getConfiguration(
-					BookmarksGroupServiceOverriddenConfiguration.class,
-					new GroupServiceSettingsLocator(
-						entry.getGroupId(), BookmarksConstants.SERVICE_NAME));
+		BookmarksGroupServiceConfiguration bookmarksGroupServiceConfiguration =
+			_configurationProvider.getConfiguration(
+				BookmarksGroupServiceConfiguration.class,
+				new GroupServiceSettingsLocator(
+					entry.getGroupId(), BookmarksConstants.SERVICE_NAME));
 
 		if ((serviceContext.isCommandAdd() &&
-			 !bookmarksGroupServiceOverriddenConfiguration.
-				 emailEntryAddedEnabled()) ||
+			 !bookmarksGroupServiceConfiguration.emailEntryAddedEnabled()) ||
 			(serviceContext.isCommandUpdate() &&
-			 !bookmarksGroupServiceOverriddenConfiguration.
-				 emailEntryUpdatedEnabled())) {
+			 !bookmarksGroupServiceConfiguration.emailEntryUpdatedEnabled())) {
 
 			return;
 		}
@@ -800,29 +797,24 @@ public class BookmarksEntryLocalServiceImpl
 
 		String entryURL = _getBookmarksEntryURL(entry, serviceContext);
 
-		String fromName =
-			bookmarksGroupServiceOverriddenConfiguration.emailFromName();
+		String fromName = bookmarksGroupServiceConfiguration.emailFromName();
 		String fromAddress =
-			bookmarksGroupServiceOverriddenConfiguration.emailFromAddress();
+			bookmarksGroupServiceConfiguration.emailFromAddress();
 
 		LocalizedValuesMap subjectLocalizedValuesMap = null;
 		LocalizedValuesMap bodyLocalizedValuesMap = null;
 
 		if (serviceContext.isCommandUpdate()) {
 			subjectLocalizedValuesMap =
-				bookmarksGroupServiceOverriddenConfiguration.
-					emailEntryUpdatedSubject();
+				bookmarksGroupServiceConfiguration.emailEntryUpdatedSubject();
 			bodyLocalizedValuesMap =
-				bookmarksGroupServiceOverriddenConfiguration.
-					emailEntryUpdatedBody();
+				bookmarksGroupServiceConfiguration.emailEntryUpdatedBody();
 		}
 		else {
 			subjectLocalizedValuesMap =
-				bookmarksGroupServiceOverriddenConfiguration.
-					emailEntryAddedSubject();
+				bookmarksGroupServiceConfiguration.emailEntryAddedSubject();
 			bodyLocalizedValuesMap =
-				bookmarksGroupServiceOverriddenConfiguration.
-					emailEntryAddedBody();
+				bookmarksGroupServiceConfiguration.emailEntryAddedBody();
 		}
 
 		SubscriptionSender subscriptionSender =

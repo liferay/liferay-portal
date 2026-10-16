@@ -8,13 +8,13 @@
 <%@ include file="/init.jsp" %>
 
 <%
-BookmarksGroupServiceOverriddenConfiguration bookmarksGroupServiceOverriddenConfiguration = ConfigurationProviderUtil.getConfiguration(BookmarksGroupServiceOverriddenConfiguration.class, new GroupServiceSettingsLocator(scopeGroupId, BookmarksConstants.SERVICE_NAME));
+BookmarksGroupServiceConfiguration bookmarksGroupServiceConfiguration = ConfigurationProviderUtil.getConfiguration(BookmarksGroupServiceConfiguration.class, new GroupServiceSettingsLocator(scopeGroupId, BookmarksConstants.SERVICE_NAME));
 
 PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
 
 String portletResource = ParamUtil.getString(request, "portletResource");
 
-long rootFolderId = bookmarksGroupServiceOverriddenConfiguration.rootFolderId();
+long rootFolderId = BookmarksUtil.getRootFolderId(scopeGroupId);
 boolean rootFolderInTrash = false;
 String rootFolderName = StringPool.BLANK;
 
@@ -48,7 +48,7 @@ if (portletId.equals(BookmarksPortletKeys.BOOKMARKS) || portletId.equals(Bookmar
 	allFolderColumns += ",action";
 }
 
-String[] folderColumns = bookmarksGroupServiceOverriddenConfiguration.folderColumns();
+String[] folderColumns = bookmarksGroupServiceConfiguration.folderColumns();
 
 if (!portletId.equals(BookmarksPortletKeys.BOOKMARKS) && !portletId.equals(BookmarksPortletKeys.BOOKMARKS_ADMIN)) {
 	folderColumns = ArrayUtil.remove(folderColumns, "action");
@@ -60,7 +60,7 @@ if (portletId.equals(BookmarksPortletKeys.BOOKMARKS) || portletId.equals(Bookmar
 	allEntryColumns += ",action";
 }
 
-String[] entryColumns = bookmarksGroupServiceOverriddenConfiguration.entryColumns();
+String[] entryColumns = bookmarksGroupServiceConfiguration.entryColumns();
 
 if (!portletId.equals(BookmarksPortletKeys.BOOKMARKS) && !portletId.equals(BookmarksPortletKeys.BOOKMARKS_ADMIN)) {
 	entryColumns = ArrayUtil.remove(entryColumns, "action");

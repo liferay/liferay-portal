@@ -5,22 +5,19 @@
 
 package com.liferay.bookmarks.web.internal.portlet.toolbar.contributor;
 
-import com.liferay.bookmarks.configuration.BookmarksGroupServiceOverriddenConfiguration;
-import com.liferay.bookmarks.constants.BookmarksConstants;
 import com.liferay.bookmarks.constants.BookmarksFolderConstants;
 import com.liferay.bookmarks.constants.BookmarksPortletKeys;
 import com.liferay.bookmarks.constants.BookmarksWebKeys;
 import com.liferay.bookmarks.exception.NoSuchFolderException;
 import com.liferay.bookmarks.model.BookmarksFolder;
 import com.liferay.bookmarks.service.BookmarksFolderService;
+import com.liferay.bookmarks.web.internal.portlet.util.BookmarksUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.toolbar.contributor.BasePortletToolbarContributor;
 import com.liferay.portal.kernel.portlet.toolbar.contributor.PortletToolbarContributor;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -30,7 +27,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.MenuItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.URLMenuItem;
-import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.settings.SettingsException;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
@@ -211,22 +208,14 @@ public class BookmarksPortletToolbarContributor
 		long rootFolderId = BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID;
 
 		try {
-			BookmarksGroupServiceOverriddenConfiguration
-				bookmarksGroupServiceOverriddenConfiguration =
-					_configurationProvider.getConfiguration(
-						BookmarksGroupServiceOverriddenConfiguration.class,
-						new GroupServiceSettingsLocator(
-							themeDisplay.getScopeGroupId(),
-							BookmarksConstants.SERVICE_NAME));
-
-			rootFolderId =
-				bookmarksGroupServiceOverriddenConfiguration.rootFolderId();
+			rootFolderId = BookmarksUtil.getRootFolderId(
+				themeDisplay.getScopeGroupId());
 		}
-		catch (ConfigurationException configurationException) {
+		catch (SettingsException settingsException) {
 			_log.error(
 				"Unable to obtain bookmarks root folder ID for group " +
 					themeDisplay.getScopeGroupId(),
-				configurationException);
+				settingsException);
 		}
 
 		long folderId = BeanParamUtil.getLong(
@@ -272,9 +261,6 @@ public class BookmarksPortletToolbarContributor
 
 	@Reference
 	private BookmarksFolderService _bookmarksFolderService;
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private Language _language;

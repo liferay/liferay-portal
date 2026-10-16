@@ -8,7 +8,7 @@
 <%@ include file="/bookmarks/init.jsp" %>
 
 <%
-BookmarksManagementToolbarDisplayContext bookmarksManagementToolbarDisplayContext = new BookmarksManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, bookmarksGroupServiceOverriddenConfiguration, portalPreferences, trashHelper);
+BookmarksManagementToolbarDisplayContext bookmarksManagementToolbarDisplayContext = new BookmarksManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, bookmarksGroupServiceConfiguration, portalPreferences, trashHelper);
 %>
 
 <portlet:actionURL name="/bookmarks/edit_entry" var="deleteEntriesURL" />

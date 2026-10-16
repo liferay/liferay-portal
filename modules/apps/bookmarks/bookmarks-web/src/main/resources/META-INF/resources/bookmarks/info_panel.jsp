@@ -209,7 +209,7 @@ if (ListUtil.isEmpty(folders) && ListUtil.isEmpty(entries)) {
 				/>
 			</liferay-expando:custom-attributes-available>
 
-			<c:if test="<%= bookmarksGroupServiceOverriddenConfiguration.enableRelatedAssets() %>">
+			<c:if test="<%= bookmarksGroupServiceConfiguration.enableRelatedAssets() %>">
 
 				<%
 				AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(BookmarksEntry.class.getName(), entry.getEntryId());

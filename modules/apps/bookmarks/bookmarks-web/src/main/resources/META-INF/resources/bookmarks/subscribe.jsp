@@ -19,7 +19,7 @@ if (folder != null) {
 BookmarksEntry entry = (BookmarksEntry)request.getAttribute("info_panel.jsp-entry");
 %>
 
-<c:if test="<%= bookmarksGroupServiceOverriddenConfiguration.emailEntryAddedEnabled() || bookmarksGroupServiceOverriddenConfiguration.emailEntryUpdatedEnabled() %>">
+<c:if test="<%= bookmarksGroupServiceConfiguration.emailEntryAddedEnabled() || bookmarksGroupServiceConfiguration.emailEntryUpdatedEnabled() %>">
 	<c:choose>
 		<c:when test="<%= entry != null %>">
 			<c:if test="<%= BookmarksEntryPermission.contains(permissionChecker, entry, ActionKeys.SUBSCRIBE) %>">
