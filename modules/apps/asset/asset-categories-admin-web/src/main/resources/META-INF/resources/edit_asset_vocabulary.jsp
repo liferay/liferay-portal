@@ -53,7 +53,7 @@ renderResponse.setTitle((vocabulary == null) ? LanguageUtil.get(request, "add-vo
 		>
 			<aui:input disabled="<%= assetCategoriesDisplayContext.isSystemVocabulary(vocabulary) %>" label="name" name="title" placeholder="name" />
 
-			<aui:input disabled="<%= assetCategoriesDisplayContext.isSystemVocabulary(vocabulary) %>" label="external-reference-code" name="externalReferenceCode" placeholder="external-reference-code" />
+			<aui:input disabled="<%= assetCategoriesDisplayContext.isExternalReferenceCodeInputDisabled(vocabulary) %>" label="external-reference-code" name="externalReferenceCode" placeholder="external-reference-code" />
 
 			<aui:input disabled="<%= assetCategoriesDisplayContext.isSystemVocabulary(vocabulary) %>" name="description" placeholder="description" />
 

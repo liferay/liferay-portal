@@ -38,6 +38,7 @@ export default function EditGeneralInfo({
 	assetLibraries,
 	cmpEnabled,
 	defaultLanguageId,
+	defaultVocabulary,
 	externalReferenceCodeInputError,
 	externalReferenceCodeMaxLength,
 	isNew,
@@ -59,6 +60,7 @@ export default function EditGeneralInfo({
 	assetLibraries: AssetLibraryType[];
 	cmpEnabled?: boolean;
 	defaultLanguageId: string;
+	defaultVocabulary?: boolean;
 	externalReferenceCodeInputError: string;
 	externalReferenceCodeMaxLength: number;
 	isNew: boolean;
@@ -239,7 +241,7 @@ export default function EditGeneralInfo({
 							aria-label={Liferay.Language.get(
 								'external-reference-code'
 							)}
-							disabled={vocabulary.system}
+							disabled={vocabulary.system || defaultVocabulary}
 							onChange={({target: {value}}) => {
 								if (
 									value.length >

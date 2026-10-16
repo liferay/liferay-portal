@@ -36,6 +36,7 @@ export default function EditVocabulary({
 	cmpEnabled,
 	cmsGroupId,
 	defaultLanguageId,
+	defaultVocabulary,
 	externalReferenceCodeMaxLength,
 	locales,
 	spritemap,
@@ -47,6 +48,7 @@ export default function EditVocabulary({
 	cmpEnabled?: boolean;
 	cmsGroupId: number;
 	defaultLanguageId: string;
+	defaultVocabulary?: boolean;
 	externalReferenceCodeMaxLength: number;
 	locales: any[];
 	spritemap: string;
@@ -362,6 +364,7 @@ export default function EditVocabulary({
 								assetLibraries={assetLibraries}
 								cmpEnabled={cmpEnabled}
 								defaultLanguageId={defaultLanguageId}
+								defaultVocabulary={defaultVocabulary}
 								externalReferenceCodeInputError={
 									externalReferenceCodeInputError
 								}

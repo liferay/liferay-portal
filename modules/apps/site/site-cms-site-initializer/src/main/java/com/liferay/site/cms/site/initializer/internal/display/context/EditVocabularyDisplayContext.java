@@ -6,6 +6,8 @@
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.service.ObjectDefinitionServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.util.Validator;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Noor Najjar
@@ -85,6 +88,8 @@ public class EditVocabularyDisplayContext {
 			"defaultLanguageId",
 			LocaleUtil.toLanguageId(_themeDisplay.getSiteDefaultLocale())
 		).put(
+			"defaultVocabulary", _isDefaultVocabulary()
+		).put(
 			"externalReferenceCodeMaxLength",
 			ModelHintsUtil.getMaxLength(
 				AssetVocabulary.class.getName(), "externalReferenceCode")
@@ -128,6 +133,22 @@ public class EditVocabularyDisplayContext {
 		return StringBundler.concat(
 			"/o/headless-admin-taxonomy/v1.0/taxonomy-vocabularies/",
 			vocabularyId, "/permissions");
+	}
+
+	private boolean _isDefaultVocabulary() {
+		AssetVocabulary assetVocabulary =
+			AssetVocabularyLocalServiceUtil.fetchAssetVocabulary(
+				ParamUtil.getLong(_httpServletRequest, "vocabularyId"));
+
+		if ((assetVocabulary != null) &&
+			Objects.equals(
+				assetVocabulary.getExternalReferenceCode(),
+				AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private final HttpServletRequest _httpServletRequest;
