@@ -21,7 +21,6 @@ export default async function createSiteTemplateWithMessageBoards({
 }): Promise<{
 	layout: Layout;
 	layoutSetPrototype: LayoutSetPrototype;
-	layoutSetPrototypeGroupId: string;
 }> {
 	const layoutSetPrototype =
 		await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
@@ -59,6 +58,5 @@ export default async function createSiteTemplateWithMessageBoards({
 	return {
 		layout,
 		layoutSetPrototype,
-		layoutSetPrototypeGroupId: String(layoutSetPrototypeGroup.groupId),
 	};
 }
