@@ -85,6 +85,9 @@ Before writing the **first line** of any artifact below, load its skill. Always,
 | Any `client-extension.yaml` | `scaffold-client-extension` |
 | Role, or any `resource-permissions.json` grant | `manage-roles-permissions` |
 | Commerce product or SKU | `commerce-catalogs` |
+| Form Container, or a form that saves to an object | `manage-form-containers` |
+| Data Set definition or Data Set fragment | `manage-data-sets` |
+| `Analytics.track` call or segment lookup | `manage-analytics` |
 
 Most real tasks match two or more rows — load all of them. Skipping one is not the smaller risk: much of what these skills document are failures that are **silent**, where the build succeeds and the defect only shows later, and the skill is the only place that behavior is written down. Reading portal source instead is not a substitute — the source shows what the code does, not which of its behaviors have already cost someone a day.
 
@@ -120,6 +123,9 @@ Every skill lives under `skills/` and owns one workflow. Match the user's intent
 | Create roles or grant permissions on objects, pages, or sites | `manage-roles-permissions` |
 | Manage environment configs, promote to UAT, or capture a site initializer | `manage-environments` |
 | Manage Commerce catalogs, products, SKUs, or B2B accounts | `commerce-catalogs` |
+| Build a form that creates or edits an object entry, or fix one that renders nothing | `manage-form-containers` |
+| Show object entries as a table, list, or cards with filters, sort, and row actions | `manage-data-sets` |
+| Connect DXP to Analytics Cloud / LDP, track a custom event, read real-time segments, or verify an event in an Event Analysis | `manage-analytics` |
 | Deploy and operate a Liferay Cloud (LXC) project via `lcp` | `manage-cloud-project` |
 | Build an entire site experience from one prompt (orchestrator; calls the others) | `build-site` |
 | Author a new workspace skill from source code or a spec doc | `author-skill` |
