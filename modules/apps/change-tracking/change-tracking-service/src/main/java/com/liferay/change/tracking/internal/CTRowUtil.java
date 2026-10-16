@@ -122,10 +122,11 @@ public class CTRowUtil {
 
 	public static String getConstraintConflictsSQL(
 		String tableName, String primaryColumnName,
-		String[] uniqueIndexColumnNames, long targetCTCollectionId) {
+		String[] uniqueIndexColumnNames, Object[] uniqueIndexValues,
+		Map<String, Integer> tableColumnsMap, long targetCTCollectionId) {
 
 		StringBundler sb = new StringBundler(
-			(3 * uniqueIndexColumnNames.length) + 9);
+			(6 * uniqueIndexColumnNames.length) + 9);
 
 		sb.append("select ");
 		sb.append(primaryColumnName);
@@ -137,10 +138,28 @@ public class CTRowUtil {
 		sb.append(primaryColumnName);
 		sb.append(" != ?");
 
-		for (String uniqueIndexColumnName : uniqueIndexColumnNames) {
+		for (int i = 0; i < uniqueIndexColumnNames.length; i++) {
+			String uniqueIndexColumnName = uniqueIndexColumnNames[i];
+
 			sb.append(" and ");
-			sb.append(uniqueIndexColumnName);
-			sb.append(" = ?");
+
+			int columnType = tableColumnsMap.get(uniqueIndexColumnName);
+
+			if (!isBlank(uniqueIndexValues[i], columnType)) {
+				sb.append(uniqueIndexColumnName);
+				sb.append(" = ?");
+			}
+			else if (columnType == Types.VARCHAR) {
+				sb.append("(");
+				sb.append(uniqueIndexColumnName);
+				sb.append(" is null or ");
+				sb.append(uniqueIndexColumnName);
+				sb.append(" = '')");
+			}
+			else {
+				sb.append(uniqueIndexColumnName);
+				sb.append(" is null");
+			}
 		}
 
 		return sb.toString();
@@ -238,6 +257,16 @@ public class CTRowUtil {
 		sb.append(")");
 
 		return sb.toString();
+	}
+
+	public static boolean isBlank(Object value, int columnType) {
+		if ((value == null) ||
+			((columnType == Types.VARCHAR) && value.equals(""))) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static boolean _isPostgresBlobTable(
