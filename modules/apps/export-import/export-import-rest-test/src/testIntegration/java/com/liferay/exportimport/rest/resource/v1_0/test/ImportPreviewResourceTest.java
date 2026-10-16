@@ -18,6 +18,7 @@ import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSe
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewSite;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
@@ -279,6 +280,7 @@ public class ImportPreviewResourceTest
 				objectDefinition);
 		}
 
+		_testPostSiteImportPreviewWithLayoutSet();
 		_testPostSiteImportPreviewWithLayoutSetPrototypeGroup();
 	}
 
@@ -310,10 +312,17 @@ public class ImportPreviewResourceTest
 	private File _exportLayoutAsFile(long groupId, Group... groups)
 		throws Exception {
 
+		return _exportLayoutAsFile(groupId, null, groups);
+	}
+
+	private File _exportLayoutAsFile(
+			long groupId, long[] layoutIds, Group... groups)
+		throws Exception {
+
 		Map<String, Serializable> parameterMap =
 			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildExportLayoutSettingsMap(
-					TestPropsValues.getUser(), groupId, false, null,
+					TestPropsValues.getUser(), groupId, false, layoutIds,
 					_getExportLayoutParameterMap(groups));
 
 		ExportImportConfiguration exportImportConfiguration =
@@ -574,6 +583,25 @@ public class ImportPreviewResourceTest
 
 		long additionCount = _getAdditionCount(
 			importPreview, objectDefinition.getPortletId());
+
+		Assert.assertTrue(additionCount > 0);
+	}
+
+	private void _testPostSiteImportPreviewWithLayoutSet() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+
+		ImportPreview importPreview =
+			importPreviewResource.postSiteImportPreview(
+				testGroup.getExternalReferenceCode(), 0L, null, null,
+				HashMapBuilder.put(
+					"file",
+					_exportLayoutAsFile(
+						testGroup.getGroupId(),
+						new long[] {layout.getLayoutId()})
+				).build());
+
+		long additionCount = _getAdditionCount(
+			importPreview, LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS);
 
 		Assert.assertTrue(additionCount > 0);
 	}

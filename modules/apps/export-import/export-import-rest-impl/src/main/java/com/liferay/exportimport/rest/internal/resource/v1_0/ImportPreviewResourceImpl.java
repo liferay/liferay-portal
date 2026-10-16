@@ -21,6 +21,7 @@ import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PreviewPortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ImportPreviewResource;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -182,7 +183,11 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 			PortletDataHandler portletDataHandler =
 				portlet.getPortletDataHandlerInstance();
 
-			if ((portletDataHandler == null) || portletDataHandler.isHidden()) {
+			if ((portletDataHandler == null) ||
+				(portletDataHandler.isHidden() &&
+				 !LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS.equals(
+					 portlet.getPortletId()))) {
+
 				continue;
 			}
 
