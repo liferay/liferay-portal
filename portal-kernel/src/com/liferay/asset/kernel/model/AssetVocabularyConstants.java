@@ -12,6 +12,8 @@ public class AssetVocabularyConstants {
 
 	public static final long EMPTY_VOCABULARY_ID = -1;
 
+	public static final String EXTERNAL_REFERENCE_CODE_TOPIC = "L_TOPIC";
+
 	public static final int VISIBILITY_TYPE_EMPTY = -1;
 
 	public static final int VISIBILITY_TYPE_INTERNAL = 1;

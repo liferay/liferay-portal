@@ -106,8 +106,10 @@ public class AssetVocabularyLocalServiceImpl
 		serviceContext.setScopeGroupId(groupId);
 
 		return assetVocabularyLocalService.addVocabulary(
-			guestUserId, groupId, StringPool.BLANK, titleMap, null,
-			StringPool.BLANK, serviceContext);
+			AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC, guestUserId,
+			groupId, titleMap.get(LocaleUtil.getSiteDefault()),
+			StringPool.BLANK, titleMap, null, StringPool.BLANK,
+			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC, serviceContext);
 	}
 
 	@Override
