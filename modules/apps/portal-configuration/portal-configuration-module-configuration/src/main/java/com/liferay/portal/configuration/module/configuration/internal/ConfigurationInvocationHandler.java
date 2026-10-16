@@ -8,7 +8,6 @@ package com.liferay.portal.configuration.module.configuration.internal;
 import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.persistence.ConfigurationOverridePropertiesUtil;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.settings.TypedSettings;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -27,15 +26,11 @@ import java.util.Map;
 public class ConfigurationInvocationHandler<S> implements InvocationHandler {
 
 	public ConfigurationInvocationHandler(
-			Class<S> clazz, TypedSettings typedSettings)
-		throws ConfigurationException, ReflectiveOperationException {
+		Class<S> clazz, TypedSettings typedSettings) {
 
 		_clazz = clazz;
 		_typedSettings = typedSettings;
 
-		_configurationOverrideInstance =
-			ConfigurationOverrideInstance.getConfigurationOverrideInstance(
-				clazz, typedSettings);
 		_overrideProperties =
 			ConfigurationOverridePropertiesUtil.getOverrideProperties(
 				clazz.getName());
@@ -57,14 +52,6 @@ public class ConfigurationInvocationHandler<S> implements InvocationHandler {
 
 				if (overrideValue != null) {
 					return overrideValue;
-				}
-			}
-
-			if (_configurationOverrideInstance != null) {
-				Object result = _configurationOverrideInstance.invoke(method);
-
-				if (result != ConfigurationOverrideInstance.NULL_RESULT) {
-					return result;
 				}
 			}
 
@@ -194,7 +181,6 @@ public class ConfigurationInvocationHandler<S> implements InvocationHandler {
 	}
 
 	private final Class<S> _clazz;
-	private final ConfigurationOverrideInstance _configurationOverrideInstance;
 	private final Map<String, Object> _overrideProperties;
 	private final TypedSettings _typedSettings;
 

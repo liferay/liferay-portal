@@ -7,7 +7,6 @@ package com.liferay.portal.configuration.module.configuration.internal.model.lis
 
 import com.liferay.asset.kernel.util.NotifiedAssetEntryThreadLocal;
 import com.liferay.layout.util.UpdateLayoutModifiedDateThreadLocal;
-import com.liferay.portal.configuration.module.configuration.internal.ConfigurationOverrideInstance;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -22,9 +21,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.settings.Settings;
-import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
-import com.liferay.portal.kernel.settings.definition.ConfigurationPidMapping;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -41,67 +37,12 @@ public class PortletPreferencesModelListener
 	extends BaseModelListener<PortletPreferences> {
 
 	@Override
-	public void onAfterCreate(PortletPreferences portletPreferences)
-		throws ModelListenerException {
-
-		_clearConfigurationOverrideInstance(portletPreferences);
-	}
-
-	@Override
-	public void onAfterRemove(PortletPreferences portletPreferences)
-		throws ModelListenerException {
-
-		_clearConfigurationOverrideInstance(portletPreferences);
-	}
-
-	@Override
 	public void onAfterUpdate(
 			PortletPreferences originalPortletPreferences,
 			PortletPreferences portletPreferences)
 		throws ModelListenerException {
 
 		_updateLayout(portletPreferences);
-
-		_clearConfigurationOverrideInstance(portletPreferences);
-	}
-
-	private void _clearConfigurationOverrideInstance(
-		PortletPreferences portletPreferences) {
-
-		if ((portletPreferences == null) ||
-			(portletPreferences.getPortletId() == null)) {
-
-			return;
-		}
-
-		ConfigurationPidMapping configurationPidMapping =
-			_getConfigurationPidMapping(portletPreferences.getPortletId());
-
-		if (configurationPidMapping == null) {
-			return;
-		}
-
-		ConfigurationOverrideInstance.clearConfigurationOverrideInstance(
-			configurationPidMapping.getConfigurationBeanClass());
-	}
-
-	private ConfigurationPidMapping _getConfigurationPidMapping(
-		String configurationId) {
-
-		ConfigurationPidMapping configurationPidMapping =
-			_settingsLocatorHelper.getConfigurationPidMapping(configurationId);
-
-		if (configurationPidMapping == null) {
-			return null;
-		}
-
-		Class<?> clazz = configurationPidMapping.getConfigurationBeanClass();
-
-		if (clazz.getAnnotation(Settings.Config.class) == null) {
-			return configurationPidMapping;
-		}
-
-		return null;
 	}
 
 	private void _updateLayout(PortletPreferences portletPreferences) {
@@ -195,8 +136,5 @@ public class PortletPreferencesModelListener
 
 	@Reference
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
-
-	@Reference
-	private SettingsLocatorHelper _settingsLocatorHelper;
 
 }

@@ -118,10 +118,10 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 
 			return configurationInvocationHandler.createProxy();
 		}
-		catch (ReflectiveOperationException | SettingsException exception) {
+		catch (SettingsException settingsException) {
 			throw new ConfigurationException(
 				"Unable to load configuration of type " + clazz.getName(),
-				exception);
+				settingsException);
 		}
 	}
 
