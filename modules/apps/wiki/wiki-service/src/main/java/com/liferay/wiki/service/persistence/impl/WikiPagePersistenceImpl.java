@@ -4601,7 +4601,13 @@ public class WikiPagePersistenceImpl
 
 		_collectionPersistenceFinderByG_ERC =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, WikiPage::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ERC",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
+					false, null),
+				"", WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ERC",
 					new String[] {
@@ -4610,19 +4616,13 @@ public class WikiPagePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "externalReferenceCode"}, true),
+				_SQL_COUNT_WIKIPAGE_WHERE, _SQL_SELECT_WIKIPAGE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_ERC",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
 					true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ERC",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
-					false, null),
-				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, WikiPage::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -4885,7 +4885,15 @@ public class WikiPagePersistenceImpl
 
 		_collectionPersistenceFinderByG_N_H =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, WikiPage::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N_H",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"groupId", "nodeId", "head"}, false),
+				"", WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_N_H",
 					new String[] {
@@ -4895,6 +4903,7 @@ public class WikiPagePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "nodeId", "head"}, true),
+				_SQL_COUNT_WIKIPAGE_WHERE, _SQL_SELECT_WIKIPAGE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_N_H",
 					new String[] {
@@ -4902,16 +4911,7 @@ public class WikiPagePersistenceImpl
 						Boolean.class.getName()
 					},
 					new String[] {"groupId", "nodeId", "head"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N_H",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"groupId", "nodeId", "head"}, false),
-				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, WikiPage::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -4924,7 +4924,15 @@ public class WikiPagePersistenceImpl
 
 		_collectionPersistenceFinderByG_N_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, WikiPage::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "nodeId", "status"}, false),
+				"", WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_N_S",
 					new String[] {
@@ -4934,6 +4942,7 @@ public class WikiPagePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "nodeId", "status"}, true),
+				_SQL_COUNT_WIKIPAGE_WHERE, _SQL_SELECT_WIKIPAGE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_N_S",
 					new String[] {
@@ -4941,16 +4950,7 @@ public class WikiPagePersistenceImpl
 						Integer.class.getName()
 					},
 					new String[] {"groupId", "nodeId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "nodeId", "status"}, false),
-				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, WikiPage::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5238,7 +5238,16 @@ public class WikiPagePersistenceImpl
 
 		_collectionPersistenceFinderByG_U_N_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, WikiPage::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U_N_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "userId", "nodeId", "status"},
+					false),
+				"", WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U_N_S",
 					new String[] {
@@ -5249,6 +5258,7 @@ public class WikiPagePersistenceImpl
 					},
 					new String[] {"groupId", "userId", "nodeId", "status"},
 					true),
+				_SQL_COUNT_WIKIPAGE_WHERE, _SQL_SELECT_WIKIPAGE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U_N_S",
 					new String[] {
@@ -5257,17 +5267,7 @@ public class WikiPagePersistenceImpl
 					},
 					new String[] {"groupId", "userId", "nodeId", "status"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U_N_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "userId", "nodeId", "status"},
-					false),
-				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, WikiPage::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5283,7 +5283,16 @@ public class WikiPagePersistenceImpl
 
 		_collectionPersistenceFinderByG_N_T_H =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, WikiPage::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N_T_H",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"groupId", "nodeId", "title", "head"}, 4, 4,
+					false, null),
+				"", WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_N_T_H",
 					new String[] {
@@ -5293,6 +5302,7 @@ public class WikiPagePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "nodeId", "title", "head"}, true),
+				_SQL_COUNT_WIKIPAGE_WHERE, _SQL_SELECT_WIKIPAGE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_N_T_H",
 					new String[] {
@@ -5301,17 +5311,7 @@ public class WikiPagePersistenceImpl
 					},
 					new String[] {"groupId", "nodeId", "title", "head"}, 4, 4,
 					true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N_T_H",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "nodeId", "title", "head"}, 4, 4,
-					false, null),
-				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, WikiPage::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5327,7 +5327,16 @@ public class WikiPagePersistenceImpl
 
 		_collectionPersistenceFinderByG_N_H_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, WikiPage::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N_H_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "nodeId", "head", "status"},
+					false),
+				"", WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_N_H_S",
 					new String[] {
@@ -5337,6 +5346,7 @@ public class WikiPagePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "nodeId", "head", "status"}, true),
+				_SQL_COUNT_WIKIPAGE_WHERE, _SQL_SELECT_WIKIPAGE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_N_H_S",
 					new String[] {
@@ -5344,17 +5354,7 @@ public class WikiPagePersistenceImpl
 						Boolean.class.getName(), Integer.class.getName()
 					},
 					new String[] {"groupId", "nodeId", "head", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N_H_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "nodeId", "head", "status"},
-					false),
-				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, WikiPage::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5536,7 +5536,20 @@ public class WikiPagePersistenceImpl
 
 		_collectionPersistenceFinderByG_N_H_P_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, WikiPage::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_N_H_P_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), String.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "nodeId", "head", "parentTitle", "status"
+					},
+					8, 8, false, null),
+				"", WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_N_H_P_S",
 					new String[] {
@@ -5550,6 +5563,7 @@ public class WikiPagePersistenceImpl
 						"groupId", "nodeId", "head", "parentTitle", "status"
 					},
 					true),
+				_SQL_COUNT_WIKIPAGE_WHERE, _SQL_SELECT_WIKIPAGE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_N_H_P_S",
@@ -5562,21 +5576,7 @@ public class WikiPagePersistenceImpl
 						"groupId", "nodeId", "head", "parentTitle", "status"
 					},
 					8, 8, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_N_H_P_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), String.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "nodeId", "head", "parentTitle", "status"
-					},
-					8, 8, false, null),
-				_SQL_SELECT_WIKIPAGE_WHERE, _SQL_COUNT_WIKIPAGE_WHERE,
-				WikiPageModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, WikiPage::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"wikiPage.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiPage::getGroupId),
@@ -5659,4 +5659,4 @@ public class WikiPagePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-869711357
+// LIFERAY-SERVICE-BUILDER-HASH:-706288296

@@ -3755,7 +3755,12 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByPatcherFixId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByPatcherFixId", new String[] {Long.class.getName()},
+					new String[] {"patcherFixId"}, false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByPatcherFixId",
@@ -3765,24 +3770,26 @@ public class PatcherBuildPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"patcherFixId"}, true),
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByPatcherFixId", new String[] {Long.class.getName()},
 					new String[] {"patcherFixId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByPatcherFixId", new String[] {Long.class.getName()},
-					new String[] {"patcherFixId"}, false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				"",
 				new FinderColumn<>(
 					"patcherBuild.", "patcherFixId", FinderColumn.Type.LONG,
 					"=", true, true, PatcherBuild::getPatcherFixId));
 
 		_collectionPersistenceFinderByPatcherProjectVersionId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByPatcherProjectVersionId",
+					new String[] {Long.class.getName()},
+					new String[] {"patcherProjectVersionId"}, false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByPatcherProjectVersionId",
@@ -3792,19 +3799,14 @@ public class PatcherBuildPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"patcherProjectVersionId"}, true),
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByPatcherProjectVersionId",
 					new String[] {Long.class.getName()},
 					new String[] {"patcherProjectVersionId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByPatcherProjectVersionId",
-					new String[] {Long.class.getName()},
-					new String[] {"patcherProjectVersionId"}, false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				"",
 				new FinderColumn<>(
 					"patcherBuild.", "patcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -3812,7 +3814,12 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByKey =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByKey",
+					new String[] {String.class.getName()},
+					new String[] {"key_"}, 0, 1, false, null),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByKey",
 					new String[] {
@@ -3821,24 +3828,28 @@ public class PatcherBuildPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"key_"}, true),
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByKey",
 					new String[] {String.class.getName()},
 					new String[] {"key_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByKey",
-					new String[] {String.class.getName()},
-					new String[] {"key_"}, 0, 1, false, null),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				"",
 				new FinderColumn<>(
 					"patcherBuild.", "key", "key_", FinderColumn.Type.STRING,
 					"=", true, true, PatcherBuild::getKey));
 
 		_collectionPersistenceFinderByP_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_P",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {
+						"patcherAccountId", "patcherProductVersionId"
+					},
+					false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_P",
 					new String[] {
@@ -3850,6 +3861,8 @@ public class PatcherBuildPersistenceImpl
 						"patcherAccountId", "patcherProductVersionId"
 					},
 					true),
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByP_P",
 					new String[] {Long.class.getName(), Long.class.getName()},
@@ -3857,16 +3870,7 @@ public class PatcherBuildPersistenceImpl
 						"patcherAccountId", "patcherProductVersionId"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_P",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {
-						"patcherAccountId", "patcherProductVersionId"
-					},
-					false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				"",
 				new FinderColumn<>(
 					"patcherBuild.", "patcherAccountId", FinderColumn.Type.LONG,
 					"=", true, true, PatcherBuild::getPatcherAccountId),
@@ -3877,7 +3881,14 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByP_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_C",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"patcherFixId", "childBuild"}, false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_C",
 					new String[] {
@@ -3886,21 +3897,15 @@ public class PatcherBuildPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"patcherFixId", "childBuild"}, true),
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByP_C",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"patcherFixId", "childBuild"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_C",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"patcherFixId", "childBuild"}, false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				"",
 				new FinderColumn<>(
 					"patcherBuild.", "patcherFixId", FinderColumn.Type.LONG,
 					"=", true, true, PatcherBuild::getPatcherFixId),
@@ -3926,7 +3931,14 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByK_GtKV =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByK_GtKV",
+					new String[] {
+						String.class.getName(), Double.class.getName()
+					},
+					new String[] {"key_", "keyVersion"}, false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByK_GtKV",
 					new String[] {
@@ -3935,16 +3947,8 @@ public class PatcherBuildPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"key_", "keyVersion"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByK_GtKV",
-					new String[] {
-						String.class.getName(), Double.class.getName()
-					},
-					new String[] {"key_", "keyVersion"}, false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null, null, "",
 				new FinderColumn<>(
 					"patcherBuild.", "key", "key_", FinderColumn.Type.STRING,
 					"=", true, true, PatcherBuild::getKey),
@@ -3954,7 +3958,14 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByK_LtKV =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByK_LtKV",
+					new String[] {
+						String.class.getName(), Double.class.getName()
+					},
+					new String[] {"key_", "keyVersion"}, false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByK_LtKV",
 					new String[] {
@@ -3963,16 +3974,8 @@ public class PatcherBuildPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"key_", "keyVersion"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByK_LtKV",
-					new String[] {
-						String.class.getName(), Double.class.getName()
-					},
-					new String[] {"key_", "keyVersion"}, false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null, null, "",
 				new FinderColumn<>(
 					"patcherBuild.", "key", "key_", FinderColumn.Type.STRING,
 					"=", true, true, PatcherBuild::getKey),
@@ -3982,7 +3985,14 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByK_L =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByK_L",
+					new String[] {
+						String.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"key_", "latestKeyBuild"}, 0, 1, false, null),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByK_L",
 					new String[] {
@@ -3991,21 +4001,15 @@ public class PatcherBuildPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"key_", "latestKeyBuild"}, true),
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByK_L",
 					new String[] {
 						String.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"key_", "latestKeyBuild"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByK_L",
-					new String[] {
-						String.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"key_", "latestKeyBuild"}, 0, 1, false, null),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				"",
 				new FinderColumn<>(
 					"patcherBuild.", "key", "key_", FinderColumn.Type.STRING,
 					"=", true, true, PatcherBuild::getKey),
@@ -4016,7 +4020,15 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByL_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByL_S",
+					new String[] {
+						Boolean.class.getName(), String.class.getName()
+					},
+					new String[] {"latestSupportTicketBuild", "supportTicket"},
+					0, 2, false, null),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByL_S",
 					new String[] {
@@ -4026,6 +4038,8 @@ public class PatcherBuildPersistenceImpl
 					},
 					new String[] {"latestSupportTicketBuild", "supportTicket"},
 					true),
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByL_S",
 					new String[] {
@@ -4033,16 +4047,7 @@ public class PatcherBuildPersistenceImpl
 					},
 					new String[] {"latestSupportTicketBuild", "supportTicket"},
 					0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByL_S",
-					new String[] {
-						Boolean.class.getName(), String.class.getName()
-					},
-					new String[] {"latestSupportTicketBuild", "supportTicket"},
-					0, 2, false, null),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				"",
 				new FinderColumn<>(
 					"patcherBuild.", "latestSupportTicketBuild",
 					FinderColumn.Type.BOOLEAN, "=", true, true,
@@ -4053,7 +4058,15 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByS_GtS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByS_GtS",
+					new String[] {
+						String.class.getName(), Double.class.getName()
+					},
+					new String[] {"supportTicket", "supportTicketVersion"},
+					false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByS_GtS",
 					new String[] {
@@ -4063,17 +4076,8 @@ public class PatcherBuildPersistenceImpl
 					},
 					new String[] {"supportTicket", "supportTicketVersion"},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByS_GtS",
-					new String[] {
-						String.class.getName(), Double.class.getName()
-					},
-					new String[] {"supportTicket", "supportTicketVersion"},
-					false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null, null, "",
 				new FinderColumn<>(
 					"patcherBuild.", "supportTicket", FinderColumn.Type.STRING,
 					"=", true, true, PatcherBuild::getSupportTicket),
@@ -4084,7 +4088,15 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByS_LtS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByS_LtS",
+					new String[] {
+						String.class.getName(), Double.class.getName()
+					},
+					new String[] {"supportTicket", "supportTicketVersion"},
+					false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByS_LtS",
 					new String[] {
@@ -4094,17 +4106,8 @@ public class PatcherBuildPersistenceImpl
 					},
 					new String[] {"supportTicket", "supportTicketVersion"},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByS_LtS",
-					new String[] {
-						String.class.getName(), Double.class.getName()
-					},
-					new String[] {"supportTicket", "supportTicketVersion"},
-					false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null, null, "",
 				new FinderColumn<>(
 					"patcherBuild.", "supportTicket", FinderColumn.Type.STRING,
 					"=", true, true, PatcherBuild::getSupportTicket),
@@ -4115,7 +4118,15 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByLtM_N_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtM_N_S",
+					new String[] {
+						Date.class.getName(), Boolean.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"modifiedDate", "notified", "status"}, false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByLtM_N_S",
 					new String[] {
@@ -4125,17 +4136,8 @@ public class PatcherBuildPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"modifiedDate", "notified", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtM_N_S",
-					new String[] {
-						Date.class.getName(), Boolean.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"modifiedDate", "notified", "status"}, false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null, null, "",
 				new FinderColumn<>(
 					"patcherBuild.", "modifiedDate", FinderColumn.Type.DATE,
 					"<", true, true, PatcherBuild::getModifiedDate),
@@ -4148,7 +4150,20 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByP_NotP_C_NotT =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByP_NotP_C_NotT",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"patcherFixId", "patcherProductVersionId", "childBuild",
+						"type_"
+					},
+					false),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByP_NotP_C_NotT",
@@ -4163,22 +4178,8 @@ public class PatcherBuildPersistenceImpl
 						"type_"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByP_NotP_C_NotT",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"patcherFixId", "patcherProductVersionId", "childBuild",
-						"type_"
-					},
-					false),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null, null, "",
 				new FinderColumn<>(
 					"patcherBuild.", "patcherFixId", FinderColumn.Type.LONG,
 					"=", true, true, PatcherBuild::getPatcherFixId),
@@ -4195,7 +4196,19 @@ public class PatcherBuildPersistenceImpl
 
 		_collectionPersistenceFinderByP_N_L_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherBuild::getPatcherBuildId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_N_L_A",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName(), String.class.getName()
+					},
+					new String[] {
+						"patcherProjectVersionId", "accountEntryCode",
+						"latestKeyBuild", "name"
+					},
+					0, 10, false, null),
+				"", PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_N_L_A",
 					new String[] {
@@ -4209,6 +4222,8 @@ public class PatcherBuildPersistenceImpl
 						"latestKeyBuild", "name"
 					},
 					true),
+				_SQL_COUNT_PATCHERBUILD_WHERE, _SQL_SELECT_PATCHERBUILD_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByP_N_L_A",
 					new String[] {
@@ -4220,20 +4235,7 @@ public class PatcherBuildPersistenceImpl
 						"latestKeyBuild", "name"
 					},
 					0, 10, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_N_L_A",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Boolean.class.getName(), String.class.getName()
-					},
-					new String[] {
-						"patcherProjectVersionId", "accountEntryCode",
-						"latestKeyBuild", "name"
-					},
-					0, 10, false, null),
-				_SQL_SELECT_PATCHERBUILD_WHERE, _SQL_COUNT_PATCHERBUILD_WHERE,
-				PatcherBuildModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherBuild::getPatcherBuildId,
+				"",
 				new FinderColumn<>(
 					"patcherBuild.", "patcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -4331,4 +4333,4 @@ public class PatcherBuildPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-460881871
+// LIFERAY-SERVICE-BUILDER-HASH:-56309125

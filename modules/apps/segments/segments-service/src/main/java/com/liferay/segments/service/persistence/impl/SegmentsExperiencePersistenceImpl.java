@@ -2827,7 +2827,13 @@ public class SegmentsExperiencePersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -2836,25 +2842,26 @@ public class SegmentsExperiencePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
-				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				"",
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId));
 
 		_collectionPersistenceFinderByG_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "plid"}, false),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P",
 					new String[] {
@@ -2863,18 +2870,13 @@ public class SegmentsExperiencePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "plid"}, true),
+				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "plid"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "plid"}, false),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
-				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				"",
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -2884,7 +2886,15 @@ public class SegmentsExperiencePersistenceImpl
 
 		_collectionPersistenceFinderByG_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_A",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"groupId", "active_"}, false),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_A",
 					new String[] {
@@ -2893,22 +2903,15 @@ public class SegmentsExperiencePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "active_"}, true),
+				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_A",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"groupId", "active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_A",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "active_"}, false),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
-				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				"",
 				new ArrayableFinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", false, true, true, SegmentsExperience::getGroupId),
@@ -2961,7 +2964,20 @@ public class SegmentsExperiencePersistenceImpl
 
 		_collectionPersistenceFinderByG_SEERC_SESERC =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_SEERC_SESERC",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName()
+					},
+					new String[] {
+						"groupId", "segmentsEntryERC", "segmentsEntryScopeERC"
+					},
+					0, 6, false, null),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_SEERC_SESERC",
@@ -2975,6 +2991,8 @@ public class SegmentsExperiencePersistenceImpl
 						"groupId", "segmentsEntryERC", "segmentsEntryScopeERC"
 					},
 					true),
+				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_SEERC_SESERC",
@@ -2986,21 +3004,7 @@ public class SegmentsExperiencePersistenceImpl
 						"groupId", "segmentsEntryERC", "segmentsEntryScopeERC"
 					},
 					0, 6, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_SEERC_SESERC",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						String.class.getName()
-					},
-					new String[] {
-						"groupId", "segmentsEntryERC", "segmentsEntryScopeERC"
-					},
-					0, 6, false, null),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
-				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				"",
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3062,7 +3066,16 @@ public class SegmentsExperiencePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_GtP =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_GtP",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "plid", "priority"}, false),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_GtP",
 					new String[] {
@@ -3072,18 +3085,8 @@ public class SegmentsExperiencePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "plid", "priority"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_GtP",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "plid", "priority"}, false),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null, null, "",
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3097,7 +3100,16 @@ public class SegmentsExperiencePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_LtP =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_LtP",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "plid", "priority"}, false),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_LtP",
 					new String[] {
@@ -3107,18 +3119,8 @@ public class SegmentsExperiencePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "plid", "priority"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_LtP",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "plid", "priority"}, false),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
 				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null, null, "",
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3132,7 +3134,16 @@ public class SegmentsExperiencePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_A",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"groupId", "plid", "active_"}, false),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_A",
 					new String[] {
@@ -3142,6 +3153,8 @@ public class SegmentsExperiencePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "plid", "active_"}, true),
+				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_A",
 					new String[] {
@@ -3149,17 +3162,7 @@ public class SegmentsExperiencePersistenceImpl
 						Boolean.class.getName()
 					},
 					new String[] {"groupId", "plid", "active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_A",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"groupId", "plid", "active_"}, false),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
-				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				"",
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3173,7 +3176,21 @@ public class SegmentsExperiencePersistenceImpl
 
 		_collectionPersistenceFinderByG_SEERC_SESERC_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_SEERC_SESERC_P",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName(), Long.class.getName()
+					},
+					new String[] {
+						"groupId", "segmentsEntryERC", "segmentsEntryScopeERC",
+						"plid"
+					},
+					0, 6, false, null),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_SEERC_SESERC_P",
@@ -3188,6 +3205,8 @@ public class SegmentsExperiencePersistenceImpl
 						"plid"
 					},
 					true),
+				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_SEERC_SESERC_P",
@@ -3200,22 +3219,7 @@ public class SegmentsExperiencePersistenceImpl
 						"plid"
 					},
 					0, 6, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_SEERC_SESERC_P",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						String.class.getName(), Long.class.getName()
-					},
-					new String[] {
-						"groupId", "segmentsEntryERC", "segmentsEntryScopeERC",
-						"plid"
-					},
-					0, 6, false, null),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
-				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				"",
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3233,7 +3237,22 @@ public class SegmentsExperiencePersistenceImpl
 
 		_collectionPersistenceFinderByG_SEERC_SESERC_P_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SegmentsExperience::getSegmentsExperienceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_SEERC_SESERC_P_A",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {
+						"groupId", "segmentsEntryERC", "segmentsEntryScopeERC",
+						"plid", "active_"
+					},
+					0, 6, false, null),
+				"", SegmentsExperienceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_SEERC_SESERC_P_A",
@@ -3249,6 +3268,8 @@ public class SegmentsExperiencePersistenceImpl
 						"plid", "active_"
 					},
 					true),
+				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
+				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_SEERC_SESERC_P_A",
@@ -3262,23 +3283,7 @@ public class SegmentsExperiencePersistenceImpl
 						"plid", "active_"
 					},
 					0, 6, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_SEERC_SESERC_P_A",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						String.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {
-						"groupId", "segmentsEntryERC", "segmentsEntryScopeERC",
-						"plid", "active_"
-					},
-					0, 6, false, null),
-				_SQL_SELECT_SEGMENTSEXPERIENCE_WHERE,
-				_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE,
-				SegmentsExperienceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SegmentsExperience::getSegmentsExperienceId,
+				"",
 				new FinderColumn<>(
 					"segmentsExperience.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SegmentsExperience::getGroupId),
@@ -3382,4 +3387,4 @@ public class SegmentsExperiencePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:883170735
+// LIFERAY-SERVICE-BUILDER-HASH:1026248712

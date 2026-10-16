@@ -1474,7 +1474,19 @@ public class ObjectEntryFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, ObjectEntryFolder::getObjectEntryFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_P",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {
+						"groupId", "companyId", "parentObjectEntryFolderId"
+					},
+					false),
+				"", ObjectEntryFolderModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_P",
 					new String[] {
@@ -1487,6 +1499,8 @@ public class ObjectEntryFolderPersistenceImpl
 						"groupId", "companyId", "parentObjectEntryFolderId"
 					},
 					true),
+				_SQL_COUNT_OBJECTENTRYFOLDER_WHERE,
+				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_P",
 					new String[] {
@@ -1497,20 +1511,7 @@ public class ObjectEntryFolderPersistenceImpl
 						"groupId", "companyId", "parentObjectEntryFolderId"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_P",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {
-						"groupId", "companyId", "parentObjectEntryFolderId"
-					},
-					false),
-				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE,
-				_SQL_COUNT_OBJECTENTRYFOLDER_WHERE,
-				ObjectEntryFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, ObjectEntryFolder::getObjectEntryFolderId,
+				"",
 				new FinderColumn<>(
 					"objectEntryFolder.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectEntryFolder::getGroupId),
@@ -1524,7 +1525,16 @@ public class ObjectEntryFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_LikeT =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, ObjectEntryFolder::getObjectEntryFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_LikeT",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "companyId", "treePath"}, false),
+				"", ObjectEntryFolderModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_LikeT",
 					new String[] {
@@ -1534,18 +1544,8 @@ public class ObjectEntryFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "companyId", "treePath"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_LikeT",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName()
-					},
-					new String[] {"groupId", "companyId", "treePath"}, false),
-				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE,
 				_SQL_COUNT_OBJECTENTRYFOLDER_WHERE,
-				ObjectEntryFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, ObjectEntryFolder::getObjectEntryFolderId,
+				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE, null, null, "",
 				new FinderColumn<>(
 					"objectEntryFolder.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectEntryFolder::getGroupId),
@@ -1558,7 +1558,22 @@ public class ObjectEntryFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_P_N_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, ObjectEntryFolder::getObjectEntryFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_C_P_N_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName(), String.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "companyId", "parentObjectEntryFolderId",
+						"name", "status"
+					},
+					false),
+				"", ObjectEntryFolderModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_C_P_N_NotS",
@@ -1574,24 +1589,8 @@ public class ObjectEntryFolderPersistenceImpl
 						"name", "status"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_C_P_N_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), String.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "companyId", "parentObjectEntryFolderId",
-						"name", "status"
-					},
-					false),
-				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE,
 				_SQL_COUNT_OBJECTENTRYFOLDER_WHERE,
-				ObjectEntryFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, ObjectEntryFolder::getObjectEntryFolderId,
+				_SQL_SELECT_OBJECTENTRYFOLDER_WHERE, null, null, "",
 				new FinderColumn<>(
 					"objectEntryFolder.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, ObjectEntryFolder::getGroupId),
@@ -1672,4 +1671,4 @@ public class ObjectEntryFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1031231129
+// LIFERAY-SERVICE-BUILDER-HASH:2065491858

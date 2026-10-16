@@ -469,7 +469,14 @@ public class PatcherProductVersionPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByFixDeliveryMethod =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherProductVersion::getPatcherProductVersionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByFixDeliveryMethod",
+					new String[] {Integer.class.getName()},
+					new String[] {"fixDeliveryMethod"}, false),
+				"", PatcherProductVersionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByFixDeliveryMethod",
@@ -479,21 +486,14 @@ public class PatcherProductVersionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"fixDeliveryMethod"}, true),
+				_SQL_COUNT_PATCHERPRODUCTVERSION_WHERE,
+				_SQL_SELECT_PATCHERPRODUCTVERSION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByFixDeliveryMethod",
 					new String[] {Integer.class.getName()},
 					new String[] {"fixDeliveryMethod"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByFixDeliveryMethod",
-					new String[] {Integer.class.getName()},
-					new String[] {"fixDeliveryMethod"}, false),
-				_SQL_SELECT_PATCHERPRODUCTVERSION_WHERE,
-				_SQL_COUNT_PATCHERPRODUCTVERSION_WHERE,
-				PatcherProductVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				PatcherProductVersion::getPatcherProductVersionId,
+				"",
 				new FinderColumn<>(
 					"patcherProductVersion.", "fixDeliveryMethod",
 					FinderColumn.Type.INTEGER, "=", true, true,
@@ -570,4 +570,4 @@ public class PatcherProductVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-211827274
+// LIFERAY-SERVICE-BUILDER-HASH:753638166

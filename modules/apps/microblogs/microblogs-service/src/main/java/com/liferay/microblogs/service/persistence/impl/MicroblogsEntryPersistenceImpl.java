@@ -2272,7 +2272,13 @@ public class MicroblogsEntryPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -2281,25 +2287,26 @@ public class MicroblogsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, MicroblogsEntry::getCompanyId));
 
 		_collectionPersistenceFinderByUserId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUserId",
+					new String[] {Long.class.getName()},
+					new String[] {"userId"}, false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUserId",
 					new String[] {
@@ -2308,25 +2315,28 @@ public class MicroblogsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"userId"}, true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUserId",
 					new String[] {Long.class.getName()},
 					new String[] {"userId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUserId",
-					new String[] {Long.class.getName()},
-					new String[] {"userId"}, false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, MicroblogsEntry::getUserId));
 
 		_collectionPersistenceFinderByU_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_T",
+					new String[] {
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {"userId", "type_"}, false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByU_T",
 					new String[] {
@@ -2335,22 +2345,15 @@ public class MicroblogsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"userId", "type_"}, true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByU_T",
 					new String[] {
 						Long.class.getName(), Integer.class.getName()
 					},
 					new String[] {"userId", "type_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_T",
-					new String[] {
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"userId", "type_"}, false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, MicroblogsEntry::getUserId),
@@ -2361,7 +2364,14 @@ public class MicroblogsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByCCNI_CCPK =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByCCNI_CCPK",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"creatorClassNameId", "creatorClassPK"},
+					false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCCNI_CCPK",
 					new String[] {
@@ -2371,21 +2381,15 @@ public class MicroblogsEntryPersistenceImpl
 					},
 					new String[] {"creatorClassNameId", "creatorClassPK"},
 					true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCCNI_CCPK",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"creatorClassNameId", "creatorClassPK"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByCCNI_CCPK",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"creatorClassNameId", "creatorClassPK"},
-					false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "creatorClassNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2397,7 +2401,15 @@ public class MicroblogsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByCCNI_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByCCNI_T",
+					new String[] {
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {"creatorClassNameId", "type_"}, false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCCNI_T",
 					new String[] {
@@ -2406,22 +2418,15 @@ public class MicroblogsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"creatorClassNameId", "type_"}, true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByCCNI_T",
 					new String[] {
 						Long.class.getName(), Integer.class.getName()
 					},
 					new String[] {"creatorClassNameId", "type_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByCCNI_T",
-					new String[] {
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"creatorClassNameId", "type_"}, false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "creatorClassNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2433,7 +2438,15 @@ public class MicroblogsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByT_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByT_P",
+					new String[] {
+						Integer.class.getName(), Long.class.getName()
+					},
+					new String[] {"type_", "parentMicroblogsEntryId"}, false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByT_P",
 					new String[] {
@@ -2442,22 +2455,15 @@ public class MicroblogsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"type_", "parentMicroblogsEntryId"}, true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByT_P",
 					new String[] {
 						Integer.class.getName(), Long.class.getName()
 					},
 					new String[] {"type_", "parentMicroblogsEntryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByT_P",
-					new String[] {
-						Integer.class.getName(), Long.class.getName()
-					},
-					new String[] {"type_", "parentMicroblogsEntryId"}, false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "type", "type_",
 					FinderColumn.Type.INTEGER, "=", true, true,
@@ -2469,7 +2475,20 @@ public class MicroblogsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_CCNI_CCPK =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByC_CCNI_CCPK",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {
+						"companyId", "creatorClassNameId", "creatorClassPK"
+					},
+					false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_CCNI_CCPK",
 					new String[] {
@@ -2482,6 +2501,8 @@ public class MicroblogsEntryPersistenceImpl
 						"companyId", "creatorClassNameId", "creatorClassPK"
 					},
 					true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByC_CCNI_CCPK",
@@ -2493,21 +2514,7 @@ public class MicroblogsEntryPersistenceImpl
 						"companyId", "creatorClassNameId", "creatorClassPK"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByC_CCNI_CCPK",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {
-						"companyId", "creatorClassNameId", "creatorClassPK"
-					},
-					false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, MicroblogsEntry::getCompanyId),
@@ -2522,7 +2529,18 @@ public class MicroblogsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_CCNI_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByC_CCNI_T",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"companyId", "creatorClassNameId", "type_"},
+					false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_CCNI_T",
 					new String[] {
@@ -2533,6 +2551,8 @@ public class MicroblogsEntryPersistenceImpl
 					},
 					new String[] {"companyId", "creatorClassNameId", "type_"},
 					true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_CCNI_T",
 					new String[] {
@@ -2541,19 +2561,7 @@ public class MicroblogsEntryPersistenceImpl
 					},
 					new String[] {"companyId", "creatorClassNameId", "type_"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByC_CCNI_T",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"companyId", "creatorClassNameId", "type_"},
-					false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, MicroblogsEntry::getCompanyId),
@@ -2568,7 +2576,20 @@ public class MicroblogsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByCCNI_CCPK_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByCCNI_CCPK_T",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {
+						"creatorClassNameId", "creatorClassPK", "type_"
+					},
+					false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCCNI_CCPK_T",
 					new String[] {
@@ -2581,6 +2602,8 @@ public class MicroblogsEntryPersistenceImpl
 						"creatorClassNameId", "creatorClassPK", "type_"
 					},
 					true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCCNI_CCPK_T",
@@ -2592,21 +2615,7 @@ public class MicroblogsEntryPersistenceImpl
 						"creatorClassNameId", "creatorClassPK", "type_"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByCCNI_CCPK_T",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {
-						"creatorClassNameId", "creatorClassPK", "type_"
-					},
-					false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "creatorClassNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -2622,7 +2631,21 @@ public class MicroblogsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_CCNI_CCPK_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByC_CCNI_CCPK_T",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"companyId", "creatorClassNameId", "creatorClassPK",
+						"type_"
+					},
+					false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByC_CCNI_CCPK_T",
@@ -2637,6 +2660,8 @@ public class MicroblogsEntryPersistenceImpl
 						"type_"
 					},
 					true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByC_CCNI_CCPK_T",
@@ -2649,22 +2674,7 @@ public class MicroblogsEntryPersistenceImpl
 						"type_"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByC_CCNI_CCPK_T",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"companyId", "creatorClassNameId", "creatorClassPK",
-						"type_"
-					},
-					false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, MicroblogsEntry::getCompanyId),
@@ -2683,7 +2693,19 @@ public class MicroblogsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByU_C_T_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, MicroblogsEntry::getMicroblogsEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_C_T_S",
+					new String[] {
+						Long.class.getName(), Date.class.getName(),
+						Integer.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"userId", "createDate", "type_", "socialRelationType"
+					},
+					false),
+				"", MicroblogsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByU_C_T_S",
 					new String[] {
@@ -2696,6 +2718,8 @@ public class MicroblogsEntryPersistenceImpl
 						"userId", "createDate", "type_", "socialRelationType"
 					},
 					true),
+				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
+				_SQL_SELECT_MICROBLOGSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByU_C_T_S",
 					new String[] {
@@ -2706,20 +2730,7 @@ public class MicroblogsEntryPersistenceImpl
 						"userId", "createDate", "type_", "socialRelationType"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_C_T_S",
-					new String[] {
-						Long.class.getName(), Date.class.getName(),
-						Integer.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"userId", "createDate", "type_", "socialRelationType"
-					},
-					false),
-				_SQL_SELECT_MICROBLOGSENTRY_WHERE,
-				_SQL_COUNT_MICROBLOGSENTRY_WHERE,
-				MicroblogsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, MicroblogsEntry::getMicroblogsEntryId,
+				"",
 				new FinderColumn<>(
 					"microblogsEntry.", "userId", FinderColumn.Type.LONG, "=",
 					true, true, MicroblogsEntry::getUserId),
@@ -2798,4 +2809,4 @@ public class MicroblogsEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1591823858
+// LIFERAY-SERVICE-BUILDER-HASH:781896624

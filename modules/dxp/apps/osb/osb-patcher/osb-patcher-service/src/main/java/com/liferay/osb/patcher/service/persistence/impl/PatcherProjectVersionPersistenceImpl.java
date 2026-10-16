@@ -958,7 +958,14 @@ public class PatcherProjectVersionPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByPatcherProductVersionId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherProjectVersion::getPatcherProjectVersionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByPatcherProductVersionId",
+					new String[] {Long.class.getName()},
+					new String[] {"patcherProductVersionId"}, false),
+				"", PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByPatcherProductVersionId",
@@ -968,21 +975,14 @@ public class PatcherProjectVersionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"patcherProductVersionId"}, true),
+				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
+				_SQL_SELECT_PATCHERPROJECTVERSION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByPatcherProductVersionId",
 					new String[] {Long.class.getName()},
 					new String[] {"patcherProductVersionId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByPatcherProductVersionId",
-					new String[] {Long.class.getName()},
-					new String[] {"patcherProductVersionId"}, false),
-				_SQL_SELECT_PATCHERPROJECTVERSION_WHERE,
-				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
-				PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				PatcherProjectVersion::getPatcherProjectVersionId,
+				"",
 				new FinderColumn<>(
 					"patcherProjectVersion.", "patcherProductVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -990,7 +990,14 @@ public class PatcherProjectVersionPersistenceImpl
 
 		_collectionPersistenceFinderByRootPatcherProjectVersionId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherProjectVersion::getPatcherProjectVersionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByRootPatcherProjectVersionId",
+					new String[] {Long.class.getName()},
+					new String[] {"rootPatcherProjectVersionId"}, false),
+				"", PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByRootPatcherProjectVersionId",
@@ -1000,21 +1007,14 @@ public class PatcherProjectVersionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"rootPatcherProjectVersionId"}, true),
+				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
+				_SQL_SELECT_PATCHERPROJECTVERSION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByRootPatcherProjectVersionId",
 					new String[] {Long.class.getName()},
 					new String[] {"rootPatcherProjectVersionId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByRootPatcherProjectVersionId",
-					new String[] {Long.class.getName()},
-					new String[] {"rootPatcherProjectVersionId"}, false),
-				_SQL_SELECT_PATCHERPROJECTVERSION_WHERE,
-				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
-				PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				PatcherProjectVersion::getPatcherProjectVersionId,
+				"",
 				new FinderColumn<>(
 					"patcherProjectVersion.", "rootPatcherProjectVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1046,7 +1046,16 @@ public class PatcherProjectVersionPersistenceImpl
 
 		_collectionPersistenceFinderByP_R =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherProjectVersion::getPatcherProjectVersionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_R",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {
+						"patcherProductVersionId", "rootPatcherProjectVersionId"
+					},
+					false),
+				"", PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_R",
 					new String[] {
@@ -1058,6 +1067,8 @@ public class PatcherProjectVersionPersistenceImpl
 						"patcherProductVersionId", "rootPatcherProjectVersionId"
 					},
 					true),
+				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
+				_SQL_SELECT_PATCHERPROJECTVERSION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByP_R",
 					new String[] {Long.class.getName(), Long.class.getName()},
@@ -1065,18 +1076,7 @@ public class PatcherProjectVersionPersistenceImpl
 						"patcherProductVersionId", "rootPatcherProjectVersionId"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_R",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {
-						"patcherProductVersionId", "rootPatcherProjectVersionId"
-					},
-					false),
-				_SQL_SELECT_PATCHERPROJECTVERSION_WHERE,
-				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
-				PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				PatcherProjectVersion::getPatcherProjectVersionId,
+				"",
 				new FinderColumn<>(
 					"patcherProjectVersion.", "patcherProductVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1088,7 +1088,14 @@ public class PatcherProjectVersionPersistenceImpl
 
 		_collectionPersistenceFinderByP_RN =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherProjectVersion::getPatcherProjectVersionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_RN",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"patcherProductVersionId", "repositoryName"},
+					0, 2, false, null),
+				"", PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_RN",
 					new String[] {
@@ -1098,21 +1105,14 @@ public class PatcherProjectVersionPersistenceImpl
 					},
 					new String[] {"patcherProductVersionId", "repositoryName"},
 					true),
+				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
+				_SQL_SELECT_PATCHERPROJECTVERSION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByP_RN",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"patcherProductVersionId", "repositoryName"},
 					0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_RN",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"patcherProductVersionId", "repositoryName"},
-					0, 2, false, null),
-				_SQL_SELECT_PATCHERPROJECTVERSION_WHERE,
-				_SQL_COUNT_PATCHERPROJECTVERSION_WHERE,
-				PatcherProjectVersionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				PatcherProjectVersion::getPatcherProjectVersionId,
+				"",
 				new FinderColumn<>(
 					"patcherProjectVersion.", "patcherProductVersionId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1182,4 +1182,4 @@ public class PatcherProjectVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1883533639
+// LIFERAY-SERVICE-BUILDER-HASH:-840275929

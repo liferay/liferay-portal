@@ -1024,7 +1024,12 @@ public class PatcherAccountPersistenceImpl
 
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherAccount::getPatcherAccountId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", PatcherAccountModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -1033,18 +1038,13 @@ public class PatcherAccountPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_PATCHERACCOUNT_WHERE,
+				_SQL_SELECT_PATCHERACCOUNT_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_PATCHERACCOUNT_WHERE,
-				_SQL_COUNT_PATCHERACCOUNT_WHERE,
-				PatcherAccountModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherAccount::getPatcherAccountId,
+				"",
 				new FinderColumn<>(
 					"patcherAccount.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, PatcherAccount::getCompanyId));
@@ -1065,7 +1065,12 @@ public class PatcherAccountPersistenceImpl
 
 		_collectionPersistenceFinderByC_LikeA =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, PatcherAccount::getPatcherAccountId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_LikeA",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"companyId", "accountEntryCode"}, false),
+				"", PatcherAccountModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_LikeA",
 					new String[] {
@@ -1074,15 +1079,8 @@ public class PatcherAccountPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "accountEntryCode"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_LikeA",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"companyId", "accountEntryCode"}, false),
-				_SQL_SELECT_PATCHERACCOUNT_WHERE,
 				_SQL_COUNT_PATCHERACCOUNT_WHERE,
-				PatcherAccountModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, PatcherAccount::getPatcherAccountId,
+				_SQL_SELECT_PATCHERACCOUNT_WHERE, null, null, "",
 				new FinderColumn<>(
 					"patcherAccount.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, PatcherAccount::getCompanyId),
@@ -1157,4 +1155,4 @@ public class PatcherAccountPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-868919100
+// LIFERAY-SERVICE-BUILDER-HASH:-950082642

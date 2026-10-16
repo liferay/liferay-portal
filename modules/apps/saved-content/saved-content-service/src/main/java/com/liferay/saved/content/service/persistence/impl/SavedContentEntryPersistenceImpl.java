@@ -1716,7 +1716,13 @@ public class SavedContentEntryPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SavedContentEntry::getSavedContentEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", SavedContentEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1725,18 +1731,13 @@ public class SavedContentEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
+				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
-				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
-				SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SavedContentEntry::getSavedContentEntryId,
+				"",
 				new FinderColumn<>(
 					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getGroupId));
@@ -1770,7 +1771,13 @@ public class SavedContentEntryPersistenceImpl
 
 		_collectionPersistenceFinderByG_U =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SavedContentEntry::getSavedContentEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "userId"}, false),
+				"", SavedContentEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U",
 					new String[] {
@@ -1779,18 +1786,13 @@ public class SavedContentEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "userId"}, true),
+				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
+				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "userId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "userId"}, false),
-				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
-				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
-				SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SavedContentEntry::getSavedContentEntryId,
+				"",
 				new FinderColumn<>(
 					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getGroupId),
@@ -1800,7 +1802,13 @@ public class SavedContentEntryPersistenceImpl
 
 		_collectionPersistenceFinderByG_CN =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SavedContentEntry::getSavedContentEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_CN",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "classNameId"}, false),
+				"", SavedContentEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_CN",
 					new String[] {
@@ -1809,18 +1817,13 @@ public class SavedContentEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "classNameId"}, true),
+				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
+				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_CN",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "classNameId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_CN",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "classNameId"}, false),
-				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
-				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
-				SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SavedContentEntry::getSavedContentEntryId,
+				"",
 				new FinderColumn<>(
 					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getGroupId),
@@ -1859,7 +1862,16 @@ public class SavedContentEntryPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, SavedContentEntry::getSavedContentEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_C",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {"groupId", "classNameId", "classPK"}, false),
+				"", SavedContentEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_C",
 					new String[] {
@@ -1869,6 +1881,8 @@ public class SavedContentEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "classNameId", "classPK"}, true),
+				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
+				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_C",
 					new String[] {
@@ -1876,17 +1890,7 @@ public class SavedContentEntryPersistenceImpl
 						Long.class.getName()
 					},
 					new String[] {"groupId", "classNameId", "classPK"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_C",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {"groupId", "classNameId", "classPK"}, false),
-				_SQL_SELECT_SAVEDCONTENTENTRY_WHERE,
-				_SQL_COUNT_SAVEDCONTENTENTRY_WHERE,
-				SavedContentEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, SavedContentEntry::getSavedContentEntryId,
+				"",
 				new FinderColumn<>(
 					"savedContentEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SavedContentEntry::getGroupId),
@@ -2105,4 +2109,4 @@ public class SavedContentEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2140012309
+// LIFERAY-SERVICE-BUILDER-HASH:-2056808086
