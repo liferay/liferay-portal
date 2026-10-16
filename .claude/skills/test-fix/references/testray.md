@@ -1,6 +1,6 @@
 # Fetch Failure Data From Testray
 
-Pull a single Testray case result through the REST API at `https://testray.liferay.com`. The caller supplies a positive integer case result ID, a test name, or a Testray build URL as `${ARGUMENTS}`.
+Pull a single Testray case result through the REST API at `https://testray.liferay.com`. The caller supplies a positive integer case result ID, a test name, or a Testray build URL as the failure identifier (see **Input** in the skill).
 
 ## Preconditions
 

@@ -1,7 +1,7 @@
 ---
 
 allowed-tools: [Bash, Edit, Glob, Grep, Read, Skill, Write]
-argument-hint: '<caseResultId | testName | testrayBuildUrl>'
+argument-hint: '<caseResultId | testName | testrayBuildUrl> [--evidence <file>] [--side Product|Test] [--task <KEY>]'
 description: Resolve a single Liferay test failure end-to-end.
 name: test-fix
 
@@ -17,17 +17,31 @@ Resolve a single test failure end-to-end.
 
 ## Input
 
+The failure identifier is everything in `${ARGUMENTS}` before the first `--` option. The options are described in **Triage Side**.
+
 ### Case Result ID
 
-When `${ARGUMENTS}` is a positive integer, use it directly as the Testray case result ID.
+When the failure identifier is a positive integer, use it directly as the Testray case result ID.
 
 ### Testray Build URL
 
-When `${ARGUMENTS}` is a URL of the form `https://testray.liferay.com/#/project/<projectId>/routines/<routineId>/build/<buildId>?filter=<urlencoded-json>`, resolve it to a case result ID by following [`references/testray.md`](references/testray.md). The procedure returns a case result ID that the rest of the workflow consumes identically to a user-supplied one.
+When the failure identifier is a URL of the form `https://testray.liferay.com/#/project/<projectId>/routines/<routineId>/build/<buildId>?filter=<urlencoded-json>`, resolve it to a case result ID by following [`references/testray.md`](references/testray.md). The procedure returns a case result ID that the rest of the workflow consumes identically to a user supplied one.
 
 ### Test Name
 
-When `${ARGUMENTS}` is anything else, resolve it to a case result ID by following [`references/testray.md`](references/testray.md). When the resolution aborts, surface the reason and ask the user to retry with the case result ID directly.
+When the failure identifier is anything else, resolve it to a case result ID by following [`references/testray.md`](references/testray.md). When the resolution aborts, surface the reason and ask the user to retry with the case result ID directly.
+
+### Triage Side
+
+When the `test-triage` skill hands over the failure, it passes the side it decided as `--side Product` or `--side Test`, the file holding its evidence as `--evidence <file>`, and, when triage reuses an existing Task (after a handback, or an open Task nobody is working on), that Task as `--task <KEY>`. Stay inside the side:
+
+- **`Product`**: the verdict can only be `Bug in portal`, `No fix needed`, or `Unresolved`.
+
+- **`Test`**: the verdict can only be `Outdated test`, `No fix needed`, or `Unresolved`. The suspect range locates what triggered the failure, and the test fix may change any test code; the range rule applies only to `Bug in portal`. Removing, weakening, or changing an assertion or expected value still needs the documented contract change described in **Iterate Through Suspects**; without it, hand the failure back. When the test has no recorded last pass, skip **Identify Suspect Commits** and **Iterate Through Suspects** and fix the test from the triage evidence. Stop after three attempts without a green run and exit `Unresolved`. Lock the verdict only after a green local run, and name the test side cause in the **Conclusion** and the pull request's Root Cause section instead of an offending commit.
+
+When `--side` is passed, every exit other than `Bug in portal` or `Outdated test` (a handback, `Unresolved`, or `No fix needed`) adds the `test-triage-review` label to the Task through the Jira REST API. The one exception is the open pull request exit in **Claim the Failure**, which creates no Task and adds no label; a Task passed with `--task` keeps any label it already has. The label makes sure the failure reaches a person even if the triage run stops before it acts on the result. Copy the routine name from the `--evidence` file into the outcome comment. When `--side` is passed and **Claim the Failure** finds an unresolved `claude-test-fix` ticket for the test without `--task` pointing at it, exit `Unresolved` naming that ticket, add the label to it, and comment the routine name from `--evidence` on it, instead of skipping. When `--side` is passed and every candidate is skipped as resolved, do the same with the newest of those tickets. Under `--side Product`, a local pass is never fixed with a test change: exit `No fix needed` or hand back.
+
+When the investigation points to the other side, stop and hand the failure back: exit with `Verdict: Unresolved`, put both sets of evidence in the **Conclusion**, post the handover as a single comment on the Task that starts with `Handed back to test-triage: <reason>` (instead of the separate handover comment in **Jira Tickets**), and return the Task key so `test-triage` can pass it as `--task` on the next handoff.
 
 ### Failure Data
 
@@ -64,7 +78,7 @@ One of:
 
 One sentence describing the outcome:
 
-- For `Bug in portal` and `Outdated test`, name the offending commit (short SHA and subject) and what it changed.
+- For `Bug in portal` and `Outdated test`, name the offending commit (short SHA and subject) and what it changed (for a `Test` side run with no last pass, the test side cause instead; see **Triage Side**).
 - For `No fix needed`, the literal string `Test passes locally`.
 - For `Unresolved`, an honest handover summary listing hypotheses considered, attempts made, observed effects, and the most plausible remaining lead.
 
@@ -88,7 +102,7 @@ The Task created in **Claim the Failure** is the persistent ticket of record for
 
 Only when the test was fixed (verdict `Bug in portal` or `Outdated test`): the URL of the pull request opened for the fix.
 
-Make a commit, then find the owner of the changed files using `<repo-root>/.github/CODEOWNERS` and invoke the `pr` skill with it as the target repository. Override the user's title-only default and pass the body content explicitly so the pull request explains the regression.
+Make a commit, then find the owner of the changed files using `<repo-root>/.github/CODEOWNERS` and invoke the `pr` skill with it as the target repository. When CODEOWNERS has no entry for the changed files (Poshi files under `portal-web/test/functional`), target the team whose routine ran the test, named in the `--evidence` file, or ask the user. Override the user's title only default and pass the body content explicitly so the pull request explains the regression.
 
 Use this template. The browse URL on the first line points at the ticket the `pr` skill resolves (the Technical Task subtask, not the parent Task), so reviewers land on the same ticket where the pull request URL is recorded:
 
@@ -121,6 +135,8 @@ Commit `<short-sha>` ("<subject>") <one or two sentences>.
 
 ### Claim the Failure
 
+When `--task` is passed, reuse that Task: reopen it when it is resolved, add the `claude-test-fix` label when it lacks it, skip the Jira check and the `jira-task` and `start-work` steps below, and continue on the existing branch named after the Task's **Technical Task** subtask (invoke `start-work` on the Task when no local branch exists).
+
 1. Check Jira for an LPD ticket whose summary contains `<test-name>` and is labeled `claude-test-fix`. Decide whether it already covers this failure by its state:
 
 	- **Unresolved** (Open, In Progress, or any nonresolved state) → claimed, skip. Someone is already working on it.
@@ -130,6 +146,8 @@ Commit `<short-sha>` ("<subject>") <one or two sentences>.
 		- **No fix commit found** (test-only ticket, unmerged commit, or a nonfixing resolution) → fall back to the resolution date: resolved before `<failureDate>` proceeds, resolved on or after skips.
 
 	When skipping and other candidates remain, retry with the next one.
+
+1. Search open pull requests that change the test file or any helper it calls (macros, page objects, fixtures), in the fork of each owning team from `.github/CODEOWNERS` (the fork of every team handle in CODEOWNERS when it has no entry for the file, as for Poshi files under `portal-web/test/functional`) and in `brianchandotcom/liferay-portal`. Filter on changed files, as `test-triage` does in **Map to Existing Work**; `--search` only matches titles and descriptions. When an open pull already changes the same code for this failure, exit with `Verdict: Unresolved` and that pull request's URL in the **Conclusion**, without creating a Task or adding any label: a second fix for the same code conflicts with the first once both are merged.
 
 1. Invoke the `jira-task` skill with summary `<test-name>` and a description that names the case result ID, the source build, and the failure trace excerpt. Add the `claude-test-fix` label.
 
@@ -149,10 +167,12 @@ Inspect the test source to discover which feature flags it depends on. Mirror th
 
 #### Run the Test
 
+Before trusting a local result, make the bundle match how CI ran the test by following [`../test-triage/references/local-environment.md`](../test-triage/references/local-environment.md). Virtual instances, leftover data from earlier runs, and stale or shared bundles have each produced a local result that was the mirror image of CI. Check them again before concluding `No fix needed` from a local pass.
+
 Run the test, deploying first when the type requires it. For `Java Semantic Versioning`, the "test" is `<gradlew> baseline` from the failing module — strictly an API contract check, not a behavioral test. For test types that exercise the runtime (`Java Integration`, `Playwright`, `Poshi`), also read the server log after the run; it captures portal-side exceptions, deployment errors, and stack traces that never reach **errorTrace**, and frequently names the real failure. Then compare the local outcome with **errorTrace**:
 
-- **Test passes** → check whether a commit between `${FIRST_FAIL_SHA}` and `HEAD` already addresses the failure. When one does, exit with `Verdict: No fix needed`. Otherwise, reason about why the test failed in CI (the test may be flaky or fail for environmental reasons). Try to fix it and rerun to confirm. When no plausible cause surfaces, exit with `Verdict: No fix needed`. Skip **Identify Suspect Commits** and **Iterate Through Suspects** in either case.
-- **Same failure** → continue to **Identify Suspect Commits**.
+- **Test passes** → check whether a commit between `${FIRST_FAIL_SHA}` and `HEAD` (when `firstFailSha` is `null`, use **buildSha**) already addresses the failure. When one does, exit with `Verdict: No fix needed`. Otherwise, reason about why the test failed in CI (the test may be flaky or fail for environmental reasons). Try to fix it and rerun to confirm. When no plausible cause surfaces, exit with `Verdict: No fix needed`. Skip **Identify Suspect Commits** and **Iterate Through Suspects** in either case.
+- **Same failure** → continue to **Identify Suspect Commits** (a `Test` side run with no last pass goes straight to the fix from the triage evidence; see **Triage Side**).
 - **Different failure** → surface the diff and ask the user whether to proceed. When the user is unreachable or declines, mark the failure as `Unresolved` with a `Conclusion` summarizing both traces (the one returned by the Testray fetch and the one observed locally) and exit.
 
 ### Identify Suspect Commits
@@ -177,11 +197,15 @@ Apply candidate fixes as uncommitted changes; the **Pull Request** step commits 
 
 1. Run the test again.
 
+Keep each verdict inside its side. An `Outdated test` fix changes only test code (functional tests, Playwright, test modules). A `Bug in portal` fix changes only product code inside the suspect range; a new regression test is the one allowed addition outside it. For a `Bug in portal` verdict on a test that exercises the runtime (`Java Integration`, `Playwright`, `Poshi`), also reproduce the defect without the test before locking the verdict, and confirm the fix changes what a user sees, not only the test result.
+
 When the test turns green, do **not** lock in the verdict immediately — keep reading the remaining suspects to confirm none of them is a stronger explanation. Settling on the first green fix is how a wrong fix gets shipped; only commit once no better candidate surfaces.
 
 When the current candidate set is exhausted without green, broaden it (next-ranked files, infrastructure) and iterate again — up to **three rounds**. After the third round without convergence, or when candidates are exhausted, mark the failure as `Unresolved` with a `Conclusion` listing the suspects analyzed, attempts made, what each changed about the failure, and the most plausible remaining lead. Run the cleanup in **Restore the Portal** and exit.
 
 Once the verdict is locked in (only ever after a green local run — never commit or open a PR otherwise), record the offending commit (short SHA + subject) and one sentence explaining how it broke the test — reused in the PR body's Root Cause section (see **Pull Request**).
+
+For a `Test` side run with no last pass, record the test side cause instead of an offending commit (see **Triage Side**).
 
 ### Restore the Portal
 
@@ -190,3 +214,5 @@ This step is idempotent: the portal must end the run in the same state it starte
 When **Set Feature Flags** changed `<bundles>/portal-ext.properties`, restore the snapshot and bounce Tomcat to pick the original properties back up.
 
 When **Set Feature Flags** was skipped because the test does not need flag changes, Tomcat keeps running untouched and there is nothing to do.
+
+When the run ends without a commit (`Unresolved`, including a hand back to `test-triage`), discard the uncommitted candidate changes (`git restore` on the touched files) and redeploy each module they touched from the clean tree, so the next run starts from the code under test.
