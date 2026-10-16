@@ -228,68 +228,6 @@ public interface CommerceInventoryReplenishmentItemPersistence
 		long commerceInventoryWarehouseId);
 
 	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where availabilityDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.inventory.model.impl.CommerceInventoryReplenishmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param availabilityDate the availability date
-	 * @param start the lower bound of the range of commerce inventory replenishment items
-	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce inventory replenishment items
-	 */
-	public java.util.List<CommerceInventoryReplenishmentItem>
-		findByAvailabilityDate(
-			Date availabilityDate, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<CommerceInventoryReplenishmentItem> orderByComparator,
-			boolean useFinderCache);
-
-	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where availabilityDate = &#63;.
-	 *
-	 * @param availabilityDate the availability date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce inventory replenishment item
-	 * @throws NoSuchInventoryReplenishmentItemException if a matching commerce inventory replenishment item could not be found
-	 */
-	public CommerceInventoryReplenishmentItem findByAvailabilityDate_First(
-			Date availabilityDate,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<CommerceInventoryReplenishmentItem> orderByComparator)
-		throws NoSuchInventoryReplenishmentItemException;
-
-	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where availabilityDate = &#63;.
-	 *
-	 * @param availabilityDate the availability date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce inventory replenishment item, or <code>null</code> if a matching commerce inventory replenishment item could not be found
-	 */
-	public CommerceInventoryReplenishmentItem fetchByAvailabilityDate_First(
-		Date availabilityDate,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<CommerceInventoryReplenishmentItem> orderByComparator);
-
-	/**
-	 * Removes all the commerce inventory replenishment items where availabilityDate = &#63; from the database.
-	 *
-	 * @param availabilityDate the availability date
-	 */
-	public void removeByAvailabilityDate(Date availabilityDate);
-
-	/**
-	 * Returns the number of commerce inventory replenishment items where availabilityDate = &#63;.
-	 *
-	 * @param availabilityDate the availability date
-	 * @return the number of matching commerce inventory replenishment items
-	 */
-	public int countByAvailabilityDate(Date availabilityDate);
-
-	/**
 	 * Returns an ordered range of all the commerce inventory replenishment items where sku = &#63;.
 	 *
 	 * <p>
@@ -768,62 +706,6 @@ public interface CommerceInventoryReplenishmentItemPersistence
 	}
 
 	/**
-	 * Returns all the commerce inventory replenishment items where availabilityDate = &#63;.
-	 *
-	 * @param availabilityDate the availability date
-	 * @return the matching commerce inventory replenishment items
-	 */
-	public default java.util.List<CommerceInventoryReplenishmentItem>
-		findByAvailabilityDate(Date availabilityDate) {
-
-		return findByAvailabilityDate(
-			availabilityDate,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the commerce inventory replenishment items where availabilityDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.inventory.model.impl.CommerceInventoryReplenishmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param availabilityDate the availability date
-	 * @param start the lower bound of the range of commerce inventory replenishment items
-	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
-	 * @return the range of matching commerce inventory replenishment items
-	 */
-	public default java.util.List<CommerceInventoryReplenishmentItem>
-		findByAvailabilityDate(Date availabilityDate, int start, int end) {
-
-		return findByAvailabilityDate(availabilityDate, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where availabilityDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.inventory.model.impl.CommerceInventoryReplenishmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param availabilityDate the availability date
-	 * @param start the lower bound of the range of commerce inventory replenishment items
-	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching commerce inventory replenishment items
-	 */
-	public default java.util.List<CommerceInventoryReplenishmentItem>
-		findByAvailabilityDate(
-			Date availabilityDate, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<CommerceInventoryReplenishmentItem> orderByComparator) {
-
-		return findByAvailabilityDate(
-			availabilityDate, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the commerce inventory replenishment items where sku = &#63;.
 	 *
 	 * @param sku the sku
@@ -1012,4 +894,4 @@ public interface CommerceInventoryReplenishmentItemPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-789072009
+// LIFERAY-SERVICE-BUILDER-HASH:1508281372

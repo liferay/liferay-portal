@@ -376,95 +376,6 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	private CollectionPersistenceFinder
 		<CommerceInventoryReplenishmentItem,
 		 NoSuchInventoryReplenishmentItemException>
-			_collectionPersistenceFinderByAvailabilityDate;
-
-	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where availabilityDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param availabilityDate the availability date
-	 * @param start the lower bound of the range of commerce inventory replenishment items
-	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce inventory replenishment items
-	 */
-	@Override
-	public List<CommerceInventoryReplenishmentItem> findByAvailabilityDate(
-		Date availabilityDate, int start, int end,
-		OrderByComparator<CommerceInventoryReplenishmentItem> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByAvailabilityDate.find(
-			finderCache, new Object[] {availabilityDate}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where availabilityDate = &#63;.
-	 *
-	 * @param availabilityDate the availability date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce inventory replenishment item
-	 * @throws NoSuchInventoryReplenishmentItemException if a matching commerce inventory replenishment item could not be found
-	 */
-	@Override
-	public CommerceInventoryReplenishmentItem findByAvailabilityDate_First(
-			Date availabilityDate,
-			OrderByComparator<CommerceInventoryReplenishmentItem>
-				orderByComparator)
-		throws NoSuchInventoryReplenishmentItemException {
-
-		return _collectionPersistenceFinderByAvailabilityDate.findFirst(
-			finderCache, new Object[] {availabilityDate}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where availabilityDate = &#63;.
-	 *
-	 * @param availabilityDate the availability date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce inventory replenishment item, or <code>null</code> if a matching commerce inventory replenishment item could not be found
-	 */
-	@Override
-	public CommerceInventoryReplenishmentItem fetchByAvailabilityDate_First(
-		Date availabilityDate,
-		OrderByComparator<CommerceInventoryReplenishmentItem>
-			orderByComparator) {
-
-		return _collectionPersistenceFinderByAvailabilityDate.fetchFirst(
-			finderCache, new Object[] {availabilityDate}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce inventory replenishment items where availabilityDate = &#63; from the database.
-	 *
-	 * @param availabilityDate the availability date
-	 */
-	@Override
-	public void removeByAvailabilityDate(Date availabilityDate) {
-		_collectionPersistenceFinderByAvailabilityDate.remove(
-			finderCache, new Object[] {availabilityDate});
-	}
-
-	/**
-	 * Returns the number of commerce inventory replenishment items where availabilityDate = &#63;.
-	 *
-	 * @param availabilityDate the availability date
-	 * @return the number of matching commerce inventory replenishment items
-	 */
-	@Override
-	public int countByAvailabilityDate(Date availabilityDate) {
-		return _collectionPersistenceFinderByAvailabilityDate.count(
-			finderCache, new Object[] {availabilityDate});
-	}
-
-	private CollectionPersistenceFinder
-		<CommerceInventoryReplenishmentItem,
-		 NoSuchInventoryReplenishmentItemException>
 			_collectionPersistenceFinderBySku;
 
 	/**
@@ -1266,37 +1177,6 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 					CommerceInventoryReplenishmentItem::
 						getCommerceInventoryWarehouseId));
 
-		_collectionPersistenceFinderByAvailabilityDate =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByAvailabilityDate",
-					new String[] {
-						Date.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"availabilityDate"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByAvailabilityDate",
-					new String[] {Date.class.getName()},
-					new String[] {"availabilityDate"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByAvailabilityDate",
-					new String[] {Date.class.getName()},
-					new String[] {"availabilityDate"}, false),
-				_SQL_SELECT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE,
-				_SQL_COUNT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE,
-				CommerceInventoryReplenishmentItemModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"commerceInventoryReplenishmentItem.", "availabilityDate",
-					FinderColumn.Type.DATE, "=", true, true,
-					CommerceInventoryReplenishmentItem::getAvailabilityDate));
-
 		_collectionPersistenceFinderBySku = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1505,4 +1385,4 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1184455727
+// LIFERAY-SERVICE-BUILDER-HASH:862648843

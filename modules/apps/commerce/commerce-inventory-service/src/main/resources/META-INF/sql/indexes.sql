@@ -4,7 +4,6 @@ create index IX_E7D143D9 on CIAudit (createDate);
 create index IX_33BF9CB0 on CIBookedQuantity (expirationDate);
 create index IX_EB8535EA on CIBookedQuantity (sku[$COLUMN_LENGTH:75$], companyId, unitOfMeasureKey[$COLUMN_LENGTH:75$]);
 
-create index IX_F588314 on CIReplenishmentItem (availabilityDate);
 create index IX_967CACA8 on CIReplenishmentItem (commerceInventoryWarehouseId);
 create unique index IX_3462AACC on CIReplenishmentItem (companyId, externalReferenceCode[$COLUMN_LENGTH:75$]);
 create index IX_EBEBFEE2 on CIReplenishmentItem (sku[$COLUMN_LENGTH:75$], companyId, unitOfMeasureKey[$COLUMN_LENGTH:75$]);

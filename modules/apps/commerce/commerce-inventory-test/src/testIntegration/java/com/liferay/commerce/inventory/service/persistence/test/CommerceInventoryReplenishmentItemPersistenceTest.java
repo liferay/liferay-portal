@@ -283,13 +283,6 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 	}
 
 	@Test
-	public void testCountByAvailabilityDate() throws Exception {
-		_persistence.countByAvailabilityDate(RandomTestUtil.nextDate());
-
-		_persistence.countByAvailabilityDate(RandomTestUtil.nextDate());
-	}
-
-	@Test
 	public void testCountBySku() throws Exception {
 		_persistence.countBySku("");
 
@@ -758,4 +751,4 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1352631320
+// LIFERAY-SERVICE-BUILDER-HASH:-354449318
