@@ -17,6 +17,7 @@ import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.controller.PortletImportController;
 import com.liferay.exportimport.internal.lar.PortletDataContextThreadLocal;
+import com.liferay.exportimport.internal.lar.PortletLayoutListenerHelper;
 import com.liferay.exportimport.kernel.controller.ExportImportController;
 import com.liferay.exportimport.kernel.exception.ExportImportDocumentException;
 import com.liferay.exportimport.kernel.exception.LARFileException;
@@ -1380,6 +1381,16 @@ public class PortletImportControllerImpl implements PortletImportController {
 			resetPortletScope(
 				portletDataContext, portletDataContext.getGroupId());
 		}
+
+		// Portlet layout listener
+
+		PortletLayoutListenerHelper portletLayoutListenerHelper =
+			new PortletLayoutListenerHelper(
+				_layoutLocalService, _portletLocalService,
+				_portletPreferencesLocalService);
+
+		portletLayoutListenerHelper.setUpPortlet(
+			layout, portletDataContext.getPortletId(), userId);
 
 		// Portlet permissions
 
