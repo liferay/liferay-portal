@@ -86,6 +86,12 @@ public interface KaleoInstanceLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public KaleoInstance addKaleoInstance(
+			String kaleoDefinitionName, Integer kaleoDefinitionVersion,
+			String transitionName, Map<String, Serializable> workflowContext,
+			ServiceContext serviceContext, boolean waitForCompletion)
+		throws PortalException;
+
 	@Indexable(type = IndexableType.REINDEX)
 	public KaleoInstance completeKaleoInstance(long kaleoInstanceId)
 		throws PortalException;
@@ -401,4 +407,4 @@ public interface KaleoInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-980243224
+// LIFERAY-SERVICE-BUILDER-HASH:-2068388726

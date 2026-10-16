@@ -64,6 +64,18 @@ public class KaleoInstanceLocalServiceUtil {
 			kaleoDefinitionVersion, workflowContext, serviceContext);
 	}
 
+	public static KaleoInstance addKaleoInstance(
+			String kaleoDefinitionName, Integer kaleoDefinitionVersion,
+			String transitionName, Map<String, Serializable> workflowContext,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext,
+			boolean waitForCompletion)
+		throws PortalException {
+
+		return getService().addKaleoInstance(
+			kaleoDefinitionName, kaleoDefinitionVersion, transitionName,
+			workflowContext, serviceContext, waitForCompletion);
+	}
+
 	public static KaleoInstance completeKaleoInstance(long kaleoInstanceId)
 		throws PortalException {
 
@@ -474,4 +486,4 @@ public class KaleoInstanceLocalServiceUtil {
 			KaleoInstanceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:133126566
+// LIFERAY-SERVICE-BUILDER-HASH:-1636303169
