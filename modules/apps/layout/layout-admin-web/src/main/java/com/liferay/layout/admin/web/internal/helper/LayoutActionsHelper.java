@@ -200,7 +200,7 @@ public class LayoutActionsHelper {
 		if (StagingUtil.isIncomplete(layout) ||
 			!layout.isSupportsEmbeddedPortlets() ||
 			!isShowAddRootLayoutButton(selGroup) ||
-			!OrphanPortletsUtil.hasOrphanPortlets(layout)) {
+			!OrphanPortletsUtil.hasOrphanPortlets(layout, _portletRegistry)) {
 
 			return false;
 		}

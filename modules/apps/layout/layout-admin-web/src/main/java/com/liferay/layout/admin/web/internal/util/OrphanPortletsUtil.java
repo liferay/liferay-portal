@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 
 import java.util.ArrayList;
@@ -38,72 +39,77 @@ public class OrphanPortletsUtil {
 			return Collections.emptyList();
 		}
 
+		List<PortletPreferences> portletPreferencesList =
+			_getPortletPreferences(layout);
+
+		if (portletPreferencesList.isEmpty()) {
+			return Collections.emptyList();
+		}
+
 		List<String> explicitlyAddedPortletIds = _getExplicitlyAddedPortletIds(
 			layout, portletRegistry);
 
 		List<Portlet> orphanPortlets = new ArrayList<>();
 
-		for (PortletPreferences portletPreferences :
-				PortletPreferencesLocalServiceUtil.getPortletPreferences(
-					PortletKeys.PREFS_OWNER_ID_DEFAULT,
-					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid())) {
+		for (PortletPreferences portletPreferences : portletPreferencesList) {
+			Portlet portlet = _fetchOrphanPortlet(
+				layout.getCompanyId(), explicitlyAddedPortletIds,
+				portletPreferences.getPortletId());
 
-			String portletId = portletPreferences.getPortletId();
-
-			Portlet portlet = PortletLocalServiceUtil.getPortletById(
-				layout.getCompanyId(), portletId);
-
-			if (portlet.isSystem() ||
-				explicitlyAddedPortletIds.contains(portletId)) {
-
-				continue;
+			if (portlet != null) {
+				orphanPortlets.add(portlet);
 			}
-
-			orphanPortlets.add(portlet);
 		}
 
 		return orphanPortlets;
 	}
 
-	public static boolean hasOrphanPortlets(Layout layout) {
+	public static boolean hasOrphanPortlets(
+		Layout layout, PortletRegistry portletRegistry) {
+
 		if (!layout.isSupportsEmbeddedPortlets()) {
 			return false;
 		}
 
-		LayoutTypePortlet selLayoutTypePortlet =
-			(LayoutTypePortlet)layout.getLayoutType();
-
-		List<Portlet> explicitlyAddedPortlets =
-			selLayoutTypePortlet.getExplicitlyAddedPortlets();
-
-		List<String> explicitlyAddedPortletIds = new ArrayList<>();
-
-		for (Portlet explicitlyAddedPortlet : explicitlyAddedPortlets) {
-			explicitlyAddedPortletIds.add(
-				explicitlyAddedPortlet.getPortletId());
-		}
-
 		List<PortletPreferences> portletPreferencesList =
-			PortletPreferencesLocalServiceUtil.getPortletPreferences(
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
+			_getPortletPreferences(layout);
 
-		for (PortletPreferences portletPreferences : portletPreferencesList) {
-			String portletId = portletPreferences.getPortletId();
-
-			Portlet portlet = PortletLocalServiceUtil.getPortletById(
-				layout.getCompanyId(), portletId);
-
-			if (portlet.isSystem() ||
-				explicitlyAddedPortletIds.contains(portletId)) {
-
-				continue;
-			}
-
-			return true;
+		if (portletPreferencesList.isEmpty()) {
+			return false;
 		}
 
-		return false;
+		List<String> explicitlyAddedPortletIds = _getExplicitlyAddedPortletIds(
+			layout, portletRegistry);
+
+		return ListUtil.exists(
+			portletPreferencesList,
+			portletPreferences -> {
+				Portlet portlet = _fetchOrphanPortlet(
+					layout.getCompanyId(), explicitlyAddedPortletIds,
+					portletPreferences.getPortletId());
+
+				if (portlet == null) {
+					return false;
+				}
+
+				return true;
+			});
+	}
+
+	private static Portlet _fetchOrphanPortlet(
+		long companyId, List<String> explicitlyAddedPortletIds,
+		String portletId) {
+
+		Portlet portlet = PortletLocalServiceUtil.getPortletById(
+			companyId, portletId);
+
+		if (portlet.isSystem() ||
+			explicitlyAddedPortletIds.contains(portletId)) {
+
+			return null;
+		}
+
+		return portlet;
 	}
 
 	private static List<String> _getExplicitlyAddedPortletIds(
@@ -120,6 +126,14 @@ public class OrphanPortletsUtil {
 		return TransformUtil.transform(
 			layoutTypePortlet.getExplicitlyAddedPortlets(),
 			Portlet::getPortletId);
+	}
+
+	private static List<PortletPreferences> _getPortletPreferences(
+		Layout layout) {
+
+		return PortletPreferencesLocalServiceUtil.getPortletPreferences(
+			PortletKeys.PREFS_OWNER_ID_DEFAULT,
+			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
 	}
 
 	private static List<String> _getTypeContentExplicitlyAddedPortletIds(
