@@ -37,6 +37,12 @@ public class ClientHttpRequestFactoryUtil {
 			long connectTimeoutMillis, int maxConnections,
 			long responseTimeoutMillis) {
 
+		HttpClientBuilder httpClientBuilder = HttpClients.custom();
+
+		PoolingHttpClientConnectionManagerBuilder
+			poolingHttpClientConnectionManagerBuilder =
+				PoolingHttpClientConnectionManagerBuilder.create();
+
 		ConnectionConfig.Builder connectionConfigBuilder =
 			ConnectionConfig.custom();
 
@@ -44,17 +50,17 @@ public class ClientHttpRequestFactoryUtil {
 			connectTimeoutMillis, TimeUnit.MILLISECONDS);
 		connectionConfigBuilder.setValidateAfterInactivity(2, TimeUnit.SECONDS);
 
-		PoolingHttpClientConnectionManagerBuilder
-			poolingHttpClientConnectionManagerBuilder =
-				PoolingHttpClientConnectionManagerBuilder.create();
-
 		poolingHttpClientConnectionManagerBuilder.setDefaultConnectionConfig(
 			connectionConfigBuilder.build());
+
 		poolingHttpClientConnectionManagerBuilder.setMaxConnPerRoute(
 			maxConnections);
 		poolingHttpClientConnectionManagerBuilder.setMaxConnTotal(
 			maxConnections);
 		poolingHttpClientConnectionManagerBuilder.useSystemProperties();
+
+		httpClientBuilder.setConnectionManager(
+			poolingHttpClientConnectionManagerBuilder.build());
 
 		RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
 
@@ -63,11 +69,8 @@ public class ClientHttpRequestFactoryUtil {
 		requestConfigBuilder.setResponseTimeout(
 			responseTimeoutMillis, TimeUnit.MILLISECONDS);
 
-		HttpClientBuilder httpClientBuilder = HttpClients.custom();
-
-		httpClientBuilder.setConnectionManager(
-			poolingHttpClientConnectionManagerBuilder.build());
 		httpClientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
+
 		httpClientBuilder.useSystemProperties();
 
 		return new GetHttpComponentsClientHttpRequestFactory(
