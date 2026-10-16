@@ -11,7 +11,6 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.internal.exportimport.data.handler.test.util.ObjectEntryTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -52,22 +51,20 @@ public class ObjectEntrySiteBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected void addEmptyEntry(String externalReferenceCode)
+	protected void addEmptyEntry(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		Group group = getGroup();
-
 		ObjectEntryTestUtil.addEmptyObjectEntry(
-			externalReferenceCode, group.getGroupId(), _objectDefinition,
+			externalReferenceCode, groupId, _objectDefinition,
 			TestPropsValues.getUserId());
 	}
 
 	@Override
-	protected void addEntry(String externalReferenceCode) throws Exception {
-		Group group = getGroup();
+	protected void addEntry(String externalReferenceCode, long groupId)
+		throws Exception {
 
 		ObjectEntryTestUtil.addObjectEntry(
-			externalReferenceCode, group.getGroupId(), _objectDefinition,
+			externalReferenceCode, groupId, _objectDefinition,
 			TestPropsValues.getUserId());
 	}
 
@@ -76,11 +73,11 @@ public class ObjectEntrySiteBatchEnginePortletDataHandlerTest
 	}
 
 	@Override
-	protected void deleteEntry(String externalReferenceCode) throws Exception {
-		Group group = getGroup();
+	protected void deleteEntry(String externalReferenceCode, long groupId)
+		throws Exception {
 
 		ObjectEntryTestUtil.deleteObjectEntry(
-			externalReferenceCode, group.getGroupId(), _objectDefinition);
+			externalReferenceCode, groupId, _objectDefinition);
 	}
 
 	@Override
@@ -135,34 +132,28 @@ public class ObjectEntrySiteBatchEnginePortletDataHandlerTest
 
 	@Override
 	protected void updateCreatorUserId(
-			String externalReferenceCode, long userId)
+			String externalReferenceCode, long groupId, long userId)
 		throws Exception {
 
-		Group group = getGroup();
-
 		ObjectEntryTestUtil.updateCreatorUserId(
-			externalReferenceCode, group.getGroupId(), _objectDefinition,
-			userId);
+			externalReferenceCode, groupId, _objectDefinition, userId);
 	}
 
 	@Override
-	protected void updateEntry(String externalReferenceCode) throws Exception {
-		Group group = getGroup();
+	protected void updateEntry(String externalReferenceCode, long groupId)
+		throws Exception {
 
 		ObjectEntryTestUtil.updateObjectEntry(
-			externalReferenceCode, group.getGroupId(), _objectDefinition);
+			externalReferenceCode, groupId, _objectDefinition);
 	}
 
 	@Override
 	protected void updateModifiedDate(
-			String externalReferenceCode, Date modifiedDate)
+			String externalReferenceCode, long groupId, Date modifiedDate)
 		throws Exception {
 
-		Group group = getGroup();
-
 		ObjectEntryTestUtil.updateModifiedDate(
-			externalReferenceCode, group.getGroupId(), modifiedDate,
-			_objectDefinition);
+			externalReferenceCode, groupId, modifiedDate, _objectDefinition);
 	}
 
 	@DeleteAfterTestRun
