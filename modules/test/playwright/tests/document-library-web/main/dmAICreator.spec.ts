@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
 const MOCKED_IMAGE_PATH =
@@ -16,7 +17,8 @@ const MOCKED_IMAGE_PATH =
 const test = mergeTests(
 	documentLibraryPagesTest,
 	isolatedSiteTest,
-	loginTest()
+	loginTest(),
+	siteSettingsPagesTest
 );
 
 test(
@@ -61,6 +63,46 @@ test(
 		}).toPass({timeout: 30000});
 
 		await aiCreatorInstanceSettingsPage.enableOpenAIImageGeneration();
+	}
+);
+
+test(
+	'Create AI Image option is hidden when disabled from Site Settings',
+	{tag: '@LPD-109984'},
+	async ({
+		aiCreatorInstanceSettingsPage,
+		documentLibraryPage,
+		page,
+		site,
+		siteSettingsPage,
+	}) => {
+
+		// Disable OpenAI image generation for the site
+
+		await siteSettingsPage.goToSiteSetting(
+			'AI Creator',
+			'OpenAI',
+			site.friendlyUrlPath
+		);
+
+		await aiCreatorInstanceSettingsPage.openAIImageGenerationCheckbox.uncheck();
+		await aiCreatorInstanceSettingsPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		// The Create AI Image option is hidden in the site
+
+		await expect(async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.openNewButton();
+
+			await expect(
+				page.getByRole('menuitem', {exact: true, name: 'Folder'})
+			).toBeVisible({timeout: 3000});
+			await expect(
+				page.getByRole('menuitem', {name: 'Create AI Image'})
+			).toBeHidden({timeout: 3000});
+		}).toPass({timeout: 30000});
 	}
 );
 
