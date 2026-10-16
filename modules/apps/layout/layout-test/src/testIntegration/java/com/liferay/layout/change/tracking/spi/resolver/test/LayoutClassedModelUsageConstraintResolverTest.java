@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.conflict.ConflictInfo;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -56,7 +58,7 @@ public class LayoutClassedModelUsageConstraintResolverTest {
 		String classExternalReferenceCode = RandomTestUtil.randomString();
 		long classNameId = RandomTestUtil.randomLong();
 		long classPK = RandomTestUtil.randomLong();
-		String containKey = RandomTestUtil.randomString();
+		String containerKey = RandomTestUtil.randomString();
 		long containerType = RandomTestUtil.randomLong();
 		long plid = RandomTestUtil.randomLong();
 
@@ -66,13 +68,13 @@ public class LayoutClassedModelUsageConstraintResolverTest {
 
 			_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
 				TestPropsValues.getGroupId(), classExternalReferenceCode,
-				classNameId, classPK, containKey, containerType, plid,
+				classNameId, classPK, containerKey, containerType, plid,
 				ServiceContextTestUtil.getServiceContext());
 		}
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
 			TestPropsValues.getGroupId(), classExternalReferenceCode,
-			classNameId, classPK, containKey, containerType, plid,
+			classNameId, classPK, containerKey, containerType, plid,
 			ServiceContextTestUtil.getServiceContext());
 
 		Map<Long, List<ConflictInfo>> conflictInfoMap =
@@ -87,6 +89,57 @@ public class LayoutClassedModelUsageConstraintResolverTest {
 		}
 	}
 
+	@Test
+	public void testResolveConflictWhenClassExternalReferenceCodeIsNull()
+		throws Exception {
+
+		long classNameId = RandomTestUtil.randomLong();
+		long classPK = RandomTestUtil.randomLong();
+		String containerKey = RandomTestUtil.randomString();
+		long containerType = RandomTestUtil.randomLong();
+		long plid = RandomTestUtil.randomLong();
+
+		LayoutClassedModelUsage publicationLayoutClassedModelUsage = null;
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			publicationLayoutClassedModelUsage =
+				_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
+					TestPropsValues.getGroupId(), null, classNameId, classPK,
+					containerKey, containerType, plid,
+					ServiceContextTestUtil.getServiceContext());
+		}
+
+		LayoutClassedModelUsage productionLayoutClassedModelUsage =
+			_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
+				TestPropsValues.getGroupId(), null, classNameId, classPK,
+				containerKey, containerType, plid,
+				ServiceContextTestUtil.getServiceContext());
+
+		Map<Long, List<ConflictInfo>> conflictInfoMap =
+			_ctCollectionLocalService.checkConflicts(_ctCollection);
+
+		Assert.assertEquals(
+			conflictInfoMap.toString(), 1, conflictInfoMap.size());
+
+		List<ConflictInfo> conflictInfos = conflictInfoMap.get(
+			_portal.getClassNameId(LayoutClassedModelUsage.class));
+
+		Assert.assertEquals(conflictInfos.toString(), 1, conflictInfos.size());
+
+		ConflictInfo conflictInfo = conflictInfos.get(0);
+
+		Assert.assertTrue(conflictInfo.isResolved());
+		Assert.assertEquals(
+			publicationLayoutClassedModelUsage.getLayoutClassedModelUsageId(),
+			conflictInfo.getSourcePrimaryKey());
+		Assert.assertEquals(
+			productionLayoutClassedModelUsage.getLayoutClassedModelUsageId(),
+			conflictInfo.getTargetPrimaryKey());
+	}
+
 	@DeleteAfterTestRun
 	private CTCollection _ctCollection;
 
@@ -96,5 +149,8 @@ public class LayoutClassedModelUsageConstraintResolverTest {
 	@Inject
 	private LayoutClassedModelUsageLocalService
 		_layoutClassedModelUsageLocalService;
+
+	@Inject
+	private Portal _portal;
 
 }
