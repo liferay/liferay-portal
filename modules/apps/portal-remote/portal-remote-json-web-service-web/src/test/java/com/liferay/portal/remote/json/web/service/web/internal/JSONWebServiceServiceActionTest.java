@@ -5,16 +5,23 @@
 
 package com.liferay.portal.remote.json.web.service.web.internal;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.memory.DeleteFileFinalizeAction;
 import com.liferay.petra.memory.FinalizeManager;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.test.FinalizeManagerUtil;
 import com.liferay.portal.kernel.test.GCUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upload.FileItem;
 import com.liferay.portal.kernel.upload.UploadServletRequest;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.remote.json.web.service.JSONWebServiceAction;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -37,6 +44,8 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.mockito.Mockito;
+
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -54,6 +63,10 @@ public class JSONWebServiceServiceActionTest
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		initPortalServices();
+
+		ReflectionTestUtil.setFieldValue(
+			jsonWebServiceActionsManager, "_portal",
+			Mockito.mock(Portal.class));
 
 		_jsonWebServiceServiceAction = new JSONWebServiceServiceAction(
 			jsonWebServiceActionsManager);
@@ -188,6 +201,21 @@ public class JSONWebServiceServiceActionTest
 		_testStatusNotFound("/foo/no-such-model-exception");
 		_testStatusNotFound("/foo/principal-exception");
 		_testStatusNotFound("/foo/security-exception");
+
+		_testJSONRPCError(
+			"Internal error", ClassCastException.class, "hello",
+			LinkedHashMapBuilder.<String, Object>put(
+				"i1", RandomTestUtil.randomString()
+			).build());
+		_testJSONRPCError(
+			"Invalid params", NoSuchModelException.class,
+			"no-such-model-exception", new LinkedHashMap<>());
+		_testJSONRPCError(
+			"Invalid params", PrincipalException.class, "principal-exception",
+			new LinkedHashMap<>());
+		_testJSONRPCError(
+			"Invalid params", SecurityException.class, "security-exception",
+			new LinkedHashMap<>());
 	}
 
 	protected MockHttpServletRequest createInvokerHttpServletRequest(
@@ -321,6 +349,57 @@ public class JSONWebServiceServiceActionTest
 
 				return method.invoke(httpServletRequest, args);
 			});
+	}
+
+	private String _getJSONRPCErrorMessage(
+			String method, Map<String, Object> parameters)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest = createHttpRequest(
+			"/foo", HttpMethods.POST);
+
+		mockHttpServletRequest.setContent(
+			toJSON(
+				LinkedHashMapBuilder.<String, Object>put(
+					"id", RandomTestUtil.randomInt()
+				).put(
+					"jsonrpc", "2.0"
+				).put(
+					"method", method
+				).put(
+					"params", parameters
+				).build()
+			).getBytes());
+
+		Map<String, Object> map = toMap(
+			_jsonWebServiceServiceAction.getJSON(
+				mockHttpServletRequest, new MockHttpServletResponse()));
+
+		Map<String, Object> error = (Map<String, Object>)map.get("error");
+
+		return (String)error.get("message");
+	}
+
+	private void _testJSONRPCError(
+			String expectedErrorMessage,
+			Class<? extends Exception> expectedExceptionClass, String method,
+			Map<String, Object> parameters)
+		throws Exception {
+
+		registerActionClass(FooService.class);
+
+		Assert.assertEquals(
+			expectedErrorMessage, _getJSONRPCErrorMessage(method, parameters));
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"JSON_SERVICE_SERIALIZE_THROWABLE", true)) {
+
+			String message = _getJSONRPCErrorMessage(method, parameters);
+
+			Assert.assertTrue(
+				message.contains(expectedExceptionClass.getName()));
+		}
 	}
 
 	private void _testStatusNotFound(String path) throws Exception {
