@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONObjectImpl;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -150,6 +151,55 @@ public class AICreatorOpenAIClientTest {
 	}
 
 	@Test
+	public void testGetGenerations() throws Exception {
+		String b64JSON = RandomTestUtil.randomString();
+		String url = RandomTestUtil.randomString();
+
+		_getMockResponse(
+			HttpURLConnection.HTTP_OK,
+			JSONUtil.put(
+				"data",
+				JSONUtil.putAll(
+					JSONUtil.put("b64_json", b64JSON),
+					JSONUtil.put("url", url))));
+
+		String apiKey = RandomTestUtil.randomString();
+		String model = RandomTestUtil.randomString();
+		String prompt = RandomTestUtil.randomString();
+		String size = RandomTestUtil.randomString();
+
+		Assert.assertArrayEquals(
+			new String[] {"data:image/png;base64," + b64JSON, url},
+			_aiCreatorOpenAIClient.getGenerations(
+				apiKey, model, prompt, size, 2));
+
+		ArgumentCaptor<Http.Options> argumentCaptor = ArgumentCaptor.forClass(
+			Http.Options.class);
+
+		Mockito.verify(
+			_http
+		).URLtoInputStream(
+			argumentCaptor.capture()
+		);
+
+		Http.Options options = argumentCaptor.getValue();
+
+		Http.Body body = options.getBody();
+
+		JSONObject bodyJSONObject = JSONFactoryUtil.createJSONObject(
+			body.getContent());
+
+		Assert.assertEquals(
+			AICreatorOpenAIClientImpl.ENDPOINT_GENERATIONS,
+			options.getLocation());
+		Assert.assertEquals(model, bodyJSONObject.getString("model"));
+		Assert.assertEquals(2, bodyJSONObject.getInt("n"));
+		Assert.assertEquals(prompt, bodyJSONObject.getString("prompt"));
+		Assert.assertFalse(bodyJSONObject.has("response_format"));
+		Assert.assertEquals(size, bodyJSONObject.getString("size"));
+	}
+
+	@Test
 	public void testValidateAPIKey() throws Exception {
 		JSONObject responseJSONObject = Mockito.mock(JSONObject.class);
 
@@ -157,10 +207,12 @@ public class AICreatorOpenAIClientTest {
 			HttpURLConnection.HTTP_OK, responseJSONObject);
 
 		String apiKey = RandomTestUtil.randomString();
+		String model = RandomTestUtil.randomString();
 
-		_aiCreatorOpenAIClient.validateAPIKey(apiKey);
+		_aiCreatorOpenAIClient.validateAPIKey(apiKey, model);
 
-		_assertOptions(apiKey, AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION);
+		_assertOptions(
+			apiKey, AICreatorOpenAIClientImpl.ENDPOINT_MODELS + "/" + model);
 
 		_assertResponse(response);
 		_assertResponseJSONObject(responseJSONObject);
@@ -168,23 +220,46 @@ public class AICreatorOpenAIClientTest {
 
 	@Test
 	public void testValidateAPIKeyIOException() throws Exception {
+		String model = RandomTestUtil.randomString();
+
 		_testIOException(
-			null, null, AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
-			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey));
+			null, null, AICreatorOpenAIClientImpl.ENDPOINT_MODELS + "/" + model,
+			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey, model));
 	}
 
 	@Test
 	public void testValidateAPIKeyResponseWithErrorKey() throws Exception {
+		String model = RandomTestUtil.randomString();
+
 		_testResponseWithErrorKey(
-			null, null, AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
-			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey));
+			null, null, AICreatorOpenAIClientImpl.ENDPOINT_MODELS + "/" + model,
+			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey, model));
 	}
 
 	@Test
 	public void testValidateAPIKeyUnauthorizedResponseCode() throws Exception {
+		String model = RandomTestUtil.randomString();
+
 		_testUnauthorizedResponseCode(
-			null, null, AICreatorOpenAIClientImpl.ENDPOINT_VALIDATION,
-			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey));
+			null, null, AICreatorOpenAIClientImpl.ENDPOINT_MODELS + "/" + model,
+			apiKey -> _aiCreatorOpenAIClient.validateAPIKey(apiKey, model));
+	}
+
+	@Test
+	public void testValidateAPIKeyWithoutModel() throws Exception {
+		JSONObject responseJSONObject = Mockito.mock(JSONObject.class);
+
+		Http.Response response = _getMockResponse(
+			HttpURLConnection.HTTP_OK, responseJSONObject);
+
+		String apiKey = RandomTestUtil.randomString();
+
+		_aiCreatorOpenAIClient.validateAPIKey(apiKey, null);
+
+		_assertOptions(apiKey, AICreatorOpenAIClientImpl.ENDPOINT_MODELS);
+
+		_assertResponse(response);
+		_assertResponseJSONObject(responseJSONObject);
 	}
 
 	private static void _assertResponse(Http.Response response) {
