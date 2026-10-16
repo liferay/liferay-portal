@@ -1,0 +1,13 @@
+.faro-sign-in {
+	margin: 15vh auto;
+	max-width: 380px;
+	padding: 2rem;
+}
+
+.faro-sign-in .btn-primary {
+	width: 100%;
+}
+
+.faro-sign-in .panel-body {
+	padding: 0.75rem 0;
+}
