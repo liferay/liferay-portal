@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
 
@@ -124,7 +125,15 @@ public class AICreatorOpenAIClientImpl implements AICreatorOpenAIClient {
 			for (int i = 0; i < dataJSONArray.length(); i++) {
 				JSONObject dataJSONObject = dataJSONArray.getJSONObject(i);
 
-				urls = ArrayUtil.append(urls, dataJSONObject.getString("url"));
+				String url = dataJSONObject.getString("url");
+
+				if (Validator.isNull(url)) {
+					url =
+						"data:image/png;base64," +
+							dataJSONObject.getString("b64_json");
+				}
+
+				urls = ArrayUtil.append(urls, url);
 			}
 		}
 

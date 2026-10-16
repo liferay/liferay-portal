@@ -8,6 +8,8 @@ package com.liferay.ai.creator.openai.web.internal.upload;
 import com.liferay.ai.creator.openai.web.internal.constants.AICreatorOpenAIWebKeys;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -16,6 +18,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
@@ -70,12 +73,10 @@ public class AICreatorOpenAIUploadFileEntryHandler
 			throw new PrincipalException("URL path is not a generated image");
 		}
 
-		URL url = new URL(urlPath);
-
 		File file = null;
 
 		try (InputStream inputStream = new BufferedInputStream(
-				url.openStream())) {
+				_openStream(urlPath))) {
 
 			long repositoryId = GetterUtil.getLong(
 				ParamUtil.getLong(portletRequest, "repositoryId"));
@@ -121,6 +122,18 @@ public class AICreatorOpenAIUploadFileEntryHandler
 				file.delete();
 			}
 		}
+	}
+
+	private InputStream _openStream(String urlPath) throws IOException {
+		if (urlPath.startsWith("data:")) {
+			return new UnsyncByteArrayInputStream(
+				Base64.decode(
+					urlPath.substring(urlPath.indexOf(CharPool.COMMA) + 1)));
+		}
+
+		URL url = new URL(urlPath);
+
+		return url.openStream();
 	}
 
 	private final DLAppService _dlAppService;
