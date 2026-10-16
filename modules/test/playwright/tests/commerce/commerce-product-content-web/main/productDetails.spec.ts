@@ -1483,6 +1483,7 @@ test(
 	{tag: '@LPD-85260'},
 	async ({
 		apiHelpers,
+		commerceAdminProductDetailsSkusPage,
 		commerceAdminProductPage,
 		page,
 		productDetailsPage,
@@ -1574,12 +1575,18 @@ test(
 			productDetailsPage.optionSelectorValues('Color')
 		).toHaveText(['Choose an Option', 'Black', 'White']);
 
-		const blackSku =
-			await apiHelpers.headlessCommerceAdminCatalog.getSkuByName('BLACK');
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
 
-		await apiHelpers.headlessCommerceAdminCatalog.patchSku(blackSku.id, {
-			expirationDate: '2020-01-01T00:00:00Z',
-		});
+		await commerceAdminProductPage.productSkusLink.click();
+
+		await commerceAdminProductDetailsSkusPage
+			.skusTableRowLink('BLACK')
+			.click();
+
+		await commerceAdminProductDetailsSkusPage.neverExpireCheckbox.uncheck();
+		await commerceAdminProductDetailsSkusPage.sidePanelSaveAsDraftButton.click();
+
+		await waitForAlert(commerceAdminProductDetailsSkusPage.sidePanelFrame);
 
 		await page.goto(`/web/${site.name}/p/${product.name['en_US']}`, {
 			waitUntil: 'networkidle',
