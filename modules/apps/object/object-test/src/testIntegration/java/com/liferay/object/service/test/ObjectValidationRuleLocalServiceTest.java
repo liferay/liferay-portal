@@ -1084,6 +1084,61 @@ public class ObjectValidationRuleLocalServiceTest {
 		}
 	}
 
+	@Test
+	public void testValidate() throws Exception {
+		ObjectValidationRule objectValidationRule = _addObjectValidationRule(
+			ObjectValidationRuleConstants.ENGINE_TYPE_GROOVY,
+			"invalidFields = true;");
+
+		_objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			_objectDefinition.getObjectDefinitionId());
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_objectEntryLocalService.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				_objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"externalReferenceCode", externalReferenceCode
+				).put(
+					"textObjectField", RandomTestUtil.randomString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			ObjectValidationRuleEngineException
+				objectValidationRuleEngineException =
+					(ObjectValidationRuleEngineException)
+						modelListenerException.getCause();
+
+			List<ObjectValidationRuleResult> objectValidationRuleResults =
+				objectValidationRuleEngineException.
+					getObjectValidationRuleResults();
+
+			Assert.assertEquals(
+				objectValidationRuleResults.toString(), 1,
+				objectValidationRuleResults.size());
+
+			ObjectValidationRuleResult objectValidationRuleResult =
+				objectValidationRuleResults.get(0);
+
+			Assert.assertEquals(
+				objectValidationRule.getExternalReferenceCode(),
+				objectValidationRuleResult.getExternalReferenceCode());
+			Assert.assertEquals(
+				externalReferenceCode,
+				objectValidationRuleResult.
+					getObjectEntryExternalReferenceCode());
+		}
+	}
+
 	private ObjectValidationRule _addObjectValidationRule(
 			String externalReferenceCode, long objectDefinitionId,
 			String engine, Map<Locale, String> errorLabelMap,
