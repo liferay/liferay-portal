@@ -116,3 +116,34 @@ test(
 		});
 	}
 );
+
+test(
+	'Export and Import actions open the space from All Spaces',
+	{tag: '@LPD-108842'},
+	async ({apiHelpers, page}) => {
+		const spaceName = getRandomString();
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: spaceName,
+			settings: {},
+			type: 'Space',
+		});
+
+		for (const action of ['Export', 'Import']) {
+			await page.goto(PORTLET_URLS.cmsAllSpaces);
+
+			await page
+				.getByRole('button', {name: `${spaceName} Actions`})
+				.click();
+
+			await page.getByRole('menuitem', {name: action}).click();
+
+			await expect(
+				page.getByRole('heading', {name: action})
+			).toBeVisible();
+			await expect(
+				page.getByText(spaceName, {exact: true})
+			).toBeVisible();
+		}
+	}
+);

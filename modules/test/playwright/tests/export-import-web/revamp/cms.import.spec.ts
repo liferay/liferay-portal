@@ -63,13 +63,13 @@ test(
 			createReadStream(path.join(__dirname, 'dependencies/Document.jpg'))
 		);
 
-		await exportImportPage.goToExport(`/asset-library-${assetLibrary1.id}`);
+		await exportImportPage.goToExport(assetLibrary1.friendlyURL);
 
 		await exportImportPage.clickNew();
 
 		const {folderPath, name} = await exportAndDownloadLar(exportImportPage);
 
-		await exportImportPage.goToImport(`/asset-library-${assetLibrary2.id}`);
+		await exportImportPage.goToImport(assetLibrary2.friendlyURL);
 
 		await assertImportWizardControls({
 			contentLabel: 'Basic Web Contents',

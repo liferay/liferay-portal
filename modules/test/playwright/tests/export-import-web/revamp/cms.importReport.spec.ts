@@ -58,7 +58,7 @@ test(
 			space.name
 		);
 
-		await exportImportPage.goToExport(`/asset-library-${space.id}`);
+		await exportImportPage.goToExport(space.friendlyURL);
 
 		const name = `MyExport-${getRandomString()}`;
 
@@ -68,7 +68,7 @@ test(
 
 		await forceRequiredFieldImportError(apiHelpers, objectDefinition.id);
 
-		await exportImportPage.goToImport(`/asset-library-${space.id}`);
+		await exportImportPage.goToImport(space.friendlyURL);
 
 		await exportImportPage.newButton.click();
 

@@ -146,7 +146,7 @@ test(
 			);
 		}
 
-		const displayUrl = `/web${site.friendlyUrlPath}/${SEPARATOR}/asset-library-${space.id}/${friendlyUrlPath}`;
+		const displayUrl = `/web${site.friendlyUrlPath}/${SEPARATOR}/${space.friendlyURL.substring(1)}/${friendlyUrlPath}`;
 
 		await test.step('GUEST reaches the image at its DPT friendly URL', async () => {
 			const guestContext = await browser.newContext();

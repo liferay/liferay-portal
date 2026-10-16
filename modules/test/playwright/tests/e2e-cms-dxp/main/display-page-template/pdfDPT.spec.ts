@@ -162,7 +162,7 @@ test(
 			);
 		}
 
-		const displayUrl = `/web${site.friendlyUrlPath}/${SEPARATOR}/asset-library-${space.id}/${friendlyUrlPath}`;
+		const displayUrl = `/web${site.friendlyUrlPath}/${SEPARATOR}/${space.friendlyURL.substring(1)}/${friendlyUrlPath}`;
 
 		await test.step('GUEST reaches the PDF and downloads it from the mapped Button', async () => {
 			const guestContext = await browser.newContext();

@@ -28,7 +28,7 @@ const test = mergeTests(
 );
 
 test(
-	'A custom Space friendly URL replaces the asset-library segment of the Display Page URL',
+	'A custom Space friendly URL replaces the generated segment of the Display Page URL',
 	{tag: '@LPD-103464'},
 	async ({
 		apiHelpers,
@@ -86,12 +86,12 @@ test(
 			);
 		});
 
-		await test.step('The content resolves under the generated asset-library segment', async () => {
+		await test.step('The content resolves under the generated segment', async () => {
 			await _expectContentAt(
 				page,
 				_buildDisplayURL(
 					site.friendlyUrlPath,
-					`asset-library-${space.id}`,
+					space.friendlyURL.substring(1),
 					friendlyUrlPath
 				),
 				contentTitle
@@ -126,7 +126,7 @@ test(
 			const response = await page.goto(
 				_buildDisplayURL(
 					site.friendlyUrlPath,
-					`asset-library-${space.id}`,
+					space.friendlyURL.substring(1),
 					friendlyUrlPath
 				)
 			);
@@ -162,7 +162,7 @@ test(
 				page,
 				_buildDisplayURL(
 					site.friendlyUrlPath,
-					`asset-library-${untouchedSpace.id}`,
+					untouchedSpace.friendlyURL.substring(1),
 					untouchedFriendlyUrlPath
 				),
 				untouchedContentTitle

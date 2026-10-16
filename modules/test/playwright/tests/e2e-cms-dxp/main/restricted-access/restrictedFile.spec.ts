@@ -138,7 +138,7 @@ test(
 			[{actionIds: ['DOWNLOAD_FILE', 'VIEW'], roleName: role.name}]
 		);
 
-		const displayUrl = `/web${site.friendlyUrlPath}/${SEPARATOR}/asset-library-${space.id}/${friendlyUrlPath}`;
+		const displayUrl = `/web${site.friendlyUrlPath}/${SEPARATOR}/${space.friendlyURL.substring(1)}/${friendlyUrlPath}`;
 
 		await test.step('A member USER sees the file page and can download the binary', async () => {
 			const member = await apiHelpers.headlessAdminUser.postUserAccount();

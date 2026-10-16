@@ -116,7 +116,7 @@ test(
 			);
 		}
 
-		const displayUrl = `/web${site.friendlyUrlPath}/cmsbasicwebcontent/asset-library-${space.id}/${friendlyUrlPath}`;
+		const displayUrl = `/web${site.friendlyUrlPath}/cmsbasicwebcontent/${space.friendlyURL.substring(1)}/${friendlyUrlPath}`;
 
 		await test.step('GUEST reaches the entry at its DPT friendly URL', async () => {
 			const guestContext = await browser.newContext();

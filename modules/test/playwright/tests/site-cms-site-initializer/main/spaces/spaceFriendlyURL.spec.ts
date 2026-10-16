@@ -130,8 +130,6 @@ test(
 				type: 'Space',
 			});
 
-		const initialFriendlyURL = `/asset-library-${assetLibrary.id}`;
-
 		await spaceSummaryPage.goto(spaceName);
 
 		await page.getByRole('button', {name: 'More Actions'}).click();
@@ -159,7 +157,7 @@ test(
 				assetLibrary.externalReferenceCode
 			);
 
-		expect(fetchedAssetLibrary.friendlyURL).toBe(initialFriendlyURL);
+		expect(fetchedAssetLibrary.friendlyURL).toBe(assetLibrary.friendlyURL);
 	}
 );
 
@@ -187,9 +185,7 @@ test(
 			name: 'Friendly URL Required',
 		});
 
-		await expect(friendlyURLTextbox).toHaveValue(
-			`/asset-library-${assetLibrary.id}`
-		);
+		await expect(friendlyURLTextbox).toHaveValue(assetLibrary.friendlyURL);
 
 		await friendlyURLTextbox.fill(friendlyURLPath);
 
@@ -214,5 +210,33 @@ test(
 			);
 
 		expect(fetchedAssetLibrary.friendlyURL).toBe(`/${friendlyURLPath}`);
+	}
+);
+
+test(
+	'Defaults the Friendly URL of a new Space to its name',
+	{tag: '@LPD-108842'},
+	async ({apiHelpers, page, spaceSummaryPage}) => {
+		const randomString = getRandomString();
+
+		const spaceName = `Space ${randomString}`;
+
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				type: 'Space',
+			});
+
+		expect(assetLibrary.friendlyURL).toBe(`/space-${randomString}`);
+
+		await spaceSummaryPage.goto(spaceName);
+
+		await page.getByRole('button', {name: 'More Actions'}).click();
+
+		await page.getByRole('menuitem', {name: 'Space Settings'}).click();
+
+		await expect(
+			page.getByRole('textbox', {name: 'Friendly URL Required'})
+		).toHaveValue(`/space-${randomString}`);
 	}
 );

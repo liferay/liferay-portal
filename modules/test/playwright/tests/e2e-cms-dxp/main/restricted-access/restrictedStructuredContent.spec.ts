@@ -161,7 +161,7 @@ test(
 			[{actionIds: ['VIEW'], roleName: role.name}]
 		);
 
-		const displayUrl = `/web${site.friendlyUrlPath}/${objectDefinition.friendlyURLSeparator}/asset-library-${space.id}/${friendlyUrlPath}`;
+		const displayUrl = `/web${site.friendlyUrlPath}/${objectDefinition.friendlyURLSeparator}/${space.friendlyURL.substring(1)}/${friendlyUrlPath}`;
 
 		await test.step('A member USER sees the restricted structured content', async () => {
 			const member = await createSiteMember(apiHelpers, String(site.id));
