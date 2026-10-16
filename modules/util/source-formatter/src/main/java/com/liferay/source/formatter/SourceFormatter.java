@@ -700,10 +700,12 @@ public class SourceFormatter {
 			if (_isFeatureFlagChanges()) {
 				File portalDir = SourceFormatterUtil.getPortalDir(
 					_sourceFormatterArgs.getBaseDirName(),
-					_sourceFormatterArgs.getMaxLineLength());
+					_sourceFormatterArgs.getMaxDirLevel());
 
-				dependentFileNames.add(
-					portalDir + "/portal-impl/src/portal.properties");
+				if (portalDir != null) {
+					dependentFileNames.add(
+						portalDir + "/portal-impl/src/portal.properties");
+				}
 			}
 		}
 
