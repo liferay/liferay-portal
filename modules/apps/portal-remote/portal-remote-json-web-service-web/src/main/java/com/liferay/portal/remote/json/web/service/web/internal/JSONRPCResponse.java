@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONSerializable;
 import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -34,18 +35,18 @@ public class JSONRPCResponse implements JSONSerializable {
 		else if (exception != null) {
 			int code = -32603;
 
-			String message = null;
+			String message = "Internal error";
 
 			if (exception instanceof InvocationTargetException) {
 				code = -32602;
 
-				message = String.valueOf(exception.getCause());
-			}
-			else {
-				message = exception.toString();
-			}
+				message = "Invalid params";
 
-			if (message == null) {
+				if (PropsValues.JSON_SERVICE_SERIALIZE_THROWABLE) {
+					message = String.valueOf(exception.getCause());
+				}
+			}
+			else if (PropsValues.JSON_SERVICE_SERIALIZE_THROWABLE) {
 				message = exception.toString();
 			}
 
