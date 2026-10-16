@@ -1,3 +1,5 @@
+database:
+    engine: ""
 deploymentContext:
     crossplaneDataClientId: ""
     crossplaneIamClientId: ""

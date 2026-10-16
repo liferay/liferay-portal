@@ -1,5 +1,6 @@
 apiVersion: apiextensions.crossplane.io/v1beta1
 data:
+    databaseEngine: {{ $.Values.database.engine | quote }}
     databasePrivateDnsZoneId: {{ printf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/privateDnsZones/%s" $.Values.deploymentContext.subscriptionId $.Values.deploymentContext.resourceGroupName (include "network.databasePrivateDnsZoneName" $) }}
     databaseSubnetId: {{ printf "%s/subnets/%s" (include "network.virtualNetworkId" $) (include "network.databaseSubnetName" $) }}
     {{- range $key := list "deploymentName" "oidcIssuerUrl" "region" "resourceGroupName" "subscriptionId" "tenantId" }}

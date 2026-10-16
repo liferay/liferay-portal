@@ -1,6 +1,9 @@
 release:
     name: my-release
     namespace: crossplane-system
+set:
+    database:
+        engine: postgresql
 suite: Deployment Runtime Configs
 templates:
     -   templates/deployment-runtime-configs.yaml
