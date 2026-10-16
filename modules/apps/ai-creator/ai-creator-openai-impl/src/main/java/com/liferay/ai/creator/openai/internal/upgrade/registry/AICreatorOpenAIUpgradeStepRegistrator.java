@@ -31,6 +31,12 @@ public class AICreatorOpenAIUpgradeStepRegistrator
 			"1.0.0", "1.1.0",
 			new AICreatorOpenAIConfigurationUpgradeProcess(
 				_configurationAdmin, _configurationProvider));
+
+		registry.register(
+			"1.1.0", "1.2.0",
+			new com.liferay.ai.creator.openai.internal.upgrade.v1_2_0.
+				AICreatorOpenAIConfigurationUpgradeProcess(
+					_configurationAdmin));
 	}
 
 	@Reference
