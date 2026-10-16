@@ -34,6 +34,7 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.comparator.ArticleIDComparator;
 import com.liferay.journal.util.comparator.ArticleTitleComparator;
 import com.liferay.journal.util.comparator.ArticleVersionComparator;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -1198,31 +1199,47 @@ public class JournalArticleServiceTest {
 		JournalFolder journalFolder = JournalTestUtil.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), user.getUserId());
+
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, _permissionCheckerFactory.create(user))) {
 
-			_journalArticleService.updateArticle(
-				_group.getGroupId(), journalFolder.getFolderId(),
-				journalArticle.getArticleId(), journalArticle.getVersion(),
-				journalArticle.getContent(),
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), user.getUserId()));
-
-			Assert.fail();
+			_assertMustHaveAddArticlePermission(
+				() -> _journalArticleService.updateArticle(
+					_group.getGroupId(), journalFolder.getFolderId(),
+					journalArticle.getArticleId(), journalArticle.getVersion(),
+					journalArticle.getContent(), serviceContext));
+			_assertMustHaveAddArticlePermission(
+				() -> _journalArticleService.updateArticle(
+					user.getUserId(), _group.getGroupId(),
+					journalFolder.getFolderId(), journalArticle.getArticleId(),
+					journalArticle.getVersion(), journalArticle.getTitleMap(),
+					journalArticle.getDescriptionMap(),
+					journalArticle.getContent(), journalArticle.getLayoutUuid(),
+					serviceContext));
+			_assertMustHaveAddArticlePermission(
+				() -> _journalArticleService.updateArticle(
+					_group.getGroupId(), journalFolder.getFolderId(),
+					journalArticle.getArticleId(), journalArticle.getVersion(),
+					journalArticle.getTitleMap(),
+					journalArticle.getDescriptionMap(),
+					journalArticle.getFriendlyURLMap(),
+					journalArticle.getContent(),
+					journalArticle.getDDMTemplateKey(),
+					journalArticle.getLayoutUuid(), 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, true, 0, 0, 0, 0, 0, true, true, false, 0, 0, null, null,
+					null, null, serviceContext));
 		}
-		catch (PrincipalException.MustHavePermission principalException) {
-			String message = principalException.getMessage();
 
-			Assert.assertTrue(
-				message, message.contains(ActionKeys.ADD_ARTICLE));
-		}
-
-		journalArticle = _journalArticleLocalService.getLatestArticle(
-			journalArticle.getResourcePrimKey());
+		JournalArticle latestJournalArticle =
+			_journalArticleLocalService.getLatestArticle(
+				journalArticle.getResourcePrimKey());
 
 		Assert.assertEquals(
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			journalArticle.getFolderId());
+			latestJournalArticle.getFolderId());
 	}
 
 	@Test
@@ -1405,6 +1422,23 @@ public class JournalArticleServiceTest {
 			expectedCount,
 			_journalArticleService.getArticlesCount(
 				_group.getGroupId(), journalFolder.getFolderId(), status));
+	}
+
+	private void _assertMustHaveAddArticlePermission(
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			String message = principalException.getMessage();
+
+			Assert.assertTrue(
+				message, message.contains(ActionKeys.ADD_ARTICLE));
+		}
 	}
 
 	private void _removeJournalArticleRoleResourcePermission(
