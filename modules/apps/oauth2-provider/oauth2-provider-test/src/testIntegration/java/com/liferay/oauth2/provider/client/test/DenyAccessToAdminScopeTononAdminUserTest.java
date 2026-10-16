@@ -65,7 +65,7 @@ public class DenyAccessToAdminScopeTononAdminUserTest
 
 		response = invocationBuilder.get();
 
-		Assert.assertEquals(400, response.getStatus());
+		Assert.assertEquals(404, response.getStatus());
 	}
 
 	@Override
