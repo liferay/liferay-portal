@@ -86,6 +86,12 @@ public abstract class DemoCreatorService {
 			log.error("Unable to add users", exception);
 		}
 
+		if (StringUtil.equals(
+				FaroPropsValues.FARO_DEMO_CREATOR_METHOD, "base")) {
+
+			return;
+		}
+
 		if (hasExistingData()) {
 			if (log.isInfoEnabled()) {
 				log.info("Skipping demo creation because of existing data");
