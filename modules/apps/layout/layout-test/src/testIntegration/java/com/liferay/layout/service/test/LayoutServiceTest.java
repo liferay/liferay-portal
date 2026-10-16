@@ -113,6 +113,40 @@ public class LayoutServiceTest {
 	}
 
 	@Test(expected = PrincipalException.class)
+	public void testCopyLayoutContentWithoutPermissions() throws Exception {
+		Layout sourceLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		_removeResourcePermission(sourceLayout);
+
+		Layout controlPanelLayout = _layoutLocalService.createLayout(
+			sourceLayout.getPlid());
+
+		controlPanelLayout.setGroupId(sourceLayout.getGroupId());
+		controlPanelLayout.setCompanyId(sourceLayout.getCompanyId());
+		controlPanelLayout.setType(LayoutConstants.TYPE_CONTROL_PANEL);
+
+		Layout targetLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		User user = UserTestUtil.addUser();
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			targetLayout.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(targetLayout.getPlid()), role.getRoleId(),
+			new String[] {ActionKeys.UPDATE});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			_layoutService.copyLayoutContent(controlPanelLayout, targetLayout);
+		}
+	}
+
+	@Test(expected = PrincipalException.class)
 	public void testCopyLayoutWithoutPermissions() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
