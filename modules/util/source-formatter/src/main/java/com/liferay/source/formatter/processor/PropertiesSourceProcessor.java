@@ -53,9 +53,6 @@ public class PropertiesSourceProcessor extends BaseSourceProcessor {
 		return super.format(file, fileName, absolutePath, content);
 	}
 
-	private static final String[] _INCLUDES = {
-		"**/*.properties", "**/.eslintignore", "**/.gitignore",
-		"**/.prettierignore"
-	};
+	private static final String[] _INCLUDES = {"**/*.properties"};
 
 }

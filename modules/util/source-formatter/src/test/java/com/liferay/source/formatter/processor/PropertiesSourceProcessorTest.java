@@ -15,11 +15,6 @@ import org.junit.Test;
 public class PropertiesSourceProcessorTest extends BaseSourceProcessorTestCase {
 
 	@Test
-	public void testGitIgnore() throws Exception {
-		test("gitignore/.testgitignore");
-	}
-
-	@Test
 	public void testIncorrectWhitespaceCheck() throws Exception {
 		test("IncorrectWhitespaceCheck.testproperties");
 	}

@@ -430,6 +430,13 @@
 			<description name="Performs several checks on tag attributes." />
 		</check>
 	</source-processor>
+	<source-processor name="IgnoreSourceProcessor">
+		<check name="WhitespaceCheck">
+			<category name="Styling" />
+			<description name="Finds missing and unnecessary whitespace." />
+			<property name="allowLeadingSpaces" value="true" />
+		</check>
+	</source-processor>
 	<source-processor name="JakartaTransformSourceProcessor">
 		<check name="JakartaTransformBNDCheck">
 			<category name="JakartaTransform" />

@@ -21,7 +21,7 @@ JavaEmptyLineAfterSuperCallCheck | .java | Finds missing empty line after a `sup
 [JavaUnusedSourceFormatterChecksCheck](check/java_unused_source_formatter_checks_check.md#javaunusedsourceformattercheckscheck) | .java | Finds `*Check` classes that are not configured. |
 [MapBuilderCheck](check/builder_check.md#buildercheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that `ConcurrentHashMapBuilder`, `HashMapBuilder`, `LinkedHashMapBuilder` or `TreeMapBuilder` is used when possible. |
 [PortletURLBuilderCheck](check/builder_check.md#buildercheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that `PortletURLBuilder` is used when possible. |
-PropertiesDuplicateKeysCheck | .eslintignore, .prettierignore, or .properties | Checks for duplicate property keys. |
+PropertiesDuplicateKeysCheck | .properties | Checks for duplicate property keys. |
 ReturnVariableDeclarationAsUsedCheck | .java | Finds cases where a variable declaration should be moved. |
 [UnicodePropertiesBuilderCheck](check/builder_check.md#buildercheck) | .java | Checks that `UnicodePropertiesBuilder` is used when possible. |
 XMLLog4jLoggersCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Checks the loggers defined in `*-log4j.xml` file. |
