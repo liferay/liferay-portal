@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.ContentDispositionUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
@@ -54,6 +56,7 @@ import jakarta.portlet.PortletException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -92,6 +95,7 @@ public class DownloadEntriesMVCResourceCommandTest {
 		_testServeResourceDownloadEntries();
 		_testServeResourceDownloadEntry();
 		_testServeResourceDownloadFolder();
+		_testServeResourceDownloadFolderWithJapaneseNames();
 		_testServeResourceDownloadFolderWithoutShortcutTargetPermission();
 		_testServeResourceMaxSizeToDownload();
 	}
@@ -206,8 +210,14 @@ public class DownloadEntriesMVCResourceCommandTest {
 			MockLiferayResourceRequest mockLiferayResourceRequest)
 		throws Exception {
 
-		MockLiferayResourceResponse mockLiferayResourceResponse =
-			new MockLiferayResourceResponse();
+		return _serveResource(
+			mockLiferayResourceRequest, new MockLiferayResourceResponse());
+	}
+
+	private byte[] _serveResource(
+			MockLiferayResourceRequest mockLiferayResourceRequest,
+			MockLiferayResourceResponse mockLiferayResourceResponse)
+		throws Exception {
 
 		_mvcResourceCommand.serveResource(
 			mockLiferayResourceRequest, mockLiferayResourceResponse);
@@ -352,6 +362,44 @@ public class DownloadEntriesMVCResourceCommandTest {
 		Assert.assertTrue(
 			zipEntries.toString(), zipEntries.containsKey("report (1).txt"));
 		Assert.assertEquals(zipEntries.toString(), 3, zipEntries.size());
+	}
+
+	private void _testServeResourceDownloadFolderWithJapaneseNames()
+		throws Exception {
+
+		Folder folder = _addFolder(
+			"日本語フォルダ1", DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		_addFileEntry("document 1", "日本語文書1.txt", folder.getFolderId());
+
+		Folder subfolder = _addFolder("日本語フォルダ2", folder.getFolderId());
+
+		_addFileEntry("document 2", "日本語文書2.txt", subfolder.getFolderId());
+
+		Map<String, String> properties = new HashMap<>();
+
+		Map<String, String> zipEntries = _getZipEntries(
+			_serveResource(
+				_getMockLiferayResourceRequest(
+					folder.getFolderId(), "/document_library/download_folder"),
+				new MockLiferayResourceResponse() {
+
+					@Override
+					public void setProperty(String name, String value) {
+						properties.put(name, value);
+					}
+
+				}));
+
+		Assert.assertEquals(
+			ContentDispositionUtil.getContentDispositionHeaderValue(
+				"日本語フォルダ1.zip"),
+			properties.get(HttpHeaders.CONTENT_DISPOSITION));
+
+		Assert.assertEquals("document 1", zipEntries.get("日本語文書1.txt"));
+		Assert.assertEquals(
+			"document 2", zipEntries.get("日本語フォルダ2/日本語文書2.txt"));
+		Assert.assertEquals(zipEntries.toString(), 2, zipEntries.size());
 	}
 
 	private void _testServeResourceDownloadFolderWithoutShortcutTargetPermission()
