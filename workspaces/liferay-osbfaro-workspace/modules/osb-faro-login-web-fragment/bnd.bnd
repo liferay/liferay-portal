@@ -1,9 +1,0 @@
-Bundle-Name: Liferay OSB Faro Login Web Fragment
-Bundle-SymbolicName: com.liferay.osb.faro.login.web.fragment
-Bundle-Version: 1.0.0
-Fragment-Host: com.liferay.login.web;bundle-version="2.0.7"
-Import-Package:\
-	com.liferay.portal.kernel.service;version="[22.0.0,9999.0.0)",\
-	com.liferay.portal.kernel.util;version="[59.0.0,9999.0.0)",\
-	\
-	*
