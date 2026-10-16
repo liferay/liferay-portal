@@ -156,3 +156,64 @@ test(
 		}
 	}
 );
+
+test(
+	'Create AI Image lists the image sizes configured for the site',
+	{tag: '@LPD-109984'},
+	async ({
+		aiCreatorInstanceSettingsPage,
+		documentLibraryPage,
+		gogoShellPage,
+		page,
+		site,
+		siteSettingsPage,
+	}) => {
+		await gogoShellPage.addCommand(
+			'scr:enable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient'
+		);
+
+		try {
+			await aiCreatorInstanceSettingsPage.addApiKey();
+
+			// Set the image sizes for the site
+
+			await siteSettingsPage.goToSiteSetting(
+				'AI Creator',
+				'OpenAI',
+				site.friendlyUrlPath
+			);
+
+			await aiCreatorInstanceSettingsPage.imageSizesInput.fill(
+				'1024x1536,1536x1024'
+			);
+			await aiCreatorInstanceSettingsPage.saveButton.click();
+
+			await waitForAlert(page);
+
+			// The Create AI Image modal lists the site image sizes
+
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.openCreateAIImage();
+
+			const createAIImageModalPage = page.frameLocator(
+				'iframe[title="Create AI Image"]'
+			);
+
+			await expect(
+				createAIImageModalPage
+					.getByLabel('Image Size', {exact: true})
+					.locator('option')
+			).toHaveText(['1024x1536', '1536x1024']);
+
+			await createAIImageModalPage
+				.getByRole('button', {name: 'Cancel'})
+				.click();
+		}
+		finally {
+			await aiCreatorInstanceSettingsPage.removeApiKey();
+			await gogoShellPage.addCommand(
+				'scr:disable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient'
+			);
+		}
+	}
+);

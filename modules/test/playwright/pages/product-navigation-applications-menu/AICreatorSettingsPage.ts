@@ -17,6 +17,8 @@ export class AICreatorInstanceSettingsPage {
 	readonly chatGPTCheckbox: Locator;
 	readonly globalMenuPage: GlobalMenuPage;
 	readonly openAIImageGenerationCheckbox: Locator;
+	readonly imageModelInput: Locator;
+	readonly imageSizesInput: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 
@@ -31,6 +33,8 @@ export class AICreatorInstanceSettingsPage {
 		this.openAIImageGenerationCheckbox = this.page.getByLabel(
 			'Enable OpenAI Image Generation'
 		);
+		this.imageModelInput = this.page.getByLabel('Image Model');
+		this.imageSizesInput = this.page.getByLabel('Image Sizes');
 		this.saveButton = this.page.getByRole('button', {name: 'Save'});
 	}
 
