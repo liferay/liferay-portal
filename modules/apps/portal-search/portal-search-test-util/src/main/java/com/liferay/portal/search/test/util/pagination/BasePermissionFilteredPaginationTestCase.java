@@ -23,9 +23,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.configuration.DefaultSearchResultPermissionFilterConfiguration;
 import com.liferay.portal.search.internal.facet.FacetPostProcessorImpl;
+import com.liferay.portal.search.internal.legacy.searcher.SearchRequestBuilderFactoryImpl;
 import com.liferay.portal.search.internal.permission.DefaultSearchResultPermissionFilter;
 import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
-import com.liferay.portal.search.searcher.SearchRequest;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.search.test.util.indexing.BaseIndexingTestCase;
@@ -170,6 +170,22 @@ public abstract class BasePermissionFilteredPaginationTestCase
 		index(3, filtering());
 
 		assertPagination(2, 3, 1, "[[2], [3]]");
+	}
+
+	@Test
+	public void testPaginateThroughSearchRequest() throws Exception {
+		index(9, filtering(3, 6, 9));
+
+		List<List<Integer>> paginatedEntries = new ArrayList<>();
+
+		for (int page = 0; page < 2; page++) {
+			paginatedEntries.add(
+				getEntries(_searchThroughSearchRequest(page * 3, 3)));
+		}
+
+		String actual = paginatedEntries.toString();
+
+		Assert.assertEquals(actual, "[[1, 2, 4], [5, 7, 8]]", actual);
 	}
 
 	@Test
@@ -490,39 +506,32 @@ public abstract class BasePermissionFilteredPaginationTestCase
 	protected int searchQueryResultWindowLimit;
 
 	private SearchRequestBuilderFactory _getSearchRequestBuilderFactory() {
-		SearchRequestBuilderFactory searchRequestBuilderFactory = Mockito.mock(
-			SearchRequestBuilderFactory.class);
+		return new SearchRequestBuilderFactoryImpl();
+	}
 
-		SearchRequestBuilder searchRequestBuilder = Mockito.mock(
-			SearchRequestBuilder.class);
+	private Hits _searchThroughSearchRequest(int from, int size)
+		throws Exception {
 
-		Mockito.when(
-			searchRequestBuilderFactory.builder(Mockito.any())
-		).thenReturn(
-			searchRequestBuilder
-		);
+		SearchContext searchContext = createSearchContext();
 
-		SearchRequest searchRequest = Mockito.mock(SearchRequest.class);
+		searchContext.setSorts(
+			new Sort(Field.PRIORITY, Sort.DOUBLE_TYPE, false));
 
-		Mockito.when(
-			searchRequestBuilder.build()
-		).thenReturn(
-			searchRequest
-		);
+		searchContext.setStart(0);
 
-		Mockito.when(
-			searchRequest.getFrom()
-		).thenReturn(
-			0
-		);
+		SearchRequestBuilderFactory searchRequestBuilderFactory =
+			_getSearchRequestBuilderFactory();
 
-		Mockito.when(
-			searchRequest.getSize()
-		).thenReturn(
-			10
-		);
+		SearchRequestBuilder searchRequestBuilder =
+			searchRequestBuilderFactory.builder(searchContext);
 
-		return searchRequestBuilderFactory;
+		searchRequestBuilder.from(from);
+		searchRequestBuilder.size(size);
+
+		SearchResultPermissionFilter searchResultPermissionFilter =
+			createSearchResultPermissionFilter();
+
+		return searchResultPermissionFilter.search(searchContext);
 	}
 
 	private static final long _FILTERED_ENTRY_IDENTIFIER = 1000000;
