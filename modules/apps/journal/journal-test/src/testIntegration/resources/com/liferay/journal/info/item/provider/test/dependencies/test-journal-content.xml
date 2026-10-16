@@ -5,7 +5,7 @@
 		<dynamic-content language-id="en_US"><![CDATA[Some text]]></dynamic-content>
 		<dynamic-content language-id="es_ES"><![CDATA[Un poco de texto]]></dynamic-content>
 	</dynamic-element>
-	<dynamic-element index-type="keyword" instance-id="kfce" name="DDM_Text" type="text">
+	<dynamic-element index-type="keyword" instance-id="vkwd" name="DDM_Text" type="text">
 		<dynamic-content language-id="en_US"><![CDATA[Some more text]]></dynamic-content>
 		<dynamic-content language-id="es_ES"><![CDATA[Un poco más de texto]]></dynamic-content>
 	</dynamic-element>
