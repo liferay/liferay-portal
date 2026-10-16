@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -1319,9 +1318,12 @@ public class GraphQLServletExtender {
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			filterString);
 
-		if (ArrayUtil.isNotEmpty(configurations)) {
+		Configuration configuration = ConfigurationUtil.fetchConfiguration(
+			configurations);
+
+		if (configuration != null) {
 			Dictionary<String, Object> dictionary =
-				configurations[0].getProperties();
+				configuration.getProperties();
 
 			return GetterUtil.getBoolean(
 				dictionary.get("graphQLEnabled"), true);

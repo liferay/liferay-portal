@@ -8,6 +8,7 @@ package com.liferay.portal.vulcan.internal.configuration.util;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.vulcan.internal.configuration.VulcanCompanyConfiguration;
@@ -15,6 +16,7 @@ import com.liferay.portal.vulcan.internal.configuration.VulcanConfiguration;
 
 import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.cm.Configuration;
@@ -24,6 +26,25 @@ import org.osgi.service.cm.ConfigurationAdmin;
  * @author Javier Gamarra
  */
 public class ConfigurationUtil {
+
+	public static Configuration fetchConfiguration(
+		Configuration[] configurations) {
+
+		if (ArrayUtil.isEmpty(configurations)) {
+			return null;
+		}
+
+		for (Configuration configuration : configurations) {
+			if (Objects.equals(
+					configuration.getFactoryPid(),
+					VulcanCompanyConfiguration.class.getName())) {
+
+				return configuration;
+			}
+		}
+
+		return configurations[0];
+	}
 
 	public static Set<String> getExcludedOperationIds(
 		long companyId, ConfigurationAdmin configurationAdmin, String path) {
@@ -40,10 +61,10 @@ public class ConfigurationUtil {
 			Configuration[] configurations =
 				configurationAdmin.listConfigurations(filterString);
 
-			if (configurations != null) {
-				for (Configuration configuration : configurations) {
-					return _getExcludedOperationIds(configuration);
-				}
+			Configuration configuration = fetchConfiguration(configurations);
+
+			if (configuration != null) {
+				return _getExcludedOperationIds(configuration);
 			}
 		}
 		catch (Exception exception) {
