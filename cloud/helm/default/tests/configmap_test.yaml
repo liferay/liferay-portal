@@ -34,10 +34,10 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["portal-cloud.properties"]
-                    pattern: "\"com.liferay.portal.search.elasticsearch8.impl\""
+                    pattern: "\"com.liferay.portal.search.elasticsearch7.impl\""
             -   matchRegex:
                     path: data["portal-cloud.properties"]
-                    pattern: "\"com.liferay.portal.search.elasticsearch7.impl\""
+                    pattern: "\"com.liferay.portal.search.elasticsearch8.impl\""
         it: Adds the Elasticsearch bundles to the deny list when the engine is opensearch
         set:
             search.engine: opensearch
@@ -92,13 +92,13 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["portal-cloud.properties"]
-                    pattern: "\"com.liferay.portal.scripting.groovy\""
+                    pattern: "\"com.example.a\""
             -   matchRegex:
                     path: data["portal-cloud.properties"]
                     pattern: "\"com.liferay.marketplace.app.manager.web\""
             -   matchRegex:
                     path: data["portal-cloud.properties"]
-                    pattern: "\"com.example.a\""
+                    pattern: "\"com.liferay.portal.scripting.groovy\""
         it: Keeps the online config bundles alongside a customer deny list
         set:
             portalBundleDenyList:
