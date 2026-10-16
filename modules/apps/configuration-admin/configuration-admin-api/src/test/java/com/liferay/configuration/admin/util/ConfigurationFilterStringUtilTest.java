@@ -125,6 +125,21 @@ public class ConfigurationFilterStringUtilTest {
 				"dxp.lxc.liferay.com.virtualInstanceId", virtualInstanceId
 			).build());
 
+		filterString =
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				companyId, "(*)\\");
+
+		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"dxp.lxc.liferay.com.virtualInstanceId", "(x)\\"
+			).build());
+		_test(
+			true, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"dxp.lxc.liferay.com.virtualInstanceId", "(*)\\"
+			).build());
+
 		String pid = "foo.scoped~123";
 
 		filterString =
@@ -137,6 +152,31 @@ public class ConfigurationFilterStringUtilTest {
 			false, filterString,
 			HashMapBuilder.<String, Serializable>put(
 				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid
+			).put(
+				"companyId", "any"
+			).build());
+		_test(
+			true, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid
+			).put(
+				Constants.SERVICE_PID, pid
+			).put(
+				"companyId", "any"
+			).build());
+
+		pid = "foo.scoped~*";
+
+		filterString =
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				null, pid, null);
+
+		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid
+			).put(
+				Constants.SERVICE_PID, "foo.scoped~123"
 			).put(
 				"companyId", "any"
 			).build());
@@ -231,6 +271,24 @@ public class ConfigurationFilterStringUtilTest {
 				"siteExternalReferenceCode", siteExternalReferenceCode
 			).build());
 
+		filterString = ConfigurationFilterStringUtil.getGroupScopedFilterString(
+			companyId, groupId, "(*)\\");
+
+		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"companyId", companyId
+			).put(
+				"siteExternalReferenceCode", "(x)\\"
+			).build());
+		_test(
+			true, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"companyId", companyId
+			).put(
+				"siteExternalReferenceCode", "(*)\\"
+			).build());
+
 		String pid = "foo.scoped~123";
 
 		filterString = ConfigurationFilterStringUtil.getGroupScopedFilterString(
@@ -316,6 +374,20 @@ public class ConfigurationFilterStringUtilTest {
 			true, filterString,
 			HashMapBuilder.<String, Serializable>put(
 				"portletInstanceId", portletInstanceId
+			).build());
+
+		filterString =
+			ConfigurationFilterStringUtil.getPortletScopedFilterString("(*)\\");
+
+		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"portletInstanceId", "(x)\\"
+			).build());
+		_test(
+			true, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"portletInstanceId", "(*)\\"
 			).build());
 
 		String pid = "foo.scoped~123";
@@ -451,6 +523,42 @@ public class ConfigurationFilterStringUtilTest {
 				Constants.SERVICE_PID, pid
 			).put(
 				"companyId", "0"
+			).build());
+
+		pid = "foo~*";
+
+		filterString =
+			ConfigurationFilterStringUtil.getSystemScopedFilterString(pid);
+
+		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid
+			).put(
+				Constants.SERVICE_PID, "foo~123"
+			).build());
+		_test(
+			true, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid
+			).put(
+				Constants.SERVICE_PID, pid
+			).build());
+
+		pid = "(*)\\";
+
+		filterString =
+			ConfigurationFilterStringUtil.getSystemScopedFilterString(pid);
+
+		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				Constants.SERVICE_PID, "(x)\\"
+			).build());
+		_test(
+			true, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				Constants.SERVICE_PID, pid
 			).build());
 	}
 
