@@ -2456,6 +2456,80 @@ ckeditor4Test(
 	}
 );
 
+ckeditor4Test(
+	'Reset translation restores the default language value of a required rich text field',
+	{tag: '@LPD-109677'},
+	async ({apiHelpers, journalEditArticlePage, journalPage, page, site}) => {
+		const richTextFieldName = 'RichText';
+
+		const structure = await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [
+					{
+						fieldType: 'rich_text',
+						name: richTextFieldName,
+						required: true,
+					},
+				],
+				name: getRandomString(),
+			})
+		);
+
+		const defaultValue = getRandomString();
+		const title = getRandomString();
+		const translatedValue = getRandomString();
+
+		await apiHelpers.headlessDelivery.postStructuredContent({
+			contentFields: [
+				{
+					contentFieldValue: {data: `<p>${defaultValue}</p>`},
+					contentFieldValue_i18n: {
+						'ca-ES': {data: `<p>${translatedValue}</p>`},
+						'en-US': {data: `<p>${defaultValue}</p>`},
+					},
+					name: richTextFieldName,
+				},
+			],
+			contentStructureId: Number(structure.id),
+			datePublished: null,
+			siteId: site.id,
+			title,
+			title_i18n: {'ca-ES': title, 'en-US': title},
+		});
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await journalEditArticlePage.editArticle(title);
+
+		const richTextEditable = page
+			.locator(`[data-field-name="${richTextFieldName}"]`)
+			.frameLocator('iframe')
+			.getByRole('textbox', {name: richTextFieldName});
+
+		await expect(richTextEditable).toHaveText(defaultValue);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'Catalan Language: Translated',
+			}),
+			trigger: page.getByRole('combobox', {name: 'Select a language'}),
+		});
+
+		await expect(richTextEditable).toHaveText(translatedValue);
+
+		await page.getByLabel('Translation Options').click();
+
+		await page.getByRole('button', {name: 'Reset Translation'}).click();
+
+		await page.getByRole('button', {name: 'Delete'}).click();
+
+		await expect(richTextEditable).toHaveText(defaultValue);
+	}
+);
+
 ckeditor5Test(
 	'Web Content is published with multiple translations',
 	{

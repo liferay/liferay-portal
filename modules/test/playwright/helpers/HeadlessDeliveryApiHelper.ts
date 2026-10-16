@@ -423,6 +423,7 @@ export class HeadlessDeliveryApiHelper {
 		siteId,
 		tags,
 		title,
+		title_i18n,
 		viewableBy = '',
 	}: {
 		categoryIds?: number[];
@@ -430,6 +431,7 @@ export class HeadlessDeliveryApiHelper {
 			contentFieldValue:
 				| {data: string}
 				| {geo: {latitude: number; longitude: number}};
+			contentFieldValue_i18n?: {[key: string]: {data: string}};
 			name: string;
 		}[];
 		contentStructureId: number;
@@ -439,6 +441,7 @@ export class HeadlessDeliveryApiHelper {
 		siteId: string;
 		tags?: string[];
 		title: string;
+		title_i18n?: {[key: string]: string};
 		viewableBy?: string;
 	}): Promise<StructuredContent> {
 		return this.apiHelpers.post(
@@ -453,6 +456,7 @@ export class HeadlessDeliveryApiHelper {
 					relatedContents,
 					taxonomyCategoryIds: categoryIds,
 					title,
+					title_i18n,
 					viewableBy,
 				},
 				failOnStatusCode: true,
