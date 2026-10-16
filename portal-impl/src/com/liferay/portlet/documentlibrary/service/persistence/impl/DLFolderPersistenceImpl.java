@@ -3631,7 +3631,12 @@ public class DLFolderPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DLFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -3640,17 +3645,12 @@ public class DLFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_DLFOLDER_WHERE, _SQL_SELECT_DLFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
-				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, DLFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId));
@@ -3710,7 +3710,12 @@ public class DLFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DLFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "parentFolderId"}, false),
+				"", DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P",
 					new String[] {
@@ -3719,17 +3724,12 @@ public class DLFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId"}, true),
+				_SQL_COUNT_DLFOLDER_WHERE, _SQL_SELECT_DLFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "parentFolderId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "parentFolderId"}, false),
-				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
-				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, DLFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -3871,7 +3871,16 @@ public class DLFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_M_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DLFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_M_P",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {"groupId", "mountPoint", "parentFolderId"},
+					false),
+				"", DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_M_P",
 					new String[] {
@@ -3882,6 +3891,7 @@ public class DLFolderPersistenceImpl
 					},
 					new String[] {"groupId", "mountPoint", "parentFolderId"},
 					true),
+				_SQL_COUNT_DLFOLDER_WHERE, _SQL_SELECT_DLFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_M_P",
 					new String[] {
@@ -3890,17 +3900,7 @@ public class DLFolderPersistenceImpl
 					},
 					new String[] {"groupId", "mountPoint", "parentFolderId"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_M_P",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {"groupId", "mountPoint", "parentFolderId"},
-					false),
-				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
-				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, DLFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -3979,7 +3979,18 @@ public class DLFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_M_P_H =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DLFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_M_P_H",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {
+						"groupId", "mountPoint", "parentFolderId", "hidden_"
+					},
+					false),
+				"", DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_M_P_H",
 					new String[] {
@@ -3992,6 +4003,7 @@ public class DLFolderPersistenceImpl
 						"groupId", "mountPoint", "parentFolderId", "hidden_"
 					},
 					true),
+				_SQL_COUNT_DLFOLDER_WHERE, _SQL_SELECT_DLFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_M_P_H",
 					new String[] {
@@ -4002,19 +4014,7 @@ public class DLFolderPersistenceImpl
 						"groupId", "mountPoint", "parentFolderId", "hidden_"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_M_P_H",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {
-						"groupId", "mountPoint", "parentFolderId", "hidden_"
-					},
-					false),
-				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
-				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, DLFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4030,7 +4030,19 @@ public class DLFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_M_LikeT_H =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DLFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_M_LikeT_H",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						String.class.getName(), Boolean.class.getName()
+					},
+					new String[] {
+						"groupId", "mountPoint", "treePath", "hidden_"
+					},
+					false),
+				"", DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_M_LikeT_H",
 					new String[] {
@@ -4043,21 +4055,8 @@ public class DLFolderPersistenceImpl
 						"groupId", "mountPoint", "treePath", "hidden_"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_M_LikeT_H",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						String.class.getName(), Boolean.class.getName()
-					},
-					new String[] {
-						"groupId", "mountPoint", "treePath", "hidden_"
-					},
-					false),
-				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
-				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, DLFolder::getFolderId,
+				_SQL_COUNT_DLFOLDER_WHERE, _SQL_SELECT_DLFOLDER_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4073,7 +4072,18 @@ public class DLFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P_H_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DLFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_H_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "parentFolderId", "hidden_", "status"
+					},
+					false),
+				"", DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_H_S",
 					new String[] {
@@ -4086,6 +4096,7 @@ public class DLFolderPersistenceImpl
 						"groupId", "parentFolderId", "hidden_", "status"
 					},
 					true),
+				_SQL_COUNT_DLFOLDER_WHERE, _SQL_SELECT_DLFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_H_S",
 					new String[] {
@@ -4096,19 +4107,7 @@ public class DLFolderPersistenceImpl
 						"groupId", "parentFolderId", "hidden_", "status"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_H_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "parentFolderId", "hidden_", "status"
-					},
-					false),
-				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
-				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, DLFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4124,7 +4123,21 @@ public class DLFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_M_P_H_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DLFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_M_P_H_S",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Long.class.getName(), Boolean.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "mountPoint", "parentFolderId", "hidden_",
+						"status"
+					},
+					false),
+				"", DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_M_P_H_S",
 					new String[] {
@@ -4139,6 +4152,7 @@ public class DLFolderPersistenceImpl
 						"status"
 					},
 					true),
+				_SQL_COUNT_DLFOLDER_WHERE, _SQL_SELECT_DLFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_M_P_H_S",
@@ -4152,22 +4166,7 @@ public class DLFolderPersistenceImpl
 						"status"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_M_P_H_S",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Long.class.getName(), Boolean.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "mountPoint", "parentFolderId", "hidden_",
-						"status"
-					},
-					false),
-				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
-				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, DLFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4186,7 +4185,20 @@ public class DLFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_M_LikeT_H_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DLFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_M_LikeT_H_NotS",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						String.class.getName(), Boolean.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "mountPoint", "treePath", "hidden_", "status"
+					},
+					false),
+				"", DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_M_LikeT_H_NotS",
@@ -4201,22 +4213,8 @@ public class DLFolderPersistenceImpl
 						"groupId", "mountPoint", "treePath", "hidden_", "status"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_M_LikeT_H_NotS",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						String.class.getName(), Boolean.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "mountPoint", "treePath", "hidden_", "status"
-					},
-					false),
-				_SQL_SELECT_DLFOLDER_WHERE, _SQL_COUNT_DLFOLDER_WHERE,
-				DLFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, DLFolder::getFolderId,
+				_SQL_COUNT_DLFOLDER_WHERE, _SQL_SELECT_DLFOLDER_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"dlFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, DLFolder::getGroupId),
@@ -4288,4 +4286,4 @@ public class DLFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:250407076
+// LIFERAY-SERVICE-BUILDER-HASH:-1583903422

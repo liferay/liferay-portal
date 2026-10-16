@@ -1065,7 +1065,13 @@ public class BatchPlannerPlanPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BatchPlannerPlan::getBatchPlannerPlanId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", BatchPlannerPlanModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -1074,25 +1080,26 @@ public class BatchPlannerPlanPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
+				_SQL_SELECT_BATCHPLANNERPLAN_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
-				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
-				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BatchPlannerPlan::getBatchPlannerPlanId,
+				"",
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId));
 
 		_collectionPersistenceFinderByC_U =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BatchPlannerPlan::getBatchPlannerPlanId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_U",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"companyId", "userId"}, false),
+				"", BatchPlannerPlanModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_U",
 					new String[] {
@@ -1101,18 +1108,13 @@ public class BatchPlannerPlanPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "userId"}, true),
+				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
+				_SQL_SELECT_BATCHPLANNERPLAN_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_U",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"companyId", "userId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_U",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"companyId", "userId"}, false),
-				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
-				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
-				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BatchPlannerPlan::getBatchPlannerPlanId,
+				"",
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1122,7 +1124,15 @@ public class BatchPlannerPlanPersistenceImpl
 
 		_collectionPersistenceFinderByC_E =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BatchPlannerPlan::getBatchPlannerPlanId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_E",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"companyId", "export"}, false),
+				"", BatchPlannerPlanModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_E",
 					new String[] {
@@ -1131,22 +1141,15 @@ public class BatchPlannerPlanPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "export"}, true),
+				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
+				_SQL_SELECT_BATCHPLANNERPLAN_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_E",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"companyId", "export"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_E",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"companyId", "export"}, false),
-				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
-				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
-				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BatchPlannerPlan::getBatchPlannerPlanId,
+				"",
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1156,7 +1159,13 @@ public class BatchPlannerPlanPersistenceImpl
 
 		_collectionPersistenceFinderByC_N =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BatchPlannerPlan::getBatchPlannerPlanId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_N",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"companyId", "name"}, 0, 2, false, null),
+				"", BatchPlannerPlanModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_N",
 					new String[] {
@@ -1165,18 +1174,13 @@ public class BatchPlannerPlanPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "name"}, true),
+				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
+				_SQL_SELECT_BATCHPLANNERPLAN_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_N",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"companyId", "name"}, 0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_N",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"companyId", "name"}, 0, 2, false, null),
-				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
-				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
-				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BatchPlannerPlan::getBatchPlannerPlanId,
+				"",
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1186,7 +1190,15 @@ public class BatchPlannerPlanPersistenceImpl
 
 		_collectionPersistenceFinderByC_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BatchPlannerPlan::getBatchPlannerPlanId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_T",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"companyId", "template"}, false),
+				"", BatchPlannerPlanModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_T",
 					new String[] {
@@ -1195,22 +1207,15 @@ public class BatchPlannerPlanPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "template"}, true),
+				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
+				_SQL_SELECT_BATCHPLANNERPLAN_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_T",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"companyId", "template"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_T",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"companyId", "template"}, false),
-				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
-				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
-				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BatchPlannerPlan::getBatchPlannerPlanId,
+				"",
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1220,7 +1225,16 @@ public class BatchPlannerPlanPersistenceImpl
 
 		_collectionPersistenceFinderByC_E_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BatchPlannerPlan::getBatchPlannerPlanId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_E_T",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"companyId", "export", "template"}, false),
+				"", BatchPlannerPlanModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_E_T",
 					new String[] {
@@ -1230,6 +1244,8 @@ public class BatchPlannerPlanPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "export", "template"}, true),
+				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
+				_SQL_SELECT_BATCHPLANNERPLAN_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_E_T",
 					new String[] {
@@ -1237,17 +1253,7 @@ public class BatchPlannerPlanPersistenceImpl
 						Boolean.class.getName()
 					},
 					new String[] {"companyId", "export", "template"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_E_T",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"companyId", "export", "template"}, false),
-				_SQL_SELECT_BATCHPLANNERPLAN_WHERE,
-				_SQL_COUNT_BATCHPLANNERPLAN_WHERE,
-				BatchPlannerPlanModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BatchPlannerPlan::getBatchPlannerPlanId,
+				"",
 				new FinderColumn<>(
 					"batchPlannerPlan.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, BatchPlannerPlan::getCompanyId),
@@ -1321,4 +1327,4 @@ public class BatchPlannerPlanPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2113725242
+// LIFERAY-SERVICE-BUILDER-HASH:368894136

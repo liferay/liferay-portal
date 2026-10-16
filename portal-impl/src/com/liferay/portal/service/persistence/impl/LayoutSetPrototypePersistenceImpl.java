@@ -889,7 +889,13 @@ public class LayoutSetPrototypePersistenceImpl
 	public void afterPropertiesSet() {
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, LayoutSetPrototype::getLayoutSetPrototypeId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", LayoutSetPrototypeModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -898,18 +904,13 @@ public class LayoutSetPrototypePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
+				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE,
-				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
-				LayoutSetPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, LayoutSetPrototype::getLayoutSetPrototypeId,
+				"",
 				new FinderColumn<>(
 					"layoutSetPrototype.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -917,7 +918,13 @@ public class LayoutSetPrototypePersistenceImpl
 
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, LayoutSetPrototype::getLayoutSetPrototypeId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", LayoutSetPrototypeModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -926,18 +933,13 @@ public class LayoutSetPrototypePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
+				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE,
-				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
-				LayoutSetPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, LayoutSetPrototype::getLayoutSetPrototypeId,
+				"",
 				new FinderColumn<>(
 					"layoutSetPrototype.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -948,7 +950,13 @@ public class LayoutSetPrototypePersistenceImpl
 
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, LayoutSetPrototype::getLayoutSetPrototypeId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", LayoutSetPrototypeModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -957,25 +965,28 @@ public class LayoutSetPrototypePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
+				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE,
-				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
-				LayoutSetPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, LayoutSetPrototype::getLayoutSetPrototypeId,
+				"",
 				new FinderColumn<>(
 					"layoutSetPrototype.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, LayoutSetPrototype::getCompanyId));
 
 		_collectionPersistenceFinderByC_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, LayoutSetPrototype::getLayoutSetPrototypeId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"companyId", "active_"}, false),
+				"", LayoutSetPrototypeModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A",
 					new String[] {
@@ -984,22 +995,15 @@ public class LayoutSetPrototypePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "active_"}, true),
+				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
+				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"companyId", "active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"companyId", "active_"}, false),
-				_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE,
-				_SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE,
-				LayoutSetPrototypeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, LayoutSetPrototype::getLayoutSetPrototypeId,
+				"",
 				new FinderColumn<>(
 					"layoutSetPrototype.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, LayoutSetPrototype::getCompanyId),
@@ -1038,4 +1042,4 @@ public class LayoutSetPrototypePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1511141768
+// LIFERAY-SERVICE-BUILDER-HASH:-53897394

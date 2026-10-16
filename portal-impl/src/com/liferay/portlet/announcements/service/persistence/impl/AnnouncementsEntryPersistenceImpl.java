@@ -1496,7 +1496,13 @@ public class AnnouncementsEntryPersistenceImpl
 	public void afterPropertiesSet() {
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AnnouncementsEntry::getEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", AnnouncementsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -1505,18 +1511,13 @@ public class AnnouncementsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
+				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE,
-				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
-				AnnouncementsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AnnouncementsEntry::getEntryId,
+				"",
 				new FinderColumn<>(
 					"announcementsEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1524,7 +1525,13 @@ public class AnnouncementsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AnnouncementsEntry::getEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", AnnouncementsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -1533,18 +1540,13 @@ public class AnnouncementsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
+				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE,
-				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
-				AnnouncementsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AnnouncementsEntry::getEntryId,
+				"",
 				new FinderColumn<>(
 					"announcementsEntry.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1555,7 +1557,13 @@ public class AnnouncementsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AnnouncementsEntry::getEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", AnnouncementsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -1564,25 +1572,26 @@ public class AnnouncementsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
+				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE,
-				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
-				AnnouncementsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AnnouncementsEntry::getEntryId,
+				"",
 				new FinderColumn<>(
 					"announcementsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, AnnouncementsEntry::getCompanyId));
 
 		_collectionPersistenceFinderByUserId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AnnouncementsEntry::getEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUserId",
+					new String[] {Long.class.getName()},
+					new String[] {"userId"}, false),
+				"", AnnouncementsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUserId",
 					new String[] {
@@ -1591,25 +1600,26 @@ public class AnnouncementsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"userId"}, true),
+				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
+				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUserId",
 					new String[] {Long.class.getName()},
 					new String[] {"userId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUserId",
-					new String[] {Long.class.getName()},
-					new String[] {"userId"}, false),
-				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE,
-				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
-				AnnouncementsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AnnouncementsEntry::getEntryId,
+				"",
 				new FinderColumn<>(
 					"announcementsEntry.", "userId", FinderColumn.Type.LONG,
 					"=", true, true, AnnouncementsEntry::getUserId));
 
 		_collectionPersistenceFinderByC_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AnnouncementsEntry::getEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"classNameId", "classPK"}, false),
+				"", AnnouncementsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C",
 					new String[] {
@@ -1618,18 +1628,13 @@ public class AnnouncementsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"classNameId", "classPK"}, true),
+				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
+				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"classNameId", "classPK"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"classNameId", "classPK"}, false),
-				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE,
-				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
-				AnnouncementsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AnnouncementsEntry::getEntryId,
+				"",
 				new FinderColumn<>(
 					"announcementsEntry.", "classNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1640,7 +1645,17 @@ public class AnnouncementsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_C_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AnnouncementsEntry::getEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C_C",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {"companyId", "classNameId", "classPK"},
+					false),
+				"", AnnouncementsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C_C",
 					new String[] {
@@ -1650,6 +1665,8 @@ public class AnnouncementsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "classNameId", "classPK"}, true),
+				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
+				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C_C",
 					new String[] {
@@ -1657,18 +1674,7 @@ public class AnnouncementsEntryPersistenceImpl
 						Long.class.getName()
 					},
 					new String[] {"companyId", "classNameId", "classPK"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C_C",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {"companyId", "classNameId", "classPK"},
-					false),
-				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE,
-				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
-				AnnouncementsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AnnouncementsEntry::getEntryId,
+				"",
 				new FinderColumn<>(
 					"announcementsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, AnnouncementsEntry::getCompanyId),
@@ -1682,7 +1688,16 @@ public class AnnouncementsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_C_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AnnouncementsEntry::getEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C_A",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"classNameId", "classPK", "alert"}, false),
+				"", AnnouncementsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C_A",
 					new String[] {
@@ -1692,6 +1707,8 @@ public class AnnouncementsEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"classNameId", "classPK", "alert"}, true),
+				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
+				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C_A",
 					new String[] {
@@ -1699,17 +1716,7 @@ public class AnnouncementsEntryPersistenceImpl
 						Boolean.class.getName()
 					},
 					new String[] {"classNameId", "classPK", "alert"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C_A",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"classNameId", "classPK", "alert"}, false),
-				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE,
-				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
-				AnnouncementsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AnnouncementsEntry::getEntryId,
+				"",
 				new FinderColumn<>(
 					"announcementsEntry.", "classNameId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1723,7 +1730,19 @@ public class AnnouncementsEntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_C_C_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AnnouncementsEntry::getEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C_C_A",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {
+						"companyId", "classNameId", "classPK", "alert"
+					},
+					false),
+				"", AnnouncementsEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C_C_A",
 					new String[] {
@@ -1736,6 +1755,8 @@ public class AnnouncementsEntryPersistenceImpl
 						"companyId", "classNameId", "classPK", "alert"
 					},
 					true),
+				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
+				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C_C_A",
 					new String[] {
@@ -1746,20 +1767,7 @@ public class AnnouncementsEntryPersistenceImpl
 						"companyId", "classNameId", "classPK", "alert"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C_C_A",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {
-						"companyId", "classNameId", "classPK", "alert"
-					},
-					false),
-				_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE,
-				_SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE,
-				AnnouncementsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AnnouncementsEntry::getEntryId,
+				"",
 				new FinderColumn<>(
 					"announcementsEntry.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, AnnouncementsEntry::getCompanyId),
@@ -1804,4 +1812,4 @@ public class AnnouncementsEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1077343811
+// LIFERAY-SERVICE-BUILDER-HASH:955200326

@@ -1016,4 +1016,4 @@ public class CPDefinitionGroupedEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1314494448
+// LIFERAY-SERVICE-BUILDER-HASH:-1092933667

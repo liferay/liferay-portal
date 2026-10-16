@@ -1013,4 +1013,4 @@ public class BatchEngineExportTaskPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1649607120
+// LIFERAY-SERVICE-BUILDER-HASH:-665293485

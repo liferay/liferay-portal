@@ -2557,7 +2557,12 @@ public class UserGroupPersistenceImpl
 
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, UserGroup::getUserGroupId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -2566,24 +2571,24 @@ public class UserGroupPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_USERGROUP_WHERE, _SQL_SELECT_USERGROUP_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_USERGROUP_WHERE, _SQL_COUNT_USERGROUP_WHERE,
-				UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, UserGroup::getUserGroupId,
+				"",
 				new FinderColumn<>(
 					"userGroup.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, UserGroup::getUuid));
 
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, UserGroup::getUserGroupId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -2592,17 +2597,12 @@ public class UserGroupPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_USERGROUP_WHERE, _SQL_SELECT_USERGROUP_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_USERGROUP_WHERE, _SQL_COUNT_USERGROUP_WHERE,
-				UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, UserGroup::getUserGroupId,
+				"",
 				new FinderColumn<>(
 					"userGroup.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, UserGroup::getUuid),
@@ -2612,7 +2612,12 @@ public class UserGroupPersistenceImpl
 
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, UserGroup::getUserGroupId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -2621,24 +2626,24 @@ public class UserGroupPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_USERGROUP_WHERE, _SQL_SELECT_USERGROUP_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_USERGROUP_WHERE, _SQL_COUNT_USERGROUP_WHERE,
-				UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, UserGroup::getUserGroupId,
+				"",
 				new FinderColumn<>(
 					"userGroup.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, UserGroup::getCompanyId));
 
 		_collectionPersistenceFinderByC_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, UserGroup::getUserGroupId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_P",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"companyId", "parentUserGroupId"}, false),
+				"", UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_P",
 					new String[] {
@@ -2647,17 +2652,12 @@ public class UserGroupPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "parentUserGroupId"}, true),
+				_SQL_COUNT_USERGROUP_WHERE, _SQL_SELECT_USERGROUP_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_P",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"companyId", "parentUserGroupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_P",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"companyId", "parentUserGroupId"}, false),
-				_SQL_SELECT_USERGROUP_WHERE, _SQL_COUNT_USERGROUP_WHERE,
-				UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, UserGroup::getUserGroupId,
+				"",
 				new FinderColumn<>(
 					"userGroup.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, UserGroup::getCompanyId),
@@ -2683,7 +2683,12 @@ public class UserGroupPersistenceImpl
 
 		_collectionPersistenceFinderByC_LikeN =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, UserGroup::getUserGroupId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_LikeN",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"companyId", "name"}, false),
+				"", UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_LikeN",
 					new String[] {
@@ -2692,14 +2697,8 @@ public class UserGroupPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "name"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_LikeN",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"companyId", "name"}, false),
-				_SQL_SELECT_USERGROUP_WHERE, _SQL_COUNT_USERGROUP_WHERE,
-				UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, UserGroup::getUserGroupId,
+				_SQL_COUNT_USERGROUP_WHERE, _SQL_SELECT_USERGROUP_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"userGroup.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, UserGroup::getCompanyId),
@@ -2709,7 +2708,18 @@ public class UserGroupPersistenceImpl
 
 		_collectionPersistenceFinderByGtU_C_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, UserGroup::getUserGroupId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGtU_C_P",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {
+						"userGroupId", "companyId", "parentUserGroupId"
+					},
+					false),
+				"", UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGtU_C_P",
 					new String[] {
@@ -2722,20 +2732,8 @@ public class UserGroupPersistenceImpl
 						"userGroupId", "companyId", "parentUserGroupId"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGtU_C_P",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {
-						"userGroupId", "companyId", "parentUserGroupId"
-					},
-					false),
-				_SQL_SELECT_USERGROUP_WHERE, _SQL_COUNT_USERGROUP_WHERE,
-				UserGroupModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, UserGroup::getUserGroupId,
+				_SQL_COUNT_USERGROUP_WHERE, _SQL_SELECT_USERGROUP_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"userGroup.", "userGroupId", FinderColumn.Type.LONG, ">",
 					true, true, UserGroup::getUserGroupId),
@@ -2814,4 +2812,4 @@ public class UserGroupPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1079714719
+// LIFERAY-SERVICE-BUILDER-HASH:-1830514170

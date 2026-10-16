@@ -3072,7 +3072,12 @@ public class AssetListEntryPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetListEntry::getAssetListEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -3081,18 +3086,13 @@ public class AssetListEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_ASSETLISTENTRY_WHERE,
+				_SQL_SELECT_ASSETLISTENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_ASSETLISTENTRY_WHERE,
-				_SQL_COUNT_ASSETLISTENTRY_WHERE,
-				AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"",
 				new ArrayableFinderColumn<>(
 					"assetListEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetListEntry::getGroupId));
@@ -3132,7 +3132,12 @@ public class AssetListEntryPersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeT =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetListEntry::getAssetListEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeT",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "title"}, false),
+				"", AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_LikeT",
 					new String[] {
@@ -3141,15 +3146,8 @@ public class AssetListEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "title"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeT",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "title"}, false),
-				_SQL_SELECT_ASSETLISTENTRY_WHERE,
 				_SQL_COUNT_ASSETLISTENTRY_WHERE,
-				AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				_SQL_SELECT_ASSETLISTENTRY_WHERE, null, null, "",
 				new ArrayableFinderColumn<>(
 					"assetListEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetListEntry::getGroupId),
@@ -3159,7 +3157,13 @@ public class AssetListEntryPersistenceImpl
 
 		_collectionPersistenceFinderByG_AET =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetListEntry::getAssetListEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_AET",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "assetEntryType"}, 0, 2, false,
+					null),
+				"", AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_AET",
 					new String[] {
@@ -3168,20 +3172,14 @@ public class AssetListEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "assetEntryType"}, true),
+				_SQL_COUNT_ASSETLISTENTRY_WHERE,
+				_SQL_SELECT_ASSETLISTENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_AET",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "assetEntryType"}, 0, 2, true,
 					null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_AET",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "assetEntryType"}, 0, 2, false,
-					null),
-				_SQL_SELECT_ASSETLISTENTRY_WHERE,
-				_SQL_COUNT_ASSETLISTENTRY_WHERE,
-				AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"",
 				new ArrayableFinderColumn<>(
 					"assetListEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetListEntry::getGroupId),
@@ -3192,7 +3190,16 @@ public class AssetListEntryPersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeT_AET =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetListEntry::getAssetListEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_LikeT_AET",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "title", "assetEntryType"}, false),
+				"", AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_LikeT_AET",
 					new String[] {
@@ -3202,19 +3209,8 @@ public class AssetListEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "title", "assetEntryType"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_LikeT_AET",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						String.class.getName()
-					},
-					new String[] {"groupId", "title", "assetEntryType"}, false),
-				_SQL_SELECT_ASSETLISTENTRY_WHERE,
 				_SQL_COUNT_ASSETLISTENTRY_WHERE,
-				AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				_SQL_SELECT_ASSETLISTENTRY_WHERE, null, null, "",
 				new ArrayableFinderColumn<>(
 					"assetListEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetListEntry::getGroupId),
@@ -3228,7 +3224,18 @@ public class AssetListEntryPersistenceImpl
 
 		_collectionPersistenceFinderByG_AES_AET =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetListEntry::getAssetListEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_AES_AET",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName()
+					},
+					new String[] {
+						"groupId", "assetEntrySubtype", "assetEntryType"
+					},
+					0, 6, false, null),
+				"", AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_AES_AET",
 					new String[] {
@@ -3241,6 +3248,8 @@ public class AssetListEntryPersistenceImpl
 						"groupId", "assetEntrySubtype", "assetEntryType"
 					},
 					true),
+				_SQL_COUNT_ASSETLISTENTRY_WHERE,
+				_SQL_SELECT_ASSETLISTENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_AES_AET",
@@ -3252,20 +3261,7 @@ public class AssetListEntryPersistenceImpl
 						"groupId", "assetEntrySubtype", "assetEntryType"
 					},
 					0, 6, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_AES_AET",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						String.class.getName()
-					},
-					new String[] {
-						"groupId", "assetEntrySubtype", "assetEntryType"
-					},
-					0, 6, false, null),
-				_SQL_SELECT_ASSETLISTENTRY_WHERE,
-				_SQL_COUNT_ASSETLISTENTRY_WHERE,
-				AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				"",
 				new ArrayableFinderColumn<>(
 					"assetListEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetListEntry::getGroupId),
@@ -3280,7 +3276,20 @@ public class AssetListEntryPersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeT_AES_AET =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetListEntry::getAssetListEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_LikeT_AES_AET",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						String.class.getName(), String.class.getName()
+					},
+					new String[] {
+						"groupId", "title", "assetEntrySubtype",
+						"assetEntryType"
+					},
+					false),
+				"", AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_LikeT_AES_AET",
@@ -3295,23 +3304,8 @@ public class AssetListEntryPersistenceImpl
 						"assetEntryType"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_LikeT_AES_AET",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						String.class.getName(), String.class.getName()
-					},
-					new String[] {
-						"groupId", "title", "assetEntrySubtype",
-						"assetEntryType"
-					},
-					false),
-				_SQL_SELECT_ASSETLISTENTRY_WHERE,
 				_SQL_COUNT_ASSETLISTENTRY_WHERE,
-				AssetListEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
+				_SQL_SELECT_ASSETLISTENTRY_WHERE, null, null, "",
 				new ArrayableFinderColumn<>(
 					"assetListEntry.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetListEntry::getGroupId),
@@ -3410,4 +3404,4 @@ public class AssetListEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1010321459
+// LIFERAY-SERVICE-BUILDER-HASH:-582269576

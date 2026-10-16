@@ -471,6 +471,13 @@ public class PermissionCheckFinderEntryPersistenceImpl
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
 				this,
+				PermissionCheckFinderEntry::getPermissionCheckFinderEntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", PermissionCheckFinderEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -479,19 +486,13 @@ public class PermissionCheckFinderEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_PERMISSIONCHECKFINDERENTRY_WHERE,
+				_SQL_SELECT_PERMISSIONCHECKFINDERENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_PERMISSIONCHECKFINDERENTRY_WHERE,
-				_SQL_COUNT_PERMISSIONCHECKFINDERENTRY_WHERE,
-				PermissionCheckFinderEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				PermissionCheckFinderEntry::getPermissionCheckFinderEntryId,
+				"",
 				new ArrayableFinderColumn<>(
 					"permissionCheckFinderEntry.", "groupId",
 					FinderColumn.Type.LONG, "=", false, true, true,
@@ -533,4 +534,4 @@ public class PermissionCheckFinderEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1328943820
+// LIFERAY-SERVICE-BUILDER-HASH:884189998

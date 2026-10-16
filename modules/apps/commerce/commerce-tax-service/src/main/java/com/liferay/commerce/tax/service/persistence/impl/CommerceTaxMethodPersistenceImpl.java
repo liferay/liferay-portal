@@ -667,4 +667,4 @@ public class CommerceTaxMethodPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-247686975
+// LIFERAY-SERVICE-BUILDER-HASH:-2029762894

@@ -1744,7 +1744,13 @@ public class BookmarksFolderPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BookmarksFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", BookmarksFolderModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1753,18 +1759,13 @@ public class BookmarksFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
+				_SQL_SELECT_BOOKMARKSFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
-				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
-				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BookmarksFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId));
@@ -1798,7 +1799,13 @@ public class BookmarksFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BookmarksFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "parentFolderId"}, false),
+				"", BookmarksFolderModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P",
 					new String[] {
@@ -1807,18 +1814,13 @@ public class BookmarksFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId"}, true),
+				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
+				_SQL_SELECT_BOOKMARKSFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "parentFolderId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "parentFolderId"}, false),
-				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
-				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
-				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BookmarksFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId),
@@ -1858,7 +1860,17 @@ public class BookmarksFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BookmarksFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "parentFolderId", "status"},
+					false),
+				"", BookmarksFolderModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_S",
 					new String[] {
@@ -1868,6 +1880,8 @@ public class BookmarksFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId", "status"}, true),
+				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
+				_SQL_SELECT_BOOKMARKSFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_S",
 					new String[] {
@@ -1875,18 +1889,7 @@ public class BookmarksFolderPersistenceImpl
 						Integer.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "parentFolderId", "status"},
-					false),
-				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
-				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
-				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BookmarksFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId),
@@ -1900,7 +1903,17 @@ public class BookmarksFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, BookmarksFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "parentFolderId", "status"},
+					false),
+				"", BookmarksFolderModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_NotS",
 					new String[] {
@@ -1910,19 +1923,8 @@ public class BookmarksFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "parentFolderId", "status"},
-					false),
-				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
 				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
-				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, BookmarksFolder::getFolderId,
+				_SQL_SELECT_BOOKMARKSFOLDER_WHERE, null, null, "",
 				new FinderColumn<>(
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId),
@@ -2046,4 +2048,4 @@ public class BookmarksFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-847612721
+// LIFERAY-SERVICE-BUILDER-HASH:-2095385820

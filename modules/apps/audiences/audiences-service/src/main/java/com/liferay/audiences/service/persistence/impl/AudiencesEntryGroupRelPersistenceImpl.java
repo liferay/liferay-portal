@@ -697,4 +697,4 @@ public class AudiencesEntryGroupRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-683350038
+// LIFERAY-SERVICE-BUILDER-HASH:1196581770

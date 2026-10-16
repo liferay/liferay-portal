@@ -864,4 +864,4 @@ public class TranslationEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-464877843
+// LIFERAY-SERVICE-BUILDER-HASH:-2045887272

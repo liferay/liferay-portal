@@ -608,7 +608,12 @@ public class ExpandoColumnPersistenceImpl
 	public void afterPropertiesSet() {
 		_collectionPersistenceFinderByTableId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, ExpandoColumn::getColumnId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByTableId",
+					new String[] {Long.class.getName()},
+					new String[] {"tableId"}, false),
+				"", ExpandoColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByTableId",
 					new String[] {
@@ -617,17 +622,13 @@ public class ExpandoColumnPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"tableId"}, true),
+				_SQL_COUNT_EXPANDOCOLUMN_WHERE, _SQL_SELECT_EXPANDOCOLUMN_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByTableId",
 					new String[] {Long.class.getName()},
 					new String[] {"tableId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByTableId",
-					new String[] {Long.class.getName()},
-					new String[] {"tableId"}, false),
-				_SQL_SELECT_EXPANDOCOLUMN_WHERE, _SQL_COUNT_EXPANDOCOLUMN_WHERE,
-				ExpandoColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, ExpandoColumn::getColumnId,
+				"",
 				new FinderColumn<>(
 					"expandoColumn.", "tableId", FinderColumn.Type.LONG, "=",
 					true, true, ExpandoColumn::getTableId));
@@ -650,7 +651,12 @@ public class ExpandoColumnPersistenceImpl
 
 		_collectionPersistenceFinderByT_N =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, ExpandoColumn::getColumnId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByT_N",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"tableId", "name"}, 0, 2, false, null),
+				"", ExpandoColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByT_N",
 					new String[] {
@@ -659,17 +665,13 @@ public class ExpandoColumnPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"tableId", "name"}, true),
+				_SQL_COUNT_EXPANDOCOLUMN_WHERE, _SQL_SELECT_EXPANDOCOLUMN_WHERE,
+				_uniquePersistenceFinderByT_N,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByT_N",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"tableId", "name"}, 0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByT_N",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"tableId", "name"}, 0, 2, false, null),
-				_SQL_SELECT_EXPANDOCOLUMN_WHERE, _SQL_COUNT_EXPANDOCOLUMN_WHERE,
-				ExpandoColumnModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", _uniquePersistenceFinderByT_N, ExpandoColumn::getColumnId,
+				"",
 				new FinderColumn<>(
 					"expandoColumn.", "tableId", FinderColumn.Type.LONG, "=",
 					true, true, ExpandoColumn::getTableId),
@@ -707,4 +709,4 @@ public class ExpandoColumnPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1462094888
+// LIFERAY-SERVICE-BUILDER-HASH:-749758859

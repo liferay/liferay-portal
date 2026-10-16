@@ -1659,7 +1659,13 @@ public class AssetVocabularyPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetVocabulary::getVocabularyId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", AssetVocabularyModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1668,18 +1674,13 @@ public class AssetVocabularyPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_ASSETVOCABULARY_WHERE,
+				_SQL_SELECT_ASSETVOCABULARY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_ASSETVOCABULARY_WHERE,
-				_SQL_COUNT_ASSETVOCABULARY_WHERE,
-				AssetVocabularyModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AssetVocabulary::getVocabularyId,
+				"",
 				new ArrayableFinderColumn<>(
 					"assetVocabulary.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetVocabulary::getGroupId));
@@ -1729,7 +1730,13 @@ public class AssetVocabularyPersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeN =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetVocabulary::getVocabularyId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeN",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "name"}, false),
+				"", AssetVocabularyModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_LikeN",
 					new String[] {
@@ -1738,15 +1745,8 @@ public class AssetVocabularyPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "name"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeN",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "name"}, false),
-				_SQL_SELECT_ASSETVOCABULARY_WHERE,
 				_SQL_COUNT_ASSETVOCABULARY_WHERE,
-				AssetVocabularyModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AssetVocabulary::getVocabularyId,
+				_SQL_SELECT_ASSETVOCABULARY_WHERE, null, null, "",
 				new FinderColumn<>(
 					"assetVocabulary.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, AssetVocabulary::getGroupId),
@@ -1756,7 +1756,15 @@ public class AssetVocabularyPersistenceImpl
 
 		_collectionPersistenceFinderByG_V =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AssetVocabulary::getVocabularyId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_V",
+					new String[] {
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "visibilityType"}, false),
+				"", AssetVocabularyModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_V",
 					new String[] {
@@ -1765,22 +1773,15 @@ public class AssetVocabularyPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "visibilityType"}, true),
+				_SQL_COUNT_ASSETVOCABULARY_WHERE,
+				_SQL_SELECT_ASSETVOCABULARY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_V",
 					new String[] {
 						Long.class.getName(), Integer.class.getName()
 					},
 					new String[] {"groupId", "visibilityType"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_V",
-					new String[] {
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "visibilityType"}, false),
-				_SQL_SELECT_ASSETVOCABULARY_WHERE,
-				_SQL_COUNT_ASSETVOCABULARY_WHERE,
-				AssetVocabularyModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, AssetVocabulary::getVocabularyId,
+				"",
 				new ArrayableFinderColumn<>(
 					"assetVocabulary.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, AssetVocabulary::getGroupId),
@@ -1836,4 +1837,4 @@ public class AssetVocabularyPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:82839573
+// LIFERAY-SERVICE-BUILDER-HASH:881475123

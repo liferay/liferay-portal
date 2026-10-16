@@ -1476,7 +1476,13 @@ public class CalendarResourcePersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CalendarResource::getCalendarResourceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", CalendarResourceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1485,18 +1491,13 @@ public class CalendarResourcePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_CALENDARRESOURCE_WHERE,
+				_SQL_SELECT_CALENDARRESOURCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_CALENDARRESOURCE_WHERE,
-				_SQL_COUNT_CALENDARRESOURCE_WHERE,
-				CalendarResourceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CalendarResource::getCalendarResourceId,
+				"",
 				new FinderColumn<>(
 					"calendarResource.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CalendarResource::getGroupId));
@@ -1531,7 +1532,13 @@ public class CalendarResourcePersistenceImpl
 
 		_collectionPersistenceFinderByG_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CalendarResource::getCalendarResourceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "code_"}, 0, 2, false, null),
+				"", CalendarResourceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C",
 					new String[] {
@@ -1540,18 +1547,13 @@ public class CalendarResourcePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "code_"}, true),
+				_SQL_COUNT_CALENDARRESOURCE_WHERE,
+				_SQL_SELECT_CALENDARRESOURCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "code_"}, 0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "code_"}, 0, 2, false, null),
-				_SQL_SELECT_CALENDARRESOURCE_WHERE,
-				_SQL_COUNT_CALENDARRESOURCE_WHERE,
-				CalendarResourceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CalendarResource::getCalendarResourceId,
+				"",
 				new ArrayableFinderColumn<>(
 					"calendarResource.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, CalendarResource::getGroupId),
@@ -1562,7 +1564,15 @@ public class CalendarResourcePersistenceImpl
 
 		_collectionPersistenceFinderByG_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CalendarResource::getCalendarResourceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_A",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"groupId", "active_"}, false),
+				"", CalendarResourceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_A",
 					new String[] {
@@ -1571,22 +1581,15 @@ public class CalendarResourcePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "active_"}, true),
+				_SQL_COUNT_CALENDARRESOURCE_WHERE,
+				_SQL_SELECT_CALENDARRESOURCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_A",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"groupId", "active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_A",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "active_"}, false),
-				_SQL_SELECT_CALENDARRESOURCE_WHERE,
-				_SQL_COUNT_CALENDARRESOURCE_WHERE,
-				CalendarResourceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CalendarResource::getCalendarResourceId,
+				"",
 				new FinderColumn<>(
 					"calendarResource.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CalendarResource::getGroupId),
@@ -1712,4 +1715,4 @@ public class CalendarResourcePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:959430328
+// LIFERAY-SERVICE-BUILDER-HASH:1871123302

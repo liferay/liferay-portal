@@ -1240,4 +1240,4 @@ public class AssetDisplayPageEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1471950958
+// LIFERAY-SERVICE-BUILDER-HASH:-707111656

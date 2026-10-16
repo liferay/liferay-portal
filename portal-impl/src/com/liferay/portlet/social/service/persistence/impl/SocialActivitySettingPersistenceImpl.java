@@ -972,4 +972,4 @@ public class SocialActivitySettingPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1689476242
+// LIFERAY-SERVICE-BUILDER-HASH:-1852241604

@@ -485,4 +485,4 @@ public class ServiceComponentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1247122162
+// LIFERAY-SERVICE-BUILDER-HASH:-1033736262

@@ -963,7 +963,12 @@ public class AccountRolePersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AccountRole::getAccountRoleId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -972,24 +977,26 @@ public class AccountRolePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_ACCOUNTROLE_WHERE, _SQL_SELECT_ACCOUNTROLE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
-				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, AccountRole::getAccountRoleId,
+				"",
 				new FinderColumn<>(
 					"accountRole.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AccountRole::getCompanyId));
 
 		_collectionPersistenceFinderByAccountEntryId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AccountRole::getAccountRoleId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByAccountEntryId",
+					new String[] {Long.class.getName()},
+					new String[] {"accountEntryId"}, false),
+				"", AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByAccountEntryId",
@@ -999,18 +1006,13 @@ public class AccountRolePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"accountEntryId"}, true),
+				_SQL_COUNT_ACCOUNTROLE_WHERE, _SQL_SELECT_ACCOUNTROLE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByAccountEntryId", new String[] {Long.class.getName()},
 					new String[] {"accountEntryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByAccountEntryId",
-					new String[] {Long.class.getName()},
-					new String[] {"accountEntryId"}, false),
-				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
-				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, AccountRole::getAccountRoleId,
+				"",
 				new ArrayableFinderColumn<>(
 					"accountRole.", "accountEntryId", FinderColumn.Type.LONG,
 					"=", false, true, true, AccountRole::getAccountEntryId));
@@ -1028,7 +1030,12 @@ public class AccountRolePersistenceImpl
 
 		_collectionPersistenceFinderByC_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, AccountRole::getAccountRoleId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_A",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"companyId", "accountEntryId"}, false),
+				"", AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A",
 					new String[] {
@@ -1037,17 +1044,13 @@ public class AccountRolePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "accountEntryId"}, true),
+				_SQL_COUNT_ACCOUNTROLE_WHERE, _SQL_SELECT_ACCOUNTROLE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"companyId", "accountEntryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_A",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"companyId", "accountEntryId"}, false),
-				_SQL_SELECT_ACCOUNTROLE_WHERE, _SQL_COUNT_ACCOUNTROLE_WHERE,
-				AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, AccountRole::getAccountRoleId,
+				"",
 				new FinderColumn<>(
 					"accountRole.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, AccountRole::getCompanyId),
@@ -1133,4 +1136,4 @@ public class AccountRolePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1825707603
+// LIFERAY-SERVICE-BUILDER-HASH:900203606

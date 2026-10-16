@@ -480,7 +480,13 @@ public class FilterPrimaryEntryPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, FilterPrimaryEntry::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", FilterPrimaryEntryModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -489,18 +495,13 @@ public class FilterPrimaryEntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_FILTERPRIMARYENTRY_WHERE,
+				_SQL_SELECT_FILTERPRIMARYENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_FILTERPRIMARYENTRY_WHERE,
-				_SQL_COUNT_FILTERPRIMARYENTRY_WHERE,
-				FilterPrimaryEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, FilterPrimaryEntry::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"filterPrimaryEntry.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, FilterPrimaryEntry::getGroupId));
@@ -538,4 +539,4 @@ public class FilterPrimaryEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:328852796
+// LIFERAY-SERVICE-BUILDER-HASH:-596865492

@@ -2249,7 +2249,12 @@ public class CountryPersistenceImpl
 	public void afterPropertiesSet() {
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -2258,24 +2263,24 @@ public class CountryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Country::getUuid));
 
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -2284,17 +2289,12 @@ public class CountryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, Country::getUuid),
@@ -2304,7 +2304,12 @@ public class CountryPersistenceImpl
 
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -2313,24 +2318,24 @@ public class CountryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCompanyId));
 
 		_collectionPersistenceFinderByActive =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByActive",
+					new String[] {Boolean.class.getName()},
+					new String[] {"active_"}, false),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByActive",
 					new String[] {
@@ -2339,17 +2344,12 @@ public class CountryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"active_"}, true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByActive",
 					new String[] {Boolean.class.getName()},
 					new String[] {"active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByActive",
-					new String[] {Boolean.class.getName()},
-					new String[] {"active_"}, false),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "active", "active_", FinderColumn.Type.BOOLEAN,
 					"=", true, true, Country::isActive));
@@ -2386,7 +2386,15 @@ public class CountryPersistenceImpl
 
 		_collectionPersistenceFinderByC_Active =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByC_Active",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"companyId", "active_"}, false),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_Active",
 					new String[] {
@@ -2395,22 +2403,14 @@ public class CountryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "active_"}, true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_Active",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"companyId", "active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByC_Active",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"companyId", "active_"}, false),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCompanyId),
@@ -2450,7 +2450,16 @@ public class CountryPersistenceImpl
 
 		_collectionPersistenceFinderByC_A_B =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_B",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"companyId", "active_", "billingAllowed"},
+					false),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_B",
 					new String[] {
@@ -2461,6 +2470,7 @@ public class CountryPersistenceImpl
 					},
 					new String[] {"companyId", "active_", "billingAllowed"},
 					true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A_B",
 					new String[] {
@@ -2469,17 +2479,7 @@ public class CountryPersistenceImpl
 					},
 					new String[] {"companyId", "active_", "billingAllowed"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_B",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"companyId", "active_", "billingAllowed"},
-					false),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCompanyId),
@@ -2492,7 +2492,16 @@ public class CountryPersistenceImpl
 
 		_collectionPersistenceFinderByC_A_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_S",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"companyId", "active_", "shippingAllowed"},
+					false),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_S",
 					new String[] {
@@ -2503,6 +2512,7 @@ public class CountryPersistenceImpl
 					},
 					new String[] {"companyId", "active_", "shippingAllowed"},
 					true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A_S",
 					new String[] {
@@ -2511,17 +2521,7 @@ public class CountryPersistenceImpl
 					},
 					new String[] {"companyId", "active_", "shippingAllowed"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_S",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"companyId", "active_", "shippingAllowed"},
-					false),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCompanyId),
@@ -2534,7 +2534,19 @@ public class CountryPersistenceImpl
 
 		_collectionPersistenceFinderByC_A_B_G =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_B_G",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Boolean.class.getName(), Boolean.class.getName()
+					},
+					new String[] {
+						"countryId", "active_", "billingAllowed",
+						"groupFilterEnabled"
+					},
+					false),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_B_G",
 					new String[] {
@@ -2548,6 +2560,7 @@ public class CountryPersistenceImpl
 						"groupFilterEnabled"
 					},
 					true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A_B_G",
 					new String[] {
@@ -2559,20 +2572,7 @@ public class CountryPersistenceImpl
 						"groupFilterEnabled"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_B_G",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Boolean.class.getName(), Boolean.class.getName()
-					},
-					new String[] {
-						"countryId", "active_", "billingAllowed",
-						"groupFilterEnabled"
-					},
-					false),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "countryId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCountryId),
@@ -2588,7 +2588,19 @@ public class CountryPersistenceImpl
 
 		_collectionPersistenceFinderByC_A_G_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_G_S",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Boolean.class.getName(), Boolean.class.getName()
+					},
+					new String[] {
+						"countryId", "active_", "groupFilterEnabled",
+						"shippingAllowed"
+					},
+					false),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_G_S",
 					new String[] {
@@ -2602,6 +2614,7 @@ public class CountryPersistenceImpl
 						"shippingAllowed"
 					},
 					true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A_G_S",
 					new String[] {
@@ -2613,20 +2626,7 @@ public class CountryPersistenceImpl
 						"shippingAllowed"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_G_S",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Boolean.class.getName(), Boolean.class.getName()
-					},
-					new String[] {
-						"countryId", "active_", "groupFilterEnabled",
-						"shippingAllowed"
-					},
-					false),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "countryId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCountryId),
@@ -2642,7 +2642,21 @@ public class CountryPersistenceImpl
 
 		_collectionPersistenceFinderByC_A_B_G_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, Country::getCountryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByC_A_B_G_S",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Boolean.class.getName(), Boolean.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {
+						"countryId", "active_", "billingAllowed",
+						"groupFilterEnabled", "shippingAllowed"
+					},
+					false),
+				"", CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_B_G_S",
 					new String[] {
@@ -2657,6 +2671,7 @@ public class CountryPersistenceImpl
 						"groupFilterEnabled", "shippingAllowed"
 					},
 					true),
+				_SQL_COUNT_COUNTRY_WHERE, _SQL_SELECT_COUNTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByC_A_B_G_S",
@@ -2670,22 +2685,7 @@ public class CountryPersistenceImpl
 						"groupFilterEnabled", "shippingAllowed"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByC_A_B_G_S",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Boolean.class.getName(), Boolean.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {
-						"countryId", "active_", "billingAllowed",
-						"groupFilterEnabled", "shippingAllowed"
-					},
-					false),
-				_SQL_SELECT_COUNTRY_WHERE, _SQL_COUNT_COUNTRY_WHERE,
-				CountryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, Country::getCountryId,
+				"",
 				new FinderColumn<>(
 					"country.", "countryId", FinderColumn.Type.LONG, "=", true,
 					true, Country::getCountryId),
@@ -2751,4 +2751,4 @@ public class CountryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:752634379
+// LIFERAY-SERVICE-BUILDER-HASH:1454356361
