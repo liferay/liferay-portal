@@ -320,13 +320,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 	}
 
 	private String _getConfigurationPid(Class<?> clazz) {
-		Meta.OCD ocd = clazz.getAnnotation(Meta.OCD.class);
-
-		if (ocd == null) {
-			return null;
-		}
-
-		return ocd.id();
+		return _configurationPidClassValue.get(clazz);
 	}
 
 	private Configuration _getFactoryConfiguration(
@@ -353,20 +347,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 	}
 
 	private <T> String _getSettingsId(Class<T> clazz) {
-		String settingsId = null;
-
-		ExtendedObjectClassDefinition eocd = clazz.getAnnotation(
-			ExtendedObjectClassDefinition.class);
-
-		if (eocd != null) {
-			settingsId = eocd.settingsId();
-		}
-
-		if (Validator.isNull(settingsId)) {
-			settingsId = _getConfigurationPid(clazz);
-		}
-
-		return settingsId;
+		return _settingsIdClassValue.get(clazz);
 	}
 
 	private void _saveConfiguration(
@@ -416,6 +397,45 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 				"Unable to save factory configuration " + pid, ioException);
 		}
 	}
+
+	private static final ClassValue<String> _configurationPidClassValue =
+		new ClassValue<String>() {
+
+			@Override
+			protected String computeValue(Class<?> clazz) {
+				Meta.OCD ocd = clazz.getAnnotation(Meta.OCD.class);
+
+				if (ocd == null) {
+					return null;
+				}
+
+				return ocd.id();
+			}
+
+		};
+
+	private static final ClassValue<String> _settingsIdClassValue =
+		new ClassValue<String>() {
+
+			@Override
+			protected String computeValue(Class<?> clazz) {
+				String settingsId = null;
+
+				ExtendedObjectClassDefinition eocd = clazz.getAnnotation(
+					ExtendedObjectClassDefinition.class);
+
+				if (eocd != null) {
+					settingsId = eocd.settingsId();
+				}
+
+				if (Validator.isNull(settingsId)) {
+					settingsId = _configurationPidClassValue.get(clazz);
+				}
+
+				return settingsId;
+			}
+
+		};
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
