@@ -8,17 +8,20 @@ package com.liferay.oauth2.provider.dynamic.registration.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.client.test.BaseClientTestCase;
 import com.liferay.oauth2.provider.client.test.BaseTestPreparatorBundleActivator;
+import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.internal.test.util.JWTAssertionUtil;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -27,6 +30,9 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.apache.cxf.rs.security.jose.jws.JwsJwtCompactConsumer;
 import org.apache.cxf.rs.security.jose.jwt.JwtToken;
@@ -88,7 +94,11 @@ public class DynamicRegistrationServiceJWTAccessTokenTest
 	}
 
 	private String _getJWTAccessToken() {
-		String jwtAccessToken = getToken(_CLIENT_ID);
+		String jwtAccessToken = getToken(
+			_CLIENT_ID, null,
+			getResourceOwnerPasswordBiFunction(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
+			this::parseTokenString);
 
 		JwsJwtCompactConsumer jwsJwtCompactConsumer = new JwsJwtCompactConsumer(
 			jwtAccessToken);
@@ -116,9 +126,6 @@ public class DynamicRegistrationServiceJWTAccessTokenTest
 			Entity.json(
 				JSONUtil.put(
 					"client_name", clientName
-				).put(
-					"grant_types",
-					new String[] {OAuthConstants.CLIENT_CREDENTIALS_GRANT}
 				).toString()));
 	}
 
@@ -127,6 +134,8 @@ public class DynamicRegistrationServiceJWTAccessTokenTest
 
 	@Inject
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
+
+	private User _user;
 
 	private class JWTAccessTokenTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -148,8 +157,12 @@ public class DynamicRegistrationServiceJWTAccessTokenTest
 
 			long companyId = TestPropsValues.getCompanyId();
 
+			_user = UserTestUtil.getAdminUser(companyId);
+
 			createOAuth2Application(
-				companyId, UserTestUtil.getAdminUser(companyId), _CLIENT_ID);
+				companyId, _user, _CLIENT_ID,
+				Collections.singletonList(GrantType.RESOURCE_OWNER_PASSWORD),
+				Arrays.asList("everything", "everything.read"));
 		}
 
 	}
