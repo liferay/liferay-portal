@@ -124,85 +124,6 @@ def is_complete(build):
 	return (build["caseResultUntested"] or 0) * 10 < total
 
 
-def odata_string(value):
-	return "'%s'" % str(value).replace("'", "''")
-
-
-def resolve_builds(token, args):
-	if args.build:
-		newest = get(token, "/o/c/builds/%s" % args.build, {})
-
-		routine_id = newest["r_routineToBuilds_c_routineId"]
-	else:
-		routines = get(
-			token,
-			"/o/c/routines",
-			{
-				"filter": "name eq %s and "
-				"r_routineToProjects_c_projectId eq %s"
-				% (odata_string(args.routine), odata_string(args.project)),
-			},
-		)["items"]
-
-		if len(routines) != 1:
-			sys.exit(
-				"Expected one routine named %s in project %s, found %d."
-				% (args.routine, args.project, len(routines))
-			)
-
-		newest = None
-		routine_id = routines[0]["id"]
-
-	builds = []
-	page = 1
-
-	while len(builds) < args.builds:
-		data = get(
-			token,
-			"/o/c/builds",
-			{
-				"filter": "r_routineToBuilds_c_routineId eq %s"
-				% odata_string(routine_id),
-				"page": page,
-				"pageSize": 50,
-				"sort": "dateCreated:desc",
-			},
-		)
-
-		for build in data["items"]:
-			if newest and build["dateCreated"] > newest["dateCreated"]:
-				continue
-
-			if not is_complete(build):
-				print(
-					"Skipping incomplete build %s" % build["name"],
-					file=sys.stderr,
-				)
-
-				continue
-
-			builds.append(build)
-
-			if len(builds) == args.builds:
-				break
-
-		if page >= data.get("lastPage", 1):
-			break
-
-		page += 1
-
-	if len(builds) < 3:
-		sys.exit("Found %d complete builds; need at least 3." % len(builds))
-
-	if len(builds) < args.builds:
-		print(
-			"Only %d complete builds were found." % len(builds),
-			file=sys.stderr,
-		)
-
-	return builds
-
-
 def main():
 	parser = argparse.ArgumentParser(
 		description=(
@@ -357,6 +278,85 @@ def main():
 
 		print()
 		print("Wrote %s" % args.tsv)
+
+
+def odata_string(value):
+	return "'%s'" % str(value).replace("'", "''")
+
+
+def resolve_builds(token, args):
+	if args.build:
+		newest = get(token, "/o/c/builds/%s" % args.build, {})
+
+		routine_id = newest["r_routineToBuilds_c_routineId"]
+	else:
+		routines = get(
+			token,
+			"/o/c/routines",
+			{
+				"filter": "name eq %s and "
+				"r_routineToProjects_c_projectId eq %s"
+				% (odata_string(args.routine), odata_string(args.project)),
+			},
+		)["items"]
+
+		if len(routines) != 1:
+			sys.exit(
+				"Expected one routine named %s in project %s, found %d."
+				% (args.routine, args.project, len(routines))
+			)
+
+		newest = None
+		routine_id = routines[0]["id"]
+
+	builds = []
+	page = 1
+
+	while len(builds) < args.builds:
+		data = get(
+			token,
+			"/o/c/builds",
+			{
+				"filter": "r_routineToBuilds_c_routineId eq %s"
+				% odata_string(routine_id),
+				"page": page,
+				"pageSize": 50,
+				"sort": "dateCreated:desc",
+			},
+		)
+
+		for build in data["items"]:
+			if newest and build["dateCreated"] > newest["dateCreated"]:
+				continue
+
+			if not is_complete(build):
+				print(
+					"Skipping incomplete build %s" % build["name"],
+					file=sys.stderr,
+				)
+
+				continue
+
+			builds.append(build)
+
+			if len(builds) == args.builds:
+				break
+
+		if page >= data.get("lastPage", 1):
+			break
+
+		page += 1
+
+	if len(builds) < 3:
+		sys.exit("Found %d complete builds; need at least 3." % len(builds))
+
+	if len(builds) < args.builds:
+		print(
+			"Only %d complete builds were found." % len(builds),
+			file=sys.stderr,
+		)
+
+	return builds
 
 
 if __name__ == "__main__":
