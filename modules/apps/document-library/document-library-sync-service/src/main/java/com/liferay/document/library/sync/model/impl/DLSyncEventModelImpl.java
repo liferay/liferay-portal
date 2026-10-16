@@ -97,13 +97,14 @@ public class DLSyncEventModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long MODIFIEDTIME_COLUMN_BITMASK = 1L;
+	public static final long TYPEPK_COLUMN_BITMASK = 1L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPEPK_COLUMN_BITMASK = 2L;
+	public static final long MODIFIEDTIME_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -303,16 +304,6 @@ public class DLSyncEventModelImpl
 		}
 
 		_modifiedTime = modifiedTime;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalModifiedTime() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("modifiedTime"));
 	}
 
 	@Override
@@ -709,4 +700,4 @@ public class DLSyncEventModelImpl
 	private DLSyncEvent _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1787803476
+// LIFERAY-SERVICE-BUILDER-HASH:-1996534808

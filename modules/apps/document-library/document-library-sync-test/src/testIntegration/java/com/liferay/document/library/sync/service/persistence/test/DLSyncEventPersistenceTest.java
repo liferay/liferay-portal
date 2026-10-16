@@ -147,13 +147,6 @@ public class DLSyncEventPersistenceTest {
 	}
 
 	@Test
-	public void testCountByGtModifiedTime() throws Exception {
-		_persistence.countByGtModifiedTime(RandomTestUtil.nextLong());
-
-		_persistence.countByGtModifiedTime(0L);
-	}
-
-	@Test
 	public void testCountByTypePK() throws Exception {
 		_persistence.countByTypePK(RandomTestUtil.nextLong());
 
@@ -481,4 +474,4 @@ public class DLSyncEventPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1408738176
+// LIFERAY-SERVICE-BUILDER-HASH:267338481

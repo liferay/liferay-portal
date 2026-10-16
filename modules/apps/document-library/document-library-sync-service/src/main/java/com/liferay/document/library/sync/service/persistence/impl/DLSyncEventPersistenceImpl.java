@@ -16,16 +16,12 @@ import com.liferay.document.library.sync.service.persistence.impl.constants.DLSy
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
-import com.liferay.portal.kernel.dao.orm.FinderPath;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
@@ -34,7 +30,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,142 +68,6 @@ public class DLSyncEventPersistenceImpl
 
 	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
 		FINDER_CLASS_NAME_ENTITY + ".List2";
-
-	private CollectionPersistenceFinder<DLSyncEvent, NoSuchEventException>
-		_collectionPersistenceFinderByGtModifiedTime;
-
-	/**
-	 * Returns all the dl sync events where modifiedTime &gt; &#63;.
-	 *
-	 * @param modifiedTime the modified time
-	 * @return the matching dl sync events
-	 */
-	@Override
-	public List<DLSyncEvent> findByGtModifiedTime(long modifiedTime) {
-		return findByGtModifiedTime(
-			modifiedTime, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the dl sync events where modifiedTime &gt; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DLSyncEventModelImpl</code>.
-	 * </p>
-	 *
-	 * @param modifiedTime the modified time
-	 * @param start the lower bound of the range of dl sync events
-	 * @param end the upper bound of the range of dl sync events (not inclusive)
-	 * @return the range of matching dl sync events
-	 */
-	@Override
-	public List<DLSyncEvent> findByGtModifiedTime(
-		long modifiedTime, int start, int end) {
-
-		return findByGtModifiedTime(modifiedTime, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the dl sync events where modifiedTime &gt; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DLSyncEventModelImpl</code>.
-	 * </p>
-	 *
-	 * @param modifiedTime the modified time
-	 * @param start the lower bound of the range of dl sync events
-	 * @param end the upper bound of the range of dl sync events (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching dl sync events
-	 */
-	@Override
-	public List<DLSyncEvent> findByGtModifiedTime(
-		long modifiedTime, int start, int end,
-		OrderByComparator<DLSyncEvent> orderByComparator) {
-
-		return findByGtModifiedTime(
-			modifiedTime, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the dl sync events where modifiedTime &gt; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DLSyncEventModelImpl</code>.
-	 * </p>
-	 *
-	 * @param modifiedTime the modified time
-	 * @param start the lower bound of the range of dl sync events
-	 * @param end the upper bound of the range of dl sync events (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching dl sync events
-	 */
-	@Override
-	public List<DLSyncEvent> findByGtModifiedTime(
-		long modifiedTime, int start, int end,
-		OrderByComparator<DLSyncEvent> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByGtModifiedTime.find(
-			finderCache, new Object[] {modifiedTime}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first dl sync event in the ordered set where modifiedTime &gt; &#63;.
-	 *
-	 * @param modifiedTime the modified time
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching dl sync event
-	 * @throws NoSuchEventException if a matching dl sync event could not be found
-	 */
-	@Override
-	public DLSyncEvent findByGtModifiedTime_First(
-			long modifiedTime, OrderByComparator<DLSyncEvent> orderByComparator)
-		throws NoSuchEventException {
-
-		return _collectionPersistenceFinderByGtModifiedTime.findFirst(
-			finderCache, new Object[] {modifiedTime}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first dl sync event in the ordered set where modifiedTime &gt; &#63;.
-	 *
-	 * @param modifiedTime the modified time
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching dl sync event, or <code>null</code> if a matching dl sync event could not be found
-	 */
-	@Override
-	public DLSyncEvent fetchByGtModifiedTime_First(
-		long modifiedTime, OrderByComparator<DLSyncEvent> orderByComparator) {
-
-		return _collectionPersistenceFinderByGtModifiedTime.fetchFirst(
-			finderCache, new Object[] {modifiedTime}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the dl sync events where modifiedTime &gt; &#63; from the database.
-	 *
-	 * @param modifiedTime the modified time
-	 */
-	@Override
-	public void removeByGtModifiedTime(long modifiedTime) {
-		_collectionPersistenceFinderByGtModifiedTime.remove(
-			finderCache, new Object[] {modifiedTime});
-	}
-
-	/**
-	 * Returns the number of dl sync events where modifiedTime &gt; &#63;.
-	 *
-	 * @param modifiedTime the modified time
-	 * @return the number of matching dl sync events
-	 */
-	@Override
-	public int countByGtModifiedTime(long modifiedTime) {
-		return _collectionPersistenceFinderByGtModifiedTime.count(
-			finderCache, new Object[] {modifiedTime});
-	}
 
 	private UniquePersistenceFinder<DLSyncEvent, NoSuchEventException>
 		_uniquePersistenceFinderByTypePK;
@@ -447,31 +306,6 @@ public class DLSyncEventPersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_collectionPersistenceFinderByGtModifiedTime =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByGtModifiedTime",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"modifiedTime"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByGtModifiedTime",
-					new String[] {Long.class.getName()},
-					new String[] {"modifiedTime"}, false),
-				_SQL_SELECT_DLSYNCEVENT_WHERE, _SQL_COUNT_DLSYNCEVENT_WHERE,
-				DLSyncEventModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
-				new FinderColumn<>(
-					"dlSyncEvent.", "modifiedTime", FinderColumn.Type.LONG, ">",
-					true, true, DLSyncEvent::getModifiedTime));
-
 		_uniquePersistenceFinderByTypePK = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -525,17 +359,11 @@ public class DLSyncEventPersistenceImpl
 	@Reference
 	protected FinderCache finderCache;
 
-	private static final String _ENTITY_ALIAS_PREFIX =
-		DLSyncEventModelImpl.ENTITY_ALIAS + ".";
-
 	private static final String _SQL_SELECT_DLSYNCEVENT =
 		"SELECT dlSyncEvent FROM DLSyncEvent dlSyncEvent";
 
 	private static final String _SQL_SELECT_DLSYNCEVENT_WHERE =
 		"SELECT dlSyncEvent FROM DLSyncEvent dlSyncEvent WHERE ";
-
-	private static final String _SQL_COUNT_DLSYNCEVENT_WHERE =
-		"SELECT COUNT(dlSyncEvent) FROM DLSyncEvent dlSyncEvent WHERE ";
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"type"});
@@ -546,4 +374,4 @@ public class DLSyncEventPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1028186204
+// LIFERAY-SERVICE-BUILDER-HASH:1373943755
