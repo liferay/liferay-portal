@@ -4,38 +4,6 @@ templates:
 tests:
     -   asserts:
             -   matchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: "\"com.example.a\""
-            -   matchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: "\"com.example.b\""
-        it: Appends the portal bundle deny list entries through the loop
-        set:
-            liferay-default.portalBundleDenyList:
-                -   com.example.a
-                -   com.example.b
-            liferay-default.search.engine: elasticsearch
-    -   asserts:
-            -   matchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: com.liferay.portal.search.elasticsearch7.api
-            -   matchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: com.liferay.portal.search.elasticsearch7.impl
-            -   matchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: com.liferay.portal.search.elasticsearch8.api
-            -   matchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: com.liferay.portal.search.elasticsearch8.impl
-            -   matchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: com.liferay.portal.search.learning.to.rank.api
-        it: Blacklists the Elasticsearch bundles through the loop when the engine is opensearch
-        set:
-            liferay-default.search.engine: opensearch
-    -   asserts:
-            -   matchRegex:
                     path: data["com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config"]
                     pattern: productionModeEnabled=B"true"
             -   matchRegex:
@@ -51,19 +19,6 @@ tests:
         set:
             liferay-default.search.engine: opensearch
     -   asserts:
-            -   notMatchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: com.liferay.portal.search.elasticsearch7.impl
-            -   notMatchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: com.liferay.portal.search.elasticsearch8.impl
-            -   notMatchRegex:
-                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
-                    pattern: com.liferay.portal.search.learning.to.rank.api
-        it: Omits the Elasticsearch bundles from the deny list when the engine is elasticsearch
-        set:
-            liferay-default.search.engine: elasticsearch
-    -   asserts:
             -   matchRegex:
                     path: data["com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config"]
                     pattern: operationMode="REMOTE"
@@ -72,7 +27,6 @@ tests:
                     pattern: productionModeEnabled=B"true"
         it: Renders the Elasticsearch configuration when the engine is elasticsearch
         set:
-            liferay-default.portalBundleDenyList: []
             liferay-default.search.engine: elasticsearch
     -   asserts:
             -   matchRegex:

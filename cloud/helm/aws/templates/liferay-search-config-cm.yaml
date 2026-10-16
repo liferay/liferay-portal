@@ -1,23 +1,6 @@
 {{- $engine := index .Values "liferay-default" "search" "engine" -}}
-{{- $liferayDefault := index .Values "liferay-default" -}}
-{{- $bundles := list -}}
-{{- if eq $engine "opensearch" -}}
-{{- $bundles = list "com.liferay.portal.search.elasticsearch.cross.cluster.replication.impl" "com.liferay.portal.search.elasticsearch.monitoring.web" "com.liferay.portal.search.elasticsearch7.api" "com.liferay.portal.search.elasticsearch7.impl" "com.liferay.portal.search.elasticsearch8.api" "com.liferay.portal.search.elasticsearch8.impl" "com.liferay.portal.search.learning.to.rank.api" "com.liferay.portal.search.learning.to.rank.impl" -}}
-{{- end -}}
-{{- with $liferayDefault.portalBundleDenyList -}}
-{{- $bundles = concat $bundles . -}}
-{{- end -}}
-{{- range $k, $v := default dict $liferayDefault.dependencies -}}
-{{- with $v.portalBundleDenyList -}}
-{{- $bundles = concat $bundles . -}}
-{{- end -}}
-{{- end -}}
 apiVersion: v1
 data:
-    com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config: |
-        {{- if $bundles }}
-        blacklistBundleSymbolicNames={{ $bundles | toJson }}
-        {{- end }}
     com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config: |
         {{- if eq $engine "elasticsearch" }}
         authenticationEnabled=B"true"

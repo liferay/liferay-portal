@@ -181,9 +181,6 @@ liferay-default:
                 name: liferay-configmap
                 subPath: com.liferay.portal.store.s3.configuration.S3StoreConfiguration.config
         x-liferay-aws-search-config:
-            -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config
-                name: liferay-search-config-aws
-                subPath: com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config
             -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config
                 name: liferay-search-config-aws
                 subPath: com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config

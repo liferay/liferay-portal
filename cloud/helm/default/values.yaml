@@ -505,6 +505,8 @@ resources:
         cpu: 2000m
         memory: 6Gi
 schedulingGates: []
+search:
+    engine: ""
 securityContext: {}
 service:
     annotations: {}
