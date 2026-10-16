@@ -3,7 +3,7 @@
 {{- $observedSearch := dig "search" (dict) $observedResources -}}
 {{- $observedStorage := dig (printf "storage-%s" $activeDataPlane) (dict) $observedResources -}}
 
-{{- $doclibBucketName := dig "resource" "metadata" "annotations" "crossplane.io/external-name" "" $observedStorage | toString -}}
+{{- $doclibBucketName := dig "resource" "status" "atProvider" "id" "" $observedStorage | toString -}}
 {{- $searchEndpoint := dig "resource" "status" "atProvider" "endpoint" "" $observedSearch | toString -}}
 {{- $searchPassword := dig "connectionDetails" "attribute.advanced_security_options.0.master_user_options.0.master_user_password" "" $observedSearch | toString | b64dec -}}
 
