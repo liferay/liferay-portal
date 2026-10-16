@@ -50,6 +50,7 @@ func (stubProvisioning *stubProvisioning) Activate(
 	privateKey *rsa.PrivateKey,
 ) error {
 	stubProvisioning.activateCalled = true
+	stubProvisioning.activationRequest = activationRequest
 
 	return stubProvisioning.activateError
 }
@@ -1432,6 +1433,64 @@ func TestExtractLiferayImageTag(t *testing.T) {
 	}
 }
 
+func TestReconcileActivatesWithEnvironmentName(t *testing.T) {
+	testCases := map[string]struct {
+		environmentName         string
+		expectedEnvironmentName string
+	}{
+		"named environment sends its name": {
+			environmentName:         "prod",
+			expectedEnvironmentName: "prod",
+		},
+		"unnamed environment sends its namespace": {
+			expectedEnvironmentName: "liferay-dev",
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			environment := pendingEnvironment()
+			environment.Spec.EnvironmentName = testCase.environmentName
+
+			provisioningClient := &stubProvisioning{
+				entitlements: &provisioning.Entitlements{},
+			}
+
+			reconcileEnvironment(
+				provisioningClient, t,
+				&corev1.Namespace{
+					ObjectMeta: metav1.ObjectMeta{
+						Name: "liferay-dev",
+						UID:  "dev-namespace-uid",
+					},
+				},
+				&corev1.Secret{
+					Data: map[string][]byte{
+						"activationCode": []byte("one-time-code"),
+					},
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "dev-activation",
+						Namespace: "liferay-dev",
+					},
+				},
+				environment,
+			)
+
+			if !provisioningClient.activateCalled {
+				t.Fatal("Activate was not called")
+			}
+
+			if provisioningClient.activationRequest.EnvironmentName != testCase.expectedEnvironmentName {
+				t.Errorf(
+					"ActivationRequest.EnvironmentName = %q, want %q",
+					provisioningClient.activationRequest.EnvironmentName,
+					testCase.expectedEnvironmentName,
+				)
+			}
+		})
+	}
+}
+
 func TestReconcileAdoptsEntitlementsSecret(t *testing.T) {
 	licenseXML := virtualClusterLicenseXML(
 		"Friday, March 2, 2029 12:00:00 AM GMT", 1, "dev-namespace-uid",
@@ -2540,6 +2599,70 @@ func TestReconcileOfflineReportsAddOnsNotReadyWhenBundleLacksAddOn(t *testing.T)
 
 	if state := liferayEnvironment.Status.Apps[0].State; state != "Failed" {
 		t.Errorf("App state = %q, want Failed", state)
+	}
+}
+
+func TestReconcileOfflineRequestCarriesEnvironmentName(t *testing.T) {
+	testCases := map[string]struct {
+		environmentName         string
+		expectedEnvironmentName string
+	}{
+		"named environment sends its name": {
+			environmentName:         "prod",
+			expectedEnvironmentName: "prod",
+		},
+		"unnamed environment sends its namespace": {
+			expectedEnvironmentName: "liferay-dev",
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			environment := pendingEnvironment()
+			environment.Spec.EnvironmentName = testCase.environmentName
+			environment.Spec.Offline = true
+
+			liferayEnvironmentReconciler, _ := reconcileEnvironment(
+				&stubProvisioning{}, t,
+				&corev1.Namespace{
+					ObjectMeta: metav1.ObjectMeta{
+						Name: "liferay-dev",
+						UID:  "dev-namespace-uid",
+					},
+				},
+				environment,
+			)
+
+			payload := getSecret(
+				"dev-identity", liferayEnvironmentReconciler, t,
+			).Data["offline-request"]
+
+			segments := strings.Split(string(payload), ".")
+
+			if len(segments) != 3 {
+				t.Fatalf("offline-request is not a JWT: got %d segments, want 3", len(segments))
+			}
+
+			claims, error := base64.RawURLEncoding.DecodeString(segments[1])
+
+			if error != nil {
+				t.Fatalf("Unable to decode the JWT payload segment: %v", error)
+			}
+
+			var claimsMap map[string]any
+
+			if error := json.Unmarshal(claims, &claimsMap); error != nil {
+				t.Fatalf("JWT payload segment is not valid JSON: %v", error)
+			}
+
+			if claimsMap["environmentName"] != testCase.expectedEnvironmentName {
+				t.Errorf(
+					"environmentName claim = %v, want %q",
+					claimsMap["environmentName"],
+					testCase.expectedEnvironmentName,
+				)
+			}
+		})
 	}
 }
 
@@ -4564,14 +4687,15 @@ func virtualClusterLicenseXML(
 type inlineRunner struct{}
 
 type stubProvisioning struct {
-	activateCalled bool
-	activateError  error
-	downloadBody   []byte
-	downloadCalled bool
-	downloadError  error
-	entitlements   *provisioning.Entitlements
-	manifestCalled bool
-	manifestError  error
+	activateCalled    bool
+	activateError     error
+	activationRequest provisioning.ActivationRequest
+	downloadBody      []byte
+	downloadCalled    bool
+	downloadError     error
+	entitlements      *provisioning.Entitlements
+	manifestCalled    bool
+	manifestError     error
 }
 
 var workloadKinds = []licensingv1alpha1.WorkloadKind{

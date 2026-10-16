@@ -1467,14 +1467,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 		logger.Info(
 			"Activating environment",
 			"environmentID", environmentID,
-			"environmentName", liferayEnvironment.Spec.EnvironmentName,
+			"environmentName", resolveEnvironmentName(liferayEnvironment),
 		)
 
 		if error := liferayEnvironmentReconciler.Provisioning.Activate(
 			provisioning.ActivationRequest{
 				ActivationCode:  activationCode,
 				EnvironmentID:   environmentID,
-				EnvironmentName: liferayEnvironment.Spec.EnvironmentName,
+				EnvironmentName: resolveEnvironmentName(liferayEnvironment),
 				PublicKey:       publicKey,
 			}, context, privateKey); error != nil {
 			logger.Error(error, "Activation rejected", "environmentID", environmentID)
@@ -1786,6 +1786,16 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnviron
 	}
 
 	return string(namespace.UID), nil
+}
+
+func resolveEnvironmentName(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) string {
+	if liferayEnvironment.Spec.EnvironmentName != "" {
+		return liferayEnvironment.Spec.EnvironmentName
+	}
+
+	return liferayEnvironment.Namespace
 }
 
 func scalesWorkload(

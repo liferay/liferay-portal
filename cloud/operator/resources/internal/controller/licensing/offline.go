@@ -262,7 +262,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) publishOffline
 	offlineActivationPayload, error := provisioning.OfflineActivationPayload(
 		provisioning.ActivationRequest{
 			EnvironmentID:   environmentID,
-			EnvironmentName: liferayEnvironment.Spec.EnvironmentName,
+			EnvironmentName: resolveEnvironmentName(liferayEnvironment),
 			PublicKey:       publicKey,
 		},
 		privateKey,
