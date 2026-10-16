@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
 import com.liferay.change.tracking.model.CTCollection;
@@ -725,6 +726,79 @@ public class LayoutSetPrototypePropagationTest
 			_layoutLocalService.getLayoutsCount(group2.getGroupId(), false));
 
 		GroupLocalServiceUtil.deleteGroup(group2);
+	}
+
+	@Test
+	@TestInfo("LPD-110362")
+	public void testLayoutSetPrototypePropagationWithDefaultVocabulary()
+		throws Exception {
+
+		_testLayoutSetPrototypePropagationWithDefaultVocabulary(false);
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-82107")
+	@Test
+	@TestInfo("LPD-110362")
+	public void testLayoutSetPrototypePropagationWithDefaultVocabularyAndFeatureFlagDisabled()
+		throws Exception {
+
+		_testLayoutSetPrototypePropagationWithDefaultVocabulary(true);
+	}
+
+	@Test
+	@TestInfo("LPD-110362")
+	public void testLayoutSetPrototypePropagationWithDefaultVocabularyFromTwoLayoutSetPrototypes()
+		throws Exception {
+
+		AssetVocabulary assetVocabulary =
+			AssetVocabularyLocalServiceUtil.addDefaultVocabulary(
+				group.getGroupId());
+
+		AssetVocabulary layoutSetPrototypeAssetVocabulary1 =
+			AssetVocabularyLocalServiceUtil.addDefaultVocabulary(
+				_layoutSetPrototypeGroup.getGroupId());
+
+		AssetCategory layoutSetPrototypeAssetCategory1 =
+			AssetTestUtil.addCategory(
+				_layoutSetPrototypeGroup.getGroupId(),
+				layoutSetPrototypeAssetVocabulary1.getVocabularyId());
+
+		_privateLayoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		Group layoutSetPrototypeGroup = _privateLayoutSetPrototype.getGroup();
+
+		LayoutTestUtil.addTypePortletLayout(layoutSetPrototypeGroup, true);
+
+		AssetVocabulary layoutSetPrototypeAssetVocabulary2 =
+			AssetVocabularyLocalServiceUtil.addDefaultVocabulary(
+				layoutSetPrototypeGroup.getGroupId());
+
+		AssetCategory layoutSetPrototypeAssetCategory2 =
+			AssetTestUtil.addCategory(
+				layoutSetPrototypeGroup.getGroupId(),
+				layoutSetPrototypeAssetVocabulary2.getVocabularyId());
+
+		LayoutSetLocalServiceUtil.updateLayoutSetPrototypeLinkEnabled(
+			group.getGroupId(), true, true,
+			_privateLayoutSetPrototype.getUuid());
+
+		int vocabulariesCount =
+			AssetVocabularyLocalServiceUtil.getGroupVocabulariesCount(
+				new long[] {group.getGroupId()});
+
+		propagateChanges(false, group);
+
+		_sites.mergeLayoutSetPrototypeLayouts(
+			_privateLayoutSetPrototype, TestPropsValues.getUserId());
+
+		Assert.assertEquals(
+			vocabulariesCount,
+			AssetVocabularyLocalServiceUtil.getGroupVocabulariesCount(
+				new long[] {group.getGroupId()}));
+
+		_assertAssetCategory(assetVocabulary, layoutSetPrototypeAssetCategory1);
+		_assertAssetCategory(assetVocabulary, layoutSetPrototypeAssetCategory2);
 	}
 
 	@Test
@@ -1634,6 +1708,20 @@ public class LayoutSetPrototypePropagationTest
 			editableValuesJSONObject.getString("instanceId"));
 	}
 
+	private void _assertAssetCategory(
+		AssetVocabulary assetVocabulary,
+		AssetCategory layoutSetPrototypeAssetCategory) {
+
+		AssetCategory assetCategory =
+			AssetCategoryLocalServiceUtil.
+				fetchAssetCategoryByExternalReferenceCode(
+					layoutSetPrototypeAssetCategory.getExternalReferenceCode(),
+					group.getGroupId());
+
+		Assert.assertEquals(
+			assetVocabulary.getVocabularyId(), assetCategory.getVocabularyId());
+	}
+
 	private void _assertLayoutSetPrototypeLayoutERC(
 			Layout prototypeLayout, long groupId)
 		throws Exception {
@@ -1847,6 +1935,37 @@ public class LayoutSetPrototypePropagationTest
 		GroupLocalServiceUtil.deleteGroup(testGroup);
 	}
 
+	private void _testLayoutSetPrototypePropagationWithDefaultVocabulary(
+			boolean initial)
+		throws Exception {
+
+		AssetVocabulary assetVocabulary =
+			AssetVocabularyLocalServiceUtil.addDefaultVocabulary(
+				group.getGroupId());
+
+		AssetVocabulary layoutSetPrototypeAssetVocabulary =
+			AssetVocabularyLocalServiceUtil.addDefaultVocabulary(
+				_layoutSetPrototypeGroup.getGroupId());
+
+		AssetCategory layoutSetPrototypeAssetCategory =
+			AssetTestUtil.addCategory(
+				_layoutSetPrototypeGroup.getGroupId(),
+				layoutSetPrototypeAssetVocabulary.getVocabularyId());
+
+		int vocabulariesCount =
+			AssetVocabularyLocalServiceUtil.getGroupVocabulariesCount(
+				new long[] {group.getGroupId()});
+
+		propagateChanges(initial, group);
+
+		Assert.assertEquals(
+			vocabulariesCount,
+			AssetVocabularyLocalServiceUtil.getGroupVocabulariesCount(
+				new long[] {group.getGroupId()}));
+
+		_assertAssetCategory(assetVocabulary, layoutSetPrototypeAssetCategory);
+	}
+
 	private void _testLayoutSetPrototypePropagationWithExportImportInProcess(
 			Consumer<Boolean> exportImportThreadLocalConsumer)
 		throws Exception {
@@ -1958,6 +2077,9 @@ public class LayoutSetPrototypePropagationTest
 
 	@Inject
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@DeleteAfterTestRun
+	private LayoutSetPrototype _privateLayoutSetPrototype;
 
 	private Layout _prototypeLayout;
 
