@@ -21,8 +21,13 @@ export interface IBrokenLinkAsset {
 	title?: string;
 }
 
+type BrokenLinksCountKey = Extract<
+	keyof IBrokenLinkAsset,
+	`${string}BrokenLinksCount`
+>;
+
 function getBrokenLinkTypes(): {
-	countKey: keyof IBrokenLinkAsset;
+	countKey: BrokenLinksCountKey;
 	plural: string;
 	singular: string;
 }[] {
@@ -53,7 +58,7 @@ function getBrokenLinkTypes(): {
 export function renderBrokenLinks(itemData: IBrokenLinkAsset) {
 	const labels = getBrokenLinkTypes().flatMap(
 		({countKey, plural, singular}) => {
-			const count = Number(itemData[countKey] ?? 0);
+			const count = itemData[countKey] ?? 0;
 
 			if (!count) {
 				return [];

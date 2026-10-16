@@ -9,6 +9,7 @@ import type {DashboardAssetListAdditionalProps} from '../../props_transformer/ge
 
 export type GovernanceAdditionalProps = DashboardAssetListAdditionalProps & {
 	allSectionFDSName: string;
+	brokenLinksFDSActionDropdownItems: IItemsActions[];
 	contentProgressFilter: string;
 	fdsActionDropdownItems: IItemsActions[];
 };

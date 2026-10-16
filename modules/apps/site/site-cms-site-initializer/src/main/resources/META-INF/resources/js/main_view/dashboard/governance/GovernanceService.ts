@@ -343,6 +343,30 @@ function getAssetListURL(filter: string, sort: string, groupId?: number) {
 	return `${SEARCH_URL}?${searchParams}`;
 }
 
+function getAssetsByIdsURL(ids: number[]) {
+	const searchParams = new URLSearchParams({
+		emptySearch: 'true',
+		filter: ids.map((id) => `entryClassPK eq ${id}`).join(' or '),
+		nestedFields: NESTED_FIELDS,
+		pageSize: String(ids.length),
+	});
+
+	return `${SEARCH_URL}?${searchParams}`;
+}
+
+function getBrokenLinkAssetsURL(assetLibraryId?: string) {
+	const searchParams = new URLSearchParams({
+		pageSize: String(GOVERNANCE_ASSET_LIST_PAGE_SIZE),
+		sort: 'title:asc',
+	});
+
+	if (assetLibraryId) {
+		searchParams.set('assetLibraryId', assetLibraryId);
+	}
+
+	return `/o/headless-cms/v1.0/broken-link-assets?${searchParams}`;
+}
+
 function getDateInDays(days: number) {
 	return new Date(Date.now() + days * MILLISECONDS_PER_DAY);
 }
@@ -452,6 +476,8 @@ async function getDuplicateTopicsCount({
 
 export default {
 	getAssetStatistics,
+	getAssetsByIdsURL,
+	getBrokenLinkAssetsURL,
 	getCMSEntryClassNames,
 	getContentAgeDistribution,
 	getContentProgress,

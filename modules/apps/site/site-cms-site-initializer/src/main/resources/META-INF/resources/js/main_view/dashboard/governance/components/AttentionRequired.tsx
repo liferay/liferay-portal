@@ -25,15 +25,6 @@ type AttentionCard = {
 
 const ATTENTION_CARDS: AttentionCard[] = [
 	{
-		color: 'red',
-		description: Liferay.Language.get(
-			'these-are-references-to-broken-links-across-the-selected-spaces'
-		),
-		icon: 'link',
-		statKey: 'brokenLinksCount',
-		title: Liferay.Language.get('broken-links'),
-	},
-	{
 		color: 'purple',
 		description: Liferay.Language.get(
 			'these-are-assets-with-pending-workflows-across-the-selected-spaces'
@@ -45,7 +36,6 @@ const ATTENTION_CARDS: AttentionCard[] = [
 ];
 
 const SECTION_PATHS: Partial<Record<keyof AssetStatistics, string>> = {
-	brokenLinksCount: 'broken-links',
 	pendingCount: 'pending-workflows',
 };
 

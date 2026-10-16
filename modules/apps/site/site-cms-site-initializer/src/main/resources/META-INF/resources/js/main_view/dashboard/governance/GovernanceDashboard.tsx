@@ -12,6 +12,7 @@ import {Filters} from './components/Filters';
 import {Freshness} from './components/Freshness';
 import {GovernanceHealth} from './components/GovernanceHealth';
 import {Operations} from './components/Operations';
+import {Quality} from './components/Quality';
 import {GovernanceAdditionalProps} from './types';
 
 import '../../../../css/dashboard/GovernanceDashboard.scss';
@@ -30,6 +31,8 @@ export default function GovernanceDashboard({
 			<GovernanceHealth />
 
 			<AttentionRequired />
+
+			<Quality additionalProps={additionalProps} />
 
 			<Freshness additionalProps={additionalProps} />
 

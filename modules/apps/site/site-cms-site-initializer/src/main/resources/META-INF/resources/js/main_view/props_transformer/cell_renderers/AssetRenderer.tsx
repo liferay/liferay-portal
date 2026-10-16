@@ -23,7 +23,7 @@ const formatDate = (date: string) => {
 	return dateUtils.format(new Date(date), 'P p');
 };
 
-export default function AssetRenderer({
+export default function AssetRenderer<T = ISearchAssetObjectEntry>({
 	actions,
 	additionalProps,
 	itemData,
@@ -40,9 +40,9 @@ export default function AssetRenderer({
 		objectDefinitionIcons: Record<string, string>;
 	};
 	itemData: any;
-	onViewClick?: (itemData: any) => void;
+	onViewClick?: (itemData: T) => void;
 	options: {actionId: string};
-	renderSubtitle?: (itemData: ISearchAssetObjectEntry) => React.ReactNode;
+	renderSubtitle?: (itemData: T) => React.ReactNode;
 	value: string;
 }) {
 	const {actionId} = options;
