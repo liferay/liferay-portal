@@ -114,7 +114,13 @@ definition {
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Complex Title 1");
 
-			PortletEntry.changeLocale(locale = "en-US");
+			Portlet.waitForForm();
+
+			Click.clickNoMouseOver(locator1 = "Button#LOCALIZATION_GENERIC");
+
+			Click(
+				key_locale = "en-US",
+				locator1 = "Translation#DROPDOWN_MENU_ITEM");
 
 			AssertVisible(
 				key_fieldFieldLabel = "HomePage",
