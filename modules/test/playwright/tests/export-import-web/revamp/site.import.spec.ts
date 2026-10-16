@@ -236,7 +236,7 @@ test(
 
 test(
 	'Can see corresponding import wizard controls at site level',
-	{tag: '@LPD-100545'},
+	{tag: ['@LPD-100545', '@LPD-110393']},
 	async ({
 		apiHelpers,
 		exportImportDataSelectionPage,
@@ -245,6 +245,11 @@ test(
 		site,
 	}) => {
 		await apiHelpers.headlessDelivery.postBlog(site.id);
+
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
 
 		await exportImportPage.goToExport(site.friendlyUrlPath);
 

@@ -60,6 +60,10 @@ export async function assertImportWizardControls({
 		await expect(
 			page.getByRole('checkbox', {name: 'Look and Feel'})
 		).toBeVisible();
+
+		await expect(
+			page.getByRole('checkbox', {name: 'Static Pages'})
+		).toBeVisible();
 	}
 	else {
 		await expect(page.getByText('Site Builder')).toBeHidden();
