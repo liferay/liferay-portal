@@ -19,13 +19,4 @@
  * "package.json" that owns it, or simply by letting the lockfile re-resolve: when the declared
  * ranges already admit the version you want, no resolution is needed at all.
  */
-export default {
-
-	// The chain does not require a version this high on its own, so this entry holds websocket-driver
-	// up until the packages that pull it in start requiring it themselves.
-	//
-	// See https://liferay.atlassian.net/browse/LPD-102337 for more information.
-
-	'webpack-dev-server/**/websocket-driver':
-		'Holds the sockjs transports of the AMD loader dev server at a version the sockjs chain does not require on its own.',
-};
+export default {};
