@@ -22,6 +22,7 @@ import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.exception.InvalidFolderException;
 import com.liferay.journal.exception.NoSuchArticleException;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
@@ -39,10 +40,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
@@ -50,8 +53,10 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -1131,6 +1136,96 @@ public class JournalArticleServiceTest {
 	}
 
 	@Test
+	public void testUpdateArticleFolder() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			user.getUserId(), _group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		JournalFolder journalFolder = JournalTestUtil.addFolder(
+			_group.getGroupId(), RandomTestUtil.randomString());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), JournalFolder.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(journalFolder.getFolderId()), role.getRoleId(),
+			new String[] {ActionKeys.ADD_ARTICLE});
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, _permissionCheckerFactory.create(user))) {
+
+			journalArticle = _journalArticleService.updateArticle(
+				_group.getGroupId(), journalFolder.getFolderId(),
+				journalArticle.getArticleId(), journalArticle.getVersion(),
+				journalArticle.getContent(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId()));
+		}
+
+		Assert.assertEquals(
+			journalFolder.getFolderId(), journalArticle.getFolderId());
+	}
+
+	@Test(expected = InvalidFolderException.class)
+	public void testUpdateArticleFolderOfAnotherGroup() throws Exception {
+		_otherGroup = GroupTestUtil.addGroup();
+
+		JournalFolder journalFolder = JournalTestUtil.addFolder(
+			_otherGroup.getGroupId(), RandomTestUtil.randomString());
+
+		_journalArticleService.updateArticle(
+			_group.getGroupId(), journalFolder.getFolderId(),
+			_article.getArticleId(), _article.getVersion(),
+			_article.getContent(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	@Test
+	public void testUpdateArticleFolderWithoutAddArticlePermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			user.getUserId(), _group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		JournalFolder journalFolder = JournalTestUtil.addFolder(
+			_group.getGroupId(), RandomTestUtil.randomString());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, _permissionCheckerFactory.create(user))) {
+
+			_journalArticleService.updateArticle(
+				_group.getGroupId(), journalFolder.getFolderId(),
+				journalArticle.getArticleId(), journalArticle.getVersion(),
+				journalArticle.getContent(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId()));
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			String message = principalException.getMessage();
+
+			Assert.assertTrue(
+				message, message.contains(ActionKeys.ADD_ARTICLE));
+		}
+
+		journalArticle = _journalArticleLocalService.getLatestArticle(
+			journalArticle.getResourcePrimKey());
+
+		Assert.assertEquals(
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			journalArticle.getFolderId());
+	}
+
+	@Test
 	public void testUpdateExpiredArticle() throws Exception {
 		_article = JournalTestUtil.expireArticle(
 			_group.getGroupId(), _article, _article.getVersion());
@@ -1360,6 +1455,9 @@ public class JournalArticleServiceTest {
 	private JournalArticle _latestArticle;
 	private String _originalPortalPreferencesXML;
 
+	@DeleteAfterTestRun
+	private Group _otherGroup;
+
 	@Inject
 	private PermissionCheckerFactory _permissionCheckerFactory;
 
@@ -1368,6 +1466,9 @@ public class JournalArticleServiceTest {
 
 	@Inject
 	private PortletPreferencesFactory _portletPreferencesFactory;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
