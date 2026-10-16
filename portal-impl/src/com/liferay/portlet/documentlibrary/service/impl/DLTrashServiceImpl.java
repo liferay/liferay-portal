@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portlet.documentlibrary.service.base.DLTrashServiceBaseImpl;
 
@@ -48,6 +49,12 @@ public class DLTrashServiceImpl extends DLTrashServiceBaseImpl {
 
 		fileEntryModelResourcePermission.check(
 			getPermissionChecker(), fileEntry, ActionKeys.UPDATE);
+
+		ModelResourcePermissionUtil.check(
+			ModelResourcePermissionRegistryUtil.
+				<Folder>getModelResourcePermission(Folder.class.getName()),
+			getPermissionChecker(), fileEntry.getGroupId(), newFolderId,
+			ActionKeys.ADD_DOCUMENT);
 
 		Folder destinationFolder = null;
 
@@ -117,6 +124,12 @@ public class DLTrashServiceImpl extends DLTrashServiceBaseImpl {
 		fileShortcutModelResourcePermission.check(
 			getPermissionChecker(), fileShortcut, ActionKeys.UPDATE);
 
+		ModelResourcePermissionUtil.check(
+			ModelResourcePermissionRegistryUtil.
+				<Folder>getModelResourcePermission(Folder.class.getName()),
+			getPermissionChecker(), fileShortcut.getGroupId(), newFolderId,
+			ActionKeys.ADD_SHORTCUT);
+
 		Folder destinationFolder = null;
 
 		if (newFolderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
@@ -185,6 +198,12 @@ public class DLTrashServiceImpl extends DLTrashServiceBaseImpl {
 
 		folderModelResourcePermission.check(
 			getPermissionChecker(), folder, ActionKeys.UPDATE);
+
+		ModelResourcePermissionUtil.check(
+			ModelResourcePermissionRegistryUtil.
+				<Folder>getModelResourcePermission(Folder.class.getName()),
+			getPermissionChecker(), folder.getGroupId(), parentFolderId,
+			ActionKeys.ADD_FOLDER);
 
 		Folder destinationFolder = null;
 
