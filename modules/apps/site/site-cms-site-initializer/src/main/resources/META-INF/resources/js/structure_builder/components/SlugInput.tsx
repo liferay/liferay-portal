@@ -35,7 +35,7 @@ export default function SlugInput({
 
 			<HelpTooltipIcon
 				message={Liferay.Language.get(
-					"the-unique-path-for-this-category.-it-will-be-appended-to-the-channel's-friendly-url"
+					"the-unique-path-for-this-content-structure.-it-will-be-appended-to-the-channel's-friendly-url"
 				)}
 			/>
 
