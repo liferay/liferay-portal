@@ -7,6 +7,16 @@
 {{- fail "Azure has no managed OpenSearch, so search.engine must be elasticsearch" -}}
 {{- end -}}
 
+{{- if not $env.databaseEngine -}}
+{{- fail "Property \"database.engine\" must be set" -}}
+{{- end -}}
+
+{{- range $observedResource := $observedResources -}}
+    {{- if and (hasPrefix "dbforpostgresql." (dig "resource" "apiVersion" "" $observedResource)) (ne $env.databaseEngine "postgresql") -}}
+        {{- fail "Unable to change the database engine of the environment. Create a new deployment to use another database engine." -}}
+    {{- end -}}
+{{- end -}}
+
 {{- $backup := $xr.spec.backup -}}
 {{- $cmkEnabled := $xr.spec.cmk.enabled -}}
 {{- $environmentId := $xr.spec.environmentId -}}
