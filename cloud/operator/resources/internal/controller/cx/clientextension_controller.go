@@ -23,6 +23,7 @@ import (
 	builder "sigs.k8s.io/controller-runtime/pkg/builder"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 	controllerutil "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	event "sigs.k8s.io/controller-runtime/pkg/event"
 	handler "sigs.k8s.io/controller-runtime/pkg/handler"
 	predicate "sigs.k8s.io/controller-runtime/pkg/predicate"
 	reconcile "sigs.k8s.io/controller-runtime/pkg/reconcile"
@@ -309,6 +310,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) SetupWithManager(
 	).Watches(
 		&corev1.Namespace{},
 		handler.EnqueueRequestsFromMapFunc(clientExtensionReconciler.requestsForNamespace),
+		builder.WithPredicates(namespaceExistencePredicate),
 	).Complete(
 		clientExtensionReconciler,
 	)
@@ -620,10 +622,41 @@ func refusalMessage(
 	}
 
 	return fmt.Sprintf(
-		"Namespace %q does not list %q in its %q annotation, so this client extension is not delivered there. Whoever manages DXP grants access by adding %q to that annotation.",
-		dxpNamespace, clientExtension.Namespace,
-		cxv1alpha1.AnnotationAllowedClientExtensionNamespaces, clientExtension.Namespace,
+		"Namespace %q does not list %q in its %q ConfigMap, so this client extension is not delivered there. Whoever manages DXP grants access by adding %q to the ConfigMap's %q key. The operator reads the ConfigMap only when it has the %q label.",
+		dxpNamespace, clientExtension.Namespace, cxv1alpha1.ConfigMapNameClientExtensionPolicy,
+		clientExtension.Namespace, cxv1alpha1.ConfigMapKeyAllowedNamespaces, LabelMetadataType,
 	)
+}
+
+func (clientExtensionReconciler *ClientExtensionReconciler) requestsForClientExtensionsDeliveringTo(
+	context context.Context,
+	namespace string,
+) []reconcile.Request {
+	var clientExtensionList cxv1alpha1.ClientExtensionList
+
+	if error := clientExtensionReconciler.List(context, &clientExtensionList); error != nil {
+		controllerruntime.LoggerFrom(context).Error(
+			error, "Unable to list client extensions", "namespace", namespace,
+		)
+
+		return nil
+	}
+
+	var requests []reconcile.Request
+
+	for index := range clientExtensionList.Items {
+		clientExtension := &clientExtensionList.Items[index]
+
+		if effectiveDxpNamespace(clientExtension) != namespace {
+			continue
+		}
+
+		requests = append(requests, reconcile.Request{
+			NamespacedName: client.ObjectKeyFromObject(clientExtension),
+		})
+	}
+
+	return requests
 }
 
 func (clientExtensionReconciler *ClientExtensionReconciler) requestsForConfigMap(
@@ -634,6 +667,12 @@ func (clientExtensionReconciler *ClientExtensionReconciler) requestsForConfigMap
 
 	if labels[LabelMirror] == "true" {
 		return requestsForMirror(object)
+	}
+
+	if cxv1alpha1.ConfigMapNameClientExtensionPolicy == object.GetName() {
+		return clientExtensionReconciler.requestsForClientExtensionsDeliveringTo(
+			context, object.GetNamespace(),
+		)
 	}
 
 	metadataType := labels[LabelMetadataType]
@@ -683,31 +722,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) requestsForNamespace
 	context context.Context,
 	object client.Object,
 ) []reconcile.Request {
-	var clientExtensionList cxv1alpha1.ClientExtensionList
-
-	if error := clientExtensionReconciler.List(context, &clientExtensionList); error != nil {
-		controllerruntime.LoggerFrom(context).Error(
-			error, "Unable to list client extensions", "namespace", object.GetName(),
-		)
-
-		return nil
-	}
-
-	var requests []reconcile.Request
-
-	for index := range clientExtensionList.Items {
-		clientExtension := &clientExtensionList.Items[index]
-
-		if effectiveDxpNamespace(clientExtension) != object.GetName() {
-			continue
-		}
-
-		requests = append(requests, reconcile.Request{
-			NamespacedName: client.ObjectKeyFromObject(clientExtension),
-		})
-	}
-
-	return requests
+	return clientExtensionReconciler.requestsForClientExtensionsDeliveringTo(context, object.GetName())
 }
 
 func (clientExtensionReconciler *ClientExtensionReconciler) resolveDxpNamespace(
@@ -734,7 +749,20 @@ func (clientExtensionReconciler *ClientExtensionReconciler) resolveDxpNamespace(
 		return "", "", getError
 	}
 
-	if !slices.Contains(allowedNamespaces(&namespace), clientExtension.Namespace) {
+	var policyConfigMap corev1.ConfigMap
+
+	if error := clientExtensionReconciler.Get(
+		context,
+		types.NamespacedName{
+			Name:      cxv1alpha1.ConfigMapNameClientExtensionPolicy,
+			Namespace: dxpNamespace,
+		},
+		&policyConfigMap,
+	); client.IgnoreNotFound(error) != nil {
+		return "", "", error
+	}
+
+	if !slices.Contains(allowedNamespaces(&policyConfigMap), clientExtension.Namespace) {
 		return dxpNamespace, ReasonNamespaceNotPermitted, nil
 	}
 
@@ -873,3 +901,12 @@ type ClientExtensionReconciler struct {
 }
 
 var errExtProvisionOwnedElsewhere = errors.New("ext-provision: owned by another client extension")
+
+var namespaceExistencePredicate = predicate.Funcs{
+	GenericFunc: func(event.GenericEvent) bool {
+		return false
+	},
+	UpdateFunc: func(event.UpdateEvent) bool {
+		return false
+	},
+}

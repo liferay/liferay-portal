@@ -28,7 +28,7 @@ func TestReconcileDeletesMirrorsWhenRefused(t *testing.T) {
 	}{
 		"the DXP namespace no longer exists": {
 			refuse: func(clientExtensionReconciler *ClientExtensionReconciler) {
-				if error := clientExtensionReconciler.Delete(context.Background(), newDxpNamespace("able")); error != nil {
+				if error := clientExtensionReconciler.Delete(context.Background(), newDxpNamespace()); error != nil {
 					t.Fatal(error)
 				}
 			},
@@ -36,9 +36,7 @@ func TestReconcileDeletesMirrorsWhenRefused(t *testing.T) {
 		},
 		"the DXP namespace no longer permits it": {
 			refuse: func(clientExtensionReconciler *ClientExtensionReconciler) {
-				dxpNamespace := newDxpNamespace("")
-
-				if error := clientExtensionReconciler.Update(context.Background(), dxpNamespace); error != nil {
+				if error := clientExtensionReconciler.Update(context.Background(), newPolicyConfigMap("")); error != nil {
 					t.Fatal(error)
 				}
 			},
@@ -54,7 +52,7 @@ func TestReconcileDeletesMirrorsWhenRefused(t *testing.T) {
 
 			clientExtensionReconciler := newClientExtensionReconciler(
 				nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
-				newDxpNamespace("able"), newExtInitConfigMap("able-oauth-application-user-agent"),
+				newDxpNamespace(), newPolicyConfigMap("able"), newExtInitConfigMap("able-oauth-application-user-agent"),
 			)
 
 			reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -90,7 +88,8 @@ func TestReconcileIgnoresMirrorAsDxpMetadata(t *testing.T) {
 	baker := newClientExtension("", "baker", "able")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, able, baker, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, able, baker, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	reconcileClientExtension(able, clientExtensionReconciler, t)
@@ -117,7 +116,7 @@ func TestReconcileKeepsMirrorsWhenVirtualInstanceDisappears(t *testing.T) {
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
-		newDxpNamespace("able"), newExtInitConfigMap("able-oauth-application-user-agent"),
+		newDxpNamespace(), newPolicyConfigMap("able"), newExtInitConfigMap("able-oauth-application-user-agent"),
 	)
 
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -152,7 +151,7 @@ func TestReconcileMirrorsDxpMetadataIntoClientExtensionNamespace(t *testing.T) {
 	dxpMetadata.Data = map[string]string{"com.liferay.lxc.dxp.mainDomain": "liferay.example.com"}
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, dxpMetadata, newDxpNamespace("able"),
+		nil, t, clientExtension, dxpMetadata, newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	if phase, _ := reconcileClientExtension(
@@ -208,7 +207,7 @@ func TestReconcileMirrorsExtInitIntoClientExtensionNamespace(t *testing.T) {
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, clientExtension, extInit, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
-		newDxpNamespace("able"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	if phase, _ := reconcileClientExtension(
@@ -304,7 +303,8 @@ func TestReconcileReleasesStaleDxpMetadataMirror(t *testing.T) {
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, able, baker,
-		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpMetadataConfigMap("liferay-dev", "other.test"), newDxpNamespace("able"),
+		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpMetadataConfigMap("liferay-dev", "other.test"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	reconcileClientExtension(able, clientExtensionReconciler, t)
@@ -351,7 +351,8 @@ func TestReconcileReplacesMirrorDataWhenSourceChanges(t *testing.T) {
 	extInit.Data = map[string]string{"able.oauth2.user.agent.client.id": "able-id", "able.oauth2.user.agent.scopes": "everything"}
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, extInit, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, clientExtension, extInit, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -385,7 +386,7 @@ func TestReconcileReportsMirrorConflict(t *testing.T) {
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, clientExtension, foreignConfigMap,
-		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	result, error := clientExtensionReconciler.Reconcile(
@@ -446,7 +447,8 @@ func TestReconcileReportsMirrorNotPermitted(t *testing.T) {
 				return client.Create(context, object, options...)
 			},
 		},
-		t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	clientExtensionReconciler.ServiceAccount = "liferay-system/dxp-operator"
@@ -482,7 +484,8 @@ func TestReconcileReportsMirrorNotPermittedAlongsideMissingExtInit(t *testing.T)
 				return client.Create(context, object, options...)
 			},
 		},
-		t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	result, error := clientExtensionReconciler.Reconcile(
@@ -526,7 +529,8 @@ func TestReconcileSharesDxpMetadataMirrorBetweenClientExtensions(t *testing.T) {
 	baker := newClientExtension("liferay-dev", "baker", "able")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, able, baker, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, able, baker, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	reconcileClientExtension(able, clientExtensionReconciler, t)

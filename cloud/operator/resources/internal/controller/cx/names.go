@@ -33,11 +33,11 @@ const (
 	MetadataTypeExtProvision = "ext-provision"
 )
 
-func allowedNamespaces(namespace *corev1.Namespace) []string {
+func allowedNamespaces(configMap *corev1.ConfigMap) []string {
 	var allowedNamespaces []string
 
 	for _, name := range strings.Split(
-		namespace.Annotations[cxv1alpha1.AnnotationAllowedClientExtensionNamespaces], ",",
+		configMap.Data[cxv1alpha1.ConfigMapKeyAllowedNamespaces], ",",
 	) {
 		if name = strings.TrimSpace(name); name != "" {
 			allowedNamespaces = append(allowedNamespaces, name)

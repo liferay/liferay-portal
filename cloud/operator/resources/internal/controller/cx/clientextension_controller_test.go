@@ -31,10 +31,11 @@ import (
 
 func TestReconcileAcceptsClientExtensionOnceAllowed(t *testing.T) {
 	clientExtension := newClientExtension("liferay-dev", "sample", "able")
-	dxpNamespace := newDxpNamespace("baker")
+	policyConfigMap := newPolicyConfigMap("baker")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, dxpNamespace, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		nil, t, clientExtension, policyConfigMap, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(),
 	)
 
 	if phase, reason := reconcileClientExtension(
@@ -43,9 +44,9 @@ func TestReconcileAcceptsClientExtensionOnceAllowed(t *testing.T) {
 		t.Fatalf("Reconcile() = %s / %s, want %s / %s", phase, reason, cxv1alpha1.PhaseDegraded, ReasonNamespaceNotPermitted)
 	}
 
-	dxpNamespace.Annotations[cxv1alpha1.AnnotationAllowedClientExtensionNamespaces] = "able,baker"
+	policyConfigMap.Data[cxv1alpha1.ConfigMapKeyAllowedNamespaces] = "able,baker"
 
-	if error := clientExtensionReconciler.Update(context.Background(), dxpNamespace); error != nil {
+	if error := clientExtensionReconciler.Update(context.Background(), policyConfigMap); error != nil {
 		t.Fatal(error)
 	}
 
@@ -69,7 +70,8 @@ func TestReconcileAllowedNamespaces(t *testing.T) {
 			dxpNamespace: "liferay-dev",
 			messages:     []string{`in namespace "liferay-dev"`},
 			objects: []client.Object{
-				newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace(" able , baker "),
+				newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+				newDxpNamespace(), newPolicyConfigMap(" able , baker "),
 			},
 			wantPhase:  cxv1alpha1.PhaseReady,
 			wantReason: ReasonDelivered,
@@ -82,13 +84,21 @@ func TestReconcileAllowedNamespaces(t *testing.T) {
 			wantReason:   ReasonDxpNamespaceNotFound,
 			wantStatus:   metav1.ConditionFalse,
 		},
+		"a namespace is refused without the policy ConfigMap": {
+			dxpNamespace: "liferay-dev",
+			messages:     []string{`Namespace "liferay-dev" does not list "able"`},
+			objects:      []client.Object{newDxpNamespace()},
+			wantPhase:    cxv1alpha1.PhaseDegraded,
+			wantReason:   ReasonNamespaceNotPermitted,
+			wantStatus:   metav1.ConditionFalse,
+		},
 		"an unlisted namespace is refused": {
 			dxpNamespace: "liferay-dev",
 			messages: []string{
-				`Namespace "liferay-dev" does not list "able"`,
-				`"cx.liferay.com/allowed-client-extension-namespaces"`,
+				`Namespace "liferay-dev" does not list "able" in its "client-extension-policy" ConfigMap`,
+				`"allowedNamespaces" key`,
 			},
-			objects:    []client.Object{newDxpNamespace("baker")},
+			objects:    []client.Object{newDxpNamespace(), newPolicyConfigMap("baker")},
 			wantPhase:  cxv1alpha1.PhaseDegraded,
 			wantReason: ReasonNamespaceNotPermitted,
 			wantStatus: metav1.ConditionFalse,
@@ -158,7 +168,8 @@ func TestReconcileChecksAllowedBeforeVirtualInstance(t *testing.T) {
 	clientExtension := newClientExtension("liferay-dev", "able", "able")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "other.test"), newDxpNamespace("baker"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "other.test"),
+		newDxpNamespace(), newPolicyConfigMap("baker"),
 	)
 
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -207,14 +218,16 @@ func TestReconcileDeletesStaleExtProvisionConfigMaps(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			clientExtension := newClientExtension("liferay-dev", "able", "able")
 
-			uatNamespace := newDxpNamespace("able")
+			uatNamespace := newDxpNamespace()
+			uatPolicyConfigMap := newPolicyConfigMap("able")
 
 			uatNamespace.Name = "liferay-uat"
+			uatPolicyConfigMap.Namespace = "liferay-uat"
 
 			clientExtensionReconciler := newClientExtensionReconciler(
-				nil, t, clientExtension,
+				nil, t, clientExtension, newPolicyConfigMap("able"),
 				newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpMetadataConfigMap("liferay-dev", "other.test"),
-				newDxpMetadataConfigMap("liferay-uat", "liferay.com"), newDxpNamespace("able"), uatNamespace,
+				newDxpMetadataConfigMap("liferay-uat", "liferay.com"), newDxpNamespace(), uatPolicyConfigMap, uatNamespace,
 			)
 
 			reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -248,7 +261,8 @@ func TestReconcileDeliversExtProvisionConfigMap(t *testing.T) {
 	clientExtension.Spec.Domain = "able.example.com"
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	if phase, reason := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); (phase != cxv1alpha1.PhaseReady) || (reason !=
@@ -329,7 +343,8 @@ func TestReconcileGivesDxpAGracePeriodToWriteExtInit(t *testing.T) {
 	addOAuth2Application(clientExtension, "com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	recorder := record.NewFakeRecorder(10)
@@ -424,7 +439,8 @@ func TestReconcileProvisionsOnceDxpWritesExtInit(t *testing.T) {
 	addOAuth2Application(clientExtension, "com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	if phase, _ := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); phase != cxv1alpha1.PhasePending {
@@ -492,7 +508,8 @@ func TestReconcileRefusesExtProvisionConfigMapItDoesNotOwn(t *testing.T) {
 
 			clientExtensionReconciler := newClientExtensionReconciler(
 				nil, t, clientExtension, owned,
-				newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able,baker"),
+				newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+				newDxpNamespace(), newPolicyConfigMap("able,baker"),
 			)
 
 			phase, reason := reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -533,7 +550,7 @@ func TestReconcileRefusesExtProvisionConfigMapTheCacheCannotSee(t *testing.T) {
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		hideFromCache(unlabeledExtProvisionConfigMap.Name), t, clientExtension, unlabeledExtProvisionConfigMap,
-		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	result, error := clientExtensionReconciler.Reconcile(
@@ -609,7 +626,7 @@ func TestReconcileRemovesProvisionedWhenUndelivered(t *testing.T) {
 	dxpMetadata := newDxpMetadataConfigMap("liferay-dev", "liferay.com")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, dxpMetadata, newDxpNamespace("able"),
+		nil, t, clientExtension, dxpMetadata, newDxpNamespace(), newPolicyConfigMap("able"),
 		newExtInitConfigMap("able-oauth-application-user-agent"),
 	)
 
@@ -650,7 +667,8 @@ func TestReconcileReportsDeliveryDxpNamespaceDoesNotPermit(t *testing.T) {
 				return client.Create(context, object, options...)
 			},
 		},
-		t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	clientExtensionReconciler.ServiceAccount = "liferay-system/dxp-operator"
@@ -695,7 +713,8 @@ func TestReconcileReportsExtInitMissingAfterGracePeriod(t *testing.T) {
 	addOAuth2Application(clientExtension, "com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	recorder := record.NewFakeRecorder(10)
@@ -748,7 +767,8 @@ func TestReconcileReportsExtInitMissingForEachApplication(t *testing.T) {
 	addOAuth2Application(clientExtension, "com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 		newExtInitConfigMap("able-oauth-application-user-agent"),
 	)
 
@@ -770,8 +790,14 @@ func TestReconcileReportsExtInitMissingForEachApplication(t *testing.T) {
 
 	provisioned := getCondition(clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionProvisioned, t)
 
-	if (provisioned == nil) || (provisioned.Status != metav1.ConditionFalse) || (provisioned.Reason != ReasonExtInitMissing) {
-		t.Fatalf("Provisioned = %v, want False / %s: ext-init holds no keys for the added application", provisioned, ReasonExtInitMissing)
+	if (provisioned == nil) ||
+		(provisioned.Status != metav1.ConditionFalse) ||
+		(provisioned.Reason != ReasonExtInitMissing) {
+
+		t.Fatalf(
+			"Provisioned = %v, want False / %s: ext-init holds no keys for the added application",
+			provisioned, ReasonExtInitMissing,
+		)
 	}
 
 	want := `DXP has not written the OAuth2 applications "able-oauth-application-headless-server" to ConfigMap "able-liferay.com-lxc-ext-init-metadata" in namespace "liferay-dev".`
@@ -784,9 +810,11 @@ func TestReconcileReportsExtInitMissingForEachApplication(t *testing.T) {
 func TestReconcileReportsStaleExtProvisionConfigMapItMayNotDelete(t *testing.T) {
 	clientExtension := newClientExtension("liferay-dev", "able", "able")
 
-	uatNamespace := newDxpNamespace("able")
+	uatNamespace := newDxpNamespace()
+	uatPolicyConfigMap := newPolicyConfigMap("able")
 
 	uatNamespace.Name = "liferay-uat"
+	uatPolicyConfigMap.Namespace = "liferay-uat"
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		&interceptor.Funcs{
@@ -801,9 +829,10 @@ func TestReconcileReportsStaleExtProvisionConfigMapItMayNotDelete(t *testing.T) 
 				return client.Delete(context, object, options...)
 			},
 		},
-		t, clientExtension,
-		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpMetadataConfigMap("liferay-uat", "liferay.com"),
-		newDxpNamespace("able"), uatNamespace,
+		t, clientExtension, newPolicyConfigMap("able"),
+		newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpMetadataConfigMap("liferay-uat", "liferay.com"), newDxpNamespace(),
+		uatPolicyConfigMap, uatNamespace,
 	)
 
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -812,11 +841,15 @@ func TestReconcileReportsStaleExtProvisionConfigMapItMayNotDelete(t *testing.T) 
 
 	updatedClientExtension.Spec.DxpNamespace = "liferay-uat"
 
-	if error := clientExtensionReconciler.Update(context.Background(), updatedClientExtension); error != nil {
+	if error := clientExtensionReconciler.Update(
+		context.Background(), updatedClientExtension,
+	); error != nil {
 		t.Fatal(error)
 	}
 
-	if _, reason := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); reason != ReasonDelivered {
+	if _, reason := reconcileClientExtension(
+		clientExtension, clientExtensionReconciler, t,
+	); reason != ReasonDelivered {
 		t.Fatalf("Delivered reason = %q, want %q", reason, ReasonDelivered)
 	}
 
@@ -826,7 +859,9 @@ func TestReconcileReportsStaleExtProvisionConfigMapItMayNotDelete(t *testing.T) 
 
 	want := `Unable to delete the stale ConfigMaps "liferay-dev/able-liferay.com-lxc-ext-provision-metadata"`
 
-	if message := getDelivered(clientExtension, clientExtensionReconciler, t).Message; !strings.Contains(message, want) {
+	if message := getDelivered(
+		clientExtension, clientExtensionReconciler, t,
+	).Message; !strings.Contains(message, want) {
 		t.Errorf("Expected the Delivered message to contain %q, got %q", want, message)
 	}
 }
@@ -835,10 +870,13 @@ func TestReconcileRequiresNoExtInitWithoutOAuth2Application(t *testing.T) {
 	clientExtension := newClientExtension("liferay-dev", "able", "able")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
-	if phase, _ := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); phase != cxv1alpha1.PhaseReady {
+	if phase, _ := reconcileClientExtension(
+		clientExtension, clientExtensionReconciler, t,
+	); phase != cxv1alpha1.PhaseReady {
 		t.Errorf("phase = %q, want %q", phase, cxv1alpha1.PhaseReady)
 	}
 
@@ -853,8 +891,13 @@ func TestReconcileRequiresNoExtInitWithoutOAuth2Application(t *testing.T) {
 		}
 	}
 
-	if ready := getCondition(clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionReady, t); ready.Message != "The client extension is delivered and provisioned." {
-		t.Errorf("Ready message = %q, want a summary rather than the OAuth2 detail", ready.Message)
+	if ready := getCondition(
+		clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionReady, t,
+	); ready.Message != "The client extension is delivered and provisioned." {
+		t.Errorf(
+			"Ready message = %q, want a summary rather than the OAuth2 detail",
+			ready.Message,
+		)
 	}
 }
 
@@ -864,7 +907,8 @@ func TestReconcileRestartsGracePeriodWhenPayloadChanges(t *testing.T) {
 	addOAuth2Application(clientExtension, "com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration~able-oauth-application-user-agent")
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	recorder := record.NewFakeRecorder(10)
@@ -899,19 +943,32 @@ func TestReconcileRestartsGracePeriodWhenPayloadChanges(t *testing.T) {
 	}
 
 	if (result.RequeueAfter <= 0) || (result.RequeueAfter > extInitGracePeriod) {
-		t.Errorf("Reconcile() RequeueAfter = %v, want a retry within %v", result.RequeueAfter, extInitGracePeriod)
+		t.Errorf(
+			"Reconcile() RequeueAfter = %v, want a retry within %v",
+			result.RequeueAfter, extInitGracePeriod,
+		)
 	}
 
-	if phase := getClientExtension(clientExtension, clientExtensionReconciler, t).Status.Phase; phase != cxv1alpha1.PhasePending {
-		t.Errorf("phase = %q, want %q: DXP has only just received the new payload", phase, cxv1alpha1.PhasePending)
+	if phase := getClientExtension(
+		clientExtension, clientExtensionReconciler, t,
+	).Status.Phase; phase != cxv1alpha1.PhasePending {
+		t.Errorf(
+			"phase = %q, want %q: DXP has only just received the new payload", phase,
+			cxv1alpha1.PhasePending,
+		)
 	}
 
 	if len(recorder.Events) != 0 {
 		t.Errorf("Expected no event for a payload DXP has only just received, got %d", len(recorder.Events))
 	}
 
-	if afterProvisioned := getCondition(clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionProvisioned, t); !afterProvisioned.LastTransitionTime.Equal(&beforeProvisioned.LastTransitionTime) {
-		t.Errorf("Provisioned lastTransitionTime = %v, want %v: the status did not change", afterProvisioned.LastTransitionTime, beforeProvisioned.LastTransitionTime)
+	if afterProvisioned := getCondition(
+		clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionProvisioned, t,
+	); !afterProvisioned.LastTransitionTime.Equal(&beforeProvisioned.LastTransitionTime) {
+		t.Errorf(
+			"Provisioned lastTransitionTime = %v, want %v: the status did not change",
+			afterProvisioned.LastTransitionTime, beforeProvisioned.LastTransitionTime,
+		)
 	}
 }
 
@@ -932,15 +989,17 @@ func TestReconcileRestartsGracePeriodWhenStatusUpdateFailsAfterPayloadChanges(t 
 					failStatusUpdate = false
 
 					return apierrors.NewConflict(
-						schema.GroupResource{Group: "cx.liferay.com", Resource: "clientextensions"}, object.GetName(),
-						errors.New("the object has been modified"),
+						schema.GroupResource{
+							Group: "cx.liferay.com", Resource: "clientextensions",
+						}, object.GetName(), errors.New("the object has been modified"),
 					)
 				}
 
 				return client.SubResource(subResourceName).Update(context, object, options...)
 			},
 		},
-		t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	recorder := record.NewFakeRecorder(10)
@@ -951,7 +1010,9 @@ func TestReconcileRestartsGracePeriodWhenStatusUpdateFailsAfterPayloadChanges(t 
 
 	expireExtInitGracePeriod(clientExtension, clientExtensionReconciler, t)
 
-	if phase, _ := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); phase != cxv1alpha1.PhaseDegraded {
+	if phase, _ := reconcileClientExtension(
+		clientExtension, clientExtensionReconciler, t,
+	); phase != cxv1alpha1.PhaseDegraded {
 		t.Fatalf("phase = %q, want %q", phase, cxv1alpha1.PhaseDegraded)
 	}
 
@@ -969,7 +1030,10 @@ func TestReconcileRestartsGracePeriodWhenStatusUpdateFailsAfterPayloadChanges(t 
 	}
 
 	if phase, _ := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); phase != cxv1alpha1.PhasePending {
-		t.Errorf("phase = %q, want %q: the retry must still see the payload DXP has only just received", phase, cxv1alpha1.PhasePending)
+		t.Errorf(
+			"phase = %q, want %q: the retry must still see the payload DXP has only just received",
+			phase, cxv1alpha1.PhasePending,
+		)
 	}
 
 	if len(recorder.Events) != 0 {
@@ -987,7 +1051,8 @@ func TestReconcileRetriesOnCacheMiss(t *testing.T) {
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		hideFromCache(ownedExtProvisionConfigMap.Name), t, clientExtension, ownedExtProvisionConfigMap,
-		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace(),
+		newPolicyConfigMap("able"),
 	)
 
 	if _, error := clientExtensionReconciler.Reconcile(
@@ -997,7 +1062,9 @@ func TestReconcileRetriesOnCacheMiss(t *testing.T) {
 		t.Fatalf("Reconcile() error = %v, want AlreadyExists so the request is retried", error)
 	}
 
-	if updatedClientExtension := getClientExtension(clientExtension, clientExtensionReconciler, t); len(updatedClientExtension.Status.Conditions) != 0 {
+	if updatedClientExtension := getClientExtension(
+		clientExtension, clientExtensionReconciler, t,
+	); len(updatedClientExtension.Status.Conditions) != 0 {
 		t.Errorf("Expected no condition for a cache that is behind, got %v", updatedClientExtension.Status.Conditions)
 	}
 }
@@ -1018,7 +1085,7 @@ func TestReconcileUpdatesItsOwnExtProvisionConfigMapInPlace(t *testing.T) {
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, clientExtension, ownedExtProvisionConfigMap,
-		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("able"),
+		newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace(), newPolicyConfigMap("able"),
 	)
 
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -1026,7 +1093,10 @@ func TestReconcileUpdatesItsOwnExtProvisionConfigMapInPlace(t *testing.T) {
 	extProvisionConfigMap := getExtProvisionConfigMap(clientExtensionReconciler, "liferay-dev", t)
 
 	if extProvisionConfigMap.UID != ownedExtProvisionConfigMap.UID {
-		t.Errorf("uid = %q, want %q: recreating the ConfigMap would issue new OAuth2 credentials", extProvisionConfigMap.UID, ownedExtProvisionConfigMap.UID)
+		t.Errorf(
+			"uid = %q, want %q: recreating the ConfigMap would issue new OAuth2 credentials",
+			extProvisionConfigMap.UID, ownedExtProvisionConfigMap.UID,
+		)
 	}
 
 	if !strings.Contains(extProvisionConfigMap.Data["able.client-extension-config.json"], "CETConfiguration~able") {
@@ -1051,7 +1121,9 @@ func TestRequestsForConfigMapMatchesExtInitByServiceID(t *testing.T) {
 
 	clientExtension := newClientExtension("liferay-dev", "able", "able")
 
-	clientExtensionReconciler := newClientExtensionReconciler(nil, t, baker, clientExtension, otherVirtualInstance)
+	clientExtensionReconciler := newClientExtensionReconciler(
+		nil, t, baker, clientExtension, otherVirtualInstance,
+	)
 
 	testCases := map[string]struct {
 		configMap *corev1.ConfigMap
@@ -1084,6 +1156,25 @@ func TestRequestsForConfigMapMatchesExtInitByServiceID(t *testing.T) {
 				t.Errorf("requestsForConfigMap() = %v, want %v", got, testCase.want)
 			}
 		})
+	}
+}
+
+func TestRequestsForConfigMapMatchesPolicyConfigMapByDxpNamespace(t *testing.T) {
+	able := newClientExtension("liferay-dev", "able", "able")
+	baker := newClientExtension("liferay-uat", "baker", "baker")
+
+	clientExtensionReconciler := newClientExtensionReconciler(nil, t, able, baker)
+
+	got := clientExtensionReconciler.requestsForConfigMap(
+		context.Background(), newPolicyConfigMap("able"),
+	)
+
+	if want := []reconcile.Request{
+		{
+			NamespacedName: client.ObjectKeyFromObject(able),
+		},
+	}; !reflect.DeepEqual(got, want) {
+		t.Errorf("requestsForConfigMap() = %v, want %v", got, want)
 	}
 }
 
@@ -1266,14 +1357,9 @@ func newDxpMetadataConfigMap(namespace string, virtualInstanceID string) *corev1
 	}
 }
 
-func newDxpNamespace(allowedNamespaces string) *corev1.Namespace {
+func newDxpNamespace() *corev1.Namespace {
 	return &corev1.Namespace{
-		ObjectMeta: metav1.ObjectMeta{
-			Annotations: map[string]string{
-				cxv1alpha1.AnnotationAllowedClientExtensionNamespaces: allowedNamespaces,
-			},
-			Name: "liferay-dev",
-		},
+		ObjectMeta: metav1.ObjectMeta{Name: "liferay-dev"},
 	}
 }
 
@@ -1355,6 +1441,17 @@ func newClientExtensionReconciler(
 		APIReader: apiReader,
 		Client:    cachedClient,
 		Recorder:  &record.FakeRecorder{},
+	}
+}
+
+func newPolicyConfigMap(allowedNamespaces string) *corev1.ConfigMap {
+	return &corev1.ConfigMap{
+		Data: map[string]string{cxv1alpha1.ConfigMapKeyAllowedNamespaces: allowedNamespaces},
+		ObjectMeta: metav1.ObjectMeta{
+			Labels:    map[string]string{LabelMetadataType: "client-extension-policy"},
+			Name:      cxv1alpha1.ConfigMapNameClientExtensionPolicy,
+			Namespace: "liferay-dev",
+		},
 	}
 }
 

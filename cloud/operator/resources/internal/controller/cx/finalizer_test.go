@@ -84,7 +84,7 @@ func TestReconcileDeleteGracePeriod(t *testing.T) {
 			}
 
 			clientExtensionReconciler := newClientExtensionReconciler(
-				nil, t, clientExtension, newDxpNamespace("liferay-cx"),
+				nil, t, clientExtension, newDxpNamespace(), newPolicyConfigMap("liferay-cx"),
 				newExtInitConfigMap("able-oauth-application-user-agent"),
 			)
 
@@ -164,7 +164,7 @@ func TestReconcileDeletesFromDxpOnRemoval(t *testing.T) {
 	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, clientExtension, extInitConfigMap,
 		newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
-		newDxpNamespace("liferay-cx"),
+		newDxpNamespace(), newPolicyConfigMap("liferay-cx"),
 	)
 
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)

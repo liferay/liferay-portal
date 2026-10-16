@@ -10,8 +10,6 @@ import (
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-const AnnotationAllowedClientExtensionNamespaces = "cx.liferay.com/allowed-client-extension-namespaces"
-
 const (
 	ConditionConfigurationAccepted = "ConfigurationAccepted"
 	ConditionDelivered             = "Delivered"
@@ -19,6 +17,11 @@ const (
 	ConditionProvisioned           = "Provisioned"
 	ConditionReady                 = "Ready"
 	ConditionWorkloadAccepted      = "WorkloadAccepted"
+)
+
+const (
+	ConfigMapKeyAllowedNamespaces      = "allowedNamespaces"
+	ConfigMapNameClientExtensionPolicy = "client-extension-policy"
 )
 
 const (

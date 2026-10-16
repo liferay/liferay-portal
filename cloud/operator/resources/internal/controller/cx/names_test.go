@@ -10,32 +10,33 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func TestAllowedNamespacesReadsAnnotation(t *testing.T) {
+func TestAllowedNamespacesReadsConfigMap(t *testing.T) {
 	testCases := map[string]struct {
-		annotations map[string]string
-		want        []string
+		data map[string]string
+		want []string
 	}{
-		"an empty annotation permits nothing": {
-			annotations: map[string]string{
-				cxv1alpha1.AnnotationAllowedClientExtensionNamespaces: "",
+		"an empty key permits nothing": {
+			data: map[string]string{
+				cxv1alpha1.ConfigMapKeyAllowedNamespaces: "",
 			},
 		},
 		"blank entries and spaces are ignored": {
-			annotations: map[string]string{
-				cxv1alpha1.AnnotationAllowedClientExtensionNamespaces: " able, ,baker ,",
+			data: map[string]string{
+				cxv1alpha1.ConfigMapKeyAllowedNamespaces: " able, ,baker ,",
 			},
 			want: []string{"able", "baker"},
 		},
-		"no annotation permits nothing": {},
+		"no key permits nothing": {},
 	}
 
 	for name, testCase := range testCases {
 		t.Run(name, func(t *testing.T) {
-			namespace := &corev1.Namespace{
-				ObjectMeta: metav1.ObjectMeta{Annotations: testCase.annotations, Name: "liferay-prod"},
+			configMap := &corev1.ConfigMap{
+				Data:       testCase.data,
+				ObjectMeta: metav1.ObjectMeta{Name: cxv1alpha1.ConfigMapNameClientExtensionPolicy, Namespace: "liferay-prod"},
 			}
 
-			if got := allowedNamespaces(namespace); !slices.Equal(got, testCase.want) {
+			if got := allowedNamespaces(configMap); !slices.Equal(got, testCase.want) {
 				t.Errorf("allowedNamespaces() = %q, want %q", got, testCase.want)
 			}
 		})

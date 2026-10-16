@@ -88,7 +88,7 @@ func TestReconcileHoldsConfigDigestUntilProvisioned(t *testing.T) {
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, clientExtension, newDeployment(podTemplate), newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
-		newDxpNamespace("liferay-cx"),
+		newDxpNamespace(), newPolicyConfigMap("liferay-cx"),
 	)
 
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -125,7 +125,8 @@ func TestReconcilePutConfigDigestUpdatesWorkload(t *testing.T) {
 	dxpMetadata.Data = map[string]string{"com.liferay.lxc.dxp.mainDomain": "liferay.example.com"}
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, dxpMetadata, newDeployment(newInitializedPodTemplate()), newDxpNamespace("liferay-cx"),
+		nil, t, clientExtension, dxpMetadata, newDeployment(newInitializedPodTemplate()),
+		newDxpNamespace(), newPolicyConfigMap("liferay-cx"),
 	)
 
 	recorder := record.NewFakeRecorder(10)
@@ -190,7 +191,7 @@ func TestReconcileReadsWorkloadFromTheAPIServer(t *testing.T) {
 			},
 		},
 		t, clientExtension, newDeployment(newInitializedPodTemplate()), newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
-		newDxpNamespace("liferay-cx"),
+		newDxpNamespace(), newPolicyConfigMap("liferay-cx"),
 	)
 
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
@@ -257,7 +258,8 @@ func TestReconcileReportsWorkload(t *testing.T) {
 				nil, t,
 				append(
 					testCase.objects, clientExtension,
-					newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("liferay-cx"),
+					newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+					newDxpNamespace(), newPolicyConfigMap("liferay-cx"),
 				)...,
 			)
 
@@ -295,7 +297,8 @@ func TestReconcileReportsWorkloadNotFoundAfterGracePeriod(t *testing.T) {
 	clientExtension.Spec.WorkloadRef = &cxv1alpha1.WorkloadRef{Kind: cxv1alpha1.WorkloadKindDeployment, Name: "able"}
 
 	clientExtensionReconciler := newClientExtensionReconciler(
-		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"), newDxpNamespace("liferay-cx"),
+		nil, t, clientExtension, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
+		newDxpNamespace(), newPolicyConfigMap("liferay-cx"),
 	)
 
 	recorder := record.NewFakeRecorder(10)
@@ -352,7 +355,7 @@ func TestReconcileRestartsWorkloadGracePeriodWhenMisconfiguredWorkloadDisappears
 
 	clientExtensionReconciler := newClientExtensionReconciler(
 		nil, t, clientExtension, deployment, newDxpMetadataConfigMap("liferay-dev", "liferay.com"),
-		newDxpNamespace("liferay-cx"),
+		newDxpNamespace(), newPolicyConfigMap("liferay-cx"),
 	)
 
 	if phase, _ := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); phase != cxv1alpha1.PhaseDegraded {
