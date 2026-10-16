@@ -11,8 +11,9 @@ import com.liferay.headless.cms.dto.v1_0.MissingRequiredFieldsAsset;
 import com.liferay.headless.cms.internal.field.MissingRequiredFieldsAssetSearcher;
 import com.liferay.headless.cms.internal.util.CMSGroupUtil;
 import com.liferay.headless.cms.resource.v1_0.MissingRequiredFieldsAssetResource;
+import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -39,6 +40,8 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -95,10 +98,27 @@ public class MissingRequiredFieldsAssetResourceImpl
 				contextAcceptLanguage.getPreferredLanguageId(), pagination,
 				search, sorts);
 
+		Map<Long, String> externalReferenceCodes = new HashMap<>();
+
+		for (ObjectDefinition objectDefinition :
+				_objectDefinitionService.getCMSObjectDefinitions(
+					contextCompany.getCompanyId(),
+					new String[] {
+						ObjectFolderConstants.
+							EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+						ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES
+					})) {
+
+			externalReferenceCodes.put(
+				objectDefinition.getObjectDefinitionId(),
+				objectDefinition.getExternalReferenceCode());
+		}
+
 		return Page.of(
 			transform(
 				searchResponse.getDocuments(),
-				this::_toMissingRequiredFieldsAsset),
+				document -> _toMissingRequiredFieldsAsset(
+					document, externalReferenceCodes)),
 			pagination, searchResponse.getCount());
 	}
 
@@ -116,7 +136,7 @@ public class MissingRequiredFieldsAssetResourceImpl
 	}
 
 	private MissingRequiredFieldsAsset _toMissingRequiredFieldsAsset(
-		Document document) {
+		Document document, Map<Long, String> externalReferenceCodes) {
 
 		long objectDefinitionId = GetterUtil.getLong(
 			document.getString("objectDefinitionId"));
@@ -147,17 +167,7 @@ public class MissingRequiredFieldsAssetResourceImpl
 					() -> GetterUtil.getLong(
 						document.getString("missingRequiredFieldsCount")));
 				setObjectDefinitionExternalReferenceCode(
-					() -> {
-						ObjectDefinition objectDefinition =
-							_objectDefinitionLocalService.fetchObjectDefinition(
-								objectDefinitionId);
-
-						if (objectDefinition == null) {
-							return null;
-						}
-
-						return objectDefinition.getExternalReferenceCode();
-					});
+					() -> externalReferenceCodes.get(objectDefinitionId));
 				setTitle(() -> _getTitle(document));
 			}
 		};
@@ -177,7 +187,7 @@ public class MissingRequiredFieldsAssetResourceImpl
 	private DepotEntryService _depotEntryService;
 
 	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private ObjectDefinitionService _objectDefinitionService;
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
