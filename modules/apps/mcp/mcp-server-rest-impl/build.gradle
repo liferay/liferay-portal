@@ -1,8 +1,8 @@
 dependencies {
 	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.2"
 	compileInclude group: "com.networknt", name: "json-schema-validator", version: "2.0.0"
-	compileInclude group: "io.modelcontextprotocol.sdk", name: "mcp-core", version: "1.0.1"
-	compileInclude group: "io.modelcontextprotocol.sdk", name: "mcp-json-jackson2", version: "1.0.1"
+	compileInclude group: "io.modelcontextprotocol.sdk", name: "mcp-core", version: "1.1.5"
+	compileInclude group: "io.modelcontextprotocol.sdk", name: "mcp-json-jackson2", version: "1.1.5"
 	compileInclude group: "io.projectreactor", name: "reactor-core", version: "3.6.5"
 	compileInclude group: "org.yaml", name: "snakeyaml", version: "2.3"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
