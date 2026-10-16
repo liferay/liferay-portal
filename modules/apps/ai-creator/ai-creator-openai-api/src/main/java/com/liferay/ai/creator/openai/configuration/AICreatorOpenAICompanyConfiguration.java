@@ -40,4 +40,10 @@ public interface AICreatorOpenAICompanyConfiguration {
 	)
 	public boolean enableDALLEToCreateImages();
 
+	@Meta.AD(
+		deflt = "gpt-image-2", description = "image-model-help",
+		name = "image-model", required = false
+	)
+	public String imageModel();
+
 }

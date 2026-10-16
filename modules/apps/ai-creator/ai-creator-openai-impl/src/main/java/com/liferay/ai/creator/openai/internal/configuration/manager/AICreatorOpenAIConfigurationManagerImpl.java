@@ -41,6 +41,24 @@ public class AICreatorOpenAIConfigurationManagerImpl
 	}
 
 	@Override
+	public String getAICreatorOpenAICompanyImageModel(long companyId)
+		throws ConfigurationException {
+
+		AICreatorOpenAICompanyConfiguration
+			aiCreatorOpenAICompanyConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					AICreatorOpenAICompanyConfiguration.class, companyId);
+
+		String imageModel = aiCreatorOpenAICompanyConfiguration.imageModel();
+
+		if (Validator.isNull(imageModel)) {
+			return "gpt-image-2";
+		}
+
+		return imageModel;
+	}
+
+	@Override
 	public String getAICreatorOpenAIGroupAPIKey(long groupId)
 		throws ConfigurationException {
 
@@ -76,6 +94,38 @@ public class AICreatorOpenAIConfigurationManagerImpl
 
 		return _secretResolver.resolve(
 			companyId, aiCreatorOpenAICompanyConfiguration.apiKey());
+	}
+
+	@Override
+	public String getAICreatorOpenAIGroupImageModel(long groupId)
+		throws ConfigurationException {
+
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		AICreatorOpenAIGroupConfiguration aiCreatorOpenAIGroupConfiguration =
+			_configurationProvider.getGroupConfiguration(
+				AICreatorOpenAIGroupConfiguration.class, group.getCompanyId(),
+				groupId);
+
+		return aiCreatorOpenAIGroupConfiguration.imageModel();
+	}
+
+	@Override
+	public String getAICreatorOpenAIGroupImageModel(
+			long companyId, long groupId)
+		throws ConfigurationException {
+
+		AICreatorOpenAIGroupConfiguration aiCreatorOpenAIGroupConfiguration =
+			_configurationProvider.getGroupConfiguration(
+				AICreatorOpenAIGroupConfiguration.class, companyId, groupId);
+
+		String imageModel = aiCreatorOpenAIGroupConfiguration.imageModel();
+
+		if (Validator.isNotNull(imageModel)) {
+			return imageModel;
+		}
+
+		return getAICreatorOpenAICompanyImageModel(companyId);
 	}
 
 	@Override
@@ -140,7 +190,7 @@ public class AICreatorOpenAIConfigurationManagerImpl
 	@Override
 	public void saveAICreatorOpenAICompanyConfiguration(
 			long companyId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE)
+			boolean enableDALLE, String imageModel)
 		throws ConfigurationException {
 
 		_configurationProvider.saveCompanyConfiguration(
@@ -151,13 +201,15 @@ public class AICreatorOpenAIConfigurationManagerImpl
 				"enableChatGPTToCreateContent", enableChatGPT
 			).put(
 				"enableDALLEToCreateImages", enableDALLE
+			).put(
+				"imageModel", imageModel
 			).build());
 	}
 
 	@Override
 	public void saveAICreatorOpenAIGroupConfiguration(
 			long groupId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE)
+			boolean enableDALLE, String imageModel)
 		throws ConfigurationException {
 
 		Group group = _groupLocalService.fetchGroup(groupId);
@@ -171,6 +223,8 @@ public class AICreatorOpenAIConfigurationManagerImpl
 				"enableChatGPTToCreateContent", enableChatGPT
 			).put(
 				"enableDALLEToCreateImages", enableDALLE
+			).put(
+				"imageModel", imageModel
 			).build());
 	}
 

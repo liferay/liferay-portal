@@ -43,6 +43,16 @@ AICreatorOpenAICompanyConfigurationDisplayContext aiCreatorOpenAICompanyConfigur
 	</clay:content-col>
 </clay:content-row>
 
+<clay:content-row
+	cssClass="c-mb-4"
+>
+	<clay:content-col
+		expand="<%= true %>"
+	>
+		<aui:input helpMessage="image-model-help" label="image-model" name="imageModel" type="text" value="<%= aiCreatorOpenAICompanyConfigurationDisplayContext.getImageModel() %>" />
+	</clay:content-col>
+</clay:content-row>
+
 <c:if test='<%= FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-93786") %>'>
 	<clay:content-row>
 		<clay:content-col

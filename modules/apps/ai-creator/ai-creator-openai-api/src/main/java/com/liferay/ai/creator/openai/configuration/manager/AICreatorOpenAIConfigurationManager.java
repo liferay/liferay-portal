@@ -15,10 +15,20 @@ public interface AICreatorOpenAIConfigurationManager {
 	public String getAICreatorOpenAICompanyAPIKey(long companyId)
 		throws ConfigurationException;
 
+	public String getAICreatorOpenAICompanyImageModel(long companyId)
+		throws ConfigurationException;
+
 	public String getAICreatorOpenAIGroupAPIKey(long groupId)
 		throws ConfigurationException;
 
 	public String getAICreatorOpenAIGroupAPIKey(long companyId, long groupId)
+		throws ConfigurationException;
+
+	public String getAICreatorOpenAIGroupImageModel(long groupId)
+		throws ConfigurationException;
+
+	public String getAICreatorOpenAIGroupImageModel(
+			long companyId, long groupId)
 		throws ConfigurationException;
 
 	public boolean isAICreatorChatGPTCompanyEnabled(long companyId)
@@ -35,12 +45,12 @@ public interface AICreatorOpenAIConfigurationManager {
 
 	public void saveAICreatorOpenAICompanyConfiguration(
 			long companyId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE)
+			boolean enableDALLE, String imageModel)
 		throws ConfigurationException;
 
 	public void saveAICreatorOpenAIGroupConfiguration(
 			long groupId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE)
+			boolean enableDALLE, String imageModel)
 		throws ConfigurationException;
 
 }

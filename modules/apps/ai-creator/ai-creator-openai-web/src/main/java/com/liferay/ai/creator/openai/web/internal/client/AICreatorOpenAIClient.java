@@ -19,9 +19,10 @@ public interface AICreatorOpenAIClient {
 		throws Exception;
 
 	public String[] getGenerations(
-			String apiKey, String prompt, String size, int numberOfImages)
+			String apiKey, String model, String prompt, String size,
+			int numberOfImages)
 		throws Exception;
 
-	public void validateAPIKey(String apiKey) throws Exception;
+	public void validateAPIKey(String apiKey, String model) throws Exception;
 
 }

@@ -5,7 +5,6 @@
 
 package com.liferay.ai.creator.openai.web.internal.portlet.action;
 
-import com.liferay.ai.creator.openai.configuration.manager.AICreatorOpenAIConfigurationManager;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
@@ -17,7 +16,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import jakarta.portlet.PortletException;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Lourdes Fernández Besada
@@ -42,19 +40,23 @@ public class SaveGroupConfigurationMVCActionCommand
 	}
 
 	@Override
-	protected void saveAICreatorOpenAIConfiguration(
-			String apiKey, boolean enableChatGPT, boolean enableDALLE,
-			ThemeDisplay themeDisplay)
+	protected String getInheritedAPIKey(ThemeDisplay themeDisplay)
 		throws ConfigurationException {
 
-		_aiCreatorOpenAIConfigurationManager.
-			saveAICreatorOpenAIGroupConfiguration(
-				themeDisplay.getScopeGroupId(), apiKey, enableChatGPT,
-				enableDALLE);
+		return aiCreatorOpenAIConfigurationManager.
+			getAICreatorOpenAICompanyAPIKey(themeDisplay.getCompanyId());
 	}
 
-	@Reference
-	private AICreatorOpenAIConfigurationManager
-		_aiCreatorOpenAIConfigurationManager;
+	@Override
+	protected void saveAICreatorOpenAIConfiguration(
+			String apiKey, boolean enableChatGPT, boolean enableDALLE,
+			String imageModel, ThemeDisplay themeDisplay)
+		throws ConfigurationException {
+
+		aiCreatorOpenAIConfigurationManager.
+			saveAICreatorOpenAIGroupConfiguration(
+				themeDisplay.getScopeGroupId(), apiKey, enableChatGPT,
+				enableDALLE, imageModel);
+	}
 
 }

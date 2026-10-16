@@ -56,7 +56,8 @@ public class MockAICreatorOpenAIClient implements AICreatorOpenAIClient {
 
 	@Override
 	public String[] getGenerations(
-		String apiKey, String prompt, String size, int numberOfImages) {
+		String apiKey, String model, String prompt, String size,
+		int numberOfImages) {
 
 		if (Objects.equals(apiKey, "VALID_API_KEY") &&
 			Objects.equals(prompt, "USER_IMAGES")) {
@@ -78,12 +79,14 @@ public class MockAICreatorOpenAIClient implements AICreatorOpenAIClient {
 	}
 
 	@Override
-	public void validateAPIKey(String apiKey) {
-		if (Objects.equals(apiKey, "VALID_API_KEY")) {
-			return;
+	public void validateAPIKey(String apiKey, String model) {
+		if (!Objects.equals(apiKey, "VALID_API_KEY")) {
+			throw _getAICreatorOpenAIClientException(apiKey);
 		}
 
-		throw _getAICreatorOpenAIClientException(apiKey);
+		if (Validator.isNotNull(model) && model.startsWith("OPENAI_API_")) {
+			throw _getAICreatorOpenAIClientException(model);
+		}
 	}
 
 	private AICreatorOpenAIClientException _getAICreatorOpenAIClientException(

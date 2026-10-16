@@ -38,6 +38,14 @@ public class AICreatorOpenAICompanyConfigurationDisplayContext
 	}
 
 	@Override
+	protected String getAICreatorOpenAIImageModel()
+		throws ConfigurationException {
+
+		return _aiCreatorOpenAIConfigurationManager.
+			getAICreatorOpenAICompanyImageModel(_themeDisplay.getCompanyId());
+	}
+
+	@Override
 	protected boolean isAICreatorChatGPTEnabled()
 		throws ConfigurationException {
 
