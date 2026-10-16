@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -75,6 +76,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.subscription.service.SubscriptionLocalService;
 
 import java.io.InputStream;
 
@@ -1119,6 +1121,77 @@ public class JournalArticleServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110132")
+	public void testSubscribeStructure() throws Exception {
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+		User user = UserTestUtil.addUser();
+
+		try {
+			_journalArticleService.subscribeStructure(
+				_group.getGroupId(), user.getUserId(),
+				ddmStructure.getStructureId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+		}
+
+		Assert.assertFalse(
+			_subscriptionLocalService.isSubscribed(
+				_group.getCompanyId(), user.getUserId(),
+				DDMStructure.class.getName(), ddmStructure.getStructureId()));
+
+		_journalArticleService.subscribeStructure(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			ddmStructure.getStructureId());
+
+		Assert.assertTrue(
+			_subscriptionLocalService.isSubscribed(
+				_group.getCompanyId(), TestPropsValues.getUserId(),
+				DDMStructure.class.getName(), ddmStructure.getStructureId()));
+	}
+
+	@Test
+	@TestInfo("LPD-110132")
+	public void testUnsubscribeStructure() throws Exception {
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+		User user = UserTestUtil.addUser();
+
+		_journalArticleLocalService.subscribeStructure(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			ddmStructure.getStructureId());
+		_journalArticleLocalService.subscribeStructure(
+			_group.getGroupId(), user.getUserId(),
+			ddmStructure.getStructureId());
+
+		try {
+			_journalArticleService.unsubscribeStructure(
+				_group.getGroupId(), user.getUserId(),
+				ddmStructure.getStructureId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+		}
+
+		Assert.assertTrue(
+			_subscriptionLocalService.isSubscribed(
+				_group.getCompanyId(), user.getUserId(),
+				DDMStructure.class.getName(), ddmStructure.getStructureId()));
+
+		_journalArticleService.unsubscribeStructure(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			ddmStructure.getStructureId());
+
+		Assert.assertFalse(
+			_subscriptionLocalService.isSubscribed(
+				_group.getCompanyId(), TestPropsValues.getUserId(),
+				DDMStructure.class.getName(), ddmStructure.getStructureId()));
+	}
+
+	@Test
 	public void testUpdateArticle() throws Exception {
 		_article.setDisplayDate(new Date());
 
@@ -1134,6 +1207,33 @@ public class JournalArticleServiceTest {
 
 		Assert.assertEquals(
 			_article.getDisplayDate(), assetEntry.getPublishDate());
+
+		User user = UserTestUtil.addUser();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		try {
+			_journalArticleService.updateArticle(
+				user.getUserId(), _group.getGroupId(), _article.getFolderId(),
+				_article.getArticleId(), _article.getVersion(),
+				_article.getTitleMap(), _article.getDescriptionMap(),
+				_article.getContent(), _article.getLayoutUuid(),
+				serviceContext);
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+		}
+
+		_article = _journalArticleService.updateArticle(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			_article.getFolderId(), _article.getArticleId(),
+			_article.getVersion(), _article.getTitleMap(),
+			_article.getDescriptionMap(), _article.getContent(),
+			_article.getLayoutUuid(), serviceContext);
+
+		Assert.assertEquals(1.2, _article.getVersion(), 0);
 	}
 
 	@Test
@@ -1503,6 +1603,9 @@ public class JournalArticleServiceTest {
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private SubscriptionLocalService _subscriptionLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
