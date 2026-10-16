@@ -13,7 +13,11 @@ import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalServiceUtil;
 import com.liferay.asset.list.service.AssetListEntryLocalServiceUtil;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalServiceUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -125,6 +129,46 @@ public class AssetListTestUtil {
 				TestPropsValues.getUserId(), groupId,
 				assetListEntry.getAssetListEntryId(), segmentsEntryId,
 				typeSettings, serviceContext);
+	}
+
+	public static JSONObject getFilterJSONObject(
+		String operatorName, String propertyName, String quantifier,
+		String... values) {
+
+		return _getFilterJSONObject(
+			operatorName, propertyName, quantifier,
+			JSONUtil.putAll(
+				(Object[])TransformUtil.transform(
+					values, value -> JSONUtil.put("value", value),
+					JSONObject.class)));
+	}
+
+	public static JSONArray getFiltersJSONArray(
+		JSONObject... filterJSONObjects) {
+
+		return JSONUtil.putAll((Object[])filterJSONObjects);
+	}
+
+	public static JSONObject getKeywordsFilterJSONObject(
+		String operatorName, String quantifier, String value) {
+
+		return _getFilterJSONObject(
+			operatorName, "keywords", quantifier, value);
+	}
+
+	private static JSONObject _getFilterJSONObject(
+		String operatorName, String propertyName, String quantifier,
+		Object value) {
+
+		return JSONUtil.put(
+			"operatorName", operatorName
+		).put(
+			"propertyName", propertyName
+		).put(
+			"quantifier", quantifier
+		).put(
+			"value", value
+		);
 	}
 
 }

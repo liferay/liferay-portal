@@ -7,7 +7,6 @@ dependencies {
 	testImplementation project(":apps:export-import:export-import-api")
 	testImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:asset:asset-entry-rel-api")
-	testIntegrationImplementation project(":apps:asset:asset-publisher-api")
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
 	testIntegrationImplementation project(":apps:blogs:blogs-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
