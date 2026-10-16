@@ -3,14 +3,7 @@ definition {
 	@summary = "Default summary"
 	macro disableAutoTagging(disableAutoTaggingFor = null, siteURLKey = null) {
 		if (${disableAutoTaggingFor} == "System Settings") {
-			ApplicationsMenu.gotoRootPortlet(
-				panel = "Control Panel",
-				portlet = "System Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Assets",
-				configurationName = "Asset Auto Tagging",
-				configurationScope = "System Scope");
+			AutoTagging.openToAssetAutoTagging(configurationScope = "System Settings");
 
 			FormFields.disableCheckbox(fieldName = "enabled");
 		}
