@@ -780,6 +780,15 @@ public class AssetPublisherDisplayContext {
 		return _compilerTagNames;
 	}
 
+	public String getConnectedGroupIdsString(long groupId)
+		throws PortalException {
+
+		return StringUtil.merge(
+			SiteConnectedGroupGroupProviderUtil.
+				getCurrentAndAncestorSiteAndDepotGroupIds(
+					new long[] {groupId}));
+	}
+
 	public String getDDMStructureDisplayFieldValue() throws Exception {
 		if (_ddmStructureDisplayFieldValue != null) {
 			return _ddmStructureDisplayFieldValue;

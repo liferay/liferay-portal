@@ -176,6 +176,13 @@ public class InputAssetLinksDisplayContext {
 		return assetType;
 	}
 
+	public String getConnectedGroupIdsString() throws PortalException {
+		return StringUtil.merge(
+			SiteConnectedGroupGroupProviderUtil.
+				getCurrentAndAncestorSiteAndDepotGroupIds(
+					new long[] {_themeDisplay.getScopeGroupId()}));
+	}
+
 	public String getGroupDescriptiveName(AssetEntry assetEntry)
 		throws PortalException {
 

@@ -96,12 +96,22 @@ function getFieldFilter(fieldName, values) {
 	return `${fieldName} in (${values.join(',')})`;
 }
 
-function buildAPIURL(assetEntryTypes, excludedAssetEntry) {
+function buildAPIURL(assetEntryTypes, excludedAssetEntry, groupIds) {
 	const url = new URL(ASSET_ENTRIES_API_URL, window.location.origin);
 
-	new Set(
-		assetEntryTypes.flatMap((assetEntryType) => assetEntryType.groupIds)
-	).forEach((groupId) => url.searchParams.append('groupIds', groupId));
+	let searchGroupIds = Array.from(
+		new Set(
+			assetEntryTypes.flatMap((assetEntryType) => assetEntryType.groupIds)
+		)
+	);
+
+	if (!searchGroupIds.length) {
+		searchGroupIds = String(groupIds).split(',');
+	}
+
+	searchGroupIds.forEach((groupId) =>
+		url.searchParams.append('groupIds', groupId)
+	);
 	url.searchParams.set('nestedFields', 'permissions');
 	url.searchParams.set('showNonindexable', 'true');
 
@@ -154,12 +164,13 @@ function buildAPIURL(assetEntryTypes, excludedAssetEntry) {
 export default function getAssetEntriesItemSelectorProps({
 	assetEntryTypes = [],
 	excludedAssetEntry,
+	groupIds,
 	portletNamespace,
 }) {
 	const singleAssetEntryType = assetEntryTypes.length === 1;
 
 	return {
-		apiURL: buildAPIURL(assetEntryTypes, excludedAssetEntry),
+		apiURL: buildAPIURL(assetEntryTypes, excludedAssetEntry, groupIds),
 		fdsProps: {
 			configInURLBehavior: 'OFF',
 			customRenderers: {

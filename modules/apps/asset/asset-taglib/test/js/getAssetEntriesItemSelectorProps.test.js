@@ -13,6 +13,7 @@ const STATUS_FILTER = "(status eq 'approved' or status eq 'scheduled')";
 function getAPIURL(assetEntryTypes) {
 	const {apiURL} = getAssetEntriesItemSelectorProps({
 		assetEntryTypes,
+		groupIds: '8,9',
 		portletNamespace: 'ns',
 	});
 
@@ -36,6 +37,13 @@ function getTitleCell() {
 
 describe('getAssetEntriesItemSelectorProps', () => {
 	describe('apiURL', () => {
+		it('falls back to the connected groups when there are no types', () => {
+			const url = getAPIURL([]);
+
+			expect(url.searchParams.getAll('groupIds')).toEqual(['8', '9']);
+			expect(url.searchParams.get('filter')).toBe(STATUS_FILTER);
+		});
+
 		it('filters by class name only when every type shares the same groups', () => {
 			const url = getAPIURL([
 				{classNameId: 10, groupIds: [1, 2], label: 'Blogs Entry'},
