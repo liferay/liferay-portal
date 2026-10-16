@@ -56,6 +56,8 @@ jobs:
                         working_directory: ./cloud/helm/azure
                     -   chart_name: liferay-azure-infrastructure-provider
                         working_directory: ./cloud/helm/azure-infrastructure-provider
+                    -   chart_name: liferay-client-extension
+                        working_directory: ./cloud/helm/client-extension
                     -   chart_name: liferay-default
                         working_directory: ./cloud/helm/default
                     -   chart_name: liferay-dxp-operator
