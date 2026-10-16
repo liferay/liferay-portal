@@ -53,6 +53,7 @@ import com.liferay.headless.admin.user.client.resource.v1_0.OrganizationResource
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -99,6 +100,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
@@ -388,6 +392,7 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 		_testPatchOrganizationWithImageExternalReferenceCode();
 		_testPatchOrganizationWithKeywords();
+		_testPatchOrganizationWithRoleBriefs();
 	}
 
 	@Override
@@ -1005,6 +1010,21 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		return organizationResource.postOrganization(organization);
 	}
 
+	private void _addRoleUsers(Role role, User user, String... actionIds)
+		throws Exception {
+
+		Role regularRole = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), Role.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(role.getRoleId()), regularRole.getRoleId(),
+			actionIds);
+
+		_userLocalService.addRoleUsers(
+			regularRole.getRoleId(), new long[] {user.getUserId()});
+	}
+
 	private void _addRoleUsers(User user, String... actionIds)
 		throws Exception {
 
@@ -1115,6 +1135,66 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 					});
 			}
 		};
+	}
+
+	private void _patchOrganizationBatch(
+			String expectedExecuteStatus, long organizationId, Role role,
+			User user)
+		throws Exception {
+
+		Organization organization = new Organization() {
+			{
+				id = String.valueOf(organizationId);
+				roleBriefs = new RoleBrief[] {
+					new RoleBrief() {
+						{
+							externalReferenceCode =
+								role.getExternalReferenceCode();
+							name = role.getName();
+							roleType = role.getType();
+						}
+					}
+				};
+			}
+		};
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_BATCH_ENGINE_IMPORT_TASK_EXECUTOR_IMPL,
+				LoggerTestUtil.ERROR)) {
+
+			HTTPTestUtil.customize(
+			).withCredentials(
+				user.getEmailAddress(), _PASSWORD
+			).apply(
+				() -> waitForFinish(
+					expectedExecuteStatus,
+					HTTPTestUtil.invokeToJSONObject(
+						JSONUtil.put(
+							_jsonFactory.createJSONObject(
+								organization.toString())
+						).toString(),
+						"headless-admin-user/v1.0/organizations/batch?" +
+							"updateStrategy=PARTIAL_UPDATE",
+						Http.Method.PUT))
+			);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			if (Objects.equals(expectedExecuteStatus, "COMPLETED")) {
+				Assert.assertTrue(logEntries.isEmpty());
+
+				return;
+			}
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"User ", user.getUserId(), " must have ",
+					ActionKeys.ASSIGN_MEMBERS, " permission for ",
+					Role.class.getName(), " ", role.getRoleId()),
+				logEntry.getMessage());
+		}
 	}
 
 	private void _testDeleteAccountOrganizationWithPermission()
@@ -1435,6 +1515,50 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 		Assert.assertTrue(
 			ArrayUtil.containsAll(patchOrganization.getKeywords(), keywords));
+	}
+
+	private void _testPatchOrganizationWithRoleBriefs() throws Exception {
+		com.liferay.portal.kernel.model.Organization
+			serviceBuilderOrganization = OrganizationTestUtil.addOrganization();
+
+		User user = UserTestUtil.addOrganizationAdminUser(
+			serviceBuilderOrganization);
+
+		_userLocalService.updatePassword(
+			user.getUserId(), _PASSWORD, _PASSWORD, false, true);
+
+		Role role1 = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+		_patchOrganizationBatch(
+			"FAILED", serviceBuilderOrganization.getOrganizationId(), role1,
+			user);
+
+		Assert.assertFalse(
+			_roleLocalService.hasGroupRole(
+				serviceBuilderOrganization.getGroupId(), role1.getRoleId()));
+
+		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_addRoleUsers(role2, user, ActionKeys.VIEW);
+
+		_patchOrganizationBatch(
+			"FAILED", serviceBuilderOrganization.getOrganizationId(), role2,
+			user);
+
+		Assert.assertFalse(
+			_roleLocalService.hasGroupRole(
+				serviceBuilderOrganization.getGroupId(), role2.getRoleId()));
+
+		_addRoleUsers(role2, user, ActionKeys.ASSIGN_MEMBERS, ActionKeys.VIEW);
+
+		_patchOrganizationBatch(
+			"COMPLETED", serviceBuilderOrganization.getOrganizationId(), role2,
+			user);
+
+		Assert.assertTrue(
+			_roleLocalService.hasGroupRole(
+				serviceBuilderOrganization.getGroupId(), role2.getRoleId()));
 	}
 
 	private void _testPostAccountOrganization() throws Exception {
@@ -2017,6 +2141,11 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		return TransformUtil.transformToArray(
 			users, User::getEmailAddress, String.class);
 	}
+
+	private static final String
+		_CLASS_NAME_BATCH_ENGINE_IMPORT_TASK_EXECUTOR_IMPL =
+			"com.liferay.batch.engine.internal." +
+				"BatchEngineImportTaskExecutorImpl";
 
 	private static final String _PASSWORD = RandomTestUtil.randomString();
 
