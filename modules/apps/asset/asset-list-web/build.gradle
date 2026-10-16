@@ -4,7 +4,6 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
-	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
@@ -14,7 +13,6 @@ dependencies {
 	compileOnly project(":apps:asset:asset-display-page-api")
 	compileOnly project(":apps:asset:asset-info-display-api")
 	compileOnly project(":apps:asset:asset-list-api")
-	compileOnly project(":apps:asset:asset-publisher-api")
 	compileOnly project(":apps:asset:asset-tags-item-selector-api")
 	compileOnly project(":apps:asset:asset-test-util")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
