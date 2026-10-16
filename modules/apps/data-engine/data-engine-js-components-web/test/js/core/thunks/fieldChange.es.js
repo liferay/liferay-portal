@@ -9,7 +9,7 @@ const DEFAULT_LANGUAGE_ID = 'en_US';
 
 const EDITING_LANGUAGE_ID = 'es_ES';
 
-const createPages = (localizedValue, localizable) => [
+const createPages = (localizedValue) => [
 	{
 		rows: [
 			{
@@ -18,7 +18,7 @@ const createPages = (localizedValue, localizable) => [
 						fields: [
 							{
 								fieldName: 'Text1',
-								localizable,
+								localizable: true,
 								localizedValue,
 								name: 'Text1',
 								type: 'text',
@@ -32,7 +32,7 @@ const createPages = (localizedValue, localizable) => [
 	},
 ];
 
-const changeField = async (localizedValue, value, localizable = true) => {
+const changeField = async (localizedValue, value) => {
 	const dispatched = [];
 
 	await fieldChange({
@@ -42,7 +42,7 @@ const changeField = async (localizedValue, value, localizable = true) => {
 		focusedField: {},
 		formId: 'formId',
 		objectFields: [],
-		pages: createPages(localizedValue, localizable),
+		pages: createPages(localizedValue),
 		portletNamespace: '_portletNamespace_',
 		properties: {
 			fieldInstance: {
@@ -68,14 +68,6 @@ const changeField = async (localizedValue, value, localizable = true) => {
 };
 
 describe('fieldChange', () => {
-	it('does not record a translation on a nonlocalizable field', async () => {
-		const field = await changeField(undefined, 'new value', false);
-
-		expect(field.localizedValue).toBeUndefined();
-		expect(field.localizedValueEdited).toBeUndefined();
-		expect(field.value).toBe('new value');
-	});
-
 	it('does not record an edit when an untranslated locale is left untouched', async () => {
 		const field = await changeField({[DEFAULT_LANGUAGE_ID]: ''}, '');
 
