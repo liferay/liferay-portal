@@ -11,6 +11,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.document.library.configuration.DLConfiguration;
+import com.liferay.frontend.data.set.action.FDSItemsActions;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -64,7 +65,8 @@ public class ViewDashboardDisplayContext {
 		ObjectDefinitionService objectDefinitionService,
 		RoleLocalService roleLocalService, ThemeDisplay themeDisplay,
 		TranslationInfoItemFieldValuesExporterRegistry
-			translationInfoItemFieldValuesExporterRegistry) {
+			translationInfoItemFieldValuesExporterRegistry,
+		FDSItemsActions viewBrokenLinksSectionFDSItemsActions) {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
 		_depotEntryLocalService = depotEntryLocalService;
@@ -77,6 +79,8 @@ public class ViewDashboardDisplayContext {
 		_themeDisplay = themeDisplay;
 		_translationInfoItemFieldValuesExporterRegistry =
 			translationInfoItemFieldValuesExporterRegistry;
+		_viewBrokenLinksSectionFDSItemsActions =
+			viewBrokenLinksSectionFDSItemsActions;
 	}
 
 	public Map<String, Object> getConstants() {
@@ -168,6 +172,11 @@ public class ViewDashboardDisplayContext {
 			"brokenLinksCheckerEnabled",
 			GetterUtil.getBoolean(
 				PropsUtil.get(PropsKeys.CMS_BROKEN_LINKS_CHECKER_ENABLED))
+		).put(
+			"brokenLinksFDSActionDropdownItems",
+			() ->
+				_viewBrokenLinksSectionFDSItemsActions.
+					getFDSActionDropdownItems(_httpServletRequest)
 		).put(
 			"candidateAssetLibraries",
 			SectionDisplayContextUtil.getDepotEntriesJSONArray(
@@ -314,5 +323,6 @@ public class ViewDashboardDisplayContext {
 	private final ThemeDisplay _themeDisplay;
 	private final TranslationInfoItemFieldValuesExporterRegistry
 		_translationInfoItemFieldValuesExporterRegistry;
+	private final FDSItemsActions _viewBrokenLinksSectionFDSItemsActions;
 
 }

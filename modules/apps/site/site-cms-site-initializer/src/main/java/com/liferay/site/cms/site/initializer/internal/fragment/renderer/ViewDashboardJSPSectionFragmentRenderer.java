@@ -10,11 +10,13 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.document.library.configuration.DLConfiguration;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.frontend.data.set.action.FDSItemsActions;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 import com.liferay.site.cms.site.initializer.internal.display.context.ViewDashboardDisplayContext;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
@@ -59,7 +61,8 @@ public class ViewDashboardJSPSectionFragmentRenderer
 			httpServletRequest, _objectDefinitionService, _roleLocalService,
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY),
-			_translationInfoItemFieldValuesExporterRegistry);
+			_translationInfoItemFieldValuesExporterRegistry,
+			_viewBrokenLinksSectionFDSItemsActions);
 	}
 
 	@Override
@@ -87,5 +90,10 @@ public class ViewDashboardJSPSectionFragmentRenderer
 	@Reference
 	private TranslationInfoItemFieldValuesExporterRegistry
 		_translationInfoItemFieldValuesExporterRegistry;
+
+	@Reference(
+		target = "(frontend.data.set.name=" + CMSSiteInitializerFDSNames.BROKEN_LINKS_SECTION + ")"
+	)
+	private FDSItemsActions _viewBrokenLinksSectionFDSItemsActions;
 
 }
