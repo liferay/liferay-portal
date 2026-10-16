@@ -727,8 +727,7 @@ public class DLFolderServiceImpl extends DLFolderServiceBaseImpl {
 
 		ModelResourcePermissionUtil.check(
 			dlFolderModelResourcePermission, permissionChecker,
-			serviceContext.getScopeGroupId(), parentFolderId,
-			ActionKeys.ADD_FOLDER);
+			dlFolder.getGroupId(), parentFolderId, ActionKeys.ADD_FOLDER);
 
 		return dlFolderLocalService.moveFolder(
 			getUserId(), folderId, parentFolderId, serviceContext);

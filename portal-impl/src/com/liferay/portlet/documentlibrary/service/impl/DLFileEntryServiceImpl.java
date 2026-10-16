@@ -842,10 +842,13 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 		fileEntryModelResourcePermission.check(
 			permissionChecker, fileEntryId, ActionKeys.UPDATE);
 
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.findByPrimaryKey(
+			fileEntryId);
+
 		ModelResourcePermissionUtil.check(
 			ModelResourcePermissionRegistryUtil.
 				<Folder>getModelResourcePermission(Folder.class.getName()),
-			permissionChecker, serviceContext.getScopeGroupId(), newFolderId,
+			permissionChecker, dlFileEntry.getGroupId(), newFolderId,
 			ActionKeys.ADD_DOCUMENT);
 
 		return dlFileEntryLocalService.moveFileEntry(
