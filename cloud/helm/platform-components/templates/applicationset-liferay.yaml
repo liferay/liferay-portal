@@ -1,6 +1,7 @@
 {{- if .Values.liferay.enabled -}}
 {{- $gitops := .Values.gitops -}}
 {{- $layout := $gitops.layout -}}
+{{- $dxpOperator := .Values.operatorApplications.dxpOperator -}}
 {{- $name := printf "%s-%s-app" $layout.projectId $layout.environmentId -}}
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -60,6 +61,14 @@ spec:
                                 value: "false"
                             -   name: global.liferayServiceAccount.name
                                 value: liferay-default
+                            {{- if and $dxpOperator.enabled (dig "clientExtensions" "enabled" false ($dxpOperator.values | default dict)) }}
+                            -   name: {{ printf "%sclientExtensions.delivery.enabled" .Values.liferay.valuesPrefix }}
+                                value: "true"
+                            -   name: {{ printf "%sclientExtensions.delivery.operatorServiceAccount.name" .Values.liferay.valuesPrefix }}
+                                value: {{ include "liferay-platform.dxpOperatorServiceAccountName" . | quote }}
+                            -   name: {{ printf "%sclientExtensions.delivery.operatorServiceAccount.namespace" .Values.liferay.valuesPrefix }}
+                                value: {{ $dxpOperator.namespace | quote }}
+                            {{- end }}
                             -   name: {{ printf "%snetwork.gatewayName" .Values.liferay.valuesPrefix }}
                                 value: {{ printf "%s-%s-gateway" $layout.projectId $layout.environmentId | quote }}
                             {{- with .Values.liferay.parameters }}

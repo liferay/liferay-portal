@@ -29,6 +29,12 @@ instrumentation.opentelemetry.io/inject-python: "false"
 sidecar.opentelemetry.io/inject: "false"
 {{- end -}}
 
+{{- define "liferay-platform.dxpOperatorServiceAccountName" -}}
+{{- $values := .Values.operatorApplications.dxpOperator.values | default dict -}}
+{{- dig "serviceAccount" "name" "" $values | default (dig "fullnameOverride" "" $values) | required (printf "The value %q must not be empty when %q is true"
+    "operatorApplications.dxpOperator.values.fullnameOverride" "operatorApplications.dxpOperator.values.clientExtensions.enabled") -}}
+{{- end -}}
+
 {{- define "liferay-platform.environmentNamespaceLabels" -}}
 licensing.liferay.com/environment: "true"
 liferay.com/observable: "true"
