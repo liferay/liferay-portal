@@ -91,41 +91,39 @@ public class UserWorkflowHandler extends BaseWorkflowHandler<User> {
 		ServiceContext serviceContext = (ServiceContext)workflowContext.get(
 			WorkflowConstants.CONTEXT_SERVICE_CONTEXT);
 
-		if (((user.getStatus() == WorkflowConstants.STATUS_DRAFT) ||
-			 (user.getStatus() == WorkflowConstants.STATUS_PENDING)) &&
-			(status == WorkflowConstants.STATUS_APPROVED)) {
+		AuditRequestContext auditRequestContext =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
 
-			_userLocalService.completeUserRegistration(user, serviceContext);
+		String clientHost = auditRequestContext.getClientHost();
+		String clientIP = auditRequestContext.getClientIP();
+		long realUserId = auditRequestContext.getRealUserId();
+		String serverName = auditRequestContext.getServerName();
+		int serverPort = auditRequestContext.getServerPort();
+		String sessionID = auditRequestContext.getSessionID();
 
-			AuditRequestContext auditRequestContext =
-				AuditRequestContextThreadLocal.getAuditRequestContext();
+		try {
+			if (((user.getStatus() == WorkflowConstants.STATUS_DRAFT) ||
+				 (user.getStatus() == WorkflowConstants.STATUS_PENDING)) &&
+				(status == WorkflowConstants.STATUS_APPROVED)) {
 
-			String clientHost = auditRequestContext.getClientHost();
-			String clientIP = auditRequestContext.getClientIP();
-			long realUserId = auditRequestContext.getRealUserId();
-			String serverName = auditRequestContext.getServerName();
-			int serverPort = auditRequestContext.getServerPort();
-			String sessionID = auditRequestContext.getSessionID();
+				_userLocalService.completeUserRegistration(
+					user, serviceContext);
 
-			try {
 				_updateAuditRequestContextThreadLocal(workflowContext);
 
 				user = _userLocalService.getUser(userId);
+			}
 
-				return _userLocalService.updateStatus(
-					user, status, serviceContext);
-			}
-			finally {
-				auditRequestContext.setClientHost(clientHost);
-				auditRequestContext.setClientIP(clientIP);
-				auditRequestContext.setRealUserId(realUserId);
-				auditRequestContext.setServerName(serverName);
-				auditRequestContext.setServerPort(serverPort);
-				auditRequestContext.setSessionID(sessionID);
-			}
+			return _userLocalService.updateStatus(user, status, serviceContext);
 		}
-
-		return _userLocalService.updateStatus(user, status, serviceContext);
+		finally {
+			auditRequestContext.setClientHost(clientHost);
+			auditRequestContext.setClientIP(clientIP);
+			auditRequestContext.setRealUserId(realUserId);
+			auditRequestContext.setServerName(serverName);
+			auditRequestContext.setServerPort(serverPort);
+			auditRequestContext.setSessionID(sessionID);
+		}
 	}
 
 	private void _updateAuditRequestContextThreadLocal(
