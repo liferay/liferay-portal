@@ -1249,7 +1249,8 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			_regularUserAccount.getId(),
 			_randomUserAccount(
 				userAccount -> {
-					userAccount.setCurrentPassword(() -> null);
+					userAccount.setCurrentPassword(
+						() -> _regularUserAccountCurrentPassword);
 					userAccount.setPassword(() -> null);
 				}));
 
@@ -1312,7 +1313,8 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			_regularUserAccount.getExternalReferenceCode(),
 			_randomUserAccount(
 				userAccount -> {
-					userAccount.setCurrentPassword(() -> null);
+					userAccount.setCurrentPassword(
+						() -> _regularUserAccountCurrentPassword);
 					userAccount.setPassword(() -> null);
 				}));
 
