@@ -93,13 +93,13 @@ resource "helm_release" "argocd" {
 							name="argocd-application-controller"
 						}
 						spec={
-							ingress=var.observability_config.enabled ? [
+							ingress=var.metrics_scrape_config.enabled ? [
 								{
 									from=[
 										{
 											namespaceSelector={
 												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_config.namespace
+													"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 												}
 											}
 										},
@@ -129,13 +129,13 @@ resource "helm_release" "argocd" {
 							name="argocd-applicationset-controller-ingress"
 						}
 						spec={
-							ingress=var.observability_config.enabled ? [
+							ingress=var.metrics_scrape_config.enabled ? [
 								{
 									from=[
 										{
 											namespaceSelector={
 												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_config.namespace
+													"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 												}
 											}
 										},
@@ -190,13 +190,13 @@ resource "helm_release" "argocd" {
 										]
 									},
 								],
-								var.observability_config.enabled ? [
+								var.metrics_scrape_config.enabled ? [
 									{
 										from=[
 											{
 												namespaceSelector={
 													matchLabels={
-														"kubernetes.io/metadata.name"=var.observability_config.namespace
+														"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 													}
 												}
 											},
@@ -226,13 +226,13 @@ resource "helm_release" "argocd" {
 							name="argocd-notifications-controller-ingress"
 						}
 						spec={
-							ingress=var.observability_config.enabled ? [
+							ingress=var.metrics_scrape_config.enabled ? [
 								{
 									from=[
 										{
 											namespaceSelector={
 												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_config.namespace
+													"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 												}
 											}
 										},
@@ -299,13 +299,13 @@ resource "helm_release" "argocd" {
 										]
 									},
 								],
-								var.observability_config.enabled ? [
+								var.metrics_scrape_config.enabled ? [
 									{
 										from=[
 											{
 												namespaceSelector={
 													matchLabels={
-														"kubernetes.io/metadata.name"=var.observability_config.namespace
+														"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 													}
 												}
 											},
@@ -380,13 +380,13 @@ resource "helm_release" "argocd" {
 										]
 									},
 								],
-								var.observability_config.enabled ? [
+								var.metrics_scrape_config.enabled ? [
 									{
 										from=[
 											{
 												namespaceSelector={
 													matchLabels={
-														"kubernetes.io/metadata.name"=var.observability_config.namespace
+														"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 													}
 												}
 											},
@@ -443,13 +443,13 @@ resource "helm_release" "argocd" {
 										]
 									},
 								],
-								var.observability_config.enabled ? [
+								var.metrics_scrape_config.enabled ? [
 									{
 										from=[
 											{
 												namespaceSelector={
 													matchLabels={
-														"kubernetes.io/metadata.name"=var.observability_config.namespace
+														"kubernetes.io/metadata.name"=var.metrics_scrape_config.namespace
 													}
 												}
 											},
