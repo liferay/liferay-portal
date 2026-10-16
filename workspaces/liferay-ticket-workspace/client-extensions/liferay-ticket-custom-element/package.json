@@ -18,9 +18,9 @@
 	"devDependencies": {
 		"@types/react": "16.14.58",
 		"@types/react-dom": "16.9.9",
-		"@vitejs/plugin-react": "^4.2.1",
+		"@vitejs/plugin-react": "^4.7.0",
 		"typescript": "^4.2.2",
-		"vite": "^5.2.2"
+		"vite": "^6.4.4"
 	},
 	"eslintConfig": {
 		"globals": {
