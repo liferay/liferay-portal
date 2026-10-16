@@ -4,7 +4,7 @@ definition {
 	property browser.chrome.version = "139.0";
 	property ci.retries.disabled = "true";
 	property custom.system.properties = "liferay.mode=test";
-	property database.types = "mysql";
+	property database.types = "mysql,postgresql";
 	property log.context.enabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";

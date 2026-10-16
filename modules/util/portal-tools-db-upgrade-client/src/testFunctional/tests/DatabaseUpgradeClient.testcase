@@ -4,7 +4,7 @@ definition {
 	property app.server.types = "tomcat";
 	property ci.retries.disabled = "true";
 	property data.archive.type = "data-archive-portal";
-	property database.types = "mysql";
+	property database.types = "mysql,postgresql";
 	property database.upgrade.enabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
@@ -36,6 +36,7 @@ definition {
 	test CheckUpgradeClientFailedGogoShellReturnsError {
 		property custom.mysql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
 		property custom.upgrade.properties = "module.framework.properties.osgi.console=80";
+		property database.types = "mysql";
 		property skip.get.testcase.database.properties = "true";
 		property skip.upgrade-legacy-database = "true";
 		property timeout.explicit.wait = "600";
@@ -61,6 +62,7 @@ definition {
 	@priority = 4
 	test CheckUpgradeClientGogoShellFailedUpgrade {
 		property custom.mysql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
+		property database.types = "mysql";
 		property skip.get.testcase.database.properties = "true";
 		property skip.upgrade-legacy-database = "true";
 		property timeout.explicit.wait = "600";
@@ -110,6 +112,7 @@ definition {
 	test CheckUpgradeClientUpgradeReportFailedUpgrade {
 		property custom.mysql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
 		property custom.properties = "upgrade.report.enabled=true";
+		property database.types = "mysql";
 		property skip.get.testcase.database.properties = "true";
 		property skip.upgrade-legacy-database = "true";
 		property timeout.explicit.wait = "600";
@@ -147,6 +150,8 @@ definition {
 	@description = "LPD-66149: Upgrade client can run with app server properties set"
 	@priority = 3
 	test CheckUpgradePropertiesAppSet {
+		property database.types = "mysql";
+
 		AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "check-upgrade-properties-app-set");
 	}
 
@@ -159,6 +164,8 @@ definition {
 	@description = "LPD-66149: Upgrade client can run with no properties set"
 	@priority = 4
 	test CheckUpgradePropertiesNoneSet {
+		property database.types = "mysql";
+
 		AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "check-upgrade-properties-none-set");
 	}
 

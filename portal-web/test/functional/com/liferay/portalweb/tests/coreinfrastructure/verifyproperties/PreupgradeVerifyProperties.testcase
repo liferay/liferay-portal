@@ -3,7 +3,7 @@ definition {
 
 	property app.server.types = "tomcat";
 	property ci.retries.disabled = "true";
-	property database.types = "mysql";
+	property database.types = "mysql,postgresql";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Upgrade Logging";
@@ -119,7 +119,7 @@ definition {
 	test VerifyLayoutFriendlyURLErrorUsingAutoUpgrade {
 		property data.archive.type = "data-archive-reserved-friendly-url";
 		property database.auto.upgrade.enabled = "true";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.version = "6.2.10.21";
 		property skip.upgrade-legacy-database = "true";
 		property test.assert.warning.exceptions = "false";
