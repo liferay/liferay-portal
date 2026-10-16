@@ -24,6 +24,8 @@ function main {
 
 	configuration_json_file=$(resolve_config_json "${1}")
 
+	_validate_database_engine "${configuration_json_file}"
+
 	generate_tfvars "azure" "${configuration_json_file}" "aks"
 
 	generate_tfvars "azure" "${configuration_json_file}" "platform"
@@ -244,6 +246,30 @@ function _set_up_azure_aks {
 	echo "Azure AKS cluster setup complete."
 
 	pop_directory
+}
+
+function _validate_database_engine {
+	local configuration_json_file="${1}"
+
+	local chart_registry
+	local chart_version
+
+	chart_registry=$(jq --raw-output '.artifacts.charts."liferay-azure-infrastructure-provider".registry // error("artifacts.charts.liferay-azure-infrastructure-provider.registry is missing")' "${configuration_json_file}")
+	chart_version=$(jq --raw-output '.artifacts.charts."liferay-azure-infrastructure-provider".version // error("artifacts.charts.liferay-azure-infrastructure-provider.version is missing")' "${configuration_json_file}")
+
+	if ! helm \
+			template \
+			--show-only templates/environment-config.yaml \
+			--values <(jq '{database: {engine: (.setup.database.engine // "")}}' "${configuration_json_file}") \
+			--version "${chart_version}" \
+			liferay-azure-infrastructure-provider \
+			"oci://${chart_registry}/liferay-azure-infrastructure-provider" \
+			> /dev/null
+	then
+		echo "The configuration JSON file must set \"setup.database.engine\" to a database engine that the chart supports." >&2
+
+		exit 1
+	fi
 }
 
 main "${@}"
