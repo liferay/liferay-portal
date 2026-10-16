@@ -27,7 +27,7 @@ const test = mergeTests(
 
 test(
 	'Publishing a new Design Library fragment returns to its fragment set',
-	{tag: '@LPD-110093'},
+	{tag: ['@LPD-102114', '@LPD-110093']},
 	async ({apiHelpers, designLibrariesPage, fragmentEditorPage, page}) => {
 
 		// Create a design library
@@ -55,7 +55,9 @@ test(
 
 		await modal.getByLabel('Fragment Name').fill(fragmentEntryName);
 
-		await modal.getByLabel('Fragment Set Name').fill(getRandomString());
+		const fragmentSetName = getRandomString();
+
+		await modal.getByLabel('Fragment Set Name').fill(fragmentSetName);
 
 		await modal.getByRole('button', {name: 'Save'}).click();
 
@@ -70,12 +72,34 @@ test(
 		await expect(
 			page.getByRole('link', {exact: true, name: fragmentEntryName})
 		).toBeVisible();
+
+		// Check the back link
+
+		const backLink = page.locator(
+			'.control-menu-nav-item a.control-menu-nav-link'
+		);
+
+		await expect(backLink).toHaveAttribute(
+			'href',
+			/view_resources_design_library/
+		);
+
+		// Go back and check the listing
+
+		await clickAndExpectToBeVisible({
+			target: designLibrariesPage.resourcesTable.getByRole('link', {
+				name: fragmentSetName,
+			}),
+			trigger: backLink,
+		});
+
+		await expect(page).toHaveURL(/view_resources_design_library/);
 	}
 );
 
 test(
 	'Editing a Design Library fragment set redirects back to the resources listing',
-	{tag: ['@LPD-97638', '@LPD-102114']},
+	{tag: '@LPD-97638'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
 
 		// Create a design library
@@ -148,48 +172,5 @@ test(
 		await expect(
 			contentTable.getByRole('row', {name: editedFragmentSetName})
 		).toBeVisible();
-
-		// Open the fragment set
-
-		await contentTable
-			.getByRole('row', {name: editedFragmentSetName})
-			.getByRole('link')
-			.first()
-			.click();
-
-		await expect(page).toHaveURL(/fragment_collection/);
-
-		// Reload without the back parameters
-
-		const url = new URL(page.url());
-
-		for (const key of [...url.searchParams.keys()]) {
-			if (key.endsWith('_backURL') || key.endsWith('_redirect')) {
-				url.searchParams.delete(key);
-			}
-		}
-
-		await page.goto(url.toString());
-
-		const backLink = page.locator(
-			'.control-menu-nav-item a.control-menu-nav-link'
-		);
-
-		// Check the back link
-
-		await expect(backLink).toHaveAttribute(
-			'href',
-			/view_resources_design_library/
-		);
-
-		// Go back and check the listing
-
-		await backLink.click();
-
-		await expect(
-			page.getByRole('link', {name: editedFragmentSetName})
-		).toBeVisible();
-
-		await expect(page).toHaveURL(/view_resources_design_library/);
 	}
 );
