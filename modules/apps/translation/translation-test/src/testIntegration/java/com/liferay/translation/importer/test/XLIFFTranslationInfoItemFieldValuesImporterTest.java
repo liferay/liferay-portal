@@ -124,6 +124,31 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 	}
 
 	@Test
+	public void testImportXLIFF12PreservesEmbeddedTags() throws Exception {
+		InfoItemFieldValues infoItemFieldValues =
+			_xliffTranslationInfoItemFieldValuesImporter.
+				importInfoItemFieldValues(
+					_group.getGroupId(),
+					new InfoItemReference(JournalArticle.class.getName(), 122),
+					TranslationTestUtil.readFileToInputStream(
+						"test-journal-article-122-embedded-tags-v12.xlf"));
+
+		InfoFieldValue<Object> contentInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("content");
+
+		Assert.assertEquals(
+			"<bpt id=\"3\"><h1></bpt>Contenidoweb<ept id=\"3\"></h1></ept>",
+			contentInfoFieldValue.getValue(LocaleUtil.SPAIN));
+
+		InfoFieldValue<Object> titleInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("title");
+
+		Assert.assertEquals(
+			"Titulodelcontenidoweb",
+			titleInfoFieldValue.getValue(LocaleUtil.SPAIN));
+	}
+
+	@Test
 	public void testImportXLIFF12PreservesInlineCodes() throws Exception {
 		InfoItemFieldValues infoItemFieldValues =
 			_xliffTranslationInfoItemFieldValuesImporter.
