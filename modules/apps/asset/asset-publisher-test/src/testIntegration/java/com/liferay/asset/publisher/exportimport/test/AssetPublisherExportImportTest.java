@@ -45,10 +45,13 @@ import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
+import com.liferay.layout.model.LayoutClassedModelUsage;
+import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -877,6 +880,64 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 				"displayStyleGroupExternalReferenceCode", null));
 
 		GroupTestUtil.deleteGroup(displayStyleLiveGroup);
+	}
+
+	@Test
+	@TestInfo("LPD-105197")
+	public void testExportImportLayoutClassedModelUsage() throws Exception {
+		ConfigurationTestUtil.saveConfiguration(
+			_assetPublisherWebConfiguration,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"dynamicExportEnabled", true
+			).put(
+				"manualExportEnabled", true
+			).build());
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			group.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+			HashMapBuilder.put(
+				"assetEntryXml",
+				getAssetEntriesXmls(
+					Collections.singletonList(getAssetEntry(journalArticle)))
+			).put(
+				"selectionStyle", new String[] {"manual"}
+			).build());
+
+		try {
+			exportImportPortlet(portletId, false);
+		}
+		finally {
+			ConfigurationTestUtil.saveConfiguration(
+				_assetPublisherWebConfiguration,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"dynamicExportEnabled", true
+				).build());
+		}
+
+		JournalArticle importedJournalArticle =
+			_journalArticleLocalService.getJournalArticleByUuidAndGroupId(
+				journalArticle.getUuid(), importedGroup.getGroupId());
+
+		List<LayoutClassedModelUsage> layoutClassedModelUsages =
+			_layoutClassedModelUsageLocalService.getLayoutClassedModelUsages(
+				_portal.getClassNameId(JournalArticle.class),
+				importedJournalArticle.getResourcePrimKey());
+
+		Assert.assertEquals(
+			layoutClassedModelUsages.toString(), 1,
+			layoutClassedModelUsages.size());
+
+		LayoutClassedModelUsage layoutClassedModelUsage =
+			layoutClassedModelUsages.get(0);
+
+		Assert.assertEquals(
+			portletId, layoutClassedModelUsage.getContainerKey());
+		Assert.assertEquals(
+			importedLayout.getPlid(), layoutClassedModelUsage.getPlid());
 	}
 
 	@Ignore
@@ -1980,7 +2041,14 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	private final List<Group> _groups = new ArrayList<>();
 
 	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
+
+	@Inject
 	private JournalFolderLocalService _journalFolderLocalService;
+
+	@Inject
+	private LayoutClassedModelUsageLocalService
+		_layoutClassedModelUsageLocalService;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;

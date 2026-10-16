@@ -15,10 +15,17 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
+import com.liferay.layout.model.LayoutClassedModelUsage;
+import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -26,7 +33,9 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -34,6 +43,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import jakarta.portlet.PortletPreferences;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -120,6 +130,120 @@ public class JournalContentExportImportTest
 	}
 
 	@Test
+	@TestInfo("LPD-105197")
+	public void testExportImportLayoutsLayoutClassedModelUsage()
+		throws Exception {
+
+		JournalArticle article = JournalTestUtil.addArticle(
+			group.getGroupId(), 0);
+
+		String portletId = _addPortletToLayout(article);
+
+		exportImportLayouts(
+			new long[] {layout.getLayoutId()}, getImportParameterMap());
+
+		_assertLayoutClassedModelUsage(
+			article, _getImportedPlid(layout), portletId);
+	}
+
+	@Test
+	@TestInfo("LPD-105197")
+	public void testExportImportLayoutsLayoutClassedModelUsageWithContentLayout()
+		throws Exception {
+
+		Layout contentLayout = LayoutTestUtil.addTypeContentLayout(group);
+
+		Layout draftLayout = contentLayout.fetchDraftLayout();
+
+		JSONObject processAddPortletJSONObject =
+			ContentLayoutTestUtil.addPortletToLayout(
+				draftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		JSONObject fragmentEntryLinkJSONObject =
+			processAddPortletJSONObject.getJSONObject("fragmentEntryLink");
+
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLinkJSONObject.getJSONObject("editableValues");
+
+		String portletId = PortletIdCodec.encode(
+			editableValuesJSONObject.getString("portletId"),
+			editableValuesJSONObject.getString("instanceId"));
+
+		JournalArticle article = JournalTestUtil.addArticle(
+			group.getGroupId(), 0);
+
+		LayoutTestUtil.updateLayoutPortletPreferences(
+			draftLayout, portletId,
+			HashMapBuilder.put(
+				"articleExternalReferenceCode",
+				article.getExternalReferenceCode()
+			).build());
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, contentLayout);
+
+		exportImportLayouts(
+			new long[] {contentLayout.getLayoutId()}, getImportParameterMap());
+
+		_assertLayoutClassedModelUsage(
+			article, _getImportedPlid(contentLayout), portletId);
+	}
+
+	@Test
+	@TestInfo("LPD-105197")
+	public void testExportImportLayoutsLayoutClassedModelUsageWithUpdatedPortletPreferences()
+		throws Exception {
+
+		JournalArticle article1 = JournalTestUtil.addArticle(
+			group.getGroupId(), 0);
+
+		String portletId = _addPortletToLayout(article1);
+
+		exportImportLayouts(
+			new long[] {layout.getLayoutId()}, getImportParameterMap());
+
+		JournalArticle article2 = JournalTestUtil.addArticle(
+			group.getGroupId(), 0);
+
+		LayoutTestUtil.updateLayoutPortletPreferences(
+			layout, portletId,
+			HashMapBuilder.put(
+				"articleExternalReferenceCode",
+				article2.getExternalReferenceCode()
+			).build());
+
+		exportImportLayouts(
+			new long[] {layout.getLayoutId()}, getImportParameterMap());
+
+		JournalArticle importedArticle = _fetchImportedArticle(article1);
+
+		Assert.assertEquals(
+			0,
+			_layoutClassedModelUsageLocalService.
+				getLayoutClassedModelUsagesCount(
+					_portal.getClassNameId(JournalArticle.class),
+					importedArticle.getResourcePrimKey()));
+
+		_assertLayoutClassedModelUsage(
+			article2, _getImportedPlid(layout), portletId);
+	}
+
+	@Test
+	@TestInfo("LPD-105197")
+	public void testExportImportPortletLayoutClassedModelUsage()
+		throws Exception {
+
+		JournalArticle article = JournalTestUtil.addArticle(
+			group.getGroupId(), 0);
+
+		String portletId = _addPortletToLayout(article);
+
+		exportImportPortlet(portletId);
+
+		_assertLayoutClassedModelUsage(
+			article, importedLayout.getPlid(), portletId);
+	}
+
+	@Test
 	@TestInfo("LPD-103207")
 	public void testExportImportSelectedArticleWithLayoutStaging()
 		throws Exception {
@@ -136,11 +260,7 @@ public class JournalContentExportImportTest
 			ExportImportThreadLocal.setLayoutStagingInProcess(false);
 		}
 
-		Assert.assertNull(
-			_journalArticleLocalService.
-				fetchLatestArticleByExternalReferenceCode(
-					importedGroup.getGroupId(),
-					article.getExternalReferenceCode()));
+		Assert.assertNull(_fetchImportedArticle(article));
 	}
 
 	@Test
@@ -153,11 +273,7 @@ public class JournalContentExportImportTest
 
 		_exportImportSelectedArticle(article, true);
 
-		JournalArticle importedArticle =
-			_journalArticleLocalService.
-				fetchLatestArticleByExternalReferenceCode(
-					importedGroup.getGroupId(),
-					article.getExternalReferenceCode());
+		JournalArticle importedArticle = _fetchImportedArticle(article);
 
 		Assert.assertEquals(
 			article.getTitle(LocaleUtil.getSiteDefault()),
@@ -175,11 +291,7 @@ public class JournalContentExportImportTest
 
 		_exportImportSelectedArticle(article, false);
 
-		Assert.assertNotNull(
-			_journalArticleLocalService.
-				fetchLatestArticleByExternalReferenceCode(
-					importedGroup.getGroupId(),
-					article.getExternalReferenceCode()));
+		Assert.assertNotNull(_fetchImportedArticle(article));
 	}
 
 	@Test
@@ -342,18 +454,57 @@ public class JournalContentExportImportTest
 			portletPreferences.getValue("groupExternalReferenceCode", null));
 	}
 
+	private String _addPortletToLayout(JournalArticle article)
+		throws Exception {
+
+		return LayoutTestUtil.addPortletToLayout(
+			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+			HashMapBuilder.put(
+				"articleExternalReferenceCode",
+				new String[] {article.getExternalReferenceCode()}
+			).build());
+	}
+
+	private void _assertLayoutClassedModelUsage(
+		JournalArticle article, long plid, String portletId) {
+
+		JournalArticle importedArticle = _fetchImportedArticle(article);
+
+		List<LayoutClassedModelUsage> layoutClassedModelUsages =
+			ListUtil.filter(
+				_layoutClassedModelUsageLocalService.
+					getLayoutClassedModelUsages(
+						_portal.getClassNameId(JournalArticle.class),
+						importedArticle.getResourcePrimKey()),
+				layoutClassedModelUsage ->
+					layoutClassedModelUsage.getPlid() == plid);
+
+		Assert.assertEquals(
+			layoutClassedModelUsages.toString(), 1,
+			layoutClassedModelUsages.size());
+
+		LayoutClassedModelUsage layoutClassedModelUsage =
+			layoutClassedModelUsages.get(0);
+
+		Assert.assertEquals(
+			portletId, layoutClassedModelUsage.getContainerKey());
+		Assert.assertEquals(
+			_portal.getClassNameId(Portlet.class),
+			layoutClassedModelUsage.getContainerType());
+	}
+
 	private void _exportImportSelectedArticle(
 			JournalArticle article, boolean portletStagingInProcess)
 		throws Exception {
 
 		exportImportPortlet(
-			LayoutTestUtil.addPortletToLayout(
-				TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
-				HashMapBuilder.put(
-					"articleExternalReferenceCode",
-					new String[] {article.getExternalReferenceCode()}
-				).build()),
-			portletStagingInProcess);
+			_addPortletToLayout(article), portletStagingInProcess);
+	}
+
+	private JournalArticle _fetchImportedArticle(JournalArticle article) {
+		return _journalArticleLocalService.
+			fetchLatestArticleByExternalReferenceCode(
+				importedGroup.getGroupId(), article.getExternalReferenceCode());
 	}
 
 	private Object _getExportedGroupExternalReferenceCode(
@@ -374,11 +525,28 @@ public class JournalContentExportImportTest
 		return portletConfiguration.get("groupExternalReferenceCode");
 	}
 
+	private long _getImportedPlid(Layout exportedLayout) throws Exception {
+		Layout importedLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+			exportedLayout.getUuid(), importedGroup.getGroupId(), false);
+
+		return importedLayout.getPlid();
+	}
+
 	@Inject
 	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
+
+	@Inject
+	private LayoutClassedModelUsageLocalService
+		_layoutClassedModelUsageLocalService;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private Portal _portal;
 
 	@Inject
 	private PortletPreferencesPortletConfigurationExporter
