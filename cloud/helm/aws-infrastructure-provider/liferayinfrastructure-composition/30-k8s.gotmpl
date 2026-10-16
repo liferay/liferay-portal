@@ -121,7 +121,6 @@ apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-search-password-secret
         gotemplating.fn.crossplane.io/composition-resource-name: search-password-secret
     labels:
         app: liferay
@@ -154,7 +153,6 @@ apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-database-server-details-configmap
         gotemplating.fn.crossplane.io/composition-resource-name: database-server-details-configmap
     labels:
         app: liferay
@@ -193,7 +191,6 @@ apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-search-connection-details-secret
         gotemplating.fn.crossplane.io/composition-resource-name: search-connection-details-secret
     labels:
         app: liferay
@@ -235,7 +232,6 @@ apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-document-library-connection-details-secret
         gotemplating.fn.crossplane.io/composition-resource-name: document-library-connection-details-secret
     labels:
         app: liferay
@@ -276,7 +272,6 @@ apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-overlay-bucket-details-secret
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-bucket-details-secret
     labels:
         app: liferay

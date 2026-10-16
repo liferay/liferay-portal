@@ -9,7 +9,6 @@ apiVersion: opensearch.aws.m.upbound.io/v1beta1
 kind: Domain
 metadata:
     annotations:
-        crossplane.io/external-name: arn:{{ $env.partition }}:es:{{ $env.region }}:{{ $env.accountId }}:domain/{{ $searchName }}
         gotemplating.fn.crossplane.io/composition-resource-name: search
     labels:
         app: liferay

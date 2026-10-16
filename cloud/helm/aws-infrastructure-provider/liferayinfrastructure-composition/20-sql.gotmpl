@@ -17,7 +17,6 @@ apiVersion: rds.aws.m.upbound.io/v1beta1
 kind: Instance
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-database-{{ $dataPlane }}
         gotemplating.fn.crossplane.io/composition-resource-name: database-{{ $dataPlane }}
     labels:
         app: liferay
@@ -135,7 +134,6 @@ apiVersion: rds.aws.m.upbound.io/v1beta1
 kind: SubnetGroup
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-database-subnet-group-{{ $dataPlane }}
         gotemplating.fn.crossplane.io/composition-resource-name: database-subnet-group-{{ $dataPlane }}
     labels:
         app: liferay

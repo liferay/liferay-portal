@@ -4,7 +4,6 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: Policy
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-liferay-policy
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-policy
     labels:
         app: liferay
@@ -47,7 +46,6 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: Role
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-liferay-role
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-role
     labels:
         app: liferay
@@ -114,7 +112,6 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: Policy
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $storageName }}-policy-{{ $dataPlane }}
         gotemplating.fn.crossplane.io/composition-resource-name: storage-policy-{{ $dataPlane }}
     labels:
         app: liferay
@@ -152,7 +149,6 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $storageName }}-policy-attachment-{{ $dataPlane }}
         gotemplating.fn.crossplane.io/composition-resource-name: storage-policy-attachment-{{ $dataPlane }}
     labels:
         app: liferay
@@ -185,7 +181,6 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: Policy
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-backup-restore-policy
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-policy
     labels:
         app: liferay
@@ -237,7 +232,6 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: Role
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-backup-restore-role
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-role
     labels:
         app: liferay
@@ -274,7 +268,6 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: Role
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-backup-service-role
         gotemplating.fn.crossplane.io/composition-resource-name: backup-service-role
     labels:
         app: liferay

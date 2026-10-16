@@ -83,7 +83,6 @@ apiVersion: backup.aws.m.upbound.io/v1beta1
 kind: Vault
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $baseName }}-backup-vault
         gotemplating.fn.crossplane.io/composition-resource-name: backup-vault
     labels:
         app: liferay

@@ -8,7 +8,6 @@ apiVersion: s3.aws.m.upbound.io/v1beta1
 kind: Bucket
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $overlayBucketName }}
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-bucket
     labels:
         app: liferay
@@ -28,7 +27,6 @@ apiVersion: s3.aws.m.upbound.io/v1beta1
 kind: BucketLifecycleConfiguration
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $overlayBucketName }}
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-bucket-lifecycle
     labels:
         projectId: {{ $projectId }}
@@ -56,7 +54,6 @@ apiVersion: s3.aws.m.upbound.io/v1beta1
 kind: BucketPublicAccessBlock
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $overlayBucketName }}-bucket-public-access-block
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-bucket-public-access-block
     labels:
         projectId: {{ $projectId }}
@@ -79,7 +76,6 @@ apiVersion: s3.aws.m.upbound.io/v1beta1
 kind: BucketVersioning
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $overlayBucketName }}-bucket-versioning
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-bucket-versioning
     labels:
         app: liferay
@@ -104,14 +100,13 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: Policy
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $overlayBucketName }}-upload-only-policy
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-upload-only-policy
     labels:
         app: liferay
         component: overlay-upload-only-policy
         liferay.com/username: {{ $overlayBucketName }}-ci-uploader
         projectId: {{ $projectId }}
-    name: {{ $overlayBucketName }}-upload-only
+    name: {{ $overlayBucketName }}-upload-only-policy
     namespace: {{ $namespace }}
 spec:
     forProvider:
@@ -160,11 +155,10 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: User
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $overlayBucketName }}-ci-uploader-user
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-ci-uploader-user
     labels:
         liferay.com/username: {{ $overlayBucketName }}-ci-uploader
-    name: {{ $overlayBucketName }}-ci-uploader
+    name: {{ $overlayBucketName }}-ci-uploader-user
     namespace: {{ $namespace }}
 spec:
     forProvider:
@@ -177,7 +171,6 @@ apiVersion: iam.aws.m.upbound.io/v1beta1
 kind: UserPolicyAttachment
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $overlayBucketName }}-ci-uploader-user-policy-attachment
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-ci-uploader-user-policy-attachment
     name: {{ $overlayBucketName }}-ci-uploader
     namespace: {{ $namespace }}

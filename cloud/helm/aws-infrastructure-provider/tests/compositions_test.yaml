@@ -155,7 +155,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$isDatabaseReady \\}\\}\\s+---\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1\\s+kind: Object\\s+metadata:\\s+annotations:\\s+crossplane\\.io/external-name: \\{\\{ \\$baseName \\}\\}-database-server-details-configmap[\\s\\S]+?DATABASE_ENDPOINT: \\{\\{ \\$activeDatabaseAddress \\| quote \\}\\}\\s+kind: ConfigMap"
+                    pattern: "\\{\\{- if \\$isDatabaseReady \\}\\}\\s+---\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1\\s+kind: Object\\s+metadata:\\s+annotations:\\s+gotemplating\\.fn\\.crossplane\\.io/composition-resource-name: database-server-details-configmap[\\s\\S]+?DATABASE_ENDPOINT: \\{\\{ \\$activeDatabaseAddress \\| quote \\}\\}\\s+kind: ConfigMap"
         it: Publishes the active data plane's database address only once the data plane is bootstrapped
     -   asserts:
             -   documentIndex: 0
