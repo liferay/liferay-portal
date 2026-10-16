@@ -83,6 +83,7 @@ public class SourceFormatBuildTest
 	@Test
 	public void testGetWorkspace() throws Exception {
 		String gitHubURL = RandomTestUtil.randomString();
+		String ownerUsername = RandomTestUtil.randomString();
 
 		PullRequest pullRequest = Mockito.mock(PullRequest.class);
 
@@ -97,6 +98,12 @@ public class SourceFormatBuildTest
 		).when(
 			pullRequest
 		).getHtmlURL();
+
+		Mockito.doReturn(
+			ownerUsername
+		).when(
+			pullRequest
+		).getOwnerUsername();
 
 		Mockito.doReturn(
 			RandomTestUtil.randomString()
@@ -153,8 +160,8 @@ public class SourceFormatBuildTest
 
 		inOrder.verify(
 			workspaceGitRepository
-		).setUsePullRequestBaseRepository(
-			true
+		).setBaseBranchUsername(
+			ownerUsername
 		);
 
 		inOrder.verify(

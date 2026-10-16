@@ -26,30 +26,6 @@ import org.mockito.Mockito;
 public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testGetBaseRemoteGitBranch() {
-		String ownerUsername = RandomTestUtil.randomString();
-		String repositoryName = RandomTestUtil.randomString();
-
-		PullRequest pullRequest = _newPullRequest(
-			RandomTestUtil.randomInt(), ownerUsername, repositoryName);
-
-		try (MockedStatic<GitUtil> gitUtilMockedStatic = Mockito.mockStatic(
-				GitUtil.class)) {
-
-			pullRequest.getBaseRemoteGitBranch();
-
-			gitUtilMockedStatic.verify(
-				() -> GitUtil.getRemoteGitBranch(
-					ArgumentMatchers.eq("master"),
-					ArgumentMatchers.any(File.class),
-					ArgumentMatchers.eq(
-						JenkinsResultsParserUtil.combine(
-							"git@github.com:", ownerUsername, "/",
-							repositoryName, ".git"))));
-		}
-	}
-
-	@Test
 	public void testGetCIMergeSHA() throws Exception {
 		PullRequest pullRequest = _newPullRequest();
 
