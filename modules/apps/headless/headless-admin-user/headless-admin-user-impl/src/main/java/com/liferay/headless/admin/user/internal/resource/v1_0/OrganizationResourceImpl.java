@@ -55,6 +55,7 @@ import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.Website;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
@@ -836,7 +837,8 @@ public class OrganizationResourceImpl
 
 		Role role = _roleService.getOrAddEmptyRole(
 			externalReferenceCode, Role.class.getName(), 0, roleBrief.getName(),
-			roleBrief.getRoleType());
+			GetterUtil.getInteger(
+				roleBrief.getRoleType(), RoleConstants.TYPE_REGULAR));
 
 		_groupService.addRoleGroups(
 			role.getRoleId(), new long[] {organization.getGroupId()});
