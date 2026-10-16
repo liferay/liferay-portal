@@ -8,6 +8,8 @@ package com.liferay.jenkins.results.parser;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 /**
  * @author Michael Hashimoto
  */
@@ -95,6 +97,38 @@ public class ArchiveBinariesCachePortalControllerBuildRunner
 		buildData.setBuildDescription(sb.toString());
 
 		updateBuildDescription();
+	}
+
+	@Override
+	protected boolean previousBuildHasCurrentSHA() {
+		long allowedBuildStartTime = getAllowedBuildStartTime();
+		String portalBranchSHA = getPortalBranchAbbreviatedSHA();
+
+		for (JSONObject previousBuildJSONObject :
+				getPreviousBuildJSONObjects()) {
+
+			long previousBuildStartTime = previousBuildJSONObject.getLong(
+				"timestamp");
+
+			if (previousBuildStartTime <= allowedBuildStartTime) {
+				continue;
+			}
+
+			String description = previousBuildJSONObject.optString(
+				"description", "");
+
+			if (description.contains("EXPIRE") ||
+				description.contains("SKIPPED")) {
+
+				continue;
+			}
+
+			if (description.contains(portalBranchSHA)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private String _getInvocationJobURL() {
