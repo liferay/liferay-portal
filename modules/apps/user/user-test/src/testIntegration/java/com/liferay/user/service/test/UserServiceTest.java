@@ -449,8 +449,9 @@ public class UserServiceTest {
 
 		User user = _userLocalService.getUser(userId);
 
-		Calendar calendar = CalendarFactoryUtil.getCalendar();
 		Contact contact = user.getContact();
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
 
 		calendar.setTime(contact.getBirthday());
 
