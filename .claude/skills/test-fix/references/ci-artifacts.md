@@ -14,7 +14,7 @@ When the check fails, ask the user to run `gcloud auth application-default login
 
 ## Find the Shard Prefix
 
-Read the case result's `attachments` field, with `${ACCESS_TOKEN}` obtained as in [`../../test-fix/references/testray.md`](../../test-fix/references/testray.md). It is a JSON string holding a list of entries with `name`, `value`, and `url`, for example **Jenkins Console**, **Liferay Log**, **Poshi Report**, and **Docker Log (<instance>)**:
+Read the case result's `attachments` field, with `${ACCESS_TOKEN}` obtained as in [`testray.md`](testray.md). It is a JSON string holding a list of entries with `name`, `value`, and `url`, for example **Jenkins Console**, **Liferay Log**, **Poshi Report**, and **Docker Log (<instance>)**:
 
 ```bash
 curl \
