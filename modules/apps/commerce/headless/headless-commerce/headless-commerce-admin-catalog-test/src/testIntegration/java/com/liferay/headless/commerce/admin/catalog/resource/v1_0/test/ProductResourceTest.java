@@ -85,6 +85,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -449,6 +451,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductWithCreator();
 		_testPostProductWithDiagramImageExternalReferenceCode();
 		_testPostProductWithGroupedProducts();
+		_testPostProductWithImagesWhenProductStatusIsDraft();
 		_testPostProductWithLazyReferencedEntryProduct();
 		_testPostProductWithLazyReferencingDisabled();
 		_testPostProductWithLazyReferencingEnabled();
@@ -1679,6 +1682,57 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 		}
+	}
+
+	private void _testPostProductWithImagesWhenProductStatusIsDraft()
+		throws Exception {
+
+		String attachmentExternalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		Product randomProduct = randomProduct();
+
+		randomProduct.setImages(
+			new Attachment[] {
+				new Attachment() {
+					{
+						attachment = Base64.encode(
+							FileUtil.getBytes(
+								ProductResourceTest.class,
+								"dependencies/image.jpg"));
+						externalReferenceCode = attachmentExternalReferenceCode;
+						neverExpire = true;
+						title = LanguageUtils.getLanguageIdMap(
+							RandomTestUtil.randomLocaleStringMap());
+					}
+				}
+			});
+		randomProduct.setProductStatus(WorkflowConstants.STATUS_DRAFT);
+
+		Product postProduct = productResource.postProduct(randomProduct);
+
+		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+			postProduct.getId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, cpDefinition.getStatus());
+
+		CPAttachmentFileEntry cpAttachmentFileEntry =
+			_cpAttachmentFileEntryLocalService.
+				getCPAttachmentFileEntryByExternalReferenceCode(
+					attachmentExternalReferenceCode,
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED,
+			cpAttachmentFileEntry.getStatus());
+
+		FileEntry fileEntry = cpAttachmentFileEntry.fetchFileEntry();
+
+		FileVersion fileVersion = fileEntry.getFileVersion();
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, fileVersion.getStatus());
 	}
 
 	private void _testPostProductWithLazyReferencedEntryProduct()
