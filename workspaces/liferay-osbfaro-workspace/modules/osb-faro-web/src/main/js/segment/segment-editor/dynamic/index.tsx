@@ -291,18 +291,18 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 		enabledSequentialSegment: false,
 	};
 
+	declare context: React.ContextType<typeof ReferencedObjectsContext>;
+
+	_defaultExternalReferenceCode = uuidv4();
+
+	_formRef = React.createRef<any>();
+
 	constructor(props: ISegmentEditorProps) {
 		super(props);
 		this.createSegment = this.createSegment.bind(this);
 		this.hasChanges = this.hasChanges.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-
-	declare context: React.ContextType<typeof ReferencedObjectsContext>;
-
-	_defaultExternalReferenceCode = uuidv4();
-
-	_formRef = React.createRef<any>();
 
 	createSegment({
 		criteria,
