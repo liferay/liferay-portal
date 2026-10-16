@@ -689,4 +689,4 @@ public class CPDefinitionLocalizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1303552237
+// LIFERAY-SERVICE-BUILDER-HASH:-436659029

@@ -2024,7 +2024,12 @@ public class JournalFolderPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -2033,17 +2038,13 @@ public class JournalFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_JOURNALFOLDER_WHERE, _SQL_SELECT_JOURNALFOLDER_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_JOURNALFOLDER_WHERE, _SQL_COUNT_JOURNALFOLDER_WHERE,
-				JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"journalFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFolder::getGroupId));
@@ -2076,7 +2077,12 @@ public class JournalFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "parentFolderId"}, false),
+				"", JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P",
 					new String[] {
@@ -2085,17 +2091,13 @@ public class JournalFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId"}, true),
+				_SQL_COUNT_JOURNALFOLDER_WHERE, _SQL_SELECT_JOURNALFOLDER_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "parentFolderId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "parentFolderId"}, false),
-				_SQL_SELECT_JOURNALFOLDER_WHERE, _SQL_COUNT_JOURNALFOLDER_WHERE,
-				JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"journalFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFolder::getGroupId),
@@ -2171,7 +2173,16 @@ public class JournalFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "parentFolderId", "status"},
+					false),
+				"", JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_S",
 					new String[] {
@@ -2181,6 +2192,8 @@ public class JournalFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId", "status"}, true),
+				_SQL_COUNT_JOURNALFOLDER_WHERE, _SQL_SELECT_JOURNALFOLDER_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_S",
 					new String[] {
@@ -2188,17 +2201,7 @@ public class JournalFolderPersistenceImpl
 						Integer.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "parentFolderId", "status"},
-					false),
-				_SQL_SELECT_JOURNALFOLDER_WHERE, _SQL_COUNT_JOURNALFOLDER_WHERE,
-				JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalFolder::getFolderId,
+				"",
 				new FinderColumn<>(
 					"journalFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFolder::getGroupId),
@@ -2211,7 +2214,16 @@ public class JournalFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalFolder::getFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "parentFolderId", "status"},
+					false),
+				"", JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_NotS",
 					new String[] {
@@ -2221,18 +2233,8 @@ public class JournalFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "parentFolderId", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "parentFolderId", "status"},
-					false),
-				_SQL_SELECT_JOURNALFOLDER_WHERE, _SQL_COUNT_JOURNALFOLDER_WHERE,
-				JournalFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalFolder::getFolderId,
+				_SQL_COUNT_JOURNALFOLDER_WHERE, _SQL_SELECT_JOURNALFOLDER_WHERE,
+				null, null, "",
 				new FinderColumn<>(
 					"journalFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFolder::getGroupId),
@@ -2370,4 +2372,4 @@ public class JournalFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:48367236
+// LIFERAY-SERVICE-BUILDER-HASH:1218767143

@@ -892,7 +892,12 @@ public class CPTaxCategoryPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPTaxCategory::getCPTaxCategoryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -901,24 +906,25 @@ public class CPTaxCategoryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_CPTAXCATEGORY_WHERE, _SQL_SELECT_CPTAXCATEGORY_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_CPTAXCATEGORY_WHERE, _SQL_COUNT_CPTAXCATEGORY_WHERE,
-				CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CPTaxCategory::getCPTaxCategoryId,
+				"",
 				new FinderColumn<>(
 					"cpTaxCategory.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, CPTaxCategory::getUuid));
 
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPTaxCategory::getCPTaxCategoryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -927,17 +933,13 @@ public class CPTaxCategoryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_CPTAXCATEGORY_WHERE, _SQL_SELECT_CPTAXCATEGORY_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_CPTAXCATEGORY_WHERE, _SQL_COUNT_CPTAXCATEGORY_WHERE,
-				CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CPTaxCategory::getCPTaxCategoryId,
+				"",
 				new FinderColumn<>(
 					"cpTaxCategory.", "uuid", "uuid_", FinderColumn.Type.STRING,
 					"=", true, true, CPTaxCategory::getUuid),
@@ -947,7 +949,12 @@ public class CPTaxCategoryPersistenceImpl
 
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPTaxCategory::getCPTaxCategoryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -956,17 +963,13 @@ public class CPTaxCategoryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_CPTAXCATEGORY_WHERE, _SQL_SELECT_CPTAXCATEGORY_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_CPTAXCATEGORY_WHERE, _SQL_COUNT_CPTAXCATEGORY_WHERE,
-				CPTaxCategoryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CPTaxCategory::getCPTaxCategoryId,
+				"",
 				new FinderColumn<>(
 					"cpTaxCategory.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, CPTaxCategory::getCompanyId));
@@ -1055,4 +1058,4 @@ public class CPTaxCategoryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-508681468
+// LIFERAY-SERVICE-BUILDER-HASH:1050841487

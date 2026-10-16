@@ -1497,7 +1497,12 @@ public class DDMStructurePersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMStructure::getStructureId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1506,17 +1511,13 @@ public class DDMStructurePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_DDMSTRUCTURE_WHERE, _SQL_SELECT_DDMSTRUCTURE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
-				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDMStructure::getStructureId,
+				"",
 				new ArrayableFinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMStructure::getGroupId));
@@ -1553,7 +1554,12 @@ public class DDMStructurePersistenceImpl
 
 		_collectionPersistenceFinderByG_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMStructure::getStructureId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "classNameId"}, false),
+				"", DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C",
 					new String[] {
@@ -1562,17 +1568,13 @@ public class DDMStructurePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "classNameId"}, true),
+				_SQL_COUNT_DDMSTRUCTURE_WHERE, _SQL_SELECT_DDMSTRUCTURE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "classNameId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "classNameId"}, false),
-				_SQL_SELECT_DDMSTRUCTURE_WHERE, _SQL_COUNT_DDMSTRUCTURE_WHERE,
-				DDMStructureModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDMStructure::getStructureId,
+				"",
 				new ArrayableFinderColumn<>(
 					"ddmStructure.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMStructure::getGroupId),
@@ -1722,4 +1724,4 @@ public class DDMStructurePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1419266619
+// LIFERAY-SERVICE-BUILDER-HASH:1939854454

@@ -1669,7 +1669,12 @@ public class CPDefinitionPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPDefinition::getCPDefinitionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1678,17 +1683,13 @@ public class CPDefinitionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_CPDEFINITION_WHERE, _SQL_SELECT_CPDEFINITION_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_CPDEFINITION_WHERE, _SQL_COUNT_CPDEFINITION_WHERE,
-				CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CPDefinition::getCPDefinitionId,
+				"",
 				new FinderColumn<>(
 					"cpDefinition.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CPDefinition::getGroupId));
@@ -1776,7 +1777,14 @@ public class CPDefinitionPersistenceImpl
 
 		_collectionPersistenceFinderByG_SE =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPDefinition::getCPDefinitionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_SE",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"groupId", "subscriptionEnabled"}, false),
+				"", CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_SE",
 					new String[] {
@@ -1785,21 +1793,15 @@ public class CPDefinitionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "subscriptionEnabled"}, true),
+				_SQL_COUNT_CPDEFINITION_WHERE, _SQL_SELECT_CPDEFINITION_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_SE",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"groupId", "subscriptionEnabled"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_SE",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "subscriptionEnabled"}, false),
-				_SQL_SELECT_CPDEFINITION_WHERE, _SQL_COUNT_CPDEFINITION_WHERE,
-				CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CPDefinition::getCPDefinitionId,
+				"",
 				new FinderColumn<>(
 					"cpDefinition.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CPDefinition::getGroupId),
@@ -1810,7 +1812,14 @@ public class CPDefinitionPersistenceImpl
 
 		_collectionPersistenceFinderByG_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPDefinition::getCPDefinitionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_S",
+					new String[] {
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "status"}, false),
+				"", CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_S",
 					new String[] {
@@ -1819,21 +1828,15 @@ public class CPDefinitionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "status"}, true),
+				_SQL_COUNT_CPDEFINITION_WHERE, _SQL_SELECT_CPDEFINITION_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_S",
 					new String[] {
 						Long.class.getName(), Integer.class.getName()
 					},
 					new String[] {"groupId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_S",
-					new String[] {
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "status"}, false),
-				_SQL_SELECT_CPDEFINITION_WHERE, _SQL_COUNT_CPDEFINITION_WHERE,
-				CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CPDefinition::getCPDefinitionId,
+				"",
 				new FinderColumn<>(
 					"cpDefinition.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CPDefinition::getGroupId),
@@ -1979,4 +1982,4 @@ public class CPDefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1820262269
+// LIFERAY-SERVICE-BUILDER-HASH:-322751061

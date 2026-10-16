@@ -1505,4 +1505,4 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-545656606
+// LIFERAY-SERVICE-BUILDER-HASH:-1184455727

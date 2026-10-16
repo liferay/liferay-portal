@@ -2185,7 +2185,12 @@ public class CommerceOrderPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommerceOrder::getCommerceOrderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -2194,17 +2199,13 @@ public class CommerceOrderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_COMMERCEORDER_WHERE, _SQL_SELECT_COMMERCEORDER_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
-				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CommerceOrder::getCommerceOrderId,
+				"",
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId));
@@ -2327,7 +2328,12 @@ public class CommerceOrderPersistenceImpl
 
 		_collectionPersistenceFinderByG_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommerceOrder::getCommerceOrderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "commerceAccountId"}, false),
+				"", CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C",
 					new String[] {
@@ -2336,17 +2342,13 @@ public class CommerceOrderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "commerceAccountId"}, true),
+				_SQL_COUNT_COMMERCEORDER_WHERE, _SQL_SELECT_COMMERCEORDER_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "commerceAccountId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "commerceAccountId"}, false),
-				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
-				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CommerceOrder::getCommerceOrderId,
+				"",
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId),
@@ -2357,7 +2359,13 @@ public class CommerceOrderPersistenceImpl
 
 		_collectionPersistenceFinderByG_CP =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommerceOrder::getCommerceOrderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_CP",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "commercePaymentMethodKey"}, 0, 2,
+					false, null),
+				"", CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_CP",
 					new String[] {
@@ -2366,19 +2374,14 @@ public class CommerceOrderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "commercePaymentMethodKey"}, true),
+				_SQL_COUNT_COMMERCEORDER_WHERE, _SQL_SELECT_COMMERCEORDER_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_CP",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "commercePaymentMethodKey"}, 0, 2,
 					true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_CP",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "commercePaymentMethodKey"}, 0, 2,
-					false, null),
-				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
-				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CommerceOrder::getCommerceOrderId,
+				"",
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId),
@@ -2389,7 +2392,15 @@ public class CommerceOrderPersistenceImpl
 
 		_collectionPersistenceFinderByG_U_O =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommerceOrder::getCommerceOrderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U_O",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "userId", "orderStatus"}, false),
+				"", CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U_O",
 					new String[] {
@@ -2399,6 +2410,8 @@ public class CommerceOrderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "userId", "orderStatus"}, true),
+				_SQL_COUNT_COMMERCEORDER_WHERE, _SQL_SELECT_COMMERCEORDER_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U_O",
 					new String[] {
@@ -2406,16 +2419,7 @@ public class CommerceOrderPersistenceImpl
 						Integer.class.getName()
 					},
 					new String[] {"groupId", "userId", "orderStatus"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U_O",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "userId", "orderStatus"}, false),
-				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
-				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CommerceOrder::getCommerceOrderId,
+				"",
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId),
@@ -2428,7 +2432,18 @@ public class CommerceOrderPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_O =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommerceOrder::getCommerceOrderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_O",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "commerceAccountId", "orderStatus"
+					},
+					false),
+				"", CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_O",
 					new String[] {
@@ -2441,6 +2456,8 @@ public class CommerceOrderPersistenceImpl
 						"groupId", "commerceAccountId", "orderStatus"
 					},
 					true),
+				_SQL_COUNT_COMMERCEORDER_WHERE, _SQL_SELECT_COMMERCEORDER_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_O",
 					new String[] {
@@ -2451,19 +2468,7 @@ public class CommerceOrderPersistenceImpl
 						"groupId", "commerceAccountId", "orderStatus"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_O",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "commerceAccountId", "orderStatus"
-					},
-					false),
-				_SQL_SELECT_COMMERCEORDER_WHERE, _SQL_COUNT_COMMERCEORDER_WHERE,
-				CommerceOrderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, CommerceOrder::getCommerceOrderId,
+				"",
 				new FinderColumn<>(
 					"commerceOrder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, CommerceOrder::getGroupId),
@@ -2653,4 +2658,4 @@ public class CommerceOrderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1843103863
+// LIFERAY-SERVICE-BUILDER-HASH:1453142650

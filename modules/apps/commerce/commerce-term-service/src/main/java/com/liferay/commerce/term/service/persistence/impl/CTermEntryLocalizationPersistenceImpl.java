@@ -570,4 +570,4 @@ public class CTermEntryLocalizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-87304108
+// LIFERAY-SERVICE-BUILDER-HASH:603638984

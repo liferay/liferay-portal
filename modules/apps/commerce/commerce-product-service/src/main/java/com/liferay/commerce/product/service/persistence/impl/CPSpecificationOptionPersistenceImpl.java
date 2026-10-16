@@ -1112,7 +1112,13 @@ public class CPSpecificationOptionPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPSpecificationOption::getCPSpecificationOptionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -1121,19 +1127,13 @@ public class CPSpecificationOptionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
+				_SQL_SELECT_CPSPECIFICATIONOPTION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_CPSPECIFICATIONOPTION_WHERE,
-				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
-				CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CPSpecificationOption::getCPSpecificationOptionId,
+				"",
 				new FinderColumn<>(
 					"cpSpecificationOption.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1141,7 +1141,13 @@ public class CPSpecificationOptionPersistenceImpl
 
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPSpecificationOption::getCPSpecificationOptionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -1150,19 +1156,13 @@ public class CPSpecificationOptionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
+				_SQL_SELECT_CPSPECIFICATIONOPTION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_CPSPECIFICATIONOPTION_WHERE,
-				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
-				CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CPSpecificationOption::getCPSpecificationOptionId,
+				"",
 				new FinderColumn<>(
 					"cpSpecificationOption.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1174,7 +1174,13 @@ public class CPSpecificationOptionPersistenceImpl
 
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPSpecificationOption::getCPSpecificationOptionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -1183,19 +1189,13 @@ public class CPSpecificationOptionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
+				_SQL_SELECT_CPSPECIFICATIONOPTION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_CPSPECIFICATIONOPTION_WHERE,
-				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
-				CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CPSpecificationOption::getCPSpecificationOptionId,
+				"",
 				new FinderColumn<>(
 					"cpSpecificationOption.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1203,7 +1203,14 @@ public class CPSpecificationOptionPersistenceImpl
 
 		_collectionPersistenceFinderByCPOptionCategoryId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPSpecificationOption::getCPSpecificationOptionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCPOptionCategoryId",
+					new String[] {Long.class.getName()},
+					new String[] {"CPOptionCategoryId"}, false),
+				"", CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByCPOptionCategoryId",
@@ -1213,21 +1220,14 @@ public class CPSpecificationOptionPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"CPOptionCategoryId"}, true),
+				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
+				_SQL_SELECT_CPSPECIFICATIONOPTION_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCPOptionCategoryId",
 					new String[] {Long.class.getName()},
 					new String[] {"CPOptionCategoryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCPOptionCategoryId",
-					new String[] {Long.class.getName()},
-					new String[] {"CPOptionCategoryId"}, false),
-				_SQL_SELECT_CPSPECIFICATIONOPTION_WHERE,
-				_SQL_COUNT_CPSPECIFICATIONOPTION_WHERE,
-				CPSpecificationOptionModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CPSpecificationOption::getCPSpecificationOptionId,
+				"",
 				new FinderColumn<>(
 					"cpSpecificationOption.", "CPOptionCategoryId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1335,4 +1335,4 @@ public class CPSpecificationOptionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2135082834
+// LIFERAY-SERVICE-BUILDER-HASH:-74548265

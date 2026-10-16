@@ -836,7 +836,12 @@ public class KBTemplatePersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBTemplate::getKbTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", KBTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -845,17 +850,12 @@ public class KBTemplatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_KBTEMPLATE_WHERE, _SQL_SELECT_KBTEMPLATE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_KBTEMPLATE_WHERE, _SQL_COUNT_KBTEMPLATE_WHERE,
-				KBTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBTemplate::getKbTemplateId,
+				"",
 				new FinderColumn<>(
 					"kbTemplate.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBTemplate::getGroupId));
@@ -926,4 +926,4 @@ public class KBTemplatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:783780626
+// LIFERAY-SERVICE-BUILDER-HASH:1915830439

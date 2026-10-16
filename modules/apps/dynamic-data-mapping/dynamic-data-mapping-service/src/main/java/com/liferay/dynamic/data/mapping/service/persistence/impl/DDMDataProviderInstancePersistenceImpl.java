@@ -1006,7 +1006,13 @@ public class DDMDataProviderInstancePersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMDataProviderInstance::getDataProviderInstanceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", DDMDataProviderInstanceModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1015,19 +1021,13 @@ public class DDMDataProviderInstancePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_DDMDATAPROVIDERINSTANCE_WHERE,
+				_SQL_SELECT_DDMDATAPROVIDERINSTANCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_DDMDATAPROVIDERINSTANCE_WHERE,
-				_SQL_COUNT_DDMDATAPROVIDERINSTANCE_WHERE,
-				DDMDataProviderInstanceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				DDMDataProviderInstance::getDataProviderInstanceId,
+				"",
 				new ArrayableFinderColumn<>(
 					"ddmDataProviderInstance.", "groupId",
 					FinderColumn.Type.LONG, "=", false, true, true,
@@ -1127,4 +1127,4 @@ public class DDMDataProviderInstancePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-709909286
+// LIFERAY-SERVICE-BUILDER-HASH:-1398310783

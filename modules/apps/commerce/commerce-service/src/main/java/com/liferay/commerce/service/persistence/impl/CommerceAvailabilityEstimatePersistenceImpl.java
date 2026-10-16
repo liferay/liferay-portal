@@ -852,6 +852,13 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
 				this,
+				CommerceAvailabilityEstimate::getCommerceAvailabilityEstimateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", CommerceAvailabilityEstimateModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -860,19 +867,13 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_COMMERCEAVAILABILITYESTIMATE_WHERE,
+				_SQL_SELECT_COMMERCEAVAILABILITYESTIMATE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_COMMERCEAVAILABILITYESTIMATE_WHERE,
-				_SQL_COUNT_COMMERCEAVAILABILITYESTIMATE_WHERE,
-				CommerceAvailabilityEstimateModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CommerceAvailabilityEstimate::getCommerceAvailabilityEstimateId,
+				"",
 				new FinderColumn<>(
 					"commerceAvailabilityEstimate.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -881,6 +882,13 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
 				this,
+				CommerceAvailabilityEstimate::getCommerceAvailabilityEstimateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", CommerceAvailabilityEstimateModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -889,19 +897,13 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_COMMERCEAVAILABILITYESTIMATE_WHERE,
+				_SQL_SELECT_COMMERCEAVAILABILITYESTIMATE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_COMMERCEAVAILABILITYESTIMATE_WHERE,
-				_SQL_COUNT_COMMERCEAVAILABILITYESTIMATE_WHERE,
-				CommerceAvailabilityEstimateModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CommerceAvailabilityEstimate::getCommerceAvailabilityEstimateId,
+				"",
 				new FinderColumn<>(
 					"commerceAvailabilityEstimate.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -914,6 +916,13 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
 				this,
+				CommerceAvailabilityEstimate::getCommerceAvailabilityEstimateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", CommerceAvailabilityEstimateModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -922,19 +931,13 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_COMMERCEAVAILABILITYESTIMATE_WHERE,
+				_SQL_SELECT_COMMERCEAVAILABILITYESTIMATE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_COMMERCEAVAILABILITYESTIMATE_WHERE,
-				_SQL_COUNT_COMMERCEAVAILABILITYESTIMATE_WHERE,
-				CommerceAvailabilityEstimateModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CommerceAvailabilityEstimate::getCommerceAvailabilityEstimateId,
+				"",
 				new FinderColumn<>(
 					"commerceAvailabilityEstimate.", "companyId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1024,4 +1027,4 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-175174217
+// LIFERAY-SERVICE-BUILDER-HASH:-1594100718

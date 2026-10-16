@@ -415,7 +415,14 @@ public class CommercePaymentEntryAuditPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByCommercePaymentEntryId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommercePaymentEntryAudit::getCommercePaymentEntryAuditId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCommercePaymentEntryId",
+					new String[] {Long.class.getName()},
+					new String[] {"commercePaymentEntryId"}, false),
+				"", CommercePaymentEntryAuditModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByCommercePaymentEntryId",
@@ -425,21 +432,14 @@ public class CommercePaymentEntryAuditPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"commercePaymentEntryId"}, true),
+				_SQL_COUNT_COMMERCEPAYMENTENTRYAUDIT_WHERE,
+				_SQL_SELECT_COMMERCEPAYMENTENTRYAUDIT_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCommercePaymentEntryId",
 					new String[] {Long.class.getName()},
 					new String[] {"commercePaymentEntryId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCommercePaymentEntryId",
-					new String[] {Long.class.getName()},
-					new String[] {"commercePaymentEntryId"}, false),
-				_SQL_SELECT_COMMERCEPAYMENTENTRYAUDIT_WHERE,
-				_SQL_COUNT_COMMERCEPAYMENTENTRYAUDIT_WHERE,
-				CommercePaymentEntryAuditModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CommercePaymentEntryAudit::getCommercePaymentEntryAuditId,
+				"",
 				new FinderColumn<>(
 					"commercePaymentEntryAudit.", "commercePaymentEntryId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -505,4 +505,4 @@ public class CommercePaymentEntryAuditPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:698808558
+// LIFERAY-SERVICE-BUILDER-HASH:-956849996

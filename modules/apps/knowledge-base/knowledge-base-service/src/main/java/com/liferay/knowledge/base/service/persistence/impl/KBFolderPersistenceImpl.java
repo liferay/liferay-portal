@@ -1343,7 +1343,12 @@ public class KBFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBFolder::getKbFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "parentKBFolderId"}, false),
+				"", KBFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P",
 					new String[] {
@@ -1352,17 +1357,12 @@ public class KBFolderPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "parentKBFolderId"}, true),
+				_SQL_COUNT_KBFOLDER_WHERE, _SQL_SELECT_KBFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "parentKBFolderId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "parentKBFolderId"}, false),
-				_SQL_SELECT_KBFOLDER_WHERE, _SQL_COUNT_KBFOLDER_WHERE,
-				KBFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBFolder::getKbFolderId,
+				"",
 				new FinderColumn<>(
 					"kbFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBFolder::getGroupId),
@@ -1416,7 +1416,16 @@ public class KBFolderPersistenceImpl
 
 		_collectionPersistenceFinderByG_P_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBFolder::getKbFolderId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "parentKBFolderId", "status"},
+					false),
+				"", KBFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_S",
 					new String[] {
@@ -1427,6 +1436,7 @@ public class KBFolderPersistenceImpl
 					},
 					new String[] {"groupId", "parentKBFolderId", "status"},
 					true),
+				_SQL_COUNT_KBFOLDER_WHERE, _SQL_SELECT_KBFOLDER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_S",
 					new String[] {
@@ -1435,17 +1445,7 @@ public class KBFolderPersistenceImpl
 					},
 					new String[] {"groupId", "parentKBFolderId", "status"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "parentKBFolderId", "status"},
-					false),
-				_SQL_SELECT_KBFOLDER_WHERE, _SQL_COUNT_KBFOLDER_WHERE,
-				KBFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBFolder::getKbFolderId,
+				"",
 				new FinderColumn<>(
 					"kbFolder.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBFolder::getGroupId),
@@ -1538,4 +1538,4 @@ public class KBFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-62904034
+// LIFERAY-SERVICE-BUILDER-HASH:1466569654

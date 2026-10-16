@@ -1088,7 +1088,12 @@ public class DDLRecordSetPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDLRecordSet::getRecordSetId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", DDLRecordSetModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1097,17 +1102,13 @@ public class DDLRecordSetPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_DDLRECORDSET_WHERE, _SQL_SELECT_DDLRECORDSET_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_DDLRECORDSET_WHERE, _SQL_COUNT_DDLRECORDSET_WHERE,
-				DDLRecordSetModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDLRecordSet::getRecordSetId,
+				"",
 				new ArrayableFinderColumn<>(
 					"ddlRecordSet.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDLRecordSet::getGroupId));
@@ -1222,4 +1223,4 @@ public class DDLRecordSetPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-980953051
+// LIFERAY-SERVICE-BUILDER-HASH:1633758336

@@ -3228,7 +3228,13 @@ public class CommercePriceListPersistenceImpl
 
 		_collectionPersistenceFinderByG_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommercePriceList::getCommercePriceListId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "companyId"}, false),
+				"", CommercePriceListModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C",
 					new String[] {
@@ -3237,18 +3243,13 @@ public class CommercePriceListPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "companyId"}, true),
+				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
+				_SQL_SELECT_COMMERCEPRICELIST_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "companyId"}, false),
-				_SQL_SELECT_COMMERCEPRICELIST_WHERE,
-				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
-				CommercePriceListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CommercePriceList::getCommercePriceListId,
+				"",
 				new ArrayableFinderColumn<>(
 					"commercePriceList.", "groupId", FinderColumn.Type.LONG,
 					"=", false, true, true, CommercePriceList::getGroupId),
@@ -3258,7 +3259,15 @@ public class CommercePriceListPersistenceImpl
 
 		_collectionPersistenceFinderByG_CBPL =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommercePriceList::getCommercePriceListId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_CBPL",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"groupId", "catalogBasePriceList"}, false),
+				"", CommercePriceListModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_CBPL",
 					new String[] {
@@ -3267,22 +3276,15 @@ public class CommercePriceListPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "catalogBasePriceList"}, true),
+				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
+				_SQL_SELECT_COMMERCEPRICELIST_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_CBPL",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"groupId", "catalogBasePriceList"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_CBPL",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "catalogBasePriceList"}, false),
-				_SQL_SELECT_COMMERCEPRICELIST_WHERE,
-				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
-				CommercePriceListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CommercePriceList::getCommercePriceListId,
+				"",
 				new FinderColumn<>(
 					"commercePriceList.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, CommercePriceList::getGroupId),
@@ -3351,7 +3353,16 @@ public class CommercePriceListPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommercePriceList::getCommercePriceListId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "companyId", "status"}, false),
+				"", CommercePriceListModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_S",
 					new String[] {
@@ -3361,6 +3372,8 @@ public class CommercePriceListPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "companyId", "status"}, true),
+				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
+				_SQL_SELECT_COMMERCEPRICELIST_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_S",
 					new String[] {
@@ -3368,17 +3381,7 @@ public class CommercePriceListPersistenceImpl
 						Integer.class.getName()
 					},
 					new String[] {"groupId", "companyId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "companyId", "status"}, false),
-				_SQL_SELECT_COMMERCEPRICELIST_WHERE,
-				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
-				CommercePriceListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CommercePriceList::getCommercePriceListId,
+				"",
 				new ArrayableFinderColumn<>(
 					"commercePriceList.", "groupId", FinderColumn.Type.LONG,
 					"=", false, true, true, CommercePriceList::getGroupId),
@@ -3391,7 +3394,16 @@ public class CommercePriceListPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommercePriceList::getCommercePriceListId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "companyId", "status"}, false),
+				"", CommercePriceListModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_NotS",
 					new String[] {
@@ -3401,18 +3413,8 @@ public class CommercePriceListPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "companyId", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "companyId", "status"}, false),
-				_SQL_SELECT_COMMERCEPRICELIST_WHERE,
 				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
-				CommercePriceListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CommercePriceList::getCommercePriceListId,
+				_SQL_SELECT_COMMERCEPRICELIST_WHERE, null, null, "",
 				new ArrayableFinderColumn<>(
 					"commercePriceList.", "groupId", FinderColumn.Type.LONG,
 					"=", false, true, true, CommercePriceList::getGroupId),
@@ -3425,7 +3427,18 @@ public class CommercePriceListPersistenceImpl
 
 		_collectionPersistenceFinderByG_CBPL_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommercePriceList::getCommercePriceListId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_CBPL_T",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "catalogBasePriceList", "type_"},
+					0, 4, false, null),
+				"", CommercePriceListModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_CBPL_T",
 					new String[] {
@@ -3436,6 +3449,8 @@ public class CommercePriceListPersistenceImpl
 					},
 					new String[] {"groupId", "catalogBasePriceList", "type_"},
 					true),
+				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
+				_SQL_SELECT_COMMERCEPRICELIST_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_CBPL_T",
 					new String[] {
@@ -3444,19 +3459,7 @@ public class CommercePriceListPersistenceImpl
 					},
 					new String[] {"groupId", "catalogBasePriceList", "type_"},
 					0, 4, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_CBPL_T",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						String.class.getName()
-					},
-					new String[] {"groupId", "catalogBasePriceList", "type_"},
-					0, 4, false, null),
-				_SQL_SELECT_COMMERCEPRICELIST_WHERE,
-				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
-				CommercePriceListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CommercePriceList::getCommercePriceListId,
+				"",
 				new FinderColumn<>(
 					"commercePriceList.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, CommercePriceList::getGroupId),
@@ -3471,7 +3474,17 @@ public class CommercePriceListPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_T_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommercePriceList::getCommercePriceListId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_T_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "companyId", "type_", "status"}, 0,
+					4, false, null),
+				"", CommercePriceListModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_T_S",
 					new String[] {
@@ -3482,6 +3495,8 @@ public class CommercePriceListPersistenceImpl
 					},
 					new String[] {"groupId", "companyId", "type_", "status"},
 					true),
+				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
+				_SQL_SELECT_COMMERCEPRICELIST_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_T_S",
 					new String[] {
@@ -3490,18 +3505,7 @@ public class CommercePriceListPersistenceImpl
 					},
 					new String[] {"groupId", "companyId", "type_", "status"}, 0,
 					4, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_T_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "companyId", "type_", "status"}, 0,
-					4, false, null),
-				_SQL_SELECT_COMMERCEPRICELIST_WHERE,
-				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
-				CommercePriceListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CommercePriceList::getCommercePriceListId,
+				"",
 				new ArrayableFinderColumn<>(
 					"commercePriceList.", "groupId", FinderColumn.Type.LONG,
 					"=", false, true, true, CommercePriceList::getGroupId),
@@ -3518,7 +3522,17 @@ public class CommercePriceListPersistenceImpl
 
 		_collectionPersistenceFinderByG_C_T_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CommercePriceList::getCommercePriceListId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_T_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "companyId", "type_", "status"},
+					false),
+				"", CommercePriceListModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_T_NotS",
 					new String[] {
@@ -3529,19 +3543,8 @@ public class CommercePriceListPersistenceImpl
 					},
 					new String[] {"groupId", "companyId", "type_", "status"},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_T_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "companyId", "type_", "status"},
-					false),
-				_SQL_SELECT_COMMERCEPRICELIST_WHERE,
 				_SQL_COUNT_COMMERCEPRICELIST_WHERE,
-				CommercePriceListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, CommercePriceList::getCommercePriceListId,
+				_SQL_SELECT_COMMERCEPRICELIST_WHERE, null, null, "",
 				new ArrayableFinderColumn<>(
 					"commercePriceList.", "groupId", FinderColumn.Type.LONG,
 					"=", false, true, true, CommercePriceList::getGroupId),
@@ -3641,4 +3644,4 @@ public class CommercePriceListPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1207293584
+// LIFERAY-SERVICE-BUILDER-HASH:1635767352

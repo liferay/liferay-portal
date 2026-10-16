@@ -6213,7 +6213,12 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -6222,18 +6227,13 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId));
@@ -6438,7 +6438,12 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_U =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "userId"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U",
 					new String[] {
@@ -6447,18 +6452,13 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "userId"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "userId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "userId"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6468,7 +6468,13 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_ERC =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ERC",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
+					false, null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ERC",
 					new String[] {
@@ -6477,20 +6483,14 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "externalReferenceCode"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_ERC",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
 					true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ERC",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
-					false, null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6501,7 +6501,12 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_F =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_F",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "folderId"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_F",
 					new String[] {
@@ -6510,18 +6515,13 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "folderId"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_F",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "folderId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_F",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "folderId"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6531,7 +6531,12 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_A",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "articleId"}, 0, 2, false, null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_A",
 					new String[] {
@@ -6540,18 +6545,13 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "articleId"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_A",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "articleId"}, 0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_A",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "articleId"}, 0, 2, false, null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6561,7 +6561,12 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_UT =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_UT",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "urlTitle"}, 0, 2, false, null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_UT",
 					new String[] {
@@ -6570,18 +6575,13 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "urlTitle"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_UT",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "urlTitle"}, 0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_UT",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "urlTitle"}, 0, 2, false, null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6591,7 +6591,12 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_DDMSI =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DDMSI",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "DDMStructureId"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_DDMSI",
 					new String[] {
@@ -6600,18 +6605,13 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "DDMStructureId"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_DDMSI",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "DDMStructureId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DDMSI",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "DDMStructureId"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6621,7 +6621,13 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_DDMTK =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DDMTK",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "DDMTemplateKey"}, 0, 2, false,
+					null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_DDMTK",
 					new String[] {
@@ -6630,20 +6636,14 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "DDMTemplateKey"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_DDMTK",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "DDMTemplateKey"}, 0, 2, true,
 					null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DDMTK",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "DDMTemplateKey"}, 0, 2, false,
-					null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6654,7 +6654,12 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_L =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_L",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "layoutUuid"}, 0, 2, false, null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_L",
 					new String[] {
@@ -6663,18 +6668,13 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "layoutUuid"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_L",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "layoutUuid"}, 0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_L",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "layoutUuid"}, 0, 2, false, null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6684,7 +6684,14 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_ST =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ST",
+					new String[] {
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "status"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ST",
 					new String[] {
@@ -6693,22 +6700,15 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "status"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_ST",
 					new String[] {
 						Long.class.getName(), Integer.class.getName()
 					},
 					new String[] {"groupId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ST",
-					new String[] {
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "status"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6865,7 +6865,15 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_U_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U_C",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {"groupId", "userId", "classNameId"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U_C",
 					new String[] {
@@ -6875,6 +6883,8 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "userId", "classNameId"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U_C",
 					new String[] {
@@ -6882,17 +6892,7 @@ public class JournalArticlePersistenceImpl
 						Long.class.getName()
 					},
 					new String[] {"groupId", "userId", "classNameId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U_C",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {"groupId", "userId", "classNameId"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6929,7 +6929,16 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_ERC_ST =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_ERC_ST",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "externalReferenceCode", "status"},
+					0, 2, false, null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ERC_ST",
 					new String[] {
@@ -6940,6 +6949,8 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "externalReferenceCode", "status"},
 					true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_ERC_ST",
 					new String[] {
@@ -6948,18 +6959,7 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "externalReferenceCode", "status"},
 					0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_ERC_ST",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "externalReferenceCode", "status"},
-					0, 2, false, null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -6973,7 +6973,15 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_F_ST =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_F_ST",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "folderId", "status"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_F_ST",
 					new String[] {
@@ -6983,6 +6991,8 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "folderId", "status"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_F_ST",
 					new String[] {
@@ -6990,17 +7000,7 @@ public class JournalArticlePersistenceImpl
 						Integer.class.getName()
 					},
 					new String[] {"groupId", "folderId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_F_ST",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "folderId", "status"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7013,7 +7013,15 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_C_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_C",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {"groupId", "classNameId", "classPK"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_C",
 					new String[] {
@@ -7023,6 +7031,8 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "classNameId", "classPK"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_C",
 					new String[] {
@@ -7030,17 +7040,7 @@ public class JournalArticlePersistenceImpl
 						Long.class.getName()
 					},
 					new String[] {"groupId", "classNameId", "classPK"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_C",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {"groupId", "classNameId", "classPK"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7076,7 +7076,17 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_C_DDMTK =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_C_DDMTK",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "classNameId", "DDMTemplateKey"},
+					0, 4, false, null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_DDMTK",
 					new String[] {
@@ -7087,6 +7097,8 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "classNameId", "DDMTemplateKey"},
 					true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_C_DDMTK",
@@ -7096,19 +7108,7 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "classNameId", "DDMTemplateKey"},
 					0, 4, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_C_DDMTK",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName()
-					},
-					new String[] {"groupId", "classNameId", "DDMTemplateKey"},
-					0, 4, false, null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7122,7 +7122,16 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_C_L =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_L",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "classNameId", "layoutUuid"}, 0, 4,
+					false, null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_L",
 					new String[] {
@@ -7133,6 +7142,8 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "classNameId", "layoutUuid"},
 					true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_L",
 					new String[] {
@@ -7141,18 +7152,7 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "classNameId", "layoutUuid"}, 0, 4,
 					true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_L",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName()
-					},
-					new String[] {"groupId", "classNameId", "layoutUuid"}, 0, 4,
-					false, null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7165,7 +7165,16 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_C_NotL =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_NotL",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "classNameId", "layoutUuid"},
+					false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_NotL",
 					new String[] {
@@ -7176,19 +7185,8 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "classNameId", "layoutUuid"},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_NotL",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName()
-					},
-					new String[] {"groupId", "classNameId", "layoutUuid"},
-					false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
 				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null, null, "",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7224,7 +7222,16 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_A_ST =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_A_ST",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "articleId", "status"}, 0, 2,
+					false, null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_A_ST",
 					new String[] {
@@ -7234,6 +7241,8 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "articleId", "status"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_A_ST",
 					new String[] {
@@ -7242,18 +7251,7 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "articleId", "status"}, 0, 2, true,
 					null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_A_ST",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "articleId", "status"}, 0, 2,
-					false, null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7266,7 +7264,15 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_A_NotST =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_A_NotST",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "articleId", "status"}, false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_A_NotST",
 					new String[] {
@@ -7276,18 +7282,8 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "articleId", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_A_NotST",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "articleId", "status"}, false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
 				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null, null, "",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7300,7 +7296,16 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_UT_ST =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_UT_ST",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "urlTitle", "status"}, 0, 2, false,
+					null),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_UT_ST",
 					new String[] {
@@ -7310,6 +7315,8 @@ public class JournalArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "urlTitle", "status"}, true),
+				_SQL_COUNT_JOURNALARTICLE_WHERE,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_UT_ST",
 					new String[] {
@@ -7318,18 +7325,7 @@ public class JournalArticlePersistenceImpl
 					},
 					new String[] {"groupId", "urlTitle", "status"}, 0, 2, true,
 					null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_UT_ST",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "urlTitle", "status"}, 0, 2, false,
-					null),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
-				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7382,7 +7378,19 @@ public class JournalArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_F_C_NotST =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_F_C_NotST",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "folderId", "classNameId", "status"
+					},
+					false),
+				"", JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_F_C_NotST",
 					new String[] {
@@ -7395,22 +7403,8 @@ public class JournalArticlePersistenceImpl
 						"groupId", "folderId", "classNameId", "status"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_F_C_NotST",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "folderId", "classNameId", "status"
-					},
-					false),
-				_SQL_SELECT_JOURNALARTICLE_WHERE,
 				_SQL_COUNT_JOURNALARTICLE_WHERE,
-				JournalArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalArticle::getResourcePrimKey,
+				_SQL_SELECT_JOURNALARTICLE_WHERE, null, null, "",
 				new FinderColumn<>(
 					"journalArticle.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalArticle::getGroupId),
@@ -7490,4 +7484,4 @@ public class JournalArticlePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:205709374
+// LIFERAY-SERVICE-BUILDER-HASH:-71064872

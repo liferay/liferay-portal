@@ -2267,7 +2267,12 @@ public class DDMTemplatePersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMTemplate::getTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -2276,17 +2281,13 @@ public class DDMTemplatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_DDMTEMPLATE_WHERE, _SQL_SELECT_DDMTEMPLATE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_DDMTEMPLATE_WHERE, _SQL_COUNT_DDMTEMPLATE_WHERE,
-				DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDMTemplate::getTemplateId,
+				"",
 				new FinderColumn<>(
 					"ddmTemplate.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DDMTemplate::getGroupId));
@@ -2357,7 +2358,12 @@ public class DDMTemplatePersistenceImpl
 
 		_collectionPersistenceFinderByG_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMTemplate::getTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "classNameId"}, false),
+				"", DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C",
 					new String[] {
@@ -2366,17 +2372,13 @@ public class DDMTemplatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "classNameId"}, true),
+				_SQL_COUNT_DDMTEMPLATE_WHERE, _SQL_SELECT_DDMTEMPLATE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "classNameId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "classNameId"}, false),
-				_SQL_SELECT_DDMTEMPLATE_WHERE, _SQL_COUNT_DDMTEMPLATE_WHERE,
-				DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDMTemplate::getTemplateId,
+				"",
 				new FinderColumn<>(
 					"ddmTemplate.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DDMTemplate::getGroupId),
@@ -2386,7 +2388,12 @@ public class DDMTemplatePersistenceImpl
 
 		_collectionPersistenceFinderByG_CPK =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMTemplate::getTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_CPK",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"groupId", "classPK"}, false),
+				"", DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_CPK",
 					new String[] {
@@ -2395,17 +2402,13 @@ public class DDMTemplatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "classPK"}, true),
+				_SQL_COUNT_DDMTEMPLATE_WHERE, _SQL_SELECT_DDMTEMPLATE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_CPK",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"groupId", "classPK"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_CPK",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"groupId", "classPK"}, false),
-				_SQL_SELECT_DDMTEMPLATE_WHERE, _SQL_COUNT_DDMTEMPLATE_WHERE,
-				DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDMTemplate::getTemplateId,
+				"",
 				new ArrayableFinderColumn<>(
 					"ddmTemplate.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMTemplate::getGroupId),
@@ -2415,7 +2418,15 @@ public class DDMTemplatePersistenceImpl
 
 		_collectionPersistenceFinderByG_C_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMTemplate::getTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_C",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName()
+					},
+					new String[] {"groupId", "classNameId", "classPK"}, false),
+				"", DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_C",
 					new String[] {
@@ -2425,6 +2436,8 @@ public class DDMTemplatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "classNameId", "classPK"}, true),
+				_SQL_COUNT_DDMTEMPLATE_WHERE, _SQL_SELECT_DDMTEMPLATE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_C",
 					new String[] {
@@ -2432,16 +2445,7 @@ public class DDMTemplatePersistenceImpl
 						Long.class.getName()
 					},
 					new String[] {"groupId", "classNameId", "classPK"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_C",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName()
-					},
-					new String[] {"groupId", "classNameId", "classPK"}, false),
-				_SQL_SELECT_DDMTEMPLATE_WHERE, _SQL_COUNT_DDMTEMPLATE_WHERE,
-				DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDMTemplate::getTemplateId,
+				"",
 				new ArrayableFinderColumn<>(
 					"ddmTemplate.", "groupId", FinderColumn.Type.LONG, "=",
 					false, true, true, DDMTemplate::getGroupId),
@@ -2515,7 +2519,16 @@ public class DDMTemplatePersistenceImpl
 
 		_collectionPersistenceFinderByG_C_C_T =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMTemplate::getTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_C_T",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName(), String.class.getName()
+					},
+					new String[] {"groupId", "classNameId", "classPK", "type_"},
+					0, 8, false, null),
+				"", DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_C_T",
 					new String[] {
@@ -2526,6 +2539,8 @@ public class DDMTemplatePersistenceImpl
 					},
 					new String[] {"groupId", "classNameId", "classPK", "type_"},
 					true),
+				_SQL_COUNT_DDMTEMPLATE_WHERE, _SQL_SELECT_DDMTEMPLATE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_C_T",
 					new String[] {
@@ -2534,17 +2549,7 @@ public class DDMTemplatePersistenceImpl
 					},
 					new String[] {"groupId", "classNameId", "classPK", "type_"},
 					0, 8, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_C_T",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), String.class.getName()
-					},
-					new String[] {"groupId", "classNameId", "classPK", "type_"},
-					0, 8, false, null),
-				_SQL_SELECT_DDMTEMPLATE_WHERE, _SQL_COUNT_DDMTEMPLATE_WHERE,
-				DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDMTemplate::getTemplateId,
+				"",
 				new FinderColumn<>(
 					"ddmTemplate.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DDMTemplate::getGroupId),
@@ -2560,7 +2565,20 @@ public class DDMTemplatePersistenceImpl
 
 		_collectionPersistenceFinderByG_C_C_T_M =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DDMTemplate::getTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_C_C_T_M",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Long.class.getName(), String.class.getName(),
+						String.class.getName()
+					},
+					new String[] {
+						"groupId", "classNameId", "classPK", "type_", "mode_"
+					},
+					0, 24, false, null),
+				"", DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_C_T_M",
 					new String[] {
@@ -2574,6 +2592,8 @@ public class DDMTemplatePersistenceImpl
 						"groupId", "classNameId", "classPK", "type_", "mode_"
 					},
 					true),
+				_SQL_COUNT_DDMTEMPLATE_WHERE, _SQL_SELECT_DDMTEMPLATE_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_C_C_T_M",
@@ -2586,21 +2606,7 @@ public class DDMTemplatePersistenceImpl
 						"groupId", "classNameId", "classPK", "type_", "mode_"
 					},
 					0, 24, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_C_C_T_M",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), String.class.getName(),
-						String.class.getName()
-					},
-					new String[] {
-						"groupId", "classNameId", "classPK", "type_", "mode_"
-					},
-					0, 24, false, null),
-				_SQL_SELECT_DDMTEMPLATE_WHERE, _SQL_COUNT_DDMTEMPLATE_WHERE,
-				DDMTemplateModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, DDMTemplate::getTemplateId,
+				"",
 				new FinderColumn<>(
 					"ddmTemplate.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, DDMTemplate::getGroupId),
@@ -2700,4 +2706,4 @@ public class DDMTemplatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-615466172
+// LIFERAY-SERVICE-BUILDER-HASH:-956185470

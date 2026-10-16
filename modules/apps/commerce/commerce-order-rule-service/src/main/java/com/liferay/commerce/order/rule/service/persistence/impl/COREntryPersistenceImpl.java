@@ -1691,7 +1691,12 @@ public class COREntryPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, COREntry::getCOREntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -1700,24 +1705,24 @@ public class COREntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_CORENTRY_WHERE, _SQL_SELECT_CORENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
-				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, COREntry::getCOREntryId,
+				"",
 				new FinderColumn<>(
 					"corEntry.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, COREntry::getUuid));
 
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, COREntry::getCOREntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -1726,17 +1731,12 @@ public class COREntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_CORENTRY_WHERE, _SQL_SELECT_CORENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
-				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, COREntry::getCOREntryId,
+				"",
 				new FinderColumn<>(
 					"corEntry.", "uuid", "uuid_", FinderColumn.Type.STRING, "=",
 					true, true, COREntry::getUuid),
@@ -1746,7 +1746,14 @@ public class COREntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_A =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, COREntry::getCOREntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"companyId", "active_"}, false),
+				"", COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A",
 					new String[] {
@@ -1755,21 +1762,14 @@ public class COREntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "active_"}, true),
+				_SQL_COUNT_CORENTRY_WHERE, _SQL_SELECT_CORENTRY_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"companyId", "active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"companyId", "active_"}, false),
-				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
-				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, COREntry::getCOREntryId,
+				"",
 				new FinderColumn<>(
 					"corEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, COREntry::getCompanyId),
@@ -1779,7 +1779,12 @@ public class COREntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_LikeType =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, COREntry::getCOREntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_LikeType",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"companyId", "type_"}, false),
+				"", COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_LikeType",
 					new String[] {
@@ -1788,14 +1793,8 @@ public class COREntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "type_"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_LikeType",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"companyId", "type_"}, false),
-				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
-				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, COREntry::getCOREntryId,
+				_SQL_COUNT_CORENTRY_WHERE, _SQL_SELECT_CORENTRY_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"corEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, COREntry::getCompanyId),
@@ -1805,7 +1804,14 @@ public class COREntryPersistenceImpl
 
 		_collectionPersistenceFinderByLtD_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, COREntry::getCOREntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtD_S",
+					new String[] {
+						Date.class.getName(), Integer.class.getName()
+					},
+					new String[] {"displayDate", "status"}, false),
+				"", COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByLtD_S",
 					new String[] {
@@ -1814,16 +1820,8 @@ public class COREntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"displayDate", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtD_S",
-					new String[] {
-						Date.class.getName(), Integer.class.getName()
-					},
-					new String[] {"displayDate", "status"}, false),
-				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
-				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, COREntry::getCOREntryId,
+				_SQL_COUNT_CORENTRY_WHERE, _SQL_SELECT_CORENTRY_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"corEntry.", "displayDate", FinderColumn.Type.DATE, "<",
 					true, true, COREntry::getDisplayDate),
@@ -1833,7 +1831,14 @@ public class COREntryPersistenceImpl
 
 		_collectionPersistenceFinderByLtE_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, COREntry::getCOREntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtE_S",
+					new String[] {
+						Date.class.getName(), Integer.class.getName()
+					},
+					new String[] {"expirationDate", "status"}, false),
+				"", COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByLtE_S",
 					new String[] {
@@ -1842,16 +1847,8 @@ public class COREntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"expirationDate", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtE_S",
-					new String[] {
-						Date.class.getName(), Integer.class.getName()
-					},
-					new String[] {"expirationDate", "status"}, false),
-				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
-				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, COREntry::getCOREntryId,
+				_SQL_COUNT_CORENTRY_WHERE, _SQL_SELECT_CORENTRY_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"corEntry.", "expirationDate", FinderColumn.Type.DATE, "<",
 					true, true, COREntry::getExpirationDate),
@@ -1861,7 +1858,16 @@ public class COREntryPersistenceImpl
 
 		_collectionPersistenceFinderByC_A_LikeType =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, COREntry::getCOREntryId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByC_A_LikeType",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"companyId", "active_", "type_"}, false),
+				"", COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByC_A_LikeType",
@@ -1872,18 +1878,8 @@ public class COREntryPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "active_", "type_"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByC_A_LikeType",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						String.class.getName()
-					},
-					new String[] {"companyId", "active_", "type_"}, false),
-				_SQL_SELECT_CORENTRY_WHERE, _SQL_COUNT_CORENTRY_WHERE,
-				COREntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, COREntry::getCOREntryId,
+				_SQL_COUNT_CORENTRY_WHERE, _SQL_SELECT_CORENTRY_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"corEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, COREntry::getCompanyId),
@@ -1973,4 +1969,4 @@ public class COREntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1785257941
+// LIFERAY-SERVICE-BUILDER-HASH:852876206

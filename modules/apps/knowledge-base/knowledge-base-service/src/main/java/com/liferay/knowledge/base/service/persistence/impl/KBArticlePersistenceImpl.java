@@ -12818,7 +12818,12 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByR_G =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByR_G",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"resourcePrimKey", "groupId"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByR_G",
 					new String[] {
@@ -12827,17 +12832,12 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"resourcePrimKey", "groupId"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByR_G",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"resourcePrimKey", "groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByR_G",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"resourcePrimKey", "groupId"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", true, true, KBArticle::getResourcePrimKey),
@@ -12946,7 +12946,13 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_ERC =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ERC",
+					new String[] {Long.class.getName(), String.class.getName()},
+					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
+					false, null),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ERC",
 					new String[] {
@@ -12955,19 +12961,13 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "externalReferenceCode"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_ERC",
 					new String[] {Long.class.getName(), String.class.getName()},
 					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
 					true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ERC",
-					new String[] {Long.class.getName(), String.class.getName()},
-					new String[] {"groupId", "externalReferenceCode"}, 0, 2,
-					false, null),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -12978,7 +12978,14 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_L =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_L",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"groupId", "latest"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_L",
 					new String[] {
@@ -12987,21 +12994,14 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "latest"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_L",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"groupId", "latest"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_L",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "latest"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13011,7 +13011,14 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_M =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_M",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"groupId", "main"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_M",
 					new String[] {
@@ -13020,21 +13027,14 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "main"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_M",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"groupId", "main"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_M",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "main"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13044,7 +13044,14 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_S",
+					new String[] {
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "status"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_S",
 					new String[] {
@@ -13053,21 +13060,14 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "status"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_S",
 					new String[] {
 						Long.class.getName(), Integer.class.getName()
 					},
 					new String[] {"groupId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_S",
-					new String[] {
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "status"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13292,7 +13292,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByR_G_L =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_L",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"resourcePrimKey", "groupId", "latest"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByR_G_L",
 					new String[] {
@@ -13303,6 +13312,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"resourcePrimKey", "groupId", "latest"},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByR_G_L",
 					new String[] {
@@ -13311,17 +13321,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"resourcePrimKey", "groupId", "latest"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_L",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"resourcePrimKey", "groupId", "latest"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -13334,7 +13334,15 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByR_G_M =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_M",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"resourcePrimKey", "groupId", "main"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByR_G_M",
 					new String[] {
@@ -13344,6 +13352,7 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"resourcePrimKey", "groupId", "main"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByR_G_M",
 					new String[] {
@@ -13351,16 +13360,7 @@ public class KBArticlePersistenceImpl
 						Boolean.class.getName()
 					},
 					new String[] {"resourcePrimKey", "groupId", "main"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_M",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"resourcePrimKey", "groupId", "main"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -13373,7 +13373,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByR_G_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"resourcePrimKey", "groupId", "status"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByR_G_S",
 					new String[] {
@@ -13384,6 +13393,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"resourcePrimKey", "groupId", "status"},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByR_G_S",
 					new String[] {
@@ -13392,17 +13402,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"resourcePrimKey", "groupId", "status"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"resourcePrimKey", "groupId", "status"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -13415,7 +13415,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByR_G_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"resourcePrimKey", "groupId", "status"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByR_G_NotS",
 					new String[] {
@@ -13426,18 +13435,8 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"resourcePrimKey", "groupId", "status"},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"resourcePrimKey", "groupId", "status"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", true, true, KBArticle::getResourcePrimKey),
@@ -13540,7 +13539,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_ERC_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ERC_S",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "externalReferenceCode", "status"},
+					0, 2, false, null),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ERC_S",
 					new String[] {
@@ -13551,6 +13559,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "externalReferenceCode", "status"},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_ERC_S",
 					new String[] {
@@ -13559,17 +13568,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "externalReferenceCode", "status"},
 					0, 2, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ERC_S",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "externalReferenceCode", "status"},
-					0, 2, false, null),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13583,7 +13582,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_L =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_L",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"groupId", "parentResourcePrimKey", "latest"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_L",
 					new String[] {
@@ -13594,6 +13602,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "parentResourcePrimKey", "latest"},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_L",
 					new String[] {
@@ -13602,17 +13611,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "parentResourcePrimKey", "latest"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_L",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"groupId", "parentResourcePrimKey", "latest"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13626,7 +13625,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_M =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_M",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"groupId", "parentResourcePrimKey", "main"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_M",
 					new String[] {
@@ -13637,6 +13645,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "parentResourcePrimKey", "main"},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_M",
 					new String[] {
@@ -13645,17 +13654,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "parentResourcePrimKey", "main"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_M",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"groupId", "parentResourcePrimKey", "main"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13669,7 +13668,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "parentResourcePrimKey", "status"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_S",
 					new String[] {
@@ -13680,6 +13688,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "parentResourcePrimKey", "status"},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_S",
 					new String[] {
@@ -13688,17 +13697,7 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "parentResourcePrimKey", "status"},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "parentResourcePrimKey", "status"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13712,25 +13711,7 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_KBFI_UT =
 			new FilterCollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_KBFI_UT",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId", "kbFolderId", "urlTitle"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByG_KBFI_UT",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName()
-					},
-					new String[] {"groupId", "kbFolderId", "urlTitle"}, 0, 4,
-					true, null),
+				this, KBArticle::getResourcePrimKey,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"countByG_KBFI_UT",
@@ -13740,9 +13721,27 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "kbFolderId", "urlTitle"}, 0, 4,
 					false, null),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_KBFI_UT",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"groupId", "kbFolderId", "urlTitle"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"findByG_KBFI_UT",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName()
+					},
+					new String[] {"groupId", "kbFolderId", "urlTitle"}, 0, 4,
+					true, null),
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13755,7 +13754,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_KBFI_L =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_KBFI_L",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"groupId", "kbFolderId", "latest"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_KBFI_L",
 					new String[] {
@@ -13765,6 +13773,7 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "kbFolderId", "latest"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_KBFI_L",
 					new String[] {
@@ -13772,17 +13781,7 @@ public class KBArticlePersistenceImpl
 						Boolean.class.getName()
 					},
 					new String[] {"groupId", "kbFolderId", "latest"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_KBFI_L",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"groupId", "kbFolderId", "latest"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13795,7 +13794,16 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_KBFI_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByG_KBFI_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "kbFolderId", "status"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_KBFI_S",
 					new String[] {
@@ -13805,6 +13813,7 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "kbFolderId", "status"}, true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_KBFI_S",
 					new String[] {
@@ -13812,17 +13821,7 @@ public class KBArticlePersistenceImpl
 						Integer.class.getName()
 					},
 					new String[] {"groupId", "kbFolderId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByG_KBFI_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "kbFolderId", "status"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13835,7 +13834,15 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeS_L =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeS_L",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"groupId", "sections", "latest"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_LikeS_L",
 					new String[] {
@@ -13845,17 +13852,8 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "sections", "latest"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeS_L",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"groupId", "sections", "latest"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13868,7 +13866,15 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeS_M =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeS_M",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"groupId", "sections", "main"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_LikeS_M",
 					new String[] {
@@ -13878,17 +13884,8 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "sections", "main"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeS_M",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"groupId", "sections", "main"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13901,7 +13898,15 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeS_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeS_S",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "sections", "status"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_LikeS_S",
 					new String[] {
@@ -13911,17 +13916,8 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "sections", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_LikeS_S",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "sections", "status"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13934,7 +13930,15 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_L_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_L_NotS",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "latest", "status"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_L_NotS",
 					new String[] {
@@ -13944,17 +13948,8 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "latest", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_L_NotS",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "latest", "status"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -13967,7 +13962,15 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_M_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_M_NotS",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "main", "status"}, false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_M_NotS",
 					new String[] {
@@ -13977,17 +13980,8 @@ public class KBArticlePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "main", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_M_NotS",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "main", "status"}, false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14138,7 +14132,18 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByR_G_L_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_L_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"resourcePrimKey", "groupId", "latest", "status"
+					},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByR_G_L_NotS",
 					new String[] {
@@ -14151,20 +14156,8 @@ public class KBArticlePersistenceImpl
 						"resourcePrimKey", "groupId", "latest", "status"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_L_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"resourcePrimKey", "groupId", "latest", "status"
-					},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -14180,7 +14173,18 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByR_G_M_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_M_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"resourcePrimKey", "groupId", "main", "status"
+					},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByR_G_M_NotS",
 					new String[] {
@@ -14193,20 +14197,8 @@ public class KBArticlePersistenceImpl
 						"resourcePrimKey", "groupId", "main", "status"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByR_G_M_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"resourcePrimKey", "groupId", "main", "status"
-					},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new ArrayableFinderColumn<>(
 					"kbArticle.", "resourcePrimKey", FinderColumn.Type.LONG,
 					"=", false, true, true, KBArticle::getResourcePrimKey),
@@ -14222,7 +14214,18 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_L_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_L_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "parentResourcePrimKey", "latest", "status"
+					},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_L_S",
 					new String[] {
@@ -14235,6 +14238,7 @@ public class KBArticlePersistenceImpl
 						"groupId", "parentResourcePrimKey", "latest", "status"
 					},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_L_S",
 					new String[] {
@@ -14245,19 +14249,7 @@ public class KBArticlePersistenceImpl
 						"groupId", "parentResourcePrimKey", "latest", "status"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_L_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "parentResourcePrimKey", "latest", "status"
-					},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14274,7 +14266,18 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_L_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_L_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "parentResourcePrimKey", "latest", "status"
+					},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_L_NotS",
 					new String[] {
@@ -14287,20 +14290,8 @@ public class KBArticlePersistenceImpl
 						"groupId", "parentResourcePrimKey", "latest", "status"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_L_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "parentResourcePrimKey", "latest", "status"
-					},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14317,7 +14308,18 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_M_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_M_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "parentResourcePrimKey", "main", "status"
+					},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_M_S",
 					new String[] {
@@ -14330,6 +14332,7 @@ public class KBArticlePersistenceImpl
 						"groupId", "parentResourcePrimKey", "main", "status"
 					},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_M_S",
 					new String[] {
@@ -14340,19 +14343,7 @@ public class KBArticlePersistenceImpl
 						"groupId", "parentResourcePrimKey", "main", "status"
 					},
 					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_M_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "parentResourcePrimKey", "main", "status"
-					},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14369,7 +14360,18 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_P_M_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_M_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "parentResourcePrimKey", "main", "status"
+					},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_M_NotS",
 					new String[] {
@@ -14382,20 +14384,8 @@ public class KBArticlePersistenceImpl
 						"groupId", "parentResourcePrimKey", "main", "status"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_P_M_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "parentResourcePrimKey", "main", "status"
-					},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14412,7 +14402,19 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_KBFI_UT_S =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_KBFI_UT_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "kbFolderId", "urlTitle", "status"
+					},
+					0, 4, false, null),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_KBFI_UT_S",
 					new String[] {
@@ -14425,6 +14427,7 @@ public class KBArticlePersistenceImpl
 						"groupId", "kbFolderId", "urlTitle", "status"
 					},
 					true),
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByG_KBFI_UT_S",
@@ -14436,20 +14439,7 @@ public class KBArticlePersistenceImpl
 						"groupId", "kbFolderId", "urlTitle", "status"
 					},
 					0, 4, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_KBFI_UT_S",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "kbFolderId", "urlTitle", "status"
-					},
-					0, 4, false, null),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				"",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14465,7 +14455,19 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_KBFI_UT_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_KBFI_UT_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						String.class.getName(), Integer.class.getName()
+					},
+					new String[] {
+						"groupId", "kbFolderId", "urlTitle", "status"
+					},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_KBFI_UT_NotS",
@@ -14479,21 +14481,8 @@ public class KBArticlePersistenceImpl
 						"groupId", "kbFolderId", "urlTitle", "status"
 					},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_KBFI_UT_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						String.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "kbFolderId", "urlTitle", "status"
-					},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14509,7 +14498,17 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_KBFI_L_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_KBFI_L_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "kbFolderId", "latest", "status"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_KBFI_L_NotS",
@@ -14521,19 +14520,8 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "kbFolderId", "latest", "status"},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_KBFI_L_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "kbFolderId", "latest", "status"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14549,7 +14537,17 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeS_L_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_LikeS_L_NotS",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "sections", "latest", "status"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_LikeS_L_NotS",
@@ -14561,19 +14559,8 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "sections", "latest", "status"},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_LikeS_L_NotS",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "sections", "latest", "status"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14589,7 +14576,17 @@ public class KBArticlePersistenceImpl
 
 		_collectionPersistenceFinderByG_LikeS_M_NotS =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, KBArticle::getResourcePrimKey,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"countByG_LikeS_M_NotS",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "sections", "main", "status"},
+					false),
+				"", KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 					"findByG_LikeS_M_NotS",
@@ -14601,19 +14598,8 @@ public class KBArticlePersistenceImpl
 					},
 					new String[] {"groupId", "sections", "main", "status"},
 					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_LikeS_M_NotS",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "sections", "main", "status"},
-					false),
-				_SQL_SELECT_KBARTICLE_WHERE, _SQL_COUNT_KBARTICLE_WHERE,
-				KBArticleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, KBArticle::getResourcePrimKey,
+				_SQL_COUNT_KBARTICLE_WHERE, _SQL_SELECT_KBARTICLE_WHERE, null,
+				null, "",
 				new FinderColumn<>(
 					"kbArticle.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, KBArticle::getGroupId),
@@ -14693,4 +14679,4 @@ public class KBArticlePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-873775876
+// LIFERAY-SERVICE-BUILDER-HASH:2069131404

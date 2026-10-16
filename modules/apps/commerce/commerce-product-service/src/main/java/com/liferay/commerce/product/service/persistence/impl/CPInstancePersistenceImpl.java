@@ -2113,7 +2113,12 @@ public class CPInstancePersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPInstance::getCPInstanceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", CPInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -2122,17 +2127,12 @@ public class CPInstancePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_CPINSTANCE_WHERE, _SQL_SELECT_CPINSTANCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_CPINSTANCE_WHERE, _SQL_COUNT_CPINSTANCE_WHERE,
-				CPInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, CPInstance::getCPInstanceId,
+				"",
 				new FinderColumn<>(
 					"cpInstance.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, CPInstance::getGroupId));
@@ -2222,7 +2222,14 @@ public class CPInstancePersistenceImpl
 
 		_collectionPersistenceFinderByG_ST =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, CPInstance::getCPInstanceId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ST",
+					new String[] {
+						Long.class.getName(), Integer.class.getName()
+					},
+					new String[] {"groupId", "status"}, false),
+				"", CPInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ST",
 					new String[] {
@@ -2231,21 +2238,14 @@ public class CPInstancePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "status"}, true),
+				_SQL_COUNT_CPINSTANCE_WHERE, _SQL_SELECT_CPINSTANCE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_ST",
 					new String[] {
 						Long.class.getName(), Integer.class.getName()
 					},
 					new String[] {"groupId", "status"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_ST",
-					new String[] {
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"groupId", "status"}, false),
-				_SQL_SELECT_CPINSTANCE_WHERE, _SQL_COUNT_CPINSTANCE_WHERE,
-				CPInstanceModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null, CPInstance::getCPInstanceId,
+				"",
 				new FinderColumn<>(
 					"cpInstance.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, CPInstance::getGroupId),
@@ -2535,4 +2535,4 @@ public class CPInstancePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1732511328
+// LIFERAY-SERVICE-BUILDER-HASH:1852332427

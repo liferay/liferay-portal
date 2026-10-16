@@ -1239,7 +1239,13 @@ public class DispatchTriggerPersistenceImpl
 	public void activate() {
 		_collectionPersistenceFinderByUuid =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DispatchTrigger::getDispatchTriggerId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+					new String[] {String.class.getName()},
+					new String[] {"uuid_"}, 0, 1, false, null),
+				"", DispatchTriggerModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
 					new String[] {
@@ -1248,18 +1254,13 @@ public class DispatchTriggerPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_"}, true),
+				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
+				_SQL_SELECT_DISPATCHTRIGGER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 					new String[] {String.class.getName()},
 					new String[] {"uuid_"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-					new String[] {String.class.getName()},
-					new String[] {"uuid_"}, 0, 1, false, null),
-				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
-				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
-				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, DispatchTrigger::getDispatchTriggerId,
+				"",
 				new FinderColumn<>(
 					"dispatchTrigger.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1267,7 +1268,13 @@ public class DispatchTriggerPersistenceImpl
 
 		_collectionPersistenceFinderByUuid_C =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DispatchTrigger::getDispatchTriggerId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+					new String[] {String.class.getName(), Long.class.getName()},
+					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
+				"", DispatchTriggerModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
 					new String[] {
@@ -1276,18 +1283,13 @@ public class DispatchTriggerPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"uuid_", "companyId"}, true),
+				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
+				_SQL_SELECT_DISPATCHTRIGGER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 					new String[] {String.class.getName(), Long.class.getName()},
 					new String[] {"uuid_", "companyId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-					new String[] {String.class.getName(), Long.class.getName()},
-					new String[] {"uuid_", "companyId"}, 0, 1, false, null),
-				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
-				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
-				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, DispatchTrigger::getDispatchTriggerId,
+				"",
 				new FinderColumn<>(
 					"dispatchTrigger.", "uuid", "uuid_",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -1298,7 +1300,13 @@ public class DispatchTriggerPersistenceImpl
 
 		_collectionPersistenceFinderByCompanyId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DispatchTrigger::getDispatchTriggerId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				"", DispatchTriggerModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
 					new String[] {
@@ -1307,25 +1315,26 @@ public class DispatchTriggerPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId"}, true),
+				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
+				_SQL_SELECT_DISPATCHTRIGGER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 					"findByCompanyId", new String[] {Long.class.getName()},
 					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
-				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
-				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, DispatchTrigger::getDispatchTriggerId,
+				"",
 				new FinderColumn<>(
 					"dispatchTrigger.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, DispatchTrigger::getCompanyId));
 
 		_collectionPersistenceFinderByC_U =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DispatchTrigger::getDispatchTriggerId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_U",
+					new String[] {Long.class.getName(), Long.class.getName()},
+					new String[] {"companyId", "userId"}, false),
+				"", DispatchTriggerModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_U",
 					new String[] {
@@ -1334,18 +1343,13 @@ public class DispatchTriggerPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"companyId", "userId"}, true),
+				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
+				_SQL_SELECT_DISPATCHTRIGGER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_U",
 					new String[] {Long.class.getName(), Long.class.getName()},
 					new String[] {"companyId", "userId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_U",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"companyId", "userId"}, false),
-				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
-				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
-				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, DispatchTrigger::getDispatchTriggerId,
+				"",
 				new FinderColumn<>(
 					"dispatchTrigger.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, DispatchTrigger::getCompanyId),
@@ -1371,7 +1375,15 @@ public class DispatchTriggerPersistenceImpl
 
 		_collectionPersistenceFinderByA_DTCM =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, DispatchTrigger::getDispatchTriggerId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByA_DTCM",
+					new String[] {
+						Boolean.class.getName(), Integer.class.getName()
+					},
+					new String[] {"active_", "dispatchTaskClusterMode"}, false),
+				"", DispatchTriggerModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByA_DTCM",
 					new String[] {
@@ -1380,22 +1392,15 @@ public class DispatchTriggerPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"active_", "dispatchTaskClusterMode"}, true),
+				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
+				_SQL_SELECT_DISPATCHTRIGGER_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByA_DTCM",
 					new String[] {
 						Boolean.class.getName(), Integer.class.getName()
 					},
 					new String[] {"active_", "dispatchTaskClusterMode"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByA_DTCM",
-					new String[] {
-						Boolean.class.getName(), Integer.class.getName()
-					},
-					new String[] {"active_", "dispatchTaskClusterMode"}, false),
-				_SQL_SELECT_DISPATCHTRIGGER_WHERE,
-				_SQL_COUNT_DISPATCHTRIGGER_WHERE,
-				DispatchTriggerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null, DispatchTrigger::getDispatchTriggerId,
+				"",
 				new FinderColumn<>(
 					"dispatchTrigger.", "active", "active_",
 					FinderColumn.Type.BOOLEAN, "=", true, true,
@@ -1486,4 +1491,4 @@ public class DispatchTriggerPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:637504341
+// LIFERAY-SERVICE-BUILDER-HASH:2121701626

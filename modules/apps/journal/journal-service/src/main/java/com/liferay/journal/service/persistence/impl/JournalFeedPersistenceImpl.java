@@ -885,7 +885,12 @@ public class JournalFeedPersistenceImpl
 
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
-				this,
+				this, JournalFeed::getId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", JournalFeedModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -894,17 +899,13 @@ public class JournalFeedPersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_JOURNALFEED_WHERE, _SQL_SELECT_JOURNALFEED_WHERE,
+				null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_JOURNALFEED_WHERE, _SQL_COUNT_JOURNALFEED_WHERE,
-				JournalFeedModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null, JournalFeed::getId,
+				"",
 				new FinderColumn<>(
 					"journalFeed.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, JournalFeed::getGroupId));
@@ -991,4 +992,4 @@ public class JournalFeedPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1828083683
+// LIFERAY-SERVICE-BUILDER-HASH:250044092

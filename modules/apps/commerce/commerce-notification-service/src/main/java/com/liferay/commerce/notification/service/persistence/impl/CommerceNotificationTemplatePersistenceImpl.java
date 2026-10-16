@@ -1038,6 +1038,13 @@ public class CommerceNotificationTemplatePersistenceImpl
 		_collectionPersistenceFinderByGroupId =
 			new FilterCollectionPersistenceFinder<>(
 				this,
+				CommerceNotificationTemplate::getCommerceNotificationTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				"", CommerceNotificationTemplateModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
 					new String[] {
@@ -1046,19 +1053,13 @@ public class CommerceNotificationTemplatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId"}, true),
+				_SQL_COUNT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
+				_SQL_SELECT_COMMERCENOTIFICATIONTEMPLATE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
 					new String[] {Long.class.getName()},
 					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
-				_SQL_COUNT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
-				CommerceNotificationTemplateModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CommerceNotificationTemplate::getCommerceNotificationTemplateId,
+				"",
 				new FinderColumn<>(
 					"commerceNotificationTemplate.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1067,6 +1068,15 @@ public class CommerceNotificationTemplatePersistenceImpl
 		_collectionPersistenceFinderByG_E =
 			new FilterCollectionPersistenceFinder<>(
 				this,
+				CommerceNotificationTemplate::getCommerceNotificationTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_E",
+					new String[] {
+						Long.class.getName(), Boolean.class.getName()
+					},
+					new String[] {"groupId", "enabled"}, false),
+				"", CommerceNotificationTemplateModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_E",
 					new String[] {
@@ -1075,23 +1085,15 @@ public class CommerceNotificationTemplatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "enabled"}, true),
+				_SQL_COUNT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
+				_SQL_SELECT_COMMERCENOTIFICATIONTEMPLATE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_E",
 					new String[] {
 						Long.class.getName(), Boolean.class.getName()
 					},
 					new String[] {"groupId", "enabled"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_E",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "enabled"}, false),
-				_SQL_SELECT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
-				_SQL_COUNT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
-				CommerceNotificationTemplateModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CommerceNotificationTemplate::getCommerceNotificationTemplateId,
+				"",
 				new FinderColumn<>(
 					"commerceNotificationTemplate.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1104,6 +1106,17 @@ public class CommerceNotificationTemplatePersistenceImpl
 		_collectionPersistenceFinderByG_T_E =
 			new FilterCollectionPersistenceFinder<>(
 				this,
+				CommerceNotificationTemplate::getCommerceNotificationTemplateId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_T_E",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"groupId", "type_", "enabled"}, 0, 2, false,
+					null),
+				"", CommerceNotificationTemplateModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_T_E",
 					new String[] {
@@ -1113,6 +1126,8 @@ public class CommerceNotificationTemplatePersistenceImpl
 						OrderByComparator.class.getName()
 					},
 					new String[] {"groupId", "type_", "enabled"}, true),
+				_SQL_COUNT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
+				_SQL_SELECT_COMMERCENOTIFICATIONTEMPLATE_WHERE, null,
 				new FinderPath(
 					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_T_E",
 					new String[] {
@@ -1121,19 +1136,7 @@ public class CommerceNotificationTemplatePersistenceImpl
 					},
 					new String[] {"groupId", "type_", "enabled"}, 0, 2, true,
 					null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_T_E",
-					new String[] {
-						Long.class.getName(), String.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"groupId", "type_", "enabled"}, 0, 2, false,
-					null),
-				_SQL_SELECT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
-				_SQL_COUNT_COMMERCENOTIFICATIONTEMPLATE_WHERE,
-				CommerceNotificationTemplateModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				CommerceNotificationTemplate::getCommerceNotificationTemplateId,
+				"",
 				new FinderColumn<>(
 					"commerceNotificationTemplate.", "groupId",
 					FinderColumn.Type.LONG, "=", true, true,
@@ -1211,4 +1214,4 @@ public class CommerceNotificationTemplatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:739834338
+// LIFERAY-SERVICE-BUILDER-HASH:-1785158194
