@@ -25,13 +25,10 @@ const AttributeBreakdownSection: React.FC<IAttributeBreakdownSectionProps> = ({
 		moveBreakdown,
 	} = useAttributes();
 
-	if (!eventId) {
-		return null;
-	}
-
 	return (
 		<AttributeConditionsSection
 			action={
+				eventId &&
 				breakdownOrder.length < MAX_ATTRIBUTES && (
 					<AttributeBreakdownDropdown
 						alignmentPosition={Align.RightTop}

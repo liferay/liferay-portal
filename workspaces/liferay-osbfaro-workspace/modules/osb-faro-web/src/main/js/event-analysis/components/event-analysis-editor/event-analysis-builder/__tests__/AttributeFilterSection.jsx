@@ -43,11 +43,14 @@ const WrappedComponent = ({eventId, ...attributes}) => (
 describe('AttributeFilterSection', () => {
 	jest.useFakeTimers();
 
-	it('does not render without an event', () => {
-		const {container} = render(<WrappedComponent />);
+	it('renders only the title without an event', () => {
+		render(<WrappedComponent />);
 
 		expect(
-			container.querySelector('.attribute-filter-section-root')
+			screen.getByRole('heading', {name: /filter.by/i})
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: /add.filter/i})
 		).toBeNull();
 	});
 

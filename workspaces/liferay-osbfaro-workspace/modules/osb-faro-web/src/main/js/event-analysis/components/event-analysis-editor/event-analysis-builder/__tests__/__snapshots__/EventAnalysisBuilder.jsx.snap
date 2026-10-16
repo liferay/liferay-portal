@@ -47,18 +47,9 @@ exports[`Event Analysis Builder render 1`] = `
         </div>
       </div>
     </section>
-  </div>
-</div>
-`;
-
-exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
-<div>
-  <div
-    class="event-analysis-builder-root d-flex flex-column"
-  >
     <section
       aria-labelledby=":r1:"
-      class="event-section-root px-4 py-3"
+      class="attribute-breakdown-section-root px-4 py-3"
       tabindex="-1"
     >
       <div
@@ -70,6 +61,55 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
           <span
             class="text-4"
             id=":r1:"
+          >
+            Breakdown By
+          </span>
+        </h3>
+      </div>
+    </section>
+    <section
+      aria-labelledby=":r2:"
+      class="attribute-filter-section-root px-4 py-3"
+      tabindex="-1"
+    >
+      <div
+        class="align-items-center d-flex justify-content-between"
+      >
+        <h3
+          class="text-8 font-weight-normal"
+        >
+          <span
+            class="text-4"
+            id=":r2:"
+          >
+            Filter By
+          </span>
+        </h3>
+      </div>
+    </section>
+  </div>
+</div>
+`;
+
+exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
+<div>
+  <div
+    class="event-analysis-builder-root d-flex flex-column"
+  >
+    <section
+      aria-labelledby=":r3:"
+      class="event-section-root px-4 py-3"
+      tabindex="-1"
+    >
+      <div
+        class="align-items-center d-flex justify-content-between"
+      >
+        <h3
+          class="text-8 font-weight-normal"
+        >
+          <span
+            class="text-4"
+            id=":r3:"
           >
             Analyze
           </span>
@@ -139,7 +179,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
       </div>
     </section>
     <section
-      aria-labelledby=":r2:"
+      aria-labelledby=":r4:"
       class="attribute-breakdown-section-root px-4 py-3"
       tabindex="-1"
     >
@@ -151,7 +191,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
         >
           <span
             class="text-4"
-            id=":r2:"
+            id=":r4:"
           >
             Breakdown By
           </span>
@@ -181,7 +221,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
       </div>
     </section>
     <section
-      aria-labelledby=":r3:"
+      aria-labelledby=":r5:"
       class="attribute-filter-section-root px-4 py-3"
       tabindex="-1"
     >
@@ -193,7 +233,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
         >
           <span
             class="text-4"
-            id=":r3:"
+            id=":r5:"
           >
             Filter By
           </span>

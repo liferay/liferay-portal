@@ -60,11 +60,14 @@ const WrappedComponent = ({announce = () => {}, eventId, ...attributes}) => (
 describe('AttributeBreakdownSection', () => {
 	jest.useFakeTimers();
 
-	it('does not render without an event', () => {
-		const {container} = render(<WrappedComponent />);
+	it('renders only the title without an event', () => {
+		render(<WrappedComponent />);
 
 		expect(
-			container.querySelector('.attribute-breakdown-section-root')
+			screen.getByRole('heading', {name: /breakdown.by/i})
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: /add.breakdown/i})
 		).toBeNull();
 	});
 
