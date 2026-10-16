@@ -30,17 +30,16 @@ import com.liferay.portal.kernel.portlet.PortletLayoutListener;
 import com.liferay.portal.kernel.portlet.PortletLayoutListenerException;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.PortletPreferences;
-import jakarta.portlet.PortletRequest;
 
 import java.util.List;
 import java.util.Objects;
@@ -147,7 +146,7 @@ public class AssetPublisherPortletLayoutListener
 			_deleteAssetListEntryUsage(plid, portletId);
 			_deleteLayoutClassedModelUsages(layout, portletId);
 
-			_addLayoutClassedModelUsages(plid, portletId, portletPreferences);
+			_addLayoutClassedModelUsages(layout, portletId, portletPreferences);
 		}
 		else {
 			_deleteAssetListEntryUsage(plid, portletId);
@@ -217,26 +216,23 @@ public class AssetPublisherPortletLayoutListener
 	}
 
 	private void _addLayoutClassedModelUsages(
-			long plid, String portletId, PortletPreferences portletPreferences)
+			Layout layout, String portletId,
+			PortletPreferences portletPreferences)
 		throws PortletLayoutListenerException {
 
 		try {
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
-			ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
-
-			PortletRequest portletRequest =
-				serviceContext.getLiferayPortletRequest();
-
 			long[] groupIds = _assetPublisherHelper.getGroupIds(
-				portletPreferences, themeDisplay.getScopeGroupId(),
-				themeDisplay.getLayout());
+				portletPreferences, serviceContext.getScopeGroupId(), layout);
 
 			List<AssetEntry> assetEntries =
 				_assetPublisherHelper.getAssetEntries(
-					portletRequest, portletPreferences,
-					themeDisplay.getPermissionChecker(), groupIds, false, true);
+					serviceContext.getLiferayPortletRequest(),
+					portletPreferences,
+					PermissionThreadLocal.getPermissionChecker(), groupIds,
+					false, true);
 
 			for (AssetEntry assetEntry : assetEntries) {
 				long classNameId = assetEntry.getClassNameId();
@@ -250,9 +246,9 @@ public class AssetPublisherPortletLayoutListener
 				}
 
 				_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-					themeDisplay.getScopeGroupId(), StringPool.BLANK,
+					serviceContext.getScopeGroupId(), StringPool.BLANK,
 					classNameId, assetEntry.getClassPK(), portletId,
-					_portal.getClassNameId(Portlet.class), plid,
+					_portal.getClassNameId(Portlet.class), layout.getPlid(),
 					serviceContext);
 			}
 		}
