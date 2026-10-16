@@ -720,9 +720,9 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	private void _testGetDataDefinitionDataLayoutsPageWithoutPermissions()
 		throws Exception {
 
-		DataDefinition dataDefinition = _addDataDefinition();
-
 		DataLayoutResource dataLayoutResource = _getDataLayoutResource();
+
+		DataDefinition dataDefinition = _addDataDefinition();
 
 		assertHttpResponseStatusCode(
 			403,
