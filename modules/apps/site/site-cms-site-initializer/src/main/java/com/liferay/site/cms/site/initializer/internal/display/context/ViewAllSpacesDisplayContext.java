@@ -91,6 +91,14 @@ public class ViewAllSpacesDisplayContext {
 			PermissionUtil.getDefaultPermissionAdditionalProps(
 				_httpServletRequest, _themeDisplay)
 		).put(
+			"exportURL",
+			ActionUtil.getControlPanelPortletURL(
+				_themeDisplay, ExportImportPortletKeys.EXPORT)
+		).put(
+			"importURL",
+			ActionUtil.getControlPanelPortletURL(
+				_themeDisplay, ExportImportPortletKeys.IMPORT)
+		).put(
 			"pinnedAssetLibraryIds",
 			TransformUtil.transformToArray(
 				_depotEntryPinLocalService.getUserDepotEntryPins(
@@ -175,15 +183,11 @@ public class ViewAllSpacesDisplayContext {
 				LanguageUtil.get(_httpServletRequest, "space-settings"), "get",
 				"update", null),
 			new FDSActionDropdownItem(
-				ActionUtil.getControlPanelPortletURL(
-					_themeDisplay, ExportImportPortletKeys.EXPORT),
-				"export", "export",
+				null, "export", "export",
 				LanguageUtil.get(_httpServletRequest, "export"), "get",
 				"update", null),
 			new FDSActionDropdownItem(
-				ActionUtil.getControlPanelPortletURL(
-					_themeDisplay, ExportImportPortletKeys.IMPORT),
-				"import", "import",
+				null, "import", "import",
 				LanguageUtil.get(_httpServletRequest, "import"), "get",
 				"update", null),
 			new FDSActionDropdownItem(

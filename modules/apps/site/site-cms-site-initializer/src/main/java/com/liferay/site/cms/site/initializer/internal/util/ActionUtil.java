@@ -867,7 +867,7 @@ public class ActionUtil {
 
 		sb.append(themeDisplay.getCDNBaseURL());
 		sb.append(themeDisplay.getPathFriendlyURLPrivateGroup());
-		sb.append("/asset-library-{id}/~/control_panel/manage?p_p_id=");
+		sb.append("{friendlyURL}/~/control_panel/manage?p_p_id=");
 		sb.append(portletId);
 
 		return sb.toString();

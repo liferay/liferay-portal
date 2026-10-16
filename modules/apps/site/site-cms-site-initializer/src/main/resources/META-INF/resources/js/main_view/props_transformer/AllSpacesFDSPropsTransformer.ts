@@ -111,6 +111,7 @@ export default function AllSpacesFDSPropsTransformer({
 				};
 				creatorUserId: string;
 				externalReferenceCode: string;
+				friendlyURL: string;
 				id: string;
 				name: string;
 				siteId: string;
@@ -167,6 +168,22 @@ export default function AllSpacesFDSPropsTransformer({
 						itemData.name
 					),
 				});
+			}
+			else if (action.data.id === 'export') {
+				navigate(
+					additionalProps.exportURL.replace(
+						'{friendlyURL}',
+						itemData.friendlyURL
+					)
+				);
+			}
+			else if (action.data.id === 'import') {
+				navigate(
+					additionalProps.importURL.replace(
+						'{friendlyURL}',
+						itemData.friendlyURL
+					)
+				);
 			}
 			else if (action.data.id === 'pin' || action.data.id === 'unpin') {
 				event?.preventDefault();
