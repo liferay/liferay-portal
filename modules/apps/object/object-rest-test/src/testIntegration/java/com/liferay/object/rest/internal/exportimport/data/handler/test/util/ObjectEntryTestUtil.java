@@ -35,25 +35,25 @@ import java.util.Objects;
 public class ObjectEntryTestUtil {
 
 	public static ObjectEntry addEmptyObjectEntry(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId, long userId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition, long userId)
 		throws Exception {
 
-		objectDefinition = _getObjectDefinition(objectDefinition, groupId);
+		objectDefinition = _getObjectDefinition(groupId, objectDefinition);
 
 		return ObjectEntryLocalServiceUtil.getOrAddEmptyObjectEntry(
-			externalReferenceCode, _getGroupId(objectDefinition, groupId),
+			externalReferenceCode, _getGroupId(groupId, objectDefinition),
 			userId, objectDefinition.getObjectDefinitionId());
 	}
 
 	public static ObjectEntry addObjectEntry(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId, long userId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition, long userId)
 		throws Exception {
 
-		objectDefinition = _getObjectDefinition(objectDefinition, groupId);
+		objectDefinition = _getObjectDefinition(groupId, objectDefinition);
 
-		groupId = _getGroupId(objectDefinition, groupId);
+		groupId = _getGroupId(groupId, objectDefinition);
 
 		return ObjectEntryLocalServiceUtil.addOrUpdateObjectEntry(
 			externalReferenceCode, groupId, userId,
@@ -66,36 +66,36 @@ public class ObjectEntryTestUtil {
 	}
 
 	public static void deleteObjectEntry(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ObjectEntryLocalServiceUtil.deleteObjectEntry(
-			_getObjectEntry(objectDefinition, externalReferenceCode, groupId));
+			_getObjectEntry(externalReferenceCode, groupId, objectDefinition));
 	}
 
 	public static ObjectEntry fetchObjectEntry(
-		ObjectDefinition objectDefinition, String externalReferenceCode,
-		long groupId) {
+		String externalReferenceCode, long groupId,
+		ObjectDefinition objectDefinition) {
 
-		objectDefinition = _fetchObjectDefinition(objectDefinition, groupId);
+		objectDefinition = _fetchObjectDefinition(groupId, objectDefinition);
 
 		if (objectDefinition == null) {
 			return null;
 		}
 
 		return ObjectEntryLocalServiceUtil.fetchObjectEntry(
-			externalReferenceCode, _getGroupId(objectDefinition, groupId),
+			externalReferenceCode, _getGroupId(groupId, objectDefinition),
 			objectDefinition.getObjectDefinitionId());
 	}
 
 	public static long getCreatorUserId(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ObjectEntry objectEntry = _getObjectEntry(
-			objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, objectDefinition);
 
 		return objectEntry.getUserId();
 	}
@@ -107,33 +107,33 @@ public class ObjectEntryTestUtil {
 	}
 
 	public static long getObjectEntryId(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ObjectEntry objectEntry = _getObjectEntry(
-			objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, objectDefinition);
 
 		return objectEntry.getObjectEntryId();
 	}
 
 	public static int getStatus(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ObjectEntry objectEntry = _getObjectEntry(
-			objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, objectDefinition);
 
 		return objectEntry.getStatus();
 	}
 
 	public static boolean hasObjectEntry(
-		ObjectDefinition objectDefinition, String externalReferenceCode,
-		long groupId) {
+		String externalReferenceCode, long groupId,
+		ObjectDefinition objectDefinition) {
 
 		ObjectEntry objectEntry = fetchObjectEntry(
-			objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, objectDefinition);
 
 		if ((objectEntry == null) || objectEntry.isInTrash()) {
 			return false;
@@ -183,12 +183,12 @@ public class ObjectEntryTestUtil {
 	}
 
 	public static ObjectEntry updateCreatorUserId(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId, long userId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition, long userId)
 		throws Exception {
 
 		ObjectEntry objectEntry = _getObjectEntry(
-			objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, objectDefinition);
 
 		objectEntry.setUserId(userId);
 
@@ -196,12 +196,12 @@ public class ObjectEntryTestUtil {
 	}
 
 	public static ObjectEntry updateModifiedDate(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId, Date modifiedDate)
+			String externalReferenceCode, long groupId, Date modifiedDate,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ObjectEntry objectEntry = _getObjectEntry(
-			objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, objectDefinition);
 
 		objectEntry.setModifiedDate(modifiedDate);
 
@@ -209,12 +209,12 @@ public class ObjectEntryTestUtil {
 	}
 
 	public static ObjectEntry updateObjectEntry(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ObjectEntry objectEntry = _getObjectEntry(
-			objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, objectDefinition);
 
 		return ObjectEntryLocalServiceUtil.updateObjectEntry(
 			objectEntry.getUserId(), objectEntry.getObjectEntryId(),
@@ -227,7 +227,7 @@ public class ObjectEntryTestUtil {
 	}
 
 	private static ObjectDefinition _fetchObjectDefinition(
-		ObjectDefinition objectDefinition, long groupId) {
+		long groupId, ObjectDefinition objectDefinition) {
 
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
 
@@ -242,7 +242,7 @@ public class ObjectEntryTestUtil {
 	}
 
 	private static long _getGroupId(
-		ObjectDefinition objectDefinition, long groupId) {
+		long groupId, ObjectDefinition objectDefinition) {
 
 		if (Objects.equals(
 				objectDefinition.getScope(),
@@ -255,7 +255,7 @@ public class ObjectEntryTestUtil {
 	}
 
 	private static ObjectDefinition _getObjectDefinition(
-			ObjectDefinition objectDefinition, long groupId)
+			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
 		Group group = GroupLocalServiceUtil.getGroup(groupId);
@@ -267,14 +267,14 @@ public class ObjectEntryTestUtil {
 	}
 
 	private static ObjectEntry _getObjectEntry(
-			ObjectDefinition objectDefinition, String externalReferenceCode,
-			long groupId)
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
-		objectDefinition = _getObjectDefinition(objectDefinition, groupId);
+		objectDefinition = _getObjectDefinition(groupId, objectDefinition);
 
 		return ObjectEntryLocalServiceUtil.getObjectEntry(
-			externalReferenceCode, _getGroupId(objectDefinition, groupId),
+			externalReferenceCode, _getGroupId(groupId, objectDefinition),
 			objectDefinition.getObjectDefinitionId());
 	}
 

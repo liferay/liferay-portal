@@ -67,7 +67,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		Group group = getGroup();
 
 		ObjectEntryTestUtil.addEmptyObjectEntry(
-			_objectDefinition, externalReferenceCode, group.getGroupId(),
+			externalReferenceCode, group.getGroupId(), _objectDefinition,
 			TestPropsValues.getUserId());
 	}
 
@@ -76,7 +76,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		Group group = getGroup();
 
 		ObjectEntryTestUtil.addObjectEntry(
-			_objectDefinition, externalReferenceCode, group.getGroupId(),
+			externalReferenceCode, group.getGroupId(), _objectDefinition,
 			TestPropsValues.getUserId());
 	}
 
@@ -89,7 +89,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		Group group = getGroup();
 
 		ObjectEntryTestUtil.deleteObjectEntry(
-			_objectDefinition, externalReferenceCode, group.getGroupId());
+			externalReferenceCode, group.getGroupId(), _objectDefinition);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		return ObjectEntryTestUtil.getCreatorUserId(
-			_objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, _objectDefinition);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		return ObjectEntryTestUtil.getObjectEntryId(
-			_objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, _objectDefinition);
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		return ObjectEntryTestUtil.getStatus(
-			_objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, _objectDefinition);
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 	@Override
 	protected boolean hasEntry(String externalReferenceCode, long groupId) {
 		return ObjectEntryTestUtil.hasObjectEntry(
-			_objectDefinition, externalReferenceCode, groupId);
+			externalReferenceCode, groupId, _objectDefinition);
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		Group group = getGroup();
 
 		ObjectEntryTestUtil.updateCreatorUserId(
-			_objectDefinition, externalReferenceCode, group.getGroupId(),
+			externalReferenceCode, group.getGroupId(), _objectDefinition,
 			userId);
 	}
 
@@ -164,7 +164,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		Group group = getGroup();
 
 		ObjectEntryTestUtil.updateObjectEntry(
-			_objectDefinition, externalReferenceCode, group.getGroupId());
+			externalReferenceCode, group.getGroupId(), _objectDefinition);
 	}
 
 	@Override
@@ -175,8 +175,8 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 		Group group = getGroup();
 
 		ObjectEntryTestUtil.updateModifiedDate(
-			_objectDefinition, externalReferenceCode, group.getGroupId(),
-			modifiedDate);
+			externalReferenceCode, group.getGroupId(), modifiedDate,
+			_objectDefinition);
 	}
 
 	@DeleteAfterTestRun
