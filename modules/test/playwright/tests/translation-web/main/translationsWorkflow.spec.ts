@@ -14,9 +14,18 @@ import {WorkflowPage} from '../../../pages/portal-workflow-web/WorkflowPage';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {changeXliffModelId, translateXliff} from '../../../utils/xliff';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import {translationPagesTest} from './fixtures/translationPagesTest';
 import {WebContentTranslationPage} from './pages/WebContentTranslationPage';
+import {
+	expectNotTranslated,
+	expectTranslated,
+	getTranslations,
+	readXliff,
+	writeFiles,
+	writeZip,
+} from './utils/translationFiles';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -311,5 +320,284 @@ test(
 		).toBeDisabled();
 
 		await performUserSwitch(page, 'test');
+	}
+);
+
+test(
+	'Importing translations with workflow sends each valid file for review',
+	{tag: '@LPD-110482'},
+	async ({
+		apiHelpers,
+		exportImportTranslationPage,
+		page,
+		site,
+		translationsAdminPage,
+		workflowPage,
+		workflowTasksPage,
+	}) => {
+		const title = getRandomString();
+
+		const base = {...BASE, title};
+
+		const french = {
+			content: 'ContenuWeb',
+			description: 'Ladescription',
+			title: 'TitreducontenuWeb',
+		};
+
+		const spanish = {
+			content: 'Contenidoweb',
+			description: 'Descripcion',
+			title: 'Titulodelcontenidoweb',
+		};
+
+		await addWebContent(apiHelpers, site, title);
+
+		await enableTranslationWorkflow(site, workflowPage);
+
+		// Translate French and Spanish, and point the German file to another model
+
+		const zipPath = await exportImportTranslationPage.exportArticle(
+			site.friendlyUrlPath,
+			title,
+			['French (France)', 'German (Germany)', 'Spanish (Spain)']
+		);
+
+		const translatedZipPath = await writeZip(
+			`${title}-en_US_translated.zip`,
+			{
+				[`${title}-en_US-de_DE.xlf`]: changeXliffModelId(
+					translateXliff(
+						await readXliff(zipPath, title, 'de_DE'),
+						getTranslations(base, {
+							content: 'Internetinhalt',
+							description: 'Beschreibung',
+							title: 'TiteldesWebinhalts',
+						})
+					)
+				),
+				[`${title}-en_US-es_ES.xlf`]: translateXliff(
+					await readXliff(zipPath, title, 'es_ES'),
+					getTranslations(base, spanish)
+				),
+				[`${title}-en_US-fr_FR.xlf`]: translateXliff(
+					await readXliff(zipPath, title, 'fr_FR'),
+					getTranslations(base, french)
+				),
+			}
+		);
+
+		// Submit the zip for workflow
+
+		await exportImportTranslationPage.gotoImport(
+			site.friendlyUrlPath,
+			title
+		);
+
+		await exportImportTranslationPage.upload([translatedZipPath]);
+
+		await exportImportTranslationPage.submit('Submit for Workflow');
+
+		await expect(exportImportTranslationPage.successTitle).toHaveText(
+			'2 Files Sent for Publication'
+		);
+
+		await expect(exportImportTranslationPage.failureTitle).toHaveText(
+			'1 file could not be published.'
+		);
+
+		await expect(
+			exportImportTranslationPage.resultItem(`${title}-en_US-de_DE.xlf`)
+		).toContainText(
+			'The translation file does not correspond to this web content.'
+		);
+
+		// Only the valid files have a pending entry and nothing is applied yet
+
+		await translationsAdminPage.goto(site);
+
+		for (const language of ['es-ES', 'fr-FR']) {
+			await translationsAdminPage.assertEntry({
+				language,
+				status: 'Pending',
+				title: `Translation of ${title} to ${language}`,
+			});
+		}
+
+		await expect(
+			page.getByRole('row').filter({hasText: `Translation of ${title}`})
+		).toHaveCount(2);
+
+		await translationsAdminPage.assertNoEntry(
+			`Translation of ${title} to de-DE`
+		);
+
+		await expectNotTranslated(apiHelpers, page, site, title, 'es-ES');
+		await expectNotTranslated(apiHelpers, page, site, title, 'fr-FR');
+
+		// Approve both pending entries
+
+		for (const language of ['es-ES', 'fr-FR']) {
+			await workflowTasksPage.goToAssignedToMyRoles(site.friendlyUrlPath);
+
+			await workflowTasksPage.assignToMe(
+				`Translation of ${title} to ${language}`
+			);
+
+			await workflowTasksPage.approve(
+				`Translation of ${title} to ${language}`
+			);
+		}
+
+		// The approved translations are applied to the web content
+
+		await translationsAdminPage.goto(site);
+
+		for (const language of ['es-ES', 'fr-FR']) {
+			await translationsAdminPage.assertEntry({
+				language,
+				status: 'Approved',
+				title: `Translation of ${title} to ${language}`,
+			});
+		}
+
+		await expectTranslated(apiHelpers, page, site, title, 'es-ES', spanish);
+		await expectTranslated(apiHelpers, page, site, title, 'fr-FR', french);
+		await expectNotTranslated(apiHelpers, page, site, title, 'de-DE');
+	}
+);
+
+test(
+	'A rejected translation import can be imported again as a draft and resubmitted',
+	{tag: '@LPD-110482'},
+	async ({
+		apiHelpers,
+		exportImportTranslationPage,
+		page,
+		site,
+		translationsAdminPage,
+		workflowPage,
+		workflowTasksPage,
+	}) => {
+		const title = getRandomString();
+
+		const base = {...BASE, title};
+
+		const entry = `Translation of ${title} to fr-FR`;
+
+		const revisedFrench = {
+			content: 'Contenu Web',
+			description: 'La description',
+			title: 'Titre du contenu Web',
+		};
+
+		await addWebContent(apiHelpers, site, title);
+
+		await enableTranslationWorkflow(site, workflowPage);
+
+		const zipPath = await exportImportTranslationPage.exportArticle(
+			site.friendlyUrlPath,
+			title,
+			['French (France)']
+		);
+
+		const xliff = await readXliff(zipPath, title, 'fr_FR');
+
+		const [filePath] = writeFiles({
+			[`${title}-en_US-fr_FR.xlf`]: translateXliff(
+				xliff,
+				getTranslations(base, {
+					content: 'ContenuWeb',
+					description: 'Ladescription',
+					title: 'TitreducontenuWeb',
+				})
+			),
+		});
+
+		const [revisedFilePath] = writeFiles({
+			[`${title}-en_US-fr_FR.xlf`]: translateXliff(
+				xliff,
+				getTranslations(base, revisedFrench)
+			),
+		});
+
+		// Submit the import for workflow and reject it
+
+		await exportImportTranslationPage.gotoImport(
+			site.friendlyUrlPath,
+			title
+		);
+
+		await exportImportTranslationPage.upload([filePath]);
+
+		await exportImportTranslationPage.submit('Submit for Workflow');
+
+		await expect(exportImportTranslationPage.successTitle).toHaveText(
+			'1 File Sent for Publication'
+		);
+
+		await workflowTasksPage.goToAssignedToMyRoles(site.friendlyUrlPath);
+
+		await workflowTasksPage.assignToMe(entry);
+
+		await workflowTasksPage.reject(entry);
+
+		await translationsAdminPage.goto(site);
+
+		await translationsAdminPage.assertEntry({
+			language: 'fr-FR',
+			status: 'Pending',
+			title: entry,
+		});
+
+		// Import a revised file as a draft while the entry is pending
+
+		await exportImportTranslationPage.gotoImport(
+			site.friendlyUrlPath,
+			title
+		);
+
+		await exportImportTranslationPage.upload([revisedFilePath]);
+
+		await expect(
+			exportImportTranslationPage.importToolbar.getByRole('button', {
+				name: 'Submit for Workflow',
+			})
+		).toBeDisabled();
+
+		await exportImportTranslationPage.submit('Save as Draft');
+
+		await expect(exportImportTranslationPage.successTitle).toHaveText(
+			'1 File Saved as Draft'
+		);
+
+		// Resubmit and approve the entry
+
+		await workflowTasksPage.resubmit(entry, site.friendlyUrlPath);
+
+		await workflowTasksPage.goToAssignedToMyRoles(site.friendlyUrlPath);
+
+		await workflowTasksPage.assignToMe(entry);
+
+		await workflowTasksPage.approve(entry);
+
+		// The revised translation is applied to the web content
+
+		await translationsAdminPage.goto(site);
+
+		await translationsAdminPage.assertEntry({
+			language: 'fr-FR',
+			status: 'Approved',
+			title: entry,
+		});
+
+		await expectTranslated(
+			apiHelpers,
+			page,
+			site,
+			title,
+			'fr-FR',
+			revisedFrench
+		);
 	}
 );
