@@ -9,13 +9,16 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.headless.cms.client.dto.v1_0.AssetStatistics;
 import com.liferay.headless.cms.client.dto.v1_0.MissingRequiredFieldsAsset;
 import com.liferay.headless.cms.client.pagination.Page;
 import com.liferay.headless.cms.client.pagination.Pagination;
+import com.liferay.headless.cms.client.resource.v1_0.AssetStatisticsResource;
 import com.liferay.headless.cms.client.resource.v1_0.MissingRequiredFieldsAssetResource;
 import com.liferay.headless.cms.resource.v1_0.test.util.CMSFreeTierTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
@@ -31,7 +34,9 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -40,10 +45,14 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -89,7 +98,8 @@ public class MissingRequiredFieldsAssetResourceTest
 	public void testGetMissingRequiredFieldsAssetsPage() throws Exception {
 		DepotEntry depotEntry = _addSpaceDepotEntry();
 
-		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
 
 		ObjectEntry objectEntry = _addObjectEntry(
 			depotEntry, objectDefinition, RandomTestUtil.randomString());
@@ -156,7 +166,10 @@ public class MissingRequiredFieldsAssetResourceTest
 
 		_assertMissingRequiredFieldsAssetsCount(_addSpaceDepotEntry(), 0);
 
+		_testGetMissingRequiredFieldsAssetsPageWithFiles();
 		_testGetMissingRequiredFieldsAssetsPageWithFreeTier();
+		_testGetMissingRequiredFieldsAssetsPageWithSearch();
+		_testGetMissingRequiredFieldsAssetsPageWithStatuses();
 	}
 
 	@Override
@@ -166,7 +179,8 @@ public class MissingRequiredFieldsAssetResourceTest
 
 		DepotEntry depotEntry = _addSpaceDepotEntry();
 
-		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
 
 		for (int i = 0; i < 3; i++) {
 			_addObjectEntry(
@@ -231,7 +245,8 @@ public class MissingRequiredFieldsAssetResourceTest
 
 		DepotEntry depotEntry = _addSpaceDepotEntry();
 
-		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
 
 		_addObjectEntry(depotEntry, objectDefinition, "aaa");
 		_addObjectEntry(depotEntry, objectDefinition, "bbb");
@@ -242,11 +257,13 @@ public class MissingRequiredFieldsAssetResourceTest
 		_assertTitleOrder(depotEntry, "bbb", "aaa", "title:desc");
 	}
 
-	private ObjectDefinition _addCMSObjectDefinition() throws Exception {
+	private ObjectDefinition _addCMSObjectDefinition(
+			String objectFolderExternalReferenceCode)
+		throws Exception {
+
 		ObjectFolder objectFolder =
 			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
-				ObjectFolderConstants.
-					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+				objectFolderExternalReferenceCode,
 				TestPropsValues.getCompanyId());
 
 		ObjectDefinition objectDefinition =
@@ -284,11 +301,23 @@ public class MissingRequiredFieldsAssetResourceTest
 			String title)
 		throws Exception {
 
+		return _addObjectEntry(
+			depotEntry, objectDefinition,
+			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS, title,
+			WorkflowConstants.ACTION_PUBLISH);
+	}
+
+	private ObjectEntry _addObjectEntry(
+			DepotEntry depotEntry, ObjectDefinition objectDefinition,
+			String objectEntryFolderExternalReferenceCode, String title,
+			int workflowAction)
+		throws Exception {
+
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				getObjectEntryFolderByExternalReferenceCode(
-					"L_CONTENTS", depotEntry.getGroupId(),
-					depotEntry.getCompanyId());
+					objectEntryFolderExternalReferenceCode,
+					depotEntry.getGroupId(), depotEntry.getCompanyId());
 
 		return _objectEntryLocalService.addObjectEntry(
 			depotEntry.getGroupId(), TestPropsValues.getUserId(),
@@ -297,7 +326,7 @@ public class MissingRequiredFieldsAssetResourceTest
 			HashMapBuilder.<String, Serializable>put(
 				"title", title
 			).build(),
-			ServiceContextTestUtil.getServiceContext());
+			_getServiceContext(workflowAction));
 	}
 
 	private void _addRequiredObjectField(ObjectDefinition objectDefinition)
@@ -373,6 +402,17 @@ public class MissingRequiredFieldsAssetResourceTest
 			expectedSecondTitle, secondMissingRequiredFieldsAsset.getTitle());
 	}
 
+	private ServiceContext _getServiceContext(int workflowAction)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setWorkflowAction(workflowAction);
+
+		return serviceContext;
+	}
+
 	private MissingRequiredFieldsAssetResource
 			_getSpaceMemberMissingRequiredFieldsAssetResource(
 				DepotEntry depotEntry)
@@ -398,6 +438,46 @@ public class MissingRequiredFieldsAssetResourceTest
 		).build();
 	}
 
+	private void _testGetMissingRequiredFieldsAssetsPageWithFiles()
+		throws Exception {
+
+		DepotEntry depotEntry = _addSpaceDepotEntry();
+
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES);
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			depotEntry, objectDefinition,
+			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
+			RandomTestUtil.randomString(), WorkflowConstants.ACTION_PUBLISH);
+
+		_addRequiredObjectField(objectDefinition);
+
+		Page<MissingRequiredFieldsAsset> missingRequiredFieldsAssetsPage =
+			missingRequiredFieldsAssetResource.
+				getMissingRequiredFieldsAssetsPage(
+					depotEntry.getDepotEntryId(), null, null, null);
+
+		List<MissingRequiredFieldsAsset> missingRequiredFieldsAssets =
+			(List<MissingRequiredFieldsAsset>)
+				missingRequiredFieldsAssetsPage.getItems();
+
+		Assert.assertEquals(
+			missingRequiredFieldsAssets.toString(), 1,
+			missingRequiredFieldsAssets.size());
+
+		MissingRequiredFieldsAsset missingRequiredFieldsAsset =
+			missingRequiredFieldsAssets.get(0);
+
+		Assert.assertEquals(
+			Long.valueOf(objectEntry.getObjectEntryId()),
+			missingRequiredFieldsAsset.getId());
+		Assert.assertEquals(
+			objectDefinition.getExternalReferenceCode(),
+			missingRequiredFieldsAsset.
+				getObjectDefinitionExternalReferenceCode());
+	}
+
 	private void _testGetMissingRequiredFieldsAssetsPageWithFreeTier()
 		throws Exception {
 
@@ -414,6 +494,121 @@ public class MissingRequiredFieldsAssetResourceTest
 			missingRequiredFieldsAssetResource.
 				getMissingRequiredFieldsAssetsPageHttpResponse(
 					null, null, Pagination.of(1, 20), null));
+	}
+
+	private void _testGetMissingRequiredFieldsAssetsPageWithSearch()
+		throws Exception {
+
+		DepotEntry depotEntry = _addSpaceDepotEntry();
+
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
+
+		String title = RandomTestUtil.randomString();
+
+		_addObjectEntry(depotEntry, objectDefinition, title);
+
+		_addObjectEntry(
+			depotEntry, objectDefinition, RandomTestUtil.randomString());
+
+		_addRequiredObjectField(objectDefinition);
+
+		Page<MissingRequiredFieldsAsset> missingRequiredFieldsAssetsPage =
+			missingRequiredFieldsAssetResource.
+				getMissingRequiredFieldsAssetsPage(
+					depotEntry.getDepotEntryId(), title, null, null);
+
+		List<MissingRequiredFieldsAsset> missingRequiredFieldsAssets =
+			(List<MissingRequiredFieldsAsset>)
+				missingRequiredFieldsAssetsPage.getItems();
+
+		Assert.assertEquals(
+			missingRequiredFieldsAssets.toString(), 1,
+			missingRequiredFieldsAssets.size());
+
+		MissingRequiredFieldsAsset missingRequiredFieldsAsset =
+			missingRequiredFieldsAssets.get(0);
+
+		Assert.assertEquals(title, missingRequiredFieldsAsset.getTitle());
+	}
+
+	private void _testGetMissingRequiredFieldsAssetsPageWithStatuses()
+		throws Exception {
+
+		DepotEntry depotEntry = _addSpaceDepotEntry();
+
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
+
+		ObjectEntry approvedObjectEntry = _addObjectEntry(
+			depotEntry, objectDefinition, RandomTestUtil.randomString());
+
+		_addObjectEntry(
+			depotEntry, objectDefinition,
+			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+			RandomTestUtil.randomString(), WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		ObjectEntry draftOverApprovedObjectEntry = _addObjectEntry(
+			depotEntry, objectDefinition, RandomTestUtil.randomString());
+		ObjectEntry expiredObjectEntry = _addObjectEntry(
+			depotEntry, objectDefinition, RandomTestUtil.randomString());
+		ObjectEntry inTrashObjectEntry = _addObjectEntry(
+			depotEntry, objectDefinition, RandomTestUtil.randomString());
+
+		_addRequiredObjectField(objectDefinition);
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(),
+			draftOverApprovedObjectEntry.getObjectEntryId(),
+			draftOverApprovedObjectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"integer", RandomTestUtil.randomInt()
+			).put(
+				"title", RandomTestUtil.randomString()
+			).build(),
+			_getServiceContext(WorkflowConstants.ACTION_SAVE_DRAFT));
+		_objectEntryLocalService.expireObjectEntry(
+			TestPropsValues.getUserId(), expiredObjectEntry.getObjectEntryId(),
+			ServiceContextTestUtil.getServiceContext());
+		_objectEntryLocalService.moveObjectEntryToTrash(
+			TestPropsValues.getUserId(), inTrashObjectEntry,
+			ServiceContextTestUtil.getServiceContext());
+
+		Page<MissingRequiredFieldsAsset> missingRequiredFieldsAssetsPage =
+			missingRequiredFieldsAssetResource.
+				getMissingRequiredFieldsAssetsPage(
+					depotEntry.getDepotEntryId(), null, null, null);
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				approvedObjectEntry.getObjectEntryId(),
+				draftOverApprovedObjectEntry.getObjectEntryId()),
+			SetUtil.fromCollection(
+				TransformUtil.transform(
+					missingRequiredFieldsAssetsPage.getItems(),
+					MissingRequiredFieldsAsset::getId)));
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		AssetStatisticsResource assetStatisticsResource =
+			AssetStatisticsResource.builder(
+			).authentication(
+				adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		AssetStatistics assetStatistics =
+			assetStatisticsResource.getAssetStatistics(
+				depotEntry.getDepotEntryId());
+
+		Assert.assertEquals(
+			missingRequiredFieldsAssetsPage.getTotalCount(),
+			GetterUtil.getLong(
+				assetStatistics.getMissingRequiredFieldsCount()));
 	}
 
 	@DeleteAfterTestRun
