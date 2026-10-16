@@ -3,7 +3,6 @@ Bundle-SymbolicName: com.liferay.bookmarks.api
 Bundle-Version: 16.0.0
 Export-Package:\
 	com.liferay.bookmarks.configuration,\
-	com.liferay.bookmarks.configuration.definition,\
 	com.liferay.bookmarks.constants,\
 	com.liferay.bookmarks.exception,\
 	com.liferay.bookmarks.model,\

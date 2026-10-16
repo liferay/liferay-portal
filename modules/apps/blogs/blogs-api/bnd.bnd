@@ -3,7 +3,6 @@ Bundle-SymbolicName: com.liferay.blogs.api
 Bundle-Version: 22.0.0
 Export-Package:\
 	com.liferay.blogs.configuration,\
-	com.liferay.blogs.configuration.definition,\
 	com.liferay.blogs.constants,\
 	com.liferay.blogs.exception,\
 	com.liferay.blogs.linkback,\
