@@ -10,6 +10,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin, {performLogout} from '../../../utils/performLogin';
 import createSiteTemplateWithMessageBoards from './utils/createSiteTemplateWithMessageBoards';
@@ -145,10 +146,11 @@ test(
 
 		// A guest can view a thread in the Message Boards widget
 
+		const articleBody = getRandomString();
 		const headline = 'Thread-' + getRandomString();
 
 		await apiHelpers.headlessDelivery.postMessageBoardThread({
-			articleBody: getRandomString(),
+			articleBody,
 			headline,
 			siteId: site.id,
 			viewableBy: 'Anyone',
@@ -158,23 +160,22 @@ test(
 
 		await page.goto(pageURL);
 
-		await expect(
-			page.getByRole('link', {name: headline}).first()
-		).toBeVisible();
+		await clickAndExpectToBeVisible({
+			target: page.getByText(articleBody),
+			trigger: page.getByRole('link', {name: headline}).first(),
+		});
 
-		// Remove the view permission of the Message Boards widget from every role
+		// Remove the view permission of the Message Boards widget from the Guest role
 
 		await performLogin(page, 'test');
 
 		await page.goto(`${pageURL}?p_l_mode=edit`);
 
-		for (const {role} of DEFAULT_WIDGET_PERMISSIONS) {
-			await pageEditorPage.changeWidgetPermission(
-				widgetId,
-				`#${role}_ACTION_VIEW`,
-				false
-			);
-		}
+		await pageEditorPage.changeWidgetPermission(
+			widgetId,
+			'#guest_ACTION_VIEW',
+			false
+		);
 
 		await pageEditorPage.publishPage();
 
@@ -189,7 +190,5 @@ test(
 				'You do not have the roles required to access this portlet.'
 			)
 		).toBeVisible();
-
-		await performLogin(page, 'test');
 	}
 );
