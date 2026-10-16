@@ -21,6 +21,10 @@ spec:
         -   {{- include "liferay-platform.chartSource" .Values.infrastructureProvider | nindent 12 }}
             helm:
                 parameters:
+                    {{- with .Values.database.engine }}
+                    -   name: database.engine
+                        value: {{ . | quote }}
+                    {{- end }}
                     {{- range $key, $value := .Values.deploymentContext }}
                     -   name: deploymentContext.{{ $key }}
                         value: {{ $value | quote }}

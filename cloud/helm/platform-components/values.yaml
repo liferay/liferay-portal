@@ -40,6 +40,8 @@ clusterSecretStore:
     enabled: false
     name: ""
     provider: {}
+database:
+    engine: ""
 deploymentContext:
     deploymentName: ""
 gateway:
