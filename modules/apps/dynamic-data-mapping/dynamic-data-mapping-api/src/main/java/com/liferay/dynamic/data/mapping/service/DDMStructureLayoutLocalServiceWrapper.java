@@ -551,28 +551,6 @@ public class DDMStructureLayoutLocalServiceWrapper
 			groupId, classNameId, structureVersionId);
 	}
 
-	@Override
-	public java.util.List<DDMStructureLayout> search(
-			long companyId, long[] groupIds, long classNameId, String keywords,
-			int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator<DDMStructureLayout>
-				orderByComparator)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmStructureLayoutLocalService.search(
-			companyId, groupIds, classNameId, keywords, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int searchCount(
-			long companyId, long[] groupIds, long classNameId, String keywords)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmStructureLayoutLocalService.searchCount(
-			companyId, groupIds, classNameId, keywords);
-	}
-
 	/**
 	 * Updates the ddm structure layout in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -656,4 +634,4 @@ public class DDMStructureLayoutLocalServiceWrapper
 	private DDMStructureLayoutLocalService _ddmStructureLayoutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1963654023
+// LIFERAY-SERVICE-BUILDER-HASH:1705599997
