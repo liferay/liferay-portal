@@ -7,6 +7,7 @@ package com.liferay.depot.web.internal.application;
 
 import com.liferay.asset.tags.constants.AssetTagsAdminPortletKeys;
 import com.liferay.depot.application.DepotApplication;
+import com.liferay.depot.constants.DepotConstants;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -23,6 +24,15 @@ public class AssetTagsAdminDepotApplication implements DepotApplication {
 
 	@Override
 	public boolean isCustomizable() {
+		return false;
+	}
+
+	@Override
+	public boolean isDepotTypeSupported(int depotType) {
+		if (depotType != DepotConstants.TYPE_DESIGN_LIBRARY) {
+			return true;
+		}
+
 		return false;
 	}
 

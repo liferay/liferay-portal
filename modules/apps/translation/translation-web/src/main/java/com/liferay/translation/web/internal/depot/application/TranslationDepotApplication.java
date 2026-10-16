@@ -6,6 +6,7 @@
 package com.liferay.translation.web.internal.depot.application;
 
 import com.liferay.depot.application.DepotApplication;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.translation.constants.TranslationPortletKeys;
 
 import org.osgi.service.component.annotations.Component;
@@ -24,6 +25,15 @@ public class TranslationDepotApplication implements DepotApplication {
 	@Override
 	public boolean isCustomizable() {
 		return true;
+	}
+
+	@Override
+	public boolean isDepotTypeSupported(int depotType) {
+		if (depotType != DepotConstants.TYPE_DESIGN_LIBRARY) {
+			return true;
+		}
+
+		return false;
 	}
 
 }

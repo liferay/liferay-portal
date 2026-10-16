@@ -17,6 +17,7 @@ import com.liferay.trash.constants.TrashPortletKeys;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,11 +35,22 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = DepotApplicationController.class)
 public class DepotApplicationController {
 
-	public Collection<DepotApplication> getCustomizableDepotApplications() {
+	public Collection<DepotApplication> getCustomizableDepotApplications(
+		long groupId) {
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			groupId);
+
+		if (depotEntry == null) {
+			return Collections.emptyList();
+		}
+
 		Collection<DepotApplication> depotApplications = new ArrayList<>();
 
 		for (DepotApplication depotApplication : _serviceTrackerMap.values()) {
-			if (!depotApplication.isCustomizable()) {
+			if (!depotApplication.isCustomizable() ||
+				!depotApplication.isDepotTypeSupported(depotEntry.getType())) {
+
 				continue;
 			}
 
@@ -61,6 +73,10 @@ public class DepotApplicationController {
 
 			if (!classNames.contains(className)) {
 				continue;
+			}
+
+			if (!depotApplication.isDepotTypeSupported(depotEntry.getType())) {
+				return false;
 			}
 
 			if (!depotApplication.isCustomizable()) {
@@ -104,7 +120,9 @@ public class DepotApplicationController {
 		DepotApplication depotApplication = _serviceTrackerMap.getService(
 			portletId);
 
-		if (depotApplication == null) {
+		if ((depotApplication == null) ||
+			!depotApplication.isDepotTypeSupported(depotEntry.getType())) {
+
 			return false;
 		}
 

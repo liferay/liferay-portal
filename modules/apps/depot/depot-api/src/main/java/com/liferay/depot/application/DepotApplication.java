@@ -30,4 +30,8 @@ public interface DepotApplication {
 		return false;
 	}
 
+	public default boolean isDepotTypeSupported(int depotType) {
+		return true;
+	}
+
 }

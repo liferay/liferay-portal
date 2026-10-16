@@ -31,8 +31,11 @@ public class DepotAdminDetailsDisplayContext {
 		_portletRequest = portletRequest;
 	}
 
-	public Collection<DepotApplication> getDepotApplications() {
-		return _depotApplicationController.getCustomizableDepotApplications();
+	public Collection<DepotApplication> getDepotApplications()
+		throws PortalException {
+
+		return _depotApplicationController.getCustomizableDepotApplications(
+			_getGroupId());
 	}
 
 	public long getDepotEntryId() {

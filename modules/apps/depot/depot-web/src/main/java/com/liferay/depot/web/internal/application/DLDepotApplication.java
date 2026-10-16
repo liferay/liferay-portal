@@ -6,6 +6,7 @@
 package com.liferay.depot.web.internal.application;
 
 import com.liferay.depot.application.DepotApplication;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
@@ -37,6 +38,15 @@ public class DLDepotApplication implements DepotApplication {
 	@Override
 	public boolean isCustomizable() {
 		return true;
+	}
+
+	@Override
+	public boolean isDepotTypeSupported(int depotType) {
+		if (depotType != DepotConstants.TYPE_DESIGN_LIBRARY) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
