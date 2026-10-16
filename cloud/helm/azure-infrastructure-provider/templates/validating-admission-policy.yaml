@@ -1,0 +1,50 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-110"
+    labels:
+        app: liferay
+    name: liferay-database-engine
+spec:
+    failurePolicy: Fail
+    matchConstraints:
+        resourceRules:
+            -   apiGroups:
+                    -   apiextensions.crossplane.io
+                apiVersions:
+                    -   "*"
+                operations:
+                    -   UPDATE
+                resourceNames:
+                    -   environment-config
+                resources:
+                    -   environmentconfigs
+    validations:
+        -   expression: variables.newDatabaseEngine == variables.oldDatabaseEngine
+            messageExpression: >-
+                'Unable to change the database engine of the deployment from "' + variables.oldDatabaseEngine +
+                '" to "' + variables.newDatabaseEngine + '". Create a new deployment to use another database engine.'
+            reason: Forbidden
+    variables:
+        -   expression: >-
+                has(object.data) && has(object.data.databaseEngine) ?
+                string(object.data.databaseEngine) : 'postgresql'
+            name: newDatabaseEngine
+        -   expression: >-
+                has(oldObject.data) && has(oldObject.data.databaseEngine) ?
+                string(oldObject.data.databaseEngine) : 'postgresql'
+            name: oldDatabaseEngine
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-110"
+    labels:
+        app: liferay
+    name: liferay-database-engine
+spec:
+    policyName: liferay-database-engine
+    validationActions:
+        -   Deny
