@@ -10,14 +10,6 @@ package com.liferay.wiki.configuration;
  */
 public interface WikiGroupServiceConfigurationOverride {
 
-	public String emailPageAddedBodyXml();
-
-	public String emailPageAddedSubjectXml();
-
-	public String emailPageUpdatedBodyXml();
-
-	public String emailPageUpdatedSubjectXml();
-
 	public boolean enableRss();
 
 }

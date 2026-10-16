@@ -10,14 +10,6 @@ package com.liferay.bookmarks.configuration;
  */
 public interface BookmarksGroupServiceConfigurationOverride {
 
-	public String emailEntryAddedBodyXml();
-
-	public String emailEntryAddedSubjectXml();
-
-	public String emailEntryUpdatedBodyXml();
-
-	public String emailEntryUpdatedSubjectXml();
-
 	public long rootFolderId();
 
 }

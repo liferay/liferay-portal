@@ -6,7 +6,6 @@
 package com.liferay.wiki.configuration.definition;
 
 import com.liferay.portal.kernel.settings.TypedSettings;
-import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.wiki.configuration.WikiGroupServiceConfigurationOverride;
 
@@ -20,34 +19,6 @@ public class WikiGroupServiceConfigurationOverrideImpl
 		TypedSettings typedSettings) {
 
 		_typedSettings = typedSettings;
-	}
-
-	@Override
-	public String emailPageAddedBodyXml() {
-		return LocalizationUtil.getXml(
-			_typedSettings.getLocalizedValuesMap("emailPageAddedBody"),
-			"emailPageAddedBody");
-	}
-
-	@Override
-	public String emailPageAddedSubjectXml() {
-		return LocalizationUtil.getXml(
-			_typedSettings.getLocalizedValuesMap("emailPageAddedSubject"),
-			"emailPageAddedSubject");
-	}
-
-	@Override
-	public String emailPageUpdatedBodyXml() {
-		return LocalizationUtil.getXml(
-			_typedSettings.getLocalizedValuesMap("emailPageUpdatedBody"),
-			"emailPageUpdatedBody");
-	}
-
-	@Override
-	public String emailPageUpdatedSubjectXml() {
-		return LocalizationUtil.getXml(
-			_typedSettings.getLocalizedValuesMap("emailPageUpdatedSubject"),
-			"emailPageUpdatedSubject");
 	}
 
 	@Override
