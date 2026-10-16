@@ -3166,22 +3166,23 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 			<#if entityFinder.collectionPersistenceFinderEnabled>
 				<#assign filterEnabled = entity.isPermissionCheckEnabled(entityFinder) />
 
-				_collectionPersistenceFinderBy${entityFinder.name} =
-					<#if filterEnabled>
-						new FilterCollectionPersistenceFinder<>(
-					<#else>
-						new CollectionPersistenceFinder<>(
-					</#if>
-						this,
+				<#assign countFinderPath>
+					<#if !entityFinder.hasCustomComparator()>
 						new FinderPath(
-							FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-							"findBy${entityFinder.name}",
+							<#if entityFinder.hasArrayableOperator()>
+								FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+							<#else>
+								FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+							</#if>
+							"countBy${entityFinder.name}",
 							new String[] {
 								<#list entityColumns as entityColumn>
-									${serviceBuilder.getPrimitiveObj("${entityColumn.type}")}.class.getName(),
-								</#list>
+									${serviceBuilder.getPrimitiveObj("${entityColumn.type}")}.class.getName()
 
-								Integer.class.getName(), Integer.class.getName(), OrderByComparator.class.getName()
+									<#if entityColumn_has_next>
+										,
+									</#if>
+								</#list>
 							},
 							new String[] {
 								<#list entityColumns as entityColumn>
@@ -3192,112 +3193,136 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 									</#if>
 								</#list>
 								},
-							true),
-						<#if !entityFinder.hasCustomComparator() && !entityFinder.hasArrayablePagination()>
-							new FinderPath(
-								FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-								"findBy${entityFinder.name}",
-								new String[] {
-									<#list entityColumns as entityColumn>
-										${serviceBuilder.getPrimitiveObj("${entityColumn.type}")}.class.getName()
+							<#if (caseInsensitiveBitmask > 0) || (convertNullBitmask > 0)>
+								${caseInsensitiveBitmask}, ${convertNullBitmask},
+								false,
+								null
+							<#else>
+								false
+							</#if>
+							),
+					<#else>
+						new FinderPath(
+							FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+							"countBy${entityFinder.name}",
+							new String[] {
+								<#list entityColumns as entityColumn>
+									${serviceBuilder.getPrimitiveObj("${entityColumn.type}")}.class.getName()
 
-										<#if entityColumn_has_next>
-											,
-										</#if>
-									</#list>
+									<#if entityColumn_has_next>
+										,
+									</#if>
+								</#list>
+							},
+							new String[] {
+								<#list entityColumns as entityColumn>
+									"${entityColumn.DBName}"
+
+									<#if entityColumn_has_next>
+										,
+									</#if>
+								</#list>
 								},
-								new String[] {
-									<#list entityColumns as entityColumn>
-										"${entityColumn.DBName}"
+							false),
+					</#if>
+				</#assign>
 
-										<#if entityColumn_has_next>
-											,
-										</#if>
-									</#list>
-									},
-								<#if (caseInsensitiveBitmask > 0) || (convertNullBitmask > 0)>
-									${caseInsensitiveBitmask}, ${convertNullBitmask},
-									true,
-									null
-								<#else>
-									true
-								</#if>
-								),
-						<#else>
-							null,
-						</#if>
-						<#if !entityFinder.hasCustomComparator()>
-							new FinderPath(
-								<#if entityFinder.hasArrayableOperator()>
-									FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-								<#else>
-									FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-								</#if>
-								"countBy${entityFinder.name}",
-								new String[] {
-									<#list entityColumns as entityColumn>
-										${serviceBuilder.getPrimitiveObj("${entityColumn.type}")}.class.getName()
+				<#assign paginatedFindPath>
+					new FinderPath(
+						FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+						"findBy${entityFinder.name}",
+						new String[] {
+							<#list entityColumns as entityColumn>
+								${serviceBuilder.getPrimitiveObj("${entityColumn.type}")}.class.getName(),
+							</#list>
 
-										<#if entityColumn_has_next>
-											,
-										</#if>
-									</#list>
+							Integer.class.getName(), Integer.class.getName(), OrderByComparator.class.getName()
+						},
+						new String[] {
+							<#list entityColumns as entityColumn>
+								"${entityColumn.DBName}"
+
+								<#if entityColumn_has_next>
+									,
+								</#if>
+							</#list>
+							},
+						true),
+				</#assign>
+
+				<#assign unpaginatedFindPath>
+					<#if !entityFinder.hasCustomComparator() && !entityFinder.hasArrayablePagination()>
+						new FinderPath(
+							FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+							"findBy${entityFinder.name}",
+							new String[] {
+								<#list entityColumns as entityColumn>
+									${serviceBuilder.getPrimitiveObj("${entityColumn.type}")}.class.getName()
+
+									<#if entityColumn_has_next>
+										,
+									</#if>
+								</#list>
+							},
+							new String[] {
+								<#list entityColumns as entityColumn>
+									"${entityColumn.DBName}"
+
+									<#if entityColumn_has_next>
+										,
+									</#if>
+								</#list>
 								},
-								new String[] {
-									<#list entityColumns as entityColumn>
-										"${entityColumn.DBName}"
+							<#if (caseInsensitiveBitmask > 0) || (convertNullBitmask > 0)>
+								${caseInsensitiveBitmask}, ${convertNullBitmask},
+								true,
+								null
+							<#else>
+								true
+							</#if>
+							),
+					<#else>
+						null,
+					</#if>
+				</#assign>
 
-										<#if entityColumn_has_next>
-											,
-										</#if>
-									</#list>
-									},
-								<#if (caseInsensitiveBitmask > 0) || (convertNullBitmask > 0)>
-									${caseInsensitiveBitmask}, ${convertNullBitmask},
-									false,
-									null
-								<#else>
-									false
-								</#if>
-								),
-						<#else>
-							new FinderPath(
-								FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-								"countBy${entityFinder.name}",
-								new String[] {
-									<#list entityColumns as entityColumn>
-										${serviceBuilder.getPrimitiveObj("${entityColumn.type}")}.class.getName()
-
-										<#if entityColumn_has_next>
-											,
-										</#if>
-									</#list>
-								},
-								new String[] {
-									<#list entityColumns as entityColumn>
-										"${entityColumn.DBName}"
-
-										<#if entityColumn_has_next>
-											,
-										</#if>
-									</#list>
-									},
-								false),
-						</#if>
-						_SQL_SELECT_${entity.alias?upper_case}_WHERE,
-						_SQL_COUNT_${entity.alias?upper_case}_WHERE,
-						${entity.name}ModelImpl.ORDER_BY_JPQL,
-						_ENTITY_ALIAS_PREFIX,
-						"${entityFinder.where!}",
-						"${entityFinder.DBWhere!}",
-						<#if entityFinder.uniquePersistenceFinderEnabled>
-							_uniquePersistenceFinderBy${entityFinder.name},
-						<#else>
-							null,
-						</#if>
-						<#if filterEnabled>
+				_collectionPersistenceFinderBy${entityFinder.name} =
+					<#if filterEnabled>
+						new FilterCollectionPersistenceFinder<>(
+							this,
 							${entity.name}::get${entity.filterPKEntityColumn.methodName},
-						</#if>
+							${countFinderPath}
+							"${entityFinder.DBWhere!}",
+							${entity.name}ModelImpl.ORDER_BY_JPQL,
+							_ENTITY_ALIAS_PREFIX,
+							${paginatedFindPath}
+							_SQL_COUNT_${entity.alias?upper_case}_WHERE,
+							_SQL_SELECT_${entity.alias?upper_case}_WHERE,
+							<#if entityFinder.uniquePersistenceFinderEnabled>
+								_uniquePersistenceFinderBy${entityFinder.name},
+							<#else>
+								null,
+							</#if>
+							${unpaginatedFindPath}
+							"${entityFinder.where!}",
+					<#else>
+						new CollectionPersistenceFinder<>(
+							this,
+							${paginatedFindPath}
+							${unpaginatedFindPath}
+							${countFinderPath}
+							_SQL_SELECT_${entity.alias?upper_case}_WHERE,
+							_SQL_COUNT_${entity.alias?upper_case}_WHERE,
+							${entity.name}ModelImpl.ORDER_BY_JPQL,
+							_ENTITY_ALIAS_PREFIX,
+							"${entityFinder.where!}",
+							"${entityFinder.DBWhere!}",
+							<#if entityFinder.uniquePersistenceFinderEnabled>
+								_uniquePersistenceFinderBy${entityFinder.name},
+							<#else>
+								null,
+							</#if>
+					</#if>
 						<#list entityColumns as entityColumn>
 							<#if entity.hasCompoundPK() && entityColumn.isPrimary()>
 								<#assign columnName = "id." + entityColumn.name />
