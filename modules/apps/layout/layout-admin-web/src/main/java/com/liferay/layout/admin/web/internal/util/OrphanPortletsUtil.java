@@ -8,12 +8,15 @@ package com.liferay.layout.admin.web.internal.util;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelModel;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletPreferences;
@@ -128,21 +131,12 @@ public class OrphanPortletsUtil {
 			Portlet::getPortletId);
 	}
 
-	private static List<PortletPreferences> _getPortletPreferences(
-		Layout layout) {
-
-		return PortletPreferencesLocalServiceUtil.getPortletPreferences(
-			PortletKeys.PREFS_OWNER_ID_DEFAULT,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
-	}
-
-	private static List<String> _getTypeContentExplicitlyAddedPortletIds(
-		Layout layout, PortletRegistry portletRegistry) {
+	private static List<String> _getFragmentEntryLinkPortletIds(
+		long groupId, long plid, PortletRegistry portletRegistry) {
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure =
 			LayoutPageTemplateStructureLocalServiceUtil.
-				fetchLayoutPageTemplateStructure(
-					layout.getGroupId(), layout.getPlid());
+				fetchLayoutPageTemplateStructure(groupId, plid);
 
 		if (layoutPageTemplateStructure == null) {
 			return Collections.emptyList();
@@ -160,13 +154,49 @@ public class OrphanPortletsUtil {
 		for (FragmentEntryLink fragmentEntryLink :
 				FragmentEntryLinkLocalServiceUtil.
 					getFragmentEntryLinksBySegmentsExperienceId(
-						layout.getGroupId(), segmentsExperienceIds,
-						layout.getPlid(), false)) {
+						groupId, segmentsExperienceIds, plid, false)) {
 
 			portletIds.addAll(
 				portletRegistry.getFragmentEntryLinkPortletIds(
 					fragmentEntryLink));
 		}
+
+		return portletIds;
+	}
+
+	private static List<PortletPreferences> _getPortletPreferences(
+		Layout layout) {
+
+		return PortletPreferencesLocalServiceUtil.getPortletPreferences(
+			PortletKeys.PREFS_OWNER_ID_DEFAULT,
+			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
+	}
+
+	private static List<String> _getTypeContentExplicitlyAddedPortletIds(
+		Layout layout, PortletRegistry portletRegistry) {
+
+		List<String> portletIds = new ArrayList<>(
+			_getFragmentEntryLinkPortletIds(
+				layout.getGroupId(), layout.getPlid(), portletRegistry));
+
+		long masterLayoutPlid = layout.getMasterLayoutPlid();
+
+		if (masterLayoutPlid == LayoutConstants.DEFAULT_PLID) {
+			return portletIds;
+		}
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateEntryLocalServiceUtil.
+				fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
+
+		if (masterLayoutPageTemplateEntry == null) {
+			return portletIds;
+		}
+
+		portletIds.addAll(
+			_getFragmentEntryLinkPortletIds(
+				masterLayoutPageTemplateEntry.getGroupId(),
+				masterLayoutPageTemplateEntry.getPlid(), portletRegistry));
 
 		return portletIds;
 	}
