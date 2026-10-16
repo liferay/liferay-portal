@@ -119,6 +119,12 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 
 		depotEntry.setUuid(serviceContext.getUuid());
 
+		String friendlyURL = null;
+
+		if (type != DepotConstants.TYPE_SPACE) {
+			friendlyURL = "/asset-library-" + depotEntry.getDepotEntryId();
+		}
+
 		Group group = _groupLocalService.addGroup(
 			GetterUtil.getString(
 				serviceContext.getAttribute("groupExternalReferenceCode")),
@@ -126,9 +132,8 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 			DepotEntry.class.getName(), depotEntry.getDepotEntryId(),
 			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap,
 			GroupConstants.TYPE_DEPOT, null, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
-			"/asset-library-" + depotEntry.getDepotEntryId(), false, false,
-			true, serviceContext);
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false,
+			false, true, serviceContext);
 
 		_groupLocalService.updateGroup(
 			group.getGroupId(),
