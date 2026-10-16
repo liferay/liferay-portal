@@ -20,8 +20,8 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.ResourcePermissionService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.UserGroupService;
 import com.liferay.portal.kernel.service.UserService;
@@ -327,8 +327,9 @@ public class UserGroupResourceImpl
 			GetterUtil.getInteger(
 				roleBrief.getRoleType(), RoleConstants.TYPE_REGULAR));
 
-		_roleLocalService.addGroupRole(
-			serviceBuilderUserGroup.getGroupId(), role.getRoleId());
+		_groupService.addRoleGroups(
+			role.getRoleId(),
+			new long[] {serviceBuilderUserGroup.getGroupId()});
 
 		return serviceBuilderUserGroup;
 	}
@@ -427,10 +428,10 @@ public class UserGroupResourceImpl
 	private static final EntityModel _entityModel = new UserGroupEntityModel();
 
 	@Reference
-	private ResourcePermissionService _resourcePermissionService;
+	private GroupService _groupService;
 
 	@Reference
-	private RoleLocalService _roleLocalService;
+	private ResourcePermissionService _resourcePermissionService;
 
 	@Reference
 	private RoleService _roleService;
