@@ -54,6 +54,21 @@ public abstract class BaseBuildRunner<T extends BuildData>
 		host.cleanUpServices();
 	}
 
+	protected long getAllowedBuildStartTime() {
+		long allowedBuildAge = 7 * _MILLISECONDS_PER_DAY;
+
+		String allowedBuildAgeInDays = Environment.get(
+			"ALLOWED_BUILD_AGE_IN_DAYS");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(allowedBuildAgeInDays)) {
+			allowedBuildAge =
+				Integer.parseInt(allowedBuildAgeInDays) * _MILLISECONDS_PER_DAY;
+		}
+
+		return JenkinsResultsParserUtil.getCurrentTimeMillis() -
+			allowedBuildAge;
+	}
+
 	protected Job getJob() {
 		if (_job != null) {
 			return _job;
@@ -160,20 +175,7 @@ public abstract class BaseBuildRunner<T extends BuildData>
 	}
 
 	protected void retirePreviousBuilds() {
-		long allowedBuildAge = 7 * _MILLISECONDS_PER_DAY;
-
-		String allowedBuildAgeInDays = Environment.get(
-			"ALLOWED_BUILD_AGE_IN_DAYS");
-
-		if ((allowedBuildAgeInDays != null) &&
-			!allowedBuildAgeInDays.isEmpty()) {
-
-			allowedBuildAge =
-				Integer.parseInt(allowedBuildAgeInDays) * _MILLISECONDS_PER_DAY;
-		}
-
-		long allowedBuildStartTime =
-			JenkinsResultsParserUtil.getCurrentTimeMillis() - allowedBuildAge;
+		long allowedBuildStartTime = getAllowedBuildStartTime();
 
 		for (JSONObject previousBuildJSONObject :
 				getPreviousBuildJSONObjects()) {
