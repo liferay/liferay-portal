@@ -28,6 +28,9 @@ spec:
     {{- with .Values.licensing.dxpVersion }}
     dxpVersion: {{ . | quote }}
     {{- end }}
+    {{- with .Values.licensing.environmentName }}
+    environmentName: {{ . | quote }}
+    {{- end }}
     {{- if .Values.licensing.offline }}
     offline: true
     {{- end }}

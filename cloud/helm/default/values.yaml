@@ -393,6 +393,7 @@ licensing:
     activationCodeSecretName: ""
     dxpVersion: ""
     enabled: false
+    environmentName: ""
     offline: false
     offlineActivationBundle: ""
     onlineActivationWorkflow:

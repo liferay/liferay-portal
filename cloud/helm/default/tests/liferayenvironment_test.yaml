@@ -52,6 +52,12 @@ tests:
             licensing.enabled: true
     -   asserts:
             -   notExists:
+                    path: spec.environmentName
+        it: Leaves the environment name to the operator unless one is named
+        set:
+            licensing.enabled: true
+    -   asserts:
+            -   notExists:
                     path: spec.desiredReplicas
         it: Leaves the replica count to the autoscaler when autoscaling is enabled
         set:
@@ -65,6 +71,14 @@ tests:
         set:
             licensing.dxpVersion: 2026.q3.0
             licensing.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.environmentName
+                    value: production
+        it: Names the environment the operator reports to the provisioning service
+        set:
+            licensing.enabled: true
+            licensing.environmentName: production
     -   asserts:
             -   equal:
                     path: spec.offline
