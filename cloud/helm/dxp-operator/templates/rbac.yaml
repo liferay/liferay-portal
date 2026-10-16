@@ -50,7 +50,6 @@ rules:
             -   get
             -   list
             -   watch
-    {{- if .Values.clientExtensions.enabled }}
     -   apiGroups:
             -   apps
         resources:
@@ -58,10 +57,11 @@ rules:
         verbs:
             -   get
             -   list
+            {{- if .Values.clientExtensions.enabled }}
             -   patch
+            {{- end }}
             -   update
             -   watch
-    {{- end }}
     -   apiGroups:
             -   apps
         resources:

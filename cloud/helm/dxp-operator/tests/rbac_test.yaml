@@ -16,8 +16,9 @@ tests:
                     path: rules[?(@.resources[0]=="configmaps")]
             -   exists:
                     path: rules[?(@.resources[0]=="cronjobs")]
-            -   exists:
-                    path: rules[?(@.resources[0]=="deployments")]
+            -   contains:
+                    content: patch
+                    path: rules[?(@.resources[0]=="deployments")].verbs
             -   exists:
                     path: rules[?(@.resources[0]=="jobs")]
         documentSelector:
@@ -158,8 +159,9 @@ tests:
                     path: rules[?(@.resources[0]=="configmaps")]
             -   notExists:
                     path: rules[?(@.resources[0]=="cronjobs")]
-            -   notExists:
-                    path: rules[?(@.resources[0]=="deployments")]
+            -   notContains:
+                    content: patch
+                    path: rules[?(@.resources[0]=="deployments")].verbs
             -   notExists:
                     path: rules[?(@.resources[0]=="jobs")]
         documentSelector:

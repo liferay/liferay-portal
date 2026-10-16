@@ -74,6 +74,31 @@ jobs:
             -   name: Install Helm chart
                 run: helm install liferay-dxp-operator . --create-namespace --namespace dxp-operator-system --set image.pullPolicy=Never --set image.repository=liferay-dxp-operator --set image.tag=smoke --timeout 5m --wait
                 working-directory: ./cloud/helm/dxp-operator
+            -   name: Check the operator can manage its workloads
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local resource
+                        local verb
+
+                        for resource in deployments.apps statefulsets.apps
+                        do
+                            for verb in get list update watch
+                            do
+                                if ! kubectl auth can-i "${verb}" "${resource}" --all-namespaces --as system:serviceaccount:dxp-operator-system:liferay-dxp-operator > /dev/null
+                                then
+                                    echo "The operator is unable to ${verb} ${resource}." >&2
+
+                                    exit 1
+                                fi
+                            done
+                        done
+                    }
+
+                    main "${@}"
             -   name: Create LiferayEnvironment
                 run: |
                     set -o errexit
