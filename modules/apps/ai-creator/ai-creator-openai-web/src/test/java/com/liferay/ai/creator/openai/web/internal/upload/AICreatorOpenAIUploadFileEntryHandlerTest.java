@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -29,6 +31,7 @@ import java.nio.file.Path;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -107,6 +110,61 @@ public class AICreatorOpenAIUploadFileEntryHandlerTest {
 			aiCreatorOpenAIUploadFileEntryHandler.upload(
 				_mockUploadPortletRequest(
 					SetUtil.fromArray(urlPath), urlPath)));
+	}
+
+	@Test
+	public void testUploadWithDataURL() throws Exception {
+		byte[] bytes = ArrayUtil.append(
+			new byte[] {
+				(byte)0x89, 'P', 'N', 'G', '\r', '\n', (byte)0x1A, '\n'
+			},
+			RandomTestUtil.randomBytes());
+
+		AtomicReference<byte[]> atomicReference = new AtomicReference<>();
+
+		_fileUtilMockedStatic.when(
+			() -> FileUtil.createTempFile(Mockito.any(InputStream.class))
+		).thenAnswer(
+			invocationOnMock -> {
+				InputStream inputStream = invocationOnMock.getArgument(
+					0, InputStream.class);
+
+				atomicReference.set(inputStream.readAllBytes());
+
+				Path path = Files.createTempFile(null, null);
+
+				File file = path.toFile();
+
+				file.deleteOnExit();
+
+				return file;
+			}
+		);
+
+		DLAppService dlAppService = Mockito.mock(DLAppService.class);
+
+		AICreatorOpenAIUploadFileEntryHandler
+			aiCreatorOpenAIUploadFileEntryHandler =
+				new AICreatorOpenAIUploadFileEntryHandler(dlAppService);
+
+		String urlPath = "data:image/png;base64," + Base64.encode(bytes);
+
+		aiCreatorOpenAIUploadFileEntryHandler.upload(
+			_mockUploadPortletRequest(SetUtil.fromArray(urlPath), urlPath));
+
+		Assert.assertArrayEquals(bytes, atomicReference.get());
+
+		Mockito.verify(
+			dlAppService
+		).addFileEntry(
+			Mockito.nullable(String.class), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyString(), Mockito.eq("image/png"),
+			Mockito.anyString(), Mockito.anyString(),
+			Mockito.nullable(String.class), Mockito.nullable(String.class),
+			Mockito.any(File.class), Mockito.nullable(Date.class),
+			Mockito.nullable(Date.class), Mockito.nullable(Date.class),
+			Mockito.any(ServiceContext.class)
+		);
 	}
 
 	@Test
