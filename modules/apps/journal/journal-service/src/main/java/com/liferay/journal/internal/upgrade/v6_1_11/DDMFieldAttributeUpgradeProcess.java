@@ -9,7 +9,10 @@ import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTy
 import com.liferay.dynamic.data.mapping.model.DDMFieldAttribute;
 import com.liferay.journal.internal.upgrade.helper.JournalArticleImageUpgradeHelper;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -40,7 +43,12 @@ public class DDMFieldAttributeUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+		DB db = DBManagerUtil.getDB();
+
+		try (SafeCloseable safeCloseable = db.addTemporaryIndex(
+				connection, "DDMFieldAttribute", false, "ctCollectionId",
+				"fieldId");
+			PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
 					"select DDMFieldAttribute.fieldAttributeId, ",
 					"DDMFieldAttribute.companyId, DDMFieldAttribute.fieldId, ",
