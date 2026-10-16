@@ -448,50 +448,48 @@ public class DLCheckInCheckOutTest {
 	public void testCheckOutWithExistingDLFileVersionIdFromAnotherFileEntry()
 		throws Exception {
 
-		FileEntry victimFileEntry = null;
+		FileEntry otherFileEntry = null;
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_overriderUser)) {
 
-			victimFileEntry = createFileEntry(StringUtil.randomString());
+			otherFileEntry = createFileEntry(StringUtil.randomString());
 		}
 
-		DLFileEntry victimDLFileEntry =
+		DLFileEntry otherDLFileEntry =
 			DLFileEntryLocalServiceUtil.getDLFileEntry(
-				victimFileEntry.getFileEntryId());
+				otherFileEntry.getFileEntryId());
 
-		DLFileVersion originalVictimDLFileVersion =
-			victimDLFileEntry.getFileVersion();
+		DLFileVersion originalOtherDLFileVersion =
+			otherDLFileEntry.getFileVersion();
 
-		long victimFileVersionId =
-			originalVictimDLFileVersion.getFileVersionId();
+		long otherFileVersionId = originalOtherDLFileVersion.getFileVersionId();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId(), 0);
 
 		serviceContext.setAttribute(
-			"existingDLFileVersionId", victimFileVersionId);
+			"existingDLFileVersionId", otherFileVersionId);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_authorUser)) {
 
-			FileEntry attackerFileEntry = createFileEntry(
-				StringUtil.randomString());
+			FileEntry fileEntry = createFileEntry(StringUtil.randomString());
 
 			AssertUtils.assertFailure(
 				NoSuchFileVersionException.class,
 				"No DLFileVersion exists with the primary key " +
-					victimFileVersionId,
+					otherFileVersionId,
 				() -> DLAppServiceUtil.checkOutFileEntry(
-					attackerFileEntry.getFileEntryId(), serviceContext));
+					fileEntry.getFileEntryId(), serviceContext));
 		}
 
-		DLFileVersion victimDLFileVersion =
-			DLFileVersionLocalServiceUtil.getDLFileVersion(victimFileVersionId);
+		DLFileVersion otherDLFileVersion =
+			DLFileVersionLocalServiceUtil.getDLFileVersion(otherFileVersionId);
 
-		Assert.assertEquals("1.0", victimDLFileVersion.getVersion());
+		Assert.assertEquals("1.0", otherDLFileVersion.getVersion());
 		Assert.assertEquals(
-			_overriderUser.getUserId(), victimDLFileVersion.getUserId());
+			_overriderUser.getUserId(), otherDLFileVersion.getUserId());
 	}
 
 	@Test
