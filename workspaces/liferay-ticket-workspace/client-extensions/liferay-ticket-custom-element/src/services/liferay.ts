@@ -7,6 +7,9 @@ interface ILiferay {
 	Icons: {
 		spritemap: string;
 	};
+	Language: {
+		get: (key: string) => string;
+	};
 	Util: {
 		openToast: (data: {
 			message?: string;
@@ -26,6 +29,9 @@ declare global {
 export const Liferay = window.Liferay || {
 	Icons: {
 		spritemap: '',
+	},
+	Language: {
+		get: (key: string) => key,
 	},
 	Util: {
 		openToast: () => null,
