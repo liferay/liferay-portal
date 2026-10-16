@@ -7,6 +7,7 @@ import {Text} from '@clayui/core';
 import ClayLink from '@clayui/link';
 import {
 	FrontendDataSet,
+	IFrontendDataSetProps,
 	IItemActionsData,
 } from '@liferay/frontend-data-set-web';
 import {sub} from 'frontend-js-web';
@@ -21,95 +22,58 @@ import {GovernanceAdditionalProps} from '../types';
 
 const EMPTY_STATE_IMAGE = '/states/cms_empty_state.svg';
 
-const VIEWS = [
-	{
-		contentRenderer: 'table',
-		default: true,
-		label: Liferay.Language.get('table'),
-		name: 'table',
-		schema: {
-			fields: [
-				{
-					actionId: 'actionLink',
-					contentRenderer: 'assetRenderer',
-					fieldName: 'embedded.title',
-					label: Liferay.Language.get('title'),
-				},
-			],
+export function getGovernanceAssetListViews({
+	actionId,
+	fieldName,
+}: {
+	actionId: string;
+	fieldName: string;
+}) {
+	return [
+		{
+			contentRenderer: 'table',
+			default: true,
+			label: Liferay.Language.get('table'),
+			name: 'table',
+			schema: {
+				fields: [
+					{
+						actionId,
+						contentRenderer: 'assetRenderer',
+						fieldName,
+						label: Liferay.Language.get('title'),
+					},
+				],
+			},
+			thumbnail: 'table',
 		},
-		thumbnail: 'table',
-	},
-];
+	];
+}
 
 export function getGovernanceAssetListPanelId(id: string) {
 	return `${id}-panel`;
 }
 
-export function GovernanceAssetList({
-	additionalProps,
-	apiURL,
+export function GovernanceListPanel({
 	count,
 	description,
 	emptyStateDescription = '',
 	emptyStateTitle,
+	fdsProps,
 	id,
-	itemActionIds,
-	renderSubtitle,
 	title,
 	viewAllHref,
 }: {
-	additionalProps: GovernanceAdditionalProps;
-	apiURL: string;
 	count: number;
 	description: string;
 	emptyStateDescription?: string;
 	emptyStateTitle: string;
+	fdsProps: Partial<IFrontendDataSetProps> &
+		Pick<IFrontendDataSetProps, 'views'>;
 	id: string;
-	itemActionIds: IItemActionsData['id'][];
-	renderSubtitle: (item: ISearchAssetObjectEntry) => React.ReactNode;
 	title: string;
 	viewAllHref: string;
 }) {
-	const {reloadStatistics} = useContext(GovernanceContext);
-
-	useEffect(() => {
-		const handleUpdateDisplay = (event?: {id?: string}) => {
-			if (event?.id === id) {
-				reloadStatistics();
-			}
-		};
-
-		Liferay.on(FDS_EVENT_UPDATE_DISPLAY, handleUpdateDisplay);
-
-		return () => {
-			Liferay.detach(FDS_EVENT_UPDATE_DISPLAY, handleUpdateDisplay);
-		};
-	}, [id, reloadStatistics]);
-
-	const fdsProps = useMemo(
-		() =>
-			getDashboardAssetListFDSProps({
-				additionalProps,
-				apiURL,
-				id,
-				itemsActions: itemActionIds.flatMap((actionId) =>
-					additionalProps.fdsActionDropdownItems.filter(
-						(action) => action.data?.id === actionId
-					)
-				),
-				onDataChange: reloadStatistics,
-				renderSubtitle,
-			}),
-		[
-			additionalProps,
-			apiURL,
-			id,
-			itemActionIds,
-			reloadStatistics,
-			renderSubtitle,
-		]
-	);
-
 	const titleId = `${id}-title`;
 
 	return (
@@ -154,7 +118,6 @@ export function GovernanceAssetList({
 					showPagination={false}
 					showSearch={false}
 					style="fluid"
-					views={VIEWS}
 				/>
 			</div>
 
@@ -170,5 +133,89 @@ export function GovernanceAssetList({
 				</div>
 			) : null}
 		</section>
+	);
+}
+
+export function GovernanceAssetList({
+	additionalProps,
+	apiURL,
+	count,
+	description,
+	emptyStateDescription,
+	emptyStateTitle,
+	id,
+	itemActionIds,
+	renderSubtitle,
+	title,
+	viewAllHref,
+}: {
+	additionalProps: GovernanceAdditionalProps;
+	apiURL: string;
+	count: number;
+	description: string;
+	emptyStateDescription?: string;
+	emptyStateTitle: string;
+	id: string;
+	itemActionIds: IItemActionsData['id'][];
+	renderSubtitle: (item: ISearchAssetObjectEntry) => React.ReactNode;
+	title: string;
+	viewAllHref: string;
+}) {
+	const {reloadStatistics} = useContext(GovernanceContext);
+
+	useEffect(() => {
+		const handleUpdateDisplay = (event?: {id?: string}) => {
+			if (event?.id === id) {
+				reloadStatistics();
+			}
+		};
+
+		Liferay.on(FDS_EVENT_UPDATE_DISPLAY, handleUpdateDisplay);
+
+		return () => {
+			Liferay.detach(FDS_EVENT_UPDATE_DISPLAY, handleUpdateDisplay);
+		};
+	}, [id, reloadStatistics]);
+
+	const fdsProps = useMemo(
+		() => ({
+			...getDashboardAssetListFDSProps({
+				additionalProps,
+				apiURL,
+				id,
+				itemsActions: itemActionIds.flatMap((actionId) =>
+					additionalProps.fdsActionDropdownItems.filter(
+						(action) => action.data?.id === actionId
+					)
+				),
+				onDataChange: reloadStatistics,
+				renderSubtitle,
+			}),
+			views: getGovernanceAssetListViews({
+				actionId: 'actionLink',
+				fieldName: 'embedded.title',
+			}),
+		}),
+		[
+			additionalProps,
+			apiURL,
+			id,
+			itemActionIds,
+			reloadStatistics,
+			renderSubtitle,
+		]
+	);
+
+	return (
+		<GovernanceListPanel
+			count={count}
+			description={description}
+			emptyStateDescription={emptyStateDescription}
+			emptyStateTitle={emptyStateTitle}
+			fdsProps={fdsProps}
+			id={id}
+			title={title}
+			viewAllHref={viewAllHref}
+		/>
 	);
 }
