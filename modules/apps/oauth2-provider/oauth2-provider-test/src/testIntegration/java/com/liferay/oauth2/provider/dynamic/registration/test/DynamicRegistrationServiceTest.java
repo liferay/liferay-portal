@@ -800,6 +800,33 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	}
 
 	@Test
+	public void testRegisterWithInvalidJWKSURI() throws Exception {
+		_testRegisterWithInvalidJWKSURI(
+			"https://10.0.0.1/" + RandomTestUtil.randomString());
+		_testRegisterWithInvalidJWKSURI(
+			"https://127.0.0.1/" + RandomTestUtil.randomString());
+		_testRegisterWithInvalidJWKSURI(
+			"https://169.254.169.254/" + RandomTestUtil.randomString());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						"com.liferay.portal.security.configuration." +
+							"URLFetchSecurityCompanyConfiguration",
+						HashMapDictionaryBuilder.<String, Object>put(
+							"urlHostsAllowed",
+							new String[] {
+								RandomTestUtil.randomString() + ".com"
+							}
+						).build())) {
+
+			_testRegisterWithInvalidJWKSURI(
+				"https://" + RandomTestUtil.randomString() + ".com");
+		}
+	}
+
+	@Test
 	public void testRegisterWithInvalidRedirectURI() throws Exception {
 		_testRegisterWithInvalidRedirectURI(StringPool.BLANK);
 		_testRegisterWithInvalidRedirectURI(
@@ -1122,6 +1149,28 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			"invalid_token", additionalInfoJSONObject.getString("error"));
 		Assert.assertEquals(
 			"authenticated", additionalInfoJSONObject.getString("mode"));
+	}
+
+	private void _testRegisterWithInvalidJWKSURI(String jwksURI)
+		throws Exception {
+
+		WebTarget registerWebTarget = getRegisterWebTarget();
+
+		Invocation.Builder invocationBuilder = authorize(
+			registerWebTarget.request(),
+			_getToken(_getDynamicRegistratorOAuth2Application()));
+
+		JSONObject jsonObject = _createAuthenticatedRegistrationJSONObject(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		jsonObject.put("jwks_uri", jwksURI);
+
+		Response response = invocationBuilder.method(
+			"post", Entity.json(jsonObject.toString()));
+
+		Assert.assertEquals(400, response.getStatus());
+
+		Assert.assertEquals("invalid_request", parseError(response));
 	}
 
 	private void _testRegisterWithInvalidRedirectURI(String redirectURI)

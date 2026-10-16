@@ -51,15 +51,19 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.configuration.URLFetchSecurityCompanyConfiguration;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -71,6 +75,8 @@ import jakarta.ws.rs.core.SecurityContext;
 import java.io.IOException;
 
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.URI;
 
 import java.nio.charset.StandardCharsets;
 
@@ -863,7 +869,8 @@ public class LiferayOAuthDataProvider
 			String jwks = properties.get("jwks");
 
 			if (jwks == null) {
-				jwks = _extractJwksFromJwksUri(properties.get("jwks_uri"));
+				jwks = _extractJwksFromJwksUri(
+					companyId, properties.get("jwks_uri"));
 			}
 
 			oAuth2Application =
@@ -1310,7 +1317,9 @@ public class LiferayOAuthDataProvider
 		serverAccessToken.setTokenType(accessToken.getTokenType());
 	}
 
-	private String _extractJwksFromJwksUri(String jwksURI) throws Exception {
+	private String _extractJwksFromJwksUri(long companyId, String jwksURI)
+		throws Exception {
+
 		if (Validator.isBlank(jwksURI)) {
 			return null;
 		}
@@ -1321,8 +1330,15 @@ public class LiferayOAuthDataProvider
 				OAuthConstants.INVALID_REQUEST, Response.Status.BAD_REQUEST);
 		}
 
+		if (_isNotAllowedJWKSURI(companyId, jwksURI)) {
+			OAuth2ErrorUtil.reportInvalidRequestError(
+				"The JWKS URI field must use an allowed host",
+				OAuthConstants.INVALID_REQUEST, Response.Status.BAD_REQUEST);
+		}
+
 		Http.Options options = new Http.Options();
 
+		options.setFollowRedirects(false);
 		options.setLocation(jwksURI);
 
 		try {
@@ -1499,6 +1515,54 @@ public class LiferayOAuthDataProvider
 
 				return null;
 			});
+	}
+
+	private boolean _isNotAllowedJWKSURI(long companyId, String jwksURI) {
+		try {
+			URI uri = HttpComponentsUtil.getURI(jwksURI);
+
+			String host = uri.getHost();
+
+			if (Validator.isNull(host)) {
+				return true;
+			}
+
+			URLFetchSecurityCompanyConfiguration
+				urlFetchSecurityCompanyConfiguration =
+					_configurationProvider.getCompanyConfiguration(
+						URLFetchSecurityCompanyConfiguration.class, companyId);
+
+			String[] urlHostsAllowed =
+				urlFetchSecurityCompanyConfiguration.urlHostsAllowed();
+
+			if (ArrayUtil.isNotEmpty(urlHostsAllowed) &&
+				!ArrayUtil.contains(urlHostsAllowed, host, true)) {
+
+				return true;
+			}
+
+			if (urlFetchSecurityCompanyConfiguration.
+					urlLocalNetworkAccessEnabled()) {
+
+				return false;
+			}
+
+			InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
+				host);
+
+			if (inetAddress == null) {
+				return true;
+			}
+
+			return InetAddressUtil.isLocalInetAddress(inetAddress);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return true;
 	}
 
 	private ServerAccessToken _populateAccessToken(
