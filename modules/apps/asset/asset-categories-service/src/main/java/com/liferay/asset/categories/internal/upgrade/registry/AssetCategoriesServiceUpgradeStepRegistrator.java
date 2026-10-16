@@ -6,9 +6,13 @@
 package com.liferay.asset.categories.internal.upgrade.registry;
 
 import com.liferay.asset.categories.internal.upgrade.v1_0_0.AssetCategoryFriendlyURLUpgradeProcess;
+import com.liferay.asset.categories.internal.upgrade.v1_1_0.AssetVocabularyExternalReferenceCodeUpgradeProcess;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
@@ -30,6 +34,11 @@ public class AssetCategoriesServiceUpgradeStepRegistrator
 			new AssetCategoryFriendlyURLUpgradeProcess(
 				_assetCategoryLocalService, _classNameLocalService,
 				_friendlyURLEntryLocalService));
+
+		registry.register(
+			"1.0.0", "1.1.0",
+			new AssetVocabularyExternalReferenceCodeUpgradeProcess(
+				_companyLocalService, _groupLocalService, _language));
 	}
 
 	@Reference
@@ -39,6 +48,15 @@ public class AssetCategoriesServiceUpgradeStepRegistrator
 	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private Language _language;
 
 }
