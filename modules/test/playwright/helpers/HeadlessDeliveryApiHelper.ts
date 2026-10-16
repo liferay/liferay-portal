@@ -343,7 +343,7 @@ export class HeadlessDeliveryApiHelper {
 		headline: string;
 		siteId: string;
 		taxonomyCategoryIds?: number[];
-		viewableBy?: 'Anyone' | 'Members' | 'Owner';
+		viewableBy?: string;
 	}): Promise<MessageBoardThread> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/message-board-threads`,
