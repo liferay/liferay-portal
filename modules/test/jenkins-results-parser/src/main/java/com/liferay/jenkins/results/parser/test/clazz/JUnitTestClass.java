@@ -39,9 +39,7 @@ public class JUnitTestClass extends BaseTestClass {
 		List<TestClassReport> cachedTestClassReports =
 			getCachedTestClassReports(batchTestClassGroup);
 
-		if ((cachedTestClassReports == null) ||
-			cachedTestClassReports.isEmpty()) {
-
+		if (cachedTestClassReports == null) {
 			return null;
 		}
 
