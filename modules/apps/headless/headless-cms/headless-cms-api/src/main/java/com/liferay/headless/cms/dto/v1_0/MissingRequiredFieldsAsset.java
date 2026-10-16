@@ -541,4 +541,4 @@ public class MissingRequiredFieldsAsset implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-713687913
+// LIFERAY-REST-BUILDER-HASH:1804215399
