@@ -197,7 +197,7 @@ public class AssetVocabularyLocalServiceImpl
 
 		long vocabularyId = counterLocalService.increment();
 
-		_validateExternalReferenceCode(externalReferenceCode, groupId, 0);
+		_validateExternalReferenceCode(externalReferenceCode, groupId, null);
 
 		AssetVocabulary vocabulary = assetVocabularyPersistence.create(
 			vocabularyId);
@@ -562,7 +562,7 @@ public class AssetVocabularyLocalServiceImpl
 
 		if (Validator.isNotNull(externalReferenceCode)) {
 			_validateExternalReferenceCode(
-				externalReferenceCode, vocabulary.getGroupId(), vocabularyId);
+				externalReferenceCode, vocabulary.getGroupId(), vocabulary);
 
 			vocabulary.setExternalReferenceCode(externalReferenceCode);
 		}
@@ -605,7 +605,7 @@ public class AssetVocabularyLocalServiceImpl
 
 		if (Validator.isNotNull(externalReferenceCode)) {
 			_validateExternalReferenceCode(
-				externalReferenceCode, vocabulary.getGroupId(), vocabularyId);
+				externalReferenceCode, vocabulary.getGroupId(), vocabulary);
 
 			vocabulary.setExternalReferenceCode(externalReferenceCode);
 		}
@@ -799,11 +799,26 @@ public class AssetVocabularyLocalServiceImpl
 	}
 
 	private void _validateExternalReferenceCode(
-			String externalReferenceCode, long groupId, long vocabularyId)
+			String externalReferenceCode, long groupId,
+			AssetVocabulary vocabulary)
 		throws PortalException {
 
 		if (Validator.isNull(externalReferenceCode)) {
 			return;
+		}
+
+		if ((vocabulary != null) &&
+			Objects.equals(
+				vocabulary.getExternalReferenceCode(),
+				AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC) &&
+			!Objects.equals(
+				externalReferenceCode,
+				AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC)) {
+
+			throw new VocabularyExternalReferenceCodeException(
+				StringBundler.concat(
+					"External reference code of default vocabulary ",
+					vocabulary.getVocabularyId(), " cannot be changed"));
 		}
 
 		int maxLength = ModelHintsUtil.getMaxLength(
@@ -820,9 +835,7 @@ public class AssetVocabularyLocalServiceImpl
 			assetVocabularyPersistence.fetchByERC_G(
 				externalReferenceCode, groupId);
 
-		if ((assetVocabulary != null) &&
-			(assetVocabulary.getVocabularyId() != vocabularyId)) {
-
+		if ((assetVocabulary != null) && !assetVocabulary.equals(vocabulary)) {
 			throw new DuplicateVocabularyExternalReferenceCodeException(
 				StringBundler.concat(
 					"Duplicate vocabulary external reference code ",
