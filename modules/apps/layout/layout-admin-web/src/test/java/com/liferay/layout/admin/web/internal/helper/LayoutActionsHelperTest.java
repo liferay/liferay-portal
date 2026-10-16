@@ -64,7 +64,7 @@ public class LayoutActionsHelperTest {
 		_setUpLayoutPermissionUtil(layout, ActionKeys.DELETE);
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
+			null, null, _themeDisplay, null);
 
 		Assert.assertFalse(layoutActionsHelper.isShowDeleteAction(layout));
 	}
@@ -75,7 +75,7 @@ public class LayoutActionsHelperTest {
 		Layout layout = _getLayout(_getGroup());
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
+			null, null, _themeDisplay, null);
 
 		Assert.assertFalse(
 			layoutActionsHelper.isShowDiscardDraftActions(layout));
@@ -123,7 +123,7 @@ public class LayoutActionsHelperTest {
 		Layout layout = _getLayout(_getGroup());
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
+			null, null, _themeDisplay, null);
 
 		Assert.assertFalse(
 			layoutActionsHelper.isShowPreviewDraftActions(layout));
@@ -259,7 +259,7 @@ public class LayoutActionsHelperTest {
 		Layout layout = _getLayout(_getGroup());
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
+			null, null, _themeDisplay, null);
 
 		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
 	}
@@ -272,7 +272,7 @@ public class LayoutActionsHelperTest {
 		Layout layout = _getLayout(_getGroup());
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
+			null, null, _themeDisplay, null);
 
 		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
 	}
@@ -293,7 +293,7 @@ public class LayoutActionsHelperTest {
 		_setUpLayoutPermissionUtil(layout, ActionKeys.UPDATE);
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
+			null, null, _themeDisplay, null);
 
 		Assert.assertTrue(layoutActionsHelper.isShowViewHistoryAction(layout));
 	}
@@ -312,7 +312,7 @@ public class LayoutActionsHelperTest {
 		);
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
+			null, null, _themeDisplay, null);
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -337,7 +337,7 @@ public class LayoutActionsHelperTest {
 		);
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
+			null, null, _themeDisplay, null);
 
 		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
 	}

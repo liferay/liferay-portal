@@ -6,6 +6,7 @@
 package com.liferay.layout.admin.web.internal.helper;
 
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.layout.admin.web.internal.util.OrphanPortletsUtil;
 import com.liferay.layout.util.template.LayoutConverter;
 import com.liferay.layout.util.template.LayoutConverterRegistry;
@@ -41,10 +42,11 @@ public class LayoutActionsHelper {
 
 	public LayoutActionsHelper(
 		LayoutConverterRegistry layoutConverterRegistry,
-		ThemeDisplay themeDisplay,
+		PortletRegistry portletRegistry, ThemeDisplay themeDisplay,
 		TranslationPermission translationPermission) {
 
 		_layoutConverterRegistry = layoutConverterRegistry;
+		_portletRegistry = portletRegistry;
 		_themeDisplay = themeDisplay;
 		_translationPermission = translationPermission;
 	}
@@ -321,6 +323,7 @@ public class LayoutActionsHelper {
 		LayoutActionsHelper.class);
 
 	private final LayoutConverterRegistry _layoutConverterRegistry;
+	private final PortletRegistry _portletRegistry;
 	private final ThemeDisplay _themeDisplay;
 	private final TranslationPermission _translationPermission;
 

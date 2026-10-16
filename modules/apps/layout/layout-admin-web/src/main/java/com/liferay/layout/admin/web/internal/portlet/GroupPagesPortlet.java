@@ -10,6 +10,7 @@ import com.liferay.asset.kernel.exception.AssetCategoryException;
 import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException;
+import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.friendly.url.exception.DuplicateFriendlyURLEntryException;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
@@ -208,7 +209,8 @@ public class GroupPagesPortlet extends MVCPortlet {
 				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 			LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-				_layoutConverterRegistry, themeDisplay, _translationPermission);
+				_layoutConverterRegistry, _portletRegistry, themeDisplay,
+				_translationPermission);
 
 			LayoutsAdminDisplayContext layoutsAdminDisplayContext =
 				new LayoutsAdminDisplayContext(
@@ -325,6 +327,9 @@ public class GroupPagesPortlet extends MVCPortlet {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private PortletRegistry _portletRegistry;
 
 	@Reference
 	private TranslationPermission _translationPermission;

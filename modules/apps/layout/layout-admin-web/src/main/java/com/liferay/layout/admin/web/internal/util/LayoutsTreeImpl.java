@@ -8,6 +8,7 @@ package com.liferay.layout.admin.web.internal.util;
 import com.liferay.application.list.GroupProvider;
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
 import com.liferay.exportimport.kernel.staging.Staging;
+import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.layout.admin.web.internal.action.provider.LayoutActionProvider;
 import com.liferay.layout.admin.web.internal.helper.LayoutActionsHelper;
 import com.liferay.layout.security.permission.resource.LayoutContentModelResourcePermission;
@@ -94,7 +95,8 @@ public class LayoutsTreeImpl implements LayoutsTree {
 			":Pagination");
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			_layoutConverterRegistry, themeDisplay, _translationPermission);
+			_layoutConverterRegistry, _portletRegistry, themeDisplay,
+			_translationPermission);
 
 		String paginationJSON = SessionClicks.get(
 			httpServletRequest.getSession(), key, _jsonFactory.getNullJSON());
@@ -597,6 +599,9 @@ public class LayoutsTreeImpl implements LayoutsTree {
 
 	@Reference
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
+
+	@Reference
+	private PortletRegistry _portletRegistry;
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
