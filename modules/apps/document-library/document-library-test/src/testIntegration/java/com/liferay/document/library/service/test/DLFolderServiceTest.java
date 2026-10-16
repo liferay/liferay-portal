@@ -23,17 +23,28 @@ import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -134,6 +145,59 @@ public class DLFolderServiceTest {
 			_dlFolderService.getFolders(
 				_group.getGroupId(), 1.0, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS));
+	}
+
+	@Test
+	public void testMoveFolderToRootFolderWhenItemGroupHasAddPermission()
+		throws Exception {
+
+		DLFolder dlFolder = _addChildDLFolder();
+
+		_user = _addUser(_group, dlFolder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			_dlFolderService.moveFolder(
+				dlFolder.getFolderId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				ServiceContextTestUtil.getServiceContext(
+					_alternativeGroup.getGroupId(), _user.getUserId()));
+		}
+
+		dlFolder = _dlFolderService.getFolder(dlFolder.getFolderId());
+
+		Assert.assertEquals(
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			dlFolder.getParentFolderId());
+		Assert.assertEquals(_group.getGroupId(), dlFolder.getGroupId());
+	}
+
+	@Test
+	public void testMoveFolderToRootFolderWhenOnlyScopeGroupHasAddPermission()
+		throws Exception {
+
+		DLFolder dlFolder = _addChildDLFolder();
+
+		_user = _addUser(_alternativeGroup, dlFolder);
+
+		long folderId = dlFolder.getFolderId();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _dlFolderService.moveFolder(
+					folderId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+					ServiceContextTestUtil.getServiceContext(
+						_alternativeGroup.getGroupId(), _user.getUserId())));
+		}
+
+		dlFolder = _dlFolderService.getFolder(folderId);
+
+		Assert.assertEquals(
+			_parentFolder.getFolderId(), dlFolder.getParentFolderId());
 	}
 
 	@Test
@@ -495,12 +559,37 @@ public class DLFolderServiceTest {
 		}
 	}
 
+	private DLFolder _addChildDLFolder() throws Exception {
+		return _dlFolderService.addFolder(
+			null, _group.getGroupId(), _group.getGroupId(), false,
+			_parentFolder.getFolderId(), StringUtil.randomString(),
+			StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
 	private DLFolder _addDLFolder() throws Exception {
 		return _dlFolderService.addFolder(
 			null, _group.getGroupId(), _group.getGroupId(), false,
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			StringUtil.randomString(), StringPool.BLANK,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	private User _addUser(Group group, DLFolder dlFolder) throws Exception {
+		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		ResourcePermissionLocalServiceUtil.setResourcePermissions(
+			_role.getCompanyId(), DLFolder.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(dlFolder.getFolderId()), _role.getRoleId(),
+			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
+
+		RoleLocalServiceUtil.addUserRoles(
+			user.getUserId(), new long[] {_role.getRoleId()});
+
+		return user;
 	}
 
 	@DeleteAfterTestRun
@@ -531,6 +620,12 @@ public class DLFolderServiceTest {
 
 	@Inject
 	private RatingsEntryLocalService _ratingsEntryLocalService;
+
+	@DeleteAfterTestRun
+	private Role _role;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 	@Inject
 	private ViewCountManager _viewCountManager;
