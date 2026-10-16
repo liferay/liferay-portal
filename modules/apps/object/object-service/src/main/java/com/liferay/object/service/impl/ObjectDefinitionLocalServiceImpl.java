@@ -530,7 +530,8 @@ public class ObjectDefinitionLocalServiceImpl
 			throw new RequiredObjectDefinitionException();
 		}
 
-		if (ArrayUtil.isNotEmpty(
+		if (!PortalInstances.isCurrentCompanyInDeletionProcess() &&
+			ArrayUtil.isNotEmpty(
 				objectDefinition.getRootObjectDefinitionIds())) {
 
 			throw new ObjectRelationshipEdgeException(

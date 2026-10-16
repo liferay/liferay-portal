@@ -2657,6 +2657,36 @@ public class ObjectDefinitionLocalServiceTest {
 				user.getUserId(),
 				customObjectDefinition.getObjectDefinitionId());
 
+			ObjectDefinition childCustomObjectDefinition =
+				_objectDefinitionLocalService.addCustomObjectDefinition(
+					null, user.getUserId(), 0, null, null, true, false, true,
+					false, true, false, false, false, false, null,
+					LocalizedMapUtil.getLocalizedMap("Baker"), "Baker", null,
+					null, LocalizedMapUtil.getLocalizedMap("Bakers"), true,
+					ObjectDefinitionConstants.SCOPE_COMPANY,
+					ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+					Collections.emptyList(),
+					Collections.singletonList(
+						ObjectFieldUtil.createObjectField(
+							ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+							ObjectFieldConstants.DB_TYPE_STRING,
+							RandomTestUtil.randomString(),
+							StringUtil.randomId())),
+					Collections.emptyList(), new ServiceContext());
+
+			_objectDefinitionLocalService.publishCustomObjectDefinition(
+				user.getUserId(),
+				childCustomObjectDefinition.getObjectDefinitionId());
+
+			_objectRelationshipLocalService.addObjectRelationship(
+				null, user.getUserId(),
+				customObjectDefinition.getObjectDefinitionId(),
+				childCustomObjectDefinition.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, true,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+
 			ObjectDefinition modifiableSystemObjectDefinition =
 				ObjectDefinitionTestUtil.addModifiableSystemObjectDefinition(
 					user.getUserId(), null,
@@ -2686,7 +2716,10 @@ public class ObjectDefinitionLocalServiceTest {
 
 		Assert.assertNull(
 			_objectDefinitionLocalService.fetchObjectDefinition(
-				company.getCompanyId(), "Able"));
+				company.getCompanyId(), "C_Able"));
+		Assert.assertNull(
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				company.getCompanyId(), "C_Baker"));
 		Assert.assertNull(
 			_objectDefinitionLocalService.fetchObjectDefinition(
 				company.getCompanyId(), "Test"));

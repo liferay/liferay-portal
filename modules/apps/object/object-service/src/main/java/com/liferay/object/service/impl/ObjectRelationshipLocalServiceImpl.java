@@ -101,6 +101,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.WorkflowInstanceManagerUtil;
+import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
@@ -383,7 +384,9 @@ public class ObjectRelationshipLocalServiceImpl
 
 		// TODO When should we allow an object relationship to be deleted?
 
-		if (objectRelationship.isEdge()) {
+		if (!PortalInstances.isCurrentCompanyInDeletionProcess() &&
+			objectRelationship.isEdge()) {
+
 			throw new ObjectRelationshipEdgeException(
 				"Edge object relationships cannot be deleted",
 				"edge-object-relationships-cannot-be-deleted");
