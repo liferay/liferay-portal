@@ -81,13 +81,15 @@ public class CMSContentMissingRequiredFieldsModelDocumentContributor
 					ObjectEntryVersion descendantObjectEntryVersion =
 						_getApprovedObjectEntryVersion(descendantObjectEntry);
 
-					if (descendantObjectEntryVersion != null) {
-						missingRequiredFieldsCount +=
-							_getMissingRequiredFieldsCount(
-								descendantObjectEntry.getObjectDefinition(),
-								descendantObjectEntry,
-								descendantObjectEntryVersion);
+					if (descendantObjectEntryVersion == null) {
+						continue;
 					}
+
+					missingRequiredFieldsCount +=
+						_getMissingRequiredFieldsCount(
+							descendantObjectEntry.getObjectDefinition(),
+							descendantObjectEntry,
+							descendantObjectEntryVersion);
 				}
 			}
 

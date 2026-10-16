@@ -489,9 +489,11 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 					SegmentsEntryRel::getClassPK));
 
 			for (Long oldUserId : oldUserIds) {
-				if (!addUserIds.remove(oldUserId)) {
-					deleteUserIds.add(oldUserId);
+				if (addUserIds.remove(oldUserId)) {
+					continue;
 				}
+
+				deleteUserIds.add(oldUserId);
 			}
 
 			if (!deleteUserIds.isEmpty()) {

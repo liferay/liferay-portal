@@ -26,12 +26,14 @@ public class MissingRequiredFieldsUtil {
 		int missingRequiredFieldsCount = 0;
 
 		for (ObjectField objectField : objectFields) {
-			if (objectField.isRequired() &&
-				_isMissing(
+			if (!objectField.isRequired() ||
+				!_isMissing(
 					defaultLanguageId, objectField, propertiesJSONObject)) {
 
-				missingRequiredFieldsCount++;
+				continue;
 			}
+
+			missingRequiredFieldsCount++;
 		}
 
 		return missingRequiredFieldsCount;

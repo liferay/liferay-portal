@@ -113,10 +113,12 @@ public class FrontendDataSetTestUtil {
 			ObjectDefinition objectDefinition = _fetchObjectDefinition(
 				externalReferenceCode);
 
-			if (objectDefinition != null) {
-				ObjectDefinitionLocalServiceUtil.deleteObjectDefinition(
-					objectDefinition);
+			if (objectDefinition == null) {
+				continue;
 			}
+
+			ObjectDefinitionLocalServiceUtil.deleteObjectDefinition(
+				objectDefinition);
 		}
 	}
 
