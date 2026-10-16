@@ -115,6 +115,8 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			"abcdefghijklmnopqrstuvwxyz0123456789");
 		_testGetDataDefinitionDataLayoutsPage("form layout", "form layout");
 		_testGetDataDefinitionDataLayoutsPage("layo", "form layout");
+
+		_testGetDataDefinitionDataLayoutsPageWithoutPermissions();
 	}
 
 	@Override
@@ -550,6 +552,69 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			_dataDefinition.getId(), randomDataLayout());
 	}
 
+	private DataDefinition _addDataDefinition() throws Exception {
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		DataDefinitionResource dataDefinitionResource =
+			DataDefinitionResource.builder(
+			).authentication(
+				adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), "journal",
+				new DataDefinition() {
+					{
+						availableLanguageIds = new String[] {"en_US"};
+						dataDefinitionFields = new DataDefinitionField[] {
+							new DataDefinitionField() {
+								{
+									fieldType = "text";
+									label = new HashMap<>(
+										RandomTestUtil.
+											randomLanguageIdStringMap());
+									name = "text";
+								}
+							}
+						};
+						dataDefinitionKey = RandomTestUtil.randomString();
+						defaultLanguageId = "en_US";
+						name = new HashMap<>(
+							RandomTestUtil.randomLanguageIdStringMap());
+						siteId = testGroup.getGroupId();
+					}
+				});
+
+		dataLayoutResource.postDataDefinitionDataLayout(
+			dataDefinition.getId(),
+			DataLayoutTestUtil.createDataLayout(
+				dataDefinition.getId(), RandomTestUtil.randomString(),
+				testGroup.getGroupId()));
+
+		return dataDefinition;
+	}
+
+	private DataLayoutResource _getDataLayoutResource() throws Exception {
+		User user = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
+		return DataLayoutResource.builder(
+		).authentication(
+			user.getEmailAddress(), user.getPasswordUnencrypted()
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private long _getDataLayoutsCount(long dataDefinitionId) throws Exception {
 		Page<DataLayout> page =
 			dataLayoutResource.getDataDefinitionDataLayoutsPage(
@@ -614,66 +679,13 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	private void _testDeleteDataDefinitionDataLayoutWithoutPermissions()
 		throws Exception {
 
-		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+		DataDefinition dataDefinition = _addDataDefinition();
 
-		DataDefinitionResource dataDefinitionResource =
-			DataDefinitionResource.builder(
-			).authentication(
-				adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
-
-		DataDefinition dataDefinition =
-			dataDefinitionResource.postSiteDataDefinitionByContentType(
-				testGroup.getGroupId(), "journal",
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = new HashMap<>(
-										RandomTestUtil.
-											randomLanguageIdStringMap());
-									name = "text";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = new HashMap<>(
-							RandomTestUtil.randomLanguageIdStringMap());
-						siteId = testGroup.getGroupId();
-					}
-				});
-
-		dataLayoutResource.postDataDefinitionDataLayout(
-			dataDefinition.getId(),
-			DataLayoutTestUtil.createDataLayout(
-				dataDefinition.getId(), RandomTestUtil.randomString(),
-				testGroup.getGroupId()));
-
-		User user = UserTestUtil.addUser(
-			testCompany, RandomTestUtil.randomString());
-
-		DataLayoutResource userDataLayoutResource = DataLayoutResource.builder(
-		).authentication(
-			user.getEmailAddress(), user.getPasswordUnencrypted()
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
+		DataLayoutResource dataLayoutResource = _getDataLayoutResource();
 
 		assertHttpResponseStatusCode(
 			403,
-			userDataLayoutResource.deleteDataDefinitionDataLayoutHttpResponse(
+			dataLayoutResource.deleteDataDefinitionDataLayoutHttpResponse(
 				dataDefinition.getId()));
 
 		Assert.assertEquals(1, _getDataLayoutsCount(dataDefinition.getId()));
@@ -703,6 +715,23 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		assertValid(page);
 
 		dataLayoutResource.deleteDataLayout(dataLayout.getId());
+	}
+
+	private void _testGetDataDefinitionDataLayoutsPageWithoutPermissions()
+		throws Exception {
+
+		DataDefinition dataDefinition = _addDataDefinition();
+
+		DataLayoutResource dataLayoutResource = _getDataLayoutResource();
+
+		assertHttpResponseStatusCode(
+			403,
+			dataLayoutResource.getDataDefinitionDataLayoutsPageHttpResponse(
+				dataDefinition.getId(), null, Pagination.of(1, 2), null));
+		assertHttpResponseStatusCode(
+			403,
+			dataLayoutResource.getDataDefinitionDataLayoutsPageHttpResponse(
+				dataDefinition.getId(), "layout", Pagination.of(1, 2), null));
 	}
 
 	@Inject
