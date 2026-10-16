@@ -100,7 +100,7 @@ import com.liferay.trash.model.TrashVersion;
 import com.liferay.trash.service.TrashEntryLocalService;
 import com.liferay.trash.service.TrashVersionLocalService;
 import com.liferay.wiki.configuration.WikiFileUploadConfiguration;
-import com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPageConstants;
 import com.liferay.wiki.constants.WikiPortletKeys;
@@ -217,14 +217,13 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		WikiNode node = _wikiNodePersistence.findByPrimaryKey(nodeId);
 
-		WikiGroupServiceOverriddenConfiguration
-			wikiGroupServiceOverriddenConfiguration =
-				_configurationProvider.getConfiguration(
-					WikiGroupServiceOverriddenConfiguration.class,
-					new GroupServiceSettingsLocator(
-						node.getGroupId(), WikiConstants.SERVICE_NAME));
+		WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+			_configurationProvider.getConfiguration(
+				WikiGroupServiceConfiguration.class,
+				new GroupServiceSettingsLocator(
+					node.getGroupId(), WikiConstants.SERVICE_NAME));
 
-		String format = wikiGroupServiceOverriddenConfiguration.defaultFormat();
+		String format = wikiGroupServiceConfiguration.defaultFormat();
 
 		boolean head = false;
 		String parentTitle = null;
@@ -2256,16 +2255,15 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			// Social
 
-			WikiGroupServiceOverriddenConfiguration
-				wikiGroupServiceOverriddenConfiguration =
-					_configurationProvider.getConfiguration(
-						WikiGroupServiceOverriddenConfiguration.class,
-						new GroupServiceSettingsLocator(
-							page.getGroupId(), WikiConstants.SERVICE_NAME));
+			WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+				_configurationProvider.getConfiguration(
+					WikiGroupServiceConfiguration.class,
+					new GroupServiceSettingsLocator(
+						page.getGroupId(), WikiConstants.SERVICE_NAME));
 
 			if ((oldStatus != WorkflowConstants.STATUS_IN_TRASH) &&
 				(!page.isMinorEdit() ||
-				 wikiGroupServiceOverriddenConfiguration.
+				 wikiGroupServiceConfiguration.
 					 pageMinorEditAddSocialActivity())) {
 
 				JSONObject extraDataJSONObject = JSONUtil.put(
@@ -2288,8 +2286,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			if (NotificationThreadLocal.isEnabled() &&
 				(!page.isMinorEdit() ||
-				 wikiGroupServiceOverriddenConfiguration.
-					 pageMinorEditSendEmail())) {
+				 wikiGroupServiceConfiguration.pageMinorEditSendEmail())) {
 
 				_notifySubscribers(
 					userId, page,
@@ -3058,12 +3055,11 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			return;
 		}
 
-		WikiGroupServiceOverriddenConfiguration
-			wikiGroupServiceOverriddenConfiguration =
-				_configurationProvider.getConfiguration(
-					WikiGroupServiceOverriddenConfiguration.class,
-					new GroupServiceSettingsLocator(
-						page.getGroupId(), WikiConstants.SERVICE_NAME));
+		WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+			_configurationProvider.getConfiguration(
+				WikiGroupServiceConfiguration.class,
+				new GroupServiceSettingsLocator(
+					page.getGroupId(), WikiConstants.SERVICE_NAME));
 
 		boolean update = false;
 
@@ -3071,12 +3067,10 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			update = true;
 		}
 
-		if (!update &&
-			wikiGroupServiceOverriddenConfiguration.emailPageAddedEnabled()) {
+		if (!update && wikiGroupServiceConfiguration.emailPageAddedEnabled()) {
 		}
 		else if (update &&
-				 wikiGroupServiceOverriddenConfiguration.
-					 emailPageUpdatedEnabled()) {
+				 wikiGroupServiceConfiguration.emailPageUpdatedEnabled()) {
 		}
 		else {
 			return;
@@ -3114,26 +3108,23 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		String pageTitle = page.getTitle();
 
-		String fromName =
-			wikiGroupServiceOverriddenConfiguration.emailFromName();
-		String fromAddress =
-			wikiGroupServiceOverriddenConfiguration.emailFromAddress();
+		String fromName = wikiGroupServiceConfiguration.emailFromName();
+		String fromAddress = wikiGroupServiceConfiguration.emailFromAddress();
 
 		LocalizedValuesMap subjectLocalizedValuesMap = null;
 		LocalizedValuesMap bodyLocalizedValuesMap = null;
 
 		if (update) {
 			subjectLocalizedValuesMap =
-				wikiGroupServiceOverriddenConfiguration.
-					emailPageUpdatedSubject();
+				wikiGroupServiceConfiguration.emailPageUpdatedSubject();
 			bodyLocalizedValuesMap =
-				wikiGroupServiceOverriddenConfiguration.emailPageUpdatedBody();
+				wikiGroupServiceConfiguration.emailPageUpdatedBody();
 		}
 		else {
 			subjectLocalizedValuesMap =
-				wikiGroupServiceOverriddenConfiguration.emailPageAddedSubject();
+				wikiGroupServiceConfiguration.emailPageAddedSubject();
 			bodyLocalizedValuesMap =
-				wikiGroupServiceOverriddenConfiguration.emailPageAddedBody();
+				wikiGroupServiceConfiguration.emailPageAddedBody();
 		}
 
 		SubscriptionSender subscriptionSender = new SubscriptionSender();

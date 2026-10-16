@@ -34,7 +34,7 @@ import com.liferay.rss.model.SyndLink;
 import com.liferay.rss.model.SyndModelFactory;
 import com.liferay.rss.util.RSSUtil;
 import com.liferay.subscription.service.SubscriptionLocalService;
-import com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPageConstants;
 import com.liferay.wiki.constants.WikiPortletKeys;
@@ -948,18 +948,17 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 				String value = null;
 
 				if (displayStyle.equals(RSSUtil.DISPLAY_STYLE_ABSTRACT)) {
-					WikiGroupServiceOverriddenConfiguration
-						wikiGroupServiceOverriddenConfiguration =
+					WikiGroupServiceConfiguration
+						wikiGroupServiceConfiguration =
 							_configurationProvider.getConfiguration(
-								WikiGroupServiceOverriddenConfiguration.class,
+								WikiGroupServiceConfiguration.class,
 								new GroupServiceSettingsLocator(
 									page.getGroupId(),
 									WikiConstants.SERVICE_NAME));
 
 					value = StringUtil.shorten(
 						_htmlParser.extractText(page.getContent()),
-						wikiGroupServiceOverriddenConfiguration.
-							rssAbstractLength(),
+						wikiGroupServiceConfiguration.rssAbstractLength(),
 						StringPool.BLANK);
 				}
 				else if (displayStyle.equals(RSSUtil.DISPLAY_STYLE_TITLE)) {

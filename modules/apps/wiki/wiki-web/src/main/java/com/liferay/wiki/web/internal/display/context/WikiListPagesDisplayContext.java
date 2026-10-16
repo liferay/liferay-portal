@@ -40,7 +40,6 @@ import com.liferay.subscription.service.SubscriptionLocalServiceUtil;
 import com.liferay.taglib.security.PermissionsURLTag;
 import com.liferay.trash.TrashHelper;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
-import com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration;
 import com.liferay.wiki.constants.WikiWebKeys;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
@@ -610,16 +609,14 @@ public class WikiListPagesDisplayContext {
 			return false;
 		}
 
-		WikiGroupServiceOverriddenConfiguration
-			wikiGroupServiceOverriddenConfiguration =
-				_wikiRequestHelper.getWikiGroupServiceOverriddenConfiguration();
+		WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+			_wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 		if (!WikiPagePermission.contains(
 				_wikiRequestHelper.getPermissionChecker(), wikiPage,
 				ActionKeys.SUBSCRIBE) ||
-			(!wikiGroupServiceOverriddenConfiguration.emailPageAddedEnabled() &&
-			 !wikiGroupServiceOverriddenConfiguration.
-				 emailPageUpdatedEnabled())) {
+			(!wikiGroupServiceConfiguration.emailPageAddedEnabled() &&
+			 !wikiGroupServiceConfiguration.emailPageUpdatedEnabled())) {
 
 			return false;
 		}

@@ -25,7 +25,6 @@ page import="com.liferay.portal.kernel.util.TempFileEntryUtil" %><%@
 page import="com.liferay.trash.TrashHelper" %><%@
 page import="com.liferay.trash.util.TrashWebKeys" %><%@
 page import="com.liferay.wiki.configuration.WikiGroupServiceConfiguration" %><%@
-page import="com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration" %><%@
 page import="com.liferay.wiki.engine.WikiEngineRenderer" %><%@
 page import="com.liferay.wiki.exception.DuplicateNodeNameException" %><%@
 page import="com.liferay.wiki.exception.DuplicatePageException" %><%@
@@ -65,7 +64,7 @@ AssetHelper assetHelper = (AssetHelper)request.getAttribute(AssetWebKeys.ASSET_H
 
 WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(request);
 
-WikiGroupServiceOverriddenConfiguration wikiGroupServiceOverriddenConfiguration = wikiRequestHelper.getWikiGroupServiceOverriddenConfiguration();
+WikiGroupServiceConfiguration siteWikiGroupServiceConfiguration = wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 WikiPortletInstanceSettingsHelper wikiPortletInstanceSettingsHelper = new WikiPortletInstanceSettingsHelper(wikiRequestHelper);
 

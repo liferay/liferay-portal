@@ -5,9 +5,10 @@
 
 package com.liferay.blogs.web.internal.struts;
 
-import com.liferay.blogs.configuration.BlogsGroupServiceOverriddenConfiguration;
+import com.liferay.blogs.configuration.BlogsGroupServiceConfiguration;
 import com.liferay.blogs.constants.BlogsConstants;
 import com.liferay.blogs.service.BlogsEntryService;
+import com.liferay.blogs.web.internal.util.BlogsUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -177,15 +178,14 @@ public class RSSStrutsAction implements StrutsAction {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		BlogsGroupServiceOverriddenConfiguration
-			blogsGroupServiceOverriddenConfiguration =
-				_configurationProvider.getConfiguration(
-					BlogsGroupServiceOverriddenConfiguration.class,
-					new GroupServiceSettingsLocator(
-						themeDisplay.getSiteGroupId(),
-						BlogsConstants.SERVICE_NAME));
+		BlogsGroupServiceConfiguration blogsGroupServiceConfiguration =
+			_configurationProvider.getConfiguration(
+				BlogsGroupServiceConfiguration.class,
+				new GroupServiceSettingsLocator(
+					themeDisplay.getSiteGroupId(),
+					BlogsConstants.SERVICE_NAME));
 
-		return blogsGroupServiceOverriddenConfiguration.enableRss();
+		return BlogsUtil.isRSSFeedsEnabled(blogsGroupServiceConfiguration);
 	}
 
 	@Reference

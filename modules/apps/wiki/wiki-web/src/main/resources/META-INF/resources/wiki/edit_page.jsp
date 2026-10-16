@@ -20,7 +20,7 @@ String title = BeanParamUtil.getString(wikiPage, request, "title");
 
 boolean editTitle = ParamUtil.getBoolean(request, "editTitle");
 
-String selectedFormat = BeanParamUtil.getString(wikiPage, request, "format", wikiGroupServiceOverriddenConfiguration.defaultFormat());
+String selectedFormat = BeanParamUtil.getString(wikiPage, request, "format", siteWikiGroupServiceConfiguration.defaultFormat());
 
 Collection<String> formats = wikiEngineRenderer.getFormats();
 

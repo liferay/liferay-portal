@@ -9,7 +9,7 @@
 
 <%
 BlogsConfigurationDisplayContext blogsConfigurationDisplayContext = new BlogsConfigurationDisplayContext(request, renderRequest, renderResponse);
-BlogsGroupServiceOverriddenConfiguration blogsGroupServiceOverriddenConfiguration = ConfigurationProviderUtil.getConfiguration(BlogsGroupServiceOverriddenConfiguration.class, new ParameterMapSettingsLocator(request.getParameterMap(), new GroupServiceSettingsLocator(themeDisplay.getSiteGroupId(), BlogsConstants.SERVICE_NAME)));
+BlogsGroupServiceConfiguration blogsGroupServiceConfiguration = ConfigurationProviderUtil.getConfiguration(BlogsGroupServiceConfiguration.class, new ParameterMapSettingsLocator(request.getParameterMap(), new GroupServiceSettingsLocator(themeDisplay.getSiteGroupId(), BlogsConstants.SERVICE_NAME)));
 BlogsGroupServiceSettings blogsGroupServiceSettings = BlogsGroupServiceSettings.getInstance(scopeGroupId, request.getParameterMap());
 
 portletDisplay.setShowBackIcon(true);
@@ -109,10 +109,10 @@ portletDisplay.setURLBackTitle("blogs");
 						<c:when test='<%= Objects.equals(blogsConfigurationDisplayContext.getNavigation(), "rss") && PortalUtil.isRSSFeedsEnabled() %>'>
 							<div class="c-px-4 panel-group-flush">
 								<liferay-rss:rss-settings
-									delta="<%= GetterUtil.getInteger(blogsGroupServiceOverriddenConfiguration.rssDelta()) %>"
-									displayStyle="<%= blogsGroupServiceOverriddenConfiguration.rssDisplayStyle() %>"
-									enabled="<%= blogsGroupServiceOverriddenConfiguration.enableRss() %>"
-									feedType="<%= blogsGroupServiceOverriddenConfiguration.rssFeedType() %>"
+									delta="<%= GetterUtil.getInteger(blogsGroupServiceConfiguration.rssDelta()) %>"
+									displayStyle="<%= blogsGroupServiceConfiguration.rssDisplayStyle() %>"
+									enabled="<%= blogsGroupServiceConfiguration.enableRss() %>"
+									feedType="<%= blogsGroupServiceConfiguration.rssFeedType() %>"
 								/>
 							</div>
 						</c:when>

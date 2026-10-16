@@ -31,7 +31,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.trash.TrashHelper;
-import com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPageConstants;
 import com.liferay.wiki.constants.WikiPortletKeys;
@@ -99,11 +99,11 @@ public class WikiPageAssetRenderer
 
 	@Override
 	public String getDiscussionPath() {
-		if (_wikiGroupServiceOverriddenConfiguration == null) {
+		if (_wikiGroupServiceConfiguration == null) {
 			try {
-				_wikiGroupServiceOverriddenConfiguration =
+				_wikiGroupServiceConfiguration =
 					ConfigurationProviderUtil.getConfiguration(
-						WikiGroupServiceOverriddenConfiguration.class,
+						WikiGroupServiceConfiguration.class,
 						new GroupServiceSettingsLocator(
 							_page.getGroupId(), WikiConstants.SERVICE_NAME));
 			}
@@ -114,7 +114,7 @@ public class WikiPageAssetRenderer
 			}
 		}
 
-		if (_wikiGroupServiceOverriddenConfiguration.pageCommentsEnabled()) {
+		if (_wikiGroupServiceConfiguration.pageCommentsEnabled()) {
 			return "edit_page_discussion";
 		}
 
@@ -421,7 +421,6 @@ public class WikiPageAssetRenderer
 	private final WikiPage _page;
 	private final TrashHelper _trashHelper;
 	private final WikiEngineRenderer _wikiEngineRenderer;
-	private WikiGroupServiceOverriddenConfiguration
-		_wikiGroupServiceOverriddenConfiguration;
+	private WikiGroupServiceConfiguration _wikiGroupServiceConfiguration;
 
 }

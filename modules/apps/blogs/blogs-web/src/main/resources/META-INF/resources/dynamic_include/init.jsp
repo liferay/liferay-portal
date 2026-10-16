@@ -17,7 +17,7 @@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
 taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
-<%@ page import="com.liferay.blogs.configuration.BlogsGroupServiceOverriddenConfiguration" %><%@
+<%@ page import="com.liferay.blogs.configuration.BlogsGroupServiceConfiguration" %><%@
 page import="com.liferay.blogs.constants.BlogsConstants" %><%@
 page import="com.liferay.blogs.constants.BlogsPortletKeys" %><%@
 page import="com.liferay.blogs.model.BlogsEntry" %><%@
@@ -26,6 +26,7 @@ page import="com.liferay.blogs.web.internal.configuration.BlogsPortletInstanceCo
 page import="com.liferay.blogs.web.internal.display.context.BlogsEditEntryDisplayContext" %><%@
 page import="com.liferay.blogs.web.internal.security.permission.resource.BlogsPermission" %><%@
 page import="com.liferay.blogs.web.internal.util.BlogsPortletInstanceConfigurationUtil" %><%@
+page import="com.liferay.blogs.web.internal.util.BlogsUtil" %><%@
 page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@

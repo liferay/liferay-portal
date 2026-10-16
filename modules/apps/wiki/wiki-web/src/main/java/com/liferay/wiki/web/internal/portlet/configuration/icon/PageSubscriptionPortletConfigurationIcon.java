@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.subscription.service.SubscriptionLocalService;
-import com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiPortletKeys;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
@@ -115,18 +115,15 @@ public class PageSubscriptionPortletConfigurationIcon
 		WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(
 			_portal.getHttpServletRequest(portletRequest));
 
-		WikiGroupServiceOverriddenConfiguration
-			wikiGroupServiceOverriddenConfiguration =
-				wikiRequestHelper.getWikiGroupServiceOverriddenConfiguration();
+		WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+			wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 		try {
 			if (_wikiPageModelResourcePermission.contains(
 					wikiRequestHelper.getPermissionChecker(),
 					ActionUtil.getPage(portletRequest), ActionKeys.SUBSCRIBE) &&
-				(wikiGroupServiceOverriddenConfiguration.
-					emailPageAddedEnabled() ||
-				 wikiGroupServiceOverriddenConfiguration.
-					 emailPageUpdatedEnabled())) {
+				(wikiGroupServiceConfiguration.emailPageAddedEnabled() ||
+				 wikiGroupServiceConfiguration.emailPageUpdatedEnabled())) {
 
 				return true;
 			}

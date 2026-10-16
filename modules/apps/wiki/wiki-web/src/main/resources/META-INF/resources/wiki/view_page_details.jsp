@@ -159,23 +159,23 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "details
 		</tr>
 	</c:if>
 
-	<c:if test="<%= wikiGroupServiceOverriddenConfiguration.enableRss() %>">
+	<c:if test="<%= WikiUtil.isRSSFeedsEnabled(siteWikiGroupServiceConfiguration) %>">
 		<tr>
 			<th class="table-header">
 				<liferay-ui:message key="rss-subscription" />
 			</th>
 			<td class="table-cell">
 				<liferay-rss:rss
-					delta="<%= GetterUtil.getInteger(wikiGroupServiceOverriddenConfiguration.rssDelta()) %>"
-					displayStyle="<%= wikiGroupServiceOverriddenConfiguration.rssDisplayStyle() %>"
-					feedType="<%= wikiGroupServiceOverriddenConfiguration.rssFeedType() %>"
+					delta="<%= GetterUtil.getInteger(siteWikiGroupServiceConfiguration.rssDelta()) %>"
+					displayStyle="<%= siteWikiGroupServiceConfiguration.rssDisplayStyle() %>"
+					feedType="<%= siteWikiGroupServiceConfiguration.rssFeedType() %>"
 					url='<%= themeDisplay.getPathMain() + "/wiki/rss?nodeId=" + wikiPage.getNodeId() + "&title=" + wikiPage.getTitle() %>'
 				/>
 			</td>
 		</tr>
 	</c:if>
 
-	<c:if test="<%= (WikiPagePermission.contains(permissionChecker, wikiPage, ActionKeys.SUBSCRIBE) || WikiNodePermission.contains(permissionChecker, node, ActionKeys.SUBSCRIBE)) && (wikiGroupServiceOverriddenConfiguration.emailPageAddedEnabled() || wikiGroupServiceOverriddenConfiguration.emailPageUpdatedEnabled()) %>">
+	<c:if test="<%= (WikiPagePermission.contains(permissionChecker, wikiPage, ActionKeys.SUBSCRIBE) || WikiNodePermission.contains(permissionChecker, node, ActionKeys.SUBSCRIBE)) && (siteWikiGroupServiceConfiguration.emailPageAddedEnabled() || siteWikiGroupServiceConfiguration.emailPageUpdatedEnabled()) %>">
 		<tr>
 			<th class="table-header">
 				<liferay-ui:message key="email-subscription" />

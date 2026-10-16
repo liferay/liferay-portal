@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.rss.util.RSSUtil;
-import com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration;
 import com.liferay.wiki.constants.WikiPortletKeys;
 import com.liferay.wiki.service.WikiPageService;
 import com.liferay.wiki.web.internal.display.context.helper.WikiRequestHelper;
@@ -117,11 +116,8 @@ public class RSSStrutsAction implements StrutsAction {
 		WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(
 			httpServletRequest);
 
-		WikiGroupServiceOverriddenConfiguration
-			wikiGroupServiceOverriddenConfiguration =
-				wikiRequestHelper.getWikiGroupServiceOverriddenConfiguration();
-
-		return wikiGroupServiceOverriddenConfiguration.enableRss();
+		return WikiUtil.isRSSFeedsEnabled(
+			wikiRequestHelper.getWikiGroupServiceConfiguration());
 	}
 
 	@Reference

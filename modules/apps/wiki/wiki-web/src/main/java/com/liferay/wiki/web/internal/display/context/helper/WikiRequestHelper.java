@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.settings.ParameterMapSettingsLocator;
 import com.liferay.portal.kernel.settings.PortletInstanceSettingsLocator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiWebKeys;
 import com.liferay.wiki.model.WikiPage;
@@ -39,15 +39,13 @@ public class WikiRequestHelper extends BaseStrutsRequestHelper {
 		return _categoryId;
 	}
 
-	public WikiGroupServiceOverriddenConfiguration
-		getWikiGroupServiceOverriddenConfiguration() {
-
+	public WikiGroupServiceConfiguration getWikiGroupServiceConfiguration() {
 		try {
-			if (_wikiGroupServiceOverriddenConfiguration == null) {
+			if (_wikiGroupServiceConfiguration == null) {
 				if (Validator.isNotNull(getPortletResource())) {
-					_wikiGroupServiceOverriddenConfiguration =
+					_wikiGroupServiceConfiguration =
 						ConfigurationProviderUtil.getConfiguration(
-							WikiGroupServiceOverriddenConfiguration.class,
+							WikiGroupServiceConfiguration.class,
 							new ParameterMapSettingsLocator(
 								getRequest().getParameterMap(),
 								new GroupServiceSettingsLocator(
@@ -55,15 +53,15 @@ public class WikiRequestHelper extends BaseStrutsRequestHelper {
 									WikiConstants.SERVICE_NAME)));
 				}
 				else {
-					_wikiGroupServiceOverriddenConfiguration =
+					_wikiGroupServiceConfiguration =
 						ConfigurationProviderUtil.getConfiguration(
-							WikiGroupServiceOverriddenConfiguration.class,
+							WikiGroupServiceConfiguration.class,
 							new GroupServiceSettingsLocator(
 								getSiteGroupId(), WikiConstants.SERVICE_NAME));
 				}
 			}
 
-			return _wikiGroupServiceOverriddenConfiguration;
+			return _wikiGroupServiceConfiguration;
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
@@ -112,8 +110,7 @@ public class WikiRequestHelper extends BaseStrutsRequestHelper {
 	}
 
 	private Long _categoryId;
-	private WikiGroupServiceOverriddenConfiguration
-		_wikiGroupServiceOverriddenConfiguration;
+	private WikiGroupServiceConfiguration _wikiGroupServiceConfiguration;
 	private WikiPage _wikiPage;
 	private WikiPortletInstanceConfiguration _wikiPortletInstanceConfiguration;
 

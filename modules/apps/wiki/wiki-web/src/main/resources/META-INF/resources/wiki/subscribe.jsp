@@ -30,7 +30,7 @@ else {
 }
 %>
 
-<c:if test="<%= wikiGroupServiceOverriddenConfiguration.emailPageAddedEnabled() || wikiGroupServiceOverriddenConfiguration.emailPageUpdatedEnabled() %>">
+<c:if test="<%= siteWikiGroupServiceConfiguration.emailPageAddedEnabled() || siteWikiGroupServiceConfiguration.emailPageUpdatedEnabled() %>">
 	<c:choose>
 		<c:when test="<%= (node != null) && WikiNodePermission.contains(permissionChecker, node, ActionKeys.SUBSCRIBE) %>">
 			<c:choose>

@@ -23,8 +23,10 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.engine.WikiEngine;
 import com.liferay.wiki.engine.WikiEngineRenderer;
 import com.liferay.wiki.exception.WikiFormatException;
@@ -194,6 +196,16 @@ public class WikiUtil {
 		}
 
 		return nodes;
+	}
+
+	public static boolean isRSSFeedsEnabled(
+		WikiGroupServiceConfiguration wikiGroupServiceConfiguration) {
+
+		if (!PortalUtil.isRSSFeedsEnabled()) {
+			return false;
+		}
+
+		return wikiGroupServiceConfiguration.enableRss();
 	}
 
 	public static List<WikiNode> orderNodes(

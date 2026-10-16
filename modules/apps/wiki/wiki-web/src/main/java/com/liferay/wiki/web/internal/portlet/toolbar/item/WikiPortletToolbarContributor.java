@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.wiki.configuration.WikiGroupServiceOverriddenConfiguration;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPortletKeys;
 import com.liferay.wiki.constants.WikiWebKeys;
@@ -135,16 +135,14 @@ public class WikiPortletToolbarContributor
 		String initialNodeName = StringPool.BLANK;
 
 		try {
-			WikiGroupServiceOverriddenConfiguration
-				wikiGroupServiceOverriddenConfiguration =
-					_configurationProvider.getConfiguration(
-						WikiGroupServiceOverriddenConfiguration.class,
-						new GroupServiceSettingsLocator(
-							themeDisplay.getScopeGroupId(),
-							WikiConstants.SERVICE_NAME));
+			WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+				_configurationProvider.getConfiguration(
+					WikiGroupServiceConfiguration.class,
+					new GroupServiceSettingsLocator(
+						themeDisplay.getScopeGroupId(),
+						WikiConstants.SERVICE_NAME));
 
-			initialNodeName =
-				wikiGroupServiceOverriddenConfiguration.initialNodeName();
+			initialNodeName = wikiGroupServiceConfiguration.initialNodeName();
 		}
 		catch (ConfigurationException configurationException) {
 			_log.error(

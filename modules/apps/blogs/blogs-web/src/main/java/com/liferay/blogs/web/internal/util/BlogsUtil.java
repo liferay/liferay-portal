@@ -8,6 +8,7 @@ package com.liferay.blogs.web.internal.util;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryServiceUtil;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
+import com.liferay.blogs.configuration.BlogsGroupServiceConfiguration;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.util.comparator.EntryDisplayDateComparator;
 import com.liferay.blogs.util.comparator.EntryTitleComparator;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -272,6 +274,16 @@ public class BlogsUtil {
 
 		return ModelHintsUtil.trimString(
 			BlogsEntry.class.getName(), "urlTitle", title);
+	}
+
+	public static boolean isRSSFeedsEnabled(
+		BlogsGroupServiceConfiguration blogsGroupServiceConfiguration) {
+
+		if (!PortalUtil.isRSSFeedsEnabled()) {
+			return false;
+		}
+
+		return blogsGroupServiceConfiguration.enableRss();
 	}
 
 }
