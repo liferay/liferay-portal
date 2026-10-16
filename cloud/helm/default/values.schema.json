@@ -1,0 +1,102 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"description": "Values for the Liferay DXP chart.",
+	"properties": {
+		"licensing": {
+			"additionalProperties": false,
+			"description": "Licensing through the Liferay DXP operator.",
+			"properties": {
+				"activationCodeSecretKey": {
+					"description": "Key of the activation code in its Secret.",
+					"type": "string"
+				},
+				"activationCodeSecretName": {
+					"description": "Secret that holds the activation code. Defaults to <name>-activation.",
+					"type": "string"
+				},
+				"dxpVersion": {
+					"description": "DXP version the operator reports to the provisioning service. Defaults to the image tag.",
+					"type": "string"
+				},
+				"enabled": {
+					"description": "Creates the LiferayEnvironment and syncs the license into the deploy folder.",
+					"type": "boolean"
+				},
+				"environmentName": {
+					"description": "Human-readable environment name the operator reports to the provisioning service. Defaults to the namespace.",
+					"type": "string"
+				},
+				"offline": {
+					"description": "Activates from an offline activation bundle instead of the provisioning service.",
+					"type": "boolean"
+				},
+				"offlineActivationBundle": {
+					"description": "File name of the offline activation bundle in the environment's marketplace directory.",
+					"type": "string"
+				},
+				"onlineActivationWorkflow": {
+					"additionalProperties": false,
+					"description": "Argo workflow that submits the activation code.",
+					"properties": {
+						"clusterRoleName": {
+							"description": "ClusterRole the workflow service account is bound to.",
+							"type": "string"
+						},
+						"clusterWorkflowTemplateName": {
+							"description": "ClusterWorkflowTemplate the workflow runs.",
+							"type": "string"
+						},
+						"enabled": {
+							"description": "Creates the online activation workflow and its RBAC.",
+							"type": "boolean"
+						},
+						"serviceAccountName": {
+							"description": "Service account the workflow runs as.",
+							"type": "string"
+						},
+						"ttlSecondsAfterCompletion": {
+							"description": "Seconds a finished workflow is kept before it is deleted.",
+							"minimum": 0,
+							"type": "integer"
+						},
+						"userAccess": {
+							"additionalProperties": false,
+							"description": "Service account a user submits the workflow with.",
+							"properties": {
+								"roleName": {
+									"description": "Role that allows submitting and watching the workflow.",
+									"type": "string"
+								},
+								"serviceAccountName": {
+									"description": "Service account bound to the role.",
+									"type": "string"
+								},
+								"tokenSecretName": {
+									"description": "Secret that holds the service account token.",
+									"type": "string"
+								}
+							},
+							"type": "object"
+						},
+						"workflowTemplateName": {
+							"description": "WorkflowTemplate a user submits.",
+							"type": "string"
+						}
+					},
+					"type": "object"
+				},
+				"secretName": {
+					"description": "Secret the license is mounted from. Defaults to <name>-entitlements.",
+					"type": "string"
+				},
+				"syncInterval": {
+					"description": "Seconds between license syncs into the deploy folder.",
+					"minimum": 1,
+					"type": "integer"
+				}
+			},
+			"type": "object"
+		}
+	},
+	"type": "object"
+}

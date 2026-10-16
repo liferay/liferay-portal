@@ -1,0 +1,92 @@
+suite: Values Schema
+templates:
+    -   templates/liferayenvironment.yaml
+tests:
+    -   asserts:
+            -   isKind:
+                    of: LiferayEnvironment
+        it: Accepts every licensing value the chart reads
+        set:
+            licensing:
+                activationCodeSecretKey: code
+                activationCodeSecretName: activation
+                dxpVersion: 2026.q3.0
+                enabled: true
+                environmentName: production
+                offline: true
+                offlineActivationBundle: activation-bundle.zip
+                onlineActivationWorkflow:
+                    clusterRoleName: cluster-role
+                    clusterWorkflowTemplateName: cluster-workflow-template
+                    enabled: false
+                    serviceAccountName: service-account
+                    ttlSecondsAfterCompletion: 0
+                    userAccess:
+                        roleName: user-role
+                        serviceAccountName: user-service-account
+                        tokenSecretName: user-token
+                    workflowTemplateName: workflow-template
+                secretName: entitlements
+                syncInterval: 1
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: licensing.enabled
+        it: Rejects a non-boolean licensing switch
+        set:
+            licensing.enabled: "yes"
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: licensing.offline
+        it: Rejects a non-boolean offline switch
+        set:
+            licensing.enabled: true
+            licensing.offline: "yes"
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: licensing.onlineActivationWorkflow.enabled
+        it: Rejects a non-boolean online activation workflow switch
+        set:
+            licensing.enabled: true
+            licensing.onlineActivationWorkflow.enabled: "yes"
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: licensing.syncInterval
+        it: Rejects a non-integer sync interval
+        set:
+            licensing.enabled: true
+            licensing.syncInterval: abc
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: licensing.activationCodeSecretName
+        it: Rejects a non-string activation code secret name
+        set:
+            licensing.activationCodeSecretName: 1
+            licensing.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: licensing.offlineActivationBundle
+        it: Rejects a non-string offline activation bundle
+        set:
+            licensing.enabled: true
+            licensing.offline: true
+            licensing.offlineActivationBundle: 1
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: licensing.syncInterval
+        it: Rejects a sync interval below one second
+        set:
+            licensing.enabled: true
+            licensing.syncInterval: 0
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: workflowTemplateNamee
+        it: Rejects an unknown key inside the online activation workflow
+        set:
+            licensing.enabled: true
+            licensing.onlineActivationWorkflow.workflowTemplateNamee: workflow-template
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: enabeld
+        it: Rejects an unknown licensing key
+        set:
+            licensing.enabeld: true
