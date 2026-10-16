@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
+import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.test.rule.Inject;
@@ -305,7 +306,16 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 				workflowTask.getWorkflowTaskId(), "approve", StringPool.BLANK,
 				null);
 
-			_waitForApproval();
+			IdempotentRetryAssert.retryAssert(
+				1, TimeUnit.MINUTES, 100, TimeUnit.MILLISECONDS,
+				() -> {
+					User user = _userLocalService.getUser(_user.getUserId());
+
+					Assert.assertEquals(
+						WorkflowConstants.STATUS_APPROVED, user.getStatus());
+
+					return null;
+				});
 
 			_assertAuditRequestContext(
 				AuditRequestContextThreadLocal.getAuditRequestContext(),
@@ -401,24 +411,6 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 			_assertUpdateAuditMessage(
 				AuditRequestContextThreadLocal.getAuditRequestContext());
 		}
-	}
-
-	private void _waitForApproval() throws Exception {
-		long deadline =
-			System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1);
-
-		User user = _userLocalService.getUser(_user.getUserId());
-
-		while ((user.getStatus() != WorkflowConstants.STATUS_APPROVED) &&
-			   (System.currentTimeMillis() < deadline)) {
-
-			Thread.sleep(100);
-
-			user = _userLocalService.getUser(_user.getUserId());
-		}
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, user.getStatus());
 	}
 
 	@DeleteAfterTestRun
