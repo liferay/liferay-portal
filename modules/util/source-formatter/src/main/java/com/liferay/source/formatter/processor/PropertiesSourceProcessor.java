@@ -54,7 +54,8 @@ public class PropertiesSourceProcessor extends BaseSourceProcessor {
 	}
 
 	private static final String[] _INCLUDES = {
-		"**/*.properties", "**/.eslintignore", "**/.prettierignore"
+		"**/*.properties", "**/.eslintignore", "**/.gitignore",
+		"**/.prettierignore"
 	};
 
 }
