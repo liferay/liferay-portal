@@ -49,7 +49,7 @@ const BarComparisonTable: React.FC<IBarComparisonTableProps> = ({
 			{items.map(({isPreviousValue, name, percent, style, value}, i) => (
 				<tr key={i}>
 					<td className="table-column-event-name">
-						<TextTruncate title={name} />
+						<TextTruncate className="py-1" title={name} />
 					</td>
 					<td>
 						<MetricBar
