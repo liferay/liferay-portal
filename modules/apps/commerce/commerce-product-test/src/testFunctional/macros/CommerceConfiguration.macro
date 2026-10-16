@@ -359,37 +359,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro configureWorkflow(workflowDefinition = null, workflowResourceValue = null) {
-		var key_workflowResourceValue = ${workflowResourceValue};
-
-		if (!(IsElementPresent(locator1 = "Pagination#ICON_DISABLED", type = "angle-right")) && (IsElementPresent(locator1 = "Pagination#FIRST_LINK"))) {
-			Pagination.changePagination(itemsPerPage = 40);
-		}
-
-		AssertClick.pauseAssertTextClickAt(
-			key_rowEntry = ${workflowResourceValue},
-			locator1 = "CommerceEntry#EDIT_ROW",
-			value1 = "Edit");
-
-		WaitForElementPresent(
-			key_rowEntry = ${workflowResourceValue},
-			locator1 = "CommerceEntry#RESOURCE_TABLE_SELECT",
-			value1 = ${workflowDefinition});
-
-		Select(
-			key_rowEntry = ${workflowResourceValue},
-			locator1 = "CommerceEntry#RESOURCE_TABLE_SELECT",
-			value1 = ${workflowDefinition});
-
-		AssertClick(
-			key_rowEntry = ${workflowResourceValue},
-			locator1 = "CommerceEntry#RESOURCE_TABLE_SAVE",
-			value1 = "Save");
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro setupB2BGuestCheckout(channelName = null) {
 		if (isSet(siteName)) {
 			var siteName = CommerceUtilities.convertStringToKey(string = ${siteName});

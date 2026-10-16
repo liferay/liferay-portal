@@ -108,39 +108,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro approvePendingProduct(userLastName = null, userFirstName = null, approveRequest = null) {
-		UserBar.gotoDropdownItem(dropdownItem = "Notifications");
-
-		Click(
-			key_text = "${userFirstName} ${userLastName} sent you a Product for review in the workflow.",
-			locator1 = "Link#ANY");
-
-		Click(
-			key_itemName = "",
-			locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
-
-		MenuItem.click(menuItem = "Assign to Me");
-
-		WaitForElementPresent(locator1 = "IFrame#MODAL_BODY");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-		Button.click(button = "Done");
-
-		SelectFrameTop();
-
-		if (isSet(approveRequest) && (${approveRequest} == "true")) {
-			Click(
-				key_itemName = "",
-				locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
-
-			MenuItem.click(menuItem = "Approve");
-
-			Button.click(button = "Done");
-		}
-	}
-
-	@summary = "Default summary"
 	macro checkProductDescription(list = null) {
 		for (var value : list ${list}) {
 			var productName = StringUtil.extractFirst(${value}, ":");
@@ -627,17 +594,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro disableProductSingleApproverWorkflow() {
-		Workflow.openWorkflowListView();
-
-		CommerceEntry.gotoMenuTab(menuTab = "Configuration");
-
-		CommerceConfiguration.configureWorkflow(
-			workflowDefinition = "No Workflow",
-			workflowResourceValue = "Product");
-	}
-
-	@summary = "Default summary"
 	macro duplicateProduct(productShortDescription = null, publishProduct = null, checkProductFields = null, compileDescription = null, productFullDescription = null, status = null, productCatalog = null) {
 		var productName = ${productName};
 
@@ -696,17 +652,6 @@ definition {
 				key_status = "Draft",
 				locator1 = "CommerceEntry#WORKFLOW_STATUS");
 		}
-	}
-
-	@summary = "Default summary"
-	macro enableProductSingleApproverWorkflow() {
-		Workflow.openWorkflowListView();
-
-		CommerceEntry.gotoMenuTab(menuTab = "Configuration");
-
-		CommerceConfiguration.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Product");
 	}
 
 	@summary = "Default summary"

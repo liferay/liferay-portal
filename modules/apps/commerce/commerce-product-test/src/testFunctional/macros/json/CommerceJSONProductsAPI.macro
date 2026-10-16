@@ -327,62 +327,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _addCommerceProductImage() {
-		var baseURL = JSONCompany.getPortalURL();
-
-		if (!(isSet(catalogName))) {
-			var catalogName = "Master";
-		}
-
-		if (!(isSet(productType))) {
-			var productType = "simple";
-		}
-
-		if (!(isSet(imageTitle))) {
-			var imageTitle = "Simple Image Title API";
-		}
-
-		if (!(isSet(productTitle))) {
-			var productTitle = "Simple Product API";
-		}
-
-		if (!(isSet(productStatus))) {
-			var productStatus = 0;
-		}
-
-		if (!(isSet(src))) {
-			var src = "${baseURL}/documents/d/guest/tree-png";
-		}
-
-		var catalogId = CommerceJSONCatalogsAPI._getCommerceCatalogIdByName(catalogName = ${catalogName});
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-catalog/v1.0/products \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-				-H 'Content-Type: application/json' \
-				-d '{
-					"active": true,
-					"catalogId": "${catalogId}",
-					"productType": "${productType}",
-					"images": [
-						{
-							"src": "${src}",
-							"title": {
-								"en_US": "${imageTitle}"
-							}
-						}
-					],
-					"name": {"en_US": "${productTitle}"},
-					"productStatus": ${productStatus}
-				}'
-		''';
-
-		com.liferay.poshi.runner.util.JSONCurlUtil.post(${curl});
-	}
-
-	@summary = "Default summary"
 	macro _addCommerceProductImageLinkedToOptionValue(optionValue = null, productERC = null, optionName = null) {
 		Variables.assertDefined(parameterList = "${productERC},${optionName},${optionValue}");
 

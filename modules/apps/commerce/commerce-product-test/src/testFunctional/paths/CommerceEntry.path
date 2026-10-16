@@ -491,23 +491,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>EDIT_ROW</td>
-	<td>//*[@data-qa-id='row']//*[normalize-space(text())='${key_rowEntry}']//..//..//*[normalize-space(text())='Edit']</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ENTRY_CONTENT_ENTRY_NAME_INDEX</td>
 	<td>//*[@data-qa-id='row']//*[normalize-space(text())='${key_rowEntry}'][${key_index}]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>RESOURCE_TABLE_SELECT</td>
-	<td>//*[@data-qa-id='row']//*[normalize-space(text())='${key_rowEntry}']//..//..//select</td>
-	<td></td>
-</tr>
-<tr>
-	<td>RESOURCE_TABLE_SAVE</td>
-	<td>//*[@data-qa-id='row']//*[normalize-space(text())='${key_rowEntry}']//..//..//button[contains(.,'Save')]</td>
 	<td></td>
 </tr>
 <tr>
