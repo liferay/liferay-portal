@@ -121,6 +121,9 @@ public class DDMUserPersonalFolderItemSelectorViewDisplayContext {
 		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
 			cur, delta);
 
+		startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+			startAndEnd[0], startAndEnd[1], getPortletFileEntriesCount());
+
 		return new ArrayList<>(
 			PortletFileRepositoryUtil.getPortletFileEntries(
 				_ddmUserPersonalFolderItemSelectorCriterion.getGroupId(),
