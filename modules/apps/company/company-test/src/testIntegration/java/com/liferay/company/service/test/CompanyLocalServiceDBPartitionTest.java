@@ -100,6 +100,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.felix.cm.PersistenceManager;
 
@@ -114,11 +116,14 @@ import org.junit.runner.RunWith;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ManagedService;
+import org.osgi.service.cm.ManagedServiceFactory;
 
 /**
  * @author Mariano Álvaro Sáiz
@@ -362,6 +367,7 @@ public class CompanyLocalServiceDBPartitionTest
 			CompanyLocalServiceTestUtil.createFactoryConfiguration(
 				_configurationAdmin, company.getCompanyId());
 
+		String factoryPid = configuration.getFactoryPid();
 		String pid = configuration.getPid();
 
 		companyLocalService.exportCompany(company.getCompanyId());
@@ -427,8 +433,28 @@ public class CompanyLocalServiceDBPartitionTest
 					exportedWebId);
 			}
 
-			company = companyLocalService.addDBPartitionCompany(
-				company.getCompanyId(), name, virtualHostname, webId);
+			List<String> pids = new CopyOnWriteArrayList<>();
+
+			ServiceRegistration<ManagedServiceFactory> serviceRegistration =
+				_bundleContext.registerService(
+					ManagedServiceFactory.class,
+					new ConfigurationTestUtil.InternalManagerServiceFactory(
+						factoryPid,
+						(servicePid, properties) -> pids.add(servicePid)),
+					MapUtil.singletonDictionary(
+						Constants.SERVICE_PID, factoryPid));
+
+			try {
+				_waitForConfigurationUpdates();
+
+				company = companyLocalService.addDBPartitionCompany(
+					company.getCompanyId(), name, virtualHostname, webId);
+
+				_waitForConfigurationUpdates();
+			}
+			finally {
+				serviceRegistration.unregister();
+			}
 
 			Assert.assertTrue(
 				ArrayUtil.contains(
@@ -446,6 +472,8 @@ public class CompanyLocalServiceDBPartitionTest
 				CompanyLocalServiceTestUtil.assertConfiguration(
 					_configurationAdmin, _persistenceManager, pid, true);
 			}
+
+			Assert.assertTrue(pids.toString(), pids.contains(pid));
 		}
 		finally {
 			db.runSQL(
@@ -1510,6 +1538,23 @@ public class CompanyLocalServiceDBPartitionTest
 		}
 
 		return false;
+	}
+
+	private void _waitForConfigurationUpdates() throws Exception {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+
+		ServiceRegistration<ManagedService> serviceRegistration =
+			_bundleContext.registerService(
+				ManagedService.class, properties -> countDownLatch.countDown(),
+				MapUtil.singletonDictionary(
+					Constants.SERVICE_PID, RandomTestUtil.randomString()));
+
+		try {
+			countDownLatch.await();
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
 	}
 
 	private static final String _CLASS_NAME_1 =
