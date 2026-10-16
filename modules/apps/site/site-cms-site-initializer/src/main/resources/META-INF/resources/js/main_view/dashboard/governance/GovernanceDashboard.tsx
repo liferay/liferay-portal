@@ -6,7 +6,6 @@
 import React from 'react';
 
 import {GovernanceContextProvider} from './GovernanceContext';
-import {AttentionRequired} from './components/AttentionRequired';
 import {DuplicationAndSimilarity} from './components/DuplicationAndSimilarity';
 import {Filters} from './components/Filters';
 import {Freshness} from './components/Freshness';
@@ -29,8 +28,6 @@ export default function GovernanceDashboard({
 			<Filters />
 
 			<GovernanceHealth />
-
-			<AttentionRequired />
 
 			<Quality additionalProps={additionalProps} />
 

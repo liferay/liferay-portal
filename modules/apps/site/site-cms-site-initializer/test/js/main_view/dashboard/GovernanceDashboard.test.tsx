@@ -109,22 +109,6 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 			).getByText('3')
 		).toBeInTheDocument();
 
-		const attentionRequired = within(
-			screen.getByRole('group', {name: 'attention-required'})
-		);
-
-		expect(
-			within(
-				attentionRequired.getByRole('button', {
-					name: /pending-workflows/,
-				})
-			).getByText('4')
-		).toBeInTheDocument();
-
-		expect(
-			attentionRequired.queryByRole('button', {name: /broken-links/})
-		).not.toBeInTheDocument();
-
 		const quality = within(screen.getByRole('group', {name: 'quality'}));
 
 		expect(
