@@ -279,13 +279,6 @@ public class DLSyncEventLocalServiceWrapper
 		return _dlSyncEventLocalService.getDLSyncEvents(start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.document.library.sync.model.DLSyncEvent>
-		getDLSyncEvents(long modifiedTime) {
-
-		return _dlSyncEventLocalService.getDLSyncEvents(modifiedTime);
-	}
-
 	/**
 	 * Returns the number of dl sync events.
 	 *
@@ -369,4 +362,4 @@ public class DLSyncEventLocalServiceWrapper
 	private DLSyncEventLocalService _dlSyncEventLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1453797240
+// LIFERAY-SERVICE-BUILDER-HASH:1512256275

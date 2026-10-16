@@ -222,9 +222,6 @@ public interface DLSyncEventLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DLSyncEvent> getDLSyncEvents(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLSyncEvent> getDLSyncEvents(long modifiedTime);
-
 	/**
 	 * Returns the number of dl sync events.
 	 *
@@ -268,4 +265,4 @@ public interface DLSyncEventLocalService
 	public DLSyncEvent updateDLSyncEvent(DLSyncEvent dlSyncEvent);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1413125723
+// LIFERAY-SERVICE-BUILDER-HASH:1553793899

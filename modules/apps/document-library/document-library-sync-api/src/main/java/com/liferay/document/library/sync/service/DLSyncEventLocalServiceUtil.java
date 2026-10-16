@@ -245,10 +245,6 @@ public class DLSyncEventLocalServiceUtil {
 		return getService().getDLSyncEvents(start, end);
 	}
 
-	public static List<DLSyncEvent> getDLSyncEvents(long modifiedTime) {
-		return getService().getDLSyncEvents(modifiedTime);
-	}
-
 	/**
 	 * Returns the number of dl sync events.
 	 *
@@ -310,4 +306,4 @@ public class DLSyncEventLocalServiceUtil {
 			DLSyncEventLocalServiceUtil.class, DLSyncEventLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1923332020
+// LIFERAY-SERVICE-BUILDER-HASH:576628628
