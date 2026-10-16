@@ -19,12 +19,15 @@ import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.site.memberships.constants.SiteMembershipsPortletKeys;
@@ -57,131 +60,33 @@ public class DepotPanelAppControllerTest {
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
 
-		_depotEntry = _depotEntryLocalService.addDepotEntry(
+		_depotEntry = _addDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY);
+		_designLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_DESIGN_LIBRARY);
+	}
+
+	@Test
+	@TestInfo("LPD-110391")
+	public void testGetPanelApps() throws Exception {
+		_testGetPanelAppsHidesAllApplicationsInTheCategorizationCategoryForADesignLibraryGroup();
+		_testGetPanelAppsHidesAllApplicationsInTheContentCategoryForADesignLibraryGroup();
+		_testGetPanelAppsHidesContentSetsInTheSiteBuilderCategoryForADesignLibraryGroup();
+		_testGetPanelAppsShowsAllContentWithSites();
+		_testGetPanelAppsShowsExportAndImportAndStagingInTheStagingCategoryForADepotGroup();
+		_testGetPanelAppsShowsOnlyContentSetsInTheSiteBuilderCategoryForADepotGroup();
+		_testGetPanelAppsShowsOnlyDocumentsAndMediaAndWebContentInTheContentCategoryForADepotGroup();
+		_testGetPanelAppsShowsOnlyMembersInThePeopleCategoryForADepotGroup();
+		_testGetPanelAppsShowsTheCategorizationCategoryForADepotGroup();
+		_testGetPanelAppsShowsTheControlPanelCategoryForADepotGroup();
+		_testGetPanelAppsShowsTheRecycleBinCategoryForADepotGroup();
+	}
+
+	private DepotEntry _addDepotEntry(int type) throws Exception {
+		return _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
-				LocaleUtil.getDefault(), "name"
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
-			new HashMap<>(), DepotConstants.TYPE_ASSET_LIBRARY,
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	@Test
-	public void testGetPanelAppsShowOnlyContentSetsInTheSiteBuilderCategoryForADepotGroup()
-		throws Exception {
-
-		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
-			PanelCategoryKeys.SITE_ADMINISTRATION_BUILD,
-			PermissionThreadLocal.getPermissionChecker(),
-			_groupLocalService.getGroup(_depotEntry.getGroupId()));
-
-		Assert.assertEquals(panelApps.toString(), 1, panelApps.size());
-
-		_assertPanelAppsContain(panelApps, AssetListPortletKeys.ASSET_LIST);
-	}
-
-	@Test
-	public void testGetPanelAppsShowsAllContentWithSites() throws Exception {
-		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
-			PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT,
-			PermissionThreadLocal.getPermissionChecker(),
-			_groupLocalService.getGroup(TestPropsValues.getGroupId()));
-
-		Assert.assertTrue(panelApps.size() >= 2);
-	}
-
-	@Test
-	public void testGetPanelAppsShowsExportAndImportAndStagingInTheStagingCategoryForADepotGroup()
-		throws Exception {
-
-		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
-			PanelCategoryKeys.SITE_ADMINISTRATION_PUBLISHING,
-			PermissionThreadLocal.getPermissionChecker(),
-			_groupLocalService.getGroup(_depotEntry.getGroupId()));
-
-		Assert.assertEquals(panelApps.toString(), 3, panelApps.size());
-
-		_assertPanelAppsContain(panelApps, ExportImportPortletKeys.EXPORT);
-		_assertPanelAppsContain(panelApps, ExportImportPortletKeys.IMPORT);
-		_assertPanelAppsContain(
-			panelApps, StagingProcessesPortletKeys.STAGING_PROCESSES);
-	}
-
-	@Test
-	public void testGetPanelAppsShowsOnlyDocumentsAndMediaAndWebContentInTheContentCategoryForADepotGroup()
-		throws Exception {
-
-		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
-			PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT,
-			PermissionThreadLocal.getPermissionChecker(),
-			_groupLocalService.getGroup(_depotEntry.getGroupId()));
-
-		Assert.assertEquals(panelApps.toString(), 3, panelApps.size());
-
-		_assertPanelAppsContain(
-			panelApps, DLPortletKeys.DOCUMENT_LIBRARY_ADMIN);
-		_assertPanelAppsContain(panelApps, JournalPortletKeys.JOURNAL);
-		_assertPanelAppsContain(
-			panelApps,
-			"com_liferay_translation_web_internal_portlet_TranslationPortlet");
-	}
-
-	@Test
-	public void testGetPanelAppsShowsOnlyMembersInThePeopleCategoryForADepotGroup()
-		throws Exception {
-
-		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
-			PanelCategoryKeys.SITE_ADMINISTRATION_MEMBERS,
-			PermissionThreadLocal.getPermissionChecker(),
-			_groupLocalService.getGroup(_depotEntry.getGroupId()));
-
-		Assert.assertEquals(panelApps.toString(), 1, panelApps.size());
-
-		_assertPanelAppsContain(
-			panelApps, SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN);
-
-		panelApps = _panelAppRegistry.getPanelApps(
-			PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT,
-			PermissionThreadLocal.getPermissionChecker(),
-			_groupLocalService.getGroup(TestPropsValues.getGroupId()));
-
-		Assert.assertTrue(panelApps.size() > 1);
-	}
-
-	@Test
-	public void testGetPanelAppsShowsTheCategorizationCategoryForADepotGroup()
-		throws Exception {
-
-		_assertIsDisplayed(
-			_depotEntry.getGroupId(),
-			PanelCategoryKeys.SITE_ADMINISTRATION_CATEGORIZATION);
-	}
-
-	@Test
-	public void testGetPanelAppsShowsTheControlPanelCategoryForADepotGroup()
-		throws Exception {
-
-		_assertIsDisplayed(
-			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_APPS);
-		_assertIsDisplayed(
-			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_INSTANCE);
-		_assertIsDisplayed(
-			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_SITES);
-		_assertIsDisplayed(
-			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_USERS);
-		_assertIsDisplayed(
-			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_WORKFLOW);
-		_assertIsDisplayed(
-			_depotEntry.getGroupId(),
-			PanelCategoryKeys.SITE_ADMINISTRATION_CONFIGURATION);
-	}
-
-	@Test
-	public void testGetPanelAppsShowsTheRecycleBinCategoryForADepotGroup()
-		throws Exception {
-
-		_assertIsDisplayed(
-			_depotEntry.getGroupId(),
-			PanelCategoryKeys.SITE_ADMINISTRATION_RECYCLE_BIN);
+			new HashMap<>(), type, ServiceContextTestUtil.getServiceContext());
 	}
 
 	private void _assertIsDisplayed(long groupId, String parentPanelCategoryKey)
@@ -212,11 +117,156 @@ public class DepotPanelAppControllerTest {
 			"Panel apps do not contain portlet " + portletId, found);
 	}
 
+	private void _testGetPanelAppsHidesAllApplicationsInTheCategorizationCategoryForADesignLibraryGroup()
+		throws Exception {
+
+		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_CATEGORIZATION,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(_designLibraryDepotEntry.getGroupId()));
+
+		Assert.assertTrue(panelApps.isEmpty());
+	}
+
+	private void _testGetPanelAppsHidesAllApplicationsInTheContentCategoryForADesignLibraryGroup()
+		throws Exception {
+
+		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(_designLibraryDepotEntry.getGroupId()));
+
+		Assert.assertTrue(panelApps.isEmpty());
+	}
+
+	private void _testGetPanelAppsHidesContentSetsInTheSiteBuilderCategoryForADesignLibraryGroup()
+		throws Exception {
+
+		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_BUILD,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(_designLibraryDepotEntry.getGroupId()));
+
+		Assert.assertTrue(panelApps.isEmpty());
+	}
+
+	private void _testGetPanelAppsShowsAllContentWithSites() throws Exception {
+		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(TestPropsValues.getGroupId()));
+
+		Assert.assertTrue(panelApps.size() >= 2);
+	}
+
+	private void _testGetPanelAppsShowsExportAndImportAndStagingInTheStagingCategoryForADepotGroup()
+		throws Exception {
+
+		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_PUBLISHING,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(_depotEntry.getGroupId()));
+
+		Assert.assertEquals(panelApps.toString(), 3, panelApps.size());
+
+		_assertPanelAppsContain(panelApps, ExportImportPortletKeys.EXPORT);
+		_assertPanelAppsContain(panelApps, ExportImportPortletKeys.IMPORT);
+		_assertPanelAppsContain(
+			panelApps, StagingProcessesPortletKeys.STAGING_PROCESSES);
+	}
+
+	private void _testGetPanelAppsShowsOnlyContentSetsInTheSiteBuilderCategoryForADepotGroup()
+		throws Exception {
+
+		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_BUILD,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(_depotEntry.getGroupId()));
+
+		Assert.assertEquals(panelApps.toString(), 1, panelApps.size());
+
+		_assertPanelAppsContain(panelApps, AssetListPortletKeys.ASSET_LIST);
+	}
+
+	private void _testGetPanelAppsShowsOnlyDocumentsAndMediaAndWebContentInTheContentCategoryForADepotGroup()
+		throws Exception {
+
+		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(_depotEntry.getGroupId()));
+
+		Assert.assertEquals(panelApps.toString(), 3, panelApps.size());
+
+		_assertPanelAppsContain(
+			panelApps, DLPortletKeys.DOCUMENT_LIBRARY_ADMIN);
+		_assertPanelAppsContain(panelApps, JournalPortletKeys.JOURNAL);
+		_assertPanelAppsContain(panelApps, PortletKeys.TRANSLATION);
+	}
+
+	private void _testGetPanelAppsShowsOnlyMembersInThePeopleCategoryForADepotGroup()
+		throws Exception {
+
+		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_MEMBERS,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(_depotEntry.getGroupId()));
+
+		Assert.assertEquals(panelApps.toString(), 1, panelApps.size());
+
+		_assertPanelAppsContain(
+			panelApps, SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN);
+
+		panelApps = _panelAppRegistry.getPanelApps(
+			PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT,
+			PermissionThreadLocal.getPermissionChecker(),
+			_groupLocalService.getGroup(TestPropsValues.getGroupId()));
+
+		Assert.assertTrue(panelApps.size() > 1);
+	}
+
+	private void _testGetPanelAppsShowsTheCategorizationCategoryForADepotGroup()
+		throws Exception {
+
+		_assertIsDisplayed(
+			_depotEntry.getGroupId(),
+			PanelCategoryKeys.SITE_ADMINISTRATION_CATEGORIZATION);
+	}
+
+	private void _testGetPanelAppsShowsTheControlPanelCategoryForADepotGroup()
+		throws Exception {
+
+		_assertIsDisplayed(
+			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_APPS);
+		_assertIsDisplayed(
+			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_INSTANCE);
+		_assertIsDisplayed(
+			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_SITES);
+		_assertIsDisplayed(
+			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_USERS);
+		_assertIsDisplayed(
+			_depotEntry.getGroupId(), PanelCategoryKeys.CONTROL_PANEL_WORKFLOW);
+		_assertIsDisplayed(
+			_depotEntry.getGroupId(),
+			PanelCategoryKeys.SITE_ADMINISTRATION_CONFIGURATION);
+	}
+
+	private void _testGetPanelAppsShowsTheRecycleBinCategoryForADepotGroup()
+		throws Exception {
+
+		_assertIsDisplayed(
+			_depotEntry.getGroupId(),
+			PanelCategoryKeys.SITE_ADMINISTRATION_RECYCLE_BIN);
+	}
+
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@DeleteAfterTestRun
+	private DepotEntry _designLibraryDepotEntry;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
