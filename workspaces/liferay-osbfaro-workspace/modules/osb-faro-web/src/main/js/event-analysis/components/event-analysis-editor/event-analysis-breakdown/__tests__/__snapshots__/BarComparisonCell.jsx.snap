@@ -34,7 +34,7 @@ exports[`BarComparisonCell render 1`] = `
             class="table-column-event-name"
           >
             <span
-              class="text-truncate"
+              class="text-truncate py-1"
               data-tooltip="false"
               title=""
             >
@@ -99,7 +99,7 @@ exports[`BarComparisonCell render two tables when comparing segment and event 1`
             class="table-column-event-name"
           >
             <span
-              class="text-truncate"
+              class="text-truncate py-1"
               data-tooltip="false"
               title=""
             >
@@ -129,7 +129,7 @@ exports[`BarComparisonCell render two tables when comparing segment and event 1`
             class="table-column-event-name"
           >
             <span
-              class="text-truncate"
+              class="text-truncate py-1"
               data-tooltip="false"
               title=""
             >
@@ -185,7 +185,7 @@ exports[`BarComparisonCell render two tables when comparing segment and event 1`
             class="table-column-event-name"
           >
             <span
-              class="text-truncate"
+              class="text-truncate py-1"
               data-tooltip="false"
               title=""
             >
@@ -215,7 +215,7 @@ exports[`BarComparisonCell render two tables when comparing segment and event 1`
             class="table-column-event-name"
           >
             <span
-              class="text-truncate"
+              class="text-truncate py-1"
               data-tooltip="false"
               title=""
             >

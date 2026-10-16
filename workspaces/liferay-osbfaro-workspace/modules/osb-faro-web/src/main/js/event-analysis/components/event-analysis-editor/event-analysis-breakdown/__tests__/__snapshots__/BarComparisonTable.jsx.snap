@@ -31,7 +31,7 @@ exports[`BarComparisonTable render 1`] = `
           class="table-column-event-name"
         >
           <span
-            class="text-truncate"
+            class="text-truncate py-1"
             data-tooltip="false"
             title=""
           >
@@ -92,7 +92,7 @@ exports[`BarComparisonTable render comparing previous 1`] = `
           class="table-column-event-name"
         >
           <span
-            class="text-truncate"
+            class="text-truncate py-1"
             data-tooltip="false"
             title=""
           >
@@ -122,7 +122,7 @@ exports[`BarComparisonTable render comparing previous 1`] = `
           class="table-column-event-name"
         >
           <span
-            class="text-truncate"
+            class="text-truncate py-1"
             data-tooltip="false"
             title=""
           >
