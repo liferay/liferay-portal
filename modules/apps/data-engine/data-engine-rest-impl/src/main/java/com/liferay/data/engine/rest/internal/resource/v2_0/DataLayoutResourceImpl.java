@@ -437,6 +437,10 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
+		DataDefinitionPermissionUtil.check(
+			PermissionThreadLocal.getPermissionChecker(), ddmStructure,
+			ActionKeys.VIEW);
+
 		DataDefinitionContentType dataDefinitionContentType =
 			DataDefinitionContentTypeRegistryUtil.getDataDefinitionContentType(
 				ddmStructure.getClassNameId());
