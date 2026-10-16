@@ -1619,6 +1619,8 @@ definition {
 
 		WebContentDisplayPortlet.selectWebContent(webContentTitle = "Web Content Title");
 
+		IFrame.closeFrame();
+
 		Staging.gotoPublishToLive();
 
 		Staging.publishToLive();
