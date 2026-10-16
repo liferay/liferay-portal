@@ -11,6 +11,7 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.exception.DepotEntryNameException;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.DuplicateGroupException;
 import com.liferay.portal.kernel.exception.LocaleException;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.randomizerbumpers.SiteFriendlyURLKeywordRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -116,6 +118,52 @@ public class DepotEntryLocalServiceTest {
 		_addDepotEntry(
 			group.getName(LocaleUtil.getDefault()),
 			RandomTestUtil.randomString());
+	}
+
+	@Test
+	@TestInfo("LPD-108842")
+	public void testAddDepotEntryFriendlyURL() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		Group group = _groupLocalService.getGroup(depotEntry.getGroupId());
+
+		Assert.assertEquals(
+			"/asset-library-" + depotEntry.getDepotEntryId(),
+			group.getFriendlyURL());
+
+		String name1 = RandomTestUtil.randomString(
+			SiteFriendlyURLKeywordRandomizerBumper.INSTANCE);
+		String name2 = RandomTestUtil.randomString();
+
+		depotEntry = _addDepotEntry(
+			StringBundler.concat(name1, StringPool.SPACE, name2),
+			RandomTestUtil.randomString(), DepotConstants.TYPE_SPACE);
+
+		group = _groupLocalService.getGroup(depotEntry.getGroupId());
+
+		String friendlyURL = StringUtil.toLowerCase(
+			StringBundler.concat(
+				StringPool.SLASH, name1, StringPool.DASH, name2));
+
+		Assert.assertEquals(friendlyURL, group.getFriendlyURL());
+
+		depotEntry = _addDepotEntry(
+			StringBundler.concat(name1, StringPool.DASH, name2),
+			RandomTestUtil.randomString(), DepotConstants.TYPE_SPACE);
+
+		group = _groupLocalService.getGroup(depotEntry.getGroupId());
+
+		Assert.assertEquals(friendlyURL + "-1", group.getFriendlyURL());
+
+		depotEntry = _addDepotEntry(
+			"API " + RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), DepotConstants.TYPE_SPACE);
+
+		group = _groupLocalService.getGroup(depotEntry.getGroupId());
+
+		Assert.assertEquals(
+			"/group-" + depotEntry.getDepotEntryId(), group.getFriendlyURL());
 	}
 
 	@Test

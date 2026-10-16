@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.randomizerbumpers.SiteFriendlyURLKeywordRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -191,7 +192,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	@FeatureFlag("LPD-11388")
 	@Override
 	@Test
-	@TestInfo("LPD-92654")
+	@TestInfo({"LPD-92654", "LPD-108842"})
 	public void testPostAssetLibrary() throws Exception {
 		super.testPostAssetLibrary();
 
@@ -975,11 +976,29 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	}
 
 	private void _testPostAssetLibraryFriendlyURL() throws Exception {
-		AssetLibrary assetLibrary = _addAssetLibrary();
+		AssetLibrary randomAssetLibrary = randomAssetLibrary();
+
+		randomAssetLibrary.setType(AssetLibrary.Type.ASSET_LIBRARY);
+
+		AssetLibrary assetLibrary = testPostAssetLibrary_addAssetLibrary(
+			randomAssetLibrary);
 
 		Assert.assertEquals(
 			"/asset-library-" + assetLibrary.getId(),
 			assetLibrary.getFriendlyURL());
+
+		randomAssetLibrary = randomAssetLibrary();
+
+		randomAssetLibrary.setName(
+			StringUtil.toLowerCase(
+				RandomTestUtil.randomString(
+					SiteFriendlyURLKeywordRandomizerBumper.INSTANCE)));
+		randomAssetLibrary.setType(AssetLibrary.Type.SPACE);
+
+		assetLibrary = testPostAssetLibrary_addAssetLibrary(randomAssetLibrary);
+
+		Assert.assertEquals(
+			"/" + randomAssetLibrary.getName(), assetLibrary.getFriendlyURL());
 	}
 
 	private void _testPostAssetLibraryWithDuplicateExternalReferenceCode()
