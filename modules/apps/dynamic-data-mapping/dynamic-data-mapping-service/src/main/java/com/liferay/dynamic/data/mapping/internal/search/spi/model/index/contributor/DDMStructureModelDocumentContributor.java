@@ -69,10 +69,19 @@ public class DDMStructureModelDocumentContributor
 			true, true);
 		document.addKeyword(
 			"resourceClassNameId", ddmStructure.getClassNameId());
-		document.addKeyword(
-			"resourcePermissionName",
-			_ddmPermissionSupport.getStructureModelResourceName(
-				ddmStructure.getClassNameId()));
+
+		try {
+			document.addKeyword(
+				"resourcePermissionName",
+				_ddmPermissionSupport.getStructureModelResourceName(
+					ddmStructure.getClassNameId()));
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
 		document.addKeyword("storageType", ddmStructure.getStorageType());
 		document.addKeyword("structureKey", ddmStructure.getStructureKey());
 		document.addKeyword("type", ddmStructure.getType());

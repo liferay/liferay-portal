@@ -48,9 +48,19 @@ public class DDMSearchUtil {
 		searchContext.setAttribute(Field.DESCRIPTION, description);
 		searchContext.setAttribute(Field.NAME, name);
 		searchContext.setAttribute(Field.STATUS, status);
-		searchContext.setAttribute(
-			"resourcePermissionName",
-			ddmPermissionSupport.getStructureModelResourceName(classNameId));
+
+		try {
+			searchContext.setAttribute(
+				"resourcePermissionName",
+				ddmPermissionSupport.getStructureModelResourceName(
+					classNameId));
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
 		searchContext.setAttribute("storageType", storageType);
 		searchContext.setAttribute("type", type);
 		searchContext.setCompanyId(companyId);

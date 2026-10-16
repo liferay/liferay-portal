@@ -41,9 +41,11 @@ public interface DDMPermissionSupport {
 			String resourceClassName)
 		throws PortalException;
 
-	public String getStructureModelResourceName(long classNameId);
+	public String getStructureModelResourceName(long classNameId)
+		throws PortalException;
 
-	public String getStructureModelResourceName(String className);
+	public String getStructureModelResourceName(String classNameString)
+		throws PortalException;
 
 	public String getTemplateModelResourceName(long resourceClassNameId)
 		throws PortalException;

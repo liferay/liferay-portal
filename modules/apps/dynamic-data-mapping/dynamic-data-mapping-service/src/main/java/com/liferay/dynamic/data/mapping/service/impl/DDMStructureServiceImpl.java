@@ -21,6 +21,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -840,70 +841,76 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 	private Predicate _getPredicate(
 		long companyId, long[] groupIds, long classNameId, String keywords) {
 
-		Predicate predicate = DDMStructureTable.INSTANCE.companyId.eq(
-			companyId
-		).and(
-			DDMStructureTable.INSTANCE.classNameId.eq(classNameId)
-		).and(
-			DDMStructureTable.INSTANCE.type.eq(0)
-		).and(
-			_inlineSQLHelper.getPermissionWherePredicate(
-				_ddmPermissionSupport.getStructureModelResourceName(
-					classNameId),
-				DDMStructureTable.INSTANCE.structureId, groupIds)
-		);
-
-		Predicate groupIdsPredicate = null;
-
-		for (long groupId : groupIds) {
-			Predicate groupIdPredicate = DDMStructureTable.INSTANCE.groupId.eq(
-				groupId);
-
-			if (groupIdsPredicate == null) {
-				groupIdsPredicate = groupIdPredicate;
-			}
-			else {
-				groupIdsPredicate = groupIdsPredicate.or(groupIdPredicate);
-			}
-		}
-
-		if (groupIdsPredicate != null) {
-			predicate = predicate.and(groupIdsPredicate.withParentheses());
-		}
-
-		Predicate keywordsPredicate = null;
-
-		for (String keyword : _customSQL.keywords(keywords, true)) {
-			if (keyword == null) {
-				continue;
-			}
-
-			Predicate keywordPredicate = DSLFunctionFactoryUtil.lower(
-				DSLFunctionFactoryUtil.castText(DDMStructureTable.INSTANCE.name)
-			).like(
-				keyword
-			).or(
-				DSLFunctionFactoryUtil.lower(
-					DSLFunctionFactoryUtil.castClobText(
-						DDMStructureTable.INSTANCE.description)
-				).like(
-					keyword
-				)
+		try {
+			Predicate predicate = DDMStructureTable.INSTANCE.companyId.eq(
+				companyId
+			).and(
+				DDMStructureTable.INSTANCE.classNameId.eq(classNameId)
+			).and(
+				DDMStructureTable.INSTANCE.type.eq(0)
+			).and(
+				_inlineSQLHelper.getPermissionWherePredicate(
+					_ddmPermissionSupport.getStructureModelResourceName(
+						classNameId),
+					DDMStructureTable.INSTANCE.structureId, groupIds)
 			);
 
-			if (keywordsPredicate == null) {
-				keywordsPredicate = keywordPredicate;
-			}
-			else {
-				keywordsPredicate = keywordsPredicate.or(keywordPredicate);
-			}
-		}
+			Predicate groupIdsPredicate = null;
 
-		if (keywordsPredicate != null) {
-			predicate = predicate.and(keywordsPredicate.withParentheses());
-		}
+			for (long groupId : groupIds) {
+				Predicate groupIdPredicate =
+					DDMStructureTable.INSTANCE.groupId.eq(groupId);
 
-		return predicate;
+				if (groupIdsPredicate == null) {
+					groupIdsPredicate = groupIdPredicate;
+				}
+				else {
+					groupIdsPredicate = groupIdsPredicate.or(groupIdPredicate);
+				}
+			}
+
+			if (groupIdsPredicate != null) {
+				predicate = predicate.and(groupIdsPredicate.withParentheses());
+			}
+
+			Predicate keywordsPredicate = null;
+
+			for (String keyword : _customSQL.keywords(keywords, true)) {
+				if (keyword == null) {
+					continue;
+				}
+
+				Predicate keywordPredicate = DSLFunctionFactoryUtil.lower(
+					DSLFunctionFactoryUtil.castText(
+						DDMStructureTable.INSTANCE.name)
+				).like(
+					keyword
+				).or(
+					DSLFunctionFactoryUtil.lower(
+						DSLFunctionFactoryUtil.castClobText(
+							DDMStructureTable.INSTANCE.description)
+					).like(
+						keyword
+					)
+				);
+
+				if (keywordsPredicate == null) {
+					keywordsPredicate = keywordPredicate;
+				}
+				else {
+					keywordsPredicate = keywordsPredicate.or(keywordPredicate);
+				}
+			}
+
+			if (keywordsPredicate != null) {
+				predicate = predicate.and(keywordsPredicate.withParentheses());
+			}
+
+			return predicate;
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

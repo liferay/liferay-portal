@@ -15,11 +15,14 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizer
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory.ServiceWrapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -142,20 +145,33 @@ public class DDMPermissionSupportImpl implements DDMPermissionSupport {
 	}
 
 	@Override
-	public String getStructureModelResourceName(long classNameId) {
+	public String getStructureModelResourceName(long classNameId)
+		throws PortalException {
+
 		return getStructureModelResourceName(_portal.getClassName(classNameId));
 	}
 
 	@Override
-	public String getStructureModelResourceName(String className) {
+	public String getStructureModelResourceName(String classNameString)
+		throws PortalException {
+
+		ClassName className = _classNameLocalService.fetchClassName(
+			classNameString);
+
+		if (className.getClassNameId() == 0) {
+			throw new PortalException(
+				StringBundler.concat(
+					"Class name ", classNameString, " is not valid"));
+		}
+
 		ServiceWrapper<DDMStructurePermissionSupport>
 			structurePermissionSupportServiceWrapper =
 				_ddmStructurePermissionSupportServiceTrackerMap.getService(
-					className);
+					classNameString);
 
 		if (structurePermissionSupportServiceWrapper == null) {
 			return ResourceActionsUtil.getCompositeModelName(
-				className, DDMStructure.class.getName());
+				classNameString, DDMStructure.class.getName());
 		}
 
 		boolean defaultModelResourceName = MapUtil.getBoolean(
@@ -167,7 +183,7 @@ public class DDMPermissionSupportImpl implements DDMPermissionSupport {
 		}
 
 		return ResourceActionsUtil.getCompositeModelName(
-			className, DDMStructure.class.getName());
+			classNameString, DDMStructure.class.getName());
 	}
 
 	@Override
@@ -348,6 +364,9 @@ public class DDMPermissionSupportImpl implements DDMPermissionSupport {
 		return ResourceActionsUtil.getCompositeModelName(
 			resourceClassName, DDMTemplate.class.getName());
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	private ServiceTrackerMap
 		<String, ServiceWrapper<DDMStructurePermissionSupport>>
