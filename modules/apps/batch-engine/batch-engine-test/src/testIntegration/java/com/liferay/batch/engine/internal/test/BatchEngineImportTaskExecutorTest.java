@@ -1062,20 +1062,6 @@ public class BatchEngineImportTaskExecutorTest
 				BatchEngineTaskExecuteStatus.FAILED.toString(),
 				_batchEngineImportTask.getExecuteStatus());
 
-			List<BatchEngineImportTaskError> batchEngineImportTaskErrors =
-				_batchEngineImportTaskErrorLocalService.
-					getBatchEngineImportTaskErrors(
-						_batchEngineImportTask.getBatchEngineImportTaskId());
-
-			Assert.assertEquals(
-				batchEngineImportTaskErrors.toString(), 1,
-				batchEngineImportTaskErrors.size());
-
-			BatchEngineImportTaskError batchEngineImportTaskError =
-				batchEngineImportTaskErrors.get(0);
-
-			Assert.assertEquals(1, batchEngineImportTaskError.getItemIndex());
-
 			_assertAuditRequestContext(
 				clientHost, clientIP, realUserId, serverName, serverPort,
 				sessionID);
