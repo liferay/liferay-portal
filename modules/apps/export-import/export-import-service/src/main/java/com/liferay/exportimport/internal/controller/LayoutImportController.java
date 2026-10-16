@@ -10,6 +10,7 @@ import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.controller.PortletImportController;
 import com.liferay.exportimport.internal.lar.GroupImporter;
+import com.liferay.exportimport.internal.lar.PortletLayoutListenerHelper;
 import com.liferay.exportimport.internal.util.ManifestXMLFilePathUtil;
 import com.liferay.exportimport.kernel.controller.ExportImportController;
 import com.liferay.exportimport.kernel.controller.ImportController;
@@ -62,10 +63,12 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -976,6 +979,17 @@ public class LayoutImportController implements ImportController {
 				portletDataContext, groupElement);
 		}
 
+		// Portlet layout listeners
+
+		PortletLayoutListenerHelper portletLayoutListenerHelper =
+			new PortletLayoutListenerHelper(
+				_layoutLocalService, _portletLocalService,
+				_portletPreferencesLocalService);
+
+		portletLayoutListenerHelper.setUpPortlets(
+			companyId, portletDataContext.getGroupId(),
+			portletDataContext.isPrivateLayout(), userId);
+
 		// Asset links
 
 		_portletImportController.importAssetLinks(portletDataContext);
@@ -1125,6 +1139,9 @@ public class LayoutImportController implements ImportController {
 	private Language _language;
 
 	@Reference
+	private LayoutLocalService _layoutLocalService;
+
+	@Reference
 	private LayoutPrototypeLocalService _layoutPrototypeLocalService;
 
 	@Reference
@@ -1153,6 +1170,9 @@ public class LayoutImportController implements ImportController {
 
 	@Reference
 	private PortletLocalService _portletLocalService;
+
+	@Reference
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	@Reference
 	private Staging _staging;
