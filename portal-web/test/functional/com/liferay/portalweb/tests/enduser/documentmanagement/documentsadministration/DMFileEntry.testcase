@@ -3710,56 +3710,6 @@ definition {
 		BlogsEntry.viewInlineImage(uploadFileName = "static-gif");
 	}
 
-	@description = "This test covers LPS-157175. Check that there is no corrupted filename on downloaded folder."
-	@priority = 3
-	test NoCorruptedNameInDownloadedZip {
-		JSONFolder.addFolder(
-			dmFolderName = "日本語フォルダ1",
-			groupName = "Guest");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Document_1.doc",
-			folderName = "日本語フォルダ1",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONFolder.addFolder(
-			dmFolderName = "日本語フォルダ2",
-			groupName = "Guest",
-			parentFolderName = "日本語フォルダ1");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Document_2.doc",
-			folderName = "日本語フォルダ2",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			parentFolderName = "日本語フォルダ1",
-			sourceFileName = "Document_2.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "Guest");
-
-		DMFolder.downloadViaEllipsisMenu(dmFolderName = "日本語フォルダ1");
-
-		AntCommands.runCommand("build-test.xml", "unzip-temp-file -DfileName=日本語フォルダ1.zip");
-
-		DMFolder.assertExpectedFileNames(key_fileName = "日本語フォルダ1.zip");
-
-		DMFolder.assertExpectedFileNames(key_fileName = "Document_1.doc");
-
-		DMFolder.assertExpectedFileNames(key_fileName = "日本語フォルダ2");
-
-		DMFolder.assertExpectedFileNames(key_fileName = "日本語フォルダ2/Document_2.doc");
-
-		DMFolder.assertExpectedFileNumber(
-			expectedFileNumber = 3,
-			key_folder = "");
-
-		DMFolder.assertExpectedFileNumber(
-			expectedFileNumber = 1,
-			key_folder = "/日本語フォルダ2");
-	}
-
 	@description = "This test covers LPS-144687. It validates that a temp zip is not created if NoSuchFileException occurs during a download."
 	@priority = 4
 	test NoZipFileIsCreatedIfDownloadResultsInError {

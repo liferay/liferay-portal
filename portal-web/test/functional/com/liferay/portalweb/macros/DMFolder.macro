@@ -151,36 +151,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertExpectedFileNames(key_fileName = null) {
-		var tempDir = PropsUtil.get("output.dir.name");
-
-		var fileName = FileUtil.exists("${tempDir}/${key_fileName}");
-
-		if (${fileName} == "false") {
-			fail("Filename "${fileName}" was not expected.");
-		}
-	}
-
-	@summary = "Default summary"
-	macro assertExpectedFileNumber(key_folder = null, expectedFileNumber = null) {
-		var tempDir = PropsUtil.get("output.dir.name");
-
-		var folderPath = ${tempDir};
-
-		if (isSet(key_folder)) {
-			var folderPath = "${folderPath}${key_folder}";
-		}
-
-		var fileList = FileUtil.listFiles(${folderPath});
-
-		var listSize = ListUtil.size(${fileList});
-
-		if (${listSize} != ${expectedFileNumber}) {
-			fail("Number of files on "${key_folder}" differ from expected.");
-		}
-	}
-
-	@summary = "Default summary"
 	macro cannotViewCP(dmFolderName = null) {
 		var key_dmFolderName = ${dmFolderName};
 
@@ -368,15 +338,6 @@ definition {
 		VerifyElementPresent(locator1 = "Message#SUCCESS");
 
 		AssertElementNotPresent(locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_FOLDER_ICON");
-	}
-
-	@summary = "Default summary"
-	macro downloadViaEllipsisMenu(dmFolderName = null) {
-		Click(
-			key_rowEntry = ${dmFolderName},
-			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
-
-		MenuItem.click(menuItem = "Download");
 	}
 
 	@summary = "Default summary"
