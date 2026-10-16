@@ -1,0 +1,21 @@
+release:
+    name: liferay-default
+    namespace: liferay-acme-prd
+suite: Client Extension Policy ConfigMap
+templates:
+    -   templates/client-extension-policy-cm.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: data.allowedNamespaces
+                    value: team-a,team-b
+        it: Lists each allowed namespace once in sorted order
+        set:
+            clientExtensions.policy.allowedNamespaces:
+                -   team-b
+                -   team-a
+                -   team-a
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the ConfigMap by default, so DXP accepts client extensions only from its own namespace

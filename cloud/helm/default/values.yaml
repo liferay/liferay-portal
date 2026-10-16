@@ -50,6 +50,8 @@ clientExtensions:
         operatorServiceAccount:
             name: dxp-operator
             namespace: dxp-operator-system
+    policy:
+        allowedNamespaces: []
 configmap:
     annotations: {}
     data: {}

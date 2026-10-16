@@ -1,0 +1,12 @@
+{{- with .Values.clientExtensions.policy.allowedNamespaces -}}
+apiVersion: v1
+data:
+    allowedNamespaces: {{ . | uniq | sortAlpha | join "," | quote }}
+kind: ConfigMap
+metadata:
+    labels:
+        {{- include "liferay.labels" $ | nindent 8 }}
+        lxc.liferay.com/metadataType: client-extension-policy
+    name: client-extension-policy
+    namespace: {{ include "liferay.namespace" $ }}
+{{- end -}}
