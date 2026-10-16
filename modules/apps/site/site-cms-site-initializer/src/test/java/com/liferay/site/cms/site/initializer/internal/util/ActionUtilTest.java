@@ -8,6 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.util;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionServiceUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -70,6 +71,35 @@ public class ActionUtilTest {
 
 		_mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
+	}
+
+	@Test
+	public void testGetControlPanelPortletURL() {
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		String cdnBaseURL = RandomTestUtil.randomString();
+
+		Mockito.when(
+			themeDisplay.getCDNBaseURL()
+		).thenReturn(
+			cdnBaseURL
+		);
+
+		String pathFriendlyURLPrivateGroup = RandomTestUtil.randomString();
+
+		Mockito.when(
+			themeDisplay.getPathFriendlyURLPrivateGroup()
+		).thenReturn(
+			pathFriendlyURLPrivateGroup
+		);
+
+		String portletId = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				cdnBaseURL, pathFriendlyURLPrivateGroup,
+				"{friendlyURL}/~/control_panel/manage?p_p_id=", portletId),
+			ActionUtil.getControlPanelPortletURL(themeDisplay, portletId));
 	}
 
 	@Test
