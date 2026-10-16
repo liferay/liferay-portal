@@ -11,6 +11,7 @@ export class CommerceAdminProductDetailsPage {
 	readonly addExistingSpecificationValueTextbox: Locator;
 	readonly addSpecification: Locator;
 	readonly addSpecificationFrame: FrameLocator;
+	readonly assigneeButton: (userName: string) => Locator;
 	readonly backLink: Locator;
 	readonly closeEditFrame: Locator;
 	readonly convertToDraftMenuItem: Locator;
@@ -68,6 +69,8 @@ export class CommerceAdminProductDetailsPage {
 		this.addSpecificationFrame = page.frameLocator('iframe >> nth=1');
 		this.addExistingSpecificationValueTextbox =
 			this.addSpecificationFrame.getByRole('textbox');
+		this.assigneeButton = (userName: string) =>
+			page.getByRole('button', {exact: true, name: userName});
 		this.backLink = page.locator('span[title="Back"]');
 		this.closeEditFrame = page
 			.frameLocator('iframe')
