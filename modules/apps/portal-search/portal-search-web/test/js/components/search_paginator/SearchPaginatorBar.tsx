@@ -46,18 +46,19 @@ function renderSearchPaginatorBar({
 }
 
 describe('SearchPaginatorBar', () => {
-	const defaultLanguageGet = Liferay.Language.get.getMockImplementation();
+	const languageGet = Liferay.Language.get as jest.Mock;
+	const defaultLanguageGet = languageGet.getMockImplementation();
 
 	beforeEach(() => {
 		jest.clearAllMocks();
 
-		Liferay.Language.get.mockImplementation(
+		languageGet.mockImplementation(
 			(key: string) => LANGUAGE_KEYS[key] ?? key
 		);
 	});
 
 	afterEach(() => {
-		Liferay.Language.get.mockImplementation(defaultLanguageGet);
+		languageGet.mockImplementation(defaultLanguageGet);
 	});
 
 	it('ends the range at the last result on a full page', () => {
