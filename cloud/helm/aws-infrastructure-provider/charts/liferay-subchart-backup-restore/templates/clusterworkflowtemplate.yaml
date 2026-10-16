@@ -101,6 +101,9 @@ spec:
                     -   "--only-show-errors"
                     -   "--recursive"
                 command: ["aws"]
+                env:
+                    -   name: HOME
+                        value: /tmp
                 image: "{{ .Values.images.awsCli.repository }}:{{ .Values.images.awsCli.tag }}"
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
@@ -156,6 +159,9 @@ spec:
                             path: /tmp/s3-recovery-point-arn.txt
             script:
                 command: [sh]
+                env:
+                    -   name: HOME
+                        value: /tmp
                 image: "{{ .Values.images.awsCli.repository }}:{{ .Values.images.awsCli.tag }}"
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
@@ -302,6 +308,9 @@ spec:
             name: restore-s3-bucket
             script:
                 command: [sh]
+                env:
+                    -   name: HOME
+                        value: /tmp
                 image: "{{ .Values.images.awsCli.repository }}:{{ .Values.images.awsCli.tag }}"
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
