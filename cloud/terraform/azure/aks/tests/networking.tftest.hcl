@@ -163,6 +163,7 @@ run "should_use_default_pod_and_service_cidrs" {
 	command=plan
 }
 variables {
+	database_engine="postgresql"
 	deployment_name="liferay-test"
 	region="eastus"
 }

@@ -20,6 +20,10 @@ function main {
 
 	validate_config_json "${1}"
 
+	local database_engine
+
+	database_engine=$(jq --raw-output '.setup.database.engine // error("setup.database.engine is missing")' "${1}")
+
 	echo "This will destroy the AKS cluster and the Liferay platform."
 	echo ""
 
@@ -82,7 +86,7 @@ function main {
 
 	_destroy_azure_platform "${terraform_args[@]}"
 
-	_destroy_azure_aks "${terraform_args[@]}"
+	_destroy_azure_aks "${database_engine}" "${terraform_args[@]}"
 
 	if [[ ${has_remote_tfstate} == true ]]
 	then
@@ -134,13 +138,19 @@ function _delete_tfstate_storage {
 }
 
 function _destroy_azure_aks {
+	local database_engine="${1}"
+
 	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/aks"
 
 	echo "Destroying the Azure AKS cluster."
 
 	terraform init
 
-	terraform destroy -input=false "${@}"
+	terraform \
+		destroy \
+		-input=false \
+		-var="database_engine=${database_engine}" \
+		"${@:2}"
 
 	echo "Azure AKS cluster teardown complete."
 

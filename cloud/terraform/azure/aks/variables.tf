@@ -8,6 +8,9 @@ variable "container_registries" {
 		id=string
 	}))
 }
+variable "database_engine" {
+	type=string
+}
 variable "deployment_name" {
 	type=string
 }

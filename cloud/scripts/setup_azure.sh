@@ -62,7 +62,7 @@ function main {
 		generate_local_backend_overrides "azure" "aks" "platform"
 	fi
 
-	_set_up_azure_aks "${terraform_args[@]}"
+	_set_up_azure_aks "${configuration_json_file}" "${terraform_args[@]}"
 
 	connect_to_cluster
 
@@ -235,13 +235,23 @@ function _log {
 }
 
 function _set_up_azure_aks {
+	local configuration_json_file="${1}"
+
+	local database_engine
+
+	database_engine=$(jq --raw-output '.setup.database.engine // error("setup.database.engine is missing")' "${configuration_json_file}")
+
 	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/aks"
 
 	echo "Setting up the Azure AKS cluster."
 
 	terraform init
 
-	terraform apply -input=false "${@}"
+	terraform \
+		apply \
+		-input=false \
+		-var="database_engine=${database_engine}" \
+		"${@:2}"
 
 	echo "Azure AKS cluster setup complete."
 

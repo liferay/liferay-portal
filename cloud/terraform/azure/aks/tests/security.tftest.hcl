@@ -23,6 +23,7 @@ run "should_not_create_acr_pull_role_by_default" {
 	command=plan
 }
 variables {
+	database_engine="postgresql"
 	deployment_name="liferay-test"
 	region="eastus"
 }

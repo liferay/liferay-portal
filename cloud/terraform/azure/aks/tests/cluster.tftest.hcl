@@ -221,6 +221,7 @@ run "should_use_user_assigned_identity" {
 	command=plan
 }
 variables {
+	database_engine="postgresql"
 	deployment_name="liferay-test"
 	region="eastus"
 }
