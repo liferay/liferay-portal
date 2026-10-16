@@ -31,11 +31,13 @@ public class FilterCollectionPersistenceFinder
 	@SafeVarargs
 	public FilterCollectionPersistenceFinder(
 		BasePersistenceImpl<T, E> basePersistenceImpl,
-		FinderPath paginatedFindPath, FinderPath unpaginatedFindPath,
-		FinderPath countFinderPath, String sqlSelectWhere, String sqlCountWhere,
-		String defaultOrderByJpql, String orderByEntityAlias, String where,
-		String dbWhere, UniquePersistenceFinder<T, E> uniquePersistenceFinder,
-		Function<T, Long> classPKFunction, FinderColumn<T>... finderColumns) {
+		Function<T, Long> classPKFunction, FinderPath countFinderPath,
+		String dbWhere, String defaultOrderByJpql, String orderByEntityAlias,
+		FinderPath paginatedFindPath, String sqlCountWhere,
+		String sqlSelectWhere,
+		UniquePersistenceFinder<T, E> uniquePersistenceFinder,
+		FinderPath unpaginatedFindPath, String where,
+		FinderColumn<T>... finderColumns) {
 
 		super(
 			basePersistenceImpl, paginatedFindPath, unpaginatedFindPath,
