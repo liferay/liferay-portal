@@ -42,7 +42,7 @@ Five principles run through everything:
 
 ## Prefer Liferay utilities
 
-- `GetterUtil` for coercion [301]; `ListUtil`, `SetUtil`, `MapUtil`, and `ArrayUtil.isEmpty` for empty checks [302]; `ArrayUtil.contains` for array membership [303]; `TransformUtil.transform` for a mapped list [304]; `JSONUtil` for building JSON [305]; `StringBundler` over `StringBuilder`, and over a `+` join of more than three pieces [306].
+- `GetterUtil` for coercion [301]; `ListUtil`, `SetUtil`, `MapUtil`, and `ArrayUtil.isEmpty` for empty checks [302]; `ArrayUtil.contains` for array membership [303]; `TransformUtil.transform` for a mapped list [304]; `JSONUtil` for building JSON [305]; `StringBundler` over `StringBuilder`, and over a `+` join of more than three pieces [306]; `SystemBundleUtil.escapeFilterValue` for any value in an OSGi filter string that is neither a code constant nor a number [307].
 - The principle behind the list: if Liferay already has a utility for the operation, use it. When you catch yourself writing a null and empty check, a map into a new list, or string concatenation, stop and reach for the util.
 
 ## Control flow and form
