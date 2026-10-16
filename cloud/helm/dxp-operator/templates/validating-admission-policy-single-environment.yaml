@@ -1,0 +1,42 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: {{ include "dxp-operator.fullname" . }}-single-environment
+spec:
+    failurePolicy: Fail
+    matchConstraints:
+        resourceRules:
+            -   apiGroups:
+                    -   licensing.liferay.com
+                apiVersions:
+                    -   v1alpha1
+                operations:
+                    -   CREATE
+                resources:
+                    -   liferayenvironments
+    paramKind:
+        apiVersion: licensing.liferay.com/v1alpha1
+        kind: LiferayEnvironment
+    validations:
+        -   expression: params.metadata.name == object.metadata.name
+            messageExpression: >-
+                'Namespace "' + request.namespace +
+                '" already has the LiferayEnvironment "' + params.metadata.name +
+                '". Only one LiferayEnvironment is supported per namespace.'
+            reason: Forbidden
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: {{ include "dxp-operator.fullname" . }}-single-environment
+spec:
+    paramRef:
+        parameterNotFoundAction: Allow
+        selector: {}
+    policyName: {{ include "dxp-operator.fullname" . }}-single-environment
+    validationActions:
+        -   Deny

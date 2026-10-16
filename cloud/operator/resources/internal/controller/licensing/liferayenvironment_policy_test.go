@@ -178,6 +178,74 @@ func TestAdmissionPolicyDeniesOverLimitReplicas(t *testing.T) {
 	}
 }
 
+func TestAdmissionPolicyRejectsSecondEnvironment(t *testing.T) {
+	config := startPolicyEnvironment(t)
+
+	writeClient, error := client.New(config, client.Options{Scheme: newScheme(t)})
+
+	if error != nil {
+		t.Fatalf("Unable to build a client: %v", error)
+	}
+
+	for _, namespaceName := range []string{"liferay-other", "liferay-single"} {
+		if error := writeClient.Create(
+			context.Background(),
+			&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: namespaceName}},
+		); error != nil {
+			t.Fatalf("Unable to create the namespace: %v", error)
+		}
+	}
+
+	liferayEnvironment := newLiferayEnvironment("dev", "liferay-single")
+
+	if error := writeClient.Create(context.Background(), liferayEnvironment); error != nil {
+		t.Fatalf("Create of the first environment = %v, want it admitted", error)
+	}
+
+	error = awaitEnvironmentCreate(
+		newLiferayEnvironment("dev-2", "liferay-single"), false, t, writeClient,
+	)
+
+	if !errors.IsForbidden(error) {
+		t.Fatalf("Create of a second environment = %v, want a forbidden response", error)
+	}
+
+	if !strings.Contains(
+		error.Error(),
+		`Namespace "liferay-single" already has the LiferayEnvironment "dev".`,
+	) {
+		t.Errorf(
+			"Create of a second environment = %v, want the message to name the existing environment",
+			error,
+		)
+	}
+
+	liferayEnvironment.Annotations = map[string]string{"liferay.com/touched": "true"}
+
+	if error := writeClient.Update(context.Background(), liferayEnvironment); error != nil {
+		t.Errorf("Update of the first environment = %v, want it admitted", error)
+	}
+
+	if error := writeClient.Create(
+		context.Background(), newLiferayEnvironment("dev", "liferay-other"),
+	); error != nil {
+		t.Errorf("Create in another namespace = %v, want it admitted", error)
+	}
+
+	if error := writeClient.Delete(context.Background(), liferayEnvironment); error != nil {
+		t.Fatalf("Unable to delete the first environment: %v", error)
+	}
+
+	if error := awaitEnvironmentCreate(
+		newLiferayEnvironment("dev-2", "liferay-single"), true, t, writeClient,
+	); error != nil {
+		t.Errorf(
+			"Create after deleting the first environment = %v, want it admitted",
+			error,
+		)
+	}
+}
+
 func TestReconcileWithAdmissionPolicy(t *testing.T) {
 	config := startPolicyEnvironment(t)
 
@@ -370,6 +438,35 @@ func attemptOverLimitWrite(
 	return writeOverLimitReplicas(scaleSubresource, workload, writeClient)
 }
 
+func awaitEnvironmentCreate(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment, shouldAdmit bool,
+	t *testing.T, writeClient client.Client,
+) error {
+	t.Helper()
+
+	deadline := time.Now().Add(policyEnforcementTimeout)
+
+	for {
+		attempt := liferayEnvironment.DeepCopy()
+
+		error := writeClient.Create(context.Background(), attempt)
+
+		if error == nil && !shouldAdmit {
+			if deleteError := writeClient.Delete(
+				context.Background(), attempt,
+			); deleteError != nil {
+				t.Fatalf("Unable to delete the admitted environment: %v", deleteError)
+			}
+		}
+
+		if (error == nil) == shouldAdmit || time.Now().After(deadline) {
+			return error
+		}
+
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+
 func awaitForbidden(
 	namespaceName string, scaleSubresource bool, t *testing.T,
 	workloadKind licensingv1alpha1.WorkloadKind, writeClient client.Client,
@@ -521,6 +618,7 @@ func installAdmissionPolicy(config *rest.Config, t *testing.T) {
 		"helm", "template", "liferay-dxp-operator", chartDir,
 		"--namespace", "liferay-system",
 		"--show-only", "templates/validating-admission-policy.yaml",
+		"--show-only", "templates/validating-admission-policy-single-environment.yaml",
 	)
 
 	rendered, error := command.Output()
@@ -577,6 +675,24 @@ func installAdmissionPolicy(config *rest.Config, t *testing.T) {
 				kind,
 			)
 		}
+	}
+}
+
+func newLiferayEnvironment(
+	name string, namespaceName string,
+) *licensingv1alpha1.LiferayEnvironment {
+	return &licensingv1alpha1.LiferayEnvironment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespaceName,
+		},
+		Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+			ActivationCodeSecretRef: licensingv1alpha1.SecretKeyRef{
+				Key:  "activationCode",
+				Name: name + "-activation",
+			},
+			WorkloadRef: licensingv1alpha1.WorkloadRef{Name: name + "-liferay"},
+		},
 	}
 }
 
