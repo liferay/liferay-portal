@@ -85,7 +85,7 @@ describe('KeyboardMovementText', () => {
 			ITEMS
 		);
 
-		expect(text).toBe('targeting-top,Child 1-of-x');
+		expect(text).toBe('targeting-top[position],Child 1-of-x');
 	});
 
 	it('explains that is it going to be placed on the bottom of another item', () => {
@@ -99,6 +99,6 @@ describe('KeyboardMovementText', () => {
 			ITEMS
 		);
 
-		expect(text).toBe('targeting-bottom,Child 1-of-x');
+		expect(text).toBe('targeting-bottom[position],Child 1-of-x');
 	});
 });

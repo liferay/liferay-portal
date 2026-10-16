@@ -136,7 +136,7 @@ describe('ConditionsPanel', () => {
 		await userEvent.click(
 			screen.getByLabelText('of-these-criteria-are-met')
 		);
-		await userEvent.click(screen.getByRole('option', {name: 'any'}));
+		await userEvent.click(screen.getByRole('option', {name: 'any[match]'}));
 
 		expect(dispatch).toHaveBeenCalledWith({
 			conjunction: 'OR',
