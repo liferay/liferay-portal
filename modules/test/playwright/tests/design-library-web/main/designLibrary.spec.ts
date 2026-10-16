@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page, expect, mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
-import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {designLibrariesPageTest} from './fixtures/designLibrariesPageTest';
@@ -24,21 +23,6 @@ const test = mergeTests(
 	loginTest()
 );
 
-async function expectRedirectionToLibrary(name: string, page: Page) {
-	const breadcrumb = page.getByRole('navigation', {
-		name: 'Breadcrumb',
-	});
-
-	await expect(breadcrumb).toBeVisible();
-
-	const links = breadcrumb.getByRole('link');
-
-	await expect(links).toHaveCount(2);
-
-	await expect(links.first()).toHaveText('Design Libraries');
-	await expect(links.last()).toHaveText(name);
-}
-
 test(
 	'Check if design library is working correctly',
 	{tag: '@LPD-79427'},
@@ -48,7 +32,9 @@ test(
 
 		await designLibrariesPage.goto();
 
-		await expect(page.getByTestId('header')).toHaveText('Design Libraries');
+		await expect(page.getByTestId('headerTitle')).toHaveText(
+			'Design Libraries'
+		);
 
 		// Check the empty state labels
 
@@ -88,7 +74,9 @@ test(
 
 		// Check the dashboard elements
 
-		await expectRedirectionToLibrary(designLibrary.name, page);
+		await designLibrariesPage.assertDesignLibraryBreadcrumb(
+			designLibrary.name
+		);
 
 		await page.getByRole('button', {name: 'More Actions'}).click();
 
@@ -131,28 +119,14 @@ test(
 
 		const mainDesignLibraryName = getRandomString();
 
-		const successScenarios = [
-			{
-				description: getRandomString(),
-				name: mainDesignLibraryName,
-			},
-			{
-				name: getRandomString(),
-			},
-		];
+		await designLibrariesPage.addDesignLibrary({
+			description: getRandomString(),
+			name: mainDesignLibraryName,
+		});
 
-		for (const scenario of successScenarios) {
-			await designLibrariesPage.goto();
+		const designLibraryName = getRandomString();
 
-			await designLibrariesPage.create(scenario);
-
-			await waitForAlert(
-				page,
-				`Success:${scenario.name} was created successfully.`
-			);
-
-			await expectRedirectionToLibrary(scenario.name, page);
-		}
+		await designLibrariesPage.addDesignLibrary({name: designLibraryName});
 
 		// Check the empty name error
 
@@ -193,9 +167,8 @@ test(
 
 		await designLibrariesPage.goto();
 
-		for (const {name} of successScenarios) {
-			await designLibrariesPage.delete(name);
-		}
+		await designLibrariesPage.delete(designLibraryName);
+		await designLibrariesPage.delete(mainDesignLibraryName);
 	}
 );
 
@@ -213,13 +186,7 @@ test(
 
 		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page
-				.getByRole('menu')
-				.getByRole('menuitem', {name: 'Connected Sites'}),
-			trigger: page.getByRole('button', {name: 'More Actions'}),
-		});
+		await designLibrariesPage.clickMoreActionsMenuItem('Connected Sites');
 
 		const connectedSitesDialog = page.getByRole('dialog');
 		const siteName = 'Liferay DXP Site';
@@ -272,16 +239,15 @@ test(
 		const designLibrary =
 			await apiHelpers.headlessAssetLibrary.createDesignLibrary();
 
-		const openRowActions = async () => {
-			await page
-				.getByRole('cell', {name: `${designLibrary.name} Actions`})
-				.getByRole('button', {name: 'Actions'})
-				.click();
+		const expectPortlet = async (portletName: string) => {
+			await expect(page).toHaveURL(/asset-library-\d+/);
+			await expect(page).toHaveURL(/backURL=/);
+			await expect(page).toHaveURL(
+				new RegExp(
+					`p_p_id=com_liferay_exportimport_web_portlet_${portletName}`
+				)
+			);
 
-			await expect(page.getByRole('menu')).toBeVisible();
-		};
-
-		const expectCleanBreadcrumb = async () => {
 			const breadcrumb = page.locator('.breadcrumb').first();
 
 			await expect(breadcrumb).toBeVisible();
@@ -297,7 +263,10 @@ test(
 
 		await designLibrariesPage.goto();
 
-		await openRowActions();
+		await page
+			.getByRole('cell', {name: `${designLibrary.name} Actions`})
+			.getByRole('button', {name: 'Actions'})
+			.click();
 
 		await expect(
 			page.getByRole('menu').getByRole('menuitem', {name: 'Export'})
@@ -309,41 +278,23 @@ test(
 
 		// Go to Export
 
-		await page
-			.getByRole('menu')
-			.getByRole('menuitem', {name: 'Export'})
-			.click();
-
-		await expect(page).toHaveURL(/asset-library-\d+/);
-		await expect(page).toHaveURL(/backURL=/);
-		await expect(page).toHaveURL(
-			/p_p_id=com_liferay_exportimport_web_portlet_ExportPortlet/
+		await designLibrariesPage.clickRowActionsMenuItem(
+			designLibrary.name,
+			'Export'
 		);
 
-		// Check the Export breadcrumb
-
-		await expectCleanBreadcrumb();
+		await expectPortlet('ExportPortlet');
 
 		// Go to Import
 
 		await designLibrariesPage.goto();
 
-		await openRowActions();
-
-		await page
-			.getByRole('menu')
-			.getByRole('menuitem', {name: 'Import'})
-			.click();
-
-		await expect(page).toHaveURL(/asset-library-\d+/);
-		await expect(page).toHaveURL(/backURL=/);
-		await expect(page).toHaveURL(
-			/p_p_id=com_liferay_exportimport_web_portlet_ImportPortlet/
+		await designLibrariesPage.clickRowActionsMenuItem(
+			designLibrary.name,
+			'Import'
 		);
 
-		// Check the Import breadcrumb
-
-		await expectCleanBreadcrumb();
+		await expectPortlet('ImportPortlet');
 	}
 );
 
@@ -361,13 +312,7 @@ test(
 
 		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page
-				.getByRole('menu')
-				.getByRole('menuitem', {name: 'Settings'}),
-			trigger: page.getByRole('button', {name: 'More Actions'}),
-		});
+		await designLibrariesPage.clickMoreActionsMenuItem('Settings');
 
 		const headerTitle = page.getByTestId('headerTitle');
 
@@ -434,13 +379,7 @@ test(
 
 		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page
-				.getByRole('menu')
-				.getByRole('menuitem', {name: 'Manage Members'}),
-			trigger: page.getByRole('button', {name: 'More Actions'}),
-		});
+		await designLibrariesPage.clickMoreActionsMenuItem('Manage Members');
 
 		const manageMembersDialog = page.getByRole('dialog');
 

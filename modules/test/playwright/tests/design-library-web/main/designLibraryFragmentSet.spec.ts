@@ -39,16 +39,7 @@ test(
 
 		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('menuitem', {
-				name: 'New Basic Fragment',
-			}),
-			trigger: page.getByRole('button', {
-				exact: true,
-				name: 'New',
-			}),
-		});
+		await designLibrariesPage.clickNewMenuItem('New Basic Fragment');
 
 		const fragmentEntryName = getRandomString();
 		const modal = page.getByRole('dialog', {name: 'Add Fragment'});
@@ -111,24 +102,10 @@ test(
 
 		await designLibrariesPage.goToDesignLibrary(designLibrary.name);
 
-		await page
-			.getByRole('button', {name: 'New Fragment Set'})
-			.or(page.getByRole('button', {exact: true, name: 'New'}))
-			.first()
-			.click();
-
-		const newFragmentSetMenuItem = page.getByRole('menuitem', {
-			name: 'New Fragment Set',
-		});
-
-		if (await newFragmentSetMenuItem.isVisible()) {
-			await newFragmentSetMenuItem.click();
-		}
+		await designLibrariesPage.clickNewMenuItem('New Fragment Set');
 
 		const fragmentSetName = getRandomString();
 		const modal = page.getByRole('dialog', {name: 'Add Fragment Set'});
-
-		await expect(modal).toBeVisible();
 
 		await modal.getByLabel('Name').fill(fragmentSetName);
 
@@ -138,13 +115,12 @@ test(
 
 		// Check the fragment set in the listing
 
-		const contentTable = page.locator(
-			'.design-library-fds-wrapper--resources table'
+		const fragmentSetRow = designLibrariesPage.resourcesTable.getByRole(
+			'row',
+			{
+				name: fragmentSetName,
+			}
 		);
-
-		const fragmentSetRow = contentTable.getByRole('row', {
-			name: fragmentSetName,
-		});
 
 		await expect(fragmentSetRow).toBeVisible();
 
@@ -170,7 +146,9 @@ test(
 		await expect(page).toHaveURL(/view_resources_design_library/);
 
 		await expect(
-			contentTable.getByRole('row', {name: editedFragmentSetName})
+			designLibrariesPage.resourcesTable.getByRole('row', {
+				name: editedFragmentSetName,
+			})
 		).toBeVisible();
 	}
 );

@@ -89,8 +89,6 @@ test(
 
 		await designLibrariesPage.clickNewStyleBook();
 
-		await expect(modal).toBeVisible();
-
 		const styleBookName = getRandomString();
 
 		await modal.getByLabel('Name').fill(styleBookName);
@@ -184,9 +182,12 @@ test(
 
 		// Check the style book row
 
-		const styleBookRow = page
-			.locator('.design-library-fds-wrapper--resources table')
-			.getByRole('row', {name: styleBookName});
+		const styleBookRow = designLibrariesPage.resourcesTable.getByRole(
+			'row',
+			{
+				name: styleBookName,
+			}
+		);
 
 		await expect(
 			styleBookRow.getByRole('cell', {name: 'Test Test'})
@@ -253,9 +254,12 @@ test(
 
 		// Open the style book editor
 
-		const styleBookRow = page
-			.locator('.design-library-fds-wrapper--resources table')
-			.getByRole('row', {name: styleBookName});
+		const styleBookRow = designLibrariesPage.resourcesTable.getByRole(
+			'row',
+			{
+				name: styleBookName,
+			}
+		);
 
 		await styleBookRow.getByRole('button', {name: /Actions$/}).click();
 

@@ -20,24 +20,92 @@ const PORTLET_URL =
 export class DesignLibrariesPage extends POM {
 	readonly emptyStateContainer: Locator;
 	readonly portletName = PORTLET_NAME;
+	readonly resourcesTable: Locator;
 
 	constructor(page: Page) {
 		super(page, PORTLET_URL);
 
 		this.emptyStateContainer = page.locator('.fds .c-empty-state');
+		this.resourcesTable = page.locator(
+			'.design-library-fds-wrapper--resources table'
+		);
+	}
+
+	async addDesignLibrary({
+		description,
+		name,
+	}: {
+		description?: string;
+		name: string;
+	}) {
+		await this.goto();
+
+		await this.create({description, name});
+
+		await waitForAlert(
+			this.page,
+			`Success:${name} was created successfully.`
+		);
+
+		await this.assertDesignLibraryBreadcrumb(name);
+	}
+
+	async assertDesignLibraryBreadcrumb(name: string) {
+		const breadcrumb = this.page.getByRole('navigation', {
+			name: 'Breadcrumb',
+		});
+
+		await expect(breadcrumb).toBeVisible();
+
+		const links = breadcrumb.getByRole('link');
+
+		await expect(links).toHaveCount(2);
+
+		await expect(links.first()).toHaveText('Design Libraries');
+		await expect(links.last()).toHaveText(name);
+	}
+
+	async clickMoreActionsMenuItem(name: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page
+				.locator('.dropdown-menu')
+				.getByRole('menuitem', {name}),
+			trigger: this.page.getByRole('button', {name: 'More Actions'}),
+		});
+	}
+
+	async clickNewMenuItem(name: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page
+				.locator('.dropdown-menu')
+				.getByRole('menuitem', {name}),
+			trigger: this.page.getByRole('button', {exact: true, name: 'New'}),
+		});
 	}
 
 	async clickNewStyleBook() {
-		const newStyleBookMenuItem = this.page.getByRole('menuitem', {
-			name: 'New Style Book',
-		});
-
 		await clickAndExpectToBeVisible({
-			target: newStyleBookMenuItem,
+			autoClick: true,
+			target: this.page
+				.locator('.dropdown-menu')
+				.getByRole('menuitem', {name: 'New Style Book'}),
 			trigger: this.page.getByRole('button', {name: 'Add Asset'}),
 		});
+	}
 
-		await newStyleBookMenuItem.click();
+	async clickRowActionsMenuItem(designLibraryName: string, name: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page
+				.locator('.dropdown-menu')
+				.getByRole('menuitem', {exact: true, name}),
+			trigger: this.page
+				.locator('table.table tbody tr', {hasText: designLibraryName})
+				.first()
+				.getByRole('button', {name: 'Actions'}),
+		});
 	}
 
 	async create({
@@ -106,18 +174,7 @@ export class DesignLibrariesPage extends POM {
 	}
 
 	async delete(name: string) {
-		await this.page
-			.locator('table.table tbody tr', {hasText: name})
-			.first()
-			.getByRole('button', {name: 'Actions'})
-			.click();
-
-		await this.page
-			.getByRole('menuitem', {
-				exact: true,
-				name: 'Delete',
-			})
-			.click();
+		await this.clickRowActionsMenuItem(name, 'Delete');
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
