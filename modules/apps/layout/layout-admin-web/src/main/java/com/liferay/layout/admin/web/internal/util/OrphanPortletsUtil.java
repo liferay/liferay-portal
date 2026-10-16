@@ -65,6 +65,47 @@ public class OrphanPortletsUtil {
 		return orphanPortlets;
 	}
 
+	public static boolean hasOrphanPortlets(Layout layout) {
+		if (!layout.isSupportsEmbeddedPortlets()) {
+			return false;
+		}
+
+		LayoutTypePortlet selLayoutTypePortlet =
+			(LayoutTypePortlet)layout.getLayoutType();
+
+		List<Portlet> explicitlyAddedPortlets =
+			selLayoutTypePortlet.getExplicitlyAddedPortlets();
+
+		List<String> explicitlyAddedPortletIds = new ArrayList<>();
+
+		for (Portlet explicitlyAddedPortlet : explicitlyAddedPortlets) {
+			explicitlyAddedPortletIds.add(
+				explicitlyAddedPortlet.getPortletId());
+		}
+
+		List<PortletPreferences> portletPreferencesList =
+			PortletPreferencesLocalServiceUtil.getPortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
+
+		for (PortletPreferences portletPreferences : portletPreferencesList) {
+			String portletId = portletPreferences.getPortletId();
+
+			Portlet portlet = PortletLocalServiceUtil.getPortletById(
+				layout.getCompanyId(), portletId);
+
+			if (portlet.isSystem() ||
+				explicitlyAddedPortletIds.contains(portletId)) {
+
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private static List<String> _getExplicitlyAddedPortletIds(
 		Layout layout, PortletRegistry portletRegistry) {
 
