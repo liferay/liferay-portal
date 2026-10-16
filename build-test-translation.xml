@@ -27,24 +27,6 @@
 		</sequential>
 	</macrodef>
 
-	<target name="copy-translation-file">
-		<if>
-			<equals arg1="${dependencyFile}" arg2="true" />
-			<then>
-				<copy
-					file="modules/apps/translation/translation-test/src/testFunctional/tests/dependencies/${translation.zip.file.name}/${translation.file.name}"
-					tofile="${selenium.output.dir.name}/${translation.file.name}"
-				/>
-			</then>
-			<else>
-				<copy
-					file="${selenium.output.dir.name}/${translation.zip.file.name}/${translation.file.name}"
-					tofile="${selenium.output.dir.name}/${translation.file.name}"
-				/>
-			</else>
-		</if>
-	</target>
-
 	<target name="unzip-translation-file">
 		<antelope:stringutil property="fileName" string="${fileName}">
 			<antelope:replace regex="\*" replacement=" " />
@@ -201,45 +183,6 @@
 					destfile="${selenium.output.dir.name}/${translation.zip.file.name}_translated.zip"
 				/>
 			</then>
-		</if>
-	</target>
-
-	<target name="update-translation-file-id">
-		<var name="translation.file.type" value="xlf" />
-
-		<antelope:stringutil property="translation.file.name" string="${translation.file.name}">
-			<antelope:replace regex="\*" replacement=" " />
-		</antelope:stringutil>
-
-		<antelope:stringutil property="translation.zip.file.name" string="${translation.zip.file.name}">
-			<antelope:replace regex="\*" replacement=" " />
-		</antelope:stringutil>
-
-		<if>
-			<equals arg1="${translation.zip.file.name}" arg2="WCGeneralName" />
-			<then>
-				<var name="translation.zip.file.name" value="Web Content Article Translations-en_US" />
-			</then>
-		</if>
-
-		<if>
-			<equals arg1="${dependencyFile}" arg2="true" />
-			<then>
-				<var name="translation.file.path" value="${selenium.output.dir.name}/${translation.file.name}.${translation.file.type}" />
-				<replace
-					file="${translation.file.path}"
-					token="${translation.entry.type}:"
-					value="${translation.entry.type}:${structuredContentId}"
-				/>
-			</then>
-			<else>
-				<var name="translation.file.path" value="${selenium.output.dir.name}/${translation.zip.file.name}/${translation.file.name}.${translation.file.type}" />
-				<replace
-					file="${translation.file.path}"
-					token="${translation.entry.type}:"
-					value="${translation.entry.type}:1"
-				/>
-			</else>
 		</if>
 	</target>
 </project>

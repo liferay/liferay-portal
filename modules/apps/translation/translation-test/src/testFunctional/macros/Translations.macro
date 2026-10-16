@@ -16,25 +16,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertFileNameFromTempFolder(webContentTitle = null, pageName = null) {
-		if (isSet(pageName)) {
-			var translationZipFileName = TestCase.waitForDownloadedTempFileName(fileNamePattern = "${pageName}*.zip");
-		}
-		else {
-			var translationZipFileName = TestCase.waitForDownloadedTempFileName(fileNamePattern = "${webContentTitle}*.zip");
-		}
-
-		echo("## translationZipFileName: ${translationZipFileName}");
-
-		if (contains(${translationZipFileName}, "en_US")) {
-			echo("This is a exported translation file.");
-		}
-		else {
-			fail("FAIL!");
-		}
-	}
-
-	@summary = "Default summary"
 	macro autoTranslate() {
 		Click(
 			key_text = "Auto Translate",
@@ -73,20 +54,6 @@ definition {
 		AssertElementPresent(
 			key_locale = ${newTargetLocale},
 			locator1 = "Translation#CONTENT_TITLE");
-	}
-
-	@summary = "Default summary"
-	macro copyTranslateFile(translationFileName = null, dependencyFile = null) {
-		if (contains(${translationZipFileName}, " ")) {
-			var translationZipFileName = StringUtil.replace(${translationZipFileName}, " ", "*");
-		}
-
-		if (isSet(dependencyFile)) {
-			AntCommands.runCommand("build-test-translation.xml", "copy-translation-file -DdependencyFile=${dependencyFile} -Dtranslation.file.name=${translationFileName} -Dtranslation.zip.file.name=${translationZipFileName}");
-		}
-		else {
-			AntCommands.runCommand("build-test-translation.xml", "copy-translation-file -Dtranslation.file.name=${translationFileName} -Dtranslation.zip.file.name=${translationZipFileName}");
-		}
 	}
 
 	@summary = "Default summary"
@@ -245,40 +212,6 @@ definition {
 		DownloadTempFile();
 
 		Button.clickCancel();
-	}
-
-	@summary = "Default summary"
-	macro gotoBulkExportTranslation() {
-		if (contains(${exportTranslationEntry}, "Page")) {
-			for (var exportTranslationEntry : list ${exportTranslationEntry}) {
-				PagesAdmin.selectPageItem(pageName = ${exportTranslationEntry});
-			}
-		}
-		else {
-			for (var exportTranslationEntry : list ${exportTranslationEntry}) {
-				LexiconEntry.selectEntry(rowEntry = ${exportTranslationEntry});
-			}
-		}
-
-		if (isSet(options)) {
-			Click(locator1 = "ManagementBar#ELLIPSIS");
-
-			MenuItem.clickNoError(menuItem = "Export for Translations");
-		}
-		else {
-			Click(
-				key_text = "upload",
-				locator1 = "ManagementBar#ANY_ICON");
-		}
-	}
-
-	@summary = "Default summary"
-	macro gotoBulkImportTranslation() {
-		MouseOver.mouseOverNotVisible(locator1 = "Portlet#OPTIONS_ICON");
-
-		Click(locator1 = "Portlet#OPTIONS_ICON");
-
-		MenuItem.click(menuItem = "Import Translations");
 	}
 
 	@summary = "Default summary"
@@ -640,20 +573,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro updateTranslateFileID(structuredContentId = null, translationFileName = null, translationEntryType = null, dependencyFile = null) {
-		if (contains(${translationZipFileName}, " ")) {
-			var translationZipFileName = StringUtil.replace(${translationZipFileName}, " ", "*");
-		}
-
-		if (isSet(dependencyFile)) {
-			AntCommands.runCommand("build-test-translation.xml", "update-translation-file-id -DdependencyFile=${dependencyFile} -DstructuredContentId=${structuredContentId} -Dtranslation.entry.type=${translationEntryType} -Dtranslation.file.name=${translationFileName} -Dtranslation.zip.file.name=${translationZipFileName}");
-		}
-		else {
-			AntCommands.runCommand("build-test-translation.xml", "update-translation-file-id -Dtranslation.entry.type=${translationEntryType} -Dtranslation.file.name=${translationFileName} -Dtranslation.zip.file.name=${translationZipFileName}");
-		}
-	}
-
-	@summary = "Default summary"
 	macro uploadTranslationsFile(fileName = null) {
 		var tempFileDirectory = selenium.getOutputDirName();
 
@@ -732,27 +651,6 @@ definition {
 					key_fieldName = ${webContentNumericFieldLabel},
 					key_fieldValue = ${webContentNumeric},
 					locator1 = "Translation#BASE_LANGUAGE_FIELD");
-			}
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewCSVErrorReport(viewNoSuccessfullyImportedTranslation = null, reportContent = null, errorReportName = null) {
-		var fileContent = TestCase.getTempFileContent(fileName = ${errorReportName});
-
-		if (contains(${fileContent}, ${reportContent})) {
-			echo("The import translation error can be viewed in the report.");
-		}
-		else {
-			fail("The import translation error can not be viewed in the report");
-		}
-
-		if (isSet(viewNoSuccessfullyImportedTranslation)) {
-			if (!(contains(${fileContent}, ${viewNoSuccessfullyImportedTranslation}))) {
-				echo("No imported translation info in the report");
-			}
-			else {
-				fail("The error report is incorrect.");
 			}
 		}
 	}
@@ -848,13 +746,6 @@ definition {
 				locator1 = "Message#ERROR_IMPORT_TRANSLATIONS_ITEM_N",
 				value1 = ${failFileName2});
 		}
-	}
-
-	@summary = "Default summary"
-	macro viewNoTranslationEntry(title = null) {
-		AssertElementNotPresent(
-			ey_rowEntry = ${title},
-			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
 	}
 
 	@summary = "Default summary"
