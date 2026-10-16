@@ -18,6 +18,7 @@ export type AssetStatistics = {
 	pendingCount: number;
 	reviewDateOverdueCount: number;
 	scheduledCount: number;
+	slaBreachedWorkflowTasksCount: number;
 	totalCount: number;
 	upcomingReviewCount: number;
 	workflowTasksCount: number;

@@ -17,6 +17,7 @@ const NO_ISSUES: AssetStatistics = {
 	pendingCount: 0,
 	reviewDateOverdueCount: 0,
 	scheduledCount: 0,
+	slaBreachedWorkflowTasksCount: 0,
 	totalCount: 0,
 	upcomingReviewCount: 0,
 	workflowTasksCount: 0,
