@@ -12,11 +12,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.NaturalOrderStringComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.source.formatter.processor.PropertiesSourceProcessor;
 
 import java.io.IOException;
-
-import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * @author Hugo Huijser
@@ -161,15 +156,10 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 			return _portalPropertiesContent;
 		}
 
-		ClassLoader classLoader =
-			PropertiesSourceProcessor.class.getClassLoader();
+		_portalPropertiesContent = getGitContent(
+			"portal-impl/src/portal.properties", "master");
 
-		URL url = classLoader.getResource("portal.properties");
-
-		if (url != null) {
-			_portalPropertiesContent = IOUtils.toString(url);
-		}
-		else {
+		if (_portalPropertiesContent == null) {
 			_portalPropertiesContent = StringPool.BLANK;
 		}
 
