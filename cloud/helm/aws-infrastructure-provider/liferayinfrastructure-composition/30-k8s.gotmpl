@@ -5,6 +5,7 @@
 
 {{- $doclibBucketName := dig "resource" "status" "atProvider" "id" "" $observedStorage | toString -}}
 {{- $searchEndpoint := dig "resource" "status" "atProvider" "endpoint" "" $observedSearch | toString -}}
+{{- $searchMasterPassword := dig "search-password-secret" "resource" "status" "atProvider" "manifest" "data" "password" "" $observedResources | toString | b64dec | default (print (randAlphaNum 16) "!#%+7QZ_b" | shuffle) -}}
 {{- $searchPassword := dig "connectionDetails" "attribute.advanced_security_options.0.master_user_options.0.master_user_password" "" $observedSearch | toString | b64dec -}}
 
 {{- $isDatabaseBootstrapped := false -}}
@@ -143,7 +144,7 @@ spec:
                 name: liferay-search-password
                 namespace: {{ $namespace }}
             stringData:
-                password: {{ print (randAlphaNum 16) "!#%+7QZ_b" | shuffle | quote }}
+                password: {{ $searchMasterPassword | quote }}
             type: Opaque
     managementPolicies: {{ $xr.spec.orphanOnDelete | ternary (list "Create" "Observe") (list "Create" "Delete" "Observe") | toJson }}
 {{- end }}
