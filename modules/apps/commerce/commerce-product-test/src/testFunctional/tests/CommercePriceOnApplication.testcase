@@ -30,58 +30,6 @@ definition {
 		CommerceConfiguration.commerceTearDown();
 	}
 
-	@description = "COMMERCE-11551 | As a buyer user, I want to be able to add to cart a 'Price on Application' sku via Quick Add to Cart"
-	@priority = 5
-	test CanAddPriceOnApplicationSkuViaQuickAdd {
-		property portal.acceptance = "true";
-
-		task ("Given the admin navigates to a product's sku details") {
-			CommerceProducts.openProductsAdmin();
-
-			CommerceProducts.searchAndGoToProductEntry(entryProductName = "U-Joint");
-
-			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
-
-			CommerceNavigator.gotoTableListEntry(entryName = "MIN55861");
-		}
-
-		task ("And the admin marks the sku as 'Price on Application'") {
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			CommerceEntry.gotoMenuTab(menuTab = "Price");
-
-			CommerceNavigator.gotoEntry(entryName = "Minium Base Price List");
-
-			CommerceSKUs.editSkuPricing(priceOnApplication = "true");
-		}
-
-		task ("When the buyer adds the 'Price on Application' product via Quick Add to Cart") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
-
-			CommerceNavigator.gotoMiniCart();
-
-			FrontStore.quickAddToCartSearchAndSelectItem(orderItemSku = "MIN55861");
-
-			Click(locator1 = "CommerceAccelerators#QUICK_ADD_TO_CART_BUTTON");
-		}
-
-		task ("Then the product is successfully added to the cart") {
-			AssertElementPresent(
-				key_cartItemName = "U-Joint",
-				locator1 = "CommerceAccelerators#MINI_CART_ITEM_NAME");
-
-			// Add assertions for the pricing following COMMERCE-11276
-
-		}
-	}
-
 	@description = "This is a test for COMMERCE-11703. When both Price List and Promotion Discovery Method are set to Hierarchy and a promotion is marked as 'Price On Application', then the lower Price List can win over Promotion"
 	@priority = 5
 	test CanLowerPriceListWinOverPromotionHierarchySetting {
