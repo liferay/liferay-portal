@@ -489,7 +489,7 @@
 			<finder-column name="structureKey" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="DDMStructureLayout" remote-service="true" uuid="true">
+	<entity local-service="true" name="DDMStructureLayout" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
 
