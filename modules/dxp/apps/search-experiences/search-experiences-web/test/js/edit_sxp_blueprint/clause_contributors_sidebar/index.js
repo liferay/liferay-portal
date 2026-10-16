@@ -86,7 +86,7 @@ describe('QueryBuilder', () => {
 			},
 		});
 
-		expect(getAllByLabelText('on').length).toEqual(
+		expect(getAllByLabelText('on[toggle]').length).toEqual(
 			activeKeywordContributors.length
 		);
 	});
