@@ -1664,7 +1664,6 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 			{
 				externalReferenceCode = role2.getExternalReferenceCode();
 				name = role2.getName();
-				roleType = role2.getType();
 			}
 		};
 
