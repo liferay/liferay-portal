@@ -112,7 +112,7 @@ portletDisplay.setShowBackIcon(Validator.isNotNull(backURL));
 
 						<c:if test="<%= Validator.isNotNull(calendarBooking.getLocation()) %>">
 							<dt>
-								<liferay-ui:message key="location" />:
+								<liferay-ui:message key="location[place]" />:
 							</dt>
 							<dd>
 								<span class="location"><%= HtmlUtil.escape(calendarBooking.getLocation()) %></span>

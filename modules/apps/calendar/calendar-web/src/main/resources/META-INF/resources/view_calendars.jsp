@@ -237,7 +237,7 @@ CalendarResource calendarResource = (CalendarResource)request.getAttribute(Calen
 							header: buttonClose,
 						},
 					},
-					title: '<liferay-ui:message key="import" />',
+					title: '<liferay-ui:message key="import[noun]" />',
 				}).render();
 			}
 

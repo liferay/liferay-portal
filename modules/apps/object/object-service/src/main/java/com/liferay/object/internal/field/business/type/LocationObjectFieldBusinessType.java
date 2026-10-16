@@ -151,7 +151,7 @@ public class LocationObjectFieldBusinessType
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "location");
+		return _language.get(locale, "location[place]");
 	}
 
 	@Override

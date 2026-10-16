@@ -174,10 +174,10 @@ String languageId = LanguageUtil.getLanguageId(request);
 			<liferay-ui:icon
 				icon="geolocation"
 				markupView="lexicon"
-				message="location"
+				message="location[place]"
 			/>
 
-			<liferay-ui:message key="location" />: <a href="https://maps.google.com.br/maps?q=<%= HtmlUtil.escapeHREF(calendarBooking.getLocation()) %>" target="_blank"><%= HtmlUtil.escape(calendarBooking.getLocation()) %></a>
+			<liferay-ui:message key="location[place]" />: <a href="https://maps.google.com.br/maps?q=<%= HtmlUtil.escapeHREF(calendarBooking.getLocation()) %>" target="_blank"><%= HtmlUtil.escape(calendarBooking.getLocation()) %></a>
 		</c:if>
 
 		<liferay-expando:custom-attributes-available

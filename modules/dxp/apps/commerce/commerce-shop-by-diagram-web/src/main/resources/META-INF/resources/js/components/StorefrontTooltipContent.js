@@ -113,7 +113,7 @@ function SkuContent({
 						displayType={productPurchasable ? 'success' : 'danger'}
 					>
 						{productPurchasable
-							? Liferay.Language.get('available')
+							? Liferay.Language.get('available[status]')
 							: Liferay.Language.get('unavailable')}
 					</ClayLabel>
 				</div>

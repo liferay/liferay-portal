@@ -20,7 +20,7 @@ if (Validator.isNotNull(keywords) && portletTitleBasedNavigation) {
 	portletDisplay.setShowBackIcon(true);
 	portletDisplay.setURLBack(ParamUtil.getString(request, "redirect"));
 
-	renderResponse.setTitle(LanguageUtil.get(resourceBundle, "search"));
+	renderResponse.setTitle(LanguageUtil.get(resourceBundle, "search[noun]"));
 }
 
 boolean defaultFolderView = false;

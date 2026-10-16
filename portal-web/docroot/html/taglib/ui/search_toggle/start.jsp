@@ -38,8 +38,8 @@ boolean advancedSearch = displayTerms.isAdvancedSearch();
 		<div class="taglib-search-toggle-advanced-content" id="<%= id %>advancedContent">
 			<div class="form-group form-group-inline">
 				<aui:select label="match" name="<%= DisplayTerms.AND_OPERATOR %>" wrapperCssClass="match-fields">
-					<aui:option label="all" selected="<%= displayTerms.isAndOperator() %>" value="<%= true %>" />
-					<aui:option label="any" selected="<%= !displayTerms.isAndOperator() %>" value="<%= false %>" />
+					<aui:option label="all[match]" selected="<%= displayTerms.isAndOperator() %>" value="<%= true %>" />
+					<aui:option label="any[match]" selected="<%= !displayTerms.isAndOperator() %>" value="<%= false %>" />
 				</aui:select>
 
 				<span class="match-fields-legend">

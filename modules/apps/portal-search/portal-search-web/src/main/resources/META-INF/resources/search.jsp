@@ -57,7 +57,7 @@ String format = ParamUtil.getString(request, SearchPortletParameterNames.FORMAT)
 <%
 String pageSubtitle = LanguageUtil.get(request, "search-results");
 
-String pageKeywords = LanguageUtil.get(request, "search");
+String pageKeywords = LanguageUtil.get(request, "search[noun]");
 
 if (Validator.isNotNull(searchDisplayContext.getKeywords())) {
 	pageKeywords = searchDisplayContext.getKeywords();

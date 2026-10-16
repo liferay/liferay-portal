@@ -36,7 +36,7 @@ public class ApplicationsHomePanelApp extends BasePanelApp {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return LanguageUtil.get(locale, "home");
+		return LanguageUtil.get(locale, "home[page]");
 	}
 
 	@Override

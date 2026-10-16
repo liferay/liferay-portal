@@ -86,7 +86,7 @@ export default function PieChartLegend({
 				render: (item) => data[item.id].value.toLocaleString(),
 			},
 			{
-				label: Liferay.Language.get('share'),
+				label: Liferay.Language.get('share[proportion]'),
 				render: (item) => `${toPercent(data[item.id].value, total)}%`,
 			},
 		],

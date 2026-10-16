@@ -172,7 +172,7 @@ const ImportSXPBlueprintModal = ({portletNamespace, redirectURL}) => {
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{Liferay.Language.get('import')}
+				{Liferay.Language.get('import[noun]')}
 			</ClayModal.Header>
 
 			<ClayModal.Body>

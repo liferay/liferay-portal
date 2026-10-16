@@ -230,7 +230,7 @@ String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 													</li>
 													<li class="nav-item">
 														<a class="nav-link" href="javascript:void(0);">
-															<liferay-ui:message key="source" />
+															<liferay-ui:message key="source[code]" />
 														</a>
 													</li>
 												</ul>

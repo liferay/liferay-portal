@@ -137,7 +137,7 @@ export function NewExport({
 							)}
 							title={sub(
 								Liferay.Language.get('x-details'),
-								Liferay.Language.get('export')
+								Liferay.Language.get('export[noun]')
 							)}
 						/>
 

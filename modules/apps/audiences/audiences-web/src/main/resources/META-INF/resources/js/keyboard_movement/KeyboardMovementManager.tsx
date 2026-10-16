@@ -243,10 +243,10 @@ function getPositionLabel(position: DropZone): string {
 	}
 
 	if (position === DROP_POSITIONS.top) {
-		return Liferay.Language.get('top');
+		return Liferay.Language.get('top[position]');
 	}
 
-	return Liferay.Language.get('bottom');
+	return Liferay.Language.get('bottom[position]');
 }
 
 function getInitialIndex(targets: MoveTarget[], sourceIndex: number): number {

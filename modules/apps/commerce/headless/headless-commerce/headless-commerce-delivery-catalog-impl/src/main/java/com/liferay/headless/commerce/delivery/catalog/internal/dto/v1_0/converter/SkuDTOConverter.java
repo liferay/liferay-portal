@@ -332,7 +332,7 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 					CommerceInventoryAvailabilityConstants.AVAILABLE)) {
 
 				availability.setLabel_i18n(
-					() -> _language.get(locale, "available"));
+					() -> _language.get(locale, "available[status]"));
 				availability.setLabel(() -> "available");
 			}
 			else {

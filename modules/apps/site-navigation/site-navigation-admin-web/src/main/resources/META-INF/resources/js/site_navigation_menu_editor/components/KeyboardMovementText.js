@@ -52,13 +52,13 @@ export function getMovementText(dragLayer, items) {
 
 	if (sibling) {
 		return sub(Liferay.Language.get('targeting-x-of-x'), [
-			Liferay.Language.get('bottom'),
+			Liferay.Language.get('bottom[position]'),
 			sibling.title,
 		]);
 	}
 
 	return sub(Liferay.Language.get('targeting-x-of-x'), [
-		Liferay.Language.get('top'),
+		Liferay.Language.get('top[position]'),
 		siblingsItems[order]?.title,
 	]);
 }

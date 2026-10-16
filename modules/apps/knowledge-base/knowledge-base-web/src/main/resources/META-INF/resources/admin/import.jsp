@@ -14,7 +14,7 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 portletDisplay.setURLBackTitle(portletDisplay.getTitle());
 
-renderResponse.setTitle(LanguageUtil.get(resourceBundle, "import"));
+renderResponse.setTitle(LanguageUtil.get(resourceBundle, "import[noun]"));
 %>
 
 <portlet:actionURL name="/knowledge_base/import_file" var="importFileURL">

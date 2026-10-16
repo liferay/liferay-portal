@@ -333,17 +333,17 @@ export function RuleBuilderConditionSection({
 								<Picker
 									aria-label={
 										conditionType === 'all'
-											? Liferay.Language.get('all')
-											: Liferay.Language.get('any')
+											? Liferay.Language.get('all[match]')
+											: Liferay.Language.get('any[match]')
 									}
 									as={TriggerLabel}
 									items={[
 										{
-											label: Liferay.Language.get('any'),
+											label: Liferay.Language.get('any[match]'),
 											value: 'any',
 										},
 										{
-											label: Liferay.Language.get('all'),
+											label: Liferay.Language.get('all[match]'),
 											value: 'all',
 										},
 									]}

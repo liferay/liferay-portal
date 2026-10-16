@@ -18,7 +18,7 @@ const ALIGN_OPTIONS = [
 		value: 'align-items-center',
 	},
 	{
-		label: Liferay.Language.get('end'),
+		label: Liferay.Language.get('end[position]'),
 		value: 'align-items-end',
 	},
 	{
@@ -56,7 +56,7 @@ const JUSTIFY_OPTIONS = [
 		value: 'justify-content-center',
 	},
 	{
-		label: Liferay.Language.get('end'),
+		label: Liferay.Language.get('end[position]'),
 		value: 'justify-content-end',
 	},
 	{
