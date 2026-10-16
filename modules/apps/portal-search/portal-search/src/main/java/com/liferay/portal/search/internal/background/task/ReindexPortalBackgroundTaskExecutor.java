@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -104,6 +105,27 @@ public class ReindexPortalBackgroundTaskExecutor
 
 			_completeSearchEngineInitializers(
 				companyIds, executionMode, searchEngineInitializers);
+		}
+		catch (Exception exception1) {
+			ConcurrentReindexManager concurrentReindexManager =
+				_concurrentReindexManagerSnapshot.get();
+
+			if ((concurrentReindexManager != null) &&
+				Objects.equals(executionMode, "concurrent")) {
+
+				_companyLocalService.forEachCompanyId(
+					companyId -> {
+						try {
+							concurrentReindexManager.deleteNextIndex(companyId);
+						}
+						catch (Exception exception2) {
+							exception1.addSuppressed(exception2);
+						}
+					},
+					companyIds);
+			}
+
+			throw exception1;
 		}
 	}
 
