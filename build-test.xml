@@ -14175,28 +14175,12 @@ enterprise.product.enterprise.search.enabled=false</echo>
 	</target>
 
 	<target name="prepare-release-bundle">
-		<ant antfile="build-release-slim.xml" dir="${release.tool.dir}" inheritAll="false" target="dist" useNativeBasedir="true">
-			<property name="override.decrement.module.bnd.versions" value="true" />
+		<ant antfile="build-developer.xml" dir="${release.tool.dir}" inheritAll="false" target="all" useNativeBasedir="true">
+			<property name="build.profile" value="${build.profile}" />
+			<property name="portal.dir" value="${project.dir}" />
 			<property name="project.release.dir.native" value="${release.tool.dir}" />
+			<property name="skip.reset.git" value="true" />
 		</ant>
-
-		<copy
-			overwrite="true"
-			tofile="${project.dir}/liferay-portal-bundle-tomcat.tar.gz"
-		>
-			<fileset
-				dir="dist/"
-				includes="liferay-*-tomcat-*.tar.gz"
-			/>
-		</copy>
-
-		<untar
-			compression="gzip"
-			dest="./bundles"
-			src="liferay-portal-bundle-tomcat.tar.gz"
-		>
-			<cutdirsmapper dirs="1" />
-		</untar>
 
 		<antcall target="deploy-license-xml">
 			<param name="test.build.cmp.license.url" value="${test.cmp.license.url}" />
