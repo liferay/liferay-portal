@@ -368,7 +368,9 @@ aiCreatorDisabledTest(
 	async ({aiCreatorInstanceSettingsPage, page, site, siteSettingsPage}) => {
 		await aiCreatorInstanceSettingsPage.goto();
 
-		await expect(aiCreatorInstanceSettingsPage.dalleCheckbox).toBeChecked();
+		await expect(
+			aiCreatorInstanceSettingsPage.openAIImageGenerationCheckbox
+		).toBeChecked();
 		await expect(aiCreatorInstanceSettingsPage.chatGPTCheckbox).toHaveCount(
 			0
 		);
@@ -379,7 +381,9 @@ aiCreatorDisabledTest(
 			site.friendlyUrlPath
 		);
 
-		await expect(aiCreatorInstanceSettingsPage.dalleCheckbox).toBeChecked();
+		await expect(
+			aiCreatorInstanceSettingsPage.openAIImageGenerationCheckbox
+		).toBeChecked();
 		await expect(aiCreatorInstanceSettingsPage.chatGPTCheckbox).toHaveCount(
 			0
 		);

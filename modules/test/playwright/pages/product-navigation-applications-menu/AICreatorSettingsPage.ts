@@ -15,8 +15,8 @@ const STR_BLANK = '';
 export class AICreatorInstanceSettingsPage {
 	readonly apiKeyInput: Locator;
 	readonly chatGPTCheckbox: Locator;
-	readonly dalleCheckbox: Locator;
 	readonly globalMenuPage: GlobalMenuPage;
+	readonly openAIImageGenerationCheckbox: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 
@@ -27,10 +27,10 @@ export class AICreatorInstanceSettingsPage {
 		this.chatGPTCheckbox = this.page.getByLabel(
 			'Enable ChatGPT to Create Content'
 		);
-		this.dalleCheckbox = this.page.getByLabel(
-			'Enable DALL-E to Create Images'
-		);
 		this.globalMenuPage = new GlobalMenuPage(page);
+		this.openAIImageGenerationCheckbox = this.page.getByLabel(
+			'Enable OpenAI Image Generation'
+		);
 		this.saveButton = this.page.getByRole('button', {name: 'Save'});
 	}
 
@@ -71,24 +71,24 @@ export class AICreatorInstanceSettingsPage {
 		await waitForAlert(this.page);
 	}
 
-	async enableDalleCreateImages() {
+	async enableOpenAIImageGeneration() {
 		await this.goto();
 
-		await this.dalleCheckbox.check();
+		await this.openAIImageGenerationCheckbox.check();
 
-		await expect(this.dalleCheckbox).toBeChecked();
+		await expect(this.openAIImageGenerationCheckbox).toBeChecked();
 
 		await this.saveButton.click();
 
 		await waitForAlert(this.page);
 	}
 
-	async disableDalleCreateImages() {
+	async disableOpenAIImageGeneration() {
 		await this.goto();
 
-		await this.dalleCheckbox.uncheck();
+		await this.openAIImageGenerationCheckbox.uncheck();
 
-		await expect(this.dalleCheckbox).not.toBeChecked();
+		await expect(this.openAIImageGenerationCheckbox).not.toBeChecked();
 
 		await this.saveButton.click();
 

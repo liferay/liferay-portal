@@ -28,7 +28,7 @@ test(
 		page,
 		site,
 	}) => {
-		await aiCreatorInstanceSettingsPage.enableDalleCreateImages();
+		await aiCreatorInstanceSettingsPage.enableOpenAIImageGeneration();
 		await aiCreatorInstanceSettingsPage.removeApiKey();
 
 		await documentLibraryPage.goto(site.friendlyUrlPath);
@@ -46,7 +46,7 @@ test(
 		page,
 		site,
 	}) => {
-		await aiCreatorInstanceSettingsPage.disableDalleCreateImages();
+		await aiCreatorInstanceSettingsPage.disableOpenAIImageGeneration();
 
 		await expect(async () => {
 			await documentLibraryPage.goto(site.friendlyUrlPath);
@@ -60,7 +60,7 @@ test(
 			).toBeHidden({timeout: 3000});
 		}).toPass({timeout: 30000});
 
-		await aiCreatorInstanceSettingsPage.enableDalleCreateImages();
+		await aiCreatorInstanceSettingsPage.enableOpenAIImageGeneration();
 	}
 );
 
