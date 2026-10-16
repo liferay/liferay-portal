@@ -1383,9 +1383,7 @@ public class DataFactory {
 		assetListEntrySegmentsEntryRelModel.setSegmentsEntryId(
 			SegmentsEntryConstants.ID_DEFAULT);
 
-		Map<String, String> map = HashMapBuilder.<String, String>create(
-			11
-		).put(
+		Map<String, String> map = HashMapBuilder.put(
 			"anyAssetType", Boolean.FALSE.toString()
 		).put(
 			"classNameIds",
@@ -1414,12 +1412,7 @@ public class DataFactory {
 			Boolean.FALSE.toString()
 		).build();
 
-		if (index == 1) {
-			map.put("queryAndOperator0", Boolean.TRUE.toString());
-			map.put("queryContains0", Boolean.TRUE.toString());
-			map.put("queryName0", "assetTags");
-		}
-		else {
+		if (index != 1) {
 			String assetPublisherQueryName = "assetCategories";
 
 			if ((index % 2) == 0) {
@@ -1458,19 +1451,16 @@ public class DataFactory {
 
 			String[] assetPublisherQueryValues = (String[])tuple.getObject(0);
 
-			map.put("queryAndOperator0", Boolean.FALSE.toString());
-			map.put("queryAndOperator1", Boolean.FALSE.toString());
-			map.put("queryContains0", Boolean.TRUE.toString());
-			map.put("queryContains1", Boolean.FALSE.toString());
-			map.put("queryName0", assetPublisherQueryName);
-			map.put("queryName1", assetPublisherQueryName);
 			map.put(
-				"queryValues0",
-				StringBundler.concat(
-					assetPublisherQueryValues[0], StringPool.COMMA,
-					assetPublisherQueryValues[1], StringPool.COMMA,
-					assetPublisherQueryValues[2]));
-			map.put("queryValues1", assetPublisherQueryValues[3]);
+				"filters",
+				JSONUtil.putAll(
+					_getFilterJSONObject(
+						"contains", assetPublisherQueryName, "any",
+						ArrayUtil.subset(assetPublisherQueryValues, 0, 3)),
+					_getFilterJSONObject(
+						"not-contains", assetPublisherQueryName, "any",
+						assetPublisherQueryValues[3])
+				).toString());
 		}
 
 		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.create(
@@ -9507,6 +9497,23 @@ public class DataFactory {
 		}
 
 		return typeSettingsUnicodeProperties.toString();
+	}
+
+	private JSONObject _getFilterJSONObject(
+		String operatorName, String propertyName, String quantifier,
+		String... values) {
+
+		return JSONUtil.put(
+			"operatorName", operatorName
+		).put(
+			"propertyName", propertyName
+		).put(
+			"quantifier", quantifier
+		).put(
+			"value",
+			JSONUtil.toJSONArray(
+				values, value -> JSONUtil.put("value", value), _log)
+		);
 	}
 
 	private String _getFragmentComponentConfiguration(String renderKey)
