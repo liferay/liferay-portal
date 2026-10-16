@@ -483,3 +483,25 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 		expect(error).toBe('Something went wrong');
 	});
 });
+
+describe('GovernanceService.getAssetsByIdsURL', () => {
+	it('requests the given assets with the nested fields of the dashboard lists', () => {
+		expect(GovernanceService.getAssetsByIdsURL([1, 2])).toBe(
+			'/o/search/v1.0/search?emptySearch=true&filter=entryClassPK+eq+1+or+entryClassPK+eq+2&nestedFields=embedded%2CsystemProperties.objectDefinitionBrief&pageSize=2'
+		);
+	});
+});
+
+describe('GovernanceService.getBrokenLinkAssetsURL', () => {
+	it('requests the first page of broken link assets sorted by title', () => {
+		expect(GovernanceService.getBrokenLinkAssetsURL()).toBe(
+			'/o/headless-cms/v1.0/broken-link-assets?pageSize=8&sort=title%3Aasc'
+		);
+	});
+
+	it('scopes the request by assetLibraryId when a space is given', () => {
+		expect(GovernanceService.getBrokenLinkAssetsURL('123')).toBe(
+			'/o/headless-cms/v1.0/broken-link-assets?pageSize=8&sort=title%3Aasc&assetLibraryId=123'
+		);
+	});
+});

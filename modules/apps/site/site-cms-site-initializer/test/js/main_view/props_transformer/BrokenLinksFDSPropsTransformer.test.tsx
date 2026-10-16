@@ -9,11 +9,31 @@ import React from 'react';
 
 import BrokenLinksFDSPropsTransformer from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/BrokenLinksFDSPropsTransformer';
 
+jest.mock('frontend-js-web', () => ({
+	...(jest.requireActual('frontend-js-web') as object),
+	sub: (template: string, ...values: string[]) =>
+		values.reduce(
+			(result, value, index) => result.replace(`{${index}}`, value),
+			template
+		),
+}));
+
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	findAction: jest.fn(() => ({data: {id: 'edit'}, href: '/edit/{id}'})),
 	replaceTokens: jest.fn(() => '/edit/1'),
 	useFDSRecordVisit: () => jest.fn(),
 }));
+
+const LANGUAGE_KEYS: Record<string, string> = {
+	'x-asset-in-recycle-bin': '{0} Asset in Recycle Bin',
+	'x-assets-in-recycle-bin': '{0} Assets in Recycle Bin',
+	'x-deleted-asset': '{0} Deleted Asset',
+	'x-deleted-assets': '{0} Deleted Assets',
+	'x-draft-asset': '{0} Draft Asset',
+	'x-draft-assets': '{0} Draft Assets',
+	'x-expired-asset': '{0} Expired Asset',
+	'x-expired-assets': '{0} Expired Assets',
+};
 
 const TITLE = 'Referring Content';
 
@@ -38,7 +58,9 @@ describe('[CMS Broken Links] BrokenLinksFDSPropsTransformer', () => {
 	};
 
 	beforeEach(() => {
-		jest.spyOn(Liferay.Language, 'get');
+		jest.spyOn(Liferay.Language, 'get').mockImplementation(
+			(key: string) => LANGUAGE_KEYS[key] ?? key
+		);
 	});
 
 	afterEach(() => {
@@ -52,42 +74,36 @@ describe('[CMS Broken Links] BrokenLinksFDSPropsTransformer', () => {
 	});
 
 	it('renders the title as plain text without the update permission', () => {
-		renderTitle({brokenLinksCount: 1});
+		renderTitle({expiredBrokenLinksCount: 1});
 
 		expect(screen.queryByRole('link', {name: TITLE})).toBeNull();
 		expect(screen.getByText(TITLE)).toBeInTheDocument();
 	});
 
 	it('links the title with the update permission', () => {
-		renderTitle({actions: {update: {}}, brokenLinksCount: 1});
+		renderTitle({actions: {update: {}}, expiredBrokenLinksCount: 1});
 
 		expect(screen.getByRole('link', {name: TITLE})).toBeInTheDocument();
 	});
 
-	it('names the broken link when a content has a single one', () => {
-		renderTitle({brokenLinkTitle: 'Expired Banner', brokenLinksCount: 1});
+	it('counts each type of broken link in the singular or the plural', () => {
+		renderTitle({
+			deletedBrokenLinksCount: 1,
+			draftBrokenLinksCount: 4,
+			expiredBrokenLinksCount: 2,
+			inTrashBrokenLinksCount: 1,
+		});
 
-		expect(screen.getByText('x-expired-asset')).toBeInTheDocument();
-		expect(Liferay.Language.get).not.toHaveBeenCalledWith('untitled-asset');
+		expect(
+			screen.getByText(
+				'2 Expired Assets · 1 Deleted Asset · 1 Asset in Recycle Bin · 4 Draft Assets'
+			)
+		).toBeInTheDocument();
 	});
 
-	it('counts the expired assets when a content has more than one', () => {
-		renderTitle({brokenLinkTitle: 'Expired Banner', brokenLinksCount: 3});
+	it('leaves out the types of broken link the content does not have', () => {
+		renderTitle({expiredBrokenLinksCount: 1});
 
-		expect(screen.getByText('x-expired-assets')).toBeInTheDocument();
-		expect(screen.queryByText('x-expired-asset')).not.toBeInTheDocument();
-	});
-
-	it('calls the single broken link untitled when it has no title', () => {
-		renderTitle({brokenLinksCount: 1});
-
-		expect(screen.getByText('x-expired-asset')).toBeInTheDocument();
-		expect(Liferay.Language.get).toHaveBeenCalledWith('untitled-asset');
-	});
-
-	it('counts zero when the content carries no expired asset', () => {
-		renderTitle({});
-
-		expect(screen.getByText('x-expired-assets')).toBeInTheDocument();
+		expect(screen.getByText('1 Expired Asset')).toBeInTheDocument();
 	});
 });

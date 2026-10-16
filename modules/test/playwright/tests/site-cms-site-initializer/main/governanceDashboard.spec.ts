@@ -98,22 +98,26 @@ function getDocumentHTML(externalReferenceCode: string) {
 	);
 }
 
-async function gotoBrokenLinks(page: Page, spaceName: string, title: string) {
-	await page.goto('/web/cms/dashboard');
-
-	await selectSpace(page, spaceName);
-
-	await page.getByRole('button', {name: /broken links/i}).click();
-
-	await expect(page).toHaveURL(/broken-links\?groupId=/);
+async function openBrokenLinksList(
+	page: Page,
+	spaceName: string,
+	title: string
+) {
+	const brokenLinksList = page.getByRole('region', {name: 'Broken Links'});
 
 	await expect(async () => {
-		await page.reload();
+		await page.goto('/web/cms/dashboard');
 
-		await expect(page.getByText(title, {exact: true})).toBeVisible({
-			timeout: 5000,
-		});
+		await selectSpace(page, spaceName);
+
+		await page.getByRole('button', {name: /^Broken Links /}).click();
+
+		await expect(
+			brokenLinksList.getByText(title, {exact: true})
+		).toBeVisible({timeout: 5000});
 	}).toPass();
+
+	return brokenLinksList;
 }
 
 async function pollDate(
@@ -760,7 +764,9 @@ test.describe('Attention Required section', () => {
 			});
 		}
 	);
+});
 
+test.describe('Quality section', () => {
 	test(
 		'Lists the contents that point at an expired asset of the selected space',
 		{tag: '@LPD-103027'},
@@ -839,27 +845,41 @@ test.describe('Attention Required section', () => {
 			});
 
 			await test.step('Confirm the second space lists its own broken link', async () => {
-				await gotoBrokenLinks(
+				await openBrokenLinksList(
 					page,
 					secondSpaceName,
 					secondSpaceReferringTitle
 				);
 			});
 
-			await test.step('Open the broken links page of the first space', async () => {
-				await gotoBrokenLinks(page, firstSpaceName, referringTitle);
-			});
-
 			await test.step('Check that only the first space is listed', async () => {
+				const brokenLinksList = await openBrokenLinksList(
+					page,
+					firstSpaceName,
+					referringTitle
+				);
+
 				await expect(
-					page.getByText(`${expiredTitle} - Expired Asset`, {
-						exact: true,
-					})
+					brokenLinksList.getByText('1 Expired Asset', {exact: true})
 				).toBeVisible();
 
 				await expect(
-					page.getByText(secondSpaceReferringTitle, {exact: true})
+					brokenLinksList.getByText(secondSpaceReferringTitle, {
+						exact: true,
+					})
 				).toBeHidden();
+			});
+
+			await test.step('Open the broken links page of the first space', async () => {
+				await page
+					.getByRole('link', {name: 'View All Broken Links'})
+					.click();
+
+				await expect(page).toHaveURL(/broken-links\?groupId=/);
+
+				await expect(
+					page.getByText(referringTitle, {exact: true})
+				).toBeVisible();
 			});
 
 			await test.step('Edit the content from the list', async () => {

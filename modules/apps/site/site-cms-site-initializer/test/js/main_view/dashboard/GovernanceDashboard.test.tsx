@@ -122,8 +122,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		).toBeInTheDocument();
 
 		expect(
+			attentionRequired.queryByRole('button', {name: /broken-links/})
+		).not.toBeInTheDocument();
+
+		const quality = within(screen.getByRole('group', {name: 'quality'}));
+
+		expect(
 			within(
-				attentionRequired.getByRole('button', {name: /broken-links/})
+				quality.getByRole('button', {name: /^broken-links /})
 			).getByText('7')
 		).toBeInTheDocument();
 	});
