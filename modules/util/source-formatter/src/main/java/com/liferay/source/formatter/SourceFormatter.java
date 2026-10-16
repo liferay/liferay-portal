@@ -1085,7 +1085,7 @@ public class SourceFormatter {
 			_excludeWorkingDirCheckoutPrivateApps(
 				SourceFormatterUtil.getPortalDir(
 					_sourceFormatterArgs.getBaseDirName(),
-					_sourceFormatterArgs.getMaxLineLength()));
+					_sourceFormatterArgs.getMaxDirLevel()));
 		}
 
 		_propertiesMap = new HashMap<>();
@@ -1216,7 +1216,7 @@ public class SourceFormatter {
 	private boolean _isRootTestPropertiesChanges(String recentChangesFileName) {
 		File portalDir = SourceFormatterUtil.getPortalDir(
 			_sourceFormatterArgs.getBaseDirName(),
-			_sourceFormatterArgs.getMaxLineLength());
+			_sourceFormatterArgs.getMaxDirLevel());
 
 		if (portalDir == null) {
 			return false;
@@ -1395,7 +1395,7 @@ public class SourceFormatter {
 
 		File portalDir = SourceFormatterUtil.getPortalDir(
 			_sourceFormatterArgs.getBaseDirName(),
-			_sourceFormatterArgs.getMaxLineLength());
+			_sourceFormatterArgs.getMaxDirLevel());
 
 		if (portalDir == null) {
 			return;
