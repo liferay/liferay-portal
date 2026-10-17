@@ -21,8 +21,16 @@ import org.jsoup.nodes.Document;
  */
 public interface PortletRegistry {
 
-	public List<String> getFragmentEntryLinkPortletIds(
-		Document document, FragmentEntryLink fragmentEntryLink);
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #getFragmentEntryLinkPortletIds(FragmentEntryLink)}
+	 */
+	@Deprecated
+	public default List<String> getFragmentEntryLinkPortletIds(
+		Document document, FragmentEntryLink fragmentEntryLink) {
+
+		return getFragmentEntryLinkPortletIds(fragmentEntryLink);
+	}
 
 	public default List<String> getFragmentEntryLinkPortletIds(
 		FragmentEntryLink fragmentEntryLink) {

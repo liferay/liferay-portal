@@ -34,8 +34,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jsoup.nodes.Document;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -47,7 +45,7 @@ public class PortletRegistryImpl implements PortletRegistry {
 
 	@Override
 	public List<String> getFragmentEntryLinkPortletIds(
-		Document document, FragmentEntryLink fragmentEntryLink) {
+		FragmentEntryLink fragmentEntryLink) {
 
 		List<String> portletIds = new ArrayList<>();
 
@@ -80,13 +78,6 @@ public class PortletRegistryImpl implements PortletRegistry {
 		_addWidgetTagPortletIds(fragmentEntryLink, html, portletIds);
 
 		return portletIds;
-	}
-
-	@Override
-	public List<String> getFragmentEntryLinkPortletIds(
-		FragmentEntryLink fragmentEntryLink) {
-
-		return getFragmentEntryLinkPortletIds(null, fragmentEntryLink);
 	}
 
 	@Override
