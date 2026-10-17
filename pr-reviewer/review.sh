@@ -1,25 +1,5 @@
 #!/bin/bash
 
-#
-# Review a local diff against the rules in this directory and print the
-# violations, so a commit or a branch satisfies the conventions before a human
-# reads it.
-#
-# The diff is the staged changes with --staged, the commits on the current branch
-# that are not on the base branch by default, or the range given as the last
-# argument. Generated files, frontend sources, generated locale files, and lock
-# files are dropped before the model sees the diff, with the same filter run.sh
-# applies to a pull request.
-#
-# The rules are reviewed as groups that run in parallel, one model call per
-# group, so each call applies a handful of rules exhaustively instead of spot
-# checking all of them. A group only runs when the diff holds a file its rules
-# apply to, so a properties change is not reviewed against the Java rules.
-#
-# Exit status is 0 when the diff is clean, 1 when it has violations, and 2 when
-# the review could not run.
-#
-
 set -o errexit
 set -o nounset
 set -o pipefail
@@ -157,11 +137,6 @@ function main {
 		_print_report
 	fi
 
-	#
-	# A group that returned no verdict reviewed nothing, so the diff is not clean
-	# even when every other group found no violations.
-	#
-
 	if ls ${work_dir}/*.failed > /dev/null 2>&1
 	then
 		echo "Unable to review the diff because these groups returned no verdict: $(basename -a -s .failed ${work_dir}/*.failed | tr "\n" " ")" >&2
@@ -292,11 +267,6 @@ function _resolve_repo {
 	rules_dir=${repo_root}/pr-reviewer/rules
 	style_file=${repo_root}/pr-reviewer/STYLE.md
 
-	#
-	# A liferay-portal-ee checkout ships no rules, so it reads them from a sibling
-	# liferay-portal checkout or from LIFERAY_PR_REVIEWER_HOME.
-	#
-
 	if [ ! -d ${rules_dir} ]
 	then
 		local reviewer_home=${LIFERAY_PR_REVIEWER_HOME:-${repo_root%/*}/liferay-portal/pr-reviewer}
@@ -406,11 +376,6 @@ function _write_diff_file {
 		fi
 	fi
 
-	#
-	# Detect generated files on the new side of the change so the filter can drop
-	# them, matching run.sh.
-	#
-
 	for reviewed_file in $(git diff --name-only ${diff_args} -- .)
 	do
 		if git grep --ignore-case --quiet "@generated" ${grep_ref} -- ":(top)${reviewed_file}" 2> /dev/null
@@ -470,13 +435,6 @@ function _write_diff_file {
 		! skip && ! name_only
 	' > ${diff_file}
 }
-
-#
-# Each group is a label, the leading digits of the rule files it covers (one
-# digit for a whole category, more to split one), and the kinds of file it
-# applies to: all, java, sh, or test. A group holds about nine rules, since a
-# call over more than that spot checks instead of applying each one.
-#
 
 _GROUPS=(
 	"convention|00|all"
