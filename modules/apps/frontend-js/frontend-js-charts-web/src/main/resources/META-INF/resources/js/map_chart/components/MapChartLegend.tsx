@@ -74,7 +74,7 @@ export default function MapChartLegend({
 				render: (item) => data[item.id].value,
 			},
 			{
-				label: Liferay.Language.get('share[proportion]'),
+				label: Liferay.Language.get('share'),
 				render: (item) => `${toPercent(data[item.id].value, total)}%`,
 			},
 		],

@@ -6,7 +6,7 @@
 export default {
 	address: {
 		icon: 'geolocation',
-		title: Liferay.Language.get('address[postal]'),
+		title: Liferay.Language.get('address'),
 	},
 	checkbox: {
 		icon: 'check',

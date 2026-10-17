@@ -255,7 +255,7 @@ announcementsPortletInstanceConfiguration = ParameterMapUtil.setParameterMap(Ann
 				);
 
 				displayTitle.append(
-					'<span class="modified-notice"> (<liferay-ui:message key="modified[state]" />) </span>'
+					'<span class="modified-notice"> (<liferay-ui:message key="modified" />) </span>'
 				);
 			}
 		};

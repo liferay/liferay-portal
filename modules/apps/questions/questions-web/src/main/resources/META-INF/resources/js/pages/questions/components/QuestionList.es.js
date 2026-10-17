@@ -139,7 +139,7 @@ const QuestionList = ({
 				displayType="primary"
 				onClick={() => historyPushParser('/questions')}
 			>
-				{Liferay.Language.get('home[page]')}
+				{Liferay.Language.get('home')}
 			</ClayButton>
 		</ClayEmptyState>
 	);

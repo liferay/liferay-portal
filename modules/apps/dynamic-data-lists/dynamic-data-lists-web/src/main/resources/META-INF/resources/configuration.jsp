@@ -307,7 +307,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 			if (displayRecordSetId) {
 				displayRecordSetId.textContent =
 					rowElement.dataset.recordSetName +
-					' (<%= UnicodeLanguageUtil.get(request, "modified[state]") %>)';
+					' (<%= UnicodeLanguageUtil.get(request, "modified") %>)';
 
 				displayRecordSetId.classList.add('modified');
 			}

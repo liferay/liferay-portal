@@ -12,7 +12,7 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(ParamUtil.getString(request, "backURL", String.valueOf(renderResponse.createRenderURL())));
 portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
-renderResponse.setTitle(LanguageUtil.get(request, "import[noun]"));
+renderResponse.setTitle(LanguageUtil.get(request, "import"));
 
 LiferayPortletURL importURL = (LiferayPortletURL)ResourceURLBuilder.createResourceURL(
 	renderResponse

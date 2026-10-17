@@ -170,7 +170,7 @@ request.setAttribute("view.jsp-viewCategory", Boolean.TRUE.toString());
 					<c:if test="<%= mbListDisplayContext.isShowSearch() %>">
 						<liferay-ui:header
 							backURL="<%= redirect %>"
-							title="search[noun]"
+							title="search"
 						/>
 					</c:if>
 

@@ -31,7 +31,7 @@ const ACTIONS = {
 			onClose: () => {
 				window.location.reload();
 			},
-			title: Liferay.Language.get('import[noun]'),
+			title: Liferay.Language.get('import'),
 			url: viewImportURL,
 		});
 	},

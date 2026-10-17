@@ -35,7 +35,7 @@ public class SearchPanelCategory extends BasePanelCategory {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "search[noun]");
+		return _language.get(locale, "search");
 	}
 
 	@Reference
