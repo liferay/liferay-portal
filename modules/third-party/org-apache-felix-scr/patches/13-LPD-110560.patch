@@ -1,0 +1,20 @@
+diff --git a/org/apache/felix/scr/impl/ComponentRegistry.java b/org/apache/felix/scr/impl/ComponentRegistry.java
+index dc979c9a5e3b3..e04292bd7a862 100755
+--- a/org/apache/felix/scr/impl/ComponentRegistry.java
++++ b/org/apache/felix/scr/impl/ComponentRegistry.java
+@@ -346,7 +346,14 @@ public class ComponentRegistry
+     	List<ComponentHolder<?>> all = new ArrayList<>();
+         synchronized ( m_componentHoldersByName )
+         {
+-        	all.addAll(m_componentHoldersByName.values());
++            for (ComponentHolder<?> holder: m_componentHoldersByName.values())
++            {
++                // Ignore name reservations
++                if (holder != null)
++                {
++                    all.add(holder);
++                }
++            }
+         }
+         return all;
+     }

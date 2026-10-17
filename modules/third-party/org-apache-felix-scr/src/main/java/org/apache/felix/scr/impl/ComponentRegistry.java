@@ -346,7 +346,14 @@ public class ComponentRegistry
     	List<ComponentHolder<?>> all = new ArrayList<>();
         synchronized ( m_componentHoldersByName )
         {
-        	all.addAll(m_componentHoldersByName.values());
+            for (ComponentHolder<?> holder: m_componentHoldersByName.values())
+            {
+                // Ignore name reservations
+                if (holder != null)
+                {
+                    all.add(holder);
+                }
+            }
         }
         return all;
     }
