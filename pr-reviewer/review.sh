@@ -161,7 +161,12 @@ function main {
 
 	local reviewed_rules
 
-	reviewed_rules=$(echo ${reviewed_rule_files} | tr " " "\n" | sed -e "s#.*/##" | cut -c 1-3 | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')
+	reviewed_rules=$( \
+		echo ${reviewed_rule_files} | \
+			tr " " "\n" | \
+			sed -e "s#.*/##" | \
+			cut -c 1-3 | \
+			jq --raw-input --slurp 'split("\n") | map(select(. != ""))')
 
 	local pid
 
@@ -172,7 +177,12 @@ function main {
 
 	local merged_json
 
-	merged_json=$(jq --argjson reviewed_files "$(echo "${reviewed_files}" | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')" --argjson reviewed_rules "${reviewed_rules}" --slurp '{chance: (map(.chance) | max // 0), groups: (map({(.group): {chance: .chance, seconds: .seconds, violations: (.violations | length)}}) | add // {}), reviewed_files: $reviewed_files, rules: $reviewed_rules, cost: (map(.cost) | add // 0), tokens: {cache_read: (map(.tokens.cache_read) | add // 0), cache_write: (map(.tokens.cache_write) | add // 0), input: (map(.tokens.input) | add // 0), output: (map(.tokens.output) | add // 0)}, violations: ([.[].violations[]] | unique_by([.file, .line, .rule]) | sort_by([.file, .line, .rule]))}' ${work_dir}/*.json)
+	merged_json=$(jq \
+		--argjson reviewed_files "$(echo "${reviewed_files}" | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')" \
+		--argjson reviewed_rules "${reviewed_rules}" \
+		--slurp \
+		'{chance: (map(.chance) | max // 0), groups: (map({(.group): {chance: .chance, seconds: .seconds, violations: (.violations | length)}}) | add // {}), reviewed_files: $reviewed_files, rules: $reviewed_rules, cost: (map(.cost) | add // 0), tokens: {cache_read: (map(.tokens.cache_read) | add // 0), cache_write: (map(.tokens.cache_write) | add // 0), input: (map(.tokens.input) | add // 0), output: (map(.tokens.output) | add // 0)}, violations: ([.[].violations[]] | unique_by([.file, .line, .rule]) | sort_by([.file, .line, .rule]))}' \
+		${work_dir}/*.json)
 
 	local violations_count
 
@@ -283,7 +293,10 @@ function _print_report {
 	local merged_json=${1}
 	local diff_label=${2}
 
-	echo "${merged_json}" | jq --arg diff_label "${diff_label}" --raw-output '"Reviewed \(.reviewed_files | length) file(s) for \($diff_label) against \(.rules | length) rules in \(.groups | length) group(s), \(.tokens.input + .tokens.cache_write + .tokens.cache_read) input tokens (\(.tokens.cache_read) read from the cache), \(.tokens.output) output tokens, and $\(.cost * 100 | round / 100)."'
+	echo "${merged_json}" | jq \
+		--arg diff_label "${diff_label}" \
+		--raw-output \
+		'"Reviewed \(.reviewed_files | length) file(s) for \($diff_label) against \(.rules | length) rules in \(.groups | length) group(s), \(.tokens.input + .tokens.cache_write + .tokens.cache_read) input tokens (\(.tokens.cache_read) read from the cache), \(.tokens.output) output tokens, and $\(.cost * 100 | round / 100)."'
 	echo ""
 
 	echo "${merged_json}" | jq --raw-output '.groups | to_entries[] | "  \(.key): \(.value.violations) violation(s), \(.value.chance)% chance, \(.value.seconds)s"'
@@ -367,7 +380,10 @@ $(cat ${work_dir}/review.diff)"
 		return 0
 	fi
 
-	echo "${raw}" | jq --arg group ${group_label} --argjson seconds $(($(date +%s) - seconds)) '{chance: (if ((.structured_output.violations // []) | length) > 0 then (.structured_output.chance // 0) else 0 end), group: $group, seconds: $seconds, cost: (.total_cost_usd // 0), tokens: {cache_read: (.usage.cache_read_input_tokens // 0), cache_write: (.usage.cache_creation_input_tokens // 0), input: (.usage.input_tokens // 0), output: (.usage.output_tokens // 0)}, violations: (.structured_output.violations // [])}' > ${group_json}
+	echo "${raw}" | jq \
+		--arg group ${group_label} \
+		--argjson seconds $(($(date +%s) - seconds)) \
+		'{chance: (if ((.structured_output.violations // []) | length) > 0 then (.structured_output.chance // 0) else 0 end), group: $group, seconds: $seconds, cost: (.total_cost_usd // 0), tokens: {cache_read: (.usage.cache_read_input_tokens // 0), cache_write: (.usage.cache_creation_input_tokens // 0), input: (.usage.input_tokens // 0), output: (.usage.output_tokens // 0)}, violations: (.structured_output.violations // [])}' > ${group_json}
 }
 
 function _write_diff_file {
