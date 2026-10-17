@@ -47,7 +47,55 @@ function main {
 		exit 2
 	fi
 
-	_resolve_repo
+	local repo_root
+
+	repo_root=$(git rev-parse --show-toplevel 2> /dev/null || true)
+
+	if [[ -z ${repo_root} ]]
+	then
+		echo "Unable to find a Git repository." >&2
+
+		exit 2
+	fi
+
+	cd ${repo_root}
+
+	local reviewer_dir=${repo_root}/pr-reviewer
+
+	if [ ! -d ${reviewer_dir}/rules ]
+	then
+		reviewer_dir=${LIFERAY_PR_REVIEWER_HOME:-${repo_root%/*}/liferay-portal/pr-reviewer}
+	fi
+
+	if [ ! -d ${reviewer_dir}/rules ] || [ ! -f ${reviewer_dir}/STYLE.md ]
+	then
+		echo "Unable to find pr-reviewer/rules and pr-reviewer/STYLE.md under ${repo_root} or LIFERAY_PR_REVIEWER_HOME." >&2
+
+		exit 2
+	fi
+
+	local diff_args=--cached
+	local diff_label="the staged changes"
+
+	if ! ${staged}
+	then
+		if [[ -z ${diff_range} ]]
+		then
+			local base_branch=${LIFERAY_PR_BASE_BRANCH:-master}
+
+			if ! git rev-parse --quiet --verify ${base_branch} > /dev/null
+			then
+				echo "Unable to find the base branch ${base_branch}. Set LIFERAY_PR_BASE_BRANCH or pass a range." >&2
+
+				exit 2
+			fi
+
+			diff_range="$(git merge-base ${base_branch} HEAD)..HEAD"
+		fi
+
+		diff_args=${diff_range}
+		diff_label="range ${diff_range}"
+	fi
 
 	local work_dir
 
@@ -57,7 +105,7 @@ function main {
 
 	local diff_file=${work_dir}/review.diff
 
-	_write_diff_file
+	_write_diff_file ${diff_args} > ${diff_file}
 
 	if [ ! -s ${diff_file} ]
 	then
@@ -78,8 +126,8 @@ function main {
 	if ${dry_run}
 	then
 		echo "Range:  ${diff_label}"
-		echo "Rules:  ${rules_dir}"
-		echo "Groups: $(_get_group_labels | tr "\n" " ")"
+		echo "Rules:  ${reviewer_dir}/rules"
+		echo "Groups: $(_get_group_labels "${reviewed_files}" | tr "\n" " ")"
 		echo "Files:"
 		echo "${reviewed_files}" | sed "s/^/  /"
 		echo ""
@@ -97,14 +145,16 @@ function main {
 	fi
 
 	local group_label
+	local group_rule_files
 	local pids=()
 	local reviewed_rule_files=""
 
-	for group_label in $(_get_group_labels)
+	for group_label in $(_get_group_labels "${reviewed_files}")
 	do
-		reviewed_rule_files+=" $(_get_group_rule_files ${group_label})"
+		group_rule_files=$(_get_group_rule_files ${group_label} ${reviewer_dir}/rules)
+		reviewed_rule_files+=" ${group_rule_files}"
 
-		_review_group ${group_label} "$(_get_group_rule_files ${group_label})" &
+		_review_group ${group_label} "${group_rule_files}" ${repo_root} ${reviewer_dir} ${work_dir} &
 
 		pids+=(${!})
 	done
@@ -132,7 +182,7 @@ function main {
 	then
 		echo "${merged_json}"
 	else
-		_print_report
+		_print_report "${merged_json}" "${diff_label}"
 	fi
 
 	if ls ${work_dir}/*.failed > /dev/null 2>&1
@@ -152,6 +202,8 @@ function main {
 }
 
 function _get_group_labels {
+	local reviewed_files=${1}
+
 	local group
 	local kinds
 
@@ -159,7 +211,7 @@ function _get_group_labels {
 	do
 		kinds=${group##*|}
 
-		if [[ ${kinds} == all ]] || _has_file_kind ${kinds}
+		if [[ ${kinds} == all ]] || _has_file_kind "${reviewed_files}" ${kinds}
 		then
 			echo ${group%%|*}
 		fi
@@ -168,6 +220,7 @@ function _get_group_labels {
 
 function _get_group_rule_files {
 	local group_label=${1}
+	local rules_dir=${2}
 
 	local group
 	local prefix
@@ -190,6 +243,10 @@ function _get_group_rule_files {
 }
 
 function _has_file_kind {
+	local reviewed_files=${1}
+
+	shift
+
 	local kind
 
 	for kind in "${@}"
@@ -223,19 +280,22 @@ function _print_help {
 }
 
 function _print_report {
-	local chance
+	local merged_json=${1}
+	local diff_label=${2}
 
-	chance=$(echo "${merged_json}" | jq ".chance")
-
-	local reviewed_files_count
-
-	reviewed_files_count=$(($(echo "${reviewed_files}" | wc -l)))
-
-	echo "Reviewed ${reviewed_files_count} file(s) for ${diff_label} against $(($(ls ${rules_dir}/*.md | wc -l))) rules in $(($(_get_group_labels | wc -l))) group(s), $(echo "${merged_json}" | jq --raw-output '"\(.tokens.input + .tokens.cache_write + .tokens.cache_read) input tokens (\(.tokens.cache_read) read from the cache), \(.tokens.output) output tokens, and $\(.cost * 100 | round / 100)"')."
+	echo "${merged_json}" | jq --arg diff_label "${diff_label}" --raw-output '"Reviewed \(.reviewed_files | length) file(s) for \($diff_label) against \(.rules | length) rules in \(.groups | length) group(s), \(.tokens.input + .tokens.cache_write + .tokens.cache_read) input tokens (\(.tokens.cache_read) read from the cache), \(.tokens.output) output tokens, and $\(.cost * 100 | round / 100)."'
 	echo ""
 
 	echo "${merged_json}" | jq --raw-output '.groups | to_entries[] | "  \(.key): \(.value.violations) violation(s), \(.value.chance)% chance, \(.value.seconds)s"'
 	echo ""
+
+	local chance
+
+	chance=$(echo "${merged_json}" | jq ".chance")
+
+	local violations_count
+
+	violations_count=$(echo "${merged_json}" | jq ".violations | length")
 
 	if [ ${violations_count} -eq 0 ]
 	then
@@ -250,40 +310,12 @@ function _print_report {
 	echo "${merged_json}" | jq --raw-output '.violations[] | "\(.file):\(.line) [rule \(.rule)] \(.message)\n    Fix: \(.fix)\n"'
 }
 
-function _resolve_repo {
-	repo_root=$(git rev-parse --show-toplevel 2> /dev/null || true)
-
-	if [[ -z ${repo_root} ]]
-	then
-		echo "Unable to find a Git repository." >&2
-
-		exit 2
-	fi
-
-	cd ${repo_root}
-
-	rules_dir=${repo_root}/pr-reviewer/rules
-	style_file=${repo_root}/pr-reviewer/STYLE.md
-
-	if [ ! -d ${rules_dir} ]
-	then
-		local reviewer_home=${LIFERAY_PR_REVIEWER_HOME:-${repo_root%/*}/liferay-portal/pr-reviewer}
-
-		rules_dir=${reviewer_home}/rules
-		style_file=${reviewer_home}/STYLE.md
-	fi
-
-	if [ ! -d ${rules_dir} ] || [ ! -f ${style_file} ]
-	then
-		echo "Unable to find pr-reviewer/rules and pr-reviewer/STYLE.md under ${repo_root} or LIFERAY_PR_REVIEWER_HOME." >&2
-
-		exit 2
-	fi
-}
-
 function _review_group {
 	local group_label=${1}
 	local rule_files=${2}
+	local repo_root=${3}
+	local reviewer_dir=${4}
+	local work_dir=${5}
 
 	local group_json=${work_dir}/${group_label}.json
 	local seconds=$(date +%s)
@@ -304,7 +336,7 @@ The chance is your confidence, from 0 to 100, that the reviewer closes a pull re
 
 # Style guide
 
-$(cat ${style_file})
+$(cat ${reviewer_dir}/STYLE.md)
 
 # Rules
 
@@ -312,7 +344,7 @@ $(awk 'FNR == 1 && NR > 1 {print ""} {print}' ${rule_files})
 
 # Diff
 
-$(cat ${diff_file})"
+$(cat ${work_dir}/review.diff)"
 
 	local raw
 
@@ -339,39 +371,15 @@ $(cat ${diff_file})"
 }
 
 function _write_diff_file {
-	local diff_args
+	local diff_args=${1}
+
 	local generated_files=""
-	local grep_ref
+	local grep_ref=${diff_args##*..}
 	local reviewed_file
 
-	if ${staged}
+	if [[ -z ${grep_ref} ]]
 	then
-		diff_args="--cached"
-		diff_label="the staged changes"
-		grep_ref="--cached"
-	else
-		if [[ -z ${diff_range} ]]
-		then
-			local base_branch=${LIFERAY_PR_BASE_BRANCH:-master}
-
-			if ! git rev-parse --quiet --verify ${base_branch} > /dev/null
-			then
-				echo "Unable to find the base branch ${base_branch}. Set LIFERAY_PR_BASE_BRANCH or pass a range." >&2
-
-				exit 2
-			fi
-
-			diff_range="$(git merge-base ${base_branch} HEAD)..HEAD"
-		fi
-
-		diff_args=${diff_range}
-		diff_label="range ${diff_range}"
-		grep_ref=${diff_range##*..}
-
-		if [[ -z ${grep_ref} ]]
-		then
-			grep_ref=HEAD
-		fi
+		grep_ref=HEAD
 	fi
 
 	for reviewed_file in $(git diff --name-only ${diff_args} -- .)
@@ -431,7 +439,7 @@ function _write_diff_file {
 			next
 		}
 		! skip && ! name_only
-	' > ${diff_file}
+	'
 }
 
 _GROUPS=(
