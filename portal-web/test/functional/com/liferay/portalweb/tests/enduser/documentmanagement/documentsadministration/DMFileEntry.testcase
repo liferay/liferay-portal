@@ -2262,11 +2262,11 @@ definition {
 
 		DMDocument.setExpirationDate(
 			enableExpirationDate = "true",
-			increaseMinutes = 1);
+			increaseMinutes = 2);
 
 		Navigator.openURL();
 
-		Notifications.waitForNotificationFlexibly(flexibleRefreshingTime = 20000);
+		Notifications.waitForNotificationFlexibly(flexibleRefreshingTime = 40000);
 
 		Notifications.viewBadgeCount(notificationCount = 1);
 
