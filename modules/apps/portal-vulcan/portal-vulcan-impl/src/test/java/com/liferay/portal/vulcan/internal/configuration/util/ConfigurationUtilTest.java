@@ -39,14 +39,14 @@ public class ConfigurationUtilTest {
 			"getSystem", VulcanConfiguration.class);
 
 		Assert.assertEquals(
-			Collections.singleton("getSystem"),
-			_getExcludedOperationIds(systemConfiguration));
-		Assert.assertEquals(
 			Collections.singleton("getCompany"),
 			_getExcludedOperationIds(
 				systemConfiguration,
 				_createConfiguration(
 					"getCompany", VulcanCompanyConfiguration.class)));
+		Assert.assertEquals(
+			Collections.singleton("getSystem"),
+			_getExcludedOperationIds(systemConfiguration));
 	}
 
 	private Configuration _createConfiguration(
