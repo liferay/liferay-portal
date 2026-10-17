@@ -28,7 +28,7 @@ function main {
 			staged=true
 		elif [[ ${1} == --* ]]
 		then
-			echo "Unknown option ${1}." >&2
+			echo "Unable to recognize the option ${1}." >&2
 
 			_print_help >&2
 
@@ -42,7 +42,7 @@ function main {
 
 	if ${staged} && [[ ! -z ${diff_range} ]]
 	then
-		echo "Pass either --staged or a range, not both." >&2
+		echo "Unable to review both the staged changes and a range. Pass one of them." >&2
 
 		exit 2
 	fi
@@ -91,7 +91,7 @@ function main {
 
 	if ! command -v claude > /dev/null 2>&1
 	then
-		echo "The claude CLI is not on the PATH." >&2
+		echo "Unable to find the claude CLI on the PATH." >&2
 
 		exit 2
 	fi
@@ -255,7 +255,7 @@ function _resolve_repo {
 
 	if [[ -z ${repo_root} ]]
 	then
-		echo "Not inside a Git repository." >&2
+		echo "Unable to find a Git repository." >&2
 
 		exit 2
 	fi
@@ -328,7 +328,7 @@ $(cat ${diff_file})"
 
 	if ! echo "${raw}" | jq --exit-status ".structured_output | has(\"violations\")" > /dev/null 2>&1
 	then
-		echo "The ${group_label} group returned no verdict: $(echo "${raw}" | jq --raw-output '.result // .error // empty' 2> /dev/null | head -c 300)" >&2
+		echo "Unable to get a verdict from the ${group_label} group: $(echo "${raw}" | jq --raw-output '.result // .error // empty' 2> /dev/null | head -c 300)" >&2
 
 		touch ${work_dir}/${group_label}.failed
 
