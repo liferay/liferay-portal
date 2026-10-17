@@ -201,7 +201,7 @@ public class Snapshot<T> {
 		public T addingService(ServiceReference<S> serviceReference) {
 			T service = super.addingService(serviceReference);
 
-			_trackedCount.incrementAndGet();
+			_count.incrementAndGet();
 
 			return service;
 		}
@@ -212,7 +212,7 @@ public class Snapshot<T> {
 
 		@Override
 		public T getService() {
-			if (_trackedCount.get() == 0) {
+			if (_count.get() == 0) {
 				return null;
 			}
 
@@ -223,7 +223,7 @@ public class Snapshot<T> {
 		public void removedService(
 			ServiceReference<S> serviceReference, T service) {
 
-			_trackedCount.decrementAndGet();
+			_count.decrementAndGet();
 
 			super.removedService(serviceReference, service);
 		}
@@ -236,7 +236,7 @@ public class Snapshot<T> {
 			super(bundleContext, filter, null);
 		}
 
-		private final AtomicInteger _trackedCount = new AtomicInteger();
+		private final AtomicInteger _count = new AtomicInteger();
 
 	}
 
