@@ -241,6 +241,34 @@ public class AssetAutoTaggerTest extends BaseAssetAutoTaggerTestCase {
 	}
 
 	@Test
+	public void testRemovesAutoTagOnUpdate() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId(), 0);
+
+		FileEntry fileEntry = addFileEntry(serviceContext);
+
+		assertContainsAssetTagName(
+			AssetEntryLocalServiceUtil.getEntry(
+				DLFileEntryConstants.getClassName(),
+				fileEntry.getFileEntryId()),
+			ASSET_TAG_NAME_AUTO);
+
+		serviceContext.setAssetTagNames(new String[0]);
+
+		AssetEntry assetEntry = updateFileEntryAssetEntry(
+			fileEntry, serviceContext);
+
+		assertDoesNotContainAssetTagName(assetEntry, ASSET_TAG_NAME_AUTO);
+
+		AssetTag assetTag = _assetTagLocalService.getTag(
+			group.getGroupId(), ASSET_TAG_NAME_AUTO);
+
+		Assert.assertNull(
+			_assetAutoTaggerEntryLocalService.fetchAssetAutoTaggerEntry(
+				assetEntry.getEntryId(), assetTag.getTagId()));
+	}
+
+	@Test
 	public void testRemovesAutoTags() throws Exception {
 		AssetEntry assetEntry = addFileEntryAssetEntry(
 			ServiceContextTestUtil.getServiceContext(group.getGroupId(), 0));
