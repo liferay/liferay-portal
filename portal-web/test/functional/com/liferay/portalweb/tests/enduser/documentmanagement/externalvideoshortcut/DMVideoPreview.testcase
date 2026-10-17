@@ -298,8 +298,7 @@ definition {
 			entryTitle = "Blogs Entry Title",
 			navTab = "Documents and Media",
 			videoName = "Document_1.mp4",
-			videoShortcutTitle = "DM Video Title In Site",
-			viewInternalVideoPreview = "true");
+			videoShortcutTitle = "DM Video Title In Site");
 
 		HeadlessExportImport.exportPortlet(
 			larFileName = "Blog_portlet.lar",
@@ -320,11 +319,23 @@ definition {
 		BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
 
 		BlogsEntry.viewEntryCP(
-			embedVideo = "true",
 			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			internalVideo = "true",
-			videoName = "Document_1.mp4");
+			entryTitle = "Blogs Entry Title");
+
+		var fileVersionId = JSONDocument.getFileEntryVersionId(
+			dmDocumentTitle = "DM Video Title In Site",
+			dmDocumentVersion = "1.0",
+			groupName = "Site Name");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#EMBEDDED_VIDEO_IFRAME");
+
+		var embeddedVideoURL = selenium.getEval("return window.location.href;");
+
+		SelectFrame.selectFrameTop();
+
+		if (!(contains(${embeddedVideoURL}, "fileVersionId=${fileVersionId}"))) {
+			fail("The embedded video does not point to the imported video file version ${fileVersionId}: ${embeddedVideoURL}");
+		}
 	}
 
 	@description = "This test ensures that a kb article created with an internal video embedded in it can be exported and imported."
