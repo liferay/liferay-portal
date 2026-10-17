@@ -149,6 +149,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 						companyId, AssetVocabulary.class.getName(),
 						GetterUtil.getLong(primaryKey)));
 			_updateExportCategoryQueryValues(companyId, portletPreferences);
+			_updateExportScopeIds(companyId, portletPreferences);
 		}
 		catch (Exception exception) {
 			PortletDataException portletDataException =
@@ -217,6 +218,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 						companyId, AssetVocabulary.class.getName(),
 						portletPreferencesOldValue));
 			_updateImportCategoryQueryValues(companyId, portletPreferences);
+			_updateImportScopeIds(companyId, portletPreferences);
 		}
 		catch (Exception exception) {
 			PortletDataException portletDataException =
@@ -749,6 +751,30 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			StringPool.POUND);
 	}
 
+	private String _getExportScopeId(long companyId, String scopeId) {
+		for (String scopeIdPrefix : _SCOPE_ID_GROUP_PREFIXES) {
+			if (!scopeId.startsWith(scopeIdPrefix)) {
+				continue;
+			}
+
+			Group group = groupLocalService.fetchGroup(
+				GetterUtil.getLong(scopeId.substring(scopeIdPrefix.length())));
+
+			if (group == null) {
+				return scopeId;
+			}
+
+			String externalReferenceCode =
+				exportImportPortletPreferencesProcessorHelper.
+					getGroupExportPortletPreferencesExternalReferenceCode(
+						companyId, group.getExternalReferenceCode());
+
+			return scopeIdPrefix + externalReferenceCode;
+		}
+
+		return scopeId;
+	}
+
 	private String _getExportScopeId(
 			PortletDataContext portletDataContext,
 			Element groupIdMappingsElement, Layout layout, String value)
@@ -931,6 +957,39 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		}
 
 		return null;
+	}
+
+	private String _getImportScopeId(long companyId, String scopeId) {
+		for (String scopeIdPrefix : _SCOPE_ID_GROUP_PREFIXES) {
+			if (!scopeId.startsWith(scopeIdPrefix)) {
+				continue;
+			}
+
+			String externalReferenceCode = scopeId.substring(
+				scopeIdPrefix.length());
+
+			if (externalReferenceCode.equals(GroupConstants.DEFAULT)) {
+				return scopeId;
+			}
+
+			Group group = groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode, companyId);
+
+			if (group == null) {
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"Ignoring scope ", scopeId, " because the ",
+							"referenced group was not found"));
+				}
+
+				return null;
+			}
+
+			return scopeIdPrefix + group.getGroupId();
+		}
+
+		return scopeId;
 	}
 
 	private void _importLayoutReferences(PortletDataContext portletDataContext)
@@ -1432,6 +1491,23 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	}
 
 	private void _updateExportScopeIds(
+			long companyId, PortletPreferences portletPreferences)
+		throws Exception {
+
+		String[] oldValues = portletPreferences.getValues("scopeIds", null);
+
+		if (oldValues == null) {
+			return;
+		}
+
+		portletPreferences.setValues(
+			"scopeIds",
+			TransformUtil.transform(
+				oldValues, oldValue -> _getExportScopeId(companyId, oldValue),
+				String.class));
+	}
+
+	private void _updateExportScopeIds(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences, String key, long plid)
 		throws Exception {
@@ -1673,6 +1749,23 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	}
 
 	private void _updateImportScopeIds(
+			long companyId, PortletPreferences portletPreferences)
+		throws Exception {
+
+		String[] oldValues = portletPreferences.getValues("scopeIds", null);
+
+		if (oldValues == null) {
+			return;
+		}
+
+		portletPreferences.setValues(
+			"scopeIds",
+			TransformUtil.transform(
+				oldValues, oldValue -> _getImportScopeId(companyId, oldValue),
+				String.class));
+	}
+
+	private void _updateImportScopeIds(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences, String key,
 			long companyGroupId, long plid)
@@ -1790,6 +1883,12 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 		portletPreferences.setValues(key, newValues.toArray(new String[0]));
 	}
+
+	private static final String[] _SCOPE_ID_GROUP_PREFIXES = {
+		AssetPublisherHelper.SCOPE_ID_CHILD_GROUP_PREFIX,
+		AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX,
+		AssetPublisherHelper.SCOPE_ID_PARENT_GROUP_PREFIX
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AssetPublisherExportImportPortletPreferencesProcessor.class);
