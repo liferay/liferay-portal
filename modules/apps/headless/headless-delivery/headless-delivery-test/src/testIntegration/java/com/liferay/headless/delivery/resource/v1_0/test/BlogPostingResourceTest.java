@@ -157,13 +157,12 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 	public void testPutBlogPosting() throws Exception {
 		super.testPutBlogPosting();
 
+		_testPutBlogPostingBatch();
 		_testPutBlogPostingSuccessTaxonomyCategoryBriefNonexisting();
 		_testPutBlogPostingSuccessTaxonomyCategoryBriefCategorySiteKeyNull();
 		_testPutBlogPostingSuccessTaxonomyCategoryBriefCategorySiteKeyNonnull();
 		_testPutBlogPostingSuccessTaxonomyCategoryBriefCategoryNamei18n();
 		_testPutBlogPostingSuccessTaxonomyCategoryBriefNonsiteBlog();
-
-		_testPutBlogPostingBatch();
 	}
 
 	@Override
