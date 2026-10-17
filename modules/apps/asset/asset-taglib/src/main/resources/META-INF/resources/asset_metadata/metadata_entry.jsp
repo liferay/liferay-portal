@@ -78,7 +78,7 @@ else if (metadataField.equals("view-count")) {
 	<c:when test='<%= Objects.equals(value, "author") %>'>
 
 		<%
-		User assetRendererUser = UserLocalServiceUtil.fetchUser(assetRenderer.getUserId());
+		User assetRendererUser = UserLocalServiceUtil.fetchUser((assetRenderer != null) ? assetRenderer.getUserId() : assetEntry.getUserId());
 
 		String displayDate = StringPool.BLANK;
 
