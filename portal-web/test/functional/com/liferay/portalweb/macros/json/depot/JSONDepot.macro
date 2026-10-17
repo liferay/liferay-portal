@@ -56,11 +56,15 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro deleteDepot(noSelenium = null, depotName = null) {
+	macro deleteDepot(noSelenium = null, depotName = null, portalURL = null) {
+		if (!(isSet(portalURL))) {
+			var portalURL = JSONCompany.getPortalURL();
+		}
+
 		var depotId = JSONGroupAPI._getDepotIdByName(
 			depotName = ${depotName},
-			noSelenium = ${noSelenium});
-		var portalURL = JSONCompany.getPortalURL();
+			noSelenium = ${noSelenium},
+			portalURL = ${portalURL});
 		var userLoginInfo = JSONUtil2.formatJSONUser();
 
 		var curl = '''

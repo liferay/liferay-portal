@@ -50,11 +50,27 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
+			User.logoutViaURL();
+
+			User.loginPG();
+
+			DepotNavigator.openDepotStagingConfiguration(
+				depotName = "Test Depot Name",
+				remoteStaging = "true");
+
+			if (IsElementPresent(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS")) {
+				Depot.deactivateStaging(depotName = "Test Depot Name");
+			}
+
 			JSONDepot.deleteDepot(depotName = "Test Depot Name");
 
-			JSONDepot.deleteDepot(depotName = "Remote Depot");
+			JSONDepot.deleteDepot(
+				depotName = "Remote Depot",
+				portalURL = "http://localhost:9080");
 
-			JSONGroup.deleteGroupByName(groupName = "Remote Site");
+			JSONGroup.deleteGroupByName(
+				groupName = "Remote Site",
+				portalURL = "http://localhost:9080");
 
 			JSONGroup.deleteGroupByName(groupName = "Site Name");
 
