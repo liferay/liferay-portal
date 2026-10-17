@@ -19,7 +19,7 @@ tests:
     -   asserts:
             -   failedTemplate:
                     errorMessage: network.gatewayName is required when network.enabled is true
-        it: Fails without a gatewayName
+        it: Fails without a gateway name
         set:
             clientExtension:
                 domain: able.example.com
@@ -32,7 +32,7 @@ tests:
     -   asserts:
             -   failedTemplate:
                     errorMessage: service.enabled must be true when network.enabled is true
-        it: Fails without the Service
+        it: Fails without the service
         set:
             clientExtension:
                 domain: able.example.com
@@ -67,7 +67,7 @@ tests:
                     value:
                         -   name: my-release-liferay-client-extension
                             port: 8080
-        it: Routes the client extension's domain to the Service
+        it: Routes the client extension's domain to the service
         set:
             clientExtension:
                 domain: able.example.com

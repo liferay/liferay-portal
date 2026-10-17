@@ -21,7 +21,7 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 0
-        it: Binds nothing when dxpNamespace is empty
+        it: Binds nothing when DXP namespace is empty
     -   asserts:
             -   equal:
                     path: subjects

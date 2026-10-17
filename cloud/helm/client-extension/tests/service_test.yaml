@@ -16,7 +16,7 @@ tests:
     -   asserts:
             -   failedTemplate:
                     errorMessage: workload.kind must be an enabled Deployment when service.enabled is true
-        it: Fails for a workload that is not a Deployment
+        it: Fails for a workload that is not a deployment
         set:
             workload:
                 kind: CronJob

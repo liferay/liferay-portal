@@ -68,7 +68,7 @@ tests:
             -   equal:
                     path: spec.serviceId
                     value: "123"
-        it: Renders a numeric serviceId as a string
+        it: Renders a numeric service ID as a string
         set:
             clientExtension:
                 serviceId: "123"
