@@ -253,7 +253,7 @@ public class WidgetLayoutStructureItemImporter
 
 			for (String portletId :
 					_portletRegistry.getFragmentEntryLinkPortletIds(
-						null, fragmentEntryLink)) {
+						fragmentEntryLink)) {
 
 				if (Objects.equals(
 						PortletIdCodec.decodePortletName(portletId),

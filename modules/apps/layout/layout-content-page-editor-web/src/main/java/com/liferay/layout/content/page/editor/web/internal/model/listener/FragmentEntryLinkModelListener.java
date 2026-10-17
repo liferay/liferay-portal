@@ -135,8 +135,7 @@ public class FragmentEntryLinkModelListener
 		throws ModelListenerException {
 
 		List<String> portletNames = TransformUtil.transform(
-			_portletRegistry.getFragmentEntryLinkPortletIds(
-				null, fragmentEntryLink),
+			_portletRegistry.getFragmentEntryLinkPortletIds(fragmentEntryLink),
 			portletId -> {
 				Portlet portlet = _portletLocalService.getPortletById(
 					fragmentEntryLink.getCompanyId(), portletId);
@@ -168,7 +167,7 @@ public class FragmentEntryLinkModelListener
 
 			for (String portletId :
 					_portletRegistry.getFragmentEntryLinkPortletIds(
-						null, curFragmentEntryLink)) {
+						curFragmentEntryLink)) {
 
 				String portletName = PortletIdCodec.decodePortletName(
 					portletId);

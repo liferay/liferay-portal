@@ -107,7 +107,7 @@ public class FragmentEntryLinkModelListener
 
 			for (String portletId :
 					_portletRegistry.getFragmentEntryLinkPortletIds(
-						null, curFragmentEntryLink)) {
+						curFragmentEntryLink)) {
 
 				String portletName = PortletIdCodec.decodePortletName(
 					portletId);
