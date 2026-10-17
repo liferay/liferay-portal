@@ -85,6 +85,9 @@ definition {
 	@description = "This test covers LPS-142411. It ensures that a translation entry is not shown after deleting translated content page with new experience."
 	@priority = 4
 	test EntryIsNotShownAfterDeletingTranslatedPage {
+		property test.liferay.virtual.instance = "false";
+		property test.run.type = "single";
+
 		HeadlessSite.addSite(siteName = "Test Site Name");
 
 		JSONLayout.addPublicLayout(
