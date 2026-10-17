@@ -1047,13 +1047,20 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editCP(videoShortcutTitle = null, depotName = null, saveAsDraft = null, webContentContentEdit = null, available = null, webContentImageDescription = null, webContentWebContent = null, navTab = null, embedVideo = null, webContentImage = null, webContentTitleEdit = null, folderName = null) {
+	macro editCP(videoShortcutTitle = null, depotName = null, saveAsDraft = null, webContentContentEdit = null, available = null, webContentImageDescription = null, webContentWebContent = null, navTab = null, embedVideo = null, webContentImage = null, webContentTitleEdit = null, folderName = null, upgradedFieldLabel = null) {
 		WebContent.addCP(webContentTitle = ${webContentTitleEdit});
 
 		if (isSet(webContentContentEdit)) {
+			if (${upgradedFieldLabel} == "true") {
+				var contentFieldLabel = "content";
+			}
+			else {
+				var contentFieldLabel = "Content";
+			}
+
 			CKEditor.addContentInWebContent(
 				content = ${webContentContentEdit},
-				fieldLabel = "Content");
+				fieldLabel = ${contentFieldLabel});
 		}
 
 		if (isSet(webContentWebContent)) {

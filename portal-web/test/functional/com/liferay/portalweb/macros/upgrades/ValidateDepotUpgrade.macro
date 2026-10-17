@@ -787,6 +787,7 @@ definition {
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 
 		WebContent.editCP(
+			upgradedFieldLabel = "true",
 			webContentContentEdit = "WC WebContent Content Edit",
 			webContentTitle = "WC WebContent Title",
 			webContentTitleEdit = "WC WebContent Title Edit");
