@@ -395,9 +395,7 @@ function SortConfigurationOptions({
 									<ClayToggle
 										label={
 											relevanceOn
-												? Liferay.Language.get(
-														'on[toggle]'
-													)
+												? Liferay.Language.get('on[toggle]')
 												: Liferay.Language.get('off')
 										}
 										onToggle={() =>
