@@ -24,6 +24,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormRule;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
@@ -36,6 +37,7 @@ import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.dynamic.data.mapping.util.DDMUtil;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureIdComparator;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -44,6 +46,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -51,6 +54,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -59,7 +64,9 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
@@ -70,6 +77,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -470,6 +478,69 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 			childFullHierarchyDDMFormFieldsMap.containsKey("Name"));
 		Assert.assertTrue(
 			childFullHierarchyDDMFormFieldsMap.containsKey("Description"));
+	}
+
+	@Test
+	public void testGetStructure() throws Exception {
+		_company = CompanyTestUtil.addCompany();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					_company.getCompanyId())) {
+
+			_companyLocalService.updatePreferences(
+				_company.getCompanyId(),
+				UnicodePropertiesBuilder.put(
+					PropsKeys.LOCALES, "en_US"
+				).build());
+
+			DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
+				DDMFormTestUtil.createAvailableLocales(
+					LocaleUtil.US, LocaleUtil.SPAIN),
+				LocaleUtil.US);
+
+			DDMFormField ddmFormField = DDMFormTestUtil.createTextDDMFormField(
+				"name", "Name", true, false, false);
+
+			LocalizedValue localizedValue = ddmFormField.getLabel();
+
+			localizedValue.addString(LocaleUtil.SPAIN, "Nombre");
+
+			ddmForm.addDDMFormField(ddmFormField);
+
+			User user = UserTestUtil.getAdminUser(_company.getCompanyId());
+
+			DDMStructure structure = _ddmStructureLocalService.addStructure(
+				user.getUserId(), _company.getGroupId(), _classNameId,
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				null, ddmForm, DDMUtil.getDefaultDDMFormLayout(ddmForm),
+				StorageType.DEFAULT.toString(),
+				ServiceContextTestUtil.getServiceContext(
+					_company.getGroupId()));
+
+			structure = _ddmStructureLocalService.getStructure(
+				structure.getStructureId());
+
+			structure.getDDMForm();
+
+			_companyLocalService.updatePreferences(
+				_company.getCompanyId(),
+				UnicodePropertiesBuilder.put(
+					PropsKeys.LOCALES, "en_US,es_ES"
+				).build());
+
+			structure = _ddmStructureLocalService.getStructure(
+				structure.getStructureId());
+
+			ddmForm = structure.getDDMForm();
+
+			Set<Locale> availableLocales = ddmForm.getAvailableLocales();
+
+			Assert.assertTrue(
+				String.valueOf(availableLocales),
+				availableLocales.contains(LocaleUtil.SPAIN));
+		}
 	}
 
 	@Test
@@ -1346,6 +1417,9 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 		"com.liferay.journal.model.JournalArticle";
 
 	private static long _classNameId;
+
+	@DeleteAfterTestRun
+	private Company _company;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
