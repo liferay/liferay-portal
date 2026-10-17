@@ -589,4 +589,4 @@ _JSON_SCHEMA='{"type": "object", "properties": {"chance": {"type": "integer"}, "
 _MODEL=${LIFERAY_PR_REVIEWER_MODEL:-sonnet}
 _NAME_ONLY_SUFFIXES="bmp gif ico jpeg jpg png svg webp"
 
-main "${@}"
+main ${@+"${@}"}
