@@ -172,7 +172,7 @@ function main {
 
 	local merged_json
 
-	merged_json=$(jq --slurp '{chance: (map(.chance) | max // 0), groups: (map({(.group): {chance: .chance, seconds: .seconds, violations: (.violations | length)}}) | add // {}), reviewed_files: $reviewed_files, rules: $reviewed_rules, cost: (map(.cost) | add // 0), tokens: {cache_read: (map(.tokens.cache_read) | add // 0), cache_write: (map(.tokens.cache_write) | add // 0), input: (map(.tokens.input) | add // 0), output: (map(.tokens.output) | add // 0)}, violations: ([.[].violations[]] | unique_by([.file, .line, .rule]) | sort_by([.file, .line, .rule]))}' --argjson reviewed_rules "${reviewed_rules}" --argjson reviewed_files "$(echo "${reviewed_files}" | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')" ${work_dir}/*.json)
+	merged_json=$(jq --argjson reviewed_files "$(echo "${reviewed_files}" | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')" --argjson reviewed_rules "${reviewed_rules}" --slurp '{chance: (map(.chance) | max // 0), groups: (map({(.group): {chance: .chance, seconds: .seconds, violations: (.violations | length)}}) | add // {}), reviewed_files: $reviewed_files, rules: $reviewed_rules, cost: (map(.cost) | add // 0), tokens: {cache_read: (map(.tokens.cache_read) | add // 0), cache_write: (map(.tokens.cache_write) | add // 0), input: (map(.tokens.input) | add // 0), output: (map(.tokens.output) | add // 0)}, violations: ([.[].violations[]] | unique_by([.file, .line, .rule]) | sort_by([.file, .line, .rule]))}' ${work_dir}/*.json)
 
 	local violations_count
 
