@@ -622,9 +622,9 @@ func refusalMessage(
 	}
 
 	return fmt.Sprintf(
-		"Namespace %q does not list %q in its %q ConfigMap, so this client extension is not delivered there. Whoever manages DXP grants access by adding %q to the ConfigMap's %q key. The operator reads the ConfigMap only when it has the %q label.",
+		"Namespace %q does not list %q in its %q ConfigMap, so this client extension is not delivered there. Whoever manages DXP grants access by adding %q to the ConfigMap's %q key.",
 		dxpNamespace, clientExtension.Namespace, cxv1alpha1.ConfigMapNameClientExtensionPolicy,
-		clientExtension.Namespace, cxv1alpha1.ConfigMapKeyAllowedNamespaces, LabelMetadataType,
+		clientExtension.Namespace, cxv1alpha1.ConfigMapKeyAllowedNamespaces,
 	)
 }
 

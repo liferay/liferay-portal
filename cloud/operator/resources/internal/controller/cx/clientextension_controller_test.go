@@ -84,7 +84,7 @@ func TestReconcileAllowedNamespaces(t *testing.T) {
 			wantReason:   ReasonDxpNamespaceNotFound,
 			wantStatus:   metav1.ConditionFalse,
 		},
-		"a namespace is refused without the policy ConfigMap": {
+		"a namespace is refused without the policy config map": {
 			dxpNamespace: "liferay-dev",
 			messages:     []string{`Namespace "liferay-dev" does not list "able"`},
 			objects:      []client.Object{newDxpNamespace()},
@@ -1094,7 +1094,7 @@ func TestReconcileUpdatesItsOwnExtProvisionConfigMapInPlace(t *testing.T) {
 
 	if extProvisionConfigMap.UID != ownedExtProvisionConfigMap.UID {
 		t.Errorf(
-			"uid = %q, want %q: recreating the ConfigMap would issue new OAuth2 credentials",
+			"uid = %q, want %q: recreating the config map would issue new OAuth2 credentials",
 			extProvisionConfigMap.UID, ownedExtProvisionConfigMap.UID,
 		)
 	}
