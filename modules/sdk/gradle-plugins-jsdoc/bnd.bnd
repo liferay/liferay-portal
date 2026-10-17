@@ -1,5 +1,5 @@
 Bundle-Description: The JSDoc Gradle plugin lets you run the JSDoc tool in order to generate documentation for your project's JavaScript files.
 Bundle-Name: Liferay Gradle Plugins JSDoc
 Bundle-SymbolicName: com.liferay.gradle.plugins.jsdoc
-Bundle-Version: 2.0.83
+Bundle-Version: 2.0.84
 Export-Package: com.liferay.gradle.plugins.jsdoc
