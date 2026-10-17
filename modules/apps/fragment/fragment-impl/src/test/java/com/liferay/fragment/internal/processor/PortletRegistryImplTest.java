@@ -55,6 +55,13 @@ public class PortletRegistryImplTest {
 	}
 
 	@Test
+	public void testGetFragmentEntryLinkPortletIds() {
+		_testGetFragmentEntryLinkPortletIdsMultipleWidgetTags();
+		_testGetFragmentEntryLinkPortletIdsWidgetTagAttributes();
+		_testGetFragmentEntryLinkPortletIdsWidgetTagInComment();
+	}
+
+	@Test
 	public void testGetFragmentEntryLinkPortletIdsAliasPortletName() {
 		String portletAlias = StringUtil.toLowerCase(
 			RandomTestUtil.randomString());
@@ -721,6 +728,126 @@ public class PortletRegistryImplTest {
 		);
 
 		ReflectionTestUtil.setFieldValue(_portletRegistry, "_portal", portal);
+	}
+
+	private void _testGetFragmentEntryLinkPortletIdsMultipleWidgetTags() {
+		String portletAlias1 = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+		String portletName1 = RandomTestUtil.randomString();
+
+		_portletRegistry.registerAlias(portletAlias1, portletName1);
+
+		String portletAlias2 = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+		String portletName2 = RandomTestUtil.randomString();
+
+		_portletRegistry.registerAlias(portletAlias2, portletName2);
+
+		String elementId1 = RandomTestUtil.randomString();
+		String elementId2 = RandomTestUtil.randomString();
+		String namespace = RandomTestUtil.randomString();
+
+		_assertGetFragmentEntryLinkPortletIds(
+			_getFragmentEntryLink(
+				StringBundler.concat(
+					"<div class=\"fragment_1\"><lfr-widget-", portletAlias1,
+					" id=\"", elementId1, "\"></lfr-widget-", portletAlias1,
+					"><lfr-widget-",
+					StringUtil.toLowerCase(RandomTestUtil.randomString()),
+					" id=\"", RandomTestUtil.randomString(), "\"><div>",
+					RandomTestUtil.randomString(), "<lfr-widget-",
+					portletAlias2, " id=\"", elementId2, "\" /></div></div>"),
+				namespace),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName1),
+				PortletIdCodec.decodeUserId(portletName1),
+				namespace + elementId1),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName2),
+				PortletIdCodec.decodeUserId(portletName2),
+				namespace + elementId2));
+	}
+
+	private void _testGetFragmentEntryLinkPortletIdsWidgetTagAttributes() {
+		String portletAlias = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+		String portletName = RandomTestUtil.randomString();
+
+		_portletRegistry.registerAlias(portletAlias, portletName);
+
+		String elementId1 = RandomTestUtil.randomString();
+		String elementId2 = RandomTestUtil.randomString();
+		String elementId3 = RandomTestUtil.randomString();
+		String elementId4 = RandomTestUtil.randomString();
+		String elementId5 = RandomTestUtil.randomString();
+		String namespace = RandomTestUtil.randomString();
+
+		_assertGetFragmentEntryLinkPortletIds(
+			_getFragmentEntryLink(
+				StringBundler.concat(
+					"<div class=\"fragment_1\"><lfr-widget-", portletAlias,
+					" id='", elementId1, "'><lfr-widget-", portletAlias,
+					" data-id=\"", RandomTestUtil.randomString(), "\" id = \"",
+					elementId2, "\"><lfr-widget-", portletAlias,
+					" title=\">\" id=\"", elementId3, "\"><lfr-widget-",
+					portletAlias, "\n\tid=\"", elementId4, "\"\n><lfr-widget-",
+					portletAlias, " id=", elementId5, "><lfr-widget-",
+					portletAlias, "></div>"),
+				namespace),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName),
+				namespace + elementId1),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName),
+				namespace + elementId2),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName),
+				namespace + elementId3),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName),
+				namespace + elementId4),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName),
+				namespace + elementId5),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName), namespace));
+	}
+
+	private void _testGetFragmentEntryLinkPortletIdsWidgetTagInComment() {
+		String portletAlias = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+		String portletName = RandomTestUtil.randomString();
+
+		_portletRegistry.registerAlias(portletAlias, portletName);
+
+		String elementId1 = RandomTestUtil.randomString();
+		String elementId2 = RandomTestUtil.randomString();
+		String namespace = RandomTestUtil.randomString();
+
+		_assertGetFragmentEntryLinkPortletIds(
+			_getFragmentEntryLink(
+				StringBundler.concat(
+					"<div class=\"fragment_1\"><lfr-widget-", portletAlias,
+					" id=\"", elementId1, "\"></lfr-widget-", portletAlias,
+					"><!-- <lfr-widget-", portletAlias, " id=\"",
+					RandomTestUtil.randomString(), "\"></lfr-widget-",
+					portletAlias, "> --><lfr-widget-", portletAlias, " id=\"",
+					elementId2, "\"></lfr-widget-", portletAlias, "></div>"),
+				namespace),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName),
+				namespace + elementId1),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName),
+				namespace + elementId2));
 	}
 
 	private PortletLocalService _portletLocalService;
