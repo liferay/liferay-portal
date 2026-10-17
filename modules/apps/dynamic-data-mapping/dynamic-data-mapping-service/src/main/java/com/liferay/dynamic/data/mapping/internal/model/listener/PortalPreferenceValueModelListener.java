@@ -5,6 +5,9 @@
 
 package com.liferay.dynamic.data.mapping.internal.model.listener;
 
+import com.liferay.dynamic.data.mapping.service.persistence.DDMStructureLayoutPersistence;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMStructurePersistence;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMStructureVersionPersistence;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
@@ -31,9 +34,18 @@ public class PortalPreferenceValueModelListener
 
 	@Override
 	public void onAfterCreate(PortalPreferenceValue portalPreferenceValue) {
+		_clearDDMStructureCaches(portalPreferenceValue.getKey());
+
 		_updateLayoutSet(
 			portalPreferenceValue.getCompanyId(),
 			portalPreferenceValue.getKey(), portalPreferenceValue.getValue());
+	}
+
+	@Override
+	public void onAfterRemove(PortalPreferenceValue portalPreferenceValue)
+		throws ModelListenerException {
+
+		_clearDDMStructureCaches(portalPreferenceValue.getKey());
 	}
 
 	@Override
@@ -42,9 +54,21 @@ public class PortalPreferenceValueModelListener
 			PortalPreferenceValue portalPreferenceValue)
 		throws ModelListenerException {
 
+		_clearDDMStructureCaches(portalPreferenceValue.getKey());
+
 		_updateLayoutSet(
 			portalPreferenceValue.getCompanyId(),
 			portalPreferenceValue.getKey(), portalPreferenceValue.getValue());
+	}
+
+	private void _clearDDMStructureCaches(String key) {
+		if (!StringUtil.equals(key, PropsKeys.LOCALES)) {
+			return;
+		}
+
+		_ddmStructureLayoutPersistence.clearCache();
+		_ddmStructurePersistence.clearCache();
+		_ddmStructureVersionPersistence.clearCache();
 	}
 
 	private void _updateLayoutSet(long companyId, String key, String value) {
@@ -72,6 +96,15 @@ public class PortalPreferenceValueModelListener
 
 		_layoutSetLocalService.updateLayoutSet(layoutSet);
 	}
+
+	@Reference
+	private DDMStructureLayoutPersistence _ddmStructureLayoutPersistence;
+
+	@Reference
+	private DDMStructurePersistence _ddmStructurePersistence;
+
+	@Reference
+	private DDMStructureVersionPersistence _ddmStructureVersionPersistence;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
