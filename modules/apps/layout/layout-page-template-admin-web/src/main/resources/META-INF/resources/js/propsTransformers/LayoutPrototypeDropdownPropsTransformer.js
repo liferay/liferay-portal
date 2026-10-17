@@ -26,7 +26,7 @@ const ACTIONS = {
 
 	importLayoutPrototype({importLayoutPrototypeURL}) {
 		openModal({
-			title: Liferay.Language.get('import[noun]'),
+			title: Liferay.Language.get('import'),
 			url: importLayoutPrototypeURL,
 		});
 	},

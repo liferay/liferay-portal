@@ -1283,7 +1283,7 @@ export default function ({
 								helpText={Liferay.Language.get(
 									'text-embedding-provider-vertex-ai-location-help'
 								)}
-								label={Liferay.Language.get('location[place]')}
+								label={Liferay.Language.get('location')}
 								name={`textEmbeddingProviderConfigurationJSONs[${index}].attributes.location`}
 								onBlur={_handleInputBlur(
 									`textEmbeddingProviderConfigurationJSONs[${index}].attributes.location`

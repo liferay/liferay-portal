@@ -373,11 +373,11 @@ const Question = ({
 							title={error.title}
 						>
 							<ClayButton
-								aria-label={Liferay.Language.get('home[page]')}
+								aria-label={Liferay.Language.get('home')}
 								displayType="primary"
 								onClick={() => historyPushParser('/questions')}
 							>
-								{Liferay.Language.get('home[page]')}
+								{Liferay.Language.get('home')}
 							</ClayButton>
 						</ClayEmptyState>
 					</div>

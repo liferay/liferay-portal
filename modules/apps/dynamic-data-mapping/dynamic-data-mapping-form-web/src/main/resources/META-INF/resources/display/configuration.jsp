@@ -182,7 +182,7 @@ DDMFormInstance selFormInstance = DDMFormInstanceServiceUtil.fetchFormInstance(f
 			if (displayFormInstanceId) {
 				displayFormInstanceId.textContent =
 					rowElement.dataset.formInstanceName +
-					' (<%= UnicodeLanguageUtil.get(request, "modified[state]") %>)';
+					' (<%= UnicodeLanguageUtil.get(request, "modified") %>)';
 
 				displayFormInstanceId.classList.add('modified');
 			}

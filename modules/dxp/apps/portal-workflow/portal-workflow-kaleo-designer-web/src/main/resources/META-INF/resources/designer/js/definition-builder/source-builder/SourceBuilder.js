@@ -156,7 +156,7 @@ export default function SourceBuilder() {
 				<ClayLayout.ContainerFluid>
 					<ClayToolbar.Nav>
 						<ClayToolbar.Item>
-							<span>{Liferay.Language.get('source[code]')}</span>
+							<span>{Liferay.Language.get('source')}</span>
 						</ClayToolbar.Item>
 
 						<ClayToolbar.Item>

@@ -84,7 +84,7 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 
 		<div class="col">
 			<commerce-ui:panel
-				title='<%= LanguageUtil.get(request, "address[postal]") %>'
+				title='<%= LanguageUtil.get(request, "address") %>'
 			>
 				<div class="row">
 					<div class="col-lg-6">

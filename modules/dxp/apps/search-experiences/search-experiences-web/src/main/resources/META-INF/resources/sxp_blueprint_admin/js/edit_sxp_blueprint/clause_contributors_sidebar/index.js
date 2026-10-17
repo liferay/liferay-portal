@@ -326,7 +326,7 @@ export default function ({
 												frameworkConfig.clauseContributorsIncludes.includes(
 													className
 												)
-													? Liferay.Language.get('on[toggle]')
+													? Liferay.Language.get('on')
 													: Liferay.Language.get(
 															'off'
 														)

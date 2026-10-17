@@ -34,7 +34,7 @@ WikiURLHelper wikiURLHelper = new WikiURLHelper(wikiRequestHelper, renderRespons
 
 	<liferay-ui:header
 		backURL="<%= redirect %>"
-		title="search[noun]"
+		title="search"
 	/>
 
 	<div class="form-search">
