@@ -430,7 +430,7 @@ $(cat ${style_file})
 
 # Rules
 
-$(cat ${rule_files})
+$(awk 'FNR == 1 && NR > 1 {print ""} {print}' ${rule_files})
 
 # Diff
 
