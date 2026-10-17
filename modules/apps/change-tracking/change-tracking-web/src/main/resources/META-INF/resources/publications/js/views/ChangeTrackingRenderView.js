@@ -1089,8 +1089,7 @@ export default function ChangeTrackingRenderView({
 				title = state.renderData.rightTitle;
 
 				if (state.renderData.changeType === CHANGE_TYPE_ADDED) {
-					title +=
-						' (' + Liferay.Language.get('new[adjective]') + ')';
+					title += ' (' + Liferay.Language.get('new[adjective]') + ')';
 				}
 			}
 
