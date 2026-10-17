@@ -1,5 +1,5 @@
 *.pom	text eol=lf
+*.sh	text eol=lf
 .m2-tmp/**/*.pom linguist-generated=true
 ivy.xml	text eol=lf
 modules/frontend-sdk/node-scripts/package.json merge=node-scripts
-*.sh	text eol=lf

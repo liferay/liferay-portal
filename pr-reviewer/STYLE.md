@@ -59,7 +59,7 @@ Five principles run through everything:
 - Write a shell test as `[` when its operands need no quotes and as `[[` when `[` would need quotes; never combine `[` with quoted operands. [406]
 - Prefer `while` to `do` / `while` [407], and leave early with a guard clause rather than nesting the real work inside a positive `if` [408].
 - Do not catch a checked exception only to wrap it in a broader one; declare it or let it propagate [409].
-- A shell script under `cloud/` opens with `set -o errexit`, `set -o nounset`, and `set -o pipefail` [410].
+- A shell script under `cloud` opens with `set -o errexit`, `set -o nounset`, and `set -o pipefail` [410].
 
 ## Removing the unnecessary ("Simplify")
 
