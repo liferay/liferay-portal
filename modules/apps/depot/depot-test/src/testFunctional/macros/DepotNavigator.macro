@@ -407,13 +407,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro openDepotWorkflowAdmin(depotName = null) {
-		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/asset-library-${depotId}/~/control_panel/manage?p_p_id=com_liferay_portal_workflow_web_internal_portlet_SiteAdministrationWorkflowPortlet");
-	}
-
-	@summary = "Default summary"
 	macro openToAddDMEntry(depotName = null, documentTypeName = null, folderName = null) {
 		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
 		var groupId = JSONGroupAPI._getGroupIdByName(

@@ -987,21 +987,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewDMWorkflowPresent(dmFolderName = null) {
-		DMFolder.gotoEditCP(folderName = ${dmFolderName});
-
-		if (IsElementNotPresent.isNotVisible(locator1 = "Radio#WORKFLOW_PARENT_FOLDER")) {
-			Click(locator1 = "DocumentsAndMediaEditFolder#WORKFLOW_DOCUMENT_TYPE_RESTRICTIONS_TOGGLE");
-		}
-
-		AssertVisible(locator1 = "Radio#WORKFLOW_PARENT_FOLDER");
-
-		AssertVisible(locator1 = "Radio#WORKFLOW_SPECIFIC_RESTRICTIONS");
-
-		AssertVisible(locator1 = "Radio#WORKFLOW_DEFAULT_WORKFLOW");
-	}
-
-	@summary = "Default summary"
 	macro viewDocumentInFTP(dmDocumentTitle = null, depotName = null, dmFolderName = null) {
 		var portalURL = PropsUtil.get("portal.url");
 		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
@@ -1189,13 +1174,6 @@ definition {
 		AssertElementNotPresent(
 			key_panel = ${panelName},
 			locator1 = "Panel#PANEL");
-	}
-
-	@summary = "Default summary"
-	macro viewNoWorkflowResource() {
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "No entries were found.");
 	}
 
 	@summary = "Default summary"
