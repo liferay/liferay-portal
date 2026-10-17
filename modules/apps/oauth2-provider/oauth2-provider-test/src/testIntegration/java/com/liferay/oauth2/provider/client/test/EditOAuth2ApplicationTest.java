@@ -165,8 +165,11 @@ public class EditOAuth2ApplicationTest extends BaseClientTestCase {
 			autoCloseables.add(
 				() -> UserLocalServiceUtil.deleteUser(user.getUserId()));
 
+			user.setReminderQueryQuestion(RandomTestUtil.randomString());
+			user.setReminderQueryAnswer(RandomTestUtil.randomString());
 			user.setScreenName(
 				RandomTestUtil.randomString() + StringPool.APOSTROPHE);
+			user.setAgreedToTermsOfUse(true);
 
 			return UserLocalServiceUtil.updateUser(user);
 		}
