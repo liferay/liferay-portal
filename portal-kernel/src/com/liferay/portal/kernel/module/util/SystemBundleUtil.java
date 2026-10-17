@@ -6,6 +6,7 @@
 package com.liferay.portal.kernel.module.util;
 
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -81,6 +82,11 @@ public class SystemBundleUtil {
 		}
 	}
 
+	public static String escapeFilterValue(String value) {
+		return StringUtil.replace(
+			value, _FILTER_VALUE_CHARS_UNESCAPED, _FILTER_VALUE_CHARS_ESCAPED);
+	}
+
 	public static BundleContext getBundleContext() {
 		Bundle systemBundle = _systemBundleProvider.getSystemBundle();
 
@@ -94,6 +100,14 @@ public class SystemBundleUtil {
 	public static ServiceLatch newServiceLatch() {
 		return new ServiceLatch(getBundleContext());
 	}
+
+	private static final String[] _FILTER_VALUE_CHARS_ESCAPED = {
+		"\\(", "\\)", "\\*", "\\\\"
+	};
+
+	private static final char[] _FILTER_VALUE_CHARS_UNESCAPED = {
+		'(', ')', '*', '\\'
+	};
 
 	private static final SystemBundleProvider _systemBundleProvider;
 

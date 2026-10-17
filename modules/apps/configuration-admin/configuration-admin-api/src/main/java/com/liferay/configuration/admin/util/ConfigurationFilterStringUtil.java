@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -30,8 +31,9 @@ public class ConfigurationFilterStringUtil {
 			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
 			StringPool.EQUAL, _toString(companyId),
 			")(dxp.lxc.liferay.com.virtualInstanceId=",
-			GetterUtil.get(virtualInstanceId, "*"), "))(!(",
-			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
+			GetterUtil.get(
+				SystemBundleUtil.escapeFilterValue(virtualInstanceId), "*"),
+			"))(!(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
 			"=*))(!(siteExternalReferenceCode=*))(!(",
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 				getPropertyKey(),
@@ -64,9 +66,11 @@ public class ConfigurationFilterStringUtil {
 			"(&(|(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
 			StringPool.EQUAL, _toString(groupId),
 			")(siteExternalReferenceCode=",
-			GetterUtil.get(siteExternalReferenceCode, "*"), "))(",
-			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			StringPool.EQUAL, companyId, ")(!(",
+			GetterUtil.get(
+				SystemBundleUtil.escapeFilterValue(siteExternalReferenceCode),
+				"*"),
+			"))(", ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+			StringPool.EQUAL, _toString(companyId), ")(!(",
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 				getPropertyKey(),
 			"=*)))");
@@ -166,7 +170,8 @@ public class ConfigurationFilterStringUtil {
 		}
 
 		return StringBundler.concat(
-			StringPool.OPEN_PARENTHESIS, key, StringPool.EQUAL, value,
+			StringPool.OPEN_PARENTHESIS, key, StringPool.EQUAL,
+			SystemBundleUtil.escapeFilterValue(value),
 			StringPool.CLOSE_PARENTHESIS);
 	}
 
@@ -196,7 +201,7 @@ public class ConfigurationFilterStringUtil {
 			return StringPool.STAR;
 		}
 
-		return String.valueOf(value);
+		return SystemBundleUtil.escapeFilterValue(String.valueOf(value));
 	}
 
 }
