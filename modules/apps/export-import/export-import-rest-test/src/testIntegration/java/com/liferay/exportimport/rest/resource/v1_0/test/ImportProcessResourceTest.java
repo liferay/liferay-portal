@@ -415,7 +415,6 @@ public class ImportProcessResourceTest
 				).build()),
 			importProcessRequest -> importProcessResource.postSiteImportProcess(
 				externalReferenceCode, 0L, null, importProcessRequest));
-
 		_testPostSiteImportProcessWithLayoutSetPrototypeGroup();
 	}
 
