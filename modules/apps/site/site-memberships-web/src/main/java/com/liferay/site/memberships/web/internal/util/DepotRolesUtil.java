@@ -10,11 +10,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.RolePermissionUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,12 +42,6 @@ public class DepotRolesUtil {
 					!Objects.equals(
 						role.getName(),
 						DepotRolesConstants.ASSET_LIBRARY_MEMBER));
-		}
-
-		if (!GroupPermissionUtil.contains(
-				permissionChecker, groupId, ActionKeys.ASSIGN_USER_ROLES)) {
-
-			return Collections.emptyList();
 		}
 
 		return ListUtil.filter(

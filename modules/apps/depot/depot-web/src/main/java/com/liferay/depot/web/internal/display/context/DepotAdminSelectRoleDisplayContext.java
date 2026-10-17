@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
-import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.RolePermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -394,12 +393,6 @@ public class DepotAdminSelectRoleDisplayContext {
 						!Objects.equals(
 							DepotRolesConstants.ASSET_LIBRARY_MEMBER,
 							role.getName()));
-			}
-
-			if (!GroupPermissionUtil.contains(
-					permissionChecker, _group, ActionKeys.ASSIGN_USER_ROLES)) {
-
-				return Collections.emptyList();
 			}
 
 			return ListUtil.filter(

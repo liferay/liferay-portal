@@ -5,6 +5,7 @@
 
 package com.liferay.site.memberships.web.internal.servlet.taglib.util;
 
+import com.liferay.depot.util.DepotRoleUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.petra.function.UnsafeConsumer;
@@ -15,11 +16,16 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.membershippolicy.SiteMembershipPolicyUtil;
+import com.liferay.site.memberships.web.internal.util.DepotRolesUtil;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
@@ -47,10 +53,7 @@ public class UserActionDropdownItemsProvider {
 
 	public List<DropdownItem> getActionDropdownItems() throws Exception {
 		return DropdownItemListBuilder.add(
-			() -> GroupPermissionUtil.contains(
-				_themeDisplay.getPermissionChecker(),
-				_themeDisplay.getSiteGroupIdOrLiveGroupId(),
-				ActionKeys.ASSIGN_USER_ROLES),
+			this::_hasAssignRolesPermission,
 			_getAssignRolesActionUnsafeConsumer()
 		).add(
 			dropdownItem -> {
@@ -155,6 +158,33 @@ public class UserActionDropdownItemsProvider {
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "remove-membership"));
 		};
+	}
+
+	private boolean _hasAssignRolesPermission() throws Exception {
+		PermissionChecker permissionChecker =
+			_themeDisplay.getPermissionChecker();
+		long groupId = _themeDisplay.getSiteGroupIdOrLiveGroupId();
+
+		if (GroupPermissionUtil.contains(
+				permissionChecker, groupId, ActionKeys.ASSIGN_USER_ROLES)) {
+
+			return true;
+		}
+
+		Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+		if (!group.isDepot()) {
+			return false;
+		}
+
+		return ListUtil.isNotEmpty(
+			DepotRoleUtil.filter(
+				groupId,
+				DepotRolesUtil.filterGroupRoles(
+					permissionChecker, groupId,
+					RoleLocalServiceUtil.getRoles(
+						_themeDisplay.getCompanyId(),
+						new int[] {RoleConstants.TYPE_DEPOT}))));
 	}
 
 	private final HttpServletRequest _httpServletRequest;
