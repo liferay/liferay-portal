@@ -12,6 +12,7 @@ import com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -45,17 +46,20 @@ public class OpenIdConnectProviderConfigurationDisplayContext {
 
 		String filterString = null;
 
+		String pid = httpServletRequest.getParameter("pid");
+
 		if (Objects.equals(
 				PortalUtil.getPortletId(httpServletRequest),
 				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS)) {
 
 			filterString = StringBundler.concat(
 				"(&(companyId=", PortalUtil.getCompanyId(httpServletRequest),
-				")(service.pid=", httpServletRequest.getParameter("pid"), "))");
+				")(service.pid=", SystemBundleUtil.escapeFilterValue(pid),
+				"))");
 		}
 		else {
 			filterString =
-				"(service.pid=" + httpServletRequest.getParameter("pid") + ")";
+				"(service.pid=" + SystemBundleUtil.escapeFilterValue(pid) + ")";
 		}
 
 		Configuration[] configurations = configurationAdmin.listConfigurations(
