@@ -34,6 +34,7 @@ public class SpacesDepotItemSelectorView extends BaseDepotItemSelectorView {
 		GroupItemSelectorCriterion groupItemSelectorCriterion) {
 
 		groupItemSelectorCriterion.setDepotEntryType(DepotConstants.TYPE_SPACE);
+		groupItemSelectorCriterion.setIncludeAllVisibleGroups(true);
 	}
 
 	@Override

@@ -82,9 +82,9 @@ public class DepotEntryAdminSearchProvider {
 			PortletURL portletURL)
 		throws PortalException {
 
-		DepotEntrySearch depotEntrySearch = _getDepotEntrySearch(
-			groupItemSelectorCriterion.getDepotEntryType(), portletRequest,
-			portletResponse, portletURL);
+		DepotEntrySearch depotEntrySearch = getDepotEntrySearch(
+			groupItemSelectorCriterion, portletRequest, portletResponse,
+			portletURL);
 
 		GroupSearch groupSearch = new GroupSearch(portletRequest, portletURL);
 

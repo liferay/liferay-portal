@@ -87,18 +87,19 @@ public class EditSXPBlueprintDisplayContext {
 		).put(
 			"selectScopeURL",
 			() -> {
-				ItemSelectorCriterion itemSelectorCriterion =
+				GroupItemSelectorCriterion groupItemSelectorCriterion =
 					new GroupItemSelectorCriterion();
 
-				itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+				groupItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 					new GroupItemSelectorReturnType());
+				groupItemSelectorCriterion.setIncludeAllVisibleGroups(true);
 
 				return PortletURLBuilder.create(
 					_itemSelector.getItemSelectorURL(
 						RequestBackedPortletURLFactoryUtil.create(
 							_renderRequest),
 						_renderResponse.getNamespace() + "selectSite",
-						itemSelectorCriterion)
+						groupItemSelectorCriterion)
 				).buildString();
 			}
 		).put(
