@@ -9,6 +9,7 @@ import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -132,7 +133,8 @@ public class StaticSiteExportBundleResourceResolver {
 		return StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS,
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH, "=/",
-			moduleName, StringPool.CLOSE_PARENTHESIS);
+			SystemBundleUtil.escapeFilterValue(moduleName),
+			StringPool.CLOSE_PARENTHESIS);
 	}
 
 	private URL _getResourceURL(
