@@ -15,7 +15,7 @@ templates:
 tests:
     -   asserts:
             -   failedTemplate:
-                    errorMessage: workload.kind must be an enabled Deployment when service.enabled is true
+                    errorMessage: workload.kind must be an enabled deployment when service.enabled is true
         it: Fails for a workload that is not a deployment
         set:
             workload:
