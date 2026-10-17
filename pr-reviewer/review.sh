@@ -373,14 +373,15 @@ $(cat ${work_dir}/review.diff)"
 function _write_diff_file {
 	local diff_args=${1}
 
-	local generated_files=""
 	local grep_ref=${diff_args##*..}
-	local reviewed_file
 
 	if [[ -z ${grep_ref} ]]
 	then
 		grep_ref=HEAD
 	fi
+
+	local generated_files=""
+	local reviewed_file
 
 	for reviewed_file in $(git diff --name-only ${diff_args} -- .)
 	do
