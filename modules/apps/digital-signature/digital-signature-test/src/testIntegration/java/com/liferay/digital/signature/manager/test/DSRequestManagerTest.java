@@ -24,6 +24,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -191,18 +192,20 @@ public class DSRequestManagerTest {
 			dsRequestDocumentValuesList.toString(), 1,
 			dsRequestDocumentValuesList.size());
 
-		List<Map<String, Serializable>> dsRecipientValuesList = ListUtil.filter(
-			_getDSRequestRecipientValuesList(dsRequestValues),
-			values -> Objects.equals(
-				dsRecipient.getEmailAddress(),
-				MapUtil.getString(values, "emailAddress")));
+		List<Map<String, Serializable>> dsRequestRecipientValuesList =
+			ListUtil.filter(
+				_getDSRequestRecipientValuesList(dsRequestValues),
+				values -> Objects.equals(
+					dsRecipient.getEmailAddress(),
+					MapUtil.getString(values, "emailAddress")));
 
 		Assert.assertEquals(
-			dsRecipientValuesList.toString(), 1, dsRecipientValuesList.size());
+			dsRequestRecipientValuesList.toString(), 1,
+			dsRequestRecipientValuesList.size());
 		Assert.assertEquals(
 			user.getUserId(),
 			MapUtil.getLong(
-				dsRecipientValuesList.get(0),
+				dsRequestRecipientValuesList.get(0),
 				"r_userToDSRequestRecipients_userId"));
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
@@ -280,7 +283,7 @@ public class DSRequestManagerTest {
 				_dsRequestRecipientObjectDefinition));
 
 		_testAddDSRequestWhenDSEnvelopeIdIsNull();
-		_testAddDSRequestWhenDSRecipientUserIsDeleted();
+		_testAddDSRequestWhenDSRequestRecipientUserIsDeleted();
 	}
 
 	@Test
@@ -289,26 +292,26 @@ public class DSRequestManagerTest {
 			System.currentTimeMillis() / 1000, 0, ZoneOffset.UTC);
 
 		_testUpdateDSRequest(
-			DSRequestConstants.STATUS_COMPLETED, localDateTime.plusDays(1),
-			"completed", localDateTime);
+			"completed", DSRequestConstants.STATUS_COMPLETED,
+			localDateTime.plusDays(1), localDateTime);
 		_testUpdateDSRequest(
-			DSRequestConstants.STATUS_CREATED, localDateTime.plusDays(1),
-			RandomTestUtil.randomString(), localDateTime);
+			RandomTestUtil.randomString(), DSRequestConstants.STATUS_CREATED,
+			localDateTime.plusDays(1), localDateTime);
 		_testUpdateDSRequest(
-			DSRequestConstants.STATUS_DECLINED, localDateTime.plusDays(1),
-			"declined", localDateTime);
+			"declined", DSRequestConstants.STATUS_DECLINED,
+			localDateTime.plusDays(1), localDateTime);
 		_testUpdateDSRequest(
-			DSRequestConstants.STATUS_EXPIRED, localDateTime, "voided",
+			"voided", DSRequestConstants.STATUS_EXPIRED, localDateTime,
 			localDateTime);
 		_testUpdateDSRequest(
-			DSRequestConstants.STATUS_SENT, localDateTime.plusDays(1),
-			"delivered", localDateTime);
+			"delivered", DSRequestConstants.STATUS_SENT,
+			localDateTime.plusDays(1), localDateTime);
 		_testUpdateDSRequest(
-			DSRequestConstants.STATUS_SENT, localDateTime.plusDays(1), "signed",
+			"signed", DSRequestConstants.STATUS_SENT, localDateTime.plusDays(1),
 			localDateTime);
 		_testUpdateDSRequest(
-			DSRequestConstants.STATUS_VOIDED, localDateTime.plusDays(1),
-			"voided", localDateTime);
+			"voided", DSRequestConstants.STATUS_VOIDED,
+			localDateTime.plusDays(1), localDateTime);
 
 		_testUpdateDSRequestWhenObjectEntryIsNotDSRequest();
 	}
@@ -382,7 +385,8 @@ public class DSRequestManagerTest {
 
 		AssertUtils.assertFailure(
 			PortalException.class,
-			"A signature request requires a DocuSign envelope ID",
+			"A digital signature request requires a digital signature " +
+				"envelope ID",
 			() -> _dsRequestManager.addDSRequest(
 				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
 				TestPropsValues.getUserId(), dsEnvelope,
@@ -395,7 +399,7 @@ public class DSRequestManagerTest {
 				_dsRequestRecipientObjectDefinition));
 	}
 
-	private void _testAddDSRequestWhenDSRecipientUserIsDeleted()
+	private void _testAddDSRequestWhenDSRequestRecipientUserIsDeleted()
 		throws Exception {
 
 		DSEnvelope dsEnvelope = _createDSEnvelope();
@@ -450,8 +454,9 @@ public class DSRequestManagerTest {
 	}
 
 	private void _testUpdateDSRequest(
-			String expectedRequestStatus, LocalDateTime expireLocalDateTime,
-			String requestStatus, LocalDateTime statusChangedLocalDateTime)
+			String dsEnvelopeStatus, String expectedRequestStatus,
+			LocalDateTime expirationLocalDateTime,
+			LocalDateTime statusLocalDateTime)
 		throws Exception {
 
 		DSEnvelope dsEnvelope = _createDSEnvelope();
@@ -463,9 +468,9 @@ public class DSRequestManagerTest {
 			TestPropsValues.getUserId(), dsEnvelope,
 			new long[] {RandomTestUtil.randomInt()});
 
-		dsEnvelope.setExpireLocalDateTime(expireLocalDateTime);
-		dsEnvelope.setStatus(requestStatus);
-		dsEnvelope.setStatusChangedLocalDateTime(statusChangedLocalDateTime);
+		dsEnvelope.setExpirationLocalDateTime(expirationLocalDateTime);
+		dsEnvelope.setStatus(dsEnvelopeStatus);
+		dsEnvelope.setStatusLocalDateTime(statusLocalDateTime);
 
 		DSEnvelopeManager dsEnvelopeManager =
 			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
@@ -504,13 +509,13 @@ public class DSRequestManagerTest {
 			dsEnvelope);
 
 		Assert.assertEquals(
-			Date.from(expireLocalDateTime.toInstant(ZoneOffset.UTC)),
+			Date.from(expirationLocalDateTime.toInstant(ZoneOffset.UTC)),
 			dsRequestValues.get("requestExpirationDate"));
 		Assert.assertEquals(
 			expectedRequestStatus,
 			MapUtil.getString(dsRequestValues, "requestStatus"));
 		Assert.assertEquals(
-			Date.from(statusChangedLocalDateTime.toInstant(ZoneOffset.UTC)),
+			Date.from(statusLocalDateTime.toInstant(ZoneOffset.UTC)),
 			dsRequestValues.get("requestStatusDate"));
 	}
 
@@ -535,8 +540,10 @@ public class DSRequestManagerTest {
 
 		AssertUtils.assertFailure(
 			NoSuchObjectEntryException.class,
-			"No signature request exists with the primary key " +
-				dsRequestDocumentId,
+			StringBundler.concat(
+				"No ObjectEntry exists with the key {objectDefinitionId=",
+				_dsRequestObjectDefinition.getObjectDefinitionId(),
+				", objectEntryId=", dsRequestDocumentId, "}"),
 			() -> _dsRequestManager.updateDSRequest(dsRequestDocumentId));
 	}
 

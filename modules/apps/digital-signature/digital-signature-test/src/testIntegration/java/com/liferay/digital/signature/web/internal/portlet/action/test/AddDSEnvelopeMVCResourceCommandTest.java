@@ -78,8 +78,7 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 		mockLiferayResourceRequest.setParameter("recipients", "[]");
 
 		AssertUtils.assertFailure(
-			PortalException.class,
-			"Days to warn signers must be fewer than days until expiration",
+			PortalException.class, "Expire warn must be less than expire after",
 			() -> ReflectionTestUtil.invoke(
 				_mvcResourceCommand, "doTransactionalCommand",
 				new Class<?>[] {ResourceRequest.class, ResourceResponse.class},

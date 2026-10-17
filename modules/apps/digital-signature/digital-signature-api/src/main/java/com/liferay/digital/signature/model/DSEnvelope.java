@@ -44,12 +44,12 @@ public class DSEnvelope {
 		return emailSubject;
 	}
 
-	public int getExpireAfter() {
-		return expireAfter;
+	public LocalDateTime getExpirationLocalDateTime() {
+		return expirationLocalDateTime;
 	}
 
-	public LocalDateTime getExpireLocalDateTime() {
-		return expireLocalDateTime;
+	public int getExpireAfter() {
+		return expireAfter;
 	}
 
 	public int getExpireWarn() {
@@ -68,8 +68,8 @@ public class DSEnvelope {
 		return status;
 	}
 
-	public LocalDateTime getStatusChangedLocalDateTime() {
-		return statusChangedLocalDateTime;
+	public LocalDateTime getStatusLocalDateTime() {
+		return statusLocalDateTime;
 	}
 
 	public void setCreatedLocalDateTime(LocalDateTime createdLocalDateTime) {
@@ -96,12 +96,14 @@ public class DSEnvelope {
 		this.emailSubject = emailSubject;
 	}
 
-	public void setExpireAfter(int expireAfter) {
-		this.expireAfter = expireAfter;
+	public void setExpirationLocalDateTime(
+		LocalDateTime expirationLocalDateTime) {
+
+		this.expirationLocalDateTime = expirationLocalDateTime;
 	}
 
-	public void setExpireLocalDateTime(LocalDateTime expireLocalDateTime) {
-		this.expireLocalDateTime = expireLocalDateTime;
+	public void setExpireAfter(int expireAfter) {
+		this.expireAfter = expireAfter;
 	}
 
 	public void setExpireWarn(int expireWarn) {
@@ -120,10 +122,8 @@ public class DSEnvelope {
 		this.status = status;
 	}
 
-	public void setStatusChangedLocalDateTime(
-		LocalDateTime statusChangedLocalDateTime) {
-
-		this.statusChangedLocalDateTime = statusChangedLocalDateTime;
+	public void setStatusLocalDateTime(LocalDateTime statusLocalDateTime) {
+		this.statusLocalDateTime = statusLocalDateTime;
 	}
 
 	public JSONObject toJSONObject() {
@@ -186,13 +186,13 @@ public class DSEnvelope {
 	protected List<DSRecipient> dsRecipients;
 	protected String emailBlurb;
 	protected String emailSubject;
+	protected LocalDateTime expirationLocalDateTime;
 	protected int expireAfter;
-	protected LocalDateTime expireLocalDateTime;
 	protected int expireWarn;
 	protected String name;
 	protected String senderEmailAddress;
 	protected String status;
-	protected LocalDateTime statusChangedLocalDateTime;
+	protected LocalDateTime statusLocalDateTime;
 
 	private static final Log _log = LogFactoryUtil.getLog(DSEnvelope.class);
 

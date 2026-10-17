@@ -59,8 +59,7 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 
 		if (Validator.isNull(dsEnvelope.getDSEnvelopeId())) {
 			throw new SystemException(
-				"DocuSign did not return an envelope ID for the created " +
-					"envelope");
+				"DocuSign did not return a digital signature envelope ID");
 		}
 
 		_dsCustomFieldManager.addDSCustomFields(
@@ -264,10 +263,10 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 					jsonObject.getJSONObject("recipients"));
 				emailBlurb = jsonObject.getString("emailBlurb");
 				emailSubject = jsonObject.getString("emailSubject");
-				expireLocalDateTime = _toLocalDateTime(
+				expirationLocalDateTime = _toLocalDateTime(
 					jsonObject.getString("expireDateTime"));
 				status = jsonObject.getString("status");
-				statusChangedLocalDateTime = _toLocalDateTime(
+				statusLocalDateTime = _toLocalDateTime(
 					jsonObject.getString("statusChangedDateTime"));
 			}
 		};

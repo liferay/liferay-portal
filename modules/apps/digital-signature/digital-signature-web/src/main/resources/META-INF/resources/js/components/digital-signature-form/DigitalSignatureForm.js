@@ -127,7 +127,7 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 
 		if (values.expireAfter > 0 && values.expireWarn >= values.expireAfter) {
 			errorList.expireWarn = Liferay.Language.get(
-				'days-to-warn-signers-must-be-fewer-than-days-until-expiration'
+				'days-to-warn-recipients-must-be-fewer-than-days-until-expiration'
 			);
 		}
 

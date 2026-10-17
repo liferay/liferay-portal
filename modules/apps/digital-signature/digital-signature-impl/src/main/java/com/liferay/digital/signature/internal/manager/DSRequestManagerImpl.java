@@ -82,8 +82,10 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				objectEntry.getObjectDefinitionId()) {
 
 			throw new NoSuchObjectEntryException(
-				"No signature request exists with the primary key " +
-					dsRequestId);
+				StringBundler.concat(
+					"No ObjectEntry exists with the key {objectDefinitionId=",
+					objectDefinition.getObjectDefinitionId(),
+					", objectEntryId=", dsRequestId, "}"));
 		}
 
 		long groupId = MapUtil.getLong(objectEntry.getValues(), "siteGroupId");
@@ -102,19 +104,20 @@ public class DSRequestManagerImpl implements DSRequestManager {
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
 					"requestExpirationDate",
-					() -> _toDate(dsEnvelope.getExpireLocalDateTime())
+					() -> _toDate(dsEnvelope.getExpirationLocalDateTime())
 				).put(
 					"requestStatus", () -> _getDSRequestStatus(dsEnvelope)
 				).put(
 					"requestStatusDate",
-					() -> _toDate(dsEnvelope.getStatusChangedLocalDateTime())
+					() -> _toDate(dsEnvelope.getStatusLocalDateTime())
 				).build(),
 				_getServiceContext(
 					companyId, groupId, objectEntry.getUserId()));
 		}
 		catch (Exception exception) {
 			_log.error(
-				"Unable to update signature request " + dsRequestId, exception);
+				"Unable to update digital signature request " + dsRequestId,
+				exception);
 		}
 	}
 
@@ -125,7 +128,8 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 		if (Validator.isNull(dsEnvelope.getDSEnvelopeId())) {
 			throw new PortalException(
-				"A signature request requires a DocuSign envelope ID");
+				"A digital signature request requires a digital signature " +
+					"envelope ID");
 		}
 
 		ObjectDefinition dsRequestObjectDefinition =
@@ -147,7 +151,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				"externalReferenceCode", dsEnvelope.getDSEnvelopeId()
 			).put(
 				"requestExpirationDate",
-				() -> _toDate(dsEnvelope.getExpireLocalDateTime())
+				() -> _toDate(dsEnvelope.getExpirationLocalDateTime())
 			).put(
 				"requestStatus", () -> _getDSRequestStatus(dsEnvelope)
 			).put(
@@ -229,22 +233,23 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		if (_log.isWarnEnabled()) {
 			_log.warn(
 				StringBundler.concat(
-					"Unsupported request recipient status \"", status, "\""));
+					"Unsupported digital signature recipient status \"", status,
+					"\""));
 		}
 
 		return null;
 	}
 
 	private String _getDSRequestStatus(DSEnvelope dsEnvelope) {
-		LocalDateTime expireLocalDateTime = dsEnvelope.getExpireLocalDateTime();
+		LocalDateTime expirationLocalDateTime =
+			dsEnvelope.getExpirationLocalDateTime();
 		String status = StringUtil.toLowerCase(dsEnvelope.getStatus());
-		LocalDateTime statusChangedLocalDateTime =
-			dsEnvelope.getStatusChangedLocalDateTime();
+		LocalDateTime statusLocalDateTime = dsEnvelope.getStatusLocalDateTime();
 
 		if (Objects.equals(status, DSRequestConstants.STATUS_VOIDED) &&
-			(expireLocalDateTime != null) &&
-			(statusChangedLocalDateTime != null) &&
-			!statusChangedLocalDateTime.isBefore(expireLocalDateTime)) {
+			(expirationLocalDateTime != null) &&
+			(statusLocalDateTime != null) &&
+			!statusLocalDateTime.isBefore(expirationLocalDateTime)) {
 
 			return DSRequestConstants.STATUS_EXPIRED;
 		}
@@ -262,7 +267,8 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		if (_log.isWarnEnabled()) {
 			_log.warn(
 				StringBundler.concat(
-					"Unsupported request status \"", status, "\""));
+					"Unsupported digital signature envelope status \"", status,
+					"\""));
 		}
 
 		return null;

@@ -76,13 +76,13 @@ describe('DigitalSignatureForm', () => {
 			Liferay.FeatureFlags['LPD-69290'] = false;
 		});
 
-		it('Validates the expiration warning period', async () => {
+		it('Validates the days to warn recipients', async () => {
 			const {getByLabelText, getByText} = render(
 				<DigitalSignatureFormWithProvider />
 			);
 
 			const inputExpireWarn = getByLabelText(
-				'days-to-warn-signers-before-expiration'
+				'days-to-warn-recipients-before-expiration'
 			);
 
 			await userEvent.clear(inputExpireWarn);
@@ -90,7 +90,7 @@ describe('DigitalSignatureForm', () => {
 
 			expect(
 				getByText(
-					'days-to-warn-signers-must-be-fewer-than-days-until-expiration'
+					'days-to-warn-recipients-must-be-fewer-than-days-until-expiration'
 				)
 			).toBeInTheDocument();
 		});

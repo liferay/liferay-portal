@@ -183,7 +183,7 @@ const DigitalSignatureFormBase = ({
 					<Input
 						error={errors.expireWarn}
 						label={Liferay.Language.get(
-							'days-to-warn-signers-before-expiration'
+							'days-to-warn-recipients-before-expiration'
 						)}
 						name="expireWarn"
 						onChange={handleChange}

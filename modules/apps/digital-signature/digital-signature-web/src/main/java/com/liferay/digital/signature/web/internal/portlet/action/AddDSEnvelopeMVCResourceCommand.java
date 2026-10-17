@@ -91,8 +91,7 @@ public class AddDSEnvelopeMVCResourceCommand
 			(dsEnvelope.getExpireWarn() >= dsEnvelope.getExpireAfter())) {
 
 			throw new PortalException(
-				"Days to warn signers must be fewer than days until " +
-					"expiration");
+				"Expire warn must be less than expire after");
 		}
 
 		dsEnvelope = _dsEnvelopeManager.addDSEnvelope(
