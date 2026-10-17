@@ -62,6 +62,7 @@ import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.expando.kernel.util.ExpandoBridgeUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.io.ByteArrayFileInputStream;
+import com.liferay.petra.io.unsync.UnsyncBufferedInputStream;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
@@ -163,6 +164,7 @@ import com.liferay.portlet.documentlibrary.util.comparator.DLFileEntryMetadataId
 import com.liferay.ratings.kernel.service.RatingsStatsLocalService;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -3144,6 +3146,56 @@ public class DLFileEntryLocalServiceImpl
 		return false;
 	}
 
+	private boolean _isFileBytesUpdated(
+		DLFileEntry dlFileEntry, DLFileVersion previousDLFileVersion,
+		DLFileVersion nextDLFileVersion) {
+
+		if (previousDLFileVersion.getSize() != nextDLFileVersion.getSize()) {
+			return true;
+		}
+
+		try (InputStream inputStream1 = DLStoreUtil.getFileAsStream(
+				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
+				dlFileEntry.getName(),
+				previousDLFileVersion.getStoreFileName());
+			InputStream inputStream2 = DLStoreUtil.getFileAsStream(
+				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
+				dlFileEntry.getName(), nextDLFileVersion.getStoreFileName())) {
+
+			if ((inputStream1 == null) || (inputStream2 == null)) {
+				return true;
+			}
+
+			InputStream bufferedInputStream1 = new UnsyncBufferedInputStream(
+				inputStream1);
+			InputStream bufferedInputStream2 = new UnsyncBufferedInputStream(
+				inputStream2);
+
+			int value = bufferedInputStream1.read();
+
+			while (value != -1) {
+				if (value != bufferedInputStream2.read()) {
+					return true;
+				}
+
+				value = bufferedInputStream1.read();
+			}
+
+			if (bufferedInputStream2.read() == -1) {
+				return false;
+			}
+
+			return true;
+		}
+		catch (IOException | PortalException | SystemException exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return true;
+		}
+	}
+
 	private boolean _isInTrashExplicitly(TrashedModel trashedModel) {
 		TrashHelper trashHelper = _trashHelperSnapshot.get();
 
@@ -3605,6 +3657,16 @@ public class DLFileEntryLocalServiceImpl
 
 		String oldStoreFileName = lastDLFileVersion.getStoreFileName();
 
+		boolean keepStoreFile = false;
+
+		if (CTCollectionThreadLocal.isProductionMode() &&
+			version.equals(lastDLFileVersion.getVersion()) &&
+			!_isFileBytesUpdated(
+				dlFileEntry, lastDLFileVersion, latestDLFileVersion)) {
+
+			keepStoreFile = true;
+		}
+
 		lastDLFileVersion.setUserId(latestDLFileVersion.getUserId());
 		lastDLFileVersion.setUserName(latestDLFileVersion.getUserName());
 		lastDLFileVersion.setModifiedDate(
@@ -3621,7 +3683,11 @@ public class DLFileEntryLocalServiceImpl
 			latestDLFileVersion.getFileEntryTypeId());
 		lastDLFileVersion.setVersion(version);
 		lastDLFileVersion.setSize(latestDLFileVersion.getSize());
-		lastDLFileVersion.setStoreUUID(String.valueOf(UUID.randomUUID()));
+
+		if (!keepStoreFile) {
+			lastDLFileVersion.setStoreUUID(String.valueOf(UUID.randomUUID()));
+		}
+
 		lastDLFileVersion.setDisplayDate(latestDLFileVersion.getDisplayDate());
 		lastDLFileVersion.setExpirationDate(
 			latestDLFileVersion.getExpirationDate());
@@ -3670,11 +3736,14 @@ public class DLFileEntryLocalServiceImpl
 
 		// File
 
-		_deleteFile(
-			user.getCompanyId(), dlFileEntry.getDataRepositoryId(),
-			dlFileEntry.getName(), oldStoreFileName);
+		if (!keepStoreFile) {
+			_deleteFile(
+				user.getCompanyId(), dlFileEntry.getDataRepositoryId(),
+				dlFileEntry.getName(), oldStoreFileName);
 
-		_copyFileVersion(dlFileEntry, latestDLFileVersion, lastDLFileVersion);
+			_copyFileVersion(
+				dlFileEntry, latestDLFileVersion, lastDLFileVersion);
+		}
 
 		// Latest file version
 
