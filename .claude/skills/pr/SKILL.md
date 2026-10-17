@@ -58,7 +58,7 @@ The target repository defaults to `<fork-owner>/<repository>`. When `${ARGUMENTS
 - `liferay-search`
 - `liferay-site-management`
 
-When the `pr-check` run reports that the branch sits on the forward target and `${ARGUMENTS}` names no repository, target the forward target instead of asking, since a team repository lacks the forward target's commits and CI there checks them all as the pull request's own.
+When the `pr-check` run reports that the branch sits on the forward target and `${ARGUMENTS}` names no repository, use the forward target instead of asking.
 
 The following short aliases resolve to a target repository:
 

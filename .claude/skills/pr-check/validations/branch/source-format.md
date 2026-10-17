@@ -31,7 +31,7 @@ The yarn side does not always run. `portal-impl/build.xml` sets `skip.node.task`
 
 `-Dvalidate.commit.messages=true` is passed explicitly because `format-source-current-branch` never sets it and only the `format-source` target does, so the commit message rules CI enforces go unchecked without it. The flag produces no output of its own, and a clean check and a check that never ran print alike, so there is nothing in a normal run to confirm from. When it matters, rerun under `ant -v`, which echoes the `SourceFormatter` argv and shows `validate.commit.messages=true` among it.
 
-`git.working.branch.name` names the commit the formatter diffs from. Without it the formatter takes the newest of `master`, `origin/master`, and `upstream/master`, which on a branch that sits on the forward target formats every commit of the target and checks its commit messages as the branch's own. It goes in `ANT_OPTS` rather than on the command line because the yarn side lists its files through a separate `ant git-util` call that inherits `ANT_OPTS` and nothing else. Pass `${MERGE_BASE}` rather than a branch tip, since the formatter diffs the two trees, and a tip newer than the branch's base shows its later changes reversed.
+Pass `git.working.branch.name` in `ANT_OPTS` rather than on the command line, since the yarn side lists its files through a separate `ant git-util` call that inherits nothing else. Pass `${MERGE_BASE}` rather than a branch tip, since the formatter diffs the two trees and a newer tip shows its later changes reversed.
 
 ## Autocommit
 

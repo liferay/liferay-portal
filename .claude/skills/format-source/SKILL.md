@@ -23,7 +23,7 @@ git fetch --no-tags https://github.com/brianchandotcom/liferay-portal.git master
 cd <repo-root>/portal-impl && ANT_OPTS="-Xmx2560m -Dgit.working.branch.name=$(git merge-base HEAD FETCH_HEAD)" ant format-source-current-branch
 ```
 
-`git.working.branch.name` is the merge base with `brianchandotcom` master, which `ci:forward` merges into and which contains `liferay` master. On a branch cut from `liferay` master that is the commit the branch started from, and on a branch that sits on `brianchandotcom` master it leaves out the commits `liferay` master has not taken yet, which the formatter would otherwise check and fix as the branch's own. It goes in `ANT_OPTS` because the yarn side lists its files through a separate `ant git-util` call that inherits nothing else. When the fetch fails, run the command without `-Dgit.working.branch.name`.
+Pass `git.working.branch.name` in `ANT_OPTS` rather than on the command line, since the yarn side lists its files through a separate `ant git-util` call that inherits nothing else. When the fetch fails, run the command without it.
 
 `ant format-source-current-branch` only inspects committed files, so run it after creating the commit, and amend any formatter changes or fixes into that commit.
 
