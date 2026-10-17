@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
@@ -182,5 +182,21 @@ export class WorkflowTasksPage {
 		await frame.getByRole('textbox', {name: 'Due Date'}).click();
 
 		await frame.getByRole('button', {name: 'Done'}).click();
+	}
+
+	async waitForTask(assetTitle: string, taskName?: string) {
+		let row = this.page.getByRole('row').filter({hasText: assetTitle});
+
+		if (taskName) {
+			row = row.filter({hasText: taskName});
+		}
+
+		await expect(async () => {
+			if (!(await row.first().isVisible())) {
+				await this.page.reload({timeout: 10000});
+			}
+
+			await expect(row.first()).toBeVisible({timeout: 2000});
+		}).toPass({timeout: 30000});
 	}
 }

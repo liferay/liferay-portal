@@ -87,16 +87,19 @@ export class WorkflowTaskDetailsPage {
 		await waitForAlert(this.page);
 	}
 
-	async goTo(assetTitle: string) {
+	async goTo(assetTitle: string, taskName?: string) {
 		await this.workflowTasksPage.goto();
 
-		await this.selectAsset(assetTitle);
+		await this.workflowTasksPage.waitForTask(assetTitle, taskName);
+
+		await this.selectAsset(assetTitle, taskName);
 	}
 
-	async selectAsset(assetText: string) {
-		const row = this.page.getByRole('row').filter({hasText: assetText});
-
-		await row.locator('.lfr-asset-title-column').getByRole('link').click();
+	async selectAsset(assetText: string, taskName?: string) {
+		await this._getRow(assetText, taskName)
+			.locator('.lfr-asset-title-column')
+			.getByRole('link')
+			.click();
 	}
 
 	async selectAssignee(assignee: string) {
@@ -107,5 +110,11 @@ export class WorkflowTaskDetailsPage {
 		await this.selectAsset(threadTitle);
 
 		await this.addComment(comment);
+	}
+
+	private _getRow(assetText: string, taskName?: string) {
+		const row = this.page.getByRole('row').filter({hasText: assetText});
+
+		return taskName ? row.filter({hasText: taskName}) : row;
 	}
 }

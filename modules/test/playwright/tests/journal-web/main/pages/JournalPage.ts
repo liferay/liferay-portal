@@ -11,6 +11,8 @@ import {expandSection} from '../../../../utils/expandSection';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
+const JOURNAL_NAMESPACE = '_com_liferay_journal_web_portlet_JournalPortlet_';
+
 export enum FilterBy {
 	ALL = 'All',
 	MINE = 'Mine',
@@ -56,6 +58,25 @@ export class JournalPage {
 		await this.page.goto(
 			`/group${siteUrl || '/guest'}${PORTLET_URLS.journal}`
 		);
+	}
+
+	async gotoFolder({
+		folderId,
+		siteUrl,
+	}: {
+		folderId: number;
+		siteUrl: Site['friendlyUrlPath'];
+	}) {
+		await this.page.goto(
+			`/group${siteUrl}${PORTLET_URLS.journal}&${JOURNAL_NAMESPACE}folderId=${folderId}&${JOURNAL_NAMESPACE}displayStyle=descriptive`
+		);
+	}
+
+	getArticleStatus(title: string) {
+		return this.page
+			.locator('.list-group-item')
+			.filter({hasText: title})
+			.locator('.label');
 	}
 
 	async fillArticleContent(content: string) {

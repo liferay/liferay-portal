@@ -9,6 +9,9 @@ import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 
+const DL_ADMIN_NAMESPACE =
+	'_com_liferay_document_library_web_portlet_DLAdminPortlet_';
+
 export type TVocabularyCategory = {
 	categoryNames: string[];
 	vocabularyName: string;
@@ -63,6 +66,25 @@ export class DocumentLibraryPage {
 		await this.page.goto(
 			`/group${siteUrl || '/guest'}${PORTLET_URLS.documentLibrary}`
 		);
+	}
+
+	async gotoFolder({
+		folderId,
+		siteUrl,
+	}: {
+		folderId: number;
+		siteUrl: Site['friendlyUrlPath'];
+	}) {
+		await this.page.goto(
+			`/group${siteUrl}${PORTLET_URLS.documentLibrary}&${DL_ADMIN_NAMESPACE}mvcRenderCommandName=%2Fdocument_library%2Fview_folder&${DL_ADMIN_NAMESPACE}folderId=${folderId}&${DL_ADMIN_NAMESPACE}displayStyle=icon`
+		);
+	}
+
+	getFileEntryStatus(title: string) {
+		return this.page
+			.locator('.card')
+			.filter({hasText: title})
+			.locator('.label');
 	}
 
 	async waitForSuccessAlert() {
