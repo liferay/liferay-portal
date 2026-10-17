@@ -22,6 +22,9 @@ import com.liferay.asset.publisher.util.AssetPublisherHelper;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
@@ -65,6 +68,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockPortletRequest;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -854,6 +858,127 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 		testExportImportAssetEntries(layoutGroup);
 	}
 
+	@Test
+	@TestInfo("LPD-81813")
+	public void testExportImportScopeIdsWithLocalStaging() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry();
+
+		Group depotGroup = depotEntry.getGroup();
+
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), depotGroup, false, false,
+			ServiceContextTestUtil.getServiceContext(depotGroup.getGroupId()));
+
+		Group depotStagingGroup = depotGroup.getStagingGroup();
+
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), group, false, false,
+			new ServiceContext());
+
+		Group stagingGroup = group.getStagingGroup();
+
+		Layout stagingLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			layout.getUuid(), stagingGroup.getGroupId(),
+			layout.isPrivateLayout());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			stagingLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			HashMapBuilder.put(
+				"scopeIds",
+				new String[] {
+					AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+						GroupConstants.DEFAULT,
+					AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+						depotStagingGroup.getGroupId()
+				}
+			).build());
+
+		_publishLayouts(stagingGroup);
+
+		PortletPreferences portletPreferences =
+			_portletPreferencesLocalService.fetchPreferences(
+				_portletPreferencesFactory.getPortletPreferencesIds(
+					layout.getCompanyId(), layout.getGroupId(), 0,
+					layout.getPlid(), portletId));
+
+		Assert.assertArrayEquals(
+			new String[] {
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					GroupConstants.DEFAULT,
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					depotGroup.getGroupId()
+			},
+			portletPreferences.getValues("scopeIds", null));
+
+		PortletPreferences stagingPortletPreferences =
+			_portletPreferencesLocalService.fetchPreferences(
+				_portletPreferencesFactory.getPortletPreferencesIds(
+					stagingLayout.getCompanyId(), stagingLayout.getGroupId(), 0,
+					stagingLayout.getPlid(), portletId));
+
+		Assert.assertArrayEquals(
+			new String[] {
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					GroupConstants.DEFAULT,
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					depotStagingGroup.getGroupId()
+			},
+			stagingPortletPreferences.getValues("scopeIds", null));
+	}
+
+	@Test
+	@TestInfo("LPD-81813")
+	public void testExportImportScopeIdsWithRemoteStaging() throws Exception {
+		Group childGroup = GroupTestUtil.addGroup(group.getGroupId());
+		Group remoteChildGroup = GroupTestUtil.addGroup(
+			importedGroup.getGroupId());
+
+		_groups.add(childGroup);
+		_groups.add(remoteChildGroup);
+
+		_setRemoteGroupExternalReferenceCode(
+			childGroup, remoteChildGroup.getExternalReferenceCode());
+
+		DepotEntry depotEntry = _addDepotEntry();
+		DepotEntry remoteDepotEntry = _addDepotEntry();
+		DepotEntry unpublishedDepotEntry = _addDepotEntry();
+
+		Group remoteDepotGroup = remoteDepotEntry.getGroup();
+
+		_setRemoteGroupExternalReferenceCode(
+			depotEntry.getGroup(), remoteDepotGroup.getExternalReferenceCode());
+
+		_setRemoteGroupExternalReferenceCode(
+			unpublishedDepotEntry.getGroup(), RandomTestUtil.randomString());
+
+		PortletPreferences importedPortletPreferences =
+			_getRemoteStagingImportedPortletPreferences(
+				HashMapBuilder.put(
+					"scopeIds",
+					new String[] {
+						AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+							GroupConstants.DEFAULT,
+						AssetPublisherHelper.SCOPE_ID_CHILD_GROUP_PREFIX +
+							childGroup.getGroupId(),
+						AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+							depotEntry.getGroupId(),
+						AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+							unpublishedDepotEntry.getGroupId()
+					}
+				).build());
+
+		Assert.assertArrayEquals(
+			new String[] {
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					GroupConstants.DEFAULT,
+				AssetPublisherHelper.SCOPE_ID_CHILD_GROUP_PREFIX +
+					remoteChildGroup.getGroupId(),
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					remoteDepotGroup.getGroupId()
+			},
+			importedPortletPreferences.getValues("scopeIds", null));
+	}
+
 	@Ignore
 	@Test
 	public void testExportImportSeveralScopedAssetEntries() throws Exception {
@@ -1586,6 +1711,22 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 				group.getGroupId(), TestPropsValues.getUserId(), categoryIds));
 	}
 
+	private DepotEntry _addDepotEntry() throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		_depotEntries.add(depotEntry);
+
+		return depotEntry;
+	}
+
 	private Map<String, String[]> _getPreferenceMap(
 		String assetListEntryExternalReferenceCode,
 		String assetListEntryGroupExternalReferenceCode) {
@@ -1619,17 +1760,8 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			Map<String, String[]> preferenceMap)
 		throws Exception {
 
-		UnicodeProperties typeSettingsUnicodeProperties =
-			group.getTypeSettingsProperties();
-
-		typeSettingsUnicodeProperties.setProperty(
-			"remoteGroupExternalReferenceCode",
-			importedGroup.getExternalReferenceCode());
-		typeSettingsUnicodeProperties.setProperty("staged", "true");
-		typeSettingsUnicodeProperties.setProperty("stagedRemotely", "true");
-
-		_groupLocalService.updateGroup(
-			group.getGroupId(), typeSettingsUnicodeProperties.toString());
+		_setRemoteGroupExternalReferenceCode(
+			group, importedGroup.getExternalReferenceCode());
 
 		String portletId = LayoutTestUtil.addPortletToLayout(
 			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
@@ -1640,6 +1772,15 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 		Map<String, Object> portletConfiguration =
 			_portletPreferencesPortletConfigurationExporter.
 				getPortletConfiguration(layout.getPlid(), portletId);
+
+		portletConfiguration.replaceAll(
+			(key, value) -> {
+				if (value instanceof String[]) {
+					return Arrays.asList((String[])value);
+				}
+
+				return value;
+			});
 
 		ExportImportThreadLocal.setPortletStagingInProcess(false);
 
@@ -1673,6 +1814,23 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			group.getGroupId(), false, parameterMap);
 	}
 
+	private void _setRemoteGroupExternalReferenceCode(
+			Group group, String remoteGroupExternalReferenceCode)
+		throws Exception {
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
+		typeSettingsUnicodeProperties.setProperty(
+			"remoteGroupExternalReferenceCode",
+			remoteGroupExternalReferenceCode);
+		typeSettingsUnicodeProperties.setProperty("staged", "true");
+		typeSettingsUnicodeProperties.setProperty("stagedRemotely", "true");
+
+		_groupLocalService.updateGroup(
+			group.getGroupId(), typeSettingsUnicodeProperties.toString());
+	}
+
 	private static Configuration _assetPublisherWebConfiguration;
 
 	@Inject
@@ -1696,11 +1854,20 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
+	@DeleteAfterTestRun
+	private final List<DepotEntry> _depotEntries = new ArrayList<>();
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
 	@Inject
 	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@DeleteAfterTestRun
+	private final List<Group> _groups = new ArrayList<>();
 
 	@Inject
 	private JournalFolderLocalService _journalFolderLocalService;

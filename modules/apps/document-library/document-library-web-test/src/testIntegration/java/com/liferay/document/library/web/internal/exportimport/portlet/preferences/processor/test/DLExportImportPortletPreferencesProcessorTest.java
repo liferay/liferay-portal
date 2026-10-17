@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -47,6 +48,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
@@ -117,6 +119,63 @@ public class DLExportImportPortletPreferencesProcessorTest {
 				_layout, DLPortletKeys.DOCUMENT_LIBRARY);
 
 		_portletPreferences.setValue("selectionStyle", "manual");
+	}
+
+	@Test
+	@TestInfo("LPD-81813")
+	public void testExportByCompanyIdSubfolderInAssetLibraryFromRemoteStaging()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry();
+		DepotEntry remoteDepotEntry = _addDepotEntry();
+
+		Group depotGroup = depotEntry.getGroup();
+		Group remoteDepotGroup = remoteDepotEntry.getGroup();
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			depotGroup.getTypeSettingsProperties();
+
+		typeSettingsUnicodeProperties.setProperty(
+			"remoteGroupExternalReferenceCode",
+			remoteDepotGroup.getExternalReferenceCode());
+		typeSettingsUnicodeProperties.setProperty("staged", "true");
+		typeSettingsUnicodeProperties.setProperty("stagedRemotely", "true");
+
+		_groupLocalService.updateGroup(
+			depotGroup.getGroupId(), typeSettingsUnicodeProperties.toString());
+
+		Folder folder = DLAppTestUtil.addFolder(depotGroup.getGroupId());
+
+		_testExportByCompanyId(
+			_getPortletPreferencesValues(folder),
+			_getPortletPreferencesValues(
+				folder.getExternalReferenceCode(),
+				remoteDepotGroup.getExternalReferenceCode(), StringPool.BLANK));
+	}
+
+	@Test
+	@TestInfo("LPD-81813")
+	public void testExportByCompanyIdSubfolderInAssetLibraryFromStaging()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry();
+
+		Group depotLiveGroup = depotEntry.getGroup();
+
+		Folder liveFolder = DLAppTestUtil.addFolder(
+			depotLiveGroup.getGroupId());
+
+		GroupTestUtil.enableLocalStaging(depotLiveGroup);
+
+		Group depotStagingGroup = depotLiveGroup.getStagingGroup();
+
+		Folder stagingFolder = _dlAppLocalService.getFolder(
+			depotStagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, liveFolder.getName());
+
+		_testExportByCompanyId(
+			_getPortletPreferencesValues(stagingFolder),
+			_getPortletPreferencesValues(liveFolder));
 	}
 
 	@Test
@@ -719,6 +778,29 @@ public class DLExportImportPortletPreferencesProcessorTest {
 		}
 
 		_portletPreferences.store();
+	}
+
+	private void _testExportByCompanyId(
+			Map<String, String> originalPortletPreferencesValues,
+			Map<String, String> expectedPortletPreferencesValues)
+		throws Exception {
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			_setPortletPreferences(originalPortletPreferencesValues);
+
+			_exportImportPortletPreferencesProcessor.
+				processExportPortletPreferences(
+					_group.getCompanyId(), _portletPreferences);
+
+			Assert.assertEquals(
+				expectedPortletPreferencesValues,
+				_getPortletPreferencesValues(_portletPreferences));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
 	}
 
 	private void _testExportImport(FileEntry fileEntry) throws Exception {

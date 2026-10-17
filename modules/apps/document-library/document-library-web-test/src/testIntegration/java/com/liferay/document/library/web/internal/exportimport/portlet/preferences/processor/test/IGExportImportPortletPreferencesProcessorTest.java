@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -119,6 +120,44 @@ public class IGExportImportPortletPreferencesProcessorTest {
 				_layout, DLPortletKeys.MEDIA_GALLERY_DISPLAY);
 
 		_portletPreferences.setValue("selectionStyle", "manual");
+	}
+
+	@Test
+	@TestInfo("LPD-81813")
+	public void testExportByCompanyIdSubfolderInAssetLibraryFromStaging()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry();
+
+		Group depotLiveGroup = depotEntry.getGroup();
+
+		Folder liveFolder = DLAppTestUtil.addFolder(
+			depotLiveGroup.getGroupId());
+
+		GroupTestUtil.enableLocalStaging(depotLiveGroup);
+
+		Group depotStagingGroup = depotLiveGroup.getStagingGroup();
+
+		Folder stagingFolder = _dlAppLocalService.getFolder(
+			depotStagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, liveFolder.getName());
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			_setPortletPreferences(_getPortletPreferencesValues(stagingFolder));
+
+			_exportImportPortletPreferencesProcessor.
+				processExportPortletPreferences(
+					_group.getCompanyId(), _portletPreferences);
+
+			Assert.assertEquals(
+				_getPortletPreferencesValues(liveFolder),
+				_getPortletPreferencesValues(_portletPreferences));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
 	}
 
 	@Test
