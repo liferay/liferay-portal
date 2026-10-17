@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <#include init />
+
 <#assign
 	colorScheme = sessionClicks.get(request, "com_liferay_application_list_taglib_SideNavigationColorScheme", "light")
 	prefersContrast = (sessionClicks.get(request, "ACCESSIBILITY_SETTING_HIGH_CONTRAST", "false") == "true")?then("more", "")
