@@ -537,7 +537,11 @@ definition {
 		LexiconCard.clickCard(card = ${depotName});
 
 		if (isSet(folderName)) {
-			LexiconCard.clickCard(card = ${folderName});
+			LexiconCard.clickCardTitleLink(card = ${folderName});
+
+			AssertElementPresent(
+				key_breadcrumbName = ${folderName},
+				locator1 = "Breadcrumb#BREADCRUMB_ENTRY");
 		}
 
 		if (isSet(noViewPermission)) {
