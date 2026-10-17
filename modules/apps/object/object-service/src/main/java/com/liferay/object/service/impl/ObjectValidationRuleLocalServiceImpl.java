@@ -639,6 +639,9 @@ public class ObjectValidationRuleLocalServiceImpl
 		List<ObjectValidationRuleResult> objectValidationRuleResults =
 			new ArrayList<>();
 
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.fetchByPrimaryKey(objectDefinitionId);
+
 		String objectEntryExternalReferenceCode = null;
 
 		if (baseModel instanceof
@@ -647,9 +650,6 @@ public class ObjectValidationRuleLocalServiceImpl
 			objectEntryExternalReferenceCode =
 				externalReferenceCodeModel.getExternalReferenceCode();
 		}
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionPersistence.fetchByPrimaryKey(objectDefinitionId);
 
 		Map<String, Object> variables = ObjectEntryVariablesUtil.getVariables(
 			_dtoConverterRegistry, objectDefinition, payloadJSONObject,
