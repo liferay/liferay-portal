@@ -425,10 +425,11 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 		throws Exception {
 
 		sourceLayout = layoutLocalService.getLayout(sourceLayout.getPlid());
-		targetLayout = layoutLocalService.getLayout(targetLayout.getPlid());
 
 		LayoutPermissionUtil.check(
 			getPermissionChecker(), sourceLayout, ActionKeys.VIEW);
+
+		targetLayout = layoutLocalService.getLayout(targetLayout.getPlid());
 
 		LayoutPermissionUtil.checkLayoutUpdatePermission(
 			getPermissionChecker(), targetLayout);
@@ -443,10 +444,11 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 		throws Exception {
 
 		sourceLayout = layoutLocalService.getLayout(sourceLayout.getPlid());
-		targetLayout = layoutLocalService.getLayout(targetLayout.getPlid());
 
 		LayoutPermissionUtil.check(
 			getPermissionChecker(), sourceLayout, ActionKeys.VIEW);
+
+		targetLayout = layoutLocalService.getLayout(targetLayout.getPlid());
 
 		LayoutPermissionUtil.checkLayoutUpdatePermission(
 			getPermissionChecker(), targetLayout);
