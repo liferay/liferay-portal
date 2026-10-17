@@ -59,8 +59,13 @@ public class AMImageHTMLExportImportContentProcessorTest {
 			Mockito.any(StagedModel.class)
 		);
 
-		Mockito.doThrow(
-			NoSuchFileEntryException.class
+		Mockito.doAnswer(
+			invocation -> {
+				throw new NoSuchFileEntryException(
+					StringBundler.concat(
+						"No FileEntry exists with the key {fileEntryId=",
+						invocation.getArgument(0, Long.class), "}"));
+			}
 		).when(
 			_dlAppLocalService
 		).getFileEntry(
@@ -360,6 +365,12 @@ public class AMImageHTMLExportImportContentProcessorTest {
 	}
 
 	@Test
+	public void testValidateContentReferences() throws Exception {
+		_testValidateContentReferencesWithInvalidReferenceAfterValidReference();
+		_testValidateContentReferencesWithReferenceInText();
+	}
+
+	@Test
 	public void testValidateContentSucceedsWhenAllReferencesAreValid()
 		throws Exception {
 
@@ -456,6 +467,42 @@ public class AMImageHTMLExportImportContentProcessorTest {
 				return "<picture><source/>" + imgTag + "</picture>";
 			}
 		);
+	}
+
+	private void _testValidateContentReferencesWithInvalidReferenceAfterValidReference()
+		throws Exception {
+
+		long fileEntryId = RandomTestUtil.randomLong();
+
+		try {
+			_amImageHTMLExportImportContentProcessor.validateContentReferences(
+				RandomTestUtil.randomLong(),
+				StringBundler.concat(
+					"<img data-fileentryid=\"", _FILE_ENTRY_ID_1,
+					"\" src=\"PATH_", _FILE_ENTRY_ID_1,
+					"\" /><picture data-fileentryid=\"", fileEntryId,
+					"\"></picture>"));
+
+			Assert.fail();
+		}
+		catch (NoSuchFileEntryException noSuchFileEntryException) {
+			Assert.assertEquals(
+				StringBundler.concat(
+					"No FileEntry exists with the key {fileEntryId=",
+					fileEntryId, "}"),
+				noSuchFileEntryException.getMessage());
+		}
+	}
+
+	private void _testValidateContentReferencesWithReferenceInText()
+		throws Exception {
+
+		_amImageHTMLExportImportContentProcessor.validateContentReferences(
+			RandomTestUtil.randomLong(),
+			StringBundler.concat(
+				"<p>&lt;img data-fileentryid=\"", RandomTestUtil.randomLong(),
+				"\"&gt;</p><img data-fileentryid=\"", _FILE_ENTRY_ID_1,
+				"\" src=\"PATH_", _FILE_ENTRY_ID_1, "\" />"));
 	}
 
 	private static final long _FILE_ENTRY_ID_1 = RandomTestUtil.randomLong();
