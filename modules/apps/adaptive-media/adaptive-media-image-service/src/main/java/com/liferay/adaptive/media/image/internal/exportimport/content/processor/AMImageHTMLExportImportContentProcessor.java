@@ -13,6 +13,7 @@ import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -71,15 +72,33 @@ public class AMImageHTMLExportImportContentProcessor
 	public void validateContentReferences(long groupId, String content)
 		throws PortalException {
 
-		Document document = _parseDocument(content);
-		String elementSelector =
-			"[" + AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID + "]";
+		int index = content.indexOf(_FILE_ENTRY_ID_ATTRIBUTE_PREFIX);
 
-		for (Element element : document.select(elementSelector)) {
+		while (index != -1) {
+			int fileEntryIdIndex =
+				index + _FILE_ENTRY_ID_ATTRIBUTE_PREFIX.length();
+
+			int fileEntryIdEndIndex = content.indexOf(
+				CharPool.QUOTE, fileEntryIdIndex);
+
+			if (fileEntryIdEndIndex == -1) {
+				break;
+			}
+
+			int greaterThanIndex = content.lastIndexOf(
+				CharPool.GREATER_THAN, index);
+			int lessThanIndex = content.lastIndexOf(CharPool.LESS_THAN, index);
+
+			index = content.indexOf(
+				_FILE_ENTRY_ID_ATTRIBUTE_PREFIX, fileEntryIdEndIndex);
+
+			if (lessThanIndex <= greaterThanIndex) {
+				continue;
+			}
+
 			try {
 				long fileEntryId = GetterUtil.getLong(
-					element.attr(
-						AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID));
+					content.substring(fileEntryIdIndex, fileEntryIdEndIndex));
 
 				_dlAppLocalService.getFileEntry(fileEntryId);
 			}
@@ -218,6 +237,9 @@ public class AMImageHTMLExportImportContentProcessor
 
 	private static final String _ATTRIBUTE_NAME_EXPORT_IMPORT_PATH =
 		"export-import-path";
+
+	private static final String _FILE_ENTRY_ID_ATTRIBUTE_PREFIX =
+		AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID + "=\"";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AMImageHTMLExportImportContentProcessor.class);
