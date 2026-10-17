@@ -33,7 +33,7 @@ Read the existing rules in `pr-reviewer/rules` and `pr-reviewer/STYLE.md` and co
 
 ### Write the Rule
 
-Pick the category by the leading digit of the existing files (`0xx` convention, `1xx` naming, `2xx` ordering, `3xx` utility methods, `4xx` control flow, `5xx` redundancy, `6xx` tests, `7xx` prose, `8xx` visibility, `9xx` formatting) and take the next free number in it. Create `pr-reviewer/rules/<number>-<kebab-case-imperative-title>.md` with this shape, matching the existing files:
+Pick the category by the leading digit of the existing files (`0xx` convention, `1xx` naming, `2xx` ordering, `3xx` utility methods, `4xx` control flow, `5xx` redundancy, `6xx` tests, `7xx` prose, `8xx` visibility, `9xx` formatting) and take the next free number in it. When no group in `_GROUPS` at the end of `pr-reviewer/review.sh` covers the new number's leading digits, add them to the group of that category, since `review.sh` reviews no rule outside a group. Create `pr-reviewer/rules/<number>-<kebab-case-imperative-title>.md` with this shape, matching the existing files:
 
 1. `# <number>: <Title Case Imperative Title>`
 

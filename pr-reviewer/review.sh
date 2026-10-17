@@ -27,10 +27,7 @@ set -o pipefail
 function main {
 	local diff_range=""
 	local dry_run=false
-	local excludes=()
-	local group_filter=""
 	local json=false
-	local single=false
 	local staged=false
 
 	while [ ${#} -gt 0 ]
@@ -39,16 +36,6 @@ function main {
 			--dry-run)
 				dry_run=true
 				;;
-			--exclude)
-				excludes+=(":(exclude)${2}")
-
-				shift
-				;;
-			--group)
-				group_filter=${2}
-
-				shift
-				;;
 			--help)
 				_print_help
 
@@ -56,9 +43,6 @@ function main {
 				;;
 			--json)
 				json=true
-				;;
-			--single)
-				single=true
 				;;
 			--staged)
 				staged=true
@@ -81,13 +65,6 @@ function main {
 	if ${staged} && [[ ! -z ${diff_range} ]]
 	then
 		echo "Pass either --staged or a range, not both." >&2
-
-		exit 2
-	fi
-
-	if ${single} && [[ ! -z ${group_filter} ]]
-	then
-		echo "Pass either --single or --group, not both." >&2
 
 		exit 2
 	fi
@@ -145,39 +122,14 @@ function main {
 	local pids=()
 	local reviewed_rule_files=""
 
-	if ${single}
-	then
-		reviewed_rule_files=$(ls ${rules_dir}/*.md)
+	for group_label in $(_get_group_labels)
+	do
+		reviewed_rule_files+=" $(_get_group_rule_files ${group_label})"
 
-		_review_group all "${reviewed_rule_files}" &
+		_review_group ${group_label} "$(_get_group_rule_files ${group_label})" &
 
 		pids+=(${!})
-	else
-		local group_labels
-
-		group_labels=$(_get_group_labels)
-
-		if [[ ! -z ${group_filter} ]]
-		then
-			if ! echo "${group_labels}" | grep --line-regexp --quiet "${group_filter}"
-			then
-				echo "The ${group_filter} group does not apply to ${diff_label}. The groups that apply are: $(echo ${group_labels})." >&2
-
-				exit 2
-			fi
-
-			group_labels=${group_filter}
-		fi
-
-		for group_label in ${group_labels}
-		do
-			reviewed_rule_files+=" $(_get_group_rule_files ${group_label})"
-
-			_review_group ${group_label} "$(_get_group_rule_files ${group_label})" &
-
-			pids+=(${!})
-		done
-	fi
+	done
 
 	local reviewed_rules
 
@@ -239,11 +191,6 @@ function _get_group_labels {
 			echo ${group%%|*}
 		fi
 	done
-
-	if [[ ! -z $(_get_group_rule_files ungrouped) ]]
-	then
-		echo ungrouped
-	fi
 }
 
 function _get_group_rule_files {
@@ -252,43 +199,6 @@ function _get_group_rule_files {
 	local group
 	local prefix
 	local prefixes
-	local rule_file
-
-	if [[ ${group_label} == ungrouped ]]
-	then
-		local grouped_prefixes=""
-
-		for group in "${_GROUPS[@]}"
-		do
-			prefixes=${group#*|}
-
-			grouped_prefixes+=" ${prefixes%|*}"
-		done
-
-		local grouped
-		local rule_number
-
-		for rule_file in ${rules_dir}/*.md
-		do
-			grouped=false
-			rule_number=$(basename ${rule_file})
-
-			for prefix in ${grouped_prefixes}
-			do
-				if [[ ${rule_number} == ${prefix}* ]]
-				then
-					grouped=true
-				fi
-			done
-
-			if ! ${grouped}
-			then
-				echo ${rule_file}
-			fi
-		done
-
-		return 0
-	fi
 
 	for group in "${_GROUPS[@]}"
 	do
@@ -331,13 +241,10 @@ function _has_file_kind {
 }
 
 function _print_help {
-	echo "Usage: review.sh [--dry-run] [--exclude <path>]... [--group <label>] [--json] [--single] [--staged | <range>]"
+	echo "Usage: review.sh [--dry-run] [--json] [--staged | <range>]"
 	echo ""
 	echo "  --dry-run  Print the filtered diff and the rule groups without calling the model."
-	echo "  --exclude  Leave a path out of the diff. Repeat the option for several paths."
-	echo "  --group    Review only the rules of one group, such as naming-1. The dry run lists the groups."
 	echo "  --json     Print the merged verdict as JSON."
-	echo "  --single   Review every rule in one model call instead of one call per group."
 	echo "  --staged   Review the staged changes instead of the branch."
 	echo "  <range>    Review a Git range, such as HEAD~3..HEAD. The default is the merge base with the base branch to HEAD."
 }
@@ -504,7 +411,7 @@ function _write_diff_file {
 	# them, matching run.sh.
 	#
 
-	for reviewed_file in $(git diff --name-only ${diff_args} -- . ${excludes[@]+"${excludes[@]}"})
+	for reviewed_file in $(git diff --name-only ${diff_args} -- .)
 	do
 		if git grep --ignore-case --quiet "@generated" ${grep_ref} -- ":(top)${reviewed_file}" 2> /dev/null
 		then
@@ -512,7 +419,7 @@ function _write_diff_file {
 		fi
 	done
 
-	git diff --unified=1 ${diff_args} -- . ${excludes[@]+"${excludes[@]}"} | awk \
+	git diff --unified=1 ${diff_args} -- . | awk \
 		-v generated_files="${generated_files}|" \
 		-v ignored_filenames="${_IGNORED_FILENAMES}" \
 		-v ignored_patterns="${_IGNORED_PATTERNS}" \
