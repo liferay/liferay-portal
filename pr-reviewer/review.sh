@@ -214,7 +214,10 @@ function main {
 	then
 		echo "Unable to review the diff because these groups returned no verdict: $(basename -a -s .failed ${work_dir}/*.failed | tr "\n" " ")" >&2
 
-		exit 2
+		if [ ${violations_count} -eq 0 ]
+		then
+			exit 2
+		fi
 	fi
 
 	if [ ${violations_count} -gt 0 ]
