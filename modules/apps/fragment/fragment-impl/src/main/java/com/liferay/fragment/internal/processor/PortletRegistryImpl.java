@@ -7,7 +7,6 @@ package com.liferay.fragment.internal.processor;
 
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
-import com.liferay.fragment.processor.util.FragmentEntryHtmlParserUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -36,7 +35,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -79,7 +77,7 @@ public class PortletRegistryImpl implements PortletRegistry {
 		String html = fragmentEntryLink.getHtml();
 
 		_addRuntimeTagPortletIds(fragmentEntryLink, html, portletIds);
-		_addWidgetTagPortletIds(document, fragmentEntryLink, html, portletIds);
+		_addWidgetTagPortletIds(fragmentEntryLink, html, portletIds);
 
 		return portletIds;
 	}
@@ -212,26 +210,61 @@ public class PortletRegistryImpl implements PortletRegistry {
 	}
 
 	private void _addWidgetTagPortletIds(
-		Document document, FragmentEntryLink fragmentEntryLink, String html,
+		FragmentEntryLink fragmentEntryLink, String html,
 		List<String> portletIds) {
 
-		if (!html.contains(_LFR_WIDGET_TAG_PREFIX)) {
+		int index = html.indexOf(_LFR_WIDGET_TAG_PREFIX);
+
+		if (index == -1) {
 			return;
 		}
 
-		if (document == null) {
-			document = FragmentEntryHtmlParserUtil.parseBodyFragment(html);
-		}
+		int commentIndex = html.indexOf("<!--");
 
-		for (Element element : document.select("*")) {
-			String tagName = element.tagName();
+		while (index != -1) {
+			if ((commentIndex != -1) && (commentIndex < index)) {
+				int commentEndIndex = html.indexOf("-->", commentIndex);
 
-			if (!StringUtil.startsWith(tagName, _LFR_WIDGET_TAG_PREFIX)) {
+				if (commentEndIndex == -1) {
+					break;
+				}
+
+				if (commentEndIndex > index) {
+					index = html.indexOf(
+						_LFR_WIDGET_TAG_PREFIX, commentEndIndex);
+				}
+
+				commentIndex = html.indexOf("<!--", commentEndIndex);
+
 				continue;
 			}
 
-			String alias = StringUtil.removeSubstring(
-				tagName, _LFR_WIDGET_TAG_PREFIX);
+			int aliasIndex = index + _LFR_WIDGET_TAG_PREFIX.length();
+
+			int aliasEndIndex = aliasIndex;
+
+			while (aliasEndIndex < html.length()) {
+				char c = html.charAt(aliasEndIndex);
+
+				if ((c <= CharPool.SPACE) || (c == CharPool.FORWARD_SLASH) ||
+					(c == CharPool.GREATER_THAN)) {
+
+					break;
+				}
+
+				aliasEndIndex++;
+			}
+
+			int tagEndIndex = _getTagEndIndex(html, aliasEndIndex);
+
+			if (tagEndIndex == -1) {
+				break;
+			}
+
+			index = html.indexOf(_LFR_WIDGET_TAG_PREFIX, tagEndIndex);
+
+			String alias = StringUtil.toLowerCase(
+				html.substring(aliasIndex, aliasEndIndex));
 
 			String portletName = getPortletName(alias);
 
@@ -239,10 +272,17 @@ public class PortletRegistryImpl implements PortletRegistry {
 				continue;
 			}
 
+			String id = _getAttributeValue(
+				"id", html.substring(aliasEndIndex, tagEndIndex));
+
+			if (id == null) {
+				id = StringPool.BLANK;
+			}
+
 			String portletId = PortletIdCodec.encode(
 				PortletIdCodec.decodePortletName(portletName),
 				PortletIdCodec.decodeUserId(portletName),
-				fragmentEntryLink.getNamespace() + element.attr("id"));
+				fragmentEntryLink.getNamespace() + id);
 
 			portletIds.add(_portal.getJsSafePortletId(portletId));
 		}
@@ -372,7 +412,24 @@ public class PortletRegistryImpl implements PortletRegistry {
 		return string.length();
 	}
 
-	private static final String _LFR_WIDGET_TAG_PREFIX = "lfr-widget-";
+	private int _getTagEndIndex(String html, int index) {
+		while (index < html.length()) {
+			char c = html.charAt(index);
+
+			if ((c == CharPool.APOSTROPHE) || (c == CharPool.QUOTE)) {
+				index = _getQuotedStringEndIndex(index + 1, c, html);
+			}
+			else if (c == CharPool.GREATER_THAN) {
+				return index;
+			}
+
+			index++;
+		}
+
+		return -1;
+	}
+
+	private static final String _LFR_WIDGET_TAG_PREFIX = "<lfr-widget-";
 
 	private static final String _LIFERAY_PORTLET_MACRO = "[@liferay_portlet";
 
