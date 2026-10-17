@@ -181,7 +181,7 @@ function main {
 		--argjson reviewed_files "$(echo "${reviewed_files}" | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')" \
 		--argjson reviewed_rules "${reviewed_rules}" \
 		--slurp \
-		'{chance: (map(.chance) | max // 0), groups: (map({(.group): {chance: .chance, seconds: .seconds, violations: (.violations | length)}}) | add // {}), reviewed_files: $reviewed_files, rules: $reviewed_rules, cost: (map(.cost) | add // 0), tokens: {cache_read: (map(.tokens.cache_read) | add // 0), cache_write: (map(.tokens.cache_write) | add // 0), input: (map(.tokens.input) | add // 0), output: (map(.tokens.output) | add // 0)}, violations: ([.[].violations[]] | unique_by([.file, .line, .rule]) | sort_by([.file, .line, .rule]))}' \
+		'{chance: (map(.chance) | max // 0), cost: (map(.cost) | add // 0), groups: (map({(.group): {chance: .chance, seconds: .seconds, violations: (.violations | length)}}) | add // {}), reviewed_files: $reviewed_files, rules: $reviewed_rules, tokens: {cache_read: (map(.tokens.cache_read) | add // 0), cache_write: (map(.tokens.cache_write) | add // 0), input: (map(.tokens.input) | add // 0), output: (map(.tokens.output) | add // 0)}, violations: ([.[].violations[]] | unique_by([.file, .line, .rule]) | sort_by([.file, .line, .rule]))}' \
 		${work_dir}/*.json)
 
 	local violations_count
@@ -333,7 +333,7 @@ function _review_group {
 	local group_json=${work_dir}/${group_label}.json
 	local seconds=$(date +%s)
 
-	echo "{\"chance\": 0, \"group\": \"${group_label}\", \"seconds\": 0, \"cost\": 0, \"tokens\": {\"cache_read\": 0, \"cache_write\": 0, \"input\": 0, \"output\": 0}, \"violations\": []}" > ${group_json}
+	echo "{\"chance\": 0, \"cost\": 0, \"group\": \"${group_label}\", \"seconds\": 0, \"tokens\": {\"cache_read\": 0, \"cache_write\": 0, \"input\": 0, \"output\": 0}, \"violations\": []}" > ${group_json}
 
 	local prompt
 
@@ -383,7 +383,7 @@ $(cat ${work_dir}/review.diff)"
 	echo "${raw}" | jq \
 		--arg group ${group_label} \
 		--argjson seconds $(($(date +%s) - seconds)) \
-		'{chance: (if ((.structured_output.violations // []) | length) > 0 then (.structured_output.chance // 0) else 0 end), group: $group, seconds: $seconds, cost: (.total_cost_usd // 0), tokens: {cache_read: (.usage.cache_read_input_tokens // 0), cache_write: (.usage.cache_creation_input_tokens // 0), input: (.usage.input_tokens // 0), output: (.usage.output_tokens // 0)}, violations: (.structured_output.violations // [])}' > ${group_json}
+		'{chance: (if ((.structured_output.violations // []) | length) > 0 then (.structured_output.chance // 0) else 0 end), cost: (.total_cost_usd // 0), group: $group, seconds: $seconds, tokens: {cache_read: (.usage.cache_read_input_tokens // 0), cache_write: (.usage.cache_creation_input_tokens // 0), input: (.usage.input_tokens // 0), output: (.usage.output_tokens // 0)}, violations: (.structured_output.violations // [])}' > ${group_json}
 }
 
 function _write_diff_file {
@@ -476,7 +476,7 @@ _GROUPS=(
 _IGNORED_FILENAMES="CHANGELOG.md package-lock.json package.json"
 _IGNORED_PATTERNS="(^|/)Language_.*[.]properties$"
 _IGNORED_SUFFIXES="css js jsx lock lockfile macro path scss snap testcase ts tsx"
-_JSON_SCHEMA='{"type": "object", "properties": {"chance": {"type": "integer"}, "violations": {"type": "array", "items": {"type": "object", "properties": {"file": {"type": "string"}, "line": {"type": "integer"}, "rule": {"type": "string"}, "message": {"type": "string"}, "fix": {"type": "string"}}, "required": ["file", "line", "rule", "message", "fix"]}}}, "required": ["chance", "violations"]}'
+_JSON_SCHEMA='{"properties": {"chance": {"type": "integer"}, "violations": {"items": {"properties": {"file": {"type": "string"}, "fix": {"type": "string"}, "line": {"type": "integer"}, "message": {"type": "string"}, "rule": {"type": "string"}}, "required": ["file", "fix", "line", "message", "rule"], "type": "object"}, "type": "array"}}, "required": ["chance", "violations"], "type": "object"}'
 _MODEL=${LIFERAY_PR_REVIEWER_MODEL:-sonnet}
 _NAME_ONLY_SUFFIXES="bmp gif ico jpeg jpg png svg webp"
 
