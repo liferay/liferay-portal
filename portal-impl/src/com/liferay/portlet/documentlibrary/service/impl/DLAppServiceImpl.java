@@ -62,6 +62,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -766,13 +767,21 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		ModelResourcePermission<FileEntry> fileEntryModelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				FileEntry.class.getName());
+
 		Repository sourceRepository =
 			RepositoryProviderUtil.getFileEntryRepository(fileEntryId);
 
+		FileEntry sourceFileEntry = sourceRepository.getFileEntry(fileEntryId);
+
+		fileEntryModelResourcePermission.check(
+			getPermissionChecker(), sourceFileEntry, ActionKeys.DOWNLOAD);
+
 		return copyFileEntry(
-			getRepository(destinationRepositoryId),
-			sourceRepository.getFileEntry(fileEntryId), destinationFolderId,
-			fileEntryTypeId, groupIds, serviceContext);
+			getRepository(destinationRepositoryId), sourceFileEntry,
+			destinationFolderId, fileEntryTypeId, groupIds, serviceContext);
 	}
 
 	@Override

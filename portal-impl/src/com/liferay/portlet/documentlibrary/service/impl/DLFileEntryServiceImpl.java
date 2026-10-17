@@ -182,6 +182,9 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 		fileEntryModelResourcePermission.check(
 			getPermissionChecker(), sourceFileEntryId, ActionKeys.VIEW);
 
+		fileEntryModelResourcePermission.check(
+			getPermissionChecker(), sourceFileEntryId, ActionKeys.DOWNLOAD);
+
 		ModelResourcePermissionUtil.check(
 			ModelResourcePermissionRegistryUtil.
 				<Folder>getModelResourcePermission(Folder.class.getName()),
