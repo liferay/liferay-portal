@@ -251,17 +251,17 @@ function _has_file_kind {
 
 	for kind in "${@}"
 	do
-		if [[ ${kind} == java ]] && echo "${reviewed_files}" | grep --quiet "[.]java$"
+		if [[ ${kind} == java ]] && echo "${reviewed_files}" | grep "[.]java$" > /dev/null
 		then
 			return 0
 		fi
 
-		if [[ ${kind} == sh ]] && echo "${reviewed_files}" | grep --quiet "[.]sh$"
+		if [[ ${kind} == sh ]] && echo "${reviewed_files}" | grep "[.]sh$" > /dev/null
 		then
 			return 0
 		fi
 
-		if [[ ${kind} == test ]] && echo "${reviewed_files}" | grep --quiet --regexp "/src/test/" --regexp "/src/testIntegration/" --regexp "Test[.]java$"
+		if [[ ${kind} == test ]] && echo "${reviewed_files}" | grep --regexp "/src/test/" --regexp "/src/testIntegration/" --regexp "Test[.]java$" > /dev/null
 		then
 			return 0
 		fi
