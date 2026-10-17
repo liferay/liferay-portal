@@ -751,14 +751,16 @@ func (clientExtensionReconciler *ClientExtensionReconciler) resolveDxpNamespace(
 
 	var policyConfigMap corev1.ConfigMap
 
-	if error := clientExtensionReconciler.Get(
+	error := clientExtensionReconciler.Get(
 		context,
 		types.NamespacedName{
 			Name:      cxv1alpha1.ConfigMapNameClientExtensionPolicy,
 			Namespace: dxpNamespace,
 		},
 		&policyConfigMap,
-	); client.IgnoreNotFound(error) != nil {
+	)
+
+	if client.IgnoreNotFound(error) != nil {
 		return "", "", error
 	}
 
