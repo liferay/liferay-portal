@@ -14,11 +14,13 @@ import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.service.CTProcessLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.document.library.kernel.service.DLFolderService;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
@@ -31,6 +33,7 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -337,6 +340,40 @@ public class DLFileEntryCTTest {
 		Assert.assertFalse(fileEntry.isCheckedOut());
 	}
 
+	@Test
+	public void testUpdateFileEntryWithUnchangedFileBytes() throws Exception {
+		FileEntry fileEntry = _addFileEntry();
+
+		FileVersion fileVersion = fileEntry.getFileVersion();
+
+		DLFileVersion dlFileVersion = (DLFileVersion)fileVersion.getModel();
+
+		byte[] bytes = "liferay".getBytes();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			_dlAppService.updateFileEntry(
+				fileEntry.getFileEntryId(), fileEntry.getFileName(),
+				fileEntry.getMimeType(), fileEntry.getTitle(), null,
+				fileEntry.getDescription(), StringPool.BLANK,
+				DLVersionNumberIncrease.NONE, new ByteArrayInputStream(bytes),
+				bytes.length, fileEntry.getDisplayDate(),
+				fileEntry.getExpirationDate(), fileEntry.getReviewDate(),
+				ServiceContextTestUtil.getServiceContext(
+					fileEntry.getGroupId()));
+
+			DLFileVersion ctDLFileVersion =
+				_dlFileVersionLocalService.getFileVersion(
+					dlFileVersion.getFileVersionId());
+
+			Assert.assertNotEquals(
+				dlFileVersion.getStoreFileName(),
+				ctDLFileVersion.getStoreFileName());
+		}
+	}
+
 	private FileEntry _addFileEntry() throws Exception {
 		return _addFileEntry(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
@@ -419,6 +456,9 @@ public class DLFileEntryCTTest {
 
 	@Inject
 	private DLAppService _dlAppService;
+
+	@Inject
+	private DLFileVersionLocalService _dlFileVersionLocalService;
 
 	@Inject
 	private DLFolderService _dlFolderService;
