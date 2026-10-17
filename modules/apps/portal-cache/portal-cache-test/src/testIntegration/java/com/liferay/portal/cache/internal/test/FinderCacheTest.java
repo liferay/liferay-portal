@@ -65,7 +65,6 @@ public class FinderCacheTest {
 		long companyId = TestPropsValues.getCompanyId();
 		String name = RandomTestUtil.randomString();
 		String primKey1 = RandomTestUtil.randomString();
-		String primKey2 = RandomTestUtil.randomString();
 
 		Assert.assertEquals(
 			0,
@@ -82,6 +81,7 @@ public class FinderCacheTest {
 				_resourcePermissionCountFinderPath, finderArgs,
 				_resourcePermissionPersistence));
 
+		String primKey2 = RandomTestUtil.randomString();
 		TransactionConfig transactionConfig = TransactionConfig.Factory.create(
 			Propagation.REQUIRED, new Class<?>[] {Exception.class});
 
