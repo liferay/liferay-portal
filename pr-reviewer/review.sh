@@ -12,32 +12,30 @@ function main {
 
 	while [ ${#} -gt 0 ]
 	do
-		case ${1} in
-			--dry-run)
-				dry_run=true
-				;;
-			--help)
-				_print_help
+		if [[ ${1} == --dry-run ]]
+		then
+			dry_run=true
+		elif [[ ${1} == --help ]]
+		then
+			_print_help
 
-				exit 0
-				;;
-			--json)
-				json=true
-				;;
-			--staged)
-				staged=true
-				;;
-			--*)
-				echo "Unknown option ${1}." >&2
+			exit 0
+		elif [[ ${1} == --json ]]
+		then
+			json=true
+		elif [[ ${1} == --staged ]]
+		then
+			staged=true
+		elif [[ ${1} == --* ]]
+		then
+			echo "Unknown option ${1}." >&2
 
-				_print_help >&2
+			_print_help >&2
 
-				exit 2
-				;;
-			*)
-				diff_range=${1}
-				;;
-		esac
+			exit 2
+		else
+			diff_range=${1}
+		fi
 
 		shift
 	done
