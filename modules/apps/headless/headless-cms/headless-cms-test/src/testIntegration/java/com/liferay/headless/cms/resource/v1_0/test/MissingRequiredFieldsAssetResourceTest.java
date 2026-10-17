@@ -442,7 +442,6 @@ public class MissingRequiredFieldsAssetResourceTest
 		throws Exception {
 
 		DepotEntry depotEntry = _addSpaceDepotEntry();
-
 		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
 			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES);
 
@@ -500,10 +499,8 @@ public class MissingRequiredFieldsAssetResourceTest
 		throws Exception {
 
 		DepotEntry depotEntry = _addSpaceDepotEntry();
-
 		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
 			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
-
 		String title = RandomTestUtil.randomString();
 
 		_addObjectEntry(depotEntry, objectDefinition, title);
@@ -536,7 +533,6 @@ public class MissingRequiredFieldsAssetResourceTest
 		throws Exception {
 
 		DepotEntry depotEntry = _addSpaceDepotEntry();
-
 		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
 			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
 

@@ -140,7 +140,6 @@ public class MissingRequiredFieldsAssetResourceImpl
 
 		long objectDefinitionId = GetterUtil.getLong(
 			document.getString("objectDefinitionId"));
-
 		long objectEntryId = GetterUtil.getLong(
 			document.getString(Field.ENTRY_CLASS_PK));
 
