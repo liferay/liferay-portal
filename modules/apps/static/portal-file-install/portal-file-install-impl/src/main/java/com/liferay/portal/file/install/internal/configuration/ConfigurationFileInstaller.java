@@ -18,6 +18,7 @@ import com.liferay.portal.file.install.properties.ConfigurationPropertiesFactory
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -255,14 +256,6 @@ public class ConfigurationFileInstaller implements FileInstaller {
 		return oldDictionary.isEmpty();
 	}
 
-	private String _escapeFilterValue(String string) {
-		string = StringUtil.replace(string, "[(]", "\\\\(");
-		string = StringUtil.replace(string, "[)]", "\\\\)");
-		string = StringUtil.replace(string, "[=]", "\\\\=");
-
-		return StringUtil.replace(string, "[\\*]", "\\\\*");
-	}
-
 	private Configuration _findExistingConfiguration(String fileName)
 		throws Exception {
 
@@ -270,7 +263,7 @@ public class ConfigurationFileInstaller implements FileInstaller {
 			StringBundler.concat(
 				StringPool.OPEN_PARENTHESIS,
 				FileInstallConstants.FELIX_FILE_INSTALL_FILENAME,
-				StringPool.EQUAL, _escapeFilterValue(fileName),
+				StringPool.EQUAL, SystemBundleUtil.escapeFilterValue(fileName),
 				StringPool.CLOSE_PARENTHESIS));
 
 		if ((configurations != null) && (configurations.length > 0)) {
