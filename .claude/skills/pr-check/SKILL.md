@@ -48,7 +48,7 @@ The **Forward Target** is the repository `ci:forward` merges a pull request into
 	git fetch --no-tags https://github.com/<forward target>.git ${BASE_BRANCH} && FORWARD_TIP=$(git rev-parse FETCH_HEAD)
 	```
 
-	With `${FORWARD_TIP}` set, the branch sits on the forward target when it holds commits of the target that `<remote>/${BASE_BRANCH}` lacks, which this reports by exiting `1`:
+	With `${FORWARD_TIP}` set, the branch sits on the forward target when it holds commits of the target that `<remote>/${BASE_BRANCH}` lacks, which this command reports by exiting `1`:
 
 	```bash
 	git merge-base --is-ancestor "$(git merge-base HEAD "${FORWARD_TIP}")" "<remote>/${BASE_BRANCH}"
@@ -62,7 +62,7 @@ The **Forward Target** is the repository `ci:forward` merges a pull request into
 	git merge-tree --name-only --write-tree "${FORWARD_TIP}" HEAD
 	```
 
-	Exit `0` means the forward merges cleanly, so continue. Exit `1` means `ci:forward` will refuse the pull request. The lines after the first, up to the first blank line, name the conflicted files, and `git log --format='%h %s' "HEAD..${FORWARD_TIP}" -- <files>` names the commits of the forward target that touched them. Stop the run, give the developer both lists, and say what fixes it: rebase onto `${FORWARD_TIP}`, resolve the conflicts, run pr-check again, and send the pull request to the forward target directly. Offer to run the rebase, handle its conflicts the way the step above does, and start pr-check over once it completes. Any other exit means the forward was not checked, so warn the developer and continue.
+	Exit `0` means the branch merges cleanly, so continue. Exit `1` means `ci:forward` will refuse the pull request. The lines after the first, up to the first blank line, name the conflicted files, and `git log --format='%h %s' "HEAD..${FORWARD_TIP}" -- <files>` names the commits of the forward target that touched them. Stop the run, give the developer both lists, and say what fixes it: rebase onto `${FORWARD_TIP}`, resolve the conflicts, run pr-check again, and send the pull request to the forward target directly. Offer to run the rebase, handle its conflicts the way the rebase step above does, and start pr-check over once it completes. Any other exit means the merge was not checked, so warn the developer and continue.
 
 - **Skills current in `liferay-portal-ee`.** In `liferay-portal-ee` only, run `git fetch <remote> master`. When `git rev-parse master` differs from `git rev-parse FETCH_HEAD`, the copied skills are stale, so stop the run and tell the developer to copy them again from the latest `master`.
 
@@ -377,7 +377,7 @@ Capture the tested commit with `git rev-parse HEAD` **after** Pass 2 completes, 
 
 The block is the overall state and tested SHA, followed by a table with one row per **matched** validation — the validations that actually ran, in the execution order above, apart from those that returned `NOT APPLICABLE`. A workspace validation has one row for each workspace it ran for, named with the workspace in parentheses, such as `Workspace Compile (liferay-aihub-workspace)`. Validations that did not fire are omitted rather than listed as skipped, so the table reflects only what the diff exercised. When no validation fired, omit the table as well and say so in one line, since a header with no rows reads as a table that failed to render.
 
-When the branch sits on the forward target, follow the header with one line saying the diff was taken from the forward target at `${FORWARD_TIP}` and that the pull request goes to the forward target.
+When the branch sits on the forward target, follow the overall state with one line saying that the diff was taken against `${FORWARD_TIP}` and that the pull request goes to the forward target.
 
 Name every validation that returned `NOT APPLICABLE` on one line beneath the table, such as `Not applicable: HTML Escaping, Structural Smoke.`, and leave the line out when none did. A selection can come back wrongly empty, so without the line a broken selection reads exactly like a diff with nothing in it.
 

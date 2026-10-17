@@ -23,7 +23,7 @@ git fetch --no-tags https://github.com/brianchandotcom/liferay-portal.git master
 cd <repo-root>/portal-impl && ANT_OPTS="-Xmx2560m -Dgit.working.branch.name=$(git merge-base HEAD FETCH_HEAD)" ant format-source-current-branch
 ```
 
-Pass `git.working.branch.name` in `ANT_OPTS` rather than on the command line, since the yarn side lists its files through a separate `ant git-util` call that inherits nothing else. When the fetch fails, run the command without it.
+Pass `git.working.branch.name` in `ANT_OPTS` rather than on the command line, since the yarn formatter lists its files through a separate `ant git-util` call that inherits nothing else. When the fetch fails, leave out `-Dgit.working.branch.name`.
 
 `ant format-source-current-branch` only inspects committed files, so run it after creating the commit, and amend any formatter changes or fixes into that commit.
 
