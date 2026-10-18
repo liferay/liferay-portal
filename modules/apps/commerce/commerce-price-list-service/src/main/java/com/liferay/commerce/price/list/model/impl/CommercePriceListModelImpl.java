@@ -178,39 +178,33 @@ public class CommercePriceListModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PARENTCOMMERCEPRICELISTID_COLUMN_BITMASK = 64L;
+	public static final long STATUS_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long STATUS_COLUMN_BITMASK = 128L;
+	public static final long TYPE_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 256L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 512L;
+	public static final long UUID_COLUMN_BITMASK = 256L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATEDATE_COLUMN_BITMASK = 1024L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 512L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIORITY_COLUMN_BITMASK = 2048L;
+	public static final long PRIORITY_COLUMN_BITMASK = 1024L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -751,16 +745,6 @@ public class CommercePriceListModelImpl
 		}
 
 		_parentCommercePriceListId = parentCommercePriceListId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalParentCommercePriceListId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("parentCommercePriceListId"));
 	}
 
 	@JSON
@@ -1765,4 +1749,4 @@ public class CommercePriceListModelImpl
 	private CommercePriceList _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:687482002
+// LIFERAY-SERVICE-BUILDER-HASH:-126425402

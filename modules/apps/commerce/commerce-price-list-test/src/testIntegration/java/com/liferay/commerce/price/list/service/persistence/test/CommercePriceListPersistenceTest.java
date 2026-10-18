@@ -303,21 +303,6 @@ public class CommercePriceListPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
-	public void testCountByParentCommercePriceListId() throws Exception {
-		_persistence.countByParentCommercePriceListId(
-			RandomTestUtil.nextLong());
-
-		_persistence.countByParentCommercePriceListId(0L);
-	}
-
-	@Test
 	public void testCountByG_C() throws Exception {
 		_persistence.countByG_C(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
@@ -330,14 +315,6 @@ public class CommercePriceListPersistenceTest {
 		_persistence.countByG_C(
 			new long[] {RandomTestUtil.nextLong(), 0L},
 			RandomTestUtil.nextLong());
-	}
-
-	@Test
-	public void testCountByG_CBPL() throws Exception {
-		_persistence.countByG_CBPL(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
-
-		_persistence.countByG_CBPL(0L, RandomTestUtil.randomBoolean());
 	}
 
 	@Test
@@ -846,4 +823,4 @@ public class CommercePriceListPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:493308229
+// LIFERAY-SERVICE-BUILDER-HASH:-797198373
