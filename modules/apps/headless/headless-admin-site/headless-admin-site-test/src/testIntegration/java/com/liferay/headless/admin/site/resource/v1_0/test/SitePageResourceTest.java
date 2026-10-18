@@ -16,6 +16,7 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
@@ -92,6 +93,7 @@ import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.manager.LayoutLockManager;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.provider.LayoutStructureProvider;
+import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutFriendlyURLRandomizerBumper;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -324,6 +326,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					RandomTestUtil.randomString()
 				).buildString()));
 
+		_testGetSiteSitePageWithDeletedOpenGraphImage(serviceContext);
 		_testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances();
 	}
 
@@ -2608,6 +2611,44 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_assertExternalReferenceCodes(
 				Collections.singletonList(viewableLayout), page);
 		}
+	}
+
+	private void _testGetSiteSitePageWithDeletedOpenGraphImage(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_CONTENT, null, serviceContext);
+
+		DLFolder dlFolder = DLTestUtil.addDLFolder(testGroup.getGroupId());
+
+		DLFileEntry dlFileEntry = DLTestUtil.addDLFileEntry(
+			dlFolder.getFolderId());
+
+		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
+			TestPropsValues.getUserId(), testGroup.getGroupId(), false,
+			layout.getLayoutId(), false, Collections.emptyMap(),
+			Collections.emptyMap(), dlFileEntry.getExternalReferenceCode(),
+			testGroup.getExternalReferenceCode(), true,
+			HashMapBuilder.put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			serviceContext);
+
+		_dlAppLocalService.deleteFileEntry(dlFileEntry.getFileEntryId());
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode());
+
+		ContentPageSettings contentPageSettings =
+			(ContentPageSettings)sitePage.getPageSettings();
+
+		OpenGraphSettings openGraphSettings =
+			contentPageSettings.getOpenGraphSettings();
+
+		Assert.assertNull(openGraphSettings.getImage());
+		Assert.assertNotNull(openGraphSettings.getTitle_i18n());
 	}
 
 	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
@@ -5650,6 +5691,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_defaultInputFragmentEntryConfigurationProvider;
 
 	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
 	private FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry;
 
@@ -5680,6 +5724,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Inject
 	private LayoutLockManager _layoutLockManager;
+
+	@Inject
+	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
 
 	@Inject
 	private LayoutStructureProvider _layoutStructureProvider;
