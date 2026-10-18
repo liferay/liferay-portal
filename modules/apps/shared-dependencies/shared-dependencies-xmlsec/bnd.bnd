@@ -7,15 +7,12 @@ Import-Package:\
 	*
 -exportcontents:\
 	org.apache.xml.security,\
-	org.apache.xml.security.algorithms.JCEMapper,\
 	org.apache.xml.security.c14n,\
 	org.apache.xml.security.encryption,\
 	org.apache.xml.security.exceptions,\
 	org.apache.xml.security.keys,\
 	org.apache.xml.security.signature,\
 	org.apache.xml.security.stax.ext,\
-	org.apache.xml.security.stax.ext.XMLSecurityConstants,\
 	org.apache.xml.security.transforms,\
 	org.apache.xml.security.transforms.params,\
-	org.apache.xml.security.utils,\
-	org.apache.xml.security.utils.Base64
+	org.apache.xml.security.utils
