@@ -238,6 +238,10 @@ definition {
 				Click(
 					key_fieldName = ${fieldName},
 					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP_ADD_BUTTON");
+
+				DataEngine.assertFieldInFieldsGroupRepeated(
+					fieldName = ${fieldName},
+					index = 2);
 			}
 
 			for (var fieldName : list "LogoFieldSet,Beneficio,Companhia,JeitoIdentificarFieldSet,Destino,DescricaoOpPar,CompanhiaOperadoraFieldSet") {
@@ -257,6 +261,11 @@ definition {
 					key_fieldName = ${fieldName},
 					key_index = 2,
 					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP_REMOVE_BUTTON");
+
+				AssertElementNotPresent(
+					key_fieldName = ${fieldName},
+					key_index = 2,
+					locator1 = "WCEditWebContent#REPEATED_FIELD_IN_FIELDS_GROUP");
 			}
 
 			for (var fieldName : list "LogoFieldSet,Beneficio,Companhia,JeitoIdentificarFieldSet,Destino,DescricaoOpPar,CompanhiaOperadoraFieldSet") {
