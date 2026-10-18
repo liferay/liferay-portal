@@ -20,14 +20,7 @@ public interface MicroblogsEntryFinder {
 
 	public int countByC_U_ATN(long companyId, long userId, String assetTagName);
 
-	public int countByC_CCNI_ATN(
-		long companyId, long creatorClassNameId, String assetTagName);
-
 	public int countByU_T_MU(long userId, int type, long microblogsEntryUserId);
-
-	public int countByC_CCNI_CCPK_ATN(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		String assetTagName, boolean andOperator);
 
 	public java.util.List<com.liferay.microblogs.model.MicroblogsEntry>
 		findByC_U(long companyId, long userId, int start, int end);
@@ -41,19 +34,9 @@ public interface MicroblogsEntryFinder {
 			int end);
 
 	public java.util.List<com.liferay.microblogs.model.MicroblogsEntry>
-		findByC_CCNI_ATN(
-			long companyId, long creatorClassNameId, String assetTagName,
-			int start, int end);
-
-	public java.util.List<com.liferay.microblogs.model.MicroblogsEntry>
 		findByU_T_MU(
 			long userId, int type, long microblogsEntryUserId, int start,
 			int end);
 
-	public java.util.List<com.liferay.microblogs.model.MicroblogsEntry>
-		findByC_CCNI_CCPK_ATN(
-			long companyId, long creatorClassNameId, long creatorClassPK,
-			String assetTagName, boolean andOperator, int start, int end);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2127992034
+// LIFERAY-SERVICE-BUILDER-HASH:-42330980
