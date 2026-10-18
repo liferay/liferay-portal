@@ -55,4 +55,4 @@ public interface FlagsEntryService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1909773746
+// LIFERAY-SERVICE-BUILDER-HASH:1423253286
