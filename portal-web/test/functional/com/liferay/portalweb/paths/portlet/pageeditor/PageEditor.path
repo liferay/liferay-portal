@@ -236,7 +236,7 @@
 </tr>
 <tr>
 	<td>FRAGMENT_SIDEBAR_COMMENTS</td>
-	<td>//div[contains(@class,'ck-editor__editable_inline') and contains(@data-placeholder,'Type your comment here')] | //div[contains(@class,'alloy-editor-container')]/div[contains(@data-placeholder,'Type your comment here')]</td>
+	<td>//div[contains(@class,'ck-editor__editable_inline') and starts-with(@aria-label,'Add Comment')] | //div[contains(@class,'alloy-editor-container')]/div[contains(@data-placeholder,'Type your comment here')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -256,7 +256,7 @@
 </tr>
 <tr>
 	<td>FRAGMENT_SIDEBAR_COMMENT_ENTRY_INPUT</td>
-	<td>//div[contains(@class,'ck-editor__editable_inline') and contains(@data-placeholder,'Type your comment here')]/p[contains(.,'${fragmentComment}')] | //div[contains(@class,'alloy-editor-container')]/div[contains(@data-placeholder,'Type your comment here')]/p[contains(.,'${fragmentComment}')]</td>
+	<td>//div[contains(@class,'ck-editor__editable_inline') and starts-with(@aria-label,'Add Comment')]/p[contains(.,'${fragmentComment}')] | //div[contains(@class,'alloy-editor-container')]/div[contains(@data-placeholder,'Type your comment here')]/p[contains(.,'${fragmentComment}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -286,7 +286,7 @@
 </tr>
 <tr>
 	<td>FRAGMENT_SIDEBAR_REPLY_COMMENTS_EDITOR</td>
-	<td>//article[contains(@class,'reply')]//div[contains(@class,'ck-editor__editable_inline') and contains(@data-placeholder,'Type your comment here')] | //div[contains(@class,'alloy-editor-container')]/div[contains(@id,'pageEditorCommentReplyEditor') and contains(@data-placeholder,'Type your comment here')]</td>
+	<td>//article[contains(@class,'reply')]//div[contains(@class,'ck-editor__editable_inline') and starts-with(@aria-label,'Add Comment')] | //div[contains(@class,'alloy-editor-container')]/div[contains(@id,'pageEditorCommentReplyEditor') and contains(@data-placeholder,'Type your comment here')]</td>
 	<td></td>
 </tr>
 <tr>
