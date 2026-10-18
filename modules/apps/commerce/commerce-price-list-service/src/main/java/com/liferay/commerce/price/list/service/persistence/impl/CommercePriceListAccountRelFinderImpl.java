@@ -45,13 +45,6 @@ public class CommercePriceListAccountRelFinderImpl
 
 	@Override
 	public int countByCommercePriceListId(
-		long commercePriceListId, String name) {
-
-		return countByCommercePriceListId(commercePriceListId, name, false);
-	}
-
-	@Override
-	public int countByCommercePriceListId(
 		long commercePriceListId, String name, boolean inlineSQLHelper) {
 
 		Session session = null;

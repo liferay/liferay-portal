@@ -3035,7 +3035,6 @@ com/liferay/commerce/price/list/service/persistence/impl/CommercePriceListDiscou
 com/liferay/commerce/price/list/service/persistence/impl/CommercePriceListDiscountRelPersistenceImpl.getPKDBName()Ljava/lang/String;:SAFE
 com/liferay/commerce/price/list/service/persistence/impl/CommercePriceListDiscountRelPersistenceImpl.getSelectSQL()Ljava/lang/String;:SAFE
 com/liferay/commerce/price/list/service/persistence/impl/CommercePriceListDiscountRelPersistenceImpl.getTableColumnsMap()Ljava/util/Map;:SAFE
-com/liferay/commerce/price/list/service/persistence/impl/CommercePriceListFinderImpl.replaceAccountGroupIds(Ljava/lang/String;[J)Ljava/lang/String;:1
 com/liferay/commerce/price/list/service/persistence/impl/CommercePriceListPersistenceImpl._getTime(Ljava/util/Date;)Ljava/lang/Long;:SAFE
 com/liferay/commerce/price/list/service/persistence/impl/CommercePriceListPersistenceImpl.create(J)Lcom/liferay/commerce/price/list/model/CommercePriceList;:SAFE
 com/liferay/commerce/price/list/service/persistence/impl/CommercePriceListPersistenceImpl.getPKDBName()Ljava/lang/String;:SAFE
