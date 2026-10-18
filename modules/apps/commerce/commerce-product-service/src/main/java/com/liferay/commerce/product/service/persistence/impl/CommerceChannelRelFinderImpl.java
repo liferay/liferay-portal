@@ -44,11 +44,6 @@ public class CommerceChannelRelFinderImpl
 		CommerceChannelRelFinder.class.getName() + ".findByC_C";
 
 	@Override
-	public int countByC_C(String className, long classPK, String name) {
-		return countByC_C(className, classPK, name, false);
-	}
-
-	@Override
 	public int countByC_C(
 		String className, long classPK, String name, boolean inlineSQLHelper) {
 
