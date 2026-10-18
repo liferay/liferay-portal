@@ -357,83 +357,6 @@ public class CPDefinitionSpecificationOptionValueUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the cp definition specification option values where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CPDefinitionSpecificationOptionValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of cp definition specification option values
-	 * @param end the upper bound of the range of cp definition specification option values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp definition specification option values
-	 */
-	public static List<CPDefinitionSpecificationOptionValue> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<CPDefinitionSpecificationOptionValue>
-			orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByGroupId(
-			groupId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cp definition specification option value in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp definition specification option value
-	 * @throws NoSuchCPDefinitionSpecificationOptionValueException if a matching cp definition specification option value could not be found
-	 */
-	public static CPDefinitionSpecificationOptionValue findByGroupId_First(
-			long groupId,
-			OrderByComparator<CPDefinitionSpecificationOptionValue>
-				orderByComparator)
-		throws com.liferay.commerce.product.exception.
-			NoSuchCPDefinitionSpecificationOptionValueException {
-
-		return getPersistence().findByGroupId_First(groupId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first cp definition specification option value in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp definition specification option value, or <code>null</code> if a matching cp definition specification option value could not be found
-	 */
-	public static CPDefinitionSpecificationOptionValue fetchByGroupId_First(
-		long groupId,
-		OrderByComparator<CPDefinitionSpecificationOptionValue>
-			orderByComparator) {
-
-		return getPersistence().fetchByGroupId_First(
-			groupId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the cp definition specification option values where groupId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 */
-	public static void removeByGroupId(long groupId) {
-		getPersistence().removeByGroupId(groupId);
-	}
-
-	/**
-	 * Returns the number of cp definition specification option values where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching cp definition specification option values
-	 */
-	public static int countByGroupId(long groupId) {
-		return getPersistence().countByGroupId(groupId);
-	}
-
-	/**
 	 * Returns an ordered range of all the cp definition specification option values where CPDefinitionId = &#63;.
 	 *
 	 * <p>
@@ -1264,58 +1187,6 @@ public class CPDefinitionSpecificationOptionValueUtil {
 	}
 
 	/**
-	 * Returns all the cp definition specification option values where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the matching cp definition specification option values
-	 */
-	public static List<CPDefinitionSpecificationOptionValue> findByGroupId(
-		long groupId) {
-
-		return getPersistence().findByGroupId(groupId);
-	}
-
-	/**
-	 * Returns a range of all the cp definition specification option values where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CPDefinitionSpecificationOptionValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of cp definition specification option values
-	 * @param end the upper bound of the range of cp definition specification option values (not inclusive)
-	 * @return the range of matching cp definition specification option values
-	 */
-	public static List<CPDefinitionSpecificationOptionValue> findByGroupId(
-		long groupId, int start, int end) {
-
-		return getPersistence().findByGroupId(groupId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp definition specification option values where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CPDefinitionSpecificationOptionValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of cp definition specification option values
-	 * @param end the upper bound of the range of cp definition specification option values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching cp definition specification option values
-	 */
-	public static List<CPDefinitionSpecificationOptionValue> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<CPDefinitionSpecificationOptionValue>
-			orderByComparator) {
-
-		return getPersistence().findByGroupId(
-			groupId, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the cp definition specification option values where CPDefinitionId = &#63;.
 	 *
 	 * @param CPDefinitionId the cp definition ID
@@ -1609,4 +1480,4 @@ public class CPDefinitionSpecificationOptionValueUtil {
 		_persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-743495614
+// LIFERAY-SERVICE-BUILDER-HASH:-1900998260

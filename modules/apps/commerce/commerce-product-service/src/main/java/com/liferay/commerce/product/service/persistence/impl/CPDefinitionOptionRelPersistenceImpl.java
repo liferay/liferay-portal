@@ -339,92 +339,6 @@ public class CPDefinitionOptionRelPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CPDefinitionOptionRel, NoSuchCPDefinitionOptionRelException>
-			_collectionPersistenceFinderByGroupId;
-
-	/**
-	 * Returns an ordered range of all the cp definition option rels where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPDefinitionOptionRelModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of cp definition option rels
-	 * @param end the upper bound of the range of cp definition option rels (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp definition option rels
-	 */
-	@Override
-	public List<CPDefinitionOptionRel> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<CPDefinitionOptionRel> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByGroupId.find(
-			finderCache, new Object[] {groupId}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first cp definition option rel in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp definition option rel
-	 * @throws NoSuchCPDefinitionOptionRelException if a matching cp definition option rel could not be found
-	 */
-	@Override
-	public CPDefinitionOptionRel findByGroupId_First(
-			long groupId,
-			OrderByComparator<CPDefinitionOptionRel> orderByComparator)
-		throws NoSuchCPDefinitionOptionRelException {
-
-		return _collectionPersistenceFinderByGroupId.findFirst(
-			finderCache, new Object[] {groupId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first cp definition option rel in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp definition option rel, or <code>null</code> if a matching cp definition option rel could not be found
-	 */
-	@Override
-	public CPDefinitionOptionRel fetchByGroupId_First(
-		long groupId,
-		OrderByComparator<CPDefinitionOptionRel> orderByComparator) {
-
-		return _collectionPersistenceFinderByGroupId.fetchFirst(
-			finderCache, new Object[] {groupId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the cp definition option rels where groupId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 */
-	@Override
-	public void removeByGroupId(long groupId) {
-		_collectionPersistenceFinderByGroupId.remove(
-			finderCache, new Object[] {groupId});
-	}
-
-	/**
-	 * Returns the number of cp definition option rels where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching cp definition option rels
-	 */
-	@Override
-	public int countByGroupId(long groupId) {
-		return _collectionPersistenceFinderByGroupId.count(
-			finderCache, new Object[] {groupId});
-	}
-
-	private CollectionPersistenceFinder
-		<CPDefinitionOptionRel, NoSuchCPDefinitionOptionRelException>
 			_collectionPersistenceFinderByCompanyId;
 
 	/**
@@ -1549,33 +1463,6 @@ public class CPDefinitionOptionRelPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					CPDefinitionOptionRel::getCompanyId));
 
-		_collectionPersistenceFinderByGroupId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_CPDEFINITIONOPTIONREL_WHERE,
-				_SQL_COUNT_CPDEFINITIONOPTIONREL_WHERE,
-				CPDefinitionOptionRelModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"cpDefinitionOptionRel.", "groupId", FinderColumn.Type.LONG,
-					"=", true, true, CPDefinitionOptionRel::getGroupId));
-
 		_collectionPersistenceFinderByCompanyId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1849,4 +1736,4 @@ public class CPDefinitionOptionRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2110422074
+// LIFERAY-SERVICE-BUILDER-HASH:2112091557

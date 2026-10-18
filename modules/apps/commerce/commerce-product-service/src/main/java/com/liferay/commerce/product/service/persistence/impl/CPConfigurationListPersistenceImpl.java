@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -105,7 +104,7 @@ public class CPConfigurationListPersistenceImpl
 	 * Returns an ordered range of all the cp configuration lists where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -255,7 +254,7 @@ public class CPConfigurationListPersistenceImpl
 	 * Returns an ordered range of all the cp configuration lists where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -340,193 +339,13 @@ public class CPConfigurationListPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CPConfigurationList, NoSuchCPConfigurationListException>
-			_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the cp configuration lists where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<CPConfigurationList> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cp configuration list in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp configuration list
-	 * @throws NoSuchCPConfigurationListException if a matching cp configuration list could not be found
-	 */
-	@Override
-	public CPConfigurationList findByCompanyId_First(
-			long companyId,
-			OrderByComparator<CPConfigurationList> orderByComparator)
-		throws NoSuchCPConfigurationListException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first cp configuration list in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp configuration list, or <code>null</code> if a matching cp configuration list could not be found
-	 */
-	@Override
-	public CPConfigurationList fetchByCompanyId_First(
-		long companyId,
-		OrderByComparator<CPConfigurationList> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the cp configuration lists where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of cp configuration lists where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching cp configuration lists
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
-	private CollectionPersistenceFinder
-		<CPConfigurationList, NoSuchCPConfigurationListException>
-			_collectionPersistenceFinderByParentCPConfigurationListId;
-
-	/**
-	 * Returns an ordered range of all the cp configuration lists where parentCPConfigurationListId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param parentCPConfigurationListId the parent cp configuration list ID
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByParentCPConfigurationListId(
-		long parentCPConfigurationListId, int start, int end,
-		OrderByComparator<CPConfigurationList> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByParentCPConfigurationListId.find(
-			finderCache, new Object[] {parentCPConfigurationListId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cp configuration list in the ordered set where parentCPConfigurationListId = &#63;.
-	 *
-	 * @param parentCPConfigurationListId the parent cp configuration list ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp configuration list
-	 * @throws NoSuchCPConfigurationListException if a matching cp configuration list could not be found
-	 */
-	@Override
-	public CPConfigurationList findByParentCPConfigurationListId_First(
-			long parentCPConfigurationListId,
-			OrderByComparator<CPConfigurationList> orderByComparator)
-		throws NoSuchCPConfigurationListException {
-
-		return _collectionPersistenceFinderByParentCPConfigurationListId.
-			findFirst(
-				finderCache, new Object[] {parentCPConfigurationListId},
-				orderByComparator);
-	}
-
-	/**
-	 * Returns the first cp configuration list in the ordered set where parentCPConfigurationListId = &#63;.
-	 *
-	 * @param parentCPConfigurationListId the parent cp configuration list ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp configuration list, or <code>null</code> if a matching cp configuration list could not be found
-	 */
-	@Override
-	public CPConfigurationList fetchByParentCPConfigurationListId_First(
-		long parentCPConfigurationListId,
-		OrderByComparator<CPConfigurationList> orderByComparator) {
-
-		return _collectionPersistenceFinderByParentCPConfigurationListId.
-			fetchFirst(
-				finderCache, new Object[] {parentCPConfigurationListId},
-				orderByComparator);
-	}
-
-	/**
-	 * Removes all the cp configuration lists where parentCPConfigurationListId = &#63; from the database.
-	 *
-	 * @param parentCPConfigurationListId the parent cp configuration list ID
-	 */
-	@Override
-	public void removeByParentCPConfigurationListId(
-		long parentCPConfigurationListId) {
-
-		_collectionPersistenceFinderByParentCPConfigurationListId.remove(
-			finderCache, new Object[] {parentCPConfigurationListId});
-	}
-
-	/**
-	 * Returns the number of cp configuration lists where parentCPConfigurationListId = &#63;.
-	 *
-	 * @param parentCPConfigurationListId the parent cp configuration list ID
-	 * @return the number of matching cp configuration lists
-	 */
-	@Override
-	public int countByParentCPConfigurationListId(
-		long parentCPConfigurationListId) {
-
-		return _collectionPersistenceFinderByParentCPConfigurationListId.count(
-			finderCache, new Object[] {parentCPConfigurationListId});
-	}
-
-	private CollectionPersistenceFinder
-		<CPConfigurationList, NoSuchCPConfigurationListException>
 			_collectionPersistenceFinderByG_C;
 
 	/**
 	 * Returns an ordered range of all the cp configuration lists where groupId = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -590,7 +409,7 @@ public class CPConfigurationListPersistenceImpl
 	 * Returns an ordered range of all the cp configuration lists where groupId = &#63; and companyId = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupIds the group IDs
@@ -660,7 +479,7 @@ public class CPConfigurationListPersistenceImpl
 	 * Returns an ordered range of all the cp configuration lists where groupId = &#63; and master = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -745,160 +564,13 @@ public class CPConfigurationListPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CPConfigurationList, NoSuchCPConfigurationListException>
-			_collectionPersistenceFinderByLtD_S;
-
-	/**
-	 * Returns all the cp configuration lists where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @return the matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByLtD_S(Date displayDate, int status) {
-		return findByLtD_S(
-			displayDate, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the cp configuration lists where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @return the range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByLtD_S(
-		Date displayDate, int status, int start, int end) {
-
-		return findByLtD_S(displayDate, status, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp configuration lists where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByLtD_S(
-		Date displayDate, int status, int start, int end,
-		OrderByComparator<CPConfigurationList> orderByComparator) {
-
-		return findByLtD_S(
-			displayDate, status, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp configuration lists where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByLtD_S(
-		Date displayDate, int status, int start, int end,
-		OrderByComparator<CPConfigurationList> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByLtD_S.find(
-			finderCache, new Object[] {displayDate, status}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cp configuration list in the ordered set where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp configuration list
-	 * @throws NoSuchCPConfigurationListException if a matching cp configuration list could not be found
-	 */
-	@Override
-	public CPConfigurationList findByLtD_S_First(
-			Date displayDate, int status,
-			OrderByComparator<CPConfigurationList> orderByComparator)
-		throws NoSuchCPConfigurationListException {
-
-		return _collectionPersistenceFinderByLtD_S.findFirst(
-			finderCache, new Object[] {displayDate, status}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first cp configuration list in the ordered set where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp configuration list, or <code>null</code> if a matching cp configuration list could not be found
-	 */
-	@Override
-	public CPConfigurationList fetchByLtD_S_First(
-		Date displayDate, int status,
-		OrderByComparator<CPConfigurationList> orderByComparator) {
-
-		return _collectionPersistenceFinderByLtD_S.fetchFirst(
-			finderCache, new Object[] {displayDate, status}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the cp configuration lists where displayDate &lt; &#63; and status = &#63; from the database.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 */
-	@Override
-	public void removeByLtD_S(Date displayDate, int status) {
-		_collectionPersistenceFinderByLtD_S.remove(
-			finderCache, new Object[] {displayDate, status});
-	}
-
-	/**
-	 * Returns the number of cp configuration lists where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @return the number of matching cp configuration lists
-	 */
-	@Override
-	public int countByLtD_S(Date displayDate, int status) {
-		return _collectionPersistenceFinderByLtD_S.count(
-			finderCache, new Object[] {displayDate, status});
-	}
-
-	private CollectionPersistenceFinder
-		<CPConfigurationList, NoSuchCPConfigurationListException>
 			_collectionPersistenceFinderByG_C_S;
 
 	/**
 	 * Returns an ordered range of all the cp configuration lists where groupId = &#63; and companyId = &#63; and status = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -965,7 +637,7 @@ public class CPConfigurationListPersistenceImpl
 	 * Returns an ordered range of all the cp configuration lists where groupId = &#63; and companyId = &#63; and status = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupIds the group IDs
@@ -1029,277 +701,6 @@ public class CPConfigurationListPersistenceImpl
 	@Override
 	public int countByG_C_S(long[] groupIds, long companyId, int status) {
 		return _collectionPersistenceFinderByG_C_S.count(
-			finderCache,
-			new Object[] {ArrayUtil.sortedUnique(groupIds), companyId, status});
-	}
-
-	private CollectionPersistenceFinder
-		<CPConfigurationList, NoSuchCPConfigurationListException>
-			_collectionPersistenceFinderByG_C_NotS;
-
-	/**
-	 * Returns all the cp configuration lists where groupId = &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByG_C_NotS(
-		long groupId, long companyId, int status) {
-
-		return findByG_C_NotS(
-			groupId, companyId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			null);
-	}
-
-	/**
-	 * Returns a range of all the cp configuration lists where groupId = &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @return the range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByG_C_NotS(
-		long groupId, long companyId, int status, int start, int end) {
-
-		return findByG_C_NotS(groupId, companyId, status, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp configuration lists where groupId = &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByG_C_NotS(
-		long groupId, long companyId, int status, int start, int end,
-		OrderByComparator<CPConfigurationList> orderByComparator) {
-
-		return findByG_C_NotS(
-			groupId, companyId, status, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp configuration lists where groupId = &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByG_C_NotS(
-		long groupId, long companyId, int status, int start, int end,
-		OrderByComparator<CPConfigurationList> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_C_NotS.find(
-			finderCache, new Object[] {new long[] {groupId}, companyId, status},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cp configuration list in the ordered set where groupId = &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp configuration list
-	 * @throws NoSuchCPConfigurationListException if a matching cp configuration list could not be found
-	 */
-	@Override
-	public CPConfigurationList findByG_C_NotS_First(
-			long groupId, long companyId, int status,
-			OrderByComparator<CPConfigurationList> orderByComparator)
-		throws NoSuchCPConfigurationListException {
-
-		return _collectionPersistenceFinderByG_C_NotS.findFirst(
-			finderCache, new Object[] {new long[] {groupId}, companyId, status},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first cp configuration list in the ordered set where groupId = &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp configuration list, or <code>null</code> if a matching cp configuration list could not be found
-	 */
-	@Override
-	public CPConfigurationList fetchByG_C_NotS_First(
-		long groupId, long companyId, int status,
-		OrderByComparator<CPConfigurationList> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_C_NotS.fetchFirst(
-			finderCache, new Object[] {new long[] {groupId}, companyId, status},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns all the cp configuration lists where groupId = any &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByG_C_NotS(
-		long[] groupIds, long companyId, int status) {
-
-		return findByG_C_NotS(
-			groupIds, companyId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			null);
-	}
-
-	/**
-	 * Returns a range of all the cp configuration lists where groupId = any &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @return the range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByG_C_NotS(
-		long[] groupIds, long companyId, int status, int start, int end) {
-
-		return findByG_C_NotS(groupIds, companyId, status, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp configuration lists where groupId = any &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByG_C_NotS(
-		long[] groupIds, long companyId, int status, int start, int end,
-		OrderByComparator<CPConfigurationList> orderByComparator) {
-
-		return findByG_C_NotS(
-			groupIds, companyId, status, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp configuration lists where groupId = &#63; and companyId = &#63; and status &ne; &#63;, optionally using the finder cache.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPConfigurationListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupIds the group IDs
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of cp configuration lists
-	 * @param end the upper bound of the range of cp configuration lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp configuration lists
-	 */
-	@Override
-	public List<CPConfigurationList> findByG_C_NotS(
-		long[] groupIds, long companyId, int status, int start, int end,
-		OrderByComparator<CPConfigurationList> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_C_NotS.find(
-			finderCache,
-			new Object[] {ArrayUtil.sortedUnique(groupIds), companyId, status},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Removes all the cp configuration lists where groupId = &#63; and companyId = &#63; and status &ne; &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param companyId the company ID
-	 * @param status the status
-	 */
-	@Override
-	public void removeByG_C_NotS(long groupId, long companyId, int status) {
-		_collectionPersistenceFinderByG_C_NotS.remove(
-			finderCache,
-			new Object[] {new long[] {groupId}, companyId, status});
-	}
-
-	/**
-	 * Returns the number of cp configuration lists where groupId = &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the number of matching cp configuration lists
-	 */
-	@Override
-	public int countByG_C_NotS(long groupId, long companyId, int status) {
-		return _collectionPersistenceFinderByG_C_NotS.count(
-			finderCache,
-			new Object[] {new long[] {groupId}, companyId, status});
-	}
-
-	/**
-	 * Returns the number of cp configuration lists where groupId = any &#63; and companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param groupIds the group IDs
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the number of matching cp configuration lists
-	 */
-	@Override
-	public int countByG_C_NotS(long[] groupIds, long companyId, int status) {
-		return _collectionPersistenceFinderByG_C_NotS.count(
 			finderCache,
 			new Object[] {ArrayUtil.sortedUnique(groupIds), companyId, status});
 	}
@@ -1832,64 +1233,6 @@ public class CPConfigurationListPersistenceImpl
 					"cpConfigurationList.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, CPConfigurationList::getCompanyId));
 
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
-				_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
-				CPConfigurationListModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"cpConfigurationList.", "companyId", FinderColumn.Type.LONG,
-					"=", true, true, CPConfigurationList::getCompanyId));
-
-		_collectionPersistenceFinderByParentCPConfigurationListId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByParentCPConfigurationListId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"parentCPConfigurationListId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByParentCPConfigurationListId",
-					new String[] {Long.class.getName()},
-					new String[] {"parentCPConfigurationListId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByParentCPConfigurationListId",
-					new String[] {Long.class.getName()},
-					new String[] {"parentCPConfigurationListId"}, false),
-				_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
-				_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
-				CPConfigurationListModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"cpConfigurationList.", "parentCPConfigurationListId",
-					FinderColumn.Type.LONG, "=", true, true,
-					CPConfigurationList::getParentCPConfigurationListId));
-
 		_collectionPersistenceFinderByG_C = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1948,32 +1291,6 @@ public class CPConfigurationListPersistenceImpl
 				"cpConfigurationList.", "master", FinderColumn.Type.BOOLEAN,
 				"=", true, true, CPConfigurationList::isMaster));
 
-		_collectionPersistenceFinderByLtD_S = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByLtD_S",
-				new String[] {
-					Date.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"displayDate", "status"}, true),
-			null,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtD_S",
-				new String[] {Date.class.getName(), Integer.class.getName()},
-				new String[] {"displayDate", "status"}, false),
-			_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
-			_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
-			CPConfigurationListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"cpConfigurationList.", "displayDate", FinderColumn.Type.DATE,
-				"<", true, true, CPConfigurationList::getDisplayDate),
-			new FinderColumn<>(
-				"cpConfigurationList.", "status", FinderColumn.Type.INTEGER,
-				"=", true, true, CPConfigurationList::getStatus));
-
 		_collectionPersistenceFinderByG_C_S = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -2011,40 +1328,6 @@ public class CPConfigurationListPersistenceImpl
 			new FinderColumn<>(
 				"cpConfigurationList.", "status", FinderColumn.Type.INTEGER,
 				"=", true, true, CPConfigurationList::getStatus));
-
-		_collectionPersistenceFinderByG_C_NotS =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId", "companyId", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_C_NotS",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName()
-					},
-					new String[] {"groupId", "companyId", "status"}, false),
-				_SQL_SELECT_CPCONFIGURATIONLIST_WHERE,
-				_SQL_COUNT_CPCONFIGURATIONLIST_WHERE,
-				CPConfigurationListModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new ArrayableFinderColumn<>(
-					"cpConfigurationList.", "groupId", FinderColumn.Type.LONG,
-					"=", false, true, true, CPConfigurationList::getGroupId),
-				new FinderColumn<>(
-					"cpConfigurationList.", "companyId", FinderColumn.Type.LONG,
-					"=", true, true, CPConfigurationList::getCompanyId),
-				new FinderColumn<>(
-					"cpConfigurationList.", "status", FinderColumn.Type.INTEGER,
-					"!=", true, true, CPConfigurationList::getStatus));
 
 		_uniquePersistenceFinderByERC_C = new UniquePersistenceFinder<>(
 			this,
@@ -2131,4 +1414,4 @@ public class CPConfigurationListPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1578954042
+// LIFERAY-SERVICE-BUILDER-HASH:-2031204394

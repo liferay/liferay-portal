@@ -315,13 +315,6 @@ public class CPDefinitionSpecificationOptionValuePersistenceTest {
 	}
 
 	@Test
-	public void testCountByGroupId() throws Exception {
-		_persistence.countByGroupId(RandomTestUtil.nextLong());
-
-		_persistence.countByGroupId(0L);
-	}
-
-	@Test
 	public void testCountByCPDefinitionId() throws Exception {
 		_persistence.countByCPDefinitionId(RandomTestUtil.nextLong());
 
@@ -881,4 +874,4 @@ public class CPDefinitionSpecificationOptionValuePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1203366993
+// LIFERAY-SERVICE-BUILDER-HASH:1057344231
