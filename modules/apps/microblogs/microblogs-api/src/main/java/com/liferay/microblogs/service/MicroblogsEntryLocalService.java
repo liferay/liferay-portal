@@ -94,10 +94,6 @@ public interface MicroblogsEntryLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public void deleteMicroblogsEntries(
-			long creatorClassNameId, long creatorClassPK)
-		throws PortalException;
-
 	/**
 	 * Deletes the microblogs entry with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -241,26 +237,6 @@ public interface MicroblogsEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MicroblogsEntry> getMicroblogsEntries(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, int type, int start, int end,
-		OrderByComparator<MicroblogsEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK, int start,
-		int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK, int type,
-		int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		String assetTagName, boolean andOperator, int start, int end);
-
 	/**
 	 * Returns the number of microblogs entries.
 	 *
@@ -268,23 +244,6 @@ public interface MicroblogsEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getMicroblogsEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK, int type);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		String assetTagName, boolean andOperator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, String assetTagName);
 
 	/**
 	 * Returns the microblogs entry with the primary key.
@@ -364,4 +323,4 @@ public interface MicroblogsEntryLocalService
 		MicroblogsEntry microblogsEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:936701397
+// LIFERAY-SERVICE-BUILDER-HASH:-415056833

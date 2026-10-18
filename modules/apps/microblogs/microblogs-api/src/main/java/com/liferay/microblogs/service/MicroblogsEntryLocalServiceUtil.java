@@ -97,14 +97,6 @@ public class MicroblogsEntryLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static void deleteMicroblogsEntries(
-			long creatorClassNameId, long creatorClassPK)
-		throws PortalException {
-
-		getService().deleteMicroblogsEntries(
-			creatorClassNameId, creatorClassPK);
-	}
-
 	/**
 	 * Deletes the microblogs entry with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -285,39 +277,6 @@ public class MicroblogsEntryLocalServiceUtil {
 		return getService().getMicroblogsEntries(start, end);
 	}
 
-	public static List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, int type, int start, int end,
-		OrderByComparator<MicroblogsEntry> orderByComparator) {
-
-		return getService().getMicroblogsEntries(
-			companyId, creatorClassNameId, type, start, end, orderByComparator);
-	}
-
-	public static List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK, int start,
-		int end) {
-
-		return getService().getMicroblogsEntries(
-			companyId, creatorClassNameId, creatorClassPK, start, end);
-	}
-
-	public static List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK, int type,
-		int start, int end) {
-
-		return getService().getMicroblogsEntries(
-			companyId, creatorClassNameId, creatorClassPK, type, start, end);
-	}
-
-	public static List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		String assetTagName, boolean andOperator, int start, int end) {
-
-		return getService().getMicroblogsEntries(
-			companyId, creatorClassNameId, creatorClassPK, assetTagName,
-			andOperator, start, end);
-	}
-
 	/**
 	 * Returns the number of microblogs entries.
 	 *
@@ -325,37 +284,6 @@ public class MicroblogsEntryLocalServiceUtil {
 	 */
 	public static int getMicroblogsEntriesCount() {
 		return getService().getMicroblogsEntriesCount();
-	}
-
-	public static int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK) {
-
-		return getService().getMicroblogsEntriesCount(
-			companyId, creatorClassNameId, creatorClassPK);
-	}
-
-	public static int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		int type) {
-
-		return getService().getMicroblogsEntriesCount(
-			companyId, creatorClassNameId, creatorClassPK, type);
-	}
-
-	public static int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		String assetTagName, boolean andOperator) {
-
-		return getService().getMicroblogsEntriesCount(
-			companyId, creatorClassNameId, creatorClassPK, assetTagName,
-			andOperator);
-	}
-
-	public static int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, String assetTagName) {
-
-		return getService().getMicroblogsEntriesCount(
-			companyId, creatorClassNameId, assetTagName);
 	}
 
 	/**
@@ -477,4 +405,4 @@ public class MicroblogsEntryLocalServiceUtil {
 			MicroblogsEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1329087582
+// LIFERAY-SERVICE-BUILDER-HASH:1020735312
