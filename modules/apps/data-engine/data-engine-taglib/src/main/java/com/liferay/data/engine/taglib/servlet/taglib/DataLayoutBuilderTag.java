@@ -457,6 +457,13 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 			DDMStructure ddmStructure = ddmStructureLocalService.getStructure(
 				_dataLayout.getDataDefinitionId());
 
+			// Clone ddmStructure and lower its MVCC version to make sure
+			// changes are never persisted or cached
+
+			ddmStructure = (DDMStructure)ddmStructure.clone();
+
+			ddmStructure.setMvccVersion(ddmStructure.getMvccVersion() - 1);
+
 			String dataDefinitionJSON = ddmStructure.getDefinition();
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
