@@ -190,13 +190,6 @@ public class CommerceChannelRelLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceChannelRelsCount(
-		String className, long classPK, String name) {
-
-		return commerceChannelRelFinder.countByC_C(className, classPK, name);
-	}
-
-	@Override
 	public List<CommerceChannelRel> getCommerceCurrencyCommerceChannelRels(
 		long commerceChannelId, String name, int start, int end) {
 

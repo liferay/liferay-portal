@@ -318,19 +318,6 @@ public class CPConfigurationListLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCPConfigurationLists(long companyId)
-		throws PortalException {
-
-		List<CPConfigurationList> cpConfigurationLists =
-			cpConfigurationListPersistence.findByCompanyId(companyId);
-
-		for (CPConfigurationList cpConfigurationList : cpConfigurationLists) {
-			cpConfigurationListLocalService.deleteCPConfigurationList(
-				cpConfigurationList, true);
-		}
-	}
-
-	@Override
 	public List<CPConfigurationList> getCPConfigurationLists(
 		long groupId, long companyId) {
 

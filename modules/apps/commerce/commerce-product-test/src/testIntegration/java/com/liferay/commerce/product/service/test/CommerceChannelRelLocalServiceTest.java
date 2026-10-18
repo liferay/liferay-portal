@@ -130,11 +130,6 @@ public class CommerceChannelRelLocalServiceTest {
 
 		Assert.assertEquals(
 			commerceChannelRels.toString(), 2, commerceChannelRels.size());
-		Assert.assertEquals(
-			commerceChannelRels.toString(), 2,
-			_commerceChannelRelLocalService.getCommerceChannelRelsCount(
-				CPDefinition.class.getName(), _cpDefinition.getCPDefinitionId(),
-				"Channel Test"));
 	}
 
 	@Test
