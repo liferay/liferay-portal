@@ -8,4 +8,3 @@ Export-Package:\
 	com.liferay.gradle.plugins.workspace,\
 	com.liferay.gradle.plugins.workspace.configurator,\
 	com.liferay.gradle.plugins.workspace.task
--donotcopy: (\.gradle)

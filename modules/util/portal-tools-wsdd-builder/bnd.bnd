@@ -6,7 +6,6 @@ Import-Package:\
 	\
 	*
 Main-Class: com.liferay.portal.tools.wsdd.builder.WSDDBuilder
--donotcopy: .touch
 -includeresource:\
 	@com.liferay.petra.io-*.jar!/com/liferay/petra/io/unsync/UnsyncByteArrayInputStream.class,\
 	@com.liferay.petra.io-*.jar!/com/liferay/petra/io/unsync/UnsyncByteArrayOutputStream.class,\
