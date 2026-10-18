@@ -14,8 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CommerceChannelRelFinder {
 
-	public int countByC_C(String className, long classPK, String name);
-
 	public int countByC_C(
 		String className, long classPK, String name, boolean inlineSQLHelper);
 
@@ -29,4 +27,4 @@ public interface CommerceChannelRelFinder {
 			boolean inlineSQLHelper);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:531387170
+// LIFERAY-SERVICE-BUILDER-HASH:1025003548
