@@ -56,6 +56,7 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -880,7 +881,7 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 		if (ArrayUtil.isNotEmpty(permissions)) {
 			return HashMapBuilder.put(
-				DepotEntry.class.getName(), permissions
+				DepotEntry.class.getName(), _toJSON(permissions)
 			).build();
 		}
 
@@ -896,25 +897,30 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 		return HashMapBuilder.put(
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
-			() -> _getPermissions(
-				cmsBasicWebContentObjectDefinition.getClassName(),
-				configurationJSONObject.getJSONObject(
-					ObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_CONTENTS),
-				roles)
+			() -> _toJSON(
+				_getPermissions(
+					cmsBasicWebContentObjectDefinition.getClassName(),
+					configurationJSONObject.getJSONObject(
+						ObjectEntryFolderConstants.
+							EXTERNAL_REFERENCE_CODE_CONTENTS),
+					roles))
 		).put(
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
-			() -> _getPermissions(
-				cmsBasicDocumentObjectDefinition.getClassName(),
-				configurationJSONObject.getJSONObject(
-					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES),
-				roles)
+			() -> _toJSON(
+				_getPermissions(
+					cmsBasicDocumentObjectDefinition.getClassName(),
+					configurationJSONObject.getJSONObject(
+						ObjectEntryFolderConstants.
+							EXTERNAL_REFERENCE_CODE_FILES),
+					roles))
 		).put(
 			ObjectEntryFolder.class.getName(),
-			() -> _getPermissions(
-				ObjectEntryFolder.class.getName(),
-				configurationJSONObject.getJSONObject("OBJECT_ENTRY_FOLDERS"),
-				roles)
+			() -> _toJSON(
+				_getPermissions(
+					ObjectEntryFolder.class.getName(),
+					configurationJSONObject.getJSONObject(
+						"OBJECT_ENTRY_FOLDERS"),
+					roles))
 		).build();
 	}
 
@@ -1164,6 +1170,27 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		bulkActionItem.setName(objectEntryFolder::getName);
 
 		return bulkActionItem;
+	}
+
+	private String _toJSON(Permission[] permissions) {
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		for (Permission permission : permissions) {
+			jsonArray.put(
+				JSONUtil.put(
+					"actionIds",
+					JSONUtil.putAll((Object[])permission.getActionIds())
+				).put(
+					"roleExternalReferenceCode",
+					permission.getRoleExternalReferenceCode()
+				).put(
+					"roleName", permission.getRoleName()
+				).put(
+					"roleType", permission.getRoleType()
+				));
+		}
+
+		return jsonArray.toString();
 	}
 
 	private static final Snapshot<BulkSelectionAction<Object>>
