@@ -199,15 +199,6 @@ public class MicroblogsEntryLocalServiceImpl
 	}
 
 	@Override
-	public void deleteMicroblogsEntries(
-			long creatorClassNameId, long creatorClassPK)
-		throws PortalException {
-
-		microblogsEntryPersistence.removeByCCNI_CCPK(
-			creatorClassNameId, creatorClassPK);
-	}
-
-	@Override
 	public MicroblogsEntry deleteMicroblogsEntry(long microblogsEntryId)
 		throws PortalException {
 
@@ -284,78 +275,6 @@ public class MicroblogsEntryLocalServiceImpl
 	@Override
 	public int getCompanyMicroblogsEntriesCount(long companyId) {
 		return microblogsEntryPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	public List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, int type, int start, int end,
-		OrderByComparator<MicroblogsEntry> orderByComparator) {
-
-		return microblogsEntryPersistence.findByC_CCNI_T(
-			companyId, creatorClassNameId, type, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK, int start,
-		int end) {
-
-		return microblogsEntryPersistence.findByC_CCNI_CCPK(
-			companyId, creatorClassNameId, creatorClassPK, start, end);
-	}
-
-	@Override
-	public List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK, int type,
-		int start, int end) {
-
-		return microblogsEntryPersistence.findByC_CCNI_CCPK_T(
-			companyId, creatorClassNameId, creatorClassPK, type, start, end);
-	}
-
-	@Override
-	public List<MicroblogsEntry> getMicroblogsEntries(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		String assetTagName, boolean andOperator, int start, int end) {
-
-		return microblogsEntryFinder.findByC_CCNI_CCPK_ATN(
-			companyId, creatorClassNameId, creatorClassPK, assetTagName,
-			andOperator, start, end);
-	}
-
-	@Override
-	public int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK) {
-
-		return microblogsEntryPersistence.countByC_CCNI_CCPK(
-			companyId, creatorClassNameId, creatorClassPK);
-	}
-
-	@Override
-	public int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		int type) {
-
-		return microblogsEntryPersistence.countByC_CCNI_CCPK_T(
-			companyId, creatorClassNameId, creatorClassPK, type);
-	}
-
-	@Override
-	public int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, long creatorClassPK,
-		String assetTagName, boolean andOperator) {
-
-		return microblogsEntryFinder.countByC_CCNI_CCPK_ATN(
-			companyId, creatorClassNameId, creatorClassPK, assetTagName,
-			andOperator);
-	}
-
-	@Override
-	public int getMicroblogsEntriesCount(
-		long companyId, long creatorClassNameId, String assetTagName) {
-
-		return microblogsEntryFinder.countByC_CCNI_ATN(
-			companyId, creatorClassNameId, assetTagName);
 	}
 
 	@Override
