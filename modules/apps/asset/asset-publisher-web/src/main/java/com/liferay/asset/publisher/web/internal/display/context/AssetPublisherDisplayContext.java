@@ -440,15 +440,13 @@ public class AssetPublisherDisplayContext {
 	public JSONArray getAssetEntryTypesJSONArray(long groupId)
 		throws Exception {
 
-		long[] groupIds =
-			SiteConnectedGroupGroupProviderUtil.
-				getCurrentAndAncestorSiteAndDepotGroupIds(new long[] {groupId});
-
 		List<AssetRendererFactory<?>> assetRendererFactories = ListUtil.sort(
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
 				_themeDisplay.getCompanyId()),
 			new AssetRendererFactoryTypeNameComparator(
 				_themeDisplay.getLocale()));
+
+		Map<Long, JSONArray> groupIdsJSONArrays = new HashMap<>();
 
 		return JSONUtil.toJSONArray(
 			assetRendererFactories,
@@ -462,8 +460,9 @@ public class AssetPublisherDisplayContext {
 					_portal.getClassNameId(assetRendererFactory.getClassName())
 				).put(
 					"groupIds",
-					_getStagedPortletGroupIdsJSONArray(
-						groupIds, assetRendererFactory.getPortletId())
+					_getGroupIdsJSONArray(
+						groupId, groupIdsJSONArrays,
+						assetRendererFactory.getPortletId())
 				).put(
 					"label",
 					assetRendererFactory.getTypeName(_themeDisplay.getLocale())
@@ -2258,6 +2257,36 @@ public class AssetPublisherDisplayContext {
 		return _classTypeComparator;
 	}
 
+	private JSONArray _getGroupIdsJSONArray(
+			long groupId, Map<Long, JSONArray> groupIdsJSONArrays,
+			String portletId)
+		throws PortalException {
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		long stagedPortletGroupId = stagingGroupHelper.getStagedPortletGroupId(
+			groupId, portletId);
+
+		JSONArray groupIdsJSONArray = groupIdsJSONArrays.get(
+			stagedPortletGroupId);
+
+		if (groupIdsJSONArray != null) {
+			return groupIdsJSONArray;
+		}
+
+		long[] groupIds =
+			SiteConnectedGroupGroupProviderUtil.
+				getCurrentAndAncestorSiteAndDepotGroupIds(
+					new long[] {stagedPortletGroupId});
+
+		groupIdsJSONArray = JSONUtil.putAll(ArrayUtil.toArray(groupIds));
+
+		groupIdsJSONArrays.put(stagedPortletGroupId, groupIdsJSONArray);
+
+		return groupIdsJSONArray;
+	}
+
 	private InfoPage<AssetEntry> _getInfoPage(
 			SearchContainer<AssetEntry> searchContainer)
 		throws Exception {
@@ -2397,21 +2426,6 @@ public class AssetPublisherDisplayContext {
 
 				return null;
 			});
-	}
-
-	private JSONArray _getStagedPortletGroupIdsJSONArray(
-		long[] groupIds, String portletId) {
-
-		StagingGroupHelper stagingGroupHelper =
-			StagingGroupHelperUtil.getStagingGroupHelper();
-
-		long[] stagedPortletGroupIds = TransformUtil.transformToLongArray(
-			ArrayUtil.toArray(groupIds),
-			groupId -> stagingGroupHelper.getStagedPortletGroupId(
-				groupId, portletId));
-
-		return JSONUtil.putAll(
-			ArrayUtil.toArray(ArrayUtil.unique(stagedPortletGroupIds)));
 	}
 
 	private boolean _isShowRelatedAssets() {

@@ -42,7 +42,9 @@ import jakarta.portlet.PortletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.PageContext;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author José Manuel Navarro
@@ -76,10 +78,7 @@ public class InputAssetLinksDisplayContext {
 			_themeDisplay.getScopeGroupId(),
 			baseAssetRendererFactory.getPortletId());
 
-		long[] groupIds =
-			SiteConnectedGroupGroupProviderUtil.
-				getCurrentAndAncestorSiteAndDepotGroupIds(
-					new long[] {_themeDisplay.getScopeGroupId()});
+		Map<Long, JSONArray> groupIdsJSONArrays = new HashMap<>();
 
 		return JSONUtil.toJSONArray(
 			getAssetRendererFactories(),
@@ -98,8 +97,9 @@ public class InputAssetLinksDisplayContext {
 						assetRendererFactory.getClassName())
 				).put(
 					"groupIds",
-					_getStagedPortletGroupIdsJSONArray(
-						groupIds, assetRendererFactory.getPortletId())
+					_getGroupIdsJSONArray(
+						_themeDisplay.getScopeGroupId(), groupIdsJSONArrays,
+						assetRendererFactory.getPortletId())
 				).put(
 					"label",
 					assetRendererFactory.getTypeName(_themeDisplay.getLocale())
@@ -263,27 +263,42 @@ public class InputAssetLinksDisplayContext {
 			});
 	}
 
+	private JSONArray _getGroupIdsJSONArray(
+			long groupId, Map<Long, JSONArray> groupIdsJSONArrays,
+			String portletId)
+		throws PortalException {
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		long stagedPortletGroupId = stagingGroupHelper.getStagedPortletGroupId(
+			groupId, portletId);
+
+		JSONArray groupIdsJSONArray = groupIdsJSONArrays.get(
+			stagedPortletGroupId);
+
+		if (groupIdsJSONArray != null) {
+			return groupIdsJSONArray;
+		}
+
+		long[] groupIds =
+			SiteConnectedGroupGroupProviderUtil.
+				getCurrentAndAncestorSiteAndDepotGroupIds(
+					new long[] {stagedPortletGroupId});
+
+		groupIdsJSONArray = JSONUtil.putAll(ArrayUtil.toArray(groupIds));
+
+		groupIdsJSONArrays.put(stagedPortletGroupId, groupIdsJSONArray);
+
+		return groupIdsJSONArray;
+	}
+
 	private AssetEntry _getRefererAssetEntry() {
 		if (_assetEntryId <= 0) {
 			return null;
 		}
 
 		return AssetEntryLocalServiceUtil.fetchEntry(_assetEntryId);
-	}
-
-	private JSONArray _getStagedPortletGroupIdsJSONArray(
-		long[] groupIds, String portletId) {
-
-		StagingGroupHelper stagingGroupHelper =
-			StagingGroupHelperUtil.getStagingGroupHelper();
-
-		long[] stagedPortletGroupIds = TransformUtil.transformToLongArray(
-			ArrayUtil.toArray(groupIds),
-			groupId -> stagingGroupHelper.getStagedPortletGroupId(
-				groupId, portletId));
-
-		return JSONUtil.putAll(
-			ArrayUtil.toArray(ArrayUtil.unique(stagedPortletGroupIds)));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

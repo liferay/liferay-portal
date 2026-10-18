@@ -35,6 +35,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.AdditionalMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -92,6 +93,16 @@ public class InputAssetLinksDisplayContextTest {
 			liveGroupId
 		);
 
+		long scopeDepotGroupId = RandomTestUtil.randomLong();
+
+		_setUpCurrentAndAncestorSiteAndDepotGroupIds(
+			_SCOPE_GROUP_ID, _SCOPE_GROUP_ID, scopeDepotGroupId);
+
+		long liveDepotGroupId = RandomTestUtil.randomLong();
+
+		_setUpCurrentAndAncestorSiteAndDepotGroupIds(
+			liveGroupId, liveGroupId, liveDepotGroupId);
+
 		_setStagedPortlet(_PORTLET_ID_1, true);
 		_setStagedPortlet(_PORTLET_ID_2, false);
 
@@ -100,11 +111,12 @@ public class InputAssetLinksDisplayContextTest {
 		Assert.assertEquals(
 			assetEntryTypesJSONArray.toString(), 2,
 			assetEntryTypesJSONArray.length());
+
 		Assert.assertArrayEquals(
-			new long[] {_SCOPE_GROUP_ID},
+			new long[] {_SCOPE_GROUP_ID, scopeDepotGroupId},
 			_getGroupIds(_CLASS_NAME_ID_1, assetEntryTypesJSONArray));
 		Assert.assertArrayEquals(
-			new long[] {liveGroupId},
+			new long[] {liveGroupId, liveDepotGroupId},
 			_getGroupIds(_CLASS_NAME_ID_2, assetEntryTypesJSONArray));
 
 		_setStagedPortlet(_PORTLET_ID_1, false);
@@ -115,8 +127,9 @@ public class InputAssetLinksDisplayContextTest {
 		Assert.assertEquals(
 			assetEntryTypesJSONArray.toString(), 1,
 			assetEntryTypesJSONArray.length());
+
 		Assert.assertArrayEquals(
-			new long[] {_SCOPE_GROUP_ID},
+			new long[] {_SCOPE_GROUP_ID, scopeDepotGroupId},
 			_getGroupIds(_CLASS_NAME_ID_1, assetEntryTypesJSONArray));
 	}
 
@@ -222,6 +235,19 @@ public class InputAssetLinksDisplayContextTest {
 			_stagingGroupHelper.isStagedPortlet(_SCOPE_GROUP_ID, portletId)
 		).thenReturn(
 			staged
+		);
+	}
+
+	private void _setUpCurrentAndAncestorSiteAndDepotGroupIds(
+		long groupId, long... currentAndAncestorSiteAndDepotGroupIds) {
+
+		_siteConnectedGroupGroupProviderUtilMockedStatic.when(
+			() ->
+				SiteConnectedGroupGroupProviderUtil.
+					getCurrentAndAncestorSiteAndDepotGroupIds(
+						AdditionalMatchers.aryEq(new long[] {groupId}))
+		).thenReturn(
+			currentAndAncestorSiteAndDepotGroupIds
 		);
 	}
 

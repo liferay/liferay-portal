@@ -74,6 +74,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.AdditionalMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -225,6 +226,14 @@ public class EditAssetListDisplayContextTest {
 			liveGroupId
 		);
 
+		_setUpCurrentAndAncestorSiteAndDepotGroupIds(
+			_SCOPE_GROUP_ID, _SCOPE_GROUP_ID, RandomTestUtil.randomLong());
+
+		long liveDepotGroupId = RandomTestUtil.randomLong();
+
+		_setUpCurrentAndAncestorSiteAndDepotGroupIds(
+			liveGroupId, liveGroupId, liveDepotGroupId);
+
 		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.put(
 			"classNameIds", classNameId
 		).put(
@@ -244,7 +253,7 @@ public class EditAssetListDisplayContextTest {
 			assetEntryTypesJSONArray.getJSONObject(0);
 
 		Assert.assertArrayEquals(
-			new long[] {liveGroupId},
+			new long[] {liveGroupId, liveDepotGroupId},
 			JSONUtil.toLongArray(
 				assetEntryTypeJSONObject.getJSONArray("groupIds")));
 	}
@@ -917,6 +926,19 @@ public class EditAssetListDisplayContextTest {
 
 		_setUpAssetRendererFactoryRegistryUtil(
 			className, classNameId, null, false, typeName);
+	}
+
+	private void _setUpCurrentAndAncestorSiteAndDepotGroupIds(
+		long groupId, long... currentAndAncestorSiteAndDepotGroupIds) {
+
+		_siteConnectedGroupGroupProviderUtilMockedStatic.when(
+			() ->
+				SiteConnectedGroupGroupProviderUtil.
+					getCurrentAndAncestorSiteAndDepotGroupIds(
+						AdditionalMatchers.aryEq(new long[] {groupId}))
+		).thenReturn(
+			currentAndAncestorSiteAndDepotGroupIds
+		);
 	}
 
 	private void _setUpJSONFactoryUtil() {

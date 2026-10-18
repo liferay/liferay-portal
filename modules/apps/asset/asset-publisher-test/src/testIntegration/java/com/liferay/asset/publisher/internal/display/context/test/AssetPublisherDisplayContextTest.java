@@ -18,6 +18,10 @@ import com.liferay.asset.publisher.constants.AssetPublisherWebKeys;
 import com.liferay.asset.publisher.util.AssetEntryResult;
 import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.model.BlogsEntry;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
@@ -57,6 +61,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -246,7 +251,17 @@ public class AssetPublisherDisplayContextTest {
 		_setStagedPortlet(BlogsPortletKeys.BLOGS, true);
 		_setStagedPortlet(JournalPortletKeys.JOURNAL, false);
 
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
 		Group stagingGroup = _group.getStagingGroup();
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			_depotEntry.getDepotEntryId(), stagingGroup.getGroupId());
 
 		JSONArray jsonArray = ReflectionTestUtil.invoke(
 			_getAssetPublisherDisplayContext(
@@ -255,7 +270,10 @@ public class AssetPublisherDisplayContextTest {
 			stagingGroup.getGroupId());
 
 		Assert.assertArrayEquals(
-			new long[] {stagingGroup.getGroupId(), _company.getGroupId()},
+			new long[] {
+				stagingGroup.getGroupId(), _company.getGroupId(),
+				_depotEntry.getGroupId()
+			},
 			_getGroupIds(BlogsEntry.class.getName(), jsonArray));
 		Assert.assertArrayEquals(
 			new long[] {_group.getGroupId(), _company.getGroupId()},
@@ -633,6 +651,15 @@ public class AssetPublisherDisplayContextTest {
 
 	@Inject
 	private ConfigurationAdmin _configurationAdmin;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
