@@ -66,13 +66,26 @@ String fieldPrefixSeparator = (String)request.getAttribute("liferay-frontend:ema
 				</c:choose>
 			</c:when>
 			<c:otherwise>
-				<liferay-editor:editor
-					contents="<%= emailBody %>"
-					editorName='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11235") ? "ckeditor5_classic" : PropsUtil.get("editor.wysiwyg.portal-web.docroot.html.taglib.ui.email_notification_settings.jsp") %>'
-					name="<%= emailParam %>"
-				/>
+				<c:choose>
+					<c:when test='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
+						<liferay-editor:editor
+							contents="<%= emailBody %>"
+							editorName="ckeditor5_classic"
+							formInputEnabled="<%= true %>"
+							formInputName='<%= fieldPrefix + fieldPrefixSeparator + emailParam + "Body" + fieldPrefixSeparator %>'
+							name="<%= emailParam %>"
+						/>
+					</c:when>
+					<c:otherwise>
+						<liferay-editor:editor
+							contents="<%= emailBody %>"
+							editorName='<%= PropsUtil.get("editor.wysiwyg.portal-web.docroot.html.taglib.ui.email_notification_settings.jsp") %>'
+							name="<%= emailParam %>"
+						/>
 
-				<aui:input name='<%= fieldPrefix + fieldPrefixSeparator + emailParam + "Body" + fieldPrefixSeparator %>' type="hidden" />
+						<aui:input name='<%= fieldPrefix + fieldPrefixSeparator + emailParam + "Body" + fieldPrefixSeparator %>' type="hidden" />
+					</c:otherwise>
+				</c:choose>
 			</c:otherwise>
 		</c:choose>
 	</aui:field-wrapper>

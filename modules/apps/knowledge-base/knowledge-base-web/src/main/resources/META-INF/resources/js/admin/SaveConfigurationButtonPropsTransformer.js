@@ -14,15 +14,13 @@ export default function propsTransformer({
 			const form = document.getElementById(`${portletNamespace}fm`);
 
 			if (form) {
-				if (emailParam) {
-					const emailParamEditor =
-						window[`${portletNamespace}${emailParam}`].getHTML();
+				const emailParamEditor =
+					emailParam && window[`${portletNamespace}${emailParam}`];
 
-					const emailParamBody = emailParam + 'Body';
-
+				if (emailParamEditor) {
 					document.getElementById(
-						`${portletNamespace}${emailParamBody}`
-					).value = emailParamEditor;
+						`${portletNamespace}${emailParam}Body`
+					).value = emailParamEditor.getHTML();
 				}
 
 				submitForm(form);
