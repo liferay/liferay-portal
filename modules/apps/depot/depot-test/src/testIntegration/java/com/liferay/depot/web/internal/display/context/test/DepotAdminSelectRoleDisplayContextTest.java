@@ -11,6 +11,7 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.test.util.DepotTestUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -32,6 +34,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -41,7 +44,7 @@ import jakarta.portlet.RenderResponse;
 
 import java.lang.reflect.Constructor;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -87,13 +90,13 @@ public class DepotAdminSelectRoleDisplayContextTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_depotEntry = _depotEntryLocalService.addDepotEntry(
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			Collections.emptyMap(), DepotConstants.TYPE_ASSET_LIBRARY,
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(),
+			FeatureFlagManagerUtil.isEnabled(
+				TestPropsValues.getCompanyId(), "LPD-57283"),
+			"LPD-57283");
+
+		_depotEntry = _addDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY);
 	}
 
 	@Test
@@ -115,7 +118,12 @@ public class DepotAdminSelectRoleDisplayContextTest {
 						_getRole(
 							DepotRolesConstants.
 								ASSET_LIBRARY_CONTENT_REVIEWER)),
-					_filterGroupRoles(user));
+					_filterGroupRoles(
+						_depotEntry, user,
+						DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+						DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
+						DepotRolesConstants.ASSET_LIBRARY_MEMBER,
+						DepotRolesConstants.ASSET_LIBRARY_OWNER));
 			});
 	}
 
@@ -125,10 +133,62 @@ public class DepotAdminSelectRoleDisplayContextTest {
 		DepotTestUtil.withAssetLibraryMember(
 			_depotEntry,
 			user -> Assert.assertEquals(
-				Collections.emptyList(), _filterGroupRoles(user)));
+				Collections.emptyList(),
+				_filterGroupRoles(
+					_depotEntry, user,
+					DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+					DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
+					DepotRolesConstants.ASSET_LIBRARY_MEMBER,
+					DepotRolesConstants.ASSET_LIBRARY_OWNER)));
 	}
 
-	private List<Role> _filterGroupRoles(User user) throws Exception {
+	@FeatureFlag("LPD-57283")
+	@Test
+	@TestInfo("LPD-110527")
+	public void testFilterGroupRolesWithDesignLibraryAdministrator()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(
+			DepotConstants.TYPE_DESIGN_LIBRARY);
+
+		DepotTestUtil.withDesignLibraryAdministrator(
+			depotEntry,
+			user -> Assert.assertEquals(
+				Collections.singletonList(
+					_getRole(
+						DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER)),
+				_filterGroupRoles(
+					depotEntry, user,
+					DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+					DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+					DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
+					DepotRolesConstants.DESIGN_LIBRARY_OWNER)));
+	}
+
+	private DepotEntry _addDepotEntry(int type) throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), type,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		_depotEntries.add(depotEntry);
+
+		return depotEntry;
+	}
+
+	private List<Role> _filterGroupRoles(
+			DepotEntry depotEntry, User user, String... roleNames)
+		throws Exception {
+
+		List<Role> roles = new ArrayList<>();
+
+		for (String roleName : roleNames) {
+			roles.add(_getRole(roleName));
+		}
+
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setPermissionChecker(
@@ -142,14 +202,9 @@ public class DepotAdminSelectRoleDisplayContextTest {
 
 		return ReflectionTestUtil.invoke(
 			_constructor.newInstance(
-				_depotEntry.getGroup(), mockLiferayPortletRenderRequest,
+				depotEntry.getGroup(), mockLiferayPortletRenderRequest,
 				new MockLiferayPortletRenderResponse(), user),
-			"_filterGroupRoles", new Class<?>[] {List.class},
-			Arrays.asList(
-				_getRole(DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR),
-				_getRole(DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER),
-				_getRole(DepotRolesConstants.ASSET_LIBRARY_MEMBER),
-				_getRole(DepotRolesConstants.ASSET_LIBRARY_OWNER)));
+			"_filterGroupRoles", new Class<?>[] {List.class}, roles);
 	}
 
 	private Role _getRole(String name) throws Exception {
@@ -159,6 +214,8 @@ public class DepotAdminSelectRoleDisplayContextTest {
 	private static Constructor<?> _constructor;
 
 	@DeleteAfterTestRun
+	private final List<DepotEntry> _depotEntries = new ArrayList<>();
+
 	private DepotEntry _depotEntry;
 
 	@Inject
