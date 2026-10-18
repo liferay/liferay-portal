@@ -407,9 +407,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="C_T" return-type="CPConfigurationEntrySetting" unique="true">
 			<finder-column name="CPConfigurationEntryId" />
 			<finder-column name="type" />
@@ -457,12 +454,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
-		<finder name="ParentCPConfigurationListId" return-type="Collection">
-			<finder-column name="parentCPConfigurationListId" />
-		</finder>
 		<finder name="G_C" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="companyId" />
@@ -471,19 +462,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="master" />
 		</finder>
-		<finder name="LtD_S" return-type="Collection">
-			<finder-column comparator="&lt;" name="displayDate" />
-			<finder-column name="status" />
-		</finder>
 		<finder name="G_C_S" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="companyId" />
 			<finder-column name="status" />
-		</finder>
-		<finder name="G_C_NotS" return-type="Collection">
-			<finder-column arrayable-operator="OR" name="groupId" />
-			<finder-column name="companyId" />
-			<finder-column comparator="!=" name="status" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="CPConfigurationListRel" remote-service="true">
@@ -770,9 +752,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
@@ -840,9 +819,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
@@ -901,9 +877,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="CPDefinitionId" return-type="Collection">
 			<finder-column name="CPDefinitionId" />
 		</finder>
@@ -957,13 +930,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
-		<finder name="G_C" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-		</finder>
 		<finder name="G_LPTEU" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="layoutPageTemplateEntryUuid" />
@@ -973,14 +939,6 @@
 			<finder-column name="layoutUuid" />
 		</finder>
 		<finder name="C_C" return-type="Collection">
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
-		</finder>
-		<finder name="C_C_LPTEU" return-type="Collection" where="layoutPageTemplateEntryUuid IS NOT NULL">
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
-		</finder>
-		<finder name="C_C_L" return-type="Collection" where="layoutUuid IS NOT NULL">
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
@@ -1059,9 +1017,6 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
-		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
 		</finder>
 		<finder name="CPDefinitionId" return-type="Collection">
 			<finder-column name="CPDefinitionId" />
