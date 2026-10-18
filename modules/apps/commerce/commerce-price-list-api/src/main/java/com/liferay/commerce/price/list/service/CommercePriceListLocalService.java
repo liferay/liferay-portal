@@ -391,10 +391,6 @@ public interface CommercePriceListLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePriceList> getCommercePriceLists(
-		long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceList> getCommercePriceLists(
 		long[] groupIds, long companyId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -500,10 +496,6 @@ public interface CommercePriceListLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePriceListsCount(
-		long commercePricingClassId, String name);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePriceListsCount(
 		long[] groupIds, long companyId, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -536,10 +528,6 @@ public interface CommercePriceListLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Hits search(SearchContext searchContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceList> searchByCommercePricingClassId(
-		long commercePricingClassId, String name, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<CommercePriceList> searchCommercePriceLists(
@@ -587,11 +575,6 @@ public interface CommercePriceListLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public void updateCommercePriceListCurrencies(
-			long companyId, String oldCommerceCurrencyCode,
-			String newCommerceCurrencyCode)
-		throws PortalException;
-
 	@Indexable(type = IndexableType.REINDEX)
 	public CommercePriceList updateExternalReferenceCode(
 			CommercePriceList commercePriceList, String externalReferenceCode)
@@ -620,4 +603,4 @@ public interface CommercePriceListLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1530436664
+// LIFERAY-SERVICE-BUILDER-HASH:-1543157920

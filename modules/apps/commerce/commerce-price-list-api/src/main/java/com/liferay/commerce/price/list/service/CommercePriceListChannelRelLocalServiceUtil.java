@@ -352,13 +352,6 @@ public class CommercePriceListChannelRelLocalServiceUtil {
 			commercePriceListId);
 	}
 
-	public static int getCommercePriceListChannelRelsCount(
-		long commercePriceListId, String name) {
-
-		return getService().getCommercePriceListChannelRelsCount(
-			commercePriceListId, name);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -419,4 +412,4 @@ public class CommercePriceListChannelRelLocalServiceUtil {
 			CommercePriceListChannelRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2141169675
+// LIFERAY-SERVICE-BUILDER-HASH:984082755
