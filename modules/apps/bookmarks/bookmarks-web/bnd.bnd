@@ -3,4 +3,3 @@ Bundle-SymbolicName: com.liferay.bookmarks.web
 Bundle-Version: 5.0.80
 Liferay-JS-Config: /META-INF/resources/bookmarks/js/config.js
 Web-ContextPath: /bookmarks-web
--includeresource: @com.liferay.util.java-*.jar!/com/liferay/util/bean/PortletBeanLocatorUtil.class
