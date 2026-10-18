@@ -371,6 +371,8 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 			_createDDMFormFieldRenderingContext();
 
 		ddmFormFieldRenderingContext.setLocale(LocaleUtil.BRAZIL);
+		ddmFormFieldRenderingContext.setPortletNamespace(
+			_PORTLET_NAMESPACE_DDM_FORM);
 
 		Map<String, Object> parameters =
 			documentLibraryDDMFormFieldTemplateContextContributor.getParameters(
@@ -386,6 +388,70 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 		Assert.assertEquals(
 			"you-need-to-be-signed-in-to-edit-this-field_pt_BR",
 			stringsMap.get("signInRequiredErrorMessage"));
+	}
+
+	@Test
+	public void testGetParametersShouldLocalizeStringsUsingUILocaleOutsideForms() {
+		ThemeDisplay themeDisplay = _mockThemeDisplay();
+
+		Mockito.when(
+			themeDisplay.getLocale()
+		).thenReturn(
+			LocaleUtil.US
+		);
+
+		DocumentLibraryDDMFormFieldTemplateContextContributor
+			documentLibraryDDMFormFieldTemplateContextContributor = _createSpy(
+				themeDisplay);
+
+		ResourceBundle brazilResourceBundle = Mockito.mock(
+			ResourceBundle.class);
+
+		Mockito.doReturn(
+			brazilResourceBundle
+		).when(
+			documentLibraryDDMFormFieldTemplateContextContributor
+		).getResourceBundle(
+			LocaleUtil.BRAZIL
+		);
+
+		Mockito.when(
+			_language.get(Mockito.eq(brazilResourceBundle), Mockito.anyString())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1) + "_pt_BR"
+		);
+
+		ResourceBundle usResourceBundle = Mockito.mock(ResourceBundle.class);
+
+		Mockito.doReturn(
+			usResourceBundle
+		).when(
+			documentLibraryDDMFormFieldTemplateContextContributor
+		).getResourceBundle(
+			LocaleUtil.US
+		);
+
+		Mockito.when(
+			_language.get(Mockito.eq(usResourceBundle), Mockito.anyString())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1) + "_en_US"
+		);
+
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
+			_createDDMFormFieldRenderingContext();
+
+		ddmFormFieldRenderingContext.setLocale(LocaleUtil.BRAZIL);
+
+		Map<String, Object> parameters =
+			documentLibraryDDMFormFieldTemplateContextContributor.getParameters(
+				new DDMFormField("field", "document_library"),
+				ddmFormFieldRenderingContext);
+
+		Map<String, String> stringsMap = (Map<String, String>)parameters.get(
+			"strings");
+
+		Assert.assertEquals("clear_en_US", stringsMap.get("clearLabel"));
+		Assert.assertEquals("select_en_US", stringsMap.get("selectLabel"));
 	}
 
 	@Test
