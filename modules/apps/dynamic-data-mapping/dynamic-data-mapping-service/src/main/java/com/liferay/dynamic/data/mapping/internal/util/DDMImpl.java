@@ -895,9 +895,12 @@ public class DDMImpl implements DDM {
 
 		if (ddmTemplate != null) {
 
-			// Clone ddmStructure to make sure changes are never persisted
+			// Clone ddmStructure and lower its MVCC version to make sure
+			// changes are never persisted or cached
 
 			ddmStructure = (DDMStructure)ddmStructure.clone();
+
+			ddmStructure.setMvccVersion(ddmStructure.getMvccVersion() - 1);
 
 			ddmStructure.setDefinition(ddmTemplate.getScript());
 		}
