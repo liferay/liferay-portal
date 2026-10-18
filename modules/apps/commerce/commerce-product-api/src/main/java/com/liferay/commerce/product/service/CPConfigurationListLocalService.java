@@ -160,9 +160,6 @@ public interface CPConfigurationListLocalService
 			long cpConfigurationListId, boolean force)
 		throws PortalException;
 
-	public void deleteCPConfigurationLists(long companyId)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -432,4 +429,4 @@ public interface CPConfigurationListLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-532709251
+// LIFERAY-SERVICE-BUILDER-HASH:1645874392

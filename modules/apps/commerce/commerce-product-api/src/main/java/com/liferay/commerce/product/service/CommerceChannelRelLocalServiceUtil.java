@@ -323,13 +323,6 @@ public class CommerceChannelRelLocalServiceUtil {
 		return getService().getCommerceChannelRelsCount(className, classPK);
 	}
 
-	public static int getCommerceChannelRelsCount(
-		String className, long classPK, String name) {
-
-		return getService().getCommerceChannelRelsCount(
-			className, classPK, name);
-	}
-
 	public static List<CommerceChannelRel>
 		getCommerceCurrencyCommerceChannelRels(
 			long commerceChannelId, String name, int start, int end) {
@@ -410,4 +403,4 @@ public class CommerceChannelRelLocalServiceUtil {
 			CommerceChannelRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-596977391
+// LIFERAY-SERVICE-BUILDER-HASH:1440390388

@@ -177,13 +177,6 @@ public class CPConfigurationListLocalServiceWrapper
 			cpConfigurationListId, force);
 	}
 
-	@Override
-	public void deleteCPConfigurationLists(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_cpConfigurationListLocalService.deleteCPConfigurationLists(companyId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -615,4 +608,4 @@ public class CPConfigurationListLocalServiceWrapper
 	private CPConfigurationListLocalService _cpConfigurationListLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1441783210
+// LIFERAY-SERVICE-BUILDER-HASH:-473596248

@@ -168,12 +168,6 @@ public class CPConfigurationListLocalServiceUtil {
 			cpConfigurationListId, force);
 	}
 
-	public static void deleteCPConfigurationLists(long companyId)
-		throws PortalException {
-
-		getService().deleteCPConfigurationLists(companyId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -521,4 +515,4 @@ public class CPConfigurationListLocalServiceUtil {
 			CPConfigurationListLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1411203783
+// LIFERAY-SERVICE-BUILDER-HASH:-749677816

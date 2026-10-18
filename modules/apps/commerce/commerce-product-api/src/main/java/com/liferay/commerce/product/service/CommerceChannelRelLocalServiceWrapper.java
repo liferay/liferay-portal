@@ -368,14 +368,6 @@ public class CommerceChannelRelLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceChannelRelsCount(
-		String className, long classPK, String name) {
-
-		return _commerceChannelRelLocalService.getCommerceChannelRelsCount(
-			className, classPK, name);
-	}
-
-	@Override
 	public java.util.List<CommerceChannelRel>
 		getCommerceCurrencyCommerceChannelRels(
 			long commerceChannelId, String name, int start, int end) {
@@ -497,4 +489,4 @@ public class CommerceChannelRelLocalServiceWrapper
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1716169947
+// LIFERAY-SERVICE-BUILDER-HASH:682421187

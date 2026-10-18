@@ -280,10 +280,6 @@ public interface CommerceChannelRelLocalService
 	public int getCommerceChannelRelsCount(String className, long classPK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceChannelRelsCount(
-		String className, long classPK, String name);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceChannelRel> getCommerceCurrencyCommerceChannelRels(
 		long commerceChannelId, String name, int start, int end);
 
@@ -347,4 +343,4 @@ public interface CommerceChannelRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-212029171
+// LIFERAY-SERVICE-BUILDER-HASH:-209182612
