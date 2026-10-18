@@ -594,6 +594,22 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 
 		Locale locale = ddmFormFieldRenderingContext.getLocale();
 
+		HttpServletRequest httpServletRequest =
+			ddmFormFieldRenderingContext.getHttpServletRequest();
+
+		if ((httpServletRequest != null) &&
+			!StringUtil.startsWith(
+				ddmFormFieldRenderingContext.getPortletNamespace(),
+				_portal.getPortletNamespace(
+					DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM))) {
+
+			ThemeDisplay themeDisplay = getThemeDisplay(httpServletRequest);
+
+			if (themeDisplay != null) {
+				locale = themeDisplay.getLocale();
+			}
+		}
+
 		if (locale == null) {
 			locale = LocaleUtil.getDefault();
 		}
