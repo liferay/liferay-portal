@@ -44,35 +44,11 @@
 			<finder-column name="userId" />
 			<finder-column name="type" />
 		</finder>
-		<finder name="CCNI_CCPK" return-type="Collection">
-			<finder-column name="creatorClassNameId" />
-			<finder-column arrayable-operator="OR" name="creatorClassPK" />
-		</finder>
-		<finder name="CCNI_T" return-type="Collection">
-			<finder-column name="creatorClassNameId" />
-			<finder-column name="type" />
-		</finder>
 		<finder name="T_P" return-type="Collection">
 			<finder-column name="type" />
 			<finder-column name="parentMicroblogsEntryId" />
 		</finder>
-		<finder name="C_CCNI_CCPK" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="creatorClassNameId" />
-			<finder-column arrayable-operator="OR" name="creatorClassPK" />
-		</finder>
-		<finder name="C_CCNI_T" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="creatorClassNameId" />
-			<finder-column name="type" />
-		</finder>
 		<finder name="CCNI_CCPK_T" return-type="Collection">
-			<finder-column name="creatorClassNameId" />
-			<finder-column arrayable-operator="OR" name="creatorClassPK" />
-			<finder-column name="type" />
-		</finder>
-		<finder name="C_CCNI_CCPK_T" return-type="Collection">
-			<finder-column name="companyId" />
 			<finder-column name="creatorClassNameId" />
 			<finder-column arrayable-operator="OR" name="creatorClassPK" />
 			<finder-column name="type" />
