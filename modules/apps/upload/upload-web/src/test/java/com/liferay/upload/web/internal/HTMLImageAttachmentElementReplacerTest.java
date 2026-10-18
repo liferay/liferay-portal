@@ -68,7 +68,8 @@ public class HTMLImageAttachmentElementReplacerTest {
 			"<img class=\"custom\" data-image-id=\"%s\" src=\"%s\" />",
 			_IMAGE_FILE_ENTRY_ID, StringUtil.randomString());
 		String expectedImgTag = String.format(
-			"<img class=\"custom\" src=\"%s\" />", _FILE_ENTRY_IMAGE_URL);
+			"<img class=\"custom\" src=\"%s\" data-fileentryid=\"%s\" />",
+			_FILE_ENTRY_IMAGE_URL, _IMAGE_FILE_ENTRY_ID);
 
 		String actualTag = _htmlImageAttachmentElementReplacer.replace(
 			originalImgTag, _fileEntry);
@@ -82,7 +83,8 @@ public class HTMLImageAttachmentElementReplacerTest {
 			"<img data-image-id=\"%s\" src=\"%s\" />", _IMAGE_FILE_ENTRY_ID,
 			StringUtil.randomString());
 		String expectedImgTag = String.format(
-			"<img src=\"%s\" />", _FILE_ENTRY_IMAGE_URL);
+			"<img src=\"%s\" data-fileentryid=\"%s\" />", _FILE_ENTRY_IMAGE_URL,
+			_IMAGE_FILE_ENTRY_ID);
 
 		String actualTag = _htmlImageAttachmentElementReplacer.replace(
 			originalImgTag, _fileEntry);

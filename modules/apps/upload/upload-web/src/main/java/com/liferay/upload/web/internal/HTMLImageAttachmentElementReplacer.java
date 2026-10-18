@@ -5,6 +5,7 @@
 
 package com.liferay.upload.web.internal;
 
+import com.liferay.adaptive.media.image.html.constants.AMImageHTMLConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.editor.constants.EditorConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
@@ -39,6 +40,10 @@ public class HTMLImageAttachmentElementReplacer
 		element.attr("src", fileEntryURL);
 
 		element.removeAttr(EditorConstants.ATTRIBUTE_DATA_IMAGE_ID);
+
+		element.attr(
+			AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID,
+			String.valueOf(fileEntry.getFileEntryId()));
 
 		return element.toString();
 	}
