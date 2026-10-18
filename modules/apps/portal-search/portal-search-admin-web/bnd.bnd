@@ -2,4 +2,3 @@ Bundle-Name: Liferay Portal Search Admin Web
 Bundle-SymbolicName: com.liferay.portal.search.admin.web
 Bundle-Version: 4.0.104
 Web-ContextPath: /portal-search-admin-web
--includeresource: package.json
