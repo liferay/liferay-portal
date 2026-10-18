@@ -1,9 +1,7 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "org.apache.commons", name: "commons-collections4", version: "4.5.0"
-	testIntegrationImplementation group: "org.apache.commons", name: "commons-compress", version: "1.26.0"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi", version: "5.4.1"
-	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.4.1"
 	testIntegrationImplementation project(":apps:application-list:application-list-api")
 	testIntegrationImplementation project(":apps:asset:asset-entry-rel-api")
