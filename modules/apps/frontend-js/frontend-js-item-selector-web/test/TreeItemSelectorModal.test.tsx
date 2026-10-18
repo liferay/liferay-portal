@@ -215,6 +215,42 @@ describe('TreeItemSelectorModal', () => {
 		expect(emittedItems[0].id).toEqual(ROOT_LEAF.id);
 	});
 
+	it('selects a parent and its children with Shift+Space in multi-select', async () => {
+		const user = userEvent.setup();
+
+		const {findByRole} = render(
+			<Wrapper multiSelect={true} onItemsChange={jest.fn()} />
+		);
+
+		const modal = await findByRole('dialog');
+
+		const parentNode = (await within(modal).findByText('Parent')).closest(
+			'.treeview-link'
+		) as HTMLElement;
+
+		parentNode.focus();
+
+		await user.keyboard('{ArrowRight}');
+
+		await within(modal).findByText('Alpha');
+
+		const getCheckbox = (name: string) =>
+			within(modal)
+				.getByText(name)
+				.closest('.treeview-item')
+				?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+
+		parentNode.focus();
+
+		await user.keyboard('{Shift>} {/Shift}');
+
+		await waitFor(() => {
+			expect(getCheckbox('Alpha')).toBeChecked();
+		});
+
+		expect(getCheckbox('Beta')).toBeChecked();
+	});
+
 	it('keeps ancestor nodes visible when search matches a descendant only', async () => {
 		const user = userEvent.setup();
 
