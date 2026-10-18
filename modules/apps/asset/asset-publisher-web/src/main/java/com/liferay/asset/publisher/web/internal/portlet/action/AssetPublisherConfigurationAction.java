@@ -468,13 +468,10 @@ public class AssetPublisherConfigurationAction extends BaseConfigurationAction {
 			actionRequest, "assetEntryIds");
 		int assetEntryOrder = ParamUtil.getInteger(
 			actionRequest, "assetEntryOrder");
-		String assetEntryType = ParamUtil.getString(
-			actionRequest, "assetEntryType");
 
 		for (long assetEntryId : assetEntryIds) {
 			assetPublisherWebHelper.addSelection(
-				portletPreferences, assetEntryId, assetEntryOrder,
-				assetEntryType);
+				portletPreferences, assetEntryId, assetEntryOrder);
 		}
 	}
 

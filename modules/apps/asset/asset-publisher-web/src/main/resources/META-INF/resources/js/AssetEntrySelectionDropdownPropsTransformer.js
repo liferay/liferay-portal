@@ -38,7 +38,6 @@ export default function propsTransformer({
 										selectedAssetEntry.assetEntryId
 								)
 								.join(','),
-							assetEntryType: selectedAssetEntries[0].className,
 							cmd: 'add-selection',
 							redirect: currentURL,
 						},

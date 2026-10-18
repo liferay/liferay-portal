@@ -134,15 +134,14 @@ public class AssetPublisherWebHelper {
 			className, classPK);
 
 		addSelection(
-			portletPreferences, assetEntry.getEntryId(), assetEntryOrder,
-			className);
+			portletPreferences, assetEntry.getEntryId(), assetEntryOrder);
 
 		portletPreferences.store();
 	}
 
 	public void addSelection(
 			PortletPreferences portletPreferences, long assetEntryId,
-			int assetEntryOrder, String assetEntryType)
+			int assetEntryOrder)
 		throws Exception {
 
 		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
@@ -152,7 +151,7 @@ public class AssetPublisherWebHelper {
 			"assetEntryXml", new String[0]);
 
 		String assetEntryXml = _getAssetEntryXml(
-			assetEntryType, assetEntry.getClassUuid());
+			assetEntry.getClassName(), assetEntry.getClassUuid());
 
 		if (!ArrayUtil.contains(assetEntryXmls, assetEntryXml)) {
 			if (assetEntryOrder > -1) {
@@ -182,11 +181,8 @@ public class AssetPublisherWebHelper {
 		long assetEntryId = ParamUtil.getLong(portletRequest, "assetEntryId");
 		int assetEntryOrder = ParamUtil.getInteger(
 			portletRequest, "assetEntryOrder");
-		String assetEntryType = ParamUtil.getString(
-			portletRequest, "assetEntryType");
 
-		addSelection(
-			portletPreferences, assetEntryId, assetEntryOrder, assetEntryType);
+		addSelection(portletPreferences, assetEntryId, assetEntryOrder);
 	}
 
 	public String encodeName(

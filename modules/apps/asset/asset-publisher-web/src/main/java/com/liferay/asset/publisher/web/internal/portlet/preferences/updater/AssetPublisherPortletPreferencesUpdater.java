@@ -55,8 +55,7 @@ public class AssetPublisherPortletPreferencesUpdater
 			className, classPK);
 
 		_assetPublisherWebHelper.addSelection(
-			portletPreferences, assetEntry.getEntryId(), -1,
-			assetEntry.getClassName());
+			portletPreferences, assetEntry.getEntryId(), -1);
 
 		_addLayoutClassedModelUsage(
 			assetEntry.getClassNameId(), assetEntry.getClassPK(),
