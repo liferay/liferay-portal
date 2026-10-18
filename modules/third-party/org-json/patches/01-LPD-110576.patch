@@ -1,0 +1,28 @@
+diff --git a/org/json/JSONObject.java b/org/json/JSONObject.java
+index fbf225e9f9e23..c9084e9f8a95a 100644
+--- a/org/json/JSONObject.java
++++ b/org/json/JSONObject.java
+@@ -2810,7 +2810,7 @@ public class JSONObject {
+             if (length == 1) {
+             	final Entry<String,?> entry = this.entrySet().iterator().next();
+                 final String key = entry.getKey();
+-                writer.write(quote(key));
++                quote(key, writer);
+                 writer.write(':');
+                 if (indentFactor > 0) {
+                     writer.write(' ');
+@@ -2831,7 +2831,7 @@ public class JSONObject {
+                     }
+                     indent(writer, newIndent);
+                     final String key = entry.getKey();
+-                    writer.write(quote(key));
++                    quote(key, writer);
+                     writer.write(':');
+                     if (indentFactor > 0) {
+                         writer.write(' ');
+@@ -2942,3 +2942,4 @@ public class JSONObject {
+         return "0";
+     }
+ }
++/* @generated */
+\ No newline at end of file
