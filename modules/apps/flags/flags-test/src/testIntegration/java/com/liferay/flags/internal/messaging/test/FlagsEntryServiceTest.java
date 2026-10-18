@@ -14,14 +14,21 @@ import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlEscapableObject;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -30,6 +37,7 @@ import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.After;
@@ -44,6 +52,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Pei-Jung Lan
@@ -104,6 +114,76 @@ public class FlagsEntryServiceTest {
 			mockSubscriptionSenderMessageListener.getSubscriptionSender());
 	}
 
+	@Test
+	public void testNotifyAfterRequestIsRecycled() throws Exception {
+		MockSubscriptionSenderMessageListener
+			mockSubscriptionSenderMessageListener =
+				new MockSubscriptionSenderMessageListener();
+
+		_registerDestination(mockSubscriptionSenderMessageListener);
+
+		User user = TestPropsValues.getUser();
+
+		int portalServerPort = PortalUtil.getPortalServerPort(false);
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			CompanyLocalServiceUtil.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setLocale(LocaleUtil.getDefault());
+		themeDisplay.setPortalURL(
+			PortalUtil.getPortalURL("localhost", portalServerPort, false));
+		themeDisplay.setScopeGroupId(TestPropsValues.getGroupId());
+		themeDisplay.setServerName("localhost");
+		themeDisplay.setServerPort(portalServerPort);
+		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
+		themeDisplay.setUser(user);
+
+		Thread thread = Thread.currentThread();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest() {
+
+				@Override
+				public Object getAttribute(String name) {
+					if (thread != Thread.currentThread()) {
+						throw new IllegalStateException(
+							"The request object has been recycled");
+					}
+
+					return super.getAttribute(name);
+				}
+
+			};
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setRequest(mockHttpServletRequest);
+
+		_flagsEntryService.addEntry(
+			RandomTestUtil.randomString(), 0L,
+			RandomTestUtil.randomString() + "@liferay.com", user.getUserId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		mockSubscriptionSenderMessageListener.block();
+
+		SubscriptionSender subscriptionSender =
+			mockSubscriptionSenderMessageListener.getSubscriptionSender();
+
+		HtmlEscapableObject htmlEscapableObject =
+			(HtmlEscapableObject)subscriptionSender.getContextAttribute(
+				"[$REPORTED_USER_URL$]");
+
+		Assert.assertEquals(
+			user.getDisplayURL(themeDisplay),
+			htmlEscapableObject.getOriginalValue());
+	}
+
 	private void _assertContentAttributesEscaped(
 		Map<String, String> contentAttributes,
 		SubscriptionSender subscriptionSender) {
@@ -153,7 +233,7 @@ public class FlagsEntryServiceTest {
 		extends BaseMessageListener {
 
 		public void block() throws Exception {
-			_countDownLatch.await();
+			Assert.assertTrue(_countDownLatch.await(30, TimeUnit.SECONDS));
 		}
 
 		public SubscriptionSender getSubscriptionSender() {
