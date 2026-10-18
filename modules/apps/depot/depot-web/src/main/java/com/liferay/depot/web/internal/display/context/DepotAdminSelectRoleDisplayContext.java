@@ -398,18 +398,8 @@ public class DepotAdminSelectRoleDisplayContext {
 			return ListUtil.filter(
 				roles,
 				role ->
-					!Objects.equals(
-						DepotRolesConstants.ASSET_LIBRARY_CONNECTED_SITE_MEMBER,
-						role.getName()) &&
-					!Objects.equals(
-						DepotRolesConstants.ASSET_LIBRARY_MEMBER,
-						role.getName()) &&
-					!Objects.equals(
-						DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-						role.getName()) &&
-					!Objects.equals(
-						DepotRolesConstants.ASSET_LIBRARY_OWNER,
-						role.getName()) &&
+					!ArrayUtil.contains(
+						_ROLE_NAMES_UNASSIGNABLE, role.getName()) &&
 					RolePermissionUtil.contains(
 						permissionChecker, _group.getGroupId(),
 						role.getRoleId(), ActionKeys.ASSIGN_MEMBERS));
@@ -471,6 +461,17 @@ public class DepotAdminSelectRoleDisplayContext {
 
 		return portletURL;
 	}
+
+	private static final String[] _ROLE_NAMES_UNASSIGNABLE = {
+		DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+		DepotRolesConstants.ASSET_LIBRARY_CONNECTED_SITE_MEMBER,
+		DepotRolesConstants.ASSET_LIBRARY_MEMBER,
+		DepotRolesConstants.ASSET_LIBRARY_OWNER,
+		DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+		DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
+		DepotRolesConstants.DESIGN_LIBRARY_OWNER,
+		DepotRolesConstants.PROJECT_MEMBER
+	};
 
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
