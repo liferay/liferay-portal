@@ -73,6 +73,7 @@ public class HTMLImageAttachmentElementHandlerTest {
 				invocationOnMock.getArgument(0, Long.class))
 		);
 
+		_testReplaceAttachmentElementsWithHyphenatedAttribute();
 		_testReplaceAttachmentElementsWithMultipleImages();
 		_testReplaceAttachmentElementsWithRepeatedImage();
 	}
@@ -181,6 +182,18 @@ public class HTMLImageAttachmentElementHandlerTest {
 		return StringBundler.concat(
 			"<img ", EditorConstants.ATTRIBUTE_DATA_IMAGE_ID, "=\"",
 			fileEntryId, "\" />");
+	}
+
+	private void _testReplaceAttachmentElementsWithHyphenatedAttribute()
+		throws Exception {
+
+		Assert.assertEquals(
+			"<img aria-label=\"a\" src=\"/final/1004\" data-fileentryid=" +
+				"\"1004\" />",
+			_htmlImageAttachmentElementHandler.replaceAttachmentElements(
+				"<img aria-label=\"a\" data-image-id=\"4\" src=\"/temp/4\" />",
+				tempFileEntry -> _createFileEntry(
+					tempFileEntry.getFileEntryId() + 1000)));
 	}
 
 	private void _testReplaceAttachmentElementsWithMultipleImages()
