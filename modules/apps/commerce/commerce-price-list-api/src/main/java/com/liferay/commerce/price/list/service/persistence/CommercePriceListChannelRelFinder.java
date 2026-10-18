@@ -15,9 +15,6 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface CommercePriceListChannelRelFinder {
 
 	public int countByCommercePriceListId(
-		long commercePriceListId, String name);
-
-	public int countByCommercePriceListId(
 		long commercePriceListId, String name, boolean inlineSQLHelper);
 
 	public java.util.List
@@ -32,4 +29,4 @@ public interface CommercePriceListChannelRelFinder {
 				boolean inlineSQLHelper);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-659004186
+// LIFERAY-SERVICE-BUILDER-HASH:89949623
