@@ -330,6 +330,22 @@ function TreeItemSelectorModal({
 		});
 	};
 
+	const handleShiftKeyDown = (
+		event: React.KeyboardEvent,
+		selection: Parameters<typeof toggleWithShift>[0],
+		id: React.Key
+	) => {
+		if (
+			multiSelect &&
+			event.shiftKey &&
+			(event.key === ' ' || event.key === 'Enter')
+		) {
+			event.preventDefault();
+
+			toggleWithShift(selection, id, true);
+		}
+	};
+
 	if (!open) {
 		return <></>;
 	}
@@ -505,7 +521,17 @@ function TreeItemSelectorModal({
 						>
 							{(item: ITaxonomyCategoryTreeNode, selection) => (
 								<ClayTreeView.Item>
-									<ClayTreeView.ItemStack>
+									<ClayTreeView.ItemStack
+										onKeyDown={(
+											event: React.KeyboardEvent
+										) =>
+											handleShiftKeyDown(
+												event,
+												selection,
+												item.id
+											)
+										}
+									>
 										{multiSelect && (
 											<ClayCheckbox
 												checked={selection.has(item.id)}
@@ -537,7 +563,17 @@ function TreeItemSelectorModal({
 											{(
 												child: ITaxonomyCategoryTreeNode
 											) => (
-												<ClayTreeView.Item>
+												<ClayTreeView.Item
+													onKeyDown={(
+														event: React.KeyboardEvent
+													) =>
+														handleShiftKeyDown(
+															event,
+															selection,
+															child.id
+														)
+													}
+												>
 													{multiSelect && (
 														<ClayCheckbox
 															checked={selection.has(
