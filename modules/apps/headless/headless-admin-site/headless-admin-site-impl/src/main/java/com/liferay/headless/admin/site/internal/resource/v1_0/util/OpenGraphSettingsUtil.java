@@ -59,10 +59,14 @@ public class OpenGraphSettingsUtil {
 						}
 
 						FileEntry fileEntry =
-							dlAppService.getFileEntryByExternalReferenceCode(
+							dlAppService.fetchFileEntryByExternalReferenceCode(
 								openGraphImageFileEntryERC,
 								layoutSEOEntry.
 									getOpenGraphImageFileEntryGroupId());
+
+						if (fileEntry == null) {
+							return null;
+						}
 
 						return new ItemExternalReference() {
 							{
