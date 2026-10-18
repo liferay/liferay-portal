@@ -103,6 +103,9 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -1683,7 +1686,17 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		permissionBulkAction.setType(
 			BulkAction.Type.PERMISSION_OBJECT_BULK_SELECTION_ACTION);
 
-		_postBulkAction(permissionBulkAction);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.json.jabsorb.serializer." +
+					"LiferayJSONDeserializationWhitelist",
+				LoggerTestUtil.WARN)) {
+
+			_postBulkAction(permissionBulkAction);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+		}
 
 		ResourcePermission resourcePermission =
 			_resourcePermissionLocalService.getResourcePermission(
@@ -1798,7 +1811,17 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		permissionBulkAction.setType(
 			BulkAction.Type.PERMISSION_OBJECT_BULK_SELECTION_ACTION);
 
-		_postBulkAction(permissionBulkAction);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.json.jabsorb.serializer." +
+					"LiferayJSONDeserializationWhitelist",
+				LoggerTestUtil.WARN)) {
+
+			_postBulkAction(permissionBulkAction);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+		}
 
 		ResourcePermission resourcePermission =
 			_resourcePermissionLocalService.getResourcePermission(
