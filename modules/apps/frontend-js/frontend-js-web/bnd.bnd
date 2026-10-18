@@ -6,4 +6,3 @@ Provide-Capability:\
 		osgi.extender="liferay.js";\
 		version:Version="${Bundle-Version}"
 Web-ContextPath: /frontend-js-web
--donotcopy: (\.touch|.*_diffs.*)
