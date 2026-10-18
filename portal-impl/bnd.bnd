@@ -45,8 +45,6 @@ Export-Package:\
 Import-Package: *
 Include-Resource: classes
 Liferay-Service: true
-Private-Package: com.liferay.*.dependencies
--donotcopy: (log4j\.properties|logging\.properties|portal-.*\.properties|system-.*\.properties|\.touch)
 -include ../common.bnd
 -removeheaders:\
 	Bnd-LastModified,\

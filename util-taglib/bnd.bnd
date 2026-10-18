@@ -18,11 +18,7 @@ Import-Package:\
 	*
 Include-Resource:\
 	classes,\
-	@../util-java/util-java.jar!/com/liferay/util/Encryptor.class,\
-	@../util-java/util-java.jar!/com/liferay/util/EncryptorException.class,\
-	@../util-java/util-java.jar!/com/liferay/util/JS.class,\
-	@../util-java/util-java.jar!/com/liferay/util/PwdGenerator.class,\
-	@../util-java/util-java.jar!/com/liferay/util/RSSUtil.class
+	@../util-java/util-java.jar!/com/liferay/util/JS.class
 Provide-Capability:\
 	osgi.extender;\
 		osgi.extender="jsp.taglib";\
