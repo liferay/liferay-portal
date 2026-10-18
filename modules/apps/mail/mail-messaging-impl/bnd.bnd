@@ -8,4 +8,3 @@ Import-Package:\
 	org.eclipse.angus.mail.smtp,\
 	\
 	*
--includeresource: META-INF/services/jakarta.mail.Provider=src/main/resources/META-INF/services/jakarta.mail.Provider
