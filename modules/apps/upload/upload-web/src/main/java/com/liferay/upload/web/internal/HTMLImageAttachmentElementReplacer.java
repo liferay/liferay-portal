@@ -10,27 +10,23 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.editor.constants.EditorConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.upload.AttachmentElementReplacer;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Alejandro Tardín
  * @author Jürgen Kappler
  */
-@Component(
-	property = {"format=html", "html.tag.name=img"},
-	service = AttachmentElementReplacer.class
-)
-public class HTMLImageAttachmentElementReplacer
-	implements AttachmentElementReplacer {
+public class HTMLImageAttachmentElementReplacer {
 
-	@Override
+	public HTMLImageAttachmentElementReplacer(
+		PortletFileRepository portletFileRepository) {
+
+		_portletFileRepository = portletFileRepository;
+	}
+
 	public String replace(String originalImgHtmlElement, FileEntry fileEntry) {
 		Element element = _toElement(originalImgHtmlElement);
 
@@ -63,7 +59,6 @@ public class HTMLImageAttachmentElementReplacer
 		return bodyElement.child(0);
 	}
 
-	@Reference
-	private PortletFileRepository _portletFileRepository;
+	private final PortletFileRepository _portletFileRepository;
 
 }

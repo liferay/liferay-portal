@@ -10,20 +10,19 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.editor.constants.EditorConstants;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.upload.AttachmentElementHandler;
-import com.liferay.upload.AttachmentElementReplacer;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Alejandro Tardín
@@ -64,12 +63,19 @@ public class HTMLImageAttachmentElementHandler
 			matcher.appendReplacement(
 				sb,
 				Matcher.quoteReplacement(
-					_attachmentElementReplacer.replace(fileName, fileEntry)));
+					_htmlImageAttachmentElementReplacer.replace(
+						fileName, fileEntry)));
 		}
 
 		matcher.appendTail(sb);
 
 		return sb.toString();
+	}
+
+	@Activate
+	protected void activate() {
+		_htmlImageAttachmentElementReplacer =
+			new HTMLImageAttachmentElementReplacer(_portletFileRepository);
 	}
 
 	private FileEntry _getFileEntry(Matcher matcher) throws PortalException {
@@ -89,14 +95,13 @@ public class HTMLImageAttachmentElementHandler
 				"([^\"]*)\"", _ATTRIBUTE_LIST_REGEXP, "/>"));
 	}
 
-	@Reference(
-		policy = ReferencePolicy.DYNAMIC,
-		policyOption = ReferencePolicyOption.GREEDY,
-		target = "(&(format=html)(html.tag.name=img))"
-	)
-	private volatile AttachmentElementReplacer _attachmentElementReplacer;
-
 	@Reference
 	private DLAppService _dlAppService;
+
+	private HTMLImageAttachmentElementReplacer
+		_htmlImageAttachmentElementReplacer;
+
+	@Reference
+	private PortletFileRepository _portletFileRepository;
 
 }

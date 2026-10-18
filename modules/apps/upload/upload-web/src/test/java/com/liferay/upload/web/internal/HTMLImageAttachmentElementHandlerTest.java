@@ -8,13 +8,13 @@ package com.liferay.upload.web.internal;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.editor.constants.EditorConstants;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.upload.AttachmentElementReplacer;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,22 +36,13 @@ public class HTMLImageAttachmentElementHandlerTest {
 
 	@Before
 	public void setUp() {
-		AttachmentElementReplacer attachmentElementReplacer = Mockito.mock(
-			AttachmentElementReplacer.class);
-
-		Mockito.when(
-			attachmentElementReplacer.replace(
-				Mockito.anyString(), Mockito.any())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(0, String.class)
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			_htmlImageAttachmentElementHandler, "_attachmentElementReplacer",
-			attachmentElementReplacer);
-
 		ReflectionTestUtil.setFieldValue(
 			_htmlImageAttachmentElementHandler, "_dlAppService", _dlAppService);
+		ReflectionTestUtil.setFieldValue(
+			_htmlImageAttachmentElementHandler, "_portletFileRepository",
+			Mockito.mock(PortletFileRepository.class));
+
+		_htmlImageAttachmentElementHandler.activate();
 	}
 
 	@Test

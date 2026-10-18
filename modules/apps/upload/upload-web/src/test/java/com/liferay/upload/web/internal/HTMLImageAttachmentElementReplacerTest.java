@@ -9,7 +9,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileEntryWrapper;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -55,11 +54,7 @@ public class HTMLImageAttachmentElementReplacerTest {
 		);
 
 		_htmlImageAttachmentElementReplacer =
-			new HTMLImageAttachmentElementReplacer();
-
-		ReflectionTestUtil.setFieldValue(
-			_htmlImageAttachmentElementReplacer, "_portletFileRepository",
-			_portletFileRepository);
+			new HTMLImageAttachmentElementReplacer(_portletFileRepository);
 	}
 
 	@Test
