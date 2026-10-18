@@ -140,8 +140,7 @@ public class FlagsRequestMessageListener extends BaseMessageListener {
 		else {
 			reportedUserName = reportedUser.getFullName();
 			reportedEmailAddress = reportedUser.getEmailAddress();
-			reportedURL = reportedUser.getDisplayURL(
-				serviceContext.getThemeDisplay());
+			reportedURL = flagsRequest.getReportedUserURL();
 		}
 
 		// Content

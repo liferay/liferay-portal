@@ -6,6 +6,7 @@
 package com.liferay.flags.internal.messaging;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.io.Serializable;
@@ -62,6 +63,10 @@ public class FlagsRequest implements Serializable {
 		return _reportedUserId;
 	}
 
+	public String getReportedUserURL() {
+		return _reportedUserURL;
+	}
+
 	public String getReporterEmailAddress() {
 		return _reporterEmailAddress;
 	}
@@ -98,6 +103,10 @@ public class FlagsRequest implements Serializable {
 		_reportedUserId = reportedUserId;
 	}
 
+	public void setReportedUserURL(String reportedUserURL) {
+		_reportedUserURL = reportedUserURL;
+	}
+
 	public void setReporterEmailAddress(String reporterEmailAddress) {
 		_reporterEmailAddress = reporterEmailAddress;
 	}
@@ -112,7 +121,8 @@ public class FlagsRequest implements Serializable {
 			"{className=", _className, ", classPK=", _classPK, ", comments=",
 			_comments, ", contentTitle=", _contentTitle, ", contentURL=",
 			_contentURL, ", reason=", _reason, ", reportedUserId=",
-			_reportedUserId, ", reporterEmailAddress=", _reporterEmailAddress,
+			_reportedUserId, ", reportedUserURL=", _reportedUserURL,
+			", reporterEmailAddress=", _reporterEmailAddress,
 			", serviceContext=", _serviceContext, "}");
 	}
 
@@ -123,6 +133,7 @@ public class FlagsRequest implements Serializable {
 	private String _contentURL;
 	private String _reason;
 	private long _reportedUserId;
+	private String _reportedUserURL = StringPool.BLANK;
 	private String _reporterEmailAddress;
 	private ServiceContext _serviceContext;
 

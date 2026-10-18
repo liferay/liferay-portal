@@ -15,10 +15,14 @@ import com.liferay.portal.kernel.exception.EmailAddressException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceMode;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Component;
@@ -52,6 +56,19 @@ public class FlagsEntryServiceImpl extends FlagsEntryServiceBaseImpl {
 			className, classPK, reporterEmailAddress, reportedUserId,
 			contentTitle, contentURL, reason, serviceContext);
 
+		User reportedUser = _userLocalService.fetchUser(reportedUserId);
+
+		if ((reportedUser != null) && !reportedUser.isGuestUser()) {
+			try {
+				flagsRequest.setReportedUserURL(
+					reportedUser.getDisplayURL(
+						serviceContext.getThemeDisplay()));
+			}
+			catch (PortalException portalException) {
+				_log.error(portalException);
+			}
+		}
+
 		Message message = new Message();
 
 		message.setPayload(flagsRequest);
@@ -73,6 +90,9 @@ public class FlagsEntryServiceImpl extends FlagsEntryServiceBaseImpl {
 		}
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		FlagsEntryServiceImpl.class);
+
 	@Reference
 	private MBMessageService _mbMessageService;
 
@@ -81,5 +101,8 @@ public class FlagsEntryServiceImpl extends FlagsEntryServiceBaseImpl {
 
 	@Reference
 	private MessageBus _messageBus;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
