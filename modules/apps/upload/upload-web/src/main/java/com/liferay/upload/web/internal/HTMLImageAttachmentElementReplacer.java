@@ -6,14 +6,12 @@
 package com.liferay.upload.web.internal;
 
 import com.liferay.adaptive.media.image.html.constants.AMImageHTMLConstants;
+import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.editor.constants.EditorConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 /**
  * @author Alejandro Tardín
@@ -27,37 +25,59 @@ public class HTMLImageAttachmentElementReplacer {
 		_portletFileRepository = portletFileRepository;
 	}
 
-	public String replace(String originalImgHtmlElement, FileEntry fileEntry) {
-		Element element = _toElement(originalImgHtmlElement);
+	public String replace(String imgTag, FileEntry fileEntry) {
+		int dataImageIdIndex = imgTag.indexOf(_DATA_IMAGE_ID_PREFIX);
+
+		int dataImageIdEndIndex = imgTag.indexOf(
+			CharPool.QUOTE, dataImageIdIndex + _DATA_IMAGE_ID_PREFIX.length());
+
+		int endIndex = imgTag.length() - 2;
+
+		if (imgTag.charAt(endIndex - 1) == CharPool.SPACE) {
+			endIndex--;
+		}
 
 		String fileEntryURL = _portletFileRepository.getPortletFileEntryURL(
 			null, fileEntry, StringPool.BLANK);
 
-		element.attr("src", fileEntryURL);
+		StringBundler sb = new StringBundler(8);
 
-		element.removeAttr(EditorConstants.ATTRIBUTE_DATA_IMAGE_ID);
+		sb.append(imgTag.substring(0, dataImageIdIndex - 1));
 
-		element.attr(
-			AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID,
-			String.valueOf(fileEntry.getFileEntryId()));
+		int srcIndex = imgTag.indexOf(_SRC_PREFIX, dataImageIdEndIndex);
 
-		return element.toString();
+		if (srcIndex == -1) {
+			sb.append(imgTag.substring(dataImageIdEndIndex + 1, endIndex));
+			sb.append(_SRC_PREFIX);
+			sb.append(fileEntryURL);
+			sb.append(CharPool.QUOTE);
+		}
+		else {
+			srcIndex += _SRC_PREFIX.length();
+
+			sb.append(imgTag.substring(dataImageIdEndIndex + 1, srcIndex));
+			sb.append(fileEntryURL);
+			sb.append(
+				imgTag.substring(
+					imgTag.indexOf(CharPool.QUOTE, srcIndex), endIndex));
+		}
+
+		sb.append(_DATA_FILE_ENTRY_ID_PREFIX);
+		sb.append(fileEntry.getFileEntryId());
+		sb.append("\" />");
+
+		return sb.toString();
 	}
 
-	private Element _toElement(String originalImgTag) {
-		Document document = Jsoup.parseBodyFragment(originalImgTag);
+	private static final String _DATA_FILE_ENTRY_ID_PREFIX =
+		StringBundler.concat(
+			StringPool.SPACE, AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID,
+			"=\"");
 
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
+	private static final String _DATA_IMAGE_ID_PREFIX =
+		EditorConstants.ATTRIBUTE_DATA_IMAGE_ID + "=\"";
 
-		outputSettings.prettyPrint(false);
-		outputSettings.syntax(Document.OutputSettings.Syntax.xml);
-
-		document.outputSettings(outputSettings);
-
-		Element bodyElement = document.body();
-
-		return bodyElement.child(0);
-	}
+	private static final String _SRC_PREFIX = " src=\"";
 
 	private final PortletFileRepository _portletFileRepository;
 
