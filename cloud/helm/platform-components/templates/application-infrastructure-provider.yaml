@@ -31,6 +31,10 @@ spec:
                     {{- end }}
                     -   name: deploymentName
                         value: {{ .Values.deploymentContext.deploymentName | quote }}
+                    {{- with .Values.database.engine }}
+                    -   name: liferay-subchart-backup-restore.database.engine
+                        value: {{ . | quote }}
+                    {{- end }}
                 valueFiles:
                     -   $values/{{ .Values.gitops.layout.system }}/{{ .Values.gitops.layout.infrastructureProviderValuesFilename }}
         -   ref: values

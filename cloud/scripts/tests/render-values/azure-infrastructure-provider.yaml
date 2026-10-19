@@ -9,3 +9,6 @@ deploymentContext:
     resourceGroupName: liferay-example
     subscriptionId: 00000000-0000-0000-0000-000000000000
     tenantId: 33333333-3333-3333-3333-333333333333
+liferay-subchart-backup-restore:
+    database:
+        engine: postgresql

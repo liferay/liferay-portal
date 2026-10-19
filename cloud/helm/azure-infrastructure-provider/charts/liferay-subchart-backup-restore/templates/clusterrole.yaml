@@ -27,7 +27,7 @@ rules:
         verbs:
             -   get
             -   list
-    -   apiGroups: ["dbforpostgresql.azure.m.upbound.io"]
+    -   apiGroups: [{{ include "backupRestore.databaseApiGroup" . | quote }}]
         resources: ["flexibleservers"]
         verbs:
             -   get

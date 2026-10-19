@@ -42,7 +42,7 @@ function main {
 	echo "${data_plane_inactive}" > /tmp/data-plane-inactive.txt
 
 	if [ -n "$( \
-		kubectl get flexibleservers.dbforpostgresql.azure.m.upbound.io \
+		kubectl get flexibleservers.{{ include "backupRestore.databaseApiGroup" . }} \
 			--output jsonpath="{.items[*].metadata.name}" \
 			--selector "dataPlane=${data_plane_inactive}")" ]
 	then
@@ -99,7 +99,7 @@ function main {
 	local data_plane_key_active
 
 	data_plane_key_active=$( \
-		kubectl get flexibleservers.dbforpostgresql.azure.m.upbound.io \
+		kubectl get flexibleservers.{{ include "backupRestore.databaseApiGroup" . }} \
 			--output jsonpath="{.items[0].metadata.labels.dataPlaneKey}" \
 			--selector "dataPlane=${data_plane_active}")
 
@@ -110,7 +110,7 @@ function main {
 
 	echo "${data_plane_key_active}" > /tmp/data-plane-key-active.txt
 
-	kubectl get flexibleservers.dbforpostgresql.azure.m.upbound.io \
+	kubectl get flexibleservers.{{ include "backupRestore.databaseApiGroup" . }} \
 		--output json \
 		| jq \
 			--arg data_plane_active "${data_plane_active}" \
@@ -132,7 +132,7 @@ function main {
 		--selector "dataPlane=${data_plane_active}" \
 		> /tmp/backup-instance-name-active.txt 2> /dev/null || true
 
-	kubectl get flexibleservers.dbforpostgresql.azure.m.upbound.io \
+	kubectl get flexibleservers.{{ include "backupRestore.databaseApiGroup" . }} \
 		--output jsonpath="{.items[0].spec.forProvider.resourceGroupName}" \
 		--selector "dataPlane=${data_plane_active}" \
 		> /tmp/resource-group-name.txt

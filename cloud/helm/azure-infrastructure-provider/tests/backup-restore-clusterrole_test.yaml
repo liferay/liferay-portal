@@ -4,6 +4,9 @@ release:
 set:
     database:
         engine: postgresql
+    liferay-subchart-backup-restore:
+        database:
+            engine: postgresql
 suite: Backup Restore ClusterRole
 templates:
     -   charts/liferay-subchart-backup-restore/templates/clusterrole.yaml

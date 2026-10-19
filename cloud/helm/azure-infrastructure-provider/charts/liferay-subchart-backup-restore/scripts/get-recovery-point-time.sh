@@ -91,7 +91,7 @@ function _pick_restore_source {
 		local earliest_restore_date
 
 		earliest_restore_date=$( \
-			az postgres flexible-server show \
+			az {{ include "backupRestore.databaseCommand" . }} flexible-server show \
 				--name "${database_server_name}" \
 				--output tsv \
 				--query backup.earliestRestoreDate \

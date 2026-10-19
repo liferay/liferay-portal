@@ -7,6 +7,8 @@ argo:
 azureBackupService:
     protectionWaitTimeoutSeconds: 600
     restoreWaitTimeoutSeconds: 7200
+database:
+    engine: ""
 images:
     azureCli:
         dataprotectionExtensionVersion: 1.11.3

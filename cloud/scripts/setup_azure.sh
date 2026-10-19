@@ -231,7 +231,7 @@ function _validate_setup_values {
 
 	helm \
 		template \
-		--values <(jq '.setup' "${configuration_json_file}") \
+		--values <(jq '.setup | ."liferay-subchart-backup-restore".database.engine = .database.engine' "${configuration_json_file}") \
 		--version "${chart_version}" \
 		liferay-azure-infrastructure-provider \
 		"oci://${chart_registry}/liferay-azure-infrastructure-provider" \
