@@ -151,7 +151,7 @@ definition {
 	test ViewAndEditUserAfterUpgrade625 {
 		property browser.chrome.version = "139.0";
 		property data.archive.type = "data-archive-user";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.version = "6.2.5";
 
 		SignIn.signIn();
@@ -314,7 +314,7 @@ definition {
 	test ViewAndEditUserAfterUpgrade621015 {
 		property browser.chrome.version = "139.0";
 		property data.archive.type = "data-archive-user";
-		property database.types = "db2,mysql,oracle";
+		property database.types = "db2,mysql,oracle,postgresql";
 		property portal.version = "6.2.10.15";
 
 		SignIn.signIn();

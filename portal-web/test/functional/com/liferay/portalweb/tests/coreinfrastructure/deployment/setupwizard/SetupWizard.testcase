@@ -11,7 +11,7 @@ definition {
 	@priority = 4
 	test AdminIsRequiredToChangePasswordWithSetupWizardDisabled {
 		property custom.properties = "passwords.default.policy.change.required=true${line.separator}setup.wizard.enabled=false";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property test.prepare.bundle.properties = "true";
 
 		task ("When an admin logs in with Setup Wizard disabled") {
@@ -53,7 +53,7 @@ definition {
 
 	@priority = 4
 	test BasicConfigurationVisualLook {
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -71,7 +71,7 @@ definition {
 
 	@priority = 4
 	test CannnotUseTestConnectionWithInvalidDriverClass {
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

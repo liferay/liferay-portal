@@ -80,7 +80,7 @@ definition {
 	@priority = 5
 	test CanSubmitFormEntryAfterUpgrade7010 {
 		property data.archive.type = "data-archive-form-entry";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
@@ -116,7 +116,7 @@ definition {
 	@priority = 5
 	test CanSubmitFormEntryAfterUpgrade7310 {
 		property data.archive.type = "data-archive-form-entry";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
@@ -128,7 +128,7 @@ definition {
 	@priority = 5
 	test UpdateFieldNameToFieldReference7010 {
 		property data.archive.type = "data-archive-form-entry";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
@@ -188,7 +188,7 @@ definition {
 	@priority = 5
 	test UploadFieldKeepsAllFilesAfterUpgrade7310 {
 		property data.archive.type = "data-archive-form-entry";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
@@ -224,7 +224,7 @@ definition {
 	@priority = 5
 	test ViewFormEntryAfterUpgrade7010 {
 		property data.archive.type = "data-archive-form-entry";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
@@ -260,7 +260,7 @@ definition {
 	@priority = 5
 	test ViewFormEntryAfterUpgrade7310 {
 		property data.archive.type = "data-archive-form-entry";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";

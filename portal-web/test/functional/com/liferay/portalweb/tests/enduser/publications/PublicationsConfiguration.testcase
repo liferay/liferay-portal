@@ -26,7 +26,7 @@ definition {
 		property app.server.bundles.size = "1";
 		property app.server.types = "tomcat";
 		property custom.properties = "auth.verifier.TunnelAuthVerifier.hosts.allowed=${line.separator}tunneling.servlet.shared.secret=1234567890123456";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property databases.size = "1";
 		property minimum.slave.ram = "24";
 		property test.liferay.virtual.instance = "false";
@@ -72,7 +72,7 @@ definition {
 	@priority = 4
 	test CreatePublicationsInNonRootContext {
 		property app.server.types = "tomcat";
-		property database.types = "mysql";
+		property database.types = "mysql,postgresql";
 		property portal.context = "liferay";
 		property skip.clean-app-server-deploy-dir = "true";
 		property test.assert.warning.exceptions = "true";
