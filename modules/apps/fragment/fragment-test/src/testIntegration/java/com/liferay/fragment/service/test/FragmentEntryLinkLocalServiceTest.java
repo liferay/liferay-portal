@@ -945,54 +945,7 @@ public class FragmentEntryLinkLocalServiceTest {
 	@Test
 	@TestInfo("LPS-128652")
 	public void testUpdateLatestChanges() throws Exception {
-		FragmentEntry fragmentEntry = _addFragmentEntry(
-			_group.getGroupId(), _fragmentCollection.getFragmentCollectionId(),
-			RandomTestUtil.randomString(),
-			_read("fragment-freemarker-with-configuration.html"),
-			_read("configuration-tabs.json"), FragmentConstants.TYPE_COMPONENT,
-			_serviceContext);
-
-		FragmentEntryLink fragmentEntryLink1 = _addFragmentEntryLink(
-			fragmentEntry, null, _defaultSegmentsExperienceId,
-			_layout.getPlid(),
-			JSONUtil.put(
-				FragmentEntryProcessorConstants.
-					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-				JSONUtil.put(
-					"title4",
-					JSONUtil.put(
-						"defaultValue", "title4"
-					).put(
-						"en_US", RandomTestUtil.randomString()
-					))
-			).put(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-				JSONUtil.put("numberOfTabs", "4")
-			).toString(),
-			0, null);
-
-		FragmentEntryLink fragmentEntryLink2 = _addFragmentEntryLink(
-			fragmentEntry, null, _defaultSegmentsExperienceId,
-			_layout.getPlid(), StringPool.BLANK, 0, null);
-
-		_fragmentEntryLinkLocalService.updateLatestChanges(
-			fragmentEntryLink1.getFragmentEntryLinkId());
-
-		fragmentEntryLink2 =
-			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-				fragmentEntryLink2.getFragmentEntryLinkId());
-
-		JSONObject configurationValuesJSONObject =
-			_jsonFactory.createJSONObject(
-				fragmentEntryLink2.getEditableValues());
-
-		JSONObject editableJSONObject =
-			configurationValuesJSONObject.getJSONObject(
-				FragmentEntryProcessorConstants.
-					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
-
-		Assert.assertNull(editableJSONObject.getJSONObject("title4"));
+		_testUpdateLatestChanges();
 	}
 
 	@Test
@@ -1391,6 +1344,57 @@ public class FragmentEntryLinkLocalServiceTest {
 		Assert.assertEquals(
 			groupFragmentEntryUsageCounts2.toString(), 1,
 			groupFragmentEntryUsageCounts2.size());
+	}
+
+	private void _testUpdateLatestChanges() throws Exception {
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			_group.getGroupId(), _fragmentCollection.getFragmentCollectionId(),
+			RandomTestUtil.randomString(),
+			_read("fragment-freemarker-with-configuration.html"),
+			_read("configuration-tabs.json"), FragmentConstants.TYPE_COMPONENT,
+			_serviceContext);
+
+		FragmentEntryLink fragmentEntryLink1 = _addFragmentEntryLink(
+			fragmentEntry, null, _defaultSegmentsExperienceId,
+			_layout.getPlid(),
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(
+					"title4",
+					JSONUtil.put(
+						"defaultValue", "title4"
+					).put(
+						"en_US", RandomTestUtil.randomString()
+					))
+			).put(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put("numberOfTabs", "4")
+			).toString(),
+			0, null);
+
+		FragmentEntryLink fragmentEntryLink2 = _addFragmentEntryLink(
+			fragmentEntry, null, _defaultSegmentsExperienceId,
+			_layout.getPlid(), StringPool.BLANK, 0, null);
+
+		_fragmentEntryLinkLocalService.updateLatestChanges(
+			fragmentEntryLink1.getFragmentEntryLinkId());
+
+		fragmentEntryLink2 =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink2.getFragmentEntryLinkId());
+
+		JSONObject configurationValuesJSONObject =
+			_jsonFactory.createJSONObject(
+				fragmentEntryLink2.getEditableValues());
+
+		JSONObject editableJSONObject =
+			configurationValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		Assert.assertNull(editableJSONObject.getJSONObject("title4"));
 	}
 
 	private void _updateFragmentEntry(
