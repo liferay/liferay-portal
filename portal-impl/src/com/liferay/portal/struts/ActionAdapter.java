@@ -18,7 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class ActionAdapter implements Action {
 
-	public ActionAdapter(StrutsAction strutsAction) {
+	public ActionAdapter(boolean layoutRequired, StrutsAction strutsAction) {
+		_layoutRequired = layoutRequired;
 		_strutsAction = strutsAction;
 	}
 
@@ -44,6 +45,11 @@ public class ActionAdapter implements Action {
 		return actionForward;
 	}
 
+	public boolean isLayoutRequired() {
+		return _layoutRequired;
+	}
+
+	private final boolean _layoutRequired;
 	private final StrutsAction _strutsAction;
 
 }

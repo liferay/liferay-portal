@@ -9,6 +9,7 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.struts.ActionAdapter;
 
 import java.util.HashMap;
@@ -39,7 +40,9 @@ public class ModuleConfig {
 		ActionAdapter actionAdapter = _getActionAdaptor(path);
 
 		if (actionAdapter != null) {
-			return new ActionMapping(actionAdapter, null, this, path);
+			return new ActionMapping(
+				actionAdapter, null, actionAdapter.isLayoutRequired(), this,
+				path);
 		}
 
 		return _actionMappings.get(path);
@@ -76,6 +79,9 @@ public class ModuleConfig {
 					ServiceReference<StrutsAction> serviceReference) {
 
 					return new ActionAdapter(
+						GetterUtil.getBoolean(
+							serviceReference.getProperty("layout.required"),
+							true),
 						bundleContext.getService(serviceReference));
 				}
 

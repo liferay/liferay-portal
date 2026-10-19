@@ -16,10 +16,12 @@ import java.util.Map;
 public class ActionMapping {
 
 	public ActionMapping(
-		Action action, String forward, ModuleConfig moduleConfig, String path) {
+		Action action, String forward, boolean layoutRequired,
+		ModuleConfig moduleConfig, String path) {
 
 		_action = action;
 		_forward = forward;
+		_layoutRequired = layoutRequired;
 		_moduleConfig = moduleConfig;
 		_path = path;
 	}
@@ -50,9 +52,14 @@ public class ActionMapping {
 		return _path;
 	}
 
+	public boolean isLayoutRequired() {
+		return _layoutRequired;
+	}
+
 	private final Action _action;
 	private final Map<String, ActionForward> _actionForwards = new HashMap<>();
 	private final String _forward;
+	private final boolean _layoutRequired;
 	private final ModuleConfig _moduleConfig;
 	private final String _path;
 

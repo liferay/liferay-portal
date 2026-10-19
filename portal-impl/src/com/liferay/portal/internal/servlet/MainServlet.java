@@ -895,6 +895,8 @@ public class MainServlet extends HttpServlet {
 
 				ActionMapping actionMapping = new ActionMapping(
 					action, actionElement.attributeValue("forward"),
+					GetterUtil.getBoolean(
+						actionElement.attributeValue("layout-required"), true),
 					moduleConfig, actionElement.attributeValue("path"));
 
 				for (Element forwardElement :
