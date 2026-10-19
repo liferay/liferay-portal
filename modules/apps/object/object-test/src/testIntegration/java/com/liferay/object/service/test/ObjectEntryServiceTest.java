@@ -10,6 +10,9 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.list.type.entry.util.ListTypeEntryUtil;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
@@ -44,6 +47,7 @@ import com.liferay.object.tree.Node;
 import com.liferay.object.tree.Tree;
 import com.liferay.object.tree.constants.TreeConstants;
 import com.liferay.petra.function.UnsafeBiFunction;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -60,6 +64,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -85,11 +90,13 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -437,6 +444,114 @@ public class ObjectEntryServiceTest {
 				null, Collections.emptyMap(),
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId(), _user.getUserId())));
+	}
+
+	@Test
+	@TestInfo("LPD-110139")
+	public void testAddObjectEntryWithAttachmentObjectField() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _adminUser.getUserId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, _adminUser.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
+
+		_setResourcePermissions(
+			_objectDefinition.getResourceName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), RoleConstants.USER,
+			new String[] {ObjectActionKeys.ADD_OBJECT_ENTRY});
+
+		ObjectEntry objectEntry = _addObjectEntry(_user);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			// Cannot reference a file entry without view permission
+
+			Map<String, Serializable> values =
+				HashMapBuilder.<String, Serializable>put(
+					"file", fileEntry.getFileEntryId()
+				).build();
+
+			_assertFailureWithoutViewPermission(
+				() -> _objectEntryService.addObjectEntry(
+					_group.getGroupId(),
+					_objectDefinition.getObjectDefinitionId(),
+					ObjectEntryFolderConstants.
+						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+					null, values,
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), _user.getUserId())));
+			_assertFailureWithoutViewPermission(
+				() -> _objectEntryService.partialUpdateObjectEntry(
+					objectEntry.getObjectEntryId(),
+					ObjectEntryFolderConstants.
+						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+					values,
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), _user.getUserId())));
+			_assertFailureWithoutViewPermission(
+				() -> _objectEntryService.updateObjectEntry(
+					objectEntry.getObjectEntryId(),
+					ObjectEntryFolderConstants.
+						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+					values,
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), _user.getUserId())));
+
+			// Can reference a file entry with view permission
+
+			_setResourcePermissions(
+				DLFileEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(fileEntry.getFileEntryId()), RoleConstants.USER,
+				new String[] {ActionKeys.VIEW});
+
+			ObjectEntry updatedObjectEntry =
+				_objectEntryService.updateObjectEntry(
+					objectEntry.getObjectEntryId(),
+					ObjectEntryFolderConstants.
+						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+					values,
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), _user.getUserId()));
+
+			Assert.assertEquals(
+				fileEntry.getFileEntryId(),
+				MapUtil.getLong(updatedObjectEntry.getValues(), "file"));
+
+			// Can keep a referenced file entry after losing view permission
+
+			_removeResourcePermission(
+				DLFileEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(fileEntry.getFileEntryId()), RoleConstants.USER,
+				ActionKeys.VIEW);
+
+			_objectEntryService.updateObjectEntry(
+				objectEntry.getObjectEntryId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"file", fileEntry.getFileEntryId()
+				).put(
+					"firstName", RandomTestUtil.randomString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId()));
+		}
+		finally {
+			_removeResourcePermission(
+				_objectDefinition.getResourceName(),
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(TestPropsValues.getCompanyId()),
+				RoleConstants.USER, ObjectActionKeys.ADD_OBJECT_ENTRY);
+		}
 	}
 
 	@Test
@@ -1611,6 +1726,18 @@ public class ObjectEntryServiceTest {
 			guestRole.getRoleId(), ObjectActionKeys.ADD_OBJECT_ENTRY);
 	}
 
+	private void _assertFailureWithoutViewPermission(
+		UnsafeRunnable<Exception> unsafeRunnable) {
+
+		PrincipalException.MustHavePermission mustHavePermission =
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				unsafeRunnable::run);
+
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
+	}
+
 	private void _assertObjectEntriesCount(int count, int status) {
 		Assert.assertEquals(
 			count,
@@ -1851,6 +1978,9 @@ public class ObjectEntryServiceTest {
 
 	@Inject
 	private ConfigurationProvider _configurationProvider;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

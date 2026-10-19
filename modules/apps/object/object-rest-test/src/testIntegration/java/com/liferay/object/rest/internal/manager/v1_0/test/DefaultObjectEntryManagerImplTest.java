@@ -1754,8 +1754,7 @@ public class DefaultObjectEntryManagerImplTest
 						() -> {
 							com.liferay.portal.kernel.repository.model.FileEntry
 								fileEntry = TempFileEntryUtil.addTempFileEntry(
-									group.getGroupId(),
-									TestPropsValues.getUserId(),
+									group.getGroupId(), _user.getUserId(),
 									objectDefinition.getPortletId(),
 									TempFileEntryUtil.getTempFileName(fileName),
 									FileUtil.createTempFile(
@@ -1779,6 +1778,33 @@ public class DefaultObjectEntryManagerImplTest
 				group.getGroupId(), dlFolder.getFolderId(), fileName));
 
 		// Regular user without permissions
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, objectDefinition,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"attachmentObjectFieldName", fileEntryId
+						).build();
+					}
+				},
+				String.valueOf(group.getGroupId())));
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, objectDefinition,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"attachmentObjectFieldName",
+							String.valueOf(fileEntryId)
+						).build();
+					}
+				},
+				String.valueOf(group.getGroupId())));
 
 		Assert.assertThrows(
 			PrincipalException.class,

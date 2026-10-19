@@ -8,9 +8,11 @@ package com.liferay.object.service.impl;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.object.configuration.ObjectConfiguration;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.definition.security.permission.resource.ObjectDefinitionPortletResourcePermissionRegistryUtil;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.exception.ObjectDefinitionAccountEntryRestrictedException;
@@ -68,6 +70,7 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -111,6 +114,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
 			_checkAddObjectEntryPortletResourcePermission(
 				groupId, objectDefinitionId, objectEntryFolderId, values);
+			_checkAttachmentPermissions(objectDefinitionId, null, values);
 		}
 
 		_validateSubmissionLimit(objectDefinitionId, getUser());
@@ -134,11 +138,14 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		if (objectEntry == null) {
 			_checkAddObjectEntryPortletResourcePermission(
 				groupId, objectDefinitionId, objectEntryFolderId, values);
+			_checkAttachmentPermissions(objectDefinitionId, null, values);
 		}
 		else {
 			checkModelResourcePermission(
 				objectDefinitionId, objectEntry.getObjectEntryId(),
 				ActionKeys.UPDATE);
+			_checkAttachmentPermissions(
+				objectDefinitionId, objectEntry.getValues(), values);
 		}
 
 		return objectEntryLocalService.addOrUpdateObjectEntry(
@@ -184,6 +191,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		checkModelResourcePermission(
 			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
 			ActionKeys.UPDATE);
+		_checkAttachmentPermissions(
+			objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
+			values);
 
 		if (objectEntryFolderId !=
 				ObjectEntryFolderConstants.
@@ -578,6 +588,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		checkModelResourcePermission(
 			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
 			ActionKeys.UPDATE);
+		_checkAttachmentPermissions(
+			objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
+			values);
 
 		if (objectEntryFolderId !=
 				ObjectEntryFolderConstants.
@@ -626,6 +639,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			checkModelResourcePermission(
 				objectEntry.getObjectDefinitionId(),
 				objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
+			_checkAttachmentPermissions(
+				objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
+				values);
 		}
 
 		return objectEntryLocalService.partialUpdateObjectEntry(
@@ -689,6 +705,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			checkModelResourcePermission(
 				objectEntry.getObjectDefinitionId(),
 				objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
+			_checkAttachmentPermissions(
+				objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
+				values);
 		}
 
 		return objectEntryLocalService.updateObjectEntry(
@@ -803,6 +822,61 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		throw new PrincipalException.MustHavePermission(
 			permissionChecker, objectDefinition.getResourceName(), 0,
 			ObjectActionKeys.ADD_OBJECT_ENTRY);
+	}
+
+	private void _checkAttachmentPermission(
+			Serializable existingValue, Serializable value)
+		throws PortalException {
+
+		long fileEntryId = GetterUtil.getLong(value);
+
+		if ((fileEntryId <= 0) ||
+			(fileEntryId == GetterUtil.getLong(existingValue))) {
+
+			return;
+		}
+
+		_dlAppService.fetchFileEntry(fileEntryId);
+	}
+
+	private void _checkAttachmentPermissions(
+			long objectDefinitionId, Map<String, Serializable> existingValues,
+			Map<String, Serializable> values)
+		throws PortalException {
+
+		if (MapUtil.isEmpty(values)) {
+			return;
+		}
+
+		if (existingValues == null) {
+			existingValues = Collections.emptyMap();
+		}
+
+		for (ObjectField objectField :
+				_objectFieldPersistence.findByODI_BT(
+					objectDefinitionId,
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+
+			if (objectField.isLocalized() &&
+				(values.get(objectField.getI18nObjectFieldName()) instanceof
+					Map<?, ?> localizedValues)) {
+
+				Map<?, ?> existingLocalizedValues =
+					(Map<?, ?>)existingValues.getOrDefault(
+						objectField.getI18nObjectFieldName(), new HashMap<>());
+
+				for (Map.Entry<?, ?> entry : localizedValues.entrySet()) {
+					_checkAttachmentPermission(
+						(Serializable)existingLocalizedValues.get(
+							entry.getKey()),
+						(Serializable)entry.getValue());
+				}
+			}
+
+			_checkAttachmentPermission(
+				existingValues.get(objectField.getName()),
+				values.get(objectField.getName()));
+		}
 	}
 
 	private void _checkPermission(
@@ -1056,6 +1130,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private DLAppService _dlAppService;
 
 	@Reference
 	private InlineSQLHelper _inlineSQLHelper;
