@@ -91,7 +91,10 @@ function ToolbarBody({className}) {
 
 	let publishButtonLabel = Liferay.Language.get('publish');
 
-	if (config.layoutType === LAYOUT_TYPES.master) {
+	if (config.launchSetId > 0) {
+		publishButtonLabel = Liferay.Language.get('mark-as-ready-to-publish');
+	}
+	else if (config.layoutType === LAYOUT_TYPES.master) {
 		publishButtonLabel = Liferay.Language.get('publish-master');
 	}
 	else if (config.singleSegmentsExperienceMode) {
