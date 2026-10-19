@@ -1,0 +1,50 @@
+{{- $databaseAdminLogin := "liferay_database_admin" }}
+
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-admin-password
+    name: {{ $baseName }}-database-admin-password
+spec:
+    forProvider:
+        manifest:
+            apiVersion: external-secrets.io/v1
+            kind: ExternalSecret
+            metadata:
+                name: database-admin-password
+                namespace: {{ $namespace }}
+            spec:
+                dataFrom:
+                    -   sourceRef:
+                            generatorRef:
+                                apiVersion: generators.external-secrets.io/v1alpha1
+                                kind: Password
+                                name: database-admin-password-generator
+                refreshInterval: 0s
+                target:
+                    name: database-admin-password
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-admin-password-generator
+    name: {{ $baseName }}-database-admin-password-generator
+spec:
+    forProvider:
+        manifest:
+            apiVersion: generators.external-secrets.io/v1alpha1
+            kind: Password
+            metadata:
+                name: database-admin-password-generator
+                namespace: {{ $namespace }}
+            spec:
+                allowRepeat: false
+                digits: 5
+                length: 24
+                noUpper: false
+                symbolCharacters: -_$@
+                symbols: 2
+    managementPolicies: {{ $managementPolicies }}

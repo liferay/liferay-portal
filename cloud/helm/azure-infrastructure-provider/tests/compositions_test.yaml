@@ -152,11 +152,11 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Reader\\s+scope: [^\\n]+Microsoft.DBforPostgreSQL/flexibleServers/"
+                    pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Reader\\s+scope: [^\\n]+\\{\\{ \\$databaseServerType \\}\\}/"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "Microsoft.DBforPostgreSQL/flexibleServers/\\{\\{ index \\$databaseServerNames \\$dataPlane \\}\\}"
+                    pattern: "\\{\\{ \\$databaseServerType \\}\\}/\\{\\{ index \\$databaseServerNames \\$dataPlane \\}\\}"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -180,7 +180,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "roleDefinitionName: Reader\\s+scope: [^\\n]+Microsoft.DBforPostgreSQL/flexibleServers/\\{\\{ index \\$dataPlaneNames \\$retainedDataPlaneKey \"databaseServer\" \\}\\}"
+                    pattern: "roleDefinitionName: Reader\\s+scope: [^\\n]+\\{\\{ \\$databaseServerType \\}\\}/\\{\\{ index \\$dataPlaneNames \\$retainedDataPlaneKey \"databaseServer\" \\}\\}"
         it: Grants the restore identity read on each retained database server
     -   asserts:
             -   documentIndex: 0

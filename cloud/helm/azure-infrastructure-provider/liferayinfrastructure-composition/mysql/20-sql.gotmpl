@@ -1,0 +1,146 @@
+{{- $database := $xr.spec.database -}}
+{{- $observedDatabaseDataPlanes := list -}}
+
+{{- $restore := $database.restore | default dict -}}
+
+{{- $restorePointInTime := dig "pointInTime" "time" "" $restore -}}
+{{- $restoreSourceDataPlane := dig "pointInTime" "sourceDataPlane" "" $restore -}}
+
+{{- if and (eq $restorePhase "provisioning") (not $restorePointInTime) -}}
+{{- fail "Azure restores the database to a point in time, so database.restore.pointInTime.time is required while restoring" -}}
+{{- end -}}
+
+{{- range $dataPlane := list "blue" "green" -}}
+    {{- if hasKey $observedResources (printf "liferay-db-%s" $dataPlane) -}}
+        {{- $observedDatabaseDataPlanes = append $observedDatabaseDataPlanes $dataPlane -}}
+    {{- end -}}
+{{- end }}
+
+{{- range $i, $dataPlane := $dataPlanes }}
+{{- $databaseServerName := index $databaseServerNames $dataPlane }}
+{{- $isDatabaseRestoreTarget := and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane) }}
+{{- $isDemotedDataPlane := eq $dataPlane $demotedDataPlane }}
+{{- $restoreSourceDatabaseServerName := dig ($restoreSourceDataPlane | default (index $dataPlaneKeys $activeDataPlane)) "databaseServer" "" $dataPlaneNames }}
+{{- if $i }}
+---
+{{- end }}
+apiVersion: dbformysql.azure.m.upbound.io/v1beta1
+kind: FlexibleServer
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-primary-{{ $dataPlane }}
+    labels:
+        dataPlane: {{ $dataPlane }}
+        dataPlaneKey: {{ index $dataPlaneKeys $dataPlane }}
+        databaseEngine: {{ $env.databaseEngine }}
+    name: {{ $databaseServerName }}
+spec:
+    forProvider:
+        {{- if not $isDatabaseRestoreTarget }}
+        administratorLogin: {{ $databaseAdminLogin }}
+        administratorPasswordSecretRef:
+            key: password
+            name: database-admin-password
+        {{- end }}
+        backupRetentionDays: {{ $backupRetentionDays }}
+        {{- if $cmkEnabled }}
+        customerManagedKey:
+            keyVaultKeyId: {{ $cmkKeyVaultKeyId }}
+            primaryUserAssignedIdentityId: {{ $cmkIdentityId }}
+        {{- end }}
+        delegatedSubnetId: {{ $env.databaseSubnetId }}
+        {{- if $database.highAvailability }}
+        highAvailability:
+            mode: ZoneRedundant
+        {{- end }}
+        {{- if $cmkEnabled }}
+        identity:
+            identityIds:
+                -   {{ $cmkIdentityId }}
+            type: UserAssigned
+        {{- end }}
+        location: {{ $region }}
+        privateDnsZoneId: {{ $env.databasePrivateDnsZoneId }}
+        resourceGroupName: {{ $env.resourceGroupName }}
+        skuName: {{ $database.instanceType | default "GP_Standard_D2ds_v4" }}
+        storage:
+            autoGrowEnabled: true
+            sizeGb: {{ $database.storageGB }}
+        tags:
+            active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
+            should-back-up: "true"
+        version: {{ $database.version | quote }}
+    {{- if $isDatabaseRestoreTarget }}
+    initProvider:
+        createMode: PointInTimeRestore
+        pointInTimeRestoreTimeInUtc: {{ $restorePointInTime }}
+        sourceServerId: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.DBforMySQL/flexibleServers/{{ $restoreSourceDatabaseServerName }}
+    {{- end }}
+    managementPolicies: {{ $isDemotedDataPlane | ternary $demotedManagementPolicies $managementPolicies }}
+---
+apiVersion: dbformysql.azure.m.upbound.io/v1beta1
+kind: FlexibleDatabase
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $databaseName }}
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-{{ $dataPlane }}
+    labels:
+        dataPlane: {{ $dataPlane }}
+    name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
+spec:
+    forProvider:
+        charset: utf8mb4
+        collation: utf8mb4_unicode_ci
+        resourceGroupName: {{ $env.resourceGroupName }}
+        serverNameSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+    managementPolicies: ["Create", "Observe", "Update"]
+{{- end }}
+{{- range $retainedDataPlaneKey, $_ := $retainedDataPlanes }}
+{{- if not (has $retainedDataPlaneKey $renderedDataPlaneKeys) }}
+{{- $retainedDatabaseServerName := index $dataPlaneNames $retainedDataPlaneKey "databaseServer" }}
+---
+apiVersion: dbformysql.azure.m.upbound.io/v1beta1
+kind: FlexibleServer
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $retainedDatabaseServerName }}
+        gotemplating.fn.crossplane.io/composition-resource-name: database-retained-{{ $retainedDataPlaneKey }}
+    labels:
+        retainedDataPlane: {{ $retainedDataPlaneKey }}
+    name: {{ $retainedDatabaseServerName }}-retained
+spec:
+    forProvider:
+        resourceGroupName: {{ $env.resourceGroupName }}
+    managementPolicies: {{ list "Delete" "Observe" | toJson }}
+{{- end }}
+{{- end }}
+{{- range $dataPlane := list "blue" "green" }}
+{{- if or (has $dataPlane $dataPlanes) (has $dataPlane $observedDatabaseDataPlanes) }}
+---
+apiVersion: protection.crossplane.io/v1beta1
+kind: Usage
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: usage-server-by-database-{{ $dataPlane }}
+    name: {{ $xr.metadata.name }}-server-by-database-{{ $dataPlane }}
+    namespace: {{ $namespace }}
+spec:
+    by:
+        apiVersion: dbformysql.azure.m.upbound.io/v1beta1
+        kind: FlexibleDatabase
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+    of:
+        apiVersion: dbformysql.azure.m.upbound.io/v1beta1
+        kind: FlexibleServer
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+{{- end }}
+{{- end }}

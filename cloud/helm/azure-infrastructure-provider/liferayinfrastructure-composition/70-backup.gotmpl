@@ -63,7 +63,7 @@ spec:
         principalId: {{ $backupRestoreIdentityPrincipalId }}
         principalType: ServicePrincipal
         roleDefinitionName: Reader
-        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.DBforPostgreSQL/flexibleServers/{{ index $databaseServerNames $dataPlane }}
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseServerType }}/{{ index $databaseServerNames $dataPlane }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
         kind: ClusterProviderConfig
@@ -85,7 +85,7 @@ spec:
         principalId: {{ $backupRestoreIdentityPrincipalId }}
         principalType: ServicePrincipal
         roleDefinitionName: Reader
-        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.DBforPostgreSQL/flexibleServers/{{ index $dataPlaneNames $retainedDataPlaneKey "databaseServer" }}
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseServerType }}/{{ index $dataPlaneNames $retainedDataPlaneKey "databaseServer" }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
         kind: ClusterProviderConfig

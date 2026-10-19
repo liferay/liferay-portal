@@ -16,6 +16,14 @@ rules:
     -   apiGroups: ["batch"]
         resources: ["jobs"]
         verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+    {{- if eq .Values.database.engine "mysql" }}
+    -   apiGroups: ["external-secrets.io"]
+        resources: ["externalsecrets"]
+        verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+    -   apiGroups: ["generators.external-secrets.io"]
+        resources: ["passwords"]
+        verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+    {{- end }}
     -   apiGroups: ["rbac.authorization.k8s.io"]
         resources: ["clusterroles"]
         verbs: ["bind", "get", "list", "watch"]

@@ -33,6 +33,7 @@
 {{- $activeDataPlane := $targetActiveDataPlane -}}
 {{- $backupRetentionDays := max 7 (min 35 (int $backup.retentionDays)) -}}
 {{- $dataPlanes := list $targetActiveDataPlane -}}
+{{- $databaseServerType := get (dict "mysql" "Microsoft.DBforMySQL/flexibleServers" "postgresql" "Microsoft.DBforPostgreSQL/flexibleServers") $env.databaseEngine -}}
 {{- $overlayStorageAccountName := printf "%.9s%.6sovl%s" ($env.deploymentName | replace "-" "" | lower) ($projectId | replace "-" "" | lower) (printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6) -}}
 {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
 {{- $targetInactiveDataPlane := (eq $targetActiveDataPlane "blue") | ternary "green" "blue" -}}
