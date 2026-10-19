@@ -59,10 +59,14 @@ spec:
             {{- end }}
             containers:
                 -   #
-                    {{- if or .statefulset.env .statefulset.customEnv }}
+                    {{- $databaseEnv := include "liferay.databaseEnv" .statefulset | trim }}
+                    {{- if or .statefulset.env $databaseEnv .statefulset.customEnv }}
                     env:
                         {{- with .statefulset.env }}
                         {{- toYaml . | nindent 22 }}
+                        {{- end }}
+                        {{- with $databaseEnv }}
+                        {{- . | nindent 22 }}
                         {{- end }}
                         {{- range $k, $v := .statefulset.customEnv }}
                         {{- if and $v (gt (len $v) 0) }}

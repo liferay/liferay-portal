@@ -321,6 +321,11 @@ customVolumes:
                 defaultMode: 0755
                 name: liferay-init-scripts-default
             name: liferay-init-scripts-default
+database:
+    engine: ""
+    host: ""
+    port: ""
+    tlsRequired: false
 dependencies: {}
 env:
     -   name: DNS_MEMBERSHIP_SERVICE_NAME

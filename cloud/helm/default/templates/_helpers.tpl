@@ -12,6 +12,45 @@
 {{- end }}
 {{- end }}
 
+{{- define "liferay.databaseEnv" -}}
+{{- $database := .database | default dict -}}
+{{- $deploymentEngine := ((.global | default dict).database | default dict).engine -}}
+{{- if and $deploymentEngine $database.engine (ne $deploymentEngine $database.engine) -}}
+{{- fail (printf "Unable to set \"database.engine\" to %q because \"global.database.engine\" sets the database engine of the deployment to %q" $database.engine $deploymentEngine) -}}
+{{- end -}}
+{{- $engine := $deploymentEngine | default $database.engine -}}
+{{- if $engine -}}
+{{- $profile := get (dict "mysql" (dict "driverClassName" "org.mariadb.jdbc.Driver" "hibernateDialect" "org.hibernate.dialect.MySQL8Dialect" "port" "3306" "scheme" "mariadb" "tlsParameter" "sslMode=trust") "postgresql" (dict "driverClassName" "org.postgresql.Driver" "parameters" "useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false" "port" "5432" "scheme" "postgresql" "tlsParameter" "sslmode=require")) $engine -}}
+{{- if not $profile -}}
+{{- fail (printf "Database engine %q is not supported. Set \"database.engine\" to \"mysql\" or \"postgresql\"." $engine) -}}
+{{- end -}}
+{{- if not $database.host -}}
+{{- fail "\"database.host\" must be set when \"database.engine\" is set" -}}
+{{- end -}}
+{{- $parameters := list -}}
+{{- with $profile.parameters -}}
+{{- $parameters = append $parameters . -}}
+{{- end -}}
+{{- if $database.tlsRequired -}}
+{{- $parameters = append $parameters $profile.tlsParameter -}}
+{{- end -}}
+{{- $url := printf "jdbc:%s://%s:%s/lportal" $profile.scheme $database.host ($database.port | default $profile.port | toString) -}}
+{{- with $parameters -}}
+{{- $url = printf "%s?%s" $url (join "&" .) -}}
+{{- end -}}
+{{- with $profile.hibernateDialect }}
+-   name: LIFERAY_HIBERNATE_PERIOD_DIALECT
+    value: {{ . }}
+{{- end }}
+-   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
+    value: {{ $profile.driverClassName }}
+-   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL
+    value: {{ $url | quote }}
+{{- else if $database.host -}}
+{{- fail "\"database.engine\" must be set when \"database.host\" is set, or Liferay falls back to its embedded Hypersonic database" -}}
+{{- end -}}
+{{- end }}
+
 {{- define "liferay.keda.prometheusServerAddress" -}}
 {{- tpl (.Values.autoscaling.keda.prometheusServerAddress | default "") . -}}
 {{- end }}
