@@ -94,7 +94,7 @@ function restoreMaxHeight(sourceElement: HTMLElement) {
 	constrainedSources.delete(sourceElement);
 }
 
-export function constrainHeightToViewport({
+function constrainToLargerSide({
 	getOffset,
 	points,
 	sourceElement,
@@ -131,4 +131,14 @@ export function constrainHeightToViewport({
 	return availableSpace.below >= availableSpace.above
 		? verticalPoints.below
 		: verticalPoints.above;
+}
+
+export function constrainHeightToViewport(props: Props): AlignPoints {
+	const {scrollTop} = props.sourceElement;
+
+	const points = constrainToLargerSide(props);
+
+	props.sourceElement.scrollTop = scrollTop;
+
+	return points;
 }
