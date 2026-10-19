@@ -4,6 +4,16 @@ apply plugin: "com.liferay.patcher"
 
 task patch(type: PatchTask)
 
+copyPatchOriginalLibClasses {
+	doLast {
+		File file = file("classes/META-INF/versions")
+
+		if (file.exists()) {
+			delete(file)
+		}
+	}
+}
+
 dependencies {
 	compileOnly group: "commons-fileupload", name: "commons-fileupload", transitive: false, version: "1.6.0"
 	compileOnly group: "commons-io", name: "commons-io", version: "2.19.0"
