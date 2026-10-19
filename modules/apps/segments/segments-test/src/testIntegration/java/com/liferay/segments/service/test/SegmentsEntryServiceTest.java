@@ -161,6 +161,41 @@ public class SegmentsEntryServiceTest {
 	}
 
 	@Test
+	public void testGetSegmentsEntriesBySourcesAndTypesWithoutViewPermission()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		SegmentsEntry segmentsEntry1 = SegmentsTestUtil.addSegmentsEntry(
+			serviceContext);
+		SegmentsEntry segmentsEntry2 = SegmentsTestUtil.addSegmentsEntry(
+			serviceContext);
+		SegmentsEntry segmentsEntry3 = SegmentsTestUtil.addSegmentsEntry(
+			serviceContext);
+
+		ResourcePermissionTestUtil.deleteResourcePermissions(segmentsEntry2);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
+
+			List<SegmentsEntry> segmentsEntries =
+				_segmentsEntryService.getSegmentsEntries(
+					_group.getGroupId(),
+					new String[] {SegmentsEntryConstants.SOURCE_DEFAULT},
+					new int[] {SegmentsEntryConstants.TYPE_DEFAULT}, 0, 100,
+					null);
+
+			Assert.assertEquals(
+				segmentsEntries.toString(), 2, segmentsEntries.size());
+
+			Assert.assertTrue(segmentsEntries.contains(segmentsEntry1));
+			Assert.assertTrue(segmentsEntries.contains(segmentsEntry3));
+		}
+	}
+
+	@Test
 	public void testGetSegmentsEntriesCountWithViewPermission()
 		throws Exception {
 
