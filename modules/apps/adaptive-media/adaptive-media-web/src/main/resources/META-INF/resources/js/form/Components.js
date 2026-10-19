@@ -40,6 +40,7 @@ HelpMessage.propTypes = {
 const Input = ({
 	disabled,
 	error,
+	helpMessage,
 	id,
 	label,
 	name,
@@ -55,6 +56,8 @@ const Input = ({
 				{label}
 
 				{required && <RequiredMark />}
+
+				{helpMessage && <HelpMessage message={helpMessage} />}
 			</label>
 
 			<ClayInput
@@ -75,6 +78,7 @@ const Input = ({
 Input.propTypes = {
 	disabled: PropTypes.bool,
 	error: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+	helpMessage: PropTypes.string,
 	id: PropTypes.string,
 	label: PropTypes.string.isRequired,
 	name: PropTypes.string.isRequired,

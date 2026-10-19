@@ -5,10 +5,15 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import ClayForm, {ClayCheckbox, ClayRadio, ClayRadioGroup} from '@clayui/form';
+import ClayForm, {
+	ClayCheckbox,
+	ClayRadio,
+	ClayRadioGroup,
+	ClayToggle,
+} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import {useFormik} from 'formik';
-import {openToast} from 'frontend-js-components-web';
+import {FeatureIndicator, openToast} from 'frontend-js-components-web';
 import {
 	fetch,
 	navigate,
@@ -60,14 +65,18 @@ const EditAdaptiveMedia = ({
 	const [automaticId, setAutomaticId] = useState(automaticUuid);
 	const [errorMessage, setErrorMessage] = useState(null);
 
-	const nameId = `${namespace}name`;
-	const descriptionId = `${namespace}description`;
-	const maxWidthId = `${namespace}maxWidth`;
-	const maxHeightId = `${namespace}maxHeight`;
-	const highResolutionId = `${namespace}addHighResolution`;
-	const newUuidId = `${namespace}newUuid`;
+	const adaptationURLParametersId = `${namespace}adaptationURLParameters`;
 	const automaticRadioId = `${namespace}automaticUuid`;
+	const delegateAdaptationId = `${namespace}delegateAdaptation`;
+	const descriptionId = `${namespace}description`;
+	const highResolutionId = `${namespace}addHighResolution`;
+	const maxHeightId = `${namespace}maxHeight`;
+	const maxWidthId = `${namespace}maxWidth`;
+	const nameId = `${namespace}name`;
+	const newUuidId = `${namespace}newUuid`;
 
+	let adaptationURLParameters = '';
+	let delegateAdaptation = false;
 	let maxWidth = '';
 	let maxHeight = '';
 
@@ -83,10 +92,15 @@ const EditAdaptiveMedia = ({
 		if (Number(currentMaxHeight) !== 0) {
 			maxHeight = currentMaxHeight;
 		}
+
+		adaptationURLParameters = properties['adaptation-url-parameters'] || '';
+		delegateAdaptation = properties['delegate-adaptation'] === 'true';
 	}
 
 	const formik = useFormik({
 		initialValues: {
+			[adaptationURLParametersId]: adaptationURLParameters,
+			[delegateAdaptationId]: delegateAdaptation,
 			[descriptionId]: amImageConfigurationEntry
 				? amImageConfigurationEntry.description
 				: '',
@@ -293,6 +307,48 @@ const EditAdaptiveMedia = ({
 				)}
 			</div>
 
+			{Liferay.FeatureFlags['LPD-94784'] && (
+				<div className="sheet-section">
+					<h3 className="sheet-subtitle">
+						{Liferay.Language.get('adaptation')}
+					</h3>
+
+					<ClayForm.Group>
+						<ClayToggle
+							id={delegateAdaptationId}
+							label={Liferay.Language.get('delegate-adaptation')}
+							name={delegateAdaptationId}
+							onToggle={(value) => {
+								setFieldValue(delegateAdaptationId, value);
+							}}
+							toggled={values[delegateAdaptationId]}
+						/>
+
+						<FeatureIndicator type="beta" />
+
+						<HelpMessage
+							message={Liferay.Language.get(
+								'delegate-adaptation-help'
+							)}
+						/>
+					</ClayForm.Group>
+
+					<Input
+						disabled={!values[delegateAdaptationId]}
+						helpMessage={Liferay.Language.get(
+							'adaptation-url-parameters-help'
+						)}
+						label={Liferay.Language.get(
+							'adaptation-url-parameters'
+						)}
+						name={adaptationURLParametersId}
+						onBlur={handleBlur}
+						onChange={handleChange}
+						value={values[adaptationURLParametersId]}
+					/>
+				</div>
+			)}
+
 			<div className="sheet-section">
 				<h3 className="sheet-subtitle">
 					{Liferay.Language.get('identifier')}
@@ -360,6 +416,8 @@ EditAdaptiveMedia.propTypes = {
 		description: PropTypes.string,
 		name: PropTypes.string,
 		properties: PropTypes.shape({
+			['adaptation-url-parameters']: PropTypes.string,
+			['delegate-adaptation']: PropTypes.string,
 			['max-height']: PropTypes.string,
 			['max-width']: PropTypes.string,
 		}),
