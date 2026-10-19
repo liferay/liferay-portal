@@ -2641,3 +2641,27 @@ A fixed positioned container for placing alerts on the top right corner of the p
 	<div class="alert alert-dismissible alert-info alert-notification">...</div>
 </div>
 ```
+
+#### Stacking Notifications
+
+Stacking is done with CSS only. Place the notifications as direct children of `.alert-notifications-fixed`, with the newest last. No extra class or attribute is needed.
+
+```html
+<div class="alert-notifications alert-notifications-fixed">
+	<div class="alert alert-dismissible alert-info alert-notification">
+		oldest
+	</div>
+	<div class="alert alert-dismissible alert-info alert-notification">...</div>
+	<div class="alert alert-dismissible alert-info alert-notification">
+		newest
+	</div>
+</div>
+```
+
+The layout depends on the number of direct children.
+
+-   More than 6: the older notifications get narrower, like a pyramid, and sit closer together.
+-   More than 12: the older notifications overlap, and only a thin strip of each one shows.
+-   More than 20: they overlap more (a thinner strip), and the content of the older notifications is hidden.
+
+Hover or focus a notification to see it in full.
