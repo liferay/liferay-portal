@@ -1225,6 +1225,30 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	@Override
+	public Layout fetchDraftLayout(long plid, long launchSetId) {
+		if (plid <= 0) {
+			return null;
+		}
+
+		List<Layout> layouts = layoutPersistence.findByC_C_L(
+			_classNameLocalService.getClassNameId(Layout.class), plid,
+			launchSetId);
+
+		if (layouts.isEmpty()) {
+			return null;
+		}
+
+		if ((layouts.size() > 1) && _log.isWarnEnabled()) {
+			_log.warn(
+				StringBundler.concat(
+					"More than one draft layout uses layout PLID ", plid,
+					" and launch set ID ", launchSetId));
+		}
+
+		return layouts.get(layouts.size() - 1);
+	}
+
+	@Override
 	public Map<Layout, Layout> fetchDraftLayouts(List<Layout> layouts) {
 		if (layouts.isEmpty()) {
 			return Collections.emptyMap();
