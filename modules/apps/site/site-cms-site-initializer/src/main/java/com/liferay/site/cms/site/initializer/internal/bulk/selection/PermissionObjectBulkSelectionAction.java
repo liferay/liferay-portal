@@ -11,9 +11,7 @@ import com.liferay.object.entry.folder.util.ObjectEntryFolderUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -167,26 +165,22 @@ public class PermissionObjectBulkSelectionAction
 			return new Permission[0];
 		}
 
-		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
+		return JSONUtil.toArray(
+			_jsonFactory.createJSONArray(json),
+			jsonObject -> {
+				Permission permission = new Permission();
 
-		Permission[] permissions = new Permission[jsonArray.length()];
+				permission.setActionIds(
+					JSONUtil.toStringArray(
+						jsonObject.getJSONArray("actionIds")));
+				permission.setRoleExternalReferenceCode(
+					jsonObject.getString("roleExternalReferenceCode", null));
+				permission.setRoleName(jsonObject.getString("roleName"));
+				permission.setRoleType(jsonObject.getString("roleType", null));
 
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-			Permission permission = new Permission();
-
-			permission.setActionIds(
-				JSONUtil.toStringArray(jsonObject.getJSONArray("actionIds")));
-			permission.setRoleExternalReferenceCode(
-				jsonObject.getString("roleExternalReferenceCode", null));
-			permission.setRoleName(jsonObject.getString("roleName"));
-			permission.setRoleType(jsonObject.getString("roleType", null));
-
-			permissions[i] = permission;
-		}
-
-		return permissions;
+				return permission;
+			},
+			Permission.class);
 	}
 
 	@Reference

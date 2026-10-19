@@ -877,7 +877,8 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 	}
 
 	private Serializable _getPermissions(
-		JSONObject configurationJSONObject, Permission[] permissions) {
+			JSONObject configurationJSONObject, Permission[] permissions)
+		throws Exception {
 
 		if (ArrayUtil.isNotEmpty(permissions)) {
 			return HashMapBuilder.put(
@@ -1172,23 +1173,20 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		return bulkActionItem;
 	}
 
-	private String _toJSON(Permission[] permissions) {
-		JSONArray jsonArray = _jsonFactory.createJSONArray();
-
-		for (Permission permission : permissions) {
-			jsonArray.put(
-				JSONUtil.put(
-					"actionIds",
-					JSONUtil.putAll((Object[])permission.getActionIds())
-				).put(
-					"roleExternalReferenceCode",
-					permission.getRoleExternalReferenceCode()
-				).put(
-					"roleName", permission.getRoleName()
-				).put(
-					"roleType", permission.getRoleType()
-				));
-		}
+	private String _toJSON(Permission[] permissions) throws Exception {
+		JSONArray jsonArray = JSONUtil.toJSONArray(
+			permissions,
+			permission -> JSONUtil.put(
+				"actionIds",
+				JSONUtil.putAll((Object[])permission.getActionIds())
+			).put(
+				"roleExternalReferenceCode",
+				permission.getRoleExternalReferenceCode()
+			).put(
+				"roleName", permission.getRoleName()
+			).put(
+				"roleType", permission.getRoleType()
+			));
 
 		return jsonArray.toString();
 	}
