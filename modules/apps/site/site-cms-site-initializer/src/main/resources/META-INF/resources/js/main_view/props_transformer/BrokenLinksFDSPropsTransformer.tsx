@@ -7,8 +7,8 @@ import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {
-	AssetListFDSProps,
 	createAssetListFDSPropsBuilder,
+	createTitleSortedFDSPropsTransformer,
 } from './utils/createAssetListFDSPropsBuilder';
 
 export interface IBrokenLinkAsset {
@@ -77,24 +77,4 @@ export const getBrokenLinksFDSProps =
 		titleRendererName: 'brokenLinkAssetTitle',
 	});
 
-export default function BrokenLinksFDSPropsTransformer({
-	additionalProps,
-	itemsActions = [],
-	...otherProps
-}: AssetListFDSProps) {
-	return {
-		...getBrokenLinksFDSProps({
-			additionalProps,
-			itemsActions,
-			...otherProps,
-		}),
-		sorts: [
-			{
-				active: true,
-				direction: 'asc',
-				key: 'title',
-				label: Liferay.Language.get('title'),
-			},
-		],
-	};
-}
+export default createTitleSortedFDSPropsTransformer(getBrokenLinksFDSProps);

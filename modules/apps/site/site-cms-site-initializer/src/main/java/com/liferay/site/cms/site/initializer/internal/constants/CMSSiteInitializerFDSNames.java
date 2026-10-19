@@ -56,6 +56,10 @@ public class CMSSiteInitializerFDSNames {
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
 			"-homeRecentAssetsSection";
 
+	public static final String MISSING_REQUIRED_FIELDS_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-missingRequiredFieldsSection";
+
 	public static final String RECYCLE_BIN_SECTION =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-recycleBinSection";
 

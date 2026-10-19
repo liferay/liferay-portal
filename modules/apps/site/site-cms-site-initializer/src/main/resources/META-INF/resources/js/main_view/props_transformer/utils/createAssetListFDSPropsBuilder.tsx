@@ -135,3 +135,21 @@ export function createAssetListFDSPropsBuilder<T = ISearchAssetObjectEntry>({
 		};
 	};
 }
+
+export function createTitleSortedFDSPropsTransformer<T extends object>(
+	getAssetListFDSProps: (props: AssetListFDSProps) => T
+) {
+	return function TitleSortedFDSPropsTransformer(props: AssetListFDSProps) {
+		return {
+			...getAssetListFDSProps(props),
+			sorts: [
+				{
+					active: true,
+					direction: 'asc',
+					key: 'title',
+					label: Liferay.Language.get('title'),
+				},
+			],
+		};
+	};
+}
