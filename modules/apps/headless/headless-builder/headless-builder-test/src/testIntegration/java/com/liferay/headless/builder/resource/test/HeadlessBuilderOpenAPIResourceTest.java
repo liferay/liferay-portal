@@ -431,6 +431,27 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 			).toString(),
 			jsonObject.toString(), JSONCompareMode.LENIENT);
 
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, apiApplicationURL + "/openapi.json", Http.Method.GET);
+
+		JSONObject pathsJSONObject = jsonObject.getJSONObject("paths");
+
+		Assert.assertTrue(
+			pathsJSONObject.has(_getAPIEndpointPath(_API_GET_ENDPOINT_ERC_2)));
+		Assert.assertTrue(
+			pathsJSONObject.has(
+				"/scopes/{scopeKey}" +
+					_getAPIEndpointPath(_API_SITE_SCOPED_ENDPOINT_ERC_2)));
+
+		JSONObject componentsJSONObject = jsonObject.getJSONObject(
+			"components");
+
+		JSONObject schemasJSONObject = componentsJSONObject.getJSONObject(
+			"schemas");
+
+		Assert.assertTrue(
+			schemasJSONObject.has(_getAPISchemaName(_API_SCHEMA_ERC_2)));
+
 		assertSuccessfulJSONObject(
 			null,
 			"headless-builder/endpoints/by-external-reference-code/" +
@@ -1123,6 +1144,30 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 		objectFieldSetting.setValue(value);
 
 		return objectFieldSetting;
+	}
+
+	private String _getAPIEndpointPath(String externalReferenceCode)
+		throws Exception {
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			"headless-builder/endpoints/by-external-reference-code/" +
+				externalReferenceCode,
+			Http.Method.GET);
+
+		return jsonObject.getString("path");
+	}
+
+	private String _getAPISchemaName(String externalReferenceCode)
+		throws Exception {
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			"headless-builder/schemas/by-external-reference-code/" +
+				externalReferenceCode,
+			Http.Method.GET);
+
+		return jsonObject.getString("name");
 	}
 
 	private ObjectDefinition _publishObjectDefinition(
