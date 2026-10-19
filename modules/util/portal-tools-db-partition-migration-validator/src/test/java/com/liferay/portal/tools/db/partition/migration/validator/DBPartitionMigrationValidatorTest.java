@@ -127,16 +127,16 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 		_testHelp(
 			Collections.singletonList("--help"), StringPool.BLANK, 0,
 			Collections.singletonList(_getJVMArg("launcher", "launcher.sh")),
-			"usage: launcher.sh <command> [parameters]");
+			"Usage: launcher.sh <command> [parameters]");
 		_testHelp(
 			Arrays.asList("export", "--help"), StringPool.BLANK, 0,
 			Collections.emptyList(),
-			"usage: db_partition_migration_validator <command> [parameters]",
+			"Usage: db_partition_migration_validator <command> [parameters]",
 			"Export validation file.", "Export parameters:");
 		_testHelp(
 			Arrays.asList("validate", "--help"), StringPool.BLANK, 0,
 			Collections.emptyList(),
-			"usage: db_partition_migration_validator <command> [parameters]",
+			"Usage: db_partition_migration_validator <command> [parameters]",
 			"Validate source and target validation files.",
 			"Validate parameters:");
 	}
@@ -147,24 +147,24 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 		_testHelp(
 			Collections.emptyList(), "Missing command: export or validate", 2,
 			Collections.emptyList(),
-			"usage: db_partition_migration_validator <command> [parameters]");
+			"Usage: db_partition_migration_validator <command> [parameters]");
 		_testHelp(
 			Collections.singletonList("--foo"), "Unrecognized option: --foo", 2,
 			Collections.emptyList(),
-			"usage: db_partition_migration_validator <command> [parameters]");
+			"Usage: db_partition_migration_validator <command> [parameters]");
 		_testHelp(
 			Arrays.asList("export", "--user", RandomTestUtil.randomString()),
 			"Missing required options: company-id, jdbc-url, password", 2,
 			Collections.emptyList(),
-			"usage: db_partition_migration_validator <command> [parameters]");
+			"Usage: db_partition_migration_validator <command> [parameters]");
 		_testHelp(
 			Collections.singletonList("foo"), "Unrecognized command: foo", 2,
 			Collections.emptyList(),
-			"usage: db_partition_migration_validator <command> [parameters]");
+			"Usage: db_partition_migration_validator <command> [parameters]");
 		_testHelp(
 			Arrays.asList("validate", "--source-file", "validate"),
 			"Missing required option: target-file", 2, Collections.emptyList(),
-			"usage: db_partition_migration_validator <command> [parameters]");
+			"Usage: db_partition_migration_validator <command> [parameters]");
 	}
 
 	@Test

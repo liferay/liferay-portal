@@ -168,7 +168,7 @@ public class DBUpgradeClientTest {
 		_testHelp(
 			Collections.singletonList("--help"), StringPool.BLANK, 0,
 			Collections.singletonList("-Dlauncher=launcher.sh"),
-			"usage: launcher.sh [parameters]",
+			"Usage: launcher.sh [parameters]",
 			"Liferay Portal Tools Database Upgrade Client");
 	}
 
@@ -177,7 +177,7 @@ public class DBUpgradeClientTest {
 	public void testInvalidArguments() throws Exception {
 		_testHelp(
 			Collections.singletonList("--foo"), "Unrecognized option: --foo", 2,
-			Collections.emptyList(), "usage: db_upgrade_client [parameters]");
+			Collections.emptyList(), "Usage: db_upgrade_client [parameters]");
 	}
 
 	@Test

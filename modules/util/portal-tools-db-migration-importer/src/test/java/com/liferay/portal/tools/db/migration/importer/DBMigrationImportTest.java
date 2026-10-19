@@ -33,7 +33,7 @@ public class DBMigrationImportTest {
 		_testHelp(
 			Collections.singletonList("--help"), StringPool.BLANK, 0,
 			Collections.singletonList("-Dlauncher=launcher.sh"),
-			"usage: launcher.sh <parameters>",
+			"Usage: launcher.sh <parameters>",
 			"Liferay Portal Tools Database Migration Importer");
 	}
 
@@ -43,7 +43,7 @@ public class DBMigrationImportTest {
 		_testHelp(
 			Collections.singletonList("--foo"), "Unrecognized option: --foo", 2,
 			Collections.emptyList(),
-			"usage: db_migration_importer <parameters>");
+			"Usage: db_migration_importer <parameters>");
 	}
 
 	@Rule

@@ -147,12 +147,14 @@ public class DBMigrationImport {
 	}
 
 	private static void _printHelpAndExit(int exitCode, Options options) {
-		new HelpFormatter(
-		).printHelp(
+		HelpFormatter helpFormatter = new HelpFormatter();
+
+		helpFormatter.setSyntaxPrefix("Usage: ");
+
+		helpFormatter.printHelp(
 			System.getProperty("launcher", "db_migration_importer") +
 				" <parameters>",
-			"Liferay Portal Tools Database Migration Importer", options, null
-		);
+			"Liferay Portal Tools Database Migration Importer", options, null);
 
 		System.exit(exitCode);
 	}

@@ -214,6 +214,8 @@ public class DBPartitionMigrationValidator {
 	private static void _printHelp() {
 		HelpFormatter helpFormatter = new HelpFormatter();
 
+		helpFormatter.setSyntaxPrefix("Usage: ");
+
 		ByteArrayOutputStream byteArrayOutputStream =
 			new ByteArrayOutputStream();
 

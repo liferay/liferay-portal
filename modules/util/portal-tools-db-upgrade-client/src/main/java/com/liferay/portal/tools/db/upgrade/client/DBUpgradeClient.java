@@ -380,12 +380,14 @@ public class DBUpgradeClient {
 	}
 
 	private static void _printHelpAndExit(int exitCode, Options options) {
-		new HelpFormatter(
-		).printHelp(
+		HelpFormatter helpFormatter = new HelpFormatter();
+
+		helpFormatter.setSyntaxPrefix("Usage: ");
+
+		helpFormatter.printHelp(
 			System.getProperty("launcher", "db_upgrade_client") +
 				" [parameters]",
-			"Liferay Portal Tools Database Upgrade Client", options, null
-		);
+			"Liferay Portal Tools Database Upgrade Client", options, null);
 
 		System.exit(exitCode);
 	}
