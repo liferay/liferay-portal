@@ -168,12 +168,11 @@ public class MercanetCommercePaymentMethod implements CommercePaymentMethod {
 
 		URL returnURL = new URL(mercanetCommercePaymentRequest.getReturnUrl());
 
-		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
-			returnURL.getQuery());
-
 		URL baseURL = new URL(
 			returnURL.getProtocol(), returnURL.getHost(), returnURL.getPort(),
 			returnURL.getPath());
+		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
+			returnURL.getQuery());
 
 		paymentRequest.setAutomaticResponseUrl(
 			_getAutomaticResponseURL(baseURL, parameterMap));
