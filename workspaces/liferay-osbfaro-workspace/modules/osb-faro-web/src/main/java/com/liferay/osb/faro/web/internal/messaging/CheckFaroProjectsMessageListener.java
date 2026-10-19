@@ -121,7 +121,7 @@ public class CheckFaroProjectsMessageListener extends BaseMessageListener {
 
 			try {
 				_contactsEngineClient.getIndividuals(
-					faroProject, (String)null, true, 0, 0, null);
+					faroProject, (String)null, false, 0, 0, null);
 			}
 			catch (Exception exception) {
 				_log.error(exception);
