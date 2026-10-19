@@ -453,7 +453,7 @@ public class ObjectEntryModelListenerTest {
 				user.getUserId());
 
 		Assert.assertNotNull(
-			_updateLinkedObjectEntry(
+			_updateCMPTaskLinkObjectEntry(
 				cmpTaskLinkObjectEntry,
 				CMPTestUtil.addCMSBasicWebContentObjectEntry(
 					_depotEntry, RandomTestUtil.randomString()),
@@ -473,7 +473,7 @@ public class ObjectEntryModelListenerTest {
 			ServiceContextTestUtil.getServiceContext());
 
 		try {
-			_updateLinkedObjectEntry(
+			_updateCMPTaskLinkObjectEntry(
 				cmpTaskLinkObjectEntry,
 				CMPTestUtil.addCMSBasicWebContentObjectEntry(
 					depotEntry, RandomTestUtil.randomString()),
@@ -920,6 +920,28 @@ public class ObjectEntryModelListenerTest {
 				cmpProjectObjectEntry.getGroupId()));
 	}
 
+	private ObjectEntry _updateCMPTaskLinkObjectEntry(
+			ObjectEntry cmpTaskLinkObjectEntry, ObjectEntry linkedObjectEntry,
+			long userId)
+		throws Exception {
+
+		Group group = _groupLocalService.getGroup(
+			linkedObjectEntry.getGroupId());
+
+		return _objectEntryLocalService.partialUpdateObjectEntry(
+			userId, cmpTaskLinkObjectEntry.getObjectEntryId(),
+			cmpTaskLinkObjectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode",
+				linkedObjectEntry.getExternalReferenceCode()
+			).put(
+				"className", linkedObjectEntry.getModelClassName()
+			).put(
+				"groupExternalReferenceCode", group.getExternalReferenceCode()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	private ObjectEntry _updateDescription(
 			ObjectEntry cmpProjectObjectEntry, String description, long userId)
 		throws Exception {
@@ -929,28 +951,6 @@ public class ObjectEntryModelListenerTest {
 			cmpProjectObjectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"description", description
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private ObjectEntry _updateLinkedObjectEntry(
-			ObjectEntry linkObjectEntry, ObjectEntry linkedObjectEntry,
-			long userId)
-		throws Exception {
-
-		Group group = _groupLocalService.getGroup(
-			linkedObjectEntry.getGroupId());
-
-		return _objectEntryLocalService.partialUpdateObjectEntry(
-			userId, linkObjectEntry.getObjectEntryId(),
-			linkObjectEntry.getObjectEntryFolderId(),
-			HashMapBuilder.<String, Serializable>put(
-				"classExternalReferenceCode",
-				linkedObjectEntry.getExternalReferenceCode()
-			).put(
-				"className", linkedObjectEntry.getModelClassName()
-			).put(
-				"groupExternalReferenceCode", group.getExternalReferenceCode()
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 	}
