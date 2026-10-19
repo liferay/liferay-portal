@@ -36,11 +36,26 @@ type AICreatorModalLearnResources = {
 	};
 };
 
+type Generation = {
+	expirationTime: number;
+	signature: string;
+	url: string;
+};
+
 type RequestStatus =
 	| {type: 'adding'}
 	| {type: 'idle'}
 	| {type: 'loading'}
 	| {errorMessage: string; type: 'error'};
+
+function getBlob(dataURL: string) {
+	const [header, data] = dataURL.split(',');
+
+	return new Blob(
+		[Uint8Array.from(atob(data), (character) => character.charCodeAt(0))],
+		{type: header.slice('data:'.length, header.indexOf(';'))}
+	);
+}
 
 export default function AICreatorImageModal({
 	eventName,
@@ -55,9 +70,9 @@ export default function AICreatorImageModal({
 	};
 
 	const [status, setStatus] = useState<RequestStatus>({type: 'idle'});
-	const [imagesURL, setImagesURL] = useState<string[] | null>(null);
+	const [generations, setGenerations] = useState<Generation[] | null>(null);
 
-	const [selectedImages, setSelectedImages] = useState<string[]>([]);
+	const [selectedImages, setSelectedImages] = useState<number[]>([]);
 
 	const setErrorStatus = (
 		errorMessage = Liferay.Language.get('an-unexpected-error-occurred')
@@ -75,9 +90,24 @@ export default function AICreatorImageModal({
 			const addedImages: string[] = [];
 
 			Promise.all(
-				selectedImages.map((imageURL) => {
+				selectedImages.map((index) => {
+					const generation = generations![index];
+
 					const formData = new FormData();
-					formData.append(`${portletNamespace}urlPath`, imageURL);
+
+					formData.append(
+						`${portletNamespace}expirationTime`,
+						String(generation.expirationTime)
+					);
+					formData.append(
+						`${portletNamespace}image`,
+						getBlob(generation.url),
+						'image.png'
+					);
+					formData.append(
+						`${portletNamespace}signature`,
+						generation.signature
+					);
 
 					return fetch(uploadGenerationsURL, {
 						body: formData,
@@ -86,7 +116,7 @@ export default function AICreatorImageModal({
 						.then((response) => response.json())
 						.then((json) => {
 							if (json.success) {
-								addedImages.push(imageURL);
+								addedImages.push(generation.signature);
 							}
 							else {
 								setErrorStatus(json.error?.message);
@@ -110,14 +140,14 @@ export default function AICreatorImageModal({
 		}
 	};
 
-	const onSelectedChange = (imageURL: string) => {
+	const onSelectedChange = (index: number) => {
 		const newSelectedImages = [...selectedImages];
 
-		if (newSelectedImages.includes(imageURL)) {
-			newSelectedImages.splice(newSelectedImages.indexOf(imageURL), 1);
+		if (newSelectedImages.includes(index)) {
+			newSelectedImages.splice(newSelectedImages.indexOf(index), 1);
 		}
 		else {
-			newSelectedImages.push(imageURL);
+			newSelectedImages.push(index);
 		}
 
 		setSelectedImages(newSelectedImages);
@@ -145,7 +175,8 @@ export default function AICreatorImageModal({
 					setErrorStatus(json.error.message);
 				}
 				else if (json.generations?.content) {
-					setImagesURL(json.generations.content);
+					setGenerations(json.generations.content);
+					setSelectedImages([]);
 					setStatus({type: 'idle'});
 				}
 				else {
@@ -188,9 +219,11 @@ export default function AICreatorImageModal({
 							portletNamespace={portletNamespace}
 						/>
 
-						{imagesURL && (
+						{generations && (
 							<ImagesResult
-								imagesURL={imagesURL}
+								imagesURL={generations.map(
+									(generation) => generation.url
+								)}
 								onSelectedChange={onSelectedChange}
 								selectedImages={selectedImages}
 							/>
@@ -222,9 +255,9 @@ export default function AICreatorImageModal({
 							)}
 							onAdd={onAdd}
 							onClose={closeModal}
-							showAddButton={Boolean(imagesURL?.length)}
-							showCreateButton={!imagesURL}
-							showRetryButton={Boolean(imagesURL?.length)}
+							showAddButton={Boolean(generations?.length)}
+							showCreateButton={!generations}
+							showRetryButton={Boolean(generations?.length)}
 						/>
 					</div>
 				</fieldset>

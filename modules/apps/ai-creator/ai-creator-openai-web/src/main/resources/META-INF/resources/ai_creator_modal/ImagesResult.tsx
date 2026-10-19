@@ -10,7 +10,7 @@ import React from 'react';
 interface Props {
 	imagesURL: string[];
 	onSelectedChange: Function;
-	selectedImages: string[];
+	selectedImages: number[];
 }
 
 export function ImagesResult({
@@ -31,10 +31,8 @@ export function ImagesResult({
 					>
 						<ClayCard displayType="image" selectable>
 							<ClayCheckbox
-								checked={
-									selectedImages.includes(imageURL) || false
-								}
-								onChange={() => onSelectedChange(imageURL)}
+								checked={selectedImages.includes(index)}
+								onChange={() => onSelectedChange(index)}
 							>
 								<ClayCard.AspectRatio className="card-item-first card-item-last">
 									<img
