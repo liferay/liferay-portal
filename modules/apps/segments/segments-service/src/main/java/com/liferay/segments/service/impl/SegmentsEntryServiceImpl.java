@@ -134,7 +134,7 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 		long groupId, String[] sources, int[] types, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator) {
 
-		return segmentsEntryPersistence.findByG_SRC_T(
+		return segmentsEntryPersistence.filterFindByG_SRC_T(
 			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources, types,
 			start, end, orderByComparator);
 	}
