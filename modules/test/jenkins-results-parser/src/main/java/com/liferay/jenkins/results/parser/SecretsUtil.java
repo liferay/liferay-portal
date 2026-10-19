@@ -190,7 +190,18 @@ public abstract class SecretsUtil {
 			throw new RuntimeException("Unable to find vault " + vaultName);
 		}
 
-		return vault.getItem(matcher.group("itemTitle"));
+		String itemTitle = matcher.group("itemTitle");
+
+		Item item = vault.getItem(itemTitle);
+
+		if (item == null) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to find item ", itemTitle, " in vault ",
+					vaultName));
+		}
+
+		return item;
 	}
 
 	protected static class Item {

@@ -135,13 +135,7 @@ public abstract class BaseJenkinsUser implements JenkinsUser {
 			return _item;
 		}
 
-		String itemReference = _getItemReference();
-
-		_item = SecretsUtil.getItem(itemReference);
-
-		if (_item == null) {
-			throw new RuntimeException("Unable to find item " + itemReference);
-		}
+		_item = SecretsUtil.getItem(_getItemReference());
 
 		return _item;
 	}
