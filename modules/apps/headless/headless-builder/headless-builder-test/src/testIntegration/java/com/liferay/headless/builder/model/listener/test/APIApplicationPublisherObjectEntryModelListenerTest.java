@@ -28,6 +28,12 @@ public class APIApplicationPublisherObjectEntryModelListenerTest
 	extends BaseTestCase {
 
 	@Test
+	public void testDeleteAPIApplication() throws Exception {
+		_testDeleteAPIApplication("published");
+		_testDeleteAPIApplication("unpublished");
+	}
+
+	@Test
 	public void testPublishAPIApplicationOnPatch() throws Exception {
 		String baseURL = StringUtil.toLowerCase(RandomTestUtil.randomString());
 		String externalReferenceCode = RandomTestUtil.randomString();
@@ -133,45 +139,6 @@ public class APIApplicationPublisherObjectEntryModelListenerTest
 
 		APIApplicationTestUtil.assertDeployedAPIApplication(baseURL);
 
-		String apiEndpointExternalReferenceCode = RandomTestUtil.randomString();
-
-		assertSuccessfulJSONObject(
-			JSONUtil.put(
-				"externalReferenceCode", apiEndpointExternalReferenceCode
-			).put(
-				"httpMethod", "get"
-			).put(
-				"name", RandomTestUtil.randomString()
-			).put(
-				"path",
-				StringPool.FORWARD_SLASH +
-					StringUtil.toLowerCase(RandomTestUtil.randomString())
-			).put(
-				"r_apiApplicationToAPIEndpoints_l_apiApplicationERC",
-				externalReferenceCode
-			).put(
-				"retrieveType",
-				APIApplication.Endpoint.RetrieveType.COLLECTION.getValue()
-			).put(
-				"scope", APIApplication.Endpoint.Scope.COMPANY.getValue()
-			).toString(),
-			"headless-builder/endpoints", Http.Method.POST);
-
-		String apiSchemaExternalReferenceCode = RandomTestUtil.randomString();
-
-		assertSuccessfulJSONObject(
-			JSONUtil.put(
-				"externalReferenceCode", apiSchemaExternalReferenceCode
-			).put(
-				"mainObjectDefinitionERC", "L_API_APPLICATION"
-			).put(
-				"name", "name"
-			).put(
-				"r_apiApplicationToAPISchemas_l_apiApplicationERC",
-				externalReferenceCode
-			).toString(),
-			"headless-builder/schemas", Http.Method.POST);
-
 		assertSuccessfulJSONObject(
 			null,
 			"headless-builder/applications/by-external-reference-code/" +
@@ -179,21 +146,6 @@ public class APIApplicationPublisherObjectEntryModelListenerTest
 			Http.Method.DELETE);
 
 		APIApplicationTestUtil.assertNotDeployedAPIApplication(baseURL);
-
-		Assert.assertEquals(
-			404,
-			HTTPTestUtil.invokeToHttpCode(
-				null,
-				"headless-builder/endpoints/by-external-reference-code/" +
-					apiEndpointExternalReferenceCode,
-				Http.Method.GET));
-		Assert.assertEquals(
-			404,
-			HTTPTestUtil.invokeToHttpCode(
-				null,
-				"headless-builder/schemas/by-external-reference-code/" +
-					apiSchemaExternalReferenceCode,
-				Http.Method.GET));
 	}
 
 	@Test
@@ -239,6 +191,79 @@ public class APIApplicationPublisherObjectEntryModelListenerTest
 		).put(
 			"title", RandomTestUtil.randomString()
 		).toString();
+	}
+
+	private void _testDeleteAPIApplication(String applicationStatus)
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		assertSuccessfulJSONObject(
+			_getAPIApplicationJSONString(
+				applicationStatus,
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
+				externalReferenceCode),
+			"headless-builder/applications", Http.Method.POST);
+
+		String apiEndpointExternalReferenceCode = RandomTestUtil.randomString();
+
+		assertSuccessfulJSONObject(
+			JSONUtil.put(
+				"externalReferenceCode", apiEndpointExternalReferenceCode
+			).put(
+				"httpMethod", "get"
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"path",
+				StringPool.FORWARD_SLASH +
+					StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).put(
+				"r_apiApplicationToAPIEndpoints_l_apiApplicationERC",
+				externalReferenceCode
+			).put(
+				"retrieveType",
+				APIApplication.Endpoint.RetrieveType.COLLECTION.getValue()
+			).put(
+				"scope", APIApplication.Endpoint.Scope.COMPANY.getValue()
+			).toString(),
+			"headless-builder/endpoints", Http.Method.POST);
+
+		String apiSchemaExternalReferenceCode = RandomTestUtil.randomString();
+
+		assertSuccessfulJSONObject(
+			JSONUtil.put(
+				"externalReferenceCode", apiSchemaExternalReferenceCode
+			).put(
+				"mainObjectDefinitionERC", "L_API_APPLICATION"
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"r_apiApplicationToAPISchemas_l_apiApplicationERC",
+				externalReferenceCode
+			).toString(),
+			"headless-builder/schemas", Http.Method.POST);
+
+		assertSuccessfulJSONObject(
+			null,
+			"headless-builder/applications/by-external-reference-code/" +
+				externalReferenceCode,
+			Http.Method.DELETE);
+
+		Assert.assertEquals(
+			404,
+			HTTPTestUtil.invokeToHttpCode(
+				null,
+				"headless-builder/endpoints/by-external-reference-code/" +
+					apiEndpointExternalReferenceCode,
+				Http.Method.GET));
+		Assert.assertEquals(
+			404,
+			HTTPTestUtil.invokeToHttpCode(
+				null,
+				"headless-builder/schemas/by-external-reference-code/" +
+					apiSchemaExternalReferenceCode,
+				Http.Method.GET));
 	}
 
 }
