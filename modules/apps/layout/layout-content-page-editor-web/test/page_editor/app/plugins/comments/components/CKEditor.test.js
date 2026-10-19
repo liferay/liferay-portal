@@ -14,26 +14,21 @@ import {StoreContextProvider} from '../../../../../../src/main/resources/META-IN
 import CommentForm from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/comments/components/CommentForm';
 
 jest.mock('frontend-editor-ckeditor-web', () => ({
-	CKEditor5BalloonEditor: ({config, onChange, onReady}) => {
+	CKEditor5BalloonEditor: ({config, data, onChange}) => {
 		const {useEffect, useRef} = jest.requireActual('react');
 
 		const textareaRef = useRef();
 
 		useEffect(() => {
-			const editor = {
-				getData: () => textareaRef.current.value,
-				setData: (data) => {
-					textareaRef.current.value = data;
-				},
-			};
-
-			onReady?.(editor);
-		}, [onReady]);
+			if (textareaRef.current.value !== data) {
+				textareaRef.current.value = data;
+			}
+		}, [data]);
 
 		return (
 			<textarea
 				aria-label={config.label}
-				defaultValue={config.initialData}
+				defaultValue={config.initialData || data}
 				onChange={(event) =>
 					onChange(event, {getData: () => event.target.value})
 				}

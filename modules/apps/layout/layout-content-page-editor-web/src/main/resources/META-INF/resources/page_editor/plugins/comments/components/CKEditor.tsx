@@ -32,8 +32,9 @@ export default function CKEditor({
 			className="c-mb-3 form-control form-control-sm"
 			config={getCKEditorConfig({
 				editorConfig,
-				initialData,
+				initialData: '',
 			})}
+			data={initialData}
 			onChange={(event, editor) => onChange(editor.getData())}
 		/>
 	);
