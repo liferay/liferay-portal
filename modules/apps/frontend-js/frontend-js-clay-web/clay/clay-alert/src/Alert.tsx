@@ -8,6 +8,8 @@ import ClayLayout from '@clayui/layout';
 import classNames from 'classnames';
 import React from 'react';
 
+import {AlertIndicator} from './AlertIndicator';
+import {ConditionalContainer} from './ConditionalContainer';
 import {ClayAlertFooter} from './Footer';
 import {ClayToastContainer} from './ToastContainer';
 import {useAutoClose} from './useAutoClose';
@@ -117,23 +119,7 @@ function ClayAlert({
 		autoClose,
 		onClose,
 	});
-	const ConditionalContainer = ({children}: any) =>
-		variant === 'stripe' ? (
-			<div className={classNames('container', containerClassName)}>
-				{children}
-			</div>
-		) : (
-			<>{children}</>
-		);
 	const showDismissible = onClose && !hideCloseIcon;
-	const AlertIndicator = () => (
-		<span className="alert-indicator">
-			<Icon
-				spritemap={spritemap}
-				symbol={symbol || ICON_MAP[displayType]}
-			/>
-		</span>
-	);
 
 	return (
 		<div
@@ -148,7 +134,10 @@ function ClayAlert({
 			onMouseOut={startAutoCloseTimer}
 			onMouseOver={pauseAutoCloseTimer}
 		>
-			<ConditionalContainer>
+			<ConditionalContainer
+				className={containerClassName}
+				variant={variant}
+			>
 				<ClayLayout.ContentRow
 					className="alert-autofit-row"
 					role={role as string}
@@ -156,7 +145,10 @@ function ClayAlert({
 					{!VARIANTS.includes(variant as string) && (
 						<ClayLayout.ContentCol>
 							<ClayLayout.ContentSection>
-								<AlertIndicator />
+								<AlertIndicator
+									spritemap={spritemap}
+									symbol={symbol || ICON_MAP[displayType]}
+								/>
 							</ClayLayout.ContentSection>
 						</ClayLayout.ContentCol>
 					)}
@@ -164,7 +156,10 @@ function ClayAlert({
 					<ClayLayout.ContentCol expand>
 						<ClayLayout.ContentSection>
 							{VARIANTS.includes(variant as string) && (
-								<AlertIndicator />
+								<AlertIndicator
+									spritemap={spritemap}
+									symbol={symbol || ICON_MAP[displayType]}
+								/>
 							)}
 
 							{title && <strong className="lead">{title}</strong>}
