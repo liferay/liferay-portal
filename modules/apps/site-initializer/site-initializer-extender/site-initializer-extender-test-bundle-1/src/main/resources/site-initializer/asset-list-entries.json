@@ -4,21 +4,11 @@
 		"title": "Test Asset List Entry 1",
 		"unicodeProperties": {
 			"classNameIds": "com.liferay.journal.model.JournalArticle",
-			"filterBy": [
+			"filters": [
 				{
-					"key": "queryAndOperator0",
-					"value": "true"
-				},
-				{
-					"key": "queryContains0",
-					"value": "true"
-				},
-				{
-					"key": "queryName0",
-					"value": "keywords"
-				},
-				{
-					"key": "queryValues0",
+					"operatorName": "contains",
+					"propertyName": "keywords",
+					"quantifier": "all",
 					"value": "Test Keyword"
 				}
 			]

@@ -1630,6 +1630,13 @@ public class BundleSiteInitializer implements SiteInitializer {
 				filterByJSONObject.getString("value"));
 		}
 
+		JSONArray filtersJSONArray = unicodePropertiesJSONObject.getJSONArray(
+			"filters");
+
+		if (!JSONUtil.isEmpty(filtersJSONArray)) {
+			map.put("filters", filtersJSONArray.toString());
+		}
+
 		Object[] orderByObjects = JSONUtil.toObjectArray(
 			unicodePropertiesJSONObject.getJSONArray("orderBy"));
 
@@ -1639,24 +1646,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 			map.put(
 				orderByJSONObject.getString("key"),
 				orderByJSONObject.getString("value"));
-		}
-
-		String[] assetTagNames = JSONUtil.toStringArray(
-			assetListJSONObject.getJSONArray("assetTagNames"));
-
-		for (int i = 0; i < assetTagNames.length; i++) {
-			map.put("queryValues" + i, assetTagNames[i]);
-
-			Object[] queryObjects = JSONUtil.toObjectArray(
-				unicodePropertiesJSONObject.getJSONArray("query"));
-
-			for (Object queryObject : queryObjects) {
-				JSONObject queryJSONObject = (JSONObject)queryObject;
-
-				map.put(
-					queryJSONObject.getString("key"),
-					queryJSONObject.getString("value"));
-			}
 		}
 
 		if (assetListEntry == null) {
