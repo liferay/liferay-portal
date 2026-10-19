@@ -14,6 +14,7 @@ dependencies {
 	compileOnly project(":apps:client-extension:client-extension-api")
 	compileOnly project(":apps:client-extension:client-extension-type-api")
 	compileOnly project(":apps:client-extension:client-extension-type-item-selector-api")
+	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:expando:expando-taglib")
@@ -59,5 +60,4 @@ dependencies {
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation project(":apps:depot:depot-api")
 }
