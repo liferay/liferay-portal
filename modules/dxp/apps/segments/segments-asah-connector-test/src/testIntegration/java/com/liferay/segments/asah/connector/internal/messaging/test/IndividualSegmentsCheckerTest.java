@@ -33,6 +33,9 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -179,7 +182,27 @@ public class IndividualSegmentsCheckerTest {
 					throw new IllegalStateException();
 				});
 
-			unsafeRunnable.run();
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.segments.asah.connector.internal.scheduler." +
+						"CheckIndividualSegmentsSchedulerJobConfiguration",
+					LoggerTestUtil.ERROR)) {
+
+				unsafeRunnable.run();
+
+				List<LogEntry> logEntries = logCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+
+				LogEntry logEntry = logEntries.get(0);
+
+				SegmentsEntry segmentsEntry = _getSegmentsEntry();
+
+				Assert.assertEquals(
+					"Unable to retrieve individuals for individual segment " +
+						segmentsEntry.getSegmentsEntryKey(),
+					logEntry.getMessage());
+			}
 
 			Assert.assertEquals(
 				segmentsEntryRelId,
