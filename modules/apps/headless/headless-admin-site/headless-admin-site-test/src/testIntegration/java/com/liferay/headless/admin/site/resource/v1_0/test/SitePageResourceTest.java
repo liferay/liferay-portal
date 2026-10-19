@@ -30,6 +30,7 @@ import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.headless.admin.site.client.custom.field.CustomField;
+import com.liferay.headless.admin.site.client.custom.field.CustomValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.AdvancedStylingConfig;
 import com.liferay.headless.admin.site.client.dto.v1_0.BasicFragmentInstancePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSettings;
@@ -5152,6 +5153,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				SitePage.Type.CONTENT_PAGE);
 			_testPutSiteSitePageWithPageSpecificationsWithCustomFields(
 				SitePage.Type.WIDGET_PAGE);
+			_testPutSiteSitePageWithPageSpecificationsWithCustomFieldsWithParentSitePage(
+				SitePage.Type.CONTENT_PAGE);
+			_testPutSiteSitePageWithPageSpecificationsWithCustomFieldsWithParentSitePage(
+				SitePage.Type.PAGE_SET_PAGE);
+			_testPutSiteSitePageWithPageSpecificationsWithCustomFieldsWithParentSitePage(
+				SitePage.Type.WIDGET_PAGE);
 		}
 	}
 
@@ -5188,6 +5195,69 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				pageSpecification -> pageSpecification.getCustomFields(),
 				CustomField[].class),
 			testGroup.getGroupId(), updateSitePage.getPageSpecifications());
+	}
+
+	private void
+			_testPutSiteSitePageWithPageSpecificationsWithCustomFieldsWithParentSitePage(
+				SitePage.Type type)
+		throws Exception {
+
+		SitePage parentSitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(SitePage.Type.PAGE_SET_PAGE));
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		SitePage sitePage = _getRandomSitePage(
+			externalReferenceCode, parentSitePage.getExternalReferenceCode(),
+			ServiceContextTestUtil.getServiceContext(
+				testGroup, TestPropsValues.getUserId()),
+			type, null);
+
+		PageSpecification[] pageSpecifications = null;
+
+		if (type == SitePage.Type.PAGE_SET_PAGE) {
+			pageSpecifications =
+				PageSpecificationsTestUtil.getPageSetPageSpecifications(
+					externalReferenceCode);
+		}
+		else {
+			pageSpecifications =
+				PageSpecificationsTestUtil.getPageSpecifications(
+					externalReferenceCode, testGroup.getGroupId(), type);
+		}
+
+		sitePage.setPageSpecifications(pageSpecifications);
+
+		sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false, sitePage);
+
+		CustomField[] customFields =
+			PageSpecificationsTestUtil.getCustomFields();
+
+		for (CustomField customField : customFields) {
+			CustomValue customValue = customField.getCustomValue();
+
+			customValue.setData(RandomTestUtil.randomString());
+		}
+
+		for (PageSpecification pageSpecification : pageSpecifications) {
+			pageSpecification.setCustomFields(customFields);
+		}
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		SitePage putSitePage = sitePageResource.putSiteSitePage(
+			testGroup.getExternalReferenceCode(), externalReferenceCode, false,
+			sitePage);
+
+		PageSpecificationsTestUtil.assertCustomFields(
+			TransformUtil.transform(
+				pageSpecifications,
+				pageSpecification -> pageSpecification.getCustomFields(),
+				CustomField[].class),
+			testGroup.getGroupId(), putSitePage.getPageSpecifications());
 	}
 
 	private void
