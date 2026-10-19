@@ -1,4 +1,8 @@
 {{- if .Values.enabled -}}
+{{- $database := deepCopy (.Values.database | default dict) -}}
+{{- if and (eq (dig "database" "engine" "" (.Values.global | default dict)) "mysql") (not $database.version) -}}
+{{- $_ := set $database "version" "8.4" -}}
+{{- end -}}
 {{- $searchEngine := include "search.engine" . -}}
 apiVersion: liferay.com/v1alpha1
 kind: LiferayInfrastructure
@@ -18,7 +22,7 @@ spec:
         {{- . | toYaml | nindent 8 }}
     {{- end }}
     database:
-        {{- .Values.database | toYaml | nindent 8 }}
+        {{- $database | toYaml | nindent 8 }}
     environmentId: {{ .Values.environmentId | quote }}
     {{- if hasKey .Values "forceDestroy" }}
     forceDestroy: {{ .Values.forceDestroy }}
