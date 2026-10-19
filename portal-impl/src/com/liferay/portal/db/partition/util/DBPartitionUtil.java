@@ -64,6 +64,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -1676,6 +1678,12 @@ public class DBPartitionUtil {
 			_defaultPartitionName = _dbPartitionDB.getDefaultPartitionName(
 				connection);
 		}
+
+		_defaultPartitionNamePattern = Pattern.compile(
+			"(?<![\\w$])[`\"]?" +
+				Pattern.quote(StringUtil.toLowerCase(_defaultPartitionName)) +
+					"[`\"]?(?:\\s|/\\*.*?\\*/)*\\.",
+			Pattern.DOTALL);
 	}
 
 	private static boolean _isCopyableQuartzTable(String tableName) {
@@ -1936,6 +1944,17 @@ public class DBPartitionUtil {
 						throw new UnsupportedOperationException(
 							"Unsupported SQL: " + sql);
 					}
+
+					Matcher quotedStringMatcher = _quotedStringPattern.matcher(
+						lowerCaseSQL);
+
+					Matcher matcher = _defaultPartitionNamePattern.matcher(
+						quotedStringMatcher.replaceAll("''"));
+
+					if (matcher.find()) {
+						throw new UnsupportedOperationException(
+							"Unsupported SQL: " + sql);
+					}
 				}
 
 				Connection connection = statement.getConnection();
@@ -2028,5 +2047,8 @@ public class DBPartitionUtil {
 	private static DBPartitionDB _dbPartitionDB;
 	private static volatile long _defaultCompanyId;
 	private static String _defaultPartitionName;
+	private static Pattern _defaultPartitionNamePattern;
+	private static final Pattern _quotedStringPattern = Pattern.compile(
+		"'(?:[^'\\\\]|\\\\.|'')*'");
 
 }
