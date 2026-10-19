@@ -46,10 +46,10 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 
 		_jenkinsMastersCount = jenkinsMasters.size();
 
-		List<String> messages = new ArrayList<>();
-		List<MonitorResult.Status> statuses = new ArrayList<>();
 		int longRunningBuildsCount = 0;
+		List<String> messages = new ArrayList<>();
 		int runningBuildsCount = 0;
+		List<MonitorResult.Status> statuses = new ArrayList<>();
 
 		for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
 			List<JenkinsMaster.RunningBuild> runningBuilds = null;
