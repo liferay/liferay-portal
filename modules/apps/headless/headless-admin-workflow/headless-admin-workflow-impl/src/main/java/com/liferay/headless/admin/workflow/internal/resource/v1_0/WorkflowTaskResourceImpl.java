@@ -18,7 +18,10 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -37,6 +40,7 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.workflow.comparator.WorkflowComparatorFactory;
+import com.liferay.portal.workflow.constants.WorkflowActionKeys;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 
 import java.io.Serializable;
@@ -83,6 +87,8 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 				Long workflowInstanceId, Long assigneeId, Boolean completed,
 				Pagination pagination)
 		throws Exception {
+
+		_checkListOthersWorkflowTasksPermission(assigneeId);
 
 		return Page.of(
 			_getActions(),
@@ -183,6 +189,8 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 			Long roleId, Pagination pagination)
 		throws Exception {
 
+		_checkListOthersWorkflowTasksPermission();
+
 		return Page.of(
 			_getActions(),
 			transform(
@@ -200,6 +208,8 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 	public Page<WorkflowTask> getWorkflowTasksAssignedToUserPage(
 			Long assigneeId, Pagination pagination)
 		throws Exception {
+
+		_checkListOthersWorkflowTasksPermission(assigneeId);
 
 		return Page.of(
 			_getActions(),
@@ -219,6 +229,8 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 			Long assigneeId, Pagination pagination)
 		throws Exception {
 
+		_checkListOthersWorkflowTasksPermission(assigneeId);
+
 		return Page.of(
 			_getActions(),
 			transform(
@@ -236,6 +248,8 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 	public Page<WorkflowTask> getWorkflowTasksSubmittingUserPage(
 			Long creatorId, Pagination pagination)
 		throws Exception {
+
+		_checkListOthersWorkflowTasksPermission(creatorId);
 
 		return Page.of(
 			_getActions(),
@@ -442,6 +456,25 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 			pagination, workflowTasks.getLength());
 	}
 
+	private void _checkListOthersWorkflowTasksPermission() throws Exception {
+		_portletResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			contextCompany.getGroupId(),
+			WorkflowActionKeys.LIST_OTHERS_WORKFLOW_TASKS);
+	}
+
+	private void _checkListOthersWorkflowTasksPermission(Long userId)
+		throws Exception {
+
+		if ((userId == null) ||
+			Objects.equals(userId, contextUser.getUserId())) {
+
+			return;
+		}
+
+		_checkListOthersWorkflowTasksPermission();
+	}
+
 	private Map<String, Map<String, String>> _getActions() {
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"assignedToMe",
@@ -612,6 +645,11 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 	)
 	private ModelResourcePermission<?>
 		_kaleoTaskInstanceTokenModelResourcePermission;
+
+	@Reference(
+		target = "(resource.name=" + WorkflowConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 	@Reference
 	private UserLocalService _userLocalService;
