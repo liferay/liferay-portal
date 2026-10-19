@@ -182,8 +182,11 @@ public class DefaultKaleoSignaler
 			return;
 		}
 
-		AuditRequestContext auditRequestContext =
+		AuditRequestContext currentAuditRequestContext =
 			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		AuditRequestContext auditRequestContext =
+			currentAuditRequestContext.clone();
 
 		long ctCollectionId = CTCollectionThreadLocal.getCTCollectionId();
 
@@ -193,7 +196,7 @@ public class DefaultKaleoSignaler
 					try (SafeCloseable safeCloseable1 =
 							AuditRequestContextThreadLocal.
 								setAuditRequestContextWithSafeCloseable(
-									auditRequestContext.clone());
+									auditRequestContext);
 						SafeCloseable safeCloseable2 =
 							CTCollectionThreadLocal.
 								setCTCollectionIdWithSafeCloseable(
