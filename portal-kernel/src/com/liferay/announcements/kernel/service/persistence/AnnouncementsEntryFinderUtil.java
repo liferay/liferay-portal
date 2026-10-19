@@ -13,20 +13,6 @@ import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
  */
 public class AnnouncementsEntryFinderUtil {
 
-	public static int countByScope(
-		long companyId, long userId, long classNameId, long[] classPKs,
-		int displayDateMonth, int displayDateDay, int displayDateYear,
-		int displayDateHour, int displayDateMinute, int expirationDateMonth,
-		int expirationDateDay, int expirationDateYear, int expirationDateHour,
-		int expirationDateMinute, boolean alert, int flagValue) {
-
-		return getFinder().countByScope(
-			companyId, userId, classNameId, classPKs, displayDateMonth,
-			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, alert, flagValue);
-	}
-
 	public static int countByScopes(
 		long companyId, long userId,
 		java.util.LinkedHashMap<Long, long[]> scopes, int displayDateMonth,
@@ -48,23 +34,6 @@ public class AnnouncementsEntryFinderUtil {
 				java.util.Date displayDateLT, java.util.Date displayDateGT) {
 
 		return getFinder().findByDisplayDate(displayDateLT, displayDateGT);
-	}
-
-	public static java.util.List
-		<com.liferay.announcements.kernel.model.AnnouncementsEntry> findByScope(
-			long companyId, long userId, long classNameId, long[] classPKs,
-			int displayDateMonth, int displayDateDay, int displayDateYear,
-			int displayDateHour, int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
-			int expirationDateHour, int expirationDateMinute, boolean alert,
-			int flagValue, int start, int end) {
-
-		return getFinder().findByScope(
-			companyId, userId, classNameId, classPKs, displayDateMonth,
-			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, alert, flagValue, start,
-			end);
 	}
 
 	public static java.util.List
@@ -103,4 +72,4 @@ public class AnnouncementsEntryFinderUtil {
 	private static AnnouncementsEntryFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1300554457
+// LIFERAY-SERVICE-BUILDER-HASH:2145325689

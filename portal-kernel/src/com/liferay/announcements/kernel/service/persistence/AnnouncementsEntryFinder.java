@@ -14,13 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface AnnouncementsEntryFinder {
 
-	public int countByScope(
-		long companyId, long userId, long classNameId, long[] classPKs,
-		int displayDateMonth, int displayDateDay, int displayDateYear,
-		int displayDateHour, int displayDateMinute, int expirationDateMonth,
-		int expirationDateDay, int expirationDateYear, int expirationDateHour,
-		int expirationDateMinute, boolean alert, int flagValue);
-
 	public int countByScopes(
 		long companyId, long userId,
 		java.util.LinkedHashMap<Long, long[]> scopes, int displayDateMonth,
@@ -35,15 +28,6 @@ public interface AnnouncementsEntryFinder {
 				java.util.Date displayDateLT, java.util.Date displayDateGT);
 
 	public java.util.List
-		<com.liferay.announcements.kernel.model.AnnouncementsEntry> findByScope(
-			long companyId, long userId, long classNameId, long[] classPKs,
-			int displayDateMonth, int displayDateDay, int displayDateYear,
-			int displayDateHour, int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
-			int expirationDateHour, int expirationDateMinute, boolean alert,
-			int flagValue, int start, int end);
-
-	public java.util.List
 		<com.liferay.announcements.kernel.model.AnnouncementsEntry>
 			findByScopes(
 				long companyId, long userId,
@@ -56,4 +40,4 @@ public interface AnnouncementsEntryFinder {
 				int start, int end);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:397008289
+// LIFERAY-SERVICE-BUILDER-HASH:2094422698
