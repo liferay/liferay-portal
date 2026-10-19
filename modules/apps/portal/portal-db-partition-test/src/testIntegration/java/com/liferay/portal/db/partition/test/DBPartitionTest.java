@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.db.partition.test.util.BaseDBPartitionTestCase;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.events.StartupHelperUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
@@ -563,6 +564,51 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 	}
 
 	@Test
+	public void testDefaultPartitionName() throws Exception {
+		_testDefaultPartitionName(
+			"drop view if exists " + defaultPartitionName + ".TestView", true);
+		_testDefaultPartitionName(
+			"drop view if exists " + defaultPartitionName + " .TestView", true);
+		_testDefaultPartitionName(
+			"drop view if exists " + defaultPartitionName + "/**/.TestView",
+			true);
+
+		if (db.getDBType() == DBType.POSTGRESQL) {
+			_testDefaultPartitionName(
+				"drop view if exists \"" + defaultPartitionName + "\".TestView",
+				true);
+			_testDefaultPartitionName(
+				StringBundler.concat(
+					"drop view if exists ", dbInspector.getCatalog(), ".",
+					defaultPartitionName, ".TestView"),
+				true);
+		}
+		else {
+			_testDefaultPartitionName(
+				"drop view if exists `" + defaultPartitionName + "`.TestView",
+				true);
+		}
+
+		_testDefaultPartitionName(
+			StringBundler.concat(
+				"delete from ClassName_ where value = '",
+				RandomTestUtil.randomString(), ".", defaultPartitionName, ".",
+				RandomTestUtil.randomString(), "'"),
+			false);
+		_testDefaultPartitionName(
+			StringBundler.concat(
+				"delete from ClassName_ where value = 'https://",
+				defaultPartitionName, ".com/", RandomTestUtil.randomString(),
+				"'"),
+			false);
+		_testDefaultPartitionName(
+			StringBundler.concat(
+				"delete from ClassName_ where value = 'This is ",
+				defaultPartitionName, ". ", RandomTestUtil.randomString(), "'"),
+			false);
+	}
+
+	@Test
 	public void testDeployRemotePortlet() throws Exception {
 		String portletName = RandomTestUtil.randomString();
 
@@ -940,6 +986,39 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 			_portletLocalService.deployRemotePortlet(
 				new long[] {companyId}, portlet,
 				new String[] {"category.hidden"}, true, true);
+		}
+	}
+
+	private void _testDefaultPartitionName(String sql, boolean unsupported)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					CompanyConstants.SYSTEM)) {
+
+			db.runSQL(sql);
+		}
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId())) {
+
+			db.runSQL(sql);
+		}
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					COMPANY_IDS[0])) {
+
+			db.runSQL(sql);
+
+			Assert.assertFalse(unsupported);
+		}
+		catch (UnsupportedOperationException unsupportedOperationException) {
+			Assert.assertTrue(unsupported);
+			Assert.assertEquals(
+				"Unsupported SQL: " + sql,
+				unsupportedOperationException.getMessage());
 		}
 	}
 
