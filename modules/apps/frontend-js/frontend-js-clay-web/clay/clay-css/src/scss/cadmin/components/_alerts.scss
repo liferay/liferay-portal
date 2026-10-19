@@ -117,6 +117,101 @@
 	}
 
 	@include clay-css($cadmin-alert-notifications-fixed);
+
+	.alert {
+		&:hover,
+		&:focus-within {
+			z-index: 1;
+		}
+	}
+
+	&:has(> :nth-last-child(7)) {
+		max-width: calc(100vw - 2 * #{$cadmin-alert-notifications-fixed-left});
+		width: $cadmin-alert-notifications-max-width;
+
+		.alert {
+			float: none;
+		}
+
+		.alert:not(:last-child) {
+			margin-bottom: 4px;
+			margin-left: auto;
+			margin-right: auto;
+			width: calc(100% - 112px);
+		}
+
+		@for $position from 2 through 8 {
+			.alert:nth-last-child(#{$position}) {
+				width: calc(100% - #{($position - 1) * 16px});
+			}
+		}
+	}
+
+	&:has(> :nth-last-child(13)) {
+		.alert:not(:last-child) {
+			height: 55px;
+			margin-bottom: -35px;
+			overflow: hidden;
+
+			&:hover,
+			&:focus-within {
+				height: auto;
+				left: 0;
+				min-height: 55px;
+				overflow: visible;
+				position: absolute;
+				right: 0;
+				transform: translateY(calc(-100% + 55px));
+			}
+
+			&:hover + .alert,
+			&:focus-within + .alert {
+				margin-top: 55px - 35px;
+			}
+
+			&:is(:hover, :focus-within)
+				+ .alert:not(:last-child):is(:hover, :focus-within)
+				+ .alert {
+				margin-top: 2 * (55px - 35px);
+			}
+		}
+	}
+
+	&:has(> :nth-last-child(21)) {
+		.alert:not(:last-child) {
+			margin-bottom: -43px;
+
+			> * {
+				opacity: 0;
+			}
+
+			&:hover > *,
+			&:focus-within > * {
+				opacity: 1;
+			}
+
+			&:hover + .alert,
+			&:focus-within + .alert {
+				margin-top: 55px - 43px;
+			}
+
+			&:is(:hover, :focus-within)
+				+ .alert:not(:last-child):is(:hover, :focus-within)
+				+ .alert {
+				margin-top: 2 * (55px - 43px);
+			}
+		}
+
+		@for $position from 21 through 29 {
+			.alert:nth-last-child(#{$position}):not(:hover, :focus-within) {
+				opacity: 1 - ($position - 20) * 0.09;
+			}
+		}
+
+		.alert:nth-last-child(n + 30):not(:hover, :focus-within) {
+			opacity: 0.1;
+		}
+	}
 }
 
 // Alert List

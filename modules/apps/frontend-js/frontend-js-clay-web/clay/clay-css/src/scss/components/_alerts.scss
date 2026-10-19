@@ -113,6 +113,102 @@
 	}
 
 	@include clay-css($alert-notifications-fixed);
+
+	.alert {
+		&:hover,
+		&:focus-within {
+			z-index: 1;
+		}
+	}
+
+	&:has(> :nth-last-child(7)) {
+		@include media-breakpoint-up(md) {
+			width: $alert-notifications-max-width;
+		}
+
+		.alert {
+			float: none;
+		}
+
+		.alert:not(:last-child) {
+			margin-bottom: 0.25rem;
+			margin-left: auto;
+			margin-right: auto;
+			width: calc(100% - 7rem);
+		}
+
+		@for $position from 2 through 8 {
+			.alert:nth-last-child(#{$position}) {
+				width: calc(100% - #{($position - 1) * 1rem});
+			}
+		}
+	}
+
+	&:has(> :nth-last-child(13)) {
+		.alert:not(:last-child) {
+			height: 3.125rem;
+			margin-bottom: -2.1875rem;
+			overflow: hidden;
+
+			&:hover,
+			&:focus-within {
+				height: auto;
+				left: 0;
+				min-height: 3.125rem;
+				overflow: visible;
+				position: absolute;
+				right: 0;
+				transform: translateY(calc(-100% + 3.125rem));
+			}
+
+			&:hover + .alert,
+			&:focus-within + .alert {
+				margin-top: 3.125rem - 2.1875rem;
+			}
+
+			&:is(:hover, :focus-within)
+				+ .alert:not(:last-child):is(:hover, :focus-within)
+				+ .alert {
+				margin-top: 2 * (3.125rem - 2.1875rem);
+			}
+		}
+	}
+
+	&:has(> :nth-last-child(21)) {
+		.alert:not(:last-child) {
+			margin-bottom: -2.6875rem;
+
+			> * {
+				opacity: 0;
+			}
+
+			&:hover > *,
+			&:focus-within > * {
+				opacity: 1;
+			}
+
+			&:hover + .alert,
+			&:focus-within + .alert {
+				margin-top: 3.125rem - 2.6875rem;
+			}
+
+			&:is(:hover, :focus-within)
+				+ .alert:not(:last-child):is(:hover, :focus-within)
+				+ .alert {
+				margin-top: 2 * (3.125rem - 2.6875rem);
+			}
+		}
+
+		@for $position from 21 through 29 {
+			.alert:nth-last-child(#{$position}):not(:hover, :focus-within) {
+				opacity: 1 - ($position - 20) * 0.09;
+			}
+		}
+
+		.alert:nth-last-child(n + 30):not(:hover, :focus-within) {
+			opacity: 0.1;
+		}
+	}
 }
 
 // Alert List
