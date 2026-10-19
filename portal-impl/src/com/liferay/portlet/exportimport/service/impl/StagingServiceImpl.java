@@ -5,6 +5,7 @@
 
 package com.liferay.portlet.exportimport.service.impl;
 
+import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.MissingReferences;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
@@ -18,8 +19,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -31,6 +34,7 @@ import com.liferay.portlet.exportimport.service.base.StagingServiceBaseImpl;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael C. Han
@@ -226,6 +230,8 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		try {
 			checkPermission(stagingRequestId);
 
+			_checkTarget(stagingRequestId, exportImportConfiguration);
+
 			return stagingLocalService.publishStagingRequest(
 				getUserId(), stagingRequestId, exportImportConfiguration);
 		}
@@ -289,6 +295,48 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		GroupPermissionUtil.check(
 			getPermissionChecker(), folder.getGroupId(),
 			ActionKeys.EXPORT_IMPORT_LAYOUTS);
+	}
+
+	private void _checkTarget(
+			long stagingRequestId,
+			ExportImportConfiguration exportImportConfiguration)
+		throws PortalException {
+
+		Map<String, Serializable> settingsMap =
+			exportImportConfiguration.getSettingsMap();
+
+		long targetGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
+
+		Folder folder = PortletFileRepositoryUtil.getPortletFolder(
+			stagingRequestId);
+
+		if (targetGroupId != folder.getGroupId()) {
+			throw new PrincipalException(
+				StringBundler.concat(
+					"Unable to publish staging request ", stagingRequestId,
+					" to group ", targetGroupId));
+		}
+
+		if (exportImportConfiguration.getType() !=
+				ExportImportConfigurationConstants.
+					TYPE_PUBLISH_PORTLET_REMOTE) {
+
+			return;
+		}
+
+		long targetPlid = MapUtil.getLong(settingsMap, "targetPlid");
+
+		Layout layout = _layoutLocalService.getLayout(targetPlid);
+
+		if ((layout.getCompanyId() != folder.getCompanyId()) ||
+			(!layout.isTypeControlPanel() &&
+			 (layout.getGroupId() != folder.getGroupId()))) {
+
+			throw new PrincipalException(
+				StringBundler.concat(
+					"Unable to publish staging request ", stagingRequestId,
+					" to layout ", targetPlid));
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
