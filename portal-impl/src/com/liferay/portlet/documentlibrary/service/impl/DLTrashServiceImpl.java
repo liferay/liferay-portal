@@ -200,10 +200,8 @@ public class DLTrashServiceImpl extends DLTrashServiceBaseImpl {
 			getPermissionChecker(), folder, ActionKeys.UPDATE);
 
 		ModelResourcePermissionUtil.check(
-			ModelResourcePermissionRegistryUtil.
-				<Folder>getModelResourcePermission(Folder.class.getName()),
-			getPermissionChecker(), folder.getGroupId(), parentFolderId,
-			ActionKeys.ADD_FOLDER);
+			folderModelResourcePermission, getPermissionChecker(),
+			folder.getGroupId(), parentFolderId, ActionKeys.ADD_FOLDER);
 
 		Folder destinationFolder = null;
 
