@@ -303,9 +303,10 @@
 			<try>
 				<touch file="${user.home}/portal-ext.properties" />
 
-				<execute dir="${db.upgrade.client.home}" failonerror="true">
-					db_upgrade_client${file.suffix.bat} run > temp.log
-				</execute>
+				<exec executable="/bin/bash" output="temp.log" resultproperty="upgrade.process.exit.code">
+					<arg value="-c" />
+					<arg value="${db.upgrade.client.home}/db_upgrade_client${file.suffix.bat} run" />
+				</exec>
 
 				<loadfile
 					property="upgrade.process.output"
@@ -313,6 +314,15 @@
 				/>
 
 				<echo>${upgrade.process.output}</echo>
+
+				<if>
+					<not>
+						<equals arg1="${upgrade.process.exit.code}" arg2="1" />
+					</not>
+					<then>
+						<fail message="Upgrade client exited with ${upgrade.process.exit.code} instead of 1 with portal-ext.properties in user's home directory." />
+					</then>
+				</if>
 
 				<if>
 					<contains string="${upgrade.process.output}" substring="Remove ${user.home}/portal-ext.properties prior to running an upgrade to prevent possible conflicts." />
