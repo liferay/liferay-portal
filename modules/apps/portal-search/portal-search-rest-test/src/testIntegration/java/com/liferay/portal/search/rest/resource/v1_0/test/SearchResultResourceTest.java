@@ -435,9 +435,11 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 					searchResult)
 		throws Exception {
 
-		JournalTestUtil.addArticle(
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			testGroup.getGroupId(), searchResult.getTitle(),
 			searchResult.getDescription());
+
+		searchResult.setDateModified(journalArticle.getModifiedDate());
 
 		return searchResult;
 	}
