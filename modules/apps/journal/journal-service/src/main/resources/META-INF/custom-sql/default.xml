@@ -33,7 +33,7 @@
 					(JournalArticle.version < tempJournalArticle.version)
 			WHERE
 				(JournalArticle.groupId = ?) AND
-				(JournalArticle.status = ?) AND
+				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] JournalArticle.status = ?) AND
 				(tempJournalArticle.id_ IS NULL)
 		]]>
 	</sql>
@@ -96,7 +96,7 @@
 					(JournalArticleLocalization.languageId = ?)
 			WHERE
 				(JournalArticle.groupId = ?) AND
-				(JournalArticle.status = ?) AND
+				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] JournalArticle.status = ?) AND
 				(tempJournalArticle.id_ IS NULL)
 			ORDER BY
 				JournalArticle.id_ ASC
@@ -111,6 +111,7 @@
 			LEFT JOIN
 				JournalArticle tempJournalArticle ON
 					[$STATUS_JOIN$] AND
+					[$VIEWABLE_STATUS_JOIN$] AND
 					(JournalArticle.groupId = tempJournalArticle.groupId) AND
 					(JournalArticle.articleId = tempJournalArticle.articleId) AND
 					(JournalArticle.version < tempJournalArticle.version)
@@ -122,6 +123,7 @@
 			WHERE
 				(JournalArticle.groupId = ?) AND
 				([$STATUS$]) AND
+				[$VIEWABLE_STATUS$] AND
 				[$FOLDER_ID$] AND
 				(tempJournalArticle.id_ IS NULL)
 			ORDER BY

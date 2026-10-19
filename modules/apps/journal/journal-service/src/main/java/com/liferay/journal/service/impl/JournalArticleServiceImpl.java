@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -681,6 +683,9 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
 			WorkflowConstants.STATUS_ANY);
 
+		queryDefinition.setOwnerUserId(
+			_getOwnerUserId(groupId, WorkflowConstants.STATUS_ANY));
+
 		return journalArticleFinder.filterFindByG_F_L(
 			groupId, folderIds, locale, queryDefinition);
 	}
@@ -696,6 +701,9 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 
 		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
 			WorkflowConstants.STATUS_ANY, start, end, orderByComparator);
+
+		queryDefinition.setOwnerUserId(
+			_getOwnerUserId(groupId, WorkflowConstants.STATUS_ANY));
 
 		return journalArticleFinder.filterFindByG_F_L(
 			groupId, folderIds, locale, queryDefinition);
@@ -1583,6 +1591,8 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
 			status, start, end, orderByComparator);
 
+		queryDefinition.setOwnerUserId(_getOwnerUserId(groupId, status));
+
 		Locale locale = LocaleUtil.getMostRelevantLocale();
 
 		return journalArticleFinder.filterFindByG_ST_L(
@@ -1591,8 +1601,13 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 
 	@Override
 	public int getLatestArticlesCount(long groupId, int status) {
+		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
+			status);
+
+		queryDefinition.setOwnerUserId(_getOwnerUserId(groupId, status));
+
 		return journalArticleFinder.filterCountByG_ST(
-			groupId, status, new QueryDefinition<>(status));
+			groupId, status, queryDefinition);
 	}
 
 	/**
@@ -2343,6 +2358,27 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		if (userId != getUserId()) {
 			throw new PrincipalException();
 		}
+	}
+
+	private long _getOwnerUserId(long groupId, int status) {
+		if ((status != WorkflowConstants.STATUS_ANY) &&
+			(status != WorkflowConstants.STATUS_DRAFT) &&
+			(status != WorkflowConstants.STATUS_SCHEDULED)) {
+
+			return 0;
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if ((permissionChecker == null) ||
+			permissionChecker.isContentReviewer(
+				permissionChecker.getCompanyId(), groupId)) {
+
+			return 0;
+		}
+
+		return permissionChecker.getUserId();
 	}
 
 	@Reference(
