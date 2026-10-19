@@ -132,6 +132,11 @@ public class PublishLayoutMVCActionCommand
 
 			layoutLockManager.unlock(draftLayout, userId);
 		}
+		else if (draftLayout.getLaunchSetId() > 0) {
+			_layoutLocalService.updateStatus(
+				userId, draftLayout.getPlid(),
+				WorkflowConstants.STATUS_READY_TO_PUBLISH, serviceContext);
+		}
 		else {
 			UnicodeProperties originalTypeSettingsUnicodeProperties =
 				layout.getTypeSettingsProperties();
