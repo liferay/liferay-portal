@@ -85,109 +85,12 @@ public class AuthVerifierPipelineTest {
 
 	@Test
 	public void testVerifyRequest() throws PortalException {
-		String contextPath = "";
-		String includeURLs = StringBundler.concat(
-			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
-
-		String legacyRequestURI = contextPath + _BASE_URL + "/legacy/Hello";
-		String regularRequestURI = contextPath + _BASE_URL + "/regular/Hello";
-
-		AuthVerifierResult.State expectedState =
-			AuthVerifierResult.State.SUCCESS;
-
-		_assertAuthVerifierResult(
-			contextPath, includeURLs, legacyRequestURI, expectedState);
-		_assertAuthVerifierResult(
-			contextPath, includeURLs, regularRequestURI, expectedState);
-	}
-
-	@Test
-	public void testVerifyRequestWithContextPath() throws PortalException {
-		String contextPath = "/abc";
-		String includeURLs = StringBundler.concat(
-			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
-
-		String requestURI = contextPath + _BASE_URL + "/regular/Hello";
-
-		AuthVerifierResult.State expectedState =
-			AuthVerifierResult.State.SUCCESS;
-
-		_assertAuthVerifierResult(
-			contextPath, includeURLs, requestURI, expectedState);
-	}
-
-	@Test
-	public void testVerifyRequestWithContextPathNotAffectedByPortalProxyPath()
-		throws PortalException {
-
-		String contextPath = "/abc";
-		String includeURLs = StringBundler.concat(
-			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
-
-		String requestURI = contextPath + _BASE_URL + "/regular/Hello";
-
-		AuthVerifierResult.State expectedState =
-			AuthVerifierResult.State.SUCCESS;
-
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"PORTAL_PROXY_PATH", "/proxy")) {
-
-			_setUpPortalUtil();
-
-			_assertAuthVerifierResult(
-				contextPath, includeURLs, requestURI, expectedState);
-		}
-	}
-
-	@Test
-	public void testVerifyRequestWithInactiveUser() throws PortalException {
-		_user.setType(UserConstants.TYPE_REGULAR);
-		_user.setStatus(WorkflowConstants.STATUS_INACTIVE);
-
-		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, true);
-		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
-	}
-
-	@Test
-	public void testVerifyRequestWithIncompleteSetupUser()
-		throws PortalException {
-
-		_user.setPasswordReset(false);
-		_user.setEmailAddressVerified(false);
-		_user.setType(UserConstants.TYPE_REGULAR);
-
-		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
-		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
-
-		_user.setPasswordReset(true);
-		_user.setEmailAddressVerified(true);
-
-		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
-		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
-	}
-
-	@Test
-	public void testVerifyRequestWithNonmatchingRequestURI()
-		throws PortalException {
-
-		String contextPath = "";
-		String includeURLs = StringBundler.concat(
-			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
-
-		String requestURI = contextPath + _BASE_URL + "/non/matching";
-
-		AuthVerifierResult.State expectedState =
-			AuthVerifierResult.State.UNSUCCESSFUL;
-
-		_assertAuthVerifierResult(
-			contextPath, includeURLs, requestURI, expectedState);
+		_testVerifyRequest();
+		_testVerifyRequestWithContextPath();
+		_testVerifyRequestWithContextPathNotAffectedByPortalProxyPath();
+		_testVerifyRequestWithInactiveUser();
+		_testVerifyRequestWithIncompleteSetupUser();
+		_testVerifyRequestWithNonmatchingRequestURI();
 	}
 
 	private void _assertAuthVerifierResult(
@@ -319,6 +222,108 @@ public class AuthVerifierPipelineTest {
 		).thenReturn(
 			_GUEST_USER_ID
 		);
+	}
+
+	private void _testVerifyRequest() throws PortalException {
+		String contextPath = "";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
+
+		String legacyRequestURI = contextPath + _BASE_URL + "/legacy/Hello";
+		String regularRequestURI = contextPath + _BASE_URL + "/regular/Hello";
+
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.SUCCESS;
+
+		_assertAuthVerifierResult(
+			contextPath, includeURLs, legacyRequestURI, expectedState);
+		_assertAuthVerifierResult(
+			contextPath, includeURLs, regularRequestURI, expectedState);
+	}
+
+	private void _testVerifyRequestWithContextPath() throws PortalException {
+		String contextPath = "/abc";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
+
+		String requestURI = contextPath + _BASE_URL + "/regular/Hello";
+
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.SUCCESS;
+
+		_assertAuthVerifierResult(
+			contextPath, includeURLs, requestURI, expectedState);
+	}
+
+	private void _testVerifyRequestWithContextPathNotAffectedByPortalProxyPath()
+		throws PortalException {
+
+		String contextPath = "/abc";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
+
+		String requestURI = contextPath + _BASE_URL + "/regular/Hello";
+
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.SUCCESS;
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"PORTAL_PROXY_PATH", "/proxy")) {
+
+			_setUpPortalUtil();
+
+			_assertAuthVerifierResult(
+				contextPath, includeURLs, requestURI, expectedState);
+		}
+	}
+
+	private void _testVerifyRequestWithInactiveUser() throws PortalException {
+		_user.setType(UserConstants.TYPE_REGULAR);
+		_user.setStatus(WorkflowConstants.STATUS_INACTIVE);
+
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, true);
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
+	}
+
+	private void _testVerifyRequestWithIncompleteSetupUser()
+		throws PortalException {
+
+		_user.setPasswordReset(false);
+		_user.setEmailAddressVerified(false);
+		_user.setType(UserConstants.TYPE_REGULAR);
+		_user.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
+
+		_user.setPasswordReset(true);
+		_user.setEmailAddressVerified(true);
+
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
+	}
+
+	private void _testVerifyRequestWithNonmatchingRequestURI()
+		throws PortalException {
+
+		String contextPath = "";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
+
+		String requestURI = contextPath + _BASE_URL + "/non/matching";
+
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.UNSUCCESSFUL;
+
+		_assertAuthVerifierResult(
+			contextPath, includeURLs, requestURI, expectedState);
 	}
 
 	private AuthVerifierResult _verifyRequest(
