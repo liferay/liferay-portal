@@ -133,9 +133,11 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 	@Test
 	public void testExportImportData() throws Exception {
 		String externalReferenceCode1 = RandomTestUtil.randomString();
-		String externalReferenceCode2 = RandomTestUtil.randomString();
 
 		addEntry(externalReferenceCode1, _getGroupId());
+
+		String externalReferenceCode2 = RandomTestUtil.randomString();
+
 		addEntry(externalReferenceCode2, _getGroupId());
 
 		_exportImport(null, Collections.emptyMap(), null);
@@ -149,9 +151,11 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 	@Test
 	public void testExportImportDeletions() throws Exception {
 		String externalReferenceCode1 = RandomTestUtil.randomString();
-		String externalReferenceCode2 = RandomTestUtil.randomString();
 
 		addEntry(externalReferenceCode1, _getGroupId());
+
+		String externalReferenceCode2 = RandomTestUtil.randomString();
+
 		addEntry(externalReferenceCode2, _getGroupId());
 
 		_exportImport(null, Collections.emptyMap(), null);
@@ -182,9 +186,11 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 		}
 
 		String externalReferenceCode1 = RandomTestUtil.randomString();
-		String externalReferenceCode2 = RandomTestUtil.randomString();
 
 		addEntry(externalReferenceCode1, _getGroupId());
+
+		String externalReferenceCode2 = RandomTestUtil.randomString();
+
 		addEntry(externalReferenceCode2, _getGroupId());
 
 		ChangesetCollection changesetCollection =
@@ -312,11 +318,15 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 	@Test
 	public void testExportImportWithDateRange() throws Exception {
 		String externalReferenceCode1 = RandomTestUtil.randomString();
-		String externalReferenceCode2 = RandomTestUtil.randomString();
-		String externalReferenceCode3 = RandomTestUtil.randomString();
 
 		addEntry(externalReferenceCode1, _getGroupId());
+
+		String externalReferenceCode2 = RandomTestUtil.randomString();
+
 		addEntry(externalReferenceCode2, _getGroupId());
+
+		String externalReferenceCode3 = RandomTestUtil.randomString();
+
 		addEntry(externalReferenceCode3, _getGroupId());
 
 		long time = System.currentTimeMillis();
