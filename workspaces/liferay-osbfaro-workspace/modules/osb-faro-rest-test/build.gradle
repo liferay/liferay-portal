@@ -5,3 +5,7 @@ dependencies {
 	testIntegrationImplementation project(":modules:osb-faro-rest-api")
 	testIntegrationImplementation project(":modules:osb-faro-rest-client")
 }
+
+jar {
+	enabled = false
+}
