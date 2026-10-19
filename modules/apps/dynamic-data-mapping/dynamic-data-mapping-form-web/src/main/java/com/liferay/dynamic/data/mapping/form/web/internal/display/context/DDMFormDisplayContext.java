@@ -64,6 +64,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -378,18 +379,26 @@ public class DDMFormDisplayContext {
 				DDMFormInstanceVersion latestApprovedDDMFormInstanceVersion =
 					_getLatestApprovedDDMFormInstanceVersion();
 
-				if (Validator.isNotNull(
-						latestApprovedDDMFormInstanceVersion.getSettings())) {
+				String settings =
+					latestApprovedDDMFormInstanceVersion.getSettings();
 
-					_ddmFormInstance.setSettings(
-						latestApprovedDDMFormInstanceVersion.getSettings());
-
+				if (Validator.isNotNull(settings)) {
 					DDMStructureVersion ddmStructureVersion =
 						latestApprovedDDMFormInstanceVersion.
 							getStructureVersion();
 
-					_ddmFormInstance.setStructureId(
-						ddmStructureVersion.getStructureId());
+					if (!Objects.equals(
+							_ddmFormInstance.getSettings(), settings) ||
+						(_ddmFormInstance.getStructureId() !=
+							ddmStructureVersion.getStructureId())) {
+
+						_ddmFormInstance = MVCCModel.scratchClone(
+							_ddmFormInstance);
+
+						_ddmFormInstance.setStructureId(
+							ddmStructureVersion.getStructureId());
+						_ddmFormInstance.setSettings(settings);
+					}
 				}
 			}
 		}
