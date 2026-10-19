@@ -93,10 +93,10 @@ public class FragmentServiceConfigurationDisplayContextTest {
 
 	@After
 	public void tearDown() throws Exception {
-		_configurationProvider.deleteCompanyConfiguration(
-			FragmentServiceConfiguration.class, _company.getCompanyId());
 		ConfigurationTestUtil.deleteConfiguration(
 			FragmentServiceConfiguration.class.getName());
+		_configurationProvider.deleteCompanyConfiguration(
+			FragmentServiceConfiguration.class, _company.getCompanyId());
 	}
 
 	@Test
