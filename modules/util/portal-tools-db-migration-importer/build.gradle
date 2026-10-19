@@ -7,7 +7,7 @@ dependencies {
 	compileInclude group: "com.zaxxer", name: "HikariCP", version: "4.0.3"
 	compileInclude group: "commons-cli", name: "commons-cli", version: "1.4"
 	compileInclude group: "org.mariadb.jdbc", name: "mariadb-java-client", version: "3.5.10"
-	compileInclude group: "org.postgresql", name: "postgresql", version: "42.7.11"
+	compileInclude group: "org.postgresql", name: "postgresql", version: "42.7.14"
 	compileInclude group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
 	compileInclude group: "org.slf4j", name: "slf4j-simple", version: "1.7.10"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.lang", version: "5.2.0"
