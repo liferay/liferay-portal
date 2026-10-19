@@ -14,12 +14,14 @@ import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 interface FieldValueMessageBalloonProps {
 	onApply: () => void;
 	onRegenerate: () => void;
+	richTextFieldNames: string[];
 	values: Record<string, string>;
 }
 
 const FieldValueMessageBalloon: React.FC<FieldValueMessageBalloonProps> = ({
 	onApply,
 	onRegenerate,
+	richTextFieldNames,
 	values,
 }) => {
 	const [applied, setApplied] = useState(false);
@@ -30,18 +32,24 @@ const FieldValueMessageBalloon: React.FC<FieldValueMessageBalloonProps> = ({
 				<AIAssistantMessageBalloonIcon />
 
 				<div className="m-2">
-					{Object.values(values).map((value, index) => (
-						<div
+					{Object.entries(values).map(([name, value]) => {
+						if (richTextFieldNames.includes(name)) {
+							return (
+								<div
 
-							// XSS: value is sanitized by DOMPurify, since rich
-							// text values are HTML by design
+									// XSS: value is sanitized by DOMPurify, since
+									// rich text values are HTML by design
 
-							dangerouslySetInnerHTML={{
-								__html: DOMPurify.sanitize(value),
-							}}
-							key={index}
-						/>
-					))}
+									dangerouslySetInnerHTML={{
+										__html: DOMPurify.sanitize(value),
+									}}
+									key={name}
+								/>
+							);
+						}
+
+						return <div key={name}>{value}</div>;
+					})}
 				</div>
 			</div>
 

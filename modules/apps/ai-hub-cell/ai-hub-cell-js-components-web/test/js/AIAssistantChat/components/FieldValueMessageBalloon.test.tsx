@@ -18,6 +18,7 @@ describe('FieldValueMessageBalloon', () => {
 			<FieldValueMessageBalloon
 				onApply={jest.fn()}
 				onRegenerate={jest.fn()}
+				richTextFieldNames={['content']}
 				values={{
 					content:
 						'<p onclick="alert(1)">Safe</p><script>alert(1)</script><img onerror="alert(1)" src="x">',
@@ -34,6 +35,7 @@ describe('FieldValueMessageBalloon', () => {
 			<FieldValueMessageBalloon
 				onApply={jest.fn()}
 				onRegenerate={jest.fn()}
+				richTextFieldNames={['content']}
 				values={{
 					content: '<p><strong>Live Energy.</strong> An app.</p>',
 				}}
@@ -48,6 +50,7 @@ describe('FieldValueMessageBalloon', () => {
 			<FieldValueMessageBalloon
 				onApply={jest.fn()}
 				onRegenerate={jest.fn()}
+				richTextFieldNames={['content']}
 				values={{
 					content: '<p>An easy app.</p>',
 					title: 'Live Energy',
@@ -65,6 +68,7 @@ describe('FieldValueMessageBalloon', () => {
 			<FieldValueMessageBalloon
 				onApply={jest.fn()}
 				onRegenerate={jest.fn()}
+				richTextFieldNames={[]}
 				values={{title: 'Fish & Chips'}}
 			/>
 		);
@@ -72,11 +76,25 @@ describe('FieldValueMessageBalloon', () => {
 		expect(screen.getByText('Fish & Chips')).toBeInTheDocument();
 	});
 
+	it('renders HTML in a plain text value literally', () => {
+		render(
+			<FieldValueMessageBalloon
+				onApply={jest.fn()}
+				onRegenerate={jest.fn()}
+				richTextFieldNames={['content']}
+				values={{title: '<b>AT&amp;T</b> news'}}
+			/>
+		);
+
+		expect(screen.getByText('<b>AT&amp;T</b> news')).toBeInTheDocument();
+	});
+
 	it('renders a rich text value as formatted text instead of HTML tags', () => {
 		render(
 			<FieldValueMessageBalloon
 				onApply={jest.fn()}
 				onRegenerate={jest.fn()}
+				richTextFieldNames={['content']}
 				values={{
 					content:
 						'<p><strong>Live Energy.</strong> An easy app.</p><p>Second paragraph.</p>',

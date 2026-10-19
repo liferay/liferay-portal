@@ -6,6 +6,7 @@
 import React from 'react';
 
 import {APPLY_OBJECT_FIELD_VALUES_EVENT} from '../events';
+import {ObjectField} from '../services/getObjectFields';
 import {Message} from '../types';
 import {AIChat} from '../useAIChat';
 import buildContentTypeMessage from '../utils/buildContentTypeMessage';
@@ -52,6 +53,28 @@ function getFeedbackProps({chat, index, item}: MessageBalloonRenderContext) {
 	};
 }
 
+function getRichTextFieldNames({chat}: MessageBalloonRenderContext) {
+	const chatContext = {
+		...chat.contextRef.current,
+		...chat.getContextRef.current?.(),
+		...chat.runtimeContextRef.current,
+	};
+
+	if (typeof chatContext.objectFields !== 'string') {
+		return [];
+	}
+
+	let objectFields = JSON.parse(chatContext.objectFields);
+
+	if (!Array.isArray(objectFields)) {
+		objectFields = objectFields.items ?? [];
+	}
+
+	return (objectFields as ObjectField[])
+		.filter(({businessType}) => businessType === 'RichText')
+		.map(({name}) => name);
+}
+
 const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 	'assistant': (context) => (
 		<AIAssistantMessageBalloon
@@ -81,7 +104,9 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 			setIsGenerating={chat.setIsGenerating}
 		/>
 	),
-	'field-values': ({chat, index}, {fieldValues}) => {
+	'field-values': (context, {fieldValues}) => {
+		const {chat, index} = context;
+
 		const previousMessage = chat.messages[index - 1];
 
 		return (
@@ -96,6 +121,7 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 						chat.sendMessage(previousMessage.text);
 					}
 				}}
+				richTextFieldNames={getRichTextFieldNames(context)}
 				values={fieldValues}
 			/>
 		);
