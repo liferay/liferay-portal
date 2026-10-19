@@ -4095,6 +4095,13 @@ public class ContactsEngineClientImpl
 			getUriVariables(faroProject, String.valueOf(segmentId)));
 	}
 
+	@Override
+	public void validateConnection(FaroProject faroProject) throws Exception {
+		get(
+			faroProject, Collections.emptyMap(), "/", Collections.emptyMap(),
+			Void.class, getUriVariables(faroProject));
+	}
+
 	protected void addActionFilter(
 		FilterBuilder filterBuilder, List<String> actionKeys) {
 

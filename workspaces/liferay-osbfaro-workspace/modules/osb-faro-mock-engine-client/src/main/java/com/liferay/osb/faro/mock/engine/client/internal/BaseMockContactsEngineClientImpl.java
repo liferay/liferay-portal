@@ -1507,6 +1507,11 @@ public abstract class BaseMockContactsEngineClientImpl
 			scheduleStartDate, scheduleType, segmentId);
 	}
 
+	@Override
+	public void validateConnection(FaroProject faroProject) throws Exception {
+		contactsEngineClient.validateConnection(faroProject);
+	}
+
 	@Reference(
 		target = "(component.name=com.liferay.osb.faro.engine.client.internal.ContactsEngineClientImpl)"
 	)

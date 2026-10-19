@@ -751,4 +751,6 @@ public interface ContactsEngineClient {
 		Date scheduleEndDate, Date scheduleStartDate, String scheduleType,
 		Long segmentId);
 
+	public void validateConnection(FaroProject faroProject) throws Exception;
+
 }
