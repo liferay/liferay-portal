@@ -50,7 +50,7 @@ public class AssetTagGroupRelLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteAssetTagGroupRelsByTagIdAndDepotEntryType()
+	public void testDeleteAssetTagGroupRelsByAssetTagIdAndDepotEntryType()
 		throws Exception {
 
 		Group projectGroup = GroupTestUtil.addGroup();
