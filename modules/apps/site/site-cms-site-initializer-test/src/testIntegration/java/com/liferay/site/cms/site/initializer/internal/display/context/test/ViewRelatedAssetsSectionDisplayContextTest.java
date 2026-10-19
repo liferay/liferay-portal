@@ -109,7 +109,6 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 		Map<String, Object> breadcrumbProps =
 			(Map<String, Object>)additionalProps.get("breadcrumbProps");
 
-		Assert.assertNotNull(breadcrumbProps);
 		Assert.assertNotNull(breadcrumbProps.get("breadcrumbItems"));
 
 		Assert.assertEquals(
