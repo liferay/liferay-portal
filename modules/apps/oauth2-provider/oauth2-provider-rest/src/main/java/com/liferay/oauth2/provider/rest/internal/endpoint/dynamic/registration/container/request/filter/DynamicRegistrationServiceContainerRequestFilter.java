@@ -249,15 +249,13 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			OAuth2ApplicationConstants.NAME_DYNAMIC_REGISTRATOR,
 			oAuth2Application.getName());
 
-		if (!dynamicRegistrator &&
-			StringUtil.equalsIgnoreCase(method, "POST")) {
-
+		if (dynamicRegistrator != StringUtil.equalsIgnoreCase(method, "POST")) {
 			throw ExceptionUtils.toNotAuthorizedException(null, null);
 		}
 
 		clientId = _getClientId(uriInfo);
 
-		if (Validator.isNotNull(clientId) && !dynamicRegistrator &&
+		if (Validator.isNotNull(clientId) &&
 			!StringUtil.equalsIgnoreCase(
 				clientId, oAuth2Application.getClientId())) {
 

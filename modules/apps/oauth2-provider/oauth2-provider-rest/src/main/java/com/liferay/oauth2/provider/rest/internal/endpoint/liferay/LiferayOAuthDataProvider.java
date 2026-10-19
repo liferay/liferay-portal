@@ -755,16 +755,13 @@ public class LiferayOAuthDataProvider
 			throw ExceptionUtils.toForbiddenException(null, null);
 		}
 
-		OAuth2Application dynamicRegistrationOAuth2Application =
+		OAuth2Application authorizationOAuth2Application =
 			_oAuth2ApplicationLocalService.fetchOAuth2Application(
 				oAuth2Authorization.getOAuth2ApplicationId());
 
 		if (!StringUtil.equals(
-				dynamicRegistrationOAuth2Application.getClientId(),
-				oAuth2Application.getClientId()) &&
-			!StringUtil.equals(
-				dynamicRegistrationOAuth2Application.getName(),
-				OAuth2ApplicationConstants.NAME_DYNAMIC_REGISTRATOR)) {
+				authorizationOAuth2Application.getClientId(),
+				oAuth2Application.getClientId())) {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
