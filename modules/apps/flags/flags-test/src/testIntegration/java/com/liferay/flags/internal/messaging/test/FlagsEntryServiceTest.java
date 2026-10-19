@@ -122,23 +122,6 @@ public class FlagsEntryServiceTest {
 
 		_registerDestination(mockSubscriptionSenderMessageListener);
 
-		User user = TestPropsValues.getUser();
-
-		int portalServerPort = PortalUtil.getPortalServerPort(false);
-
-		ThemeDisplay themeDisplay = new ThemeDisplay();
-
-		themeDisplay.setCompany(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
-		themeDisplay.setLocale(LocaleUtil.getDefault());
-		themeDisplay.setPortalURL(
-			PortalUtil.getPortalURL("localhost", portalServerPort, false));
-		themeDisplay.setScopeGroupId(TestPropsValues.getGroupId());
-		themeDisplay.setServerName("localhost");
-		themeDisplay.setServerPort(portalServerPort);
-		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
-		themeDisplay.setUser(user);
-
 		Thread thread = Thread.currentThread();
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -147,14 +130,33 @@ public class FlagsEntryServiceTest {
 				@Override
 				public Object getAttribute(String name) {
 					if (thread != Thread.currentThread()) {
-						throw new IllegalStateException(
-							"The request object has been recycled");
+						throw new IllegalStateException();
 					}
 
 					return super.getAttribute(name);
 				}
 
 			};
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setLocale(LocaleUtil.getDefault());
+
+		int portalServerPort = PortalUtil.getPortalServerPort(false);
+
+		themeDisplay.setPortalURL(
+			PortalUtil.getPortalURL("localhost", portalServerPort, false));
+
+		themeDisplay.setScopeGroupId(TestPropsValues.getGroupId());
+		themeDisplay.setServerName("localhost");
+		themeDisplay.setServerPort(portalServerPort);
+		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
+
+		User user = TestPropsValues.getUser();
+
+		themeDisplay.setUser(user);
 
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
