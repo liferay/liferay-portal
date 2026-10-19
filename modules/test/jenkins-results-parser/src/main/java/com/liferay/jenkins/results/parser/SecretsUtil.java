@@ -748,13 +748,7 @@ public abstract class SecretsUtil {
 		try {
 			for (Vault vault : Vault.getInstances()) {
 				for (Item item : vault.getItems()) {
-					for (ItemField itemField : item.getItemFields()) {
-						_loadItemField(item, itemField, vault);
-					}
-
-					for (ItemFile itemFile : item.getItemFiles()) {
-						_loadItemFile(item, itemFile, vault);
-					}
+					_loadItem(item, vault);
 				}
 			}
 
@@ -769,6 +763,26 @@ public abstract class SecretsUtil {
 			exception.printStackTrace();
 
 			_connectSecrets.clear();
+		}
+	}
+
+	private static void _loadItem(Item item, Vault vault) {
+		List<Item> sourceItems = new ArrayList<>();
+
+		Item sourceItem = item;
+
+		while ((sourceItem != null) && !sourceItems.contains(sourceItem)) {
+			for (ItemField itemField : sourceItem.getItemFields()) {
+				_loadItemField(item, itemField, vault);
+			}
+
+			for (ItemFile itemFile : sourceItem.getItemFiles()) {
+				_loadItemFile(item, itemFile, vault);
+			}
+
+			sourceItems.add(sourceItem);
+
+			sourceItem = sourceItem._linkedItem;
 		}
 	}
 
@@ -787,10 +801,10 @@ public abstract class SecretsUtil {
 		String vaultName = vault.getName();
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(itemFieldId)) {
-			_connectSecrets.put(
+			_connectSecrets.putIfAbsent(
 				_getSecretReference(itemFieldId, itemId, vaultName),
 				itemFieldValue);
-			_connectSecrets.put(
+			_connectSecrets.putIfAbsent(
 				_getSecretReference(itemFieldId, itemTitle, vaultName),
 				itemFieldValue);
 		}
@@ -798,10 +812,10 @@ public abstract class SecretsUtil {
 		String itemFieldLabel = itemField.getLabel();
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(itemFieldLabel)) {
-			_connectSecrets.put(
+			_connectSecrets.putIfAbsent(
 				_getSecretReference(itemFieldLabel, itemId, vaultName),
 				itemFieldValue);
-			_connectSecrets.put(
+			_connectSecrets.putIfAbsent(
 				_getSecretReference(itemFieldLabel, itemTitle, vaultName),
 				itemFieldValue);
 		}
@@ -821,10 +835,10 @@ public abstract class SecretsUtil {
 		String itemTitle = item.getTitle();
 		String vaultName = vault.getName();
 
-		_connectSecrets.put(
+		_connectSecrets.putIfAbsent(
 			_getSecretReference(itemFileName, itemId, vaultName),
 			itemFieldValue);
-		_connectSecrets.put(
+		_connectSecrets.putIfAbsent(
 			_getSecretReference(itemFileName, itemTitle, vaultName),
 			itemFieldValue);
 	}
