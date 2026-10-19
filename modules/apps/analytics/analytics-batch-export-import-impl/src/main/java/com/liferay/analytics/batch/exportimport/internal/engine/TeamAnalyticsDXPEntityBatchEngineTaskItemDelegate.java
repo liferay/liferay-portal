@@ -26,13 +26,14 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Marcos Martins
  */
 @Component(
 	property = "batch.engine.task.item.delegate.name=team-analytics-dxp-entities",
-	service = BatchEngineTaskItemDelegate.class
+	scope = ServiceScope.PROTOTYPE, service = BatchEngineTaskItemDelegate.class
 )
 public class TeamAnalyticsDXPEntityBatchEngineTaskItemDelegate
 	extends BaseAnalyticsDXPEntityBatchEngineTaskItemDelegate<DXPEntity> {

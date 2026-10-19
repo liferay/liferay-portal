@@ -30,13 +30,14 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Andrea Sbarra
  */
 @Component(
 	property = "batch.engine.task.item.delegate.name=" + AccountMemberBatchEngineTaskItemDelegateConstants.COMMERCE_ACCOUNT_MEMBER,
-	service = BatchEngineTaskItemDelegate.class
+	scope = ServiceScope.PROTOTYPE, service = BatchEngineTaskItemDelegate.class
 )
 public class AccountMemberBatchEngineTaskItemDelegate
 	extends BaseBatchEngineTaskItemDelegate<AccountMember> {

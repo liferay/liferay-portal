@@ -21,11 +21,14 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Riccardo Ferrari
  */
-@Component(service = BatchEngineTaskItemDelegate.class)
+@Component(
+	scope = ServiceScope.PROTOTYPE, service = BatchEngineTaskItemDelegate.class
+)
 public class AnalyticsMostViewedContentRecommendationBatchEngineTaskItemDelegate
 	extends BaseBatchEngineTaskItemDelegate
 		<AnalyticsMostViewedContentRecommendation> {

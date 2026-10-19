@@ -23,13 +23,14 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Riccardo Ferrari
  */
 @Component(
 	property = "batch.engine.task.item.delegate.name=" + OrderBatchEngineTaskItemDelegate.KEY,
-	service = BatchEngineTaskItemDelegate.class
+	scope = ServiceScope.PROTOTYPE, service = BatchEngineTaskItemDelegate.class
 )
 public class OrderBatchEngineTaskItemDelegate
 	extends BaseBatchEngineTaskItemDelegate<Order> {

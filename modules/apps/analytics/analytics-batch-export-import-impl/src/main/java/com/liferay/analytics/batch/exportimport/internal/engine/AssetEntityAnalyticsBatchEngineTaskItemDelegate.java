@@ -33,13 +33,14 @@ import java.util.function.Supplier;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Riccardo Ferrari
  */
 @Component(
 	property = "batch.engine.task.item.delegate.name=asset-entry-analytics-dxp-entities",
-	service = BatchEngineTaskItemDelegate.class
+	scope = ServiceScope.PROTOTYPE, service = BatchEngineTaskItemDelegate.class
 )
 public class AssetEntityAnalyticsBatchEngineTaskItemDelegate
 	extends BaseAnalyticsDXPEntityBatchEngineTaskItemDelegate<AssetEntity> {
