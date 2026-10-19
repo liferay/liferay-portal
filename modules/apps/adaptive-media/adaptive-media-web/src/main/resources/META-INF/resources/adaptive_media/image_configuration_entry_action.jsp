@@ -102,13 +102,18 @@ String entryUuid = String.valueOf(amImageConfigurationEntry.getUUID());
 	String onClick = liferayPortletResponse.getNamespace() + "adaptRemaining('" + entryUuid + "', '" + optimizeImagesURL.toString() + "');";
 
 	int percentage = AMImageEntryLocalServiceUtil.getPercentage(themeDisplay.getCompanyId(), entryUuid, GetterUtil.getInteger(request.getAttribute(AMWebKeys.TOTAL_IMAGES)));
+
+	boolean adaptationDelegated = AMImageAdaptationUtil.isAdaptationDelegated(amImageConfigurationEntry, themeDisplay.getCompanyId());
+
+	boolean adaptRemainingDisabled = adaptationDelegated || !amImageConfigurationEntry.isEnabled() || (percentage == 100) || !optimizeImagesEnabled;
 	%>
 
 	<liferay-ui:icon
-		cssClass='<%= (!amImageConfigurationEntry.isEnabled() || (percentage == 100) || !optimizeImagesEnabled) ? "disabled" : StringPool.BLANK %>'
+		cssClass='<%= adaptRemainingDisabled ? "disabled" : StringPool.BLANK %>'
 		id='<%= "icon-adapt-remaining" + entryUuid %>'
+		linkCssClass='<%= adaptRemainingDisabled ? "disabled" : StringPool.BLANK %>'
 		message="adapt-remaining"
-		onClick="<%= onClick %>"
+		onClick="<%= adaptRemainingDisabled ? StringPool.BLANK : onClick %>"
 		url="javascript:void(0);"
 	/>
 

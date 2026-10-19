@@ -13,6 +13,7 @@ import com.liferay.adaptive.media.image.scaler.AMImageScaledImage;
 import com.liferay.adaptive.media.image.scaler.AMImageScaler;
 import com.liferay.adaptive.media.image.scaler.AMImageScalerRegistry;
 import com.liferay.adaptive.media.image.service.AMImageEntryLocalService;
+import com.liferay.adaptive.media.image.util.AMImageAdaptationUtil;
 import com.liferay.adaptive.media.image.validator.AMImageValidator;
 import com.liferay.adaptive.media.processor.AMProcessor;
 import com.liferay.document.library.kernel.model.DLFileVersion;
@@ -162,6 +163,12 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 			FileVersion fileVersion,
 			AMImageConfigurationEntry amImageConfigurationEntry)
 		throws PortalException {
+
+		if (AMImageAdaptationUtil.isAdaptationDelegated(
+				amImageConfigurationEntry, fileVersion.getCompanyId())) {
+
+			return;
+		}
 
 		try {
 			AMImageEntry amImageEntry =
