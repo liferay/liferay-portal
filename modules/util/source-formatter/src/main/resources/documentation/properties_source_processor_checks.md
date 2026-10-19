@@ -24,7 +24,7 @@ PropertiesLanguageKeysOrderCheck | [Styling](styling_checks.md#styling-checks) |
 PropertiesLanguageStylingCheck | [Styling](styling_checks.md#styling-checks) | Applies rules to enforce consistency in code style. |
 PropertiesLiferayPluginPackageFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `liferay-plugin-package.properties` file. |
 PropertiesLiferayPluginPackageLiferayVersionsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Validates the version in `liferay-plugin-package.properties` file. |
-PropertiesLongLinesCheck | [Styling](styling_checks.md#styling-checks) | Finds lines that are longer than the specified maximum line length. |
+PropertiesLongLinesCheck | [Styling](styling_checks.md#styling-checks) | Wraps comments in `.properties` files to the maximum line length. |
 PropertiesMultiLineValuesOrderCheck | [Styling](styling_checks.md#styling-checks) | Verifies that property with multiple values is not on a single line. |
 PropertiesPlaywrightTestCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `test.properties` for Playwright test. |
 PropertiesPortalFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `portal.properties` or `portal-*.properties` file. |
