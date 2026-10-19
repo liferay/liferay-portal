@@ -611,6 +611,11 @@ public abstract class SecretsUtil {
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(accessToken)) {
 			JenkinsResultsParserUtil.addRedactToken(accessToken);
 		}
+		else {
+			System.out.println(
+				"Unable to get the op connect access token from " +
+					"one.password.access.token.key");
+		}
 
 		_accessToken = accessToken;
 
@@ -644,6 +649,10 @@ public abstract class SecretsUtil {
 
 			return _connectURL;
 		}
+
+		System.out.println(
+			"Unable to get the op connect URL from " +
+				"one.password.connect.url.key");
 
 		try {
 			connectURL = JenkinsResultsParserUtil.getBuildProperty(
