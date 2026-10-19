@@ -166,7 +166,7 @@
 				},
 				{
 					"DBType": "Clob",
-					"businessType": "LongText",
+					"businessType": "RichText",
 					"externalReferenceCode": "DESCRIPTION",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -945,7 +945,7 @@
 				},
 				{
 					"DBType": "Clob",
-					"businessType": "LongText",
+					"businessType": "RichText",
 					"externalReferenceCode": "DESCRIPTION",
 					"indexed": true,
 					"indexedAsKeyword": false,

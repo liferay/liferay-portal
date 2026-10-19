@@ -168,14 +168,10 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "INPUTS-textarea"
+												"key": "INPUTS-rich-text-input"
 											},
 											"fragmentConfig": {
-												"inputFieldId": "ObjectField_description",
-												"inputReadOnly": false,
-												"numberOfLines": 5,
-												"placeholder": "",
-												"showCharactersCount": false
+												"inputFieldId": "ObjectField_description"
 											},
 											"fragmentFields": [
 											],
