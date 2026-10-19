@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -104,7 +106,11 @@ public class MCPServerProtectedResourceMetadataServletTest {
 		Assert.assertEquals(
 			HttpServletResponse.SC_NO_CONTENT, httpResponse.statusCode());
 
-		httpResponse = _send("POST");
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
+
+			httpResponse = _send("POST");
+		}
 
 		_assertHeader("GET, HEAD, OPTIONS", "Allow", httpResponse.headers());
 		Assert.assertEquals(
