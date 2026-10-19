@@ -10,6 +10,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {launchPagesTest} from '../../../fixtures/launchPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {LaunchEntry, LaunchSet} from '../../../helpers/LaunchApiHelper';
 import {LaunchPreviewPage} from '../../../pages/launch-web/LaunchPreviewPage';
@@ -21,6 +22,8 @@ import getPageDefinition from '../../layout-content-page-editor-web/main/utils/g
 
 const JOURNAL_ARTICLE_CLASS_NAME = 'com.liferay.journal.model.JournalArticle';
 
+const LAYOUT_CLASS_NAME = 'com.liferay.portal.kernel.model.Layout';
+
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
@@ -29,7 +32,8 @@ const test = mergeTests(
 	}),
 	isolatedSiteTest,
 	launchPagesTest,
-	loginTest()
+	loginTest(),
+	pageEditorPagesTest
 ).extend<{launchSetIds: number[]}>({
 	launchSetIds: async ({apiHelpers}, use) => {
 		const launchSetIds: number[] = [];
@@ -69,8 +73,14 @@ async function addWebContentPage(
 			JOURNAL_ARTICLE_CLASS_NAME
 		);
 
+	const headingId = getRandomString();
+
 	const layout = await apiHelpers.headlessDelivery.createSitePage({
 		pageDefinition: getPageDefinition([
+			getFragmentDefinition({
+				id: headingId,
+				key: 'BASIC_COMPONENT-heading',
+			}),
 			getFragmentDefinition({
 				fragmentConfig: {
 					itemSelector: {
@@ -88,7 +98,7 @@ async function addWebContentPage(
 		title: pageTitle,
 	});
 
-	return {layout, webContent};
+	return {headingId, layout, webContent};
 }
 
 function getURLParameter(url: string, name: string) {
@@ -162,21 +172,30 @@ async function expectPreview(
 }
 
 test(
-	'Previews two launches holding their own draft of a web content over the live site',
+	'Previews two launches holding their own drafts of a web content and a page over the live site',
 	{tag: ['@LPD-72339', '@LPD-109351']},
-	async ({apiHelpers, launchSetIds, launchesPage, page, site}) => {
+	async ({
+		apiHelpers,
+		launchSetIds,
+		launchesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
 		const pageTitle = getRandomString();
 		const title = getRandomString();
 
-		const {layout, webContent} = await addWebContentPage(
+		const {headingId, layout, webContent} = await addWebContentPage(
 			apiHelpers,
 			pageTitle,
 			site,
 			title
 		);
 
+		const liveHeading = 'Heading Example';
 		const liveText = 'Version 1.2';
 
+		const firstLaunchHeading = getRandomString();
 		const firstLaunchName = getRandomString();
 		const firstLaunchText = getRandomString();
 		const secondLaunchName = getRandomString();
@@ -265,6 +284,36 @@ test(
 			await updateDraft(firstLaunchText);
 
 			await backToLaunches.click();
+
+			await expect(launchesPage.newEntryButton).toBeVisible();
+		});
+
+		await test.step('Add the page, which makes a draft from the live page', async () => {
+			await launchesPage.addPageEntry(site.name, pageTitle);
+
+			const launchEntry = await apiHelpers.launch.getLaunchEntry(
+				firstLaunch.id,
+				LAYOUT_CLASS_NAME
+			);
+
+			expect(launchEntry.classPK).toBe(layout.id);
+			expect(launchEntry.baseVersionKey).toBe(String(layout.id));
+			expect(launchEntry.draftId).toBeGreaterThan(0);
+		});
+
+		await test.step('Edit the page draft of the first launch', async () => {
+			await launchesPage
+				.getEntryRow(pageTitle)
+				.getByRole('link', {exact: true, name: pageTitle})
+				.click();
+
+			await pageEditorPage.editTextEditable(
+				headingId,
+				'element-text',
+				firstLaunchHeading
+			);
+
+			await page.goto(firstLaunchEntriesURL);
 
 			await expect(launchesPage.newEntryButton).toBeVisible();
 		});
@@ -369,10 +418,14 @@ test(
 			expect(previewPage.url()).toContain('p_l_mode=preview');
 
 			await expectPreview(previewPage, {
-				hidden: [liveText, secondLaunchText],
+				hidden: [liveHeading, liveText, secondLaunchText],
 				launchName: firstLaunchName,
 				shown: firstLaunchText,
 			});
+
+			await expect(
+				previewPage.getByText(firstLaunchHeading, {exact: true})
+			).toBeVisible();
 		});
 
 		await test.step('Switch the preview to the second launch', async () => {
@@ -388,10 +441,14 @@ test(
 			);
 
 			await expectPreview(previewPage, {
-				hidden: [firstLaunchText, liveText],
+				hidden: [firstLaunchHeading, firstLaunchText, liveText],
 				launchName: secondLaunchName,
 				shown: secondLaunchText,
 			});
+
+			await expect(
+				previewPage.getByText(liveHeading, {exact: true})
+			).toBeVisible();
 		});
 
 		await test.step('Switch the preview to the live site without leaving preview mode', async () => {
@@ -402,10 +459,14 @@ test(
 			expect(previewPage.url()).toContain('previewLaunchSetId=0');
 
 			await expectPreview(previewPage, {
-				hidden: [firstLaunchText, secondLaunchText],
+				hidden: [firstLaunchHeading, firstLaunchText, secondLaunchText],
 				launchName: 'No Launch',
 				shown: liveText,
 			});
+
+			await expect(
+				previewPage.getByText(liveHeading, {exact: true})
+			).toBeVisible();
 
 			await previewPage.close();
 		});
@@ -419,7 +480,13 @@ test(
 				page.getByRole('navigation', {name: 'Preview'})
 			).toBeHidden();
 
+			await expect(
+				page.getByText(liveHeading, {exact: true})
+			).toBeVisible();
 			await expect(page.getByText(liveText, {exact: true})).toBeVisible();
+			await expect(
+				page.getByText(firstLaunchHeading, {exact: true})
+			).toBeHidden();
 			await expect(
 				page.getByText(firstLaunchText, {exact: true})
 			).toBeHidden();
@@ -454,8 +521,14 @@ test(
 			);
 
 			await expect(
+				page.getByText(firstLaunchHeading, {exact: true})
+			).toBeVisible();
+			await expect(
 				page.getByText(firstLaunchText, {exact: true})
 			).toBeVisible();
+			await expect(
+				page.getByText(liveHeading, {exact: true})
+			).toBeHidden();
 			await expect(page.getByText(liveText, {exact: true})).toBeHidden();
 		});
 
