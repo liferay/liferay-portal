@@ -55,6 +55,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Image;
+import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -894,13 +895,7 @@ public class DDMImpl implements DDM {
 			ddmTemplateId);
 
 		if (ddmTemplate != null) {
-
-			// Clone ddmStructure and lower its MVCC version to make sure
-			// changes are never persisted or cached
-
-			ddmStructure = (DDMStructure)ddmStructure.clone();
-
-			ddmStructure.setMvccVersion(ddmStructure.getMvccVersion() - 1);
+			ddmStructure = MVCCModel.scratchClone(ddmStructure);
 
 			ddmStructure.setDefinition(ddmTemplate.getScript());
 		}

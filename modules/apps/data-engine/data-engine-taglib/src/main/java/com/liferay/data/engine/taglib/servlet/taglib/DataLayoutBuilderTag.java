@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.servlet.taglib.aui.ESImport;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -457,12 +458,7 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 			DDMStructure ddmStructure = ddmStructureLocalService.getStructure(
 				_dataLayout.getDataDefinitionId());
 
-			// Clone ddmStructure and lower its MVCC version to make sure
-			// changes are never persisted or cached
-
-			ddmStructure = (DDMStructure)ddmStructure.clone();
-
-			ddmStructure.setMvccVersion(ddmStructure.getMvccVersion() - 1);
+			ddmStructure = MVCCModel.scratchClone(ddmStructure);
 
 			String dataDefinitionJSON = ddmStructure.getDefinition();
 
