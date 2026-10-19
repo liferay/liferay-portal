@@ -20,6 +20,8 @@ import {usePreview} from '../../hooks/usePreview';
 import {deleteScheduledPublishProcess} from '../../services/deleteScheduledPublishProcess';
 import {getScheduledPublishProcess} from '../../services/getScheduledPublishProcess';
 import {postPublishProcess} from '../../services/postPublishProcess';
+import {postScheduledPublishProcess} from '../../services/postScheduledPublishProcess';
+import {PublishProcessRequest} from '../../types/exportImportProcess';
 import {
 	getSelectedDeletionCount,
 	getSelectedItemsCount,
@@ -126,8 +128,13 @@ export function NewPublish({
 			const scheduledPublishProcess =
 				scheduledPublishProcessResponse.data;
 
+			const scheduledPublishProcessRequest =
+				scheduledPublishProcess.scheduledPublishProcessRequest;
+
 			const publishProcessRequest =
-				scheduledPublishProcess.publishProcessRequest ?? {name: ''};
+				scheduledPublishProcessRequest?.publishProcessRequest ?? {
+					name: '',
+				};
 
 			const dateFilter = toDateFilterValues(
 				publishProcessRequest,
@@ -137,7 +144,7 @@ export function NewPublish({
 			handleApplyFilter(dateFilter);
 
 			const scheduledTimeZoneId =
-				publishProcessRequest.timeZoneId ?? timeZoneId;
+				scheduledPublishProcessRequest?.timeZoneId ?? timeZoneId;
 
 			const scheduleStartDate = scheduledPublishProcess.scheduleStartDate;
 
@@ -169,9 +176,9 @@ export function NewPublish({
 					neverEnd: !scheduledPublishProcess.scheduleEndDate,
 					startDateTime: scheduleStartDateTime,
 					timeZoneId: scheduledTimeZoneId,
-					...(publishProcessRequest.cronExpression
+					...(scheduledPublishProcessRequest?.cronExpression
 						? fromCronExpression(
-								publishProcessRequest.cronExpression,
+								scheduledPublishProcessRequest.cronExpression,
 								scheduleStartDateTime
 							)
 						: {}),
@@ -217,38 +224,42 @@ export function NewPublish({
 
 				const scheduled = scheduleValues.enabled;
 
-				const scheduleFields = scheduled
-					? {
-							cronExpression: toCronExpression(scheduleValues),
-							scheduleEndDate: hasEndDate(scheduleValues)
-								? toZonedDate(
-										scheduleValues.endDateTime,
-										scheduleValues.timeZoneId
-									).toISOString()
-								: undefined,
-							scheduleStartDate: toZonedDate(
-								scheduleValues.startDateTime,
-								scheduleValues.timeZoneId
-							).toISOString(),
-							timeZoneId: scheduleValues.timeZoneId,
-						}
-					: {};
+				const publishProcessRequest: PublishProcessRequest = {
+					...appliedDateFilterRef.current,
+					...toProcessRequestFlags(values.contentSelection),
+					deletions: values.deletions,
+					name: values.name,
+					permissions: values.permissions,
+					portletDataHandlers: toPortletDataHandlers(
+						portletDataHandlerSections,
+						values.contentSelection
+					),
+				};
 
-				const result = await postPublishProcess({
-					publishProcessRequest: {
-						...appliedDateFilterRef.current,
-						...toProcessRequestFlags(values.contentSelection),
-						...scheduleFields,
-						deletions: values.deletions,
-						name: values.name,
-						permissions: values.permissions,
-						portletDataHandlers: toPortletDataHandlers(
-							portletDataHandlerSections,
-							values.contentSelection
-						),
-					},
-					url: publishProcessAPIURL,
-				});
+				const result = scheduled
+					? await postScheduledPublishProcess({
+							scheduledPublishProcessRequest: {
+								cronExpression:
+									toCronExpression(scheduleValues),
+								publishProcessRequest,
+								scheduleEndDate: hasEndDate(scheduleValues)
+									? toZonedDate(
+											scheduleValues.endDateTime,
+											scheduleValues.timeZoneId
+										).toISOString()
+									: undefined,
+								scheduleStartDate: toZonedDate(
+									scheduleValues.startDateTime,
+									scheduleValues.timeZoneId
+								).toISOString(),
+								timeZoneId: scheduleValues.timeZoneId,
+							},
+							url: scheduledPublishProcessAPIURL,
+						})
+					: await postPublishProcess({
+							publishProcessRequest,
+							url: publishProcessAPIURL,
+						});
 
 				if (result.error) {
 					Liferay.Util.openToast({
@@ -343,9 +354,10 @@ export function NewPublish({
 							lastPublishDate={lastPublishDate}
 							loading={loading}
 							onApplyFilter={handleApplyFilter}
-							pageTreeModalConfiguration={
-								pageTreeModalConfiguration
-							}
+							pageTreeModalConfiguration={{
+								...pageTreeModalConfiguration,
+								title: Liferay.Language.get('pages-to-publish'),
+							}}
 							permissionsDescription={Liferay.Language.get(
 								'publish-permissions-help'
 							)}

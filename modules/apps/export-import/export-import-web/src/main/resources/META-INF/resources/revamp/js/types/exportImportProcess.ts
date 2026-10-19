@@ -80,7 +80,6 @@ export interface PublishProcess {
 
 export interface PublishProcessRequest {
 	comments?: boolean;
-	cronExpression?: string;
 	dateRangeType?: DateRangeType;
 	deletions?: boolean;
 	endDate?: string;
@@ -88,10 +87,7 @@ export interface PublishProcessRequest {
 	permissions?: boolean;
 	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
-	scheduleEndDate?: string;
-	scheduleStartDate?: string;
 	startDate?: string;
-	timeZoneId?: string;
 }
 
 export interface ScheduledPublishProcess {
@@ -99,7 +95,15 @@ export interface ScheduledPublishProcess {
 	id?: number;
 	name?: string;
 	nextFireDate?: string;
-	publishProcessRequest?: PublishProcessRequest;
 	scheduleEndDate?: string;
 	scheduleStartDate?: string;
+	scheduledPublishProcessRequest?: ScheduledPublishProcessRequest;
+}
+
+export interface ScheduledPublishProcessRequest {
+	cronExpression: string;
+	publishProcessRequest: PublishProcessRequest;
+	scheduleEndDate?: string;
+	scheduleStartDate?: string;
+	timeZoneId?: string;
 }
