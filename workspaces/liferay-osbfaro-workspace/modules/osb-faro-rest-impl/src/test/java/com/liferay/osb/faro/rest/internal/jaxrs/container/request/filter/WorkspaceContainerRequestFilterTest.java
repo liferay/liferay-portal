@@ -63,7 +63,7 @@ public class WorkspaceContainerRequestFilterTest {
 	}
 
 	private Response _filter(
-		String channelId, boolean channelIdInPath, String groupId,
+		String channelId, boolean pathParameter, String groupId,
 		boolean omniadmin, long userId) {
 
 		PermissionThreadLocal.setPermissionChecker(
@@ -92,7 +92,7 @@ public class WorkspaceContainerRequestFilterTest {
 		}
 
 		if (channelId != null) {
-			if (channelIdInPath) {
+			if (pathParameter) {
 				pathParameters.putSingle("channelId", channelId);
 			}
 			else {
@@ -278,6 +278,8 @@ public class WorkspaceContainerRequestFilterTest {
 		_faroProject = _proxy(
 			FaroProject.class,
 			HashMapBuilder.<String, Object>put(
+				"getGroupId", _GROUP_ID
+			).put(
 				"isAllowedIPAddress", allowedIPAddress
 			).build());
 	}

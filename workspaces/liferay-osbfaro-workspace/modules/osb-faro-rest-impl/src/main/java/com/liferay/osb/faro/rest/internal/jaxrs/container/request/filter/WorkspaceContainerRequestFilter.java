@@ -13,7 +13,6 @@ import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroChannelLocalService;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -65,24 +64,20 @@ public class WorkspaceContainerRequestFilter implements ContainerRequestFilter {
 		MultivaluedMap<String, String> pathParameters =
 			uriInfo.getPathParameters();
 
-		String groupIdString = pathParameters.getFirst("groupId");
+		String groupId = pathParameters.getFirst("groupId");
 
-		if (Validator.isNull(groupIdString)) {
+		if (Validator.isNull(groupId)) {
 			return;
 		}
 
-		long groupId = GetterUtil.getLong(groupIdString);
-
 		FaroProject faroProject =
-			_faroProjectLocalService.fetchFaroProjectByGroupId(groupId);
+			_faroProjectLocalService.fetchFaroProjectByGroupId(
+				GetterUtil.getLong(groupId));
 
 		if (faroProject == null) {
 			_abort(
 				containerRequestContext, Response.Status.NOT_FOUND,
-				StringBundler.concat(
-					"No workspace was found with group ID ", groupIdString,
-					". Call getWorkspacesPage to list the workspaces you can ",
-					"access."));
+				"No workspace was found with group ID " + groupId);
 
 			return;
 		}
@@ -104,19 +99,17 @@ public class WorkspaceContainerRequestFilter implements ContainerRequestFilter {
 
 				_abort(
 					containerRequestContext, Response.Status.FORBIDDEN,
-					"Your IP address is not authorized to access this " +
-						"workspace");
+					"IP address not allowed to access the workspace");
 
 				return;
 			}
 
-			if (!_isWorkspaceMember(groupId, permissionChecker.getUserId())) {
+			if (!_isWorkspaceMember(
+					faroProject.getGroupId(), permissionChecker.getUserId())) {
+
 				_abort(
 					containerRequestContext, Response.Status.FORBIDDEN,
-					StringBundler.concat(
-						"You do not have access to the workspace with group ",
-						"ID ", groupIdString, ". Call getWorkspacesPage to ",
-						"list the workspaces you can access."));
+					"Unable to access the workspace with group ID " + groupId);
 
 				return;
 			}
@@ -136,16 +129,13 @@ public class WorkspaceContainerRequestFilter implements ContainerRequestFilter {
 		}
 
 		FaroChannel faroChannel = _faroChannelLocalService.fetchFaroChannel(
-			channelId, groupId);
+			channelId, faroProject.getGroupId());
 
 		if (faroChannel == null) {
 			_abort(
 				containerRequestContext, Response.Status.NOT_FOUND,
-				StringBundler.concat(
-					"No property was found with channel ID ", channelId,
-					" in the workspace with group ID ", groupIdString,
-					". Call getWorkspaceGroupChannelsPage to list the ",
-					"properties you can access."));
+				"No property was found with channel ID " + channelId +
+					" in the workspace with group ID " + groupId);
 
 			return;
 		}
@@ -153,10 +143,7 @@ public class WorkspaceContainerRequestFilter implements ContainerRequestFilter {
 		if (!_hasChannelPermission(faroChannel, permissionChecker)) {
 			_abort(
 				containerRequestContext, Response.Status.FORBIDDEN,
-				StringBundler.concat(
-					"You do not have access to the property with channel ID ",
-					channelId, ". Call getWorkspaceGroupChannelsPage to list ",
-					"the properties you can access."));
+				"Unable to access the property with channel ID " + channelId);
 		}
 	}
 
