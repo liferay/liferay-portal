@@ -12,16 +12,17 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
-import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.base.CommerceAddressServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.service.permission.CommonPermissionUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -421,7 +422,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 		throws PortalException {
 
 		if (className.equals(CommerceOrder.class.getName())) {
-			_commerceOrderService.getCommerceOrder(classPK);
+			_commerceOrderModelResourcePermission.check(
+				getPermissionChecker(), classPK, _getActionId(actionId));
 		}
 		else if (className.equals(AccountEntry.class.getName())) {
 			if (classPK == AccountConstants.ACCOUNT_ENTRY_ID_GUEST) {
@@ -450,6 +452,19 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 				}
 			}
 		}
+		else {
+			CommonPermissionUtil.check(
+				getPermissionChecker(), className, classPK,
+				_getActionId(actionId));
+		}
+	}
+
+	private String _getActionId(String actionId) {
+		if (Objects.equals(actionId, AccountActionKeys.VIEW_ADDRESSES)) {
+			return ActionKeys.VIEW;
+		}
+
+		return ActionKeys.UPDATE;
 	}
 
 	@Reference
@@ -466,7 +481,10 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 	@Reference
 	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
 
-	@Reference
-	private CommerceOrderService _commerceOrderService;
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
+	)
+	private ModelResourcePermission<CommerceOrder>
+		_commerceOrderModelResourcePermission;
 
 }
