@@ -8,6 +8,7 @@
 				"engine": {
 					"description": "Database engine of every environment in the deployment. It cannot be changed after the deployment is created.",
 					"enum": [
+						"mysql",
 						"postgresql"
 					]
 				}
