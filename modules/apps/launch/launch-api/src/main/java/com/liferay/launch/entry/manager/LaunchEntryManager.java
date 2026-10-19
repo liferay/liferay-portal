@@ -25,7 +25,7 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface LaunchEntryManager {
 
-	public Draft addDraft(long classPK, String versionKey)
+	public Draft addDraft(long classPK, long launchSetId, String versionKey)
 		throws PortalException;
 
 	public void deleteDraft(long classPK, long draftId) throws PortalException;

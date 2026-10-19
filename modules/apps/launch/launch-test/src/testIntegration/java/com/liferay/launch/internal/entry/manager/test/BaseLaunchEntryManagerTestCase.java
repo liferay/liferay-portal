@@ -113,7 +113,8 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 		Assert.assertThrows(
 			PortalException.class,
 			() -> launchEntryManager.addDraft(
-				classPK, String.valueOf(draft1.getDraftId())));
+				classPK, RandomTestUtil.randomLong(),
+				String.valueOf(draft1.getDraftId())));
 	}
 
 	@Test
@@ -330,7 +331,9 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 			Assert.assertEquals(versionKey, version.getVersionKey());
 
 			Assert.assertNotNull(
-				versionKey, launchEntryManager.addDraft(classPK, versionKey));
+				versionKey,
+				launchEntryManager.addDraft(
+					classPK, RandomTestUtil.randomLong(), versionKey));
 		}
 	}
 
@@ -377,7 +380,8 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 			classPK);
 
 		return launchEntryManager.addDraft(
-			classPK, publishedVersion.getVersionKey());
+			classPK, RandomTestUtil.randomLong(),
+			publishedVersion.getVersionKey());
 	}
 
 	protected abstract long addEntry() throws Exception;

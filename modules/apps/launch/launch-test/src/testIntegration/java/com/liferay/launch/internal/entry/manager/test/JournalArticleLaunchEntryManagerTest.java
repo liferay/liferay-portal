@@ -186,7 +186,9 @@ public class JournalArticleLaunchEntryManagerTest
 		Assert.assertEquals(
 			entryValue,
 			getDraftValue(
-				launchEntryManager.addDraft(classPK, version.getVersionKey())));
+				launchEntryManager.addDraft(
+					classPK, RandomTestUtil.randomLong(),
+					version.getVersionKey())));
 	}
 
 	private void _testGetPreviewBaseModelForHistoricalVersion()

@@ -67,6 +67,8 @@ public class LaunchEntryObjectEntryValuesContributor
 		try {
 			LaunchEntryManager.Draft draft = launchEntryManager.addDraft(
 				MapUtil.getLong(values, "classPK"),
+				MapUtil.getLong(
+					values, "r_launchSetToLaunchEntries_c_launchSetId"),
 				MapUtil.getString(values, "baseVersionKey"));
 
 			values.put("draftId", draft.getDraftId());
