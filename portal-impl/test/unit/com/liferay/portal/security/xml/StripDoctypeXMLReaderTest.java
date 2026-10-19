@@ -6,6 +6,7 @@
 package com.liferay.portal.security.xml;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.ByteArrayInputStream;
@@ -77,7 +78,8 @@ public class StripDoctypeXMLReaderTest {
 		Assert.assertEquals(xml, result);
 	}
 
-	@Test
+	@Test(timeout = 1000)
+	@TestInfo("LPD-110183")
 	public void testReadInputStream() throws Exception {
 		byte[] buff = new byte[4096];
 
@@ -95,9 +97,20 @@ public class StripDoctypeXMLReaderTest {
 
 			Assert.assertEquals(_SANITIZED_XML[i], result);
 		}
+
+		for (String xml : _UNTERMINATED_DOCTYPE_XML) {
+			InputStream inputStream = new ByteArrayInputStream(xml.getBytes());
+
+			StripDoctypeFilter stripDoctypeFilter = new StripDoctypeFilter(
+				inputStream);
+
+			Assert.assertEquals(
+				-1, stripDoctypeFilter.read(buff, 0, buff.length));
+		}
 	}
 
-	@Test
+	@Test(timeout = 1000)
+	@TestInfo("LPD-110183")
 	public void testReadReader() throws Exception {
 		char[] chars = new char[4096];
 
@@ -114,6 +127,16 @@ public class StripDoctypeXMLReaderTest {
 			String result = new String(chars, 0, length);
 
 			Assert.assertEquals(_SANITIZED_XML[i], result);
+		}
+
+		for (String xml : _UNTERMINATED_DOCTYPE_XML) {
+			Reader reader = new StringReader(xml);
+
+			StripDoctypeFilter stripDoctypeFilter = new StripDoctypeFilter(
+				reader);
+
+			Assert.assertEquals(
+				-1, stripDoctypeFilter.read(chars, 0, chars.length));
 		}
 	}
 
@@ -133,6 +156,10 @@ public class StripDoctypeXMLReaderTest {
 		"<?xml version=\"1.0\"?><!-- comment --><root />",
 		"<?xml version=\"1.0\"?><root />",
 		"<?xml version=\"1.0\"?><root attribute=\"<!DOCTYPE root>\"/>"
+	};
+
+	private static final String[] _UNTERMINATED_DOCTYPE_XML = {
+		"<!D", "<!DOCTYPE root", "<!DOCTYPE root [<!ELEMENT root ANY >"
 	};
 
 }
