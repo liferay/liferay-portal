@@ -10,11 +10,13 @@
 		<root>true</root>
 		<permissions>
 			<supports>
+				<action-key>LIST_OTHERS_WORKFLOW_TASKS</action-key>
 				<action-key>START_WORKFLOW_INSTANCE</action-key>
 			</supports>
 			<site-member-defaults />
 			<guest-defaults />
 			<guest-unsupported>
+				<action-key>LIST_OTHERS_WORKFLOW_TASKS</action-key>
 				<action-key>START_WORKFLOW_INSTANCE</action-key>
 			</guest-unsupported>
 		</permissions>

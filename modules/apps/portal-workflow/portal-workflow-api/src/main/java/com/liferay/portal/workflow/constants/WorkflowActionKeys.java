@@ -10,6 +10,9 @@ package com.liferay.portal.workflow.constants;
  */
 public class WorkflowActionKeys {
 
+	public static final String LIST_OTHERS_WORKFLOW_TASKS =
+		"LIST_OTHERS_WORKFLOW_TASKS";
+
 	public static final String START_WORKFLOW_INSTANCE =
 		"START_WORKFLOW_INSTANCE";
 

@@ -16,12 +16,14 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.workflow.configuration.WorkflowDefinitionConfiguration;
 import com.liferay.portal.workflow.constants.WorkflowActionKeys;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -71,9 +73,7 @@ public class WorkflowPortletResourcePermission
 		PermissionChecker permissionChecker, long groupId, String actionId) {
 
 		try {
-			if (Objects.equals(
-					actionId, WorkflowActionKeys.START_WORKFLOW_INSTANCE)) {
-
+			if (_actionIds.contains(actionId)) {
 				return permissionChecker.hasPermission(
 					groupId, WorkflowConstants.RESOURCE_NAME, groupId,
 					actionId);
@@ -134,6 +134,10 @@ public class WorkflowPortletResourcePermission
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		WorkflowPortletResourcePermission.class);
+
+	private static final Set<String> _actionIds = SetUtil.fromArray(
+		WorkflowActionKeys.LIST_OTHERS_WORKFLOW_TASKS,
+		WorkflowActionKeys.START_WORKFLOW_INSTANCE);
 
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
