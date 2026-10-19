@@ -3,7 +3,7 @@
 		"dotenv": "16.6.1"
 	},
 	"devDependencies": {
-		"@playwright/test": "1.55.1",
+		"@playwright/test": "1.63.0",
 		"typescript": "4.7.4"
 	},
 	"files": [

@@ -7,7 +7,7 @@
 	"description": "",
 	"devDependencies": {
 		"@axe-core/playwright": "4.11.1",
-		"@playwright/test": "1.55.1",
+		"@playwright/test": "1.63.0",
 		"dotenv": "16.6.1",
 		"ts-node": "10.9.2",
 		"tslib": "2.8.1",
