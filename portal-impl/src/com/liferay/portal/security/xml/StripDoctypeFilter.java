@@ -53,6 +53,10 @@ public class StripDoctypeFilter {
 				while (true) {
 					int doctypeContent = readFromSource();
 
+					if (doctypeContent == -1) {
+						return -1;
+					}
+
 					if (doctypeContent == '[') {
 						_entityDeclaration = true;
 					}
