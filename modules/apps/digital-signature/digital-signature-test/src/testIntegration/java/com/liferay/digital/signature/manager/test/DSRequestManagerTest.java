@@ -403,6 +403,7 @@ public class DSRequestManagerTest {
 		throws Exception {
 
 		DSEnvelope dsEnvelope = _createDSEnvelope();
+
 		DSRecipient dsRecipient = _createDSRecipient();
 
 		User user = UserTestUtil.addUser();
