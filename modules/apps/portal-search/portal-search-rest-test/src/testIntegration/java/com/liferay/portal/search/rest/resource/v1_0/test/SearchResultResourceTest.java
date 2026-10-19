@@ -627,7 +627,7 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 					"includes",
 					JSONFactoryUtil.createJSONArray(
 					).put(
-						"fullName"
+						Field.getLocalizedName(_locale, "fullName")
 					)
 				))
 		).put(
@@ -747,7 +747,7 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 		return JSONUtil.put(
 			"fields",
 			JSONUtil.put(
-				"fullName",
+				Field.getLocalizedName(_locale, "fullName"),
 				JSONUtil.put(
 					"fragment_size", 100
 				).put(
