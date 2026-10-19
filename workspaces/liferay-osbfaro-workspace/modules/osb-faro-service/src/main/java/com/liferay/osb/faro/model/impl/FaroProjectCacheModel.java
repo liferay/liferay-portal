@@ -66,7 +66,7 @@ public class FaroProjectCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(51);
+		StringBundler sb = new StringBundler(53);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -104,6 +104,8 @@ public class FaroProjectCacheModel
 		sb.append(lastAccessTime);
 		sb.append(", recommendationsEnabled=");
 		sb.append(recommendationsEnabled);
+		sb.append(", salesforceAccountId=");
+		sb.append(salesforceAccountId);
 		sb.append(", serverLocation=");
 		sb.append(serverLocation);
 		sb.append(", services=");
@@ -198,6 +200,13 @@ public class FaroProjectCacheModel
 		faroProjectImpl.setLastAccessTime(lastAccessTime);
 		faroProjectImpl.setRecommendationsEnabled(recommendationsEnabled);
 
+		if (salesforceAccountId == null) {
+			faroProjectImpl.setSalesforceAccountId("");
+		}
+		else {
+			faroProjectImpl.setSalesforceAccountId(salesforceAccountId);
+		}
+
 		if (serverLocation == null) {
 			faroProjectImpl.setServerLocation("");
 		}
@@ -276,6 +285,7 @@ public class FaroProjectCacheModel
 		lastAccessTime = objectInput.readLong();
 
 		recommendationsEnabled = objectInput.readBoolean();
+		salesforceAccountId = objectInput.readUTF();
 		serverLocation = objectInput.readUTF();
 		services = objectInput.readUTF();
 		state = objectInput.readUTF();
@@ -364,6 +374,13 @@ public class FaroProjectCacheModel
 
 		objectOutput.writeBoolean(recommendationsEnabled);
 
+		if (salesforceAccountId == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(salesforceAccountId);
+		}
+
 		if (serverLocation == null) {
 			objectOutput.writeUTF("");
 		}
@@ -427,6 +444,7 @@ public class FaroProjectCacheModel
 	public String incidentReportEmailAddresses;
 	public long lastAccessTime;
 	public boolean recommendationsEnabled;
+	public String salesforceAccountId;
 	public String serverLocation;
 	public String services;
 	public String state;
@@ -436,4 +454,4 @@ public class FaroProjectCacheModel
 	public String weDeployKey;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:874254404
+// LIFERAY-SERVICE-BUILDER-HASH:-1220074902

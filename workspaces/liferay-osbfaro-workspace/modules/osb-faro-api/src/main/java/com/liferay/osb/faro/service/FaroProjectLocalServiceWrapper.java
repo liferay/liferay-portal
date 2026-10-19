@@ -422,6 +422,14 @@ public class FaroProjectLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.faro.model.FaroProject updateSalesforceAccountId(
+		long faroProjectId, String salesforceAccountId) {
+
+		return _faroProjectLocalService.updateSalesforceAccountId(
+			faroProjectId, salesforceAccountId);
+	}
+
+	@Override
 	public com.liferay.osb.faro.model.FaroProject updateState(
 		long faroProjectId, String state) {
 
@@ -456,4 +464,4 @@ public class FaroProjectLocalServiceWrapper
 	private FaroProjectLocalService _faroProjectLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1582388683
+// LIFERAY-SERVICE-BUILDER-HASH:1622161548

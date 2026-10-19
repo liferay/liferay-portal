@@ -67,6 +67,10 @@ public class FaroProjectTable extends BaseTable<FaroProjectTable> {
 		createColumn(
 			"recommendationsEnabled", Boolean.class, Types.BOOLEAN,
 			Column.FLAG_DEFAULT);
+	public final Column<FaroProjectTable, String> salesforceAccountId =
+		createColumn(
+			"salesforceAccountId", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<FaroProjectTable, String> serverLocation = createColumn(
 		"serverLocation", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<FaroProjectTable, String> services = createColumn(
@@ -89,4 +93,4 @@ public class FaroProjectTable extends BaseTable<FaroProjectTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1295361779
+// LIFERAY-SERVICE-BUILDER-HASH:1093186720

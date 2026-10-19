@@ -341,6 +341,21 @@ public interface FaroProjectModel
 	public void setRecommendationsEnabled(boolean recommendationsEnabled);
 
 	/**
+	 * Returns the salesforce account ID of this faro project.
+	 *
+	 * @return the salesforce account ID of this faro project
+	 */
+	@AutoEscape
+	public String getSalesforceAccountId();
+
+	/**
+	 * Sets the salesforce account ID of this faro project.
+	 *
+	 * @param salesforceAccountId the salesforce account ID of this faro project
+	 */
+	public void setSalesforceAccountId(String salesforceAccountId);
+
+	/**
 	 * Returns the server location of this faro project.
 	 *
 	 * @return the server location of this faro project
@@ -452,4 +467,4 @@ public interface FaroProjectModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:700206287
+// LIFERAY-SERVICE-BUILDER-HASH:-779616953

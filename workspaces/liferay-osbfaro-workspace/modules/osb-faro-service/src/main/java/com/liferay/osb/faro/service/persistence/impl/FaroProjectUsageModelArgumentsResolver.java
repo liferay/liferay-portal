@@ -120,4 +120,4 @@ public class FaroProjectUsageModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:562459504
+// LIFERAY-SERVICE-BUILDER-HASH:-1589855992

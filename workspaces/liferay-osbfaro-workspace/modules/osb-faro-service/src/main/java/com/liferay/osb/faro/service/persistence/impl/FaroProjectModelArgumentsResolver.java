@@ -118,4 +118,4 @@ public class FaroProjectModelArgumentsResolver implements ArgumentsResolver {
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:564436373
+// LIFERAY-SERVICE-BUILDER-HASH:825935625

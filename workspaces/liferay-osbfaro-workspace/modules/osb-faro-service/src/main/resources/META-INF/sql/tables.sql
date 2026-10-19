@@ -76,6 +76,7 @@ create table OSBFaro_FaroProject (
 	incidentReportEmailAddresses STRING null,
 	lastAccessTime LONG,
 	recommendationsEnabled BOOLEAN,
+	salesforceAccountId VARCHAR(75) null,
 	serverLocation VARCHAR(75) null,
 	services STRING null,
 	state_ VARCHAR(75) null,

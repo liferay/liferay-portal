@@ -9,6 +9,7 @@ create unique index IX_12C47BB1 on OSBFaro_FaroPreferences (groupId, ownerId);
 
 create index IX_ECF55FFC on OSBFaro_FaroProject (corpProjectUuid[$COLUMN_LENGTH:75$]);
 create unique index IX_3D4C0F8C on OSBFaro_FaroProject (groupId);
+create unique index IX_F468295B on OSBFaro_FaroProject (salesforceAccountId[$COLUMN_LENGTH:75$]);
 create index IX_46F39E6A on OSBFaro_FaroProject (serverLocation[$COLUMN_LENGTH:75$]);
 create index IX_DC26D918 on OSBFaro_FaroProject (userId);
 create unique index IX_D2CDE05C on OSBFaro_FaroProject (weDeployKey[$COLUMN_LENGTH:75$]);

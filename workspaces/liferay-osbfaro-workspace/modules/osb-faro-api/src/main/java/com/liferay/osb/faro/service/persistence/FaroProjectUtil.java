@@ -292,6 +292,58 @@ public class FaroProjectUtil {
 	}
 
 	/**
+	 * Returns the faro project where salesforceAccountId = &#63; or throws a <code>NoSuchFaroProjectException</code> if it could not be found.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @return the matching faro project
+	 * @throws NoSuchFaroProjectException if a matching faro project could not be found
+	 */
+	public static FaroProject findBySalesforceAccountId(
+			String salesforceAccountId)
+		throws com.liferay.osb.faro.exception.NoSuchFaroProjectException {
+
+		return getPersistence().findBySalesforceAccountId(salesforceAccountId);
+	}
+
+	/**
+	 * Returns the faro project where salesforceAccountId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
+	 */
+	public static FaroProject fetchBySalesforceAccountId(
+		String salesforceAccountId, boolean useFinderCache) {
+
+		return getPersistence().fetchBySalesforceAccountId(
+			salesforceAccountId, useFinderCache);
+	}
+
+	/**
+	 * Removes the faro project where salesforceAccountId = &#63; from the database.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @return the faro project that was removed
+	 */
+	public static FaroProject removeBySalesforceAccountId(
+			String salesforceAccountId)
+		throws com.liferay.osb.faro.exception.NoSuchFaroProjectException {
+
+		return getPersistence().removeBySalesforceAccountId(
+			salesforceAccountId);
+	}
+
+	/**
+	 * Returns the number of faro projects where salesforceAccountId = &#63;.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @return the number of matching faro projects
+	 */
+	public static int countBySalesforceAccountId(String salesforceAccountId) {
+		return getPersistence().countBySalesforceAccountId(salesforceAccountId);
+	}
+
+	/**
 	 * Returns an ordered range of all the faro projects where serverLocation = &#63;.
 	 *
 	 * <p>
@@ -484,6 +536,18 @@ public class FaroProjectUtil {
 	}
 
 	/**
+	 * Returns the faro project where salesforceAccountId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
+	 */
+	public static FaroProject fetchBySalesforceAccountId(
+		String salesforceAccountId) {
+
+		return getPersistence().fetchBySalesforceAccountId(salesforceAccountId);
+	}
+
+	/**
 	 * Returns the faro project where weDeployKey = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param weDeployKey the we deploy key
@@ -605,4 +669,4 @@ public class FaroProjectUtil {
 	private static volatile FaroProjectPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1585587381
+// LIFERAY-SERVICE-BUILDER-HASH:-1018871235

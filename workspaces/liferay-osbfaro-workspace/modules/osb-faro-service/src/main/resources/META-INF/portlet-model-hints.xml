@@ -81,6 +81,7 @@
 		</field>
 		<field name="lastAccessTime" type="long" />
 		<field name="recommendationsEnabled" type="boolean" />
+		<field name="salesforceAccountId" type="String" />
 		<field name="serverLocation" type="String" />
 		<field name="services" type="String">
 			<hint-collection name="TEXTAREA" />

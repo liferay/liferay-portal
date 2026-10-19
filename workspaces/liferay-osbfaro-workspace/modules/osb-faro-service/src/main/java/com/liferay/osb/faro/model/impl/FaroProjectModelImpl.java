@@ -71,6 +71,7 @@ public class FaroProjectModelImpl
 		{"incidentReportEmailAddresses", Types.VARCHAR},
 		{"lastAccessTime", Types.BIGINT},
 		{"recommendationsEnabled", Types.BOOLEAN},
+		{"salesforceAccountId", Types.VARCHAR},
 		{"serverLocation", Types.VARCHAR}, {"services", Types.VARCHAR},
 		{"state_", Types.VARCHAR}, {"subscription", Types.VARCHAR},
 		{"subscriptionModifiedTime", Types.BIGINT},
@@ -99,6 +100,7 @@ public class FaroProjectModelImpl
 		TABLE_COLUMNS_MAP.put("incidentReportEmailAddresses", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("lastAccessTime", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("recommendationsEnabled", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("salesforceAccountId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("serverLocation", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("services", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("state_", Types.VARCHAR);
@@ -109,7 +111,7 @@ public class FaroProjectModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OSBFaro_FaroProject (mvccVersion LONG default 0 not null,faroProjectId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createTime LONG,modifiedTime LONG,name VARCHAR(75) null,accountKey VARCHAR(75) null,accountName VARCHAR(75) null,corpProjectName VARCHAR(75) null,corpProjectUuid VARCHAR(75) null,dataSourceConnected BOOLEAN,ipAddresses STRING null,incidentReportEmailAddresses STRING null,lastAccessTime LONG,recommendationsEnabled BOOLEAN,serverLocation VARCHAR(75) null,services STRING null,state_ VARCHAR(75) null,subscription STRING null,subscriptionModifiedTime LONG,timeZoneId VARCHAR(75) null,weDeployKey VARCHAR(75) null)";
+		"create table OSBFaro_FaroProject (mvccVersion LONG default 0 not null,faroProjectId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createTime LONG,modifiedTime LONG,name VARCHAR(75) null,accountKey VARCHAR(75) null,accountName VARCHAR(75) null,corpProjectName VARCHAR(75) null,corpProjectUuid VARCHAR(75) null,dataSourceConnected BOOLEAN,ipAddresses STRING null,incidentReportEmailAddresses STRING null,lastAccessTime LONG,recommendationsEnabled BOOLEAN,salesforceAccountId VARCHAR(75) null,serverLocation VARCHAR(75) null,services STRING null,state_ VARCHAR(75) null,subscription STRING null,subscriptionModifiedTime LONG,timeZoneId VARCHAR(75) null,weDeployKey VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OSBFaro_FaroProject";
@@ -144,26 +146,32 @@ public class FaroProjectModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SERVERLOCATION_COLUMN_BITMASK = 4L;
+	public static final long SALESFORCEACCOUNTID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 8L;
+	public static final long SERVERLOCATION_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long WEDEPLOYKEY_COLUMN_BITMASK = 16L;
+	public static final long USERID_COLUMN_BITMASK = 16L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long WEDEPLOYKEY_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long FAROPROJECTID_COLUMN_BITMASK = 32L;
+	public static final long FAROPROJECTID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -309,6 +317,8 @@ public class FaroProjectModelImpl
 				"recommendationsEnabled",
 				FaroProject::getRecommendationsEnabled);
 			attributeGetterFunctions.put(
+				"salesforceAccountId", FaroProject::getSalesforceAccountId);
+			attributeGetterFunctions.put(
 				"serverLocation", FaroProject::getServerLocation);
 			attributeGetterFunctions.put("services", FaroProject::getServices);
 			attributeGetterFunctions.put("state", FaroProject::getState);
@@ -395,6 +405,10 @@ public class FaroProjectModelImpl
 				"recommendationsEnabled",
 				(BiConsumer<FaroProject, Boolean>)
 					FaroProject::setRecommendationsEnabled);
+			attributeSetterBiConsumers.put(
+				"salesforceAccountId",
+				(BiConsumer<FaroProject, String>)
+					FaroProject::setSalesforceAccountId);
 			attributeSetterBiConsumers.put(
 				"serverLocation",
 				(BiConsumer<FaroProject, String>)
@@ -773,6 +787,34 @@ public class FaroProjectModelImpl
 	}
 
 	@Override
+	public String getSalesforceAccountId() {
+		if (_salesforceAccountId == null) {
+			return "";
+		}
+		else {
+			return _salesforceAccountId;
+		}
+	}
+
+	@Override
+	public void setSalesforceAccountId(String salesforceAccountId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_salesforceAccountId = salesforceAccountId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalSalesforceAccountId() {
+		return getColumnOriginalValue("salesforceAccountId");
+	}
+
+	@Override
 	public String getServerLocation() {
 		if (_serverLocation == null) {
 			return "";
@@ -993,6 +1035,7 @@ public class FaroProjectModelImpl
 			getIncidentReportEmailAddresses());
 		faroProjectImpl.setLastAccessTime(getLastAccessTime());
 		faroProjectImpl.setRecommendationsEnabled(isRecommendationsEnabled());
+		faroProjectImpl.setSalesforceAccountId(getSalesforceAccountId());
 		faroProjectImpl.setServerLocation(getServerLocation());
 		faroProjectImpl.setServices(getServices());
 		faroProjectImpl.setState(getState());
@@ -1046,6 +1089,8 @@ public class FaroProjectModelImpl
 			this.<Long>getColumnOriginalValue("lastAccessTime"));
 		faroProjectImpl.setRecommendationsEnabled(
 			this.<Boolean>getColumnOriginalValue("recommendationsEnabled"));
+		faroProjectImpl.setSalesforceAccountId(
+			this.<String>getColumnOriginalValue("salesforceAccountId"));
 		faroProjectImpl.setServerLocation(
 			this.<String>getColumnOriginalValue("serverLocation"));
 		faroProjectImpl.setServices(
@@ -1224,6 +1269,16 @@ public class FaroProjectModelImpl
 		faroProjectCacheModel.recommendationsEnabled =
 			isRecommendationsEnabled();
 
+		faroProjectCacheModel.salesforceAccountId = getSalesforceAccountId();
+
+		String salesforceAccountId = faroProjectCacheModel.salesforceAccountId;
+
+		if ((salesforceAccountId != null) &&
+			(salesforceAccountId.length() == 0)) {
+
+			faroProjectCacheModel.salesforceAccountId = null;
+		}
+
 		faroProjectCacheModel.serverLocation = getServerLocation();
 
 		String serverLocation = faroProjectCacheModel.serverLocation;
@@ -1354,6 +1409,7 @@ public class FaroProjectModelImpl
 	private String _incidentReportEmailAddresses;
 	private long _lastAccessTime;
 	private boolean _recommendationsEnabled;
+	private String _salesforceAccountId;
 	private String _serverLocation;
 	private String _services;
 	private String _state;
@@ -1412,6 +1468,7 @@ public class FaroProjectModelImpl
 		_columnOriginalValues.put("lastAccessTime", _lastAccessTime);
 		_columnOriginalValues.put(
 			"recommendationsEnabled", _recommendationsEnabled);
+		_columnOriginalValues.put("salesforceAccountId", _salesforceAccountId);
 		_columnOriginalValues.put("serverLocation", _serverLocation);
 		_columnOriginalValues.put("services", _services);
 		_columnOriginalValues.put("state_", _state);
@@ -1479,19 +1536,21 @@ public class FaroProjectModelImpl
 
 		columnBitmasks.put("recommendationsEnabled", 131072L);
 
-		columnBitmasks.put("serverLocation", 262144L);
+		columnBitmasks.put("salesforceAccountId", 262144L);
 
-		columnBitmasks.put("services", 524288L);
+		columnBitmasks.put("serverLocation", 524288L);
 
-		columnBitmasks.put("state_", 1048576L);
+		columnBitmasks.put("services", 1048576L);
 
-		columnBitmasks.put("subscription", 2097152L);
+		columnBitmasks.put("state_", 2097152L);
 
-		columnBitmasks.put("subscriptionModifiedTime", 4194304L);
+		columnBitmasks.put("subscription", 4194304L);
 
-		columnBitmasks.put("timeZoneId", 8388608L);
+		columnBitmasks.put("subscriptionModifiedTime", 8388608L);
 
-		columnBitmasks.put("weDeployKey", 16777216L);
+		columnBitmasks.put("timeZoneId", 16777216L);
+
+		columnBitmasks.put("weDeployKey", 33554432L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1500,4 +1559,4 @@ public class FaroProjectModelImpl
 	private FaroProject _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1999638613
+// LIFERAY-SERVICE-BUILDER-HASH:353740684

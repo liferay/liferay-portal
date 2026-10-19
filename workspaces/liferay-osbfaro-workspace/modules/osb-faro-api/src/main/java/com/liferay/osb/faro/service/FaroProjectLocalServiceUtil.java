@@ -361,6 +361,13 @@ public class FaroProjectLocalServiceUtil {
 		return getService().updateFaroProject(faroProject);
 	}
 
+	public static FaroProject updateSalesforceAccountId(
+		long faroProjectId, String salesforceAccountId) {
+
+		return getService().updateSalesforceAccountId(
+			faroProjectId, salesforceAccountId);
+	}
+
 	public static FaroProject updateState(long faroProjectId, String state) {
 		return getService().updateState(faroProjectId, state);
 	}
@@ -380,4 +387,4 @@ public class FaroProjectLocalServiceUtil {
 			FaroProjectLocalServiceUtil.class, FaroProjectLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1167403344
+// LIFERAY-SERVICE-BUILDER-HASH:-1714361864

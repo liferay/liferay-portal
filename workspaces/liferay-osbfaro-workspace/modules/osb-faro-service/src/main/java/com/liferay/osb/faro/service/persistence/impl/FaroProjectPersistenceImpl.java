@@ -274,6 +274,67 @@ public class FaroProjectPersistenceImpl
 			finderCache, new Object[] {corpProjectUuid});
 	}
 
+	private UniquePersistenceFinder<FaroProject, NoSuchFaroProjectException>
+		_uniquePersistenceFinderBySalesforceAccountId;
+
+	/**
+	 * Returns the faro project where salesforceAccountId = &#63; or throws a <code>NoSuchFaroProjectException</code> if it could not be found.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @return the matching faro project
+	 * @throws NoSuchFaroProjectException if a matching faro project could not be found
+	 */
+	@Override
+	public FaroProject findBySalesforceAccountId(String salesforceAccountId)
+		throws NoSuchFaroProjectException {
+
+		return _uniquePersistenceFinderBySalesforceAccountId.find(
+			finderCache, new Object[] {salesforceAccountId});
+	}
+
+	/**
+	 * Returns the faro project where salesforceAccountId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
+	 */
+	@Override
+	public FaroProject fetchBySalesforceAccountId(
+		String salesforceAccountId, boolean useFinderCache) {
+
+		return _uniquePersistenceFinderBySalesforceAccountId.fetch(
+			finderCache, new Object[] {salesforceAccountId}, useFinderCache);
+	}
+
+	/**
+	 * Removes the faro project where salesforceAccountId = &#63; from the database.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @return the faro project that was removed
+	 */
+	@Override
+	public FaroProject removeBySalesforceAccountId(String salesforceAccountId)
+		throws NoSuchFaroProjectException {
+
+		FaroProject faroProject = findBySalesforceAccountId(
+			salesforceAccountId);
+
+		return remove(faroProject);
+	}
+
+	/**
+	 * Returns the number of faro projects where salesforceAccountId = &#63;.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @return the number of matching faro projects
+	 */
+	@Override
+	public int countBySalesforceAccountId(String salesforceAccountId) {
+		return _uniquePersistenceFinderBySalesforceAccountId.count(
+			finderCache, new Object[] {salesforceAccountId});
+	}
+
 	private CollectionPersistenceFinder<FaroProject, NoSuchFaroProjectException>
 		_collectionPersistenceFinderByServerLocation;
 
@@ -654,6 +715,20 @@ public class FaroProjectPersistenceImpl
 					"faroProject.", "corpProjectUuid", FinderColumn.Type.STRING,
 					"=", true, true, FaroProject::getCorpProjectUuid));
 
+		_uniquePersistenceFinderBySalesforceAccountId =
+			new UniquePersistenceFinder<>(
+				this,
+				createUniqueFinderPath(
+					FINDER_CLASS_NAME_ENTITY, "fetchBySalesforceAccountId",
+					new String[] {String.class.getName()},
+					new String[] {"salesforceAccountId"}, 0, 1, false,
+					convertNullFunction(FaroProject::getSalesforceAccountId)),
+				_SQL_SELECT_FAROPROJECT_WHERE, "",
+				new FinderColumn<>(
+					"faroProject.", "salesforceAccountId",
+					FinderColumn.Type.STRING, "=", true, true,
+					FaroProject::getSalesforceAccountId));
+
 		_collectionPersistenceFinderByServerLocation =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -758,4 +833,4 @@ public class FaroProjectPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-963518515
+// LIFERAY-SERVICE-BUILDER-HASH:513219582

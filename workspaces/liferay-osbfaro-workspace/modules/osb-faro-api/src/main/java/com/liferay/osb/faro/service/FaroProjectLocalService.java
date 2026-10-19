@@ -308,6 +308,10 @@ public interface FaroProjectLocalService
 	public FaroProject updateFaroProject(FaroProject faroProject);
 
 	@Indexable(type = IndexableType.REINDEX)
+	public FaroProject updateSalesforceAccountId(
+		long faroProjectId, String salesforceAccountId);
+
+	@Indexable(type = IndexableType.REINDEX)
 	public FaroProject updateState(long faroProjectId, String state);
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -315,4 +319,4 @@ public interface FaroProjectLocalService
 		long faroProjectId, String subscription);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1844417284
+// LIFERAY-SERVICE-BUILDER-HASH:-123464274

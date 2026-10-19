@@ -52,6 +52,7 @@ public class FaroProjectWrapper
 			"incidentReportEmailAddresses", getIncidentReportEmailAddresses());
 		attributes.put("lastAccessTime", getLastAccessTime());
 		attributes.put("recommendationsEnabled", isRecommendationsEnabled());
+		attributes.put("salesforceAccountId", getSalesforceAccountId());
 		attributes.put("serverLocation", getServerLocation());
 		attributes.put("services", getServices());
 		attributes.put("state", getState());
@@ -175,6 +176,13 @@ public class FaroProjectWrapper
 
 		if (recommendationsEnabled != null) {
 			setRecommendationsEnabled(recommendationsEnabled);
+		}
+
+		String salesforceAccountId = (String)attributes.get(
+			"salesforceAccountId");
+
+		if (salesforceAccountId != null) {
+			setSalesforceAccountId(salesforceAccountId);
 		}
 
 		String serverLocation = (String)attributes.get("serverLocation");
@@ -404,6 +412,16 @@ public class FaroProjectWrapper
 	@Override
 	public boolean getRecommendationsEnabled() {
 		return model.getRecommendationsEnabled();
+	}
+
+	/**
+	 * Returns the salesforce account ID of this faro project.
+	 *
+	 * @return the salesforce account ID of this faro project
+	 */
+	@Override
+	public String getSalesforceAccountId() {
+		return model.getSalesforceAccountId();
 	}
 
 	/**
@@ -729,6 +747,16 @@ public class FaroProjectWrapper
 	}
 
 	/**
+	 * Sets the salesforce account ID of this faro project.
+	 *
+	 * @param salesforceAccountId the salesforce account ID of this faro project
+	 */
+	@Override
+	public void setSalesforceAccountId(String salesforceAccountId) {
+		model.setSalesforceAccountId(salesforceAccountId);
+	}
+
+	/**
 	 * Sets the server location of this faro project.
 	 *
 	 * @param serverLocation the server location of this faro project
@@ -839,4 +867,4 @@ public class FaroProjectWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:461860127
+// LIFERAY-SERVICE-BUILDER-HASH:-826915521
