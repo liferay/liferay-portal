@@ -332,6 +332,62 @@ public class InvitedMemberResourceTest
 			Assert.assertEquals(
 				"Expiration date must be a future date.", problem.getTitle());
 		}
+
+		long groupId = MapUtil.getLong(_objectEntry.getValues(), "siteId");
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {groupId}, ServiceContextTestUtil.getServiceContext());
+
+		Role role = _roleLocalService.getRole(
+			_objectEntry.getCompanyId(), RoleConstants.SITE_ADMINISTRATOR);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			new long[] {user.getUserId()}, groupId, role.getRoleId());
+
+		UserAccountResource userAccountResource = UserAccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).build();
+
+		InvitedMember invitedMember3 = randomInvitedMember();
+
+		UserAccount userAccount3 = userAccountResource.postRoomUserAccount(
+			_objectEntry.getObjectEntryId(),
+			new UserAccount() {
+				{
+					setEmailAddress(invitedMember3::getEmailAddress);
+				}
+			});
+
+		InvitedMemberResource invitedMemberResource =
+			InvitedMemberResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> invitedMemberResource.patchRoomInvitedMember(
+				_objectEntry.getObjectEntryId(), userAccount3.getId(),
+				new InvitedMember() {
+					{
+						roleKey = RoleConstants.SITE_OWNER;
+					}
+				}));
 	}
 
 	@Override

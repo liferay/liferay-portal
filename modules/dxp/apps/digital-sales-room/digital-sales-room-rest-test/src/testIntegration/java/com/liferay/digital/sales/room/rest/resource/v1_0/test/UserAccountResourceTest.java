@@ -127,6 +127,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_testDeleteRoomUserAccountWithDSRContentContributor();
 		_testDeleteRoomUserAccountWithMembershipExpirationDate();
+		_testDeleteRoomUserAccountWithSiteAdministrator();
 	}
 
 	@Override
@@ -144,6 +145,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_testPatchRoomUserAccountWithDSRContentContributor();
 		_testPatchRoomUserAccountWithDSRRoomCollaborator();
 		_testPatchRoomUserAccountWithPermission();
+		_testPatchRoomUserAccountWithSiteAdministrator();
 		_testPatchRoomUserAccountWithoutRoleKey();
 	}
 
@@ -158,6 +160,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_testPostRoomUserAccountWithDSRRoomCollaborator();
 		_testPostRoomUserAccountWithMembershipExpirationDate();
 		_testPostRoomUserAccountWithPermission();
+		_testPostRoomUserAccountWithSiteAdministrator();
 	}
 
 	@Override
@@ -334,6 +337,38 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			_objectEntry.getObjectEntryId(), user.getUserId());
 
 		Assert.assertNull(_fetchExpireMembershipTicket(user.getUserId()));
+	}
+
+	private void _testDeleteRoomUserAccountWithSiteAdministrator()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password, _addUser(password, RoleConstants.SITE_ADMINISTRATOR));
+
+		User user = _addUser(
+			RandomTestUtil.randomString(), RoleConstants.SITE_MEMBER);
+
+		userAccountResource.deleteRoomUserAccount(
+			_objectEntry.getObjectEntryId(), user.getUserId());
+
+		Assert.assertFalse(
+			_groupLocalService.hasUserGroup(
+				user.getUserId(), _getGroupId(_objectEntry)));
+
+		user = _addUser(
+			RandomTestUtil.randomString(), RoleConstants.SITE_OWNER);
+
+		try {
+			userAccountResource.deleteRoomUserAccount(
+				_objectEntry.getObjectEntryId(), user.getUserId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Assert.assertNotNull(problemException);
+		}
 	}
 
 	private void _testGetRoomUserAccountsPageWithMembershipExpirationDate()
@@ -538,6 +573,62 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 						roleKey = RoleConstants.SITE_ADMINISTRATOR;
 					}
 				}));
+	}
+
+	private void _testPatchRoomUserAccountWithSiteAdministrator()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user1 = _addUser(password, RoleConstants.SITE_ADMINISTRATOR);
+
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password, user1);
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> userAccountResource.patchRoomUserAccount(
+				_objectEntry.getObjectEntryId(), user1.getUserId(),
+				new UserAccount() {
+					{
+						roleKey = RoleConstants.SITE_OWNER;
+					}
+				}));
+
+		User user2 = _addUser(
+			RandomTestUtil.randomString(), RoleConstants.SITE_MEMBER);
+
+		userAccountResource.patchRoomUserAccount(
+			_objectEntry.getObjectEntryId(), user2.getUserId(),
+			new UserAccount() {
+				{
+					roleKey = DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR;
+				}
+			});
+
+		Assert.assertTrue(
+			_userGroupRoleLocalService.hasUserGroupRole(
+				user2.getUserId(), _getGroupId(_objectEntry),
+				DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR));
+
+		User user3 = _addUser(
+			RandomTestUtil.randomString(), RoleConstants.SITE_OWNER);
+
+		try {
+			userAccountResource.patchRoomUserAccount(
+				_objectEntry.getObjectEntryId(), user3.getUserId(),
+				new UserAccount() {
+					{
+						membershipExpirationDate = DateUtil.getTomorrowDate();
+					}
+				});
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Assert.assertNotNull(problemException);
+		}
 	}
 
 	private void _testPatchRoomUserAccountWithoutRoleKey() throws Exception {
@@ -841,6 +932,43 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 					roleKey = RoleConstants.SITE_MEMBER;
 				}
 			});
+	}
+
+	private void _testPostRoomUserAccountWithSiteAdministrator()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password, _addUser(password, RoleConstants.SITE_ADMINISTRATOR));
+
+		User user = UserTestUtil.addUser();
+
+		userAccountResource.postRoomUserAccount(
+			_objectEntry.getObjectEntryId(),
+			new UserAccount() {
+				{
+					emailAddress = user.getEmailAddress();
+					roleKey = DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR;
+				}
+			});
+
+		Assert.assertTrue(
+			_userGroupRoleLocalService.hasUserGroupRole(
+				user.getUserId(), _getGroupId(_objectEntry),
+				DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR));
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> userAccountResource.postRoomUserAccount(
+				_objectEntry.getObjectEntryId(),
+				new UserAccount() {
+					{
+						emailAddress = user.getEmailAddress();
+						roleKey = RoleConstants.SITE_OWNER;
+					}
+				}));
 	}
 
 	private AccountEntry _accountEntry;
