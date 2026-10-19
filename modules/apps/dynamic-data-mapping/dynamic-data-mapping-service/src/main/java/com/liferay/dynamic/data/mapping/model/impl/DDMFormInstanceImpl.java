@@ -108,6 +108,7 @@ public class DDMFormInstanceImpl extends DDMFormInstanceBaseImpl {
 	public void setSettings(String settings) {
 		super.setSettings(settings);
 
+		_ddmFormValues = null;
 		_formInstanceSettings = null;
 	}
 
