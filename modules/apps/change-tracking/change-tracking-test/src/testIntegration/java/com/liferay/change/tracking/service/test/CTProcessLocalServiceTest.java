@@ -10,6 +10,7 @@ import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.model.CTProcess;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTProcessLocalService;
+import com.liferay.change.tracking.service.CTProcessService;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.test.util.JournalFolderFixture;
@@ -18,6 +19,7 @@ import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -33,6 +35,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -165,6 +169,83 @@ public class CTProcessLocalServiceTest {
 		}
 	}
 
+	@Test
+	public void testGetCTProcesses() throws Exception {
+		String name = RandomTestUtil.randomString();
+		String folderName = RandomTestUtil.randomString();
+
+		CTCollection failedCTCollection = _addCTCollection(name, folderName);
+
+		_journalFolderFixture.addFolder(_group.getGroupId(), folderName);
+
+		CTCollection successfulCTCollection = _addCTCollection(
+			name, RandomTestUtil.randomString());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.background.task.internal.messaging." +
+					"BackgroundTaskMessageListener",
+				LoggerTestUtil.ERROR)) {
+
+			CTProcess failedCTProcess = _ctProcessLocalService.addCTProcess(
+				failedCTCollection.getUserId(),
+				failedCTCollection.getCtCollectionId());
+
+			CTProcess successfulCTProcess = _ctProcessLocalService.addCTProcess(
+				successfulCTCollection.getUserId(),
+				successfulCTCollection.getCtCollectionId());
+
+			_assertGetCTProcesses(
+				name, BackgroundTaskConstants.STATUS_FAILED, failedCTProcess);
+			_assertGetCTProcesses(
+				name, BackgroundTaskConstants.STATUS_SUCCESSFUL,
+				successfulCTProcess);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to execute background task", logEntry.getMessage());
+		}
+	}
+
+	private CTCollection _addCTCollection(String name, String folderName)
+		throws Exception {
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, name, null);
+
+		_ctCollections.add(ctCollection);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_journalFolderFixture.addFolder(_group.getGroupId(), folderName);
+		}
+
+		return ctCollection;
+	}
+
+	private void _assertGetCTProcesses(
+			String keywords, int status, CTProcess ctProcess)
+		throws Exception {
+
+		Assert.assertEquals(
+			Collections.singletonList(ctProcess),
+			_ctProcessService.getCTProcesses(
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+				keywords, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+		Assert.assertEquals(
+			1,
+			_ctProcessService.getCTProcessesCount(
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+				keywords, status));
+	}
+
 	@Inject
 	private static JournalFolderLocalService _journalFolderLocalService;
 
@@ -177,8 +258,14 @@ public class CTProcessLocalServiceTest {
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
 
+	@DeleteAfterTestRun
+	private final List<CTCollection> _ctCollections = new ArrayList<>();
+
 	@Inject
 	private CTProcessLocalService _ctProcessLocalService;
+
+	@Inject
+	private CTProcessService _ctProcessService;
 
 	@DeleteAfterTestRun
 	private Group _group;
