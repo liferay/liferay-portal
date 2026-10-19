@@ -10,19 +10,15 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.ProtectedServletRequest;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -310,19 +306,9 @@ public abstract class BaseAuthFilter extends BasePortalFilter {
 			initThreadLocals(user);
 
 			if (!user.isGuestUser()) {
-				String authType = ParamUtil.getString(
-					httpServletRequest, "authType");
-
-				if (authType == null) {
-					Company company = CompanyLocalServiceUtil.getCompany(
-						CompanyThreadLocal.getCompanyId());
-
-					authType = company.getAuthType();
-				}
-
 				httpServletRequest = setCredentials(
 					httpServletRequest, httpServletRequest.getSession(), user,
-					authType);
+					HttpServletRequest.FORM_AUTH);
 			}
 			else {
 				if (_digestAuthEnabled) {
