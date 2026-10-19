@@ -8,12 +8,16 @@ package com.liferay.jenkins.results.parser.monitor;
 import com.liferay.jenkins.results.parser.JenkinsCohort;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.ParallelExecutor;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Brittney Nguyen
@@ -44,27 +48,28 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 				MonitorResult.Status.UNKNOWN, currentTimeMillis);
 		}
 
-		_jenkinsMastersCount = jenkinsMasters.size();
+		Map<String, String> exceptionMessages = new ConcurrentHashMap<>();
+
+		List<List<JenkinsMaster.RunningBuild>> runningBuildsList =
+			_readRunningBuilds(exceptionMessages, jenkinsMasters);
 
 		int longRunningBuildsCount = 0;
 		List<String> messages = new ArrayList<>();
 		int runningBuildsCount = 0;
 		List<MonitorResult.Status> statuses = new ArrayList<>();
 
-		for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
-			List<JenkinsMaster.RunningBuild> runningBuilds = null;
+		for (int i = 0; i < jenkinsMasters.size(); i++) {
+			JenkinsMaster jenkinsMaster = jenkinsMasters.get(i);
 
-			try {
-				runningBuilds = jenkinsMaster.readRunningBuilds(
-					_RETRIES_SIZE_MAX, _SECONDS_RETRY_PERIOD,
-					getAttemptTimeoutMillis(_RETRIES_SIZE_MAX));
-			}
-			catch (Exception exception) {
+			List<JenkinsMaster.RunningBuild> runningBuilds =
+				runningBuildsList.get(i);
+
+			if (runningBuilds == null) {
 				messages.add(
 					JenkinsResultsParserUtil.combine(
 						"Unable to read running builds on ",
 						jenkinsMaster.getName(), ": ",
-						JenkinsResultsParserUtil.getMessage(exception)));
+						exceptionMessages.get(jenkinsMaster.getName())));
 
 				statuses.add(MonitorResult.Status.UNKNOWN);
 
@@ -133,7 +138,7 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 
 	@Override
 	protected int getReadsCount() {
-		return _jenkinsMastersCount;
+		return 1;
 	}
 
 	private List<JenkinsMaster> _getJenkinsMasters() {
@@ -154,12 +159,56 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 		return new ArrayList<>(jenkinsMastersMap.values());
 	}
 
+	private List<List<JenkinsMaster.RunningBuild>> _readRunningBuilds(
+		Map<String, String> exceptionMessages,
+		List<JenkinsMaster> jenkinsMasters) {
+
+		List<Callable<List<JenkinsMaster.RunningBuild>>> callables =
+			new ArrayList<>();
+
+		for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
+			callables.add(
+				new Callable<List<JenkinsMaster.RunningBuild>>() {
+
+					@Override
+					public List<JenkinsMaster.RunningBuild> call() {
+						try {
+							return jenkinsMaster.readRunningBuilds(
+								_RETRIES_SIZE_MAX, _SECONDS_RETRY_PERIOD,
+								getAttemptTimeoutMillis(_RETRIES_SIZE_MAX));
+						}
+						catch (Exception exception) {
+							exceptionMessages.put(
+								jenkinsMaster.getName(),
+								JenkinsResultsParserUtil.getMessage(exception));
+
+							return null;
+						}
+					}
+
+				});
+		}
+
+		ParallelExecutor<List<JenkinsMaster.RunningBuild>> parallelExecutor =
+			new ParallelExecutor<>(
+				callables,
+				JenkinsResultsParserUtil.getNewThreadPoolExecutor(
+					jenkinsMasters.size(), true),
+				"readRunningBuilds");
+
+		try {
+			return parallelExecutor.execute();
+		}
+		catch (TimeoutException timeoutException) {
+			throw new RuntimeException(timeoutException);
+		}
+	}
+
 	private static final int _RETRIES_SIZE_MAX = 1;
 
 	private static final int _SECONDS_RETRY_PERIOD = 1;
 
 	private final long _buildDurationMaximumSeconds;
 	private final String _cohortName;
-	private int _jenkinsMastersCount;
 
 }
