@@ -139,7 +139,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -837,7 +840,7 @@ public class BundleSiteInitializerTest {
 			links.toString(), assetLinkEntriesCount, links.size());
 	}
 
-	private void _assertAssetListEntries() {
+	private void _assertAssetListEntries() throws Exception {
 		List<AssetListEntry> assetListEntries =
 			_assetListEntryLocalService.getAssetListEntries(
 				_group.getGroupId());
@@ -863,7 +866,33 @@ public class BundleSiteInitializerTest {
 		Assert.assertTrue(
 			typeSettings.contains(
 				"classTypeIdsJournalArticleAssetRendererFactory"));
-		Assert.assertTrue(typeSettings.contains("queryValues0=Test Keyword"));
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			UnicodePropertiesBuilder.fastLoad(
+				typeSettings
+			).build();
+
+		JSONArray filtersJSONArray = JSONFactoryUtil.createJSONArray(
+			typeSettingsUnicodeProperties.getProperty("filters"));
+
+		Assert.assertEquals(
+			filtersJSONArray.toString(), 1, filtersJSONArray.length());
+		Assert.assertEquals(
+			"contains",
+			JSONUtil.getValueAsString(
+				filtersJSONArray, "JSONObject/0", "Object/operatorName"));
+		Assert.assertEquals(
+			"keywords",
+			JSONUtil.getValueAsString(
+				filtersJSONArray, "JSONObject/0", "Object/propertyName"));
+		Assert.assertEquals(
+			"all",
+			JSONUtil.getValueAsString(
+				filtersJSONArray, "JSONObject/0", "Object/quantifier"));
+		Assert.assertEquals(
+			"Test Keyword",
+			JSONUtil.getValueAsString(
+				filtersJSONArray, "JSONObject/0", "Object/value"));
 
 		assetListEntry = assetListEntries.get(1);
 
