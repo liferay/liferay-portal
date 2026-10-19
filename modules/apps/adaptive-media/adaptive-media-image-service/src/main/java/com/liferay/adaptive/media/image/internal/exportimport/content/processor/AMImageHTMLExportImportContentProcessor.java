@@ -72,7 +72,7 @@ public class AMImageHTMLExportImportContentProcessor
 	public void validateContentReferences(long groupId, String content)
 		throws PortalException {
 
-		int index = content.indexOf(_FILE_ENTRY_ID_ATTRIBUTE_PREFIX);
+		int index = _getFileEntryIdAttributeIndex(content, 0);
 
 		while (index != -1) {
 			int fileEntryIdIndex =
@@ -83,17 +83,6 @@ public class AMImageHTMLExportImportContentProcessor
 
 			if (fileEntryIdEndIndex == -1) {
 				break;
-			}
-
-			int greaterThanIndex = content.lastIndexOf(
-				CharPool.GREATER_THAN, index);
-			int lessThanIndex = content.lastIndexOf(CharPool.LESS_THAN, index);
-
-			index = content.indexOf(
-				_FILE_ENTRY_ID_ATTRIBUTE_PREFIX, fileEntryIdEndIndex);
-
-			if (lessThanIndex <= greaterThanIndex) {
-				continue;
 			}
 
 			try {
@@ -116,7 +105,27 @@ public class AMImageHTMLExportImportContentProcessor
 							"deleted.\n", content));
 				}
 			}
+
+			index = _getFileEntryIdAttributeIndex(content, fileEntryIdEndIndex);
 		}
+	}
+
+	private int _getFileEntryIdAttributeIndex(String content, int fromIndex) {
+		int index = content.indexOf(_FILE_ENTRY_ID_ATTRIBUTE_PREFIX, fromIndex);
+
+		while (index != -1) {
+			if (content.lastIndexOf(CharPool.LESS_THAN, index) >
+					content.lastIndexOf(CharPool.GREATER_THAN, index)) {
+
+				return index;
+			}
+
+			index = content.indexOf(
+				_FILE_ENTRY_ID_ATTRIBUTE_PREFIX,
+				index + _FILE_ENTRY_ID_ATTRIBUTE_PREFIX.length());
+		}
+
+		return -1;
 	}
 
 	private Document _parseDocument(String html) {
