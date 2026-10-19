@@ -573,8 +573,9 @@ public class LayoutUtil {
 			return layout;
 		}
 
-		return LayoutLocalServiceUtil.updateTypeSettings(
-			layout, typeSettingsUnicodeProperties.toString());
+		return LayoutServiceUtil.updateTypeSettings(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			typeSettingsUnicodeProperties.toString());
 	}
 
 	public static Layout updatePortletLayout(
