@@ -252,6 +252,39 @@ public class WorkflowTaskResourceTest extends BaseWorkflowTaskResourceTestCase {
 
 		_assertActions(false, workflowTask3);
 
+		assertHttpResponseStatusCode(
+			404,
+			workflowTaskResource.
+				getWorkflowInstanceWorkflowTasksPageHttpResponse(
+					RandomTestUtil.randomLong(), null, Pagination.of(1, 2)));
+		assertHttpResponseStatusCode(
+			404,
+			_userWorkflowTaskResource.
+				getWorkflowInstanceWorkflowTasksPageHttpResponse(
+					_workflowInstance.getId(), null, Pagination.of(10, 2)));
+
+		for (WorkflowTask workflowTask :
+				Arrays.asList(workflowTask1, workflowTask2)) {
+
+			workflowTaskResource.postWorkflowTaskAssignToUser(
+				workflowTask.getId(),
+				new WorkflowTaskAssignToUser() {
+					{
+						assigneeId = _user.getUserId();
+						workflowTaskId = workflowTask.getId();
+					}
+				});
+		}
+
+		page = _userWorkflowTaskResource.getWorkflowInstanceWorkflowTasksPage(
+			_workflowInstance.getId(), null, Pagination.of(1, 3));
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(workflowTask1, workflowTask2),
+			(List<WorkflowTask>)page.getItems());
+		assertValid(page);
 	}
 
 	@Override
