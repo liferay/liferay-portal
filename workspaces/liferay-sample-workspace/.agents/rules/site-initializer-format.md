@@ -623,9 +623,9 @@ Controls theme assignment and theme settings for the public (nonprivate) layout 
 
 Use the `settings` block to switch off the stock theme chrome when a master page supplies a branded header and footer — otherwise both render, one above the other. Prefer this over hiding `#banner` / `#footer` with CSS: the setting is scoped to this layout set, whereas a `globalCSS` CET is injected instance wide and there is no site specific `body` class to scope such a rule to.
 
-> **The tree cannot attach a theme CET — but it is not the only route.** Liferay attaches `themeCSS`, `themeFavicon`, and `themeSpritemap` through a `ClientExtensionEntryRel` on the layout, the master layout, or the layout set. `BundleSiteInitializer` never writes that row — the class does not mention `ClientExtensionEntryRel` at all — and there is no key in `metadata.json` for it, so a CET deployed by the tree alone is *available* but not *applied*.
+> **The tree cannot attach a theme CET.** Liferay attaches `themeCSS`, `themeFavicon`, and `themeSpritemap` through a `ClientExtensionEntryRel` on the layout, the master layout, or the layout set. `BundleSiteInitializer` never writes that row — the class does not mention `ClientExtensionEntryRel` at all — and there is no key in `metadata.json` for it, so a CET deployed by the tree alone is *available* but not *applied*.
 >
-> `headless-admin-site` holds settings that write it, and `LayoutsImporterImpl` — which this initializer calls for every layout — reads the same keys off `page-definition.json`. Neither route is proven to take effect on a 2026.Q2 bundle: the REST one is **verified unreliable** (the write persists, the rendering does not change), and the tree one is untested. See `skills/theme-and-design/SKILL.md` → "Apply to Site" and its addendum before spending time here.
+> Attaching it over REST does not work either: the write persists, but the rendering does not change. See `skills/theme-and-design/SKILL.md` → "Apply to Site".
 >
 > None of that is a reason to skip the client extension. Still build and deploy it — a `themeFavicon` is the only way to deliver a browser tab icon at all — and treat **selecting** it as a manual step that must be redone after a reprovision.
 >
