@@ -7,7 +7,6 @@ package com.liferay.commerce.tax.engine.fixed.service.base;
 
 import com.liferay.commerce.tax.engine.fixed.model.CommerceTaxFixedRateAddressRel;
 import com.liferay.commerce.tax.engine.fixed.service.CommerceTaxFixedRateAddressRelService;
-import com.liferay.commerce.tax.engine.fixed.service.persistence.CommerceTaxFixedRateAddressRelFinder;
 import com.liferay.commerce.tax.engine.fixed.service.persistence.CommerceTaxFixedRateAddressRelPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.db.DB;
@@ -126,10 +125,6 @@ public abstract class CommerceTaxFixedRateAddressRelServiceBaseImpl
 		commerceTaxFixedRateAddressRelPersistence;
 
 	@Reference
-	protected CommerceTaxFixedRateAddressRelFinder
-		commerceTaxFixedRateAddressRelFinder;
-
-	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
 
@@ -137,4 +132,4 @@ public abstract class CommerceTaxFixedRateAddressRelServiceBaseImpl
 		CommerceTaxFixedRateAddressRelServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1951433461
+// LIFERAY-SERVICE-BUILDER-HASH:583146742
