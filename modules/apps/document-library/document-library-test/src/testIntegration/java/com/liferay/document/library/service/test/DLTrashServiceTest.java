@@ -66,43 +66,20 @@ public class DLTrashServiceTest {
 	}
 
 	@Test
-	public void testMoveFileEntryFromTrashToFolder() throws Exception {
+	public void testMoveFileEntryFromTrash() throws Exception {
 		_testMoveFileEntryFromTrashToFolderWithAddPermission();
 		_testMoveFileEntryFromTrashToFolderWithoutAddPermission();
+		_testMoveFileEntryFromTrashToRootFolder();
 	}
 
 	@Test
-	public void testMoveFileEntryFromTrashToRootFolder() throws Exception {
-		Folder folder = _addFolder(ActionKeys.ADD_DOCUMENT, ActionKeys.VIEW);
-
-		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
-			_group.getGroupId(), folder.getFolderId());
-
-		DLTrashServiceUtil.moveFileEntryToTrash(fileEntry.getFileEntryId());
-
-		DLTrashServiceUtil.moveFileEntryFromTrash(
-			fileEntry.getFileEntryId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(
-			fileEntry.getFileEntryId());
-
-		Assert.assertEquals(
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			dlFileEntry.getFolderId());
-		Assert.assertFalse(dlFileEntry.isInTrash());
-	}
-
-	@Test
-	public void testMoveFileShortcutFromTrashToFolder() throws Exception {
+	public void testMoveFileShortcutFromTrash() throws Exception {
 		_testMoveFileShortcutFromTrashToFolderWithAddPermission();
 		_testMoveFileShortcutFromTrashToFolderWithoutAddPermission();
 	}
 
 	@Test
-	public void testMoveFolderFromTrashToFolder() throws Exception {
+	public void testMoveFolderFromTrash() throws Exception {
 		_testMoveFolderFromTrashToFolderWithAddPermission();
 		_testMoveFolderFromTrashToFolderWithoutAddPermission();
 	}
@@ -213,6 +190,29 @@ public class DLTrashServiceTest {
 			fileEntry.getFileEntryId());
 
 		Assert.assertTrue(dlFileEntry.isInTrash());
+	}
+
+	private void _testMoveFileEntryFromTrashToRootFolder() throws Exception {
+		Folder folder = _addFolder(ActionKeys.ADD_DOCUMENT, ActionKeys.VIEW);
+
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), folder.getFolderId());
+
+		DLTrashServiceUtil.moveFileEntryToTrash(fileEntry.getFileEntryId());
+
+		DLTrashServiceUtil.moveFileEntryFromTrash(
+			fileEntry.getFileEntryId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(
+			fileEntry.getFileEntryId());
+
+		Assert.assertEquals(
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			dlFileEntry.getFolderId());
+		Assert.assertFalse(dlFileEntry.isInTrash());
 	}
 
 	private void _testMoveFileShortcutFromTrashToFolderWithAddPermission()
