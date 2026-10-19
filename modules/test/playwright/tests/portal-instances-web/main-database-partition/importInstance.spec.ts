@@ -54,6 +54,10 @@ test(
 
 			await virtualInstancesPage.openImportVirtualInstanceModal();
 
+			await expect(
+				virtualInstancesPage.importInstanceDocumentLibraryFilesWarning
+			).toBeVisible();
+
 			await virtualInstancesPage.submitImportVirtualInstance({
 				name: importedWebId,
 				schemaName,

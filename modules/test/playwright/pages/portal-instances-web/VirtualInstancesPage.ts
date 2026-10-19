@@ -11,6 +11,9 @@ import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {NotificationsPage} from '../notifications-web/NotificationsPage';
 import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenuPage';
 
+const DOCUMENT_LIBRARY_FILES_WARNING =
+	'Document Library files are not included and must be transferred separately.';
+
 export class VirtualInstancesPage {
 	private addInstanceFrame: FrameLocator;
 	private copyInstanceFrame: FrameLocator;
@@ -28,12 +31,15 @@ export class VirtualInstancesPage {
 	readonly addInstanceWebIdField: Locator;
 	readonly copyInstanceCancelButton: Locator;
 	readonly copyInstanceDestinationCompanyIdField: Locator;
+	readonly copyInstanceDocumentLibraryFilesWarning: Locator;
 	readonly copyInstanceErrorMessage: Locator;
 	readonly copyInstanceNameField: Locator;
 	readonly copyInstanceSubmitButton: Locator;
 	readonly copyInstanceVirtualHostField: Locator;
 	readonly copyInstanceWebIdField: Locator;
 	readonly exportInstanceConfirmButton: Locator;
+	readonly exportInstanceDocumentLibraryFilesWarning: Locator;
+	readonly importInstanceDocumentLibraryFilesWarning: Locator;
 	readonly importInstanceErrorMessage: Locator;
 	readonly importInstanceNameField: Locator;
 	readonly importInstanceNonexistentSchemaErrorMessage: Locator;
@@ -84,6 +90,8 @@ export class VirtualInstancesPage {
 			.getByRole('button', {exact: true, name: 'Cancel'});
 		this.copyInstanceDestinationCompanyIdField =
 			this.copyInstanceFrame.getByLabel('Destination Company ID');
+		this.copyInstanceDocumentLibraryFilesWarning =
+			this.copyInstanceFrame.getByText(DOCUMENT_LIBRARY_FILES_WARNING);
 		this.copyInstanceErrorMessage = this.copyInstanceFrame.getByText(
 			'Please enter a valid destination company ID'
 		);
@@ -98,6 +106,11 @@ export class VirtualInstancesPage {
 		this.exportInstanceConfirmButton = page
 			.getByRole('dialog', {name: 'Export Instance'})
 			.getByRole('button', {exact: true, name: 'Export'});
+		this.exportInstanceDocumentLibraryFilesWarning = page
+			.getByRole('dialog', {name: 'Export Instance'})
+			.getByText(DOCUMENT_LIBRARY_FILES_WARNING);
+		this.importInstanceDocumentLibraryFilesWarning =
+			this.importInstanceFrame.getByText(DOCUMENT_LIBRARY_FILES_WARNING);
 		this.importInstanceErrorMessage = this.importInstanceFrame.getByText(
 			'Please enter a valid schema name'
 		);
@@ -319,7 +332,8 @@ export class VirtualInstancesPage {
 			await notificationsPage.goto();
 
 			await expect(
-				notificationsPage.getNotificationByTitle(
+				notificationsPage.getNotification(
+					DOCUMENT_LIBRARY_FILES_WARNING,
 					`The instance ${sourceName} was copied to ${webId}.`
 				)
 			).toBeVisible({timeout: 10 * 1000});
@@ -348,7 +362,8 @@ export class VirtualInstancesPage {
 		await expect(async () => {
 			await notificationsPage.goto();
 
-			const notification = notificationsPage.getNotificationByTitle(
+			const notification = notificationsPage.getNotification(
+				DOCUMENT_LIBRARY_FILES_WARNING,
 				`The instance ${name} was exported.`
 			);
 
@@ -374,7 +389,8 @@ export class VirtualInstancesPage {
 			await notificationsPage.goto();
 
 			await expect(
-				notificationsPage.getNotificationByTitle(
+				notificationsPage.getNotification(
+					DOCUMENT_LIBRARY_FILES_WARNING,
 					`The instance ${name} was imported.`
 				)
 			).toBeVisible({timeout: 10 * 1000});
@@ -480,6 +496,10 @@ export class VirtualInstancesPage {
 			}),
 			trigger: row.getByRole('button', {name: 'Show Actions'}),
 		});
+
+		await expect(
+			this.exportInstanceDocumentLibraryFilesWarning
+		).toBeVisible();
 
 		await this.exportInstanceConfirmButton.click();
 	}

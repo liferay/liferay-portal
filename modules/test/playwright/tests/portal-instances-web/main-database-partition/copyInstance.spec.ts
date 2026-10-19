@@ -127,6 +127,10 @@ test(
 
 			await virtualInstancesPage.openCopyVirtualInstanceModal(name);
 
+			await expect(
+				virtualInstancesPage.copyInstanceDocumentLibraryFilesWarning
+			).toBeVisible();
+
 			// A blank destination company ID copies into a new instance
 
 			await virtualInstancesPage.submitCopyVirtualInstance({
