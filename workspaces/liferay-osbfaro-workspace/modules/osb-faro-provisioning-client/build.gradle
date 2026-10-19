@@ -3,4 +3,8 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	compileOnly project(":modules:osb-faro-api")
+	testImplementation group: "com.liferay.osb.koroneiki", name: "com.liferay.osb.koroneiki.rest.client", version: "latest.release"
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
+	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
+	testImplementation group: "junit", name: "junit", version: "4.13.1"
 }
