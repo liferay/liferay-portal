@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -68,8 +69,11 @@ public class FragmentEntryLinkModelListener
 			new ArrayList<>();
 
 		try {
+			FragmentEntryLink clonedFragmentEntryLink = MVCCModel.scratchClone(
+				fragmentEntryLink);
+
 			InfoFieldUtil.forEachInfoField(
-				fragmentEntryLink, _fragmentRendererController,
+				clonedFragmentEntryLink, _fragmentRendererController,
 				(infoField, type, unsafeSupplier) ->
 					infoFieldObjectValuePairs.add(
 						new ObjectValuePair<>(infoField, type)));
