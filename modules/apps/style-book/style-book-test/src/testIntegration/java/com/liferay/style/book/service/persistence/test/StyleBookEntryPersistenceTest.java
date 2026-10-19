@@ -154,6 +154,8 @@ public class StyleBookEntryPersistenceTest {
 
 		newStyleBookEntry.setThemeId(RandomTestUtil.randomString());
 
+		newStyleBookEntry.setStatus(RandomTestUtil.nextInt());
+
 		newStyleBookEntry = _persistence.update(newStyleBookEntry);
 
 		_styleBookEntries.add(newStyleBookEntry);
@@ -214,6 +216,8 @@ public class StyleBookEntryPersistenceTest {
 		Assert.assertEquals(
 			existingStyleBookEntry.getThemeId(),
 			newStyleBookEntry.getThemeId());
+		Assert.assertEquals(
+			existingStyleBookEntry.getStatus(), newStyleBookEntry.getStatus());
 	}
 
 	@Test
@@ -248,6 +252,7 @@ public class StyleBookEntryPersistenceTest {
 		draftStyleBookEntry.setStyleBookEntryKey(
 			styleBookEntry.getStyleBookEntryKey());
 		draftStyleBookEntry.setThemeId(styleBookEntry.getThemeId());
+		draftStyleBookEntry.setStatus(styleBookEntry.getStatus());
 
 		_styleBookEntries.add(_persistence.update(draftStyleBookEntry));
 
@@ -297,6 +302,7 @@ public class StyleBookEntryPersistenceTest {
 			draftStyleBookEntry.getStyleBookEntryKey());
 		Assert.assertEquals(
 			styleBookEntry.getThemeId(), draftStyleBookEntry.getThemeId());
+		Assert.assertEquals(2, draftStyleBookEntry.getStatus());
 	}
 
 	@Test(
@@ -347,6 +353,8 @@ public class StyleBookEntryPersistenceTest {
 		styleBookEntry2.setStyleBookEntryKey(RandomTestUtil.randomString());
 
 		styleBookEntry2.setThemeId(RandomTestUtil.randomString());
+
+		styleBookEntry2.setStatus(RandomTestUtil.nextInt());
 
 		_styleBookEntries.add(_persistence.update(styleBookEntry2));
 	}
@@ -680,7 +688,7 @@ public class StyleBookEntryPersistenceTest {
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "defaultStyleBookEntry", true, "name", true,
 			"previewFileEntryId", true, "styleBookEntryKey", true, "themeId",
-			true);
+			true, "status", true);
 	}
 
 	@Test
@@ -1028,6 +1036,8 @@ public class StyleBookEntryPersistenceTest {
 
 		styleBookEntry.setThemeId(RandomTestUtil.randomString());
 
+		styleBookEntry.setStatus(RandomTestUtil.nextInt());
+
 		_styleBookEntries.add(_persistence.update(styleBookEntry));
 
 		return styleBookEntry;
@@ -1039,4 +1049,4 @@ public class StyleBookEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-425048980
+// LIFERAY-SERVICE-BUILDER-HASH:964148364

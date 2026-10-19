@@ -79,10 +79,12 @@ public class StyleBookEntryTable extends BaseTable<StyleBookEntryTable> {
 			Column.FLAG_DEFAULT);
 	public final Column<StyleBookEntryTable, String> themeId = createColumn(
 		"themeId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<StyleBookEntryTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private StyleBookEntryTable() {
 		super("StyleBookEntry", StyleBookEntryTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1554132384
+// LIFERAY-SERVICE-BUILDER-HASH:991377109

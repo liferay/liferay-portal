@@ -158,6 +158,8 @@ public class StyleBookEntryVersionPersistenceTest {
 
 		newStyleBookEntryVersion.setThemeId(RandomTestUtil.randomString());
 
+		newStyleBookEntryVersion.setStatus(RandomTestUtil.nextInt());
+
 		newStyleBookEntryVersion = _persistence.update(
 			newStyleBookEntryVersion);
 
@@ -229,6 +231,9 @@ public class StyleBookEntryVersionPersistenceTest {
 		Assert.assertEquals(
 			existingStyleBookEntryVersion.getThemeId(),
 			newStyleBookEntryVersion.getThemeId());
+		Assert.assertEquals(
+			existingStyleBookEntryVersion.getStatus(),
+			newStyleBookEntryVersion.getStatus());
 	}
 
 	@Test
@@ -471,7 +476,7 @@ public class StyleBookEntryVersionPersistenceTest {
 			"groupId", true, "companyId", true, "userId", true, "userName",
 			true, "createDate", true, "modifiedDate", true,
 			"defaultStyleBookEntry", true, "name", true, "previewFileEntryId",
-			true, "styleBookEntryKey", true, "themeId", true);
+			true, "styleBookEntryKey", true, "themeId", true, "status", true);
 	}
 
 	@Test
@@ -832,6 +837,8 @@ public class StyleBookEntryVersionPersistenceTest {
 
 		styleBookEntryVersion.setThemeId(RandomTestUtil.randomString());
 
+		styleBookEntryVersion.setStatus(RandomTestUtil.nextInt());
+
 		_styleBookEntryVersions.add(_persistence.update(styleBookEntryVersion));
 
 		return styleBookEntryVersion;
@@ -843,4 +850,4 @@ public class StyleBookEntryVersionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1489380020
+// LIFERAY-SERVICE-BUILDER-HASH:2054328667

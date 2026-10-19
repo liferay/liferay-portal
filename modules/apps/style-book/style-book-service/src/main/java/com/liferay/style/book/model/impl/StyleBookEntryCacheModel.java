@@ -68,7 +68,7 @@ public class StyleBookEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(39);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -108,6 +108,8 @@ public class StyleBookEntryCacheModel
 		sb.append(styleBookEntryKey);
 		sb.append(", themeId=");
 		sb.append(themeId);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -202,6 +204,8 @@ public class StyleBookEntryCacheModel
 			styleBookEntryImpl.setThemeId(themeId);
 		}
 
+		styleBookEntryImpl.setStatus(status);
+
 		styleBookEntryImpl.resetOriginalValues();
 
 		return styleBookEntryImpl;
@@ -240,6 +244,8 @@ public class StyleBookEntryCacheModel
 		previewFileEntryId = objectInput.readLong();
 		styleBookEntryKey = objectInput.readUTF();
 		themeId = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -322,6 +328,8 @@ public class StyleBookEntryCacheModel
 		else {
 			objectOutput.writeUTF(themeId);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -344,6 +352,7 @@ public class StyleBookEntryCacheModel
 	public long previewFileEntryId;
 	public String styleBookEntryKey;
 	public String themeId;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1158768179
+// LIFERAY-SERVICE-BUILDER-HASH:-2116178489

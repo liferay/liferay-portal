@@ -417,6 +417,16 @@ public class StyleBookEntryLocalServiceWrapper
 		return _styleBookEntryLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public StyleBookEntry getOrAddEmptyStyleBookEntry(
+			String externalReferenceCode, long userId, long groupId,
+			String themeId)
+		throws Exception {
+
+		return _styleBookEntryLocalService.getOrAddEmptyStyleBookEntry(
+			externalReferenceCode, userId, groupId, themeId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -716,13 +726,14 @@ public class StyleBookEntryLocalServiceWrapper
 			long userId, long styleBookEntryId, boolean defaultStyleBookEntry,
 			String frontendTokenDefinition, String frontendTokensValues,
 			String name, String styleBookEntryKey, long previewFileEntryId,
+			String themeId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _styleBookEntryLocalService.updateStyleBookEntry(
 			userId, styleBookEntryId, defaultStyleBookEntry,
 			frontendTokenDefinition, frontendTokensValues, name,
-			styleBookEntryKey, previewFileEntryId, serviceContext);
+			styleBookEntryKey, previewFileEntryId, themeId, serviceContext);
 	}
 
 	@Override
@@ -796,4 +807,4 @@ public class StyleBookEntryLocalServiceWrapper
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1113817741
+// LIFERAY-SERVICE-BUILDER-HASH:1005015963

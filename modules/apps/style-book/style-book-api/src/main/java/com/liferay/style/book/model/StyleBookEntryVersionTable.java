@@ -89,10 +89,13 @@ public class StyleBookEntryVersionTable
 	public final Column<StyleBookEntryVersionTable, String> themeId =
 		createColumn(
 			"themeId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<StyleBookEntryVersionTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private StyleBookEntryVersionTable() {
 		super("StyleBookEntryVersion", StyleBookEntryVersionTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-946573344
+// LIFERAY-SERVICE-BUILDER-HASH:-1038501019

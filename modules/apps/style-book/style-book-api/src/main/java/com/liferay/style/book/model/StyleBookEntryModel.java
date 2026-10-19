@@ -377,6 +377,20 @@ public interface StyleBookEntryModel
 	 */
 	public void setThemeId(String themeId);
 
+	/**
+	 * Returns the status of this style book entry.
+	 *
+	 * @return the status of this style book entry
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this style book entry.
+	 *
+	 * @param status the status of this style book entry
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public StyleBookEntry cloneWithOriginalValues();
 
@@ -385,4 +399,4 @@ public interface StyleBookEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-757872884
+// LIFERAY-SERVICE-BUILDER-HASH:1337730469
