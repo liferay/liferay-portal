@@ -6,7 +6,6 @@
 package com.liferay.site.navigation.admin.web.internal.portlet.action;
 
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
@@ -92,27 +91,9 @@ public class GetSiteNavigationMenuPreviewMVCResourceCommand
 			httpServletResponse, "portal_normal.ftl", layoutSet.getTheme(),
 			false);
 
-		int bodyCloseTagIndex = html.lastIndexOf("</body>");
-		int bodyTagIndex = html.indexOf("<body", html.indexOf("</head>"));
-
-		if ((bodyCloseTagIndex == -1) || (bodyTagIndex == -1)) {
-			ServletResponseUtil.write(
-				httpServletResponse, unsyncStringWriter.toString());
-
-			return;
-		}
-
-		StringBundler sb = new StringBundler(3);
-
-		int bodyTagEndIndex =
-			html.indexOf(StringPool.GREATER_THAN, bodyTagIndex) + 1;
-
-		sb.append(html.substring(0, bodyTagEndIndex));
-
-		sb.append(unsyncStringWriter.toString());
-		sb.append(html.substring(bodyCloseTagIndex));
-
-		ServletResponseUtil.write(httpServletResponse, sb.toString());
+		ServletResponseUtil.write(
+			httpServletResponse,
+			ThemeUtil.replaceBodyContent(html, unsyncStringWriter.toString()));
 	}
 
 	@Reference

@@ -10,6 +10,8 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFacto
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Theme;
@@ -96,6 +98,22 @@ public class ThemeUtil {
 				servletContext, httpServletRequest, httpServletResponse, path,
 				theme, false, write);
 		}
+	}
+
+	public static String replaceBodyContent(String html, String bodyContent) {
+		int bodyCloseTagIndex = html.lastIndexOf("</body>");
+		int bodyTagIndex = html.indexOf("<body", html.indexOf("</head>"));
+
+		if ((bodyCloseTagIndex == -1) || (bodyTagIndex == -1)) {
+			return bodyContent;
+		}
+
+		int bodyTagEndIndex =
+			html.indexOf(StringPool.GREATER_THAN, bodyTagIndex) + 1;
+
+		return StringBundler.concat(
+			html.substring(0, bodyTagEndIndex), bodyContent,
+			html.substring(bodyCloseTagIndex));
 	}
 
 	protected static String doIncludeFTL(
