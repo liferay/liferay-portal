@@ -81,10 +81,9 @@ public class ClientHttpRequestFactoryUtilTest {
 		Assert.assertEquals(
 			connectTimeoutMillis, connectTimeout.toMilliseconds());
 
-		TimeValue validateAfterInactivity =
-			connectionConfig.getValidateAfterInactivity();
+		TimeValue timeValue = connectionConfig.getValidateAfterInactivity();
 
-		Assert.assertEquals(2000, validateAfterInactivity.toMilliseconds());
+		Assert.assertEquals(2000, timeValue.toMilliseconds());
 
 		httpComponentsClientHttpRequestFactory.destroy();
 	}
