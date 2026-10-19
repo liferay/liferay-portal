@@ -615,6 +615,13 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"isSegmentationEnabled", _isSegmentationEnabled()
 			).put(
+				"launchSetId",
+				() -> {
+					Layout layout = themeDisplay.getLayout();
+
+					return layout.getLaunchSetId();
+				}
+			).put(
 				"layoutConversionWarningMessages",
 				MultiSessionMessages.get(
 					portletRequest, "layoutConversionWarningMessages")
