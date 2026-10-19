@@ -1,9 +1,0 @@
-Bundle-Description: Creates a Liferay form field module project.
-Bundle-Name: Liferay Project Templates Form Field
-Bundle-SymbolicName: com.liferay.project.templates.form.field
-Bundle-Version: 1.0.206
-Liferay-Versions: [7,9999.0)
--removeheaders:\
-	Import-Package,\
-	Private-Package,\
-	Require-Capability

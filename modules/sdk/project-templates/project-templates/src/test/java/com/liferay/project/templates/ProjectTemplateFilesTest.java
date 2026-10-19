@@ -817,9 +817,7 @@ public class ProjectTemplateFilesTest {
 
 		String pathString = archetypeResourcesDirPath.toString();
 
-		if (!pathString.contains("ext") && !pathString.contains("spring-mvc") &&
-			!pathString.contains("form-field")) {
-
+		if (!pathString.contains("ext") && !pathString.contains("spring-mvc")) {
 			_testPomXml(archetypeResourcesDirPath, documentBuilder);
 		}
 
@@ -906,13 +904,11 @@ public class ProjectTemplateFilesTest {
 		String archetypePostGenerateGroovy = _testArchetypePostGenerateGroovy(
 			projectTemplateDirPath);
 
-		if (!pathString.contains("form-field")) {
-			_testArchetypeMetadataXml(
-				projectTemplateDirPath, projectTemplateDirName,
-				archetypeResourcesDirPath, bndProperties,
-				requireAuthorProperty.get(), archetypePostGenerateGroovy,
-				archetypeResourceExpressions, documentBuilder);
-		}
+		_testArchetypeMetadataXml(
+			projectTemplateDirPath, projectTemplateDirName,
+			archetypeResourcesDirPath, bndProperties,
+			requireAuthorProperty.get(), archetypePostGenerateGroovy,
+			archetypeResourceExpressions, documentBuilder);
 	}
 
 	private void _testPropertyValue(

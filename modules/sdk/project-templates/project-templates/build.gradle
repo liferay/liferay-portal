@@ -69,7 +69,6 @@ dependencies {
 
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.api", version: "1.0.203"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.control.menu.entry", version: "1.0.201"
-	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.form.field", version: "1.0.205"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.fragment", version: "1.0.200"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.layout.template", version: "1.0.197"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.modules.ext", version: "1.0.186"

@@ -1,7 +1,0 @@
-{
-#if (!(${liferayVersion.startsWith("7.0")} || ${liferayVersion.startsWith("7.1")}))
-	"presets": ["@babel/preset-env"#if(!(${liferayVersion.startsWith("7.0")} || ${liferayVersion.startsWith("7.1")} || ${liferayVersion.startsWith("7.2")})), "@babel/preset-react"#end]
-#else
-	"presets": ["es2015", "liferay-project"]
-#end
-}
