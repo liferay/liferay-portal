@@ -204,8 +204,11 @@ public class DDMFormInstanceCacheModel
 		ddmFormInstanceImpl.resetOriginalValues();
 
 		try {
-			_ddmFormValuesMethodHandle.invokeExact(
-				ddmFormInstanceImpl, ddmFormValues);
+			_objectDefinitionIdMethodHandle.invokeExact(
+				ddmFormInstanceImpl, objectDefinitionId);
+
+			_storageTypeMethodHandle.invokeExact(
+				ddmFormInstanceImpl, storageType);
 		}
 		catch (Throwable throwable) {
 			ReflectionUtil.throwException(throwable);
@@ -244,9 +247,9 @@ public class DDMFormInstanceCacheModel
 		settings = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
-		ddmFormValues =
-			(com.liferay.dynamic.data.mapping.storage.DDMFormValues)
-				objectInput.readObject();
+		objectDefinitionId = (Long)objectInput.readObject();
+
+		storageType = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -321,7 +324,9 @@ public class DDMFormInstanceCacheModel
 
 		objectOutput.writeLong(lastPublishDate);
 
-		objectOutput.writeObject(ddmFormValues);
+		objectOutput.writeObject(objectDefinitionId);
+
+		objectOutput.writeObject(storageType);
 	}
 
 	public long mvccVersion;
@@ -342,18 +347,21 @@ public class DDMFormInstanceCacheModel
 	public String description;
 	public String settings;
 	public long lastPublishDate;
-	public volatile com.liferay.dynamic.data.mapping.storage.DDMFormValues
-		ddmFormValues;
+	public volatile Long objectDefinitionId;
+	public volatile String storageType;
 
-	private static final MethodHandle _ddmFormValuesMethodHandle;
+	private static final MethodHandle _objectDefinitionIdMethodHandle;
+	private static final MethodHandle _storageTypeMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_ddmFormValuesMethodHandle = lookup.findSetter(
-				DDMFormInstanceImpl.class, "_ddmFormValues",
-				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class);
+			_objectDefinitionIdMethodHandle = lookup.findSetter(
+				DDMFormInstanceImpl.class, "_objectDefinitionId", Long.class);
+
+			_storageTypeMethodHandle = lookup.findSetter(
+				DDMFormInstanceImpl.class, "_storageType", String.class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
 			throw new ExceptionInInitializerError(reflectiveOperationException);
@@ -361,4 +369,4 @@ public class DDMFormInstanceCacheModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:54044157
+// LIFERAY-SERVICE-BUILDER-HASH:542067088

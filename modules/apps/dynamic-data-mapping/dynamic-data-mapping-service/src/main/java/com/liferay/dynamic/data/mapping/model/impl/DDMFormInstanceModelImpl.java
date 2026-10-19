@@ -960,14 +960,18 @@ public class DDMFormInstanceModelImpl
 		_lastPublishDate = lastPublishDate;
 	}
 
-	public com.liferay.dynamic.data.mapping.storage.DDMFormValues
-		getSettingsDDMFormValues() {
-
+	public Long getSettingsObjectDefinitionId() {
 		return null;
 	}
 
-	public void setSettingsDDMFormValues(
-		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues) {
+	public void setSettingsObjectDefinitionId(Long objectDefinitionId) {
+	}
+
+	public String getSettingsStorageType() {
+		return null;
+	}
+
+	public void setSettingsStorageType(String storageType) {
 	}
 
 	@Override
@@ -1210,11 +1214,15 @@ public class DDMFormInstanceModelImpl
 		}
 
 		try {
-			_ddmFormValuesSetterMethodHandle.invokeExact(
+			_objectDefinitionIdSetterMethodHandle.invokeExact(
 				(DDMFormInstanceImpl)this,
-				(com.liferay.dynamic.data.mapping.storage.DDMFormValues)
-					_ddmFormValuesGetterMethodHandle.invokeExact(
-						(DDMFormInstanceImpl)source));
+				(Long)_objectDefinitionIdGetterMethodHandle.invokeExact(
+					(DDMFormInstanceImpl)source));
+
+			_storageTypeSetterMethodHandle.invokeExact(
+				(DDMFormInstanceImpl)this,
+				(String)_storageTypeGetterMethodHandle.invokeExact(
+					(DDMFormInstanceImpl)source));
 		}
 		catch (Throwable throwable) {
 			ReflectionUtil.throwException(throwable);
@@ -1272,7 +1280,9 @@ public class DDMFormInstanceModelImpl
 
 		_setModifiedDate = false;
 
-		setSettingsDDMFormValues(null);
+		setSettingsObjectDefinitionId(null);
+
+		setSettingsStorageType(null);
 
 		_columnBitmask = 0;
 	}
@@ -1383,12 +1393,17 @@ public class DDMFormInstanceModelImpl
 		}
 
 		try {
-			setSettingsDDMFormValues(null);
+			setSettingsObjectDefinitionId(null);
 
-			ddmFormInstanceCacheModel.ddmFormValues =
-				(com.liferay.dynamic.data.mapping.storage.DDMFormValues)
-					_ddmFormValuesGetterMethodHandle.invokeExact(
-						(DDMFormInstanceImpl)this);
+			ddmFormInstanceCacheModel.objectDefinitionId =
+				(Long)_objectDefinitionIdGetterMethodHandle.invokeExact(
+					(DDMFormInstanceImpl)this);
+
+			setSettingsStorageType(null);
+
+			ddmFormInstanceCacheModel.storageType =
+				(String)_storageTypeGetterMethodHandle.invokeExact(
+					(DDMFormInstanceImpl)this);
 		}
 		catch (Throwable throwable) {
 			ReflectionUtil.throwException(throwable);
@@ -1590,38 +1605,60 @@ public class DDMFormInstanceModelImpl
 
 	private long _columnBitmask;
 
-	protected static final BiConsumer
-		<DDMFormInstance,
-		 com.liferay.dynamic.data.mapping.storage.DDMFormValues>
-			ddmFormValuesUpdateEntityCacheBiConsumer =
-				(ddmFormInstance, ddmFormValues) -> {
-					DDMFormInstanceCacheModel ddmFormInstanceCacheModel =
-						EntityCacheUtil.fetchCacheModel(
-							DDMFormInstanceImpl.class,
-							ddmFormInstance.getPrimaryKey(),
-							DDMFormInstanceCacheModel.class);
+	protected static final BiConsumer<DDMFormInstance, Long>
+		objectDefinitionIdUpdateEntityCacheBiConsumer =
+			(ddmFormInstance, objectDefinitionId) -> {
+				DDMFormInstanceCacheModel ddmFormInstanceCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						DDMFormInstanceImpl.class,
+						ddmFormInstance.getPrimaryKey(),
+						DDMFormInstanceCacheModel.class);
 
-					if ((ddmFormInstanceCacheModel != null) &&
-						(ddmFormInstanceCacheModel.getMvccVersion() ==
-							ddmFormInstance.getMvccVersion())) {
+				if ((ddmFormInstanceCacheModel != null) &&
+					(ddmFormInstanceCacheModel.getMvccVersion() ==
+						ddmFormInstance.getMvccVersion())) {
 
-						ddmFormInstanceCacheModel.ddmFormValues = ddmFormValues;
-					}
-				};
+					ddmFormInstanceCacheModel.objectDefinitionId =
+						objectDefinitionId;
+				}
+			};
 
-	private static final MethodHandle _ddmFormValuesGetterMethodHandle;
-	private static final MethodHandle _ddmFormValuesSetterMethodHandle;
+	private static final MethodHandle _objectDefinitionIdGetterMethodHandle;
+	private static final MethodHandle _objectDefinitionIdSetterMethodHandle;
+
+	protected static final BiConsumer<DDMFormInstance, String>
+		storageTypeUpdateEntityCacheBiConsumer =
+			(ddmFormInstance, storageType) -> {
+				DDMFormInstanceCacheModel ddmFormInstanceCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						DDMFormInstanceImpl.class,
+						ddmFormInstance.getPrimaryKey(),
+						DDMFormInstanceCacheModel.class);
+
+				if ((ddmFormInstanceCacheModel != null) &&
+					(ddmFormInstanceCacheModel.getMvccVersion() ==
+						ddmFormInstance.getMvccVersion())) {
+
+					ddmFormInstanceCacheModel.storageType = storageType;
+				}
+			};
+
+	private static final MethodHandle _storageTypeGetterMethodHandle;
+	private static final MethodHandle _storageTypeSetterMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
 
 		try {
-			_ddmFormValuesGetterMethodHandle = lookup.findGetter(
-				DDMFormInstanceImpl.class, "_ddmFormValues",
-				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class);
-			_ddmFormValuesSetterMethodHandle = lookup.findSetter(
-				DDMFormInstanceImpl.class, "_ddmFormValues",
-				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class);
+			_objectDefinitionIdGetterMethodHandle = lookup.findGetter(
+				DDMFormInstanceImpl.class, "_objectDefinitionId", Long.class);
+			_objectDefinitionIdSetterMethodHandle = lookup.findSetter(
+				DDMFormInstanceImpl.class, "_objectDefinitionId", Long.class);
+
+			_storageTypeGetterMethodHandle = lookup.findGetter(
+				DDMFormInstanceImpl.class, "_storageType", String.class);
+			_storageTypeSetterMethodHandle = lookup.findSetter(
+				DDMFormInstanceImpl.class, "_storageType", String.class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
 			throw new ExceptionInInitializerError(reflectiveOperationException);
@@ -1631,4 +1668,4 @@ public class DDMFormInstanceModelImpl
 	private DDMFormInstance _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-359132391
+// LIFERAY-SERVICE-BUILDER-HASH:228130222
