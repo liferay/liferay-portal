@@ -12,8 +12,12 @@ import com.liferay.frontend.js.web.internal.resource.handler.JavaScriptFrontendR
 import com.liferay.frontend.js.web.internal.resource.handler.LanguageFrontendResourceRequestHandler;
 import com.liferay.frontend.js.web.internal.resource.handler.StyleSheetFrontendResourceRequestHandler;
 import com.liferay.petra.io.StreamUtil;
+import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.Language;
@@ -31,6 +35,7 @@ import com.liferay.portal.servlet.filters.BasePortalFilter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -89,7 +94,14 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		_gZipCompressionLevel = GetterUtil.getInteger(
 			PropsUtil.get(PropsKeys.GZIP_COMPRESSION_LEVEL),
 			Deflater.DEFAULT_COMPRESSION);
+
 		_gZipEnabled = GetterUtil.getBoolean(PropsUtil.get(_GZIP_FILTER));
+
+		if (_gZipEnabled) {
+			_gZipBytesPortalCache = PortalCacheHelperUtil.getPortalCache(
+				PortalCacheManagerNames.SINGLE_VM,
+				_GZIP_BYTES_PORTAL_CACHE_NAME);
+		}
 
 		List<FrontendResourceRequestHandler> frontendResourceRequestHandlers =
 			new ArrayList<>();
@@ -117,6 +129,14 @@ public class FrontendResourceFilter extends BasePortalFilter {
 	@Deactivate
 	protected void deactivate() {
 		_frontendResourceRequestHandlers.set(Collections.emptyList());
+
+		if (_gZipBytesPortalCache != null) {
+			PortalCacheHelperUtil.removePortalCache(
+				PortalCacheManagerNames.SINGLE_VM,
+				_GZIP_BYTES_PORTAL_CACHE_NAME);
+
+			_gZipBytesPortalCache = null;
+		}
 	}
 
 	@Override
@@ -208,30 +228,29 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		httpServletResponse.setCharacterEncoding(StringPool.UTF8);
 		httpServletResponse.setContentType(frontendResource.getContentType());
 
-		GZIPOutputStream gzipOutputStream = null;
-
 		if (_gZipEnabled) {
 			httpServletResponse.addHeader("Vary", HttpHeaders.ACCEPT_ENCODING);
 
 			if (BrowserSnifferUtil.acceptsGzip(httpServletRequest)) {
+				byte[] bytes = _getGZipBytes(frontendResource);
+
+				httpServletResponse.setContentLength(bytes.length);
+
 				httpServletResponse.setHeader(
 					HttpHeaders.CONTENT_ENCODING, "gzip");
 
-				gzipOutputStream = _createGZipOutputStream(
-					httpServletResponse.getOutputStream());
+				ServletOutputStream servletOutputStream =
+					httpServletResponse.getOutputStream();
+
+				servletOutputStream.write(bytes);
+
+				return;
 			}
 		}
 
 		try (InputStream inputStream = frontendResource.getInputStream()) {
-			if (gzipOutputStream == null) {
-				StreamUtil.transfer(
-					inputStream, httpServletResponse.getOutputStream(), false);
-			}
-			else {
-				StreamUtil.transfer(inputStream, gzipOutputStream, false);
-
-				gzipOutputStream.finish();
-			}
+			StreamUtil.transfer(
+				inputStream, httpServletResponse.getOutputStream(), false);
 		}
 	}
 
@@ -245,6 +264,41 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		};
 	}
 
+	private byte[] _getGZipBytes(FrontendResource frontendResource)
+		throws Exception {
+
+		String eTag = frontendResource.getETag();
+
+		if (eTag != null) {
+			byte[] bytes = _gZipBytesPortalCache.get(eTag);
+
+			if (bytes != null) {
+				return bytes;
+			}
+		}
+
+		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
+			new UnsyncByteArrayOutputStream();
+
+		try (InputStream inputStream = frontendResource.getInputStream();
+			GZIPOutputStream gzipOutputStream = _createGZipOutputStream(
+				unsyncByteArrayOutputStream)) {
+
+			StreamUtil.transfer(inputStream, gzipOutputStream, false);
+		}
+
+		byte[] bytes = unsyncByteArrayOutputStream.toByteArray();
+
+		if (eTag != null) {
+			_gZipBytesPortalCache.put(eTag, bytes);
+		}
+
+		return bytes;
+	}
+
+	private static final String _GZIP_BYTES_PORTAL_CACHE_NAME =
+		FrontendResourceFilter.class.getName() + "._gZipBytesPortalCache";
+
 	private static final String _GZIP_FILTER =
 		"com.liferay.portal.servlet.filters.gzip.GZipFilter";
 
@@ -254,6 +308,7 @@ public class FrontendResourceFilter extends BasePortalFilter {
 	private final AtomicReference<List<FrontendResourceRequestHandler>>
 		_frontendResourceRequestHandlers = new AtomicReference<>(
 			Collections.emptyList());
+	private PortalCache<String, byte[]> _gZipBytesPortalCache;
 	private int _gZipCompressionLevel;
 	private boolean _gZipEnabled;
 
