@@ -11,6 +11,8 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPD_61579 extends ParamAndPropertyAncestorTagImpl {
 
 	public void method() {
+		ServletContext servletContext = ServletContextUtil.getServletContext();
+
 		setServletContext(ServletContextUtil.getServletContext());
 
 		if (FileAvailabilityUtil.isAvailable(getServletContext(), "page")) {
