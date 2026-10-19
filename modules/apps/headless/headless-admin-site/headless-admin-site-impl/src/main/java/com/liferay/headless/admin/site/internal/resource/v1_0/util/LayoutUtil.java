@@ -562,18 +562,19 @@ public class LayoutUtil {
 		typeSettingsUnicodeProperties.putAll(
 			_getLastImportSettingsMap(serviceContext.getUserId()));
 
-		if (!Objects.equals(
+		layout = _updateLayout(
+			layout, nameMap, null, null, null, null, null, null, null, null,
+			null, friendlyURLMap, serviceContext);
+
+		if (Objects.equals(
 				typeSettingsUnicodeProperties,
 				layout.getTypeSettingsProperties())) {
 
-			layout = LayoutServiceUtil.updateTypeSettings(
-				layout.getGroupId(), layout.isPrivateLayout(),
-				layout.getLayoutId(), typeSettingsUnicodeProperties.toString());
+			return layout;
 		}
 
-		return _updateLayout(
-			layout, nameMap, null, null, null, null, null, null, null, null,
-			null, friendlyURLMap, serviceContext);
+		return LayoutLocalServiceUtil.updateTypeSettings(
+			layout, typeSettingsUnicodeProperties.toString());
 	}
 
 	public static Layout updatePortletLayout(
