@@ -59,7 +59,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portlet.announcements.service.base.AnnouncementsEntryLocalServiceBaseImpl;
@@ -129,16 +128,6 @@ public class AnnouncementsEntryLocalServiceImpl
 	}
 
 	@Override
-	public void checkEntries() throws PortalException {
-		Date date = new Date();
-
-		Date previousCheckDate = new Date(
-			date.getTime() - _ANNOUNCEMENTS_ENTRY_CHECK_INTERVAL);
-
-		checkEntries(previousCheckDate, date);
-	}
-
-	@Override
 	public void checkEntries(Date startDate, Date endDate)
 		throws PortalException {
 
@@ -169,19 +158,6 @@ public class AnnouncementsEntryLocalServiceImpl
 
 		List<AnnouncementsEntry> entries =
 			announcementsEntryPersistence.findByC_C(classNameId, classPK);
-
-		for (AnnouncementsEntry entry : entries) {
-			deleteEntry(entry);
-		}
-	}
-
-	@Override
-	public void deleteEntries(long companyId, long classNameId, long classPK)
-		throws PortalException {
-
-		List<AnnouncementsEntry> entries =
-			announcementsEntryPersistence.findByC_C_C(
-				companyId, classNameId, classPK);
 
 		for (AnnouncementsEntry entry : entries) {
 			deleteEntry(entry);
@@ -269,29 +245,6 @@ public class AnnouncementsEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<AnnouncementsEntry> getEntries(
-		long userId, long classNameId, long[] classPKs, int displayDateMonth,
-		int displayDateDay, int displayDateYear, int displayDateHour,
-		int displayDateMinute, int expirationDateMonth, int expirationDateDay,
-		int expirationDateYear, int expirationDateHour,
-		int expirationDateMinute, boolean alert, int flagValue, int start,
-		int end) {
-
-		User user = _userPersistence.fetchByPrimaryKey(userId);
-
-		if (user == null) {
-			return Collections.emptyList();
-		}
-
-		return announcementsEntryFinder.findByScope(
-			user.getCompanyId(), userId, classNameId, classPKs,
-			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
-			displayDateMinute, expirationDateMonth, expirationDateDay,
-			expirationDateYear, expirationDateHour, expirationDateMinute, alert,
-			flagValue, start, end);
-	}
-
-	@Override
 	public int getEntriesCount(
 		long userId, LinkedHashMap<Long, long[]> scopes, boolean alert,
 		int flagValue) {
@@ -327,38 +280,6 @@ public class AnnouncementsEntryLocalServiceImpl
 
 		return announcementsEntryPersistence.countByC_C_C_A(
 			companyId, classNameId, classPK, alert);
-	}
-
-	@Override
-	public int getEntriesCount(
-		long userId, long classNameId, long[] classPKs, boolean alert,
-		int flagValue) {
-
-		return getEntriesCount(
-			userId, classNameId, classPKs, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, alert,
-			flagValue);
-	}
-
-	@Override
-	public int getEntriesCount(
-		long userId, long classNameId, long[] classPKs, int displayDateMonth,
-		int displayDateDay, int displayDateYear, int displayDateHour,
-		int displayDateMinute, int expirationDateMonth, int expirationDateDay,
-		int expirationDateYear, int expirationDateHour,
-		int expirationDateMinute, boolean alert, int flagValue) {
-
-		User user = _userPersistence.fetchByPrimaryKey(userId);
-
-		if (user == null) {
-			return 0;
-		}
-
-		return announcementsEntryFinder.countByScope(
-			user.getCompanyId(), userId, classNameId, classPKs,
-			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
-			displayDateMinute, expirationDateMonth, expirationDateDay,
-			expirationDateYear, expirationDateHour, expirationDateMinute, alert,
-			flagValue);
 	}
 
 	@Override
@@ -733,9 +654,6 @@ public class AnnouncementsEntryLocalServiceImpl
 			throw new SystemException(ioException);
 		}
 	}
-
-	private static final long _ANNOUNCEMENTS_ENTRY_CHECK_INTERVAL =
-		PropsValues.ANNOUNCEMENTS_ENTRY_CHECK_INTERVAL * Time.MINUTE;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AnnouncementsEntryLocalServiceImpl.class);

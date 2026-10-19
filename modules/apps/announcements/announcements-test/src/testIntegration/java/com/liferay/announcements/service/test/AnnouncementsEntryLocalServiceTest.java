@@ -95,42 +95,6 @@ public class AnnouncementsEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteEntriesInDifferentCompany() throws Exception {
-		_announcementsEntries.add(_addEntry(0, 0));
-		_announcementsEntries.add(_addEntry(0, 0));
-		_announcementsEntries.add(_addEntry(0, 0));
-
-		_announcementsEntryLocalService.deleteEntries(
-			_company.getCompanyId(), 0, 0);
-
-		List<AnnouncementsEntry> announcementsEntries =
-			_announcementsEntryLocalService.getEntries(
-				_user.getCompanyId(), 0, 0, false, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-		Assert.assertEquals(
-			announcementsEntries.toString(), 3, announcementsEntries.size());
-	}
-
-	@Test
-	public void testDeleteEntriesInSameCompany() throws Exception {
-		_announcementsEntries.add(_addEntry(0, 0));
-		_announcementsEntries.add(_addEntry(0, 0));
-		_announcementsEntries.add(_addEntry(0, 0));
-
-		_announcementsEntryLocalService.deleteEntries(
-			_user.getCompanyId(), 0, 0);
-
-		List<AnnouncementsEntry> announcementsEntries =
-			_announcementsEntryLocalService.getEntries(
-				_user.getCompanyId(), 0, 0, false, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-		Assert.assertEquals(
-			announcementsEntries.toString(), 0, announcementsEntries.size());
-	}
-
-	@Test
 	public void testDeleteGroupAnnouncements() throws Exception {
 		Group group = GroupTestUtil.addGroup(
 			_user.getCompanyId(), _user.getUserId(),
