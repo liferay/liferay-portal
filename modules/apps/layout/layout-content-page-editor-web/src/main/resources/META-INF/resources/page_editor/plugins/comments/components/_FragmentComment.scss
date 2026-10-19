@@ -108,6 +108,12 @@ html#{$cadmin-selector} {
 				border-bottom: 1px solid $cadmin-gray-300;
 
 				.form-control {
+					.ck.ck-editor__editable_inline {
+						border: 0;
+						box-shadow: none;
+						padding: 0;
+					}
+
 					&:has(> .ck-focused) {
 						background-color: $cadmin-input-focus-bg;
 						border-color: $cadmin-input-focus-border-color;
