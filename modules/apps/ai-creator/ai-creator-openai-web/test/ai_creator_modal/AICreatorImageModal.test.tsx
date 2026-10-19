@@ -24,6 +24,14 @@ jest.mock('frontend-js-web', () => ({
 
 const mockedFetch = fetch as any;
 
+function getGeneration(index: number) {
+	return {
+		expirationTime: 1000 + index,
+		signature: `signature-${index}`,
+		url: `data:image/png;base64,${btoa(`image-${index}`)}`,
+	};
+}
+
 async function renderModalWithRequest() {
 	render(
 
@@ -92,12 +100,7 @@ describe('AICreatorImageModal', () => {
 				new Response(
 					JSON.stringify({
 						generations: {
-							content: [
-								'/generated-image-url-1.png',
-								'/generated-image-url-2.png',
-								'/generated-image-url-3.png',
-								'/generated-image-url-4.png',
-							],
+							content: [1, 2, 3, 4].map(getGeneration),
 						},
 					})
 				)
@@ -120,11 +123,7 @@ describe('AICreatorImageModal', () => {
 				new Response(
 					JSON.stringify({
 						generations: {
-							content: [
-								'/generated-image-url-1.png',
-								'/generated-image-url-2.png',
-								'/generated-image-url-3.png',
-							],
+							content: [1, 2, 3].map(getGeneration),
 						},
 					})
 				)
@@ -161,9 +160,30 @@ describe('AICreatorImageModal', () => {
 
 		expect(mockedFetch).toHaveBeenCalledTimes(3);
 
-		const [url] = mockedFetch.mock.calls[1];
+		const [url, {body}] = mockedFetch.mock.calls[1];
 
 		expect(url).toBe('/upload-url');
+
+		expect(body.get('namespaceexpirationTime')).toBe('1001');
+		expect(body.get('namespacesignature')).toBe('signature-1');
+		expect(body.get('namespaceurlPath')).toBeNull();
+
+		const image = body.get('namespaceimage');
+
+		expect(image.type).toBe('image/png');
+		expect(
+			await new Promise((resolve) => {
+				const fileReader = new FileReader();
+
+				fileReader.onload = () => resolve(fileReader.result);
+
+				fileReader.readAsText(image);
+			})
+		).toBe('image-1');
+
+		const [, {body: secondBody}] = mockedFetch.mock.calls[2];
+
+		expect(secondBody.get('namespacesignature')).toBe('signature-2');
 	});
 
 	it('shows unexpected error messages if any while generating images', async () => {
