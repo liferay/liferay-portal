@@ -6,6 +6,7 @@
 package com.liferay.document.library.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.exception.NoSuchMetadataSetException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
@@ -22,6 +23,7 @@ import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRespons
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -34,6 +36,8 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -80,6 +84,31 @@ public class DLFileEntryTypeServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@Test
+	@TestInfo("LPD-110143")
+	public void testAddFileEntryTypeWithDataDefinitionFromAnotherGroup()
+		throws Exception {
+
+		_otherGroup = GroupTestUtil.addGroup();
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_otherGroup.getGroupId(), DLFileEntryMetadata.class.getName());
+
+		AssertUtils.assertFailure(
+			NoSuchMetadataSetException.class,
+			"{ddmStructureId=" + ddmStructure.getStructureId() + "}",
+			() -> _dlFileEntryTypeService.addFileEntryType(
+				null, _group.getGroupId(), ddmStructure.getStructureId(), null,
+				Collections.singletonMap(LocaleUtil.US, "New File Entry Type"),
+				Collections.singletonMap(LocaleUtil.US, "New File Entry Type"),
+				ServiceContextTestUtil.getServiceContext(
+					_group, TestPropsValues.getUserId())));
+
+		Assert.assertNotNull(
+			_ddmStructureLocalService.fetchStructure(
+				ddmStructure.getStructureId()));
 	}
 
 	@Test
@@ -196,6 +225,31 @@ public class DLFileEntryTypeServiceTest {
 				"12345678", _group.getGroupId()));
 
 		Assert.assertEquals(0, _indexer.searchCount(searchContext));
+	}
+
+	@Test
+	@TestInfo("LPD-110143")
+	public void testDeleteFileEntryTypeWithDataDefinitionFromAnotherGroup()
+		throws Exception {
+
+		DLFileEntryType dlFileEntryType = _addFileEntryType(null);
+
+		_otherGroup = GroupTestUtil.addGroup();
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_otherGroup.getGroupId(), DLFileEntryMetadata.class.getName());
+
+		dlFileEntryType.setDataDefinitionId(ddmStructure.getStructureId());
+
+		dlFileEntryType = _dlFileEntryTypeLocalService.updateDLFileEntryType(
+			dlFileEntryType);
+
+		_dlFileEntryTypeService.deleteFileEntryType(
+			dlFileEntryType.getFileEntryTypeId());
+
+		Assert.assertNotNull(
+			_ddmStructureLocalService.fetchStructure(
+				ddmStructure.getStructureId()));
 	}
 
 	@Test
@@ -503,6 +557,9 @@ public class DLFileEntryTypeServiceTest {
 	private DDMFormDeserializer _ddmFormDeserializer;
 
 	@Inject
+	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Inject
 	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
@@ -524,5 +581,8 @@ public class DLFileEntryTypeServiceTest {
 		filter = "indexer.class.name=com.liferay.document.library.kernel.model.DLFileEntryType"
 	)
 	private Indexer<DLFileEntryType> _indexer;
+
+	@DeleteAfterTestRun
+	private Group _otherGroup;
 
 }
