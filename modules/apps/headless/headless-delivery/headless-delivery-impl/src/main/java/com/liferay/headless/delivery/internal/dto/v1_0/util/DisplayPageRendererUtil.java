@@ -50,10 +50,6 @@ import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Locale;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 /**
  * @author Jürgen Kappler
  */
@@ -202,17 +198,12 @@ public class DisplayPageRendererUtil {
 
 			LayoutSet layoutSet = layout.getLayoutSet();
 
-			Document document = Jsoup.parse(
-				ThemeUtil.include(
-					ServletContextPool.get(StringPool.BLANK),
-					httpServletRequest, httpServletResponse,
-					"portal_normal.ftl", layoutSet.getTheme(), false));
+			String html = ThemeUtil.include(
+				ServletContextPool.get(StringPool.BLANK), httpServletRequest,
+				httpServletResponse, "portal_normal.ftl", layoutSet.getTheme(),
+				false);
 
-			Element bodyElement = document.body();
-
-			bodyElement.html(sb.toString());
-
-			return document.html();
+			return ThemeUtil.replaceBodyContent(html, sb.toString());
 		}
 		finally {
 			LocaleThreadLocal.setThemeDisplayLocale(originalThemeDisplayLocale);
