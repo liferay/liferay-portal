@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -53,6 +54,7 @@ public class GroupItemSelectorProviderImplTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110411")
 	public void testGetGroups() throws Exception {
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(_user);
@@ -82,7 +84,7 @@ public class GroupItemSelectorProviderImplTest {
 			_groupItemSelectorProvider.getGroupsCount(
 				_group.getCompanyId(), _group.getGroupId(), null));
 
-		Group childGroup = GroupTestUtil.addGroup(_group.getGroupId());
+		_childGroup = GroupTestUtil.addGroup(_group.getGroupId());
 
 		groups = _groupItemSelectorProvider.getGroups(
 			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
@@ -95,9 +97,9 @@ public class GroupItemSelectorProviderImplTest {
 			_groupItemSelectorProvider.getGroupsCount(
 				_group.getCompanyId(), _group.getGroupId(), null));
 
-		childGroup.setActive(false);
+		_childGroup.setActive(false);
 
-		_groupLocalService.updateGroup(childGroup);
+		_childGroup = _groupLocalService.updateGroup(_childGroup);
 
 		groups = _groupItemSelectorProvider.getGroups(
 			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
@@ -121,6 +123,9 @@ public class GroupItemSelectorProviderImplTest {
 		Assert.assertEquals(
 			"Site", _groupItemSelectorProvider.getLabel(LocaleUtil.US));
 	}
+
+	@DeleteAfterTestRun
+	private Group _childGroup;
 
 	@DeleteAfterTestRun
 	private Group _group;
