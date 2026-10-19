@@ -1044,9 +1044,9 @@ public abstract class BaseTopLevelBuild
 	}
 
 	protected Element getBaseBranchDetailsElement() {
+		String baseBranchSHA = null;
 		String baseBranchUsername = "liferay";
 		String baseGitRepositoryName = getBaseGitRepositoryName();
-		String baseGitRepositorySHA = null;
 
 		if ((this instanceof WorkspaceBuild) && !fromArchive) {
 			WorkspaceBuild workspaceBuild = (WorkspaceBuild)this;
@@ -1056,19 +1056,18 @@ public abstract class BaseTopLevelBuild
 			WorkspaceGitRepository workspaceGitRepository =
 				workspace.getPrimaryWorkspaceGitRepository();
 
+			baseBranchSHA = workspaceGitRepository.getBaseBranchSHA();
 			baseBranchUsername = workspaceGitRepository.getBaseBranchUsername();
-			baseGitRepositorySHA = workspaceGitRepository.getBaseBranchSHA();
 		}
 		else if (!baseGitRepositoryName.equals("liferay-jenkins-ee") &&
 				 baseGitRepositoryName.endsWith("-ee")) {
 
-			baseGitRepositorySHA = getBaseGitRepositorySHA(
+			baseBranchSHA = getBaseGitRepositorySHA(
 				baseGitRepositoryName.substring(
 					0, baseGitRepositoryName.length() - 3));
 		}
 		else {
-			baseGitRepositorySHA = getBaseGitRepositorySHA(
-				baseGitRepositoryName);
+			baseBranchSHA = getBaseGitRepositorySHA(baseGitRepositoryName);
 		}
 
 		String baseBranchURL = JenkinsResultsParserUtil.combine(
@@ -1079,17 +1078,17 @@ public abstract class BaseTopLevelBuild
 			"p", null, "Branch Name: ",
 			Dom4JUtil.getNewAnchorElement(baseBranchURL, getBranchName()));
 
-		if (baseGitRepositorySHA != null) {
+		if (baseBranchSHA != null) {
 			String baseGitRepositoryCommitURL =
 				JenkinsResultsParserUtil.combine(
 					"https://github.com/", baseBranchUsername, "/",
-					baseGitRepositoryName, "/commit/", baseGitRepositorySHA);
+					baseGitRepositoryName, "/commit/", baseBranchSHA);
 
 			Dom4JUtil.addToElement(
 				baseGitBranchDetailsElement, Dom4JUtil.getNewElement("br"),
 				"Branch GIT ID: ",
 				Dom4JUtil.getNewAnchorElement(
-					baseGitRepositoryCommitURL, baseGitRepositorySHA));
+					baseGitRepositoryCommitURL, baseBranchSHA));
 		}
 
 		return baseGitBranchDetailsElement;
