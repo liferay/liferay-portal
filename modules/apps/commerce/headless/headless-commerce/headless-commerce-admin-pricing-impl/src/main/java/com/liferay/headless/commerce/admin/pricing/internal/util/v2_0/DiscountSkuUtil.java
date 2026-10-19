@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.util.Objects;
+
 /**
  * @author Alessio Antonio Rendina
  */
@@ -74,21 +76,44 @@ public class DiscountSkuUtil {
 			).build();
 		}
 
-		CommerceDiscountRel commerceDiscountRel =
-			commerceDiscountRelService.fetchCommerceDiscountRel(
-				commerceDiscount.getCommerceDiscountId(),
-				CPInstance.class.getName(), cpInstance.getCPInstanceId());
+		CommerceDiscountRel commerceDiscountRel = _fetchCommerceDiscountRel(
+			commerceDiscount, commerceDiscountRelService, cpInstance,
+			unitOfMeasureKey);
 
 		if (commerceDiscountRel != null) {
-			return commerceDiscountRelService.updateTypeSettings(
-				commerceDiscountRel.getCommerceDiscountRelId(),
-				typeSettingsUnicodeProperties);
+			return commerceDiscountRel;
 		}
 
 		return commerceDiscountRelService.addCommerceDiscountRel(
 			commerceDiscount.getCommerceDiscountId(),
 			CPInstance.class.getName(), cpInstance.getCPInstanceId(),
 			typeSettingsUnicodeProperties, serviceContext);
+	}
+
+	private static CommerceDiscountRel _fetchCommerceDiscountRel(
+			CommerceDiscount commerceDiscount,
+			CommerceDiscountRelService commerceDiscountRelService,
+			CPInstance cpInstance, String unitOfMeasureKey)
+		throws PortalException {
+
+		for (CommerceDiscountRel commerceDiscountRel :
+				commerceDiscountRelService.getCommerceDiscountRels(
+					commerceDiscount.getCommerceDiscountId(),
+					CPInstance.class.getName(), cpInstance.getCPInstanceId())) {
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				commerceDiscountRel.getTypeSettingsUnicodeProperties();
+
+			if (Objects.equals(
+					typeSettingsUnicodeProperties.getProperty(
+						"unitOfMeasureKey"),
+					unitOfMeasureKey)) {
+
+				return commerceDiscountRel;
+			}
+		}
+
+		return null;
 	}
 
 	private static CPInstance _getCPInstance(
