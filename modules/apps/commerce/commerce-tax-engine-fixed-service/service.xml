@@ -88,6 +88,19 @@
 		<finder name="CPTaxCategoryId" return-type="Collection">
 			<finder-column name="CPTaxCategoryId" />
 		</finder>
+		<finder name="C_C_R_Z" return-type="Collection">
+			<finder-column name="commerceTaxMethodId" />
+			<finder-column arrayable-operator="OR" name="countryId" />
+			<finder-column arrayable-operator="OR" name="regionId" />
+			<finder-column name="zip" />
+		</finder>
+		<finder db-index="false" name="C_C_C_R_Z" return-type="Collection">
+			<finder-column name="commerceTaxMethodId" />
+			<finder-column name="CPTaxCategoryId" />
+			<finder-column arrayable-operator="OR" name="countryId" />
+			<finder-column arrayable-operator="OR" name="regionId" />
+			<finder-column name="zip" />
+		</finder>
 	</entity>
 	<exceptions>
 		<exception>DuplicateCommerceTaxFixedRate</exception>
