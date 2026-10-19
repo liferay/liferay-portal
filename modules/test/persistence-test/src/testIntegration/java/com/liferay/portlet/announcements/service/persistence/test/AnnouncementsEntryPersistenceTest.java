@@ -256,15 +256,6 @@ public class AnnouncementsEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_C_C() throws Exception {
-		_persistence.countByC_C_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
-
-		_persistence.countByC_C_C(0L, 0L, 0L);
-	}
-
-	@Test
 	public void testCountByC_C_A() throws Exception {
 		_persistence.countByC_C_A(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -580,4 +571,4 @@ public class AnnouncementsEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:42058478
+// LIFERAY-SERVICE-BUILDER-HASH:-1193718797
