@@ -14,6 +14,7 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.MVCCModel;
 
 import java.util.List;
 
@@ -38,18 +39,9 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 				DDMTemplateLocalServiceUtil.fetchDDMTemplate(formDDMTemplateId);
 
 			if (ddmTemplate != null) {
-
-				// Clone ddmStructure to make sure changes are never persisted
-
-				ddmStructure = (DDMStructure)ddmStructure.clone();
+				ddmStructure = MVCCModel.scratchClone(ddmStructure);
 
 				ddmStructure.setDefinition(ddmTemplate.getScript());
-
-				// Purposely lower MVCC version to avoid entity cache corruption
-				// when DDMStructureImpl#getDDMForm is invoked for
-				// reconstructing the DDMForm cache field
-
-				ddmStructure.setMvccVersion(ddmStructure.getMvccVersion() - 1);
 			}
 		}
 

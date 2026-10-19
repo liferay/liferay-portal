@@ -10,6 +10,14 @@ package com.liferay.portal.kernel.model;
  */
 public interface MVCCModel {
 
+	public static <T extends MVCCModel> T scratchClone(BaseModel<T> baseModel) {
+		T cloneT = (T)baseModel.clone();
+
+		cloneT.setMvccVersion(cloneT.getMvccVersion() - 1);
+
+		return cloneT;
+	}
+
 	public long getMvccVersion();
 
 	public void setMvccVersion(long mvccVersion);
