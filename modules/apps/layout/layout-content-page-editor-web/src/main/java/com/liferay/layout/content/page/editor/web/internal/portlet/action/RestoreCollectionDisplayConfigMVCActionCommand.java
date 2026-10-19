@@ -5,8 +5,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
-import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.fragment.service.FragmentEntryLinkService;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -61,14 +60,11 @@ public class RestoreCollectionDisplayConfigMVCActionCommand
 			JSONObject fragmentEntryLinkJSONObject =
 				(JSONObject)filterFragmentEntryLink;
 
-			FragmentEntryLink fragmentEntryLink =
-				_fragmentEntryLinkLocalService.getFragmentEntryLink(
-					fragmentEntryLinkJSONObject.getLong("fragmentEntryLinkId"));
-
 			JSONObject editableValuesJSONObject =
 				fragmentEntryLinkJSONObject.getJSONObject("editableValues");
 
-			fragmentEntryLink.setEditableValues(
+			_fragmentEntryLinkService.updateFragmentEntryLink(
+				fragmentEntryLinkJSONObject.getLong("fragmentEntryLinkId"),
 				editableValuesJSONObject.toString());
 		}
 
@@ -82,7 +78,7 @@ public class RestoreCollectionDisplayConfigMVCActionCommand
 	}
 
 	@Reference
-	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+	private FragmentEntryLinkService _fragmentEntryLinkService;
 
 	@Reference
 	private JSONFactory _jsonFactory;
