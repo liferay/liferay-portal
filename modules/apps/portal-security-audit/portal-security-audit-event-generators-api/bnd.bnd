@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Audit Event Generators API
 Bundle-SymbolicName: com.liferay.portal.security.audit.event.generators.api
-Bundle-Version: 7.0.2
+Bundle-Version: 7.1.0
 Export-Package:\
 	com.liferay.portal.security.audit.event.generators.constants,\
 	com.liferay.portal.security.audit.event.generators.util
