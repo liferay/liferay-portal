@@ -146,9 +146,9 @@ public class AuthVerifierPipelineTest {
 		_user.setStatus(WorkflowConstants.STATUS_INACTIVE);
 
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, true);
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, true);
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, false);
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
 	}
 
 	@Test
@@ -160,17 +160,17 @@ public class AuthVerifierPipelineTest {
 		_user.setType(UserConstants.TYPE_REGULAR);
 
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.SUCCESS, true);
+			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, false);
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
 
 		_user.setPasswordReset(true);
 		_user.setEmailAddressVerified(true);
 
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.SUCCESS, true);
+			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, false);
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
 	}
 
 	@Test
@@ -202,7 +202,8 @@ public class AuthVerifierPipelineTest {
 	}
 
 	private void _assertAuthVerifierResultForUser(
-			AuthVerifierResult.State expectedState, boolean impersonated)
+			AuthVerifierResult.State expectedState, long expectedUserId,
+			boolean impersonated)
 		throws PortalException {
 
 		AuthVerifierResult authVerifierResult = _verifyRequest(
@@ -210,6 +211,7 @@ public class AuthVerifierPipelineTest {
 			_BASE_URL + "/regular/Hello");
 
 		Assert.assertSame(expectedState, authVerifierResult.getState());
+		Assert.assertEquals(expectedUserId, authVerifierResult.getUserId());
 	}
 
 	private HttpServletRequest _getWrappedHttpServletRequest(
@@ -237,6 +239,7 @@ public class AuthVerifierPipelineTest {
 
 		authVerifierResult.setSettings(new HashMap<>());
 		authVerifierResult.setState(AuthVerifierResult.State.SUCCESS);
+		authVerifierResult.setUserId(_DO_AS_USER_ID);
 
 		_authVerifier = (AuthVerifier)ProxyUtil.newProxyInstance(
 			AuthVerifier.class.getClassLoader(),
@@ -314,7 +317,7 @@ public class AuthVerifierPipelineTest {
 		Mockito.when(
 			UserLocalServiceUtil.getGuestUserId(Mockito.anyLong())
 		).thenReturn(
-			_user.getUserId()
+			_GUEST_USER_ID
 		);
 	}
 
@@ -375,6 +378,8 @@ public class AuthVerifierPipelineTest {
 	private static final String _BASE_URL = "/TestAuthVerifier";
 
 	private static final long _DO_AS_USER_ID = RandomTestUtil.randomLong();
+
+	private static final long _GUEST_USER_ID = _DO_AS_USER_ID + 2;
 
 	private static final long _REAL_USER_ID = _DO_AS_USER_ID + 1;
 
