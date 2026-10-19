@@ -261,10 +261,16 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 
 	@Override
 	public void mergeTags(long fromTagId, long toTagId) throws PortalException {
-		AssetTag tag = assetTagPersistence.findByPrimaryKey(fromTagId);
+		AssetTag fromTag = assetTagPersistence.findByPrimaryKey(fromTagId);
 
 		AssetTagsPermission.check(
-			getPermissionChecker(), tag.getGroupId(), ActionKeys.MANAGE_TAG);
+			getPermissionChecker(), fromTag.getGroupId(),
+			ActionKeys.MANAGE_TAG);
+
+		AssetTag toTag = assetTagPersistence.findByPrimaryKey(toTagId);
+
+		AssetTagsPermission.check(
+			getPermissionChecker(), toTag.getGroupId(), ActionKeys.MANAGE_TAG);
 
 		assetTagLocalService.mergeTags(fromTagId, toTagId);
 	}
