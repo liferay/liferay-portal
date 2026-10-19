@@ -15,12 +15,17 @@ public class LPD_102414 {
 		CommerceOrderHttpHelper commerceOrderHttpHelper, long groupId,
 		HttpServletRequest httpServletRequest) {
 
-		commerceOrderHttpHelper.getCommerceCartPortletURL(httpServletRequest);
-		commerceOrderHttpHelper.getCommerceCartPortletURL(null);
 		commerceOrderHttpHelper.getCommerceCartPortletURL(
-			httpServletRequest, commerceOrder);
+			123, httpServletRequest, commerceOrder);
 		commerceOrderHttpHelper.getCommerceCartPortletURL(
 			groupId, httpServletRequest, commerceOrder);
+
+		commerceOrderHttpHelper.getCommerceCartPortletURL(httpServletRequest);
+		commerceOrderHttpHelper.getCommerceCartPortletURL(null);
+
+		commerceOrderHttpHelper.getCommerceCartPortletURL(
+			httpServletRequest, commerceOrder);
+		commerceOrderHttpHelper.getCommerceCartPortletURL(null, commerceOrder);
 	}
 
 }
