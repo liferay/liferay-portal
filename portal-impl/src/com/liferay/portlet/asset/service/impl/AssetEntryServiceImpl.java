@@ -7,6 +7,7 @@ package com.liferay.portlet.asset.service.impl;
 
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -176,6 +177,23 @@ public class AssetEntryServiceImpl extends AssetEntryServiceBaseImpl {
 
 		AssetEntryPermission.check(
 			getPermissionChecker(), className, classPK, ActionKeys.UPDATE);
+
+		AssetEntry entry = assetEntryLocalService.fetchEntry(
+			className, classPK);
+
+		if (entry != null) {
+			groupId = entry.getGroupId();
+		}
+		else {
+			AssetRendererFactory<?> assetRendererFactory =
+				AssetRendererFactoryRegistryUtil.
+					getAssetRendererFactoryByClassName(className);
+
+			AssetRenderer<?> assetRenderer =
+				assetRendererFactory.getAssetRenderer(classPK);
+
+			groupId = assetRenderer.getGroupId();
+		}
 
 		return assetEntryLocalService.updateEntry(
 			getUserId(), groupId, createDate, modifiedDate, className, classPK,
