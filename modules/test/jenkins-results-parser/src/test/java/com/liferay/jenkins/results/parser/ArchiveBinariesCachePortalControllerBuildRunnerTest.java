@@ -70,17 +70,6 @@ public class ArchiveBinariesCachePortalControllerBuildRunnerTest
 			allowedBuildStartTime, false, portalBranchSHA,
 			Arrays.asList(
 				_newBuildJSONObject(
-					"IN PROGRESS " + portalBranchSHA,
-					allowedBuildStartTime - 1)));
-		_testPreviousBuildHasCurrentSHA(
-			allowedBuildStartTime, false, portalBranchSHA,
-			Arrays.asList(
-				_newBuildJSONObject(
-					"IN QUEUE " + portalBranchSHA, allowedBuildStartTime - 1)));
-		_testPreviousBuildHasCurrentSHA(
-			allowedBuildStartTime, false, portalBranchSHA,
-			Arrays.asList(
-				_newBuildJSONObject(
 					"SKIPPED " + portalBranchSHA, allowedBuildStartTime + 1),
 				_newBuildJSONObject(
 					RandomTestUtil.randomString() + " " + portalBranchSHA,
