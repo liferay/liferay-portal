@@ -407,7 +407,7 @@ public class DLServiceVerifyProcessTest extends BaseVerifyProcessTestCase {
 				_ddmFormDeserializer.deserialize(builder.build());
 
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			DLFileEntryMetadata.class.getName(),
+			_group.getGroupId(), DLFileEntryMetadata.class.getName(),
 			ddmFormDeserializerDeserializeResponse.getDDMForm());
 
 		User user = TestPropsValues.getUser();

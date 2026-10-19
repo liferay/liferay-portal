@@ -85,7 +85,7 @@ public class DLFileEntryDDMFormValuesReaderTest {
 		throws Exception {
 
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			DLFileEntryMetadata.class.getName());
+			_group.getGroupId(), DLFileEntryMetadata.class.getName());
 
 		return DLFileEntryTypeLocalServiceUtil.addFileEntryType(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),

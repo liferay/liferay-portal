@@ -94,7 +94,7 @@ public class DLFileEntryMetadataLocalServiceTest {
 				_ddmFormDeserializer.deserialize(builder.build());
 
 		_ddmStructure = DDMStructureTestUtil.addStructure(
-			DLFileEntryMetadata.class.getName(),
+			_group.getGroupId(), DLFileEntryMetadata.class.getName(),
 			ddmFormDeserializerDeserializeResponse.getDDMForm());
 
 		ServiceContext serviceContext = _getServiceContext(_group, user);
@@ -153,12 +153,16 @@ public class DLFileEntryMetadataLocalServiceTest {
 
 		Group group = GroupTestUtil.addGroup();
 
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			group.getGroupId(), DLFileEntryMetadata.class.getName(),
+			_ddmStructure.getDDMForm());
+
 		ServiceContext serviceContext = _getServiceContext(group, user);
 
 		DLFileEntryType dlFileEntryType =
 			_dlFileEntryTypeLocalService.addFileEntryType(
 				null, user.getUserId(), group.getGroupId(),
-				_ddmStructure.getStructureId(), null,
+				ddmStructure.getStructureId(), null,
 				Collections.singletonMap(LocaleUtil.US, "New File Entry Type"),
 				Collections.singletonMap(LocaleUtil.US, "New File Entry Type"),
 				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT,
@@ -171,7 +175,7 @@ public class DLFileEntryMetadataLocalServiceTest {
 			RandomTestUtil.randomString(), null, null,
 			dlFileEntryType.getFileEntryTypeId(),
 			setUpDDMFormValuesMap(
-				_ddmStructure.getStructureKey(), user.getLocale()),
+				ddmStructure.getStructureKey(), user.getLocale()),
 			null, new ByteArrayInputStream(TestDataConstants.TEST_BYTE_ARRAY),
 			TestDataConstants.TEST_BYTE_ARRAY.length, null, null, null,
 			serviceContext);
@@ -180,7 +184,7 @@ public class DLFileEntryMetadataLocalServiceTest {
 
 		DLFileEntryMetadata dlFileEntryMetadata =
 			_dlFileEntryMetadataLocalService.fetchFileEntryMetadata(
-				_ddmStructure.getStructureId(),
+				ddmStructure.getStructureId(),
 				dlFileVersion.getFileVersionId());
 
 		Assert.assertNotNull(dlFileEntryMetadata);
@@ -193,12 +197,12 @@ public class DLFileEntryMetadataLocalServiceTest {
 
 		Assert.assertNull(
 			_dlFileEntryMetadataLocalService.fetchFileEntryMetadata(
-				_ddmStructure.getStructureId(),
+				ddmStructure.getStructureId(),
 				dlFileVersion.getFileVersionId()));
 
 		Assert.assertNull(
 			_ddmStructureLocalService.fetchDDMStructure(
-				_ddmStructure.getStructureId()));
+				ddmStructure.getStructureId()));
 	}
 
 	@Test

@@ -126,7 +126,7 @@ public class DLFileEntryTypeServiceTest {
 				_ddmFormDeserializer.deserialize(builder.build());
 
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			DLFileEntryMetadata.class.getName(),
+			_group.getGroupId(), DLFileEntryMetadata.class.getName(),
 			ddmFormDeserializerDeserializeResponse.getDDMForm());
 
 		User user = TestPropsValues.getUser();
@@ -292,8 +292,10 @@ public class DLFileEntryTypeServiceTest {
 			String name = RandomTestUtil.randomString();
 			String description = RandomTestUtil.randomString();
 			DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-				DLFileEntryMetadata.class.getName(),
-				new Locale[] {LocaleUtil.SPAIN}, LocaleUtil.SPAIN);
+				_group.getGroupId(), DLFileEntryMetadata.class.getName(),
+				DDMStructureTestUtil.getSampleDDMForm(
+					new Locale[] {LocaleUtil.SPAIN}, LocaleUtil.SPAIN),
+				LocaleUtil.SPAIN);
 
 			DLFileEntryType dlFileEntryType =
 				_dlFileEntryTypeLocalService.addFileEntryType(
@@ -326,8 +328,10 @@ public class DLFileEntryTypeServiceTest {
 			String name = RandomTestUtil.randomString();
 			String description = RandomTestUtil.randomString();
 			DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-				DLFileEntryMetadata.class.getName(),
-				new Locale[] {LocaleUtil.SPAIN}, LocaleUtil.SPAIN);
+				_group.getGroupId(), DLFileEntryMetadata.class.getName(),
+				DDMStructureTestUtil.getSampleDDMForm(
+					new Locale[] {LocaleUtil.SPAIN}, LocaleUtil.SPAIN),
+				LocaleUtil.SPAIN);
 
 			DLFileEntryType dlFileEntryType =
 				_dlFileEntryTypeLocalService.addFileEntryType(

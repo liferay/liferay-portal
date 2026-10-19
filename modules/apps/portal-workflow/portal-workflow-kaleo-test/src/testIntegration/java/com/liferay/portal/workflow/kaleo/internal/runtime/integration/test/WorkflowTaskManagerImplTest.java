@@ -1608,7 +1608,7 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 
 	private DLFileEntryType _addFileEntryType() throws Exception {
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			DLFileEntryMetadata.class.getName());
+			_group.getGroupId(), DLFileEntryMetadata.class.getName());
 
 		LocalizedValuesMap localizedValuesMap = new LocalizedValuesMap(
 			"defaultValue");

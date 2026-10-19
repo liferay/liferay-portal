@@ -76,7 +76,7 @@ public class DLSubscriptionClassTypeTest
 	@Override
 	protected long addClassType() throws Exception {
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			DLFileEntryMetadata.class.getName());
+			group.getGroupId(), DLFileEntryMetadata.class.getName());
 
 		DLFileEntryType fileEntryType =
 			DLFileEntryTypeLocalServiceUtil.addFileEntryType(
