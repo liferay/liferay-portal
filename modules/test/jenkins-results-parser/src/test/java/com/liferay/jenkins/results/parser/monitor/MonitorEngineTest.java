@@ -287,6 +287,37 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testRunCycleKeepsLinkURLs() {
+		MonitorResultStore monitorResultStore = new MonitorResultStore();
+
+		List<String> linkURLs = Collections.singletonList(
+			"https://" + RandomTestUtil.randomString());
+
+		TestMonitor testMonitor = new TestMonitor(
+			_newMonitorConfig(RandomTestUtil.randomString(), 10, 0)) {
+
+			@Override
+			public MonitorResult execute() {
+				return new MonitorResult(
+					linkURLs, RandomTestUtil.randomString(), null,
+					MonitorResult.Status.CRITICAL, RandomTestUtil.randomLong());
+			}
+
+		};
+
+		MonitorEngine monitorEngine = new MonitorEngine(
+			monitorResultStore,
+			Collections.<Monitor>singletonList(testMonitor));
+
+		monitorEngine.runCycle();
+
+		MonitorResult monitorResult = monitorResultStore.getLatestMonitorResult(
+			testMonitor.getId());
+
+		testEquals(linkURLs, monitorResult.getLinkURLs());
+	}
+
+	@Test
 	public void testRunCyclePreparesMonitors() {
 		TestMonitor testMonitor = Mockito.spy(
 			new TestMonitor(_newMonitorConfig("a")));

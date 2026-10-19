@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.JenkinsMasterTestUtil;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
@@ -392,6 +393,26 @@ public class ResourceThresholdMonitorTest
 	}
 
 	@Test
+	public void testGetLinkURLs() {
+		String masterName = RandomTestUtil.randomString();
+
+		String masterRemoteURL = JenkinsResultsParserUtil.combine(
+			"https://", masterName, ".liferay.com/");
+
+		JenkinsMasterTestUtil.getJenkinsMaster(
+			masterName, masterRemoteURL, "http://" + masterName);
+
+		Properties monitorProperties = _newMonitorProperties(masterName, "ram");
+
+		monitorProperties.setProperty("monitor[a].threshold[warn]", "50");
+
+		Monitor monitor = _newMonitor(monitorProperties);
+
+		testEquals(
+			Collections.singletonList(masterRemoteURL), monitor.getLinkURLs());
+	}
+
+	@Test
 	public void testNewMonitorInvalidMetric() {
 		_testNewMonitorInvalidMetric("");
 		_testNewMonitorInvalidMetric(RandomTestUtil.randomString());
@@ -445,6 +466,16 @@ public class ResourceThresholdMonitorTest
 			Assert.assertTrue(
 				message, message.contains("monitor[a].threshold[warn]"));
 		}
+	}
+
+	@Test
+	public void testNewMonitorUnknownMaster() {
+		Properties monitorProperties = _newMonitorProperties(
+			RandomTestUtil.randomString(), "ram");
+
+		monitorProperties.setProperty("monitor[a].threshold[warn]", "50");
+
+		_newMonitor(monitorProperties);
 	}
 
 	private void _assertRAMUnavailable(String memoryInfo) throws Exception {

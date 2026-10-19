@@ -41,7 +41,8 @@ public class ControllerResultMonitorTest
 		mockEnvironment(Collections.emptyMap());
 
 		JenkinsMasterTestUtil.getJenkinsMaster(
-			_MASTER_NAME, "http://" + _MASTER_NAME);
+			_MASTER_NAME, "https://test-9-1.liferay.com/",
+			"http://" + _MASTER_NAME);
 
 		mockURLReaders();
 
@@ -110,25 +111,25 @@ public class ControllerResultMonitorTest
 	@Test
 	public void testExecuteDescription() throws Exception {
 		_testExecute(
-			"Job " + _JOB_NAME + " build 1001 reported FAILURE for " +
-				_getBuildURL(2001),
-			MonitorResult.Status.CRITICAL,
-			_newBuildJSONObject(
-				600, _newResultDescription("", 2001, "FAILURE"), 1001,
-				"SUCCESS"));
-		_testExecute(
-			"Job " + _JOB_NAME + " build 1002 reported FAILURE for " +
-				_getBuildURL(2002),
-			MonitorResult.Status.CRITICAL,
-			_newBuildJSONObject(
-				600, _newRetroactiveFailureDescription(2002), 1002, "SUCCESS"));
-		_testExecute(
 			"Job " + _JOB_NAME + " is OK", MonitorResult.Status.OK,
 			_newBuildJSONObject(
 				600,
 				_newResultDescription(
 					"green", RandomTestUtil.randomInt(), "SUCCESS"),
 				RandomTestUtil.randomInt(), "SUCCESS"));
+		_testExecute(
+			"Job " + _JOB_URL + "/1001 reported FAILURE for " +
+				_getBuildURL(2001),
+			MonitorResult.Status.CRITICAL,
+			_newBuildJSONObject(
+				600, _newResultDescription("", 2001, "FAILURE"), 1001,
+				"SUCCESS"));
+		_testExecute(
+			"Job " + _JOB_URL + "/1002 reported FAILURE for " +
+				_getBuildURL(2002),
+			MonitorResult.Status.CRITICAL,
+			_newBuildJSONObject(
+				600, _newRetroactiveFailureDescription(2002), 1002, "SUCCESS"));
 	}
 
 	@Test
@@ -148,7 +149,7 @@ public class ControllerResultMonitorTest
 
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Job ", _JOB_NAME, " build 1002 has been in progress for ",
+				"Job ", _JOB_URL, "/1002 has been in progress for ",
 				JenkinsResultsParserUtil.toDurationString(86401 * 1000), " at ",
 				_getBuildURL(2002)),
 			MonitorResult.Status.WARN,
@@ -163,7 +164,7 @@ public class ControllerResultMonitorTest
 
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Job ", _JOB_NAME, " build 1003 invoked ", _getBuildURL(2003),
+				"Job ", _JOB_URL, "/1003 invoked ", _getBuildURL(2003),
 				", which finished with the result ABORTED without reporting ",
 				"back"),
 			MonitorResult.Status.CRITICAL,
@@ -175,7 +176,7 @@ public class ControllerResultMonitorTest
 
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Job ", _JOB_NAME, " build 1004 invoked ", _getBuildURL(2004),
+				"Job ", _JOB_URL, "/1004 invoked ", _getBuildURL(2004),
 				", which finished with the result SUCCESS without reporting ",
 				"back"),
 			MonitorResult.Status.CRITICAL,
@@ -187,14 +188,16 @@ public class ControllerResultMonitorTest
 			_getDownstreamBuildAPIURL(2005));
 
 		_testExecute(
-			"Unable to read " + _getBuildURL(2005),
+			JenkinsResultsParserUtil.combine(
+				"Job ", _JOB_URL, "/1005 invoked ", _getBuildURL(2005),
+				", which could not be read"),
 			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(
 				600, _newInProgressDescription(2005), 1005, "SUCCESS"));
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Unable to determine the downstream build of job ", _JOB_NAME,
-				" build 1006"),
+				"Unable to determine the downstream build of job ", _JOB_URL,
+				"/1006"),
 			MonitorResult.Status.UNKNOWN,
 			_newBuildJSONObject(
 				600, "<strong>IN PROGRESS</strong>", 1006, "SUCCESS"));
@@ -212,7 +215,7 @@ public class ControllerResultMonitorTest
 				"SUCCESS"));
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Job ", _JOB_NAME, " build 1002 invoked its downstream build ",
+				"Job ", _JOB_URL, "/1002 invoked its downstream build ",
 				JenkinsResultsParserUtil.toDurationString(86401 * 1000),
 				" ago and it has not started"),
 			MonitorResult.Status.WARN,
@@ -224,11 +227,42 @@ public class ControllerResultMonitorTest
 	}
 
 	@Test
+	public void testExecuteLinkURLs() throws Exception {
+		MonitorResult monitorResult = _executeBuilds(
+			_newBuildJSONObject(
+				600, _newResultDescription("", 2001, "FAILURE"), 1001,
+				"SUCCESS"));
+
+		testEquals(Collections.emptyList(), monitorResult.getLinkURLs());
+
+		monitorResult = _executeBuilds();
+
+		Assert.assertNull(monitorResult.getLinkURLs());
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.clear();
+
+		calendar.set(2026, Calendar.AUGUST, 27, 12, 0, 0);
+
+		_currentTimeMillis = calendar.getTimeInMillis();
+
+		monitorResult = _executeBuilds(
+			_newBuildJSONObject(
+				32401,
+				_newResultDescription(
+					"green", RandomTestUtil.randomInt(), "SUCCESS"),
+				RandomTestUtil.randomInt(), "SUCCESS"));
+
+		Assert.assertNull(monitorResult.getLinkURLs());
+	}
+
+	@Test
 	public void testExecuteMissingTimestamp() throws Exception {
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
 				"Unable to determine the last build timestamp for job ",
-				_JOB_NAME, ". Job ", _JOB_NAME, " build 1001 reported FAILURE ",
+				_JOB_NAME, ". Job ", _JOB_URL, "/1001 reported FAILURE ",
 				"for ", _getBuildURL(2001)),
 			MonitorResult.Status.CRITICAL,
 			new JSONObject(
@@ -254,19 +288,19 @@ public class ControllerResultMonitorTest
 	public void testExecuteNoDescription() throws Exception {
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Job ", _JOB_NAME, " build 1001 completed with the result ",
+				"Job ", _JOB_URL, "/1001 completed with the result ",
 				"ABORTED without invoking a downstream build"),
 			MonitorResult.Status.WARN,
 			_newBuildJSONObject(600, "", 1001, "ABORTED"));
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Job ", _JOB_NAME, " build 1002 completed with the result ",
+				"Job ", _JOB_URL, "/1002 completed with the result ",
 				"FAILURE without invoking a downstream build"),
 			MonitorResult.Status.CRITICAL,
 			_newBuildJSONObject(600, "", 1002, "FAILURE"));
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
-				"Job ", _JOB_NAME, " build 1003 completed with the result ",
+				"Job ", _JOB_URL, "/1003 completed with the result ",
 				"UNSTABLE without invoking a downstream build"),
 			MonitorResult.Status.CRITICAL,
 			_newBuildJSONObject(600, "", 1003, "UNSTABLE"));
@@ -346,18 +380,13 @@ public class ControllerResultMonitorTest
 
 		String message = monitorResult.getMessage();
 
-		Assert.assertTrue(
-			message.startsWith(
-				"Unable to read http://" + _MASTER_NAME + "/job/" + _JOB_NAME));
+		Assert.assertTrue(message.startsWith("Unable to read " + _JOB_URL));
 
 		setURLReaderOutput("{}", _JOB_API_URL);
 
 		monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(
-			JenkinsResultsParserUtil.combine(
-				"Unable to read http://", _MASTER_NAME, "/job/", _JOB_NAME),
-			monitorResult.getMessage());
+		testEquals("Unable to read " + _JOB_URL, monitorResult.getMessage());
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
@@ -383,7 +412,7 @@ public class ControllerResultMonitorTest
 				" ago, exceeding its schedule of 0 3 * * * plus a grace ",
 				"period of ",
 				JenkinsResultsParserUtil.toDurationString(21600L * 1000),
-				". Job ", _JOB_NAME, " build 1002 reported FAILURE for ",
+				". Job ", _JOB_URL, "/1002 reported FAILURE for ",
 				_getBuildURL(2002)),
 			MonitorResult.Status.CRITICAL,
 			_newBuildJSONObject(
@@ -440,19 +469,19 @@ public class ControllerResultMonitorTest
 	@Test
 	public void testExecuteSkipped() throws Exception {
 		_testExecuteSkipped(
-			"Job " + _JOB_NAME + " build 1001 reported FAILURE for " +
-				_getBuildURL(2001),
-			MonitorResult.Status.CRITICAL,
-			_newBuildJSONObject(
-				864000, _newResultDescription("", 2001, "FAILURE"), 1001,
-				"SUCCESS"));
-		_testExecuteSkipped(
 			"Job " + _JOB_NAME + " is OK", MonitorResult.Status.OK,
 			_newBuildJSONObject(
 				864000,
 				_newResultDescription(
 					"green", RandomTestUtil.randomInt(), "SUCCESS"),
 				RandomTestUtil.randomInt(), "SUCCESS"));
+		_testExecuteSkipped(
+			"Job " + _JOB_URL + "/1001 reported FAILURE for " +
+				_getBuildURL(2001),
+			MonitorResult.Status.CRITICAL,
+			_newBuildJSONObject(
+				864000, _newResultDescription("", 2001, "FAILURE"), 1001,
+				"SUCCESS"));
 		_testExecuteSkipped(
 			"Unable to find a result for job " + _JOB_NAME +
 				" in its last 6 builds",
@@ -470,6 +499,16 @@ public class ControllerResultMonitorTest
 				_newResultDescription(
 					"", RandomTestUtil.randomInt(), "FAILURE"),
 				RandomTestUtil.randomInt(), "SUCCESS"));
+	}
+
+	@Test
+	public void testGetLinkURLs() {
+		ControllerResultMonitor controllerResultMonitor =
+			_newControllerResultMonitor(_newMonitorProperties());
+
+		testEquals(
+			Collections.singletonList(_JOB_URL),
+			controllerResultMonitor.getLinkURLs());
 	}
 
 	@Test
@@ -740,6 +779,10 @@ public class ControllerResultMonitorTest
 
 	private static final String _JOB_NAME =
 		"archive-binaries-cache-controller(master)";
+
+	private static final String _JOB_URL =
+		"https://test-9-1.liferay.com/job/archive-binaries-cache-controller" +
+			"(master)";
 
 	private static final String _MASTER_NAME = "test-9-1";
 

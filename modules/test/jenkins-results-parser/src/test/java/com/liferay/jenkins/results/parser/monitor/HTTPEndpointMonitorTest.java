@@ -56,7 +56,7 @@ public class HTTPEndpointMonitorTest
 
 		testEquals(
 			JenkinsResultsParserUtil.combine(
-				"Endpoint ", _URL, " responded in ",
+				"Endpoint ", _REMOTE_URL, " responded in ",
 				metrics.get("latency.millis"),
 				" ms, exceeding its maximum latency of 1 ms"),
 			monitorResult.getMessage());
@@ -80,7 +80,7 @@ public class HTTPEndpointMonitorTest
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
 			JenkinsResultsParserUtil.combine(
-				"Unable to read ", _URL, ": java.io.IOException"),
+				"Unable to read ", _REMOTE_URL, ": java.io.IOException"),
 			monitorResult.getMessage());
 
 		Map<String, String> metrics = monitorResult.getMetrics();
@@ -99,7 +99,7 @@ public class HTTPEndpointMonitorTest
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
 			JenkinsResultsParserUtil.combine(
-				"Endpoint ", _URL, " was not found"),
+				"Endpoint ", _REMOTE_URL, " was not found"),
 			monitorResult.getMessage());
 
 		Map<String, String> metrics = monitorResult.getMetrics();
@@ -117,7 +117,8 @@ public class HTTPEndpointMonitorTest
 
 		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
 		testEquals(
-			JenkinsResultsParserUtil.combine("Endpoint ", _URL, " is OK"),
+			JenkinsResultsParserUtil.combine(
+				"Endpoint ", _REMOTE_URL, " is OK"),
 			monitorResult.getMessage());
 
 		Map<String, String> metrics = monitorResult.getMetrics();
@@ -141,7 +142,7 @@ public class HTTPEndpointMonitorTest
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
 			JenkinsResultsParserUtil.combine(
-				"Endpoint ", _URL, " returned the response code 503"),
+				"Endpoint ", _REMOTE_URL, " returned the response code 503"),
 			monitorResult.getMessage());
 
 		Map<String, String> metrics = monitorResult.getMetrics();
@@ -161,12 +162,21 @@ public class HTTPEndpointMonitorTest
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
 			JenkinsResultsParserUtil.combine(
-				"Unable to read ", _URL, ": Read timed out"),
+				"Unable to read ", _REMOTE_URL, ": Read timed out"),
 			monitorResult.getMessage());
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 
 		Assert.assertTrue(metrics.isEmpty());
+	}
+
+	@Test
+	public void testGetLinkURLs() {
+		HTTPEndpointMonitor httpEndpointMonitor = _newHTTPEndpointMonitor(
+			_newMonitorProperties());
+
+		testEquals(
+			Collections.singletonList(_URL), httpEndpointMonitor.getLinkURLs());
 	}
 
 	@Test
@@ -317,7 +327,9 @@ public class HTTPEndpointMonitorTest
 
 	private static final long _MILLIS_LATENCY = 50;
 
-	private static final String _URL =
-		"https://" + RandomTestUtil.randomString();
+	private static final String _REMOTE_URL =
+		"https://test-9-1.liferay.com/api/json";
+
+	private static final String _URL = "http://test-9-1/api/json";
 
 }

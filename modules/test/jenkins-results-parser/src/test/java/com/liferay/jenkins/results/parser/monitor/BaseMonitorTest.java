@@ -5,10 +5,15 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.JenkinsMaster;
+import com.liferay.jenkins.results.parser.JenkinsMasterTestUtil;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -88,6 +93,54 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testGetLinkURLs() {
+		String defaultLinkURL = "https://" + RandomTestUtil.randomString();
+
+		testEquals(
+			Collections.singletonList(defaultLinkURL),
+			_getLinkURLs(defaultLinkURL, ""));
+		testEquals(
+			Collections.singletonList(defaultLinkURL),
+			_getLinkURLs(defaultLinkURL, null));
+
+		String httpURL = "http://" + RandomTestUtil.randomString();
+		String httpsURL = "https://" + RandomTestUtil.randomString();
+
+		testEquals(
+			Arrays.asList(httpsURL, httpURL),
+			_getLinkURLs(defaultLinkURL, httpsURL + " , " + httpURL));
+
+		testEquals(Collections.emptyList(), _getLinkURLs(null, null));
+	}
+
+	@Test
+	public void testGetLinkURLsInvalid() {
+		String httpsURL = "https://" + RandomTestUtil.randomString();
+
+		_testGetLinkURLsInvalid("", httpsURL + ",," + httpsURL);
+
+		_testGetLinkURLsInvalid("https://", "https://");
+
+		String fileURL = "file:///" + RandomTestUtil.randomString();
+
+		_testGetLinkURLsInvalid(fileURL, fileURL);
+
+		String randomString = RandomTestUtil.randomString();
+
+		_testGetLinkURLsInvalid(randomString, randomString);
+
+		String password = RandomTestUtil.randomString();
+
+		String message = _getLinkURLsFailureMessage(
+			JenkinsResultsParserUtil.combine(
+				httpsURL, ",https://", RandomTestUtil.randomString(), ":",
+				password, "@", RandomTestUtil.randomString()));
+
+		Assert.assertFalse(message.contains(password));
+		Assert.assertTrue(message.contains("[REDACTED]"));
+	}
+
+	@Test
 	public void testGetOverdueGraceSeconds() {
 		BaseMonitor baseMonitor = _newBaseMonitor(60);
 
@@ -103,6 +156,26 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 			60L,
 			baseMonitor.getOverdueGraceSeconds(
 				600, Collections.singletonMap("overdue.grace", "60")));
+	}
+
+	@Test
+	public void testGetRemoteJobURL() {
+		String masterName = RandomTestUtil.randomString();
+
+		JenkinsMaster jenkinsMaster = JenkinsMasterTestUtil.getJenkinsMaster(
+			masterName, "https://" + masterName + ".liferay.com/",
+			"http://" + masterName);
+
+		BaseMonitor baseMonitor = _newBaseMonitor(60);
+
+		String jobName = RandomTestUtil.randomString();
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"https://", masterName, ".liferay.com/job/", jobName, "%20(",
+				jobName, ")"),
+			baseMonitor.getRemoteJobURL(
+				jenkinsMaster, jobName + " (" + jobName + ")"));
 	}
 
 	@Test
@@ -153,6 +226,25 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 		_testGetRequiredURLParameterUserInfo("https://");
 	}
 
+	private List<String> _getLinkURLs(String defaultLinkURL, String links) {
+		BaseMonitor baseMonitor = _newBaseMonitor(defaultLinkURL, links);
+
+		return baseMonitor.getLinkURLs();
+	}
+
+	private String _getLinkURLsFailureMessage(String links) {
+		try {
+			_newBaseMonitor(null, links);
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			return illegalArgumentException.getMessage();
+		}
+
+		return null;
+	}
+
 	private String _getRequiredURLParameter(String url, String... urlPrefixes) {
 		BaseMonitor baseMonitor = _newBaseMonitor(60);
 
@@ -190,6 +282,31 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 		};
 	}
 
+	private BaseMonitor _newBaseMonitor(String defaultLinkURL, String links) {
+		Map<String, String> parameters = null;
+
+		if (links != null) {
+			parameters = Collections.singletonMap("links", links);
+		}
+
+		return new BaseMonitor(
+			new MonitorConfig(
+				_MONITOR_ID, 0, parameters, MonitorConfig.Severity.MEDIUM, null,
+				60, RandomTestUtil.randomString())) {
+
+			@Override
+			public MonitorResult execute() {
+				return null;
+			}
+
+			@Override
+			protected String getDefaultLinkURL() {
+				return defaultLinkURL;
+			}
+
+		};
+	}
+
 	private void _testGetAttemptTimeoutMillis(
 		int expected, int maxRetries, long timeoutSeconds) {
 
@@ -210,6 +327,14 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertTrue(worstCaseMillis < (timeoutSeconds * 1000));
 	}
 
+	private void _testGetLinkURLsInvalid(String entry, String links) {
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"Invalid links for monitor[", _MONITOR_ID,
+				"].parameter[links]: ", entry),
+			_getLinkURLsFailureMessage(links));
+	}
+
 	private void _testGetRequiredURLParameterUserInfo(String urlPrefix) {
 		String password = RandomTestUtil.randomString();
 
@@ -222,5 +347,7 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertFalse(message.contains(password));
 		Assert.assertTrue(message.contains("[REDACTED]"));
 	}
+
+	private static final String _MONITOR_ID = RandomTestUtil.randomString();
 
 }

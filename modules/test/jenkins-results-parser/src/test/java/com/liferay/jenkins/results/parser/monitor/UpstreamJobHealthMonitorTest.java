@@ -39,7 +39,8 @@ public class UpstreamJobHealthMonitorTest
 		mockEnvironment(Collections.emptyMap());
 
 		JenkinsMasterTestUtil.getJenkinsMaster(
-			_MASTER_NAME, "http://" + _MASTER_NAME);
+			_MASTER_NAME, "https://test-9-1.liferay.com/",
+			"http://" + _MASTER_NAME);
 	}
 
 	@Test
@@ -150,6 +151,32 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
+	public void testExecuteReadFailure() throws Exception {
+		mockURLReaders();
+
+		String exceptionMessage = RandomTestUtil.randomString();
+
+		setURLReaderException(new IOException(exceptionMessage), _JOB_API_URL);
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"Unable to read ", _CONTROLLER_JOB_URL, ": ", exceptionMessage),
+			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+
+		setURLReaderOutput("{}", _JOB_API_URL);
+
+		monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(
+			"Unable to read " + _CONTROLLER_JOB_URL,
+			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+	}
+
+	@Test
 	public void testExecuteRecentMergeIsNotOverdue() throws Exception {
 		_setURLReaderOutput(
 			_newHeadCommitJSONObject(1800, _newSHA()),
@@ -182,6 +209,16 @@ public class UpstreamJobHealthMonitorTest
 		Map<String, String> metrics = monitorResult.getMetrics();
 
 		testEquals(sha, metrics.get("last.invocation.sha"));
+	}
+
+	@Test
+	public void testGetLinkURLs() {
+		UpstreamJobHealthMonitor upstreamJobHealthMonitor =
+			_newUpstreamJobHealthMonitor(_newMonitorProperties());
+
+		testEquals(
+			Collections.singletonList(_CONTROLLER_JOB_URL),
+			upstreamJobHealthMonitor.getLinkURLs());
 	}
 
 	@Test
@@ -337,6 +374,10 @@ public class UpstreamJobHealthMonitorTest
 
 	private static final String _CONTROLLER_JOB_NAME =
 		"test-portal-testsuite-upstream-controller(master)";
+
+	private static final String _CONTROLLER_JOB_URL =
+		"https://test-9-1.liferay.com/job/test-portal-testsuite-upstream-" +
+			"controller(master)";
 
 	private static final String _HEAD_COMMIT_API_URL =
 		"https://api.github.com/repos/liferay/liferay-portal/commits/master";

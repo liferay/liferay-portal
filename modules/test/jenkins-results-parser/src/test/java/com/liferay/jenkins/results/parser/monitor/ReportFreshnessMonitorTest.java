@@ -87,18 +87,15 @@ public class ReportFreshnessMonitorTest
 	public void testExecuteGeneratedDateFuture() throws Exception {
 		mockURLReaders();
 
-		long generatedTimestamp =
-			JenkinsResultsParserUtil.getCurrentTimeMillis() + (3600 * 1000);
-
 		setURLReaderOutput(
-			_newReportData(generatedTimestamp, "dataGeneratedDate"), _URL);
+			_newReportData(4102444800000L, "dataGeneratedDate"), _URL);
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
 		testEquals(
 			JenkinsResultsParserUtil.combine(
-				"Report ", _REPORT_NAME, " was generated at ",
-				String.valueOf(generatedTimestamp), ", which is in the future"),
+				"Report ", _REPORT_NAME, " was generated at Dec 31, 2099 ",
+				"4:00:00 PM PST, which is in the future"),
 			monitorResult.getMessage());
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
@@ -304,6 +301,15 @@ public class ReportFreshnessMonitorTest
 				"hour"),
 			monitorResult.getMessage());
 		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
+	}
+
+	@Test
+	public void testGetLinkURLs() {
+		ReportFreshnessMonitor reportFreshnessMonitor =
+			_newReportFreshnessMonitor(_newMonitorProperties());
+
+		testEquals(
+			Collections.emptyList(), reportFreshnessMonitor.getLinkURLs());
 	}
 
 	@Test

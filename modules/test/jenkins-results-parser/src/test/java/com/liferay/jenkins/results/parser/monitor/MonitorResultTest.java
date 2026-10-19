@@ -7,8 +7,10 @@ package com.liferay.jenkins.results.parser.monitor;
 
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -34,6 +36,44 @@ public class MonitorResultTest extends com.liferay.jenkins.results.parser.Test {
 		testEquals(
 			MonitorResult.DURATION_MILLIS_UNMEASURED,
 			monitorResult.getDurationMillis());
+	}
+
+	@Test
+	public void testGetLinkURLs() {
+		String linkURL = "https://" + RandomTestUtil.randomString();
+
+		List<String> linkURLs = new ArrayList<>(
+			Collections.singletonList(linkURL));
+
+		MonitorResult monitorResult = new MonitorResult(
+			linkURLs, RandomTestUtil.randomString(), null,
+			MonitorResult.Status.CRITICAL, RandomTestUtil.randomLong());
+
+		linkURLs.clear();
+
+		List<String> returnedLinkURLs = monitorResult.getLinkURLs();
+
+		testEquals(Collections.singletonList(linkURL), returnedLinkURLs);
+
+		try {
+			returnedLinkURLs.add(RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (UnsupportedOperationException unsupportedOperationException) {
+		}
+
+		monitorResult = new MonitorResult(
+			Collections.<String>emptyList(), RandomTestUtil.randomString(),
+			null, MonitorResult.Status.CRITICAL, RandomTestUtil.randomLong());
+
+		testEquals(Collections.emptyList(), monitorResult.getLinkURLs());
+
+		monitorResult = new MonitorResult(
+			RandomTestUtil.randomString(), null, MonitorResult.Status.OK,
+			RandomTestUtil.randomLong());
+
+		Assert.assertNull(monitorResult.getLinkURLs());
 	}
 
 	@Test

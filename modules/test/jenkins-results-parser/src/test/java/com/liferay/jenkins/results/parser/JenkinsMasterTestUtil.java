@@ -102,13 +102,19 @@ public class JenkinsMasterTestUtil {
 	public static JenkinsMaster getJenkinsMaster(
 		String masterName, String masterURL) {
 
+		return getJenkinsMaster(
+			masterName, "http://" + masterName + ".liferay.com", masterURL);
+	}
+
+	public static JenkinsMaster getJenkinsMaster(
+		String masterName, String masterRemoteURL, String masterURL) {
+
 		Properties properties = new Properties();
 
 		properties.setProperty(
 			"jenkins.local.url[" + masterName + "]", masterURL);
 		properties.setProperty(
-			"jenkins.remote.url[" + masterName + "]",
-			"http://" + masterName + ".liferay.com");
+			"jenkins.remote.url[" + masterName + "]", masterRemoteURL);
 
 		JenkinsResultsParserUtil.setBuildProperties(properties);
 

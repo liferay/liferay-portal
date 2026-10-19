@@ -44,7 +44,7 @@ public class JobHealthMonitorTest
 		MasterResourceReader.clearInstances();
 
 		JenkinsMasterTestUtil.getJenkinsMaster(
-			_MASTER_NAME, "http://" + _MASTER_NAME);
+			_MASTER_NAME, _MASTER_REMOTE_URL, "http://" + _MASTER_NAME);
 	}
 
 	@Test
@@ -362,7 +362,8 @@ public class JobHealthMonitorTest
 
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
-			"Job generate-reports-controller was not found on http://test-9-1",
+			"Job generate-reports-controller was not found on " +
+				_MASTER_REMOTE_URL,
 			monitorResult.getMessage());
 	}
 
@@ -637,10 +638,11 @@ public class JobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
-			"Unable to read http://test-9-1: java.io.IOException",
+			JenkinsResultsParserUtil.combine(
+				"Unable to read ", _MASTER_REMOTE_URL, ": java.io.IOException"),
 			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test
@@ -721,11 +723,23 @@ public class JobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
-			"Unable to read http://test-9-1: Unable to create a JSON object " +
-				"from the response body",
+			JenkinsResultsParserUtil.combine(
+				"Unable to read ", _MASTER_REMOTE_URL,
+				": Unable to create a JSON object from the response body"),
 			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+	}
+
+	@Test
+	public void testGetLinkURLs() {
+		JobHealthMonitor jobHealthMonitor = _newJobHealthMonitor(
+			_newMonitorProperties());
+
+		testEquals(
+			Collections.singletonList(
+				"https://test-9-1.liferay.com/job/generate-reports-controller"),
+			jobHealthMonitor.getLinkURLs());
 	}
 
 	@Test
@@ -947,5 +961,8 @@ public class JobHealthMonitorTest
 		"http://test-9-1/api/json?tree=jobs";
 
 	private static final String _MASTER_NAME = "test-9-1";
+
+	private static final String _MASTER_REMOTE_URL =
+		"https://test-9-1.liferay.com/";
 
 }

@@ -303,6 +303,33 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
 	}
 
+	@Test
+	public void testRunKeepsLinkURLs() {
+		MonitorRunner monitorRunner = new MonitorRunner();
+
+		List<String> linkURLs = Collections.singletonList(
+			"https://" + RandomTestUtil.randomString());
+
+		TestMonitor testMonitor = new TestMonitor(
+			_newMonitorConfig(RandomTestUtil.randomString())) {
+
+			@Override
+			public MonitorResult execute() {
+				return new MonitorResult(
+					linkURLs, RandomTestUtil.randomString(), null,
+					MonitorResult.Status.CRITICAL, RandomTestUtil.randomLong());
+			}
+
+		};
+
+		Map<Monitor, MonitorResult> monitorResultsMap = monitorRunner.run(
+			Collections.<Monitor>singletonList(testMonitor));
+
+		MonitorResult monitorResult = monitorResultsMap.get(testMonitor);
+
+		testEquals(linkURLs, monitorResult.getLinkURLs());
+	}
+
 	@Test(timeout = 5000)
 	public void testRunMonitorConfigTimeout() {
 		MonitorRunner monitorRunner = new MonitorRunner();
