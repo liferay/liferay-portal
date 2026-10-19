@@ -4,7 +4,9 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+
+const REDUCED_MOTION_CLASS_NAME = 'c-prefers-reduced-motion';
 
 function SideNavigationColorSchemeButton({
 	className,
@@ -23,10 +25,26 @@ function SideNavigationColorSchemeButton({
 			: initialColorScheme;
 	});
 
+	const reducedMotionAddedRef = useRef(false);
+
 	useEffect(() => {
 		if (document.documentElement.dataset.colorScheme !== colorScheme) {
 			document.documentElement.dataset.colorScheme = colorScheme;
 		}
+
+		if (!reducedMotionAddedRef.current) {
+			return;
+		}
+
+		let frame = requestAnimationFrame(() => {
+			frame = requestAnimationFrame(() => {
+				reducedMotionAddedRef.current = false;
+
+				document.body.classList.remove(REDUCED_MOTION_CLASS_NAME);
+			});
+		});
+
+		return () => cancelAnimationFrame(frame);
 	}, [colorScheme]);
 
 	useEffect(() => {
@@ -55,6 +73,12 @@ function SideNavigationColorSchemeButton({
 
 	const toggle = async () => {
 		const nextColorScheme = colorScheme === 'dark' ? 'light' : 'dark';
+
+		if (!document.body.classList.contains(REDUCED_MOTION_CLASS_NAME)) {
+			reducedMotionAddedRef.current = true;
+
+			document.body.classList.add(REDUCED_MOTION_CLASS_NAME);
+		}
 
 		setColorScheme(nextColorScheme);
 
