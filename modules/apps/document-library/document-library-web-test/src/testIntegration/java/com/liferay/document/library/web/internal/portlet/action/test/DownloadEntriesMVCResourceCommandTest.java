@@ -56,6 +56,8 @@ import jakarta.portlet.PortletException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import java.nio.charset.StandardCharsets;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -190,7 +192,7 @@ public class DownloadEntriesMVCResourceCommandTest {
 		Map<String, String> zipEntries = new LinkedHashMap<>();
 
 		try (ZipInputStream zipInputStream = new ZipInputStream(
-				new ByteArrayInputStream(bytes))) {
+				new ByteArrayInputStream(bytes), StandardCharsets.ISO_8859_1)) {
 
 			ZipEntry zipEntry = zipInputStream.getNextEntry();
 
