@@ -4,10 +4,23 @@
  */
 
 import ClayAlert from './Alert';
+import {ClayToaster} from './Toaster';
+import {createToastStore} from './createToastStore';
 import {usePrefersPersistentAlerts} from './usePrefersPersistentAlerts';
 
 import type {DisplayType, IClayAlertProps} from './Alert';
+import type {
+	ToastItem,
+	ToastStore,
+	ToastStoreListener,
+} from './createToastStore';
 
-export {usePrefersPersistentAlerts};
-export type {DisplayType, IClayAlertProps};
+export {ClayToaster, createToastStore, usePrefersPersistentAlerts};
+export type {
+	DisplayType,
+	IClayAlertProps,
+	ToastItem,
+	ToastStore,
+	ToastStoreListener,
+};
 export default ClayAlert;
