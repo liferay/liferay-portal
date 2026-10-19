@@ -38,12 +38,8 @@ liferay-default:
                 value: "true"
             -   name: LIFERAY_DL_PERIOD_STORE_PERIOD_IMPL
                 value: com.liferay.portal.store.azure.AzureStore
-            -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
-                value: org.postgresql.Driver
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD
                 value: ${env.DATABASE_PASSWORD}
-            -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL
-                value: jdbc:postgresql://${env.DATABASE_ENDPOINT}:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false&sslmode=require
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME
                 value: liferay
             -   name: LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PORT_PERIOD_ENABLED
@@ -104,6 +100,9 @@ liferay-default:
                     defaultMode: 0755
                     name: liferay-init-scripts-azure
                 name: liferay-init-scripts-azure
+    database:
+        host: ${env.DATABASE_ENDPOINT}
+        tlsRequired: true
     network:
         enabled: true
         timeouts:

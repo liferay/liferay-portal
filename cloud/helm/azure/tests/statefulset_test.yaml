@@ -1,3 +1,5 @@
+set:
+    global.database.engine: postgresql
 suite: StatefulSet
 templates:
     -   charts/liferay-default/templates/configmap.yaml
