@@ -349,6 +349,8 @@ public class AMImageHTMLExportImportContentProcessorTest {
 	@Test
 	public void testReplaceExportContentReferences() throws Exception {
 		_testReplaceExportContentReferencesWithInvalidReference();
+		_testReplaceExportContentReferencesWithNoReferences();
+		_testReplaceExportContentReferencesWithReferenceBeforeOtherAttributes();
 		_testReplaceExportContentReferencesWithReferenceInText();
 		_testReplaceExportContentReferencesWithValidReferences();
 		_testReplaceExportContentReferencesWithZeroFileEntryId();
@@ -514,6 +516,31 @@ public class AMImageHTMLExportImportContentProcessorTest {
 			Assert.assertSame(
 				NoSuchFileEntryException.class, throwable.getClass());
 		}
+	}
+
+	private void _testReplaceExportContentReferencesWithNoReferences()
+		throws Exception {
+
+		String content = StringBundler.concat(
+			RandomTestUtil.randomString(), " & ", RandomTestUtil.randomString(),
+			"<br>", RandomTestUtil.randomString());
+
+		Assert.assertEquals(content, _export(content));
+	}
+
+	private void _testReplaceExportContentReferencesWithReferenceBeforeOtherAttributes()
+		throws Exception {
+
+		String urlFileEntry1 = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<img export-import-path=\"PATH_", _FILE_ENTRY_ID_1,
+				"\" src=\"", urlFileEntry1, "\">"),
+			_export(
+				StringBundler.concat(
+					"<img data-fileentryid=\"", _FILE_ENTRY_ID_1, "\" src=\"",
+					urlFileEntry1, "\">")));
 	}
 
 	private void _testReplaceExportContentReferencesWithReferenceInText()
