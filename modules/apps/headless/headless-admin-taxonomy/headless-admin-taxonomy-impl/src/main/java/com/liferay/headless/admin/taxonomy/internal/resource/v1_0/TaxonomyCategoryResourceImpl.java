@@ -191,6 +191,10 @@ public class TaxonomyCategoryResourceImpl
 					return true;
 				}
 
+				if ((group != null) && group.isLayoutPrototype()) {
+					return false;
+				}
+
 				return ExportImportDescriptor.super.isScopeSupported(
 					companyId, groupId);
 			}
