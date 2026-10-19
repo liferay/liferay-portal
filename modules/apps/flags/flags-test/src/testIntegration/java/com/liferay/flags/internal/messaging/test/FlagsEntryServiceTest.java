@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -129,7 +129,7 @@ public class FlagsEntryServiceTest {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
-			CompanyLocalServiceUtil.getCompany(TestPropsValues.getCompanyId()));
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setLocale(LocaleUtil.getDefault());
 		themeDisplay.setPortalURL(
 			PortalUtil.getPortalURL("localhost", portalServerPort, false));
@@ -219,6 +219,9 @@ public class FlagsEntryServiceTest {
 	}
 
 	private BundleContext _bundleContext;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private DestinationFactory _destinationFactory;
