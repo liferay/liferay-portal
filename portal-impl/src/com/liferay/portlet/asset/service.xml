@@ -362,10 +362,6 @@
 		<finder name="VocabularyId" return-type="Collection">
 			<finder-column name="vocabularyId" />
 		</finder>
-		<finder name="G_V" return-type="AssetVocabularyGroupRel">
-			<finder-column name="groupId" />
-			<finder-column name="vocabularyId" />
-		</finder>
 		<finder name="G_D" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="depotEntryType" />
