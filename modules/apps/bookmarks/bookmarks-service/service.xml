@@ -51,10 +51,6 @@
 			<finder-column name="groupId" />
 			<finder-column arrayable-operator="OR" name="folderId" />
 		</finder>
-		<finder name="G_S" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="status" />
-		</finder>
 		<finder name="G_NotS" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column comparator="!=" name="status" />
@@ -62,11 +58,6 @@
 		<finder name="C_NotS" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column comparator="!=" name="status" />
-		</finder>
-		<finder name="G_U_S" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="userId" />
-			<finder-column name="status" />
 		</finder>
 		<finder name="G_U_NotS" return-type="Collection">
 			<finder-column name="groupId" />
