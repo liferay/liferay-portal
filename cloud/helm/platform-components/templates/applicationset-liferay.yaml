@@ -57,6 +57,10 @@ spec:
                 -   {{- include "liferay-platform.chartSource" .Values.liferay | nindent 20 }}
                     helm:
                         parameters:
+                            {{- with .Values.database.engine }}
+                            -   name: global.database.engine
+                                value: {{ . | quote }}
+                            {{- end }}
                             -   name: global.liferayServiceAccount.create
                                 value: "false"
                             -   name: global.liferayServiceAccount.name
