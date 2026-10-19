@@ -48,7 +48,11 @@ public class FileEntryTypeDLAppServiceWrapper extends DLAppServiceWrapper {
 
 		_validateFileEntryType(fileEntryTypeId, destinationRepositoryId);
 
-		_populateServiceContext(serviceContext, fileEntryId);
+		if (fileEntryTypeId !=
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT) {
+
+			_populateServiceContext(serviceContext, fileEntryId);
+		}
 
 		return super.copyFileEntry(
 			fileEntryId, destinationFolderId, destinationRepositoryId,
