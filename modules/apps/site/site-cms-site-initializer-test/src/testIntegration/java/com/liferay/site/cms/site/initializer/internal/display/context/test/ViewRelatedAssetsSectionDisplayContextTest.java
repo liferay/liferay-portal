@@ -203,12 +203,13 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 		// A member of a space sees assets from that space only
 
 		DepotEntry memberDepotEntry = _addDepotEntry();
-		DepotEntry nonmemberDepotEntry = _addDepotEntry();
 
 		User user1 = UserTestUtil.addUser();
 
 		_userLocalService.addGroupUser(
 			memberDepotEntry.getGroupId(), user1.getUserId());
+
+		DepotEntry nonmemberDepotEntry = _addDepotEntry();
 
 		String searchAPIURL = _getSearchAPIURL(user1);
 
