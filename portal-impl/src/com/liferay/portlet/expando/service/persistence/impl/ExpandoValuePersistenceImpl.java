@@ -419,98 +419,6 @@ public class ExpandoValuePersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<ExpandoValue, NoSuchValueException>
-		_collectionPersistenceFinderByT_R;
-
-	/**
-	 * Returns an ordered range of all the expando values where tableId = &#63; and rowId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ExpandoValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @param start the lower bound of the range of expando values
-	 * @param end the upper bound of the range of expando values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching expando values
-	 */
-	@Override
-	public List<ExpandoValue> findByT_R(
-		long tableId, long rowId, int start, int end,
-		OrderByComparator<ExpandoValue> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByT_R.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {tableId, rowId},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first expando value in the ordered set where tableId = &#63; and rowId = &#63;.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching expando value
-	 * @throws NoSuchValueException if a matching expando value could not be found
-	 */
-	@Override
-	public ExpandoValue findByT_R_First(
-			long tableId, long rowId,
-			OrderByComparator<ExpandoValue> orderByComparator)
-		throws NoSuchValueException {
-
-		return _collectionPersistenceFinderByT_R.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {tableId, rowId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first expando value in the ordered set where tableId = &#63; and rowId = &#63;.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching expando value, or <code>null</code> if a matching expando value could not be found
-	 */
-	@Override
-	public ExpandoValue fetchByT_R_First(
-		long tableId, long rowId,
-		OrderByComparator<ExpandoValue> orderByComparator) {
-
-		return _collectionPersistenceFinderByT_R.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {tableId, rowId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the expando values where tableId = &#63; and rowId = &#63; from the database.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 */
-	@Override
-	public void removeByT_R(long tableId, long rowId) {
-		_collectionPersistenceFinderByT_R.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {tableId, rowId});
-	}
-
-	/**
-	 * Returns the number of expando values where tableId = &#63; and rowId = &#63;.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @return the number of matching expando values
-	 */
-	@Override
-	public int countByT_R(long tableId, long rowId) {
-		return _collectionPersistenceFinderByT_R.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {tableId, rowId});
-	}
-
-	private CollectionPersistenceFinder<ExpandoValue, NoSuchValueException>
 		_collectionPersistenceFinderByT_CPK;
 
 	/**
@@ -1294,34 +1202,6 @@ public class ExpandoValuePersistenceImpl
 				"expandoValue.", "columnId", FinderColumn.Type.LONG, "=", true,
 				true, ExpandoValue::getColumnId));
 
-		_collectionPersistenceFinderByT_R = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByT_R",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"tableId", "rowId_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByT_R",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"tableId", "rowId_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByT_R",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"tableId", "rowId_"}, false),
-			_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
-			ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"expandoValue.", "tableId", FinderColumn.Type.LONG, "=", true,
-				true, ExpandoValue::getTableId),
-			new FinderColumn<>(
-				"expandoValue.", "rowId", "rowId_", FinderColumn.Type.LONG, "=",
-				true, true, ExpandoValue::getRowId));
-
 		_collectionPersistenceFinderByT_CPK = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1484,4 +1364,4 @@ public class ExpandoValuePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-199820914
+// LIFERAY-SERVICE-BUILDER-HASH:1194283269

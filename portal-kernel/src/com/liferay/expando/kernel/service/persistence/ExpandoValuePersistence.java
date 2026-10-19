@@ -283,72 +283,6 @@ public interface ExpandoValuePersistence
 	public int countByT_C(long tableId, long columnId);
 
 	/**
-	 * Returns an ordered range of all the expando values where tableId = &#63; and rowId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.expando.model.impl.ExpandoValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @param start the lower bound of the range of expando values
-	 * @param end the upper bound of the range of expando values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching expando values
-	 */
-	public java.util.List<ExpandoValue> findByT_R(
-		long tableId, long rowId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first expando value in the ordered set where tableId = &#63; and rowId = &#63;.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching expando value
-	 * @throws NoSuchValueException if a matching expando value could not be found
-	 */
-	public ExpandoValue findByT_R_First(
-			long tableId, long rowId,
-			com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue>
-				orderByComparator)
-		throws NoSuchValueException;
-
-	/**
-	 * Returns the first expando value in the ordered set where tableId = &#63; and rowId = &#63;.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching expando value, or <code>null</code> if a matching expando value could not be found
-	 */
-	public ExpandoValue fetchByT_R_First(
-		long tableId, long rowId,
-		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue>
-			orderByComparator);
-
-	/**
-	 * Removes all the expando values where tableId = &#63; and rowId = &#63; from the database.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 */
-	public void removeByT_R(long tableId, long rowId);
-
-	/**
-	 * Returns the number of expando values where tableId = &#63; and rowId = &#63;.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @return the number of matching expando values
-	 */
-	public int countByT_R(long tableId, long rowId);
-
-	/**
 	 * Returns an ordered range of all the expando values where tableId = &#63; and classPK = &#63;.
 	 *
 	 * <p>
@@ -911,62 +845,6 @@ public interface ExpandoValuePersistence
 	}
 
 	/**
-	 * Returns all the expando values where tableId = &#63; and rowId = &#63;.
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @return the matching expando values
-	 */
-	public default java.util.List<ExpandoValue> findByT_R(
-		long tableId, long rowId) {
-
-		return findByT_R(
-			tableId, rowId, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the expando values where tableId = &#63; and rowId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.expando.model.impl.ExpandoValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @param start the lower bound of the range of expando values
-	 * @param end the upper bound of the range of expando values (not inclusive)
-	 * @return the range of matching expando values
-	 */
-	public default java.util.List<ExpandoValue> findByT_R(
-		long tableId, long rowId, int start, int end) {
-
-		return findByT_R(tableId, rowId, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the expando values where tableId = &#63; and rowId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.expando.model.impl.ExpandoValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param tableId the table ID
-	 * @param rowId the row ID
-	 * @param start the lower bound of the range of expando values
-	 * @param end the upper bound of the range of expando values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching expando values
-	 */
-	public default java.util.List<ExpandoValue> findByT_R(
-		long tableId, long rowId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<ExpandoValue>
-			orderByComparator) {
-
-		return findByT_R(tableId, rowId, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the expando values where tableId = &#63; and classPK = &#63;.
 	 *
 	 * @param tableId the table ID
@@ -1144,4 +1022,4 @@ public interface ExpandoValuePersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1949298197
+// LIFERAY-SERVICE-BUILDER-HASH:1778364636
