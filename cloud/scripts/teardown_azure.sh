@@ -45,11 +45,13 @@ function _delete_tfstate_storage {
 
 	local container_name
 	local deployment_name
+	local region
 	local resource_group_name
 	local storage_account_name
 
 	container_name=$(jq --raw-output '.tfstate.container_name' "${configuration_json_file}")
 	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
+	region=$(jq --raw-output '.region' "${configuration_json_file}")
 	resource_group_name=$(jq --raw-output '.tfstate.resource_group_name' "${configuration_json_file}")
 	storage_account_name=$(jq --raw-output '.tfstate.storage_account_name' "${configuration_json_file}")
 
@@ -79,7 +81,7 @@ function _delete_tfstate_storage {
 			--include v \
 			--num-results "*" \
 			--output tsv \
-			--query "length([?!starts_with(name, '${deployment_name}/')])")
+			--query "length([?!starts_with(name, '${deployment_name}/${region}/')])")
 
 	if [ ${foreign_container_count} -gt 0 ] || [ ${foreign_blob_count} -gt 0 ]
 	then
@@ -88,7 +90,7 @@ function _delete_tfstate_storage {
 		return
 	fi
 
-	if ! confirm "delete the Terraform state storage account ${storage_account_name}"
+	if ! is_confirmed "delete the Terraform state storage account ${storage_account_name}"
 	then
 		echo "Storage account ${storage_account_name} was kept."
 

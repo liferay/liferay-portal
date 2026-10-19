@@ -72,10 +72,11 @@ function log_in {
 
 function update_kubeconfig {
 	local cluster_name="${1}"
+	local cluster_terraform_stack="${2}"
 
 	local resource_group_name
 
-	resource_group_name=$(terraform output -raw resource_group_name)
+	resource_group_name=$(run_terraform "azure" "${cluster_terraform_stack}" output -raw resource_group_name)
 
 	az aks get-credentials \
 		--name "${cluster_name}" \

@@ -31,6 +31,16 @@ EOF
 	done
 }
 
+function get_kms_key_id {
+	local alias_name="${1}"
+	local region="${2}"
+
+	aws kms list-aliases \
+		--output text \
+		--query "Aliases[?AliasName=='${alias_name}'].TargetKeyId" \
+		--region "${region}"
+}
+
 function log_in {
 	local configuration_json_file="${1}"
 
@@ -63,10 +73,11 @@ function log_in {
 
 function update_kubeconfig {
 	local cluster_name="${1}"
+	local cluster_terraform_stack="${2}"
 
 	local region
 
-	region=$(terraform output -raw region)
+	region=$(run_terraform "aws" "${cluster_terraform_stack}" output -raw region)
 
 	aws eks update-kubeconfig \
 		--name "${cluster_name}" \

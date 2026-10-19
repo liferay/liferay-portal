@@ -104,7 +104,7 @@ function _delete_tfstate_bucket {
 
 	local foreign_object_count
 
-	foreign_object_count=$(jq --arg prefix "${deployment_name}/" '[.[] | select(.Key | startswith($prefix) | not)] | length' <<< "${object_versions_json}")
+	foreign_object_count=$(jq --arg prefix "${deployment_name}/${region}/" '[.[] | select(.Key | startswith($prefix) | not)] | length' <<< "${object_versions_json}")
 
 	if [ ${foreign_object_count} -gt 0 ]
 	then
@@ -113,7 +113,7 @@ function _delete_tfstate_bucket {
 		return
 	fi
 
-	if ! confirm "delete the Terraform state bucket ${bucket_name}"
+	if ! is_confirmed "delete the Terraform state bucket ${bucket_name}"
 	then
 		echo "Bucket ${bucket_name} was kept."
 
@@ -139,11 +139,7 @@ function _delete_tfstate_kms_key {
 
 	local kms_key_id
 
-	kms_key_id=$( \
-		aws kms list-aliases \
-			--output text \
-			--query "Aliases[?AliasName=='${alias_name}'].TargetKeyId" \
-			--region "${region}")
+	kms_key_id=$(get_kms_key_id "${alias_name}" "${region}")
 
 	if [[ -z ${kms_key_id} ]]
 	then
@@ -151,8 +147,6 @@ function _delete_tfstate_kms_key {
 
 		return
 	fi
-
-	aws kms delete-alias --alias-name "${alias_name}" --region "${region}"
 
 	local deletion_date
 
@@ -162,6 +156,8 @@ function _delete_tfstate_kms_key {
 			--output text \
 			--query 'DeletionDate' \
 			--region "${region}")
+
+	aws kms delete-alias --alias-name "${alias_name}" --region "${region}"
 
 	echo "KMS key ${kms_key_id} was scheduled for deletion on ${deletion_date}."
 }
