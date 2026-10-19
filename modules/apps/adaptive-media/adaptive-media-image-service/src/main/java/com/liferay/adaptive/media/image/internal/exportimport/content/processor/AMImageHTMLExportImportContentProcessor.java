@@ -207,45 +207,63 @@ public class AMImageHTMLExportImportContentProcessor
 	private String _replace(
 		String content, AMReferenceExporter amReferenceExporter) {
 
-		Document document = _parseDocument(content);
-		String elementSelector =
-			"[" + AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID + "]";
+		StringBundler sb = new StringBundler();
 
-		for (Element element : document.select(elementSelector)) {
-			try {
-				long fileEntryId = GetterUtil.getLong(
-					element.attr(
-						AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID));
+		int beginIndex = 0;
 
-				if (fileEntryId == 0) {
-					continue;
-				}
+		int index = _getFileEntryIdAttributeIndex(content, 0);
 
-				FileEntry fileEntry = _dlAppLocalService.getFileEntry(
-					fileEntryId);
+		while (index != -1) {
+			int fileEntryIdIndex =
+				index + _FILE_ENTRY_ID_ATTRIBUTE_PREFIX.length();
 
-				amReferenceExporter.exportReference(fileEntry);
+			int fileEntryIdEndIndex = content.indexOf(
+				CharPool.QUOTE, fileEntryIdIndex);
 
-				element.removeAttr(
-					AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID);
-				element.attr(
-					_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH,
-					ExportImportPathUtil.getModelPath(fileEntry));
+			if (fileEntryIdEndIndex == -1) {
+				break;
 			}
-			catch (PortalException portalException) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(portalException);
+
+			long fileEntryId = GetterUtil.getLong(
+				content.substring(fileEntryIdIndex, fileEntryIdEndIndex));
+
+			if (fileEntryId != 0) {
+				try {
+					FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+						fileEntryId);
+
+					amReferenceExporter.exportReference(fileEntry);
+
+					sb.append(content.substring(beginIndex, index));
+					sb.append(_EXPORT_IMPORT_PATH_ATTRIBUTE_PREFIX);
+					sb.append(ExportImportPathUtil.getModelPath(fileEntry));
+
+					beginIndex = fileEntryIdEndIndex;
+				}
+				catch (PortalException portalException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(portalException);
+					}
 				}
 			}
+
+			index = _getFileEntryIdAttributeIndex(content, fileEntryIdEndIndex);
 		}
 
-		Element bodyElement = document.body();
+		if (sb.index() == 0) {
+			return content;
+		}
 
-		return bodyElement.html();
+		sb.append(content.substring(beginIndex));
+
+		return sb.toString();
 	}
 
 	private static final String _ATTRIBUTE_NAME_EXPORT_IMPORT_PATH =
 		"export-import-path";
+
+	private static final String _EXPORT_IMPORT_PATH_ATTRIBUTE_PREFIX =
+		_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH + "=\"";
 
 	private static final String _FILE_ENTRY_ID_ATTRIBUTE_PREFIX =
 		AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID + "=\"";
