@@ -16,7 +16,12 @@ import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -341,6 +346,14 @@ public class AMImageHTMLExportImportContentProcessorTest {
 					_portletDataContext, _stagedModel, content));
 	}
 
+	@Test
+	public void testReplaceExportContentReferences() throws Exception {
+		_testReplaceExportContentReferencesWithInvalidReference();
+		_testReplaceExportContentReferencesWithReferenceInText();
+		_testReplaceExportContentReferencesWithValidReferences();
+		_testReplaceExportContentReferencesWithZeroFileEntryId();
+	}
+
 	@Test(expected = NoSuchFileEntryException.class)
 	public void testValidateContentFailsWithInvalidReferences()
 		throws Exception {
@@ -466,6 +479,93 @@ public class AMImageHTMLExportImportContentProcessorTest {
 
 				return "<picture><source/>" + imgTag + "</picture>";
 			}
+		);
+	}
+
+	private void _testReplaceExportContentReferencesWithInvalidReference()
+		throws Exception {
+
+		long fileEntryId = RandomTestUtil.randomLong();
+
+		String content = StringBundler.concat(
+			RandomTestUtil.randomString(), "<img src=\"",
+			RandomTestUtil.randomString(), "\" data-fileentryid=\"",
+			fileEntryId, "\" />", RandomTestUtil.randomString());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				AMImageHTMLExportImportContentProcessor.class.getName(),
+				LoggerTestUtil.WARN)) {
+
+			Assert.assertEquals(content, _export(content));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"No FileEntry exists with the key {fileEntryId=",
+					fileEntryId, "}"),
+				throwable.getMessage());
+			Assert.assertSame(
+				NoSuchFileEntryException.class, throwable.getClass());
+		}
+	}
+
+	private void _testReplaceExportContentReferencesWithReferenceInText()
+		throws Exception {
+
+		String content = StringBundler.concat(
+			"<p>&lt;img data-fileentryid=\"", _FILE_ENTRY_ID_1, "\"&gt;</p>");
+
+		Assert.assertEquals(content, _export(content));
+	}
+
+	private void _testReplaceExportContentReferencesWithValidReferences()
+		throws Exception {
+
+		String prefix = RandomTestUtil.randomString();
+		String infix = RandomTestUtil.randomString();
+		String suffix = RandomTestUtil.randomString();
+
+		String urlFileEntry1 = RandomTestUtil.randomString();
+		String urlFileEntry2 = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				prefix, "<img src=\"", urlFileEntry1,
+				"\" export-import-path=\"PATH_", _FILE_ENTRY_ID_1, "\" />",
+				infix, "<picture export-import-path=\"PATH_", _FILE_ENTRY_ID_2,
+				"\"><img src=\"", urlFileEntry2,
+				"\" export-import-path=\"PATH_", _FILE_ENTRY_ID_2,
+				"\" /></picture>", suffix),
+			_export(
+				StringBundler.concat(
+					prefix, "<img src=\"", urlFileEntry1,
+					"\" data-fileentryid=\"", _FILE_ENTRY_ID_1, "\" />", infix,
+					"<picture data-fileentryid=\"", _FILE_ENTRY_ID_2,
+					"\"><img src=\"", urlFileEntry2, "\" data-fileentryid=\"",
+					_FILE_ENTRY_ID_2, "\" /></picture>", suffix)));
+	}
+
+	private void _testReplaceExportContentReferencesWithZeroFileEntryId()
+		throws Exception {
+
+		String content = StringBundler.concat(
+			RandomTestUtil.randomString(), "<img src=\"",
+			RandomTestUtil.randomString(), "\" data-fileentryid=\"0\" />",
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(content, _export(content));
+
+		Mockito.verify(
+			_dlAppLocalService, Mockito.never()
+		).getFileEntry(
+			0
 		);
 	}
 
