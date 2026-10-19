@@ -57,6 +57,13 @@ run "should_honor_custom_master_cidr_and_metrics_scrape_namespace" {
 		}
 	}
 }
+run "should_omit_the_metrics_rule_when_scraping_is_disabled" {
+	assert {
+		condition=length([for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-metrics-ingress"][0].spec.ingress) == 0
+		error_message="external-secrets-metrics-ingress must declare no ingress rule when scraping is disabled"
+	}
+	command=plan
+}
 run "should_scope_the_manual_network_policies_correctly" {
 	assert {
 		condition=length(yamldecode(helm_release.external_secrets.values[0]).extraObjects) == 3
@@ -118,11 +125,4 @@ variables {
 	keda_helm_chart_version="2.19.0"
 	project_id="liferay-test-project"
 	region="us-central1"
-}
-run "should_omit_the_metrics_rule_when_scraping_is_disabled" {
-	assert {
-		condition=length([for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-metrics-ingress"][0].spec.ingress) == 0
-		error_message="external-secrets-metrics-ingress must declare no ingress rule when scraping is disabled"
-	}
-	command=plan
 }
