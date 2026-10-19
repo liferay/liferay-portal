@@ -9,7 +9,18 @@ import com.liferay.adaptive.media.AMURIResolver;
 import com.liferay.adaptive.media.exception.AMRuntimeException;
 import com.liferay.adaptive.media.image.configuration.AMImageConfigurationEntry;
 import com.liferay.adaptive.media.image.url.AMImageURLFactory;
+import com.liferay.adaptive.media.image.util.AMImageAdaptationUtil;
+import com.liferay.document.library.helper.DLURLHelper;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.UnsupportedEncodingException;
 
@@ -19,12 +30,14 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alejandro Tardín
+ * @author Daniel Sanz
  */
 @Component(service = AMImageURLFactory.class)
 public class AMImageURLFactoryImpl implements AMImageURLFactory {
@@ -33,6 +46,13 @@ public class AMImageURLFactoryImpl implements AMImageURLFactory {
 	public URI createFileEntryURL(
 		FileVersion fileVersion,
 		AMImageConfigurationEntry amImageConfigurationEntry) {
+
+		if (AMImageAdaptationUtil.isAdaptationDelegated(
+				amImageConfigurationEntry, fileVersion.getCompanyId())) {
+
+			return _createDelegatedAdaptationURL(
+				amImageConfigurationEntry, fileVersion);
+		}
 
 		Date modifiedDate = fileVersion.getModifiedDate();
 
@@ -49,12 +69,79 @@ public class AMImageURLFactoryImpl implements AMImageURLFactory {
 		FileVersion fileVersion,
 		AMImageConfigurationEntry amImageConfigurationEntry) {
 
+		if (AMImageAdaptationUtil.isAdaptationDelegated(
+				amImageConfigurationEntry, fileVersion.getCompanyId())) {
+
+			return _createDelegatedAdaptationURL(
+				amImageConfigurationEntry, fileVersion);
+		}
+
 		String relativeURI = String.format(
 			"image/%d/%d/%s/%s", fileVersion.getFileEntryId(),
 			fileVersion.getFileVersionId(), amImageConfigurationEntry.getUUID(),
 			_encode(fileVersion.getFileName()));
 
 		return _amURIResolver.resolveURI(URI.create(relativeURI));
+	}
+
+	/**
+	 * Returns the URL that asks for the image's adaptation. There is no
+	 * rendition to serve, so the URL names the original image and carries the
+	 * parameters saying which adaptations are required.
+	 *
+	 * <p>
+	 * A path is delivered by the company's CDN host when it has one, on the
+	 * understanding that whatever fronts the portal is what the image's
+	 * parameters are addressed to. A URL that names a host of its own is left
+	 * to it.
+	 * </p>
+	 *
+	 * <p>
+	 * The parameters are passed along unread, so an image can address an image
+	 * optimization service of any make. Each replaces the one of the same name
+	 * the URL already carries.
+	 * </p>
+	 */
+	private URI _createDelegatedAdaptationURL(
+		AMImageConfigurationEntry amImageConfigurationEntry,
+		FileVersion fileVersion) {
+
+		try {
+			String previewURL = _dlURLHelper.getPreviewURL(
+				fileVersion.getFileEntry(), fileVersion, (ThemeDisplay)null,
+				StringPool.BLANK, true, false);
+
+			if (Validator.isBlank(previewURL)) {
+				return null;
+			}
+
+			if (!HttpComponentsUtil.hasDomain(previewURL)) {
+				previewURL =
+					_getCDNHost(fileVersion.getCompanyId()) + previewURL;
+			}
+
+			Map<String, String> properties =
+				amImageConfigurationEntry.getProperties();
+
+			Map<String, String[]> parameterMap =
+				HttpComponentsUtil.getParameterMap(
+					GetterUtil.getString(
+						properties.get("adaptation-url-parameters")));
+
+			for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+				String[] values = entry.getValue();
+
+				previewURL = HttpComponentsUtil.setParameter(
+					previewURL, entry.getKey(), values[0]);
+			}
+
+			return URI.create(previewURL);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return null;
+		}
 	}
 
 	private String _encode(String s) {
@@ -67,7 +154,34 @@ public class AMImageURLFactoryImpl implements AMImageURLFactory {
 		}
 	}
 
+	private String _getCDNHost(long companyId) {
+		String cdnHost = _portal.getCDNHostHttps(companyId);
+
+		if (Validator.isBlank(cdnHost)) {
+			cdnHost = _portal.getCDNHostHttp(companyId);
+		}
+
+		if (Validator.isBlank(cdnHost)) {
+			return StringPool.BLANK;
+		}
+
+		if (cdnHost.endsWith(StringPool.SLASH)) {
+			return cdnHost.substring(0, cdnHost.length() - 1);
+		}
+
+		return cdnHost;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AMImageURLFactoryImpl.class);
+
 	@Reference
 	private AMURIResolver _amURIResolver;
+
+	@Reference
+	private DLURLHelper _dlURLHelper;
+
+	@Reference
+	private Portal _portal;
 
 }
