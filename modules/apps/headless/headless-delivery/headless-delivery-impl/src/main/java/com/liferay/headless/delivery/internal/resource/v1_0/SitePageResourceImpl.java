@@ -116,10 +116,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -802,17 +798,12 @@ public class SitePageResourceImpl
 
 			LayoutSet layoutSet = layout.getLayoutSet();
 
-			Document document = Jsoup.parse(
-				ThemeUtil.include(
-					ServletContextPool.get(StringPool.BLANK),
-					httpServletRequest, contextHttpServletResponse,
-					"portal_normal.ftl", layoutSet.getTheme(), false));
+			String html = ThemeUtil.include(
+				ServletContextPool.get(StringPool.BLANK), httpServletRequest,
+				contextHttpServletResponse, "portal_normal.ftl",
+				layoutSet.getTheme(), false);
 
-			Element bodyElement = document.body();
-
-			bodyElement.html(sb.toString());
-
-			return document.html();
+			return ThemeUtil.replaceBodyContent(html, sb.toString());
 		}
 	}
 
