@@ -75,7 +75,9 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -973,6 +975,8 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 
 		discountResource.putDiscountByExternalReferenceCode(
 			discount.getExternalReferenceCode(), discount);
+		discountResource.putDiscountByExternalReferenceCode(
+			discount.getExternalReferenceCode(), discount);
 
 		CommerceDiscount commerceDiscount =
 			_commerceDiscountLocalService.
@@ -988,16 +992,22 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 				CPInstance.class.getName());
 
 		Assert.assertEquals(
-			commerceDiscountRels.toString(), 1, commerceDiscountRels.size());
-
-		CommerceDiscountRel commerceDiscountRel = commerceDiscountRels.get(0);
-
-		UnicodeProperties typeSettingsUnicodeProperties =
-			commerceDiscountRel.getTypeSettingsUnicodeProperties();
-
+			commerceDiscountRels.toString(), 2, commerceDiscountRels.size());
 		Assert.assertEquals(
-			cpInstanceUnitOfMeasure2.getKey(),
-			typeSettingsUnicodeProperties.getProperty("unitOfMeasureKey"));
+			SetUtil.fromArray(
+				cpInstanceUnitOfMeasure1.getKey(),
+				cpInstanceUnitOfMeasure2.getKey()),
+			SetUtil.fromList(
+				ListUtil.toList(
+					commerceDiscountRels,
+					commerceDiscountRel -> {
+						UnicodeProperties typeSettingsUnicodeProperties =
+							commerceDiscountRel.
+								getTypeSettingsUnicodeProperties();
+
+						return typeSettingsUnicodeProperties.getProperty(
+							"unitOfMeasureKey");
+					})));
 	}
 
 	private void _testPostDiscountWithTargetKey() throws Exception {
