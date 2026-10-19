@@ -85,17 +85,24 @@ public class UpgradePartitionedConfigurationTableTest
 
 	@Test
 	public void testUpgradeProcess() throws Exception {
-		DBPartitionUtil.forEachCompanyId(
-			companyId -> {
-				if (companyId != _companyId) {
-					db.runSQL("drop table if exists Configuration_");
-					db.runSQL(
-						StringBundler.concat(
-							"create or replace view Configuration_ as select ",
-							"* from ", defaultPartitionName,
-							".Configuration_"));
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(_companyId)) {
+
+			for (long companyId : PortalInstancePool.getCompanyIds()) {
+				if (companyId == _companyId) {
+					continue;
 				}
-			});
+
+				String partitionName = getPartitionName(companyId);
+
+				db.runSQL(
+					dbPartitionDB.getDropTableSQL(
+						partitionName, "Configuration_"));
+				db.runSQL(
+					dbPartitionDB.getCreateViewSQL(
+						defaultPartitionName, partitionName, "Configuration_"));
+			}
+		}
 
 		VirtualHost virtualHost = _virtualHostLocalService.getVirtualHost(
 			TestPropsValues.COMPANY_WEB_ID);
