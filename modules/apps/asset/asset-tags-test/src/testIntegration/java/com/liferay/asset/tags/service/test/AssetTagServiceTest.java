@@ -13,7 +13,9 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -82,7 +84,7 @@ public class AssetTagServiceTest {
 
 	@Test
 	public void testGetGroupsTagsWithNoGroupIds() throws Exception {
-		_addTag();
+		_addTag(_group);
 
 		List<AssetTag> assetTags = AssetTagServiceUtil.getGroupsTags(
 			new long[0]);
@@ -92,7 +94,7 @@ public class AssetTagServiceTest {
 
 	@Test
 	public void testGetTagsCountWithNoGroupIds() throws Exception {
-		AssetTag assetTag = _addTag();
+		AssetTag assetTag = _addTag(_group);
 
 		Assert.assertEquals(
 			0, AssetTagServiceUtil.getTagsCount(new long[0], null));
@@ -103,7 +105,7 @@ public class AssetTagServiceTest {
 
 	@Test
 	public void testGetTagsWithNoGroupIds() throws Exception {
-		AssetTag assetTag = _addTag();
+		AssetTag assetTag = _addTag(_group);
 
 		List<AssetTag> assetTags = AssetTagServiceUtil.getTags(
 			new long[0], null, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
@@ -118,10 +120,61 @@ public class AssetTagServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110148")
+	public void testMergeTags() throws Exception {
+		AssetTag fromAssetTag = _addTag(_group);
+		AssetTag toAssetTag = _addTag(_group);
+
+		User user = UserTestUtil.addGroupAdminUser(_group);
+
+		UserTestUtil.setUser(user);
+
+		AssetTagServiceUtil.mergeTags(
+			fromAssetTag.getTagId(), toAssetTag.getTagId());
+
+		Assert.assertNull(
+			AssetTagLocalServiceUtil.fetchAssetTag(fromAssetTag.getTagId()));
+
+		UserLocalServiceUtil.deleteUser(user);
+	}
+
+	@Test
+	@TestInfo("LPD-110148")
+	public void testMergeTagsWithoutManageTagPermission() throws Exception {
+		AssetTag fromAssetTag = _addTag(_group);
+
+		Group group = GroupTestUtil.addGroup();
+
+		AssetTag toAssetTag = _addTag(group);
+
+		User user = UserTestUtil.addGroupAdminUser(_group);
+
+		UserTestUtil.setUser(user);
+
+		PrincipalException.MustHavePermission mustHavePermission =
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> AssetTagServiceUtil.mergeTags(
+					fromAssetTag.getTagId(), toAssetTag.getTagId()));
+
+		Assert.assertEquals(
+			"com.liferay.asset.tags", mustHavePermission.resourceName);
+		Assert.assertEquals(group.getGroupId(), mustHavePermission.resourceId);
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.MANAGE_TAG}, mustHavePermission.actionId);
+
+		Assert.assertNotNull(
+			AssetTagLocalServiceUtil.fetchAssetTag(fromAssetTag.getTagId()));
+
+		GroupTestUtil.deleteGroup(group);
+		UserLocalServiceUtil.deleteUser(user);
+	}
+
+	@Test
 	@TestInfo("LPD-110165")
 	public void testSubscribeTag() throws Exception {
 		User adminUser = UserTestUtil.addGroupAdminUser(_group);
-		AssetTag assetTag = _addTag();
+		AssetTag assetTag = _addTag(_group);
 		User user = UserTestUtil.addUser();
 
 		UserTestUtil.setUser(adminUser);
@@ -149,7 +202,7 @@ public class AssetTagServiceTest {
 	@TestInfo("LPD-110165")
 	public void testUnsubscribeTag() throws Exception {
 		User adminUser = UserTestUtil.addGroupAdminUser(_group);
-		AssetTag assetTag = _addTag();
+		AssetTag assetTag = _addTag(_group);
 		User user = UserTestUtil.addUser();
 
 		AssetTagLocalServiceUtil.subscribeTag(
@@ -178,11 +231,11 @@ public class AssetTagServiceTest {
 				AssetTag.class.getName(), assetTag.getTagId()));
 	}
 
-	private AssetTag _addTag() throws Exception {
+	private AssetTag _addTag(Group group) throws Exception {
 		return AssetTagLocalServiceUtil.addTag(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			null, TestPropsValues.getUserId(), group.getGroupId(),
 			RandomTestUtil.randomString(),
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
 	@DeleteAfterTestRun
