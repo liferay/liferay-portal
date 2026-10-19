@@ -152,16 +152,20 @@ public class AICreatorOpenAIClientTest {
 
 	@Test
 	public void testGetGenerations() throws Exception {
-		String b64JSON = RandomTestUtil.randomString();
-		String url = RandomTestUtil.randomString();
+		String b64JSON1 = RandomTestUtil.randomString();
+		String b64JSON2 = RandomTestUtil.randomString();
 
 		_getMockResponse(
 			HttpURLConnection.HTTP_OK,
 			JSONUtil.put(
 				"data",
 				JSONUtil.putAll(
-					JSONUtil.put("b64_json", b64JSON),
-					JSONUtil.put("url", url))));
+					JSONUtil.put("b64_json", b64JSON1),
+					JSONUtil.put(
+						"b64_json", b64JSON2
+					).put(
+						"url", RandomTestUtil.randomString()
+					))));
 
 		String apiKey = RandomTestUtil.randomString();
 		String model = RandomTestUtil.randomString();
@@ -169,7 +173,10 @@ public class AICreatorOpenAIClientTest {
 		String size = RandomTestUtil.randomString();
 
 		Assert.assertArrayEquals(
-			new String[] {"data:image/png;base64," + b64JSON, url},
+			new String[] {
+				"data:image/png;base64," + b64JSON1,
+				"data:image/png;base64," + b64JSON2
+			},
 			_aiCreatorOpenAIClient.getGenerations(
 				apiKey, model, prompt, size, 2));
 

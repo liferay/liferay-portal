@@ -11,9 +11,6 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
-const MOCKED_IMAGE_PATH =
-	'USER_IMAGES_URL_http://localhost:8080/o/classic-theme/images/favicon.ico';
-
 const test = mergeTests(
 	documentLibraryPagesTest,
 	isolatedSiteTest,
@@ -132,7 +129,7 @@ test(
 			);
 			await createAIImageModalPage
 				.getByPlaceholder('Write something...')
-				.fill(MOCKED_IMAGE_PATH);
+				.fill('USER_IMAGES');
 			await createAIImageModalPage
 				.getByRole('button', {name: 'Create'})
 				.click();
