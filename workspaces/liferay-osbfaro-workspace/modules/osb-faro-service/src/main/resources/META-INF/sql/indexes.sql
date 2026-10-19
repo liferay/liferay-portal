@@ -7,7 +7,7 @@ create index IX_F93E2F21 on OSBFaro_FaroNotification (createTime, groupId, owner
 
 create unique index IX_12C47BB1 on OSBFaro_FaroPreferences (groupId, ownerId);
 
-create unique index IX_ECF55FFC on OSBFaro_FaroProject (corpProjectUuid[$COLUMN_LENGTH:75$]);
+create index IX_ECF55FFC on OSBFaro_FaroProject (corpProjectUuid[$COLUMN_LENGTH:75$]);
 create unique index IX_3D4C0F8C on OSBFaro_FaroProject (groupId);
 create index IX_46F39E6A on OSBFaro_FaroProject (serverLocation[$COLUMN_LENGTH:75$]);
 create index IX_DC26D918 on OSBFaro_FaroProject (userId);
