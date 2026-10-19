@@ -107,7 +107,7 @@ public class CheckFaroProjectsMessageListener extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		Map<FaroProject, Exception> projectExceptions = new HashMap<>();
+		Map<String, FaroProject> serverLocationFaroProjects = new HashMap<>();
 
 		for (FaroProject faroProject :
 				_faroProjectLocalService.getFaroProjects(
@@ -119,48 +119,50 @@ public class CheckFaroProjectsMessageListener extends BaseMessageListener {
 				continue;
 			}
 
+			serverLocationFaroProjects.putIfAbsent(
+				faroProject.getServerLocation(), faroProject);
+		}
+
+		Map<String, Exception> serverLocationExceptions = new HashMap<>();
+
+		for (Map.Entry<String, FaroProject> entry :
+				serverLocationFaroProjects.entrySet()) {
+
 			try {
-				_contactsEngineClient.getIndividuals(
-					faroProject, (String)null, false, 0, 0, null);
+				_contactsEngineClient.validateConnection(entry.getValue());
 			}
 			catch (Exception exception) {
 				_log.error(exception);
 
-				projectExceptions.put(faroProject, exception);
+				serverLocationExceptions.put(entry.getKey(), exception);
 			}
-
-			Thread.sleep(1000);
 		}
 
-		if ((_systemsDownStartTime > 0) != projectExceptions.isEmpty()) {
+		if ((_systemsDownStartTime > 0) != serverLocationExceptions.isEmpty()) {
 			return;
 		}
 
-		if (projectExceptions.isEmpty()) {
+		if (serverLocationExceptions.isEmpty()) {
 			String duration = Time.getDuration(
 				System.currentTimeMillis() - _systemsDownStartTime);
 
 			sendEmail(
-				"SYSTEM ALERT: All projects up",
-				"All projects are up after " + duration + " of downtime.");
+				"SYSTEM ALERT: All clusters up",
+				"All clusters are up after " + duration + " of downtime.");
 
 			_systemsDownStartTime = 0;
 		}
 		else {
-			StringBundler sb = new StringBundler(7);
+			StringBundler sb = new StringBundler(
+				serverLocationExceptions.size() * 5);
 
-			for (Map.Entry<FaroProject, Exception> projectException :
-					projectExceptions.entrySet()) {
+			for (Map.Entry<String, Exception> entry :
+					serverLocationExceptions.entrySet()) {
 
-				FaroProject faroProject = projectException.getKey();
-
-				sb.append(faroProject.getName());
-
-				sb.append(StringPool.NEW_LINE);
-				sb.append(faroProject.getWeDeployKey());
+				sb.append(entry.getKey());
 				sb.append(StringPool.NEW_LINE);
 
-				Exception exception = projectException.getValue();
+				Exception exception = entry.getValue();
 
 				sb.append(exception.getMessage());
 
@@ -169,7 +171,8 @@ public class CheckFaroProjectsMessageListener extends BaseMessageListener {
 			}
 
 			sendEmail(
-				"SYSTEM ALERT: " + projectExceptions.size() + " projects down",
+				"SYSTEM ALERT: " + serverLocationExceptions.size() +
+					" clusters down",
 				sb.toString());
 
 			_systemsDownStartTime = System.currentTimeMillis();
