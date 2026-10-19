@@ -1695,7 +1695,7 @@
 		</check>
 		<check name="PropertiesCommentsCheck">
 			<category name="Styling" />
-			<description name="Validates comments in `.properties` files." />
+			<description name="Validates comments in `.properties` files and wraps them to the maximum line length." />
 		</check>
 		<check name="PropertiesDefaultAdminScreenNameCheck">
 			<category name="Bug Prevention" />
@@ -1762,10 +1762,6 @@
 		<check name="PropertiesLiferayPluginPackageLiferayVersionsCheck">
 			<category name="Bug Prevention" />
 			<description name="Validates the version in `liferay-plugin-package.properties` file." />
-		</check>
-		<check name="PropertiesLongLinesCheck">
-			<category name="Styling" />
-			<description name="Wraps comments in `.properties` files to the maximum line length." />
 		</check>
 		<check name="PropertiesMultiLineValuesOrderCheck">
 			<category name="Styling" />
