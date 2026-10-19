@@ -33,7 +33,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Leslie Wong
  */
-@Ignore
 @RunWith(Arquillian.class)
 public class IndividualSegmentMembershipChangeResourceTest
 	extends BaseIndividualSegmentMembershipChangeResourceTestCase {
@@ -47,6 +46,56 @@ public class IndividualSegmentMembershipChangeResourceTest
 		_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeEndAndRangeStart();
 		_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeStart();
 		_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithoutRange();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithPagination()
+		throws Exception {
+
+		super.
+			testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithPagination();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithSortDateTime()
+		throws Exception {
+
+		super.
+			testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithSortDateTime();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithSortDouble()
+		throws Exception {
+
+		super.
+			testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithSortDouble();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithSortInteger()
+		throws Exception {
+
+		super.
+			testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithSortInteger();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithSortString()
+		throws Exception {
+
+		super.
+			testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithSortString();
 	}
 
 	private void _assertBadRequest(HttpInvoker.HttpResponse httpResponse)
