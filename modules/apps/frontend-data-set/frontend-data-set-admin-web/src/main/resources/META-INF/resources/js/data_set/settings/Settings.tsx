@@ -20,13 +20,16 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import {
 	DEFAULT_FETCH_HEADERS,
-	DEFAULT_VISUALIZATION_MODES,
 	OBJECT_RELATIONSHIP,
 } from '../../utils/constants';
 import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
+import getVisualizationModes, {
+	getMappedVisualizationModeNames,
+	isVisualizationModeDisplayed,
+} from '../../utils/getVisualizationModes';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
-import {TVisualizationMode} from '../../utils/types';
+import {IDataSetVisualizationMode} from '../../utils/types';
 import {IDataSetSectionProps} from '../DataSet';
 
 const NOT_CONFIGURED_VISUALIZATION_MODE = {
@@ -43,6 +46,7 @@ const Settings = ({
 	onActiveSectionChange,
 	onDataSetUpdate,
 	spritemap,
+	visualizationModeClientExtensions,
 }: IDataSetSectionProps) => {
 	const [snapshotsEnabled, setSnapshotsEnabled] = useState<boolean>(
 		dataSet.snapshotsEnabled
@@ -61,7 +65,7 @@ const Settings = ({
 	);
 	const [showSearch, setShowSearch] = useState(dataSet.showSearch ?? true);
 	const [visualizationModes, setVisualizationModes] = useState<
-		Array<TVisualizationMode>
+		Array<IDataSetVisualizationMode>
 	>([]);
 
 	const handleToggleChange = useCallback(
@@ -175,41 +179,36 @@ const Settings = ({
 				const {
 					hideManagementBarInEmptyState:
 						persistedHideManagementBarInEmptyState,
-					[OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS]: cards,
-					[OBJECT_RELATIONSHIP.DATA_SET_LIST_SECTIONS]: list,
-					[OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS]: table,
 				} = responseJSON;
 
-				const activeViews: Array<TVisualizationMode> = [];
+				const mappedVisualizationModeNames =
+					getMappedVisualizationModeNames(responseJSON);
 
-				(
-					DEFAULT_VISUALIZATION_MODES as Array<TVisualizationMode>
-				).forEach((view) => {
-					if (view.mode === 'cards' && cards && cards.length) {
-						activeViews.push(view);
-					}
-					if (view.mode === 'list' && list && list.length) {
-						activeViews.push(view);
-					}
-					if (view.mode === 'table' && table && table.length) {
-						activeViews.push(view);
-					}
-				});
+				const displayedVisualizationModes = getVisualizationModes({
+					dataSet,
+					visualizationModeClientExtensions,
+				}).filter((visualizationMode) =>
+					isVisualizationModeDisplayed({
+						mappedVisualizationModeNames,
+						visualizationMode,
+					})
+				);
 
-				setVisualizationModes(activeViews);
+				setVisualizationModes(displayedVisualizationModes);
 
 				setDefaultVisualizationMode(() => {
 					if (
-						activeViews.find(
-							(view: TVisualizationMode) =>
-								view.mode === dataSet.defaultVisualizationMode
+						displayedVisualizationModes.find(
+							(visualizationMode) =>
+								visualizationMode.name ===
+								dataSet.defaultVisualizationMode
 						)
 					) {
 						return dataSet.defaultVisualizationMode;
 					}
 					else {
-						return activeViews.length
-							? activeViews[0].mode
+						return displayedVisualizationModes.length
+							? displayedVisualizationModes[0].name
 							: NOT_CONFIGURED_VISUALIZATION_MODE.type;
 					}
 				});
@@ -329,9 +328,9 @@ const Settings = ({
 									selectedKey={defaultVisualizationMode}
 								>
 									{visualizationModes.length ? (
-										({label, mode, thumbnail}) => (
+										({label, name, thumbnail}) => (
 											<Option
-												key={mode}
+												key={name}
 												textValue={label}
 											>
 												<ClayIcon

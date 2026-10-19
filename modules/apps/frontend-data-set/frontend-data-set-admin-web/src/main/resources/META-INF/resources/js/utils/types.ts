@@ -78,10 +78,7 @@ export interface IBaseVisualizationMode<Mode extends string> {
 	label: string;
 	mode: Mode;
 	thumbnail: string;
-	visualizationModeId: string;
 }
-
-export interface ICards extends IBaseVisualizationMode<'cards'> {}
 
 export interface IClientExtensionFilter extends IFilter {
 	clientExtensionEntryERC: string;
@@ -120,6 +117,7 @@ export interface IDataSet {
 	snapshotsEnabled: boolean;
 	sortsOrder?: string;
 	tableSectionsOrder?: string;
+	visualizationModes?: string;
 }
 
 export interface IDataSetTableSection extends IOrderable {
@@ -132,6 +130,14 @@ export interface IDataSetTableSection extends IOrderable {
 	rendererLabel?: string;
 	sortable: boolean;
 	type: string;
+}
+
+export interface IDataSetVisualizationMode {
+	clientExtension: boolean;
+	enabled: boolean;
+	label: string;
+	name: string;
+	thumbnail: string;
 }
 
 export interface IDateFilter extends IFilter {
@@ -191,8 +197,6 @@ export interface IFilterTypeProps {
 	label: string;
 }
 
-export interface IList extends IBaseVisualizationMode<'list'> {}
-
 export interface IListTypeEntry {
 	externalReferenceCode: string;
 	id: number;
@@ -246,8 +250,10 @@ export interface ISystemDataSet {
 	title: string;
 }
 
-export interface ITable extends IBaseVisualizationMode<'table'> {}
+export interface IVisualizationModeClientExtension {
+	externalReferenceCode: string;
+	icon: string;
+	name: string;
+}
 
 type TLocalizedValue<T> = Liferay.Language.LocalizedValue<T>;
-
-export type TVisualizationMode = ICards | IList | ITable;

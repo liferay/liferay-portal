@@ -45,6 +45,8 @@ renderResponse.setTitle(dataSetLabel);
 			"saveDataSetTableSectionsURL", fdsAdminDisplayContext.getSaveDataSetTableSectionsURL()
 		).put(
 			"spritemap", themeDisplay.getPathThemeSpritemap()
+		).put(
+			"visualizationModeClientExtensions", fdsAdminDisplayContext.getFDSVisualizationModeCETsJSONArray()
 		).build()
 	%>'
 />

@@ -19,7 +19,11 @@ import getDataSetResourceURL from '../utils/getDataSetResourceURL';
 import getFields, {getFilterableFields} from '../utils/getFields';
 import getOpenApiData from '../utils/getOpenApiData';
 import openDefaultFailureToast from '../utils/openDefaultFailureToast';
-import {IDataSet, IFieldTreeItem} from '../utils/types';
+import {
+	IDataSet,
+	IFieldTreeItem,
+	IVisualizationModeClientExtension,
+} from '../utils/types';
 import Actions from './actions/Actions';
 import Details from './details/Details';
 import Filters from './filters/Filters';
@@ -89,6 +93,7 @@ export interface IDataSetSectionProps {
 	saveDataSetSortURL: string;
 	saveDataSetTableSectionsURL: string;
 	spritemap: string;
+	visualizationModeClientExtensions: IVisualizationModeClientExtension[];
 }
 
 const DataSet = ({
@@ -105,6 +110,7 @@ const DataSet = ({
 	saveDataSetSortURL,
 	saveDataSetTableSectionsURL,
 	spritemap,
+	visualizationModeClientExtensions = [],
 }: {
 	backURL: string;
 	cellClientExtensionRenderers: IClientExtensionRenderer[];
@@ -119,6 +125,7 @@ const DataSet = ({
 	saveDataSetSortURL: string;
 	saveDataSetTableSectionsURL: string;
 	spritemap: string;
+	visualizationModeClientExtensions?: IVisualizationModeClientExtension[];
 }) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [dataSet, setDataSet] = useState<IDataSet>();
@@ -228,6 +235,9 @@ const DataSet = ({
 								saveDataSetTableSectionsURL
 							}
 							spritemap={spritemap}
+							visualizationModeClientExtensions={
+								visualizationModeClientExtensions
+							}
 						/>
 					)
 				)}

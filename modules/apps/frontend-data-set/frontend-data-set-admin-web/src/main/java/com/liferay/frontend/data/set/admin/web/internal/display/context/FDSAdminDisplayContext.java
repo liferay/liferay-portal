@@ -6,6 +6,7 @@
 package com.liferay.frontend.data.set.admin.web.internal.display.context;
 
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
+import com.liferay.client.extension.type.FDSVisualizationModeCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.data.set.SystemFDSEntry;
 import com.liferay.frontend.data.set.SystemFDSEntryRegistry;
@@ -163,6 +164,26 @@ public class FDSAdminDisplayContext {
 				"externalReferenceCode", fdsFilterCET.getExternalReferenceCode()
 			).put(
 				"name", fdsFilterCET.getName(themeDisplay.getLocale())
+			));
+	}
+
+	public JSONArray getFDSVisualizationModeCETsJSONArray() throws Exception {
+		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		return JSONUtil.toJSONArray(
+			(List<FDSVisualizationModeCET>)(List)_cetManager.getCETs(
+				themeDisplay.getCompanyId(), null,
+				ClientExtensionEntryConstants.TYPE_FDS_VISUALIZATION_MODE,
+				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null),
+			fdsVisualizationModeCET -> JSONUtil.put(
+				"externalReferenceCode",
+				fdsVisualizationModeCET.getExternalReferenceCode()
+			).put(
+				"icon", fdsVisualizationModeCET.getIcon()
+			).put(
+				"name",
+				fdsVisualizationModeCET.getName(themeDisplay.getLocale())
 			));
 	}
 

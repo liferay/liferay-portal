@@ -49,6 +49,8 @@ interface IField {
 	name: string;
 }
 
+type TOnRowClick = ({item}: {item: any}) => void;
+
 const Row = ({
 	actions,
 	fields,
@@ -56,6 +58,7 @@ const Row = ({
 	item,
 	onDragCrossover,
 	onDrop,
+	onRowClick,
 	query,
 }: {
 	actions?: Array<IAction>;
@@ -64,6 +67,7 @@ const Row = ({
 	item: any;
 	onDragCrossover: Function;
 	onDrop: Function;
+	onRowClick?: TOnRowClick;
 	query: string;
 }) => {
 	const tableRowRef = useRef<HTMLTableRowElement>(null);
@@ -178,11 +182,26 @@ const Row = ({
 
 	dragRef(dropRef(tableRowRef));
 
+	const onClick = (event: React.MouseEvent<HTMLTableRowElement>) => {
+		if (
+			!onRowClick ||
+			(event.target as HTMLElement).closest(
+				'a, button, input, label, .dropdown-menu'
+			)
+		) {
+			return;
+		}
+
+		onRowClick({item});
+	};
+
 	return (
 		<ClayTable.Row
 			className={classNames('orderable-table-row', {
-				dragging: isDragging,
+				'dragging': isDragging,
+				'orderable-table-row-clickable': onRowClick,
 			})}
+			onClick={onClick}
 			ref={tableRowRef}
 		>
 			<ClayTable.Cell className="drag-handle-cell">
@@ -312,6 +331,7 @@ const Table = ({
 	items,
 	onDragCrossover,
 	onDrop,
+	onRowClick,
 	query,
 }: {
 	actions?: Array<IAction>;
@@ -319,6 +339,7 @@ const Table = ({
 	items: Array<any>;
 	onDragCrossover: Function;
 	onDrop: Function;
+	onRowClick?: TOnRowClick;
 	query: string;
 }) => {
 	const [, dropRef] = useDrop({
@@ -358,6 +379,7 @@ const Table = ({
 						key={item.externalReferenceCode || item.id || index}
 						onDragCrossover={onDragCrossover}
 						onDrop={onDrop}
+						onRowClick={onRowClick}
 						query={query}
 					/>
 				))}
@@ -379,6 +401,7 @@ interface IOrderableTableProps {
 	noItemsDescription: string;
 	noItemsTitle: string;
 	onOrderChange: (args: {order: string}) => void;
+	onRowClick?: TOnRowClick;
 	title?: string;
 }
 
@@ -393,6 +416,7 @@ const OrderableTable = ({
 	noItemsDescription,
 	noItemsTitle,
 	onOrderChange,
+	onRowClick,
 	title,
 }: IOrderableTableProps) => {
 	const [items, setItems] = useState(initialItems);
@@ -517,6 +541,7 @@ const OrderableTable = ({
 									onOrderChange({order: newOrder});
 								}
 							}}
+							onRowClick={onRowClick}
 							query={query}
 						/>
 					</DndProvider>
