@@ -46,10 +46,26 @@ public class DuplicateUniqueFinderRowsCleaner {
 			return false;
 		}
 
-		boolean duplicatesDeleted = false;
-
 		List<String[]> duplicateColumnValuesList =
 			_getDuplicateColumnValuesList();
+
+		if (duplicateColumnValuesList.isEmpty()) {
+			return false;
+		}
+
+		String[] primaryKeyColumnNames = _db.getPrimaryKeyColumnNames(
+			_connection, _tableName);
+
+		if (primaryKeyColumnNames.length == 0) {
+			_log.error(
+				StringBundler.concat(
+					"Unable to delete duplicate records in table ", _tableName,
+					" because it does not have a primary key"));
+
+			return false;
+		}
+
+		boolean duplicatesDeleted = false;
 
 		for (String[] duplicateColumnValues : duplicateColumnValuesList) {
 			List<Map<String, String>> duplicateRows = _getDuplicateRows(
@@ -67,9 +83,6 @@ public class DuplicateUniqueFinderRowsCleaner {
 				sb.append("delete from ");
 				sb.append(_tableName);
 				sb.append(" where ");
-
-				String[] primaryKeyColumnNames = _db.getPrimaryKeyColumnNames(
-					_connection, _tableName);
 
 				for (String primaryKeyColumnName : primaryKeyColumnNames) {
 					sb.append(primaryKeyColumnName);

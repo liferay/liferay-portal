@@ -7,6 +7,7 @@ package com.liferay.portal.db.index.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.db.index.IndexUpdaterUtil;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.events.StartupHelperUtil;
@@ -183,8 +184,74 @@ public class IndexUpdaterUtilTest {
 	}
 
 	@Test
+	public void testUpdateIndexNoPrimaryKey() throws Exception {
+		_createTestTable(false);
+
+		try {
+			_db.runSQL("insert into TestTable values(1, 2, 3, 4, '5', '6')");
+			_db.runSQL("insert into TestTable values(7, 9, 10, 11, '5', '6')");
+
+			boolean upgrading = StartupHelperUtil.isUpgrading();
+
+			StartupHelperUtil.setUpgrading(true);
+
+			try (AutoCloseable autoCloseable =
+					() -> StartupHelperUtil.setUpgrading(upgrading);
+				LogCapture duplicateUniqueFinderRowsCleanerLogCapture =
+					LoggerTestUtil.configureLog4JLogger(
+						DuplicateUniqueFinderRowsCleaner.class.getName(),
+						LoggerTestUtil.ERROR);
+				LogCapture indexUpdaterUtilLogCapture =
+					LoggerTestUtil.configureLog4JLogger(
+						IndexUpdaterUtil.class.getName(),
+						LoggerTestUtil.ERROR)) {
+
+				ReflectionTestUtil.invoke(
+					IndexUpdaterUtil.class, "_updateIndexes",
+					new Class<?>[] {String.class, String.class}, "TestTable",
+					"create unique index IX_TestTable on TestTable(column3" +
+						"[$COLUMN_LENGTH:255$], column4[$COLUMN_LENGTH:255$])");
+
+				List<LogEntry> logEntries =
+					duplicateUniqueFinderRowsCleanerLogCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+
+				LogEntry logEntry = logEntries.get(0);
+
+				Assert.assertEquals(
+					"Unable to delete duplicate records in table TestTable " +
+						"because it does not have a primary key",
+					logEntry.getMessage());
+
+				logEntries = indexUpdaterUtilLogCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+			}
+
+			try (Connection connection = DataAccess.getConnection();
+
+				PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						"select count(*) as count from TestTable")) {
+
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					Assert.assertTrue(resultSet.next());
+
+					Assert.assertEquals(2, resultSet.getLong("count"));
+				}
+			}
+		}
+		finally {
+			_dropTestTable();
+		}
+	}
+
+	@Test
 	public void testUpdateIndexRetry() throws Exception {
-		_createTestTable();
+		_createTestTable(true);
 
 		try {
 			_db.runSQL("insert into TestTable values(1, 2, 3, 4, '5', '6')");
@@ -264,7 +331,7 @@ public class IndexUpdaterUtilTest {
 
 	@Test
 	public void testUpdateIndexUnpopulatedColumn() throws Exception {
-		_createTestTable();
+		_createTestTable(true);
 
 		try {
 			_db.runSQL("insert into TestTable values(1, 2, 3, 4, '', '6')");
@@ -364,13 +431,15 @@ public class IndexUpdaterUtilTest {
 		_portalTableIndexName = _getTableIndexName(portalIndexesSQL);
 	}
 
-	private void _createTestTable() throws Exception {
+	private void _createTestTable(boolean primaryKey) throws Exception {
 		DBPartitionUtil.forEachCompanyId(
 			companyId -> _db.runSQL(
 				StringBundler.concat(
 					"create table TestTable (id1 INTEGER, id2 INTEGER, ",
 					"column1 INTEGER, column2 INTEGER, column3 VARCHAR(255), ",
-					"column4 VARCHAR(255), primary key (id1, id2))")));
+					"column4 VARCHAR(255)",
+					primaryKey ? ", primary key (id1, id2)" : StringPool.BLANK,
+					")")));
 	}
 
 	private void _dropIndex(String tableName, String indexName)
