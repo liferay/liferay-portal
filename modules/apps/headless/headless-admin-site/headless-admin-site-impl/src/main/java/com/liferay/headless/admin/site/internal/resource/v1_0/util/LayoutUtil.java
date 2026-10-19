@@ -566,9 +566,22 @@ public class LayoutUtil {
 			layout, nameMap, null, null, null, null, null, null, null, null,
 			null, friendlyURLMap, serviceContext);
 
+		UnicodeProperties layoutTypeSettingsUnicodeProperties =
+			layout.getTypeSettingsProperties();
+
+		for (String key : new String[] {"layoutUpdateable", "privateLayout"}) {
+			String value = layoutTypeSettingsUnicodeProperties.getProperty(key);
+
+			if (value == null) {
+				continue;
+			}
+
+			typeSettingsUnicodeProperties.setProperty(key, value);
+		}
+
 		if (Objects.equals(
 				typeSettingsUnicodeProperties,
-				layout.getTypeSettingsProperties())) {
+				layoutTypeSettingsUnicodeProperties)) {
 
 			return layout;
 		}
