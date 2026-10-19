@@ -763,6 +763,8 @@ public abstract class SecretsUtil {
 			exception.printStackTrace();
 
 			_connectSecrets.clear();
+
+			Vault.clear();
 		}
 	}
 
@@ -863,11 +865,7 @@ public abstract class SecretsUtil {
 				_getConnectURL() + path, null, _getHTTPAuthorization());
 		}
 		catch (IOException ioException) {
-			System.out.println(ioException.getMessage());
-
-			ioException.printStackTrace();
-
-			return new JSONArray();
+			throw new RuntimeException("Unable to read " + path, ioException);
 		}
 	}
 
@@ -881,11 +879,7 @@ public abstract class SecretsUtil {
 				_getConnectURL() + path, null, _getHTTPAuthorization());
 		}
 		catch (IOException ioException) {
-			System.out.println(ioException.getMessage());
-
-			ioException.printStackTrace();
-
-			return null;
+			throw new RuntimeException("Unable to read " + path, ioException);
 		}
 	}
 
@@ -918,11 +912,7 @@ public abstract class SecretsUtil {
 				_getConnectURL() + path, null, _getHTTPAuthorization());
 		}
 		catch (IOException ioException) {
-			System.out.println(ioException.getMessage());
-
-			ioException.printStackTrace();
-
-			return "";
+			throw new RuntimeException("Unable to read " + path, ioException);
 		}
 	}
 
@@ -946,6 +936,12 @@ public abstract class SecretsUtil {
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)/(?<fieldLabel>.*)");
 
 	private static class Vault {
+
+		public static void clear() {
+			synchronized (_vaultsMap) {
+				_vaultsMap.clear();
+			}
+		}
 
 		public static Vault getInstance(String name) {
 			Map<String, Vault> vaultsMap = _getVaultsMap();
