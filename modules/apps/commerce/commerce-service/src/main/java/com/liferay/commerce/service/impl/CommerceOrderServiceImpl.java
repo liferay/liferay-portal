@@ -109,11 +109,25 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 
 			_checkPermissions(accountEntry, groupId);
 
+			_portletResourcePermission.check(
+				getPermissionChecker(), groupId,
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
+			_portletResourcePermission.check(
+				getPermissionChecker(), groupId,
+				CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
+
 			accountEntryId = accountEntry.getAccountEntryId();
 		}
 		else {
 			_commerceOrderModelResourcePermission.check(
 				getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
+
+			_portletResourcePermission.check(
+				getPermissionChecker(), commerceOrder.getGroupId(),
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
+			_portletResourcePermission.check(
+				getPermissionChecker(), commerceOrder.getGroupId(),
+				CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
 		}
 
 		return commerceOrderLocalService.addOrUpdateCommerceOrder(
