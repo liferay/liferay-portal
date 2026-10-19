@@ -104,7 +104,11 @@ function _delete_tfstate_storage {
 
 	echo "Storage account ${storage_account_name} was deleted successfully."
 
-	if [[ $(az resource list --output tsv --query "length(@)" --resource-group "${resource_group_name}") -eq 0 ]]
+	local resource_count
+
+	resource_count=$(az resource list --output tsv --query "length(@)" --resource-group "${resource_group_name}")
+
+	if [ ${resource_count} -eq 0 ]
 	then
 		echo "Deleting resource group ${resource_group_name}."
 

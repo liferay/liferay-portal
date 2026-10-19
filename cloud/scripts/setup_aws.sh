@@ -51,11 +51,13 @@ function _configure_s3_bucket {
 
 	local kms_key_id
 
-	if ! kms_key_id=$( \
-		aws kms describe-key --key-id "${alias_name}" \
+	kms_key_id=$( \
+		aws kms list-aliases \
 			--output text \
-			--query 'KeyMetadata.KeyId' \
-			--region "${region}" 2>/dev/null)
+			--query "Aliases[?AliasName=='${alias_name}'].TargetKeyId" \
+			--region "${region}")
+
+	if [[ -z ${kms_key_id} ]]
 	then
 		_log "Creating KMS key for bucket ${bucket_name}."
 

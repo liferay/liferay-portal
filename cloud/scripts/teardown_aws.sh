@@ -60,9 +60,9 @@ function _delete_object_versions {
 				--bucket "${bucket_name}" \
 				--bypass-governance-retention \
 				--delete "file://${delete_request_file}" \
-				--output json \
-				--region "${region}" \
-				| jq --null-input '[inputs | (.Errors // [])[]] | length')
+				--output text \
+				--query 'length(Errors || `[]`)' \
+				--region "${region}")
 
 		if [ ${delete_error_count} -gt 0 ]
 		then
@@ -99,11 +99,8 @@ function _delete_tfstate_bucket {
 		aws s3api list-object-versions \
 			--bucket "${bucket_name}" \
 			--output json \
-			--region "${region}" \
-			| jq \
-				--compact-output \
-				--null-input \
-				'[inputs | (.Versions // [])[], (.DeleteMarkers // [])[] | {Key, VersionId}]')
+			--query '[Versions, DeleteMarkers][].{Key: Key, VersionId: VersionId}' \
+			--region "${region}")
 
 	local foreign_object_count
 
@@ -142,12 +139,13 @@ function _delete_tfstate_kms_key {
 
 	local kms_key_id
 
-	if ! kms_key_id=$( \
-		aws kms describe-key \
-			--key-id "${alias_name}" \
+	kms_key_id=$( \
+		aws kms list-aliases \
 			--output text \
-			--query 'KeyMetadata.KeyId' \
-			--region "${region}" 2> /dev/null)
+			--query "Aliases[?AliasName=='${alias_name}'].TargetKeyId" \
+			--region "${region}")
+
+	if [[ -z ${kms_key_id} ]]
 	then
 		echo "KMS key alias ${alias_name} does not exist. Skipping the deletion process."
 
