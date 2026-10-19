@@ -61,10 +61,10 @@ public class FindEntryStrutsActionTest {
 				"securityMode", "domain"
 			).build());
 
-		Assert.assertEquals(
-			"https://mail.google.com", _execute("https://mail.google.com"));
 		Assert.assertNotEquals(
 			"https://google.co", _execute("https://google.co"));
+		Assert.assertEquals(
+			"https://mail.google.com", _execute("https://mail.google.com"));
 	}
 
 	private String _execute(String noSuchEntryRedirect) throws Exception {
