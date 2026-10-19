@@ -492,63 +492,6 @@ public class AssetVocabularyGroupRelUtil {
 	}
 
 	/**
-	 * Returns the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; or throws a <code>NoSuchVocabularyGroupRelException</code> if it could not be found.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the matching asset vocabulary group rel
-	 * @throws NoSuchVocabularyGroupRelException if a matching asset vocabulary group rel could not be found
-	 */
-	public static AssetVocabularyGroupRel findByG_V(
-			long groupId, long vocabularyId)
-		throws com.liferay.asset.kernel.exception.
-			NoSuchVocabularyGroupRelException {
-
-		return getPersistence().findByG_V(groupId, vocabularyId);
-	}
-
-	/**
-	 * Returns the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching asset vocabulary group rel, or <code>null</code> if a matching asset vocabulary group rel could not be found
-	 */
-	public static AssetVocabularyGroupRel fetchByG_V(
-		long groupId, long vocabularyId, boolean useFinderCache) {
-
-		return getPersistence().fetchByG_V(
-			groupId, vocabularyId, useFinderCache);
-	}
-
-	/**
-	 * Removes the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the asset vocabulary group rel that was removed
-	 */
-	public static AssetVocabularyGroupRel removeByG_V(
-			long groupId, long vocabularyId)
-		throws com.liferay.asset.kernel.exception.
-			NoSuchVocabularyGroupRelException {
-
-		return getPersistence().removeByG_V(groupId, vocabularyId);
-	}
-
-	/**
-	 * Returns the number of asset vocabulary group rels where groupId = &#63; and vocabularyId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the number of matching asset vocabulary group rels
-	 */
-	public static int countByG_V(long groupId, long vocabularyId) {
-		return getPersistence().countByG_V(groupId, vocabularyId);
-	}
-
-	/**
 	 * Returns an ordered range of all the asset vocabulary group rels where groupId = &#63; and depotEntryType = &#63;.
 	 *
 	 * <p>
@@ -847,19 +790,6 @@ public class AssetVocabularyGroupRelUtil {
 		String uuid, long groupId) {
 
 		return getPersistence().fetchByUUID_G(uuid, groupId);
-	}
-
-	/**
-	 * Returns the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the matching asset vocabulary group rel, or <code>null</code> if a matching asset vocabulary group rel could not be found
-	 */
-	public static AssetVocabularyGroupRel fetchByG_V(
-		long groupId, long vocabularyId) {
-
-		return getPersistence().fetchByG_V(groupId, vocabularyId);
 	}
 
 	/**
@@ -1201,4 +1131,4 @@ public class AssetVocabularyGroupRelUtil {
 	private static volatile AssetVocabularyGroupRelPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:189209333
+// LIFERAY-SERVICE-BUILDER-HASH:1724667693

@@ -325,47 +325,6 @@ public interface AssetVocabularyGroupRelPersistence
 	public int countByVocabularyId(long vocabularyId);
 
 	/**
-	 * Returns the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; or throws a <code>NoSuchVocabularyGroupRelException</code> if it could not be found.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the matching asset vocabulary group rel
-	 * @throws NoSuchVocabularyGroupRelException if a matching asset vocabulary group rel could not be found
-	 */
-	public AssetVocabularyGroupRel findByG_V(long groupId, long vocabularyId)
-		throws NoSuchVocabularyGroupRelException;
-
-	/**
-	 * Returns the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching asset vocabulary group rel, or <code>null</code> if a matching asset vocabulary group rel could not be found
-	 */
-	public AssetVocabularyGroupRel fetchByG_V(
-		long groupId, long vocabularyId, boolean useFinderCache);
-
-	/**
-	 * Removes the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the asset vocabulary group rel that was removed
-	 */
-	public AssetVocabularyGroupRel removeByG_V(long groupId, long vocabularyId)
-		throws NoSuchVocabularyGroupRelException;
-
-	/**
-	 * Returns the number of asset vocabulary group rels where groupId = &#63; and vocabularyId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the number of matching asset vocabulary group rels
-	 */
-	public int countByG_V(long groupId, long vocabularyId);
-
-	/**
 	 * Returns an ordered range of all the asset vocabulary group rels where groupId = &#63; and depotEntryType = &#63;.
 	 *
 	 * <p>
@@ -598,19 +557,6 @@ public interface AssetVocabularyGroupRelPersistence
 		String uuid, long groupId) {
 
 		return fetchByUUID_G(uuid, groupId, true);
-	}
-
-	/**
-	 * Returns the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the matching asset vocabulary group rel, or <code>null</code> if a matching asset vocabulary group rel could not be found
-	 */
-	public default AssetVocabularyGroupRel fetchByG_V(
-		long groupId, long vocabularyId) {
-
-		return fetchByG_V(groupId, vocabularyId, true);
 	}
 
 	/**
@@ -962,4 +908,4 @@ public interface AssetVocabularyGroupRelPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-919059596
+// LIFERAY-SERVICE-BUILDER-HASH:225626307

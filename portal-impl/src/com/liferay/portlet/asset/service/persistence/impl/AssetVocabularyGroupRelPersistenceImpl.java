@@ -498,75 +498,6 @@ public class AssetVocabularyGroupRelPersistenceImpl
 			FinderCacheUtil.getFinderCache(), new Object[] {vocabularyId});
 	}
 
-	private UniquePersistenceFinder
-		<AssetVocabularyGroupRel, NoSuchVocabularyGroupRelException>
-			_uniquePersistenceFinderByG_V;
-
-	/**
-	 * Returns the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; or throws a <code>NoSuchVocabularyGroupRelException</code> if it could not be found.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the matching asset vocabulary group rel
-	 * @throws NoSuchVocabularyGroupRelException if a matching asset vocabulary group rel could not be found
-	 */
-	@Override
-	public AssetVocabularyGroupRel findByG_V(long groupId, long vocabularyId)
-		throws NoSuchVocabularyGroupRelException {
-
-		return _uniquePersistenceFinderByG_V.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, vocabularyId});
-	}
-
-	/**
-	 * Returns the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching asset vocabulary group rel, or <code>null</code> if a matching asset vocabulary group rel could not be found
-	 */
-	@Override
-	public AssetVocabularyGroupRel fetchByG_V(
-		long groupId, long vocabularyId, boolean useFinderCache) {
-
-		return _uniquePersistenceFinderByG_V.fetch(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, vocabularyId}, useFinderCache);
-	}
-
-	/**
-	 * Removes the asset vocabulary group rel where groupId = &#63; and vocabularyId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the asset vocabulary group rel that was removed
-	 */
-	@Override
-	public AssetVocabularyGroupRel removeByG_V(long groupId, long vocabularyId)
-		throws NoSuchVocabularyGroupRelException {
-
-		AssetVocabularyGroupRel assetVocabularyGroupRel = findByG_V(
-			groupId, vocabularyId);
-
-		return remove(assetVocabularyGroupRel);
-	}
-
-	/**
-	 * Returns the number of asset vocabulary group rels where groupId = &#63; and vocabularyId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param vocabularyId the vocabulary ID
-	 * @return the number of matching asset vocabulary group rels
-	 */
-	@Override
-	public int countByG_V(long groupId, long vocabularyId) {
-		return _uniquePersistenceFinderByG_V.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, vocabularyId});
-	}
-
 	private CollectionPersistenceFinder
 		<AssetVocabularyGroupRel, NoSuchVocabularyGroupRelException>
 			_collectionPersistenceFinderByG_D;
@@ -1247,23 +1178,6 @@ public class AssetVocabularyGroupRelPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					AssetVocabularyGroupRel::getVocabularyId));
 
-		_uniquePersistenceFinderByG_V = new UniquePersistenceFinder<>(
-			this,
-			createUniqueFinderPath(
-				FINDER_CLASS_NAME_ENTITY, "fetchByG_V",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"groupId", "vocabularyId"}, 0, 0, false,
-				AssetVocabularyGroupRel::getGroupId,
-				AssetVocabularyGroupRel::getVocabularyId),
-			_SQL_SELECT_ASSETVOCABULARYGROUPREL_WHERE, "",
-			new FinderColumn<>(
-				"assetVocabularyGroupRel.", "groupId", FinderColumn.Type.LONG,
-				"=", true, true, AssetVocabularyGroupRel::getGroupId),
-			new FinderColumn<>(
-				"assetVocabularyGroupRel.", "vocabularyId",
-				FinderColumn.Type.LONG, "=", true, true,
-				AssetVocabularyGroupRel::getVocabularyId));
-
 		_collectionPersistenceFinderByG_D = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1381,4 +1295,4 @@ public class AssetVocabularyGroupRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-732408384
+// LIFERAY-SERVICE-BUILDER-HASH:1600179607
