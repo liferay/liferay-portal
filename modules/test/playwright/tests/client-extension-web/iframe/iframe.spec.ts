@@ -103,7 +103,7 @@ test(
 
 			await editIFramePage.nameInput.clear();
 
-			await editIFramePage.publish(WaitAction.ERROR);
+			await editIFramePage.publish(WaitAction.MISSING_NAME);
 		});
 
 		await test.step('URL cannot be empty', async () => {

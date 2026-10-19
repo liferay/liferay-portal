@@ -22,6 +22,7 @@ export enum WaitAction {
 	ERROR,
 	INVALID_CHARACTER,
 	MISSING_HYPHEN,
+	MISSING_NAME,
 	NONE,
 	SUCCESS,
 	UPPERCASE_STARTING_LETTER,
@@ -140,6 +141,16 @@ export class EditClientExtensionsPage extends POM {
 				await waitForAlert(
 					this.page,
 					'must contain at least one hyphen.',
+					{
+						type: 'danger',
+					}
+				);
+				break;
+
+			case WaitAction.MISSING_NAME:
+				await waitForAlert(
+					this.page,
+					'Error:Client extension name is required.',
 					{
 						type: 'danger',
 					}

@@ -134,7 +134,7 @@ test(
 			'http://www.myplace.com/mycellrenderer.js'
 		);
 
-		await editFDSCellRendererPage.publish(WaitAction.ERROR);
+		await editFDSCellRendererPage.publish(WaitAction.MISSING_NAME);
 	}
 );
 

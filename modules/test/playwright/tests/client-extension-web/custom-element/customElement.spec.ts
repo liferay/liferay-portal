@@ -217,7 +217,7 @@ test(
 
 			await editCustomElementPage.nameInput.clear();
 
-			await editCustomElementPage.publish(WaitAction.ERROR);
+			await editCustomElementPage.publish(WaitAction.MISSING_NAME);
 		});
 
 		await test.step('HTML Element Name cannot be empty', async () => {

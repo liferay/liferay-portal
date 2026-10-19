@@ -162,6 +162,6 @@ test(
 			'https://www.example.com/test.js'
 		);
 
-		await editJSImportMapsPage.publish(WaitAction.ERROR);
+		await editJSImportMapsPage.publish(WaitAction.MISSING_NAME);
 	}
 );
