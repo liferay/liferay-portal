@@ -1789,25 +1789,25 @@
 			</library>
 			<library>
 				<file-name>com.liferay.mcp.server.rest.impl.jar!mcp-core.jar</file-name>
-				<version>1.0.1</version>
+				<version>1.1.5</version>
 				<project-name>Bundle io.modelcontextprotocol.sdk : mcp-core</project-name>
 				<project-url>https://github.com/modelcontextprotocol/java-sdk</project-url>
 				<licenses>
 					<license>
 						<license-name>MIT License</license-name>
-						<license-url>http://www.opensource.org/licenses/mit-license.php</license-url>
+						<license-url>https://www.opensource.org/licenses/mit-license.php</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.mcp.server.rest.impl.jar!mcp-json-jackson2.jar</file-name>
-				<version>1.0.1</version>
+				<version>1.1.5</version>
 				<project-name>Bundle io.modelcontextprotocol.sdk : mcp-json-jackson2</project-name>
 				<project-url>https://github.com/modelcontextprotocol/java-sdk</project-url>
 				<licenses>
 					<license>
 						<license-name>MIT License</license-name>
-						<license-url>http://www.opensource.org/licenses/mit-license.php</license-url>
+						<license-url>https://www.opensource.org/licenses/mit-license.php</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -5680,7 +5680,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.apache.commons.jar!org.apache.commons.fileupload.jar</file-name>
-				<version>1.5.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>1.5.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache Commons FileUpload Jakarta</project-name>
 				<project-url>https://commons.apache.org/proper/commons-fileupload/</project-url>
 				<licenses>
@@ -6513,7 +6513,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.jsoup.jar!jsoup.jar</file-name>
-				<version>1.23.1</version>
+				<version>1.23.2</version>
 				<project-name>jsoup Java HTML Parser</project-name>
 				<project-url>https://jsoup.org/</project-url>
 				<licenses>
@@ -9154,7 +9154,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/json-java.jar</file-name>
-				<version>20231013</version>
+				<version>20231013.LIFERAY-PATCHED-1</version>
 				<project-name>JSON in Java</project-name>
 				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
 				<licenses>
