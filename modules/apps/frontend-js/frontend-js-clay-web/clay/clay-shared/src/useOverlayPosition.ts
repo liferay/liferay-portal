@@ -115,12 +115,12 @@ export function useOverlayPosition(
 			if (constrainHeight) {
 				const {scrollTop} = ref.current;
 
-				points = constrainHeightToViewport(
+				points = constrainHeightToViewport({
+					getOffset,
 					points,
-					ref.current,
-					triggerRef.current,
-					getOffset
-				);
+					sourceElement: ref.current,
+					targetElement: triggerRef.current,
+				});
 
 				ref.current.scrollTop = scrollTop;
 			}

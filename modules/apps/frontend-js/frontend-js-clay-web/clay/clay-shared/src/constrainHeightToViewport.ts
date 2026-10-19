@@ -7,6 +7,13 @@ import type {AlignPoints} from './useOverlayPosition';
 
 type GetOffset = (points: AlignPoints) => [number, number];
 
+type Props = {
+	getOffset: GetOffset;
+	points: AlignPoints;
+	sourceElement: HTMLElement;
+	targetElement: HTMLElement;
+};
+
 type VerticalPoints = {
 	above: AlignPoints;
 	below: AlignPoints;
@@ -87,12 +94,12 @@ function restoreMaxHeight(sourceElement: HTMLElement) {
 	constrainedSources.delete(sourceElement);
 }
 
-export function constrainHeightToViewport(
-	points: AlignPoints,
-	sourceElement: HTMLElement,
-	targetElement: HTMLElement,
-	getOffset: GetOffset
-): AlignPoints {
+export function constrainHeightToViewport({
+	getOffset,
+	points,
+	sourceElement,
+	targetElement,
+}: Props): AlignPoints {
 	restoreMaxHeight(sourceElement);
 
 	const verticalPoints = getVerticalPoints(points);
