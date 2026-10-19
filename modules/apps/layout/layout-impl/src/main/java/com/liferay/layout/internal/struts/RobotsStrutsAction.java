@@ -33,7 +33,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author David Truong
  */
-@Component(property = "path=/portal/robots", service = StrutsAction.class)
+@Component(
+	property = {"layout.required=false", "path=/portal/robots"},
+	service = StrutsAction.class
+)
 public class RobotsStrutsAction implements StrutsAction {
 
 	@Override

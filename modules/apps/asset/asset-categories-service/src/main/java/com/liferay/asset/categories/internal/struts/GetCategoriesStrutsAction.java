@@ -29,7 +29,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eduardo Lundgren
  */
 @Component(
-	property = "path=/asset/get_categories", service = StrutsAction.class
+	property = {"layout.required=false", "path=/asset/get_categories"},
+	service = StrutsAction.class
 )
 public class GetCategoriesStrutsAction implements StrutsAction {
 

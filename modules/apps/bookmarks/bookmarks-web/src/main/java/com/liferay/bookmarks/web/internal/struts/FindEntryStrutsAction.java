@@ -20,7 +20,8 @@ import org.osgi.service.component.annotations.Component;
  * @author Sergio González
  */
 @Component(
-	property = "path=/bookmarks/find_entry", service = StrutsAction.class
+	property = {"layout.required=false", "path=/bookmarks/find_entry"},
+	service = StrutsAction.class
 )
 public class FindEntryStrutsAction implements StrutsAction {
 

@@ -23,7 +23,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Brian Wing Shun Chan
  */
 @Component(
-	property = "path=/bookmarks/open_entry", service = StrutsAction.class
+	property = {"layout.required=false", "path=/bookmarks/open_entry"},
+	service = StrutsAction.class
 )
 public class OpenEntryStrutsAction implements StrutsAction {
 

@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Brian Wing Shun Chan
  */
 @Component(
-	property = "path=/portal/session_tree_js_click",
+	property = {"layout.required=false", "path=/portal/session_tree_js_click"},
 	service = StrutsAction.class
 )
 public class SessionTreeJSClickStrutsAction implements StrutsAction {

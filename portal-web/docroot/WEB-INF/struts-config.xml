@@ -24,11 +24,11 @@
 		<!-- Portal -->
 
 		<action forward="portal.error" path="/portal/error" />
-		<action forward="/portal/expire_session.jsp" path="/portal/expire_session" />
-		<action forward="/portal/extend_session.jsp" path="/portal/extend_session" />
-		<action forward="/portal/j_login.jsp" path="/portal/j_login" />
+		<action forward="/portal/expire_session.jsp" layout-required="false" path="/portal/expire_session" />
+		<action forward="/portal/extend_session.jsp" layout-required="false" path="/portal/extend_session" />
+		<action forward="/portal/j_login.jsp" layout-required="false" path="/portal/j_login" />
 		<action forward="portal.j_login_error" path="/portal/j_login_error" />
-		<action path="/portal/json_service" type="com.liferay.portal.action.JSONServiceAction" />
+		<action layout-required="false" path="/portal/json_service" type="com.liferay.portal.action.JSONServiceAction" />
 
 		<action path="/portal/layout" type="com.liferay.portal.action.LayoutAction">
 			<forward name="portal.layout" path="portal.layout" />
@@ -40,7 +40,7 @@
 
 		<action path="/portal/login" type="com.liferay.portal.action.LoginAction" />
 		<action forward="portal.login_disabled" path="/portal/login_disabled" />
-		<action path="/portal/logout" type="com.liferay.portal.action.LogoutAction" />
+		<action layout-required="false" path="/portal/logout" type="com.liferay.portal.action.LogoutAction" />
 		<action forward="/portal/protected.jsp" path="/portal/protected" />
 		<action path="/portal/rate_entry" type="com.liferay.portal.action.RateEntryAction" />
 
@@ -48,7 +48,7 @@
 			<forward name="/portal/render_portlet" path="/portal/render_portlet.jsp" />
 		</action>
 
-		<action path="/portal/session_click" type="com.liferay.portal.action.SessionClickAction" />
+		<action layout-required="false" path="/portal/session_click" type="com.liferay.portal.action.SessionClickAction" />
 
 		<action path="/portal/setup_wizard" type="com.liferay.portal.action.SetupWizardAction">
 			<forward name="portal.setup_wizard" path="portal.setup_wizard" />

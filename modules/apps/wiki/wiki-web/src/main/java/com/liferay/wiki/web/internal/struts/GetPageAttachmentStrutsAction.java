@@ -32,7 +32,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jorge Ferrer
  */
 @Component(
-	property = "path=/wiki/get_page_attachment", service = StrutsAction.class
+	property = {"layout.required=false", "path=/wiki/get_page_attachment"},
+	service = StrutsAction.class
 )
 public class GetPageAttachmentStrutsAction implements StrutsAction {
 

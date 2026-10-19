@@ -24,7 +24,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alejandro Tardín
  */
 @Component(
-	property = "path=/portal/comment/discussion/get_editor",
+	property = {
+		"layout.required=false", "path=/portal/comment/discussion/get_editor"
+	},
 	service = StrutsAction.class
 )
 public class GetEditorStrutsAction implements StrutsAction {

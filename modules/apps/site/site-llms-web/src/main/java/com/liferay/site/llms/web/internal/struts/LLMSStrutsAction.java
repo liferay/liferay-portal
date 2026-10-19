@@ -30,7 +30,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Jonathan McCann
  */
-@Component(property = "path=/portal/llms", service = StrutsAction.class)
+@Component(
+	property = {"layout.required=false", "path=/portal/llms"},
+	service = StrutsAction.class
+)
 public class LLMSStrutsAction implements StrutsAction {
 
 	@Override
