@@ -964,6 +964,32 @@ public class LayoutLocalServiceWrapper
 		return null;
 	}
 
+	private FragmentEntryLink _fetchTargetLayoutFragmentEntryLink(
+		Layout sourceLayout, FragmentEntryLink sourceLayoutFragmentEntryLink,
+		Layout targetLayout) {
+
+		if ((sourceLayout.getClassPK() == targetLayout.getClassPK()) &&
+			(sourceLayout.getLaunchSetId() > 0) &&
+			(targetLayout.getLaunchSetId() == 0)) {
+
+			String originalFragmentEntryLinkERC =
+				sourceLayoutFragmentEntryLink.getOriginalFragmentEntryLinkERC();
+
+			if (Validator.isNull(originalFragmentEntryLinkERC)) {
+				return null;
+			}
+
+			return _fragmentEntryLinkLocalService.
+				fetchFragmentEntryLinkByExternalReferenceCode(
+					originalFragmentEntryLinkERC, targetLayout.getGroupId());
+		}
+
+		return _fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+			targetLayout.getGroupId(),
+			sourceLayoutFragmentEntryLink.getExternalReferenceCode(),
+			targetLayout.getPlid());
+	}
+
 	private Set<Long> _getFragmentEntryLinkIds(String data) {
 		if (Validator.isNull(data)) {
 			return Collections.emptySet();
@@ -1436,10 +1462,8 @@ public class LayoutLocalServiceWrapper
 					fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
 			FragmentEntryLink targetLayoutFragmentEntryLink =
-				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-					targetLayout.getGroupId(),
-					originalFragmentEntryLink.getExternalReferenceCode(),
-					targetLayout.getPlid());
+				_fetchTargetLayoutFragmentEntryLink(
+					sourceLayout, originalFragmentEntryLink, targetLayout);
 
 			if (targetLayoutFragmentEntryLink == null) {
 				newFragmentEntryLink =
