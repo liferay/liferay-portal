@@ -541,13 +541,9 @@ components:
                 comments:
                     default: false
                     type: boolean
-                cronExpression:
-                    description:
-                        A cron expression. When set, the publish is scheduled to recur instead of running immediately.
-                    type: string
                 dateRangeType:
                     description:
-                        The recipe used to resolve the publish window at every run, relaunch, and scheduled occurrence. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates.
+                        The recipe used to resolve the publish window at every run and relaunch. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates.
                     enum: [ALL, DATE_RANGE, FROM_LAST_PUBLISH_DATE, LAST]
                     type: string
                 deletions:
@@ -574,24 +570,10 @@ components:
                 ratings:
                     default: false
                     type: boolean
-                scheduleEndDate:
-                    description:
-                        When the scheduled publish stops recurring. Applies only when a cron expression is given.
-                    format: date-time
-                    type: string
-                scheduleStartDate:
-                    description:
-                        When the scheduled publish starts. Applies only when a cron expression is given. Defaults to now.
-                    format: date-time
-                    type: string
                 startDate:
                     description:
                         The publish window's start date.
                     format: date-time
-                    type: string
-                timeZoneId:
-                    description:
-                        The time zone the cron expression is evaluated in. Defaults to the server time zone.
                     type: string
             required:
                 -   name
@@ -709,11 +691,6 @@ components:
                     format: date-time
                     readOnly: true
                     type: string
-                publishProcessRequest:
-                    $ref: "#/components/schemas/PublishProcessRequest"
-                    description:
-                        The publish process request the scheduled publication was created with, including its cron expression and time zone, which can be reused to create a new scheduled publication.
-                    readOnly: true
                 scheduleEndDate:
                     description:
                         The date the scheduled publication stops firing.
@@ -726,6 +703,37 @@ components:
                     format: date-time
                     readOnly: true
                     type: string
+                scheduledPublishProcessRequest:
+                    $ref: "#/components/schemas/ScheduledPublishProcessRequest"
+                    description:
+                        The request the scheduled publish process was created with.
+                    readOnly: true
+            type: object
+        ScheduledPublishProcessRequest:
+            properties:
+                cronExpression:
+                    description:
+                        The cron expression the publication fires on.
+                    type: string
+                publishProcessRequest:
+                    $ref: "#/components/schemas/PublishProcessRequest"
+                    description:
+                        The publish process request to run every time the schedule fires.
+                scheduleEndDate:
+                    format: date-time
+                    type: string
+                scheduleStartDate:
+                    description:
+                        The date the publication starts firing. Defaults to now.
+                    format: date-time
+                    type: string
+                timeZoneId:
+                    description:
+                        The time zone the cron expression is evaluated in. Defaults to the server time zone.
+                    type: string
+            required:
+                -   cronExpression
+                -   publishProcessRequest
             type: object
         Status:
             properties:
@@ -2162,7 +2170,7 @@ paths:
             tags: ["PublishProcess"]
         post:
             description:
-                Starts a Publish to Live process on the specified site with the portlet data handlers returned by the publish preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches and scheduled occurrences. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run. When a cron expression is given, the publish is scheduled to recur instead of running immediately.
+                Starts a Publish to Live process on the specified site with the portlet data handlers returned by the publish preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
             operationId: postSitePublishProcess
             parameters:
                 -   in: path
@@ -2228,6 +2236,34 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/ScheduledPublishProcess"
                                 type: array
+            tags: ["ScheduledPublishProcess"]
+        post:
+            description:
+                Schedules a Publish to Live process on the specified site. The publish process request of the schedule runs every time the cron expression fires, evaluated in the given time zone between the schedule start and end dates, and its date range is resolved at every run as described for the publish process.
+            operationId: postSiteScheduledPublishProcess
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ScheduledPublishProcessRequest"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ScheduledPublishProcessRequest"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ScheduledPublishProcess"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ScheduledPublishProcess"
             tags: ["ScheduledPublishProcess"]
     "/sites/{siteExternalReferenceCode}/scheduled-publish-processes/{scheduledPublishProcessId}":
         delete:
