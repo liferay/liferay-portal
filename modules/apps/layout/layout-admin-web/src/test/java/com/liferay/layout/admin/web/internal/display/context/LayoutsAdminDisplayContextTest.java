@@ -5,6 +5,10 @@
 
 package com.liferay.layout.admin.web.internal.display.context;
 
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
+import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.IconItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItem;
@@ -96,12 +100,13 @@ public class LayoutsAdminDisplayContextTest {
 	public void setUp() throws Exception {
 		_setUpLanguageUtil();
 		_setUpPortalUtil();
+		_setUpThemeDisplay();
 
 		_layoutActionsHelper = Mockito.mock(LayoutActionsHelper.class);
 
 		_layoutsAdminDisplayContext = new LayoutsAdminDisplayContext(
 			null, _layoutActionsHelper, null, null, null,
-			_liferayPortletRequest, null, null);
+			_liferayPortletRequest, null, _siteConnectedGroupGroupProvider);
 	}
 
 	@Test
@@ -186,6 +191,56 @@ public class LayoutsAdminDisplayContextTest {
 		_testGetVerticalNavItemListWithDepotGroup();
 	}
 
+	@Test
+	@TestInfo("LPD-110074")
+	public void testHasRequiredVocabularies() throws Exception {
+		long classNameId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_portal.getClassNameId(Layout.class)
+		).thenReturn(
+			classNameId
+		);
+
+		long scopeGroupId = _themeDisplay.getScopeGroupId();
+
+		_testHasRequiredVocabularies(
+			_mockAssetVocabulary(classNameId, true, scopeGroupId), true,
+			new long[] {scopeGroupId});
+
+		long depotGroupId = RandomTestUtil.randomLong();
+
+		_testHasRequiredVocabularies(
+			_mockAssetVocabulary(classNameId, true, depotGroupId), true,
+			new long[] {scopeGroupId, depotGroupId});
+		_testHasRequiredVocabularies(
+			_mockAssetVocabulary(classNameId, false, depotGroupId), false,
+			new long[] {scopeGroupId, depotGroupId});
+	}
+
+	@Test
+	@TestInfo("LPD-110074")
+	public void testIsShowCategorization() throws Exception {
+		long classNameId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_portal.getClassNameId(Layout.class)
+		).thenReturn(
+			classNameId
+		);
+
+		AssetVocabulary assetVocabulary = _mockAssetVocabulary(
+			classNameId, true, RandomTestUtil.randomLong());
+
+		_testIsShowCategorization(assetVocabulary, 1, true);
+		_testIsShowCategorization(assetVocabulary, 0, false);
+
+		_testIsShowCategorization(
+			_mockAssetVocabulary(
+				classNameId, false, RandomTestUtil.randomLong()),
+			1, false);
+	}
+
 	private void _assertGetEditOrViewLayoutURL(Layout layout, String layoutMode)
 		throws Exception {
 
@@ -193,14 +248,15 @@ public class LayoutsAdminDisplayContextTest {
 
 		if (Validator.isNull(layoutMode)) {
 			Mockito.when(
-				_portal.getLayoutFullURL(layout, null)
+				_portal.getLayoutFullURL(layout, _themeDisplay)
 			).thenReturn(
 				friendlyURL
 			);
 		}
 		else {
 			Mockito.when(
-				_portal.getLayoutFullURL(layout.fetchDraftLayout(), null)
+				_portal.getLayoutFullURL(
+					layout.fetchDraftLayout(), _themeDisplay)
 			).thenReturn(
 				friendlyURL
 			);
@@ -391,6 +447,64 @@ public class LayoutsAdminDisplayContextTest {
 		return layoutsAdminDisplayContext;
 	}
 
+	private AssetVocabulary _mockAssetVocabulary(
+		long classNameId, boolean required, long vocabularyGroupId) {
+
+		AssetVocabulary assetVocabulary = Mockito.mock(AssetVocabulary.class);
+
+		Mockito.when(
+			assetVocabulary.getGroupId()
+		).thenReturn(
+			vocabularyGroupId
+		);
+
+		Mockito.when(
+			assetVocabulary.getVocabularyId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			assetVocabulary.isAssociatedToClassNameId(classNameId)
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			assetVocabulary.isRequired(
+				classNameId, 0, _themeDisplay.getScopeGroupId())
+		).thenReturn(
+			required
+		);
+
+		return assetVocabulary;
+	}
+
+	private void _mockSiteConnectedGroupGroupProvider(long[] groupIds)
+		throws Exception {
+
+		Mockito.when(
+			_siteConnectedGroupGroupProvider.
+				getCurrentAndAncestorSiteAndDepotGroupIds(
+					_themeDisplay.getScopeGroupId())
+		).thenReturn(
+			groupIds
+		);
+	}
+
+	private void _setUpAssetVocabularyServiceUtil(
+		AssetVocabulary assetVocabulary,
+		MockedStatic<AssetVocabularyServiceUtil>
+			assetVocabularyServiceUtilMockedStatic,
+		long[] groupIds) {
+
+		assetVocabularyServiceUtilMockedStatic.when(
+			() -> AssetVocabularyServiceUtil.getGroupVocabularies(groupIds)
+		).thenReturn(
+			Collections.singletonList(assetVocabulary)
+		);
+	}
+
 	private void _setUpDesignLibraryGroup(
 			long designLibraryGroupId, String title)
 		throws Exception {
@@ -526,6 +640,17 @@ public class LayoutsAdminDisplayContextTest {
 		);
 
 		portalUtil.setPortal(_portal);
+	}
+
+	private void _setUpThemeDisplay() {
+		Mockito.when(
+			_themeDisplay.getScopeGroupId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		_liferayPortletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
 	}
 
 	private void _testGetVerticalNavItemList() throws Exception {
@@ -686,6 +811,60 @@ public class LayoutsAdminDisplayContextTest {
 		}
 	}
 
+	private void _testHasRequiredVocabularies(
+			AssetVocabulary assetVocabulary, boolean expected, long[] groupIds)
+		throws Exception {
+
+		_mockSiteConnectedGroupGroupProvider(groupIds);
+
+		try (MockedStatic<AssetVocabularyServiceUtil>
+				assetVocabularyServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetVocabularyServiceUtil.class)) {
+
+			_setUpAssetVocabularyServiceUtil(
+				assetVocabulary, assetVocabularyServiceUtilMockedStatic,
+				groupIds);
+
+			Assert.assertEquals(
+				expected,
+				_layoutsAdminDisplayContext.hasRequiredVocabularies());
+		}
+	}
+
+	private void _testIsShowCategorization(
+			AssetVocabulary assetVocabulary, int count, boolean expected)
+		throws Exception {
+
+		long[] groupIds = {
+			_themeDisplay.getScopeGroupId(), assetVocabulary.getGroupId()
+		};
+
+		_mockSiteConnectedGroupGroupProvider(groupIds);
+
+		try (MockedStatic<AssetCategoryServiceUtil>
+				assetCategoryServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetCategoryServiceUtil.class);
+			MockedStatic<AssetVocabularyServiceUtil>
+				assetVocabularyServiceUtilMockedStatic = Mockito.mockStatic(
+					AssetVocabularyServiceUtil.class)) {
+
+			assetCategoryServiceUtilMockedStatic.when(
+				() -> AssetCategoryServiceUtil.getVocabularyCategoriesCount(
+					assetVocabulary.getGroupId(),
+					assetVocabulary.getVocabularyId())
+			).thenReturn(
+				count
+			);
+
+			_setUpAssetVocabularyServiceUtil(
+				assetVocabulary, assetVocabularyServiceUtilMockedStatic,
+				groupIds);
+
+			Assert.assertEquals(
+				expected, _layoutsAdminDisplayContext.isShowCategorization());
+		}
+	}
+
 	private static final Group _group = Mockito.mock(Group.class);
 	private static final MockedStatic<GroupLocalServiceUtil>
 		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
@@ -696,5 +875,9 @@ public class LayoutsAdminDisplayContextTest {
 	private LayoutsAdminDisplayContext _layoutsAdminDisplayContext;
 	private LiferayPortletRequest _liferayPortletRequest;
 	private Portal _portal;
+	private final SiteConnectedGroupGroupProvider
+		_siteConnectedGroupGroupProvider = Mockito.mock(
+			SiteConnectedGroupGroupProvider.class);
+	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 }
