@@ -79,11 +79,15 @@ function _delete_tfstate_bucket {
 	local configuration_json_file="${1}"
 
 	local bucket_name
-	local deployment_name
-	local region
 
 	bucket_name=$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")
+
+	local deployment_name
+
 	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
+
+	local region
+
 	region=$(jq --raw-output '.region' "${configuration_json_file}")
 
 	if ! aws s3api head-bucket --bucket "${bucket_name}" --region "${region}" &> /dev/null

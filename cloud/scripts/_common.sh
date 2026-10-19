@@ -290,11 +290,15 @@ function _install_liferay_platform_chart {
 	local configuration_json_file="${2}"
 
 	local platform_repo_url
-	local platform_target_revision
-	local platform_values
 
 	platform_repo_url=$(jq --raw-output '"oci://\(.artifacts.charts."liferay-platform".registry // error("artifacts.charts.liferay-platform.registry is missing"))/liferay-platform"' "${configuration_json_file}")
+
+	local platform_target_revision
+
 	platform_target_revision=$(jq --raw-output '.artifacts.charts."liferay-platform".version // error("artifacts.charts.liferay-platform.version is missing")' "${configuration_json_file}")
+
+	local platform_values
+
 	platform_values=$(run_terraform "${cloud}" "platform" output -json | jq --from-file "${SCRIPTS_DIR}/_${cloud}_platform_values.jq" --slurpfile configuration "${configuration_json_file}")
 
 	echo "Applying the Liferay platform root application."

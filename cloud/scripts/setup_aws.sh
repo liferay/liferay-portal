@@ -39,7 +39,6 @@ function main {
 }
 
 function _configure_s3_bucket {
-	local alias_name
 	local bucket_name="${1}"
 	local region="${2}"
 
@@ -47,7 +46,7 @@ function _configure_s3_bucket {
 
 	account_id="$(aws sts get-caller-identity --output text --query "Account")"
 
-	alias_name="alias/tfstate-${bucket_name}"
+	local alias_name="alias/tfstate-${bucket_name}"
 
 	local kms_key_id
 
@@ -149,9 +148,11 @@ function _create_tfstate_bucket {
 	local configuration_json_file="${1}"
 
 	local bucket_name
-	local region
 
 	bucket_name=$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")
+
+	local region
+
 	region=$(jq --raw-output '.region' "${configuration_json_file}")
 
 	if ! aws s3api head-bucket --bucket "${bucket_name}" --region "${region}" &> /dev/null

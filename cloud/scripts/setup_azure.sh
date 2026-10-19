@@ -81,13 +81,19 @@ function _create_tfstate_storage {
 	local configuration_json_file="${1}"
 
 	local container_name
-	local region
-	local resource_group_name
-	local storage_account_name
 
 	container_name=$(jq --raw-output '.tfstate.container_name' "${configuration_json_file}")
+
+	local region
+
 	region=$(jq --raw-output '.region' "${configuration_json_file}")
+
+	local resource_group_name
+
 	resource_group_name=$(jq --raw-output '.tfstate.resource_group_name' "${configuration_json_file}")
+
+	local storage_account_name
+
 	storage_account_name=$(jq --raw-output '.tfstate.storage_account_name' "${configuration_json_file}")
 
 	if ! az group show --name "${resource_group_name}" &> /dev/null
@@ -216,9 +222,11 @@ function _validate_setup_values {
 	local configuration_json_file="${1}"
 
 	local chart_registry
-	local chart_version
 
 	chart_registry=$(jq --raw-output '.artifacts.charts."liferay-azure-infrastructure-provider".registry // error("artifacts.charts.liferay-azure-infrastructure-provider.registry is missing")' "${configuration_json_file}")
+
+	local chart_version
+
 	chart_version=$(jq --raw-output '.artifacts.charts."liferay-azure-infrastructure-provider".version // error("artifacts.charts.liferay-azure-infrastructure-provider.version is missing")' "${configuration_json_file}")
 
 	helm \
