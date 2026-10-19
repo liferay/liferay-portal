@@ -968,7 +968,9 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			String externalReferenceCode = scopeId.substring(
 				scopeIdPrefix.length());
 
-			if (externalReferenceCode.equals(GroupConstants.DEFAULT)) {
+			if (externalReferenceCode.equals(GroupConstants.DEFAULT) ||
+				Validator.isNumber(externalReferenceCode)) {
+
 				return scopeId;
 			}
 
