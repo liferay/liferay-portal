@@ -8,6 +8,17 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: timeout="1200000"
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Applies a replication transport timeout of a million milliseconds or more as an integer
+        set:
+            tomcat.sessionReplication.transportTimeoutMs: 1200000
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
                     pattern: timeout="25000"
         documentSelector:
             path: kind
@@ -15,7 +26,7 @@ tests:
             value: StatefulSet
         it: Applies the configured replication transport timeout
         set:
-            cluster.sessionReplication.transportTimeoutMs: 25000
+            tomcat.sessionReplication.transportTimeoutMs: 25000
     -   asserts:
             -   matchRegex:
                     path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
@@ -54,9 +65,9 @@ tests:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Falls back to the default replication transport timeout when the cluster block is removed
+        it: Falls back to the default replication transport timeout when the session replication block is removed
         set:
-            cluster: null
+            tomcat.sessionReplication: null
     -   asserts:
             -   matchRegex:
                     path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]

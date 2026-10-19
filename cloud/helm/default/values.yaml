@@ -52,9 +52,6 @@ clientExtensions:
             namespace: dxp-operator-system
     policy:
         allowedNamespaces: []
-cluster:
-    sessionReplication:
-        transportTimeoutMs: 300000
 configmap:
     annotations: {}
     data: {}
@@ -209,7 +206,7 @@ customInitContainers:
                                     <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
                                         <Transport
                                             className="org.apache.catalina.tribes.transport.nio.PooledParallelSender"
-                                            timeout="{{ dig "sessionReplication" "transportTimeoutMs" 300000 (.cluster | default dict) }}"
+                                            timeout="{{ dig "sessionReplication" "transportTimeoutMs" 300000 (.tomcat | default dict) | int64 }}"
                                         />
                                     </Sender>
                                 </Channel>
@@ -448,6 +445,7 @@ network:
     hostnames: []
     hsts:
         enabled: true
+        value: max-age=31536000; includeSubDomains; preload
     perHostnameRoutes: false
     securityPolicyAuthorizationSpec: {}
     sessionPersistence:
@@ -549,6 +547,8 @@ startupProbe:
 tolerations: []
 tomcat:
     maxThreads: ""
+    sessionReplication:
+        transportTimeoutMs: 300000
 updateStrategy:
     type: RollingUpdate
 volumeClaimTemplates:

@@ -19,6 +19,19 @@ tests:
             network.hsts.enabled: false
     -   asserts:
             -   equal:
+                    path: spec.rules[0].filters[0].responseHeaderModifier.set[0].value
+                    value: max-age=63072000
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Sets a custom Strict-Transport-Security header value
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.hsts.value: max-age=63072000
+    -   asserts:
+            -   equal:
                     path: spec.rules[0].filters
                     value:
                         -   responseHeaderModifier:
