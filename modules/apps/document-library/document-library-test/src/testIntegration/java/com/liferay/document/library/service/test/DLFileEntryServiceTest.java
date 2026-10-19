@@ -17,6 +17,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -43,6 +44,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
 
 import java.io.ByteArrayInputStream;
@@ -329,11 +331,11 @@ public class DLFileEntryServiceTest {
 	public void testMoveFileEntryToRootFolderWhenItemGroupHasAddPermission()
 		throws Exception {
 
-		DLFolder dlFolder = _addDLFolder();
+		DLFolder dlFolder = DLTestUtil.addDLFolder(_group.getGroupId());
 
 		DLFileEntry dlFileEntry = addDLFileEntry(dlFolder.getFolderId(), false);
 
-		_user = _addUser(_group, dlFileEntry);
+		_user = _addUser(dlFileEntry, _group);
 
 		_alternativeGroup = GroupTestUtil.addGroup();
 
@@ -360,25 +362,35 @@ public class DLFileEntryServiceTest {
 	public void testMoveFileEntryToRootFolderWhenOnlyScopeGroupHasAddPermission()
 		throws Exception {
 
-		DLFolder dlFolder = _addDLFolder();
+		DLFolder dlFolder = DLTestUtil.addDLFolder(_group.getGroupId());
 
 		DLFileEntry dlFileEntry = addDLFileEntry(dlFolder.getFolderId(), false);
 
 		_alternativeGroup = GroupTestUtil.addGroup();
 
-		_user = _addUser(_alternativeGroup, dlFileEntry);
+		_user = _addUser(dlFileEntry, _alternativeGroup);
 
 		long fileEntryId = dlFileEntry.getFileEntryId();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> DLFileEntryServiceUtil.moveFileEntry(
-					fileEntryId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-					ServiceContextTestUtil.getServiceContext(
-						_alternativeGroup.getGroupId(), _user.getUserId())));
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> DLFileEntryServiceUtil.moveFileEntry(
+						fileEntryId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+						ServiceContextTestUtil.getServiceContext(
+							_alternativeGroup.getGroupId(),
+							_user.getUserId())));
+
+			Assert.assertEquals(
+				DLConstants.RESOURCE_NAME, mustHavePermission.resourceName);
+			Assert.assertEquals(
+				_group.getGroupId(), mustHavePermission.resourceId);
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.ADD_DOCUMENT},
+				mustHavePermission.actionId);
 		}
 
 		dlFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(fileEntryId);
@@ -520,16 +532,7 @@ public class DLFileEntryServiceTest {
 			new HashMap<String, Serializable>());
 	}
 
-	private DLFolder _addDLFolder() throws Exception {
-		return DLFolderLocalServiceUtil.addFolder(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			_group.getGroupId(), false,
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), false,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-	}
-
-	private User _addUser(Group group, DLFileEntry dlFileEntry)
+	private User _addUser(DLFileEntry dlFileEntry, Group group)
 		throws Exception {
 
 		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);

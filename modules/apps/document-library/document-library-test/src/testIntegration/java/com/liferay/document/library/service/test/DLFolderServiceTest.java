@@ -18,6 +18,7 @@ import com.liferay.document.library.kernel.service.DLFolderService;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.kernel.util.comparator.RepositoryModelReadCountComparator;
 import com.liferay.document.library.kernel.util.comparator.RepositoryModelTitleComparator;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.petra.string.StringPool;
@@ -54,6 +55,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
 
 import java.util.ArrayList;
@@ -151,9 +153,11 @@ public class DLFolderServiceTest {
 	public void testMoveFolderToRootFolderWhenItemGroupHasAddPermission()
 		throws Exception {
 
-		DLFolder dlFolder = _addChildDLFolder();
+		DLFolder dlFolder = DLTestUtil.addDLFolder(
+			_group.getGroupId(), _parentFolder.getFolderId(), false,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		_user = _addUser(_group, dlFolder);
+		_user = _addUser(dlFolder, _group);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
@@ -177,21 +181,33 @@ public class DLFolderServiceTest {
 	public void testMoveFolderToRootFolderWhenOnlyScopeGroupHasAddPermission()
 		throws Exception {
 
-		DLFolder dlFolder = _addChildDLFolder();
+		DLFolder dlFolder = DLTestUtil.addDLFolder(
+			_group.getGroupId(), _parentFolder.getFolderId(), false,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		_user = _addUser(_alternativeGroup, dlFolder);
+		_user = _addUser(dlFolder, _alternativeGroup);
 
 		long folderId = dlFolder.getFolderId();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> _dlFolderService.moveFolder(
-					folderId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-					ServiceContextTestUtil.getServiceContext(
-						_alternativeGroup.getGroupId(), _user.getUserId())));
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> _dlFolderService.moveFolder(
+						folderId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+						ServiceContextTestUtil.getServiceContext(
+							_alternativeGroup.getGroupId(),
+							_user.getUserId())));
+
+			Assert.assertEquals(
+				DLConstants.RESOURCE_NAME, mustHavePermission.resourceName);
+			Assert.assertEquals(
+				_group.getGroupId(), mustHavePermission.resourceId);
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.ADD_FOLDER},
+				mustHavePermission.actionId);
 		}
 
 		dlFolder = _dlFolderService.getFolder(folderId);
@@ -559,14 +575,6 @@ public class DLFolderServiceTest {
 		}
 	}
 
-	private DLFolder _addChildDLFolder() throws Exception {
-		return _dlFolderService.addFolder(
-			null, _group.getGroupId(), _group.getGroupId(), false,
-			_parentFolder.getFolderId(), StringUtil.randomString(),
-			StringPool.BLANK,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-	}
-
 	private DLFolder _addDLFolder() throws Exception {
 		return _dlFolderService.addFolder(
 			null, _group.getGroupId(), _group.getGroupId(), false,
@@ -575,7 +583,7 @@ public class DLFolderServiceTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
-	private User _addUser(Group group, DLFolder dlFolder) throws Exception {
+	private User _addUser(DLFolder dlFolder, Group group) throws Exception {
 		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
 
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
