@@ -156,6 +156,7 @@ export interface IRoomObjectEntry {
 
 export interface IRoomShareProps {
 	canAssignAllRoles?: boolean;
+	canEditSiteAdministrators?: boolean;
 	closeModal?: () => void;
 	readOnly?: boolean;
 	roomId: number;

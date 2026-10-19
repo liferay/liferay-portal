@@ -13,6 +13,8 @@
 		HashMapBuilder.<String, Object>put(
 			"canAssignAllRoles", canAssignAllRoles
 		).put(
+			"canEditSiteAdministrators", canEditSiteAdministrators
+		).put(
 			"readOnly", readOnly
 		).put(
 			"roomId", roomId

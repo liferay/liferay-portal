@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.liveusers.LiveUsers;
+import com.liferay.portal.security.membershippolicy.SiteMembershipPolicyUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -380,22 +381,31 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		if (permissionChecker.isGroupAdmin(group.getGroupId()) ||
-			permissionChecker.isGroupOwner(group.getGroupId())) {
-
+		if (permissionChecker.isGroupOwner(group.getGroupId())) {
 			return;
 		}
 
-		int rolePriority = DSRRoleAssignmentPermissionUtil.getRolePriority(
-			group.getGroupId(), contextUser.getUserId());
+		if (permissionChecker.isGroupAdmin(group.getGroupId())) {
+			if (!SiteMembershipPolicyUtil.isMembershipProtected(
+					permissionChecker, userId, group.getGroupId())) {
 
-		if (rolePriority <= DSRRoleAssignmentPermissionUtil.getRolePriority(
-				group.getGroupId(), userId)) {
-
-			throw new PrincipalException.MustHavePermission(
-				permissionChecker, Group.class.getName(), group.getGroupId(),
-				ActionKeys.ASSIGN_MEMBERS);
+				return;
+			}
 		}
+		else {
+			int rolePriority = DSRRoleAssignmentPermissionUtil.getRolePriority(
+				group.getGroupId(), contextUser.getUserId());
+
+			if (rolePriority > DSRRoleAssignmentPermissionUtil.getRolePriority(
+					group.getGroupId(), userId)) {
+
+				return;
+			}
+		}
+
+		throw new PrincipalException.MustHavePermission(
+			permissionChecker, Group.class.getName(), group.getGroupId(),
+			ActionKeys.ASSIGN_MEMBERS);
 	}
 
 	private void _checkPermission(Group group, String roleKey)

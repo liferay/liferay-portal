@@ -14,7 +14,9 @@ import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.UserGroupRolePermissionUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -35,20 +37,31 @@ public class DSRRoleAssignmentPermissionUtil {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		if (permissionChecker.isGroupAdmin(group.getGroupId()) ||
-			permissionChecker.isGroupOwner(group.getGroupId())) {
-
+		if (permissionChecker.isGroupOwner(group.getGroupId())) {
 			return;
 		}
 
-		Integer rolePriority = _rolePrioritiesMap.get(roleKey);
+		if (permissionChecker.isGroupAdmin(group.getGroupId())) {
+			if (UserGroupRolePermissionUtil.contains(
+					permissionChecker, group,
+					RoleLocalServiceUtil.getRole(
+						group.getCompanyId(), roleKey))) {
 
-		if ((rolePriority == null) ||
-			(rolePriority > getRolePriority(group.getGroupId(), userId))) {
-
-			throw new RoleAssignmentException(
-				"you-do-not-have-permission-to-assign-this-role");
+				return;
+			}
 		}
+		else {
+			Integer rolePriority = _rolePrioritiesMap.get(roleKey);
+
+			if ((rolePriority != null) &&
+				(rolePriority <= getRolePriority(group.getGroupId(), userId))) {
+
+				return;
+			}
+		}
+
+		throw new RoleAssignmentException(
+			"you-do-not-have-permission-to-assign-this-role");
 	}
 
 	public static int getRolePriority(long groupId, long userId)

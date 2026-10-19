@@ -78,6 +78,8 @@ public class ShareTag extends IncludeTag {
 			_canAssignAllRoles =
 				permissionChecker.isGroupAdmin(_groupId) ||
 				permissionChecker.isGroupOwner(_groupId);
+			_canEditSiteAdministrators = permissionChecker.isGroupOwner(
+				_groupId);
 			_readOnly =
 				DSRRoomUtil.isArchived(objectEntry) ||
 				DSRRoomUtil.isReadOnly(objectEntry, permissionChecker);
@@ -138,6 +140,7 @@ public class ShareTag extends IncludeTag {
 		super.cleanUp();
 
 		_canAssignAllRoles = false;
+		_canEditSiteAdministrators = false;
 		_groupId = 0;
 		_hasAssignMembersPermission = false;
 		_readOnly = false;
@@ -154,6 +157,9 @@ public class ShareTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-digital-sales-room-web:share:canAssignAllRoles",
 			_canAssignAllRoles);
+		httpServletRequest.setAttribute(
+			"liferay-digital-sales-room-web:share:canEditSiteAdministrators",
+			_canEditSiteAdministrators);
 		httpServletRequest.setAttribute(
 			"liferay-digital-sales-room-web:share:readOnly", _readOnly);
 		httpServletRequest.setAttribute(
@@ -185,6 +191,7 @@ public class ShareTag extends IncludeTag {
 	private static final Log _log = LogFactoryUtil.getLog(ShareTag.class);
 
 	private boolean _canAssignAllRoles;
+	private boolean _canEditSiteAdministrators;
 	private long _groupId;
 	private boolean _hasAssignMembersPermission;
 	private boolean _readOnly;

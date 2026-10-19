@@ -50,6 +50,7 @@ const MANAGEABLE_ROLE_KEYS: Record<string, string[]> = {
 	'DSR Content Contributor': ['Site Member'],
 	'DSR Room Collaborator': ['DSR Content Contributor', 'Site Member'],
 };
+const SITE_ADMINISTRATOR_ROLE_KEY = 'Site Administrator';
 const SITE_MEMBER_ROLE_KEY = 'Site Member';
 const SITE_OWNER_ROLE_KEY = 'Site Owner';
 
@@ -146,6 +147,7 @@ function isPastDate(date: string): boolean {
 
 function RoomShare({
 	canAssignAllRoles = false,
+	canEditSiteAdministrators = false,
 	closeModal,
 	readOnly = false,
 	roomId,
@@ -413,7 +415,12 @@ function RoomShare({
 	}, [loadUsers]);
 
 	const canEditMember = (user: IUserAccount): boolean => {
-		if (readOnly || user.roleKey === SITE_OWNER_ROLE_KEY) {
+		if (
+			readOnly ||
+			user.roleKey === SITE_OWNER_ROLE_KEY ||
+			(user.roleKey === SITE_ADMINISTRATOR_ROLE_KEY &&
+				!canEditSiteAdministrators)
+		) {
 			return false;
 		}
 
