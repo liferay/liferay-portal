@@ -40,10 +40,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Objects;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -82,13 +78,10 @@ public class PreviewFragmentCollectionMVCResourceCommand
 		String renderedPortalNormal = _renderPortalNormal(
 			httpServletRequest, httpServletResponse);
 
-		Document document = Jsoup.parse(renderedPortalNormal);
-
-		Element element = document.body();
-
-		element.html(renderedPreviewFragmentCollection);
-
-		ServletResponseUtil.write(httpServletResponse, document.html());
+		ServletResponseUtil.write(
+			httpServletResponse,
+			ThemeUtil.replaceBodyContent(
+				renderedPortalNormal, renderedPreviewFragmentCollection));
 	}
 
 	private String _renderPortalNormal(
