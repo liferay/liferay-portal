@@ -7,6 +7,9 @@ package com.liferay.adaptive.media.image.internal.configuration.util;
 
 import com.liferay.adaptive.media.image.configuration.AMImageConfigurationEntry;
 import com.liferay.adaptive.media.image.internal.configuration.AMImageConfigurationEntryImpl;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -175,6 +178,51 @@ public class AMImageConfigurationEntryParserUtilTest {
 	}
 
 	@Test
+	public void testGetConfigurationStringWithProperties() {
+
+		// A property value is encoded
+
+		Assert.assertEquals(
+			"test:desc:12345:adaptation-url-parameters=" +
+				"format%3Dwebp%26quality%3D80:enabled=true",
+			AMImageConfigurationEntryParserUtil.getConfigurationString(
+				new AMImageConfigurationEntryImpl(
+					"test", "desc", "12345",
+					HashMapBuilder.put(
+						"adaptation-url-parameters", "format=webp&quality=80"
+					).build(),
+					true)));
+
+		// A property with no value is left out
+
+		Assert.assertEquals(
+			"test:desc:12345:max-width=200:enabled=true",
+			AMImageConfigurationEntryParserUtil.getConfigurationString(
+				new AMImageConfigurationEntryImpl(
+					"test", "desc", "12345",
+					HashMapBuilder.put(
+						"adaptation-url-parameters", StringPool.BLANK
+					).put(
+						"max-width", "200"
+					).build(),
+					true)));
+
+		// The separators are encoded
+
+		Assert.assertEquals(
+			"test:desc:12345:adaptation-url-parameters=" +
+				"bg-color%3D255%3A0%3A0%3Bquality%3D80:enabled=true",
+			AMImageConfigurationEntryParserUtil.getConfigurationString(
+				new AMImageConfigurationEntryImpl(
+					"test", "desc", "12345",
+					HashMapBuilder.put(
+						"adaptation-url-parameters",
+						"bg-color=255:0:0;quality=80"
+					).build(),
+					true)));
+	}
+
+	@Test
 	public void testGetDisabledConfigurationStringWithMaxHeight() {
 		AMImageConfigurationEntry amImageConfigurationEntry =
 			new AMImageConfigurationEntryImpl(
@@ -275,6 +323,28 @@ public class AMImageConfigurationEntryParserUtilTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullString() {
 		AMImageConfigurationEntryParserUtil.parse(null);
+	}
+
+	@Test
+	public void testParseReadsBackTheSeparators() {
+		Map<String, String> properties = HashMapBuilder.put(
+			RandomTestUtil.randomString(),
+			StringBundler.concat(
+				RandomTestUtil.randomString(), ":",
+				RandomTestUtil.randomString(), ";",
+				RandomTestUtil.randomString())
+		).build();
+
+		AMImageConfigurationEntry amImageConfigurationEntry =
+			AMImageConfigurationEntryParserUtil.parse(
+				AMImageConfigurationEntryParserUtil.getConfigurationString(
+					new AMImageConfigurationEntryImpl(
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(), properties, true)));
+
+		Assert.assertEquals(
+			properties, amImageConfigurationEntry.getProperties());
 	}
 
 	@Test

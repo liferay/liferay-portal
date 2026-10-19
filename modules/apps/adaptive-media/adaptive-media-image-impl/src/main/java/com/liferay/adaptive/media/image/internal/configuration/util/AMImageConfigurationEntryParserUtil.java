@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +69,7 @@ public class AMImageConfigurationEntryParserUtil {
 	public static String getConfigurationString(
 		AMImageConfigurationEntry amImageConfigurationEntry) {
 
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler();
 
 		sb.append(URLCodec.encodeURL(amImageConfigurationEntry.getName()));
 		sb.append(StringPool.COLON);
@@ -78,25 +79,36 @@ public class AMImageConfigurationEntryParserUtil {
 		sb.append(amImageConfigurationEntry.getUUID());
 		sb.append(StringPool.COLON);
 
-		Map<String, String> properties =
-			amImageConfigurationEntry.getProperties();
+		Map<String, String> properties = new TreeMap<>(
+			amImageConfigurationEntry.getProperties());
 
-		if (properties.get("max-height") != null) {
-			int height = GetterUtil.getInteger(properties.get("max-height"));
+		boolean firstProperty = true;
 
-			sb.append("max-height=");
-			sb.append(height);
+		for (Map.Entry<String, String> entry : properties.entrySet()) {
+			String value = entry.getValue();
 
-			if (properties.get("max-width") != null) {
+			if (Validator.isNull(value)) {
+				continue;
+			}
+
+			if (!firstProperty) {
 				sb.append(StringPool.SEMICOLON);
 			}
-		}
 
-		if (properties.get("max-width") != null) {
-			int width = GetterUtil.getInteger(properties.get("max-width"));
+			firstProperty = false;
 
-			sb.append("max-width=");
-			sb.append(width);
+			String key = entry.getKey();
+
+			sb.append(key);
+
+			sb.append(StringPool.EQUAL);
+
+			if (key.equals("max-height") || key.equals("max-width")) {
+				sb.append(GetterUtil.getInteger(value));
+			}
+			else {
+				sb.append(URLCodec.encodeURL(value));
+			}
 		}
 
 		sb.append(":enabled=");
@@ -144,9 +156,15 @@ public class AMImageConfigurationEntryParserUtil {
 		Map<String, String> properties = new HashMap<>();
 
 		for (String attribute : attributes) {
-			String[] keyValuePair = _keyValueSeparatorPattern.split(attribute);
+			String[] keyValuePair = _keyValueSeparatorPattern.split(
+				attribute, 2);
 
-			properties.put(keyValuePair[0], keyValuePair[1]);
+			if (keyValuePair.length != 2) {
+				continue;
+			}
+
+			properties.put(
+				keyValuePair[0], HttpComponentsUtil.decodeURL(keyValuePair[1]));
 		}
 
 		boolean enabled = true;
