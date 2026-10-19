@@ -1,9 +1,10 @@
 {{- if .Values.providers.enabled -}}
+{{- $databaseProvider := include "database.crossplaneProvider" . -}}
 {{- $providers := list
     (dict "name" "provider-azure-alertsmanagement" "runtimeConfigName" "azure-alertsmanagement-config")
     (dict "name" "provider-azure-authorization" "runtimeConfigName" "azure-authorization-config")
     (dict "name" "provider-azure-dataprotection" "runtimeConfigName" "azure-dataprotection-config")
-    (dict "name" "provider-azure-dbforpostgresql" "runtimeConfigName" "azure-dbforpostgresql-config")
+    (dict "name" (printf "provider-azure-%s" $databaseProvider) "runtimeConfigName" (printf "azure-%s-config" $databaseProvider))
     (dict "name" "provider-azure-keyvault" "runtimeConfigName" "azure-keyvault-config")
     (dict "name" "provider-azure-managedidentity" "runtimeConfigName" "azure-managedidentity-config")
     (dict "name" "provider-azure-network" "runtimeConfigName" "azure-network-config")

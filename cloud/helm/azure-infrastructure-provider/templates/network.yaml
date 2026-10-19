@@ -3,7 +3,7 @@ apiVersion: network.azure.m.upbound.io/v1beta1
 kind: PrivateDNSZone
 metadata:
     annotations:
-        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     labels:
         app: liferay
@@ -32,7 +32,7 @@ apiVersion: network.azure.m.upbound.io/v1beta1
 kind: Subnet
 metadata:
     annotations:
-        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-80"
     labels:
         app: liferay
@@ -46,6 +46,6 @@ spec:
                 serviceDelegation:
                     actions:
                         -   Microsoft.Network/virtualNetworks/subnets/join/action
-                    name: Microsoft.DBforPostgreSQL/flexibleServers
+                    name: {{ include "database.flexibleServerType" $ }}
         resourceGroupName: {{ $deploymentContext.resourceGroupName | quote }}
         virtualNetworkName: {{ include "network.virtualNetworkName" $ }}

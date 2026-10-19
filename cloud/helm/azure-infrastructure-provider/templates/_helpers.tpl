@@ -1,5 +1,13 @@
+{{- define "database.crossplaneProvider" -}}
+{{- get (dict "mysql" "dbformysql" "postgresql" "dbforpostgresql") .Values.database.engine -}}
+{{- end -}}
+
+{{- define "database.flexibleServerType" -}}
+{{- get (dict "mysql" "Microsoft.DBforMySQL/flexibleServers" "postgresql" "Microsoft.DBforPostgreSQL/flexibleServers") .Values.database.engine -}}
+{{- end -}}
+
 {{- define "network.databasePrivateDnsZoneName" -}}
-{{- print "privatelink.postgres.database.azure.com" -}}
+{{- get (dict "mysql" "privatelink.mysql.database.azure.com" "postgresql" "privatelink.postgres.database.azure.com") .Values.database.engine -}}
 {{- end -}}
 
 {{- define "network.databaseSubnetName" -}}
