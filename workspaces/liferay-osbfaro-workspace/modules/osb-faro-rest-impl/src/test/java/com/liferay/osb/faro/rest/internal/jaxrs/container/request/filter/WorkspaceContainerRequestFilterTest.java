@@ -157,25 +157,25 @@ public class WorkspaceContainerRequestFilterTest {
 	@Test
 	public void testFilter() {
 		Assert.assertNull(_filter(null, null, _MEMBER_USER_ID));
-		Assert.assertNull(_filter(_GROUP_ID, null, _MEMBER_USER_ID));
+		Assert.assertNull(_filter(null, _GROUP_ID, _MEMBER_USER_ID));
 		Assert.assertNull(
-			_filter(_GROUP_ID, _ALL_USERS_CHANNEL_ID, _MEMBER_USER_ID));
-		Assert.assertNull(_filter(_GROUP_ID, null, _OMNIADMIN_USER_ID));
+			_filter(_ALL_USERS_CHANNEL_ID, _GROUP_ID, _MEMBER_USER_ID));
+		Assert.assertNull(_filter(null, _GROUP_ID, _OMNIADMIN_USER_ID));
 
-		_assertStatus(
-			Response.Status.NOT_FOUND, _filter(999L, null, _MEMBER_USER_ID));
-		_assertStatus(
-			Response.Status.UNAUTHORIZED,
-			_filter(_GROUP_ID, null, _GUEST_USER_ID));
-		_assertStatus(
-			Response.Status.FORBIDDEN,
-			_filter(_GROUP_ID, null, _OUTSIDER_USER_ID));
-		_assertStatus(
-			Response.Status.NOT_FOUND,
-			_filter(_GROUP_ID, "unknown", _MEMBER_USER_ID));
-		_assertStatus(
-			Response.Status.FORBIDDEN,
-			_filter(_GROUP_ID, _SELECT_USERS_CHANNEL_ID, _MEMBER_USER_ID));
+		_assertResponseStatus(
+			_filter(null, 999L, _MEMBER_USER_ID), Response.Status.NOT_FOUND);
+		_assertResponseStatus(
+			_filter(null, _GROUP_ID, _GUEST_USER_ID),
+			Response.Status.UNAUTHORIZED);
+		_assertResponseStatus(
+			_filter(null, _GROUP_ID, _OUTSIDER_USER_ID),
+			Response.Status.FORBIDDEN);
+		_assertResponseStatus(
+			_filter("unknown", _GROUP_ID, _MEMBER_USER_ID),
+			Response.Status.NOT_FOUND);
+		_assertResponseStatus(
+			_filter(_SELECT_USERS_CHANNEL_ID, _GROUP_ID, _MEMBER_USER_ID),
+			Response.Status.FORBIDDEN);
 
 		Mockito.when(
 			_userGroupRoleLocalService.getUserGroupRoles(
@@ -185,7 +185,7 @@ public class WorkspaceContainerRequestFilterTest {
 		);
 
 		Assert.assertNull(
-			_filter(_GROUP_ID, _SELECT_USERS_CHANNEL_ID, _MEMBER_USER_ID));
+			_filter(_SELECT_USERS_CHANNEL_ID, _GROUP_ID, _MEMBER_USER_ID));
 
 		Mockito.when(
 			_faroProject.isAllowedIPAddress(Mockito.any())
@@ -193,18 +193,19 @@ public class WorkspaceContainerRequestFilterTest {
 			false
 		);
 
-		_assertStatus(
-			Response.Status.FORBIDDEN,
-			_filter(_GROUP_ID, null, _MEMBER_USER_ID));
-		Assert.assertNull(_filter(_GROUP_ID, null, _OMNIADMIN_USER_ID));
+		_assertResponseStatus(
+			_filter(null, _GROUP_ID, _MEMBER_USER_ID),
+			Response.Status.FORBIDDEN);
+		Assert.assertNull(_filter(null, _GROUP_ID, _OMNIADMIN_USER_ID));
 	}
 
-	private void _assertStatus(Response.Status status, Response response) {
-		Assert.assertNotNull(response);
+	private void _assertResponseStatus(
+		Response response, Response.Status status) {
+
 		Assert.assertEquals(status.getStatusCode(), response.getStatus());
 	}
 
-	private Response _filter(Long groupId, String channelId, long userId) {
+	private Response _filter(String channelId, Long groupId, long userId) {
 		User user = Mockito.mock(User.class);
 
 		Mockito.when(
