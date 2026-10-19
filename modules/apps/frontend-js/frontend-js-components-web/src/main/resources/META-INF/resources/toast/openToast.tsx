@@ -3,11 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayAlert, {DisplayType} from '@clayui/alert';
+import ClayAlert, {
+	ClayToaster,
+	DisplayType,
+	IClayAlertProps,
+	createToastStore,
+} from '@clayui/alert';
 import {render} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
-import {buildFragment, uuidv4} from 'frontend-js-web';
+import {uuidv4} from 'frontend-js-web';
 import React, {MouseEvent, ReactNode} from 'react';
+import {flushSync} from 'react-dom';
 
 import './notification.scss';
 
@@ -27,57 +33,132 @@ const DEFAULT_TOAST_TYPE_TITLES = {
 
 const TOAST_AUTO_CLOSE_INTERVAL = 5000;
 
-const TPL_ALERT_CONTAINER = `
-	<div class="alert-container cadmin container">
-		<div class="alert-notifications alert-notifications-fixed" id=${DEFAULT_ALERT_CONTAINER_ID}></div>
-	</div>
-`;
+const toastStore = createToastStore();
 
-const getRootElement = ({
-	container,
-	containerId,
-}: {
-	container?: HTMLElement;
-	containerId?: string;
-}) => {
-	if (container || containerId) {
-		container =
-			container ||
-			(document.getElementById(containerId as string) as HTMLElement);
+let toasterNode: HTMLElement | null = null;
 
-		if (container) {
-			const child = document.createElement('div');
-
-			container.appendChild(child);
-
-			return child;
-		}
+const renderToasterIfMissing = () => {
+	if (toasterNode?.isConnected) {
+		return;
 	}
 
-	let alertFixed = document.getElementById(DEFAULT_ALERT_CONTAINER_ID);
+	Liferay.destroyComponent(DEFAULT_ALERT_CONTAINER_ID);
 
-	if (!alertFixed) {
-		alertFixed = buildFragment(TPL_ALERT_CONTAINER).querySelector(
-			'.alert-container.container'
-		) as HTMLElement;
+	toasterNode = document.body.appendChild(document.createElement('div'));
 
-		alertFixed = document.body.appendChild(alertFixed);
-	}
-
-	// Creates a fragment to prevent React from unmounting the alert container
-
-	container = document.createElement('div');
-
-	const fragmentContainer = document.querySelector(
-		`.alert-notifications.alert-notifications-fixed`
-	) as HTMLElement;
-
-	fragmentContainer.appendChild(container);
-
-	return container;
+	render(
+		<ClayToaster
+			className="cadmin"
+			id={DEFAULT_ALERT_CONTAINER_ID}
+			store={toastStore}
+		/>,
+		{
+			...DEFAULT_RENDER_DATA,
+			__reactDOMFlushSync: true,
+			componentId: DEFAULT_ALERT_CONTAINER_ID,
+		},
+		toasterNode
+	);
 };
 
 const rootsMap = new Map();
+
+const openContainerToast = ({
+	alertProps,
+	containerElement,
+	onClick,
+	onClose,
+	renderData,
+	toastProps,
+}: {
+	alertProps: IClayAlertProps;
+	containerElement: HTMLElement;
+	onClick: NonNullable<OpenToastProps['onClick']>;
+	onClose: NonNullable<OpenToastProps['onClose']>;
+	renderData: NonNullable<OpenToastProps['renderData']>;
+	toastProps: NonNullable<OpenToastProps['toastProps']>;
+}) => {
+	const id = uuidv4();
+
+	const rootElement = containerElement.appendChild(
+		document.createElement('div')
+	);
+
+	const cleanUp = () => {
+		if (rootsMap.has(id)) {
+			const root = rootsMap.get(id);
+
+			root.unmount();
+
+			rootsMap.delete(id);
+		}
+	};
+
+	const onCloseFn = (event: CloseEvent) => {
+		if (onClose) {
+			onClose({event});
+		}
+
+		if (!event || !event.defaultPrevented) {
+			rootElement.remove();
+
+			cleanUp();
+		}
+	};
+
+	const root = render(
+		<ClayAlert
+			{...alertProps}
+			className={classNames('mb-3', toastProps.className)}
+			onClick={(event) => onClick({event, onClose: onCloseFn})}
+			onClose={onCloseFn as () => void}
+		/>,
+		{...renderData, __reactDOMFlushSync: true},
+		rootElement
+	);
+
+	rootsMap.set(id, root);
+};
+
+const openGlobalToast = ({
+	alertProps,
+	onClick,
+	onClose,
+	renderData,
+}: {
+	alertProps: IClayAlertProps;
+	onClick: NonNullable<OpenToastProps['onClick']>;
+	onClose: NonNullable<OpenToastProps['onClose']>;
+	renderData: NonNullable<OpenToastProps['renderData']>;
+}) => {
+	const key: string = flushSync(() =>
+		toastStore.add({
+			...alertProps,
+			onClick: (event: MouseEvent) =>
+				onClick({
+					event,
+					onClose: (event) =>
+						toastStore.close(
+							key,
+							event as unknown as MouseEvent<HTMLButtonElement>
+						),
+				}),
+			onClose: ((event: CloseEvent) => onClose({event})) as () => void,
+		})
+	);
+
+	Liferay.component(
+		renderData.componentId ||
+			`__UNNAMED_COMPONENT__${renderData.portletId}__${uuidv4()}`,
+		{destroy: () => toastStore.remove(key)},
+		{
+			destroyOnNavigate: !renderData.portletId,
+			portletId: renderData.portletId,
+		}
+	);
+
+	renderToasterIfMissing();
+};
 
 export interface OpenToastProps {
 	autoClose?: number | boolean;
@@ -93,7 +174,7 @@ export interface OpenToastProps {
 		onClose: (event: CloseEvent) => void;
 	}) => void;
 	onClose?: ({event}: {event: CloseEvent}) => void;
-	renderData?: {portletId: string};
+	renderData?: {componentId?: string; portletId?: string};
 	title?: string;
 	toastProps?: {
 		actions?: ReactNode; // Element | React.JSX.Element;
@@ -135,34 +216,6 @@ function openToast({
 	type = 'success',
 	variant,
 }: OpenToastProps) {
-	const id = uuidv4();
-
-	const rootElement = getRootElement({container, containerId});
-
-	const cleanUp = () => {
-		if (rootsMap.has(id)) {
-			const root = rootsMap.get(id);
-
-			root.unmount();
-
-			rootsMap.delete(id);
-		}
-	};
-
-	const onCloseFn = (event: CloseEvent) => {
-		if (onClose) {
-			onClose({event});
-		}
-
-		if (!event || !event.defaultPrevented) {
-			if (!container || !containerId) {
-				rootElement.parentNode?.removeChild(rootElement);
-			}
-
-			cleanUp();
-		}
-	};
-
 	let titleHTML =
 		title === undefined ? DEFAULT_TOAST_TYPE_TITLES[type] : title;
 
@@ -174,37 +227,41 @@ function openToast({
 		titleHTML = '';
 	}
 
-	const root = render(
-		<ClayAlert
-			autoClose={autoClose}
-			closeButtonAriaLabel={Liferay.Language.get('close')}
-			displayType={type}
-			onClick={(event) => onClick({event, onClose: onCloseFn})}
-			onClose={onCloseFn as () => void}
-			variant={variant}
-			{...toastProps}
-			className={classNames('mb-3', toastProps?.className)}
-			role="alert"
-		>
-			<div
-				dangerouslySetInnerHTML={{
-					__html: `${titleHTML}${message}`,
-				}}
-			/>
-		</ClayAlert>,
-		{...renderData, __reactDOMFlushSync: true},
-		rootElement
+	const content = (
+		<div
+			dangerouslySetInnerHTML={{
+				__html: `${titleHTML}${message}`,
+			}}
+		/>
 	);
 
-	const alertElement =
-		rootElement.querySelector<HTMLElement>('[role="alert"]');
+	const alertProps: IClayAlertProps = {
+		autoClose,
+		autoFocus,
+		children: content,
+		closeButtonAriaLabel: Liferay.Language.get('close'),
+		displayType: type,
+		variant,
+		...toastProps,
+		role: 'alert',
+	};
 
-	if (autoFocus && alertElement) {
-		alertElement.setAttribute('tabindex', '-1');
-		alertElement.focus();
+	const containerElement =
+		container || (containerId && document.getElementById(containerId));
+
+	if (containerElement) {
+		openContainerToast({
+			alertProps,
+			containerElement,
+			onClick,
+			onClose,
+			renderData,
+			toastProps,
+		});
 	}
-
-	rootsMap.set(id, root);
+	else {
+		openGlobalToast({alertProps, onClick, onClose, renderData});
+	}
 }
 
 export default openToast;

@@ -113,15 +113,7 @@ export class Session {
 	}
 
 	private _destroyBanner() {
-		const toast = document.getElementById(TOAST_ID);
-
-		const toastRootElement = toast?.parentElement;
-
 		Liferay.destroyComponent(TOAST_ID);
-
-		if (toastRootElement) {
-			toastRootElement.remove();
-		}
 
 		this._banner = false;
 	}
