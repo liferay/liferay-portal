@@ -1585,7 +1585,7 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 			).put(
 				"scope", "0"
 			).put(
-				"search", "Paulo"
+				"search", "Paul"
 			).build(),
 			new SearchRequestBody());
 
