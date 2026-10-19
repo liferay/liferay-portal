@@ -24,6 +24,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -31,7 +32,9 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -39,6 +42,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.File;
@@ -354,6 +358,62 @@ public class DLFileEntryTypeServiceTest {
 		}
 		finally {
 			LocaleThreadLocal.setSiteDefaultLocale(locale);
+		}
+	}
+
+	@Test
+	public void testSearchWithoutViewPermission() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		serviceContext.setAddGuestPermissions(false);
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), DLFileEntryMetadata.class.getName());
+
+		DLFileEntryType dlFileEntryType =
+			_dlFileEntryTypeService.addFileEntryType(
+				null, _group.getGroupId(), ddmStructure.getStructureId(), null,
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				serviceContext);
+
+		Assert.assertEquals(
+			Collections.singletonList(dlFileEntryType),
+			_dlFileEntryTypeService.search(
+				TestPropsValues.getCompanyId(),
+				new long[] {_group.getGroupId()}, null, false,
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+
+		Assert.assertEquals(
+			1,
+			_dlFileEntryTypeService.searchCount(
+				TestPropsValues.getCompanyId(),
+				new long[] {_group.getGroupId()}, null, false,
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT));
+
+		User user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertEquals(
+				Collections.emptyList(),
+				_dlFileEntryTypeService.search(
+					TestPropsValues.getCompanyId(),
+					new long[] {_group.getGroupId()}, null, false,
+					DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+			Assert.assertEquals(
+				0,
+				_dlFileEntryTypeService.searchCount(
+					TestPropsValues.getCompanyId(),
+					new long[] {_group.getGroupId()}, null, false,
+					DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT));
 		}
 	}
 
