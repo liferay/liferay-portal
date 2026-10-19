@@ -149,7 +149,9 @@ public class LayoutLocalServiceWrapper
 			false, sourceLayout, sourceSegmentsExperiencesIds, targetLayout,
 			targetSegmentsExperiencesIds);
 
-		if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
+		if ((sourceLayout.getClassPK() == targetLayout.getPlid()) &&
+			(sourceLayout.getLaunchSetId() == 0)) {
+
 			_createLayoutContentVersion(sourceLayout);
 		}
 
