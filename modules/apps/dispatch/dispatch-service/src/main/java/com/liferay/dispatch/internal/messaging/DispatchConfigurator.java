@@ -115,9 +115,12 @@ public class DispatchConfigurator {
 				StorageType storageType =
 					dispatchTaskClusterMode.getStorageType();
 
-				if ((storageType == StorageType.MEMORY) ||
-					!_dispatchTriggerHelper.hasSchedulerJob(
-						dispatchTrigger, storageType)) {
+				if (storageType == StorageType.MEMORY) {
+					_dispatchTriggerHelper.addLocalSchedulerJob(
+						dispatchTrigger, dispatchTrigger.getTimeZoneId());
+				}
+				else if (!_dispatchTriggerHelper.hasSchedulerJob(
+							dispatchTrigger, storageType)) {
 
 					_dispatchTriggerHelper.addSchedulerJob(
 						dispatchTrigger, storageType,
@@ -143,8 +146,15 @@ public class DispatchConfigurator {
 				DispatchTaskClusterMode.valueOf(
 					dispatchTrigger.getDispatchTaskClusterMode());
 
-			_dispatchTriggerHelper.deleteSchedulerJob(
-				dispatchTrigger, dispatchTaskClusterMode.getStorageType());
+			StorageType storageType = dispatchTaskClusterMode.getStorageType();
+
+			if (storageType == StorageType.MEMORY) {
+				_dispatchTriggerHelper.deleteLocalSchedulerJob(dispatchTrigger);
+			}
+			else {
+				_dispatchTriggerHelper.deleteSchedulerJob(
+					dispatchTrigger, storageType);
+			}
 		}
 	}
 
