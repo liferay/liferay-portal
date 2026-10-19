@@ -690,6 +690,15 @@ public class CTCollectionLocalServiceImpl
 	}
 
 	@Override
+	public List<CTCollection> getCTCollections(
+		long companyId, long userId, int[] statuses, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		return ctCollectionPersistence.findByC_U_S(
+			companyId, userId, statuses, start, end, orderByComparator);
+	}
+
+	@Override
 	public List<CTMappingTableInfo> getCTMappingTableInfos(
 		long ctCollectionId) {
 
