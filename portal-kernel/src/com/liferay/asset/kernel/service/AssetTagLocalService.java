@@ -631,13 +631,6 @@ public interface AssetTagLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AssetTag> getTags(long classNameId, long classPK);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetTag> getTags(long groupId, long classNameId, String name);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetTag> getTags(
-		long groupId, long classNameId, String name, int start, int end);
-
 	/**
 	 * Returns the asset tags of the entity.
 	 *
@@ -764,4 +757,4 @@ public interface AssetTagLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1993427931
+// LIFERAY-SERVICE-BUILDER-HASH:931509264

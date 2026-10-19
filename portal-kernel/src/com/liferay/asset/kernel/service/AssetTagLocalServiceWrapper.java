@@ -816,21 +816,6 @@ public class AssetTagLocalServiceWrapper
 		return _assetTagLocalService.getTags(classNameId, classPK);
 	}
 
-	@Override
-	public java.util.List<AssetTag> getTags(
-		long groupId, long classNameId, String name) {
-
-		return _assetTagLocalService.getTags(groupId, classNameId, name);
-	}
-
-	@Override
-	public java.util.List<AssetTag> getTags(
-		long groupId, long classNameId, String name, int start, int end) {
-
-		return _assetTagLocalService.getTags(
-			groupId, classNameId, name, start, end);
-	}
-
 	/**
 	 * Returns the asset tags of the entity.
 	 *
@@ -1026,4 +1011,4 @@ public class AssetTagLocalServiceWrapper
 	private AssetTagLocalService _assetTagLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:280545498
+// LIFERAY-SERVICE-BUILDER-HASH:-1449043628

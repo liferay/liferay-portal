@@ -378,57 +378,11 @@ public class AssetEntryLocalServiceUtil {
 		return getService().getEntries(entryQuery);
 	}
 
-	public static List<AssetEntry> getEntries(
-		long[] groupIds, long[] classNameIds, long[] classTypeIds,
-		String keywords, String userName, String title, String description,
-		Boolean listable, boolean advancedSearch, boolean andOperator,
-		int start, int end, String orderByCol1, String orderByCol2,
-		String orderByType1, String orderByType2) {
-
-		return getService().getEntries(
-			groupIds, classNameIds, classTypeIds, keywords, userName, title,
-			description, listable, advancedSearch, andOperator, start, end,
-			orderByCol1, orderByCol2, orderByType1, orderByType2);
-	}
-
-	public static List<AssetEntry> getEntries(
-		long[] groupIds, long[] classNameIds, String keywords, String userName,
-		String title, String description, Boolean listable,
-		boolean advancedSearch, boolean andOperator, int start, int end,
-		String orderByCol1, String orderByCol2, String orderByType1,
-		String orderByType2) {
-
-		return getService().getEntries(
-			groupIds, classNameIds, keywords, userName, title, description,
-			listable, advancedSearch, andOperator, start, end, orderByCol1,
-			orderByCol2, orderByType1, orderByType2);
-	}
-
 	public static int getEntriesCount(
 		com.liferay.asset.kernel.service.persistence.AssetEntryQuery
 			entryQuery) {
 
 		return getService().getEntriesCount(entryQuery);
-	}
-
-	public static int getEntriesCount(
-		long[] groupIds, long[] classNameIds, long[] classTypeIds,
-		String keywords, String userName, String title, String description,
-		Boolean listable, boolean advancedSearch, boolean andOperator) {
-
-		return getService().getEntriesCount(
-			groupIds, classNameIds, classTypeIds, keywords, userName, title,
-			description, listable, advancedSearch, andOperator);
-	}
-
-	public static int getEntriesCount(
-		long[] groupIds, long[] classNameIds, String keywords, String userName,
-		String title, String description, Boolean listable,
-		boolean advancedSearch, boolean andOperator) {
-
-		return getService().getEntriesCount(
-			groupIds, classNameIds, keywords, userName, title, description,
-			listable, advancedSearch, andOperator);
 	}
 
 	public static AssetEntry getEntry(long entryId) throws PortalException {
@@ -482,18 +436,6 @@ public class AssetEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static List<AssetEntry> getTopViewedEntries(
-		String className, boolean asc, int start, int end) {
-
-		return getService().getTopViewedEntries(className, asc, start, end);
-	}
-
-	public static List<AssetEntry> getTopViewedEntries(
-		String[] className, boolean asc, int start, int end) {
-
-		return getService().getTopViewedEntries(className, asc, start, end);
 	}
 
 	public static boolean hasAssetTagAssetEntries(long tagId) {
@@ -836,4 +778,4 @@ public class AssetEntryLocalServiceUtil {
 	private static volatile AssetEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1660055984
+// LIFERAY-SERVICE-BUILDER-HASH:-159373524

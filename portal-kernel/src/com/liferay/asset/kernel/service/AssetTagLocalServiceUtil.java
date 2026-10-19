@@ -730,18 +730,6 @@ public class AssetTagLocalServiceUtil {
 		return getService().getTags(classNameId, classPK);
 	}
 
-	public static List<AssetTag> getTags(
-		long groupId, long classNameId, String name) {
-
-		return getService().getTags(groupId, classNameId, name);
-	}
-
-	public static List<AssetTag> getTags(
-		long groupId, long classNameId, String name, int start, int end) {
-
-		return getService().getTags(groupId, classNameId, name, start, end);
-	}
-
 	/**
 	 * Returns the asset tags of the entity.
 	 *
@@ -895,4 +883,4 @@ public class AssetTagLocalServiceUtil {
 	private static volatile AssetTagLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:637015822
+// LIFERAY-SERVICE-BUILDER-HASH:92155394
