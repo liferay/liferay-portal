@@ -127,14 +127,9 @@ public class ArchiveBinariesCachePortalControllerBuildRunnerTest
 		long allowedBuildStartTime =
 			_currentTimeMillis - (7 * _MILLISECONDS_PER_DAY);
 
-		for (long timestamp :
-				new long[] {
-					allowedBuildStartTime - 1, allowedBuildStartTime,
-					allowedBuildStartTime + 1
-				}) {
-
-			_testPreviousBuildHasCurrentSHARetiredBuild(timestamp);
-		}
+		_testPreviousBuildHasCurrentSHARetiredBuild(allowedBuildStartTime);
+		_testPreviousBuildHasCurrentSHARetiredBuild(allowedBuildStartTime + 1);
+		_testPreviousBuildHasCurrentSHARetiredBuild(allowedBuildStartTime - 1);
 	}
 
 	private JSONObject _newBuildJSONObject(String description, long timestamp) {
