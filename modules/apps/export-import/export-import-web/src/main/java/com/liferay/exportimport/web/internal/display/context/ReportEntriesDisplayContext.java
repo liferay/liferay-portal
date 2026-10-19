@@ -56,7 +56,7 @@ public class ReportEntriesDisplayContext {
 	public String getReportEntryAPIURL(String reportEntryId) {
 		return ScopeUtil.getAPIURL(
 			StringBundler.concat(
-				"/report-entry/", reportEntryId,
+				"/report-entries/", reportEntryId,
 				"?nestedFields=errorStacktrace,scope.label"));
 	}
 
