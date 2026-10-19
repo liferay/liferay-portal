@@ -10,8 +10,8 @@ import propsTransformer from '../../src/main/resources/META-INF/resources/js/Ass
 jest.mock('@liferay/frontend-js-item-selector-web');
 
 const ASSET_ENTRY_TYPES = [
-	{classNameId: 1, label: 'Web Content'},
-	{classNameId: 2, label: 'Blogs'},
+	{classNameId: 1, groupIds: [123], label: 'Web Content'},
+	{classNameId: 2, groupIds: [123], label: 'Blogs'},
 ];
 
 function open(additionalProps = {}) {
@@ -63,7 +63,9 @@ describe('AssetEntrySelectionDropdownPropsTransformer', () => {
 
 	it('pins the type and hides the filter when one type is permitted', () => {
 		const config = open({
-			assetEntryTypes: [{classNameId: 9, label: 'Document'}],
+			assetEntryTypes: [
+				{classNameId: 9, groupIds: [123], label: 'Document'},
+			],
 		});
 
 		expect(config.fdsProps.filters).toHaveLength(0);
@@ -73,7 +75,7 @@ describe('AssetEntrySelectionDropdownPropsTransformer', () => {
 		expect(url.searchParams.get('filter')).toContain('classNameId eq 9');
 	});
 
-	it('posts the selected asset entry ids and type on selection', () => {
+	it('posts the selected asset entry IDs on selection', () => {
 		const form = document.createElement('form');
 
 		document.nsfm = form;
@@ -82,13 +84,12 @@ describe('AssetEntrySelectionDropdownPropsTransformer', () => {
 
 		open().onItemsChange([
 			{assetEntryId: 10, className: 'com.example.A'},
-			{assetEntryId: 11, className: 'com.example.A'},
+			{assetEntryId: 11, className: 'com.example.B'},
 		]);
 
 		expect(Liferay.Util.postForm).toHaveBeenCalledWith(form, {
 			data: {
 				assetEntryIds: '10,11',
-				assetEntryType: 'com.example.A',
 				cmd: 'add-selection',
 				redirect: 'currentURL',
 			},
