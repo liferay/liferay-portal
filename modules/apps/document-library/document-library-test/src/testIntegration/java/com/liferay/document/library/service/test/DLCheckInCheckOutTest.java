@@ -17,11 +17,16 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFolderServiceUtil;
 import com.liferay.document.library.kernel.store.DLStoreRequest;
 import com.liferay.document.library.kernel.store.DLStoreUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.lock.Lock;
+import com.liferay.portal.kernel.lock.LockManagerUtil;
+import com.liferay.portal.kernel.lock.NoSuchLockException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -52,6 +57,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
+import com.liferay.portlet.documentlibrary.model.impl.DLFileEntryImpl;
+import com.liferay.portlet.documentlibrary.model.impl.DLFolderImpl;
 
 import java.io.InputStream;
 
@@ -493,6 +500,198 @@ public class DLCheckInCheckOutTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110147")
+	public void testGetFileEntryLockWithoutViewPermission() throws Exception {
+		_serviceContext.setAddGuestPermissions(false);
+
+		FileEntry fileEntry = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			fileEntry = createFileEntry(StringUtil.randomString());
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), _serviceContext);
+
+			Assert.assertNotNull(
+				DLFileEntryServiceUtil.getFileEntryLock(
+					fileEntry.getFileEntryId()));
+		}
+
+		_user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertNull(
+				DLFileEntryServiceUtil.getFileEntryLock(
+					fileEntry.getFileEntryId()));
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110147")
+	public void testRefreshFileEntryLock() throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			FileEntry fileEntry = createFileEntry(StringUtil.randomString());
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), _serviceContext);
+
+			Lock lock = LockManagerUtil.getLock(
+				DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+			_assertExpirationDate(
+				DLFileEntryImpl.LOCK_EXPIRATION_TIME,
+				DLAppServiceUtil.refreshFileEntryLock(
+					lock.getUuid(), lock.getCompanyId(), 0));
+			_assertExpirationDate(
+				DLFileEntryImpl.LOCK_EXPIRATION_TIME,
+				DLAppServiceUtil.refreshFileEntryLock(
+					lock.getUuid(), lock.getCompanyId(), -1));
+			_assertExpirationDate(
+				DLFileEntryImpl.LOCK_EXPIRATION_TIME,
+				DLAppServiceUtil.refreshFileEntryLock(
+					lock.getUuid(), lock.getCompanyId(), Long.MAX_VALUE));
+		}
+	}
+
+	@Test(expected = NoSuchLockException.class)
+	@TestInfo("LPD-110147")
+	public void testRefreshFileEntryLockWithFolderLock() throws Exception {
+		Lock lock = DLAppServiceUtil.lockFolder(
+			_group.getGroupId(), _folder.getFolderId());
+
+		DLFileEntryServiceUtil.refreshFileEntryLock(
+			lock.getUuid(), lock.getCompanyId(), 0);
+	}
+
+	@Test
+	@TestInfo("LPD-110147")
+	public void testRefreshFileEntryLockWithPermissionOverrideCheckout()
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(
+			"Overrider", RoleConstants.TYPE_REGULAR,
+			DLFileEntryConstants.getClassName(),
+			ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+			ActionKeys.OVERRIDE_CHECKOUT);
+
+		try {
+			UserLocalServiceUtil.setRoleUsers(
+				role.getRoleId(), new long[] {_overriderUser.getUserId()});
+
+			FileEntry fileEntry = null;
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					_authorUser)) {
+
+				fileEntry = createFileEntry(StringUtil.randomString());
+
+				DLAppServiceUtil.checkOutFileEntry(
+					fileEntry.getFileEntryId(), _serviceContext);
+			}
+
+			Lock lock = LockManagerUtil.getLock(
+				DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					_overriderUser)) {
+
+				_assertExpirationDate(
+					DLFileEntryImpl.LOCK_EXPIRATION_TIME,
+					DLAppServiceUtil.refreshFileEntryLock(
+						lock.getUuid(), lock.getCompanyId(), 0));
+			}
+		}
+		finally {
+			RoleLocalServiceUtil.deleteRole(role.getRoleId());
+		}
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-110147")
+	public void testRefreshFileEntryLockWithoutPermissionOverrideCheckout()
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			fileEntry = createFileEntry(StringUtil.randomString());
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), _serviceContext);
+		}
+
+		Lock lock = LockManagerUtil.getLock(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			DLAppServiceUtil.refreshFileEntryLock(
+				lock.getUuid(), lock.getCompanyId(), 0);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110147")
+	public void testRefreshFolderLock() throws Exception {
+		Lock lock = DLAppServiceUtil.lockFolder(
+			_group.getGroupId(), _folder.getFolderId());
+
+		_assertExpirationDate(
+			DLFolderImpl.LOCK_EXPIRATION_TIME,
+			DLAppServiceUtil.refreshFolderLock(
+				lock.getUuid(), lock.getCompanyId(), 0));
+		_assertExpirationDate(
+			DLFolderImpl.LOCK_EXPIRATION_TIME,
+			DLAppServiceUtil.refreshFolderLock(
+				lock.getUuid(), lock.getCompanyId(), -1));
+		_assertExpirationDate(
+			DLFolderImpl.LOCK_EXPIRATION_TIME,
+			DLAppServiceUtil.refreshFolderLock(
+				lock.getUuid(), lock.getCompanyId(), Long.MAX_VALUE));
+	}
+
+	@Test(expected = NoSuchLockException.class)
+	@TestInfo("LPD-110147")
+	public void testRefreshFolderLockWithFileEntryLock() throws Exception {
+		FileEntry fileEntry = createFileEntry(StringUtil.randomString());
+
+		DLAppServiceUtil.checkOutFileEntry(
+			fileEntry.getFileEntryId(), _serviceContext);
+
+		Lock lock = LockManagerUtil.getLock(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+		DLFolderServiceUtil.refreshFolderLock(
+			lock.getUuid(), lock.getCompanyId(), 0);
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-110147")
+	public void testRefreshFolderLockWithoutUpdatePermission()
+		throws Exception {
+
+		Lock lock = DLAppServiceUtil.lockFolder(
+			_group.getGroupId(), _folder.getFolderId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			DLAppServiceUtil.refreshFolderLock(
+				lock.getUuid(), lock.getCompanyId(), 0);
+		}
+	}
+
+	@Test
 	public void testUpdateFileEntry() throws Exception {
 		Folder folder = DLAppServiceUtil.getFolder(_folder.getFolderId());
 
@@ -686,6 +885,15 @@ public class DLCheckInCheckOutTest {
 			content.length(), null, null, null, _serviceContext);
 	}
 
+	private void _assertExpirationDate(long expirationTime, Lock lock) {
+		Date expirationDate = lock.getExpirationDate();
+
+		Assert.assertTrue(expirationDate.after(new Date()));
+		Assert.assertFalse(
+			expirationDate.after(
+				new Date(System.currentTimeMillis() + expirationTime)));
+	}
+
 	private void _renameDLStoreFile() throws Exception {
 		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(
 			_fileEntry.getFileEntryId());
@@ -723,5 +931,8 @@ public class DLCheckInCheckOutTest {
 	private User _overriderUser;
 
 	private ServiceContext _serviceContext;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
