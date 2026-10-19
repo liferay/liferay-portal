@@ -62,7 +62,7 @@ public class JSONSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testJSONDeprecatedPackagesCheck() throws Exception {
+	public void testJSONDeprecatedPackages() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(
 				"JSONDeprecatedPackages/package.testjson"

@@ -1249,7 +1249,7 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testSizeIsZeroCheck() throws Exception {
+	public void testSizeIsZero() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(
 				"SizeIsZero.testjava"

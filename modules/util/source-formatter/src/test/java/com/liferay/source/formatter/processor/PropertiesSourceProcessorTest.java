@@ -20,8 +20,8 @@ public class PropertiesSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testIncorrectWhitespaceCheck() throws Exception {
-		test("IncorrectWhitespaceCheck.testproperties");
+	public void testIncorrectWhitespace() throws Exception {
+		test("IncorrectWhitespace.testproperties");
 	}
 
 	@Test
@@ -71,8 +71,8 @@ public class PropertiesSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testStylingCheck() throws Exception {
-		test("StylingCheck.testproperties");
+	public void testStyling() throws Exception {
+		test("Styling.testproperties");
 	}
 
 }

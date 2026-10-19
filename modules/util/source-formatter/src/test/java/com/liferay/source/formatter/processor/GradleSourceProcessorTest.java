@@ -49,8 +49,8 @@ public class GradleSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testStylingCheck() throws Exception {
-		test("StylingCheck.testgradle");
+	public void testStyling() throws Exception {
+		test("Styling.testgradle");
 	}
 
 }
