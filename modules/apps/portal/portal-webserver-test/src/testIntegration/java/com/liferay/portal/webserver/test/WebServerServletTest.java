@@ -358,7 +358,8 @@ public class WebServerServletTest {
 		_testServiceGroupIdUUID("html", "video/mp4");
 		_testServicePortletFileEntry(ContentTypes.IMAGE_PNG);
 		_testServicePortletFileEntry(ContentTypes.TEXT_HTML);
-		_testServiceWithoutTrailingSlash();
+		_testServiceWithoutTrailingSlash("/documents");
+		_testServiceWithoutTrailingSlash("/image");
 	}
 
 	@Test
@@ -724,27 +725,6 @@ public class WebServerServletTest {
 			guestRole.getRoleId(), actionId);
 	}
 
-	private MockHttpServletResponse _service(
-			String requestURI, String servletPath)
-		throws Exception {
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.USER, TestPropsValues.getUser());
-		mockHttpServletRequest.setRequestURI(requestURI);
-		mockHttpServletRequest.setServletPath(servletPath);
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_webServerServlet.service(
-			mockHttpServletRequest, mockHttpServletResponse);
-
-		return mockHttpServletResponse;
-	}
-
 	private MockHttpServletResponse _serviceDocumentRequest(
 			FileEntry fileEntry, User user)
 		throws Exception {
@@ -816,6 +796,27 @@ public class WebServerServletTest {
 		mockHttpServletRequest.setRequestURI(
 			StringBundler.concat(
 				"/", repository.getRepositoryId(), "/", fileEntry.getUuid()));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_webServerServlet.service(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		return mockHttpServletResponse;
+	}
+
+	private MockHttpServletResponse _serviceServletPathRequest(
+			String requestURI, String servletPath)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.USER, TestPropsValues.getUser());
+		mockHttpServletRequest.setRequestURI(requestURI);
+		mockHttpServletRequest.setServletPath(servletPath);
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
@@ -1211,17 +1212,18 @@ public class WebServerServletTest {
 				fileEntry.getUuid()));
 	}
 
-	private void _testServiceWithoutTrailingSlash() throws Exception {
-		for (String servletPath : new String[] {"/documents", "/image"}) {
-			MockHttpServletResponse expectedMockHttpServletResponse = _service(
-				servletPath + StringPool.SLASH, servletPath);
-			MockHttpServletResponse actualMockHttpServletResponse = _service(
-				servletPath, servletPath);
+	private void _testServiceWithoutTrailingSlash(String servletPath)
+		throws Exception {
 
-			Assert.assertEquals(
-				expectedMockHttpServletResponse.getStatus(),
-				actualMockHttpServletResponse.getStatus());
-		}
+		MockHttpServletResponse expectedMockHttpServletResponse =
+			_serviceServletPathRequest(
+				servletPath + StringPool.SLASH, servletPath);
+		MockHttpServletResponse actualMockHttpServletResponse =
+			_serviceServletPathRequest(servletPath, servletPath);
+
+		Assert.assertEquals(
+			expectedMockHttpServletResponse.getStatus(),
+			actualMockHttpServletResponse.getStatus());
 	}
 
 	private void _updateGroupToPrivateSite(Group group) throws Exception {
