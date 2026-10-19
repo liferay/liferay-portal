@@ -369,7 +369,6 @@ public class RunningBuildDurationMonitorTest
 		_testRunningBuildDurationMonitorInvalidProperty(
 			"monitor[a].threshold[build.duration.maximum]",
 			RandomTestUtil.randomString());
-
 		_testRunningBuildDurationMonitorMissingProperty(
 			"monitor[a].parameter[cohort.name]");
 	}

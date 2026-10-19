@@ -1010,12 +1010,12 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			int maxRetries, int retryPeriodSeconds, int timeoutMillis)
 		throws IOException {
 
+		List<RunningBuild> runningBuilds = new ArrayList<>();
+
 		JSONObject computerAPIJSONObject =
 			JenkinsResultsParserUtil.toJSONObject(
 				getURL() + _COMPUTER_API_TREE_QUERY, false, maxRetries,
 				retryPeriodSeconds, timeoutMillis);
-
-		List<RunningBuild> runningBuilds = new ArrayList<>();
 
 		JSONArray computerJSONArray = computerAPIJSONObject.getJSONArray(
 			"computer");

@@ -29,7 +29,6 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 
 		_cohortName = getRequiredParameter(
 			"cohort.name", monitorConfig.getParameters());
-
 		_buildDurationMaximumSeconds = getLongValue(
 			"threshold", 24 * 60 * 60, "build.duration.maximum",
 			monitorConfig.getThresholds());
@@ -49,14 +48,13 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 		}
 
 		Map<String, String> exceptionMessages = new ConcurrentHashMap<>();
-
-		List<List<JenkinsMaster.RunningBuild>> runningBuildsList =
-			_readRunningBuilds(exceptionMessages, jenkinsMasters);
-
 		int longRunningBuildsCount = 0;
 		List<String> messages = new ArrayList<>();
 		int runningBuildsCount = 0;
 		List<MonitorResult.Status> statuses = new ArrayList<>();
+
+		List<List<JenkinsMaster.RunningBuild>> runningBuildsList =
+			_readRunningBuilds(exceptionMessages, jenkinsMasters);
 
 		for (int i = 0; i < jenkinsMasters.size(); i++) {
 			JenkinsMaster jenkinsMaster = jenkinsMasters.get(i);
