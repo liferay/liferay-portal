@@ -857,13 +857,6 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 			).toString(),
 			"headless-builder/applications", Http.Method.POST);
 
-		String path1 =
-			StringPool.FORWARD_SLASH +
-				StringUtil.toLowerCase(RandomTestUtil.randomString());
-		String path2 =
-			StringPool.FORWARD_SLASH +
-				StringUtil.toLowerCase(RandomTestUtil.randomString());
-
 		assertSuccessfulJSONObject(
 			JSONUtil.put(
 				"apiApplicationToAPIEndpoints",
@@ -944,7 +937,10 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 					).put(
 						"name", RandomTestUtil.randomString()
 					).put(
-						"path", path1
+						"path",
+						StringUtil.toLowerCase(
+							StringPool.FORWARD_SLASH +
+								RandomTestUtil.randomString())
 					).put(
 						"retrieveType",
 						APIApplication.Endpoint.RetrieveType.COLLECTION.
@@ -1002,7 +998,10 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 					).put(
 						"name", RandomTestUtil.randomString()
 					).put(
-						"path", path2
+						"path",
+						StringUtil.toLowerCase(
+							StringPool.FORWARD_SLASH +
+								RandomTestUtil.randomString())
 					).put(
 						"retrieveType",
 						APIApplication.Endpoint.RetrieveType.COLLECTION.
