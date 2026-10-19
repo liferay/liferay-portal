@@ -184,6 +184,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+import com.liferay.sites.kernel.util.Sites;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -473,7 +474,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			"LPD-72013", "LPD-74331", "LPD-75450", "LPD-77124", "LPD-77505",
 			"LPD-77576", "LPD-77852", "LPD-78667", "LPD-79415", "LPD-80061",
 			"LPD-81793", "LPD-83094", "LPD-97454", "LPD-101044", "LPD-101791",
-			"LPD-103694"
+			"LPD-103694", "LPD-110626"
 		}
 	)
 	public void testPutSiteSitePage() throws Exception {
@@ -5258,6 +5259,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				pageSpecification -> pageSpecification.getCustomFields(),
 				CustomField[].class),
 			testGroup.getGroupId(), putSitePage.getPageSpecifications());
+
+		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+			externalReferenceCode, testGroup.getGroupId());
+
+		Assert.assertEquals(
+			"true", layout.getTypeSettingsProperty(Sites.LAYOUT_UPDATEABLE));
 	}
 
 	private void
