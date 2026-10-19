@@ -16,12 +16,12 @@ import java.util.Map;
 public class ActionMapping {
 
 	public ActionMapping(
-		ModuleConfig moduleConfig, String forward, String path, Action action) {
+		Action action, String forward, ModuleConfig moduleConfig, String path) {
 
-		_moduleConfig = moduleConfig;
-		_forward = forward;
-		_path = path;
 		_action = action;
+		_forward = forward;
+		_moduleConfig = moduleConfig;
+		_path = path;
 	}
 
 	public void addActionForward(ActionForward actionForward) {

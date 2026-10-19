@@ -39,7 +39,7 @@ public class ModuleConfig {
 		ActionAdapter actionAdapter = _getActionAdaptor(path);
 
 		if (actionAdapter != null) {
-			return new ActionMapping(this, null, path, actionAdapter);
+			return new ActionMapping(actionAdapter, null, this, path);
 		}
 
 		return _actionMappings.get(path);

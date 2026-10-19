@@ -894,8 +894,8 @@ public class MainServlet extends HttpServlet {
 				}
 
 				ActionMapping actionMapping = new ActionMapping(
-					moduleConfig, actionElement.attributeValue("forward"),
-					actionElement.attributeValue("path"), action);
+					action, actionElement.attributeValue("forward"),
+					moduleConfig, actionElement.attributeValue("path"));
 
 				for (Element forwardElement :
 						actionElement.elements("forward")) {
