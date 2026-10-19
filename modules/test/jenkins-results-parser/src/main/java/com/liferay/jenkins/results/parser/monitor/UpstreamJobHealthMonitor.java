@@ -72,14 +72,14 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 		catch (Exception exception) {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
-					"Unable to read ", _controllerJobURL, ": ",
+					"Unable to read ", _remoteControllerJobURL, ": ",
 					exception.getMessage()),
 				null, MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
 		if (buildsJSONArray == null) {
 			return new MonitorResult(
-				"Unable to read " + _controllerJobURL, null,
+				"Unable to read " + _remoteControllerJobURL, null,
 				MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 

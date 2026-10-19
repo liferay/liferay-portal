@@ -57,7 +57,7 @@ public class JobHealthMonitor extends BaseMonitor {
 		catch (Exception exception) {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
-					"Unable to read ", _jenkinsMaster.getURL(), ": ",
+					"Unable to read ", _jenkinsMaster.getRemoteURL(), ": ",
 					JenkinsResultsParserUtil.getMessage(exception)),
 				null, MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
@@ -66,7 +66,7 @@ public class JobHealthMonitor extends BaseMonitor {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
 					"Job ", _jobName, " was not found on ",
-					_jenkinsMaster.getURL()),
+					_jenkinsMaster.getRemoteURL()),
 				null, MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 

@@ -9,6 +9,8 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
 import java.io.IOException;
 
+import java.net.URI;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +32,13 @@ public class ExternalStatusMonitor extends BaseMonitor {
 		Map<String, String> parameters = monitorConfig.getParameters();
 
 		_componentNames = _getComponentNames(parameters);
-		_statusPageURL = getRequiredURLParameter("url", parameters, "https://");
+
+		_componentsURL = getRequiredURLParameter("url", parameters, "https://");
+
+		URI uri = URI.create(_componentsURL);
+
+		_statusPageURL = JenkinsResultsParserUtil.combine(
+			uri.getScheme(), "://", uri.getAuthority());
 	}
 
 	@Override
@@ -92,7 +100,7 @@ public class ExternalStatusMonitor extends BaseMonitor {
 
 	@Override
 	protected String getDefaultLinkURL() {
-		return _statusPageURL;
+		return _componentsURL;
 	}
 
 	private Set<String> _getComponentNames(Map<String, String> parameters) {
@@ -117,7 +125,7 @@ public class ExternalStatusMonitor extends BaseMonitor {
 
 	private Map<String, String> _getComponentStatuses() throws IOException {
 		JSONObject statusPageJSONObject = JenkinsResultsParserUtil.toJSONObject(
-			_statusPageURL, false, _RETRIES_SIZE_MAX, null, null,
+			_componentsURL, false, _RETRIES_SIZE_MAX, null, null,
 			_SECONDS_RETRY_PERIOD, getAttemptTimeoutMillis(_RETRIES_SIZE_MAX),
 			null);
 
@@ -191,6 +199,7 @@ public class ExternalStatusMonitor extends BaseMonitor {
 	private static final int _SECONDS_RETRY_PERIOD = 1;
 
 	private final Set<String> _componentNames;
+	private final String _componentsURL;
 	private final String _statusPageURL;
 
 }

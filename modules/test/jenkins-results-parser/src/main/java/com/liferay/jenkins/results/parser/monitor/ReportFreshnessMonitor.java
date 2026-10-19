@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser.monitor;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,8 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
 					"Report ", _reportName, " was generated at ",
-					String.valueOf(generatedTimestamp),
+					JenkinsResultsParserUtil.toDateString(
+						new Date(generatedTimestamp)),
 					", which is in the future"),
 				null, MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
