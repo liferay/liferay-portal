@@ -84,9 +84,7 @@ public class RolesAdminPortletTest {
 		_ctCollection = _ctCollectionLocalService.addCTCollection(
 			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 			0, RandomTestUtil.randomString(), null);
-
 		_group = GroupTestUtil.addGroup();
-
 		_layout = _layoutLocalService.getLayout(TestPropsValues.getPlid());
 
 		_role = _roleLocalService.getRole(

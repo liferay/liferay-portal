@@ -80,12 +80,10 @@ public class UserGroupsAdminPortletTest {
 		_ctCollection = _ctCollectionLocalService.addCTCollection(
 			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 			0, RandomTestUtil.randomString(), null);
-
 		_group = GroupTestUtil.addGroup();
-
 		_layout = _layoutLocalService.getLayout(TestPropsValues.getPlid());
-
 		_user = UserTestUtil.addUser();
+
 		_userGroup = UserGroupTestUtil.addUserGroup(_group.getGroupId());
 	}
 
