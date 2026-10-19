@@ -21,6 +21,11 @@
 	>
 		<div class="copy-db-partition-company-content">
 			<div class="px-4 py-2">
+				<clay:alert
+					displayType="warning"
+					message="document-library-files-are-not-included-and-must-be-transferred-separately"
+				/>
+
 				<aui:model-context model="<%= Company.class %>" />
 
 				<aui:input name="name" required="<%= true %>" type="text" />

@@ -21,6 +21,11 @@
 	>
 		<div class="add-db-partition-company-content">
 			<div class="px-4 py-2">
+				<clay:alert
+					displayType="warning"
+					message="document-library-files-are-not-included-and-must-be-transferred-separately"
+				/>
+
 				<aui:input label="schema-name" name="schemaName" required="<%= true %>" type="text" />
 
 				<aui:input name="name" type="text" />
