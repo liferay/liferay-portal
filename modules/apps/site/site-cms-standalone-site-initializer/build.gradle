@@ -37,6 +37,7 @@ dependencies {
 	compileOnly project(":apps:marketplace:marketplace-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
 	compileOnly project(":apps:notification:notification-api")
+	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:on-demand-admin:on-demand-admin-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
