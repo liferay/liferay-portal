@@ -387,7 +387,7 @@ test(
 					dataSetLabel,
 				});
 
-				await visualizationModesPage.selectTab('Table');
+				await visualizationModesPage.editVisualizationMode('Table');
 
 				for (const fieldName of Object.keys(fields)) {
 					for (const cell of fields[fieldName]) {
@@ -452,7 +452,7 @@ test(
 					dataSetLabel,
 				});
 
-				await visualizationModesPage.selectTab('Cards');
+				await visualizationModesPage.editVisualizationMode('Cards');
 
 				for (const sectionLabel of Object.keys(sections)) {
 					const assignedFieldLocator =
@@ -484,7 +484,7 @@ test(
 					dataSetLabel,
 				});
 
-				await visualizationModesPage.selectTab('List');
+				await visualizationModesPage.editVisualizationMode('List');
 
 				for (const sectionLabel of Object.keys(sections)) {
 					const assignedFieldLocator =

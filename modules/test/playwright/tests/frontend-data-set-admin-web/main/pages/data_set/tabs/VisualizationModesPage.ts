@@ -27,7 +27,7 @@ export class VisualizationModesPage {
 	constructor(page: Page) {
 		this.addCustomFieldInput = page.getByPlaceholder('Type Field Here.');
 		this.addFieldsButton = page
-			.getByRole('tabpanel')
+			.locator('.table-visualization-mode')
 			.getByRole('list')
 			.getByLabel('New');
 		this.cardsVisualizationModeContainer = page.locator(
@@ -233,13 +233,41 @@ export class VisualizationModesPage {
 		});
 	}
 
-	async selectTab(tabLabel: string) {
-		const tab = this.container.getByRole('tab', {
-			exact: true,
-			name: tabLabel,
+	async editVisualizationMode(label: string) {
+		await this.container
+			.getByRole('button', {exact: true, name: `Edit ${label}`})
+			.click();
+
+		await expect(
+			this.container.getByRole('heading', {exact: true, name: label})
+		).toBeVisible();
+	}
+
+	async getVisualizationModeLabels() {
+		const dragButtons = this.container.getByRole('button', {
+			name: /^Drag /,
 		});
 
-		await tab.click();
+		return (
+			await dragButtons.evaluateAll((buttons) =>
+				buttons.map((button) => button.getAttribute('aria-label'))
+			)
+		).map((ariaLabel) => ariaLabel!.replace(/^Drag /, ''));
+	}
+
+	getVisualizationModeRowByIcon(icon: string) {
+		return this.container
+			.getByRole('row')
+			.filter({has: this.page.locator(`.lexicon-icon-${icon}`)});
+	}
+
+	getVisualizationModeRow(label: string) {
+		return this.container.getByRole('row').filter({
+			has: this.page.getByRole('button', {
+				exact: true,
+				name: `Edit ${label}`,
+			}),
+		});
 	}
 
 	async unSelectField({

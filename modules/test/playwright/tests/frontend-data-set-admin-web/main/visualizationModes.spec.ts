@@ -49,6 +49,97 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 	});
 });
 
+test('Order and enable visualization modes @LPD-107930', async ({
+	page,
+	visualizationModesPage,
+}) => {
+	await test.step('Navigate to visualization modes', async () => {
+		await visualizationModesPage.goto({
+			dataSetLabel,
+		});
+
+		await expect
+			.poll(() => visualizationModesPage.getVisualizationModeLabels())
+			.toEqual(['Cards', 'List', 'Table']);
+	});
+
+	await test.step('Disable every visualization mode but the table one', async () => {
+		for (const label of ['Cards', 'List']) {
+			const toggle = visualizationModesPage
+				.getVisualizationModeRow(label)
+				.getByRole('switch');
+
+			await toggle.click();
+
+			await expect(toggle).not.toBeChecked();
+		}
+
+		await expect(
+			visualizationModesPage
+				.getVisualizationModeRow('Table')
+				.getByRole('switch')
+		).toBeDisabled();
+	});
+
+	await test.step('Move the table visualization mode to the top', async () => {
+		await page.getByRole('button', {name: 'Drag Table'}).focus();
+
+		await page.keyboard.press('Enter');
+		await page.keyboard.press('ArrowUp');
+		await page.keyboard.press('ArrowUp');
+
+		await Promise.all([
+			page.waitForResponse(
+				(response) =>
+					response.request().method() === 'PATCH' && response.ok()
+			),
+			page.keyboard.press('Enter'),
+		]);
+
+		await expect
+			.poll(() => visualizationModesPage.getVisualizationModeLabels())
+			.toEqual(['Table', 'Cards', 'List']);
+	});
+
+	await test.step('Check the configuration persists', async () => {
+		await page.reload();
+
+		await visualizationModesPage.dataSetPage.selectTab(
+			'Visualization Modes'
+		);
+
+		await expect
+			.poll(() => visualizationModesPage.getVisualizationModeLabels())
+			.toEqual(['Table', 'Cards', 'List']);
+
+		await expect(
+			visualizationModesPage
+				.getVisualizationModeRow('Cards')
+				.getByRole('switch')
+		).not.toBeChecked();
+	});
+
+	await test.step('Open a visualization mode by clicking its row and go back', async () => {
+		await visualizationModesPage
+			.getVisualizationModeRow('List')
+			.getByText('List', {exact: true})
+			.click();
+
+		await expect(
+			visualizationModesPage.listVisualizationModeContainer
+		).toBeVisible();
+
+		await page
+			.getByRole('navigation', {name: 'Breadcrumb'})
+			.getByRole('button', {name: 'Visualization Modes'})
+			.click();
+
+		await expect
+			.poll(() => visualizationModesPage.getVisualizationModeLabels())
+			.toHaveLength(3);
+	});
+});
+
 test('Configure cards visualization mode @LPD-10735', async ({
 	page,
 	visualizationModesPage,
@@ -58,7 +149,7 @@ test('Configure cards visualization mode @LPD-10735', async ({
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Cards');
+		await visualizationModesPage.editVisualizationMode('Cards');
 
 		await expect(
 			visualizationModesPage.cardsVisualizationModeContainer
@@ -241,7 +332,7 @@ test('Configure list visualization mode @LPD-10735', async ({
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('List');
+		await visualizationModesPage.editVisualizationMode('List');
 
 		await expect(
 			visualizationModesPage.listVisualizationModeContainer
@@ -426,7 +517,7 @@ test('Configure table visualization mode @LPD-11049', async ({
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.editVisualizationMode('Table');
 
 		await expect(
 			visualizationModesPage.tableVisualizationModeContainer
@@ -573,7 +664,7 @@ test('Add a field and assert its added to the last position in the table and ass
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.editVisualizationMode('Table');
 
 		await expect(
 			visualizationModesPage.tableVisualizationModeContainer
@@ -695,7 +786,7 @@ test('Configure table visualization mode using search with array fields @LPD-117
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.editVisualizationMode('Table');
 
 		await expect(
 			visualizationModesPage.tableVisualizationModeContainer
@@ -764,7 +855,7 @@ test('Check cancel in table visualization mode', async ({
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.editVisualizationMode('Table');
 
 		await expect(
 			visualizationModesPage.tableVisualizationModeContainer
@@ -884,7 +975,7 @@ test('Check field edition in table visualization mode @LPS-176051, @LPS-178736',
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.editVisualizationMode('Table');
 
 		await expect(
 			visualizationModesPage.tableVisualizationModeContainer
@@ -1060,7 +1151,7 @@ test('Check modal field selection allows check and uncheck fields @LPS-174141, @
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.editVisualizationMode('Table');
 
 		await expect(
 			visualizationModesPage.tableVisualizationModeContainer
@@ -1136,7 +1227,7 @@ test('Assert the CellRenderer is displayed', async ({
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.editVisualizationMode('Table');
 
 		await expect(
 			visualizationModesPage.tableVisualizationModeContainer
@@ -1214,7 +1305,7 @@ test(
 				dataSetLabel,
 			});
 
-			await visualizationModesPage.selectTab('Table');
+			await visualizationModesPage.editVisualizationMode('Table');
 
 			await expect(
 				visualizationModesPage.tableVisualizationModeContainer
@@ -1379,6 +1470,10 @@ test(
 
 			await page.locator('nav.navbar').locator('li').nth(1).click();
 
+			await visualizationModesPage
+				.getVisualizationModeRowByIcon('table')
+				.click();
+
 			await expect(
 				visualizationModesPage
 					.getRowByText(SAMPLE_FIELD)
@@ -1400,6 +1495,10 @@ test(
 			await page.goto(dataSetPageUrl);
 
 			await page.locator('nav.navbar').locator('li').nth(1).click();
+
+			await visualizationModesPage
+				.getVisualizationModeRowByIcon('table')
+				.click();
 
 			await expect(
 				visualizationModesPage
@@ -1431,7 +1530,7 @@ test('Check more than 20 fields can be added @LPD-61085', async ({
 			dataSetLabel,
 		});
 
-		await visualizationModesPage.selectTab('Table');
+		await visualizationModesPage.editVisualizationMode('Table');
 
 		await page.getByText('Add Fields', {exact: true}).click();
 

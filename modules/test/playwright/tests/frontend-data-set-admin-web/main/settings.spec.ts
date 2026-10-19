@@ -67,7 +67,7 @@ test('If Default Visualization Mode is not configured allows user to navigate to
 		await settingsPage.goToVisualizationModesLink.click();
 
 		await expect(
-			visualizationModesPage.page.getByText('No fields added yet.')
+			visualizationModesPage.getVisualizationModeRow('Table')
 		).toBeInViewport();
 	});
 });
