@@ -965,7 +965,9 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 						AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
 							unpublishedDepotEntry.getGroupId()
 					}
-				).build());
+				).build(),
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					remoteDepotGroup.getGroupId());
 
 		Assert.assertArrayEquals(
 			new String[] {
@@ -973,6 +975,8 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 					GroupConstants.DEFAULT,
 				AssetPublisherHelper.SCOPE_ID_CHILD_GROUP_PREFIX +
 					remoteChildGroup.getGroupId(),
+				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+					remoteDepotGroup.getGroupId(),
 				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
 					remoteDepotGroup.getGroupId()
 			},
@@ -1757,7 +1761,7 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	}
 
 	private PortletPreferences _getRemoteStagingImportedPortletPreferences(
-			Map<String, String[]> preferenceMap)
+			Map<String, String[]> preferenceMap, String... legacyScopeIds)
 		throws Exception {
 
 		_setRemoteGroupExternalReferenceCode(
@@ -1781,6 +1785,15 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 
 				return value;
 			});
+
+		if (legacyScopeIds.length > 0) {
+			List<String> scopeIds = new ArrayList<>(
+				(List<String>)portletConfiguration.get("scopeIds"));
+
+			Collections.addAll(scopeIds, legacyScopeIds);
+
+			portletConfiguration.put("scopeIds", scopeIds);
+		}
 
 		ExportImportThreadLocal.setPortletStagingInProcess(false);
 
