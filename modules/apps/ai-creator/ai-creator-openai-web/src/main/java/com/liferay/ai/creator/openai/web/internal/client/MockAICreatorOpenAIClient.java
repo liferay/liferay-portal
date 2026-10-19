@@ -6,6 +6,7 @@
 package com.liferay.ai.creator.openai.web.internal.client;
 
 import com.liferay.ai.creator.openai.web.internal.exception.AICreatorOpenAIClientException;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -15,6 +16,7 @@ import java.io.IOException;
 
 import java.net.HttpURLConnection;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -62,17 +64,11 @@ public class MockAICreatorOpenAIClient implements AICreatorOpenAIClient {
 		if (Objects.equals(apiKey, "VALID_API_KEY") &&
 			Objects.equals(prompt, "USER_IMAGES")) {
 
-			return _getGenerations(
-				"http/localhost:8080/mock/url", numberOfImages);
-		}
+			String[] generations = new String[numberOfImages];
 
-		if (Validator.isNotNull(prompt) &&
-			prompt.startsWith(_USER_IMAGES_URL_)) {
+			Arrays.fill(generations, "data:image/png;base64," + _IMAGE);
 
-			return _getGenerations(
-				GetterUtil.getString(
-					prompt.substring(_USER_IMAGES_URL_.length())),
-				numberOfImages);
+			return generations;
 		}
 
 		throw _getAICreatorOpenAIClientException(prompt);
@@ -109,21 +105,6 @@ public class MockAICreatorOpenAIClient implements AICreatorOpenAIClient {
 			new UnsupportedOperationException("Unsupported key: " + key));
 	}
 
-	private String[] _getGenerations(String url, int numberOfImages) {
-		String[] generations = new String[numberOfImages];
-
-		if (numberOfImages > 1) {
-			for (int i = 0; i < numberOfImages; i++) {
-				generations[i] = url + "?t=" + i;
-			}
-		}
-		else {
-			generations[0] = url;
-		}
-
-		return generations;
-	}
-
 	private String _getSampleCompletion(long sleepMillis) {
 		if ((sleepMillis <= 0) || (sleepMillis > 10000)) {
 			return "OPENAI_API_COMPLETION_RESPONSE_CONTENT";
@@ -141,10 +122,13 @@ public class MockAICreatorOpenAIClient implements AICreatorOpenAIClient {
 		return "OPENAI_API_COMPLETION_RESPONSE_CONTENT";
 	}
 
+	private static final String _IMAGE = StringBundler.concat(
+		"iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAT0lEQVR42u3PQQkA",
+		"AAgEsPsb0v4pNIJvYbACS/W8FgEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB",
+		"AQEBAQEBAQEBAQEBAQEBAQGBywLV/pFLvCMoJQAAAABJRU5ErkJggg==");
+
 	private static final String _USER_CONTENT_SLEEP_MILLIS_PREFIX =
 		"USER_CONTENT_SLEEP_MILLIS_";
-
-	private static final String _USER_IMAGES_URL_ = "USER_IMAGES_URL_";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		MockAICreatorOpenAIClient.class);

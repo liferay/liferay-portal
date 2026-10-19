@@ -99,7 +99,7 @@ public class AICreatorOpenAIClientImpl implements AICreatorOpenAIClient {
 			int numberOfImages)
 		throws Exception {
 
-		String[] urls = new String[0];
+		String[] generations = new String[0];
 
 		Http.Options options = new Http.Options();
 
@@ -127,19 +127,14 @@ public class AICreatorOpenAIClientImpl implements AICreatorOpenAIClient {
 			for (int i = 0; i < dataJSONArray.length(); i++) {
 				JSONObject dataJSONObject = dataJSONArray.getJSONObject(i);
 
-				String url = dataJSONObject.getString("url");
-
-				if (Validator.isNull(url)) {
-					url =
-						"data:image/png;base64," +
-							dataJSONObject.getString("b64_json");
-				}
-
-				urls = ArrayUtil.append(urls, url);
+				generations = ArrayUtil.append(
+					generations,
+					"data:image/png;base64," +
+						dataJSONObject.getString("b64_json"));
 			}
 		}
 
-		return urls;
+		return generations;
 	}
 
 	@Override

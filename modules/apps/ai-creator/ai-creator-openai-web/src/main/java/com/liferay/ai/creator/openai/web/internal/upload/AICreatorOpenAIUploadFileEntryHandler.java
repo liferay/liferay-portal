@@ -34,7 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.net.URL;
 import java.net.URLConnection;
 
 import java.util.Date;
@@ -76,7 +75,10 @@ public class AICreatorOpenAIUploadFileEntryHandler
 		File file = null;
 
 		try (InputStream inputStream = new BufferedInputStream(
-				_openStream(urlPath))) {
+				new UnsyncByteArrayInputStream(
+					Base64.decode(
+						urlPath.substring(
+							urlPath.indexOf(CharPool.COMMA) + 1))))) {
 
 			long repositoryId = GetterUtil.getLong(
 				ParamUtil.getLong(portletRequest, "repositoryId"));
@@ -122,18 +124,6 @@ public class AICreatorOpenAIUploadFileEntryHandler
 				file.delete();
 			}
 		}
-	}
-
-	private InputStream _openStream(String urlPath) throws IOException {
-		if (urlPath.startsWith("data:")) {
-			return new UnsyncByteArrayInputStream(
-				Base64.decode(
-					urlPath.substring(urlPath.indexOf(CharPool.COMMA) + 1)));
-		}
-
-		URL url = new URL(urlPath);
-
-		return url.openStream();
 	}
 
 	private final DLAppService _dlAppService;
