@@ -274,6 +274,23 @@ public class FaroProjectLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
+	public FaroProject updateSalesforceAccountId(
+		long faroProjectId, String salesforceAccountId) {
+
+		FaroProject faroProject = faroProjectPersistence.fetchByPrimaryKey(
+			faroProjectId);
+
+		if (faroProject == null) {
+			return null;
+		}
+
+		faroProject.setSalesforceAccountId(salesforceAccountId);
+
+		return faroProjectPersistence.update(faroProject);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public FaroProject updateState(long faroProjectId, String state) {
 		FaroProject faroProject = faroProjectPersistence.fetchByPrimaryKey(
 			faroProjectId);

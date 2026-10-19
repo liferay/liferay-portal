@@ -193,6 +193,7 @@
 		<column name="incidentReportEmailAddresses" type="String" />
 		<column name="lastAccessTime" type="long" />
 		<column name="recommendationsEnabled" type="boolean" />
+		<column name="salesforceAccountId" type="String" />
 		<column name="serverLocation" type="String" />
 		<column name="services" type="String" />
 		<column name="state" type="String" />
@@ -211,6 +212,9 @@
 		</finder>
 		<finder name="CorpProjectUuid" return-type="FaroProject">
 			<finder-column name="corpProjectUuid" />
+		</finder>
+		<finder name="SalesforceAccountId" return-type="FaroProject" unique="true">
+			<finder-column name="salesforceAccountId" />
 		</finder>
 		<finder name="ServerLocation" return-type="Collection">
 			<finder-column name="serverLocation" />

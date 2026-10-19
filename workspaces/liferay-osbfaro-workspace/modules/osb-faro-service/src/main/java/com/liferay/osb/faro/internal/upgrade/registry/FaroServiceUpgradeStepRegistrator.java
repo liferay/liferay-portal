@@ -179,6 +179,11 @@ public class FaroServiceUpgradeStepRegistrator
 					PropsValues.DEFAULT_REGULAR_COLOR_SCHEME_ID,
 					"', themeId = '", PropsValues.DEFAULT_REGULAR_THEME_ID,
 					"' where themeId = 'osbfarotheme_WAR_osbfarotheme'")));
+
+		registry.register(
+			"21.0.1", "22.0.0",
+			UpgradeProcessFactory.addColumns(
+				"OSBFaro_FaroProject", "salesforceAccountId VARCHAR(75) null"));
 	}
 
 }
