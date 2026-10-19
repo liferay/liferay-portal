@@ -226,7 +226,6 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			"post", Entity.json(jsonObject.toString()));
 
 		Assert.assertEquals(400, response.getStatus());
-
 		Assert.assertEquals("invalid_client_metadata", parseError(response));
 
 		registerWebTarget = getRegisterWebTarget(clientId);
@@ -489,7 +488,6 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 					).toString()));
 
 			Assert.assertEquals(403, response.getStatus());
-
 			Assert.assertEquals(
 				OAuthConstants.ACCESS_DENIED, parseError(response));
 		}
@@ -1193,7 +1191,6 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				).toString()));
 
 		Assert.assertEquals(400, response.getStatus());
-
 		Assert.assertEquals("invalid_redirect_uri", parseError(response));
 	}
 
