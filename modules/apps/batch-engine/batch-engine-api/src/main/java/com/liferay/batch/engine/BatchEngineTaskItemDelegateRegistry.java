@@ -5,6 +5,8 @@
 
 package com.liferay.batch.engine;
 
+import com.liferay.petra.lang.SafeCloseable;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -13,7 +15,15 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface BatchEngineTaskItemDelegateRegistry {
 
-	public BatchEngineTaskItemDelegate<?> getBatchEngineTaskItemDelegate(
-		long companyId, String itemClassName, String taskItemDelegateName);
+	public BatchEngineTaskItemDelegateSafeCloseable
+		getBatchEngineTaskItemDelegateWithSafeCloseable(
+			long companyId, String itemClassName, String taskItemDelegateName);
+
+	public interface BatchEngineTaskItemDelegateSafeCloseable
+		extends SafeCloseable {
+
+		public BatchEngineTaskItemDelegate<?> getBatchEngineTaskItemDelegate();
+
+	}
 
 }

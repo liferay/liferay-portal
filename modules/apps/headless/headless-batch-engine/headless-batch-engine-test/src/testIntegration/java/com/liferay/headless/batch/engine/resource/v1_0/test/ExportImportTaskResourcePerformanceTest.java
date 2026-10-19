@@ -7,6 +7,7 @@ package com.liferay.headless.batch.engine.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry.BatchEngineTaskItemDelegateSafeCloseable;
 import com.liferay.headless.batch.engine.batch.engine.TestEntityBatchEngineTaskItemDelegate;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ExportTask;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
@@ -157,14 +158,27 @@ public class ExportImportTaskResourcePerformanceTest {
 
 	@Test
 	public void testPostExportTaskWithTestEntity() throws Exception {
-		TestEntityBatchEngineTaskItemDelegate
-			testEntityBatchEngineTaskItemDelegate =
-				_getTestEntityBatchEngineTaskItemDelegate();
-
 		int count = GetterUtil.getInteger(
 			_properties.getProperty("test.entities.count"));
 
-		testEntityBatchEngineTaskItemDelegate.generate(count);
+		try (BatchEngineTaskItemDelegateSafeCloseable
+				batchEngineTaskItemDelegateSafeCloseable =
+					_batchEngineTaskItemDelegateRegistry.
+						getBatchEngineTaskItemDelegateWithSafeCloseable(
+							0,
+							"com.liferay.headless.batch.engine.entity." +
+								"TestEntity",
+							"export-import-task-resource-performance-test-" +
+								"entities")) {
+
+			TestEntityBatchEngineTaskItemDelegate
+				testEntityBatchEngineTaskItemDelegate =
+					(TestEntityBatchEngineTaskItemDelegate)
+						batchEngineTaskItemDelegateSafeCloseable.
+							getBatchEngineTaskItemDelegate();
+
+			testEntityBatchEngineTaskItemDelegate.generate(count);
+		}
 
 		_testPostExportTask(
 			"com.liferay.headless.batch.engine.entity.TestEntity#" +
@@ -264,15 +278,6 @@ public class ExportImportTaskResourcePerformanceTest {
 		sb.append(StringPool.CLOSE_BRACKET);
 
 		return sb.toString();
-	}
-
-	private TestEntityBatchEngineTaskItemDelegate
-		_getTestEntityBatchEngineTaskItemDelegate() {
-
-		return (TestEntityBatchEngineTaskItemDelegate)
-			_batchEngineTaskItemDelegateRegistry.getBatchEngineTaskItemDelegate(
-				0, "com.liferay.headless.batch.engine.entity.TestEntity",
-				"export-import-task-resource-performance-test-entities");
 	}
 
 	private Map<String, String> _splitClassName(String className) {

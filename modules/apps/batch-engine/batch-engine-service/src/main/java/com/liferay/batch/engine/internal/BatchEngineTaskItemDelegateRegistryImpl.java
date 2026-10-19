@@ -7,6 +7,7 @@ package com.liferay.batch.engine.internal;
 
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry.BatchEngineTaskItemDelegateSafeCloseable;
 import com.liferay.batch.engine.internal.writer.BatchEngineTaskItemDelegateProvider;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
@@ -19,6 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,23 +36,51 @@ public class BatchEngineTaskItemDelegateRegistryImpl
 	implements BatchEngineTaskItemDelegateRegistry {
 
 	@Override
-	public BatchEngineTaskItemDelegate<?> getBatchEngineTaskItemDelegate(
-		long companyId, String itemClassName, String taskItemDelegateName) {
+	public BatchEngineTaskItemDelegateSafeCloseable
+		getBatchEngineTaskItemDelegateWithSafeCloseable(
+			long companyId, String itemClassName, String taskItemDelegateName) {
 
-		String companyIdKey = _encodeKey(
+		ServiceObjects<Object> serviceObjects = _getServiceObjects(
 			companyId, itemClassName, taskItemDelegateName);
 
-		if (_serviceTrackerMap.containsKey(companyIdKey)) {
-			return _serviceTrackerMap.getService(companyIdKey);
+		if (serviceObjects == null) {
+			return new BatchEngineTaskItemDelegateSafeCloseable() {
+
+				@Override
+				public void close() {
+				}
+
+				@Override
+				public BatchEngineTaskItemDelegate<?>
+					getBatchEngineTaskItemDelegate() {
+
+					return null;
+				}
+
+			};
 		}
 
-		String key = _encodeKey(null, itemClassName, taskItemDelegateName);
+		Object service = serviceObjects.getService();
 
-		if (_serviceTrackerMap.containsKey(key)) {
-			return _serviceTrackerMap.getService(key);
-		}
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
+			_batchEngineTaskItemDelegateProvider.toBatchEngineTaskItemDelegate(
+				service);
 
-		return null;
+		return new BatchEngineTaskItemDelegateSafeCloseable() {
+
+			@Override
+			public void close() {
+				serviceObjects.ungetService(service);
+			}
+
+			@Override
+			public BatchEngineTaskItemDelegate<?>
+				getBatchEngineTaskItemDelegate() {
+
+				return batchEngineTaskItemDelegate;
+			}
+
+		};
 	}
 
 	@Activate
@@ -76,32 +106,25 @@ public class BatchEngineTaskItemDelegateRegistryImpl
 					bundleContext.ungetService(serviceReference);
 				}
 			},
-			new ServiceTrackerCustomizer
-				<String, BatchEngineTaskItemDelegate<?>>() {
+			new ServiceTrackerCustomizer<Object, ServiceObjects<Object>>() {
 
 				@Override
-				public BatchEngineTaskItemDelegate<?> addingService(
-					ServiceReference<String> serviceReference) {
+				public ServiceObjects<Object> addingService(
+					ServiceReference<Object> serviceReference) {
 
-					return _batchEngineTaskItemDelegateProvider.
-						toBatchEngineTaskItemDelegate(
-							bundleContext.getService(serviceReference));
+					return bundleContext.getServiceObjects(serviceReference);
 				}
 
 				@Override
 				public void modifiedService(
-					ServiceReference<String> serviceReference,
-					BatchEngineTaskItemDelegate<?>
-						batchEngineTaskItemDelegate) {
+					ServiceReference<Object> serviceReference,
+					ServiceObjects<Object> serviceObjects) {
 				}
 
 				@Override
 				public void removedService(
-					ServiceReference<String> serviceReference,
-					BatchEngineTaskItemDelegate<?>
-						batchEngineTaskItemDelegate) {
-
-					bundleContext.ungetService(serviceReference);
+					ServiceReference<Object> serviceReference,
+					ServiceObjects<Object> serviceObjects) {
 				}
 
 			});
@@ -199,11 +222,30 @@ public class BatchEngineTaskItemDelegateRegistryImpl
 		return _getItemClass((ParameterizedType)genericSuperclassType);
 	}
 
+	private ServiceObjects<Object> _getServiceObjects(
+		long companyId, String itemClassName, String taskItemDelegateName) {
+
+		String companyIdKey = _encodeKey(
+			companyId, itemClassName, taskItemDelegateName);
+
+		if (_serviceTrackerMap.containsKey(companyIdKey)) {
+			return _serviceTrackerMap.getService(companyIdKey);
+		}
+
+		String key = _encodeKey(null, itemClassName, taskItemDelegateName);
+
+		if (_serviceTrackerMap.containsKey(key)) {
+			return _serviceTrackerMap.getService(key);
+		}
+
+		return null;
+	}
+
 	@Reference
 	private BatchEngineTaskItemDelegateProvider
 		_batchEngineTaskItemDelegateProvider;
 
-	private ServiceTrackerMap<String, BatchEngineTaskItemDelegate<?>>
+	private ServiceTrackerMap<String, ServiceObjects<Object>>
 		_serviceTrackerMap;
 
 }

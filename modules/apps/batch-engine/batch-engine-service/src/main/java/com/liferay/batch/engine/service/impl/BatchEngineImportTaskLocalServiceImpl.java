@@ -8,6 +8,7 @@ package com.liferay.batch.engine.service.impl;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry.BatchEngineTaskItemDelegateSafeCloseable;
 import com.liferay.batch.engine.ItemClassRegistry;
 import com.liferay.batch.engine.exception.BatchEngineImportTaskParametersException;
 import com.liferay.batch.engine.internal.sanitizer.BatchEngineTaskContentSanitizer;
@@ -70,15 +71,20 @@ public class BatchEngineImportTaskLocalServiceImpl
 			String taskItemDelegateName)
 		throws PortalException {
 
-		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-			_batchEngineTaskItemDelegateRegistry.getBatchEngineTaskItemDelegate(
-				companyId, className, taskItemDelegateName);
+		try (BatchEngineTaskItemDelegateSafeCloseable
+				batchEngineTaskItemDelegateSafeCloseable =
+					_batchEngineTaskItemDelegateRegistry.
+						getBatchEngineTaskItemDelegateWithSafeCloseable(
+							companyId, className, taskItemDelegateName)) {
 
-		return addBatchEngineImportTask(
-			externalReferenceCode, companyId, userId, batchSize, callbackURL,
-			className, content, contentType, executeStatus, fieldNameMappingMap,
-			importStrategy, operation, parameters, taskItemDelegateName,
-			batchEngineTaskItemDelegate);
+			return addBatchEngineImportTask(
+				externalReferenceCode, companyId, userId, batchSize,
+				callbackURL, className, content, contentType, executeStatus,
+				fieldNameMappingMap, importStrategy, operation, parameters,
+				taskItemDelegateName,
+				batchEngineTaskItemDelegateSafeCloseable.
+					getBatchEngineTaskItemDelegate());
+		}
 	}
 
 	@Override

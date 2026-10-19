@@ -11,6 +11,7 @@ import com.liferay.batch.engine.BatchEngineTaskContentType;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry.BatchEngineTaskItemDelegateSafeCloseable;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.ItemClassRegistry;
 import com.liferay.batch.engine.action.ImportTaskPostAction;
@@ -91,13 +92,20 @@ public class BatchEngineImportTaskExecutorImpl
 
 	@Override
 	public void execute(BatchEngineImportTask batchEngineImportTask) {
-		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-			_batchEngineTaskItemDelegateRegistry.getBatchEngineTaskItemDelegate(
-				batchEngineImportTask.getCompanyId(),
-				batchEngineImportTask.getClassName(),
-				batchEngineImportTask.getTaskItemDelegateName());
+		try (BatchEngineTaskItemDelegateSafeCloseable
+				batchEngineTaskItemDelegateSafeCloseable =
+					_batchEngineTaskItemDelegateRegistry.
+						getBatchEngineTaskItemDelegateWithSafeCloseable(
+							batchEngineImportTask.getCompanyId(),
+							batchEngineImportTask.getClassName(),
+							batchEngineImportTask.getTaskItemDelegateName())) {
 
-		execute(batchEngineImportTask, batchEngineTaskItemDelegate, true);
+			execute(
+				batchEngineImportTask,
+				batchEngineTaskItemDelegateSafeCloseable.
+					getBatchEngineTaskItemDelegate(),
+				true);
+		}
 	}
 
 	@Override

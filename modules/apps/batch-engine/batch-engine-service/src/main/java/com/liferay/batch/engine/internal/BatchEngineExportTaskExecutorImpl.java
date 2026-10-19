@@ -10,6 +10,7 @@ import com.liferay.batch.engine.BatchEngineTaskContentType;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry.BatchEngineTaskItemDelegateSafeCloseable;
 import com.liferay.batch.engine.ItemClassRegistry;
 import com.liferay.batch.engine.action.ExportTaskPostAction;
 import com.liferay.batch.engine.configuration.BatchEngineTaskCompanyConfiguration;
@@ -252,37 +253,25 @@ public class BatchEngineExportTaskExecutorImpl
 		Map<String, Serializable> parameters = _getParameters(
 			batchEngineExportTask);
 
-		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-			_batchEngineTaskItemDelegateRegistry.getBatchEngineTaskItemDelegate(
-				batchEngineExportTask.getCompanyId(),
-				batchEngineExportTask.getClassName(),
-				batchEngineExportTask.getTaskItemDelegateName());
-
-		if (batchEngineTaskItemDelegate == null) {
-			throw new IllegalStateException(
-				"No batch engine delegate available for class name " +
-					batchEngineExportTask.getClassName());
-		}
-
 		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
 			new UnsyncByteArrayOutputStream();
 
-		try (BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
+		try (BatchEngineTaskItemDelegateSafeCloseable
+				batchEngineTaskItemDelegateSafeCloseable =
+					_getBatchEngineTaskItemDelegateSafeCloseable(
+						batchEngineExportTask);
+
+			BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
 				_getBatchEngineExportTaskItemWriter(
 					batchEngineExportTask, parameters, settings,
 					unsyncByteArrayOutputStream);
 
-			SafeCloseable safeCloseable =
-				NestedFieldsContextThreadLocal.
-					setNestedFieldsContextWithSafeCloseable(
-						new NestedFieldsContext(
-							NestedFieldsContextUtil.limitDepth(
-								GetterUtil.getInteger(
-									parameters.get("batchNestedFieldsDepth"))),
-							NestedFieldsContextUtil.toList(
-								MapUtil.getString(
-									parameters, "batchNestedFields")),
-							batchEngineTaskItemDelegate.getVersion()))) {
+			SafeCloseable safeCloseable = _getNestedFieldsContextSafeCloseable(
+				batchEngineTaskItemDelegateSafeCloseable, parameters)) {
+
+			BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
+				batchEngineTaskItemDelegateSafeCloseable.
+					getBatchEngineTaskItemDelegate();
 
 			int maxItems = settings.getMaxItems();
 
@@ -454,6 +443,31 @@ public class BatchEngineExportTaskExecutorImpl
 			).build();
 	}
 
+	private BatchEngineTaskItemDelegateSafeCloseable
+		_getBatchEngineTaskItemDelegateSafeCloseable(
+			BatchEngineExportTask batchEngineExportTask) {
+
+		BatchEngineTaskItemDelegateSafeCloseable
+			batchEngineTaskItemDelegateSafeCloseable =
+				_batchEngineTaskItemDelegateRegistry.
+					getBatchEngineTaskItemDelegateWithSafeCloseable(
+						batchEngineExportTask.getCompanyId(),
+						batchEngineExportTask.getClassName(),
+						batchEngineExportTask.getTaskItemDelegateName());
+
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
+			batchEngineTaskItemDelegateSafeCloseable.
+				getBatchEngineTaskItemDelegate();
+
+		if (batchEngineTaskItemDelegate == null) {
+			throw new IllegalStateException(
+				"No batch engine delegate available for class name " +
+					batchEngineExportTask.getClassName());
+		}
+
+		return batchEngineTaskItemDelegateSafeCloseable;
+	}
+
 	private String _getCSVFileColumnDelimiter(long companyId) throws Exception {
 		BatchEngineTaskCompanyConfiguration
 			batchEngineTaskCompanyConfiguration =
@@ -514,6 +528,26 @@ public class BatchEngineExportTaskExecutorImpl
 		filteredParameters.remove("sort");
 
 		return filteredParameters;
+	}
+
+	private SafeCloseable _getNestedFieldsContextSafeCloseable(
+		BatchEngineTaskItemDelegateSafeCloseable
+			batchEngineTaskItemDelegateSafeCloseable,
+		Map<String, Serializable> parameters) {
+
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
+			batchEngineTaskItemDelegateSafeCloseable.
+				getBatchEngineTaskItemDelegate();
+
+		return NestedFieldsContextThreadLocal.
+			setNestedFieldsContextWithSafeCloseable(
+				new NestedFieldsContext(
+					NestedFieldsContextUtil.limitDepth(
+						GetterUtil.getInteger(
+							parameters.get("batchNestedFieldsDepth"))),
+					NestedFieldsContextUtil.toList(
+						MapUtil.getString(parameters, "batchNestedFields")),
+					batchEngineTaskItemDelegate.getVersion()));
 	}
 
 	private Map<String, Serializable> _getParameters(

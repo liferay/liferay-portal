@@ -7,8 +7,6 @@ package com.liferay.content.site.generator.internal.object.action.executor;
 
 import com.liferay.batch.engine.BatchEngineImportTaskExecutor;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
-import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
-import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
 import com.liferay.batch.engine.constants.BatchEngineImportTaskConstants;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
@@ -268,10 +266,6 @@ public class CommitCSGGenerationObjectActionExecutor
 		String taskItemDelegateName = configurationJSONObject.getString(
 			"taskItemDelegateName");
 
-		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-			_batchEngineTaskItemDelegateRegistry.getBatchEngineTaskItemDelegate(
-				companyId, className, taskItemDelegateName);
-
 		BatchEngineImportTask batchEngineImportTask =
 			_batchEngineImportTaskLocalService.addBatchEngineImportTask(
 				null, companyId, userId, 100, null, className,
@@ -286,8 +280,7 @@ public class CommitCSGGenerationObjectActionExecutor
 					configurationJSONObject.getJSONObject("parameters")),
 				taskItemDelegateName);
 
-		_batchEngineImportTaskExecutor.execute(
-			batchEngineImportTask, batchEngineTaskItemDelegate, true);
+		_batchEngineImportTaskExecutor.execute(batchEngineImportTask);
 
 		return batchEngineImportTask;
 	}
@@ -355,10 +348,6 @@ public class CommitCSGGenerationObjectActionExecutor
 	@Reference
 	private BatchEngineImportTaskLocalService
 		_batchEngineImportTaskLocalService;
-
-	@Reference
-	private BatchEngineTaskItemDelegateRegistry
-		_batchEngineTaskItemDelegateRegistry;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
