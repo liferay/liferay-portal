@@ -1738,7 +1738,7 @@ paths:
                                     $ref: "#/components/schemas/ReportEntry"
                                 type: array
             tags: ["ReportEntry"]
-    "/report-entry/{reportEntryId}":
+    "/report-entries/{reportEntryId}":
         get:
             description:
                 Retrieves the report entry with the specified ID.
