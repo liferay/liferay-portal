@@ -50,6 +50,7 @@ export default function LaunchEntryBaseVersionCell({
 		})
 			.then((launchEntryVersions) =>
 				openSelectLaunchEntryVersionModal({
+					baseVersionKey: itemData.baseVersionKey,
 					launchEntryVersions,
 					onSelect: (baseVersionKey) =>
 						rebaseLaunchEntry({
