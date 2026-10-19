@@ -358,10 +358,6 @@ public interface BookmarksFolderLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Object> getFoldersAndEntries(
-		long groupId, long folderId, int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Object> getFoldersAndEntries(
 		long groupId, long folderId, int status, int start, int end,
 		OrderByComparator<?> orderByComparator);
 
@@ -477,4 +473,4 @@ public interface BookmarksFolderLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-221618465
+// LIFERAY-SERVICE-BUILDER-HASH:1409271081

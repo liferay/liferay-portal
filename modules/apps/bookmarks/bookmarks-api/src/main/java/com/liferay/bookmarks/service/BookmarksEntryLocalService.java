@@ -345,20 +345,6 @@ public interface BookmarksEntryLocalService
 	public int getFoldersEntriesCount(long groupId, List<Long> folderIds);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BookmarksEntry> getGroupEntries(
-		long groupId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BookmarksEntry> getGroupEntries(
-		long groupId, long userId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupEntriesCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupEntriesCount(long groupId, long userId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -461,4 +447,4 @@ public interface BookmarksEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-650601510
+// LIFERAY-SERVICE-BUILDER-HASH:1442334514

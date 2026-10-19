@@ -409,13 +409,6 @@ public class BookmarksFolderLocalServiceUtil {
 	}
 
 	public static List<Object> getFoldersAndEntries(
-		long groupId, long folderId, int status, int start, int end) {
-
-		return getService().getFoldersAndEntries(
-			groupId, folderId, status, start, end);
-	}
-
-	public static List<Object> getFoldersAndEntries(
 		long groupId, long folderId, int status, int start, int end,
 		OrderByComparator<?> orderByComparator) {
 
@@ -588,4 +581,4 @@ public class BookmarksFolderLocalServiceUtil {
 			BookmarksFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:153036870
+// LIFERAY-SERVICE-BUILDER-HASH:1737965882

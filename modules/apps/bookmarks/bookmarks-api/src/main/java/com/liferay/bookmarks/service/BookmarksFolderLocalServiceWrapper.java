@@ -468,14 +468,6 @@ public class BookmarksFolderLocalServiceWrapper
 
 	@Override
 	public java.util.List<Object> getFoldersAndEntries(
-		long groupId, long folderId, int status, int start, int end) {
-
-		return _bookmarksFolderLocalService.getFoldersAndEntries(
-			groupId, folderId, status, start, end);
-	}
-
-	@Override
-	public java.util.List<Object> getFoldersAndEntries(
 		long groupId, long folderId, int status, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<?> orderByComparator) {
 
@@ -706,4 +698,4 @@ public class BookmarksFolderLocalServiceWrapper
 	private BookmarksFolderLocalService _bookmarksFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1769914154
+// LIFERAY-SERVICE-BUILDER-HASH:1547893449
