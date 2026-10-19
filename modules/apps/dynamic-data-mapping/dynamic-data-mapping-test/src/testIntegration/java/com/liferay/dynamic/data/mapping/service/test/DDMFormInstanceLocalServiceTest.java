@@ -169,12 +169,15 @@ public class DDMFormInstanceLocalServiceTest extends BaseDDMServiceTestCase {
 		cachedFormInstance.setMvccVersion(
 			cachedFormInstance.getMvccVersion() - 1);
 
+		cachedFormInstance.getObjectDefinitionId();
 		cachedFormInstance.getSettingsDDMFormValues();
+		cachedFormInstance.getStorageType();
+
+		long objectDefinitionId = RandomTestUtil.randomLong();
+		String storageType = RandomTestUtil.randomString();
 
 		cachedFormInstance.setSettings(
-			DDMFormValuesSerializeUtil.serialize(
-				DDMFormInstanceTestUtil.createSettingsDDMFormValues(false),
-				_jsonDDMFormValuesSerializer));
+			_createSettings(objectDefinitionId, storageType));
 
 		DDMFormInstanceSettings ddmFormInstanceSettings =
 			DDMFormInstanceFactory.create(
@@ -184,6 +187,20 @@ public class DDMFormInstanceLocalServiceTest extends BaseDDMServiceTestCase {
 		Assert.assertFalse(
 			cachedFormInstance.getSettings(),
 			ddmFormInstanceSettings.requireCaptcha());
+
+		Assert.assertEquals(storageType, cachedFormInstance.getStorageType());
+		Assert.assertEquals(
+			objectDefinitionId, cachedFormInstance.getObjectDefinitionId());
+
+		objectDefinitionId = RandomTestUtil.randomLong();
+		storageType = RandomTestUtil.randomString();
+
+		cachedFormInstance.setSettings(
+			_createSettings(objectDefinitionId, storageType));
+
+		Assert.assertEquals(
+			objectDefinitionId, cachedFormInstance.getObjectDefinitionId());
+		Assert.assertEquals(storageType, cachedFormInstance.getStorageType());
 	}
 
 	@Test
@@ -318,6 +335,25 @@ public class DDMFormInstanceLocalServiceTest extends BaseDDMServiceTestCase {
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED,
 			secondFormInstanceVersion.getStatus());
+	}
+
+	private String _createSettings(
+		long objectDefinitionId, String storageType) {
+
+		DDMFormValues settingsDDMFormValues =
+			DDMFormInstanceTestUtil.createSettingsDDMFormValues(false);
+
+		settingsDDMFormValues.addDDMFormFieldValue(
+			DDMFormValuesTestUtil.createUnlocalizedDDMFormFieldValue(
+				"objectDefinitionId", String.valueOf(objectDefinitionId)));
+
+		DDMFormFieldValue ddmFormFieldValue =
+			settingsDDMFormValues.getDDMFormFieldValue("storageType", false);
+
+		ddmFormFieldValue.setValue(new UnlocalizedValue(storageType));
+
+		return DDMFormValuesSerializeUtil.serialize(
+			settingsDDMFormValues, _jsonDDMFormValuesSerializer);
 	}
 
 	private static long _classNameId;
