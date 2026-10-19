@@ -7,6 +7,7 @@ package com.liferay.change.tracking.service.impl;
 
 import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.constants.CTPortletKeys;
+import com.liferay.change.tracking.internal.background.task.CTPublishBackgroundTaskExecutor;
 import com.liferay.change.tracking.model.CTCollectionTable;
 import com.liferay.change.tracking.model.CTProcess;
 import com.liferay.change.tracking.model.CTProcessTable;
@@ -133,7 +134,12 @@ public class CTProcessServiceImpl extends CTProcessServiceBaseImpl {
 		).and(
 			() -> {
 				if (status != WorkflowConstants.STATUS_ANY) {
-					return BackgroundTaskTable.INSTANCE.status.eq(status);
+					return BackgroundTaskTable.INSTANCE.status.eq(
+						status
+					).and(
+						BackgroundTaskTable.INSTANCE.taskExecutorClassName.eq(
+							CTPublishBackgroundTaskExecutor.class.getName())
+					);
 				}
 
 				return null;
