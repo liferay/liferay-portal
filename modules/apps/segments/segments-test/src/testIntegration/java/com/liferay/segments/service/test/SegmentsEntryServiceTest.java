@@ -187,11 +187,10 @@ public class SegmentsEntryServiceTest {
 					new int[] {SegmentsEntryConstants.TYPE_DEFAULT}, 0, 100,
 					null);
 
-			Assert.assertEquals(
-				segmentsEntries.toString(), 2, segmentsEntries.size());
-
 			Assert.assertTrue(segmentsEntries.contains(segmentsEntry1));
 			Assert.assertTrue(segmentsEntries.contains(segmentsEntry3));
+			Assert.assertEquals(
+				segmentsEntries.toString(), 2, segmentsEntries.size());
 		}
 	}
 
