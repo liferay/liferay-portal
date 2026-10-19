@@ -17,7 +17,6 @@ import com.liferay.bookmarks.model.BookmarksEntry;
 import com.liferay.bookmarks.model.BookmarksFolder;
 import com.liferay.bookmarks.service.base.BookmarksEntryLocalServiceBaseImpl;
 import com.liferay.bookmarks.social.BookmarksActivityKeys;
-import com.liferay.bookmarks.util.comparator.EntryModifiedDateComparator;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -321,49 +320,6 @@ public class BookmarksEntryLocalServiceImpl
 		return bookmarksEntryPersistence.countByG_F_S(
 			groupId, ArrayUtil.toArray(folderIds.toArray(new Long[0])),
 			WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Override
-	public List<BookmarksEntry> getGroupEntries(
-		long groupId, int start, int end) {
-
-		return bookmarksEntryPersistence.findByG_S(
-			groupId, WorkflowConstants.STATUS_APPROVED, start, end,
-			new EntryModifiedDateComparator());
-	}
-
-	@Override
-	public List<BookmarksEntry> getGroupEntries(
-		long groupId, long userId, int start, int end) {
-
-		OrderByComparator<BookmarksEntry> orderByComparator =
-			new EntryModifiedDateComparator();
-
-		if (userId <= 0) {
-			return bookmarksEntryPersistence.findByG_S(
-				groupId, WorkflowConstants.STATUS_APPROVED, start, end,
-				orderByComparator);
-		}
-
-		return bookmarksEntryPersistence.findByG_U_S(
-			groupId, userId, WorkflowConstants.STATUS_APPROVED, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int getGroupEntriesCount(long groupId) {
-		return bookmarksEntryPersistence.countByG_S(
-			groupId, WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Override
-	public int getGroupEntriesCount(long groupId, long userId) {
-		if (userId <= 0) {
-			return getGroupEntriesCount(groupId);
-		}
-
-		return bookmarksEntryPersistence.countByG_U_S(
-			groupId, userId, WorkflowConstants.STATUS_APPROVED);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

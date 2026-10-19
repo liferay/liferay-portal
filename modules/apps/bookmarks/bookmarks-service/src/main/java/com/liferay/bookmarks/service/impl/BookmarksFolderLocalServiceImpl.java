@@ -305,14 +305,6 @@ public class BookmarksFolderLocalServiceImpl
 
 	@Override
 	public List<Object> getFoldersAndEntries(
-		long groupId, long folderId, int status, int start, int end) {
-
-		return getFoldersAndEntries(
-			groupId, folderId, status, start, end, null);
-	}
-
-	@Override
-	public List<Object> getFoldersAndEntries(
 		long groupId, long folderId, int status, int start, int end,
 		OrderByComparator<?> orderByComparator) {
 

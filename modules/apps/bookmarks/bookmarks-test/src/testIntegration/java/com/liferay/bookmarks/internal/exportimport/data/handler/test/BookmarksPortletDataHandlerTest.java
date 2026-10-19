@@ -115,14 +115,18 @@ public class BookmarksPortletDataHandlerTest
 	protected List<StagedModel> getStagedModels() {
 		List<StagedModel> stagedModels = new ArrayList<>();
 
-		stagedModels.addAll(
-			BookmarksEntryLocalServiceUtil.getGroupEntries(
-				portletDataContext.getGroupId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS));
-
-		stagedModels.addAll(
+		List<BookmarksFolder> folders =
 			BookmarksFolderLocalServiceUtil.getFolders(
-				portletDataContext.getGroupId()));
+				portletDataContext.getGroupId());
+
+		for (BookmarksFolder folder : folders) {
+			stagedModels.addAll(
+				BookmarksEntryLocalServiceUtil.getEntries(
+					portletDataContext.getGroupId(), folder.getFolderId(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+		}
+
+		stagedModels.addAll(folders);
 
 		return stagedModels;
 	}
