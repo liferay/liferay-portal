@@ -21,6 +21,7 @@ import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -42,6 +43,9 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
+import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.Portal;
@@ -131,6 +135,7 @@ public class FragmentEntryLinkModelListenerTest {
 		_testUpdateFragmentEntryLinkWithHTMLField();
 		_testUpdateFragmentEntryLinkWithMappedTextField();
 		_testUpdateFragmentEntryLinkWithRichTextField();
+		_testUpdateFragmentEntryLinkWithRollback();
 		_testUpdateFragmentEntryLinkWithTextField();
 	}
 
@@ -641,6 +646,50 @@ public class FragmentEntryLinkModelListenerTest {
 		}
 	}
 
+	private void _testUpdateFragmentEntryLinkWithRollback() throws Exception {
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-heading"),
+			_createEditableValues("element-text", "Heading Example"),
+			_serviceContext);
+
+		long fragmentEntryLinkId = fragmentEntryLink.getFragmentEntryLinkId();
+
+		_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			fragmentEntryLinkId);
+
+		_pushServiceContext(fragmentEntryLink, _draftLayout);
+
+		try {
+			TransactionInvokerUtil.invoke(
+				_transactionConfig,
+				() -> {
+					_fragmentEntryLinkLocalService.updateFragmentEntryLink(
+						TestPropsValues.getUserId(), fragmentEntryLinkId,
+						_createEditableValues(
+							"element-text", RandomTestUtil.randomString()),
+						false);
+
+					throw new PortalException("Roll back");
+				});
+
+			Assert.fail();
+		}
+		catch (Throwable throwable) {
+			Assert.assertEquals("Roll back", throwable.getMessage());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+
+		fragmentEntryLink = _fragmentEntryLinkLocalService.getFragmentEntryLink(
+			fragmentEntryLinkId);
+
+		Assert.assertEquals(
+			fragmentEntryLink.getEditableValues(),
+			String.valueOf(fragmentEntryLink.getEditableValuesJSONObject()));
+	}
+
 	private void _testUpdateFragmentEntryLinkWithTextField() throws Exception {
 		String editableValue = "<script>alert('xss');</script>Example";
 
@@ -667,6 +716,10 @@ public class FragmentEntryLinkModelListenerTest {
 			TestPropsValues.getUserId(),
 			fragmentEntryLink.getFragmentEntryLinkId(), editableValues, true);
 	}
+
+	private static final TransactionConfig _transactionConfig =
+		TransactionConfig.Factory.create(
+			Propagation.REQUIRES_NEW, new Class<?>[] {Exception.class});
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
