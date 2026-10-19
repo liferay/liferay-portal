@@ -41,6 +41,10 @@ spec:
                         ---
                         {{ $.Files.Get $path | nindent 24 }}
                         {{- end }}
+                        {{- range $path, $_ := $.Files.Glob (printf "%s/%s/[1-9]*" $composition.directory $.Values.database.engine) }}
+                        ---
+                        {{ $.Files.Get $path | nindent 24 }}
+                        {{- end }}
                 kind: Input
                 source: Inline
             step: go-templating
