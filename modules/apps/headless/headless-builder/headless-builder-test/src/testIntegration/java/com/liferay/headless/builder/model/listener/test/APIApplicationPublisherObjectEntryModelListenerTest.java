@@ -141,7 +141,7 @@ public class APIApplicationPublisherObjectEntryModelListenerTest
 			).put(
 				"httpMethod", "get"
 			).put(
-				"name", "name"
+				"name", RandomTestUtil.randomString()
 			).put(
 				"path",
 				StringPool.FORWARD_SLASH +
