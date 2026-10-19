@@ -13,6 +13,7 @@ import com.liferay.document.library.kernel.model.DLFileShortcut;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.document.library.kernel.service.DLFolderService;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
@@ -38,6 +40,9 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
+import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -49,6 +54,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.view.count.ViewCountManager;
@@ -576,12 +583,240 @@ public class DLFolderServiceTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-110146")
+	public void testUpdateFolder() throws Exception {
+		DLFolder dlFolder = _addDLFolder(ActionKeys.UPDATE, ActionKeys.VIEW);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAttribute(
+			"workflowDefinition" + _dlFileEntryType.getFileEntryTypeId(),
+			"Single Approver@1");
+
+		dlFolder = _dlFolderService.updateFolder(
+			dlFolder.getFolderId(), dlFolder.getName(),
+			dlFolder.getDescription(), _dlFileEntryType.getFileEntryTypeId(),
+			Collections.singletonList(_dlFileEntryType.getFileEntryTypeId()),
+			DLFolderConstants.RESTRICTION_TYPE_FILE_ENTRY_TYPES_AND_WORKFLOW,
+			serviceContext);
+
+		User user = UserTestUtil.addUser(_group.getGroupId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			String name = StringUtil.randomString();
+
+			dlFolder = _dlFolderService.updateFolder(
+				dlFolder.getFolderId(), name, StringPool.BLANK, 0,
+				Collections.emptyList(),
+				DLFolderConstants.RESTRICTION_TYPE_INHERIT,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId()));
+
+			_assertDLFolder(
+				_dlFileEntryType.getFileEntryTypeId(), dlFolder, name,
+				DLFolderConstants.
+					RESTRICTION_TYPE_FILE_ENTRY_TYPES_AND_WORKFLOW);
+
+			name = StringUtil.randomString();
+
+			dlFolder = _dlFolderService.updateFolder(
+				dlFolder.getFolderId(), dlFolder.getParentFolderId(), name,
+				StringPool.BLANK, 0, Collections.emptyList(),
+				DLFolderConstants.RESTRICTION_TYPE_INHERIT,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId()));
+
+			_assertDLFolder(
+				_dlFileEntryType.getFileEntryTypeId(), dlFolder, name,
+				DLFolderConstants.
+					RESTRICTION_TYPE_FILE_ENTRY_TYPES_AND_WORKFLOW);
+		}
+
+		String name = StringUtil.randomString();
+
+		dlFolder = _dlFolderService.updateFolder(
+			dlFolder.getFolderId(), name, StringPool.BLANK, 0,
+			Collections.emptyList(), DLFolderConstants.RESTRICTION_TYPE_INHERIT,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_assertDLFolder(
+			0, dlFolder, name, DLFolderConstants.RESTRICTION_TYPE_INHERIT);
+	}
+
+	@Test
+	@TestInfo("LPD-110146")
+	public void testUpdateFolderToRootFolderWhenOnlyScopeGroupHasAddPermission()
+		throws Exception {
+
+		DLFolder dlFolder = DLTestUtil.addDLFolder(
+			_group.getGroupId(), _parentFolder.getFolderId(), false,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_user = _addUser(dlFolder.getFolderId(), _alternativeGroup);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> _dlFolderService.updateFolder(
+						dlFolder.getFolderId(),
+						DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+						dlFolder.getName(), StringPool.BLANK, 0,
+						Collections.emptyList(),
+						DLFolderConstants.RESTRICTION_TYPE_INHERIT,
+						ServiceContextTestUtil.getServiceContext(
+							_alternativeGroup.getGroupId(),
+							_user.getUserId())));
+
+			Assert.assertEquals(
+				DLConstants.RESOURCE_NAME, mustHavePermission.resourceName);
+			Assert.assertEquals(
+				_group.getGroupId(), mustHavePermission.resourceId);
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.ADD_FOLDER},
+				mustHavePermission.actionId);
+		}
+
+		DLFolder currentDLFolder = _dlFolderLocalService.getFolder(
+			dlFolder.getFolderId());
+
+		Assert.assertEquals(
+			_parentFolder.getFolderId(), currentDLFolder.getParentFolderId());
+	}
+
+	@Test
+	@TestInfo("LPD-110146")
+	public void testUpdateFolderWithOnlyAdvancedUpdatePermission()
+		throws Exception {
+
+		DLFolder dlFolder = _addDLFolder(
+			ActionKeys.ADVANCED_UPDATE, ActionKeys.VIEW);
+		DLFolder parentDLFolder = _addDLFolder(
+			ActionKeys.ADD_SUBFOLDER, ActionKeys.VIEW);
+
+		User user = UserTestUtil.addUser(_group.getGroupId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId());
+
+			serviceContext.setAttribute(
+				"workflowDefinition" + _dlFileEntryType.getFileEntryTypeId(),
+				"Single Approver@1");
+
+			DLFolder updatedDLFolder = _dlFolderService.updateFolder(
+				dlFolder.getFolderId(), parentDLFolder.getFolderId(),
+				StringUtil.randomString(), StringUtil.randomString(),
+				_dlFileEntryType.getFileEntryTypeId(),
+				Collections.singletonList(
+					_dlFileEntryType.getFileEntryTypeId()),
+				DLFolderConstants.
+					RESTRICTION_TYPE_FILE_ENTRY_TYPES_AND_WORKFLOW,
+				serviceContext);
+
+			Assert.assertEquals(
+				dlFolder.getDescription(), updatedDLFolder.getDescription());
+			Assert.assertEquals(
+				dlFolder.getParentFolderId(),
+				updatedDLFolder.getParentFolderId());
+
+			_assertDLFolder(
+				_dlFileEntryType.getFileEntryTypeId(), updatedDLFolder,
+				dlFolder.getName(),
+				DLFolderConstants.
+					RESTRICTION_TYPE_FILE_ENTRY_TYPES_AND_WORKFLOW);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110146")
+	public void testUpdateFolderWithParentFolderId() throws Exception {
+		DLFolder dlFolder = _addDLFolder(ActionKeys.UPDATE, ActionKeys.VIEW);
+		DLFolder parentDLFolder1 = _addDLFolder(ActionKeys.VIEW);
+		DLFolder parentDLFolder2 = _addDLFolder(
+			ActionKeys.ADD_SUBFOLDER, ActionKeys.VIEW);
+
+		User user = UserTestUtil.addUser(_group.getGroupId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> _dlFolderService.updateFolder(
+						dlFolder.getFolderId(), parentDLFolder1.getFolderId(),
+						dlFolder.getName(), dlFolder.getDescription(), 0,
+						Collections.emptyList(),
+						DLFolderConstants.RESTRICTION_TYPE_INHERIT,
+						ServiceContextTestUtil.getServiceContext(
+							_group.getGroupId(), user.getUserId())));
+
+			Assert.assertEquals(
+				DLFolder.class.getName(), mustHavePermission.resourceName);
+			Assert.assertEquals(
+				parentDLFolder1.getFolderId(), mustHavePermission.resourceId);
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.ADD_FOLDER},
+				mustHavePermission.actionId);
+
+			DLFolder currentDLFolder = _dlFolderService.getFolder(
+				dlFolder.getFolderId());
+
+			Assert.assertEquals(
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				currentDLFolder.getParentFolderId());
+
+			DLFolder updatedDLFolder = _dlFolderService.updateFolder(
+				dlFolder.getFolderId(), parentDLFolder2.getFolderId(),
+				dlFolder.getName(), dlFolder.getDescription(), 0,
+				Collections.emptyList(),
+				DLFolderConstants.RESTRICTION_TYPE_INHERIT,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId()));
+
+			Assert.assertEquals(
+				parentDLFolder2.getFolderId(),
+				updatedDLFolder.getParentFolderId());
+		}
+	}
+
 	private DLFolder _addDLFolder() throws Exception {
 		return _dlFolderService.addFolder(
 			null, _group.getGroupId(), _group.getGroupId(), false,
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			StringUtil.randomString(), StringPool.BLANK,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	private DLFolder _addDLFolder(String... siteMemberActionIds)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+		serviceContext.setModelPermissions(
+			ModelPermissionsFactory.create(
+				HashMapBuilder.put(
+					RoleConstants.SITE_MEMBER, siteMemberActionIds
+				).build(),
+				DLFolder.class.getName()));
+
+		return _dlFolderService.addFolder(
+			null, _group.getGroupId(), _group.getGroupId(), false,
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), StringPool.BLANK, serviceContext);
 	}
 
 	private User _addUser(long folderId, Group group) throws Exception {
@@ -601,6 +836,46 @@ public class DLFolderServiceTest {
 		return user;
 	}
 
+	private void _assertDLFolder(
+			long defaultFileEntryTypeId, DLFolder dlFolder, String name,
+			int restrictionType)
+		throws Exception {
+
+		Assert.assertEquals(
+			defaultFileEntryTypeId, dlFolder.getDefaultFileEntryTypeId());
+		Assert.assertEquals(name, dlFolder.getName());
+		Assert.assertEquals(restrictionType, dlFolder.getRestrictionType());
+
+		List<Long> fileEntryTypeIds = new ArrayList<>();
+		WorkflowDefinitionLink workflowDefinitionLink =
+			_workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLink(
+				dlFolder.getCompanyId(), dlFolder.getGroupId(),
+				DLFolder.class.getName(), dlFolder.getFolderId(),
+				_dlFileEntryType.getFileEntryTypeId(), true);
+
+		if (restrictionType ==
+				DLFolderConstants.
+					RESTRICTION_TYPE_FILE_ENTRY_TYPES_AND_WORKFLOW) {
+
+			fileEntryTypeIds.add(_dlFileEntryType.getFileEntryTypeId());
+
+			Assert.assertEquals(
+				"Single Approver",
+				workflowDefinitionLink.getWorkflowDefinitionName());
+		}
+		else {
+			Assert.assertNull(workflowDefinitionLink);
+		}
+
+		Assert.assertEquals(
+			fileEntryTypeIds,
+			ListUtil.toList(
+				_dlFileEntryTypeLocalService.getFolderFileEntryTypes(
+					new long[] {_group.getGroupId()}, dlFolder.getFolderId(),
+					false),
+				DLFileEntryType.FILE_ENTRY_TYPE_ID_ACCESSOR));
+	}
+
 	@DeleteAfterTestRun
 	private Group _alternativeGroup;
 
@@ -615,6 +890,9 @@ public class DLFolderServiceTest {
 
 	@DeleteAfterTestRun
 	private DLFileEntryType _dlFileEntryType;
+
+	@Inject
+	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
 
 	@Inject
 	private DLFileEntryTypeService _dlFileEntryTypeService;
@@ -641,5 +919,9 @@ public class DLFolderServiceTest {
 
 	@Inject
 	private ViewCountManager _viewCountManager;
+
+	@Inject
+	private WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
 
 }
