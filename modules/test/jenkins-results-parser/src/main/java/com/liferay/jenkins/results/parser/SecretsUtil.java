@@ -93,6 +93,10 @@ public abstract class SecretsUtil {
 	}
 
 	public static String getSecret(String key) {
+		if (key == null) {
+			return key;
+		}
+
 		Matcher matcher = _secretReferencePattern.matcher(key);
 
 		if (matcher.matches()) {
