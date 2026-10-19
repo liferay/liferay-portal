@@ -536,8 +536,8 @@ public class TestrayImporter {
 
 		String testrayCaseName = testrayCaseResult.getName();
 
-		if (testrayCaseName.length() > 150) {
-			testrayCaseName = testrayCaseName.substring(0, 150);
+		if (testrayCaseName.length() > 250) {
+			testrayCaseName = testrayCaseName.substring(0, 250);
 		}
 
 		testcasePropertiesMap.put("testray.testcase.name", testrayCaseName);
