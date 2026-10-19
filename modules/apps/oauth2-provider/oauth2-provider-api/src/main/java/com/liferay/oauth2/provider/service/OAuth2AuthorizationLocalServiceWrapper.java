@@ -191,6 +191,14 @@ public class OAuth2AuthorizationLocalServiceWrapper
 	}
 
 	@Override
+	public void deleteOAuth2Authorizations(
+		long userId, long oAuth2ApplicationId) {
+
+		_oAuth2AuthorizationLocalService.deleteOAuth2Authorizations(
+			userId, oAuth2ApplicationId);
+	}
+
+	@Override
 	public void deleteOAuth2ScopeGrantOAuth2Authorization(
 		long oAuth2ScopeGrantId, long oAuth2AuthorizationId) {
 
@@ -657,4 +665,4 @@ public class OAuth2AuthorizationLocalServiceWrapper
 	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:558783372
+// LIFERAY-SERVICE-BUILDER-HASH:1568943933

@@ -171,6 +171,13 @@ public class OAuth2ApplicationLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
+	public static OAuth2Application deleteClientCredentialsGrant(
+			long oAuth2ApplicationId)
+		throws PortalException {
+
+		return getService().deleteClientCredentialsGrant(oAuth2ApplicationId);
+	}
+
 	/**
 	 * Deletes the o auth2 application with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -221,6 +228,12 @@ public class OAuth2ApplicationLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deletePersistedModel(persistedModel);
+	}
+
+	public static OAuth2Application deleteScopeAliases(long oAuth2ApplicationId)
+		throws PortalException {
+
+		return getService().deleteScopeAliases(oAuth2ApplicationId);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -551,4 +564,4 @@ public class OAuth2ApplicationLocalServiceUtil {
 			OAuth2ApplicationLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2022099425
+// LIFERAY-SERVICE-BUILDER-HASH:-802733689

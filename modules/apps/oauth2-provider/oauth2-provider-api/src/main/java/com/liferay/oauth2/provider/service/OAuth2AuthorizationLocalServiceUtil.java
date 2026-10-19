@@ -167,6 +167,12 @@ public class OAuth2AuthorizationLocalServiceUtil {
 		return getService().deleteOAuth2Authorization(oAuth2Authorization);
 	}
 
+	public static void deleteOAuth2Authorizations(
+		long userId, long oAuth2ApplicationId) {
+
+		getService().deleteOAuth2Authorizations(userId, oAuth2ApplicationId);
+	}
+
 	public static void deleteOAuth2ScopeGrantOAuth2Authorization(
 		long oAuth2ScopeGrantId, long oAuth2AuthorizationId) {
 
@@ -542,4 +548,4 @@ public class OAuth2AuthorizationLocalServiceUtil {
 			OAuth2AuthorizationLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:195126008
+// LIFERAY-SERVICE-BUILDER-HASH:-300178827

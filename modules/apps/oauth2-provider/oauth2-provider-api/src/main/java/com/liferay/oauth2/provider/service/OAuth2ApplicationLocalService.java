@@ -139,6 +139,10 @@ public interface OAuth2ApplicationLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public OAuth2Application deleteClientCredentialsGrant(
+			long oAuth2ApplicationId)
+		throws PortalException;
+
 	/**
 	 * Deletes the o auth2 application with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -177,6 +181,9 @@ public interface OAuth2ApplicationLocalService
 	 */
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
+		throws PortalException;
+
+	public OAuth2Application deleteScopeAliases(long oAuth2ApplicationId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -410,4 +417,4 @@ public interface OAuth2ApplicationLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-962047129
+// LIFERAY-SERVICE-BUILDER-HASH:1182387942

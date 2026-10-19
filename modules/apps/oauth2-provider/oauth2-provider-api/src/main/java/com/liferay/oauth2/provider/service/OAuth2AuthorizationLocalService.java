@@ -142,6 +142,9 @@ public interface OAuth2AuthorizationLocalService
 	public OAuth2Authorization deleteOAuth2Authorization(
 		OAuth2Authorization oAuth2Authorization);
 
+	public void deleteOAuth2Authorizations(
+		long userId, long oAuth2ApplicationId);
+
 	public void deleteOAuth2ScopeGrantOAuth2Authorization(
 		long oAuth2ScopeGrantId, long oAuth2AuthorizationId);
 
@@ -391,4 +394,4 @@ public interface OAuth2AuthorizationLocalService
 		String refreshTokenContent, String rememberDeviceContent);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1819882809
+// LIFERAY-SERVICE-BUILDER-HASH:448737132

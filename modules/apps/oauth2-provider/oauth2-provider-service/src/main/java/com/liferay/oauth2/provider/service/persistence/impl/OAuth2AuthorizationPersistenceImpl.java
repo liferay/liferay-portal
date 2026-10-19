@@ -442,6 +442,99 @@ public class OAuth2AuthorizationPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<OAuth2Authorization, NoSuchOAuth2AuthorizationException>
+			_collectionPersistenceFinderByU_O;
+
+	/**
+	 * Returns an ordered range of all the o auth2 authorizations where userId = &#63; and oAuth2ApplicationId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuth2AuthorizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param userId the user ID
+	 * @param oAuth2ApplicationId the o auth2 application ID
+	 * @param start the lower bound of the range of o auth2 authorizations
+	 * @param end the upper bound of the range of o auth2 authorizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching o auth2 authorizations
+	 */
+	@Override
+	public List<OAuth2Authorization> findByU_O(
+		long userId, long oAuth2ApplicationId, int start, int end,
+		OrderByComparator<OAuth2Authorization> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByU_O.find(
+			finderCache, new Object[] {userId, oAuth2ApplicationId}, start, end,
+			orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first o auth2 authorization in the ordered set where userId = &#63; and oAuth2ApplicationId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param oAuth2ApplicationId the o auth2 application ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching o auth2 authorization
+	 * @throws NoSuchOAuth2AuthorizationException if a matching o auth2 authorization could not be found
+	 */
+	@Override
+	public OAuth2Authorization findByU_O_First(
+			long userId, long oAuth2ApplicationId,
+			OrderByComparator<OAuth2Authorization> orderByComparator)
+		throws NoSuchOAuth2AuthorizationException {
+
+		return _collectionPersistenceFinderByU_O.findFirst(
+			finderCache, new Object[] {userId, oAuth2ApplicationId},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first o auth2 authorization in the ordered set where userId = &#63; and oAuth2ApplicationId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param oAuth2ApplicationId the o auth2 application ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching o auth2 authorization, or <code>null</code> if a matching o auth2 authorization could not be found
+	 */
+	@Override
+	public OAuth2Authorization fetchByU_O_First(
+		long userId, long oAuth2ApplicationId,
+		OrderByComparator<OAuth2Authorization> orderByComparator) {
+
+		return _collectionPersistenceFinderByU_O.fetchFirst(
+			finderCache, new Object[] {userId, oAuth2ApplicationId},
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the o auth2 authorizations where userId = &#63; and oAuth2ApplicationId = &#63; from the database.
+	 *
+	 * @param userId the user ID
+	 * @param oAuth2ApplicationId the o auth2 application ID
+	 */
+	@Override
+	public void removeByU_O(long userId, long oAuth2ApplicationId) {
+		_collectionPersistenceFinderByU_O.remove(
+			finderCache, new Object[] {userId, oAuth2ApplicationId});
+	}
+
+	/**
+	 * Returns the number of o auth2 authorizations where userId = &#63; and oAuth2ApplicationId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param oAuth2ApplicationId the o auth2 application ID
+	 * @return the number of matching o auth2 authorizations
+	 */
+	@Override
+	public int countByU_O(long userId, long oAuth2ApplicationId) {
+		return _collectionPersistenceFinderByU_O.count(
+			finderCache, new Object[] {userId, oAuth2ApplicationId});
+	}
+
+	private CollectionPersistenceFinder
+		<OAuth2Authorization, NoSuchOAuth2AuthorizationException>
 			_collectionPersistenceFinderByU_O_R;
 
 	/**
@@ -1234,6 +1327,36 @@ public class OAuth2AuthorizationPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					OAuth2Authorization::getRefreshTokenContentHash));
 
+		_collectionPersistenceFinderByU_O = new CollectionPersistenceFinder<>(
+			this,
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByU_O",
+				new String[] {
+					Long.class.getName(), Long.class.getName(),
+					Integer.class.getName(), Integer.class.getName(),
+					OrderByComparator.class.getName()
+				},
+				new String[] {"userId", "oAuth2ApplicationId"}, true),
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByU_O",
+				new String[] {Long.class.getName(), Long.class.getName()},
+				new String[] {"userId", "oAuth2ApplicationId"}, true),
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_O",
+				new String[] {Long.class.getName(), Long.class.getName()},
+				new String[] {"userId", "oAuth2ApplicationId"}, false),
+			_SQL_SELECT_OAUTH2AUTHORIZATION_WHERE,
+			_SQL_COUNT_OAUTH2AUTHORIZATION_WHERE,
+			OAuth2AuthorizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
+			"", "", null,
+			new FinderColumn<>(
+				"oAuth2Authorization.", "userId", FinderColumn.Type.LONG, "=",
+				true, true, OAuth2Authorization::getUserId),
+			new FinderColumn<>(
+				"oAuth2Authorization.", "oAuth2ApplicationId",
+				FinderColumn.Type.LONG, "=", true, true,
+				OAuth2Authorization::getOAuth2ApplicationId));
+
 		_collectionPersistenceFinderByU_O_R = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1352,4 +1475,4 @@ public class OAuth2AuthorizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2112999082
+// LIFERAY-SERVICE-BUILDER-HASH:1835430233
