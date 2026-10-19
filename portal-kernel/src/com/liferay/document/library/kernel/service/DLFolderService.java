@@ -273,4 +273,4 @@ public interface DLFolderService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1753373700
+// LIFERAY-SERVICE-BUILDER-HASH:2066661061
