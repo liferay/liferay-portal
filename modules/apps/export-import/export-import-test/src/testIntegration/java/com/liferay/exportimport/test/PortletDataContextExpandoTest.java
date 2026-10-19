@@ -129,7 +129,7 @@ public class PortletDataContextExpandoTest {
 				exportImportReportEntries.get(0);
 
 			Assert.assertEquals(
-				ExportImportReportEntryConstants.TYPE_ERROR,
+				ExportImportReportEntryConstants.TYPE_WARNING,
 				exportImportReportEntry.getType());
 
 			String errorMessage = exportImportReportEntry.getErrorMessage();
