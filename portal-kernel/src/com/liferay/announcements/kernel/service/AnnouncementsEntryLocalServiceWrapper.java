@@ -63,13 +63,6 @@ public class AnnouncementsEntryLocalServiceWrapper
 	}
 
 	@Override
-	public void checkEntries()
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_announcementsEntryLocalService.checkEntries();
-	}
-
-	@Override
 	public void checkEntries(java.util.Date startDate, java.util.Date endDate)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -147,14 +140,6 @@ public class AnnouncementsEntryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_announcementsEntryLocalService.deleteEntries(classNameId, classPK);
-	}
-
-	@Override
-	public void deleteEntries(long companyId, long classNameId, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_announcementsEntryLocalService.deleteEntries(
-			companyId, classNameId, classPK);
 	}
 
 	@Override
@@ -420,23 +405,6 @@ public class AnnouncementsEntryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<AnnouncementsEntry> getEntries(
-		long userId, long classNameId, long[] classPKs, int displayDateMonth,
-		int displayDateDay, int displayDateYear, int displayDateHour,
-		int displayDateMinute, int expirationDateMonth, int expirationDateDay,
-		int expirationDateYear, int expirationDateHour,
-		int expirationDateMinute, boolean alert, int flagValue, int start,
-		int end) {
-
-		return _announcementsEntryLocalService.getEntries(
-			userId, classNameId, classPKs, displayDateMonth, displayDateDay,
-			displayDateYear, displayDateHour, displayDateMinute,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, alert, flagValue, start,
-			end);
-	}
-
-	@Override
 	public int getEntriesCount(
 		long userId, java.util.LinkedHashMap<Long, long[]> scopes,
 		boolean alert, int flagValue) {
@@ -466,30 +434,6 @@ public class AnnouncementsEntryLocalServiceWrapper
 
 		return _announcementsEntryLocalService.getEntriesCount(
 			companyId, classNameId, classPK, alert);
-	}
-
-	@Override
-	public int getEntriesCount(
-		long userId, long classNameId, long[] classPKs, boolean alert,
-		int flagValue) {
-
-		return _announcementsEntryLocalService.getEntriesCount(
-			userId, classNameId, classPKs, alert, flagValue);
-	}
-
-	@Override
-	public int getEntriesCount(
-		long userId, long classNameId, long[] classPKs, int displayDateMonth,
-		int displayDateDay, int displayDateYear, int displayDateHour,
-		int displayDateMinute, int expirationDateMonth, int expirationDateDay,
-		int expirationDateYear, int expirationDateHour,
-		int expirationDateMinute, boolean alert, int flagValue) {
-
-		return _announcementsEntryLocalService.getEntriesCount(
-			userId, classNameId, classPKs, displayDateMonth, displayDateDay,
-			displayDateYear, displayDateHour, displayDateMinute,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, alert, flagValue);
 	}
 
 	@Override
@@ -621,4 +565,4 @@ public class AnnouncementsEntryLocalServiceWrapper
 	private AnnouncementsEntryLocalService _announcementsEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:913899043
+// LIFERAY-SERVICE-BUILDER-HASH:640553938
