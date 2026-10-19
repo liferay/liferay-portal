@@ -16,7 +16,7 @@ public class PropertiesSourceProcessorTest extends BaseSourceProcessorTestCase {
 
 	@Test
 	public void testFormatComments() throws Exception {
-		test("PropertiesLongLinesCheck.testproperties");
+		test("FormatComments.testproperties");
 	}
 
 	@Test
