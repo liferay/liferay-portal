@@ -98,6 +98,16 @@ export class ObjectAdminApiHelper {
 		return body;
 	}
 
+	async postObjectDefinitionObjectField(
+		objectDefinitionId: number,
+		objectField: Partial<ObjectField>
+	): Promise<ObjectField> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/object-definitions/${objectDefinitionId}/object-fields`,
+			{data: objectField}
+		);
+	}
+
 	async postObjectDefinitionObjectFieldBatch(
 		objectDefinitionId: number,
 		objectFields: Partial<ObjectField>[]

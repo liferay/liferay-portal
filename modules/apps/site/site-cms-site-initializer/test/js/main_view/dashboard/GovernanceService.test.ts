@@ -387,3 +387,17 @@ describe('GovernanceService.getBrokenLinkAssetsURL', () => {
 		);
 	});
 });
+
+describe('GovernanceService.getMissingRequiredFieldsAssetsURL', () => {
+	it('requests the first page of missing required fields assets sorted by title', () => {
+		expect(GovernanceService.getMissingRequiredFieldsAssetsURL()).toBe(
+			'/o/headless-cms/v1.0/missing-required-fields-assets?pageSize=8&sort=title%3Aasc'
+		);
+	});
+
+	it('scopes the request by assetLibraryId when a space is given', () => {
+		expect(GovernanceService.getMissingRequiredFieldsAssetsURL('123')).toBe(
+			'/o/headless-cms/v1.0/missing-required-fields-assets?pageSize=8&sort=title%3Aasc&assetLibraryId=123'
+		);
+	});
+});

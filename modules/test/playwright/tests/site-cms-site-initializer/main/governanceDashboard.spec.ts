@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ObjectDefinitionAPI} from '@liferay/object-admin-rest-client-js';
 import {type Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
@@ -96,26 +97,31 @@ function getDocumentHTML(externalReferenceCode: string) {
 	);
 }
 
-async function openBrokenLinksList(
+async function openQualityList(
 	page: Page,
-	spaceName: string,
-	title: string
+	{
+		cardTitle,
+		spaceName,
+		text,
+	}: {cardTitle: string; spaceName: string; text: string}
 ) {
-	const brokenLinksList = page.getByRole('region', {name: 'Broken Links'});
+	const qualityList = page.getByRole('region', {name: cardTitle});
 
 	await expect(async () => {
 		await page.goto('/web/cms/dashboard');
 
 		await selectSpace(page, spaceName);
 
-		await page.getByRole('button', {name: /^Broken Links /}).click();
+		await page
+			.getByRole('button', {name: new RegExp(`^${cardTitle} `)})
+			.click();
 
-		await expect(
-			brokenLinksList.getByText(title, {exact: true})
-		).toBeVisible({timeout: 5000});
+		await expect(qualityList.getByText(text, {exact: true})).toBeVisible({
+			timeout: 5000,
+		});
 	}).toPass();
 
-	return brokenLinksList;
+	return qualityList;
 }
 
 async function pollDate(
@@ -668,19 +674,19 @@ test.describe('Quality section', () => {
 			});
 
 			await test.step('Confirm the second space lists its own broken link', async () => {
-				await openBrokenLinksList(
-					page,
-					secondSpaceName,
-					secondSpaceReferringTitle
-				);
+				await openQualityList(page, {
+					cardTitle: 'Broken Links',
+					spaceName: secondSpaceName,
+					text: secondSpaceReferringTitle,
+				});
 			});
 
 			await test.step('Check that only the first space is listed', async () => {
-				const brokenLinksList = await openBrokenLinksList(
-					page,
-					firstSpaceName,
-					referringTitle
-				);
+				const brokenLinksList = await openQualityList(page, {
+					cardTitle: 'Broken Links',
+					spaceName: firstSpaceName,
+					text: referringTitle,
+				});
 
 				await expect(
 					brokenLinksList.getByText('1 Expired Asset', {exact: true})
@@ -715,6 +721,175 @@ test.describe('Quality section', () => {
 				await expect(page.getByLabel('Title')).toHaveValue(
 					referringTitle
 				);
+			});
+		}
+	);
+
+	test(
+		'Lists the contents missing a required field added to their published content structure',
+		{tag: '@LPD-110645'},
+		async ({apiHelpers, page}) => {
+			const spaceName = `space ${getRandomString()}`;
+			const title = `content ${getRandomString()}`;
+
+			let applicationName: string;
+			let objectDefinitionId: number;
+			let objectEntryId: number;
+
+			await test.step('Publish a content of a versioned content structure', async () => {
+				const space =
+					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+						name: spaceName,
+						settings: {},
+						type: 'Space',
+					});
+
+				const objectDefinitionAPIClient =
+					await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+				const {body: objectDefinition} =
+					await objectDefinitionAPIClient.postObjectDefinition({
+						enableComments: true,
+						enableFriendlyURLCustomization: true,
+						enableIndexSearch: true,
+						enableLocalization: true,
+						enableObjectEntryDraft: true,
+						enableObjectEntryHistory: true,
+						enableObjectEntrySchedule: true,
+						enableObjectEntryVersioning: true,
+						externalReferenceCode: getRandomString(),
+						label: {en_US: getRandomString()},
+						name: `Structure${getRandomInt()}`,
+						objectDefinitionSettings: [
+							{
+								name: 'acceptedGroupExternalReferenceCodes',
+								value: space.externalReferenceCode,
+							} as any,
+						],
+						objectFields: [
+							{
+								DBType: 'String',
+								businessType: 'Text',
+								externalReferenceCode: getRandomString(),
+								indexed: true,
+								indexedAsKeyword: false,
+								indexedLanguageId: 'en_US',
+								label: {en_US: 'Title'},
+								localized: true,
+								name: 'title',
+								required: true,
+							},
+						],
+						objectFolderExternalReferenceCode:
+							'L_CMS_CONTENT_STRUCTURES',
+						pluralLabel: {en_US: getRandomString()},
+						scope: 'depot',
+						status: {code: 0},
+						titleObjectFieldName: 'title',
+					});
+
+				apiHelpers.data.push({
+					id: objectDefinition.id as number,
+					type: 'objectDefinition',
+				});
+
+				applicationName = (
+					objectDefinition.restContextPath as string
+				).replace(/^\/o\//, '');
+				objectDefinitionId = objectDefinition.id as number;
+
+				const objectEntry =
+					await apiHelpers.objectEntry.postObjectEntry(
+						{
+							objectEntryFolderExternalReferenceCode:
+								'L_CONTENTS',
+							title,
+						},
+						applicationName,
+						spaceName
+					);
+
+				objectEntryId = objectEntry.id;
+			});
+
+			await test.step('Add a required field to the published structure', async () => {
+				await apiHelpers.objectAdmin.postObjectDefinitionObjectField(
+					objectDefinitionId,
+					{
+						DBType: 'String',
+						businessType: 'Text',
+						externalReferenceCode: getRandomString(),
+						indexed: true,
+						indexedAsKeyword: false,
+						indexedLanguageId: 'en_US',
+						label: {en_US: 'Summary'},
+						localized: true,
+						name: 'summary',
+						required: true,
+					}
+				);
+			});
+
+			await test.step('Check the dashboard lists the content with its missing field', async () => {
+				const missingRequiredDataList = await openQualityList(page, {
+					cardTitle: 'Missing Required Data',
+					spaceName,
+					text: title,
+				});
+
+				await expect(
+					missingRequiredDataList.getByText(
+						'1 Missing Required Field',
+						{exact: true}
+					)
+				).toBeVisible();
+			});
+
+			await test.step('Open the missing required data page of the space', async () => {
+				await page
+					.getByRole('link', {name: 'View All Missing Required Data'})
+					.click();
+
+				await expect(page).toHaveURL(/missing-required-data\?groupId=/);
+
+				await expect(
+					page.getByText(title, {exact: true})
+				).toBeVisible();
+			});
+
+			await test.step('Offer only the edit action in the page', async () => {
+				await page
+					.getByRole('button', {name: `${title} Actions`})
+					.click();
+
+				const editMenuItem = page.getByRole('menuitem', {name: 'Edit'});
+
+				await expect(editMenuItem).toBeVisible();
+
+				await expect(
+					page.getByRole('menuitem', {name: 'View'})
+				).toBeHidden();
+
+				await editMenuItem.click();
+
+				await expect(page.getByLabel('Title')).toHaveValue(title);
+			});
+
+			await test.step('Check the content leaves the list once the field is filled', async () => {
+				const objectEntry =
+					await apiHelpers.objectEntry.patchObjectEntry(
+						{summary_i18n: {en_US: getRandomString()}},
+						applicationName,
+						objectEntryId
+					);
+
+				expect(objectEntry.id).toBe(objectEntryId);
+
+				await openQualityList(page, {
+					cardTitle: 'Missing Required Data',
+					spaceName,
+					text: 'No Missing Required Data',
+				});
 			});
 		}
 	);
