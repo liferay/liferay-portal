@@ -1206,22 +1206,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	@Override
 	public Layout fetchDraftLayout(long plid) {
-		if (plid <= 0) {
-			return null;
-		}
-
-		List<Layout> layouts = layoutPersistence.findByC_C(
-			_classNameLocalService.getClassNameId(Layout.class), plid);
-
-		if (layouts.isEmpty()) {
-			return null;
-		}
-
-		if ((layouts.size() > 1) && _log.isWarnEnabled()) {
-			_log.warn("More than one draft layout uses layout ID " + plid);
-		}
-
-		return layouts.get(layouts.size() - 1);
+		return fetchDraftLayout(plid, 0);
 	}
 
 	@Override
@@ -1271,9 +1256,9 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		}
 
 		for (Layout draftLayout :
-				layoutPersistence.findByC_C(
-					_classNameLocalService.getClassNameId(Layout.class),
-					plids)) {
+				layoutPersistence.findByC_C_L(
+					_classNameLocalService.getClassNameId(Layout.class), plids,
+					0)) {
 
 			draftLayouts.put(
 				layoutsMap.get(draftLayout.getClassPK()), draftLayout);
