@@ -45,24 +45,6 @@ describe('FieldValueMessageBalloon', () => {
 		await checkAccessibility({context: container});
 	});
 
-	it('renders each value in its own element', () => {
-		render(
-			<FieldValueMessageBalloon
-				onApply={jest.fn()}
-				onRegenerate={jest.fn()}
-				richTextFieldNames={['content']}
-				values={{
-					content: '<p>An easy app.</p>',
-					title: 'Live Energy',
-				}}
-			/>
-		);
-
-		expect(screen.getByText('Live Energy')).not.toContainElement(
-			screen.getByText('An easy app.')
-		);
-	});
-
 	it('renders a plain text value as is', () => {
 		render(
 			<FieldValueMessageBalloon
@@ -74,19 +56,6 @@ describe('FieldValueMessageBalloon', () => {
 		);
 
 		expect(screen.getByText('Fish & Chips')).toBeInTheDocument();
-	});
-
-	it('renders HTML in a plain text value literally', () => {
-		render(
-			<FieldValueMessageBalloon
-				onApply={jest.fn()}
-				onRegenerate={jest.fn()}
-				richTextFieldNames={['content']}
-				values={{title: '<b>AT&amp;T</b> news'}}
-			/>
-		);
-
-		expect(screen.getByText('<b>AT&amp;T</b> news')).toBeInTheDocument();
 	});
 
 	it('renders a rich text value as formatted text instead of HTML tags', () => {
@@ -105,5 +74,36 @@ describe('FieldValueMessageBalloon', () => {
 		expect(screen.getByText('Live Energy.').tagName).toBe('STRONG');
 		expect(screen.getByText('Second paragraph.').tagName).toBe('P');
 		expect(screen.queryByText(/<p>|<strong>/)).toBeNull();
+	});
+
+	it('renders each value in its own element', () => {
+		render(
+			<FieldValueMessageBalloon
+				onApply={jest.fn()}
+				onRegenerate={jest.fn()}
+				richTextFieldNames={['content']}
+				values={{
+					content: '<p>An easy app.</p>',
+					title: 'Live Energy',
+				}}
+			/>
+		);
+
+		expect(screen.getByText('Live Energy')).not.toContainElement(
+			screen.getByText('An easy app.')
+		);
+	});
+
+	it('renders HTML in a plain text value literally', () => {
+		render(
+			<FieldValueMessageBalloon
+				onApply={jest.fn()}
+				onRegenerate={jest.fn()}
+				richTextFieldNames={['content']}
+				values={{title: '<b>AT&amp;T</b> news'}}
+			/>
+		);
+
+		expect(screen.getByText('<b>AT&amp;T</b> news')).toBeInTheDocument();
 	});
 });
