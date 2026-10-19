@@ -22,7 +22,9 @@ import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutWrapper;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.search.IndexStatusManagerThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -440,8 +442,8 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 			}
 
 			@Override
-			public Serializable getPreviewPrimaryKey() {
-				return launchDraftLayout.getPlid();
+			public BaseModel<?> getPreviewBaseModel() {
+				return new LaunchLayoutWrapper(launchDraftLayout);
 			}
 
 			@Override
@@ -475,8 +477,8 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 			}
 
 			@Override
-			public Serializable getPreviewPrimaryKey() {
-				return layout.getPlid();
+			public BaseModel<?> getPreviewBaseModel() {
+				return layout;
 			}
 
 			@Override
