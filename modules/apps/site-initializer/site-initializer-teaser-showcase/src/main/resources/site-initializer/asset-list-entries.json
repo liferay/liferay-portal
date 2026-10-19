@@ -4,22 +4,16 @@
 		"title": "Retail Partners FAQ",
 		"unicodeProperties": {
 			"classNameIds": "com.liferay.journal.model.JournalArticle",
-			"filterBy": [
+			"filters": [
 				{
-					"key": "queryAndOperator0",
-					"value": "true"
-				},
-				{
-					"key": "queryContains0",
-					"value": "true"
-				},
-				{
-					"key": "queryName0",
-					"value": "assetCategories"
-				},
-				{
-					"key": "queryValues0",
-					"value": "[#TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/faq/retail-partners.json#]"
+					"operatorName": "contains",
+					"propertyName": "assetCategories",
+					"quantifier": "all",
+					"value": [
+						{
+							"value": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/faq/retail-partners.json$]"
+						}
+					]
 				}
 			]
 		}
@@ -29,22 +23,16 @@
 		"title": "Products and Services FAQ",
 		"unicodeProperties": {
 			"classNameIds": "com.liferay.journal.model.JournalArticle",
-			"filterBy": [
+			"filters": [
 				{
-					"key": "queryAndOperator0",
-					"value": "true"
-				},
-				{
-					"key": "queryContains0",
-					"value": "true"
-				},
-				{
-					"key": "queryName0",
-					"value": "assetCategories"
-				},
-				{
-					"key": "queryValues0",
-					"value": "[#TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/faq/products-and-services.json#]"
+					"operatorName": "contains",
+					"propertyName": "assetCategories",
+					"quantifier": "all",
+					"value": [
+						{
+							"value": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/faq/products-and-services.json$]"
+						}
+					]
 				}
 			]
 		}
@@ -54,22 +42,16 @@
 		"title": "Pricing and Ordering FAQ",
 		"unicodeProperties": {
 			"classNameIds": "com.liferay.journal.model.JournalArticle",
-			"filterBy": [
+			"filters": [
 				{
-					"key": "queryAndOperator0",
-					"value": "true"
-				},
-				{
-					"key": "queryContains0",
-					"value": "true"
-				},
-				{
-					"key": "queryName0",
-					"value": "assetCategories"
-				},
-				{
-					"key": "queryValues0",
-					"value": "[#TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/faq/pricing-and-ordering.json#]"
+					"operatorName": "contains",
+					"propertyName": "assetCategories",
+					"quantifier": "all",
+					"value": [
+						{
+							"value": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/faq/pricing-and-ordering.json$]"
+						}
+					]
 				}
 			]
 		}
@@ -79,22 +61,16 @@
 		"title": "Returns and Exchanges FAQ",
 		"unicodeProperties": {
 			"classNameIds": "com.liferay.journal.model.JournalArticle",
-			"filterBy": [
+			"filters": [
 				{
-					"key": "queryAndOperator0",
-					"value": "true"
-				},
-				{
-					"key": "queryContains0",
-					"value": "true"
-				},
-				{
-					"key": "queryName0",
-					"value": "assetCategories"
-				},
-				{
-					"key": "queryValues0",
-					"value": "[#TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/faq/returns-and-exchanges.json#]"
+					"operatorName": "contains",
+					"propertyName": "assetCategories",
+					"quantifier": "all",
+					"value": [
+						{
+							"value": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/faq/returns-and-exchanges.json$]"
+						}
+					]
 				}
 			]
 		}
