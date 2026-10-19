@@ -14,6 +14,7 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeService;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.document.library.kernel.service.DLFolderService;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.kernel.util.comparator.RepositoryModelReadCountComparator;
@@ -157,7 +158,7 @@ public class DLFolderServiceTest {
 			_group.getGroupId(), _parentFolder.getFolderId(), false,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		_user = _addUser(dlFolder, _group);
+		_user = _addUser(dlFolder.getFolderId(), _group);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
@@ -169,7 +170,7 @@ public class DLFolderServiceTest {
 					_alternativeGroup.getGroupId(), _user.getUserId()));
 		}
 
-		dlFolder = _dlFolderService.getFolder(dlFolder.getFolderId());
+		dlFolder = _dlFolderLocalService.getFolder(dlFolder.getFolderId());
 
 		Assert.assertEquals(
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
@@ -185,9 +186,9 @@ public class DLFolderServiceTest {
 			_group.getGroupId(), _parentFolder.getFolderId(), false,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		_user = _addUser(dlFolder, _alternativeGroup);
-
 		long folderId = dlFolder.getFolderId();
+
+		_user = _addUser(folderId, _alternativeGroup);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
@@ -210,7 +211,7 @@ public class DLFolderServiceTest {
 				mustHavePermission.actionId);
 		}
 
-		dlFolder = _dlFolderService.getFolder(folderId);
+		dlFolder = _dlFolderLocalService.getFolder(folderId);
 
 		Assert.assertEquals(
 			_parentFolder.getFolderId(), dlFolder.getParentFolderId());
@@ -583,15 +584,15 @@ public class DLFolderServiceTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
-	private User _addUser(DLFolder dlFolder, Group group) throws Exception {
+	private User _addUser(long folderId, Group group) throws Exception {
 		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
 
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		ResourcePermissionLocalServiceUtil.setResourcePermissions(
 			_role.getCompanyId(), DLFolder.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(dlFolder.getFolderId()), _role.getRoleId(),
+			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(folderId),
+			_role.getRoleId(),
 			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
 
 		RoleLocalServiceUtil.addUserRoles(
@@ -617,6 +618,9 @@ public class DLFolderServiceTest {
 
 	@Inject
 	private DLFileEntryTypeService _dlFileEntryTypeService;
+
+	@Inject
+	private DLFolderLocalService _dlFolderLocalService;
 
 	@Inject
 	private DLFolderService _dlFolderService;

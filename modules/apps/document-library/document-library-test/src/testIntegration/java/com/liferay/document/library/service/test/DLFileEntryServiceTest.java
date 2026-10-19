@@ -335,7 +335,7 @@ public class DLFileEntryServiceTest {
 
 		DLFileEntry dlFileEntry = addDLFileEntry(dlFolder.getFolderId(), false);
 
-		_user = _addUser(dlFileEntry, _group);
+		_user = _addUser(dlFileEntry.getFileEntryId(), _group);
 
 		_alternativeGroup = GroupTestUtil.addGroup();
 
@@ -368,9 +368,9 @@ public class DLFileEntryServiceTest {
 
 		_alternativeGroup = GroupTestUtil.addGroup();
 
-		_user = _addUser(dlFileEntry, _alternativeGroup);
-
 		long fileEntryId = dlFileEntry.getFileEntryId();
+
+		_user = _addUser(fileEntryId, _alternativeGroup);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
@@ -532,17 +532,15 @@ public class DLFileEntryServiceTest {
 			new HashMap<String, Serializable>());
 	}
 
-	private User _addUser(DLFileEntry dlFileEntry, Group group)
-		throws Exception {
-
+	private User _addUser(long fileEntryId, Group group) throws Exception {
 		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
 
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		ResourcePermissionLocalServiceUtil.setResourcePermissions(
 			_role.getCompanyId(), DLFileEntry.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(dlFileEntry.getFileEntryId()), _role.getRoleId(),
+			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(fileEntryId),
+			_role.getRoleId(),
 			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
 
 		RoleLocalServiceUtil.addUserRoles(
