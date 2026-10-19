@@ -80,6 +80,7 @@ import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -183,6 +184,13 @@ public class DynamicRegistrationServiceContainerRequestFilter
 	@Activate
 	protected void activate() {
 		_portalCache = PortalCacheHelperUtil.getPortalCache(
+			PortalCacheManagerNames.SINGLE_VM,
+			DynamicRegistrationServiceContainerRequestFilter.class.getName());
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		PortalCacheHelperUtil.removePortalCache(
 			PortalCacheManagerNames.SINGLE_VM,
 			DynamicRegistrationServiceContainerRequestFilter.class.getName());
 	}
