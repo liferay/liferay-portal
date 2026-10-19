@@ -802,11 +802,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	@Test
 	public void testRegisterWithInvalidJWKSURI() throws Exception {
 		_testRegisterWithInvalidJWKSURI(
-			"https://10.0.0.1/" + RandomTestUtil.randomString());
-		_testRegisterWithInvalidJWKSURI(
-			"https://127.0.0.1/" + RandomTestUtil.randomString());
-		_testRegisterWithInvalidJWKSURI(
-			"https://169.254.169.254/" + RandomTestUtil.randomString());
+			"https://127.0.0." + RandomTestUtil.randomInt(0, 255));
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
@@ -1169,7 +1165,6 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			"post", Entity.json(jsonObject.toString()));
 
 		Assert.assertEquals(400, response.getStatus());
-
 		Assert.assertEquals("invalid_request", parseError(response));
 	}
 

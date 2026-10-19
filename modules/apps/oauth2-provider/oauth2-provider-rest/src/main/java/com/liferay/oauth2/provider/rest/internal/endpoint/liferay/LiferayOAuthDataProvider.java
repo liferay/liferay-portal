@@ -869,7 +869,7 @@ public class LiferayOAuthDataProvider
 			String jwks = properties.get("jwks");
 
 			if (jwks == null) {
-				jwks = _extractJwksFromJwksUri(
+				jwks = _extractJWKSFromJWKSURI(
 					companyId, properties.get("jwks_uri"));
 			}
 
@@ -1317,7 +1317,7 @@ public class LiferayOAuthDataProvider
 		serverAccessToken.setTokenType(accessToken.getTokenType());
 	}
 
-	private String _extractJwksFromJwksUri(long companyId, String jwksURI)
+	private String _extractJWKSFromJWKSURI(long companyId, String jwksURI)
 		throws Exception {
 
 		if (Validator.isBlank(jwksURI)) {
@@ -1330,7 +1330,7 @@ public class LiferayOAuthDataProvider
 				OAuthConstants.INVALID_REQUEST, Response.Status.BAD_REQUEST);
 		}
 
-		if (_isNotAllowedJWKSURI(companyId, jwksURI)) {
+		if (!_isAllowedJWKSURI(companyId, jwksURI)) {
 			OAuth2ErrorUtil.reportInvalidRequestError(
 				"The JWKS URI field must use an allowed host",
 				OAuthConstants.INVALID_REQUEST, Response.Status.BAD_REQUEST);
@@ -1517,14 +1517,14 @@ public class LiferayOAuthDataProvider
 			});
 	}
 
-	private boolean _isNotAllowedJWKSURI(long companyId, String jwksURI) {
+	private boolean _isAllowedJWKSURI(long companyId, String jwksURI) {
 		try {
 			URI uri = HttpComponentsUtil.getURI(jwksURI);
 
 			String host = uri.getHost();
 
 			if (Validator.isNull(host)) {
-				return true;
+				return false;
 			}
 
 			URLFetchSecurityCompanyConfiguration
@@ -1538,23 +1538,23 @@ public class LiferayOAuthDataProvider
 			if (ArrayUtil.isNotEmpty(urlHostsAllowed) &&
 				!ArrayUtil.contains(urlHostsAllowed, host, true)) {
 
-				return true;
+				return false;
 			}
 
 			if (urlFetchSecurityCompanyConfiguration.
 					urlLocalNetworkAccessEnabled()) {
 
-				return false;
+				return true;
 			}
 
 			InetAddress inetAddress = InetAddressUtil.getInetAddressByName(
 				host);
 
 			if (inetAddress == null) {
-				return true;
+				return false;
 			}
 
-			return InetAddressUtil.isLocalInetAddress(inetAddress);
+			return !InetAddressUtil.isLocalInetAddress(inetAddress);
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -1562,7 +1562,7 @@ public class LiferayOAuthDataProvider
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	private ServerAccessToken _populateAccessToken(
