@@ -315,6 +315,7 @@ public class ProjectFaroController extends BaseFaroController {
 			FaroParam
 				<List<OSBOfferingEntry>> offeringEntriesFaroParam,
 			@FormParam("ownerEmailAddress") String ownerEmailAddress,
+			@FormParam("salesforceAccountId") String salesforceAccountId,
 			@FormParam("serverLocation") String serverLocation,
 			@DefaultValue("UTC") @FormParam("timeZoneId") String timeZoneId)
 		throws Exception {
@@ -328,8 +329,9 @@ public class ProjectFaroController extends BaseFaroController {
 				corpProjectName, corpProjectUuid,
 				emailAddressDomainsFaroParam.getValue(), friendlyURL,
 				incidentReportEmailAddressesFaroParam.getValue(), name,
-				offeringEntriesFaroParam.getValue(), serverLocation,
-				FaroProjectConstants.STATE_UNCONFIGURED, timeZoneId);
+				offeringEntriesFaroParam.getValue(), salesforceAccountId,
+				serverLocation, FaroProjectConstants.STATE_UNCONFIGURED,
+				timeZoneId);
 
 			Role role = _roleLocalService.getRole(
 				user.getCompanyId(), RoleConstants.SITE_OWNER);
@@ -1188,8 +1190,8 @@ public class ProjectFaroController extends BaseFaroController {
 			String corpProjectName, String corpProjectUuid,
 			List<String> emailAddressDomains, String friendlyURL,
 			List<String> incidentReportEmailAddresses, String name,
-			List<OSBOfferingEntry> offeringEntries, String serverLocation,
-			String state, String timeZoneId)
+			List<OSBOfferingEntry> offeringEntries, String salesforceAccountId,
+			String serverLocation, String state, String timeZoneId)
 		throws Exception {
 
 		_validateFriendlyURL(friendlyURL);
@@ -1248,6 +1250,12 @@ public class ProjectFaroController extends BaseFaroController {
 			faroProject.setWeDeployKey(
 				FaroPropsValues.FARO_DEFAULT_WE_DEPLOY_KEY);
 		}
+
+		if (Validator.isNull(salesforceAccountId)) {
+			salesforceAccountId = osbAccountEntry.getSalesforceAccountId();
+		}
+
+		faroProject.setSalesforceAccountId(salesforceAccountId);
 
 		String weDeployKey =
 			contactsEngineClient.addProject(faroProject) + ".lfr.cloud";
