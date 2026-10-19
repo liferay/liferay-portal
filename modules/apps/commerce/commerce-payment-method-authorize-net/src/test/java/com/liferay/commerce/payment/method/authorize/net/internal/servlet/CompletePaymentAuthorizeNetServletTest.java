@@ -87,6 +87,7 @@ public class CompletePaymentAuthorizeNetServletTest {
 	public void testDoGet() throws Exception {
 		_testDoGet();
 		_testDoGetWithCancel();
+		_testDoGetWithCancelAndCompletedCommerceOrder();
 	}
 
 	@Test
@@ -273,9 +274,16 @@ public class CompletePaymentAuthorizeNetServletTest {
 			mockHttpServletResponse.getRedirectedUrl());
 
 		Mockito.verify(
-			_commercePaymentEngine
+			_commercePaymentEngine, Mockito.never()
+		).cancelPayment(
+			Mockito.eq(commerceOrderId), Mockito.any(),
+			Mockito.any(HttpServletRequest.class)
+		);
+
+		Mockito.verify(
+			_commercePaymentEngine, Mockito.never()
 		).completePayment(
-			Mockito.eq(commerceOrderId), Mockito.isNull(),
+			Mockito.eq(commerceOrderId), Mockito.any(),
 			Mockito.any(HttpServletRequest.class)
 		);
 	}
@@ -293,12 +301,54 @@ public class CompletePaymentAuthorizeNetServletTest {
 			commerceOrder
 		);
 
-		_get(true, "http://localhost/web/guest");
+		MockHttpServletResponse mockHttpServletResponse = _get(
+			true, "http://localhost/web/guest");
+
+		Assert.assertEquals(
+			"http://localhost/web/guest",
+			mockHttpServletResponse.getRedirectedUrl());
 
 		Mockito.verify(
 			_commercePaymentEngine
 		).cancelPayment(
 			Mockito.eq(commerceOrderId), Mockito.isNull(),
+			Mockito.any(HttpServletRequest.class)
+		);
+
+		Mockito.verify(
+			_commercePaymentEngine, Mockito.never()
+		).completePayment(
+			Mockito.eq(commerceOrderId), Mockito.any(),
+			Mockito.any(HttpServletRequest.class)
+		);
+	}
+
+	private void _testDoGetWithCancelAndCompletedCommerceOrder()
+		throws Exception {
+
+		long commerceOrderId = RandomTestUtil.randomLong();
+
+		CommerceOrder commerceOrder = _mockCommerceOrder(
+			commerceOrderId, CommerceOrderPaymentConstants.STATUS_COMPLETED);
+
+		Mockito.when(
+			_commercePaymentHttpHelper.getCommerceOrder(
+				Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			commerceOrder
+		);
+
+		MockHttpServletResponse mockHttpServletResponse = _get(
+			true, "http://localhost/web/guest");
+
+		Assert.assertEquals(
+			"http://localhost/web/guest",
+			mockHttpServletResponse.getRedirectedUrl());
+
+		Mockito.verify(
+			_commercePaymentEngine, Mockito.never()
+		).cancelPayment(
+			Mockito.eq(commerceOrderId), Mockito.any(),
 			Mockito.any(HttpServletRequest.class)
 		);
 	}

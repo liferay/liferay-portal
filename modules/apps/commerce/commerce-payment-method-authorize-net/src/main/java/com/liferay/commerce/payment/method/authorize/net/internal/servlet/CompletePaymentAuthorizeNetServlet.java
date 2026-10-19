@@ -101,15 +101,11 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 
 			boolean cancel = ParamUtil.getBoolean(httpServletRequest, "cancel");
 
-			if (cancel) {
-				_commercePaymentEngine.cancelPayment(
-					commerceOrder.getCommerceOrderId(), null,
-					httpServletRequest);
-			}
-			else if (commerceOrder.getPaymentStatus() !=
-						CommerceOrderPaymentConstants.STATUS_COMPLETED) {
+			if (cancel &&
+				(commerceOrder.getPaymentStatus() !=
+					CommerceOrderPaymentConstants.STATUS_COMPLETED)) {
 
-				_commercePaymentEngine.completePayment(
+				_commercePaymentEngine.cancelPayment(
 					commerceOrder.getCommerceOrderId(), null,
 					httpServletRequest);
 			}
