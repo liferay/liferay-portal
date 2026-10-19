@@ -18,6 +18,9 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.asah.rest.dto.v1_0.AsahSegmentsEntry;
@@ -142,13 +145,29 @@ public class AsahSegmentsEntryResourceSecurityTest {
 	private void _testPostAsahSegmentsEntryWithUnknownMembershipUserId()
 		throws Exception {
 
-		SegmentsEntry segmentsEntry = _postAsahSegmentsEntry(
-			_toMembership(Long.MAX_VALUE), _analyticsAdministratorUser);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.segments.asah.rest.internal.resource.v1_0." +
+					"AsahSegmentsEntryResourceImpl",
+				LoggerTestUtil.ERROR)) {
 
-		Assert.assertEquals(
-			0,
-			_segmentsEntryRelLocalService.getSegmentsEntryRelsCount(
-				segmentsEntry.getSegmentsEntryId()));
+			SegmentsEntry segmentsEntry = _postAsahSegmentsEntry(
+				_toMembership(Long.MAX_VALUE), _analyticsAdministratorUser);
+
+			Assert.assertEquals(
+				0,
+				_segmentsEntryRelLocalService.getSegmentsEntryRelsCount(
+					segmentsEntry.getSegmentsEntryId()));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to process user ID " + Long.MAX_VALUE,
+				logEntry.getMessage());
+		}
 	}
 
 	private Membership _toMembership(long userId) {
