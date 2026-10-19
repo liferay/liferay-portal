@@ -669,6 +669,11 @@
 			<finder-column name="privateLayout" />
 			<finder-column arrayable-operator="OR" name="status" />
 		</finder>
+		<finder name="C_C_L" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column arrayable-operator="OR" name="classPK" />
+			<finder-column name="launchSetId" />
+		</finder>
 		<finder name="G_P_P_H" return-type="Collection" where="system = [$FALSE$]">
 			<finder-column name="groupId" />
 			<finder-column name="privateLayout" />
