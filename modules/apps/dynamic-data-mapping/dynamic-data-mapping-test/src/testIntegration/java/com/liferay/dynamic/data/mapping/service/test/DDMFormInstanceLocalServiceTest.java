@@ -6,20 +6,26 @@
 package com.liferay.dynamic.data.mapping.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstanceSettings;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceVersion;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormInstanceTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
+import com.liferay.dynamic.data.mapping.util.DDMFormInstanceFactory;
+import com.liferay.dynamic.data.mapping.util.DDMFormValuesSerializeUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import org.junit.Assert;
@@ -103,6 +109,36 @@ public class DDMFormInstanceLocalServiceTest extends BaseDDMServiceTestCase {
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_DRAFT,
 			latestFormInstanceVersion.getStatus());
+	}
+
+	@Test
+	public void testSetSettings() throws Exception {
+		DDMFormInstance formInstance =
+			DDMFormInstanceTestUtil.addDDMFormInstance(
+				group, TestPropsValues.getUserId());
+
+		DDMFormInstance cachedFormInstance =
+			DDMFormInstanceLocalServiceUtil.getFormInstance(
+				formInstance.getFormInstanceId());
+
+		cachedFormInstance.setMvccVersion(
+			cachedFormInstance.getMvccVersion() - 1);
+
+		cachedFormInstance.getSettingsDDMFormValues();
+
+		cachedFormInstance.setSettings(
+			DDMFormValuesSerializeUtil.serialize(
+				DDMFormInstanceTestUtil.createSettingsDDMFormValues(false),
+				_jsonDDMFormValuesSerializer));
+
+		DDMFormInstanceSettings ddmFormInstanceSettings =
+			DDMFormInstanceFactory.create(
+				DDMFormInstanceSettings.class,
+				cachedFormInstance.getSettingsDDMFormValues());
+
+		Assert.assertFalse(
+			cachedFormInstance.getSettings(),
+			ddmFormInstanceSettings.requireCaptcha());
 	}
 
 	@Test
@@ -240,5 +276,8 @@ public class DDMFormInstanceLocalServiceTest extends BaseDDMServiceTestCase {
 	}
 
 	private static long _classNameId;
+
+	@Inject(filter = "ddm.form.values.serializer.type=json")
+	private DDMFormValuesSerializer _jsonDDMFormValuesSerializer;
 
 }
