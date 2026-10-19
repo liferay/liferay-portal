@@ -9,12 +9,14 @@ import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.order.CommerceOrderAttachmentURLProvider;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.service.CommerceOrderAttachmentService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.AttachmentBase64;
 import com.liferay.headless.commerce.delivery.cart.internal.odata.entity.v1_0.AttachmentEntityModel;
+import com.liferay.headless.commerce.delivery.cart.internal.util.v1_0.GuestCommerceOrderUtil;
 import com.liferay.headless.commerce.delivery.cart.resource.v1_0.AttachmentResource;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
@@ -62,6 +64,15 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 	public void deleteCartAttachment(Long attachmentId, Long cartId)
 		throws Exception {
 
+		CommerceOrderAttachment commerceOrderAttachment =
+			_commerceOrderAttachmentService.getCommerceOrderAttachment(
+				attachmentId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			_commerceOrderService.getCommerceOrder(
+				commerceOrderAttachment.getCommerceOrderId()),
+			_commerceOrderHttpHelper, contextHttpServletRequest);
+
 		_commerceOrderAttachmentService.deleteCommerceOrderAttachment(
 			attachmentId);
 	}
@@ -90,8 +101,9 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 					contextCompany.getCompanyId());
 
 		if (commerceOrderAttachment != null) {
-			_commerceOrderAttachmentService.deleteCommerceOrderAttachment(
-				commerceOrderAttachment.getCommerceOrderAttachmentId());
+			deleteCartAttachment(
+				commerceOrderAttachment.getCommerceOrderAttachmentId(),
+				commerceOrder.getCommerceOrderId());
 		}
 	}
 
@@ -103,6 +115,9 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		return SearchUtil.search(
 			Collections.emptyMap(),
@@ -137,6 +152,9 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		return getCartAttachmentsPage(
 			commerceOrder.getCommerceOrderId(), search, filter, pagination,
 			sorts);
@@ -156,6 +174,9 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		return _toAttachment(
 			_commerceOrderAttachmentService.addCommerceOrderAttachment(
@@ -182,6 +203,9 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 				"Unable to find cart with external reference code " +
 					externalReferenceCode);
 		}
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		return postCartAttachmentByBase64(
 			commerceOrder.getCommerceOrderId(), attachmentBase64);
@@ -301,6 +325,9 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 	@Reference
 	private CommerceOrderAttachmentURLProvider
 		_commerceOrderAttachmentURLProvider;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;

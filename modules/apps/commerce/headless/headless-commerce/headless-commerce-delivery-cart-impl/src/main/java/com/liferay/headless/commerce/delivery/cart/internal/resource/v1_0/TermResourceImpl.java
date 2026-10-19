@@ -11,6 +11,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -23,6 +24,7 @@ import com.liferay.commerce.term.model.CommerceTermEntry;
 import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.Term;
+import com.liferay.headless.commerce.delivery.cart.internal.util.v1_0.GuestCommerceOrderUtil;
 import com.liferay.headless.commerce.delivery.cart.resource.v1_0.TermResource;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -56,6 +58,9 @@ public class TermResourceImpl extends BaseTermResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		return getCartDeliveryTermsPage(commerceOrder.getCommerceOrderId());
 	}
 
@@ -74,6 +79,9 @@ public class TermResourceImpl extends BaseTermResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		return getCartPaymentTermsPage(commerceOrder.getCommerceOrderId());
 	}
 
@@ -81,6 +89,9 @@ public class TermResourceImpl extends BaseTermResourceImpl {
 	public Page<Term> getCartDeliveryTermsPage(Long cartId) throws Exception {
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		return Page.of(
 			transform(
@@ -95,6 +106,9 @@ public class TermResourceImpl extends BaseTermResourceImpl {
 	public Page<Term> getCartPaymentTermsPage(Long cartId) throws Exception {
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
 			_commercePaymentMethodGroupRelLocalService.
@@ -199,6 +213,9 @@ public class TermResourceImpl extends BaseTermResourceImpl {
 
 	@Reference
 	private CommerceContextFactory _commerceContextFactory;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
