@@ -458,7 +458,7 @@ PrimitiveWrapperInstantiationCheck | [Bug Prevention](bug_prevention_checks.md#b
 PrincipalExceptionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds calls to `PrincipalException.class.getName()` (use `PrincipalException.getNestedClasses()` instead). |
 PropertiesArchivedModulesCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .eslintignore, .prettierignore, or .properties | Finds `test.batch.class.names.includes` property value pointing to archived modules in `test.properties`. |
 PropertiesBuildIncludeDirsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .eslintignore, .prettierignore, or .properties | Verifies property value of `build.include.dirs` in `build.properties`. |
-PropertiesCommentsCheck | [Styling](styling_checks.md#styling-checks) | .eslintignore, .prettierignore, or .properties | Validates comments in `.properties` files. |
+PropertiesCommentsCheck | [Styling](styling_checks.md#styling-checks) | .eslintignore, .prettierignore, or .properties | Validates comments in `.properties` files and wraps them to the maximum line length. |
 PropertiesDefaultAdminScreenNameCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .eslintignore, .prettierignore, or .properties | Checks that we do not use `default.admin.screen.name`. |
 PropertiesDefinitionKeysCheck | [Styling](styling_checks.md#styling-checks) | .eslintignore, .prettierignore, or .properties | Sorts definition keys in `liferay-plugin-package.properties` file. |
 PropertiesDependenciesFileCheck | [Styling](styling_checks.md#styling-checks) | .eslintignore, .prettierignore, or .properties | Sorts the properties in `dependencies.properties` file. |
@@ -475,7 +475,6 @@ PropertiesLanguageKeysOrderCheck | [Styling](styling_checks.md#styling-checks) |
 PropertiesLanguageStylingCheck | [Styling](styling_checks.md#styling-checks) | .eslintignore, .prettierignore, or .properties | Applies rules to enforce consistency in code style. |
 PropertiesLiferayPluginPackageFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .eslintignore, .prettierignore, or .properties | Performs several checks on `liferay-plugin-package.properties` file. |
 PropertiesLiferayPluginPackageLiferayVersionsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .eslintignore, .prettierignore, or .properties | Validates the version in `liferay-plugin-package.properties` file. |
-PropertiesLongLinesCheck | [Styling](styling_checks.md#styling-checks) | .eslintignore, .prettierignore, or .properties | Wraps comments in `.properties` files to the maximum line length. |
 PropertiesMultiLineValuesOrderCheck | [Styling](styling_checks.md#styling-checks) | .eslintignore, .prettierignore, or .properties | Verifies that property with multiple values is not on a single line. |
 PropertiesPlaywrightTestCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .eslintignore, .prettierignore, or .properties | Performs several checks on `test.properties` for Playwright test. |
 PropertiesPortalFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .eslintignore, .prettierignore, or .properties | Performs several checks on `portal.properties` or `portal-*.properties` file. |

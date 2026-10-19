@@ -153,14 +153,13 @@ PoshiPropertiesOrderCheck | .function, .jar, .lar, .macro, .path, .testcase, .wa
 PoshiStylingCheck | .function, .jar, .lar, .macro, .path, .testcase, .war, or .zip | Applies rules to enforce consistency in code style. |
 PoshiVariableNameCheck | .function, .jar, .lar, .macro, .path, .testcase, .war, or .zip | Checks variable names for correct use of `camelCase`. |
 PoshiWhitespaceCheck | .function, .jar, .lar, .macro, .path, .testcase, .war, or .zip | Finds missing and unnecessary whitespace. |
-PropertiesCommentsCheck | .eslintignore, .prettierignore, or .properties | Validates comments in `.properties` files. |
+PropertiesCommentsCheck | .eslintignore, .prettierignore, or .properties | Validates comments in `.properties` files and wraps them to the maximum line length. |
 PropertiesDefinitionKeysCheck | .eslintignore, .prettierignore, or .properties | Sorts definition keys in `liferay-plugin-package.properties` file. |
 PropertiesDependenciesFileCheck | .eslintignore, .prettierignore, or .properties | Sorts the properties in `dependencies.properties` file. |
 PropertiesEmptyLinesCheck | .eslintignore, .prettierignore, or .properties | Finds missing and unnecessary empty lines. |
 PropertiesLanguageContractionsCheck | .eslintignore, .prettierignore, or .properties | Finds contractions (such as `can't` or `you're`). |
 PropertiesLanguageKeysOrderCheck | .eslintignore, .prettierignore, or .properties | Sort language keys in `Language.properties` file. |
 PropertiesLanguageStylingCheck | .eslintignore, .prettierignore, or .properties | Applies rules to enforce consistency in code style. |
-PropertiesLongLinesCheck | .eslintignore, .prettierignore, or .properties | Wraps comments in `.properties` files to the maximum line length. |
 PropertiesMultiLineValuesOrderCheck | .eslintignore, .prettierignore, or .properties | Verifies that property with multiple values is not on a single line. |
 PropertiesStylingCheck | .eslintignore, .prettierignore, or .properties | Applies rules to enforce consistency in code style. |
 PropertiesTestFileCheck | .eslintignore, .prettierignore, or .properties | Checks the order of properties in `test.properties` file. |
