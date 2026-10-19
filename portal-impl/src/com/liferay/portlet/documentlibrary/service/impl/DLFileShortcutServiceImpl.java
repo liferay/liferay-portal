@@ -156,6 +156,17 @@ public class DLFileShortcutServiceImpl extends DLFileShortcutServiceBaseImpl {
 		fileShortcutModelResourcePermission.check(
 			getPermissionChecker(), fileShortcutId, ActionKeys.UPDATE);
 
+		DLFileShortcut dlFileShortcut =
+			dlFileShortcutPersistence.findByPrimaryKey(fileShortcutId);
+
+		if (dlFileShortcut.getFolderId() != folderId) {
+			ModelResourcePermissionUtil.check(
+				ModelResourcePermissionRegistryUtil.
+					<Folder>getModelResourcePermission(Folder.class.getName()),
+				getPermissionChecker(), dlFileShortcut.getGroupId(), folderId,
+				ActionKeys.ADD_SHORTCUT);
+		}
+
 		try {
 			ModelResourcePermission<FileEntry>
 				fileEntryModelResourcePermission =
