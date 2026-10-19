@@ -13,6 +13,7 @@ import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowTaskAssignToUser;
 import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowTasksBulkSelection;
 import com.liferay.headless.admin.workflow.resource.v1_0.WorkflowTaskResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -41,10 +43,14 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.workflow.comparator.WorkflowComparatorFactory;
 import com.liferay.portal.workflow.constants.WorkflowActionKeys;
+import com.liferay.portal.workflow.kaleo.exception.NoSuchInstanceException;
+import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
+import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalService;
 
 import java.io.Serializable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -90,19 +96,8 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 
 		_checkListOthersWorkflowTasksPermission(assigneeId);
 
-		return Page.of(
-			_getActions(),
-			transform(
-				_workflowTaskManager.getWorkflowTasksByWorkflowInstance(
-					contextCompany.getCompanyId(), assigneeId,
-					workflowInstanceId, completed,
-					pagination.getStartPosition(), pagination.getEndPosition(),
-					null),
-				this::_toWorkflowTask),
-			pagination,
-			_workflowTaskManager.getWorkflowTaskCountByWorkflowInstance(
-				contextCompany.getCompanyId(), assigneeId, workflowInstanceId,
-				completed));
+		return _getWorkflowInstanceWorkflowTasksPage(
+			assigneeId, completed, pagination, workflowInstanceId);
 	}
 
 	@Override
@@ -110,18 +105,8 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 			Long workflowInstanceId, Boolean completed, Pagination pagination)
 		throws Exception {
 
-		return Page.of(
-			_getActions(),
-			transform(
-				_workflowTaskManager.getWorkflowTasksByWorkflowInstance(
-					contextCompany.getCompanyId(), null, workflowInstanceId,
-					completed, pagination.getStartPosition(),
-					pagination.getEndPosition(), null),
-				this::_toWorkflowTask),
-			pagination,
-			_workflowTaskManager.getWorkflowTaskCountByWorkflowInstance(
-				contextCompany.getCompanyId(), null, workflowInstanceId,
-				completed));
+		return _getWorkflowInstanceWorkflowTasksPage(
+			null, completed, pagination, workflowInstanceId);
 	}
 
 	@Override
@@ -520,6 +505,61 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 		return workflowContext;
 	}
 
+	private Page<WorkflowTask> _getWorkflowInstanceWorkflowTasksPage(
+			Long assigneeId, Boolean completed, Pagination pagination,
+			long workflowInstanceId)
+		throws Exception {
+
+		KaleoInstance kaleoInstance =
+			_kaleoInstanceLocalService.fetchKaleoInstance(workflowInstanceId);
+
+		if ((kaleoInstance == null) ||
+			(kaleoInstance.getCompanyId() != contextCompany.getCompanyId())) {
+
+			throw new NoSuchInstanceException(
+				"No Kaleo instance exists with the primary key " +
+					workflowInstanceId);
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		List<com.liferay.portal.kernel.workflow.WorkflowTask> workflowTasks =
+			unsafeTransform(
+				_workflowTaskManager.getWorkflowTasksByWorkflowInstance(
+					contextCompany.getCompanyId(), assigneeId,
+					workflowInstanceId, completed, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null),
+				workflowTask -> {
+					if (_kaleoTaskInstanceTokenModelResourcePermission.contains(
+							permissionChecker, workflowTask.getWorkflowTaskId(),
+							ActionKeys.VIEW)) {
+
+						return workflowTask;
+					}
+
+					return null;
+				});
+
+		if (workflowTasks.isEmpty() &&
+			!_kaleoInstanceModelResourcePermission.contains(
+				permissionChecker, kaleoInstance, ActionKeys.VIEW)) {
+
+			throw new NoSuchInstanceException(
+				"No Kaleo instance exists with the primary key " +
+					workflowInstanceId);
+		}
+
+		return Page.of(
+			_getActions(),
+			transform(
+				ListUtil.subList(
+					workflowTasks, pagination.getStartPosition(),
+					pagination.getEndPosition()),
+				this::_toWorkflowTask),
+			pagination, workflowTasks.size());
+	}
+
 	private OrderByComparator<com.liferay.portal.kernel.workflow.WorkflowTask>
 		_toOrderByComparator(Sort sort) {
 
@@ -639,6 +679,15 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 
 		return _toWorkflowTask(actions, workflowTask);
 	}
+
+	@Reference
+	private KaleoInstanceLocalService _kaleoInstanceLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.workflow.kaleo.model.KaleoInstance)"
+	)
+	private ModelResourcePermission<KaleoInstance>
+		_kaleoInstanceModelResourcePermission;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken)"
