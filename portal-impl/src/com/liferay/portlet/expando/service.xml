@@ -136,10 +136,6 @@
 			<finder-column name="tableId" />
 			<finder-column name="columnId" />
 		</finder>
-		<finder name="T_R" return-type="Collection">
-			<finder-column name="tableId" />
-			<finder-column name="rowId" />
-		</finder>
 		<finder name="T_CPK" return-type="Collection">
 			<finder-column name="tableId" />
 			<finder-column name="classPK" />
