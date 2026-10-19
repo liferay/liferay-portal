@@ -121,6 +121,13 @@ public class OAuth2AuthorizationLocalServiceImpl
 	}
 
 	@Override
+	public void deleteOAuth2Authorizations(
+		long userId, long oAuth2ApplicationId) {
+
+		oAuth2AuthorizationPersistence.removeByU_O(userId, oAuth2ApplicationId);
+	}
+
+	@Override
 	public OAuth2Authorization fetchOAuth2AuthorizationByAccessTokenContent(
 		String accessTokenContent) {
 
