@@ -10,6 +10,7 @@ import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
 export const test = mergeTests(
@@ -222,21 +223,13 @@ test(
 					uom2Name
 				);
 
-			await skuTableRowActionLocator.scrollIntoViewIfNeeded();
-
-			await expect(skuTableRowActionLocator).toBeVisible();
-
-			await skuTableRowActionLocator.click();
-
-			await expect(
-				commerceAdminProductDetailsSkusPage.skuUOMActionMenuItem(
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: commerceAdminProductDetailsSkusPage.skuUOMActionMenuItem(
 					'Delete'
-				)
-			).toBeVisible();
-
-			await commerceAdminProductDetailsSkusPage
-				.skuUOMActionMenuItem('Delete')
-				.click();
+				),
+				trigger: skuTableRowActionLocator,
+			});
 
 			await waitForAlert(
 				commerceAdminProductDetailsSkusPage.sidePanelFrame
