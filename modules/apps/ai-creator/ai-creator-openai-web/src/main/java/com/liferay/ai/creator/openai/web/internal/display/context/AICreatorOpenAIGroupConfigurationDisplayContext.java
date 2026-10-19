@@ -36,9 +36,12 @@ public class AICreatorOpenAIGroupConfigurationDisplayContext
 			isAICreatorChatGPTCompanyEnabled(_themeDisplay.getCompanyId());
 	}
 
-	public boolean isCompanyDALLEEnabled() throws ConfigurationException {
+	public boolean isCompanyOpenAIImageGenerationEnabled()
+		throws ConfigurationException {
+
 		return _aiCreatorOpenAIConfigurationManager.
-			isAICreatorDALLECompanyEnabled(_themeDisplay.getCompanyId());
+			isAICreatorOpenAIImageGenerationCompanyEnabled(
+				_themeDisplay.getCompanyId());
 	}
 
 	@Override
@@ -73,9 +76,11 @@ public class AICreatorOpenAIGroupConfigurationDisplayContext
 	}
 
 	@Override
-	protected boolean isAICreatorDALLEEnabled() throws ConfigurationException {
+	protected boolean isAICreatorOpenAIImageGenerationEnabled()
+		throws ConfigurationException {
+
 		return _aiCreatorOpenAIConfigurationManager.
-			isAICreatorDALLEGroupEnabled(
+			isAICreatorOpenAIImageGenerationGroupEnabled(
 				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId());
 	}
 

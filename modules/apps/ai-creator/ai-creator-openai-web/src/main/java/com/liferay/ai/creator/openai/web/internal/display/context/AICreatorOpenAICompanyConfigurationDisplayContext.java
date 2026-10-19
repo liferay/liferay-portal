@@ -62,9 +62,12 @@ public class AICreatorOpenAICompanyConfigurationDisplayContext
 	}
 
 	@Override
-	protected boolean isAICreatorDALLEEnabled() throws ConfigurationException {
+	protected boolean isAICreatorOpenAIImageGenerationEnabled()
+		throws ConfigurationException {
+
 		return _aiCreatorOpenAIConfigurationManager.
-			isAICreatorDALLECompanyEnabled(_themeDisplay.getCompanyId());
+			isAICreatorOpenAIImageGenerationCompanyEnabled(
+				_themeDisplay.getCompanyId());
 	}
 
 	private final AICreatorOpenAIConfigurationManager

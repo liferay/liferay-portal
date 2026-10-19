@@ -43,8 +43,10 @@ public class GetGenerationsMVCResourceCommand extends BaseMVCResourceCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		if (!aiCreatorOpenAIConfigurationManager.isAICreatorDALLEGroupEnabled(
-				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId())) {
+		if (!aiCreatorOpenAIConfigurationManager.
+				isAICreatorOpenAIImageGenerationGroupEnabled(
+					themeDisplay.getCompanyId(),
+					themeDisplay.getScopeGroupId())) {
 
 			addDisabledConfigurationErrorMessage(
 				resourceRequest, resourceResponse);

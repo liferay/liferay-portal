@@ -211,7 +211,8 @@ public class AICreatorOpenAIConfigurationManagerImpl
 	}
 
 	@Override
-	public boolean isAICreatorDALLECompanyEnabled(long companyId)
+	public boolean isAICreatorOpenAIImageGenerationCompanyEnabled(
+			long companyId)
 		throws ConfigurationException {
 
 		AICreatorOpenAICompanyConfiguration
@@ -219,14 +220,16 @@ public class AICreatorOpenAIConfigurationManagerImpl
 				_configurationProvider.getCompanyConfiguration(
 					AICreatorOpenAICompanyConfiguration.class, companyId);
 
-		return aiCreatorOpenAICompanyConfiguration.enableDALLEToCreateImages();
+		return aiCreatorOpenAICompanyConfiguration.
+			enableOpenAIImageGeneration();
 	}
 
 	@Override
-	public boolean isAICreatorDALLEGroupEnabled(long companyId, long groupId)
+	public boolean isAICreatorOpenAIImageGenerationGroupEnabled(
+			long companyId, long groupId)
 		throws ConfigurationException {
 
-		if (!isAICreatorDALLECompanyEnabled(companyId)) {
+		if (!isAICreatorOpenAIImageGenerationCompanyEnabled(companyId)) {
 			return false;
 		}
 
@@ -234,13 +237,14 @@ public class AICreatorOpenAIConfigurationManagerImpl
 			_configurationProvider.getGroupConfiguration(
 				AICreatorOpenAIGroupConfiguration.class, companyId, groupId);
 
-		return aiCreatorOpenAIGroupConfiguration.enableDALLEToCreateImages();
+		return aiCreatorOpenAIGroupConfiguration.enableOpenAIImageGeneration();
 	}
 
 	@Override
 	public void saveAICreatorOpenAICompanyConfiguration(
 			long companyId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE, String imageModel, String imageSizes)
+			boolean enableOpenAIImageGeneration, String imageModel,
+			String imageSizes)
 		throws ConfigurationException {
 
 		_configurationProvider.saveCompanyConfiguration(
@@ -250,7 +254,7 @@ public class AICreatorOpenAIConfigurationManagerImpl
 			).put(
 				"enableChatGPTToCreateContent", enableChatGPT
 			).put(
-				"enableDALLEToCreateImages", enableDALLE
+				"enableOpenAIImageGeneration", enableOpenAIImageGeneration
 			).put(
 				"imageModel", imageModel
 			).put(
@@ -261,7 +265,8 @@ public class AICreatorOpenAIConfigurationManagerImpl
 	@Override
 	public void saveAICreatorOpenAIGroupConfiguration(
 			long groupId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE, String imageModel, String imageSizes)
+			boolean enableOpenAIImageGeneration, String imageModel,
+			String imageSizes)
 		throws ConfigurationException {
 
 		Group group = _groupLocalService.fetchGroup(groupId);
@@ -274,7 +279,7 @@ public class AICreatorOpenAIConfigurationManagerImpl
 			).put(
 				"enableChatGPTToCreateContent", enableChatGPT
 			).put(
-				"enableDALLEToCreateImages", enableDALLE
+				"enableOpenAIImageGeneration", enableOpenAIImageGeneration
 			).put(
 				"imageModel", imageModel
 			).put(

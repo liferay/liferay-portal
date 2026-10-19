@@ -42,7 +42,7 @@ public class AICreatorOpenAIMenuItemFactoryImpl
 
 		try {
 			if (!_aiCreatorOpenAIConfigurationManager.
-					isAICreatorDALLEGroupEnabled(
+					isAICreatorOpenAIImageGenerationGroupEnabled(
 						themeDisplay.getCompanyId(),
 						themeDisplay.getScopeGroupId())) {
 

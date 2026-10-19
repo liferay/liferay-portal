@@ -47,20 +47,24 @@ public interface AICreatorOpenAIConfigurationManager {
 	public boolean isAICreatorChatGPTGroupEnabled(long companyId, long groupId)
 		throws ConfigurationException;
 
-	public boolean isAICreatorDALLECompanyEnabled(long companyId)
+	public boolean isAICreatorOpenAIImageGenerationCompanyEnabled(
+			long companyId)
 		throws ConfigurationException;
 
-	public boolean isAICreatorDALLEGroupEnabled(long companyId, long groupId)
+	public boolean isAICreatorOpenAIImageGenerationGroupEnabled(
+			long companyId, long groupId)
 		throws ConfigurationException;
 
 	public void saveAICreatorOpenAICompanyConfiguration(
 			long companyId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE, String imageModel, String imageSizes)
+			boolean enableOpenAIImageGeneration, String imageModel,
+			String imageSizes)
 		throws ConfigurationException;
 
 	public void saveAICreatorOpenAIGroupConfiguration(
 			long groupId, String apiKey, boolean enableChatGPT,
-			boolean enableDALLE, String imageModel, String imageSizes)
+			boolean enableOpenAIImageGeneration, String imageModel,
+			String imageSizes)
 		throws ConfigurationException;
 
 }

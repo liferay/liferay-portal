@@ -88,10 +88,10 @@ AICreatorOpenAICompanyConfigurationDisplayContext aiCreatorOpenAICompanyConfigur
 		expand="<%= true %>"
 	>
 		<clay:checkbox
-			checked="<%= aiCreatorOpenAICompanyConfigurationDisplayContext.isDALLEEnabled() %>"
-			id='<%= liferayPortletResponse.getNamespace() + "enableDALLE" %>'
-			label='<%= LanguageUtil.get(request, "enable-dalle-to-create-images") %>'
-			name='<%= liferayPortletResponse.getNamespace() + "enableDALLE" %>'
+			checked="<%= aiCreatorOpenAICompanyConfigurationDisplayContext.isOpenAIImageGenerationEnabled() %>"
+			id='<%= liferayPortletResponse.getNamespace() + "enableOpenAIImageGeneration" %>'
+			label='<%= LanguageUtil.get(request, "enable-openai-image-generation") %>'
+			name='<%= liferayPortletResponse.getNamespace() + "enableOpenAIImageGeneration" %>'
 		/>
 	</clay:content-col>
 </clay:content-row>

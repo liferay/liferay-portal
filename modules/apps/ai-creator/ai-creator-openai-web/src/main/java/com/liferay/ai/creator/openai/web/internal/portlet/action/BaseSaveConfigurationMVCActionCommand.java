@@ -69,13 +69,14 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 		String successMessageKey = "your-request-completed-successfully";
 
 		String apiKey = ParamUtil.getString(actionRequest, "apiKey");
-		boolean enableDALLE = ParamUtil.getBoolean(actionRequest, "enableDALLE");
+		boolean enableOpenAIImageGeneration = ParamUtil.getBoolean(
+			actionRequest, "enableOpenAIImageGeneration");
 		String imageModel = ParamUtil.getString(actionRequest, "imageModel");
 
 		if (Validator.isNotNull(apiKey)) {
 			String model = null;
 
-			if (enableDALLE) {
+			if (enableOpenAIImageGeneration) {
 				model = imageModel;
 
 				if (Validator.isNull(model)) {
@@ -95,7 +96,9 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 
 			successMessageKey = "your-api-key-was-successfully-added";
 		}
-		else if (enableDALLE && Validator.isNotNull(imageModel)) {
+		else if (enableOpenAIImageGeneration &&
+				 Validator.isNotNull(imageModel)) {
+
 			String inheritedAPIKey = getInheritedAPIKey(themeDisplay);
 
 			if (Validator.isNotNull(inheritedAPIKey) &&
@@ -109,8 +112,7 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 
 		saveAICreatorOpenAIConfiguration(
 			apiKey, ParamUtil.getBoolean(actionRequest, "enableChatGPT"),
-			enableDALLE, imageModel,
-			imageSizes, themeDisplay);
+			enableOpenAIImageGeneration, imageModel, imageSizes, themeDisplay);
 
 		SessionMessages.add(
 			actionRequest, "requestProcessed",
@@ -125,8 +127,9 @@ public abstract class BaseSaveConfigurationMVCActionCommand
 		throws ConfigurationException;
 
 	protected abstract void saveAICreatorOpenAIConfiguration(
-			String apiKey, boolean enableChatGPT, boolean enableDALLE,
-			String imageModel, String imageSizes, ThemeDisplay themeDisplay)
+			String apiKey, boolean enableChatGPT,
+			boolean enableOpenAIImageGeneration, String imageModel,
+			String imageSizes, ThemeDisplay themeDisplay)
 		throws ConfigurationException;
 
 	@Reference(

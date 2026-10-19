@@ -65,15 +65,17 @@ public abstract class BaseAICreatorOpenAIConfigurationDisplayContext {
 		return isAICreatorChatGPTEnabled();
 	}
 
-	public boolean isDALLEEnabled() throws ConfigurationException {
+	public boolean isOpenAIImageGenerationEnabled()
+		throws ConfigurationException {
+
 		String enabled = ParamUtil.getString(
-			httpServletRequest, "enableDALLE", null);
+			httpServletRequest, "enableOpenAIImageGeneration", null);
 
 		if (enabled != null) {
 			return GetterUtil.getBoolean(enabled);
 		}
 
-		return isAICreatorDALLEEnabled();
+		return isAICreatorOpenAIImageGenerationEnabled();
 	}
 
 	protected abstract String getAICreatorOpenAIAPIKey()
@@ -88,7 +90,7 @@ public abstract class BaseAICreatorOpenAIConfigurationDisplayContext {
 	protected abstract boolean isAICreatorChatGPTEnabled()
 		throws ConfigurationException;
 
-	protected abstract boolean isAICreatorDALLEEnabled()
+	protected abstract boolean isAICreatorOpenAIImageGenerationEnabled()
 		throws ConfigurationException;
 
 	protected final HttpServletRequest httpServletRequest;
