@@ -66,56 +66,9 @@ public class DLTrashServiceTest {
 	}
 
 	@Test
-	public void testMoveFileEntryFromTrashToFolderWithAddPermission()
-		throws Exception {
-
-		FileEntry fileEntry = _addFileEntry();
-
-		Folder folder = _addFolder(ActionKeys.ADD_DOCUMENT, ActionKeys.VIEW);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			DLTrashServiceUtil.moveFileEntryToTrash(fileEntry.getFileEntryId());
-
-			DLTrashServiceUtil.moveFileEntryFromTrash(
-				fileEntry.getFileEntryId(), folder.getFolderId(),
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), _user.getUserId()));
-		}
-
-		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(
-			fileEntry.getFileEntryId());
-
-		Assert.assertEquals(folder.getFolderId(), dlFileEntry.getFolderId());
-		Assert.assertFalse(dlFileEntry.isInTrash());
-	}
-
-	@Test
-	public void testMoveFileEntryFromTrashToFolderWithoutAddPermission()
-		throws Exception {
-
-		FileEntry fileEntry = _addFileEntry();
-
-		Folder folder = _addFolder(ActionKeys.VIEW);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			DLTrashServiceUtil.moveFileEntryToTrash(fileEntry.getFileEntryId());
-
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> DLTrashServiceUtil.moveFileEntryFromTrash(
-					fileEntry.getFileEntryId(), folder.getFolderId(),
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId(), _user.getUserId())));
-		}
-
-		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(
-			fileEntry.getFileEntryId());
-
-		Assert.assertTrue(dlFileEntry.isInTrash());
+	public void testMoveFileEntryFromTrashToFolder() throws Exception {
+		_testMoveFileEntryFromTrashToFolderWithAddPermission();
+		_testMoveFileEntryFromTrashToFolderWithoutAddPermission();
 	}
 
 	@Test
@@ -143,115 +96,15 @@ public class DLTrashServiceTest {
 	}
 
 	@Test
-	public void testMoveFileShortcutFromTrashToFolderWithAddPermission()
-		throws Exception {
-
-		DLFileShortcut dlFileShortcut = _addDLFileShortcut();
-
-		Folder folder = _addFolder(ActionKeys.ADD_SHORTCUT, ActionKeys.VIEW);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			DLTrashServiceUtil.moveFileShortcutToTrash(
-				dlFileShortcut.getFileShortcutId());
-
-			DLTrashServiceUtil.moveFileShortcutFromTrash(
-				dlFileShortcut.getFileShortcutId(), folder.getFolderId(),
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), _user.getUserId()));
-		}
-
-		dlFileShortcut = DLFileShortcutLocalServiceUtil.getDLFileShortcut(
-			dlFileShortcut.getFileShortcutId());
-
-		Assert.assertEquals(folder.getFolderId(), dlFileShortcut.getFolderId());
-		Assert.assertFalse(dlFileShortcut.isInTrash());
+	public void testMoveFileShortcutFromTrashToFolder() throws Exception {
+		_testMoveFileShortcutFromTrashToFolderWithAddPermission();
+		_testMoveFileShortcutFromTrashToFolderWithoutAddPermission();
 	}
 
 	@Test
-	public void testMoveFileShortcutFromTrashToFolderWithoutAddPermission()
-		throws Exception {
-
-		DLFileShortcut dlFileShortcut = _addDLFileShortcut();
-
-		Folder folder = _addFolder(ActionKeys.VIEW);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			DLTrashServiceUtil.moveFileShortcutToTrash(
-				dlFileShortcut.getFileShortcutId());
-
-			long fileShortcutId = dlFileShortcut.getFileShortcutId();
-
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> DLTrashServiceUtil.moveFileShortcutFromTrash(
-					fileShortcutId, folder.getFolderId(),
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId(), _user.getUserId())));
-		}
-
-		dlFileShortcut = DLFileShortcutLocalServiceUtil.getDLFileShortcut(
-			dlFileShortcut.getFileShortcutId());
-
-		Assert.assertTrue(dlFileShortcut.isInTrash());
-	}
-
-	@Test
-	public void testMoveFolderFromTrashToFolderWithAddPermission()
-		throws Exception {
-
-		Folder folder = _addFolder(_user, ActionKeys.VIEW);
-
-		Folder parentFolder = _addFolder(
-			ActionKeys.ADD_SUBFOLDER, ActionKeys.VIEW);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			DLTrashServiceUtil.moveFolderToTrash(folder.getFolderId());
-
-			DLTrashServiceUtil.moveFolderFromTrash(
-				folder.getFolderId(), parentFolder.getFolderId(),
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), _user.getUserId()));
-		}
-
-		DLFolder dlFolder = DLFolderLocalServiceUtil.getDLFolder(
-			folder.getFolderId());
-
-		Assert.assertEquals(
-			parentFolder.getFolderId(), dlFolder.getParentFolderId());
-		Assert.assertFalse(dlFolder.isInTrash());
-	}
-
-	@Test
-	public void testMoveFolderFromTrashToFolderWithoutAddPermission()
-		throws Exception {
-
-		Folder folder = _addFolder(_user, ActionKeys.VIEW);
-
-		Folder parentFolder = _addFolder(ActionKeys.VIEW);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			DLTrashServiceUtil.moveFolderToTrash(folder.getFolderId());
-
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> DLTrashServiceUtil.moveFolderFromTrash(
-					folder.getFolderId(), parentFolder.getFolderId(),
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId(), _user.getUserId())));
-		}
-
-		DLFolder dlFolder = DLFolderLocalServiceUtil.getDLFolder(
-			folder.getFolderId());
-
-		Assert.assertTrue(dlFolder.isInTrash());
+	public void testMoveFolderFromTrashToFolder() throws Exception {
+		_testMoveFolderFromTrashToFolderWithAddPermission();
+		_testMoveFolderFromTrashToFolderWithoutAddPermission();
 	}
 
 	private DLFileShortcut _addDLFileShortcut() throws Exception {
@@ -295,6 +148,183 @@ public class DLTrashServiceTest {
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			serviceContext);
+	}
+
+	private void _assertMustHavePermission(
+		String actionId, Folder folder,
+		PrincipalException.MustHavePermission mustHavePermission) {
+
+		Assert.assertEquals(
+			Folder.class.getName(), mustHavePermission.resourceName);
+		Assert.assertEquals(
+			folder.getFolderId(), mustHavePermission.resourceId);
+		Assert.assertArrayEquals(
+			new String[] {actionId}, mustHavePermission.actionId);
+	}
+
+	private void _testMoveFileEntryFromTrashToFolderWithAddPermission()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		Folder folder = _addFolder(ActionKeys.ADD_DOCUMENT, ActionKeys.VIEW);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			DLTrashServiceUtil.moveFileEntryToTrash(fileEntry.getFileEntryId());
+
+			DLTrashServiceUtil.moveFileEntryFromTrash(
+				fileEntry.getFileEntryId(), folder.getFolderId(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId()));
+		}
+
+		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(
+			fileEntry.getFileEntryId());
+
+		Assert.assertEquals(folder.getFolderId(), dlFileEntry.getFolderId());
+		Assert.assertFalse(dlFileEntry.isInTrash());
+	}
+
+	private void _testMoveFileEntryFromTrashToFolderWithoutAddPermission()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		Folder folder = _addFolder(ActionKeys.VIEW);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			DLTrashServiceUtil.moveFileEntryToTrash(fileEntry.getFileEntryId());
+
+			_assertMustHavePermission(
+				ActionKeys.ADD_DOCUMENT, folder,
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> DLTrashServiceUtil.moveFileEntryFromTrash(
+						fileEntry.getFileEntryId(), folder.getFolderId(),
+						ServiceContextTestUtil.getServiceContext(
+							_group.getGroupId(), _user.getUserId()))));
+		}
+
+		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(
+			fileEntry.getFileEntryId());
+
+		Assert.assertTrue(dlFileEntry.isInTrash());
+	}
+
+	private void _testMoveFileShortcutFromTrashToFolderWithAddPermission()
+		throws Exception {
+
+		DLFileShortcut dlFileShortcut = _addDLFileShortcut();
+
+		Folder folder = _addFolder(ActionKeys.ADD_SHORTCUT, ActionKeys.VIEW);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			DLTrashServiceUtil.moveFileShortcutToTrash(
+				dlFileShortcut.getFileShortcutId());
+
+			DLTrashServiceUtil.moveFileShortcutFromTrash(
+				dlFileShortcut.getFileShortcutId(), folder.getFolderId(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId()));
+		}
+
+		dlFileShortcut = DLFileShortcutLocalServiceUtil.getDLFileShortcut(
+			dlFileShortcut.getFileShortcutId());
+
+		Assert.assertEquals(folder.getFolderId(), dlFileShortcut.getFolderId());
+		Assert.assertFalse(dlFileShortcut.isInTrash());
+	}
+
+	private void _testMoveFileShortcutFromTrashToFolderWithoutAddPermission()
+		throws Exception {
+
+		DLFileShortcut dlFileShortcut = _addDLFileShortcut();
+
+		Folder folder = _addFolder(ActionKeys.VIEW);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			DLTrashServiceUtil.moveFileShortcutToTrash(
+				dlFileShortcut.getFileShortcutId());
+
+			long fileShortcutId = dlFileShortcut.getFileShortcutId();
+
+			_assertMustHavePermission(
+				ActionKeys.ADD_SHORTCUT, folder,
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> DLTrashServiceUtil.moveFileShortcutFromTrash(
+						fileShortcutId, folder.getFolderId(),
+						ServiceContextTestUtil.getServiceContext(
+							_group.getGroupId(), _user.getUserId()))));
+		}
+
+		dlFileShortcut = DLFileShortcutLocalServiceUtil.getDLFileShortcut(
+			dlFileShortcut.getFileShortcutId());
+
+		Assert.assertTrue(dlFileShortcut.isInTrash());
+	}
+
+	private void _testMoveFolderFromTrashToFolderWithAddPermission()
+		throws Exception {
+
+		Folder folder = _addFolder(_user, ActionKeys.VIEW);
+
+		Folder parentFolder = _addFolder(
+			ActionKeys.ADD_SUBFOLDER, ActionKeys.VIEW);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			DLTrashServiceUtil.moveFolderToTrash(folder.getFolderId());
+
+			DLTrashServiceUtil.moveFolderFromTrash(
+				folder.getFolderId(), parentFolder.getFolderId(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId()));
+		}
+
+		DLFolder dlFolder = DLFolderLocalServiceUtil.getDLFolder(
+			folder.getFolderId());
+
+		Assert.assertEquals(
+			parentFolder.getFolderId(), dlFolder.getParentFolderId());
+		Assert.assertFalse(dlFolder.isInTrash());
+	}
+
+	private void _testMoveFolderFromTrashToFolderWithoutAddPermission()
+		throws Exception {
+
+		Folder folder = _addFolder(_user, ActionKeys.VIEW);
+
+		Folder parentFolder = _addFolder(ActionKeys.VIEW);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			DLTrashServiceUtil.moveFolderToTrash(folder.getFolderId());
+
+			_assertMustHavePermission(
+				ActionKeys.ADD_FOLDER, parentFolder,
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> DLTrashServiceUtil.moveFolderFromTrash(
+						folder.getFolderId(), parentFolder.getFolderId(),
+						ServiceContextTestUtil.getServiceContext(
+							_group.getGroupId(), _user.getUserId()))));
+		}
+
+		DLFolder dlFolder = DLFolderLocalServiceUtil.getDLFolder(
+			folder.getFolderId());
+
+		Assert.assertTrue(dlFolder.isInTrash());
 	}
 
 	@DeleteAfterTestRun
