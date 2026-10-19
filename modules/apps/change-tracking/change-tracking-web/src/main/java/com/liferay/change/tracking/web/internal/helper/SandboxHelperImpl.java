@@ -11,15 +11,14 @@ import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.constants.CTPortletKeys;
 import com.liferay.change.tracking.helper.SandboxHelper;
 import com.liferay.change.tracking.model.CTCollection;
-import com.liferay.change.tracking.model.CTCollectionTable;
 import com.liferay.change.tracking.model.CTCollectionTemplate;
 import com.liferay.change.tracking.model.CTPreferences;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTCollectionTemplateLocalService;
 import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -31,6 +30,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactory;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.text.Format;
@@ -171,37 +171,28 @@ public class SandboxHelperImpl implements SandboxHelper {
 	}
 
 	private CTCollection _findUserCTCollection(CTPreferences ctPreferences) {
-		List<CTCollection> ctCollections = _ctCollectionLocalService.dslQuery(
-			DSLQueryFactoryUtil.select(
-				CTCollectionTable.INSTANCE
-			).from(
-				CTCollectionTable.INSTANCE
-			).where(
-				CTCollectionTable.INSTANCE.ctCollectionId.notIn(
-					new Long[] {
-						ctPreferences.getCtCollectionId(),
-						ctPreferences.getPreviousCtCollectionId()
-					}
-				).and(
-					CTCollectionTable.INSTANCE.userId.eq(
-						ctPreferences.getUserId())
-				).and(
-					CTCollectionTable.INSTANCE.status.eq(
-						WorkflowConstants.STATUS_DRAFT
-					).or(
-						CTCollectionTable.INSTANCE.status.eq(
-							WorkflowConstants.STATUS_INCOMPLETE)
-					).withParentheses()
-				)
-			).orderBy(
-				CTCollectionTable.INSTANCE.modifiedDate.descending()
-			));
+		List<CTCollection> ctCollections =
+			_ctCollectionLocalService.getCTCollections(
+				ctPreferences.getCompanyId(), ctPreferences.getUserId(),
+				new int[] {
+					WorkflowConstants.STATUS_DRAFT,
+					WorkflowConstants.STATUS_INCOMPLETE
+				},
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				OrderByComparatorFactoryUtil.create(
+					"CTCollection", "modifiedDate", false));
 
-		if (ctCollections.isEmpty()) {
-			return null;
+		for (CTCollection ctCollection : ctCollections) {
+			if ((ctCollection.getCtCollectionId() !=
+					ctPreferences.getCtCollectionId()) &&
+				(ctCollection.getCtCollectionId() !=
+					ctPreferences.getPreviousCtCollectionId())) {
+
+				return ctCollection;
+			}
 		}
 
-		return ctCollections.get(0);
+		return null;
 	}
 
 	@Reference
