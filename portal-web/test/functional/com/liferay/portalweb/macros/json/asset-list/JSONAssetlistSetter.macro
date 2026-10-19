@@ -138,9 +138,6 @@ orderByColumn1=modifiedDate
 orderByColumn2=title
 orderByType1=DESC
 orderByType2=ASC
-queryAndOperator0=true
-queryContains0=true
-queryName0=assetTags
 subtypeFieldsFilterEnabledDLFileEntryAssetRendererFactory=false
 subtypeFieldsFilterEnabledJournalArticleAssetRendererFactory=false
 ''';
@@ -170,9 +167,6 @@ orderByColumn1=modifiedDate
 orderByColumn2=title
 orderByType1=DESC
 orderByType2=ASC
-queryAndOperator0=true
-queryContains0=true
-queryName0=assetTags
 subtypeFieldsFilterEnabledDLFileEntryAssetRendererFactory=false
 subtypeFieldsFilterEnabledJournalArticleAssetRendererFactory=false
 ''';
@@ -210,9 +204,6 @@ orderByColumn1=modifiedDate
 orderByColumn2=title
 orderByType1=DESC
 orderByType2=ASC
-queryAndOperator0=true
-queryContains0=true
-queryName0=assetTags
 subtypeFieldsFilterEnabledDLFileEntryAssetRendererFactory=false
 subtypeFieldsFilterEnabledJournalArticleAssetRendererFactory=false
 ''';
@@ -252,9 +243,6 @@ orderByColumn1=modifiedDate
 orderByColumn2=title
 orderByType1=DESC
 orderByType2=ASC
-queryAndOperator0=true
-queryContains0=true
-queryName0=assetTags
 subtypeFieldsFilterEnabledDLFileEntryAssetRendererFactory=false
 subtypeFieldsFilterEnabledJournalArticleAssetRendererFactory=false
 ''';
@@ -284,9 +272,6 @@ orderByColumn1=modifiedDate
 orderByColumn2=title
 orderByType1=DESC
 orderByType2=ASC
-queryAndOperator0=true
-queryContains0=true
-queryName0=assetTags
 subtypeFieldsFilterEnabledDLFileEntryAssetRendererFactory=false
 subtypeFieldsFilterEnabledJournalArticleAssetRendererFactory=false
 ''';
@@ -326,9 +311,6 @@ orderByColumn1=modifiedDate
 orderByColumn2=title
 orderByType1=DESC
 orderByType2=ASC
-queryAndOperator0=true
-queryContains0=true
-queryName0=assetTags
 subtypeFieldsFilterEnabledDLFileEntryAssetRendererFactory=false
 subtypeFieldsFilterEnabledJournalArticleAssetRendererFactory=false
 ''';
