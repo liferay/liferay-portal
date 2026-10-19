@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.payment.method.mercanet.internal.servlet;
 
+import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.engine.CommercePaymentEngine;
 import com.liferay.commerce.payment.helper.CommercePaymentHttpHelper;
@@ -19,15 +20,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -115,22 +112,6 @@ public class MercanetServlet extends HttpServlet {
 						httpServletRequest.getSession());
 				}
 
-				User currentUser = _portal.getUser(httpServletRequest);
-
-				if (currentUser == null) {
-					CommerceOrder commerceOrder =
-						_commercePaymentHttpHelper.getCommerceOrder(
-							httpServletRequest);
-
-					if (commerceOrder != null) {
-						currentUser = _userLocalService.fetchUser(
-							commerceOrder.getUserId());
-					}
-				}
-
-				PermissionThreadLocal.setPermissionChecker(
-					PermissionCheckerFactoryUtil.create(currentUser));
-
 				URL portalURL = new URL(
 					_portal.getPortalURL(httpServletRequest));
 
@@ -143,28 +124,42 @@ public class MercanetServlet extends HttpServlet {
 					throw new ServletException();
 				}
 
-				if (!Objects.equals(parameterMap.get("responseCode"), "00")) {
-					String orderId = parameterMap.get("orderId");
+				CommerceOrder commerceOrder =
+					_commercePaymentHttpHelper.getCommerceOrder(
+						httpServletRequest);
 
-					long commerceOrderId = GetterUtil.getLong(orderId);
+				if (!Objects.equals(
+						commerceOrder.getCommercePaymentMethodKey(),
+						MercanetCommercePaymentMethod.KEY)) {
 
-					CommerceOrder commerceOrder =
-						_commerceOrderLocalService.getCommerceOrder(
-							commerceOrderId);
+					throw new ServletException();
+				}
 
-					if (!Objects.equals(
-							commerceOrder.getCommercePaymentMethodKey(),
-							MercanetCommercePaymentMethod.KEY)) {
+				MercanetGroupServiceConfiguration
+					mercanetGroupServiceConfiguration =
+						_getMercanetGroupServiceConfiguration(
+							commerceOrder.getGroupId());
 
-						throw new ServletException();
-					}
+				ResponseData responseData = _getResponseData(
+					commerceOrder, data, httpServletRequest,
+					mercanetGroupServiceConfiguration);
 
-					String transactionReference = parameterMap.get(
-						"transactionReference");
+				if (!_isValidResponse(
+						commerceOrder, mercanetGroupServiceConfiguration,
+						parameterMap, responseData)) {
+
+					throw new ServletException();
+				}
+
+				if (!Objects.equals(
+						MapUtil.getString(parameterMap, "responseCode"),
+						"00") &&
+					(commerceOrder.getPaymentStatus() !=
+						CommerceOrderPaymentConstants.STATUS_COMPLETED)) {
 
 					_commercePaymentEngine.cancelPayment(
-						commerceOrderId, transactionReference,
-						httpServletRequest);
+						commerceOrder.getCommerceOrderId(),
+						commerceOrder.getTransactionId(), httpServletRequest);
 				}
 
 				httpServletResponse.sendRedirect(redirect);
@@ -190,44 +185,16 @@ public class MercanetServlet extends HttpServlet {
 						_getMercanetGroupServiceConfiguration(
 							commerceOrder.getGroupId());
 
-				String environment = StringUtil.toUpperCase(
-					mercanetGroupServiceConfiguration.environment());
-
-				String keyVersion =
-					mercanetGroupServiceConfiguration.keyVersion();
-
-				PaypageClient paypageClient = new PaypageClient(
-					Environment.valueOf(environment),
-					mercanetGroupServiceConfiguration.merchantId(),
-					Integer.valueOf(keyVersion),
-					_secretResolver.resolve(
-						commerceOrder.getCompanyId(),
-						mercanetGroupServiceConfiguration.secretKey()));
-
-				PaypageResponse paypageResponse = paypageClient.decodeResponse(
-					HashMapBuilder.put(
-						"Data", data
-					).put(
-						"Seal", ParamUtil.getString(httpServletRequest, "Seal")
-					).build());
-
-				ResponseData responseData = paypageResponse.getData();
+				ResponseData responseData = _getResponseData(
+					commerceOrder, data, httpServletRequest,
+					mercanetGroupServiceConfiguration);
 
 				ResponseCode responseCode = responseData.getResponseCode();
 
 				if (Objects.equals(responseCode.getCode(), "00") &&
-					Objects.equals(
-						responseData.getMerchantId(),
-						mercanetGroupServiceConfiguration.merchantId()) &&
-					Objects.equals(
-						parameterMap.get("customerId"),
-						String.valueOf(commerceOrder.getUserId())) &&
-					Objects.equals(
-						parameterMap.get("orderId"),
-						String.valueOf(commerceOrder.getCommerceOrderId())) &&
-					Objects.equals(
-						responseData.getTransactionReference(),
-						commerceOrder.getTransactionId())) {
+					_isValidResponse(
+						commerceOrder, mercanetGroupServiceConfiguration,
+						parameterMap, responseData)) {
 
 					_commercePaymentEngine.completePayment(
 						commerceOrder.getCommerceOrderId(),
@@ -251,6 +218,32 @@ public class MercanetServlet extends HttpServlet {
 				groupId, MercanetCommercePaymentMethodConstants.SERVICE_NAME));
 	}
 
+	private ResponseData _getResponseData(
+			CommerceOrder commerceOrder, String data,
+			HttpServletRequest httpServletRequest,
+			MercanetGroupServiceConfiguration mercanetGroupServiceConfiguration)
+		throws Exception {
+
+		PaypageClient paypageClient = new PaypageClient(
+			Environment.valueOf(
+				StringUtil.toUpperCase(
+					mercanetGroupServiceConfiguration.environment())),
+			mercanetGroupServiceConfiguration.merchantId(),
+			Integer.valueOf(mercanetGroupServiceConfiguration.keyVersion()),
+			_secretResolver.resolve(
+				commerceOrder.getCompanyId(),
+				mercanetGroupServiceConfiguration.secretKey()));
+
+		PaypageResponse paypageResponse = paypageClient.decodeResponse(
+			HashMapBuilder.put(
+				"Data", data
+			).put(
+				"Seal", ParamUtil.getString(httpServletRequest, "Seal")
+			).build());
+
+		return paypageResponse.getData();
+	}
+
 	private Map<String, String> _getResponseParameters(String data) {
 		Map<String, String> map = new HashMap<>();
 
@@ -268,6 +261,30 @@ public class MercanetServlet extends HttpServlet {
 		}
 
 		return map;
+	}
+
+	private boolean _isValidResponse(
+		CommerceOrder commerceOrder,
+		MercanetGroupServiceConfiguration mercanetGroupServiceConfiguration,
+		Map<String, String> parameterMap, ResponseData responseData) {
+
+		if (Objects.equals(
+				MapUtil.getString(parameterMap, "customerId"),
+				String.valueOf(commerceOrder.getUserId())) &&
+			Objects.equals(
+				MapUtil.getString(parameterMap, "orderId"),
+				String.valueOf(commerceOrder.getCommerceOrderId())) &&
+			Objects.equals(
+				responseData.getMerchantId(),
+				mercanetGroupServiceConfiguration.merchantId()) &&
+			Objects.equals(
+				responseData.getTransactionReference(),
+				commerceOrder.getTransactionId())) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -295,8 +312,5 @@ public class MercanetServlet extends HttpServlet {
 		target = "(osgi.web.symbolicname=com.liferay.commerce.payment.method.mercanet)"
 	)
 	private ServletContext _servletContext;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
