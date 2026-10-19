@@ -18,6 +18,8 @@ public class KoroneikiConstants {
 
 	public static final String DOMAIN_DOSSIERA = "dossiera";
 
+	public static final String DOMAIN_SALESFORCE = "salesforce";
+
 	public static final String DOMAIN_WEB = "web";
 
 	public static final String ENTITY_NAME_ACCOUNT = "account";
