@@ -62,7 +62,8 @@ public class ViewDashboardJSPSectionFragmentRenderer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY),
 			_translationInfoItemFieldValuesExporterRegistry,
-			_viewBrokenLinksSectionFDSItemsActions);
+			_viewBrokenLinksSectionFDSItemsActions,
+			_viewMissingRequiredFieldsSectionFDSItemsActions);
 	}
 
 	@Override
@@ -95,5 +96,10 @@ public class ViewDashboardJSPSectionFragmentRenderer
 		target = "(frontend.data.set.name=" + CMSSiteInitializerFDSNames.BROKEN_LINKS_SECTION + ")"
 	)
 	private FDSItemsActions _viewBrokenLinksSectionFDSItemsActions;
+
+	@Reference(
+		target = "(frontend.data.set.name=" + CMSSiteInitializerFDSNames.MISSING_REQUIRED_FIELDS_SECTION + ")"
+	)
+	private FDSItemsActions _viewMissingRequiredFieldsSectionFDSItemsActions;
 
 }

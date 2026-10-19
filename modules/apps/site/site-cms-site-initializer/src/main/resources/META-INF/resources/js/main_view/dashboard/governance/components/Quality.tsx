@@ -4,7 +4,11 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import {IInternalRenderer, IItemsActions} from '@liferay/frontend-data-set-web';
+import {
+	IFrontendDataSetProps,
+	IInternalRenderer,
+	IItemsActions,
+} from '@liferay/frontend-data-set-web';
 import {openToast} from 'frontend-js-components-web';
 import {escapeHTML} from 'frontend-js-web';
 import React, {useContext, useMemo, useState} from 'react';
@@ -18,11 +22,19 @@ import {
 	getBrokenLinksFDSProps,
 	renderBrokenLinks,
 } from '../../../props_transformer/BrokenLinksFDSPropsTransformer';
+import {
+	IMissingRequiredFieldsAsset,
+	getMissingRequiredFieldsFDSProps,
+	renderMissingRequiredFields,
+} from '../../../props_transformer/MissingRequiredFieldsFDSPropsTransformer';
 import AssetRenderer from '../../../props_transformer/cell_renderers/AssetRenderer';
+import {AssetListFDSProps} from '../../../props_transformer/utils/createAssetListFDSPropsBuilder';
 import {SectionHeader} from '../../common/SectionHeader';
-import InteractiveCard from '../../performance/components/InteractiveCard';
+import InteractiveCard, {
+	MetricColor,
+} from '../../performance/components/InteractiveCard';
 import {GovernanceContext} from '../GovernanceContext';
-import GovernanceService from '../GovernanceService';
+import GovernanceService, {AssetStatistics} from '../GovernanceService';
 import getCMSSectionURL from '../getCMSSectionURL';
 import {GovernanceAdditionalProps} from '../types';
 import {
@@ -32,18 +44,84 @@ import {
 } from './GovernanceAssetList';
 import {PercentageOfTotal} from './PercentageOfTotal';
 
-const BROKEN_LINKS_LIST_ID = 'brokenLinks';
+interface IQualityAsset {
+	id?: number;
+	title?: string;
+}
 
-function getBrokenLinksDescription() {
-	return Liferay.Language.get(
-		'these-are-assets-containing-links-to-content-that-has-been-deleted,-expired,-or-moved-to-the-recycle-bin'
-	);
+interface QualityCard<T extends IQualityAsset> {
+	color: MetricColor;
+	countKey: keyof Pick<
+		AssetStatistics,
+		'brokenLinksCount' | 'missingRequiredFieldsCount'
+	>;
+	description: string;
+	emptyStateDescription: string;
+	emptyStateTitle: string;
+	getAPIURL: (assetLibraryId?: string) => string;
+	getFDSProps: (props: AssetListFDSProps) => Partial<IFrontendDataSetProps>;
+	icon: string;
+	id: string;
+	itemsActions: IItemsActions[];
+	renderSubtitle: (itemData: T) => React.ReactNode;
+	sectionPath: string;
+	title: string;
+}
+
+type AnyQualityCard =
+	| QualityCard<IBrokenLinkAsset>
+	| QualityCard<IMissingRequiredFieldsAsset>;
+
+function getQualityCards(
+	additionalProps: GovernanceAdditionalProps
+): AnyQualityCard[] {
+	return [
+		{
+			color: 'red',
+			countKey: 'brokenLinksCount',
+			description: Liferay.Language.get(
+				'these-are-assets-containing-links-to-content-that-has-been-deleted,-expired,-or-moved-to-the-recycle-bin'
+			),
+			emptyStateDescription: Liferay.Language.get(
+				'there-are-no-broken-links'
+			),
+			emptyStateTitle: Liferay.Language.get('no-broken-links'),
+			getAPIURL: GovernanceService.getBrokenLinkAssetsURL,
+			getFDSProps: getBrokenLinksFDSProps,
+			icon: 'chain-broken',
+			id: 'brokenLinks',
+			itemsActions: additionalProps.brokenLinksFDSActionDropdownItems,
+			renderSubtitle: renderBrokenLinks,
+			sectionPath: 'broken-links',
+			title: Liferay.Language.get('broken-links'),
+		},
+		{
+			color: 'orange',
+			countKey: 'missingRequiredFieldsCount',
+			description: Liferay.Language.get(
+				'these-are-assets-missing-a-field-their-content-type-requires'
+			),
+			emptyStateDescription: Liferay.Language.get(
+				'there-is-no-missing-required-data'
+			),
+			emptyStateTitle: Liferay.Language.get('no-missing-required-data'),
+			getAPIURL: GovernanceService.getMissingRequiredFieldsAssetsURL,
+			getFDSProps: getMissingRequiredFieldsFDSProps,
+			icon: 'custom-field',
+			id: 'missingRequiredFields',
+			itemsActions:
+				additionalProps.missingRequiredFieldsFDSActionDropdownItems,
+			renderSubtitle: renderMissingRequiredFields,
+			sectionPath: 'missing-required-data',
+			title: Liferay.Language.get('missing-required-data'),
+		},
+	];
 }
 
 async function openViewModal(
 	additionalProps: GovernanceAdditionalProps,
-	itemData: IBrokenLinkAsset,
-	items: IBrokenLinkAsset[]
+	itemData: IQualityAsset,
+	items: IQualityAsset[]
 ) {
 	const {data, error} = await ApiHelper.get<{
 		items: ISearchAssetObjectEntry[];
@@ -92,31 +170,31 @@ function getViewItemAction(
 			itemData,
 			items,
 		}: {
-			itemData: IBrokenLinkAsset;
-			items: IBrokenLinkAsset[];
+			itemData: IQualityAsset;
+			items: IQualityAsset[];
 		}) => openViewModal(additionalProps, itemData, items),
 	};
 }
 
-function BrokenLinksList({
+function QualityAssetList<T extends IQualityAsset>({
 	additionalProps,
-	description,
+	card,
 }: {
 	additionalProps: GovernanceAdditionalProps;
-	description: string;
+	card: QualityCard<T>;
 }) {
 	const {space, statistics} = useContext(GovernanceContext);
 
 	const fdsProps = useMemo(
 		() => ({
-			...getBrokenLinksFDSProps({
+			...card.getFDSProps({
 				additionalProps,
-				apiURL: GovernanceService.getBrokenLinkAssetsURL(
+				apiURL: card.getAPIURL(
 					space.value === 'all' ? undefined : space.value
 				),
-				id: BROKEN_LINKS_LIST_ID,
+				id: card.id,
 				itemsActions: [
-					...additionalProps.brokenLinksFDSActionDropdownItems,
+					...card.itemsActions,
 					getViewItemAction(additionalProps),
 				],
 				searchAsYouType: false,
@@ -126,7 +204,7 @@ function BrokenLinksList({
 				tableCell: [
 					{
 						component: ({actions, itemData, options, value}) => (
-							<AssetRenderer<IBrokenLinkAsset>
+							<AssetRenderer<T>
 								actions={actions}
 								additionalProps={additionalProps}
 								itemData={itemData}
@@ -134,7 +212,7 @@ function BrokenLinksList({
 									openViewModal(additionalProps, item, [item])
 								}
 								options={options}
-								renderSubtitle={renderBrokenLinks}
+								renderSubtitle={card.renderSubtitle}
 								value={value}
 							/>
 						),
@@ -148,21 +226,19 @@ function BrokenLinksList({
 				fieldName: 'title',
 			}),
 		}),
-		[additionalProps, space]
+		[additionalProps, card, space]
 	);
 
 	return (
 		<GovernanceListPanel
-			count={statistics?.brokenLinksCount ?? 0}
-			description={description}
-			emptyStateDescription={Liferay.Language.get(
-				'there-are-no-broken-links'
-			)}
-			emptyStateTitle={Liferay.Language.get('no-broken-links')}
+			count={statistics?.[card.countKey] ?? 0}
+			description={card.description}
+			emptyStateDescription={card.emptyStateDescription}
+			emptyStateTitle={card.emptyStateTitle}
 			fdsProps={fdsProps}
-			id={BROKEN_LINKS_LIST_ID}
-			title={Liferay.Language.get('broken-links')}
-			viewAllHref={getCMSSectionURL('broken-links', space.siteId)}
+			id={card.id}
+			title={card.title}
+			viewAllHref={getCMSSectionURL(card.sectionPath, space.siteId)}
 		/>
 	);
 }
@@ -173,11 +249,14 @@ export function Quality({
 	additionalProps: GovernanceAdditionalProps;
 }) {
 	const {loadingStatistics, statistics} = useContext(GovernanceContext);
-	const [brokenLinksExpanded, setBrokenLinksExpanded] = useState(false);
+	const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
-	const count = statistics?.brokenLinksCount ?? 0;
+	const cards = useMemo(
+		() => getQualityCards(additionalProps),
+		[additionalProps]
+	);
 
-	const description = getBrokenLinksDescription();
+	const expandedCard = cards.find(({id}) => id === expandedCardId);
 
 	const title = Liferay.Language.get('quality');
 
@@ -186,36 +265,46 @@ export function Quality({
 			<SectionHeader icon="speed" title={title} />
 
 			<ClayLayout.Row className="mt-4">
-				<ClayLayout.Col className="mb-4" md={4}>
-					<InteractiveCard
-						active={brokenLinksExpanded}
-						aria-controls={getGovernanceAssetListPanelId(
-							BROKEN_LINKS_LIST_ID
-						)}
-						aria-expanded={brokenLinksExpanded}
-						color="red"
-						description={description}
-						icon="chain-broken"
-						loading={loadingStatistics}
-						onClick={() =>
-							setBrokenLinksExpanded((expanded) => !expanded)
-						}
-						title={Liferay.Language.get('broken-links')}
-						value={count}
-					>
-						<PercentageOfTotal
-							count={count}
-							template={Liferay.Language.get('x-of-x-assets')}
-							total={statistics?.totalCount ?? 0}
-						/>
-					</InteractiveCard>
-				</ClayLayout.Col>
+				{cards.map((card) => {
+					const count = statistics?.[card.countKey] ?? 0;
+					const expanded = card.id === expandedCardId;
 
-				{brokenLinksExpanded ? (
+					return (
+						<ClayLayout.Col className="mb-4" key={card.id} md={4}>
+							<InteractiveCard
+								active={expanded}
+								aria-controls={getGovernanceAssetListPanelId(
+									card.id
+								)}
+								aria-expanded={expanded}
+								color={card.color}
+								description={card.description}
+								icon={card.icon}
+								loading={loadingStatistics}
+								onClick={() =>
+									setExpandedCardId(expanded ? null : card.id)
+								}
+								title={card.title}
+								value={count}
+							>
+								<PercentageOfTotal
+									count={count}
+									template={Liferay.Language.get(
+										'x-of-x-assets'
+									)}
+									total={statistics?.totalCount ?? 0}
+								/>
+							</InteractiveCard>
+						</ClayLayout.Col>
+					);
+				})}
+
+				{expandedCard ? (
 					<ClayLayout.Col className="mb-4" size={12}>
-						<BrokenLinksList
+						<QualityAssetList
 							additionalProps={additionalProps}
-							description={description}
+							card={expandedCard}
+							key={expandedCard.id}
 						/>
 					</ClayLayout.Col>
 				) : null}

@@ -66,7 +66,8 @@ public class ViewDashboardDisplayContext {
 		RoleLocalService roleLocalService, ThemeDisplay themeDisplay,
 		TranslationInfoItemFieldValuesExporterRegistry
 			translationInfoItemFieldValuesExporterRegistry,
-		FDSItemsActions viewBrokenLinksSectionFDSItemsActions) {
+		FDSItemsActions viewBrokenLinksSectionFDSItemsActions,
+		FDSItemsActions viewMissingRequiredFieldsSectionFDSItemsActions) {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
 		_depotEntryLocalService = depotEntryLocalService;
@@ -81,6 +82,8 @@ public class ViewDashboardDisplayContext {
 			translationInfoItemFieldValuesExporterRegistry;
 		_viewBrokenLinksSectionFDSItemsActions =
 			viewBrokenLinksSectionFDSItemsActions;
+		_viewMissingRequiredFieldsSectionFDSItemsActions =
+			viewMissingRequiredFieldsSectionFDSItemsActions;
 	}
 
 	public Map<String, Object> getConstants() {
@@ -254,6 +257,11 @@ public class ViewDashboardDisplayContext {
 					_dlConfiguration);
 			}
 		).put(
+			"missingRequiredFieldsFDSActionDropdownItems",
+			() ->
+				_viewMissingRequiredFieldsSectionFDSItemsActions.
+					getFDSActionDropdownItems(_httpServletRequest)
+		).put(
 			"objectDefinitionCssClasses",
 			SectionDisplayContextUtil.getObjectDefinitionCssClasses()
 		).put(
@@ -324,5 +332,7 @@ public class ViewDashboardDisplayContext {
 	private final TranslationInfoItemFieldValuesExporterRegistry
 		_translationInfoItemFieldValuesExporterRegistry;
 	private final FDSItemsActions _viewBrokenLinksSectionFDSItemsActions;
+	private final FDSItemsActions
+		_viewMissingRequiredFieldsSectionFDSItemsActions;
 
 }

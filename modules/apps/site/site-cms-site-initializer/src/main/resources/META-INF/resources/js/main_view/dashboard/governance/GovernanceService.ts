@@ -25,6 +25,7 @@ export type AssetStatistics = {
 	expiringSoonCount: number;
 	inDraftCount: number;
 	longStandingDraftsCount: number;
+	missingRequiredFieldsCount: number;
 	overdueWorkflowTasksCount: number;
 	pendingCount: number;
 	reviewDateOverdueCount: number;
@@ -336,7 +337,7 @@ function getAssetsByIdsURL(ids: number[]) {
 	return `${SEARCH_URL}?${searchParams}`;
 }
 
-function getBrokenLinkAssetsURL(assetLibraryId?: string) {
+function getQualityAssetsURL(path: string, assetLibraryId?: string) {
 	const searchParams = new URLSearchParams({
 		pageSize: String(GOVERNANCE_ASSET_LIST_PAGE_SIZE),
 		sort: 'title:asc',
@@ -346,7 +347,18 @@ function getBrokenLinkAssetsURL(assetLibraryId?: string) {
 		searchParams.set('assetLibraryId', assetLibraryId);
 	}
 
-	return `/o/headless-cms/v1.0/broken-link-assets?${searchParams}`;
+	return `/o/headless-cms/v1.0/${path}?${searchParams}`;
+}
+
+function getBrokenLinkAssetsURL(assetLibraryId?: string) {
+	return getQualityAssetsURL('broken-link-assets', assetLibraryId);
+}
+
+function getMissingRequiredFieldsAssetsURL(assetLibraryId?: string) {
+	return getQualityAssetsURL(
+		'missing-required-fields-assets',
+		assetLibraryId
+	);
 }
 
 function getDateInDays(days: number) {
@@ -381,4 +393,5 @@ export default {
 	getFreshnessListURL,
 	getLongStandingDraftsThresholdDate,
 	getLongStandingDraftsURL,
+	getMissingRequiredFieldsAssetsURL,
 };
