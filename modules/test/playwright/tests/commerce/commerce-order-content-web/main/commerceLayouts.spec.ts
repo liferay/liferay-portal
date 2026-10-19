@@ -3091,6 +3091,284 @@ test(
 );
 
 test(
+	'Order Multishipping fragment lists the regions of the selected country',
+	{tag: '@LPD-110682'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		commerceLayoutsPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		await test.step('Create the order display page template', async () => {
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			const displayPageTemplateName = getRandomString();
+
+			await displayPageTemplatesPage.createTemplate({
+				contentType: 'Order',
+				name: displayPageTemplateName,
+			});
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			await commerceLayoutsPage.addFragment('Multishipping', 'Order');
+
+			await pageEditorPage.waitForChangesSaved();
+
+			await displayPageTemplatesPage.publishTemplate();
+
+			await commerceLayoutsPage.moreActionsButton.click();
+			await commerceLayoutsPage.markAsDefaultMenuItem.click();
+
+			await waitForAlert(page);
+
+			await expect(
+				commerceLayoutsPage.defaultDisplayPageTemplateIcon
+			).toBeVisible();
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		const cart = await test.step('Create the order', async () => {
+			const account = await apiHelpers.headlessAdminUser.postAccount({
+				name: getRandomString(),
+				type: 'person',
+			});
+
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+			const product =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+				});
+
+			return apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [
+						{
+							quantity: 1,
+							skuId: product.skus[0].id,
+						},
+					],
+				},
+				channel.id
+			);
+		});
+
+		await test.step('Enable multishipping on the channel', async () => {
+			await commerceAdminChannelsPage.goto();
+
+			await (
+				await commerceAdminChannelsPage.channelsTableRowLink(
+					channel.name
+				)
+			).click();
+
+			await commerceAdminChannelDetailsPage.allowMultishippingToggle.setChecked(
+				true
+			);
+
+			await commerceAdminChannelDetailsPage.saveButton.click();
+
+			await waitForAlert(page);
+		});
+
+		const deliveryGroupName = getRandomString();
+
+		await test.step('Add a delivery group with a region', async () => {
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart.id}`
+			);
+
+			await commerceLayoutsPage.addDeliveryGroupButton.click();
+
+			await commerceLayoutsPage.deliveryGroupNameInput.fill(
+				deliveryGroupName
+			);
+			await commerceLayoutsPage.addressNameInput.fill(getRandomString());
+			await commerceLayoutsPage.addressCountrySelect.selectOption({
+				label: 'United States',
+			});
+			await commerceLayoutsPage.addressStreet1Input.fill(
+				getRandomString()
+			);
+			await commerceLayoutsPage.addressCityInput.fill(getRandomString());
+
+			await expect(commerceLayoutsPage.addressRegionSelect).toBeEnabled();
+
+			await commerceLayoutsPage.addressRegionSelect.selectOption({
+				label: 'Alabama',
+			});
+			await commerceLayoutsPage.addressZipInput.fill('35004');
+
+			await commerceLayoutsPage.saveButton.click();
+
+			await waitForAlert(page);
+		});
+
+		await test.step('Check the region is saved', async () => {
+			await page.reload();
+
+			await commerceLayoutsPage
+				.deliveryGroupCell(deliveryGroupName)
+				.click();
+
+			await expect(commerceLayoutsPage.addressRegionSelect).toHaveValue(
+				'Alabama'
+			);
+		});
+	}
+);
+
+test(
+	'Order info box address modal lists the regions of the selected country',
+	{tag: '@LPD-110682'},
+	async ({
+		apiHelpers,
+		commerceLayoutsPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		await test.step('Create the order display page template', async () => {
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			const displayPageTemplateName = getRandomString();
+
+			await displayPageTemplatesPage.createTemplate({
+				contentType: 'Order',
+				name: displayPageTemplateName,
+			});
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			await pageEditorPage.addFragment('Order', 'Info Box');
+
+			const infoBoxFragmentId =
+				await pageEditorPage.getFragmentId('Info Box');
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Field',
+				fragmentId: infoBoxFragmentId,
+				tab: 'General',
+				value: 'shippingAddress',
+			});
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Label',
+				fragmentId: infoBoxFragmentId,
+				tab: 'General',
+				value: 'Shipping Address',
+			});
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Read Only',
+				fragmentId: infoBoxFragmentId,
+				tab: 'General',
+				value: false,
+			});
+
+			await pageEditorPage.waitForChangesSaved();
+
+			await displayPageTemplatesPage.publishTemplate();
+
+			await commerceLayoutsPage.moreActionsButton.click();
+			await commerceLayoutsPage.markAsDefaultMenuItem.click();
+
+			await waitForAlert(page);
+
+			await expect(
+				commerceLayoutsPage.defaultDisplayPageTemplateIcon
+			).toBeVisible();
+		});
+
+		const cart = await test.step('Create the order', async () => {
+			const account = await apiHelpers.headlessAdminUser.postAccount({
+				name: getRandomString(),
+				type: 'person',
+			});
+
+			const channel =
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
+
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+			const product =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+				});
+
+			return apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [
+						{
+							quantity: 1,
+							skuId: product.skus[0].id,
+						},
+					],
+				},
+				channel.id
+			);
+		});
+
+		const addressName = getRandomString();
+
+		await test.step('Add a shipping address with a region', async () => {
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart.id}`
+			);
+
+			await commerceLayoutsPage.infoBoxButton('Shipping Address').click();
+
+			await commerceLayoutsPage.addressNameInput.fill(addressName);
+			await commerceLayoutsPage.addressCountrySelect.selectOption({
+				label: 'United States',
+			});
+			await commerceLayoutsPage.addressStreet1Input.fill(
+				getRandomString()
+			);
+			await commerceLayoutsPage.addressCityInput.fill(getRandomString());
+			await commerceLayoutsPage.addressRegionSelect.selectOption({
+				label: 'Alabama',
+			});
+			await commerceLayoutsPage.addressZipInput.fill('35004');
+
+			await commerceLayoutsPage.saveButton.click();
+
+			await expect(
+				commerceLayoutsPage.infoBoxValue(addressName)
+			).toBeVisible();
+		});
+
+		await test.step('Check the region is saved', async () => {
+			await page.reload();
+
+			await commerceLayoutsPage.infoBoxButton('Shipping Address').click();
+
+			await expect(commerceLayoutsPage.addressRegionSelect).toHaveValue(
+				'Alabama'
+			);
+		});
+	}
+);
+
+test(
 	'Account selector redirects to order details DPT if open order content portlet is not present',
 	{tag: '@LPD-43496'},
 	async ({

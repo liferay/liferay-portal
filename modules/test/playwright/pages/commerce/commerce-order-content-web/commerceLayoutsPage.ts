@@ -9,10 +9,17 @@ import {liferayConfig} from '../../../liferay.config';
 
 export class CommerceLayoutsPage {
 	readonly accountSelectorButton: (name: string) => Locator;
+	readonly addDeliveryGroupButton: Locator;
 	readonly addOrderButton: Locator;
 	readonly addPageButton: Locator;
 	readonly addPageModalSubmitButton: Locator;
 	readonly addPageNameInput: Locator;
+	readonly addressCityInput: Locator;
+	readonly addressCountrySelect: Locator;
+	readonly addressNameInput: Locator;
+	readonly addressRegionSelect: Locator;
+	readonly addressStreet1Input: Locator;
+	readonly addressZipInput: Locator;
 	readonly addWidgetButton: Locator;
 	readonly addWidgetLabel: (widgetName: string) => Locator;
 	readonly availableThemesFrame: FrameLocator;
@@ -25,6 +32,8 @@ export class CommerceLayoutsPage {
 	readonly createNewOrderButton: Locator;
 	readonly createPageMenuItem: Locator;
 	readonly defaultDisplayPageTemplateIcon: Locator;
+	readonly deliveryGroupCell: (name: string) => Locator;
+	readonly deliveryGroupNameInput: Locator;
 	readonly defineCustomThemeCheckbox: Locator;
 	readonly deleteEntriesButton: Locator;
 	readonly deleteLayoutModal: Locator;
@@ -100,6 +109,10 @@ export class CommerceLayoutsPage {
 				name,
 			});
 		};
+		this.addDeliveryGroupButton = page.getByRole('button', {
+			exact: true,
+			name: 'Add Delivery Group',
+		});
 		this.addOrderButton = page.getByRole('button', {
 			exact: true,
 			name: 'Add Order',
@@ -114,6 +127,14 @@ export class CommerceLayoutsPage {
 		this.addPageNameInput = page
 			.frameLocator('#addLayoutDialog_iframe_')
 			.getByTestId('addPageNameInput');
+		this.addressCityInput = page.getByLabel('City', {exact: true});
+		this.addressCountrySelect = page.getByLabel('Country');
+		this.addressNameInput = page.getByLabel('Name', {exact: true});
+		this.addressRegionSelect = page.getByLabel('Region');
+		this.addressStreet1Input = page.getByLabel('Address Line 1', {
+			exact: true,
+		});
+		this.addressZipInput = page.getByLabel('Zip', {exact: true});
 		this.addWidgetButton = page.getByTestId('add');
 		this.addWidgetLabel = (widgetName) => {
 			return page
@@ -158,6 +179,9 @@ export class CommerceLayoutsPage {
 			.getByTestId('row')
 			.locator('use')
 			.nth(1);
+		this.deliveryGroupCell = (name: string) =>
+			page.locator('.delivery-group', {hasText: name});
+		this.deliveryGroupNameInput = page.getByLabel('Group Name');
 		this.defineCustomThemeCheckbox = page.getByLabel(
 			'Define a custom theme for this page.'
 		);
