@@ -22,7 +22,6 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -238,23 +237,6 @@ public class AssetEntryServiceTest {
 			_assetEntryLocalService.getEntries(assetEntryQuery);
 
 		validateAssetEntries(expectedAssetEntries, actualAssetEntries);
-	}
-
-	@Test
-	public void testGetTopViewedEntries() throws Exception {
-		AssetEntry assetEntry = AssetTestUtil.addAssetEntry(
-			_group.getGroupId(), new Date(), "testClass");
-
-		_viewCountManager.incrementViewCount(
-			assetEntry.getCompanyId(), _portal.getClassNameId(AssetEntry.class),
-			assetEntry.getEntryId(), 2);
-
-		List<AssetEntry> topViewedAssetEntries =
-			_assetEntryLocalService.getTopViewedEntries(
-				"testClass", false, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		Assert.assertEquals(
-			topViewedAssetEntries.toString(), 1, topViewedAssetEntries.size());
 	}
 
 	@Test

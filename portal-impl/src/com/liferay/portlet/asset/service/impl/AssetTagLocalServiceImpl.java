@@ -18,7 +18,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.increment.BufferedIncrement;
 import com.liferay.portal.kernel.increment.NumberIncrement;
@@ -548,21 +547,6 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 		}
 
 		return assetEntryPersistence.getAssetTags(entry.getEntryId());
-	}
-
-	@Override
-	public List<AssetTag> getTags(long groupId, long classNameId, String name) {
-		return assetTagFinder.findByG_C_N(
-			groupId, classNameId, name, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			null);
-	}
-
-	@Override
-	public List<AssetTag> getTags(
-		long groupId, long classNameId, String name, int start, int end) {
-
-		return assetTagFinder.findByG_C_N(
-			groupId, classNameId, name, start, end, null);
 	}
 
 	/**
