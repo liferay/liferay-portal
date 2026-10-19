@@ -24,6 +24,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -130,25 +131,29 @@ public class UpdateArticleMVCActionCommand extends BaseMVCActionCommand {
 			AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
 				JournalArticle.class.getName(), article.getResourcePrimKey());
 
+			Layout layout = _layoutLocalService.getLayout(refererPlid);
+
 			PortletPreferences portletPreferences =
 				PortletPreferencesFactoryUtil.getStrictPortletSetup(
-					_layoutLocalService.getLayout(refererPlid),
-					portletResource);
+					layout, portletResource);
 
 			if (portletPreferences != null) {
-				ThemeDisplay themeDisplay =
-					(ThemeDisplay)actionRequest.getAttribute(
-						WebKeys.THEME_DISPLAY);
+				Group group = null;
 
-				if (article.getGroupId() != themeDisplay.getScopeGroupId()) {
-					Group group = _groupLocalService.fetchGroup(
-						article.getGroupId());
+				if ((article.getGroupId() != layout.getGroupId()) ||
+					(article.getGroupId() != _portal.getScopeGroupId(
+						layout, portletResource))) {
 
-					if (group != null) {
-						portletPreferences.setValue(
-							"groupExternalReferenceCode",
-							group.getExternalReferenceCode());
-					}
+					group = _groupLocalService.fetchGroup(article.getGroupId());
+				}
+
+				if (group != null) {
+					portletPreferences.setValue(
+						"groupExternalReferenceCode",
+						group.getExternalReferenceCode());
+				}
+				else {
+					portletPreferences.reset("groupExternalReferenceCode");
 				}
 
 				portletPreferences.setValue(
