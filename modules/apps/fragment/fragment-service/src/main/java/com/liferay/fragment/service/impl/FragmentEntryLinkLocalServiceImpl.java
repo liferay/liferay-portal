@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTable;
+import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -764,12 +765,15 @@ public class FragmentEntryLinkLocalServiceImpl
 
 			fragmentEntryLink.setHtml(html);
 
+			FragmentEntryLink clonedFragmentEntryLink = MVCCModel.scratchClone(
+				fragmentEntryLink);
+
 			fragmentEntryLink.setEditableValues(
 				_fragmentEntryProcessorRegistry.mergeDefaultEditableValues(
-					fragmentEntryLink.getConfigurationJSONObject(),
+					clonedFragmentEntryLink.getConfigurationJSONObject(),
 					editableValuesJSONObject,
 					_getProcessedHTML(
-						fragmentEntryLink,
+						clonedFragmentEntryLink,
 						ServiceContextThreadLocal.getServiceContext())));
 
 			modified = true;
