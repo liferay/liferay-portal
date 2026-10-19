@@ -359,7 +359,7 @@ public class RunningBuildDurationMonitorTest
 
 		_execute(runningBuildDurationMonitor);
 
-		testEquals(3, runningBuildDurationMonitor.getReadsCount());
+		testEquals(1, runningBuildDurationMonitor.getReadsCount());
 	}
 
 	@Test
