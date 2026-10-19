@@ -5,8 +5,10 @@
 
 package com.liferay.frontend.data.set.internal.serializer;
 
+import com.liferay.client.extension.type.CET;
 import com.liferay.client.extension.type.FDSCellRendererCET;
 import com.liferay.client.extension.type.FDSFilterCET;
+import com.liferay.client.extension.type.FDSVisualizationModeCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.data.set.FDSEntryItemImportPolicy;
 import com.liferay.frontend.data.set.action.util.FDSActionUtil;
@@ -65,6 +67,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -620,7 +623,7 @@ public class CustomFDSSerializer
 	public JSONArray serializeViews(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
-		JSONArray jsonArray = _jsonFactory.createJSONArray();
+		JSONArray defaultViewsJSONArray = _jsonFactory.createJSONArray();
 
 		Map<String, Object> dataSetObjectEntryProperties =
 			getDataSetObjectEntryProperties(fdsName, httpServletRequest);
@@ -693,7 +696,7 @@ public class CustomFDSSerializer
 			}
 		}
 
-		jsonArray.put(
+		defaultViewsJSONArray.put(
 			() -> {
 				List<ObjectEntry> objectEntries = getRelatedObjectEntries(
 					fdsName, httpServletRequest, (Predicate)null,
@@ -842,7 +845,10 @@ public class CustomFDSSerializer
 			}
 		);
 
-		return jsonArray;
+		return _getEnabledViewsJSONArray(
+			defaultViewsJSONArray, defaultVisualizationMode, httpServletRequest,
+			MapUtil.getString(
+				dataSetObjectEntryProperties, "visualizationModes"));
 	}
 
 	protected Map<String, Object> getDataSetObjectEntryProperties(
@@ -937,6 +943,91 @@ public class CustomFDSSerializer
 		}
 
 		return jsonObject;
+	}
+
+	private JSONArray _getEnabledViewsJSONArray(
+		JSONArray defaultViewsJSONArray, String defaultVisualizationMode,
+		HttpServletRequest httpServletRequest, String visualizationModes) {
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		Map<String, JSONObject> defaultViewJSONObjects = new HashMap<>();
+
+		for (int i = 0; i < defaultViewsJSONArray.length(); i++) {
+			JSONObject defaultViewJSONObject =
+				defaultViewsJSONArray.getJSONObject(i);
+
+			defaultViewJSONObjects.put(
+				defaultViewJSONObject.getString("name"), defaultViewJSONObject);
+		}
+
+		for (String name :
+				_getEnabledVisualizationModeNames(visualizationModes)) {
+
+			if (_defaultVisualizationModeNames.contains(name)) {
+				jsonArray.put(() -> defaultViewJSONObjects.get(name));
+			}
+			else {
+				jsonArray.put(
+					() -> _serializeClientExtensionView(
+						defaultVisualizationMode, httpServletRequest, name));
+			}
+		}
+
+		return jsonArray;
+	}
+
+	private List<String> _getEnabledVisualizationModeNames(
+		String visualizationModes) {
+
+		List<String> enabledVisualizationModeNames = new ArrayList<>();
+
+		List<String> visualizationModeNames = new ArrayList<>();
+
+		if (Validator.isNotNull(visualizationModes)) {
+			try {
+				JSONArray jsonArray = _jsonFactory.createJSONArray(
+					visualizationModes);
+
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+					String name = jsonObject.getString("name");
+
+					if (Validator.isNull(name)) {
+						continue;
+					}
+
+					visualizationModeNames.add(name);
+
+					if (!jsonObject.getBoolean("enabled")) {
+						continue;
+					}
+
+					enabledVisualizationModeNames.add(name);
+				}
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to parse visualization modes " +
+							visualizationModes,
+						exception);
+				}
+			}
+		}
+
+		// Default visualization modes are enabled unless stated otherwise
+
+		for (String name : _defaultVisualizationModeNames) {
+			if (visualizationModeNames.contains(name)) {
+				continue;
+			}
+
+			enabledVisualizationModeNames.add(name);
+		}
+
+		return enabledVisualizationModeNames;
 	}
 
 	private Object _getListTypeEntryKey(
@@ -1074,6 +1165,47 @@ public class CustomFDSSerializer
 		}
 
 		return false;
+	}
+
+	private JSONObject _serializeClientExtensionView(
+		String defaultVisualizationMode, HttpServletRequest httpServletRequest,
+		String externalReferenceCode) {
+
+		CET cet = cetManager.getCET(
+			PortalUtil.getCompanyId(httpServletRequest), externalReferenceCode);
+
+		if (!(cet instanceof FDSVisualizationModeCET)) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"No frontend data set visualization mode client " +
+						"extension was found for " + externalReferenceCode);
+			}
+
+			return null;
+		}
+
+		FDSVisualizationModeCET fdsVisualizationModeCET =
+			(FDSVisualizationModeCET)cet;
+
+		return JSONUtil.put(
+			"contentRenderer", "clientExtension"
+		).put(
+			"contentRendererClientExtension", true
+		).put(
+			"contentRendererModuleURL",
+			"default from " + fdsVisualizationModeCET.getURL()
+		).put(
+			"default", defaultVisualizationMode.equals(externalReferenceCode)
+		).put(
+			"label",
+			fdsVisualizationModeCET.getName(
+				PortalUtil.getLocale(httpServletRequest))
+		).put(
+			"name", externalReferenceCode
+		).put(
+			"thumbnail",
+			GetterUtil.getString(fdsVisualizationModeCET.getIcon(), "view")
+		);
 	}
 
 	private JSONObject _serializeFilter(
@@ -1411,6 +1543,9 @@ public class CustomFDSSerializer
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CustomFDSSerializer.class);
+
+	private static final List<String> _defaultVisualizationModeNames =
+		Arrays.asList("cards", "list", "table");
 
 	@Reference
 	private JSONFactory _jsonFactory;

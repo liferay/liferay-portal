@@ -345,6 +345,21 @@
 					"state": false,
 					"system": true,
 					"type": "Clob"
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "VISUALIZATION_MODES",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Visualization Modes"
+					},
+					"name": "visualizationModes",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Clob"
 				}
 			],
 			"objectRelationships": [

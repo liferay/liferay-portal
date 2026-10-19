@@ -7,6 +7,7 @@ package com.liferay.frontend.data.set.internal.serializer;
 
 import com.liferay.client.extension.type.FDSCellRendererCET;
 import com.liferay.client.extension.type.FDSFilterCET;
+import com.liferay.client.extension.type.FDSVisualizationModeCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.data.set.action.FDSBulkActions;
 import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
@@ -24,7 +25,9 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -36,6 +39,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -1357,6 +1361,129 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 				FDS_NAMES[0], httpServletRequest
 			).toString(),
 			JSONCompareMode.STRICT);
+
+		_resetFDSSerializer();
+
+		// Visualization modes
+
+		_mockSerializeViewsTable(
+			FDS_NAMES[0],
+			Collections.singletonList(
+				HashMapBuilder.<String, Object>put(
+					"fieldName", FIELD_NAMES[0]
+				).put(
+					"label", LABELS[0]
+				).put(
+					"renderer", "default"
+				).put(
+					"rendererType", "internal"
+				).put(
+					"sortable", false
+				).put(
+					"type", "String"
+				).build()));
+
+		_mockSerializeViewsCardsOrList(
+			FDS_NAMES[0], sectionsMap, "dataSetToDataSetCardsSections");
+		_mockSerializeViewsCardsOrList(
+			FDS_NAMES[0], sectionsMap, "dataSetToDataSetListSections");
+
+		Mockito.when(
+			_customFDSSerializer.getDataSetObjectEntryProperties(
+				FDS_NAMES[0], httpServletRequest)
+		).thenReturn(
+			HashMapBuilder.<String, Object>put(
+				"defaultVisualizationMode", cetExternalReferenceCode
+			).put(
+				"visualizationModes",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"enabled", true
+					).put(
+						"name", "table"
+					),
+					JSONUtil.put(
+						"enabled", true
+					).put(
+						"name", cetExternalReferenceCode
+					),
+					JSONUtil.put(
+						"enabled", false
+					).put(
+						"name", "cards"
+					),
+					JSONUtil.put(
+						"enabled", true
+					).put(
+						"name", RandomTestUtil.randomString()
+					)
+				).toString()
+			).build()
+		);
+
+		CETManager cetManager = Mockito.mock(CETManager.class);
+
+		FDSVisualizationModeCET fdsVisualizationModeCET = Mockito.mock(
+			FDSVisualizationModeCET.class);
+
+		Mockito.when(
+			fdsVisualizationModeCET.getURL()
+		).thenReturn(
+			"/o/" + cetExternalReferenceCode + "/index.js"
+		);
+
+		Mockito.when(
+			fdsVisualizationModeCET.getName(LocaleUtil.US)
+		).thenReturn(
+			LABELS[1]
+		);
+
+		Mockito.when(
+			fdsVisualizationModeCET.getIcon()
+		).thenReturn(
+			"date"
+		);
+
+		Mockito.when(
+			cetManager.getCET(
+				Mockito.anyLong(), Mockito.eq(cetExternalReferenceCode))
+		).thenReturn(
+			fdsVisualizationModeCET
+		);
+
+		_customFDSSerializer.cetManager = cetManager;
+
+		JSONArray jsonArray = _customFDSSerializer.serializeViews(
+			FDS_NAMES[0], httpServletRequest);
+
+		Assert.assertEquals(3, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals("table", jsonObject.getString("name"));
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"contentRenderer", "clientExtension"
+			).put(
+				"contentRendererClientExtension", true
+			).put(
+				"contentRendererModuleURL",
+				"default from /o/" + cetExternalReferenceCode + "/index.js"
+			).put(
+				"default", true
+			).put(
+				"label", LABELS[1]
+			).put(
+				"name", cetExternalReferenceCode
+			).put(
+				"thumbnail", "date"
+			).toString(),
+			String.valueOf(jsonArray.getJSONObject(1)), JSONCompareMode.STRICT);
+
+		jsonObject = jsonArray.getJSONObject(2);
+
+		Assert.assertEquals("list", jsonObject.getString("name"));
 	}
 
 	private boolean _containsLabel(
@@ -1769,9 +1896,12 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 	private void _mockSerializeViewsCardsOrList(
 		String fdsName, Map<String, String> sectionMap, String relationship) {
 
-		Mockito.when(
-			_customFDSSerializer.serializeViews(fdsName, httpServletRequest)
-		).thenCallRealMethod();
+		Mockito.doCallRealMethod(
+		).when(
+			_customFDSSerializer
+		).serializeViews(
+			fdsName, httpServletRequest
+		);
 
 		List<ObjectEntry> objectEntries = new ArrayList<>();
 
@@ -1802,9 +1932,12 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 	private void _mockSerializeViewsTable(
 		String fdsName, List<Map<String, Object>> propertiesMapList) {
 
-		Mockito.when(
-			_customFDSSerializer.serializeViews(fdsName, httpServletRequest)
-		).thenCallRealMethod();
+		Mockito.doCallRealMethod(
+		).when(
+			_customFDSSerializer
+		).serializeViews(
+			fdsName, httpServletRequest
+		);
 
 		List<ObjectEntry> objectEntries = new ArrayList<>();
 
