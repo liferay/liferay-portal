@@ -1,0 +1,249 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.exportimport.test;
+
+import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
+import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
+import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
+import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
+import com.liferay.exportimport.kernel.service.StagingServiceUtil;
+import com.liferay.exportimport.test.util.ExportImportTestUtil;
+import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.io.File;
+import java.io.Serializable;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+/**
+ * @author Vendel Töreki
+ */
+@RunWith(Arquillian.class)
+public class StagingServiceTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	public void setUp() throws Exception {
+		_group = GroupTestUtil.addGroup();
+
+		_layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		_targetGroup = GroupTestUtil.addGroup();
+
+		_targetLayout = LayoutTestUtil.addTypePortletLayout(_targetGroup);
+
+		_user = UserTestUtil.addGroupAdminUser(_group);
+	}
+
+	@Test
+	@TestInfo("LPD-110192")
+	public void testPublishStagingRequest() throws Exception {
+		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertNotNull(
+				StagingServiceUtil.publishStagingRequest(
+					_addStagingRequest(file),
+					_addExportImportConfiguration(_group)));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110192")
+	public void testPublishStagingRequestToAnotherGroup() throws Exception {
+		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			long stagingRequestId = _addStagingRequest(file);
+
+			ExportImportConfiguration exportImportConfiguration =
+				_addExportImportConfiguration(_targetGroup);
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.publishStagingRequest(
+					stagingRequestId, exportImportConfiguration));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+
+		Assert.assertEquals(
+			1, LayoutLocalServiceUtil.getLayoutsCount(_targetGroup, false));
+	}
+
+	@Test
+	@TestInfo("LPD-110192")
+	public void testPublishStagingRequestWithPortlet() throws Exception {
+		File file = ExportImportTestUtil.exportPortletInfoAsFile(
+			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertNotNull(
+				StagingServiceUtil.publishStagingRequest(
+					_addStagingRequest(file),
+					_addPortletExportImportConfiguration(_layout.getPlid())));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110192")
+	public void testPublishStagingRequestWithPortletToControlPanelLayout()
+		throws Exception {
+
+		File file = ExportImportTestUtil.exportPortletInfoAsFile(
+			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertNotNull(
+				StagingServiceUtil.publishStagingRequest(
+					_addStagingRequest(file),
+					_addPortletExportImportConfiguration(
+						PortalUtil.getControlPanelPlid(
+							_group.getCompanyId()))));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110192")
+	public void testPublishStagingRequestWithPortletToLayoutInAnotherGroup()
+		throws Exception {
+
+		File file = ExportImportTestUtil.exportPortletInfoAsFile(
+			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			long stagingRequestId = _addStagingRequest(file);
+
+			ExportImportConfiguration exportImportConfiguration =
+				_addPortletExportImportConfiguration(_targetLayout.getPlid());
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.publishStagingRequest(
+					stagingRequestId, exportImportConfiguration));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	private ExportImportConfiguration _addExportImportConfiguration(
+			Group targetGroup)
+		throws Exception {
+
+		Map<String, Serializable> settingsMap =
+			ExportImportConfigurationSettingsMapFactoryUtil.
+				buildImportLayoutSettingsMap(
+					_user, targetGroup.getGroupId(), false, new long[0],
+					new HashMap<>());
+
+		return ExportImportConfigurationLocalServiceUtil.
+			addExportImportConfiguration(
+				_user.getUserId(), targetGroup.getGroupId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				ExportImportConfigurationConstants.TYPE_PUBLISH_LAYOUT_REMOTE,
+				settingsMap,
+				ServiceContextTestUtil.getServiceContext(
+					targetGroup.getGroupId(), _user.getUserId()));
+	}
+
+	private ExportImportConfiguration _addPortletExportImportConfiguration(
+			long targetPlid)
+		throws Exception {
+
+		Map<String, Serializable> settingsMap =
+			ExportImportConfigurationSettingsMapFactoryUtil.
+				buildImportPortletSettingsMap(
+					_user, targetPlid, _group.getGroupId(),
+					DLPortletKeys.DOCUMENT_LIBRARY, new HashMap<>());
+
+		return ExportImportConfigurationLocalServiceUtil.
+			addExportImportConfiguration(
+				_user.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				ExportImportConfigurationConstants.TYPE_PUBLISH_PORTLET_REMOTE,
+				settingsMap,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId()));
+	}
+
+	private long _addStagingRequest(File file) throws Exception {
+		long stagingRequestId = StagingServiceUtil.createStagingRequest(
+			_group.getGroupId(), FileUtil.getMD5Checksum(file));
+
+		StagingServiceUtil.updateStagingRequest(
+			stagingRequestId, file.getName(), FileUtil.getBytes(file));
+
+		return stagingRequestId;
+	}
+
+	@DeleteAfterTestRun
+	private Group _group;
+
+	private Layout _layout;
+
+	@DeleteAfterTestRun
+	private Group _targetGroup;
+
+	private Layout _targetLayout;
+
+	@DeleteAfterTestRun
+	private User _user;
+
+}
