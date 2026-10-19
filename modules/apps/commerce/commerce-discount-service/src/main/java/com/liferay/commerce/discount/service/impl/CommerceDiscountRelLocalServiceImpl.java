@@ -364,6 +364,15 @@ public class CommerceDiscountRelLocalServiceImpl
 	}
 
 	@Override
+	public List<CommerceDiscountRel> getCommerceDiscountRels(
+		long commerceDiscountId, String className, long classPK) {
+
+		return commerceDiscountRelPersistence.findByCD_CN_CPK(
+			commerceDiscountId,
+			_classNameLocalService.getClassNameId(className), classPK);
+	}
+
+	@Override
 	public int getCommerceDiscountRelsCount(
 		long commerceDiscountId, String className) {
 
