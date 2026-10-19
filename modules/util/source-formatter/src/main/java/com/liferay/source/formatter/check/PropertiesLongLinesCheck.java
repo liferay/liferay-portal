@@ -23,21 +23,15 @@ public class PropertiesLongLinesCheck extends BaseFileCheck {
 			String fileName, String absolutePath, String content)
 		throws IOException {
 
-		if (absolutePath.endsWith("-portal.properties") ||
-			absolutePath.matches(
-				".*\\/portal-impl\\/src\\/portal[\\w-]+\\.properties")) {
-
-			return content;
-		}
-
 		Matcher matcher = _commentsPattern.matcher(content);
 
 		while (matcher.find()) {
 			String match = matcher.group();
 
-			String comment = StringUtil.removeSubstring(match, "\n    #");
+			String prefix = matcher.group(1);
 
-			comment = _splitComment(comment);
+			String comment = _splitComment(
+				StringUtil.removeSubstring(match, "\n" + prefix), prefix);
 
 			if (!StringUtil.equals(match, comment)) {
 				return StringUtil.replaceFirst(
@@ -48,38 +42,33 @@ public class PropertiesLongLinesCheck extends BaseFileCheck {
 		return content;
 	}
 
-	private String _splitComment(String comment) {
+	private String _splitComment(String comment, String prefix) {
 		if (comment.length() <= getMaxLineLength()) {
 			return comment;
 		}
 
-		int x = -1;
+		int x = prefix.length() + 1;
 
-		if (comment.startsWith("    # See http:")) {
-			x = comment.indexOf(CharPool.SPACE, 10);
+		if (comment.startsWith(prefix + " See http")) {
+			x += 4;
 		}
-		else {
-			x = comment.indexOf(CharPool.SPACE, 6);
-		}
+
+		x = comment.indexOf(CharPool.SPACE, x);
 
 		if (x == -1) {
 			return comment;
 		}
 
-		if (x > getMaxLineLength()) {
-			String s = "    # " + comment.substring(x + 1);
-
-			return comment.substring(0, x) + "\n" + _splitComment(s);
+		if (x <= getMaxLineLength()) {
+			x = comment.lastIndexOf(CharPool.SPACE, getMaxLineLength());
 		}
 
-		x = comment.lastIndexOf(CharPool.SPACE, getMaxLineLength());
-
-		String s = "    # " + comment.substring(x + 1);
-
-		return comment.substring(0, x) + "\n" + _splitComment(s);
+		return comment.substring(0, x) + "\n" +
+			_splitComment(prefix + " " + comment.substring(x + 1), prefix);
 	}
 
 	private static final Pattern _commentsPattern = Pattern.compile(
-		"(    (?!# Env: )# (?! ).+)(\n    # (?! ).+)*");
+		"^([ \t]*(?:#+|\\$h\\d+)) (?!Env: )\\S.*(\n\\1 (?!Env: )\\S.*)*",
+		Pattern.MULTILINE);
 
 }

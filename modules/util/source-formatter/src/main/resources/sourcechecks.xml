@@ -1765,7 +1765,7 @@
 		</check>
 		<check name="PropertiesLongLinesCheck">
 			<category name="Styling" />
-			<description name="Finds lines that are longer than the specified maximum line length." />
+			<description name="Wraps comments in `.properties` files to the maximum line length." />
 		</check>
 		<check name="PropertiesMultiLineValuesOrderCheck">
 			<category name="Styling" />

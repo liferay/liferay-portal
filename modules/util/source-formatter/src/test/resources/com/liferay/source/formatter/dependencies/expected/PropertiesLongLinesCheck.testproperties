@@ -1,0 +1,80 @@
+##
+## Check GETTING_STARTED.md for additional properties and their default values.
+##
+
+#
+# Set a comma delimited list of words that are used as extra bad alias names in
+# addition to those in bad_alias_names.txt.
+#
+extra.bad.alias.names=
+
+    #
+    # Set a list of comma-delimited URL prefixes that allow for unhindered MIME
+    # sniffing. This property is used only when the property
+    # "http.header.secure.x.content.type.options" is set to true.
+    #
+    # Env: SYSTEM_LIFERAY_HTTP_PERIOD_HEADER_PERIOD_SECURE
+    # Env: SYSTEM_LIFERAY_HTTP_PERIOD_HEADER_PERIOD_SECURE_PERIOD_X
+    #
+    #http.header.secure.x.content.type.options.urls.excludes=
+
+    #
+    # Set this to true for the portal to send the "X-Frame-Options: DENY" HTTP
+    # header to protect against clickjacking.
+    #
+    http.header.secure.x.frame.options=true
+
+    #
+    # Set this to true for the portal to send the "X-Content-Type-Options:
+    # nosniff" HTTP header to protect against MIME sniffing.
+    #
+    http.header.secure.x.content.type.options=true
+
+    #
+    # See http://docs.codehaus.org/display/SONAR/Analyzing+with+SonarQube+Runner
+    # for more information.
+    #
+    sonar.enabled=true
+
+    #
+    # Specify the values of the list. For example:
+    #     com.liferay.portal.kernel.util.StringPool
+    #     com.liferay.portal.kernel.util.StringUtil
+    #
+    # Env: LIFERAY_LIST_PERIOD_VALUES_PERIOD_WITH_PERIOD_A_PERIOD_VERY_PERIOD_LONG_PERIOD_NAME
+    #
+    list.values=
+
+    #
+    # Set this to true to enable the list.
+    # Env: LIFERAY_LIST_PERIOD_ENABLED
+    #
+    list.enabled=true
+
+    list.description=Set this property to true to enable the feature that is described    # in the docs.
+
+        #
+        # Set this property to true to enable the feature that is described in
+        # the documentation.
+        #
+        nested.enabled=true
+
+##
+## See https://github.com/liferay/liferay-portal/blob/master/source-formatter.properties
+## for details.
+##
+
+#
+# Set this property to true to enable the feature that is described in the
+# documentation of this module.
+#
+foo=bar
+
+#set ($h1 = '##')
+#set ($h2 = '#')
+$h1
+$h1 Check GETTING_STARTED.md for additional properties and their default values.
+$h1
+
+$h2 Set a comma delimited list of words that are used as extra bad alias names.
+$h2

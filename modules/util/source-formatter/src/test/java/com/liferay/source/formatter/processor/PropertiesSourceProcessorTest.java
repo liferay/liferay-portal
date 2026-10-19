@@ -15,6 +15,11 @@ import org.junit.Test;
 public class PropertiesSourceProcessorTest extends BaseSourceProcessorTestCase {
 
 	@Test
+	public void testFormatComments() throws Exception {
+		test("PropertiesLongLinesCheck.testproperties");
+	}
+
+	@Test
 	public void testIncorrectWhitespaceCheck() throws Exception {
 		test("IncorrectWhitespaceCheck.testproperties");
 	}
