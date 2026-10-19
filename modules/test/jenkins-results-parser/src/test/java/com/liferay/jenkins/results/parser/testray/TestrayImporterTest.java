@@ -46,18 +46,8 @@ public class TestrayImporterTest
 
 	@Test
 	public void testGetTestcaseElementName() throws Exception {
-		String name = StringUtils.repeat(RandomTestUtil.randomString(), 7);
-
-		name = name.substring(0, 250);
-
-		testEquals(name, _getTestcaseName(name));
-	}
-
-	@Test
-	public void testGetTestcaseElementNameLong() throws Exception {
-		String name = StringUtils.repeat(RandomTestUtil.randomString(), 8);
-
-		testEquals(name.substring(0, 250), _getTestcaseName(name));
+		_testGetTestcaseElementName(250, 250);
+		_testGetTestcaseElementName(251, 250);
 	}
 
 	@Test
@@ -386,6 +376,16 @@ public class TestrayImporterTest
 		);
 
 		return argumentCaptor.getValue();
+	}
+
+	private void _testGetTestcaseElementName(int nameLength, int expectedLength)
+		throws Exception {
+
+		String name = StringUtils.repeat(RandomTestUtil.randomString(), 8);
+
+		name = name.substring(0, nameLength);
+
+		testEquals(name.substring(0, expectedLength), _getTestcaseName(name));
 	}
 
 }
