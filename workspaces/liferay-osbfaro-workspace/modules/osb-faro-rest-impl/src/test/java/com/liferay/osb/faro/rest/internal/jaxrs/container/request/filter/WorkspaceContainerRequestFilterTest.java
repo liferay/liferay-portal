@@ -22,8 +22,6 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ProxyUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -33,331 +31,172 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import java.lang.reflect.Method;
-
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 /**
  * @author Nilton Vieira
  */
 public class WorkspaceContainerRequestFilterTest {
 
+	@Before
+	public void setUp() {
+		_permissionChecker = PermissionThreadLocal.getPermissionChecker();
+
+		FaroChannel allUsersFaroChannel = _mockFaroChannel(
+			FaroChannelConstants.PERMISSION_ALL_USERS);
+		FaroChannel selectUsersFaroChannel = _mockFaroChannel(
+			FaroChannelConstants.PERMISSION_SELECT_USERS);
+
+		Mockito.when(
+			_faroChannelLocalService.fetchFaroChannel(
+				_ALL_USERS_CHANNEL_ID, _GROUP_ID)
+		).thenReturn(
+			allUsersFaroChannel
+		);
+
+		Mockito.when(
+			_faroChannelLocalService.fetchFaroChannel(
+				_SELECT_USERS_CHANNEL_ID, _GROUP_ID)
+		).thenReturn(
+			selectUsersFaroChannel
+		);
+
+		Mockito.when(
+			_faroProject.getGroupId()
+		).thenReturn(
+			_GROUP_ID
+		);
+
+		Mockito.when(
+			_faroProject.isAllowedIPAddress(Mockito.any())
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_faroProjectLocalService.fetchFaroProjectByGroupId(_GROUP_ID)
+		).thenReturn(
+			_faroProject
+		);
+
+		FaroUser faroUser = Mockito.mock(FaroUser.class);
+
+		Mockito.when(
+			faroUser.getRoleId()
+		).thenReturn(
+			_ROLE_ID
+		);
+
+		Mockito.when(
+			faroUser.getStatus()
+		).thenReturn(
+			FaroUserConstants.STATUS_APPROVED
+		);
+
+		Mockito.when(
+			_faroUserLocalService.fetchFaroUser(_GROUP_ID, _MEMBER_USER_ID)
+		).thenReturn(
+			faroUser
+		);
+
+		Role role = Mockito.mock(Role.class);
+
+		Mockito.when(
+			role.getName()
+		).thenReturn(
+			RoleConstants.SITE_MEMBER
+		);
+
+		Mockito.when(
+			_roleLocalService.fetchRole(_ROLE_ID)
+		).thenReturn(
+			role
+		);
+
+		Mockito.when(
+			_userGroupRoleLocalService.getUserGroupRoles(
+				_MEMBER_USER_ID, _CHANNEL_GROUP_ID)
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_workspaceContainerRequestFilter, "_faroChannelLocalService",
+			_faroChannelLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_workspaceContainerRequestFilter, "_faroProjectLocalService",
+			_faroProjectLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_workspaceContainerRequestFilter, "_faroUserLocalService",
+			_faroUserLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_workspaceContainerRequestFilter, "_httpServletRequest",
+			Mockito.mock(HttpServletRequest.class));
+		ReflectionTestUtil.setFieldValue(
+			_workspaceContainerRequestFilter, "_roleLocalService",
+			_roleLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_workspaceContainerRequestFilter, "_userGroupRoleLocalService",
+			_userGroupRoleLocalService);
+	}
+
+	@After
+	public void tearDown() {
+		PermissionThreadLocal.setPermissionChecker(_permissionChecker);
+	}
+
 	@Test
-	public void testFilter() throws Exception {
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		try {
-			_testFilterWithAuthorizedRequests();
-			_testFilterWithUnauthorizedRequests();
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
-	}
-
-	private Response _filter(
-		String channelId, boolean pathParameter, String groupId,
-		boolean omniadmin, long userId) {
-
-		PermissionThreadLocal.setPermissionChecker(
-			_proxy(
-				PermissionChecker.class,
-				HashMapBuilder.<String, Object>put(
-					"getUser",
-					_proxy(
-						User.class,
-						HashMapBuilder.<String, Object>put(
-							"isGuestUser", userId == _GUEST_USER_ID
-						).build())
-				).put(
-					"getUserId", userId
-				).put(
-					"isOmniadmin", omniadmin
-				).build()));
-
-		MultivaluedMap<String, String> pathParameters =
-			new MultivaluedHashMap<>();
-		MultivaluedMap<String, String> queryParameters =
-			new MultivaluedHashMap<>();
-
-		if (groupId != null) {
-			pathParameters.putSingle("groupId", groupId);
-		}
-
-		if (channelId != null) {
-			if (pathParameter) {
-				pathParameters.putSingle("channelId", channelId);
-			}
-			else {
-				queryParameters.putSingle("channelId", channelId);
-			}
-		}
-
-		AtomicReference<Response> responseAtomicReference =
-			new AtomicReference<>();
-
-		WorkspaceContainerRequestFilter workspaceContainerRequestFilter =
-			new WorkspaceContainerRequestFilter();
-
-		ReflectionTestUtil.setFieldValue(
-			workspaceContainerRequestFilter, "_faroChannelLocalService",
-			_proxy(
-				FaroChannelLocalService.class,
-				HashMapBuilder.<String, Object>put(
-					"fetchFaroChannel",
-					(UnsafeFunction)arguments -> _faroChannels.get(arguments[0])
-				).build()));
-		ReflectionTestUtil.setFieldValue(
-			workspaceContainerRequestFilter, "_faroProjectLocalService",
-			_proxy(
-				FaroProjectLocalService.class,
-				HashMapBuilder.<String, Object>put(
-					"fetchFaroProjectByGroupId",
-					(UnsafeFunction)arguments -> {
-						if ((long)arguments[0] == _GROUP_ID) {
-							return _faroProject;
-						}
-
-						return null;
-					}
-				).build()));
-		ReflectionTestUtil.setFieldValue(
-			workspaceContainerRequestFilter, "_faroUserLocalService",
-			_proxy(
-				FaroUserLocalService.class,
-				HashMapBuilder.<String, Object>put(
-					"fetchFaroUser",
-					(UnsafeFunction)arguments -> {
-						if (((long)arguments[1] != _CHANNEL_MEMBER_USER_ID) &&
-							((long)arguments[1] != _MEMBER_USER_ID)) {
-
-							return null;
-						}
-
-						return _proxy(
-							FaroUser.class,
-							HashMapBuilder.<String, Object>put(
-								"getRoleId", (Object)_ROLE_ID
-							).put(
-								"getStatus",
-								(Object)FaroUserConstants.STATUS_APPROVED
-							).build());
-					}
-				).build()));
-		ReflectionTestUtil.setFieldValue(
-			workspaceContainerRequestFilter, "_httpServletRequest",
-			_proxy(
-				HttpServletRequest.class,
-				HashMapBuilder.<String, Object>put(
-					"getRemoteAddr", _REMOTE_ADDR
-				).build()));
-		ReflectionTestUtil.setFieldValue(
-			workspaceContainerRequestFilter, "_roleLocalService",
-			_proxy(
-				RoleLocalService.class,
-				HashMapBuilder.<String, Object>put(
-					"fetchRole",
-					_proxy(
-						Role.class,
-						HashMapBuilder.<String, Object>put(
-							"getName", RoleConstants.SITE_MEMBER
-						).build())
-				).build()));
-		ReflectionTestUtil.setFieldValue(
-			workspaceContainerRequestFilter, "_userGroupRoleLocalService",
-			_proxy(
-				UserGroupRoleLocalService.class,
-				HashMapBuilder.<String, Object>put(
-					"getUserGroupRoles",
-					(UnsafeFunction)arguments -> {
-						if (((long)arguments[0] == _CHANNEL_MEMBER_USER_ID) &&
-							((long)arguments[1] == _CHANNEL_GROUP_ID)) {
-
-							return Collections.singletonList(
-								_proxy(UserGroupRole.class, new HashMap<>()));
-						}
-
-						return Collections.emptyList();
-					}
-				).build()));
-
-		workspaceContainerRequestFilter.filter(
-			_proxy(
-				ContainerRequestContext.class,
-				HashMapBuilder.<String, Object>put(
-					"abortWith",
-					(UnsafeFunction)arguments -> {
-						responseAtomicReference.set((Response)arguments[0]);
-
-						return null;
-					}
-				).put(
-					"getUriInfo",
-					_proxy(
-						UriInfo.class,
-						HashMapBuilder.<String, Object>put(
-							"getPathParameters", pathParameters
-						).put(
-							"getQueryParameters", queryParameters
-						).build())
-				).build()));
-
-		return responseAtomicReference.get();
-	}
-
-	private Object _getDefaultValue(Method method) {
-		Class<?> returnType = method.getReturnType();
-
-		if (returnType == boolean.class) {
-			return false;
-		}
-
-		if (returnType == int.class) {
-			return 0;
-		}
-
-		if (returnType == long.class) {
-			return 0L;
-		}
-
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T> T _proxy(Class<T> clazz, Map<String, Object> values) {
-		return (T)ProxyUtil.newProxyInstance(
-			clazz.getClassLoader(), new Class<?>[] {clazz},
-			(proxy, method, arguments) -> {
-				Object value = values.get(method.getName());
-
-				if (value instanceof UnsafeFunction) {
-					UnsafeFunction unsafeFunction = (UnsafeFunction)value;
-
-					value = unsafeFunction.apply(arguments);
-				}
-
-				if (value == null) {
-					return _getDefaultValue(method);
-				}
-
-				return value;
-			});
-	}
-
-	private void _setFaroChannels() {
-		_faroChannels.put(
-			_ALL_USERS_CHANNEL_ID,
-			_proxy(
-				FaroChannel.class,
-				HashMapBuilder.<String, Object>put(
-					"getGroupId", _CHANNEL_GROUP_ID
-				).put(
-					"getPermissionType",
-					FaroChannelConstants.PERMISSION_ALL_USERS
-				).build()));
-		_faroChannels.put(
-			_SELECT_USERS_CHANNEL_ID,
-			_proxy(
-				FaroChannel.class,
-				HashMapBuilder.<String, Object>put(
-					"getGroupId", _CHANNEL_GROUP_ID
-				).put(
-					"getPermissionType",
-					FaroChannelConstants.PERMISSION_SELECT_USERS
-				).build()));
-	}
-
-	private void _setFaroProject(boolean allowedIPAddress) {
-		_faroProject = _proxy(
-			FaroProject.class,
-			HashMapBuilder.<String, Object>put(
-				"getGroupId", _GROUP_ID
-			).put(
-				"isAllowedIPAddress", allowedIPAddress
-			).build());
-	}
-
-	private void _testFilterWithAuthorizedRequests() {
-		_setFaroChannels();
-		_setFaroProject(true);
-
-		Assert.assertNull(_filter(null, false, null, false, _MEMBER_USER_ID));
+	public void testFilter() {
+		Assert.assertNull(_filter(null, null, _MEMBER_USER_ID));
+		Assert.assertNull(_filter(_GROUP_ID, null, _MEMBER_USER_ID));
 		Assert.assertNull(
-			_filter(
-				null, false, String.valueOf(_GROUP_ID), false,
-				_MEMBER_USER_ID));
-		Assert.assertNull(
-			_filter(
-				_ALL_USERS_CHANNEL_ID, true, String.valueOf(_GROUP_ID), false,
-				_MEMBER_USER_ID));
-		Assert.assertNull(
-			_filter(
-				_ALL_USERS_CHANNEL_ID, false, String.valueOf(_GROUP_ID), false,
-				_MEMBER_USER_ID));
-		Assert.assertNull(
-			_filter(
-				_SELECT_USERS_CHANNEL_ID, true, String.valueOf(_GROUP_ID),
-				false, _CHANNEL_MEMBER_USER_ID));
-
-		_setFaroProject(false);
-
-		Assert.assertNull(
-			_filter(
-				null, false, String.valueOf(_GROUP_ID), true,
-				_OUTSIDER_USER_ID));
-	}
-
-	private void _testFilterWithUnauthorizedRequests() {
-		_setFaroChannels();
-		_setFaroProject(true);
+			_filter(_GROUP_ID, _ALL_USERS_CHANNEL_ID, _MEMBER_USER_ID));
+		Assert.assertNull(_filter(_GROUP_ID, null, _OMNIADMIN_USER_ID));
 
 		_assertStatus(
-			Response.Status.NOT_FOUND,
-			_filter(null, false, "999", false, _MEMBER_USER_ID));
+			Response.Status.NOT_FOUND, _filter(999L, null, _MEMBER_USER_ID));
 		_assertStatus(
 			Response.Status.UNAUTHORIZED,
-			_filter(
-				null, false, String.valueOf(_GROUP_ID), false, _GUEST_USER_ID));
+			_filter(_GROUP_ID, null, _GUEST_USER_ID));
 		_assertStatus(
 			Response.Status.FORBIDDEN,
-			_filter(
-				null, false, String.valueOf(_GROUP_ID), false,
-				_OUTSIDER_USER_ID));
-		_assertStatus(
-			Response.Status.FORBIDDEN,
-			_filter(
-				_ALL_USERS_CHANNEL_ID, true, String.valueOf(_GROUP_ID), false,
-				_OUTSIDER_USER_ID));
+			_filter(_GROUP_ID, null, _OUTSIDER_USER_ID));
 		_assertStatus(
 			Response.Status.NOT_FOUND,
-			_filter(
-				"unknown", true, String.valueOf(_GROUP_ID), false,
-				_MEMBER_USER_ID));
+			_filter(_GROUP_ID, "unknown", _MEMBER_USER_ID));
 		_assertStatus(
 			Response.Status.FORBIDDEN,
-			_filter(
-				_SELECT_USERS_CHANNEL_ID, true, String.valueOf(_GROUP_ID),
-				false, _MEMBER_USER_ID));
-		_assertStatus(
-			Response.Status.FORBIDDEN,
-			_filter(
-				_SELECT_USERS_CHANNEL_ID, false, String.valueOf(_GROUP_ID),
-				false, _MEMBER_USER_ID));
+			_filter(_GROUP_ID, _SELECT_USERS_CHANNEL_ID, _MEMBER_USER_ID));
 
-		_setFaroProject(false);
+		Mockito.when(
+			_userGroupRoleLocalService.getUserGroupRoles(
+				_MEMBER_USER_ID, _CHANNEL_GROUP_ID)
+		).thenReturn(
+			List.of(Mockito.mock(UserGroupRole.class))
+		);
+
+		Assert.assertNull(
+			_filter(_GROUP_ID, _SELECT_USERS_CHANNEL_ID, _MEMBER_USER_ID));
+
+		Mockito.when(
+			_faroProject.isAllowedIPAddress(Mockito.any())
+		).thenReturn(
+			false
+		);
 
 		_assertStatus(
 			Response.Status.FORBIDDEN,
-			_filter(
-				null, false, String.valueOf(_GROUP_ID), false,
-				_MEMBER_USER_ID));
+			_filter(_GROUP_ID, null, _MEMBER_USER_ID));
+		Assert.assertNull(_filter(_GROUP_ID, null, _OMNIADMIN_USER_ID));
 	}
 
 	private void _assertStatus(Response.Status status, Response response) {
@@ -365,11 +204,113 @@ public class WorkspaceContainerRequestFilterTest {
 		Assert.assertEquals(status.getStatusCode(), response.getStatus());
 	}
 
+	private Response _filter(Long groupId, String channelId, long userId) {
+		User user = Mockito.mock(User.class);
+
+		Mockito.when(
+			user.isGuestUser()
+		).thenReturn(
+			userId == _GUEST_USER_ID
+		);
+
+		PermissionChecker permissionChecker = Mockito.mock(
+			PermissionChecker.class);
+
+		Mockito.when(
+			permissionChecker.getUser()
+		).thenReturn(
+			user
+		);
+
+		Mockito.when(
+			permissionChecker.getUserId()
+		).thenReturn(
+			userId
+		);
+
+		Mockito.when(
+			permissionChecker.isOmniadmin()
+		).thenReturn(
+			userId == _OMNIADMIN_USER_ID
+		);
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+		MultivaluedMap<String, String> pathParameters =
+			new MultivaluedHashMap<>();
+
+		if (groupId != null) {
+			pathParameters.putSingle("groupId", String.valueOf(groupId));
+		}
+
+		if (channelId != null) {
+			pathParameters.putSingle("channelId", channelId);
+		}
+
+		UriInfo uriInfo = Mockito.mock(UriInfo.class);
+
+		Mockito.when(
+			uriInfo.getPathParameters()
+		).thenReturn(
+			pathParameters
+		);
+
+		Mockito.when(
+			uriInfo.getQueryParameters()
+		).thenReturn(
+			new MultivaluedHashMap<>()
+		);
+
+		ContainerRequestContext containerRequestContext = Mockito.mock(
+			ContainerRequestContext.class);
+
+		Mockito.when(
+			containerRequestContext.getUriInfo()
+		).thenReturn(
+			uriInfo
+		);
+
+		_workspaceContainerRequestFilter.filter(containerRequestContext);
+
+		ArgumentCaptor<Response> argumentCaptor = ArgumentCaptor.forClass(
+			Response.class);
+
+		Mockito.verify(
+			containerRequestContext, Mockito.atMost(1)
+		).abortWith(
+			argumentCaptor.capture()
+		);
+
+		List<Response> responses = argumentCaptor.getAllValues();
+
+		if (responses.isEmpty()) {
+			return null;
+		}
+
+		return responses.get(0);
+	}
+
+	private FaroChannel _mockFaroChannel(int permissionType) {
+		FaroChannel faroChannel = Mockito.mock(FaroChannel.class);
+
+		Mockito.when(
+			faroChannel.getGroupId()
+		).thenReturn(
+			_CHANNEL_GROUP_ID
+		);
+
+		Mockito.when(
+			faroChannel.getPermissionType()
+		).thenReturn(
+			permissionType
+		);
+
+		return faroChannel;
+	}
+
 	private static final String _ALL_USERS_CHANNEL_ID = "100";
 
 	private static final long _CHANNEL_GROUP_ID = 200L;
-
-	private static final long _CHANNEL_MEMBER_USER_ID = 4L;
 
 	private static final long _GROUP_ID = 300L;
 
@@ -377,22 +318,28 @@ public class WorkspaceContainerRequestFilterTest {
 
 	private static final long _MEMBER_USER_ID = 2L;
 
+	private static final long _OMNIADMIN_USER_ID = 4L;
+
 	private static final long _OUTSIDER_USER_ID = 3L;
 
 	private static final long _ROLE_ID = 400L;
 
 	private static final String _SELECT_USERS_CHANNEL_ID = "500";
 
-	private final Map<String, FaroChannel> _faroChannels = new HashMap<>();
-	private FaroProject _faroProject;
-
-	private static final String _REMOTE_ADDR = "127.0.0.1";
-
-	@FunctionalInterface
-	private interface UnsafeFunction {
-
-		public Object apply(Object[] arguments) throws Exception;
-
-	}
+	private final FaroChannelLocalService _faroChannelLocalService =
+		Mockito.mock(FaroChannelLocalService.class);
+	private final FaroProject _faroProject = Mockito.mock(FaroProject.class);
+	private final FaroProjectLocalService _faroProjectLocalService =
+		Mockito.mock(FaroProjectLocalService.class);
+	private final FaroUserLocalService _faroUserLocalService = Mockito.mock(
+		FaroUserLocalService.class);
+	private PermissionChecker _permissionChecker;
+	private final RoleLocalService _roleLocalService = Mockito.mock(
+		RoleLocalService.class);
+	private final UserGroupRoleLocalService _userGroupRoleLocalService =
+		Mockito.mock(UserGroupRoleLocalService.class);
+	private final WorkspaceContainerRequestFilter
+		_workspaceContainerRequestFilter =
+			new WorkspaceContainerRequestFilter();
 
 }
