@@ -188,6 +188,16 @@ public class UserActionDropdownItemsProviderTest {
 
 		List<String> actions = new ArrayList<>();
 
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
+			PortletConfigFactoryUtil.create(
+				_portletLocalService.getPortletById(
+					SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN),
+				null));
+
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
@@ -197,21 +207,11 @@ public class UserActionDropdownItemsProviderTest {
 		themeDisplay.setScopeGroupId(_depotEntry.getGroupId());
 		themeDisplay.setSiteGroupId(_depotEntry.getGroupId());
 
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
-
-		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_CONFIG,
-			PortletConfigFactoryUtil.create(
-				_portletLocalService.getPortletById(
-					SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN),
-				null));
 
 		List<Map<String, Object>> dropdownItems = ReflectionTestUtil.invoke(
 			_constructor.newInstance(
