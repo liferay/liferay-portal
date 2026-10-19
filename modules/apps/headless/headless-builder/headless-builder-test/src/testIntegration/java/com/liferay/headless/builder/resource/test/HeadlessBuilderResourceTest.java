@@ -537,9 +537,9 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 		_publishAPIApplication(_API_APPLICATION_ERC_1);
 
 		_addCustomObjectEntry(
-			-1, null, _objectDefinition1, "value1", "uniqueValue1");
+			25, null, _objectDefinition1, "value1", "uniqueValue1");
 		_addCustomObjectEntry(
-			25, null, _objectDefinition1, "value2", "uniqueValue2");
+			-1, null, _objectDefinition1, "value2", "uniqueValue2");
 		_addCustomObjectEntry(
 			101, null, _objectDefinition1, "value3", "uniqueValue3");
 
@@ -552,7 +552,7 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 		JSONAssert.assertEquals(
 			JSONUtil.putAll(
 				JSONUtil.put(
-					"integerProperty", -1
+					"integerProperty", 25
 				).put(
 					"multiselectPicklistProperty", Collections.emptyList()
 				).put(
@@ -575,7 +575,7 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 					"textUniqueProperty", "uniqueValue1"
 				),
 				JSONUtil.put(
-					"integerProperty", 25
+					"integerProperty", -1
 				).put(
 					"multiselectPicklistProperty", Collections.emptyList()
 				).put(
@@ -631,9 +631,13 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 			Http.Method.GET);
 
 		JSONAssert.assertEquals(
-			itemsJSONArray.toString(),
+			JSONUtil.putAll(
+				JSONUtil.put("textProperty", "value2"),
+				JSONUtil.put("textProperty", "value1"),
+				JSONUtil.put("textProperty", "value3")
+			).toString(),
 			String.valueOf(jsonObject.getJSONArray("items")),
-			JSONCompareMode.STRICT);
+			JSONCompareMode.STRICT_ORDER);
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
@@ -670,7 +674,7 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 					"textUniqueProperty", "uniqueValue3"
 				),
 				JSONUtil.put(
-					"integerProperty", 25
+					"integerProperty", -1
 				).put(
 					"multiselectPicklistProperty", Collections.emptyList()
 				).put(
@@ -693,7 +697,7 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 					"textUniqueProperty", "uniqueValue2"
 				),
 				JSONUtil.put(
-					"integerProperty", -1
+					"integerProperty", 25
 				).put(
 					"multiselectPicklistProperty", Collections.emptyList()
 				).put(
