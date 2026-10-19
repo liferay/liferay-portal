@@ -209,7 +209,7 @@
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
-		<finder name="CorpProjectUuid" return-type="FaroProject" unique="true">
+		<finder name="CorpProjectUuid" return-type="FaroProject">
 			<finder-column name="corpProjectUuid" />
 		</finder>
 		<finder name="ServerLocation" return-type="Collection">
