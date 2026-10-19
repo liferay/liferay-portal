@@ -651,6 +651,51 @@ public class CommerceDiscountRelServiceHttp {
 		}
 	}
 
+	public static java.util.List
+		<com.liferay.commerce.discount.model.CommerceDiscountRel>
+				getCommerceDiscountRels(
+					HttpPrincipal httpPrincipal, long commerceDiscountId,
+					String className, long classPK)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceDiscountRelServiceUtil.class, "getCommerceDiscountRels",
+				_getCommerceDiscountRelsParameterTypes14);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, commerceDiscountId, className, classPK);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.discount.model.CommerceDiscountRel>)
+					returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static int getCommerceDiscountRelsCount(
 			HttpPrincipal httpPrincipal, long commerceDiscountId,
 			String className)
@@ -660,7 +705,7 @@ public class CommerceDiscountRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRelServiceUtil.class,
 				"getCommerceDiscountRelsCount",
-				_getCommerceDiscountRelsCountParameterTypes14);
+				_getCommerceDiscountRelsCountParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountId, className);
@@ -704,7 +749,7 @@ public class CommerceDiscountRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRelServiceUtil.class,
 				"getCommercePricingClassesByCommerceDiscountId",
-				_getCommercePricingClassesByCommerceDiscountIdParameterTypes15);
+				_getCommercePricingClassesByCommerceDiscountIdParameterTypes16);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountId, title, start, end);
@@ -747,7 +792,7 @@ public class CommerceDiscountRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRelServiceUtil.class,
 				"getCommercePricingClassesByCommerceDiscountIdCount",
-				_getCommercePricingClassesByCommerceDiscountIdCountParameterTypes16);
+				_getCommercePricingClassesByCommerceDiscountIdCountParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountId, title);
@@ -790,7 +835,7 @@ public class CommerceDiscountRelServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRelServiceUtil.class, "updateTypeSettings",
-				_updateTypeSettingsParameterTypes17);
+				_updateTypeSettingsParameterTypes18);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountRelId,
@@ -875,20 +920,22 @@ public class CommerceDiscountRelServiceHttp {
 			long.class, String.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
+	private static final Class<?>[] _getCommerceDiscountRelsParameterTypes14 =
+		new Class[] {long.class, String.class, long.class};
 	private static final Class<?>[]
-		_getCommerceDiscountRelsCountParameterTypes14 = new Class[] {
+		_getCommerceDiscountRelsCountParameterTypes15 = new Class[] {
 			long.class, String.class
 		};
 	private static final Class<?>[]
-		_getCommercePricingClassesByCommerceDiscountIdParameterTypes15 =
+		_getCommercePricingClassesByCommerceDiscountIdParameterTypes16 =
 			new Class[] {long.class, String.class, int.class, int.class};
 	private static final Class<?>[]
-		_getCommercePricingClassesByCommerceDiscountIdCountParameterTypes16 =
+		_getCommercePricingClassesByCommerceDiscountIdCountParameterTypes17 =
 			new Class[] {long.class, String.class};
-	private static final Class<?>[] _updateTypeSettingsParameterTypes17 =
+	private static final Class<?>[] _updateTypeSettingsParameterTypes18 =
 		new Class[] {
 			long.class, com.liferay.portal.kernel.util.UnicodeProperties.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:411867800
+// LIFERAY-SERVICE-BUILDER-HASH:-2106676924

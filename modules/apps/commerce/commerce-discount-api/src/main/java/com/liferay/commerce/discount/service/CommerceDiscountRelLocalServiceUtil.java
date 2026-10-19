@@ -345,6 +345,13 @@ public class CommerceDiscountRelLocalServiceUtil {
 			commerceDiscountId, className, start, end, orderByComparator);
 	}
 
+	public static List<CommerceDiscountRel> getCommerceDiscountRels(
+		long commerceDiscountId, String className, long classPK) {
+
+		return getService().getCommerceDiscountRels(
+			commerceDiscountId, className, classPK);
+	}
+
 	/**
 	 * Returns the number of commerce discount rels.
 	 *
@@ -467,4 +474,4 @@ public class CommerceDiscountRelLocalServiceUtil {
 			CommerceDiscountRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1950482109
+// LIFERAY-SERVICE-BUILDER-HASH:-794974829

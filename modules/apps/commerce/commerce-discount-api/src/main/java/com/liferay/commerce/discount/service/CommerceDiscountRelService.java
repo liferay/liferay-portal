@@ -95,6 +95,11 @@ public interface CommerceDiscountRelService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceDiscountRel> getCommerceDiscountRels(
+			long commerceDiscountId, String className, long classPK)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceDiscountRelsCount(
 			long commerceDiscountId, String className)
 		throws PortalException;
@@ -144,4 +149,4 @@ public interface CommerceDiscountRelService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2113912963
+// LIFERAY-SERVICE-BUILDER-HASH:-1876785648

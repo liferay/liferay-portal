@@ -285,6 +285,10 @@ public interface CommerceDiscountRelLocalService
 		long commerceDiscountId, String className, int start, int end,
 		OrderByComparator<CommerceDiscountRel> orderByComparator);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceDiscountRel> getCommerceDiscountRels(
+		long commerceDiscountId, String className, long classPK);
+
 	/**
 	 * Returns the number of commerce discount rels.
 	 *
@@ -361,4 +365,4 @@ public interface CommerceDiscountRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-416750439
+// LIFERAY-SERVICE-BUILDER-HASH:580388480

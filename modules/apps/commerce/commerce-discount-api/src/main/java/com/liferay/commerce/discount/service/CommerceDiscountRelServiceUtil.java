@@ -110,6 +110,14 @@ public class CommerceDiscountRelServiceUtil {
 			commerceDiscountId, className, start, end, orderByComparator);
 	}
 
+	public static List<CommerceDiscountRel> getCommerceDiscountRels(
+			long commerceDiscountId, String className, long classPK)
+		throws PortalException {
+
+		return getService().getCommerceDiscountRels(
+			commerceDiscountId, className, classPK);
+	}
+
 	public static int getCommerceDiscountRelsCount(
 			long commerceDiscountId, String className)
 		throws PortalException {
@@ -198,4 +206,4 @@ public class CommerceDiscountRelServiceUtil {
 			CommerceDiscountRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1934448418
+// LIFERAY-SERVICE-BUILDER-HASH:1907906316
