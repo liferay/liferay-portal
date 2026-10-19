@@ -2,6 +2,41 @@ defaults:
     run:
         shell: bash
 jobs:
+    test-client-extension:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+            -   name: Create kind cluster
+                uses: helm/kind-action@v1
+            -   name: Install Helm
+                uses: azure/setup-helm@v4
+                with:
+                    version: 4.2.4
+            -   name: Install CRDs
+                run: kubectl apply --filename ./cloud/helm/dxp-operator/crds --force-conflicts --server-side
+            -   name: Validate ClientExtension against its CRD
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        kubectl wait --for condition=Established --timeout 1m crd/clientextensions.cx.liferay.com
+
+                        helm \
+                            template \
+                            liferay \
+                            . \
+                            --show-only \
+                            templates/clientextension.yaml \
+                            --values \
+                            ../../scripts/tests/render-values/client-extension.yaml \
+                            | kubectl apply --dry-run=server --filename - --server-side
+                    }
+
+                    main "${@}"
+                working-directory: ./cloud/helm/client-extension
     test-default:
         runs-on: ubuntu-latest
         steps:

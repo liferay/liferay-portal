@@ -9,6 +9,8 @@ on:
         paths:
             -   .github/workflows/ci-reusable-test-cloud-helm-chart-smoke.yaml
             -   .github/workflows/ci-test-cloud-helm-chart-smoke.yaml
+            -   cloud/helm/client-extension/**
             -   cloud/helm/default/**
             -   cloud/helm/dxp-operator/**
             -   cloud/operator/**
+            -   cloud/scripts/tests/render-values/client-extension.yaml
