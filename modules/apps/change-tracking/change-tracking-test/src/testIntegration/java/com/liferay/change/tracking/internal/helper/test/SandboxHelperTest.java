@@ -33,9 +33,12 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -112,6 +115,8 @@ public class SandboxHelperTest {
 			Assert.assertEquals(
 				incompleteCTCollection.getCtCollectionId(),
 				ctPreferences.getCtCollectionId());
+
+			_testSandboxWithMultipleCTCollections();
 		}
 	}
 
@@ -199,6 +204,78 @@ public class SandboxHelperTest {
 					RoleConstants.PUBLICATIONS_USER, publisherUser.getUserId(),
 					false));
 		}
+	}
+
+	private CTCollection _addCTCollection(
+			User user, int status, Date modifiedDate)
+		throws Exception {
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, user.getCompanyId(), user.getUserId(), 0,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		ctCollection.setModifiedDate(modifiedDate);
+		ctCollection.setStatus(status);
+
+		return _ctCollectionLocalService.updateCTCollection(ctCollection);
+	}
+
+	private void _testSandboxWithMultipleCTCollections() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		long time = System.currentTimeMillis();
+
+		_addCTCollection(
+			user, WorkflowConstants.STATUS_DRAFT,
+			new Date(time - (4 * Time.HOUR)));
+
+		CTCollection draftCTCollection = _addCTCollection(
+			user, WorkflowConstants.STATUS_DRAFT,
+			new Date(time - (3 * Time.HOUR)));
+
+		CTCollection approvedCTCollection = _addCTCollection(
+			user, WorkflowConstants.STATUS_APPROVED,
+			new Date(time - (2 * Time.HOUR)));
+
+		_addCTCollection(
+			user, WorkflowConstants.STATUS_EXPIRED, new Date(time - Time.HOUR));
+		_addCTCollection(
+			UserTestUtil.addUser(), WorkflowConstants.STATUS_DRAFT,
+			new Date(time));
+
+		CTPreferences ctPreferences =
+			_ctPreferencesLocalService.getCTPreferences(
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId());
+
+		ctPreferences.setUserId(user.getUserId());
+		ctPreferences.setCtCollectionId(
+			approvedCTCollection.getCtCollectionId());
+		ctPreferences.setPreviousCtCollectionId(
+			CTCollectionThreadLocal.CT_COLLECTION_ID_PRODUCTION);
+
+		ctPreferences = _ctPreferencesLocalService.updateCTPreferences(
+			ctPreferences);
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(user));
+
+			_sandboxHelper.sandbox(ctPreferences);
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
+
+		ctPreferences = _ctPreferencesLocalService.getCTPreferences(
+			ctPreferences.getCtPreferencesId());
+
+		Assert.assertEquals(
+			draftCTCollection.getCtCollectionId(),
+			ctPreferences.getCtCollectionId());
 	}
 
 	@Inject
