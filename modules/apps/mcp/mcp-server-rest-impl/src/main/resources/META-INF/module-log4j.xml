@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<Configuration strict="true">
+	<Loggers>
+		<Logger level="ERROR" name="io.modelcontextprotocol.server.DefaultMcpStatelessServerHandler" />
+	</Loggers>
+</Configuration>
