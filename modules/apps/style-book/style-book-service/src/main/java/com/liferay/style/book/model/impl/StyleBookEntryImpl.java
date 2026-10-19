@@ -54,6 +54,8 @@ public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 		FileEntry previewFileEntry = _getPreviewFileEntry();
 
 		JSONObject jsonObject = JSONUtil.put(
+			"defaultStyleBookEntry", isDefaultStyleBookEntry()
+		).put(
 			"frontendTokenDefinitionPath",
 			() -> {
 				if (Validator.isBlank(frontendTokenDefinition)) {
