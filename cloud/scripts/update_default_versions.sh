@@ -28,6 +28,7 @@ function main {
 		"${ROOT_CLOUD_DIR}/scripts/_platform_values.jq"
 		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
 		"${ROOT_CLOUD_DIR}/scripts/setup_aws.sh"
+		"${ROOT_CLOUD_DIR}/scripts/teardown_aws.sh"
 		"${ROOT_CLOUD_DIR}/terraform/aws/eks"
 		"${ROOT_CLOUD_DIR}/terraform/aws/platform"
 		"${ROOT_CLOUD_DIR}/terraform/modules/argocd"

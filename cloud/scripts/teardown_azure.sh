@@ -16,87 +16,42 @@ function main {
 		exit 1
 	fi
 
-	check_utils az helm jq terraform
+	check_utils az helm jq kubectl terraform
 
 	validate_config_json "${1}"
 
-	local database_engine
+	local configuration_json_file
 
-	database_engine=$(jq --raw-output '.setup.database.engine // error("setup.database.engine is missing")' "${1}")
+	configuration_json_file=$(resolve_config_json "${1}")
 
-	echo "This will destroy the AKS cluster and the Liferay platform."
-	echo ""
+	export_database_engine "${configuration_json_file}"
 
-	local reply
+	confirm_teardown "AKS"
 
-	read -p "Type \"yes\" to continue: " -r reply
+	prepare_terraform_stacks "azure" "aks" "${configuration_json_file}"
 
-	if [[ ${reply} != yes ]]
+	log_in "${configuration_json_file}"
+
+	tear_down "azure" "aks" "${configuration_json_file}"
+
+	if has_remote_tfstate "${configuration_json_file}"
 	then
-		echo "The teardown was canceled."
-
-		exit 1
-	fi
-
-	generate_tfvars "azure" "${1}" "aks"
-
-	generate_tfvars "azure" "${1}" "platform"
-
-	az_login "${1}"
-
-	local terraform_args=()
-
-	while IFS= read -r terraform_arg
-	do
-		terraform_args+=("${terraform_arg}")
-	done < <(get_terraform_args "${1}")
-
-	local has_remote_tfstate=false
-
-	if jq --exit-status '.tfstate | objects' "${1}" &> /dev/null
-	then
-		has_remote_tfstate=true
-	fi
-
-	if [[ ${has_remote_tfstate} == true ]]
-	then
-		local container_name
-		local deployment_name
-		local region
-		local resource_group_name
-		local storage_account_name
-
-		container_name="$(jq --raw-output '.tfstate.container_name' "${1}")"
-		deployment_name="$(jq --raw-output '.deployment_name' "${1}")"
-		region="$(jq --raw-output '.region' "${1}")"
-		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${1}")"
-		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${1}")"
-
-		generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
-	else
-		generate_local_backend_overrides "azure" "aks" "platform"
-	fi
-
-	if connect_to_cluster
-	then
-		_uninstall_liferay_platform_chart
-	else
-		echo "Skipping the Liferay platform root application uninstall."
-	fi
-
-	_destroy_azure_platform "${terraform_args[@]}"
-
-	_destroy_azure_aks "${database_engine}" "${terraform_args[@]}"
-
-	if [[ ${has_remote_tfstate} == true ]]
-	then
-		_delete_tfstate_storage "${resource_group_name}" "${storage_account_name}"
+		_delete_tfstate_storage "${configuration_json_file}"
 	fi
 }
 
 function _delete_tfstate_storage {
-	local resource_group_name="${1}"
-	local storage_account_name="${2}"
+	local configuration_json_file="${1}"
+
+	local container_name
+	local deployment_name
+	local resource_group_name
+	local storage_account_name
+
+	container_name=$(jq --raw-output '.tfstate.container_name' "${configuration_json_file}")
+	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
+	resource_group_name=$(jq --raw-output '.tfstate.resource_group_name' "${configuration_json_file}")
+	storage_account_name=$(jq --raw-output '.tfstate.storage_account_name' "${configuration_json_file}")
 
 	if ! az storage account show --name "${storage_account_name}" --resource-group "${resource_group_name}" &> /dev/null
 	then
@@ -105,11 +60,35 @@ function _delete_tfstate_storage {
 		return
 	fi
 
-	local reply
+	local foreign_container_count
 
-	read -p "Type \"yes\" to delete the Terraform state storage account ${storage_account_name}: " -r reply
+	foreign_container_count=$( \
+		az storage container-rm list \
+			--output tsv \
+			--query "length([?name != '${container_name}'])" \
+			--resource-group "${resource_group_name}" \
+			--storage-account "${storage_account_name}")
 
-	if [[ ${reply} != yes ]]
+	local foreign_blob_count
+
+	foreign_blob_count=$( \
+		az storage blob list \
+			--account-name "${storage_account_name}" \
+			--auth-mode login \
+			--container-name "${container_name}" \
+			--include v \
+			--num-results "*" \
+			--output tsv \
+			--query "length([?!starts_with(name, '${deployment_name}/')])")
+
+	if [ ${foreign_container_count} -gt 0 ] || [ ${foreign_blob_count} -gt 0 ]
+	then
+		echo "Storage account ${storage_account_name} was kept because it still holds the Terraform state of other deployments."
+
+		return
+	fi
+
+	if ! confirm "delete the Terraform state storage account ${storage_account_name}"
 	then
 		echo "Storage account ${storage_account_name} was kept."
 
@@ -134,57 +113,6 @@ function _delete_tfstate_storage {
 		echo "Resource group ${resource_group_name} was deleted successfully."
 	else
 		echo "Resource group ${resource_group_name} was kept because it still holds other resources."
-	fi
-}
-
-function _destroy_azure_aks {
-	local database_engine="${1}"
-
-	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/aks"
-
-	echo "Destroying the Azure AKS cluster."
-
-	terraform init
-
-	terraform \
-		destroy \
-		-input=false \
-		-var="database_engine=${database_engine}" \
-		"${@:2}"
-
-	echo "Azure AKS cluster teardown complete."
-
-	pop_directory
-}
-
-function _destroy_azure_platform {
-	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/platform"
-
-	echo "Destroying the Liferay platform."
-
-	terraform init
-
-	terraform destroy -input=false "${@}"
-
-	echo "Liferay platform teardown complete."
-
-	pop_directory
-}
-
-function _uninstall_liferay_platform_chart {
-	echo "Uninstalling the Liferay platform root application."
-
-	if ! helm \
-		uninstall \
-		liferay-platform \
-		--ignore-not-found \
-		--namespace argocd-system \
-		--timeout 30m0s \
-		--wait
-	then
-		echo "The liferay-platform Helm release was not uninstalled after 30 minutes." >&2
-
-		exit 1
 	fi
 }
 

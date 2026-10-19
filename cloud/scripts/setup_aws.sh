@@ -24,45 +24,18 @@ function main {
 
 	configuration_json_file=$(resolve_config_json "${1}")
 
-	generate_tfvars "aws" "${configuration_json_file}" "eks"
+	prepare_terraform_stacks "aws" "eks" "${configuration_json_file}"
 
-	generate_tfvars "aws" "${configuration_json_file}" "platform"
+	log_in "${configuration_json_file}"
 
-	aws_login "${configuration_json_file}"
-
-	local terraform_args=()
-
-	while IFS= read -r terraform_arg
-	do
-		terraform_args+=("${terraform_arg}")
-	done < <(get_terraform_args "${configuration_json_file}")
-
-	if jq --exit-status '.tfstate | objects' "${configuration_json_file}" &> /dev/null
+	if has_remote_tfstate "${configuration_json_file}"
 	then
-		local bucket_name
-		local deployment_name
-		local region
-
-		bucket_name="$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")"
-		deployment_name="$(jq --raw-output '.deployment_name' "${configuration_json_file}")"
-		region="$(jq --raw-output '.region' "${configuration_json_file}")"
-
-		_create_tfstate_bucket "${bucket_name}" "${region}"
-
-		generate_remote_backend_overrides "${bucket_name}" "${deployment_name}" "${region}"
-	else
-		generate_local_backend_overrides "aws" "eks" "platform"
+		_create_tfstate_bucket "${configuration_json_file}"
 	fi
 
 	_set_up_aws_service_linked_roles
 
-	_set_up_aws_eks "${terraform_args[@]}"
-
-	connect_to_cluster
-
-	set_up_platform "aws" "${terraform_args[@]}"
-
-	install_liferay_platform_chart "aws" "${configuration_json_file}"
+	set_up "aws" "eks" "${configuration_json_file}"
 }
 
 function _configure_s3_bucket {
@@ -150,28 +123,6 @@ function _configure_s3_bucket {
 		--region "${region}"
 }
 
-function _create_tfstate_bucket {
-	local bucket_name="${1}"
-	local region="${2}"
-
-	if ! aws s3api head-bucket --bucket "${bucket_name}" --region "${region}" &> /dev/null
-	then
-		_log "Creating bucket ${bucket_name}."
-
-		_create_s3_bucket "${bucket_name}" "${region}"
-
-		_log "Bucket ${bucket_name} was created successfully."
-	else
-		_log "Bucket ${bucket_name} already exists. Skipping creation process."
-	fi
-
-	_log "Configuring bucket ${bucket_name}."
-
-	_configure_s3_bucket "${bucket_name}" "${region}"
-
-	_log "Bucket ${bucket_name} was configured successfully."
-}
-
 function _create_s3_bucket {
 	local bucket_name="${1}"
 	local region="${2}"
@@ -196,22 +147,35 @@ function _create_s3_bucket {
 		--versioning-configuration Status=Enabled
 }
 
-function _log {
-	echo "[Tfstate bucket configuration] ${1}"
+function _create_tfstate_bucket {
+	local configuration_json_file="${1}"
+
+	local bucket_name
+	local region
+
+	bucket_name=$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")
+	region=$(jq --raw-output '.region' "${configuration_json_file}")
+
+	if ! aws s3api head-bucket --bucket "${bucket_name}" --region "${region}" &> /dev/null
+	then
+		_log "Creating bucket ${bucket_name}."
+
+		_create_s3_bucket "${bucket_name}" "${region}"
+
+		_log "Bucket ${bucket_name} was created successfully."
+	else
+		_log "Bucket ${bucket_name} already exists. Skipping creation process."
+	fi
+
+	_log "Configuring bucket ${bucket_name}."
+
+	_configure_s3_bucket "${bucket_name}" "${region}"
+
+	_log "Bucket ${bucket_name} was configured successfully."
 }
 
-function _set_up_aws_eks {
-	push_directory "${ROOT_CLOUD_DIR}/terraform/aws/eks"
-
-	echo "Setting up the AWS EKS cluster."
-
-	terraform init
-
-	terraform apply -input=false "${@}"
-
-	echo "AWS EKS cluster setup complete."
-
-	pop_directory
+function _log {
+	echo "[Tfstate bucket configuration] ${1}"
 }
 
 function _set_up_aws_service_linked_roles {

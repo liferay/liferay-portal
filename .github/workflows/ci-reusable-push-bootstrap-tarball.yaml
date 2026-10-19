@@ -92,6 +92,7 @@ jobs:
                                 cloud/scripts/_platform_values.jq
                                 cloud/scripts/config.json.defaults
                                 cloud/scripts/setup_aws.sh
+                                cloud/scripts/teardown_aws.sh
                                 cloud/terraform/aws/eks/*
                                 cloud/terraform/aws/eks/.terraform.lock.hcl
                                 cloud/terraform/aws/platform/*

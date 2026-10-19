@@ -26,49 +26,18 @@ function main {
 
 	_validate_setup_values "${configuration_json_file}"
 
-	generate_tfvars "azure" "${configuration_json_file}" "aks"
+	export_database_engine "${configuration_json_file}"
 
-	generate_tfvars "azure" "${configuration_json_file}" "platform"
+	prepare_terraform_stacks "azure" "aks" "${configuration_json_file}"
 
-	az_login "${configuration_json_file}"
+	log_in "${configuration_json_file}"
 
-	local terraform_args=()
-
-	while IFS= read -r terraform_arg
-	do
-		terraform_args+=("${terraform_arg}")
-	done < <(get_terraform_args "${configuration_json_file}")
-
-	if jq --exit-status '.tfstate | objects' "${configuration_json_file}" &> /dev/null
+	if has_remote_tfstate "${configuration_json_file}"
 	then
-		local container_name
-		local deployment_name
-		local region
-		local resource_group_name
-		local storage_account_name
-
-		container_name="$(jq --raw-output '.tfstate.container_name' "${configuration_json_file}")"
-		deployment_name="$(jq --raw-output '.deployment_name' "${configuration_json_file}")"
-		region="$(jq --raw-output '.region' "${configuration_json_file}")"
-		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${configuration_json_file}")"
-		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${configuration_json_file}")"
-
-		_create_tfstate_storage "${container_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
-
-		_grant_tfstate_access "${container_name}" "${resource_group_name}" "${storage_account_name}"
-
-		generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
-	else
-		generate_local_backend_overrides "azure" "aks" "platform"
+		_create_tfstate_storage "${configuration_json_file}"
 	fi
 
-	_set_up_azure_aks "${configuration_json_file}" "${terraform_args[@]}"
-
-	connect_to_cluster
-
-	set_up_platform "azure" "${terraform_args[@]}"
-
-	install_liferay_platform_chart "azure" "${configuration_json_file}"
+	set_up "azure" "aks" "${configuration_json_file}"
 }
 
 function _configure_storage_account {
@@ -109,10 +78,17 @@ function _create_storage_account {
 }
 
 function _create_tfstate_storage {
-	local container_name="${1}"
-	local region="${2}"
-	local resource_group_name="${3}"
-	local storage_account_name="${4}"
+	local configuration_json_file="${1}"
+
+	local container_name
+	local region
+	local resource_group_name
+	local storage_account_name
+
+	container_name=$(jq --raw-output '.tfstate.container_name' "${configuration_json_file}")
+	region=$(jq --raw-output '.region' "${configuration_json_file}")
+	resource_group_name=$(jq --raw-output '.tfstate.resource_group_name' "${configuration_json_file}")
+	storage_account_name=$(jq --raw-output '.tfstate.storage_account_name' "${configuration_json_file}")
 
 	if ! az group show --name "${resource_group_name}" &> /dev/null
 	then
@@ -160,6 +136,8 @@ function _create_tfstate_storage {
 	else
 		_log "Storage container ${container_name} already exists. Skipping creation process."
 	fi
+
+	_grant_tfstate_access "${container_name}" "${resource_group_name}" "${storage_account_name}"
 }
 
 function _grant_tfstate_access {
@@ -232,30 +210,6 @@ function _has_tfstate_access {
 
 function _log {
 	echo "[Tfstate storage configuration] ${1}"
-}
-
-function _set_up_azure_aks {
-	local configuration_json_file="${1}"
-
-	local database_engine
-
-	database_engine=$(jq --raw-output '.setup.database.engine // error("setup.database.engine is missing")' "${configuration_json_file}")
-
-	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/aks"
-
-	echo "Setting up the Azure AKS cluster."
-
-	terraform init
-
-	terraform \
-		apply \
-		-input=false \
-		-var="database_engine=${database_engine}" \
-		"${@:2}"
-
-	echo "Azure AKS cluster setup complete."
-
-	pop_directory
 }
 
 function _validate_setup_values {
