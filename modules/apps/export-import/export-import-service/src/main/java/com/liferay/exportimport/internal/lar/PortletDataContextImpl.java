@@ -1988,7 +1988,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 								ExportImportClassedModelUtil.getClassPK(
 									classedModel),
 								GetterUtil.getLong(getExportImportProcessId()),
-								ExportImportReportEntryConstants.TYPE_ERROR,
+								ExportImportReportEntryConstants.TYPE_WARNING,
 								StringUtil.merge(warningMessages, "\n"), null,
 								clazz.getName());
 					}
