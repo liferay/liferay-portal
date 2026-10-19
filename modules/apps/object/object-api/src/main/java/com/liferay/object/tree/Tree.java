@@ -22,6 +22,20 @@ public class Tree {
 		this.rootNode = rootNode;
 	}
 
+	public Node fetchNode(long primaryKey) {
+		Iterator<Node> iterator = iterator();
+
+		while (iterator.hasNext()) {
+			Node node = iterator.next();
+
+			if (node.getPrimaryKey() == primaryKey) {
+				return node;
+			}
+		}
+
+		return null;
+	}
+
 	public List<Edge> getAncestorEdges(long primaryKey) {
 		Node node = getNode(primaryKey);
 
