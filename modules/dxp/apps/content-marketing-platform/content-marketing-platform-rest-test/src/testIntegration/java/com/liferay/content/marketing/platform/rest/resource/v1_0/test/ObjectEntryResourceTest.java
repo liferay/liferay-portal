@@ -154,6 +154,28 @@ public class ObjectEntryResourceTest {
 	}
 
 	@Test
+	public void testPostCMPProjectObjectEntryWithRichTextDescription()
+		throws Exception {
+
+		JSONObject cmpProjectObjectEntryJSONObject =
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"description", "<p>Hello <strong>World</strong></p>"
+				).put(
+					"title", RandomTestUtil.randomString()
+				).toString(),
+				_cmpProjectObjectDefinition.getRESTContextPath(),
+				Http.Method.POST);
+
+		Assert.assertEquals(
+			"<p>Hello <strong>World</strong></p>",
+			cmpProjectObjectEntryJSONObject.getString("description"));
+		Assert.assertEquals(
+			"Hello World",
+			cmpProjectObjectEntryJSONObject.getString("descriptionRawText"));
+	}
+
+	@Test
 	public void testPostCMPTaskLinkObjectEntry() throws Exception {
 
 		// Link basic web content in a task
@@ -217,6 +239,36 @@ public class ObjectEntryResourceTest {
 		Assert.assertEquals(
 			cmpProjectObjectEntryJSONObject.getLong("scopeId"),
 			cmpTaskObjectEntryJSONObject.getLong("scopeId"));
+	}
+
+	@Test
+	public void testPostCMPTaskObjectEntryWithRichTextDescription()
+		throws Exception {
+
+		JSONObject cmpProjectObjectEntryJSONObject =
+			_postCMPProjectObjectEntry();
+
+		JSONObject cmpTaskObjectEntryJSONObject =
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"description", "<p>Hello <strong>World</strong></p>"
+				).put(
+					"r_cmpProjectToCMPTasks_c_cmpProjectERC",
+					cmpProjectObjectEntryJSONObject.getString(
+						"externalReferenceCode")
+				).put(
+					"title", RandomTestUtil.randomString()
+				).toString(),
+				_cmpTaskObjectDefinition.getRESTContextPath() + "/scopes/" +
+					cmpProjectObjectEntryJSONObject.getLong("scopeId"),
+				Http.Method.POST);
+
+		Assert.assertEquals(
+			"<p>Hello <strong>World</strong></p>",
+			cmpTaskObjectEntryJSONObject.getString("description"));
+		Assert.assertEquals(
+			"Hello World",
+			cmpTaskObjectEntryJSONObject.getString("descriptionRawText"));
 	}
 
 	private DepotEntry _addDepotEntry(int type) throws Exception {
