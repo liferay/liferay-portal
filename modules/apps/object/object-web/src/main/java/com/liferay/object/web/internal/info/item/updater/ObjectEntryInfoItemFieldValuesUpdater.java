@@ -15,6 +15,7 @@ import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.item.updater.InfoItemFieldValuesUpdater;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.info.item.util.ObjectEntryInfoItemUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -30,11 +31,17 @@ import com.liferay.object.rest.manager.v1_0.util.ObjectEntryManagerUtil;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
+import com.liferay.object.service.ObjectEntryServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
+import com.liferay.object.tree.Edge;
+import com.liferay.object.tree.Node;
+import com.liferay.object.tree.ObjectEntryTreeFactory;
+import com.liferay.object.tree.Tree;
 import com.liferay.object.web.internal.info.item.handler.ObjectEntryInfoItemExceptionRequestHandler;
 import com.liferay.object.web.internal.util.ObjectEntryCMSInfoItemFieldValuesUtil;
 import com.liferay.object.web.internal.util.ObjectEntryUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.InfoFormException;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -125,7 +132,7 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 
 			_deleteRelatedObjectEntries(
 				themeDisplay.getCompanyId(), dtoConverterContext,
-				infoItemFieldValues, scopeKey);
+				infoItemFieldValues, objectEntry, scopeKey);
 
 			com.liferay.object.rest.dto.v1_0.ObjectEntry dtoObjectEntry = null;
 
@@ -255,7 +262,8 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 
 	private void _deleteRelatedObjectEntries(
 			long companyId, DTOConverterContext dtoConverterContext,
-			InfoItemFieldValues infoItemFieldValues, String scopeKey)
+			InfoItemFieldValues infoItemFieldValues, ObjectEntry objectEntry,
+			String scopeKey)
 		throws Exception {
 
 		InfoFieldValue<Object> deletedItemIdentifiersInfoFieldValue =
@@ -267,6 +275,7 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 
 		String[] deletedItemIdentifiers = GetterUtil.getStringValues(
 			deletedItemIdentifiersInfoFieldValue.getValue());
+		Tree tree = null;
 
 		for (String deletedItemIdentifier : deletedItemIdentifiers) {
 			String[] split = StringUtil.split(
@@ -293,9 +302,60 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 
 			String externalReferenceCode = split[1];
 
-			objectEntryManager.deleteObjectEntry(
-				companyId, dtoConverterContext, externalReferenceCode,
-				objectDefinition, scopeKey);
+			if (!objectDefinition.isRootDescendantNode()) {
+				objectEntryManager.deleteObjectEntry(
+					companyId, dtoConverterContext, externalReferenceCode,
+					objectDefinition, scopeKey);
+
+				continue;
+			}
+
+			ObjectEntry relatedObjectEntry =
+				ObjectEntryServiceUtil.fetchObjectEntry(
+					externalReferenceCode, objectEntry.getGroupId(),
+					objectDefinition.getObjectDefinitionId());
+
+			if ((relatedObjectEntry == null) ||
+				!relatedObjectEntry.isRootDescendantNode()) {
+
+				objectEntryManager.deleteObjectEntry(
+					companyId, dtoConverterContext, externalReferenceCode,
+					objectDefinition, scopeKey);
+
+				continue;
+			}
+
+			if (tree == null) {
+				ObjectEntryTreeFactory objectEntryTreeFactory =
+					new ObjectEntryTreeFactory(
+						ObjectEntryLocalServiceUtil.getService(),
+						ObjectRelationshipLocalServiceUtil.getService());
+
+				tree = objectEntryTreeFactory.create(
+					objectEntry.getObjectEntryId());
+			}
+
+			Node node = tree.fetchNode(relatedObjectEntry.getObjectEntryId());
+
+			if (node == null) {
+				throw new NoSuchObjectEntryException(
+					StringBundler.concat(
+						"No ObjectEntry exists with the key ",
+						"{externalReferenceCode=", externalReferenceCode,
+						", rootObjectEntryId=",
+						objectEntry.getRootObjectEntryId(), "}"));
+			}
+
+			DefaultObjectEntryManager defaultObjectEntryManager =
+				DefaultObjectEntryManagerProvider.provide(objectEntryManager);
+			Edge edge = node.getEdge();
+			Node parentNode = node.getParentNode();
+
+			defaultObjectEntryManager.deleteRelatedObjectEntry(
+				node.getPrimaryKey(),
+				ObjectRelationshipLocalServiceUtil.getObjectRelationship(
+					edge.getObjectRelationshipId()),
+				parentNode.getPrimaryKey());
 		}
 	}
 
