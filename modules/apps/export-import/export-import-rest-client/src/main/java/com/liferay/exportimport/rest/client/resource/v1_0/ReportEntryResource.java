@@ -547,7 +547,7 @@ public interface ReportEntryResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/report-entry/{reportEntryId}");
+						"/o/export-import/v1.0/report-entries/{reportEntryId}");
 
 			httpInvoker.path("reportEntryId", reportEntryId);
 
@@ -831,4 +831,4 @@ public interface ReportEntryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1130450803
+// LIFERAY-REST-BUILDER-HASH:-1187985579
