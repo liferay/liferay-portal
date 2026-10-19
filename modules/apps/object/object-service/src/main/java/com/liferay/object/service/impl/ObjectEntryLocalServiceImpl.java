@@ -6223,11 +6223,11 @@ public class ObjectEntryLocalServiceImpl
 			new ValidationError(objectEntryValuesException.getMessage()));
 	}
 
-	private boolean _hasAssetTagGroupRels(int depotEntryType, long tagId) {
+	private boolean _hasAssetTagGroupRels(long assetTagId, int depotEntryType) {
 		List<AssetTagGroupRel> assetTagGroupRels =
 			_assetTagGroupRelLocalService.
 				getAssetTagGroupRelsByTagIdAndDepotEntryType(
-					tagId, depotEntryType);
+					assetTagId, depotEntryType);
 
 		return ListUtil.isNotEmpty(assetTagGroupRels);
 	}
@@ -7174,7 +7174,7 @@ public class ObjectEntryLocalServiceImpl
 		for (AssetTag assetTag : assetEntry.getTags()) {
 			if (ArrayUtil.contains(assetTagIds, assetTag.getTagId()) ||
 				((depotEntryType == DepotConstants.TYPE_SPACE) &&
-				 !_hasAssetTagGroupRels(depotEntryType, assetTag.getTagId()))) {
+				 !_hasAssetTagGroupRels(assetTag.getTagId(), depotEntryType))) {
 
 				continue;
 			}

@@ -374,7 +374,7 @@ public class KeywordResourceImpl
 				_checkManageTagPermission(projectGroupIds);
 
 				_setProjectAssetTagGroupRels(
-					projectGroupIds, assetTag.getTagId());
+					assetTag.getTagId(), projectGroupIds);
 			}
 		}
 
@@ -398,7 +398,7 @@ public class KeywordResourceImpl
 			for (long fromKeywordId : fromKeywordIds) {
 				projectGroupIds = ArrayUtil.append(
 					projectGroupIds,
-					_getGroupIds(DepotConstants.TYPE_PROJECT, fromKeywordId));
+					_getGroupIds(fromKeywordId, DepotConstants.TYPE_PROJECT));
 			}
 
 			_checkManageTagPermission(ArrayUtil.unique(projectGroupIds));
@@ -406,7 +406,7 @@ public class KeywordResourceImpl
 			projectGroupIds = _normalizeGroupIds(
 				ArrayUtil.append(
 					_getGroupIds(
-						DepotConstants.TYPE_PROJECT, assetTag.getTagId()),
+						assetTag.getTagId(), DepotConstants.TYPE_PROJECT),
 					projectGroupIds));
 		}
 
@@ -419,7 +419,7 @@ public class KeywordResourceImpl
 			DepotConstants.TYPE_SPACE);
 
 		if (ArrayUtil.isNotEmpty(projectGroupIds)) {
-			_setProjectAssetTagGroupRels(projectGroupIds, assetTag.getTagId());
+			_setProjectAssetTagGroupRels(assetTag.getTagId(), projectGroupIds);
 		}
 	}
 
@@ -518,7 +518,7 @@ public class KeywordResourceImpl
 			DepotConstants.TYPE_SPACE);
 
 		if (ArrayUtil.isNotEmpty(projectGroupIds)) {
-			_setProjectAssetTagGroupRels(projectGroupIds, assetTag.getTagId());
+			_setProjectAssetTagGroupRels(assetTag.getTagId(), projectGroupIds);
 		}
 
 		return assetTag;
@@ -547,11 +547,11 @@ public class KeywordResourceImpl
 		return depotEntry.getType();
 	}
 
-	private long[] _getGroupIds(int depotEntryType, long tagId) {
+	private long[] _getGroupIds(long assetTagId, int depotEntryType) {
 		return ListUtil.toLongArray(
 			_assetTagGroupRelLocalService.
 				getAssetTagGroupRelsByTagIdAndDepotEntryType(
-					tagId, depotEntryType),
+					assetTagId, depotEntryType),
 			AssetTagGroupRel::getGroupId);
 	}
 
@@ -728,7 +728,7 @@ public class KeywordResourceImpl
 			long[] assetLibraryGroupIds = _normalizeGroupIds(
 				ArrayUtil.append(
 					_getGroupIds(
-						DepotConstants.TYPE_SPACE, assetTag.getTagId()),
+						assetTag.getTagId(), DepotConstants.TYPE_SPACE),
 					TaxonomyGroupUtil.getAssetLibraryGroupIds(
 						keyword.getAssetLibraries(), group.getCompanyId())));
 
@@ -748,12 +748,12 @@ public class KeywordResourceImpl
 				projectGroupIds = _normalizeGroupIds(
 					ArrayUtil.append(
 						_getGroupIds(
-							DepotConstants.TYPE_PROJECT, assetTag.getTagId()),
+							assetTag.getTagId(), DepotConstants.TYPE_PROJECT),
 						projectGroupIds));
 
 				if (ArrayUtil.isNotEmpty(projectGroupIds)) {
 					_setProjectAssetTagGroupRels(
-						projectGroupIds, assetTag.getTagId());
+						assetTag.getTagId(), projectGroupIds);
 				}
 			}
 		}
@@ -772,19 +772,19 @@ public class KeywordResourceImpl
 	}
 
 	private void _setProjectAssetTagGroupRels(
-			long[] projectGroupIds, long tagId)
+			long assetTagId, long[] projectGroupIds)
 		throws Exception {
 
 		if (ArrayUtil.isEmpty(projectGroupIds)) {
 			_assetTagGroupRelLocalService.
 				deleteAssetTagGroupRelsByTagIdAndDepotEntryType(
-					tagId, DepotConstants.TYPE_PROJECT);
+					assetTagId, DepotConstants.TYPE_PROJECT);
 
 			return;
 		}
 
 		_assetTagGroupRelLocalService.setAssetTagGroupRels(
-			tagId, projectGroupIds, DepotConstants.TYPE_PROJECT);
+			assetTagId, projectGroupIds, DepotConstants.TYPE_PROJECT);
 	}
 
 	private AssetTag _toAssetTag(Object[] assetTags) {
