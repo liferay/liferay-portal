@@ -308,6 +308,11 @@ public interface CTCollectionLocalService
 		long companyId, int[] statuses, int start, int end,
 		OrderByComparator<CTCollection> orderByComparator);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CTCollection> getCTCollections(
+		long companyId, long userId, int[] statuses, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator);
+
 	/**
 	 * Returns the number of ct collections.
 	 *
@@ -407,4 +412,4 @@ public interface CTCollectionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-846670018
+// LIFERAY-SERVICE-BUILDER-HASH:-943615411

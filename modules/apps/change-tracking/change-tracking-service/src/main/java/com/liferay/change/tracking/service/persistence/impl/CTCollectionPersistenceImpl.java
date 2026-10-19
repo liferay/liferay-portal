@@ -456,134 +456,6 @@ public class CTCollectionPersistenceImpl
 
 	private FilterCollectionPersistenceFinder
 		<CTCollection, NoSuchCollectionException>
-			_collectionPersistenceFinderByC_U;
-
-	/**
-	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of ct collections
-	 * @param end the upper bound of the range of ct collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ct collections
-	 */
-	@Override
-	public List<CTCollection> findByC_U(
-		long companyId, long userId, int start, int end,
-		OrderByComparator<CTCollection> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_U.find(
-			finderCache, new Object[] {companyId, userId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct collection
-	 * @throws NoSuchCollectionException if a matching ct collection could not be found
-	 */
-	@Override
-	public CTCollection findByC_U_First(
-			long companyId, long userId,
-			OrderByComparator<CTCollection> orderByComparator)
-		throws NoSuchCollectionException {
-
-		return _collectionPersistenceFinderByC_U.findFirst(
-			finderCache, new Object[] {companyId, userId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct collection, or <code>null</code> if a matching ct collection could not be found
-	 */
-	@Override
-	public CTCollection fetchByC_U_First(
-		long companyId, long userId,
-		OrderByComparator<CTCollection> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_U.fetchFirst(
-			finderCache, new Object[] {companyId, userId}, orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the ct collections that the user has permissions to view where companyId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of ct collections
-	 * @param end the upper bound of the range of ct collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ct collections that the user has permission to view
-	 */
-	@Override
-	public List<CTCollection> filterFindByC_U(
-		long companyId, long userId, int start, int end,
-		OrderByComparator<CTCollection> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_U.filterFind(
-			finderCache, new Object[] {companyId, userId}, start, end,
-			orderByComparator, companyId, 0);
-	}
-
-	/**
-	 * Removes all the ct collections where companyId = &#63; and userId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 */
-	@Override
-	public void removeByC_U(long companyId, long userId) {
-		_collectionPersistenceFinderByC_U.remove(
-			finderCache, new Object[] {companyId, userId});
-	}
-
-	/**
-	 * Returns the number of ct collections where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @return the number of matching ct collections
-	 */
-	@Override
-	public int countByC_U(long companyId, long userId) {
-		return _collectionPersistenceFinderByC_U.count(
-			finderCache, new Object[] {companyId, userId});
-	}
-
-	/**
-	 * Returns the number of ct collections that the user has permission to view where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @return the number of matching ct collections that the user has permission to view
-	 */
-	@Override
-	public int filterCountByC_U(long companyId, long userId) {
-		return _collectionPersistenceFinderByC_U.filterCount(
-			finderCache, new Object[] {companyId, userId}, companyId, 0);
-	}
-
-	private FilterCollectionPersistenceFinder
-		<CTCollection, NoSuchCollectionException>
 			_collectionPersistenceFinderByC_SVI;
 
 	/**
@@ -922,6 +794,229 @@ public class CTCollectionPersistenceImpl
 		return _collectionPersistenceFinderByC_S.filterCount(
 			finderCache,
 			new Object[] {companyId, ArrayUtil.sortedUnique(statuses)},
+			companyId, 0);
+	}
+
+	private FilterCollectionPersistenceFinder
+		<CTCollection, NoSuchCollectionException>
+			_collectionPersistenceFinderByC_U_S;
+
+	/**
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching ct collections
+	 */
+	@Override
+	public List<CTCollection> findByC_U_S(
+		long companyId, long userId, int status, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByC_U_S.find(
+			finderCache, new Object[] {companyId, userId, new int[] {status}},
+			start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching ct collection
+	 * @throws NoSuchCollectionException if a matching ct collection could not be found
+	 */
+	@Override
+	public CTCollection findByC_U_S_First(
+			long companyId, long userId, int status,
+			OrderByComparator<CTCollection> orderByComparator)
+		throws NoSuchCollectionException {
+
+		return _collectionPersistenceFinderByC_U_S.findFirst(
+			finderCache, new Object[] {companyId, userId, new int[] {status}},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching ct collection, or <code>null</code> if a matching ct collection could not be found
+	 */
+	@Override
+	public CTCollection fetchByC_U_S_First(
+		long companyId, long userId, int status,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		return _collectionPersistenceFinderByC_U_S.fetchFirst(
+			finderCache, new Object[] {companyId, userId, new int[] {status}},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the ct collections that the user has permissions to view where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ct collections that the user has permission to view
+	 */
+	@Override
+	public List<CTCollection> filterFindByC_U_S(
+		long companyId, long userId, int status, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		return _collectionPersistenceFinderByC_U_S.filterFind(
+			finderCache, new Object[] {companyId, userId, new int[] {status}},
+			start, end, orderByComparator, companyId, 0);
+	}
+
+	/**
+	 * Returns an ordered range of all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ct collections that the user has permission to view
+	 */
+	@Override
+	public List<CTCollection> filterFindByC_U_S(
+		long companyId, long userId, int[] statuses, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		return _collectionPersistenceFinderByC_U_S.filterFind(
+			finderCache,
+			new Object[] {companyId, userId, ArrayUtil.sortedUnique(statuses)},
+			start, end, orderByComparator, companyId, 0);
+	}
+
+	/**
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63; and status = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching ct collections
+	 */
+	@Override
+	public List<CTCollection> findByC_U_S(
+		long companyId, long userId, int[] statuses, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByC_U_S.find(
+			finderCache,
+			new Object[] {companyId, userId, ArrayUtil.sortedUnique(statuses)},
+			start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Removes all the ct collections where companyId = &#63; and userId = &#63; and status = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 */
+	@Override
+	public void removeByC_U_S(long companyId, long userId, int status) {
+		_collectionPersistenceFinderByC_U_S.remove(
+			finderCache, new Object[] {companyId, userId, new int[] {status}});
+	}
+
+	/**
+	 * Returns the number of ct collections where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @return the number of matching ct collections
+	 */
+	@Override
+	public int countByC_U_S(long companyId, long userId, int status) {
+		return _collectionPersistenceFinderByC_U_S.count(
+			finderCache, new Object[] {companyId, userId, new int[] {status}});
+	}
+
+	/**
+	 * Returns the number of ct collections where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @return the number of matching ct collections
+	 */
+	@Override
+	public int countByC_U_S(long companyId, long userId, int[] statuses) {
+		return _collectionPersistenceFinderByC_U_S.count(
+			finderCache,
+			new Object[] {companyId, userId, ArrayUtil.sortedUnique(statuses)});
+	}
+
+	/**
+	 * Returns the number of ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @return the number of matching ct collections that the user has permission to view
+	 */
+	@Override
+	public int filterCountByC_U_S(long companyId, long userId, int status) {
+		return _collectionPersistenceFinderByC_U_S.filterCount(
+			finderCache, new Object[] {companyId, userId, new int[] {status}},
+			companyId, 0);
+	}
+
+	/**
+	 * Returns the number of ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @return the number of matching ct collections that the user has permission to view
+	 */
+	@Override
+	public int filterCountByC_U_S(long companyId, long userId, int[] statuses) {
+		return _collectionPersistenceFinderByC_U_S.filterCount(
+			finderCache,
+			new Object[] {companyId, userId, ArrayUtil.sortedUnique(statuses)},
 			companyId, 0);
 	}
 
@@ -1362,36 +1457,6 @@ public class CTCollectionPersistenceImpl
 					"ctCollection.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, CTCollection::getCompanyId));
 
-		_collectionPersistenceFinderByC_U =
-			new FilterCollectionPersistenceFinder<>(
-				this, CTCollection::getCtCollectionId,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_U",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"companyId", "userId"}, false),
-				"", CTCollectionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_U",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId", "userId"}, true),
-				_SQL_COUNT_CTCOLLECTION_WHERE, _SQL_SELECT_CTCOLLECTION_WHERE,
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_U",
-					new String[] {Long.class.getName(), Long.class.getName()},
-					new String[] {"companyId", "userId"}, true),
-				"",
-				new FinderColumn<>(
-					"ctCollection.", "companyId", FinderColumn.Type.LONG, "=",
-					true, true, CTCollection::getCompanyId),
-				new FinderColumn<>(
-					"ctCollection.", "userId", FinderColumn.Type.LONG, "=",
-					true, true, CTCollection::getUserId));
-
 		_collectionPersistenceFinderByC_SVI =
 			new FilterCollectionPersistenceFinder<>(
 				this, CTCollection::getCtCollectionId,
@@ -1452,6 +1517,46 @@ public class CTCollectionPersistenceImpl
 				new FinderColumn<>(
 					"ctCollection.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, CTCollection::getCompanyId),
+				new ArrayableFinderColumn<>(
+					"ctCollection.", "status", FinderColumn.Type.INTEGER, "=",
+					false, true, true, CTCollection::getStatus));
+
+		_collectionPersistenceFinderByC_U_S =
+			new FilterCollectionPersistenceFinder<>(
+				this, CTCollection::getCtCollectionId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_U_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"companyId", "userId", "status"}, false),
+				"", CTCollectionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_U_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"companyId", "userId", "status"}, true),
+				_SQL_COUNT_CTCOLLECTION_WHERE, _SQL_SELECT_CTCOLLECTION_WHERE,
+				null,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_U_S",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"companyId", "userId", "status"}, true),
+				"",
+				new FinderColumn<>(
+					"ctCollection.", "companyId", FinderColumn.Type.LONG, "=",
+					true, true, CTCollection::getCompanyId),
+				new FinderColumn<>(
+					"ctCollection.", "userId", FinderColumn.Type.LONG, "=",
+					true, true, CTCollection::getUserId),
 				new ArrayableFinderColumn<>(
 					"ctCollection.", "status", FinderColumn.Type.INTEGER, "=",
 					false, true, true, CTCollection::getStatus));
@@ -1537,4 +1642,4 @@ public class CTCollectionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:200567472
+// LIFERAY-SERVICE-BUILDER-HASH:-1972855846

@@ -432,6 +432,18 @@ public class CTCollectionLocalServiceWrapper
 			companyId, statuses, start, end, orderByComparator);
 	}
 
+	@Override
+	public java.util.List<com.liferay.change.tracking.model.CTCollection>
+		getCTCollections(
+			long companyId, long userId, int[] statuses, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.change.tracking.model.CTCollection>
+					orderByComparator) {
+
+		return _ctCollectionLocalService.getCTCollections(
+			companyId, userId, statuses, start, end, orderByComparator);
+	}
+
 	/**
 	 * Returns the number of ct collections.
 	 *
@@ -633,4 +645,4 @@ public class CTCollectionLocalServiceWrapper
 	private CTCollectionLocalService _ctCollectionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1350542652
+// LIFERAY-SERVICE-BUILDER-HASH:2120225261

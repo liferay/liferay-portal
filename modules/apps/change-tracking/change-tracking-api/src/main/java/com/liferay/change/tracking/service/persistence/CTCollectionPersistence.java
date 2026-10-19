@@ -300,100 +300,6 @@ public interface CTCollectionPersistence extends BasePersistence<CTCollection> {
 	public int filterCountByCompanyId(long companyId);
 
 	/**
-	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of ct collections
-	 * @param end the upper bound of the range of ct collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ct collections
-	 */
-	public java.util.List<CTCollection> findByC_U(
-		long companyId, long userId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct collection
-	 * @throws NoSuchCollectionException if a matching ct collection could not be found
-	 */
-	public CTCollection findByC_U_First(
-			long companyId, long userId,
-			com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
-				orderByComparator)
-		throws NoSuchCollectionException;
-
-	/**
-	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct collection, or <code>null</code> if a matching ct collection could not be found
-	 */
-	public CTCollection fetchByC_U_First(
-		long companyId, long userId,
-		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
-			orderByComparator);
-
-	/**
-	 * Returns an ordered range of all the ct collections that the user has permissions to view where companyId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of ct collections
-	 * @param end the upper bound of the range of ct collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ct collections that the user has permission to view
-	 */
-	public java.util.List<CTCollection> filterFindByC_U(
-		long companyId, long userId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
-			orderByComparator);
-
-	/**
-	 * Removes all the ct collections where companyId = &#63; and userId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 */
-	public void removeByC_U(long companyId, long userId);
-
-	/**
-	 * Returns the number of ct collections where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @return the number of matching ct collections
-	 */
-	public int countByC_U(long companyId, long userId);
-
-	/**
-	 * Returns the number of ct collections that the user has permission to view where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @return the number of matching ct collections that the user has permission to view
-	 */
-	public int filterCountByC_U(long companyId, long userId);
-
-	/**
 	 * Returns an ordered range of all the ct collections where companyId = &#63; and schemaVersionId = &#63;.
 	 *
 	 * <p>
@@ -638,6 +544,169 @@ public interface CTCollectionPersistence extends BasePersistence<CTCollection> {
 	 * @return the number of matching ct collections that the user has permission to view
 	 */
 	public int filterCountByC_S(long companyId, int[] statuses);
+
+	/**
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching ct collections
+	 */
+	public java.util.List<CTCollection> findByC_U_S(
+		long companyId, long userId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching ct collection
+	 * @throws NoSuchCollectionException if a matching ct collection could not be found
+	 */
+	public CTCollection findByC_U_S_First(
+			long companyId, long userId, int status,
+			com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
+				orderByComparator)
+		throws NoSuchCollectionException;
+
+	/**
+	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching ct collection, or <code>null</code> if a matching ct collection could not be found
+	 */
+	public CTCollection fetchByC_U_S_First(
+		long companyId, long userId, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the ct collections that the user has permissions to view where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ct collections that the user has permission to view
+	 */
+	public java.util.List<CTCollection> filterFindByC_U_S(
+		long companyId, long userId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ct collections that the user has permission to view
+	 */
+	public java.util.List<CTCollection> filterFindByC_U_S(
+		long companyId, long userId, int[] statuses, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63; and status = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching ct collections
+	 */
+	public java.util.List<CTCollection> findByC_U_S(
+		long companyId, long userId, int[] statuses, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Removes all the ct collections where companyId = &#63; and userId = &#63; and status = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 */
+	public void removeByC_U_S(long companyId, long userId, int status);
+
+	/**
+	 * Returns the number of ct collections where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @return the number of matching ct collections
+	 */
+	public int countByC_U_S(long companyId, long userId, int status);
+
+	/**
+	 * Returns the number of ct collections where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @return the number of matching ct collections
+	 */
+	public int countByC_U_S(long companyId, long userId, int[] statuses);
+
+	/**
+	 * Returns the number of ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @return the number of matching ct collections that the user has permission to view
+	 */
+	public int filterCountByC_U_S(long companyId, long userId, int status);
+
+	/**
+	 * Returns the number of ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @return the number of matching ct collections that the user has permission to view
+	 */
+	public int filterCountByC_U_S(long companyId, long userId, int[] statuses);
 
 	/**
 	 * Returns the ct collection where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchCollectionException</code> if it could not be found.
@@ -993,99 +1062,6 @@ public interface CTCollectionPersistence extends BasePersistence<CTCollection> {
 	}
 
 	/**
-	 * Returns all the ct collections where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @return the matching ct collections
-	 */
-	public default java.util.List<CTCollection> findByC_U(
-		long companyId, long userId) {
-
-		return findByC_U(
-			companyId, userId,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the ct collections where companyId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of ct collections
-	 * @param end the upper bound of the range of ct collections (not inclusive)
-	 * @return the range of matching ct collections
-	 */
-	public default java.util.List<CTCollection> findByC_U(
-		long companyId, long userId, int start, int end) {
-
-		return findByC_U(companyId, userId, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of ct collections
-	 * @param end the upper bound of the range of ct collections (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ct collections
-	 */
-	public default java.util.List<CTCollection> findByC_U(
-		long companyId, long userId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
-			orderByComparator) {
-
-		return findByC_U(
-			companyId, userId, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @return the matching ct collections that the user has permission to view
-	 */
-	public default java.util.List<CTCollection> filterFindByC_U(
-		long companyId, long userId) {
-
-		return filterFindByC_U(
-			companyId, userId,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of ct collections
-	 * @param end the upper bound of the range of ct collections (not inclusive)
-	 * @return the range of matching ct collections that the user has permission to view
-	 */
-	public default java.util.List<CTCollection> filterFindByC_U(
-		long companyId, long userId, int start, int end) {
-
-		return filterFindByC_U(companyId, userId, start, end, null);
-	}
-
-	/**
 	 * Returns all the ct collections where companyId = &#63; and schemaVersionId = &#63;.
 	 *
 	 * @param companyId the company ID
@@ -1364,5 +1340,201 @@ public interface CTCollectionPersistence extends BasePersistence<CTCollection> {
 		return filterFindByC_S(companyId, statuses, start, end, null);
 	}
 
+	/**
+	 * Returns all the ct collections where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @return the matching ct collections
+	 */
+	public default java.util.List<CTCollection> findByC_U_S(
+		long companyId, long userId, int status) {
+
+		return findByC_U_S(
+			companyId, userId, status,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the ct collections where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @return the range of matching ct collections
+	 */
+	public default java.util.List<CTCollection> findByC_U_S(
+		long companyId, long userId, int status, int start, int end) {
+
+		return findByC_U_S(companyId, userId, status, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ct collections
+	 */
+	public default java.util.List<CTCollection> findByC_U_S(
+		long companyId, long userId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
+			orderByComparator) {
+
+		return findByC_U_S(
+			companyId, userId, status, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns all the ct collections where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @return the matching ct collections
+	 */
+	public default java.util.List<CTCollection> findByC_U_S(
+		long companyId, long userId, int[] statuses) {
+
+		return findByC_U_S(
+			companyId, userId, statuses,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the ct collections where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @return the range of matching ct collections
+	 */
+	public default java.util.List<CTCollection> findByC_U_S(
+		long companyId, long userId, int[] statuses, int start, int end) {
+
+		return findByC_U_S(companyId, userId, statuses, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ct collections
+	 */
+	public default java.util.List<CTCollection> findByC_U_S(
+		long companyId, long userId, int[] statuses, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CTCollection>
+			orderByComparator) {
+
+		return findByC_U_S(
+			companyId, userId, statuses, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @return the matching ct collections that the user has permission to view
+	 */
+	public default java.util.List<CTCollection> filterFindByC_U_S(
+		long companyId, long userId, int status) {
+
+		return filterFindByC_U_S(
+			companyId, userId, status,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param status the status
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @return the range of matching ct collections that the user has permission to view
+	 */
+	public default java.util.List<CTCollection> filterFindByC_U_S(
+		long companyId, long userId, int status, int start, int end) {
+
+		return filterFindByC_U_S(companyId, userId, status, start, end, null);
+	}
+
+	/**
+	 * Returns all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @return the matching ct collections that the user has permission to view
+	 */
+	public default java.util.List<CTCollection> filterFindByC_U_S(
+		long companyId, long userId, int[] statuses) {
+
+		return filterFindByC_U_S(
+			companyId, userId, statuses,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63; and status = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param statuses the statuses
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @return the range of matching ct collections that the user has permission to view
+	 */
+	public default java.util.List<CTCollection> filterFindByC_U_S(
+		long companyId, long userId, int[] statuses, int start, int end) {
+
+		return filterFindByC_U_S(companyId, userId, statuses, start, end, null);
+	}
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1618916131
+// LIFERAY-SERVICE-BUILDER-HASH:-1061424881

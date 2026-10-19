@@ -372,6 +372,14 @@ public class CTCollectionLocalServiceUtil {
 			companyId, statuses, start, end, orderByComparator);
 	}
 
+	public static List<CTCollection> getCTCollections(
+		long companyId, long userId, int[] statuses, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		return getService().getCTCollections(
+			companyId, userId, statuses, start, end, orderByComparator);
+	}
+
 	/**
 	 * Returns the number of ct collections.
 	 *
@@ -531,4 +539,4 @@ public class CTCollectionLocalServiceUtil {
 			CTCollectionLocalServiceUtil.class, CTCollectionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:294435277
+// LIFERAY-SERVICE-BUILDER-HASH:-955722249

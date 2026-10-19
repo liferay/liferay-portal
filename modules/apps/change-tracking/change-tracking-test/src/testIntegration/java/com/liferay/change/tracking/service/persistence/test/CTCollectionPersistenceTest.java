@@ -250,14 +250,6 @@ public class CTCollectionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_U() throws Exception {
-		_persistence.countByC_U(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByC_U(0L, 0L);
-	}
-
-	@Test
 	public void testCountByC_SVI() throws Exception {
 		_persistence.countByC_SVI(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
@@ -277,6 +269,22 @@ public class CTCollectionPersistenceTest {
 	public void testCountByC_SArrayable() throws Exception {
 		_persistence.countByC_S(
 			RandomTestUtil.nextLong(), new int[] {RandomTestUtil.nextInt(), 0});
+	}
+
+	@Test
+	public void testCountByC_U_S() throws Exception {
+		_persistence.countByC_U_S(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextInt());
+
+		_persistence.countByC_U_S(0L, 0L, 0);
+	}
+
+	@Test
+	public void testCountByC_U_SArrayable() throws Exception {
+		_persistence.countByC_U_S(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			new int[] {RandomTestUtil.nextInt(), 0});
 	}
 
 	@Test
@@ -645,4 +653,4 @@ public class CTCollectionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1051562728
+// LIFERAY-SERVICE-BUILDER-HASH:-444906988
