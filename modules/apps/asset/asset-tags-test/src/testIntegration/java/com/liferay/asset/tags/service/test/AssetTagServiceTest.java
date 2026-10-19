@@ -11,15 +11,21 @@ import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetTagServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.subscription.service.SubscriptionLocalServiceUtil;
 
 import java.util.List;
 
@@ -109,6 +115,67 @@ public class AssetTagServiceTest {
 			QueryUtil.ALL_POS);
 
 		Assert.assertTrue(assetTags.toString(), assetTags.isEmpty());
+	}
+
+	@Test
+	@TestInfo("LPD-110165")
+	public void testSubscribeTag() throws Exception {
+		User adminUser = UserTestUtil.addGroupAdminUser(_group);
+		AssetTag assetTag = _addTag();
+		User user = UserTestUtil.addUser();
+
+		UserTestUtil.setUser(adminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class, null,
+			() -> AssetTagServiceUtil.subscribeTag(
+				user.getUserId(), _group.getGroupId(), assetTag.getTagId()));
+
+		Assert.assertFalse(
+			SubscriptionLocalServiceUtil.isSubscribed(
+				_group.getCompanyId(), user.getUserId(),
+				AssetTag.class.getName(), assetTag.getTagId()));
+
+		AssetTagServiceUtil.subscribeTag(
+			adminUser.getUserId(), _group.getGroupId(), assetTag.getTagId());
+
+		Assert.assertTrue(
+			SubscriptionLocalServiceUtil.isSubscribed(
+				_group.getCompanyId(), adminUser.getUserId(),
+				AssetTag.class.getName(), assetTag.getTagId()));
+	}
+
+	@Test
+	@TestInfo("LPD-110165")
+	public void testUnsubscribeTag() throws Exception {
+		User adminUser = UserTestUtil.addGroupAdminUser(_group);
+		AssetTag assetTag = _addTag();
+		User user = UserTestUtil.addUser();
+
+		AssetTagLocalServiceUtil.subscribeTag(
+			adminUser.getUserId(), _group.getGroupId(), assetTag.getTagId());
+		AssetTagLocalServiceUtil.subscribeTag(
+			user.getUserId(), _group.getGroupId(), assetTag.getTagId());
+
+		UserTestUtil.setUser(adminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class, null,
+			() -> AssetTagServiceUtil.unsubscribeTag(
+				user.getUserId(), assetTag.getTagId()));
+
+		Assert.assertTrue(
+			SubscriptionLocalServiceUtil.isSubscribed(
+				_group.getCompanyId(), user.getUserId(),
+				AssetTag.class.getName(), assetTag.getTagId()));
+
+		AssetTagServiceUtil.unsubscribeTag(
+			adminUser.getUserId(), assetTag.getTagId());
+
+		Assert.assertFalse(
+			SubscriptionLocalServiceUtil.isSubscribed(
+				_group.getCompanyId(), adminUser.getUserId(),
+				AssetTag.class.getName(), assetTag.getTagId()));
 	}
 
 	private AssetTag _addTag() throws Exception {
