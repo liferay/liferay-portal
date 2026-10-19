@@ -6,7 +6,6 @@
 import React from 'react';
 
 import {GovernanceContextProvider} from './GovernanceContext';
-import {DuplicationAndSimilarity} from './components/DuplicationAndSimilarity';
 import {Filters} from './components/Filters';
 import {Freshness} from './components/Freshness';
 import {GovernanceHealth} from './components/GovernanceHealth';
@@ -18,10 +17,8 @@ import '../../../../css/dashboard/GovernanceDashboard.scss';
 
 export default function GovernanceDashboard({
 	additionalProps,
-	constants,
 }: {
 	additionalProps: GovernanceAdditionalProps;
-	constants: {[key: string]: string};
 }) {
 	return (
 		<GovernanceContextProvider>
@@ -34,11 +31,6 @@ export default function GovernanceDashboard({
 			<Freshness additionalProps={additionalProps} />
 
 			<Operations additionalProps={additionalProps} />
-
-			<DuplicationAndSimilarity
-				additionalProps={additionalProps}
-				constants={constants}
-			/>
 		</GovernanceContextProvider>
 	);
 }

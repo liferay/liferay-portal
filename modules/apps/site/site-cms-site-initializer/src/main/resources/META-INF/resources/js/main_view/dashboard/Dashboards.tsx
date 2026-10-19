@@ -133,10 +133,7 @@ function Dashboards({
 
 			<ClayLayout.Container className="px-4" fluid>
 				{tabId === 'governance' ? (
-					<GovernanceDashboard
-						additionalProps={additionalProps}
-						constants={constants}
-					/>
+					<GovernanceDashboard additionalProps={additionalProps} />
 				) : null}
 
 				{tabId === 'inventory' ? (

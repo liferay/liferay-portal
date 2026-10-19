@@ -45,18 +45,6 @@ export type Contributors = {
 	totalCount: number;
 };
 
-export type DuplicateTitle = {
-	frequency: number;
-	term: string;
-};
-
-export type DuplicateTopicAsset = {
-	dateModified: string;
-	embedded?: {id: number};
-	entryClassName: string;
-	title: string;
-};
-
 export type FacetBucket = {
 	displayName: string;
 	frequency: number;
@@ -83,19 +71,13 @@ const CONTENT_AGE_RANGES: ContentAgeRange[] = [
 
 const CONTRIBUTORS_AGGREGATION_NAME = 'contributors';
 
-const DUPLICATE_TITLES_AGGREGATION_NAME = 'duplicateTitles';
-
 const LONG_STANDING_DRAFT_DAYS = 30;
 
 export const GOVERNANCE_ASSET_LIST_PAGE_SIZE = 8;
 
 const MAX_CONTRIBUTORS = 7;
 
-const MAX_FACET_TERMS = 10000;
-
 export const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-
-const MINIMUM_DUPLICATE_FREQUENCY = 2;
 
 const NESTED_FIELDS = 'embedded,systemProperties.objectDefinitionBrief';
 
@@ -389,101 +371,13 @@ function getLongStandingDraftsURL(filter: string, groupId?: number) {
 	);
 }
 
-async function getCMSEntryClassNames(
-	ercContentStructures: string,
-	ercFileTypes: string,
-	signal?: AbortSignal
-) {
-	const filter = encodeURIComponent(
-		`objectFolderExternalReferenceCode eq '${ercContentStructures}' or objectFolderExternalReferenceCode eq '${ercFileTypes}'`
-	);
-
-	const {data} = await ApiHelper.get<{items: {className: string}[]}>(
-		`/o/object-admin/v1.0/object-definitions?filter=${filter}&pageSize=-1`,
-		signal
-	);
-
-	return (data?.items ?? []).map(({className}) => className).join(',');
-}
-
-async function getDuplicateTitles({
-	entryClassNames,
-	signal,
-	siteId,
-}: {
-	entryClassNames: string;
-	signal?: AbortSignal;
-	siteId?: number;
-}): Promise<DuplicateTitle[] | undefined> {
-	if (!entryClassNames) {
-		return undefined;
-	}
-
-	const searchParams = new URLSearchParams({
-		entryClassNames,
-		pageSize: '1',
-	});
-
-	if (siteId) {
-		searchParams.set('filter', `groupIds/any(g:g eq ${siteId})`);
-	}
-
-	const {data} = await ApiHelper.post<{
-		searchFacets?: Record<string, DuplicateTitle[]>;
-	}>(
-		`/o/search/v1.0/search?${searchParams}`,
-		{
-			attributes: {'search.empty.search': true},
-			facetConfigurations: [
-				{
-					aggregationName: DUPLICATE_TITLES_AGGREGATION_NAME,
-					attributes: {
-						field: `localized_title_${Liferay.ThemeDisplay.getLanguageId()}_sortable.keyword_lowercase`,
-					},
-					frequencyThreshold: MINIMUM_DUPLICATE_FREQUENCY,
-					maxTerms: MAX_FACET_TERMS,
-					name: 'custom',
-				},
-			],
-		},
-		signal
-	);
-
-	if (!data) {
-		return undefined;
-	}
-
-	return data.searchFacets?.[DUPLICATE_TITLES_AGGREGATION_NAME] ?? [];
-}
-
-async function getDuplicateTopicsCount({
-	entryClassNames,
-	signal,
-	siteId,
-}: {
-	entryClassNames: string;
-	signal?: AbortSignal;
-	siteId?: number;
-}) {
-	const titles = await getDuplicateTitles({entryClassNames, signal, siteId});
-
-	if (!titles) {
-		return undefined;
-	}
-
-	return titles.reduce((count, {frequency}) => count + frequency, 0);
-}
-
 export default {
 	getAssetStatistics,
 	getAssetsByIdsURL,
 	getBrokenLinkAssetsURL,
-	getCMSEntryClassNames,
 	getContentAgeDistribution,
 	getContentProgress,
 	getContributors,
-	getDuplicateTitles,
-	getDuplicateTopicsCount,
 	getFreshnessListURL,
 	getLongStandingDraftsThresholdDate,
 	getLongStandingDraftsURL,
