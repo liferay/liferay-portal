@@ -138,6 +138,19 @@ public class MonitorMetricsWriter {
 		return monitorResult.getTimestamp() / 1000;
 	}
 
+	private List<String> _getLinkURLs(Monitor monitor) {
+		MonitorResult monitorResult =
+			_monitorResultStore.getLatestMonitorResult(monitor.getId());
+
+		List<String> linkURLs = monitorResult.getLinkURLs();
+
+		if (linkURLs != null) {
+			return linkURLs;
+		}
+
+		return monitor.getLinkURLs();
+	}
+
 	private String _getMessage(Monitor monitor) {
 		MonitorResult monitorResult =
 			_monitorResultStore.getLatestMonitorResult(monitor.getId());
@@ -274,8 +287,17 @@ public class MonitorMetricsWriter {
 				gaugeDataPointSnapshotBuilder =
 					GaugeSnapshot.GaugeDataPointSnapshot.builder();
 
-			gaugeDataPointSnapshotBuilder.labels(
-				Labels.of("message", message, "monitor", monitor.getId()));
+			Labels labels = Labels.of(
+				"message", message, "monitor", monitor.getId());
+
+			List<String> linkURLs = _getLinkURLs(monitor);
+
+			if (!linkURLs.isEmpty()) {
+				labels = labels.add(
+					"links", JenkinsResultsParserUtil.join("\n", linkURLs));
+			}
+
+			gaugeDataPointSnapshotBuilder.labels(labels);
 			gaugeDataPointSnapshotBuilder.value(1);
 
 			gaugeSnapshotBuilder.dataPoint(

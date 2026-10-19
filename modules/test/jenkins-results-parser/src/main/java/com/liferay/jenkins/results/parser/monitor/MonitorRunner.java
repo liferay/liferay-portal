@@ -226,9 +226,9 @@ public class MonitorRunner {
 			}
 
 			return new MonitorResult(
-				durationMillis, monitorResult.getMessage(),
-				monitorResult.getMetrics(), monitorResult.getStatus(),
-				monitorResult.getTimestamp());
+				durationMillis, monitorResult.getLinkURLs(),
+				monitorResult.getMessage(), monitorResult.getMetrics(),
+				monitorResult.getStatus(), monitorResult.getTimestamp());
 		}
 		catch (ExecutionException executionException) {
 			Throwable throwable = executionException.getCause();

@@ -90,6 +90,11 @@ public class ExternalStatusMonitor extends BaseMonitor {
 			currentTimeMillis);
 	}
 
+	@Override
+	protected String getDefaultLinkURL() {
+		return _statusPageURL;
+	}
+
 	private Set<String> _getComponentNames(Map<String, String> parameters) {
 		Set<String> componentNames = new TreeSet<>();
 

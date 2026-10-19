@@ -7,6 +7,9 @@ package com.liferay.jenkins.results.parser.monitor;
 
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Brittney Nguyen
  */
@@ -26,6 +29,11 @@ public class TestMonitor implements Monitor {
 	@Override
 	public String getId() {
 		return _monitorConfig.getId();
+	}
+
+	@Override
+	public List<String> getLinkURLs() {
+		return Collections.emptyList();
 	}
 
 	@Override

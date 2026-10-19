@@ -36,6 +36,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 
 		_jobURL = JenkinsResultsParserUtil.combine(
 			_jenkinsMaster.getURL(), "/job/", _jobName);
+		_remoteJobURL = getRemoteJobURL(_jenkinsMaster, _jobName);
 
 		_thresholds = monitorConfig.getThresholds();
 
@@ -124,6 +125,11 @@ public class ControllerResultMonitor extends BaseMonitor {
 	@Override
 	public void prepareCycle() {
 		MasterResourceReader.clearInstances();
+	}
+
+	@Override
+	protected String getDefaultLinkURL() {
+		return _remoteJobURL;
 	}
 
 	@Override
@@ -452,6 +458,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 	private final String _jobName;
 	private final String _jobURL;
 	private final long _pendingMaximumSeconds;
+	private final String _remoteJobURL;
 	private final Map<String, String> _thresholds;
 
 }

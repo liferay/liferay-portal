@@ -29,9 +29,12 @@ public class JobHealthMonitor extends BaseMonitor {
 
 		_cadenceSeconds = getLongValue("parameter", 0, "cadence", parameters);
 		_expectedGreen = _isExpectedGreen(parameters);
+
 		_jenkinsMaster = JenkinsMaster.getInstance(
 			getRequiredParameter("master.name", parameters));
 		_jobName = getRequiredParameter("job.name", parameters);
+
+		_remoteJobURL = getRemoteJobURL(_jenkinsMaster, _jobName);
 
 		_thresholds = monitorConfig.getThresholds();
 
@@ -225,6 +228,11 @@ public class JobHealthMonitor extends BaseMonitor {
 		MasterResourceReader.clearInstances();
 	}
 
+	@Override
+	protected String getDefaultLinkURL() {
+		return _remoteJobURL;
+	}
+
 	private String _getDurationExceededMessage(long lastBuildAgeSeconds) {
 		return JenkinsResultsParserUtil.combine(
 			"Job ", _jobName, " has been running for ",
@@ -363,6 +371,7 @@ public class JobHealthMonitor extends BaseMonitor {
 	private final JenkinsMaster _jenkinsMaster;
 	private final String _jobName;
 	private final long _overdueGraceSeconds;
+	private final String _remoteJobURL;
 	private final Map<String, String> _thresholds;
 
 }

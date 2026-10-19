@@ -5,9 +5,11 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,10 +20,20 @@ public class MonitorResult {
 	public static final long DURATION_MILLIS_UNMEASURED = -1;
 
 	public MonitorResult(
-		long durationMillis, String message, Map<String, String> metrics,
+		List<String> linkURLs, String message, Map<String, String> metrics,
 		Status status, long timestamp) {
 
+		this(
+			DURATION_MILLIS_UNMEASURED, linkURLs, message, metrics, status,
+			timestamp);
+	}
+
+	public MonitorResult(
+		long durationMillis, List<String> linkURLs, String message,
+		Map<String, String> metrics, Status status, long timestamp) {
+
 		_durationMillis = durationMillis;
+		_linkURLs = _newUnmodifiableList(linkURLs);
 		_message = message;
 		_metrics = _newUnmodifiableMap(metrics);
 		_status = status;
@@ -29,14 +41,27 @@ public class MonitorResult {
 	}
 
 	public MonitorResult(
+		long durationMillis, String message, Map<String, String> metrics,
+		Status status, long timestamp) {
+
+		this(durationMillis, null, message, metrics, status, timestamp);
+	}
+
+	public MonitorResult(
 		String message, Map<String, String> metrics, Status status,
 		long timestamp) {
 
-		this(DURATION_MILLIS_UNMEASURED, message, metrics, status, timestamp);
+		this(
+			DURATION_MILLIS_UNMEASURED, null, message, metrics, status,
+			timestamp);
 	}
 
 	public long getDurationMillis() {
 		return _durationMillis;
+	}
+
+	public List<String> getLinkURLs() {
+		return _linkURLs;
 	}
 
 	public String getMessage() {
@@ -89,6 +114,14 @@ public class MonitorResult {
 
 	}
 
+	private List<String> _newUnmodifiableList(List<String> list) {
+		if (list == null) {
+			return null;
+		}
+
+		return Collections.unmodifiableList(new ArrayList<>(list));
+	}
+
 	private Map<String, String> _newUnmodifiableMap(Map<String, String> map) {
 		if (map == null) {
 			return Collections.emptyMap();
@@ -98,6 +131,7 @@ public class MonitorResult {
 	}
 
 	private final long _durationMillis;
+	private final List<String> _linkURLs;
 	private final String _message;
 	private final Map<String, String> _metrics;
 	private final Status _status;

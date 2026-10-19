@@ -6,8 +6,15 @@
 package com.liferay.jenkins.results.parser.monitor;
 
 import com.liferay.jenkins.results.parser.Dom4JUtil;
+import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +33,21 @@ public abstract class BaseMonitor implements Monitor {
 	}
 
 	@Override
+	public List<String> getLinkURLs() {
+		if (!_linkURLs.isEmpty()) {
+			return _linkURLs;
+		}
+
+		String defaultLinkURL = getDefaultLinkURL();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(defaultLinkURL)) {
+			return Collections.emptyList();
+		}
+
+		return Collections.singletonList(defaultLinkURL);
+	}
+
+	@Override
 	public MonitorConfig getMonitorConfig() {
 		return _monitorConfig;
 	}
@@ -36,6 +58,8 @@ public abstract class BaseMonitor implements Monitor {
 
 	protected BaseMonitor(MonitorConfig monitorConfig) {
 		_monitorConfig = monitorConfig;
+
+		_linkURLs = _getLinkURLs(monitorConfig.getParameters());
 	}
 
 	protected int getAttemptTimeoutMillis(int maxRetries) {
@@ -91,6 +115,10 @@ public abstract class BaseMonitor implements Monitor {
 		_cronScheduleLoaded = true;
 
 		return _cronSchedule;
+	}
+
+	protected String getDefaultLinkURL() {
+		return null;
 	}
 
 	protected String getInvalidValueMessage(
@@ -161,6 +189,21 @@ public abstract class BaseMonitor implements Monitor {
 		return 2;
 	}
 
+	protected String getRemoteJobURL(
+		JenkinsMaster jenkinsMaster, String jobName) {
+
+		String jobURL = JenkinsResultsParserUtil.combine(
+			jenkinsMaster.getRemoteURL(), "job/", jobName);
+
+		try {
+			return JenkinsResultsParserUtil.encode(jobURL);
+		}
+		catch (MalformedURLException | URISyntaxException exception) {
+			throw new RuntimeException(
+				"Unable to encode job URL " + jobURL, exception);
+		}
+	}
+
 	protected String getRequiredParameter(
 		String name, Map<String, String> parameters) {
 
@@ -184,8 +227,43 @@ public abstract class BaseMonitor implements Monitor {
 			}
 		}
 
-		String url = getRequiredParameter(name, parameters);
+		return _getURL(
+			name, getRequiredParameter(name, parameters), urlPrefixes);
+	}
 
+	private String _getKey(String category, String name) {
+		return JenkinsResultsParserUtil.combine(
+			"monitor[", _monitorConfig.getId(), "].", category, "[", name, "]");
+	}
+
+	private List<String> _getLinkURLs(Map<String, String> parameters) {
+		String links = parameters.get("links");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(links)) {
+			return Collections.emptyList();
+		}
+
+		List<String> linkURLs = new ArrayList<>();
+
+		for (String linkURL : links.split(",")) {
+			linkURLs.add(
+				_getURL("links", linkURL.trim(), "http://", "https://"));
+		}
+
+		return Collections.unmodifiableList(linkURLs);
+	}
+
+	private long _getTimeoutMillis() {
+		long timeoutSeconds = _monitorConfig.getTimeoutSeconds();
+
+		if (timeoutSeconds <= 0) {
+			timeoutSeconds = MonitorConfig.SECONDS_TIMEOUT_DEFAULT;
+		}
+
+		return timeoutSeconds * 1000;
+	}
+
+	private String _getURL(String name, String url, String... urlPrefixes) {
 		Matcher matcher = _userInfoPattern.matcher(url);
 
 		if (matcher.matches()) {
@@ -205,21 +283,6 @@ public abstract class BaseMonitor implements Monitor {
 			getInvalidValueMessage("parameter", name, url));
 	}
 
-	private String _getKey(String category, String name) {
-		return JenkinsResultsParserUtil.combine(
-			"monitor[", _monitorConfig.getId(), "].", category, "[", name, "]");
-	}
-
-	private long _getTimeoutMillis() {
-		long timeoutSeconds = _monitorConfig.getTimeoutSeconds();
-
-		if (timeoutSeconds <= 0) {
-			timeoutSeconds = MonitorConfig.SECONDS_TIMEOUT_DEFAULT;
-		}
-
-		return timeoutSeconds * 1000;
-	}
-
 	private static final long _SECONDS_OVERDUE_GRACE_MINIMUM = 30 * 60;
 
 	private static final Pattern _userInfoPattern = Pattern.compile(
@@ -227,6 +290,7 @@ public abstract class BaseMonitor implements Monitor {
 
 	private CronSchedule _cronSchedule;
 	private boolean _cronScheduleLoaded;
+	private final List<String> _linkURLs;
 	private final MonitorConfig _monitorConfig;
 
 }

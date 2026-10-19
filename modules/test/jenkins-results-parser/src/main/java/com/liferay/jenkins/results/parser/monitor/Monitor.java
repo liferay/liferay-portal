@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import java.util.List;
+
 /**
  * @author Brittney Nguyen
  */
@@ -13,6 +15,8 @@ public interface Monitor {
 	public MonitorResult execute();
 
 	public String getId();
+
+	public List<String> getLinkURLs();
 
 	public MonitorConfig getMonitorConfig();
 

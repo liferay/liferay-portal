@@ -47,6 +47,8 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 
 		_controllerJobURL = JenkinsResultsParserUtil.combine(
 			jenkinsMaster.getURL(), "/job/", _controllerJobName);
+		_remoteControllerJobURL = getRemoteJobURL(
+			jenkinsMaster, _controllerJobName);
 
 		Map<String, String> thresholds = monitorConfig.getThresholds();
 
@@ -130,6 +132,11 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 
 		return _newMonitorResult(
 			currentTimeMillis, messages, metrics, statuses);
+	}
+
+	@Override
+	protected String getDefaultLinkURL() {
+		return _remoteControllerJobURL;
 	}
 
 	private void _checkControllerAge(
@@ -378,6 +385,7 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 	private final String _controllerJobURL;
 	private final String _portalRepositoryName;
 	private final String _portalUsername;
+	private final String _remoteControllerJobURL;
 	private final long _triggerLatencySeconds;
 
 }

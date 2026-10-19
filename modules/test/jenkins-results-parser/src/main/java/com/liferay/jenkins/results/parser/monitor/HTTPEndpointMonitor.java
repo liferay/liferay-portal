@@ -70,6 +70,11 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 			metrics, MonitorResult.Status.OK, currentTimeMillis);
 	}
 
+	@Override
+	protected String getDefaultLinkURL() {
+		return _endpointURL;
+	}
+
 	private String _getFailureMessage(Exception exception) {
 		if (exception instanceof FileNotFoundException) {
 			return JenkinsResultsParserUtil.combine(

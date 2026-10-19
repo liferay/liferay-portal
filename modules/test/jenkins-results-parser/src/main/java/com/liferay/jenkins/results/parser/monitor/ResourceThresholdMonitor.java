@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
 import java.io.IOException;
@@ -36,6 +37,10 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 		}
 
 		_masterName = getRequiredParameter("master.name", parameters);
+
+		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(_masterName);
+
+		_masterRemoteURL = jenkinsMaster.getRemoteURL();
 
 		if (_metric.equals("disk")) {
 			_device = getRequiredParameter("device", parameters);
@@ -124,6 +129,11 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 	@Override
 	public void prepareCycle() {
 		MasterResourceReader.clearInstances();
+	}
+
+	@Override
+	protected String getDefaultLinkURL() {
+		return _masterRemoteURL;
 	}
 
 	private Double _getDiskUsedPercentage() throws IOException {
@@ -367,6 +377,7 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 	private final long _criticalThreshold;
 	private final String _device;
 	private final String _masterName;
+	private final String _masterRemoteURL;
 	private final String _metric;
 	private final String _selector;
 	private final long _warnThreshold;
