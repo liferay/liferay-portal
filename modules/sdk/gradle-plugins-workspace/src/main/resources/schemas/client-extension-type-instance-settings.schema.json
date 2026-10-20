@@ -2604,6 +2604,12 @@
 					"const": "com.liferay.mcp.server.rest.internal.configuration.MCPServerConfiguration",
 					"description": "The settings in this configuration let you control the MCP server.",
 					"title": "MCP Server"
+				},
+				"searchToolMaxResultsCount": {
+					"default": 10,
+					"description": "Set the maximum number of results the search tool returns.",
+					"title": "Search Tool Maximum Number of Results",
+					"type": "number"
 				}
 			},
 			"required": [
