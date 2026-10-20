@@ -21,17 +21,21 @@ import com.liferay.petra.concurrent.NoticeableFuture;
 import com.liferay.petra.process.ProcessChannel;
 import com.liferay.petra.process.ProcessException;
 import com.liferay.petra.process.ProcessExecutor;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.io.File;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -161,12 +165,21 @@ public class TalendDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 			for (Map.Entry<String, String> propEntry :
 					dispatchTaskSettingsUnicodeProperties.entrySet()) {
 
-				talendProcessBuilder.contextParam(
-					propEntry.getKey(),
-					TalendContextParamUtil.getValue(
+				String value = propEntry.getValue();
+
+				if (!Objects.equals(propEntry.getKey(), "JAVA_OPTS")) {
+					value = SecretResolverUtil.resolve(
 						dispatchTrigger.getCompanyId(),
-						dispatchTrigger.getDispatchTriggerId(),
-						propEntry.getKey(), propEntry.getValue()));
+						StringBundler.concat(
+							DispatchTrigger.class.getSimpleName(),
+							StringPool.SLASH, dispatchTrigger.getCompanyId(),
+							StringPool.SLASH,
+							dispatchTrigger.getDispatchTriggerId(),
+							StringPool.SLASH, propEntry.getKey()),
+						value);
+				}
+
+				talendProcessBuilder.contextParam(propEntry.getKey(), value);
 			}
 		}
 
