@@ -107,7 +107,6 @@ public class CMSPanelAppShowFilter implements PanelAppShowFilter {
 		TranslationPortletKeys.TRANSLATION, TrashPortletKeys.TRASH,
 		UsersAdminPortletKeys.SERVICE_ACCOUNTS, WikiPortletKeys.WIKI_ADMIN,
 		WorkflowPortletKeys.SITE_ADMINISTRATION_WORKFLOW,
-		"com_liferay_adaptive_media_web_portlet_AMPortlet",
 		"com_liferay_address_web_internal_portlet_" +
 			"CountriesManagementAdminPortlet",
 		"com_liferay_akismet_web_portlet_ModerationPortlet",
