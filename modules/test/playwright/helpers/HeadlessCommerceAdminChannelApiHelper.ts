@@ -6,6 +6,17 @@
 import {getRandomInt} from '../utils/getRandomInt';
 import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
+type TDefaultProductDisplayPage = {
+	pageUuid: string;
+};
+
+type TProductDisplayPage = {
+	id?: number;
+	pageTemplateUuid?: string;
+	pageUuid?: string;
+	productId: number;
+};
+
 type TChannel = {
 	accountId?: number;
 	currencyCode?: string;
@@ -77,6 +88,26 @@ export class HeadlessCommerceAdminChannelApiHelper {
 		}
 
 		return channel;
+	}
+
+	async postDefaultProductDisplayPage(
+		channelId: number,
+		defaultProductDisplayPage: TDefaultProductDisplayPage
+	): Promise<TDefaultProductDisplayPage> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/channels/${channelId}/default-product-display-pages`,
+			{data: defaultProductDisplayPage}
+		);
+	}
+
+	async postProductDisplayPage(
+		channelId: number,
+		productDisplayPage: TProductDisplayPage
+	): Promise<TProductDisplayPage> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/channels/${channelId}/product-display-pages`,
+			{data: productDisplayPage}
+		);
 	}
 
 	async putChannel(channelId: number, channel: TChannel) {
