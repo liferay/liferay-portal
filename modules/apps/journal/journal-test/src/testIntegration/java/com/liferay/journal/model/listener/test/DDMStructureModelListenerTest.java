@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionService;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
+import com.liferay.data.engine.rest.dto.v2_0.DataDefinitionField;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.test.util.DataDefinitionTestUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -177,6 +178,32 @@ public class DDMStructureModelListenerTest {
 
 		_assertDDMFormFieldValuesMap(
 			_expectedFieldValuesMap, journalArticle.getDDMFormValues());
+	}
+
+	@Test
+	public void testUpdateDataDefinitionLocalizable() throws Exception {
+		DataDefinitionField[] dataDefinitionFields =
+			_dataDefinition.getDataDefinitionFields();
+
+		DataDefinitionField dataDefinitionField = dataDefinitionFields[0];
+
+		JournalArticle journalArticle = _addJournalArticle();
+
+		for (boolean localizable : new boolean[] {false, true}) {
+			for (DataDefinitionField nestedDataDefinitionField :
+					dataDefinitionField.getNestedDataDefinitionFields()) {
+
+				nestedDataDefinitionField.setLocalizable(localizable);
+			}
+
+			_putDataDefinition(_dataDefinition);
+
+			journalArticle = _journalArticleLocalService.getJournalArticle(
+				journalArticle.getId());
+
+			_assertDDMFormFieldValuesMap(
+				_expectedFieldValuesMap, journalArticle.getDDMFormValues());
+		}
 	}
 
 	@Test
@@ -455,6 +482,21 @@ public class DDMStructureModelListenerTest {
 			expectedDDMStructureKey, document.get("ddmStructureKey"));
 	}
 
+	private DataDefinition _putDataDefinition(DataDefinition dataDefinition)
+		throws Exception {
+
+		DataDefinitionResource.Builder dataDefinitionResourcedBuilder =
+			_dataDefinitionResourceFactory.create();
+
+		DataDefinitionResource dataDefinitionResource =
+			dataDefinitionResourcedBuilder.user(
+				TestPropsValues.getUser()
+			).build();
+
+		return dataDefinitionResource.putDataDefinition(
+			_dataDefinition.getId(), dataDefinition);
+	}
+
 	private void _updateBasicWebContent() throws PortalException {
 		Company company = _companyLocalService.getCompany(
 			_group.getCompanyId());
@@ -478,14 +520,6 @@ public class DDMStructureModelListenerTest {
 			String dataDefinitionKey, String resourceName)
 		throws Exception {
 
-		DataDefinitionResource.Builder dataDefinitionResourcedBuilder =
-			_dataDefinitionResourceFactory.create();
-
-		DataDefinitionResource dataDefinitionResource =
-			dataDefinitionResourcedBuilder.user(
-				TestPropsValues.getUser()
-			).build();
-
 		Class<?> clazz = getClass();
 
 		DataDefinition updatedDataDefinition = DataDefinition.toDTO(
@@ -493,26 +527,16 @@ public class DDMStructureModelListenerTest {
 
 		updatedDataDefinition.setDataDefinitionKey(dataDefinitionKey);
 
-		dataDefinitionResource.putDataDefinition(
-			_dataDefinition.getId(), updatedDataDefinition);
+		_putDataDefinition(updatedDataDefinition);
 	}
 
 	private DataDefinition _updateDataDefinitionStructureKey(
 			String dataDefinitionKey)
 		throws Exception {
 
-		DataDefinitionResource.Builder dataDefinitionResourcedBuilder =
-			_dataDefinitionResourceFactory.create();
-
-		DataDefinitionResource dataDefinitionResource =
-			dataDefinitionResourcedBuilder.user(
-				TestPropsValues.getUser()
-			).build();
-
 		_dataDefinition.setDataDefinitionKey(dataDefinitionKey);
 
-		return dataDefinitionResource.putDataDefinition(
-			_dataDefinition.getId(), _dataDefinition);
+		return _putDataDefinition(_dataDefinition);
 	}
 
 	private static final Map<String, List<String>> _expectedFieldValuesMap =
