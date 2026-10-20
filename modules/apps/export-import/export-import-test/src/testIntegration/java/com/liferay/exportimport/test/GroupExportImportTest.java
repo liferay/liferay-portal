@@ -6,6 +6,8 @@
 package com.liferay.exportimport.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportGroup;
@@ -17,11 +19,17 @@ import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
+import com.liferay.layout.provider.LayoutStructureProvider;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -37,6 +45,7 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -44,12 +53,14 @@ import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.staging.StagingGroupHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +73,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Petteri Karttunen
@@ -323,6 +339,45 @@ public class GroupExportImportTest {
 	}
 
 	@Test
+	public void testImportGroupsWithReferencesToOtherGroup() throws Exception {
+		Group group2 = GroupTestUtil.addGroup();
+
+		FileEntry fileEntry = _addFileEntry(group2);
+
+		Layout layout1 = LayoutTestUtil.addTypeContentLayout(_group);
+		Layout layout2 = LayoutTestUtil.addTypeContentLayout(group2);
+
+		_addItemToLayout(layout1, fileEntry, layout2);
+
+		File file = _exportLayouts(_group, group2);
+
+		_deleteLayout(layout1);
+		_deleteLayout(layout2);
+
+		_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_importLayoutsWithMissingReferences(file, _group, group2);
+
+		_assertMissingReference(
+			FileEntry.class.getName(), fileEntry.getExternalReferenceCode(),
+			group2.getGroupId(), exportImportReportEntries);
+		_assertMissingReference(
+			Layout.class.getName(), layout2.getExternalReferenceCode(),
+			group2.getGroupId(), exportImportReportEntries);
+
+		Assert.assertNotNull(
+			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
+				group2.getGroupId(), fileEntry.getExternalReferenceCode()));
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				layout1.getExternalReferenceCode(), _group.getGroupId()));
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				layout2.getExternalReferenceCode(), group2.getGroupId()));
+	}
+
+	@Test
 	public void testImportGroupsWithUnselectedGroup() throws Exception {
 		Group group2 = GroupTestUtil.addGroup();
 
@@ -345,6 +400,53 @@ public class GroupExportImportTest {
 				layout2.getExternalReferenceCode(), group2.getGroupId()));
 	}
 
+	private FileEntry _addFileEntry(Group group) throws Exception {
+		return _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
+			RandomTestUtil.randomBytes(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+	}
+
+	private void _addItemToLayout(
+			Layout layout, FileEntry linkedFileEntry, Layout linkedLayout)
+		throws Exception {
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addItemToLayout(
+			JSONUtil.put(
+				"link",
+				JSONUtil.put(
+					"layout",
+					JSONUtil.put(
+						"groupId", linkedLayout.getGroupId()
+					).put(
+						"layoutId", linkedLayout.getLayoutId()
+					).put(
+						"privateLayout", linkedLayout.isPrivateLayout()
+					))
+			).put(
+				"styles",
+				JSONUtil.put(
+					"backgroundImage",
+					JSONUtil.put(
+						"classNameId", _portal.getClassNameId(FileEntry.class)
+					).put(
+						"classPK", linkedFileEntry.getFileEntryId()
+					).put(
+						"fileEntryId", linkedFileEntry.getFileEntryId()
+					))
+			).toString(),
+			LayoutDataItemTypeConstants.TYPE_CONTAINER, draftLayout,
+			_layoutStructureProvider,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+	}
+
 	private void _assertExportGroupsIsSkipped(Group group) throws Exception {
 		File file = _exportLayouts(group.getGroupId(), _group);
 
@@ -359,6 +461,23 @@ public class GroupExportImportTest {
 		finally {
 			FileUtil.delete(file);
 		}
+	}
+
+	private void _assertMissingReference(
+		String expectedClassName, String expectedExternalReferenceCode,
+		long expectedGroupId,
+		List<ExportImportReportEntry> exportImportReportEntries) {
+
+		Assert.assertTrue(
+			ListUtil.exists(
+				exportImportReportEntries,
+				exportImportReportEntry ->
+					(exportImportReportEntry.getClassNameId() ==
+						_portal.getClassNameId(expectedClassName)) &&
+					Objects.equals(
+						exportImportReportEntry.getClassExternalReferenceCode(),
+						expectedExternalReferenceCode) &&
+					(exportImportReportEntry.getGroupId() == expectedGroupId)));
 	}
 
 	private void _deleteLayout(Layout layout) throws Exception {
@@ -498,6 +617,88 @@ public class GroupExportImportTest {
 		return exportImportConfiguration;
 	}
 
+	private List<ExportImportReportEntry> _importLayoutsWithMissingReferences(
+			File file, Group... groups)
+		throws Exception {
+
+		List<ExportImportReportEntry> addedExportImportReportEntries =
+			new ArrayList<>();
+		List<Long> deletedExportImportReportEntryIds = new ArrayList<>();
+
+		Bundle bundle = FrameworkUtil.getBundle(GroupExportImportTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				ModelListener.class,
+				new BaseModelListener<ExportImportReportEntry>() {
+
+					@Override
+					public Class<?> getModelClass() {
+						return ExportImportReportEntry.class;
+					}
+
+					@Override
+					public void onAfterCreate(
+						ExportImportReportEntry exportImportReportEntry) {
+
+						if (exportImportReportEntry.getType() ==
+								ExportImportReportEntryConstants.
+									TYPE_MISSING_REFERENCE) {
+
+							addedExportImportReportEntries.add(
+								exportImportReportEntry);
+						}
+					}
+
+					@Override
+					public void onAfterRemove(
+						ExportImportReportEntry exportImportReportEntry) {
+
+						deletedExportImportReportEntryIds.add(
+							exportImportReportEntry.
+								getExportImportReportEntryId());
+					}
+
+				},
+				null);
+
+		ExportImportConfiguration exportImportConfiguration = null;
+
+		try {
+			exportImportConfiguration = _importLayouts(
+				file, _getExternalReferenceCodes(groups));
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		Assert.assertFalse(addedExportImportReportEntries.isEmpty());
+
+		for (ExportImportReportEntry exportImportReportEntry :
+				addedExportImportReportEntries) {
+
+			Assert.assertTrue(
+				deletedExportImportReportEntryIds.contains(
+					exportImportReportEntry.getExportImportReportEntryId()));
+		}
+
+		Assert.assertFalse(
+			ListUtil.exists(
+				_exportImportReportEntryLocalService.
+					getExportImportReportEntries(
+						TestPropsValues.getCompanyId(),
+						exportImportConfiguration.
+							getExportImportConfigurationId()),
+				exportImportReportEntry ->
+					exportImportReportEntry.getType() ==
+						ExportImportReportEntryConstants.
+							TYPE_MISSING_REFERENCE));
+
+		return addedExportImportReportEntries;
+	}
+
 	private void _updateParentGroupId(Group group, long parentGroupId)
 		throws Exception {
 
@@ -510,6 +711,9 @@ public class GroupExportImportTest {
 	}
 
 	private Group _companyGroup;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
 	private ExportImportConfigurationLocalService
@@ -536,6 +740,15 @@ public class GroupExportImportTest {
 
 	@Inject
 	private LayoutService _layoutService;
+
+	@Inject
+	private LayoutStructureProvider _layoutStructureProvider;
+
+	@Inject
+	private Portal _portal;
+
+	@Inject
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Inject
 	private StagingGroupHelper _stagingGroupHelper;
