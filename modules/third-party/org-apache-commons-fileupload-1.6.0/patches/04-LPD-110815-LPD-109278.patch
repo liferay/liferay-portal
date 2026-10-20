@@ -1,0 +1,27 @@
+diff --git a/org/apache/commons/fileupload/servlet/ServletRequestContext.java b/org/apache/commons/fileupload/servlet/ServletRequestContext.java
+index 7ac5aabeaa397..6a40d814f050c 100644
+--- a/org/apache/commons/fileupload/servlet/ServletRequestContext.java
++++ b/org/apache/commons/fileupload/servlet/ServletRequestContext.java
+@@ -54,9 +54,15 @@ public class ServletRequestContext implements UploadContext {
+      */
+     @Override
+     public long contentLength() {
++        String header = request.getHeader(FileUploadBase.CONTENT_LENGTH);
++
++        if ((header == null) || (header.length() == 0)) {
++            return request.getContentLength();
++        }
++
+         long size;
+         try {
+-            size = Long.parseLong(request.getHeader(FileUploadBase.CONTENT_LENGTH));
++            size = Long.parseLong(header);
+         } catch (final NumberFormatException e) {
+             size = request.getContentLength();
+         }
+@@ -118,3 +124,4 @@ public class ServletRequestContext implements UploadContext {
+     }
+ 
+ }
++/* @generated */
+\ No newline at end of file
