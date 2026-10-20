@@ -61,7 +61,7 @@ public class CategoriesCMSTableFDSView extends BaseCMSTableFDSView {
 		).setFieldName(
 			"numberOfTaxonomyCategories"
 		).setLabel(
-			"subcategories"
+			"subcategories[category]"
 		).setSortable(
 			true
 		);

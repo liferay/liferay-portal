@@ -165,7 +165,7 @@
 							<c:if test="<%= !layoutRevision.isIncomplete() %>">
 								<li>
 									<a class="dropdown-item" href="javascript:Liferay.fire('<portlet:namespace />viewHistory', {layoutRevisionId: '<%= layoutRevision.getLayoutRevisionId() %>', layoutSetBranchId: '<%= layoutRevision.getLayoutSetBranchId() %>'}); void(0);">
-										<liferay-ui:message key="history" />
+										<liferay-ui:message key="history[record]" />
 									</a>
 								</li>
 							</c:if>

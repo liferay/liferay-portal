@@ -101,7 +101,7 @@ public class AssetCategoryCTDisplayRenderer
 		).display(
 			"path", assetCategory.getPath(displayBuilder.getLocale(), true)
 		).display(
-			"subcategories",
+			"subcategories[category]",
 			_assetCategoryLocalService.getChildCategoriesCount(
 				assetCategory.getCategoryId())
 		);

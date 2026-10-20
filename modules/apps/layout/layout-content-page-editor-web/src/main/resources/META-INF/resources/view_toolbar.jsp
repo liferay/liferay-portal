@@ -66,7 +66,7 @@ ContentPageEditorDisplayContext contentPageEditorDisplayContext = (ContentPageEd
 						icon="time"
 						monospaced="<%= true %>"
 						small="<%= true %>"
-						title="history"
+						title="history[record]"
 					/>
 				</span>
 			</li>

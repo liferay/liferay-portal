@@ -182,7 +182,7 @@ public class StagingBarDisplayContext {
 					LiferayWindowState.POP_UP
 				).buildString());
 			dropdownItem.setLabel(
-				LanguageUtil.get(_themeDisplay.getLocale(), "history"));
+				LanguageUtil.get(_themeDisplay.getLocale(), "history[record]"));
 		};
 	}
 

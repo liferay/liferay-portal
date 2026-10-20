@@ -188,7 +188,7 @@ public class ViewVersionHistoryDisplayContext {
 			StringBundler.concat(
 				StringPool.QUOTE,
 				_objectEntry.getTitleValue(_themeDisplay.getLanguageId(), true),
-				"\" ", _language.get(_themeDisplay.getLocale(), "history"))
+				"\" ", _language.get(_themeDisplay.getLocale(), "history[record]"))
 		).build();
 	}
 

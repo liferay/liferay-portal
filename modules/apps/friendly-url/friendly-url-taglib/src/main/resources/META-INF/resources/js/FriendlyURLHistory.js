@@ -60,7 +60,7 @@ export default function FriendlyURLHistory({
 	return (
 		<>
 			<ClayButtonWithIcon
-				aria-label={Liferay.Language.get('history')}
+				aria-label={Liferay.Language.get('history[record]')}
 				borderless
 				className={classNames('btn-url-history', {
 					['btn-url-history-localizable']: localizable,
@@ -78,7 +78,7 @@ export default function FriendlyURLHistory({
 				outline
 				small
 				symbol="time"
-				title={Liferay.Language.get('history')}
+				title={Liferay.Language.get('history[record]')}
 			/>
 			{showModal && (
 				<FriendlyURLHistoryModal

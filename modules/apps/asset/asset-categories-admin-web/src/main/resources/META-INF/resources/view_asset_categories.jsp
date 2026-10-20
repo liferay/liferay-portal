@@ -199,7 +199,7 @@ AssetCategoryActionDropdownItemsProvider assetCategoryActionDropdownItemsProvide
 
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-expand-smaller table-column-text-center"
-								name="subcategories"
+								name="subcategories[category]"
 								value="<%= String.valueOf(subcategoriesCount) %>"
 							/>
 						</c:otherwise>

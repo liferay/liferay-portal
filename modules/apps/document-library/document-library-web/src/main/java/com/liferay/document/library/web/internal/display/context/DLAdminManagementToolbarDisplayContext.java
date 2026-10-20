@@ -769,7 +769,7 @@ public class DLAdminManagementToolbarDisplayContext
 				labelItem.setCloseable(true);
 
 				labelItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "recent"));
+					LanguageUtil.get(httpServletRequest, "recent[items]"));
 			});
 
 		return labelItemListWrapper.build();
@@ -824,7 +824,7 @@ public class DLAdminManagementToolbarDisplayContext
 						"recent"
 					).buildPortletURL());
 				dropdownItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "recent"));
+					LanguageUtil.get(_httpServletRequest, "recent[items]"));
 			}
 		).add(
 			_themeDisplay::isSignedIn,

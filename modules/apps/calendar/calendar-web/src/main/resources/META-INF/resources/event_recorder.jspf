@@ -51,7 +51,7 @@
 
 				<tr>
 					<td>
-						<liferay-ui:message key="when" />:
+						<liferay-ui:message key="when[date-time]" />:
 					</td>
 					<td>
 						<label class="scheduler-event-recorder-date">{date}</label>

@@ -89,7 +89,7 @@ const ACTIONS = {
 			onClose: () => {
 				window.location.reload();
 			},
-			title: Liferay.Language.get('history'),
+			title: Liferay.Language.get('history[record]'),
 			url: viewHistoryURL,
 		});
 	},

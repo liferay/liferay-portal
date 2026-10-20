@@ -97,7 +97,7 @@ export function LayoutSelector({className = 'ml-3', layoutType}) {
 			}
 		>
 			<ClayDropDown.ItemList>
-				<ClayDropDown.Group header={Liferay.Language.get('recent')}>
+				<ClayDropDown.Group header={Liferay.Language.get('recent[items]')}>
 					{recentLayouts.map((layout) => (
 						<ClayDropDown.Item
 							className="align-items-center d-flex"

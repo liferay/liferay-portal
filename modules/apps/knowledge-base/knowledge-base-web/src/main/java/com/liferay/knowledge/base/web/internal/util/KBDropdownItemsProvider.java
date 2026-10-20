@@ -755,7 +755,7 @@ public class KBDropdownItemsProvider {
 			dropdownItem.setIcon("date-time");
 			dropdownItem.setLabel(
 				LanguageUtil.get(
-					_liferayPortletRequest.getHttpServletRequest(), "history"));
+					_liferayPortletRequest.getHttpServletRequest(), "history[record]"));
 		};
 	}
 

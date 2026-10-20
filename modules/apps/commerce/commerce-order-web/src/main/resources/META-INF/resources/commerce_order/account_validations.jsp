@@ -39,7 +39,7 @@ long commerceOrderId = ParamUtil.getLong(request, "commerceOrderId");
 	</c:if>
 
 	<commerce-ui:panel
-		title='<%= LanguageUtil.get(request, "history") %>'
+		title='<%= LanguageUtil.get(request, "history[record]") %>'
 	>
 		<frontend-data-set:headless-display
 			additionalProps="<%= commerceOrderAccountValidationsDisplayContext.getAdditionalProps() %>"

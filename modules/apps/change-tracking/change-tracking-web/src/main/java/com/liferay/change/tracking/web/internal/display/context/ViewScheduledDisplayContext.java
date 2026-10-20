@@ -114,7 +114,7 @@ public class ViewScheduledDisplayContext {
 					_renderResponse.createRenderURL(), "mvcRenderCommandName",
 					"/change_tracking/view_history");
 				navigationItem.setLabel(
-					_language.get(_httpServletRequest, "history"));
+					_language.get(_httpServletRequest, "history[record]"));
 			}
 		).build();
 	}

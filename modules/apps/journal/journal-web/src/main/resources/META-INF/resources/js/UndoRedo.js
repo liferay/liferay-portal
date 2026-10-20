@@ -510,13 +510,13 @@ export default function UndoRedo({
 				onActiveChange={setActive}
 				trigger={
 					<ClayButton
-						aria-label={Liferay.Language.get('history')}
+						aria-label={Liferay.Language.get('history[record]')}
 						aria-pressed={active}
 						className="px-2"
 						disabled={history.length <= 1}
 						displayType="secondary"
 						size="sm"
-						title={Liferay.Language.get('history')}
+						title={Liferay.Language.get('history[record]')}
 					>
 						<span className="inline-item inline-item-before">
 							<ClayIcon symbol="time" />

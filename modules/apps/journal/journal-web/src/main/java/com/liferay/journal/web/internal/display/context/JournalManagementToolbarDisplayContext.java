@@ -465,7 +465,7 @@ public class JournalManagementToolbarDisplayContext
 					).buildString());
 				labelItem.setCloseable(true);
 				labelItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "recent"));
+					LanguageUtil.get(httpServletRequest, "recent[items]"));
 			}
 		).add(
 			_journalDisplayContext::isNavigationStructure,
@@ -711,7 +711,7 @@ public class JournalManagementToolbarDisplayContext
 					"navigationRecent", Boolean.TRUE
 				).buildPortletURL()
 			).setLabel(
-				LanguageUtil.get(httpServletRequest, "recent")
+				LanguageUtil.get(httpServletRequest, "recent[items]")
 			).build());
 
 		if (!_journalDisplayContext.isHighlightedDDMStructure()) {

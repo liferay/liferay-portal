@@ -168,7 +168,7 @@ public class BookmarksManagementToolbarDisplayContext {
 
 				labelItem.setCloseable(true);
 				labelItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "recent"));
+					LanguageUtil.get(_httpServletRequest, "recent[items]"));
 			}
 		).build();
 	}

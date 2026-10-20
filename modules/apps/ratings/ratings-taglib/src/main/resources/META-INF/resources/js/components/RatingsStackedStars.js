@@ -56,7 +56,7 @@ export default function RatingsStackedStars({
 					{!!totalEntries &&
 						` (${totalEntries} ${
 							totalEntries === 1
-								? Liferay.Language.get('vote')
+								? Liferay.Language.get('vote[noun]')
 								: Liferay.Language.get('votes')
 						})`}
 				</span>

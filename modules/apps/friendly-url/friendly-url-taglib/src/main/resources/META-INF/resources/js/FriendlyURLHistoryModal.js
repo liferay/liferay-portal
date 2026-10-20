@@ -220,7 +220,7 @@ const FriendlyURLHistoryModal = ({
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{Liferay.Language.get('history')}
+				{Liferay.Language.get('history[record]')}
 			</ClayModal.Header>
 
 			<ClayModal.Body>

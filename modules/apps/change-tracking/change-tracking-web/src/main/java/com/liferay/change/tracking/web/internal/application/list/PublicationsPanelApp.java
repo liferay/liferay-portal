@@ -84,7 +84,7 @@ public class PublicationsPanelApp extends BasePanelApp {
 
 		panelAppNavigationItems.add(
 			_getPanelAppNavigationItem(
-				httpServletRequest, "history", "/change_tracking/view_history",
+				httpServletRequest, "history[record]", "/change_tracking/view_history",
 				themeDisplay));
 
 		return panelAppNavigationItems;

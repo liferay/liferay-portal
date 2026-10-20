@@ -48,7 +48,7 @@ else if (navigation.equals("history")) {
 	}
 
 	PortalUtil.addPortletBreadcrumbEntry(
-		request, LanguageUtil.get(request, "history"),
+		request, LanguageUtil.get(request, "history[record]"),
 		PortletURLBuilder.create(
 			PortletURLUtil.clone(portletURL, renderResponse)
 		).setMVCRenderCommandName(

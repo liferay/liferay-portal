@@ -59,7 +59,7 @@ public class HistoryComponentSectionFragmentRenderer
 
 	@Override
 	protected String getLabelKey() {
-		return "history";
+		return "history[record]";
 	}
 
 	@Override

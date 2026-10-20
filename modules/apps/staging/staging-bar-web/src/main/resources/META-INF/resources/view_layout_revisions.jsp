@@ -29,7 +29,7 @@ List<LayoutRevision> rootLayoutRevisions = LayoutRevisionLocalServiceUtil.getChi
 %>
 
 <liferay-util:include page="/navigation.jsp" servletContext="<%= application %>">
-	<liferay-util:param name="navigationName" value="history" />
+	<liferay-util:param name="navigationName" value="history[record]" />
 </liferay-util:include>
 
 <clay:container-fluid>

@@ -116,7 +116,7 @@ export default function ItemSelector({
 			transformedMappedItems = [
 				{
 					items: transformedMappedItems,
-					label: Liferay.Language.get('recent'),
+					label: Liferay.Language.get('recent[items]'),
 					type: 'group',
 				},
 			];
