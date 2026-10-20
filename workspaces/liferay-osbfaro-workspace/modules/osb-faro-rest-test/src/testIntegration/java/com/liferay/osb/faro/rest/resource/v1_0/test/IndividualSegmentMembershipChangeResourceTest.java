@@ -176,14 +176,14 @@ public class IndividualSegmentMembershipChangeResourceTest
 	private void _testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeEndAndRangeStart()
 		throws Exception {
 
-		String rangeEnd = "2026-01-31";
-		String rangeStart = "2026-01-01";
+		String rangeEndLocalDateString = "2026-01-31";
+		String rangeStartLocalDateString = "2026-01-01";
 
 		Object[] arguments = _getIndividualSegmentMembershipChangesArguments(
-			rangeEnd, rangeStart);
+			rangeEndLocalDateString, rangeStartLocalDateString);
 
-		Assert.assertEquals(_toDate(LocalDate.parse(rangeEnd)), arguments[4]);
-		Assert.assertEquals(_toDate(LocalDate.parse(rangeStart)), arguments[3]);
+		Assert.assertEquals(_toDate(LocalDate.parse(rangeEndLocalDateString)), arguments[4]);
+		Assert.assertEquals(_toDate(LocalDate.parse(rangeStartLocalDateString)), arguments[3]);
 	}
 
 	private void _testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeStart()
