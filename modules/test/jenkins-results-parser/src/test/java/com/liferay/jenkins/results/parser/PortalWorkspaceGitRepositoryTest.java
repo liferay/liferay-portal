@@ -183,8 +183,6 @@ public class PortalWorkspaceGitRepositoryTest
 		).put(
 			"base_branch_head_sha", baseBranchSHA
 		).put(
-			"base_branch_sha", baseBranchSHA
-		).put(
 			"base_branch_username", RandomTestUtil.randomString()
 		).put(
 			"directory",
@@ -199,8 +197,6 @@ public class PortalWorkspaceGitRepositoryTest
 			"sender_branch_head_sha", senderBranchSHA
 		).put(
 			"sender_branch_name", "master"
-		).put(
-			"sender_branch_sha", senderBranchSHA
 		).put(
 			"sender_branch_username", RandomTestUtil.randomString()
 		).put(
