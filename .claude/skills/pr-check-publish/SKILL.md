@@ -52,6 +52,8 @@ Post a fresh comment on each run rather than editing a prior one, so the PR keep
 <!-- pr-check {"result": "success", "sha": "<tested-SHA>"} -->
 ```
 
+When `build/test-plan/result.json` exists and its `head` is the tested SHA, add a `Test plan: <count> run, <passed> passed.` line between the Results Summary block and the marker. Leave it out otherwise. Put a blank line before and after it. `<count>` is the number of entries in `tests`. `<passed>` is the number of those entries whose `result` is `passed`.
+
 Post the body with `--body-file`, or with `--body` from a quoted-heredoc variable; either keeps the marker's literal `!` off the command line, where it could otherwise trigger history expansion and corrupt the marker. Use `mktemp` for the file so it stays out of the working tree, and remove it afterward.
 
 ```bash

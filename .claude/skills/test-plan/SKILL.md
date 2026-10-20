@@ -1,7 +1,7 @@
 ---
 
 allowed-tools: [Agent, Bash, Glob, Grep, Read]
-description: Generate a targeted local test plan for branch changes. Use when the user wants to know which tests to run before merging, asks for a test plan, wants to validate changes locally, or mentions running tests for their branch. This skill analyzes commits on top of master and produces a runnable shell script covering Unit, Integration, Playwright, and Poshi tests within a 20-minute local budget.
+description: Generate a targeted local test plan for branch changes. Use when the user wants to know which tests to run before merging, asks for a test plan, wants to validate changes locally, or mentions running tests for their branch. This skill analyzes commits on top of master. It builds and starts the portal, then writes and runs a shell script of integration, Playwright, and Poshi tests that fits a 20 minute local budget.
 name: test-plan
 
 ---
@@ -11,6 +11,8 @@ name: test-plan
 Produce a runnable shell script that executes the tests most likely to regress given the current branch's changes compared to master.
 
 The full test suite takes hours to run, so the team merges aggressively and relies on a daily full-suite run that delivers results within 24 hours of merge. This skill produces a focused premerge script (under 20 minutes) that mitigates risk without attempting full coverage — its goal is to catch the most likely regressions, not every possible one.
+
+Include only integration, Playwright, and Poshi tests. Never add a unit test.
 
 ## How This Project Organizes Tests
 
@@ -30,6 +32,22 @@ git log master..HEAD --oneline
 ```
 
 Read the changed files to understand what the changes actually do — not merely which files were touched, but what behavior changed. This understanding drives the test selection.
+
+### Required Tests
+
+Every plan includes these tests:
+
+- **Smoke Tests**: For each row of the table after this list that the diff matches, include that row's test from `modules/test/portal-smoke-test`.
+- **Tests the Branch Changed**: Include every integration test, Playwright spec, and Poshi testcase that `git diff master...HEAD --name-only` lists.
+
+| Changed Path | Condition | Test |
+| --- | --- | --- |
+| `*.batch-engine-data.json` | Any change | `CompanyLocalServiceTest` |
+| `resource-actions/*.xml` | Any change | `ResourceActionsDefinitionTest` |
+| `src/main/java/**/*Configuration.java` | Any change | `ModuleConfigurationLocalizationTest` |
+| `src/main/java/**/*Portlet.java` | Added | `PortletTitleTest` |
+| `src/main/java/**/*ResourceImpl.java` | Added, or its `implements` line changed | `JAXRSResourceTest` |
+| `src/main/resources/site-initializer/**` | Any change | `BundleSiteInitializerTest` |
 
 ### Identify What Could Regress
 
@@ -51,70 +69,97 @@ For each area that could regress, search for test files. Use parallel Agent and 
 
 ### Prioritize Within the 20-Minute Budget
 
-Apply the following priority order:
+Put every required test in the script's `# Required` block. **Write the Script** shows where that block goes. Never drop a required test for any reason, including the budget.
 
-**Always include:**
+The 20 minutes include starting or restarting the portal. They do not include building it. Probe the portal as `.claude/rules/tomcat.md` describes before estimating the budget. Fill the `# Selected` block from what is left of the 20 minutes. Add only the tests the change needs, in this priority order:
 
-1. Unit tests for directly changed code — fast (approximately 5–15 seconds per class) and highest signal.
-
-1. Integration tests that directly exercise the changed functionality.
-
-1. Tests that exercise the core logic change end-to-end.
-
-**Include when budget allows:**
+1. Integration tests that directly exercise the changed functionality and are not already required.
 
 1. Representative integration tests from affected downstream modules — choose a few that cover distinct usage patterns rather than running them all.
 
 1. Playwright tests for affected web modules (approximately 1–3 minutes per spec).
 
-**Include when still within budget:**
-
 1. Poshi tests (approximately 2–5 minutes each).
 
-1. Additional downstream module tests for broader coverage.
+Drop a candidate test only when it does not fit the budget or when reading the test shows that it does not reach the change. Never drop a test because of reasoning about the change without reading the test.
 
 When the change affects many modules (for example, a framework change), do not attempt to test every single module. Choose a diverse sample that covers different usage patterns of the changed code.
 
+### Build and Start the Portal
+
+When `<bundles>` holds no `tomcat-*` directory, build the bundle first. From the repository root, run `ant -f build-dist.xml unzip-tomcat`. Then run `ant all -Dgradle.stop.daemon.enabled=false`.
+
+Deploy the branch to the bundle unless the step above or the `pr-check` skill already did. The `pr-check` skill already deployed the branch when a log under `build/pr-check/full-portal-build` or `build/pr-check/per-module-compile` reports `BUILD SUCCESSFUL`. The log must also be newer than the commit time that `git log -1 --format=%ct HEAD` prints. Otherwise, when the branch changes portal core, run `ant all -Dgradle.stop.daemon.enabled=false` from the repository root. Then run `<gradlew> deploy` from each changed module outside portal core whose name does not end in `-test`. Portal core is `portal-impl`, `portal-kernel`, `portal-test`, `portal-web`, `support-tomcat`, and the `util-*` projects.
+
+Probe the portal as `.claude/rules/tomcat.md` describes. Bounce it when the branch changes portal core. Otherwise, start it when it is not ready.
+
 ### Write the Script
 
-Delete any existing `test.sh` at the repository root, then write a new one. The script must be self-contained and runnable via `bash test.sh`. Use this structure:
+Write the script to `build/test-plan/test.sh` under the repository root. Create the directory if it does not exist. Delete any `build/test-plan/result.json` from an earlier run and any `test.sh` left at the repository root. The script must be self-contained and runnable via `bash build/test-plan/test.sh`. Use this structure:
 
 ```bash
 #!/usr/bin/env bash
 #
 # Test plan for branch: <branch-name>
-# Generated: <date>
+# Generated: <date> at <head-SHA>
 # Estimated time: <X>m / 20m budget
 #
 # Changes: <N> commits, <N> files changed
 # Affected areas: <list of module groups or components>
+#
+# Dropped:
+# - <test>: <reason>
 #
 
 set -o errexit
 set -o nounset
 set -o pipefail
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
 _EXIT_CODE=0
+_RESULTS=()
+
+function _run {
+	if "${@}"
+	then
+		_RESULTS+=("{\"command\": \"${*}\", \"result\": \"passed\"}")
+	else
+		_EXIT_CODE=1
+
+		_RESULTS+=("{\"command\": \"${*}\", \"result\": \"failed\"}")
+	fi
+}
+
+# Required
 
 <test commands — one per line, no blank lines between them>
+
+# Selected
+
+<test commands — one per line, no blank lines between them>
+
+printf '{"head": "%s", "tests": [%s]}\n' "$(git rev-parse HEAD)" "$(IFS=,; echo "${_RESULTS[*]-}")" > build/test-plan/result.json
 
 exit ${_EXIT_CODE}
 ```
 
 **Critical rules for the script:**
 
-- Replace `<test commands>` with the actual commands discovered during selection.
-- Suffix every command with `|| _EXIT_CODE=1` so failures are recorded without halting execution. The `||` recovery neutralizes `errexit` on test failures while keeping the strict-mode block in place for unrecovered errors. The script exits with `${_EXIT_CODE}` at the end — `0` when all tests pass, `1` when any fail.
+- Replace each `<test commands>` block with the actual commands. Start every command with `_run`. The script exits with `${_EXIT_CODE}` at the end — `0` when all tests pass, `1` when any fail.
 - Use `./gradlew --project-dir ./modules` for Gradle tasks (the script's `cd` puts the repository root as the working directory).
 - Use `npx --prefix ./modules/test/playwright playwright test` for Playwright.
-- All test types (Unit, Integration, Playwright, Poshi) run directly — the portal is assumed to be running.
-- Precede each command with a single-line comment explaining why it was selected. State the rationale; do not restate the test name or module.
+- Precede each command with a single line comment explaining why it is in the plan. State the rationale; do not restate the test name or module.
+- When nothing is required, write `# Nothing required` under the `# Required` comment. Do not leave the comment out.
+- List every dropped candidate with its reason under `# Dropped:` in the script's header comment.
 
-After writing the script, mark it executable with `chmod +x test.sh` and instruct the user to run it via `./test.sh`.
+After writing the script, mark it executable with `chmod +x build/test-plan/test.sh`.
+
+### Run the Script
+
+Run `build/test-plan/test.sh`. Report each test's result from `build/test-plan/result.json`. Leave the portal running.
 
 ## Guidelines
 
 - Verify every test file exists before adding it to the script.
-- When the changes are purely cosmetic (formatting, comments), say so and generate a script that exits `0` with a header explaining why.
+- When nothing is required and the changes are purely cosmetic, such as formatting or comments, say so. Skip building and starting the portal. Generate a script that exits `0`, with a header that explains why.

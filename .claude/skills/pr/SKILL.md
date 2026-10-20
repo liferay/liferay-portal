@@ -107,6 +107,8 @@ This optional section is only included when the commits do not add any tests. It
 
 The **PR Check** section is the Results Summary block emitted by the `pr-check` skill that ran as the precondition — the overall state line, the tested SHA, the table of validations, and every note appended below it, since any row can carry a note, a `PASS` included — pasted verbatim, followed by a hidden marker. The marker is an HTML comment, invisible in rendered Markdown, whose payload is a JSON object of the form `<!-- pr-check {"result": "<state>", "sha": "<tested-SHA>"} -->`, where `<state>` is `success` when the overall state is `PASS` and `failure` when it is `FAIL`, so a run carrying `NOT VERIFIED` rows records `success`, and `<tested-SHA>` is the full 40-character SHA from the Results Summary. The webhook reads the `result` and `sha` fields to apply the `pr-check` commit status to that SHA and the `pr-check - <state>` label to the PR, so this skill records no status or label itself.
 
+When `build/test-plan/result.json` exists and its `head` is the tested SHA, add a `Test plan: <count> run, <passed> passed.` line between the Results Summary block and the marker. Leave it out otherwise. Put a blank line before and after it. `<count>` is the number of entries in `tests`. `<passed>` is the number of those entries whose `result` is `passed`.
+
 When pr-check was skipped via `--skip-pr-check`, still write the section, but as a skip rather than a run. Under the same `## PR Check` heading, the body is a single `**pr-check: SKIPPED** — <reason>` line with no table, and the marker payload adds a `reason` field alongside `result` (set to `skipped`) and the PR head SHA. The JSON object keys are alphabetical (`reason`, `result`, `sha`).
 
 ```markdown
