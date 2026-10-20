@@ -274,8 +274,6 @@ public class PullRequestPortalTopLevelBuild
 		WorkspaceGitRepository workspaceGitRepository =
 			workspace.getPrimaryWorkspaceGitRepository();
 
-		workspaceGitRepository.setGitHubURL(pullRequest.getHtmlURL());
-
 		String upstreamBranchUsername = getParameterValue(
 			"GITHUB_UPSTREAM_BRANCH_USERNAME");
 
@@ -284,16 +282,18 @@ public class PullRequestPortalTopLevelBuild
 				upstreamBranchUsername);
 		}
 
-		String senderBranchSHA = _getSenderBranchSHA();
-
-		if (JenkinsResultsParserUtil.isSHA(senderBranchSHA)) {
-			workspaceGitRepository.setSenderBranchSHA(senderBranchSHA);
-		}
+		workspaceGitRepository.setGitHubURL(pullRequest.getHtmlURL());
 
 		String upstreamBranchSHA = _getUpstreamBranchSHA();
 
 		if (JenkinsResultsParserUtil.isSHA(upstreamBranchSHA)) {
 			workspaceGitRepository.setBaseBranchSHA(upstreamBranchSHA);
+		}
+
+		String senderBranchSHA = _getSenderBranchSHA();
+
+		if (JenkinsResultsParserUtil.isSHA(senderBranchSHA)) {
+			workspaceGitRepository.setSenderBranchSHA(senderBranchSHA);
 		}
 
 		return workspace;
