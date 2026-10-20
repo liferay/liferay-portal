@@ -68,15 +68,15 @@ public class TalendDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 			throw new PortalException("Unable to fetch Talend archive");
 		}
 
-		if (_log.isTraceEnabled()) {
-			_log.trace(
-				"Execute Talend process for dispatch trigger ID " +
-					dispatchTrigger.getDispatchTriggerId());
-		}
-
 		try {
 			TalendProcess talendProcess = _getTalendProcess(
 				dispatchTrigger, talendArchive);
+
+			if (_log.isTraceEnabled()) {
+				_log.trace(
+					"Execute Talend process for dispatch trigger ID " +
+						dispatchTrigger.getDispatchTriggerId());
+			}
 
 			ProcessChannel<TalendProcessOutput> processChannel =
 				_processExecutor.execute(
