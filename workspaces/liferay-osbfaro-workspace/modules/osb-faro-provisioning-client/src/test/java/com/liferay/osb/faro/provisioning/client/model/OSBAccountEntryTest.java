@@ -24,9 +24,6 @@ public class OSBAccountEntryTest {
 		OSBAccountEntry osbAccountEntry = new OSBAccountEntry(
 			_getAccount(
 				_getExternalLink(
-					KoroneikiConstants.DOMAIN_DOSSIERA, "dossieraAccountId",
-					KoroneikiConstants.ENTITY_NAME_ACCOUNT),
-				_getExternalLink(
 					KoroneikiConstants.DOMAIN_SALESFORCE, "salesforceAccountId",
 					KoroneikiConstants.ENTITY_NAME_ACCOUNT)));
 

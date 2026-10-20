@@ -32,24 +32,17 @@ public class OSBAccountEntry {
 
 		if (ArrayUtil.isNotEmpty(externalLinks)) {
 			for (ExternalLink externalLink : externalLinks) {
-				if (StringUtil.equals(
+				if (!StringUtil.equals(
 						externalLink.getDomain(),
-						KoroneikiConstants.DOMAIN_DOSSIERA) &&
-					StringUtil.equals(
-						externalLink.getEntityId(),
+						KoroneikiConstants.DOMAIN_SALESFORCE) ||
+					!StringUtil.equals(
+						externalLink.getEntityName(),
 						KoroneikiConstants.ENTITY_NAME_ACCOUNT)) {
 
-					_dossieraAccountKey = externalLink.getEntityId();
+					continue;
 				}
-				else if (StringUtil.equals(
-							externalLink.getDomain(),
-							KoroneikiConstants.DOMAIN_SALESFORCE) &&
-						 StringUtil.equals(
-							 externalLink.getEntityName(),
-							 KoroneikiConstants.ENTITY_NAME_ACCOUNT)) {
 
-					_salesforceAccountId = externalLink.getEntityId();
-				}
+				_salesforceAccountId = externalLink.getEntityId();
 			}
 		}
 
@@ -90,10 +83,6 @@ public class OSBAccountEntry {
 		}
 
 		return new Date(_createDate.getTime());
-	}
-
-	public String getDossieraAccountKey() {
-		return _dossieraAccountKey;
 	}
 
 	public long getHighestSupportResponseId() {
@@ -234,10 +223,6 @@ public class OSBAccountEntry {
 		}
 	}
 
-	public void setDossieraAccountKey(String dossieraAccountKey) {
-		_dossieraAccountKey = dossieraAccountKey;
-	}
-
 	public void setHighestSupportResponseId(long highestSupportResponseId) {
 		_highestSupportResponseId = highestSupportResponseId;
 	}
@@ -347,7 +332,6 @@ public class OSBAccountEntry {
 	private String _corpProjectUuid;
 	private long _countryId;
 	private Date _createDate;
-	private String _dossieraAccountKey;
 	private long _highestSupportResponseId;
 	private long _industry;
 	private String _instructions;

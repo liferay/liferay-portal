@@ -1222,7 +1222,7 @@ public class ProjectFaroController extends BaseFaroController {
 
 		try {
 			faroProject = _faroProjectLocalService.addFaroProject(
-				user.getUserId(), name, osbAccountEntry.getDossieraAccountKey(),
+				user.getUserId(), name, null,
 				osbAccountEntry.getCorpEntryName(), osbAccountEntry.getName(),
 				corpProjectUuid, emailAddressDomains, friendlyURL,
 				JSONUtil.writeValueAsString(incidentReportEmailAddresses),

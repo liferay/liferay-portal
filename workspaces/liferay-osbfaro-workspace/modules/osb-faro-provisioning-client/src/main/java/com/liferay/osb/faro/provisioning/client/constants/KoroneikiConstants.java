@@ -16,8 +16,6 @@ public class KoroneikiConstants {
 
 	public static final String DOMAIN_ANALYTICS_CLOUD = "analytics-cloud";
 
-	public static final String DOMAIN_DOSSIERA = "dossiera";
-
 	public static final String DOMAIN_SALESFORCE = "salesforce";
 
 	public static final String DOMAIN_WEB = "web";

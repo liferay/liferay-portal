@@ -135,7 +135,6 @@ public class MockProvisioningClientImpl extends BaseMockProvisioningClientImpl {
 
 				setCorpEntryName("Mock Project");
 				setCorpProjectUuid(FaroPropsValues.MOCK_PROJECT_ID);
-				setDossieraAccountKey("Mock Project");
 				setName("Mock Project");
 				setOfferingEntries(osbOfferingEntries);
 			}
@@ -188,7 +187,6 @@ public class MockProvisioningClientImpl extends BaseMockProvisioningClientImpl {
 
 				setCorpEntryName("Liferay Demo");
 				setCorpProjectUuid(FaroPropsValues.FARO_PROJECT_ID);
-				setDossieraAccountKey("Liferay Demo");
 				setName("Liferay Demo");
 				setOfferingEntries(osbOfferingEntries);
 			}

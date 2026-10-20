@@ -79,7 +79,7 @@ public class ProjectDisplay {
 	}
 
 	public ProjectDisplay(OSBAccountEntry osbAccountEntry) {
-		_accountKey = osbAccountEntry.getDossieraAccountKey();
+		_accountKey = osbAccountEntry.getSalesforceAccountId();
 		_accountName = osbAccountEntry.getCorpEntryName();
 		_corpProjectName = osbAccountEntry.getName();
 		_corpProjectUuid = osbAccountEntry.getCorpProjectUuid();
