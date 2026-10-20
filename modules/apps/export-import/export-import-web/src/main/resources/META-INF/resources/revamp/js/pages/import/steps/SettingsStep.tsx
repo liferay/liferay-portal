@@ -4,10 +4,10 @@
  */
 
 import {ClayRadio} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import React from 'react';
 
+import SectionHeader from '../../../components/SectionHeader';
 import {FormikFieldRadioGroup} from '../../../components/forms/formik';
 import {
 	DATA_STRATEGIES,
@@ -59,56 +59,50 @@ export default function SettingsStep({scope}: {scope: Scope}) {
 
 	return (
 		<>
-			<ClayLayout.Sheet>
-				<SectionHeader
-					name="userIdStrategy"
-					symbol="signature"
-					title={Liferay.Language.get('authorship-of-the-content')}
-				/>
+			<SectionHeader
+				className="mt-5"
+				id="userIdStrategy-label"
+				title={Liferay.Language.get('authorship-of-the-content')}
+			/>
 
+			<FormikFieldRadioGroup
+				aria-labelledby="userIdStrategy-label"
+				name="userIdStrategy"
+				options={[
+					{
+						description: Liferay.Language.get(
+							'use-the-original-author-help'
+						),
+						label: Liferay.Language.get('use-the-original-author'),
+						value: USER_ID_STRATEGIES.CURRENT_USER_ID,
+					},
+					{
+						description: Liferay.Language.get(
+							'use-the-current-user-as-author-help'
+						),
+						label: Liferay.Language.get(
+							'use-the-current-user-as-author'
+						),
+						value: USER_ID_STRATEGIES.ALWAYS_CURRENT_USER_ID,
+					},
+				]}
+			/>
+
+			<SectionHeader
+				className="mt-5"
+				id="dataStrategy-label"
+				title={Liferay.Language.get('update-data')}
+			/>
+
+			{dataStrategyOptions.length === 1 ? (
+				<ReadOnlyOption option={dataStrategyOptions[0]} />
+			) : (
 				<FormikFieldRadioGroup
-					aria-labelledby="userIdStrategy-label"
-					name="userIdStrategy"
-					options={[
-						{
-							description: Liferay.Language.get(
-								'use-the-original-author-help'
-							),
-							label: Liferay.Language.get(
-								'use-the-original-author'
-							),
-							value: USER_ID_STRATEGIES.CURRENT_USER_ID,
-						},
-						{
-							description: Liferay.Language.get(
-								'use-the-current-user-as-author-help'
-							),
-							label: Liferay.Language.get(
-								'use-the-current-user-as-author'
-							),
-							value: USER_ID_STRATEGIES.ALWAYS_CURRENT_USER_ID,
-						},
-					]}
-				/>
-			</ClayLayout.Sheet>
-
-			<ClayLayout.Sheet className="mt-4">
-				<SectionHeader
+					aria-labelledby="dataStrategy-label"
 					name="dataStrategy"
-					symbol="reset"
-					title={Liferay.Language.get('update-data')}
+					options={dataStrategyOptions}
 				/>
-
-				{dataStrategyOptions.length === 1 ? (
-					<ReadOnlyOption option={dataStrategyOptions[0]} />
-				) : (
-					<FormikFieldRadioGroup
-						aria-labelledby="dataStrategy-label"
-						name="dataStrategy"
-						options={dataStrategyOptions}
-					/>
-				)}
-			</ClayLayout.Sheet>
+			)}
 		</>
 	);
 }
@@ -138,30 +132,5 @@ function ReadOnlyOption({
 				</span>
 			</ClayLayout.ContentCol>
 		</ClayLayout.ContentRow>
-	);
-}
-
-function SectionHeader({
-	name,
-	symbol,
-	title,
-}: {
-	name?: string;
-	symbol: string;
-	title: string;
-}) {
-	return (
-		<ClayLayout.SheetHeader className="mb-0">
-			<div
-				className="sheet-title"
-				id={name ? `${name}-label` : undefined}
-			>
-				<span className="inline-item inline-item-before small text-secondary">
-					<ClayIcon className="mr-1" symbol={symbol} />
-				</span>
-
-				{title}
-			</div>
-		</ClayLayout.SheetHeader>
 	);
 }

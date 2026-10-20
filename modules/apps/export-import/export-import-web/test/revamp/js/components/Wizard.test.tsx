@@ -23,11 +23,7 @@ const renderWizard = (backURL = '/back', onSubmit: () => void = () => {}) => {
 
 	render(
 		<Wizard backURL={backURL}>
-			<WizardStep
-				description="This is step 1"
-				onSubmit={onSubmit}
-				title="Step 1"
-			>
+			<WizardStep onSubmit={onSubmit} title="Step 1">
 				<Step>
 					<h1>Step 1 Content</h1>
 				</Step>
@@ -43,7 +39,6 @@ const renderWizard = (backURL = '/back', onSubmit: () => void = () => {}) => {
 						{Liferay.Language.get('export')}
 					</ClayButton>
 				}
-				description="This is step 2"
 				title="Step 2"
 			>
 				<Step>
