@@ -19,10 +19,10 @@ export interface ImportPreview {
 	fileName: string;
 	fileSize: number;
 	portletDataHandlers: PortletDataHandler[];
-	previewSites?: PreviewSite[];
+	sites?: Site[];
 }
 
-export interface PreviewSite {
+export interface Site {
 	childSitesCount?: number;
 	descriptiveName?: string;
 	existsInInstance?: boolean;

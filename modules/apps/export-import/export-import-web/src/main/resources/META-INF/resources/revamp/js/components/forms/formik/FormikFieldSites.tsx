@@ -6,21 +6,21 @@
 import {FormikValues, useFormikContext} from 'formik';
 import React from 'react';
 
-import {PreviewSite} from '../../../types/exportImportPreview';
+import {Site} from '../../../types/exportImportPreview';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import SitesControl from '../site_selector/SitesControl';
 
 export function FormikFieldSites({
 	apiURL,
 	name,
-	previewSites,
 	process,
+	sites,
 	totalCount,
 }: {
 	apiURL?: string;
 	name: string;
-	previewSites?: PreviewSite[];
 	process?: ExportImportProcess;
+	sites?: Site[];
 	totalCount?: number;
 }) {
 	const {setFieldTouched, setFieldValue, values} =
@@ -33,9 +33,9 @@ export function FormikFieldSites({
 				setFieldValue(name, externalReferenceCodes);
 				setFieldTouched(name, true, false);
 			}}
-			previewSites={previewSites}
 			process={process}
 			selectedExternalReferenceCodes={values[name] ?? []}
+			sites={sites}
 			totalCount={totalCount}
 		/>
 	);

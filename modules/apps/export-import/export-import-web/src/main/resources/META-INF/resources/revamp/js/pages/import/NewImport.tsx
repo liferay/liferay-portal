@@ -121,8 +121,13 @@ export function NewImport({
 								),
 								contentSelection
 							),
-							siteExternalReferenceCodes:
-								values.siteExternalReferenceCodes,
+							...(siteSelectionEnabled && {
+								sites: (
+									values.siteExternalReferenceCodes as string[]
+								).map((externalReferenceCode) => ({
+									externalReferenceCode,
+								})),
+							}),
 							userIdStrategy:
 								values.userIdStrategy as UserIdStrategy,
 						},

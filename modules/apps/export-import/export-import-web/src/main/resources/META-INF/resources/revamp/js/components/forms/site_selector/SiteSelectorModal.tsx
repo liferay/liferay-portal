@@ -12,7 +12,7 @@ import {
 } from '@liferay/frontend-data-set-web';
 import React, {useState} from 'react';
 
-import {PreviewSite} from '../../../types/exportImportPreview';
+import {Site} from '../../../types/exportImportPreview';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 
 const SORTS = [
@@ -56,11 +56,9 @@ function getView(process: ExportImportProcess): IView {
 	};
 }
 
-function sortByDescriptiveName(previewSites: PreviewSite[]) {
-	return [...previewSites].sort((previewSite1, previewSite2) =>
-		(previewSite1.descriptiveName ?? '').localeCompare(
-			previewSite2.descriptiveName ?? ''
-		)
+function sortByDescriptiveName(sites: Site[]) {
+	return [...sites].sort((site1, site2) =>
+		(site1.descriptiveName ?? '').localeCompare(site2.descriptiveName ?? '')
 	);
 }
 
@@ -68,16 +66,16 @@ export default function SiteSelectorModal({
 	apiURL,
 	onClose,
 	onSubmit,
-	previewSites,
 	process = 'export',
 	selectedSites,
+	sites,
 }: {
 	apiURL?: string;
 	onClose: () => void;
-	onSubmit: (selectedSites: PreviewSite[]) => void;
-	previewSites?: PreviewSite[];
+	onSubmit: (selectedSites: Site[]) => void;
 	process?: ExportImportProcess;
-	selectedSites: PreviewSite[];
+	selectedSites: Site[];
+	sites?: Site[];
 }) {
 	const {observer, onClose: closeModal} = useModal({onClose});
 
@@ -108,8 +106,8 @@ export default function SiteSelectorModal({
 					selectionType="multiple"
 					style="fluid"
 					views={[getView(process)]}
-					{...(previewSites
-						? {items: sortByDescriptiveName(previewSites)}
+					{...(sites
+						? {items: sortByDescriptiveName(sites)}
 						: {sorts: SORTS})}
 				/>
 			</ClayModal.Body>

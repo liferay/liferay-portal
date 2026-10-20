@@ -5,11 +5,11 @@
 
 import {addParams} from 'frontend-js-web';
 
-import {PreviewSite} from '../types/exportImportPreview';
+import {Site} from '../types/exportImportPreview';
 import ApiHelper, {RequestResult} from './ApiHelper';
 
-export interface PreviewSitesPage {
-	items: PreviewSite[];
+export interface SitesPage {
+	items: Site[];
 	lastPage: number;
 	page: number;
 	pageSize: number;
@@ -18,8 +18,6 @@ export interface PreviewSitesPage {
 
 export function getExportPreviewSitesCount(
 	url: string
-): Promise<RequestResult<PreviewSitesPage>> {
-	return ApiHelper.get<PreviewSitesPage>(
-		addParams({page: '1', pageSize: '1'}, url)
-	);
+): Promise<RequestResult<SitesPage>> {
+	return ApiHelper.get<SitesPage>(addParams({page: '1', pageSize: '1'}, url));
 }

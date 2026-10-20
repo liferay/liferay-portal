@@ -9,30 +9,30 @@ import ClayLayout from '@clayui/layout';
 import {sub} from 'frontend-js-web';
 import React, {useId, useState} from 'react';
 
-import {PreviewSite} from '../../../types/exportImportPreview';
+import {Site} from '../../../types/exportImportPreview';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import SectionTags from '../content_selector/SectionTags';
 import SiteSelectorModal from './SiteSelectorModal';
 
-function toEntries(sites: PreviewSite[]) {
+function toEntries(sites: Site[]) {
 	return sites.map(
-		(site) => [site.externalReferenceCode, site] as [string, PreviewSite]
+		(site) => [site.externalReferenceCode, site] as [string, Site]
 	);
 }
 
 export default function SitesControl({
 	apiURL,
 	onChange,
-	previewSites,
 	process = 'export',
 	selectedExternalReferenceCodes,
+	sites,
 	totalCount,
 }: {
 	apiURL?: string;
 	onChange: (externalReferenceCodes: string[]) => void;
-	previewSites?: PreviewSite[];
 	process?: ExportImportProcess;
 	selectedExternalReferenceCodes: string[];
+	sites?: Site[];
 	totalCount?: number;
 }) {
 	const descriptionId = useId();
@@ -42,7 +42,7 @@ export default function SitesControl({
 	const [
 		knownSitesByExternalReferenceCode,
 		setKnownSitesByExternalReferenceCode,
-	] = useState(() => new Map(toEntries(previewSites ?? [])));
+	] = useState(() => new Map(toEntries(sites ?? [])));
 
 	const selectedSites = selectedExternalReferenceCodes.map(
 		(externalReferenceCode) =>
@@ -107,9 +107,9 @@ export default function SitesControl({
 							)
 						);
 					}}
-					previewSites={previewSites}
 					process={process}
 					selectedSites={selectedSites}
+					sites={sites}
 				/>
 			)}
 		</>

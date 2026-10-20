@@ -6,19 +6,15 @@
 import React from 'react';
 
 import {FormikFieldSites} from '../../../components/forms/formik';
-import {PreviewSite} from '../../../types/exportImportPreview';
+import {Site} from '../../../types/exportImportPreview';
 
-export default function SiteSelection({
-	previewSites,
-}: {
-	previewSites: PreviewSite[];
-}) {
+export default function SiteSelection({sites}: {sites: Site[]}) {
 	return (
 		<FormikFieldSites
 			name="siteExternalReferenceCodes"
-			previewSites={previewSites}
 			process="import"
-			totalCount={previewSites.length}
+			sites={sites}
+			totalCount={sites.length}
 		/>
 	);
 }

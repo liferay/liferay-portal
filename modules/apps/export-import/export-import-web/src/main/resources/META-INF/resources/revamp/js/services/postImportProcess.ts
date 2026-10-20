@@ -6,11 +6,12 @@
 import {
 	ImportProcess,
 	ImportProcessRequest,
+	InstanceImportProcessRequest,
 } from '../types/exportImportProcess';
 import ApiHelper, {RequestResult} from './ApiHelper';
 
 export interface ImportProcessParams {
-	importProcessRequest: ImportProcessRequest;
+	importProcessRequest: ImportProcessRequest | InstanceImportProcessRequest;
 	url: string;
 }
 

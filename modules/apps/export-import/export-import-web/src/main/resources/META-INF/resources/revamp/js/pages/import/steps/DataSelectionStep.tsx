@@ -35,13 +35,13 @@ export default function DataSelectionStep({
 		<>
 			<FileSummary importPreview={importPreview} />
 
-			{siteSelectionEnabled && !!importPreview.previewSites?.length && (
+			{siteSelectionEnabled && !!importPreview.sites?.length && (
 				<ScopeSection
 					subtitle={Liferay.Language.get(
 						'import-complete-sites-from-your-file,-including-all-their-pages,-content,-and-settings'
 					)}
 				>
-					<SiteSelection previewSites={importPreview.previewSites} />
+					<SiteSelection sites={importPreview.sites} />
 				</ScopeSection>
 			)}
 

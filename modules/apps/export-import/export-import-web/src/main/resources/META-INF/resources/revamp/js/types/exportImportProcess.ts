@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Site} from './exportImportPreview';
 import {PortletDataHandler} from './portletDataHandler';
 
 export type ExportImportProcess = 'export' | 'import' | 'publish';
@@ -28,7 +29,10 @@ export interface ExportProcessRequest {
 	permissions?: boolean;
 	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
-	siteExternalReferenceCodes?: string[];
+}
+
+export interface InstanceExportProcessRequest extends ExportProcessRequest {
+	sites?: Site[];
 }
 
 export const DATA_STRATEGIES = {
@@ -63,8 +67,11 @@ export interface ImportProcessRequest {
 	permissions?: boolean;
 	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
-	siteExternalReferenceCodes?: string[];
 	userIdStrategy?: UserIdStrategy;
+}
+
+export interface InstanceImportProcessRequest extends ImportProcessRequest {
+	sites?: Site[];
 }
 
 export interface PublishProcess {
