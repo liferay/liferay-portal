@@ -31,10 +31,6 @@ public enum LocationVariableProtocol {
 		return Objects.equals(_value, protocolString);
 	}
 
-	public String getValue() {
-		return _value;
-	}
-
 	private LocationVariableProtocol(String value) {
 		_value = value;
 	}

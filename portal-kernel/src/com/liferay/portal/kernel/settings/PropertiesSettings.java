@@ -46,10 +46,6 @@ public class PropertiesSettings extends BaseSettings {
 		return StringUtil.split(doGetValue(key));
 	}
 
-	protected String getProperty(String key) {
-		return readProperty(key);
-	}
-
 	protected String readProperty(String key) {
 		String value = _properties.get(key);
 

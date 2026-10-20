@@ -27,10 +27,6 @@ public class ParameterMapSettings extends BaseSettings {
 		_parameterMap = parameterMap;
 	}
 
-	public String getParameterNamePrefix() {
-		return _parameterNamePrefix;
-	}
-
 	public void setParameterNamePrefix(String parameterNamePrefix) {
 		_parameterNamePrefix = parameterNamePrefix;
 	}
