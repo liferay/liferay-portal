@@ -4,18 +4,21 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import classNames from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';
 
 const REDUCED_MOTION_CLASS_NAME = 'c-prefers-reduced-motion';
 
 function SideNavigationColorSchemeButton({
 	className,
-	colorScheme: initialColorScheme,
+	colorScheme: initialColorScheme = 'light',
 	colorSchemeSessionKey,
+	size = 'sm',
 }: {
 	className?: string;
-	colorScheme: 'dark' | 'light';
+	colorScheme?: 'dark' | 'light';
 	colorSchemeSessionKey: string;
+	size?: 'sm' | 'xs';
 }) {
 	const [colorScheme, setColorScheme] = useState<'dark' | 'light'>(() => {
 		const current = document.documentElement.dataset.colorScheme;
@@ -95,13 +98,13 @@ function SideNavigationColorSchemeButton({
 			aria-label={label}
 			aria-pressed={colorScheme === 'dark'}
 			borderless
-			className={className}
+			className={classNames('lfr-portal-tooltip', className)}
+			data-title={label}
 			displayType="secondary"
 			monospaced
 			onClick={toggle}
-			size="sm"
+			size={size}
 			symbol={colorScheme === 'dark' ? 'sun' : 'moon'}
-			title={label}
 		/>
 	);
 }
