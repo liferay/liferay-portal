@@ -5,11 +5,14 @@
 
 package com.liferay.batch.engine;
 
+import java.util.Map;
+
 /**
  * @author Alejandro Tardín
  */
 public interface BatchEngineContentProcessor {
 
-	public String process(String content);
+	public String process(
+		String content, Map<String, Object> fieldNameValueMap);
 
 }

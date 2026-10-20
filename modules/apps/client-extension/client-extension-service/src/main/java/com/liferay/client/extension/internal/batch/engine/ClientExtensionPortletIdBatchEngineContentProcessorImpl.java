@@ -12,6 +12,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +26,9 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImpl
 	implements BatchEngineContentProcessor {
 
 	@Override
-	public String process(String content) {
+	public String process(
+		String content, Map<String, Object> fieldNameValueMap) {
+
 		if (!ExportImportThreadLocal.isImportInProcess() || (content == null) ||
 			!content.contains(_PORTLET_ID_PREFIX)) {
 

@@ -60,7 +60,7 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 		Assert.assertEquals(
 			_getPortletId(targetCompanyId, externalReferenceCode),
 			_batchEngineContentProcessor.process(
-				_getPortletId(sourceCompanyId, externalReferenceCode)));
+				_getPortletId(sourceCompanyId, externalReferenceCode), null));
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 			companyId, RandomTestUtil.randomString());
 
 		Assert.assertEquals(
-			content, _batchEngineContentProcessor.process(content));
+			content, _batchEngineContentProcessor.process(content, null));
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 			RandomTestUtil.randomLong(), RandomTestUtil.randomString());
 
 		Assert.assertEquals(
-			content, _batchEngineContentProcessor.process(content));
+			content, _batchEngineContentProcessor.process(content, null));
 	}
 
 	@Test
@@ -97,14 +97,14 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 			sourceCompanyId, RandomTestUtil.randomString());
 
 		Assert.assertEquals(
-			content, _batchEngineContentProcessor.process(content));
+			content, _batchEngineContentProcessor.process(content, null));
 	}
 
 	@Test
 	public void testProcessIgnoresNullContent() {
 		_mock(RandomTestUtil.randomLong(), true);
 
-		Assert.assertNull(_batchEngineContentProcessor.process(null));
+		Assert.assertNull(_batchEngineContentProcessor.process(null, null));
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 		String content = "com_liferay_journal_web_portlet_JournalPortlet";
 
 		Assert.assertEquals(
-			content, _batchEngineContentProcessor.process(content));
+			content, _batchEngineContentProcessor.process(content, null));
 	}
 
 	@Test
@@ -133,7 +133,8 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 				targetCompanyId, externalReferenceCode + instanceSuffix),
 			_batchEngineContentProcessor.process(
 				_getPortletId(
-					sourceCompanyId, externalReferenceCode + instanceSuffix)));
+					sourceCompanyId, externalReferenceCode + instanceSuffix),
+				null));
 	}
 
 	@Test
@@ -154,7 +155,8 @@ public class ClientExtensionPortletIdBatchEngineContentProcessorImplTest {
 			_batchEngineContentProcessor.process(
 				_getPageDefinition(
 					_getPortletId(sourceCompanyId, externalReferenceCode1),
-					_getPortletId(sourceCompanyId, externalReferenceCode2))));
+					_getPortletId(sourceCompanyId, externalReferenceCode2)),
+				null));
 	}
 
 	private String _getPageDefinition(

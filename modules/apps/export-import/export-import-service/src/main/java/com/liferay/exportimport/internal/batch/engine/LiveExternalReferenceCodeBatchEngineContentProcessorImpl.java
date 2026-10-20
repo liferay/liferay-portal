@@ -11,6 +11,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -25,7 +27,9 @@ public class LiveExternalReferenceCodeBatchEngineContentProcessorImpl
 	implements BatchEngineContentProcessor {
 
 	@Override
-	public String process(String content) {
+	public String process(
+		String content, Map<String, Object> fieldNameValueMap) {
+
 		if (!ExportImportThreadLocal.isStagingInProcess()) {
 			return content;
 		}

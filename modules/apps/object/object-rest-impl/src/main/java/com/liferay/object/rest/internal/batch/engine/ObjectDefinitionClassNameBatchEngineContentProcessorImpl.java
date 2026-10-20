@@ -8,6 +8,8 @@ package com.liferay.object.rest.internal.batch.engine;
 import com.liferay.batch.engine.BatchEngineContentProcessor;
 import com.liferay.object.definition.processor.ObjectDefinitionClassNameProcessor;
 
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -19,7 +21,9 @@ public class ObjectDefinitionClassNameBatchEngineContentProcessorImpl
 	implements BatchEngineContentProcessor {
 
 	@Override
-	public String process(String content) {
+	public String process(
+		String content, Map<String, Object> fieldNameValueMap) {
+
 		return _objectDefinitionClassNameProcessor.
 			updateObjectDefinitionReferences(content);
 	}
