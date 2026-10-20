@@ -322,6 +322,14 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 */
 	@Override
 	public Company getCompanyById(long companyId) throws PortalException {
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin() &&
+			(companyId != permissionChecker.getCompanyId())) {
+
+			throw new PrincipalException();
+		}
+
 		return companyPersistence.findByPrimaryKey(companyId);
 	}
 
