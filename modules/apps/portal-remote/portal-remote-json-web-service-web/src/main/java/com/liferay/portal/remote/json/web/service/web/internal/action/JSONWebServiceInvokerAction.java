@@ -36,7 +36,6 @@ import java.util.Set;
 import jodd.bean.BeanUtil;
 
 import jodd.json.BeanSerializer;
-import jodd.json.JsonContext;
 import jodd.json.JsonSerializer;
 
 /**
@@ -164,6 +163,36 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 
 		private Object _result;
 
+	}
+
+	private static Map<String, Object> _toJSONMap(Object object) {
+		if (object == null) {
+			return new LinkedHashMap<>();
+		}
+
+		if (object instanceof Map) {
+			return (Map<String, Object>)object;
+		}
+
+		Map<String, Object> map = new LinkedHashMap<>();
+
+		BeanSerializer beanSerializer = new BeanSerializer(
+			_jsonSerializer.createJsonContext(null), object) {
+
+			@Override
+			protected void onSerializableProperty(
+				String propertyName,
+				@SuppressWarnings("rawtypes") Class propertyClass,
+				Object value) {
+
+				map.put(propertyName, value);
+			}
+
+		};
+
+		beanSerializer.serialize();
+
+		return map;
 	}
 
 	private void _addInclude(Statement statement, String name) {
@@ -322,38 +351,23 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 	}
 
 	private Map<String, Object> _convertObjectToMap(
-		final Statement statement, Object object, final String prefix) {
+		Statement statement, Object object, String prefix) {
 
 		if (object instanceof Map) {
 			return (Map<String, Object>)object;
 		}
 
-		JsonContext jsonContext = _jsonSerializer.createJsonContext(null);
-		final Map<String, Object> map = new LinkedHashMap<>();
+		Map<String, Object> map = _toJSONMap(object);
 
-		BeanSerializer beanSerializer = new BeanSerializer(
-			jsonContext, object) {
+		for (String name : map.keySet()) {
+			String include = name;
 
-			@Override
-			protected void onSerializableProperty(
-				String propertyName,
-				@SuppressWarnings("rawtypes") Class propertyClass,
-				Object value) {
-
-				map.put(propertyName, value);
-
-				String include = propertyName;
-
-				if (prefix != null) {
-					include = prefix + "." + include;
-				}
-
-				_addInclude(statement, include);
+			if (prefix != null) {
+				include = prefix + "." + name;
 			}
 
-		};
-
-		beanSerializer.serialize();
+			_addInclude(statement, include);
+		}
 
 		return map;
 	}
@@ -619,7 +633,7 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 					Map<String, Object> parameterMap =
 						statement.getParameterMap();
 
-					Object propertyValue = BeanUtil.declared.getProperty(
+					Object propertyValue = _resolveJSONProperty(
 						object, value.substring(name.length()));
 
 					parameterMap.put(flag.getKey(), propertyValue);
@@ -628,7 +642,7 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 					Map<String, Object> parameterMap =
 						statement.getParameterMap();
 
-					Object propertyValue = BeanUtil.declared.getProperty(
+					Object propertyValue = _resolveJSONProperty(
 						statement._pushTarget,
 						value.substring(pushedName.length()));
 
@@ -636,6 +650,24 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 				}
 			}
 		}
+	}
+
+	private Object _resolveJSONProperty(Object object, String propertyName) {
+		if (object == null) {
+			return null;
+		}
+
+		Map<String, Object> map = _toJSONMap(object);
+
+		int index = propertyName.indexOf(CharPool.PERIOD);
+
+		if (index == -1) {
+			return map.get(propertyName);
+		}
+
+		return _resolveJSONProperty(
+			map.get(propertyName.substring(0, index)),
+			propertyName.substring(index + 1));
 	}
 
 	private static final JsonSerializer _jsonSerializer = new JsonSerializer();
@@ -735,7 +767,14 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 
 			String beanName = variableName.substring(0, index);
 
-			result = BeanUtil.declared.getProperty(result, beanName);
+			Map<String, Object> map = _toJSONMap(result);
+
+			if (map.containsKey(beanName)) {
+				result = BeanUtil.declared.getProperty(result, beanName);
+			}
+			else {
+				result = null;
+			}
 
 			statement.setName(
 				statement.getName() + StringPool.PERIOD + beanName);
