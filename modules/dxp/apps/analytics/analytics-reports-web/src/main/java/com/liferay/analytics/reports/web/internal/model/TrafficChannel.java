@@ -161,8 +161,7 @@ public class TrafficChannel {
 				return null;
 			}
 		).put(
-			"title",
-			ResourceBundleUtil.getString(resourceBundle, _type.toString())
+			"title", ResourceBundleUtil.getString(resourceBundle, _getTitleKey())
 		).put(
 			"value",
 			() -> {
@@ -257,6 +256,14 @@ public class TrafficChannel {
 		_type = type;
 
 		_error = false;
+	}
+
+	private String _getTitleKey() {
+		if (_type == Type.DIRECT) {
+			return "direct[traffic-channel]";
+		}
+
+		return _type.toString();
 	}
 
 	private static final Map<Type, String> _helpMessageKeys =

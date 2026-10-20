@@ -43,6 +43,10 @@ public class ReindexExecutionModeConfigurationFieldOptionsProvider
 
 				@Override
 				public String getLabel(Locale locale) {
+					if (executionMode.equals("sync")) {
+						return _language.get(locale, "sync[mode]");
+					}
+
 					return _language.get(locale, executionMode);
 				}
 
