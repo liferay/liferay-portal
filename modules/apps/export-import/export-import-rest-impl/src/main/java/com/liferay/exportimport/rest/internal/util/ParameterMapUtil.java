@@ -700,7 +700,7 @@ public class ParameterMapUtil {
 				throw new BadRequestException(
 					StringBundler.concat(
 						"No portlet data handler exists with name \"", name,
-						"\""));
+						"\" in the preview of this scope"));
 			}
 
 			if (!GetterUtil.getBoolean(
