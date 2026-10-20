@@ -11,22 +11,20 @@ import {
 	dateFilterToEditingState,
 	getAppliedFilterSummary,
 	getValidation,
-	normalizeDateFilter,
+	toDateFilter,
 } from '../../../../../src/main/resources/META-INF/resources/revamp/js/components/date_filter/utils';
 import {toWallClockDateTime} from '../../../../../src/main/resources/META-INF/resources/revamp/js/utils/dateTime';
 
 const HOUR = 60 * 60 * 1000;
 
-describe('normalizeDateFilter', () => {
-	it('returns the all type for the show all range', () => {
-		expect(normalizeDateFilter({range: Range.All}, 'UTC')).toEqual({
-			dateRangeType: 'ALL',
-		});
+describe('toDateFilter', () => {
+	it('returns no date filter for the show all range', () => {
+		expect(toDateFilter({range: Range.All}, 'UTC')).toBeUndefined();
 	});
 
 	it('resolves the date range bounds in the given time zone', () => {
 		expect(
-			normalizeDateFilter(
+			toDateFilter(
 				{
 					endDate: '2026-10-20 09:30',
 					range: Range.DateRange,
@@ -35,15 +33,15 @@ describe('normalizeDateFilter', () => {
 				'Europe/Madrid'
 			)
 		).toEqual({
-			dateRangeType: 'DATE_RANGE',
 			endDate: '2026-10-20T07:30:00.000Z',
 			startDate: '2026-08-22T13:05:00.000Z',
+			type: 'DateRange',
 		});
 	});
 
 	it('returns only the start date for an open-ended date range', () => {
 		expect(
-			normalizeDateFilter(
+			toDateFilter(
 				{
 					endDate: '',
 					range: Range.DateRange,
@@ -52,14 +50,14 @@ describe('normalizeDateFilter', () => {
 				'Europe/Madrid'
 			)
 		).toEqual({
-			dateRangeType: 'DATE_RANGE',
 			startDate: '2026-08-22T13:05:00.000Z',
+			type: 'DateRange',
 		});
 	});
 
 	it('returns only the end date for an open-ended date range', () => {
 		expect(
-			normalizeDateFilter(
+			toDateFilter(
 				{
 					endDate: '2026-10-20 09:30',
 					range: Range.DateRange,
@@ -68,40 +66,23 @@ describe('normalizeDateFilter', () => {
 				'Europe/Madrid'
 			)
 		).toEqual({
-			dateRangeType: 'DATE_RANGE',
 			endDate: '2026-10-20T07:30:00.000Z',
+			type: 'DateRange',
 		});
 	});
 
 	it('returns the from last publish date type without dates', () => {
-		expect(
-			normalizeDateFilter({range: Range.FromLastPublishDate}, 'UTC')
-		).toEqual({
-			dateRangeType: 'FROM_LAST_PUBLISH_DATE',
-		});
+		expect(toDateFilter({range: Range.FromLastPublishDate}, 'UTC')).toEqual(
+			{
+				type: 'FromLastPublishDate',
+			}
+		);
 	});
 
-	it('resolves the modified last range to a start date only', () => {
-		const beforeTime = Date.now();
-
-		const normalizedDateFilter = normalizeDateFilter(
-			{
-				last: LastRange.H24,
-				range: Range.Last,
-			},
-			'UTC'
-		);
-
-		const afterTime = Date.now();
-
-		const dayMilliseconds = 24 * 60 * 60 * 1000;
-
-		const startTime = new Date(normalizedDateFilter.startDate!).getTime();
-
-		expect(normalizedDateFilter.dateRangeType).toBe('LAST');
-		expect(normalizedDateFilter.endDate).toBeUndefined();
-		expect(startTime).toBeGreaterThanOrEqual(beforeTime - dayMilliseconds);
-		expect(startTime).toBeLessThanOrEqual(afterTime - dayMilliseconds);
+	it('resolves the modified last range to its hours', () => {
+		expect(
+			toDateFilter({last: LastRange.D7, range: Range.Last}, 'UTC')
+		).toEqual({hours: 168, type: 'LastHours'});
 	});
 });
 

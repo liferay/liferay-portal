@@ -50,7 +50,7 @@ const FUTURE_DISPLAY_DATE = toDisplayDate(FUTURE_DATE);
 const FUTURE_DISPLAY_DATE_TIME = `${FUTURE_DISPLAY_DATE} 03:30 PM`;
 
 const PUBLISH_PROCESS_REQUEST: PublishProcessRequest = {
-	dateRangeType: 'FROM_LAST_PUBLISH_DATE',
+	dateFilter: {type: 'FromLastPublishDate'},
 	deletions: true,
 	name: 'Weekly Content Sync',
 	permissions: false,
@@ -703,9 +703,11 @@ describe('NewPublish', () => {
 					...SCHEDULED_PUBLISH_PROCESS_REQUEST,
 					publishProcessRequest: {
 						...PUBLISH_PROCESS_REQUEST,
-						dateRangeType: 'DATE_RANGE',
-						endDate: '2026-09-01T07:30:00Z',
-						startDate: '2026-08-22T13:05:00Z',
+						dateFilter: {
+							endDate: '2026-09-01T07:30:00Z',
+							startDate: '2026-08-22T13:05:00Z',
+							type: 'DateRange',
+						},
 					},
 				},
 			},
@@ -753,13 +755,11 @@ describe('NewPublish', () => {
 			getScheduledPublishProcessCall()![1]!.body as string
 		);
 
-		expect(body.publishProcessRequest.dateRangeType).toBe('DATE_RANGE');
-		expect(body.publishProcessRequest.startDate).toBe(
-			'2026-08-22T13:05:00.000Z'
-		);
-		expect(body.publishProcessRequest.endDate).toBe(
-			'2026-09-01T07:30:00.000Z'
-		);
+		expect(body.publishProcessRequest.dateFilter).toEqual({
+			endDate: '2026-09-01T07:30:00.000Z',
+			startDate: '2026-08-22T13:05:00.000Z',
+			type: 'DateRange',
+		});
 	});
 
 	it('reclassifies a custom cron whose time matches the start date, keeping the sync', async () => {

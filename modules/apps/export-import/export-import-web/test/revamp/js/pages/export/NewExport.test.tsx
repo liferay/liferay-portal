@@ -439,14 +439,7 @@ describe('NewExport', () => {
 		expect(screen.getByText('loaded')).toBeInTheDocument();
 	});
 
-	it('exports the last range start date resolved at apply, not at submit', async () => {
-		const HOUR = 60 * 60 * 1000;
-		const applyTime = Date.UTC(2026, 0, 1, 12, 0, 0);
-
-		let now = applyTime;
-
-		jest.spyOn(Date, 'now').mockImplementation(() => now);
-
+	it('exports the modified last range as its hours', async () => {
 		renderComponent();
 
 		await screen.findByText('loaded');
@@ -465,8 +458,6 @@ describe('NewExport', () => {
 			screen.getByRole('button', {name: /show-results/i})
 		);
 
-		now = applyTime + 5 * HOUR;
-
 		fetch.mockResponseOnce(JSON.stringify({}));
 
 		await userEvent.click(screen.getByRole('button', {name: /^export$/i}));
@@ -476,11 +467,7 @@ describe('NewExport', () => {
 
 			const body = JSON.parse(exportCall![1]!.body as string);
 
-			expect(body.dateRangeType).toBe('LAST');
-			expect(body.startDate).toBe(
-				new Date(applyTime - 12 * HOUR).toISOString()
-			);
-			expect(body.endDate).toBeUndefined();
+			expect(body.dateFilter).toEqual({hours: 12, type: 'LastHours'});
 		});
 	});
 
@@ -526,9 +513,10 @@ describe('NewExport', () => {
 		await waitFor(() => {
 			const body = JSON.parse(getExportCall()![1]!.body as string);
 
-			expect(body.dateRangeType).toBe('DATE_RANGE');
-			expect(body.endDate).toBeUndefined();
-			expect(body.startDate).toBe('2026-01-01T07:00:00.000Z');
+			expect(body.dateFilter).toEqual({
+				startDate: '2026-01-01T07:00:00.000Z',
+				type: 'DateRange',
+			});
 		});
 	});
 

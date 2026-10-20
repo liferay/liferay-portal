@@ -18,15 +18,17 @@ describe('getPreview', () => {
 
 	it('appends the date filter to a scoped url that already has a query string', async () => {
 		await getPreview({
-			query: {
+			dateFilter: {
 				endDate: '2026-06-26T12:00:00.000Z',
 				startDate: '2026-06-26T00:00:00.000Z',
+				type: 'DateRange',
 			},
 			url: '/o/export-import/v1.0/sites/L_GUEST/portlets/com_liferay_document_library_web_portlet_DLAdminPortlet/export-preview?plid=1',
 		});
 
 		const url = getRequestedURL();
 
+		expect(url.searchParams.get('dateFilterType')).toBe('DateRange');
 		expect(url.searchParams.get('endDate')).toBe(
 			'2026-06-26T12:00:00.000Z'
 		);
@@ -38,25 +40,24 @@ describe('getPreview', () => {
 
 	it('appends the date filter to a url without a query string', async () => {
 		await getPreview({
-			query: {endDate: '2026-06-26T12:00:00.000Z'},
+			dateFilter: {hours: 12, type: 'LastHours'},
 			url: '/o/export-import/v1.0/sites/L_GUEST/export-preview',
 		});
 
 		const url = getRequestedURL();
 
-		expect(url.searchParams.get('endDate')).toBe(
-			'2026-06-26T12:00:00.000Z'
-		);
+		expect(url.searchParams.get('dateFilterType')).toBe('LastHours');
+		expect(url.searchParams.get('hours')).toBe('12');
 	});
 
 	it('keeps the url untouched when there is no date filter', async () => {
 		await getPreview({
-			query: {endDate: '', startDate: undefined},
 			url: '/o/export-import/v1.0/sites/L_GUEST/export-preview?plid=1',
 		});
 
 		const url = getRequestedURL();
 
+		expect(url.searchParams.has('dateFilterType')).toBe(false);
 		expect(url.searchParams.has('endDate')).toBe(false);
 		expect(url.searchParams.get('plid')).toBe('1');
 		expect(url.searchParams.has('startDate')).toBe(false);

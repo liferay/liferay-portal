@@ -9,94 +9,42 @@ import {
 } from '../../../../src/main/resources/META-INF/resources/revamp/js/components/date_filter';
 import {toDateFilterValues} from '../../../../src/main/resources/META-INF/resources/revamp/js/utils/toDateFilterValues';
 
-const HOUR = 60 * 60 * 1000;
-
-function hoursAgo(hours: number): string {
-	return new Date(Date.now() - hours * HOUR).toISOString();
-}
-
 describe('toDateFilterValues', () => {
 	it('defaults to the all range', () => {
-		expect(toDateFilterValues({name: 'Weekly'}, 'UTC')).toEqual({
+		expect(toDateFilterValues(undefined, 'UTC')).toEqual({
 			range: Range.All,
 		});
-
-		expect(
-			toDateFilterValues({dateRangeType: 'ALL', name: 'Weekly'}, 'UTC')
-		).toEqual({range: Range.All});
 	});
 
 	it('maps the from last publish date range', () => {
 		expect(
-			toDateFilterValues(
-				{dateRangeType: 'FROM_LAST_PUBLISH_DATE', name: 'Weekly'},
-				'UTC'
-			)
+			toDateFilterValues({type: 'FromLastPublishDate'}, 'UTC')
 		).toEqual({range: Range.FromLastPublishDate});
 	});
 
 	it('maps the last hours to the matching option', () => {
 		expect(
-			toDateFilterValues(
-				{
-					dateRangeType: 'LAST',
-					name: 'Weekly',
-					startDate: hoursAgo(24),
-				},
-				'UTC'
-			)
+			toDateFilterValues({hours: 24, type: 'LastHours'}, 'UTC')
 		).toEqual({last: LastRange.H24, range: Range.Last});
 
 		expect(
-			toDateFilterValues(
-				{
-					dateRangeType: 'LAST',
-					name: 'Weekly',
-					startDate: hoursAgo(168),
-				},
-				'UTC'
-			)
+			toDateFilterValues({hours: 168, type: 'LastHours'}, 'UTC')
 		).toEqual({last: LastRange.D7, range: Range.Last});
 	});
 
 	it('maps unmapped last hours to the closest option', () => {
 		expect(
-			toDateFilterValues(
-				{
-					dateRangeType: 'LAST',
-					name: 'Weekly',
-					startDate: hoursAgo(11),
-				},
-				'UTC'
-			)
+			toDateFilterValues({hours: 11, type: 'LastHours'}, 'UTC')
 		).toEqual({last: LastRange.H12, range: Range.Last});
 
 		expect(
-			toDateFilterValues(
-				{
-					dateRangeType: 'LAST',
-					name: 'Weekly',
-					startDate: hoursAgo(300),
-				},
-				'UTC'
-			)
+			toDateFilterValues({hours: 300, type: 'LastHours'}, 'UTC')
 		).toEqual({last: LastRange.D7, range: Range.Last});
 	});
 
-	it('falls back to the all range for an unusable last start date', () => {
+	it('falls back to the all range for unusable last hours', () => {
 		expect(
-			toDateFilterValues({dateRangeType: 'LAST', name: 'Weekly'}, 'UTC')
-		).toEqual({range: Range.All});
-
-		expect(
-			toDateFilterValues(
-				{
-					dateRangeType: 'LAST',
-					name: 'Weekly',
-					startDate: new Date().toISOString(),
-				},
-				'UTC'
-			)
+			toDateFilterValues({hours: 0, type: 'LastHours'}, 'UTC')
 		).toEqual({range: Range.All});
 	});
 
@@ -104,10 +52,9 @@ describe('toDateFilterValues', () => {
 		expect(
 			toDateFilterValues(
 				{
-					dateRangeType: 'DATE_RANGE',
 					endDate: '2026-10-20T09:30:00Z',
-					name: 'Weekly',
 					startDate: '2026-08-22T13:05:00Z',
+					type: 'DateRange',
 				},
 				'Europe/Madrid'
 			)
@@ -122,9 +69,8 @@ describe('toDateFilterValues', () => {
 		expect(
 			toDateFilterValues(
 				{
-					dateRangeType: 'DATE_RANGE',
 					endDate: '2026-10-20T09:30:00Z',
-					name: 'Weekly',
+					type: 'DateRange',
 				},
 				'UTC'
 			)
@@ -139,9 +85,8 @@ describe('toDateFilterValues', () => {
 		expect(
 			toDateFilterValues(
 				{
-					dateRangeType: 'DATE_RANGE',
-					name: 'Weekly',
 					startDate: 'not-a-date',
+					type: 'DateRange',
 				},
 				'UTC'
 			)
