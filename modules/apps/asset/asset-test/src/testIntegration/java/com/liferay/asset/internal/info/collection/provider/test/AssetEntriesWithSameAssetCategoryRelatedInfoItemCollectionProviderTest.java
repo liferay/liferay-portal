@@ -611,7 +611,13 @@ public class
 				collectionQuery),
 			_getAssetEntry(
 				JournalArticle.class.getName(),
-				journalArticle.getResourcePrimKey()));
+				journalArticle.getResourcePrimKey()),
+			_getAssetEntry(
+				objectDefinition.getClassName(),
+				objectEntry2.getObjectEntryId()),
+			_getAssetEntry(
+				objectDefinition.getClassName(),
+				relatedObjectEntry2.getObjectEntryId()));
 
 		collectionQuery.setRelatedItemObject(
 			_getAssetEntry(
