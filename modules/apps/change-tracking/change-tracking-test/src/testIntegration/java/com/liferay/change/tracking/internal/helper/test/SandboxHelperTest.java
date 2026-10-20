@@ -238,10 +238,10 @@ public class SandboxHelperTest {
 			new Date(time - (2 * Time.HOUR)));
 
 		_addCTCollection(
-			user, WorkflowConstants.STATUS_EXPIRED, new Date(time - Time.HOUR));
-		_addCTCollection(
 			UserTestUtil.addUser(), WorkflowConstants.STATUS_DRAFT,
 			new Date(time));
+		_addCTCollection(
+			user, WorkflowConstants.STATUS_EXPIRED, new Date(time - Time.HOUR));
 
 		CTPreferences ctPreferences =
 			_ctPreferencesLocalService.getCTPreferences(
