@@ -6,11 +6,13 @@
 package com.liferay.document.library.internal.workflow.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
@@ -140,6 +142,36 @@ public class DLFileEntryWorkflowHandlerTest {
 		Assert.assertNotEquals(
 			StringPool.BLANK,
 			approvedWorkflowContext.get(WorkflowConstants.CONTEXT_URL));
+	}
+
+	@Test
+	public void testGetAssetRendererWhenFileEntryIsCheckedOut()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry(null, null);
+
+		FileVersion fileVersion = fileEntry.getFileVersion();
+
+		_dlAppService.checkOutFileEntry(
+			fileEntry.getFileEntryId(), _serviceContext);
+
+		_dlAppService.updateFileEntry(
+			fileEntry.getFileEntryId(), fileEntry.getFileName(),
+			fileEntry.getMimeType(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), DLVersionNumberIncrease.NONE,
+			StringPool.SPACE.getBytes(), null, null, null, _serviceContext);
+
+		WorkflowHandler<DLFileEntry> workflowHandler =
+			WorkflowHandlerRegistryUtil.getWorkflowHandler(
+				DLFileEntry.class.getName());
+
+		AssetRenderer<DLFileEntry> assetRenderer =
+			workflowHandler.getAssetRenderer(fileVersion.getFileVersionId());
+
+		Assert.assertEquals(
+			fileVersion.getTitle(),
+			assetRenderer.getTitle(LocaleUtil.getDefault()));
 	}
 
 	@Test
