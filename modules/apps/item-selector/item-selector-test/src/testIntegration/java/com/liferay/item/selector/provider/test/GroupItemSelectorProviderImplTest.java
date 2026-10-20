@@ -66,9 +66,6 @@ public class GroupItemSelectorProviderImplTest {
 		int originalGroupsSize = groups.size();
 
 		Assert.assertEquals(
-			groups.toString(), originalGroupsSize, groups.size());
-
-		Assert.assertEquals(
 			originalGroupsSize,
 			_groupItemSelectorProvider.getGroupsCount(
 				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
