@@ -193,6 +193,10 @@ public class DefaultDLEditFileEntryDisplayContext
 
 	@Override
 	public String getPublishButtonLabel() {
+		if (_fileEntryDisplayContextHelper.isCheckedOut()) {
+			return "save";
+		}
+
 		if (_hasFolderWorkflowDefinitionLink()) {
 			return "submit-for-workflow";
 		}
@@ -200,9 +204,7 @@ public class DefaultDLEditFileEntryDisplayContext
 		DLPortletInstanceSettings dlPortletInstanceSettings =
 			_dlRequestHelper.getDLPortletInstanceSettings();
 
-		if (dlPortletInstanceSettings.isEnableFileEntryDrafts() ||
-			_fileEntryDisplayContextHelper.isCheckedOut()) {
-
+		if (dlPortletInstanceSettings.isEnableFileEntryDrafts()) {
 			return "save";
 		}
 

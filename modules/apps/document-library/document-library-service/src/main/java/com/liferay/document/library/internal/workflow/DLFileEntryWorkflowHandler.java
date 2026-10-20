@@ -114,11 +114,8 @@ public class DLFileEntryWorkflowHandler
 			return null;
 		}
 
-		DLFileVersion dlFileVersion = _dlFileVersionLocalService.getFileVersion(
-			classPK);
-
 		return assetRendererFactory.getAssetRenderer(
-			dlFileVersion.getFileEntryId(), AssetRendererFactory.TYPE_LATEST);
+			classPK, AssetRendererFactory.TYPE_LATEST);
 	}
 
 	@Override
