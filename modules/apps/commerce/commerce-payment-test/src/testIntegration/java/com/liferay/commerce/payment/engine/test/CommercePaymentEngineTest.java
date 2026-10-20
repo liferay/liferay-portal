@@ -7,13 +7,19 @@ package com.liferay.commerce.payment.engine.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
+import com.liferay.commerce.constants.CommercePaymentMethodConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.exception.CommerceOrderPaymentMethodException;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.payment.engine.CommercePaymentEngine;
+import com.liferay.commerce.payment.method.CommercePaymentMethod;
+import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelQualifierLocalService;
 import com.liferay.commerce.payment.test.util.TestCommercePaymentMethod;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
@@ -25,6 +31,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceOrderLocalService;
+import com.liferay.commerce.service.CommerceOrderTypeLocalService;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.util.CommerceGroupThreadLocal;
@@ -36,6 +43,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -53,6 +61,7 @@ import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.frutilla.FrutillaRule;
 
@@ -63,6 +72,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -104,12 +118,14 @@ public class CommercePaymentEngineTest {
 		CommerceGroupThreadLocal.set(
 			_groupLocalService.fetchGroup(_commerceChannel.getGroupId()));
 
-		_commercePaymentMethodGroupRelLocalService.
-			addCommercePaymentMethodGroupRel(
-				_user.getUserId(), _commerceChannel.getGroupId(),
-				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomLocaleStringMap(), true, null,
-				TestCommercePaymentMethod.KEY, 99, null);
+		_commercePaymentMethodGroupRel =
+			_commercePaymentMethodGroupRelLocalService.
+				addCommercePaymentMethodGroupRel(
+					_user.getUserId(), _commerceChannel.getGroupId(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), true, null,
+					TestCommercePaymentMethod.KEY,
+					RandomTestUtil.randomDouble(), null);
 
 		_httpServletRequest = new MockHttpServletRequest("GET", "");
 
@@ -122,6 +138,11 @@ public class CommercePaymentEngineTest {
 
 		for (CommerceOrder commerceOrder : _commerceOrders) {
 			_commerceOrderLocalService.deleteCommerceOrder(commerceOrder);
+		}
+
+		for (CommerceOrderType commerceOrderType : _commerceOrderTypes) {
+			_commerceOrderTypeLocalService.deleteCommerceOrderType(
+				commerceOrderType);
 		}
 	}
 
@@ -217,6 +238,204 @@ public class CommercePaymentEngineTest {
 	}
 
 	@Test
+	public void testCompletePaymentWithInvalidPaymentMethod() throws Exception {
+		frutillaRule.scenario(
+			"When the payment method of an order cannot complete the " +
+				"payment, the payment should not be completed"
+		).given(
+			"An order with an invalid payment method in a channel with " +
+				"active payment methods"
+		).when(
+			"I complete the order payment"
+		).then(
+			"The order payment status should not be 'paid'"
+		);
+
+		_testCompletePaymentFailure(RandomTestUtil.randomString());
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			CommercePaymentEngineTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		String commercePaymentMethodKey = RandomTestUtil.randomString();
+
+		ServiceRegistration<CommercePaymentMethod> serviceRegistration =
+			bundleContext.registerService(
+				CommercePaymentMethod.class,
+				new CommercePaymentMethod() {
+
+					@Override
+					public String getDescription(Locale locale) {
+						return null;
+					}
+
+					@Override
+					public String getKey() {
+						return commercePaymentMethodKey;
+					}
+
+					@Override
+					public String getName(Locale locale) {
+						return null;
+					}
+
+					@Override
+					public int getPaymentType() {
+						return CommercePaymentMethodConstants.
+							TYPE_ONLINE_REDIRECT;
+					}
+
+					@Override
+					public String getServletPath() {
+						return null;
+					}
+
+				},
+				null);
+
+		try {
+			CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+				_commercePaymentMethodGroupRelLocalService.
+					addCommercePaymentMethodGroupRel(
+						_user.getUserId(), _commerceChannel.getGroupId(),
+						RandomTestUtil.randomLocaleStringMap(),
+						RandomTestUtil.randomLocaleStringMap(), true, null,
+						commercePaymentMethodKey, RandomTestUtil.randomDouble(),
+						null);
+
+			_testCompletePaymentFailure(commercePaymentMethodKey);
+
+			_commercePaymentMethodGroupRelLocalService.setActive(
+				commercePaymentMethodGroupRel.
+					getCommercePaymentMethodGroupRelId(),
+				false);
+
+			_testCompletePaymentFailure(commercePaymentMethodKey);
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+	}
+
+	@Test
+	public void testCompletePaymentWithoutActivePaymentMethods()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"When a channel has no active payment methods the payment should " +
+				"be completed without a payment method"
+		).given(
+			"An order without a payment method in a channel without active " +
+				"payment methods"
+		).when(
+			"I complete the order payment"
+		).then(
+			"The order payment status should be 'paid'"
+		);
+
+		_commercePaymentMethodGroupRelLocalService.setActive(
+			_commercePaymentMethodGroupRel.getCommercePaymentMethodGroupRelId(),
+			false);
+
+		CommerceOrder commerceOrder = _addCommerceOrder(
+			StringPool.BLANK, BigDecimal.valueOf(RandomTestUtil.randomInt()));
+
+		_commercePaymentEngine.completePayment(
+			commerceOrder.getCommerceOrderId(), null, _httpServletRequest);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(
+			CommerceOrderPaymentConstants.STATUS_COMPLETED,
+			commerceOrder.getPaymentStatus());
+	}
+
+	@Test
+	public void testCompletePaymentWithoutAvailablePaymentMethods()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"When no active payment method of the channel is available for " +
+				"an order, the payment should be completed without a payment " +
+					"method"
+		).given(
+			"An order without a payment method whose order type is not " +
+				"qualified for the active payment method of the channel"
+		).when(
+			"I complete the order payment"
+		).then(
+			"The order payment status should be 'paid'"
+		);
+
+		_commercePaymentMethodGroupRelQualifierLocalService.
+			addCommercePaymentMethodGroupRelQualifier(
+				_user.getUserId(), CommerceOrderType.class.getName(),
+				RandomTestUtil.randomLong(),
+				_commercePaymentMethodGroupRel.
+					getCommercePaymentMethodGroupRelId());
+
+		CommerceOrderType commerceOrderType =
+			_commerceOrderTypeLocalService.addCommerceOrderType(
+				null, _user.getUserId(), RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(), true, 1, 1, 2022, 12, 0,
+				0, 0, 0, 0, 0, 0, true, _serviceContext);
+
+		_commerceOrderTypes.add(commerceOrderType);
+
+		CommerceOrder commerceOrder = _addCommerceOrder(
+			StringPool.BLANK, BigDecimal.valueOf(RandomTestUtil.randomInt()));
+
+		commerceOrder.setCommerceOrderTypeId(
+			commerceOrderType.getCommerceOrderTypeId());
+
+		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			commerceOrder);
+
+		_commercePaymentEngine.completePayment(
+			commerceOrder.getCommerceOrderId(), null, _httpServletRequest);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(
+			CommerceOrderPaymentConstants.STATUS_COMPLETED,
+			commerceOrder.getPaymentStatus());
+	}
+
+	@Test
+	public void testCompletePaymentWithoutPaymentMethod() throws Exception {
+		frutillaRule.scenario(
+			"When an order without a payment method is not free, the payment " +
+				"should not be completed"
+		).given(
+			"An order without a payment method in a channel with active " +
+				"payment methods"
+		).when(
+			"I complete the order payment"
+		).then(
+			"The order payment status should be 'paid' only if the order is " +
+				"free"
+		);
+
+		_testCompletePaymentFailure(StringPool.BLANK);
+
+		CommerceOrder commerceOrder = _addCommerceOrder(
+			StringPool.BLANK, BigDecimal.ZERO);
+
+		_commercePaymentEngine.completePayment(
+			commerceOrder.getCommerceOrderId(), null, _httpServletRequest);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(
+			CommerceOrderPaymentConstants.STATUS_COMPLETED,
+			commerceOrder.getPaymentStatus());
+	}
+
+	@Test
 	public void testProcessPayment() throws Exception {
 		frutillaRule.scenario(
 			"When a payment is started the payment status should be " +
@@ -301,6 +520,45 @@ public class CommercePaymentEngineTest {
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
+	private CommerceOrder _addCommerceOrder(
+			String commercePaymentMethodKey, BigDecimal total)
+		throws Exception {
+
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+			_user.getUserId(), _commerceChannel.getGroupId(),
+			_commerceCurrency);
+
+		_commerceOrders.add(commerceOrder);
+
+		commerceOrder.setCommercePaymentMethodKey(commercePaymentMethodKey);
+		commerceOrder.setTotal(total);
+
+		return _commerceOrderLocalService.updateCommerceOrder(commerceOrder);
+	}
+
+	private void _testCompletePaymentFailure(String commercePaymentMethodKey)
+		throws Exception {
+
+		CommerceOrder commerceOrder = _addCommerceOrder(
+			commercePaymentMethodKey,
+			BigDecimal.valueOf(RandomTestUtil.randomInt()));
+
+		long commerceOrderId = commerceOrder.getCommerceOrderId();
+
+		AssertUtils.assertFailure(
+			CommerceOrderPaymentMethodException.class,
+			"Unable to complete payment for commerce order " + commerceOrderId,
+			() -> _commercePaymentEngine.completePayment(
+				commerceOrderId, null, _httpServletRequest));
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		Assert.assertEquals(
+			CommerceOrderPaymentConstants.STATUS_PENDING,
+			commerceOrder.getPaymentStatus());
+	}
+
 	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
 
@@ -313,14 +571,25 @@ public class CommercePaymentEngineTest {
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
+	@Inject
+	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
+
+	private final List<CommerceOrderType> _commerceOrderTypes =
+		new ArrayList<>();
 	private final List<CommerceOrder> _commerceOrders = new ArrayList<>();
 
 	@Inject
 	private CommercePaymentEngine _commercePaymentEngine;
 
+	private CommercePaymentMethodGroupRel _commercePaymentMethodGroupRel;
+
 	@Inject
 	private CommercePaymentMethodGroupRelLocalService
 		_commercePaymentMethodGroupRelLocalService;
+
+	@Inject
+	private CommercePaymentMethodGroupRelQualifierLocalService
+		_commercePaymentMethodGroupRelQualifierLocalService;
 
 	@Inject
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;

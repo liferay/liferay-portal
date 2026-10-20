@@ -17,7 +17,10 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.exception.CommerceOrderPaymentMethodException;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
@@ -35,6 +38,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -268,7 +272,59 @@ public class CommerceOrderServiceTest {
 	@Test
 	public void testUpdateCommerceOrder() throws Exception {
 		_testUpdateCommerceOrderWithAccountBuyerRole();
+		_testUpdateCommerceOrderWithInvalidCommercePaymentMethodKey();
 		_testUpdateCommerceOrderWithRegularRole();
+	}
+
+	@Test
+	public void testUpdateCommercePaymentMethodKey() throws Exception {
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
+				AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+				_commerceCurrency.getCode(), 0);
+
+		long commerceOrderId = commerceOrder.getCommerceOrderId();
+
+		String commercePaymentMethodKey = RandomTestUtil.randomString();
+
+		AssertUtils.assertFailure(
+			CommerceOrderPaymentMethodException.class,
+			"Invalid payment method key " + commercePaymentMethodKey,
+			() -> _commerceOrderService.updateCommercePaymentMethodKey(
+				commerceOrderId, commercePaymentMethodKey));
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+			_commercePaymentMethodGroupRelLocalService.
+				addCommercePaymentMethodGroupRel(
+					TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), true, null,
+					commercePaymentMethodKey, RandomTestUtil.randomDouble(),
+					null);
+
+		commerceOrder = _commerceOrderService.updateCommercePaymentMethodKey(
+			commerceOrderId, commercePaymentMethodKey);
+
+		Assert.assertEquals(
+			commercePaymentMethodKey,
+			commerceOrder.getCommercePaymentMethodKey());
+
+		_commercePaymentMethodGroupRelLocalService.setActive(
+			commercePaymentMethodGroupRel.getCommercePaymentMethodGroupRelId(),
+			false);
+
+		commerceOrder = _commerceOrderService.updateCommercePaymentMethodKey(
+			commerceOrderId, StringPool.BLANK);
+
+		Assert.assertEquals(
+			StringPool.BLANK, commerceOrder.getCommercePaymentMethodKey());
+
+		AssertUtils.assertFailure(
+			CommerceOrderPaymentMethodException.class,
+			"Invalid payment method key " + commercePaymentMethodKey,
+			() -> _commerceOrderService.updateCommercePaymentMethodKey(
+				commerceOrderId, commercePaymentMethodKey));
 	}
 
 	private CommerceOrder _addOrUpdateCommerceOrder(
@@ -631,6 +687,43 @@ public class CommerceOrderServiceTest {
 			commerceOrder.getOrderStatus());
 	}
 
+	private void _testUpdateCommerceOrderWithInvalidCommercePaymentMethodKey()
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.getPersonAccountEntry(user.getUserId());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				user.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			String commercePaymentMethodKey = RandomTestUtil.randomString();
+
+			AssertUtils.assertFailure(
+				CommerceOrderPaymentMethodException.class,
+				"Invalid payment method key " + commercePaymentMethodKey,
+				() -> _commerceOrderService.updateCommerceOrder(
+					commerceOrder.getExternalReferenceCode(),
+					commerceOrder.getCommerceOrderId(),
+					commerceOrder.getBillingAddressId(),
+					commerceOrder.getCommerceShippingMethodId(),
+					commerceOrder.getShippingAddressId(),
+					commerceOrder.getAdvanceStatus(), commercePaymentMethodKey,
+					commerceOrder.getName(),
+					commerceOrder.getPurchaseOrderNumber(),
+					commerceOrder.getShippingAmount(),
+					commerceOrder.getShippingOptionName(),
+					commerceOrder.getSubtotal(), commerceOrder.getTotal()));
+		}
+	}
+
 	private void _testUpdateCommerceOrderWithRegularRole() throws Exception {
 		Role role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
@@ -810,6 +903,10 @@ public class CommerceOrderServiceTest {
 
 	@Inject
 	private CommerceOrderService _commerceOrderService;
+
+	@Inject
+	private CommercePaymentMethodGroupRelLocalService
+		_commercePaymentMethodGroupRelLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
