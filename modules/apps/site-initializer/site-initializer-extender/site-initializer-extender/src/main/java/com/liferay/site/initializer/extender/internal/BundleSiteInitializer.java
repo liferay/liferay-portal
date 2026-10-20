@@ -184,7 +184,6 @@ import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
-import com.liferay.portal.kernel.settings.ArchivedSettingsFactory;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
@@ -287,7 +286,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 		AccountResource.Factory accountResourceFactory,
 		AccountRoleLocalService accountRoleLocalService,
 		AccountRoleResource.Factory accountRoleResourceFactory,
-		ArchivedSettingsFactory archivedSettingsFactory,
 		AssetCategoryLocalService assetCategoryLocalService,
 		AssetEntryLocalService assetEntryLocalService,
 		AssetLinkLocalService assetLinkLocalService,
@@ -382,7 +380,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 		_accountResourceFactory = accountResourceFactory;
 		_accountRoleLocalService = accountRoleLocalService;
 		_accountRoleResourceFactory = accountRoleResourceFactory;
-		_archivedSettingsFactory = archivedSettingsFactory;
 		_assetCategoryLocalService = assetCategoryLocalService;
 		_assetEntryLocalService = assetEntryLocalService;
 		_assetLinkLocalService = assetLinkLocalService;
@@ -6524,7 +6521,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private final AccountResource.Factory _accountResourceFactory;
 	private final AccountRoleLocalService _accountRoleLocalService;
 	private final AccountRoleResource.Factory _accountRoleResourceFactory;
-	private final ArchivedSettingsFactory _archivedSettingsFactory;
 	private final AssetCategoryLocalService _assetCategoryLocalService;
 	private final AssetEntryLocalService _assetEntryLocalService;
 	private final AssetLinkLocalService _assetLinkLocalService;

@@ -79,7 +79,6 @@ import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
-import com.liferay.portal.kernel.settings.ArchivedSettingsFactory;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -148,21 +147,20 @@ public class SiteInitializerExtender
 				_accountEntryOrganizationRelLocalService,
 				_accountGroupLocalService, _accountGroupRelService,
 				_accountResourceFactory, _accountRoleLocalService,
-				_accountRoleResourceFactory, _archivedSettingsFactory,
-				_assetCategoryLocalService, _assetEntryLocalService,
-				_assetLinkLocalService, _assetListEntryLocalService,
-				_blogPostingResourceFactory, _cetManager,
-				_clientExtensionEntryLocalService, _companyLocalService,
-				_configurationProvider, _dataDefinitionResourceFactory,
-				_ddmStructureLocalService, _ddmTemplateLocalService,
-				_defaultDDMStructureHelper, _dependencyManager,
-				_depotEntryGroupRelLocalService, _depotEntryLocalService,
-				_dlFileEntryLocalService, _dlFileEntryTypeLocalService,
-				_dlFolderLocalService, _dlURLHelper,
-				_documentFolderResourceFactory, _documentResourceFactory,
-				_expandoValueLocalService, _fragmentEntryLinkLocalService,
-				_fragmentsImporter, _groupLocalService,
-				_journalArticleLocalService, _jsonFactory,
+				_accountRoleResourceFactory, _assetCategoryLocalService,
+				_assetEntryLocalService, _assetLinkLocalService,
+				_assetListEntryLocalService, _blogPostingResourceFactory,
+				_cetManager, _clientExtensionEntryLocalService,
+				_companyLocalService, _configurationProvider,
+				_dataDefinitionResourceFactory, _ddmStructureLocalService,
+				_ddmTemplateLocalService, _defaultDDMStructureHelper,
+				_dependencyManager, _depotEntryGroupRelLocalService,
+				_depotEntryLocalService, _dlFileEntryLocalService,
+				_dlFileEntryTypeLocalService, _dlFolderLocalService,
+				_dlURLHelper, _documentFolderResourceFactory,
+				_documentResourceFactory, _expandoValueLocalService,
+				_fragmentEntryLinkLocalService, _fragmentsImporter,
+				_groupLocalService, _journalArticleLocalService, _jsonFactory,
 				_keywordResourceFactory, _knowledgeBaseArticleResourceFactory,
 				_knowledgeBaseFolderResourceFactory, _languageKeyResolver,
 				_layoutLocalService, _layoutPageTemplateEntryLocalService,
@@ -273,21 +271,20 @@ public class SiteInitializerExtender
 				_accountEntryOrganizationRelLocalService,
 				_accountGroupLocalService, _accountGroupRelService,
 				_accountResourceFactory, _accountRoleLocalService,
-				_accountRoleResourceFactory, _archivedSettingsFactory,
-				_assetCategoryLocalService, _assetEntryLocalService,
-				_assetLinkLocalService, _assetListEntryLocalService,
-				_blogPostingResourceFactory, _cetManager,
-				_clientExtensionEntryLocalService, _companyLocalService,
-				_configurationProvider, _dataDefinitionResourceFactory,
-				_ddmStructureLocalService, _ddmTemplateLocalService,
-				_defaultDDMStructureHelper, _dependencyManager,
-				_depotEntryGroupRelLocalService, _depotEntryLocalService,
-				_dlFileEntryLocalService, _dlFileEntryTypeLocalService,
-				_dlFolderLocalService, _dlURLHelper,
-				_documentFolderResourceFactory, _documentResourceFactory,
-				_expandoValueLocalService, _fragmentEntryLinkLocalService,
-				_fragmentsImporter, _groupLocalService,
-				_journalArticleLocalService, _jsonFactory,
+				_accountRoleResourceFactory, _assetCategoryLocalService,
+				_assetEntryLocalService, _assetLinkLocalService,
+				_assetListEntryLocalService, _blogPostingResourceFactory,
+				_cetManager, _clientExtensionEntryLocalService,
+				_companyLocalService, _configurationProvider,
+				_dataDefinitionResourceFactory, _ddmStructureLocalService,
+				_ddmTemplateLocalService, _defaultDDMStructureHelper,
+				_dependencyManager, _depotEntryGroupRelLocalService,
+				_depotEntryLocalService, _dlFileEntryLocalService,
+				_dlFileEntryTypeLocalService, _dlFolderLocalService,
+				_dlURLHelper, _documentFolderResourceFactory,
+				_documentResourceFactory, _expandoValueLocalService,
+				_fragmentEntryLinkLocalService, _fragmentsImporter,
+				_groupLocalService, _journalArticleLocalService, _jsonFactory,
 				_keywordResourceFactory, _knowledgeBaseArticleResourceFactory,
 				_knowledgeBaseFolderResourceFactory, _languageKeyResolver,
 				_layoutLocalService, _layoutPageTemplateEntryLocalService,
@@ -357,9 +354,6 @@ public class SiteInitializerExtender
 
 	@Reference
 	private AccountRoleResource.Factory _accountRoleResourceFactory;
-
-	@Reference
-	private ArchivedSettingsFactory _archivedSettingsFactory;
 
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;

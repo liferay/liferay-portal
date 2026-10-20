@@ -79,7 +79,6 @@ import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
-import com.liferay.portal.kernel.settings.ArchivedSettingsFactory;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
@@ -117,7 +116,6 @@ public class SiteInitializerExtension {
 		AccountResource.Factory accountResourceFactory,
 		AccountRoleLocalService accountRoleLocalService,
 		AccountRoleResource.Factory accountRoleResourceFactory,
-		ArchivedSettingsFactory archivedSettingsFactory,
 		AssetCategoryLocalService assetCategoryLocalService,
 		AssetEntryLocalService assetEntryLocalService,
 		AssetLinkLocalService assetLinkLocalService,
@@ -214,10 +212,9 @@ public class SiteInitializerExtension {
 			accountEntryLocalService, accountEntryOrganizationRelLocalService,
 			accountGroupLocalService, accountGroupRelService,
 			accountResourceFactory, accountRoleLocalService,
-			accountRoleResourceFactory, archivedSettingsFactory,
-			assetCategoryLocalService, assetEntryLocalService,
-			assetLinkLocalService, assetListEntryLocalService,
-			blogPostingResourceFactory, cetManager,
+			accountRoleResourceFactory, assetCategoryLocalService,
+			assetEntryLocalService, assetLinkLocalService,
+			assetListEntryLocalService, blogPostingResourceFactory, cetManager,
 			clientExtensionEntryLocalService, companyLocalService,
 			configurationProvider, dataDefinitionResourceFactory,
 			ddmStructureLocalService, ddmTemplateLocalService,
