@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.kernel.settings;
+package com.liferay.portal.configuration.settings.internal;
 
+import com.liferay.portal.kernel.settings.BaseSettings;
+import com.liferay.portal.kernel.settings.LocationVariableResolver;
+import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.HashMap;
