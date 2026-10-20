@@ -42,6 +42,8 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly skuAddModalSuccessMessage: Locator;
 	readonly skuPriceAddButton: Locator;
 	readonly skuPriceAddModal: FrameLocator;
+	readonly skuPriceAddModalAddButton: Locator;
+	readonly skuPriceAddModalUnitPriceInput: Locator;
 	readonly skuPriceFrame: FrameLocator;
 	readonly skuPriceListSelect: Locator;
 	readonly skuTab: (tabName: string) => Locator;
@@ -190,7 +192,15 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 		this.skuPriceAddButton = this.skuPriceFrame.locator(
 			'[data-testid="fdsCreationActionButton"]'
 		);
-		this.skuPriceAddModal = page.frameLocator('iframe[title="Add Price"]');
+		this.skuPriceAddModal = this.skuPriceFrame.frameLocator(
+			'iframe[title="Add Price"]'
+		);
+		this.skuPriceAddModalAddButton = this.skuPriceFrame.getByRole(
+			'button',
+			{exact: true, name: 'Add'}
+		);
+		this.skuPriceAddModalUnitPriceInput =
+			this.skuPriceAddModal.getByLabel('Unit Price');
 		this.skuPriceListSelect =
 			this.skuPriceAddModal.getByLabel('Price List');
 		this.skuTab = (skuTab) =>

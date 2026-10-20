@@ -284,6 +284,72 @@ test(
 );
 
 test(
+	'Add a price entry from the SKU price lists',
+	{tag: '@LPD-110416'},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsSkusPage,
+		commerceAdminProductPage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const priceList =
+			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
+				catalogId: catalog.id,
+				currencyCode: 'USD',
+				name: getRandomString(),
+				type: 'price-list',
+			});
+
+		await test.step('Open the add price dialog', async () => {
+			await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+			await commerceAdminProductDetailsPage.goToProductSkus();
+
+			await commerceAdminProductDetailsSkusPage
+				.skusTableRowLink(`${productSkus[0].sku}`)
+				.click();
+			await commerceAdminProductDetailsSkusPage.goToSkuTab('Price');
+			await commerceAdminProductDetailsSkusPage.skuPriceAddButton.click();
+		});
+
+		await test.step('Add the price entry', async () => {
+			await commerceAdminProductDetailsSkusPage.skuPriceListSelect.selectOption(
+				priceList.name
+			);
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput.fill(
+				'15'
+			);
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalAddButton.click();
+		});
+
+		await test.step('Check the dialog closes and the list refreshes', async () => {
+			await expect(
+				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			).toBeHidden();
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRowLink(
+					priceList.name
+				)
+			).toBeVisible();
+		});
+	}
+);
+
+test(
 	'Product name should be created for both user language and instance language',
 	{tag: '@LPD-64086'},
 	async ({apiHelpers, commerceAdminProductPage, page}) => {

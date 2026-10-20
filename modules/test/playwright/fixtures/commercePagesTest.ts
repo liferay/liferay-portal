@@ -15,6 +15,7 @@ import {CommerceAdminChannelDetailsCategoryDisplayPagesPage} from '../pages/comm
 import {CommerceAdminChannelDetailsCountriesPage} from '../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsCountriesPage';
 import {CommerceAdminChannelDetailsCurrenciesPage} from '../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsCurrenciesPage';
 import {CommerceAdminChannelDetailsPage} from '../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsPage';
+import {CommerceAdminChannelDetailsProductDisplayPagesPage} from '../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsProductDisplayPagesPage';
 import {CommerceAdminChannelDetailsTypePage} from '../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsTypePage';
 import {CommerceAdminChannelsPage} from '../pages/commerce/commerce-channel-web/commerceAdminChannelsPage';
 import {CheckoutPage} from '../pages/commerce/commerce-checkout-web/checkoutPage';
@@ -96,6 +97,7 @@ const commercePagesTest = test.extend<{
 	commerceAdminChannelDetailsCountriesPage: CommerceAdminChannelDetailsCountriesPage;
 	commerceAdminChannelDetailsCurrenciesPage: CommerceAdminChannelDetailsCurrenciesPage;
 	commerceAdminChannelDetailsPage: CommerceAdminChannelDetailsPage;
+	commerceAdminChannelDetailsProductDisplayPagesPage: CommerceAdminChannelDetailsProductDisplayPagesPage;
 	commerceAdminChannelDetailsTypePage: CommerceAdminChannelDetailsTypePage;
 	commerceAdminChannelsPage: CommerceAdminChannelsPage;
 	commerceAdminCurrenciesPage: CommerceAdminCurrenciesPage;
@@ -199,6 +201,9 @@ const commercePagesTest = test.extend<{
 	},
 	commerceAdminChannelDetailsPage: async ({page}, use) => {
 		await use(new CommerceAdminChannelDetailsPage(page));
+	},
+	commerceAdminChannelDetailsProductDisplayPagesPage: async ({page}, use) => {
+		await use(new CommerceAdminChannelDetailsProductDisplayPagesPage(page));
 	},
 	commerceAdminChannelDetailsTypePage: async ({page}, use) => {
 		await use(new CommerceAdminChannelDetailsTypePage(page));
