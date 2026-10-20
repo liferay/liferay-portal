@@ -24,13 +24,9 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.resource.manager.ClassLoaderResourceManager;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.settings.ConfigurationBeanSettings;
 import com.liferay.portal.kernel.settings.LocationVariableResolver;
@@ -48,8 +44,6 @@ import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.PropsUtil;
-
-import jakarta.portlet.PortletPreferences;
 
 import java.io.Serializable;
 
@@ -184,27 +178,6 @@ public class SettingsLocatorHelperImpl implements SettingsLocatorHelper {
 	}
 
 	@Override
-	public Settings getPortletInstancePortletPreferencesSettings(
-		long companyId, long ownerId, int ownerType, long plid,
-		String portletId, Settings parentSettings) {
-
-		return new PortletPreferencesSettings(
-			_getPortletInstancePortletPreferences(
-				companyId, ownerId, ownerType, plid, portletId),
-			parentSettings);
-	}
-
-	@Override
-	public Settings getPortletInstancePortletPreferencesSettings(
-		long companyId, long plid, String portletId, Settings parentSettings) {
-
-		return getPortletInstancePortletPreferencesSettings(
-			companyId, PortletKeys.PREFS_OWNER_ID_DEFAULT,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid, portletId,
-			parentSettings);
-	}
-
-	@Override
 	public Settings getServerSettings(String settingsId) {
 		return getConfigurationBeanSettings(settingsId);
 	}
@@ -257,28 +230,6 @@ public class SettingsLocatorHelperImpl implements SettingsLocatorHelper {
 		bundleTracker.open();
 
 		return bundleTracker;
-	}
-
-	private PortletPreferences _getPortletInstancePortletPreferences(
-		long companyId, long ownerId, int ownerType, long plid,
-		String portletId) {
-
-		if (plid != LayoutConstants.DEFAULT_PLID) {
-			Layout layout = _layoutLocalService.fetchLayout(plid);
-
-			if (layout != null) {
-				return _portletPreferencesFactory.getStrictPortletSetup(
-					layout, portletId);
-			}
-		}
-
-		if (PortletIdCodec.hasUserId(portletId)) {
-			ownerId = PortletIdCodec.decodeUserId(portletId);
-			ownerType = PortletKeys.PREFS_OWNER_TYPE_USER;
-		}
-
-		return _portletPreferencesLocalService.getStrictPreferences(
-			companyId, ownerId, ownerType, plid, portletId);
 	}
 
 	private Settings _getScopedConfigurationBeanSettings(
@@ -481,13 +432,7 @@ public class SettingsLocatorHelperImpl implements SettingsLocatorHelper {
 	@Reference
 	private GroupLocalService _groupLocalService;
 
-	@Reference
-	private LayoutLocalService _layoutLocalService;
-
 	private Settings _portalPropertiesSettings;
-
-	@Reference
-	private PortletPreferencesFactory _portletPreferencesFactory;
 
 	@Reference
 	private PortletPreferencesLocalService _portletPreferencesLocalService;

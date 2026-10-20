@@ -105,7 +105,6 @@
 		<suppress checks="JavaFeatureFlagManagerUtilCheck" files="portal-test/src/com/liferay/portal/test/rule/FeatureFlagTestRule\.java" />
 		<suppress checks="JavaHelperUtilCheck" files="portal-impl/src/com/liferay/portal/deploy/hot/CustomJspBagRegistryUtil\.java" />
 		<suppress checks="JavaHelperUtilCheck" files="portal-kernel/src/com/liferay/portal/kernel/security/pwd/PasswordEncryptorUtil\.java" />
-		<suppress checks="JavaHelperUtilCheck" files="portal-kernel/src/com/liferay/portal/kernel/settings/SettingsLocatorHelperUtil\.java" />
 		<suppress checks="JavaModuleClassGetResourceCallCheck" files="modules/apps/dispatch/dispatch-talend-api/src/test/java/com/liferay/dispatch/talend/TalendArchiveUtil\.java" />
 		<suppress checks="JavaModuleClassGetResourceCallCheck" files="modules/apps/dispatch/dispatch-talend-web/src/test/java/com/liferay/dispatch/talend/web/internal/process/TalendProcessTest\.java" />
 		<suppress checks="JavaModuleClassGetResourceCallCheck" files="modules/core/portal-bootstrap/src/main/java/com/liferay/portal/bootstrap/ModuleFrameworkImpl\.java" />

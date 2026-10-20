@@ -22,16 +22,6 @@ public class SettingsLocatorHelperUtil {
 			companyId, configurationPid, parentSettings);
 	}
 
-	public static Settings getCompanyPortletPreferencesSettings(
-		long companyId, String settingsId, Settings parentSettings) {
-
-		SettingsLocatorHelper settingsLocatorHelper =
-			_settingsLocatorHelperSnapshot.get();
-
-		return settingsLocatorHelper.getCompanyPortletPreferencesSettings(
-			companyId, settingsId, parentSettings);
-	}
-
 	public static Settings getGroupConfigurationBeanSettings(
 		long groupId, String configurationPid, Settings parentSettings) {
 
@@ -62,51 +52,6 @@ public class SettingsLocatorHelperUtil {
 
 	public static SettingsLocatorHelper getSettingsLocatorHelper() {
 		return _settingsLocatorHelperSnapshot.get();
-	}
-
-	public Settings getConfigurationBeanSettings(String settingsId) {
-		SettingsLocatorHelper settingsLocatorHelper =
-			_settingsLocatorHelperSnapshot.get();
-
-		return settingsLocatorHelper.getConfigurationBeanSettings(settingsId);
-	}
-
-	public Settings getGroupPortletPreferencesSettings(
-		long groupId, String settingsId, Settings parentSettings) {
-
-		SettingsLocatorHelper settingsLocatorHelper =
-			_settingsLocatorHelperSnapshot.get();
-
-		return settingsLocatorHelper.getGroupPortletPreferencesSettings(
-			groupId, settingsId, parentSettings);
-	}
-
-	public Settings getPortalPreferencesSettings(
-		long companyId, Settings parentSettings) {
-
-		SettingsLocatorHelper settingsLocatorHelper =
-			_settingsLocatorHelperSnapshot.get();
-
-		return settingsLocatorHelper.getPortalPreferencesSettings(
-			companyId, parentSettings);
-	}
-
-	public Settings getPortletInstancePortletPreferencesSettings(
-		long companyId, long plid, String portletId, Settings parentSettings) {
-
-		SettingsLocatorHelper settingsLocatorHelper =
-			_settingsLocatorHelperSnapshot.get();
-
-		return settingsLocatorHelper.
-			getPortletInstancePortletPreferencesSettings(
-				companyId, plid, portletId, parentSettings);
-	}
-
-	public Settings getServerSettings(String settingsId) {
-		SettingsLocatorHelper settingsLocatorHelper =
-			_settingsLocatorHelperSnapshot.get();
-
-		return settingsLocatorHelper.getServerSettings(settingsId);
 	}
 
 	private static final Snapshot<SettingsLocatorHelper>
