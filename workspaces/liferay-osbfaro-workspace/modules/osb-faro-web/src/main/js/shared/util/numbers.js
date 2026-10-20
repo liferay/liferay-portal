@@ -51,17 +51,17 @@ export const toLocale = (
 	}).format(number);
 
 const WESTERN_TIERS = [
-	{factor: 1e-12, suffix: 'T', threshold: 1e12},
-	{factor: 1e-9, suffix: 'B', threshold: 1e9},
-	{factor: 1e-6, suffix: 'M', threshold: 1e6},
-	{factor: 1e-3, suffix: 'K', threshold: 1e3},
+	{suffix: 'T', threshold: 1e12},
+	{suffix: 'B', threshold: 1e9},
+	{suffix: 'M', threshold: 1e6},
+	{suffix: 'K', threshold: 1e3},
 ];
 
 // Japanese groups by 4 digits, not 3: 万 (10,000) and 億 (100,000,000).
 
 const JAPANESE_TIERS = [
-	{factor: 1e-8, suffix: '億', threshold: 1e8},
-	{factor: 1e-4, suffix: '万', threshold: 1e4},
+	{suffix: '億', threshold: 1e8},
+	{suffix: '万', threshold: 1e4},
 ];
 
 const getTier = (number, tiers) =>
@@ -85,9 +85,9 @@ const formatMantissa = (number, locale) =>
  * @returns {string}
  */
 export const toThousands = (number, locale = getLocale()) =>
-	toThousandsBase(number, (factor) => number * factor, locale);
+	toThousandsBase(number, (threshold) => number / threshold, locale);
 
-export const toThousandsBase = (number, setFactor, locale = getLocale()) => {
+export const toThousandsBase = (number, getMantissa, locale = getLocale()) => {
 	if (!isNumber(number)) {
 		return '';
 	}
@@ -99,7 +99,7 @@ export const toThousandsBase = (number, setFactor, locale = getLocale()) => {
 		return formatMantissa(number, locale);
 	}
 
-	return `${formatMantissa(setFactor(tier.factor), locale)}${tier.suffix}`;
+	return `${formatMantissa(getMantissa(tier.threshold), locale)}${tier.suffix}`;
 };
 
 /**
