@@ -56,9 +56,11 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -1389,6 +1391,103 @@ public class JournalArticleServiceTest {
 			_article.getDisplayDate(), assetEntry.getPublishDate());
 	}
 
+	@Test
+	@TestInfo("LPD-110158")
+	public void testUpdateStatus() throws Exception {
+		_workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
+			TestPropsValues.getUserId(), _group.getCompanyId(),
+			_group.getGroupId(), JournalFolder.class.getName(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.DDM_STRUCTURE_ID_ALL, "Single Approver", 1);
+
+		JournalArticle journalArticle = JournalTestUtil.addArticleWithWorkflow(
+			_group.getGroupId(), false);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _journalArticleService.updateStatus(
+				_group.getGroupId(), journalArticle.getArticleId(),
+				journalArticle.getVersion(), WorkflowConstants.STATUS_APPROVED,
+				null, serviceContext));
+
+		JournalArticle draftJournalArticle =
+			_journalArticleLocalService.getArticle(journalArticle.getId());
+
+		Assert.assertTrue(draftJournalArticle.isDraft());
+
+		_workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
+			TestPropsValues.getUserId(), _group.getCompanyId(),
+			_group.getGroupId(), JournalFolder.class.getName(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.DDM_STRUCTURE_ID_ALL, null);
+
+		JournalArticle approvedJournalArticle =
+			_journalArticleService.updateStatus(
+				_group.getGroupId(), journalArticle.getArticleId(),
+				journalArticle.getVersion(), WorkflowConstants.STATUS_APPROVED,
+				null, serviceContext);
+
+		Assert.assertTrue(approvedJournalArticle.isApproved());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), JournalArticle.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(journalArticle.getResourcePrimKey()),
+			role.getRoleId(), new String[] {ActionKeys.UPDATE});
+
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, _permissionCheckerFactory.create(user))) {
+
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> _journalArticleService.updateStatus(
+						_group.getGroupId(), journalArticle.getArticleId(),
+						journalArticle.getVersion(),
+						WorkflowConstants.STATUS_EXPIRED, null,
+						serviceContext));
+
+			Assert.assertEquals(
+				JournalArticle.class.getName(),
+				mustHavePermission.resourceName);
+			Assert.assertEquals(
+				journalArticle.getResourcePrimKey(),
+				mustHavePermission.resourceId);
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.EXPIRE}, mustHavePermission.actionId);
+		}
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), JournalArticle.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(journalArticle.getResourcePrimKey()),
+			role.getRoleId(), new String[] {ActionKeys.EXPIRE});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, _permissionCheckerFactory.create(user))) {
+
+			JournalArticle expiredJournalArticle =
+				_journalArticleService.updateStatus(
+					_group.getGroupId(), journalArticle.getArticleId(),
+					journalArticle.getVersion(),
+					WorkflowConstants.STATUS_EXPIRED, null, serviceContext);
+
+			Assert.assertTrue(expiredJournalArticle.isExpired());
+		}
+
+		_roleLocalService.deleteRole(role);
+		_userLocalService.deleteUser(user);
+	}
+
 	protected List<JournalArticle> addArticles(int count, String content)
 		throws Exception {
 
@@ -1847,9 +1946,16 @@ public class JournalArticleServiceTest {
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
 	private SubscriptionLocalService _subscriptionLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@Inject
+	private WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
 
 }
