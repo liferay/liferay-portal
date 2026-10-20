@@ -6,7 +6,9 @@
 package com.liferay.jenkins.results.parser;
 
 import java.io.File;
+import java.io.StringReader;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -64,17 +66,14 @@ public class SourceFormatterReleaseUtil {
 		GitWorkingDirectory gitWorkingDirectory, String ref) {
 
 		try {
+			Properties artifactProperties = new Properties();
+
 			File portalDirectory = gitWorkingDirectory.getWorkingDirectory();
 
-			File artifactPropertiesFile = new File(
-				portalDirectory, _ARTIFACT_PROPERTIES_PATH);
-
-			if (!artifactPropertiesFile.exists()) {
-				return false;
-			}
-
-			Properties artifactProperties =
-				JenkinsResultsParserUtil.getProperties(artifactPropertiesFile);
+			artifactProperties.load(
+				new StringReader(
+					JenkinsResultsParserUtil.read(
+						new File(portalDirectory, _ARTIFACT_PROPERTIES_PATH))));
 
 			String artifactGitId = artifactProperties.getProperty(
 				"artifact.git.id");
@@ -95,32 +94,60 @@ public class SourceFormatterReleaseUtil {
 					GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
 					GitUtil.MILLIS_TIMEOUT,
 					JenkinsResultsParserUtil.combine(
-						"git diff --name-only ", artifactGitId, " ", ref,
-						" -- ", _SOURCE_FORMATTER_PATH));
+						"git diff --no-color --unified=0 ", artifactGitId, " ",
+						ref, " -- ", _SOURCE_FORMATTER_PATH));
 
 			if (executionResult.getExitValue() != 0) {
 				return false;
 			}
 
-			String standardOut = executionResult.getStandardOut();
-
-			for (String modifiedFilePath : standardOut.split("\n")) {
-				modifiedFilePath = modifiedFilePath.trim();
-
-				if (modifiedFilePath.isEmpty()) {
-					continue;
-				}
-
-				if (!_versionFilePaths.contains(modifiedFilePath)) {
-					return false;
-				}
-			}
-
-			return true;
+			return _isVersionOnlyDiff(executionResult.getStandardOut());
 		}
 		catch (Exception exception) {
 			return false;
 		}
+	}
+
+	private static boolean _isVersionOnlyDiff(String gitDiff) {
+		List<String> addedLines = new ArrayList<>();
+		List<String> removedLines = new ArrayList<>();
+
+		boolean hunk = false;
+
+		for (String line : gitDiff.split("\n")) {
+			if (line.startsWith("diff --git ")) {
+				int index = line.indexOf(" b/");
+
+				if (!_versionFilePaths.contains(line.substring(index + 3))) {
+					return false;
+				}
+
+				hunk = false;
+
+				continue;
+			}
+
+			if (line.startsWith("@@")) {
+				hunk = true;
+
+				continue;
+			}
+
+			if (!hunk) {
+				continue;
+			}
+
+			Matcher matcher = _versionPattern.matcher(line.substring(1));
+
+			if (line.startsWith("+")) {
+				addedLines.add(matcher.replaceAll(""));
+			}
+			else if (line.startsWith("-")) {
+				removedLines.add(matcher.replaceAll(""));
+			}
+		}
+
+		return addedLines.equals(removedLines);
 	}
 
 	private static final String _ARTIFACT_PROPERTIES_PATH =
@@ -142,5 +169,7 @@ public class SourceFormatterReleaseUtil {
 		JenkinsResultsParserUtil.combine(
 			_SOURCE_FORMATTER_PATH, "/src/main/resources/META-INF/maven/",
 			"plugin.xml"));
+	private static final Pattern _versionPattern = Pattern.compile(
+		"\\d+(\\.\\d+)+");
 
 }

@@ -10551,50 +10551,40 @@ ${output.content}</echo>
 				</beanshell>
 			</try>
 			<catch>
-				<local name="source.formatter.released.jar.resolved" />
+				<local name="source.formatter.released.source.match" />
+				<local name="source.formatter.released.source.match.failure" />
 
-				<beanshell>
-					<![CDATA[
-						import com.liferay.jenkins.results.parser.GitWorkingDirectory;
-						import com.liferay.jenkins.results.parser.GitWorkingDirectoryFactory;
-						import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
-						import com.liferay.jenkins.results.parser.SourceFormatterReleaseUtil;
+				<trycatch property="source.formatter.released.source.match.failure">
+					<try>
+						<beanshell>
+							<![CDATA[
+								import com.liferay.jenkins.results.parser.GitWorkingDirectory;
+								import com.liferay.jenkins.results.parser.GitWorkingDirectoryFactory;
+								import com.liferay.jenkins.results.parser.SourceFormatterReleaseUtil;
 
-						import java.io.File;
+								import java.io.File;
 
-						import java.net.URL;
+								File baseDir = project.getBaseDir();
 
-						import java.util.Properties;
+								GitWorkingDirectory gitWorkingDirectory = GitWorkingDirectoryFactory.newGitWorkingDirectory(project.getProperty("liferay.portal.branch"), baseDir.getCanonicalPath(), "liferay-portal");
 
-						try {
-							String portalDirPath = project.getBaseDir().getCanonicalPath();
-
-							GitWorkingDirectory gitWorkingDirectory = GitWorkingDirectoryFactory.newGitWorkingDirectory(project.getProperty("liferay.portal.branch"), portalDirPath, "liferay-portal");
-
-							if (SourceFormatterReleaseUtil.isReleasedSourceMatch(gitWorkingDirectory, "HEAD")) {
-								File artifactPropertiesFile = new File(project.getBaseDir(), "modules/.releng/util/source-formatter/artifact.properties");
-
-								Properties artifactProperties = JenkinsResultsParserUtil.getProperties(new File[] {artifactPropertiesFile});
-
-								File jarFile = new File(project.getBaseDir(), "tools/sdk/dependencies/com.liferay.source.formatter/lib/com.liferay.source.formatter.jar");
-
-								JenkinsResultsParserUtil.toFile(new URL(artifactProperties.getProperty("artifact.url")), jarFile);
-
-								if (jarFile.exists() && (jarFile.length() > 0)) {
-									project.setProperty("source.formatter.released.jar.resolved", "true");
+								if (SourceFormatterReleaseUtil.isReleasedSourceMatch(gitWorkingDirectory, "HEAD")) {
+									project.setProperty("source.formatter.released.source.match", "true");
 								}
-							}
-						}
-						catch (Exception exception) {
-							System.out.println("Unable to resolve the released source-formatter: " + exception.getMessage());
-						}
-					]]>
-				</beanshell>
+							]]>
+						</beanshell>
+					</try>
+					<catch>
+						<echo>Unable to compare source-formatter with the released version: ${source.formatter.released.source.match.failure}</echo>
+					</catch>
+				</trycatch>
 
 				<if>
-					<equals arg1="${source.formatter.released.jar.resolved}" arg2="true" />
+					<equals arg1="${source.formatter.released.source.match}" arg2="true" />
 					<then>
-						<echo>Unable to find cached source-formatter. Resolved the released source-formatter.</echo>
+						<echo>Unable to find cached source-formatter. Using the released source-formatter.</echo>
+
+						<antcall inheritAll="false" target="setup-sdk" />
 					</then>
 					<else>
 						<echo>Unable to find cached source-formatter. Building from source.</echo>
