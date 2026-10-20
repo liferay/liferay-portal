@@ -495,8 +495,8 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 
 				if (_isSameContent(
 						fileEntry,
-						_getInputStream(
-							zipFile, zipEntryNames.get(fileEntryPath)))) {
+						zipFile.getEntry(zipEntryNames.get(fileEntryPath)),
+						zipFile)) {
 
 					zipEntryNames.remove(fileEntryPath);
 				}
@@ -749,8 +749,13 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			ZipFile zipFile, String fileName, String contentPath)
 		throws Exception {
 
+		return _getInputStream(
+			zipFile, _getFragmentEntryPath(fileName, contentPath));
+	}
+
+	private String _getFragmentEntryPath(String fileName, String contentPath) {
 		if (contentPath.startsWith(StringPool.SLASH)) {
-			return _getInputStream(zipFile, contentPath.substring(1));
+			return contentPath.substring(1);
 		}
 
 		if (contentPath.startsWith("./")) {
@@ -760,7 +765,7 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 		String path = fileName.substring(
 			0, fileName.lastIndexOf(StringPool.SLASH));
 
-		return _getInputStream(zipFile, path + StringPool.SLASH + contentPath);
+		return path + StringPool.SLASH + contentPath;
 	}
 
 	private String _getIcon(FragmentEntry fragmentEntry, String icon) {
@@ -1241,15 +1246,15 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			return true;
 		}
 
-		InputStream inputStream = null;
+		ZipEntry zipEntry = null;
 
 		if (Validator.isNotNull(thumbnailPath)) {
-			inputStream = _getFragmentEntryInputStream(
-				zipFile, fileName, thumbnailPath);
+			zipEntry = zipFile.getEntry(
+				_getFragmentEntryPath(fileName, thumbnailPath));
 		}
 
 		if (fragmentEntry.getPreviewFileEntryId() == 0) {
-			if (inputStream == null) {
+			if (zipEntry == null) {
 				return false;
 			}
 
@@ -1259,19 +1264,20 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 		return !_isSameContent(
 			PortletFileRepositoryUtil.getPortletFileEntry(
 				fragmentEntry.getPreviewFileEntryId()),
-			inputStream);
+			zipEntry, zipFile);
 	}
 
-	private boolean _isSameContent(FileEntry fileEntry, InputStream inputStream)
+	private boolean _isSameContent(
+			FileEntry fileEntry, ZipEntry zipEntry, ZipFile zipFile)
 		throws Exception {
 
-		if (inputStream == null) {
+		if ((zipEntry == null) || (fileEntry.getSize() != zipEntry.getSize())) {
 			return false;
 		}
 
 		return Arrays.equals(
 			FileUtil.getBytes(fileEntry.getContentStream()),
-			FileUtil.getBytes(inputStream));
+			FileUtil.getBytes(zipFile.getInputStream(zipEntry)));
 	}
 
 	private String _replaceResourceReferences(
