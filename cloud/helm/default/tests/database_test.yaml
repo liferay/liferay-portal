@@ -1,0 +1,170 @@
+suite: Database
+templates:
+    -   templates/configmap.yaml
+    -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
+    -   templates/workloads.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    value: jdbc:postgresql://db.example.com:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Accepts a database engine that matches the engine of the deployment
+        set:
+            database.engine: postgresql
+            database.host: db.example.com
+            global.database.engine: postgresql
+        template: templates/workloads.yaml
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: LIFERAY_HIBERNATE_PERIOD_DIALECT
+                        value: org.hibernate.dialect.MySQL8Dialect
+                    path: spec.template.spec.containers[0].env
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Adds the Hibernate dialect for MySQL
+        set:
+            database.engine: mysql
+            database.host: db.example.com
+        template: templates/workloads.yaml
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    value: jdbc:postgresql://db.example.com:6432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Connects to the configured database port
+        set:
+            database.engine: postgresql
+            database.host: db.example.com
+            database.port: 6432
+        template: templates/workloads.yaml
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: Unable to set "database.engine" to "mysql" because "global.database.engine" sets the database engine of the deployment to "postgresql"
+        it: Fails when the database engine differs from the engine of the deployment
+        set:
+            database.engine: mysql
+            database.host: db.example.com
+            global.database.engine: postgresql
+        template: templates/workloads.yaml
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: Database engine "oracle" is not supported. Set "database.engine" to "mysql" or "postgresql".
+        it: Fails when the database engine is not supported
+        set:
+            database.engine: oracle
+            database.host: db.example.com
+        template: templates/workloads.yaml
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: '"database.host" must be set when "database.engine" is set'
+        it: Fails when the database engine is set without a host
+        set:
+            database.engine: postgresql
+        template: templates/workloads.yaml
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: '"database.engine" must be set when "database.host" is set, or Liferay falls back to its embedded Hypersonic database'
+        it: Fails when the database host is set without an engine
+        set:
+            database.host: db.example.com
+        template: templates/workloads.yaml
+    -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        name: LIFERAY_HIBERNATE_PERIOD_DIALECT
+                    path: spec.template.spec.containers[0].env
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Leaves out the Hibernate dialect for PostgreSQL
+        set:
+            database.engine: postgresql
+            database.host: db.example.com
+        template: templates/workloads.yaml
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    value: jdbc:mariadb://db.example.com:3306/lportal
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Leaves out the TLS parameter of the MySQL URL when TLS is not required
+        set:
+            database.engine: mysql
+            database.host: db.example.com
+            database.tlsRequired: false
+        template: templates/workloads.yaml
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    value: jdbc:postgresql://db.example.com:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Leaves out the TLS parameter of the PostgreSQL URL when TLS is not required
+        set:
+            database.engine: postgresql
+            database.host: db.example.com
+            database.tlsRequired: false
+        template: templates/workloads.yaml
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    value: jdbc:postgresql://db.example.com:5432/custom
+            -   contains:
+                    any: true
+                    content:
+                        name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
+                        value: org.postgresql.Driver
+                    path: spec.template.spec.containers[0].env
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Lets custom environment variables override the generated JDBC URL
+        set:
+            customEnv:
+                x-extra:
+                    -   name: FOO
+                        value: bar
+                x-jdbc:
+                    -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME
+                        value: liferay
+                    -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL
+                        value: jdbc:postgresql://db.example.com:5432/custom
+            database.engine: postgresql
+            database.host: db.example.com
+        template: templates/workloads.yaml
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_HIBERNATE_PERIOD_DIALECT")].value
+                    value: org.hibernate.dialect.MariaDBDialect
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME")].value
+                    value: com.mysql.cj.jdbc.Driver
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    value: jdbc:mariadb://db.example.com:3306/lportal
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Lets custom environment variables override the generated driver and dialect
+        set:
+            customEnv:
+                x-jdbc:
+                    -   name: LIFERAY_HIBERNATE_PERIOD_DIALECT
+                        value: org.hibernate.dialect.MariaDBDialect
+                    -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
+                        value: com.mysql.cj.jdbc.Driver
+            database.engine: mysql
+            database.host: db.example.com
+        template: templates/workloads.yaml

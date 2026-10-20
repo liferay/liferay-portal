@@ -34,11 +34,11 @@ tests:
                     pattern: (\?|&)sslMode=trust(&|$)
         documentSelector:
             path: kind
-            skipEmptyTemplates: true
             value: StatefulSet
         it: Connects to MySQL over TLS through the MariaDB driver
         set:
             global.database.engine: mysql
+        template: charts/liferay-default/templates/workloads.yaml
     -   asserts:
             -   contains:
                     any: true
@@ -54,11 +54,11 @@ tests:
                     pattern: (\?|&)sslmode=require(&|$)
         documentSelector:
             path: kind
-            skipEmptyTemplates: true
             value: StatefulSet
         it: Connects to PostgreSQL over TLS
         set:
             global.database.engine: postgresql
+        template: charts/liferay-default/templates/workloads.yaml
     -   asserts:
             -   contains:
                     any: true
