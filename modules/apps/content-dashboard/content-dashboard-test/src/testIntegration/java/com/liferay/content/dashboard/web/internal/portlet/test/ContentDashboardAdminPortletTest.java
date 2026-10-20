@@ -28,6 +28,8 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.constants.LanguageConstants;
@@ -77,6 +79,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -233,6 +237,249 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertNotNull(context);
 		Assert.assertEquals(
 			LanguageConstants.VALUE_RTL, context.get("languageDirection"));
+	}
+
+	@Test
+	public void testGetDataWithAssetCategoriesInCreationOrder()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getCompanyId(), _company.getGroupId(),
+				TestPropsValues.getUserId());
+
+		AssetVocabulary audienceAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "audience");
+
+		AssetCategory audienceAssetCategory1 = _addAssetCategory(
+			audienceAssetVocabulary, "C_" + RandomTestUtil.randomString(),
+			serviceContext);
+		AssetCategory audienceAssetCategory2 = _addAssetCategory(
+			audienceAssetVocabulary, "B_" + RandomTestUtil.randomString(),
+			serviceContext);
+		AssetCategory audienceAssetCategory3 = _addAssetCategory(
+			audienceAssetVocabulary, "A_" + RandomTestUtil.randomString(),
+			serviceContext);
+
+		AssetVocabulary stageAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "stage");
+
+		AssetCategory stageAssetCategory1 = _addAssetCategory(
+			stageAssetVocabulary, RandomTestUtil.randomString(),
+			serviceContext);
+		AssetCategory stageAssetCategory2 = _addAssetCategory(
+			stageAssetVocabulary, RandomTestUtil.randomString(),
+			serviceContext);
+		AssetCategory stageAssetCategory3 = _addAssetCategory(
+			stageAssetVocabulary, RandomTestUtil.randomString(),
+			serviceContext);
+
+		List<AssetCategory> assetCategories = new ArrayList<>(
+			Arrays.asList(
+				audienceAssetCategory1, audienceAssetCategory2,
+				audienceAssetCategory3, stageAssetCategory1,
+				stageAssetCategory2, stageAssetCategory3));
+
+		try {
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId(),
+					new long[] {
+						audienceAssetCategory1.getCategoryId(),
+						audienceAssetCategory3.getCategoryId(),
+						stageAssetCategory1.getCategoryId(),
+						stageAssetCategory2.getCategoryId(),
+						stageAssetCategory3.getCategoryId()
+					}));
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId(),
+					new long[] {
+						audienceAssetCategory1.getCategoryId(),
+						audienceAssetCategory2.getCategoryId(),
+						audienceAssetCategory3.getCategoryId(),
+						stageAssetCategory1.getCategoryId(),
+						stageAssetCategory2.getCategoryId(),
+						stageAssetCategory3.getCategoryId()
+					}));
+
+			JSONArray jsonArray = _getVocabulariesJSONArray();
+
+			Assert.assertEquals(
+				_getKeys(
+					audienceAssetCategory1, audienceAssetCategory2,
+					audienceAssetCategory3),
+				_getKeys(jsonArray));
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				Assert.assertEquals(
+					_getKeys(
+						stageAssetCategory1, stageAssetCategory2,
+						stageAssetCategory3),
+					_getKeys(jsonObject.getJSONArray("categories")));
+			}
+
+			AssetCategory stageAssetCategory4 = _addAssetCategory(
+				stageAssetVocabulary, RandomTestUtil.randomString(),
+				serviceContext);
+
+			assetCategories.add(stageAssetCategory4);
+
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId(),
+					new long[] {
+						audienceAssetCategory1.getCategoryId(),
+						stageAssetCategory4.getCategoryId()
+					}));
+
+			jsonArray = _getVocabulariesJSONArray();
+
+			Assert.assertEquals(
+				_getKeys(
+					audienceAssetCategory1, audienceAssetCategory2,
+					audienceAssetCategory3),
+				_getKeys(jsonArray));
+
+			JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+			Assert.assertEquals(
+				_getKeys(
+					stageAssetCategory1, stageAssetCategory2,
+					stageAssetCategory3, stageAssetCategory4),
+				_getKeys(jsonObject.getJSONArray("categories")));
+		}
+		finally {
+			for (AssetCategory assetCategory : assetCategories) {
+				_assetCategoryLocalService.deleteCategory(assetCategory);
+			}
+		}
+	}
+
+	@Test
+	public void testGetDataWithAssetVocabularyIds() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getCompanyId(), _company.getGroupId(),
+				TestPropsValues.getUserId());
+
+		AssetVocabulary audienceAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "audience");
+
+		AssetCategory audienceAssetCategory = _addAssetCategory(
+			audienceAssetVocabulary, RandomTestUtil.randomString(),
+			serviceContext);
+
+		AssetVocabulary stageAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "stage");
+
+		AssetCategory stageAssetCategory = _addAssetCategory(
+			stageAssetVocabulary, RandomTestUtil.randomString(),
+			serviceContext);
+
+		try {
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId(),
+					new long[] {
+						audienceAssetCategory.getCategoryId(),
+						stageAssetCategory.getCategoryId()
+					}));
+
+			JSONArray jsonArray = _getVocabulariesJSONArray(
+				String.valueOf(audienceAssetVocabulary.getVocabularyId()),
+				String.valueOf(stageAssetVocabulary.getVocabularyId()));
+
+			Assert.assertEquals(
+				_getKeys(audienceAssetCategory), _getKeys(jsonArray));
+
+			JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+			Assert.assertEquals(
+				_getKeys(stageAssetCategory),
+				_getKeys(jsonObject.getJSONArray("categories")));
+
+			jsonArray = _getVocabulariesJSONArray(
+				String.valueOf(audienceAssetVocabulary.getVocabularyId()));
+
+			Assert.assertEquals(
+				_getKeys(audienceAssetCategory), _getKeys(jsonArray));
+
+			jsonObject = jsonArray.getJSONObject(0);
+
+			Assert.assertNull(jsonObject.getJSONArray("categories"));
+		}
+		finally {
+			_assetCategoryLocalService.deleteCategory(audienceAssetCategory);
+			_assetCategoryLocalService.deleteCategory(stageAssetCategory);
+		}
+	}
+
+	@Test
+	public void testGetDataWithChildAssetCategories() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getCompanyId(), _company.getGroupId(),
+				TestPropsValues.getUserId());
+
+		AssetVocabulary stageAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				serviceContext.getScopeGroupId(), "stage");
+
+		AssetCategory stageAssetCategory1 = _addAssetCategory(
+			stageAssetVocabulary, RandomTestUtil.randomString(),
+			serviceContext);
+		AssetCategory stageAssetCategory2 = _addAssetCategory(
+			stageAssetVocabulary, RandomTestUtil.randomString(),
+			serviceContext);
+		AssetCategory stageAssetCategory3 = _addAssetCategory(
+			stageAssetVocabulary, RandomTestUtil.randomString(),
+			serviceContext);
+
+		try {
+			for (int i = 0; i < 3; i++) {
+				JournalTestUtil.addArticle(
+					_group.getGroupId(), 0,
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), TestPropsValues.getUserId(),
+						new long[] {
+							stageAssetCategory1.getCategoryId(),
+							stageAssetCategory2.getCategoryId(),
+							stageAssetCategory3.getCategoryId()
+						}));
+			}
+
+			JSONArray jsonArray = _getVocabulariesJSONArray();
+
+			Assert.assertEquals(
+				_getKeys(
+					stageAssetCategory1, stageAssetCategory2,
+					stageAssetCategory3),
+				_getKeys(jsonArray));
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				Assert.assertEquals(
+					stageAssetVocabulary.getTitle(LocaleUtil.US),
+					jsonObject.getString("vocabularyName"));
+			}
+		}
+		finally {
+			_assetCategoryLocalService.deleteCategory(stageAssetCategory1);
+			_assetCategoryLocalService.deleteCategory(stageAssetCategory2);
+			_assetCategoryLocalService.deleteCategory(stageAssetCategory3);
+		}
 	}
 
 	@Test
@@ -1516,6 +1763,16 @@ public class ContentDashboardAdminPortletTest {
 		}
 	}
 
+	private AssetCategory _addAssetCategory(
+			AssetVocabulary assetVocabulary, String title,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		return _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _company.getGroupId(), title,
+			assetVocabulary.getVocabularyId(), serviceContext);
+	}
+
 	private FileEntry _addFileEntry(String fileExtension) throws Exception {
 		return DLAppLocalServiceUtil.addFileEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
@@ -1577,6 +1834,28 @@ public class ContentDashboardAdminPortletTest {
 				"com.liferay.content.dashboard.web.internal.display.context." +
 					"ContentDashboardAdminDisplayContext"),
 			"getData", new Class<?>[0]);
+	}
+
+	private List<String> _getKeys(AssetCategory... assetCategories) {
+		List<String> keys = new ArrayList<>();
+
+		for (AssetCategory assetCategory : assetCategories) {
+			keys.add(String.valueOf(assetCategory.getCategoryId()));
+		}
+
+		return keys;
+	}
+
+	private List<String> _getKeys(JSONArray jsonArray) {
+		List<String> keys = new ArrayList<>();
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			keys.add(jsonObject.getString("key"));
+		}
+
+		return keys;
 	}
 
 	private MockLiferayPortletRenderRequest
@@ -1694,6 +1973,37 @@ public class ContentDashboardAdminPortletTest {
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
+	}
+
+	private JSONArray _getVocabulariesJSONArray() throws Exception {
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"scopeId", String.valueOf(_group.getGroupId()));
+
+		Map<String, Object> data = _getData(mockLiferayPortletRenderRequest);
+
+		Map<String, Object> props = (Map<String, Object>)data.get("props");
+
+		return (JSONArray)props.get("vocabularies");
+	}
+
+	private JSONArray _getVocabulariesJSONArray(String... assetVocabularyIds)
+		throws Exception {
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				assetVocabularyIds, LocaleUtil.US);
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"scopeId", String.valueOf(_group.getGroupId()));
+
+		Map<String, Object> data = _getData(mockLiferayPortletRenderRequest);
+
+		Map<String, Object> props = (Map<String, Object>)data.get("props");
+
+		return (JSONArray)props.get("vocabularies");
 	}
 
 	private Boolean _isSwapConfigurationEnabled(String... assetVocabularyIds)
