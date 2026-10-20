@@ -143,6 +143,20 @@ public class ViewVersionHistoryDisplayContextTest
 			"expire", "copy", "delete");
 	}
 
+	@Test
+	@TestInfo("LPD-110617")
+	public void testGetProps() throws Exception {
+		String backURL = RandomTestUtil.randomString();
+
+		Map<String, Object> props = _getProps(backURL);
+
+		Assert.assertEquals(backURL, props.get("backURL"));
+
+		props = _getProps("javascript:alert(document.cookie)");
+
+		Assert.assertNull(props.get("backURL"));
+	}
+
 	private void _assertFDSActionDropdownItemIds(String... expectedIds)
 		throws Exception {
 
@@ -178,6 +192,17 @@ public class ViewVersionHistoryDisplayContextTest
 			"objectEntryId", String.valueOf(objectEntry.getObjectEntryId()));
 
 		return mockHttpServletRequest;
+	}
+
+	private Map<String, Object> _getProps(String backURL) throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(_objectEntry);
+
+		mockHttpServletRequest.setParameter("backURL", backURL);
+
+		return ReflectionTestUtil.invoke(
+			_getViewVersionHistoryDisplayContext(mockHttpServletRequest),
+			"getProps", new Class<?>[0]);
 	}
 
 	private Object _getViewVersionHistoryDisplayContext(

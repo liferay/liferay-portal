@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -86,6 +87,7 @@ public class ViewAssetDisplayContextTest extends BaseDisplayContextTestCase {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
+	@TestInfo("LPD-110617")
 	public void testGetAdditionalProps() throws Exception {
 		_testGetAdditionalPropsWithoutCommentPermission();
 		_testGetAdditionalPropsWithoutPermissions();
@@ -259,6 +261,15 @@ public class ViewAssetDisplayContextTest extends BaseDisplayContextTestCase {
 			ReflectionTestUtil.invoke(
 				_getViewAssetDisplayContext(mockHttpServletRequest),
 				"getAdditionalProps", new Class<?>[0]));
+
+		mockHttpServletRequest.setParameter(
+			"backURL", "javascript:alert(document.cookie)");
+
+		Map<String, Object> additionalProps = ReflectionTestUtil.invoke(
+			_getViewAssetDisplayContext(mockHttpServletRequest),
+			"getAdditionalProps", new Class<?>[0]);
+
+		Assert.assertNull(additionalProps.get("backURL"));
 	}
 
 	private void _testGetAdditionalPropsWithPermissions() throws Exception {
