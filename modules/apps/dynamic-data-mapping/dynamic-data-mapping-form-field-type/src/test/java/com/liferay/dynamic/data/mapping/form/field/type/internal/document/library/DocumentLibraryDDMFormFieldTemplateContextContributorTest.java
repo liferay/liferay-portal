@@ -347,111 +347,10 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 
 	@Test
 	public void testGetParametersShouldLocalizeStringsUsingDisplayLocale() {
-		DocumentLibraryDDMFormFieldTemplateContextContributor
-			documentLibraryDDMFormFieldTemplateContextContributor = _createSpy(
-				_mockThemeDisplay());
-
-		ResourceBundle resourceBundle = Mockito.mock(ResourceBundle.class);
-
-		Mockito.doReturn(
-			resourceBundle
-		).when(
-			documentLibraryDDMFormFieldTemplateContextContributor
-		).getResourceBundle(
-			LocaleUtil.BRAZIL
-		);
-
-		Mockito.when(
-			_language.get(Mockito.eq(resourceBundle), Mockito.anyString())
-		).thenAnswer(
-			invocation -> invocation.getArgument(1) + "_pt_BR"
-		);
-
-		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
-			_createDDMFormFieldRenderingContext();
-
-		ddmFormFieldRenderingContext.setLocale(LocaleUtil.BRAZIL);
-		ddmFormFieldRenderingContext.setPortletNamespace(
-			_PORTLET_NAMESPACE_DDM_FORM);
-
-		Map<String, Object> parameters =
-			documentLibraryDDMFormFieldTemplateContextContributor.getParameters(
-				new DDMFormField("field", "document_library"),
-				ddmFormFieldRenderingContext);
-
-		Map<String, String> stringsMap = (Map<String, String>)parameters.get(
-			"strings");
-
-		Assert.assertEquals("clear_pt_BR", stringsMap.get("clearLabel"));
-		Assert.assertEquals("file_pt_BR", stringsMap.get("fileLabel"));
-		Assert.assertEquals("select_pt_BR", stringsMap.get("selectLabel"));
-		Assert.assertEquals(
-			"you-need-to-be-signed-in-to-edit-this-field_pt_BR",
-			stringsMap.get("signInRequiredErrorMessage"));
-	}
-
-	@Test
-	public void testGetParametersShouldLocalizeStringsUsingUILocaleOutsideForms() {
-		ThemeDisplay themeDisplay = _mockThemeDisplay();
-
-		Mockito.when(
-			themeDisplay.getLocale()
-		).thenReturn(
-			LocaleUtil.US
-		);
-
-		DocumentLibraryDDMFormFieldTemplateContextContributor
-			documentLibraryDDMFormFieldTemplateContextContributor = _createSpy(
-				themeDisplay);
-
-		ResourceBundle brazilResourceBundle = Mockito.mock(
-			ResourceBundle.class);
-
-		Mockito.doReturn(
-			brazilResourceBundle
-		).when(
-			documentLibraryDDMFormFieldTemplateContextContributor
-		).getResourceBundle(
-			LocaleUtil.BRAZIL
-		);
-
-		Mockito.when(
-			_language.get(Mockito.eq(brazilResourceBundle), Mockito.anyString())
-		).thenAnswer(
-			invocation -> invocation.getArgument(1) + "_pt_BR"
-		);
-
-		ResourceBundle usResourceBundle = Mockito.mock(ResourceBundle.class);
-
-		Mockito.doReturn(
-			usResourceBundle
-		).when(
-			documentLibraryDDMFormFieldTemplateContextContributor
-		).getResourceBundle(
-			LocaleUtil.US
-		);
-
-		Mockito.when(
-			_language.get(Mockito.eq(usResourceBundle), Mockito.anyString())
-		).thenAnswer(
-			invocation -> invocation.getArgument(1) + "_en_US"
-		);
-
-		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
-			_createDDMFormFieldRenderingContext();
-
-		ddmFormFieldRenderingContext.setLocale(LocaleUtil.BRAZIL);
-
-		Map<String, Object> parameters =
-			documentLibraryDDMFormFieldTemplateContextContributor.getParameters(
-				new DDMFormField("field", "document_library"),
-				ddmFormFieldRenderingContext);
-
-		Map<String, String> stringsMap = (Map<String, String>)parameters.get(
-			"strings");
-
-		Assert.assertEquals("clear_en_US", stringsMap.get("clearLabel"));
-		Assert.assertEquals("select_en_US", stringsMap.get("selectLabel"));
+		_testGetParametersShouldLocalizeStringsUsingDisplayLocale(
+			LocaleUtil.BRAZIL, _PORTLET_NAMESPACE_DDM_FORM);
+		_testGetParametersShouldLocalizeStringsUsingDisplayLocale(
+			LocaleUtil.SPAIN, _PORTLET_NAMESPACE);
 	}
 
 	@Test
@@ -935,6 +834,69 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 		).thenReturn(
 			user
 		);
+	}
+
+	private void _testGetParametersShouldLocalizeStringsUsingDisplayLocale(
+		Locale locale, String portletNamespace) {
+
+		ThemeDisplay themeDisplay = _mockThemeDisplay();
+
+		Mockito.when(
+			themeDisplay.getLocale()
+		).thenReturn(
+			LocaleUtil.SPAIN
+		);
+
+		DocumentLibraryDDMFormFieldTemplateContextContributor
+			documentLibraryDDMFormFieldTemplateContextContributor = _createSpy(
+				themeDisplay);
+
+		for (Locale resourceBundleLocale :
+				new Locale[] {LocaleUtil.BRAZIL, LocaleUtil.SPAIN}) {
+
+			ResourceBundle resourceBundle = Mockito.mock(ResourceBundle.class);
+
+			Mockito.doReturn(
+				resourceBundle
+			).when(
+				documentLibraryDDMFormFieldTemplateContextContributor
+			).getResourceBundle(
+				resourceBundleLocale
+			);
+
+			Mockito.when(
+				_language.get(Mockito.eq(resourceBundle), Mockito.anyString())
+			).thenAnswer(
+				invocation ->
+					invocation.getArgument(1) + "_" +
+						LocaleUtil.toLanguageId(resourceBundleLocale)
+			);
+		}
+
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
+			_createDDMFormFieldRenderingContext();
+
+		ddmFormFieldRenderingContext.setLocale(LocaleUtil.BRAZIL);
+		ddmFormFieldRenderingContext.setPortletNamespace(portletNamespace);
+
+		Map<String, Object> parameters =
+			documentLibraryDDMFormFieldTemplateContextContributor.getParameters(
+				new DDMFormField("field", "document_library"),
+				ddmFormFieldRenderingContext);
+
+		Map<String, String> stringsMap = (Map<String, String>)parameters.get(
+			"strings");
+
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		Assert.assertEquals(
+			"clear_" + languageId, stringsMap.get("clearLabel"));
+		Assert.assertEquals("file_" + languageId, stringsMap.get("fileLabel"));
+		Assert.assertEquals(
+			"select_" + languageId, stringsMap.get("selectLabel"));
+		Assert.assertEquals(
+			"you-need-to-be-signed-in-to-edit-this-field_" + languageId,
+			stringsMap.get("signInRequiredErrorMessage"));
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
