@@ -402,6 +402,9 @@ public class CommercePaymentServlet extends HttpServlet {
 						httpServletRequest, commercePaymentEntry));
 		}
 		else {
+			commercePaymentIntegration.validate(
+				httpServletRequest, commercePaymentEntry);
+
 			boolean cancel = ParamUtil.getBoolean(httpServletRequest, "cancel");
 
 			if (cancel) {
