@@ -31,9 +31,3 @@
 		grid-template-columns: repeat(3, 1fr);
 	}
 }
-
-.option-group {
-	> label + label {
-		margin-top: 1rem;
-	}
-}

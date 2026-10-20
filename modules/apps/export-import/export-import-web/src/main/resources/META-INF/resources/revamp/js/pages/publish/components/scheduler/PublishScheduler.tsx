@@ -4,6 +4,7 @@
  */
 
 import ClayAlert from '@clayui/alert';
+import ClayForm from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import React from 'react';
 
@@ -94,7 +95,7 @@ export default function PublishScheduler({
 				title={Liferay.Language.get('when-to-publish')}
 			/>
 
-			<div className="option-group">
+			<ClayForm.Group>
 				<FieldRadio
 					checked={!value.enabled}
 					description={Liferay.Language.get(
@@ -105,7 +106,9 @@ export default function PublishScheduler({
 					onChange={() => set({enabled: false})}
 					value="now"
 				/>
+			</ClayForm.Group>
 
+			<ClayForm.Group>
 				<FieldRadio
 					checked={value.enabled}
 					description={Liferay.Language.get(
@@ -116,166 +119,160 @@ export default function PublishScheduler({
 					onChange={() => set({enabled: true})}
 					value="schedule"
 				/>
+			</ClayForm.Group>
 
-				{value.enabled && (
-					<div className="mt-4">
-						<ClayLayout.Row>
+			{value.enabled && (
+				<div className="mt-4">
+					<ClayLayout.Row>
+						<ClayLayout.Col md={6} size={12}>
+							<FieldDatePicker
+								defaultTime={(date) =>
+									getStartDefaultTime(date, value.timeZoneId)
+								}
+								errorMessage={startDateTimeErrorMessage}
+								id="publishScheduleStartDateTime"
+								label={Liferay.Language.get('start-date')}
+								name="publishScheduleStartDateTime"
+								onBlur={onStartDateTimeBlur}
+								onChange={(startDateTime) =>
+									set({
+										startDateTime: startDateTime as string,
+									})
+								}
+								required
+								time
+								value={value.startDateTime}
+								years={{
+									end: currentYear + 10,
+									start: currentYear,
+								}}
+							/>
+						</ClayLayout.Col>
+
+						<ClayLayout.Col md={6} size={12}>
+							<FieldSelectWithOption
+								label={Liferay.Language.get('time-zone')}
+								name="publishScheduleTimeZoneId"
+								onChange={(event) =>
+									set({timeZoneId: event.target.value})
+								}
+								options={timeZones}
+								value={value.timeZoneId}
+							/>
+						</ClayLayout.Col>
+					</ClayLayout.Row>
+
+					<ClayLayout.Row>
+						<ClayLayout.Col md={6} size={12}>
+							<FieldSelectWithOption
+								label={Liferay.Language.get('repeat')}
+								name="publishScheduleRepeat"
+								onChange={(event) => {
+									const unit = event.target
+										.value as IntervalUnit;
+
+									set({
+										...(unit === IntervalUnit.Year
+											? {
+													monthDays: [
+														getSelectedMonthDays(
+															value
+														)[0],
+													],
+													months: [
+														getSelectedMonths(
+															value
+														)[0],
+													],
+												}
+											: {months: []}),
+										...(unit === IntervalUnit.Custom
+											? {
+													cronExpression:
+														toCustomCronExpression(
+															value
+														),
+												}
+											: {}),
+										unit,
+										yearInterval: 1,
+									});
+								}}
+								options={REPEAT_OPTIONS}
+								value={value.unit}
+							/>
+						</ClayLayout.Col>
+
+						{repeatsMonthlyOrYearly && (
 							<ClayLayout.Col md={6} size={12}>
-								<FieldDatePicker
-									defaultTime={(date) =>
-										getStartDefaultTime(
-											date,
-											value.timeZoneId
-										)
-									}
-									errorMessage={startDateTimeErrorMessage}
-									id="publishScheduleStartDateTime"
-									label={Liferay.Language.get('start-date')}
-									name="publishScheduleStartDateTime"
-									onBlur={onStartDateTimeBlur}
-									onChange={(startDateTime) =>
+								<FieldSelectWithOption
+									label={Liferay.Language.get('repeat-type')}
+									name="publishScheduleRepeatType"
+									onChange={(event) =>
 										set({
-											startDateTime:
-												startDateTime as string,
+											repeatType: event.target
+												.value as RepeatType,
 										})
 									}
-									required
-									time
-									value={value.startDateTime}
-									years={{
-										end: currentYear + 10,
-										start: currentYear,
-									}}
+									options={REPEAT_TYPE_OPTIONS}
+									value={value.repeatType}
 								/>
 							</ClayLayout.Col>
-
-							<ClayLayout.Col md={6} size={12}>
-								<FieldSelectWithOption
-									label={Liferay.Language.get('time-zone')}
-									name="publishScheduleTimeZoneId"
-									onChange={(event) =>
-										set({timeZoneId: event.target.value})
-									}
-									options={timeZones}
-									value={value.timeZoneId}
-								/>
-							</ClayLayout.Col>
-						</ClayLayout.Row>
-
-						<ClayLayout.Row>
-							<ClayLayout.Col md={6} size={12}>
-								<FieldSelectWithOption
-									label={Liferay.Language.get('repeat')}
-									name="publishScheduleRepeat"
-									onChange={(event) => {
-										const unit = event.target
-											.value as IntervalUnit;
-
-										set({
-											...(unit === IntervalUnit.Year
-												? {
-														monthDays: [
-															getSelectedMonthDays(
-																value
-															)[0],
-														],
-														months: [
-															getSelectedMonths(
-																value
-															)[0],
-														],
-													}
-												: {months: []}),
-											...(unit === IntervalUnit.Custom
-												? {
-														cronExpression:
-															toCustomCronExpression(
-																value
-															),
-													}
-												: {}),
-											unit,
-											yearInterval: 1,
-										});
-									}}
-									options={REPEAT_OPTIONS}
-									value={value.unit}
-								/>
-							</ClayLayout.Col>
-
-							{repeatsMonthlyOrYearly && (
-								<ClayLayout.Col md={6} size={12}>
-									<FieldSelectWithOption
-										label={Liferay.Language.get(
-											'repeat-type'
-										)}
-										name="publishScheduleRepeatType"
-										onChange={(event) =>
-											set({
-												repeatType: event.target
-													.value as RepeatType,
-											})
-										}
-										options={REPEAT_TYPE_OPTIONS}
-										value={value.repeatType}
-									/>
-								</ClayLayout.Col>
-							)}
-						</ClayLayout.Row>
-
-						{value.unit === IntervalUnit.Custom && (
-							<CustomCronFields
-								errorMessage={cronExpressionErrorMessage}
-								onBlur={onCronExpressionBlur}
-								onChange={set}
-								value={value}
-							/>
 						)}
+					</ClayLayout.Row>
 
-						{value.unit === IntervalUnit.Week && (
-							<WeeklyFields onChange={set} value={value} />
-						)}
+					{value.unit === IntervalUnit.Custom && (
+						<CustomCronFields
+							errorMessage={cronExpressionErrorMessage}
+							onBlur={onCronExpressionBlur}
+							onChange={set}
+							value={value}
+						/>
+					)}
 
-						{value.unit === IntervalUnit.Month && (
-							<MonthlyFields onChange={set} value={value} />
-						)}
+					{value.unit === IntervalUnit.Week && (
+						<WeeklyFields onChange={set} value={value} />
+					)}
 
-						{value.unit === IntervalUnit.Year && (
-							<YearlyFields onChange={set} value={value} />
-						)}
+					{value.unit === IntervalUnit.Month && (
+						<MonthlyFields onChange={set} value={value} />
+					)}
 
-						{isRepeatingUnit(value.unit) && (
-							<RepeatAtFields
-								errorMessage={repeatOnTimeErrorMessage}
-								onBlur={onRepeatOnTimeBlur}
-								onChange={set}
-								value={value}
-							/>
-						)}
+					{value.unit === IntervalUnit.Year && (
+						<YearlyFields onChange={set} value={value} />
+					)}
 
-						{value.unit !== IntervalUnit.Never && (
-							<EndDateFields
-								errorMessage={endDateTimeErrorMessage}
-								onBlur={onEndDateTimeBlur}
-								onChange={set}
-								value={value}
-							/>
-						)}
+					{isRepeatingUnit(value.unit) && (
+						<RepeatAtFields
+							errorMessage={repeatOnTimeErrorMessage}
+							onBlur={onRepeatOnTimeBlur}
+							onChange={set}
+							value={value}
+						/>
+					)}
 
-						{scheduleSummary && (
-							<ClayAlert
-								className="mb-0 mt-3"
-								displayType="info"
-								title={`${Liferay.Language.get('summary')}:`}
-							>
-								{scheduleSummary.map((sentence) => (
-									<div key={sentence}>{sentence}</div>
-								))}
-							</ClayAlert>
-						)}
-					</div>
-				)}
-			</div>
+					{value.unit !== IntervalUnit.Never && (
+						<EndDateFields
+							errorMessage={endDateTimeErrorMessage}
+							onBlur={onEndDateTimeBlur}
+							onChange={set}
+							value={value}
+						/>
+					)}
+
+					{scheduleSummary && (
+						<ClayAlert
+							className="mb-0 mt-3"
+							displayType="info"
+							title={`${Liferay.Language.get('summary')}:`}
+						>
+							{scheduleSummary.map((sentence) => (
+								<div key={sentence}>{sentence}</div>
+							))}
+						</ClayAlert>
+					)}
+				</div>
+			)}
 		</>
 	);
 }
