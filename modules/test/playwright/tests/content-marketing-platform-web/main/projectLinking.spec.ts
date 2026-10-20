@@ -82,7 +82,7 @@ test(
 		const contentTitle = `Content ${getRandomString()}`;
 		const projectTitle = `Project ${getRandomString()}`;
 
-		await test.step('Create a past-due project and a content item', async () => {
+		await test.step('Create a past due project and a content item', async () => {
 			await apiHelpers.objectEntry.postObjectEntry(
 				{dueDate: '2020-01-01', title: projectTitle},
 				CMP_PROJECTS
@@ -148,7 +148,7 @@ test(
 		const contentTitle = `Content ${getRandomString()}`;
 		const projectTitle = `Project ${getRandomString()}`;
 
-		await test.step('Create a past-due project and a content item', async () => {
+		await test.step('Create a past due project and a content item', async () => {
 			await apiHelpers.objectEntry.postObjectEntry(
 				{dueDate: '2020-01-01', title: projectTitle},
 				CMP_PROJECTS

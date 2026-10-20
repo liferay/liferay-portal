@@ -38,11 +38,11 @@ test(
 			filter: folderTitle,
 		});
 
-		const newFolderTitle = getRandomString();
-
 		const nameInput = page.getByLabel('Name');
 
 		await expect(nameInput).toHaveValue(folderTitle);
+
+		const newFolderTitle = getRandomString();
 
 		await nameInput.fill(newFolderTitle);
 		await page.getByLabel('Description').fill('folder description');
@@ -393,11 +393,11 @@ test(
 			filter: folderTitle,
 		});
 
-		const newFolderTitle = getRandomString();
-
 		const nameInput = page.getByLabel('Name');
 
 		await expect(nameInput).toHaveValue(folderTitle);
+
+		const newFolderTitle = getRandomString();
 
 		await nameInput.fill(newFolderTitle);
 
@@ -435,11 +435,11 @@ test(
 			filter: folderTitle,
 		});
 
-		const newFolderTitle = getRandomString();
-
 		const nameInput = page.getByLabel('Name');
 
 		await expect(nameInput).toHaveValue(folderTitle);
+
+		const newFolderTitle = getRandomString();
 
 		await nameInput.fill(newFolderTitle);
 

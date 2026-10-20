@@ -43,7 +43,7 @@ test(
 		let task;
 
 		const {awarenessId, championId, considerationId, decisionMakerId} =
-			await test.step('Resolve the persona and funnel-stage category ids', async () => {
+			await test.step('Resolve the persona and funnel stage category IDs', async () => {
 				const siteId = await apiHelpers.headlessAdminUser
 					.getSiteByFriendlyUrlPath('cms')
 					.then((response) => response.id);

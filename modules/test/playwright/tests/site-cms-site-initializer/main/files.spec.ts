@@ -641,11 +641,11 @@ test(
 				page.getByRole('link', {name: fileTitle})
 			).toBeVisible();
 
-			const imgageSrc = await page
+			const imageSrc = await page
 				.getByRole('img', {name: fileTitle})
 				.getAttribute('src');
 
-			expect(imgageSrc.includes(fileTitle)).toBeTruthy();
+			expect(imageSrc.includes(fileTitle)).toBeTruthy();
 		}
 		finally {
 			await performLogout(page);
