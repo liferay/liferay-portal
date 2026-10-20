@@ -120,6 +120,31 @@ describe('ClayDropDownWithItems', () => {
 		expect(document.body).toMatchSnapshot();
 	});
 
+	it('renders a DropDownWithItems with header content before the items', () => {
+		render(
+			<ClayDropDownWithItems
+				defaultActive
+				headerContent={<ClayButton>Header</ClayButton>}
+				items={[
+					{
+						href: '#',
+						label: 'linkable',
+					},
+				]}
+				spritemap={spritemap}
+				trigger={<ClayButton>Click Me</ClayButton>}
+			/>
+		);
+
+		const header = screen.getByText('Header');
+		const item = screen.getByText('linkable');
+
+		expect(
+			header.compareDocumentPosition(item) &
+				Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
+	});
+
 	it('renders a DropDownWithItems with footer content', () => {
 		render(
 			<ClayDropDownWithItems

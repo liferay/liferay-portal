@@ -70,6 +70,12 @@ export type Props = {
 	footerContent?: React.ReactElement;
 
 	/**
+	 * Add an action button or any other element you want to be fixed position to the
+	 * header from the DropDown.
+	 */
+	headerContent?: React.ReactElement;
+
+	/**
 	 * Add informational text at the top of DropDown.
 	 */
 	helpText?: string;
@@ -199,6 +205,7 @@ export function ClayDropDownWithItems({
 	containerElement,
 	defaultActive = false,
 	footerContent,
+	headerContent,
 	helpText,
 	items,
 	menuElementAttrs,
@@ -326,6 +333,12 @@ export function ClayDropDownWithItems({
 							spritemap={spritemap}
 							value={searchValue}
 						/>
+					)}
+
+					{headerContent && (
+						<div className="dropdown-section" role="presentation">
+							{headerContent}
+						</div>
 					)}
 
 					<Wrap>

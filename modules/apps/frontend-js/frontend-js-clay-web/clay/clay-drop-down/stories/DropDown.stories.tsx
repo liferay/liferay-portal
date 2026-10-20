@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {Heading} from '@clayui/core';
 import {ClayCheckbox, ClayInput, ClayRadio} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
@@ -532,6 +532,29 @@ DropDownWithItems.args = {
 	renderMenuOnClick: false,
 	searchable: true,
 };
+
+export function DropDownWithItemsWithHeaderContent() {
+	return (
+		<ClayDropDownWithItems
+			headerContent={
+				<div className="align-items-center d-flex justify-content-between">
+					<span className="font-weight-semi-bold">John Doe</span>
+
+					<ClayButtonWithIcon
+						aria-label="Switch to dark mode"
+						borderless
+						displayType="secondary"
+						size="xs"
+						symbol="moon"
+					/>
+				</div>
+			}
+			items={ITEMS}
+			trigger={<ClayButton>Click Me</ClayButton>}
+			triggerIcon="caret-bottom"
+		/>
+	);
+}
 export function DropDownWithItemsWithCustomActive() {
 	const [value, setValue] = useState('');
 	const [active, setActive] = useState(false);
