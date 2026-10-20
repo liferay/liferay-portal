@@ -101,7 +101,7 @@ public class LayoutsAdminDisplayContextTest {
 
 		_layoutsAdminDisplayContext = new LayoutsAdminDisplayContext(
 			null, _layoutActionsHelper, null, null, null,
-			_liferayPortletRequest, null);
+			_liferayPortletRequest, null, null);
 	}
 
 	@Test
@@ -159,8 +159,8 @@ public class LayoutsAdminDisplayContextTest {
 		LayoutsAdminDisplayContext layoutsAdminDisplayContext = Mockito.spy(
 			new LayoutsAdminDisplayContext(
 				null, _layoutActionsHelper, null, null, null,
-				_liferayPortletRequest,
-				new MockLiferayPortletActionResponse()));
+				_liferayPortletRequest, new MockLiferayPortletActionResponse(),
+				null));
 
 		Mockito.doReturn(
 			true
@@ -364,8 +364,8 @@ public class LayoutsAdminDisplayContextTest {
 		LayoutsAdminDisplayContext layoutsAdminDisplayContext = Mockito.spy(
 			new LayoutsAdminDisplayContext(
 				null, _layoutActionsHelper, null, null, null,
-				_liferayPortletRequest,
-				new MockLiferayPortletActionResponse()));
+				_liferayPortletRequest, new MockLiferayPortletActionResponse(),
+				null));
 
 		Mockito.doReturn(
 			StringPool.BLANK
