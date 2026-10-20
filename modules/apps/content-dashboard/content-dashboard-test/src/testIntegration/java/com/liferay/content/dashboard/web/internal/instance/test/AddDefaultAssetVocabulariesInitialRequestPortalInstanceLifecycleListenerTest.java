@@ -272,8 +272,8 @@ public class
 		try {
 			_group = GroupTestUtil.addGroup();
 
-			AssetVocabulary groupAssetVocabulary =
-				_addInternalAssetVocabulary(_group.getGroupId());
+			AssetVocabulary groupAssetVocabulary = _addInternalAssetVocabulary(
+				_group.getGroupId());
 
 			List<AssetVocabulary> assetVocabularies =
 				_assetVocabularyLocalService.getGroupsVocabularies(
@@ -305,7 +305,8 @@ public class
 			null, TestPropsValues.getUserId(), groupId,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomLocaleStringMap(), Collections.emptyMap(),
-			new AssetVocabularySettingsHelper().toString(),
+			new AssetVocabularySettingsHelper(
+			).toString(),
 			AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL,
 			ServiceContextTestUtil.getServiceContext(groupId));
 	}

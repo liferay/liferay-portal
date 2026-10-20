@@ -90,7 +90,9 @@ test(
 		const getVersionRow = (version: string) =>
 			page.getByRole('row').filter({
 				has: page.locator('td.lfr-version-column', {
-					hasText: new RegExp(`^\\s*${version.replace('.', '\\.')}\\s*$`),
+					hasText: new RegExp(
+						`^\\s*${version.replace('.', '\\.')}\\s*$`
+					),
 				}),
 			});
 
@@ -207,4 +209,3 @@ test(
 		});
 	}
 );
-

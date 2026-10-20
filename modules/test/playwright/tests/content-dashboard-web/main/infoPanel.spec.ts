@@ -128,7 +128,9 @@ test(
 		const blogPostingImage =
 			await apiHelpers.headlessDelivery.postSiteBlogPostingImage(
 				site.id,
-				createReadStream(path.join(__dirname, 'dependencies/image1.jpeg')),
+				createReadStream(
+					path.join(__dirname, 'dependencies/image1.jpeg')
+				),
 				'image1.jpeg'
 			);
 
@@ -284,13 +286,11 @@ test(
 	async ({apiHelpers, contentDashboardPage, page, site}) => {
 		const webContentTitle = getRandomString();
 
-		let webContent = await apiHelpers.jsonWebServicesJournal.addWebContent(
-			{
-				ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
-				groupId: site.id,
-				titleMap: {en_US: webContentTitle},
-			}
-		);
+		let webContent = await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+			groupId: site.id,
+			titleMap: {en_US: webContentTitle},
+		});
 
 		for (let i = 0; i < 11; i++) {
 			webContent = await apiHelpers.jsonWebServicesJournal.editWebContent(
@@ -324,7 +324,9 @@ test(
 
 			await contentDashboardPage.goto(undefined, {scopeId: site.id});
 
-			await expect(contentDashboardPage.getRow(webContentTitle)).toBeVisible();
+			await expect(
+				contentDashboardPage.getRow(webContentTitle)
+			).toBeVisible();
 
 			await expect(contentDashboardPage.infoPanel).toHaveCount(0);
 
@@ -332,7 +334,9 @@ test(
 
 			await page.reload();
 
-			await expect(contentDashboardPage.getRow(webContentTitle)).toBeVisible();
+			await expect(
+				contentDashboardPage.getRow(webContentTitle)
+			).toBeVisible();
 
 			await expect(contentDashboardPage.infoPanel).toHaveCount(0);
 		});
@@ -341,7 +345,9 @@ test(
 			for (const {actionName, landing, title, version} of [
 				{
 					actionName: 'Compare to...',
-					landing: page.getByText('You are comparing these versions:'),
+					landing: page.getByText(
+						'You are comparing these versions:'
+					),
 					title: webContentTitle,
 					version: '2.0',
 				},

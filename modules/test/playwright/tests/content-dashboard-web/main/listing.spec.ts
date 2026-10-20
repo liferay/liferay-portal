@@ -227,9 +227,7 @@ test(
 				).toBeVisible();
 
 				await expect(
-					contentDashboardPage.getRow(
-						siteAssets[1 - index].blogTitle
-					)
+					contentDashboardPage.getRow(siteAssets[1 - index].blogTitle)
 				).toHaveCount(0);
 			}
 		});

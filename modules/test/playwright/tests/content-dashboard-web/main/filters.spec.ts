@@ -107,7 +107,10 @@ test(
 		const author = await addSiteUser({
 			apiHelpers,
 			siteId: site.id,
-			userAccount: {familyName: 'Test', givenName: `Author${getRandomInt()}`},
+			userAccount: {
+				familyName: 'Test',
+				givenName: `Author${getRandomInt()}`,
+			},
 		});
 
 		const authorContext = await browser.newContext();
@@ -252,7 +255,9 @@ test(
 
 			await contentDashboardPage.goto(undefined, {scopeId: site.id});
 
-			await contentDashboardPage.filterByCategories([firstCategoryFilter]);
+			await contentDashboardPage.filterByCategories([
+				firstCategoryFilter,
+			]);
 
 			await contentDashboardPage.filterByAuthors({
 				names: ['Test Test', authorName],
@@ -415,9 +420,7 @@ test(
 			await expect(clearAllButton).toBeVisible();
 
 			for (const siteCategory of siteCategories.slice(1)) {
-				await frame
-					.getByText(siteCategory.name, {exact: true})
-					.click();
+				await frame.getByText(siteCategory.name, {exact: true}).click();
 			}
 
 			await expect(
@@ -565,9 +568,9 @@ test(
 
 			await contentDashboardPage.selectModalItems();
 
-			await expect(contentDashboardPage.getAppliedFilter('Tag:')).toHaveText(
-				[`Tag: ${firstTag}`]
-			);
+			await expect(
+				contentDashboardPage.getAppliedFilter('Tag:')
+			).toHaveText([`Tag: ${firstTag}`]);
 
 			await contentDashboardPage.search(keyword);
 
@@ -732,12 +735,7 @@ test(
 			).toBeVisible();
 		});
 
-		for (const {
-			hiddenTitles,
-			status,
-			stepName,
-			visibleTitles,
-		} of [
+		for (const {hiddenTitles, status, stepName, visibleTitles} of [
 			{
 				hiddenTitles: [draftBlogTitle, draftWebContentTitle],
 				status: 'Approved',
@@ -925,7 +923,10 @@ test(
 		await test.step('FilterByTypes', async () => {
 			for (const {nodeNames, titles} of [
 				{
-					nodeNames: ['Basic Web Content (Global)', /^Blogs Entry \(/],
+					nodeNames: [
+						'Basic Web Content (Global)',
+						/^Blogs Entry \(/,
+					],
 					titles: [basicWebContentTitle, blogTitle],
 				},
 				{
@@ -1035,9 +1036,8 @@ test(
 
 		await contentDashboardPage.goto(undefined, {scopeId: site.id});
 
-		const typeFilter = contentDashboardPage.getAppliedFilter(
-			/^(Sub)?[Tt]ype:/
-		);
+		const typeFilter =
+			contentDashboardPage.getAppliedFilter(/^(Sub)?[Tt]ype:/);
 
 		await contentDashboardPage.filterByTreeNodes({
 			dialogTitle: 'Filter by Type',
@@ -1047,7 +1047,9 @@ test(
 
 		await expect(typeFilter).not.toHaveCount(0);
 
-		await expect(contentDashboardPage.getRow(webContentTitle)).toBeVisible();
+		await expect(
+			contentDashboardPage.getRow(webContentTitle)
+		).toBeVisible();
 
 		await expect(contentDashboardPage.getRow(documentTitle)).toHaveCount(0);
 
@@ -1064,13 +1066,17 @@ test(
 
 		await webContentArticleCheckbox.uncheck();
 
-		await expect(frame.getByRole('checkbox', {checked: true})).toHaveCount(0);
+		await expect(frame.getByRole('checkbox', {checked: true})).toHaveCount(
+			0
+		);
 
 		await contentDashboardPage.selectModalItems();
 
 		await expect(typeFilter).toHaveCount(0);
 
-		await expect(contentDashboardPage.getRow(webContentTitle)).toBeVisible();
+		await expect(
+			contentDashboardPage.getRow(webContentTitle)
+		).toBeVisible();
 
 		await expect(contentDashboardPage.getRow(documentTitle)).toBeVisible();
 	}

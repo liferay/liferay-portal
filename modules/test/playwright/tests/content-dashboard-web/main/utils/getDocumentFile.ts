@@ -5,9 +5,6 @@
 
 import getRandomString from '../../../../utils/getRandomString';
 
-export default function getDocumentFile(
-	name: string,
-	mimeType = 'text/plain'
-) {
+export default function getDocumentFile(name: string, mimeType = 'text/plain') {
 	return {buffer: Buffer.from(getRandomString()), mimeType, name};
 }

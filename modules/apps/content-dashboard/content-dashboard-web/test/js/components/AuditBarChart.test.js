@@ -230,14 +230,12 @@ const mockTwoVocabulariesWithThreeStages = [
 	'Subaudience_2',
 	'Subaudience_3',
 ].map((name, index) => ({
-	categories: ['Substage_1', 'Substage_2', 'Substage_3'].map(
-		(stageName) => ({
-			key: stageName.toLowerCase(),
-			name: stageName,
-			value: index + 1,
-			vocabularyName: 'Stage',
-		})
-	),
+	categories: ['Substage_1', 'Substage_2', 'Substage_3'].map((stageName) => ({
+		key: stageName.toLowerCase(),
+		name: stageName,
+		value: index + 1,
+		vocabularyName: 'Stage',
+	})),
 	key: name.toLowerCase(),
 	name,
 	vocabularyName: 'Audience',

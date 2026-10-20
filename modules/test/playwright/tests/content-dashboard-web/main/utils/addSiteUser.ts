@@ -17,7 +17,8 @@ export default async function addSiteUser({
 	siteId: string;
 	userAccount?: TUserAccount;
 }) {
-	const user = await apiHelpers.headlessAdminUser.postUserAccount(userAccount);
+	const user =
+		await apiHelpers.headlessAdminUser.postUserAccount(userAccount);
 
 	userData[user.alternateName] = {
 		name: user.givenName,
@@ -30,7 +31,9 @@ export default async function addSiteUser({
 	await apiHelpers.jsonWebServicesUser.answerReminderQuery(user.id);
 
 	const company =
-		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId('liferay.com');
+		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+			'liferay.com'
+		);
 
 	const role = await apiHelpers.jsonWebServicesRole.getRole(
 		String(company.companyId),

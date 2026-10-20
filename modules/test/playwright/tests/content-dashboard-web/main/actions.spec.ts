@@ -12,8 +12,8 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {ApiHelpers} from '../../../helpers/ApiHelpers';
-import {DisplayPageTemplatesPage} from '../../../pages/layout-page-template-admin-web/DisplayPageTemplatesPage';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
+import {DisplayPageTemplatesPage} from '../../../pages/layout-page-template-admin-web/DisplayPageTemplatesPage';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
@@ -321,7 +321,8 @@ test(
 				{
 					actionIds: ['ACCESS_IN_CONTROL_PANEL'],
 					primaryKey: company.companyId,
-					resourceName: 'com_liferay_journal_web_portlet_JournalPortlet',
+					resourceName:
+						'com_liferay_journal_web_portlet_JournalPortlet',
 					scope: 1,
 				},
 				{
@@ -600,7 +601,10 @@ test(
 		await test.step('IconEdit', async () => {
 			await contentDashboardPage.goto(undefined, {scopeId: site.id});
 
-			await contentDashboardPage.clickQuickAction(webContentTitle, 'Edit');
+			await contentDashboardPage.clickQuickAction(
+				webContentTitle,
+				'Edit'
+			);
 
 			await expect(page).toHaveURL(
 				/com_liferay_journal_web_portlet_JournalPortlet.*edit_article/
@@ -680,7 +684,9 @@ test(
 
 			await expect(blogTitleInput).toHaveValue(editedBlogTitle);
 
-			await page.getByRole('button', {exact: true, name: 'Publish'}).click();
+			await page
+				.getByRole('button', {exact: true, name: 'Publish'})
+				.click();
 
 			await waitForContentDashboardRedirect(page);
 

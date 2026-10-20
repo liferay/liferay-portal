@@ -11,7 +11,6 @@ import {changeManagementToolbarView} from '../../../../utils/changeManagementToo
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {hoverAndExpectToBeVisible} from '../../../../utils/hoverAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
-import {waitForAlert} from '../../../../utils/waitForAlert';
 import {waitForPageToBeLoaded} from '../../../../utils/waitForPageToBeLoaded';
 
 export class ContentDashboardPage {

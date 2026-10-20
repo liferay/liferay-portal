@@ -214,9 +214,8 @@ describe('SidebarPanelInfoView', () => {
 
 		userEvent.click(getByText('categorization'));
 
-		const panelHeader = getByText('public-categories').closest(
-			'.panel-header'
-		);
+		const panelHeader =
+			getByText('public-categories').closest('.panel-header');
 
 		const panelCollapse = getByText('Topic 1').closest('.panel-collapse');
 
