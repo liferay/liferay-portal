@@ -837,7 +837,7 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 	}
 
 	private void _testGetParametersShouldLocalizeStringsUsingDisplayLocale(
-		Locale locale, String portletNamespace) {
+		Locale expectedLocale, String portletNamespace) {
 
 		ThemeDisplay themeDisplay = _mockThemeDisplay();
 
@@ -851,27 +851,23 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 			documentLibraryDDMFormFieldTemplateContextContributor = _createSpy(
 				themeDisplay);
 
-		for (Locale resourceBundleLocale :
-				new Locale[] {LocaleUtil.BRAZIL, LocaleUtil.SPAIN}) {
+		ResourceBundle resourceBundle = Mockito.mock(ResourceBundle.class);
 
-			ResourceBundle resourceBundle = Mockito.mock(ResourceBundle.class);
+		Mockito.doReturn(
+			resourceBundle
+		).when(
+			documentLibraryDDMFormFieldTemplateContextContributor
+		).getResourceBundle(
+			expectedLocale
+		);
 
-			Mockito.doReturn(
-				resourceBundle
-			).when(
-				documentLibraryDDMFormFieldTemplateContextContributor
-			).getResourceBundle(
-				resourceBundleLocale
-			);
+		String languageId = LocaleUtil.toLanguageId(expectedLocale);
 
-			Mockito.when(
-				_language.get(Mockito.eq(resourceBundle), Mockito.anyString())
-			).thenAnswer(
-				invocation ->
-					invocation.getArgument(1) + "_" +
-						LocaleUtil.toLanguageId(resourceBundleLocale)
-			);
-		}
+		Mockito.when(
+			_language.get(Mockito.eq(resourceBundle), Mockito.anyString())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1) + "_" + languageId
+		);
 
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
 			_createDDMFormFieldRenderingContext();
@@ -886,8 +882,6 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 
 		Map<String, String> stringsMap = (Map<String, String>)parameters.get(
 			"strings");
-
-		String languageId = LocaleUtil.toLanguageId(locale);
 
 		Assert.assertEquals(
 			"clear_" + languageId, stringsMap.get("clearLabel"));
