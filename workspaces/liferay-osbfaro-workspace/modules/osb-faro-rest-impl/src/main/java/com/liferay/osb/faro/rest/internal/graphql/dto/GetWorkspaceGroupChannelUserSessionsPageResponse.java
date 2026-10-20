@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.rest.internal.graphql.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
@@ -31,10 +32,12 @@ public class GetWorkspaceGroupChannelUserSessionsPageResponse {
 			return _browserName;
 		}
 
+		@JsonFormat(pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
 		public Date getCompleteDate() {
 			return _completeDate;
 		}
 
+		@JsonFormat(pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
 		public Date getCreateDate() {
 			return _createDate;
 		}
@@ -91,23 +94,29 @@ public class GetWorkspaceGroupChannelUserSessionsPageResponse {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class UserSessionBag {
 
-		public Integer getTotalEvents() {
-			return _totalEvents;
+		public GetWorkspaceGroupChannelEventMetricsResponse.Metric
+			getTotalPageGroupsMetric() {
+
+			return _totalPageGroupsMetric;
 		}
 
 		public List<UserSession> getUserSessions() {
 			return _userSessions;
 		}
 
-		public void setTotalEvents(Integer totalEvents) {
-			_totalEvents = totalEvents;
+		public void setTotalPageGroupsMetric(
+			GetWorkspaceGroupChannelEventMetricsResponse.Metric
+				totalPageGroupsMetric) {
+
+			_totalPageGroupsMetric = totalPageGroupsMetric;
 		}
 
 		public void setUserSessions(List<UserSession> userSessions) {
 			_userSessions = userSessions;
 		}
 
-		private Integer _totalEvents;
+		private GetWorkspaceGroupChannelEventMetricsResponse.Metric
+			_totalPageGroupsMetric;
 		private List<UserSession> _userSessions;
 
 	}

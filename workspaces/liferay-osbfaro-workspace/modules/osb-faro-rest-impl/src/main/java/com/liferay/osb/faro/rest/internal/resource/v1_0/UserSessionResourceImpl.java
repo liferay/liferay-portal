@@ -9,6 +9,7 @@ import com.liferay.osb.faro.rest.dto.v1_0.UserSession;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.converter.FaroDTOConverterContext;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
 import com.liferay.osb.faro.rest.internal.graphql.client.FaroGraphQLClient;
+import com.liferay.osb.faro.rest.internal.graphql.dto.GetWorkspaceGroupChannelEventMetricsResponse;
 import com.liferay.osb.faro.rest.internal.graphql.dto.GetWorkspaceGroupChannelUserSessionsPageResponse;
 import com.liferay.osb.faro.rest.resource.v1_0.UserSessionResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
@@ -18,7 +19,6 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -63,9 +63,6 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 			String rangeStart, String search)
 		throws Exception {
 
-		int cur = FaroPaginationUtil.getCur(pagination);
-		int delta = FaroPaginationUtil.getDelta(pagination);
-
 		GetWorkspaceGroupChannelUserSessionsPageResponse
 			getWorkspaceGroupChannelUserSessionsPageResponse =
 				_faroGraphQLClient.execute(
@@ -83,7 +80,8 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 					).put(
 						"keywords", search
 					).put(
-						"page", Math.max(0, cur - 1)
+						"page",
+						Math.max(0, FaroPaginationUtil.getCur(pagination) - 1)
 					).put(
 						"rangeEnd", rangeEnd
 					).put(
@@ -91,7 +89,7 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 					).put(
 						"rangeStart", rangeStart
 					).put(
-						"size", delta
+						"size", FaroPaginationUtil.getDelta(pagination)
 					).build());
 
 		GetWorkspaceGroupChannelUserSessionsPageResponse.UserSessionBag
@@ -105,21 +103,32 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 			return Page.of(Collections.emptyList(), pagination, 0);
 		}
 
-		List<UserSession> userSessions = transform(
-			userSessionBag.getUserSessions(),
-			userSession -> _userSessionDTOConverter.toDTO(
-				new FaroDTOConverterContext(
-					contextAcceptLanguage.isAcceptAllLanguages(), entityId,
-					contextAcceptLanguage.getPreferredLocale()),
-				userSession));
+		return Page.of(
+			transform(
+				userSessionBag.getUserSessions(),
+				userSession -> _userSessionDTOConverter.toDTO(
+					new FaroDTOConverterContext(
+						contextAcceptLanguage.isAcceptAllLanguages(), entityId,
+						contextAcceptLanguage.getPreferredLocale()),
+					userSession)),
+			pagination, _getTotalCount(userSessionBag));
+	}
 
-		int totalCount = ((cur - 1) * delta) + userSessions.size();
+	private long _getTotalCount(
+		GetWorkspaceGroupChannelUserSessionsPageResponse.UserSessionBag
+			userSessionBag) {
 
-		if (userSessions.size() >= delta) {
-			totalCount++;
+		GetWorkspaceGroupChannelEventMetricsResponse.Metric
+			totalPageGroupsMetric = userSessionBag.getTotalPageGroupsMetric();
+
+		if ((totalPageGroupsMetric == null) ||
+			(totalPageGroupsMetric.getValue() == null)) {
+
+			return 0;
 		}
 
-		return Page.of(userSessions, pagination, totalCount);
+		return totalPageGroupsMetric.getValue(
+		).longValue();
 	}
 
 	@Reference

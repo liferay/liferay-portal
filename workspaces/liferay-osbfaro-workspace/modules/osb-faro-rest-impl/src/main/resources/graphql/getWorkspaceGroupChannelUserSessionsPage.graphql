@@ -23,7 +23,9 @@ query getWorkspaceGroupChannelUserSessionsPage(
 		rangeStart: $rangeStart
 		size: $size
 	) {
-		totalEvents
+		totalPageGroupsMetric {
+			value
+		}
 		userSessions {
 			... on UserSession {
 				becameKnown
