@@ -14,6 +14,7 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.document.library.kernel.service.DLFolderService;
+import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -990,6 +991,20 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 		fileEntryModelResourcePermission.check(
 			getPermissionChecker(), dlFileVersion.getFileEntryId(),
 			ActionKeys.UPDATE);
+
+		if (userId != getUserId()) {
+			throw new PrincipalException();
+		}
+
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.findByPrimaryKey(
+			dlFileVersion.getFileEntryId());
+
+		if (DLUtil.hasWorkflowDefinitionLink(
+				dlFileEntry.getCompanyId(), dlFileEntry.getGroupId(),
+				dlFileEntry.getFolderId(), dlFileEntry.getFileEntryTypeId())) {
+
+			throw new PrincipalException();
+		}
 
 		return dlFileEntryLocalService.updateStatus(
 			userId, fileVersionId, status, serviceContext, workflowContext);
