@@ -15,7 +15,7 @@ import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.rest.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
-import com.liferay.exportimport.rest.dto.v1_0.PreviewSite;
+import com.liferay.exportimport.rest.dto.v1_0.Site;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
@@ -194,23 +194,21 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 				setFileName(fileEntry::getFileName);
 				setFileSize(fileEntry::getSize);
 				setPortletDataHandlers(() -> importPortletDataHandlers);
-				setPreviewSites(() -> _getPreviewSites(fileEntry));
+				setSites(() -> _getSites(fileEntry));
 			}
 		};
 	}
 
-	private PreviewSite[] _getPreviewSites(FileEntry fileEntry)
-		throws Exception {
-
+	private Site[] _getSites(FileEntry fileEntry) throws Exception {
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-85946")) {
 
-			return new PreviewSite[0];
+			return new Site[0];
 		}
 
 		return transformToArray(
 			_exportImportHelper.getExportImportGroups(fileEntry),
-			exportImportGroup -> new PreviewSite() {
+			exportImportGroup -> new Site() {
 				{
 					setChildSitesCount(exportImportGroup::getChildGroupsCount);
 					setDescriptiveName(exportImportGroup::getDescriptiveName);
@@ -230,7 +228,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 					setPath(exportImportGroup::getPath);
 				}
 			},
-			PreviewSite.class);
+			Site.class);
 	}
 
 	private void _validateImportFile(

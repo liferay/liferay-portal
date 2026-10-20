@@ -15,7 +15,9 @@ import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalSer
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.rest.dto.v1_0.ImportProcess;
 import com.liferay.exportimport.rest.dto.v1_0.ImportProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.InstanceImportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ProcessProgress;
+import com.liferay.exportimport.rest.dto.v1_0.Site;
 import com.liferay.exportimport.rest.dto.v1_0.Status;
 import com.liferay.exportimport.rest.internal.util.BackgroundTaskUtil;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
@@ -195,17 +197,22 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			GroupUtil.getAssetLibraryGroup(
 				contextCompany.getCompanyId(),
 				assetLibraryExternalReferenceCode),
-			importProcessRequest, portletId, null);
+			importProcessRequest, portletId, null, null);
 	}
 
 	@Override
 	public ImportProcess postImportProcess(
-			String portletId, ImportProcessRequest importProcessRequest)
+			String portletId,
+			InstanceImportProcessRequest instanceImportProcessRequest)
 		throws Exception {
 
 		return _postImportProcess(
 			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
-			importProcessRequest, portletId, null);
+			_toImportProcessRequest(instanceImportProcessRequest), portletId,
+			transform(
+				instanceImportProcessRequest.getSites(),
+				Site::getExternalReferenceCode, String.class),
+			null);
 	}
 
 	@Override
@@ -219,7 +226,8 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			GroupUtil.getSiteGroup(
 				contextCompany.getCompanyId(), siteExternalReferenceCode,
 				portletId),
-			importProcessRequest, portletId, sitePageExternalReferenceCode);
+			importProcessRequest, portletId, null,
+			sitePageExternalReferenceCode);
 	}
 
 	private List<BackgroundTask> _getBackgroundTasks(
@@ -339,14 +347,16 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 
 	private ImportProcess _postImportProcess(
 			Group group, ImportProcessRequest importProcessRequest,
-			String portletId, String sitePageExternalReferenceCode)
+			String portletId, String[] siteExternalReferenceCodes,
+			String sitePageExternalReferenceCode)
 		throws Exception {
 
 		Layout layout = LayoutUtil.getPortletLayout(
 			group, portletId, sitePageExternalReferenceCode);
 
 		if (layout == null) {
-			return _postLayoutImportProcess(group, importProcessRequest);
+			return _postLayoutImportProcess(
+				group, importProcessRequest, siteExternalReferenceCodes);
 		}
 
 		return _postPortletImportProcess(
@@ -355,7 +365,8 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 	}
 
 	private ImportProcess _postLayoutImportProcess(
-			Group group, ImportProcessRequest importProcessRequest)
+			Group group, ImportProcessRequest importProcessRequest,
+			String[] siteExternalReferenceCodes)
 		throws Exception {
 
 		long groupId = group.getGroupId();
@@ -382,6 +393,9 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 				false, group, contextAcceptLanguage.getPreferredLocale(),
 				manifestSummary, manifestSummary.getDataPortlets(), false),
 			false);
+
+		ParameterMapUtil.putSiteExternalReferenceCodes(
+			parameterMap, siteExternalReferenceCodes);
 
 		Map<String, Serializable> settingsMap =
 			_exportImportConfigurationSettingsMapFactory.
@@ -505,6 +519,48 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 									BackgroundTaskConstants.getStatusLabel(
 										backgroundTask.getStatus())));
 						}
+					});
+			}
+		};
+	}
+
+	private ImportProcessRequest _toImportProcessRequest(
+		InstanceImportProcessRequest instanceImportProcessRequest) {
+
+		return new ImportProcessRequest() {
+			{
+				setComments(instanceImportProcessRequest::getComments);
+				setDataStrategy(
+					() -> {
+						InstanceImportProcessRequest.DataStrategy dataStrategy =
+							instanceImportProcessRequest.getDataStrategy();
+
+						if (dataStrategy == null) {
+							return null;
+						}
+
+						return ImportProcessRequest.DataStrategy.create(
+							dataStrategy.getValue());
+					});
+				setDeletions(instanceImportProcessRequest::getDeletions);
+				setName(instanceImportProcessRequest::getName);
+				setPermissions(instanceImportProcessRequest::getPermissions);
+				setPortletDataHandlers(
+					instanceImportProcessRequest::getPortletDataHandlers);
+				setRatings(instanceImportProcessRequest::getRatings);
+				setUserIdStrategy(
+					() -> {
+						InstanceImportProcessRequest.UserIdStrategy
+							userIdStrategy =
+								instanceImportProcessRequest.
+									getUserIdStrategy();
+
+						if (userIdStrategy == null) {
+							return null;
+						}
+
+						return ImportProcessRequest.UserIdStrategy.create(
+							userIdStrategy.getValue());
 					});
 			}
 		};

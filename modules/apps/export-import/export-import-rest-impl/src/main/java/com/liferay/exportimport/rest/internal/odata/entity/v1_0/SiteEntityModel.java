@@ -14,9 +14,9 @@ import java.util.Map;
 /**
  * @author Petteri Karttunen
  */
-public class PreviewSiteEntityModel implements EntityModel {
+public class SiteEntityModel implements EntityModel {
 
-	public PreviewSiteEntityModel() {
+	public SiteEntityModel() {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
 			new StringEntityField(
 				"descriptiveName", locale -> "descriptiveName"));

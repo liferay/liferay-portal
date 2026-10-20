@@ -18,7 +18,9 @@ import com.liferay.exportimport.rest.dto.v1_0.DateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcess;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.FromLastPublishDateFilter;
+import com.liferay.exportimport.rest.dto.v1_0.InstanceExportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ProcessProgress;
+import com.liferay.exportimport.rest.dto.v1_0.Site;
 import com.liferay.exportimport.rest.dto.v1_0.Status;
 import com.liferay.exportimport.rest.internal.util.BackgroundTaskUtil;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
@@ -227,17 +229,21 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			GroupUtil.getAssetLibraryGroup(
 				contextCompany.getCompanyId(),
 				assetLibraryExternalReferenceCode),
-			portletId, null);
+			portletId, null, null);
 	}
 
 	@Override
 	public ExportProcess postExportProcess(
-			String portletId, ExportProcessRequest exportProcessRequest)
+			String portletId,
+			InstanceExportProcessRequest instanceExportProcessRequest)
 		throws Exception {
 
 		return _postExportProcess(
-			exportProcessRequest,
+			_toExportProcessRequest(instanceExportProcessRequest),
 			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()), portletId,
+			transform(
+				instanceExportProcessRequest.getSites(),
+				Site::getExternalReferenceCode, String.class),
 			null);
 	}
 
@@ -296,7 +302,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			GroupUtil.getSiteGroup(
 				contextCompany.getCompanyId(), siteExternalReferenceCode,
 				portletId),
-			portletId, sitePageExternalReferenceCode);
+			portletId, null, sitePageExternalReferenceCode);
 	}
 
 	private List<BackgroundTask> _getBackgroundTasks(
@@ -401,14 +407,16 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 	private ExportProcess _postExportProcess(
 			ExportProcessRequest exportProcessRequest, Group group,
-			String portletId, String sitePageExternalReferenceCode)
+			String portletId, String[] siteExternalReferenceCodes,
+			String sitePageExternalReferenceCode)
 		throws Exception {
 
 		Layout layout = LayoutUtil.getPortletLayout(
 			group, portletId, sitePageExternalReferenceCode);
 
 		if (layout == null) {
-			return _postLayoutExportProcess(exportProcessRequest, group);
+			return _postLayoutExportProcess(
+				exportProcessRequest, group, siteExternalReferenceCodes);
 		}
 
 		return _postPortletExportProcess(
@@ -418,7 +426,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	}
 
 	private ExportProcess _postLayoutExportProcess(
-			ExportProcessRequest exportProcessRequest, Group group)
+			ExportProcessRequest exportProcessRequest, Group group,
+			String[] siteExternalReferenceCodes)
 		throws Exception {
 
 		long groupId = group.getGroupId();
@@ -440,6 +449,9 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 						false),
 					false),
 				contextUser);
+
+		ParameterMapUtil.putSiteExternalReferenceCodes(
+			parameterMap, siteExternalReferenceCodes);
 
 		boolean privateLayout = LayoutUtil.isPrivateLayout(parameterMap);
 
@@ -556,6 +568,23 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 										backgroundTask.getStatus())));
 						}
 					});
+			}
+		};
+	}
+
+	private ExportProcessRequest _toExportProcessRequest(
+		InstanceExportProcessRequest instanceExportProcessRequest) {
+
+		return new ExportProcessRequest() {
+			{
+				setComments(instanceExportProcessRequest::getComments);
+				setDateFilter(instanceExportProcessRequest::getDateFilter);
+				setDeletions(instanceExportProcessRequest::getDeletions);
+				setName(instanceExportProcessRequest::getName);
+				setPermissions(instanceExportProcessRequest::getPermissions);
+				setPortletDataHandlers(
+					instanceExportProcessRequest::getPortletDataHandlers);
+				setRatings(instanceExportProcessRequest::getRatings);
 			}
 		};
 	}

@@ -6,10 +6,11 @@
 package com.liferay.exportimport.rest.internal.resource.v1_0;
 
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
-import com.liferay.exportimport.rest.dto.v1_0.PreviewSite;
-import com.liferay.exportimport.rest.internal.odata.entity.v1_0.PreviewSiteEntityModel;
+import com.liferay.exportimport.rest.dto.v1_0.Site;
+import com.liferay.exportimport.rest.internal.odata.entity.v1_0.SiteEntityModel;
+import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
-import com.liferay.exportimport.rest.resource.v1_0.PreviewSiteResource;
+import com.liferay.exportimport.rest.resource.v1_0.SiteResource;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -20,9 +21,7 @@ import com.liferay.portal.kernel.util.comparator.GroupDescriptiveNameComparator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.staging.StagingGroupHelper;
 
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.List;
@@ -36,10 +35,10 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Petteri Karttunen
  */
 @Component(
-	properties = "OSGI-INF/liferay/rest/v1_0/preview-site.properties",
-	scope = ServiceScope.PROTOTYPE, service = PreviewSiteResource.class
+	properties = "OSGI-INF/liferay/rest/v1_0/site.properties",
+	scope = ServiceScope.PROTOTYPE, service = SiteResource.class
 )
-public class PreviewSiteResourceImpl extends BasePreviewSiteResourceImpl {
+public class SiteResourceImpl extends BaseSiteResourceImpl {
 
 	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
@@ -47,16 +46,12 @@ public class PreviewSiteResourceImpl extends BasePreviewSiteResourceImpl {
 	}
 
 	@Override
-	public Page<PreviewSite> getExportPreviewPreviewSitesPage(
+	public Page<Site> getExportPreviewSitesPage(
 			String search, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+		Group companyGroup = GroupUtil.getCompanyGroup(
 			contextCompany.getCompanyId());
-
-		if (companyGroup == null) {
-			throw new NotFoundException();
-		}
 
 		PermissionUtil.checkExportPermission(
 			contextCompany.getCompanyId(), companyGroup.getGroupId(),
@@ -71,7 +66,7 @@ public class PreviewSiteResourceImpl extends BasePreviewSiteResourceImpl {
 				ListUtil.subList(
 					groups, pagination.getStartPosition(),
 					pagination.getEndPosition()),
-				group -> new PreviewSite() {
+				group -> new Site() {
 					{
 						setChildSitesCount(
 							() -> _exportImportHelper.getChildGroupsCount(
@@ -106,13 +101,9 @@ public class PreviewSiteResourceImpl extends BasePreviewSiteResourceImpl {
 			!sort.isReverse(), contextAcceptLanguage.getPreferredLocale());
 	}
 
-	private static final EntityModel _entityModel =
-		new PreviewSiteEntityModel();
+	private static final EntityModel _entityModel = new SiteEntityModel();
 
 	@Reference
 	private ExportImportHelper _exportImportHelper;
-
-	@Reference
-	private StagingGroupHelper _stagingGroupHelper;
 
 }
