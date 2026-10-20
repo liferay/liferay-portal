@@ -13,6 +13,18 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import {disableEntryIcon, enableEntryIcon} from './utils/entryIcons';
 
+const iconElements = new Map();
+
+function getIconElement(id) {
+	const element = document.getElementById(id);
+
+	if (element) {
+		iconElements.set(id, element);
+	}
+
+	return element || iconElements.get(id);
+}
+
 const AdaptiveMediaProgress = ({
 	adaptedImages,
 	adaptiveMediaProgressComponentId,
@@ -61,9 +73,7 @@ const AdaptiveMediaProgress = ({
 					}
 
 					enableEntryIcon(
-						document.getElementById(
-							`${namespace}icon-disable-${uuid}`
-						)
+						getIconElement(`${namespace}icon-disable-${uuid}`)
 					);
 				}
 				else {
@@ -89,19 +99,22 @@ const AdaptiveMediaProgress = ({
 			}
 
 			disableEntryIcon(
-				document.getElementById(
-					`${namespace}icon-adapt-remaining${uuid}`
-				)
+				getIconElement(`${namespace}icon-adapt-remaining${uuid}`)
 			);
 
 			disableEntryIcon(
-				document.getElementById(`${namespace}icon-disable-${uuid}`)
+				getIconElement(`${namespace}icon-disable-${uuid}`)
 			);
 
 			return delay(updateProgress, intervalSpeed);
 		},
 		[delay, intervalSpeed, isMounted, namespace, updateProgress, uuid]
 	);
+
+	useEffect(() => {
+		getIconElement(`${namespace}icon-adapt-remaining${uuid}`);
+		getIconElement(`${namespace}icon-disable-${uuid}`);
+	}, [namespace, uuid]);
 
 	const onClickRetry = () => {
 		setImagesFailed(0);
