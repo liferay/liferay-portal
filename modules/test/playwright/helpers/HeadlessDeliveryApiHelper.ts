@@ -222,8 +222,10 @@ export class HeadlessDeliveryApiHelper {
 		blog?: {
 			articleBody?: string;
 			headline?: string;
+			image?: {imageId: number};
 			keywords?: string[];
 			taxonomyCategoryIds?: number[];
+			viewableBy?: string;
 		}
 	): Promise<any> {
 		blog = {
@@ -237,6 +239,26 @@ export class HeadlessDeliveryApiHelper {
 			{
 				data: blog,
 				failOnStatusCode: true,
+			}
+		);
+	}
+
+	async postSiteBlogPostingImage(
+		siteId: number | string,
+		file: TDocumentFile,
+		title = getRandomString()
+	): Promise<{contentUrl: string; id: number; title: string}> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/blog-posting-images`,
+			{
+				failOnStatusCode: true,
+				headers: {
+					...(await this.apiHelpers.getCSRFTokenHeader()),
+				},
+				multipart: {
+					blogPostingImage: JSON.stringify({title}),
+					file,
+				},
 			}
 		);
 	}
