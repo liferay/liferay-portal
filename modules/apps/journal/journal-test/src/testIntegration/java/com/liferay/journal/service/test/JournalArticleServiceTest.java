@@ -160,39 +160,9 @@ public class JournalArticleServiceTest {
 	}
 
 	@Test
-	public void testAddArticleDefaultValuesWithInvalidClassNameId()
-		throws Exception {
-
-		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			_group.getGroupId(), JournalArticle.class.getName());
-
-		Assert.assertThrows(
-			PrincipalException.class,
-			() -> _addArticleDefaultValues(
-				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
-				ddmStructure.getStructureId(), ddmStructure));
-
-		Assert.assertEquals(
-			1,
-			_journalArticleLocalService.getArticlesCount(_group.getGroupId()));
-	}
-
-	@Test
-	public void testAddArticleDefaultValuesWithNoPermissions()
-		throws Exception {
-
-		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			_group.getGroupId(), JournalArticle.class.getName());
-
-		_assertThrowsPrincipalException(
-			ddmStructure,
-			() -> _addArticleDefaultValues(
-				PortalUtil.getClassNameId(DDMStructure.class),
-				ddmStructure.getStructureId(), ddmStructure));
-
-		Assert.assertEquals(
-			1,
-			_journalArticleLocalService.getArticlesCount(_group.getGroupId()));
+	public void testAddArticleDefaultValues() throws Exception {
+		_testAddArticleDefaultValuesWithInvalidClassNameId();
+		_testAddArticleDefaultValuesWithNoPermissions();
 	}
 
 	@Test(expected = StorageFieldRequiredException.class)
@@ -306,73 +276,10 @@ public class JournalArticleServiceTest {
 
 	@Test
 	public void testDeleteArticleDefaultValues() throws Exception {
-		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
-			TestPropsValues.getUserId(), _group.getGroupId(),
-			RandomTestUtil.randomString());
-
-		_deleteArticleDefaultValues(
-			journalArticle.getArticleId(), journalArticle.getDDMStructureId());
-
-		Assert.assertNull(
-			_journalArticleLocalService.fetchArticle(
-				_group.getGroupId(), journalArticle.getArticleId()));
-	}
-
-	@Test
-	public void testDeleteArticleDefaultValuesWithInvalidArticle()
-		throws Exception {
-
-		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			_group.getGroupId(), JournalArticle.class.getName());
-
-		Assert.assertThrows(
-			PrincipalException.class,
-			() -> _deleteArticleDefaultValues(
-				_article.getArticleId(), ddmStructure.getStructureId()));
-
-		Assert.assertNotNull(
-			_journalArticleLocalService.fetchArticle(
-				_group.getGroupId(), _article.getArticleId()));
-	}
-
-	@Test
-	public void testDeleteArticleDefaultValuesWithInvalidDDMStructureId()
-		throws Exception {
-
-		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
-			TestPropsValues.getUserId(), _group.getGroupId(),
-			RandomTestUtil.randomString());
-
-		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			_group.getGroupId(), JournalArticle.class.getName());
-
-		Assert.assertThrows(
-			PrincipalException.class,
-			() -> _deleteArticleDefaultValues(
-				journalArticle.getArticleId(), ddmStructure.getStructureId()));
-
-		Assert.assertNotNull(
-			_journalArticleLocalService.fetchArticle(
-				_group.getGroupId(), journalArticle.getArticleId()));
-	}
-
-	@Test
-	public void testDeleteArticleDefaultValuesWithNoPermissions()
-		throws Exception {
-
-		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
-			TestPropsValues.getUserId(), _group.getGroupId(),
-			RandomTestUtil.randomString());
-
-		_assertThrowsPrincipalException(
-			journalArticle.getDDMStructure(),
-			() -> _deleteArticleDefaultValues(
-				journalArticle.getArticleId(),
-				journalArticle.getDDMStructureId()));
-
-		Assert.assertNotNull(
-			_journalArticleLocalService.fetchArticle(
-				_group.getGroupId(), journalArticle.getArticleId()));
+		_testDeleteArticleDefaultValues();
+		_testDeleteArticleDefaultValuesWithInvalidArticle();
+		_testDeleteArticleDefaultValuesWithInvalidDDMStructureId();
+		_testDeleteArticleDefaultValuesWithNoPermissions();
 	}
 
 	@Test
@@ -1348,48 +1255,9 @@ public class JournalArticleServiceTest {
 
 	@Test
 	public void testUpdateArticleDefaultValues() throws Exception {
-		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
-			TestPropsValues.getUserId(), _group.getGroupId(), "Title");
-
-		JournalArticle updatedJournalArticle = _updateArticleDefaultValues(
-			journalArticle);
-
-		Assert.assertNotEquals(
-			"Title", updatedJournalArticle.getTitle(LocaleUtil.getDefault()));
-	}
-
-	@Test
-	public void testUpdateArticleDefaultValuesWithInvalidArticle()
-		throws Exception {
-
-		Assert.assertThrows(
-			PrincipalException.class,
-			() -> _updateArticleDefaultValues(_article));
-
-		_article = _journalArticleLocalService.getArticle(
-			_group.getGroupId(), _article.getArticleId());
-
-		Assert.assertEquals(
-			"Version 1", _article.getTitle(LocaleUtil.getDefault()));
-	}
-
-	@Test
-	public void testUpdateArticleDefaultValuesWithNoPermissions()
-		throws Exception {
-
-		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
-			TestPropsValues.getUserId(), _group.getGroupId(), "Title");
-
-		_assertThrowsPrincipalException(
-			journalArticle.getDDMStructure(),
-			() -> _updateArticleDefaultValues(journalArticle));
-
-		JournalArticle latestJournalArticle =
-			_journalArticleLocalService.getArticle(
-				_group.getGroupId(), journalArticle.getArticleId());
-
-		Assert.assertEquals(
-			"Title", latestJournalArticle.getTitle(LocaleUtil.getDefault()));
+		_testUpdateArticleDefaultValues();
+		_testUpdateArticleDefaultValuesWithInvalidArticle();
+		_testUpdateArticleDefaultValuesWithNoPermissions();
 	}
 
 	@Test
@@ -1762,6 +1630,150 @@ public class JournalArticleServiceTest {
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(journalArticle.getResourcePrimKey()), actionId);
 		}
+	}
+
+	private void _testAddArticleDefaultValuesWithInvalidClassNameId()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _addArticleDefaultValues(
+				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+				ddmStructure.getStructureId(), ddmStructure));
+
+		Assert.assertEquals(
+			1,
+			_journalArticleLocalService.getArticlesCount(_group.getGroupId()));
+	}
+
+	private void _testAddArticleDefaultValuesWithNoPermissions()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		_assertThrowsPrincipalException(
+			ddmStructure,
+			() -> _addArticleDefaultValues(
+				PortalUtil.getClassNameId(DDMStructure.class),
+				ddmStructure.getStructureId(), ddmStructure));
+
+		Assert.assertEquals(
+			1,
+			_journalArticleLocalService.getArticlesCount(_group.getGroupId()));
+	}
+
+	private void _testDeleteArticleDefaultValues() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString());
+
+		_deleteArticleDefaultValues(
+			journalArticle.getArticleId(), journalArticle.getDDMStructureId());
+
+		Assert.assertNull(
+			_journalArticleLocalService.fetchArticle(
+				_group.getGroupId(), journalArticle.getArticleId()));
+	}
+
+	private void _testDeleteArticleDefaultValuesWithInvalidArticle()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _deleteArticleDefaultValues(
+				_article.getArticleId(), ddmStructure.getStructureId()));
+
+		Assert.assertNotNull(
+			_journalArticleLocalService.fetchArticle(
+				_group.getGroupId(), _article.getArticleId()));
+	}
+
+	private void _testDeleteArticleDefaultValuesWithInvalidDDMStructureId()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString());
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _deleteArticleDefaultValues(
+				journalArticle.getArticleId(), ddmStructure.getStructureId()));
+
+		Assert.assertNotNull(
+			_journalArticleLocalService.fetchArticle(
+				_group.getGroupId(), journalArticle.getArticleId()));
+	}
+
+	private void _testDeleteArticleDefaultValuesWithNoPermissions()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString());
+
+		_assertThrowsPrincipalException(
+			journalArticle.getDDMStructure(),
+			() -> _deleteArticleDefaultValues(
+				journalArticle.getArticleId(),
+				journalArticle.getDDMStructureId()));
+
+		Assert.assertNotNull(
+			_journalArticleLocalService.fetchArticle(
+				_group.getGroupId(), journalArticle.getArticleId()));
+	}
+
+	private void _testUpdateArticleDefaultValues() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
+			TestPropsValues.getUserId(), _group.getGroupId(), "Title");
+
+		JournalArticle updatedJournalArticle = _updateArticleDefaultValues(
+			journalArticle);
+
+		Assert.assertNotEquals(
+			"Title", updatedJournalArticle.getTitle(LocaleUtil.getDefault()));
+	}
+
+	private void _testUpdateArticleDefaultValuesWithInvalidArticle()
+		throws Exception {
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _updateArticleDefaultValues(_article));
+
+		_article = _journalArticleLocalService.getArticle(
+			_group.getGroupId(), _article.getArticleId());
+
+		Assert.assertEquals(
+			"Version 1", _article.getTitle(LocaleUtil.getDefault()));
+	}
+
+	private void _testUpdateArticleDefaultValuesWithNoPermissions()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
+			TestPropsValues.getUserId(), _group.getGroupId(), "Title");
+
+		_assertThrowsPrincipalException(
+			journalArticle.getDDMStructure(),
+			() -> _updateArticleDefaultValues(journalArticle));
+
+		JournalArticle latestJournalArticle =
+			_journalArticleLocalService.getArticle(
+				_group.getGroupId(), journalArticle.getArticleId());
+
+		Assert.assertEquals(
+			"Title", latestJournalArticle.getTitle(LocaleUtil.getDefault()));
 	}
 
 	private JournalArticle _updateArticleDefaultValues(
