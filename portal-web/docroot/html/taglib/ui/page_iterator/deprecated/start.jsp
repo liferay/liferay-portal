@@ -313,7 +313,7 @@ NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 		Liferay.Util.postForm(
 			document.<%= randomNamespace + namespace %>pageIteratorFm,
 			{
-				data: data
+				data: data,
 			}
 		);
 	}

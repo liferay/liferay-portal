@@ -161,7 +161,8 @@ public class TrafficChannel {
 				return null;
 			}
 		).put(
-			"title", ResourceBundleUtil.getString(resourceBundle, _getTitleKey())
+			"title",
+			ResourceBundleUtil.getString(resourceBundle, _getTitleKey())
 		).put(
 			"value",
 			() -> {

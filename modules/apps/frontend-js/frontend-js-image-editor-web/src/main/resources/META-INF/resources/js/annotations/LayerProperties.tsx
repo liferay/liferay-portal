@@ -244,7 +244,9 @@ export function LayerProperties({
 									value: 'medium',
 								},
 								{
-									label: Liferay.Language.get('light[strength]'),
+									label: Liferay.Language.get(
+										'light[strength]'
+									),
 									value: 'fine',
 								},
 								{

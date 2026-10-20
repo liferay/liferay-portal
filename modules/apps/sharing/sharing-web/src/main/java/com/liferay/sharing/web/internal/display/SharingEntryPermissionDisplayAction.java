@@ -21,7 +21,8 @@ public enum SharingEntryPermissionDisplayAction {
 
 	COMMENTS(
 		"COMMENTS", "comment[verb]", "collaborators-can-comment-on-the-item[",
-		"comment[verb]", SharingEntryAction.ADD_DISCUSSION, SharingEntryAction.VIEW),
+		"comment[verb]", SharingEntryAction.ADD_DISCUSSION,
+		SharingEntryAction.VIEW),
 	UPDATE(
 		"UPDATE", "update", "collaborators-can-view-comment-update-the-item[",
 		"update", SharingEntryAction.ADD_DISCUSSION, SharingEntryAction.UPDATE,

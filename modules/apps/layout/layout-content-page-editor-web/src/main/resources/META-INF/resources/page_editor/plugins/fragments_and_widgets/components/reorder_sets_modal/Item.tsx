@@ -101,7 +101,9 @@ export function Item({index, item, onDropItem}: ItemProps) {
 										className="sr-only"
 										id={dragButtonDescriptionId}
 									>
-										{Liferay.Language.get('reorder[arrange]')}
+										{Liferay.Language.get(
+											'reorder[arrange]'
+										)}
 									</span>
 								</ClayButton>
 							</ContentCol>
