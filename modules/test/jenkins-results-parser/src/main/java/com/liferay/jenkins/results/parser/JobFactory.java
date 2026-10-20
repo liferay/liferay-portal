@@ -313,10 +313,10 @@ public class JobFactory {
 				portalUpstreamBranchName, projectNames, repositoryName,
 				testSuiteName, upstreamBranchName);
 
-			Job cachedJob = _jobs.get(key);
+			Job job = _jobs.get(key);
 
-			if (cachedJob != null) {
-				return cachedJob;
+			if (job != null) {
+				return job;
 			}
 
 			if (JenkinsResultsParserUtil.isBuildCachingEnabled(
