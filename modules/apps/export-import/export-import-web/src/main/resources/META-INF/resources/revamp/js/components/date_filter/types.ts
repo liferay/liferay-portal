@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DateRangeType} from '../../types/exportImportProcess';
-
 export enum Range {
 	All = 'all',
 	DateRange = 'dateRange',
@@ -24,12 +22,6 @@ export type DateFilterValues =
 	| {endDate: string; range: Range.DateRange; startDate: string}
 	| {range: Range.FromLastPublishDate}
 	| {last: LastRange; range: Range.Last};
-
-export type NormalizedDateFilter = {
-	dateRangeType?: DateRangeType;
-	endDate?: string;
-	startDate?: string;
-};
 
 export type EditingState = {
 	endDate: string;

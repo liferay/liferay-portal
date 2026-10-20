@@ -5,28 +5,32 @@
 
 import {addParams} from 'frontend-js-web';
 
-import {NormalizedDateFilter} from '../components/date_filter';
 import {Preview} from '../types/exportImportPreview';
+import {DateFilter} from '../types/exportImportProcess';
 import ApiHelper, {RequestResult} from './ApiHelper';
 
 export interface PreviewParams {
-	query?: NormalizedDateFilter;
+	dateFilter?: DateFilter;
 	url: string;
 }
 
 export function getPreview({
-	query = {},
+	dateFilter,
 	url,
 }: PreviewParams): Promise<RequestResult<Preview>> {
-	const params: Record<string, string> = {};
+	if (!dateFilter) {
+		return ApiHelper.get<Preview>(url);
+	}
 
-	Object.entries(query).forEach(([key, value]) => {
+	const {type, ...dateFilterParams} = dateFilter;
+
+	const params: Record<string, string> = {dateFilterType: type};
+
+	Object.entries(dateFilterParams).forEach(([key, value]) => {
 		if (value !== undefined && value !== null && value !== '') {
 			params[key] = String(value);
 		}
 	});
 
-	return ApiHelper.get<Preview>(
-		Object.keys(params).length ? addParams(params, url) : url
-	);
+	return ApiHelper.get<Preview>(addParams(params, url));
 }

@@ -3,30 +3,27 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DateFilterValues, LastRange, Range} from '../components/date_filter';
-import {PublishProcessRequest} from '../types/exportImportProcess';
+import {
+	DateFilterValues,
+	HOURS_BY_LAST_RANGE,
+	LastRange,
+	Range,
+} from '../components/date_filter';
+import {DateFilter} from '../types/exportImportProcess';
 import {toWallClockDateTime} from './dateTime';
-
-const HOUR = 60 * 60 * 1000;
-
-const LAST_RANGES: Array<{hours: number; lastRange: LastRange}> = [
-	{hours: 12, lastRange: LastRange.H12},
-	{hours: 24, lastRange: LastRange.H24},
-	{hours: 48, lastRange: LastRange.H48},
-	{hours: 168, lastRange: LastRange.D7},
-];
 
 function toLastRange(hours: number): LastRange | null {
 	if (!(hours > 0)) {
 		return null;
 	}
 
-	const [closestLastRange] = [...LAST_RANGES].sort(
+	const [closestLastRange] = Object.values(LastRange).sort(
 		(first, second) =>
-			Math.abs(first.hours - hours) - Math.abs(second.hours - hours)
+			Math.abs(HOURS_BY_LAST_RANGE[first] - hours) -
+			Math.abs(HOURS_BY_LAST_RANGE[second] - hours)
 	);
 
-	return closestLastRange.lastRange;
+	return closestLastRange;
 }
 
 function toDateTime(
@@ -41,28 +38,26 @@ function toDateTime(
 }
 
 export function toDateFilterValues(
-	{dateRangeType, endDate, startDate}: PublishProcessRequest,
+	dateFilter: DateFilter | undefined,
 	timeZoneId: string
 ): DateFilterValues {
-	if (dateRangeType === 'DATE_RANGE') {
+	if (dateFilter?.type === 'DateRange') {
 		return {
-			endDate: toDateTime(endDate, timeZoneId),
+			endDate: toDateTime(dateFilter.endDate, timeZoneId),
 			range: Range.DateRange,
-			startDate: toDateTime(startDate, timeZoneId),
+			startDate: toDateTime(dateFilter.startDate, timeZoneId),
 		};
 	}
 
-	if (dateRangeType === 'LAST' && startDate) {
-		const lastRange = toLastRange(
-			Math.round((Date.now() - Date.parse(startDate)) / HOUR)
-		);
+	if (dateFilter?.type === 'LastHours') {
+		const lastRange = toLastRange(dateFilter.hours);
 
 		if (lastRange) {
 			return {last: lastRange, range: Range.Last};
 		}
 	}
 
-	if (dateRangeType === 'FROM_LAST_PUBLISH_DATE') {
+	if (dateFilter?.type === 'FromLastPublishDate') {
 		return {range: Range.FromLastPublishDate};
 	}
 

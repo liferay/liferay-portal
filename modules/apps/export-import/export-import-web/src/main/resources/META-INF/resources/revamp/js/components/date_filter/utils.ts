@@ -5,6 +5,7 @@
 
 import {sub} from 'frontend-js-web';
 
+import {DateFilter} from '../../types/exportImportProcess';
 import {
 	isCompleteDateTime,
 	toDateText,
@@ -12,13 +13,7 @@ import {
 	toWallClockDate,
 	toZonedDate,
 } from '../../utils/dateTime';
-import {
-	DateFilterValues,
-	EditingState,
-	LastRange,
-	NormalizedDateFilter,
-	Range,
-} from './types';
+import {DateFilterValues, EditingState, LastRange, Range} from './types';
 
 export const RANGE_OPTIONS = [
 	{
@@ -35,11 +30,11 @@ export const RANGE_OPTIONS = [
 	},
 ];
 
-const MILLISECONDS_BY_LAST_RANGE: Record<LastRange, number> = {
-	[LastRange.H12]: 12 * 60 * 60 * 1000,
-	[LastRange.H24]: 24 * 60 * 60 * 1000,
-	[LastRange.H48]: 48 * 60 * 60 * 1000,
-	[LastRange.D7]: 7 * 24 * 60 * 60 * 1000,
+export const HOURS_BY_LAST_RANGE: Record<LastRange, number> = {
+	[LastRange.H12]: 12,
+	[LastRange.H24]: 24,
+	[LastRange.H48]: 48,
+	[LastRange.D7]: 7 * 24,
 };
 
 export const LAST_RANGE_OPTIONS = [
@@ -61,42 +56,38 @@ export const LAST_RANGE_OPTIONS = [
 	},
 ];
 
-export function normalizeDateFilter(
-	dateFilter: DateFilterValues,
+export function toDateFilter(
+	dateFilterValues: DateFilterValues,
 	timeZoneId: string
-): NormalizedDateFilter {
-	if (dateFilter.range === Range.DateRange) {
-		const {endDate, startDate} = dateFilter;
+): DateFilter | undefined {
+	if (dateFilterValues.range === Range.DateRange) {
+		const {endDate, startDate} = dateFilterValues;
 
 		return {
-			dateRangeType: 'DATE_RANGE',
 			endDate: endDate
 				? toZonedDate(endDate, timeZoneId).toISOString()
 				: undefined,
 			startDate: startDate
 				? toZonedDate(startDate, timeZoneId).toISOString()
 				: undefined,
+			type: 'DateRange',
 		};
 	}
 
-	if (dateFilter.range === Range.FromLastPublishDate) {
+	if (dateFilterValues.range === Range.FromLastPublishDate) {
 		return {
-			dateRangeType: 'FROM_LAST_PUBLISH_DATE',
+			type: 'FromLastPublishDate',
 		};
 	}
 
-	if (dateFilter.range === Range.Last) {
+	if (dateFilterValues.range === Range.Last) {
 		return {
-			dateRangeType: 'LAST',
-			startDate: new Date(
-				Date.now() - MILLISECONDS_BY_LAST_RANGE[dateFilter.last]
-			).toISOString(),
+			hours: HOURS_BY_LAST_RANGE[dateFilterValues.last],
+			type: 'LastHours',
 		};
 	}
 
-	return {
-		dateRangeType: 'ALL',
-	};
+	return undefined;
 }
 
 export function dateFilterToEditingState(

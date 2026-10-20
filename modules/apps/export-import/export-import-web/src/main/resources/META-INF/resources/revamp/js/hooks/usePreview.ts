@@ -5,14 +5,10 @@
 
 import {useCallback, useEffect, useRef, useState} from 'react';
 
-import {
-	DateFilterValues,
-	NormalizedDateFilter,
-	Range,
-	normalizeDateFilter,
-} from '../components/date_filter';
+import {DateFilterValues, Range, toDateFilter} from '../components/date_filter';
 import {PreviewParams, getPreview} from '../services/getPreview';
 import {Preview} from '../types/exportImportPreview';
+import {DateFilter} from '../types/exportImportProcess';
 
 export function usePreview(
 	previewAPIURL: string,
@@ -23,7 +19,7 @@ export function usePreview(
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(!initialPreview);
 	const initialPreviewRef = useRef<Preview | undefined>(initialPreview);
-	const appliedDateFilterRef = useRef<NormalizedDateFilter>({});
+	const appliedDateFilterRef = useRef<DateFilter>();
 	const requestIdRef = useRef(0);
 
 	const loadPreview = useCallback((previewParams: PreviewParams) => {
@@ -62,7 +58,7 @@ export function usePreview(
 
 	const handleApplyFilter = useCallback(
 		(dateFilterValues: DateFilterValues) => {
-			appliedDateFilterRef.current = normalizeDateFilter(
+			appliedDateFilterRef.current = toDateFilter(
 				dateFilterValues,
 				timeZoneId
 			);
@@ -81,7 +77,7 @@ export function usePreview(
 			}
 
 			loadPreview({
-				query: appliedDateFilterRef.current,
+				dateFilter: appliedDateFilterRef.current,
 				url: previewAPIURL,
 			});
 		},

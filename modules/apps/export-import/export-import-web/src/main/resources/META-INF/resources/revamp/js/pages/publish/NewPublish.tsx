@@ -48,7 +48,7 @@ import {
 
 type PublishFormValues = {
 	contentSelection: ContentSelection | null | undefined;
-	dateFilter: DateFilterValues;
+	dateFilterValues: DateFilterValues;
 	deletions: boolean;
 	name: string;
 	permissions: boolean;
@@ -95,7 +95,7 @@ export function NewPublish({
 	const [initialFormValues, setInitialFormValues] =
 		useState<PublishFormValues>(() => ({
 			contentSelection: undefined,
-			dateFilter: {range: Range.All},
+			dateFilterValues: {range: Range.All},
 			deletions: false,
 			name: '',
 			permissions: false,
@@ -136,12 +136,12 @@ export function NewPublish({
 					name: '',
 				};
 
-			const dateFilter = toDateFilterValues(
-				publishProcessRequest,
+			const dateFilterValues = toDateFilterValues(
+				publishProcessRequest.dateFilter,
 				timeZoneId
 			);
 
-			handleApplyFilter(dateFilter);
+			handleApplyFilter(dateFilterValues);
 
 			const scheduledTimeZoneId =
 				scheduledPublishProcessRequest?.timeZoneId ?? timeZoneId;
@@ -160,7 +160,7 @@ export function NewPublish({
 					publishProcessRequest,
 					{commentsAndRatingsEnabled}
 				),
-				dateFilter,
+				dateFilterValues,
 				deletions: !!publishProcessRequest.deletions,
 				name: scheduledPublishProcess.name ?? '',
 				permissions: !!publishProcessRequest.permissions,
@@ -225,8 +225,8 @@ export function NewPublish({
 				const scheduled = scheduleValues.enabled;
 
 				const publishProcessRequest: PublishProcessRequest = {
-					...appliedDateFilterRef.current,
 					...toProcessRequestFlags(values.contentSelection),
+					dateFilter: appliedDateFilterRef.current,
 					deletions: values.deletions,
 					name: values.name,
 					permissions: values.permissions,

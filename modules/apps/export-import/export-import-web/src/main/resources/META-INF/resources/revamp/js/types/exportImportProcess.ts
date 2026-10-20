@@ -7,11 +7,10 @@ import {PortletDataHandler} from './portletDataHandler';
 
 export type ExportImportProcess = 'export' | 'import' | 'publish';
 
-export type DateRangeType =
-	| 'ALL'
-	| 'DATE_RANGE'
-	| 'FROM_LAST_PUBLISH_DATE'
-	| 'LAST';
+export type DateFilter =
+	| {endDate?: string; startDate?: string; type: 'DateRange'}
+	| {type: 'FromLastPublishDate'}
+	| {hours: number; type: 'LastHours'};
 
 export interface ExportProcess {
 	dateCreated?: string;
@@ -23,15 +22,13 @@ export interface ExportProcess {
 
 export interface ExportProcessRequest {
 	comments?: boolean;
-	dateRangeType?: DateRangeType;
+	dateFilter?: DateFilter;
 	deletions?: boolean;
-	endDate?: string;
 	name: string;
 	permissions?: boolean;
 	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
 	siteExternalReferenceCodes?: string[];
-	startDate?: string;
 }
 
 export const DATA_STRATEGIES = {
@@ -80,14 +77,12 @@ export interface PublishProcess {
 
 export interface PublishProcessRequest {
 	comments?: boolean;
-	dateRangeType?: DateRangeType;
+	dateFilter?: DateFilter;
 	deletions?: boolean;
-	endDate?: string;
 	name: string;
 	permissions?: boolean;
 	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
-	startDate?: string;
 }
 
 export interface ScheduledPublishProcess {

@@ -33,7 +33,7 @@ import SiteSelection from './components/SiteSelection';
 
 type ExportFormValues = {
 	contentSelection: ContentSelection | null | undefined;
-	dateFilter: DateFilterValues;
+	dateFilterValues: DateFilterValues;
 	deletions: boolean;
 	name: string;
 	permissions: boolean;
@@ -74,7 +74,7 @@ export function NewExport({
 
 	const initialFormValues: ExportFormValues = {
 		contentSelection: undefined,
-		dateFilter: {range: Range.All},
+		dateFilterValues: {range: Range.All},
 		deletions: false,
 		name: '',
 		permissions: false,
@@ -87,8 +87,8 @@ export function NewExport({
 			onSubmit={async (values) => {
 				const result = await postExportProcess({
 					exportProcessRequest: {
-						...appliedDateFilterRef.current,
 						...toProcessRequestFlags(values.contentSelection),
+						dateFilter: appliedDateFilterRef.current,
 						deletions: values.deletions,
 						name: values.name,
 						permissions: values.permissions,
