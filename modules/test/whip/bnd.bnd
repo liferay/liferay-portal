@@ -4,6 +4,3 @@ Bundle-Version: 1.0.6
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true
 Premain-Class: com.liferay.whip.agent.InstrumentationAgent
--includeresource:\
-	@asm-[0-9.]*.jar!/!module-info.class,\
-	@asm-tree-[0-9.]*.jar!/!module-info.class
