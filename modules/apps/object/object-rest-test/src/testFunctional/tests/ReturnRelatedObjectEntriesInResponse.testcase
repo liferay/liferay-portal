@@ -9,37 +9,12 @@ definition {
 	setUp {
 		TestCase.setUpPortalInstanceNoSelenium();
 
-		task ("Given two custom objects created and published") {
-			var studentObjectDefinitionId = ObjectDefinitionAPI.createAndPublishObjectDefinition(
-				en_US_label = "student",
-				en_US_plural_label = "students",
-				name = "Student",
-				requiredStringFieldName = "name");
+		task ("Given a custom object Subject created and published") {
 			var subjectObjectDefinitionId = ObjectDefinitionAPI.createAndPublishObjectDefinition(
 				en_US_label = "subject",
 				en_US_plural_label = "subjects",
 				name = "Subject",
 				requiredStringFieldName = "name");
-		}
-
-		task ("And Given a many-to-many studentsSubjects relationship created between them being Student the parent") {
-			ObjectDefinitionAPI.createRelationship(
-				deletionType = "cascade",
-				en_US_label = "studentsSubjects",
-				name = "studentsSubjects",
-				objectDefinitionId1 = ${studentObjectDefinitionId},
-				objectDefinitionId2 = ${subjectObjectDefinitionId},
-				type = "manyToMany");
-		}
-
-		task ("And Given a one-to-many mainSubjectStudents relationship created between them being Subject the parent") {
-			ObjectDefinitionAPI.createRelationship(
-				deletionType = "cascade",
-				en_US_label = "mainSubjectStudents",
-				name = "mainSubjectStudents",
-				objectDefinitionId1 = ${subjectObjectDefinitionId},
-				objectDefinitionId2 = ${studentObjectDefinitionId},
-				type = "oneToMany");
 		}
 
 		task ("And Given a one-to-many mainSubjects relationship created between Subject and itself") {
@@ -51,56 +26,12 @@ definition {
 				objectDefinitionId2 = ${subjectObjectDefinitionId},
 				type = "oneToMany");
 		}
-
-		task ("And Given a many-to-many studentsUsers relationship created between them being Student the parent") {
-			var systemUserObjectId = ObjectDefinitionAPI.getObjectDefinitionIdByName(name = "User");
-
-			ObjectDefinitionAPI.createRelationship(
-				deletionType = "cascade",
-				en_US_label = "studentsUsers",
-				name = "studentsUsers",
-				objectDefinitionId1 = ${studentObjectDefinitionId},
-				objectDefinitionId2 = ${systemUserObjectId},
-				type = "manyToMany");
-		}
-
-		task ("And Given a one-to-many studentUsers relationship created between them being Student the parent") {
-			ObjectDefinitionAPI.createRelationship(
-				deletionType = "cascade",
-				en_US_label = "studentUsers",
-				name = "studentUsers",
-				objectDefinitionId1 = ${studentObjectDefinitionId},
-				objectDefinitionId2 = ${systemUserObjectId},
-				type = "oneToMany");
-		}
-
-		task ("And Given a many-to-many usersStudents relationship created between them being User the parent") {
-			ObjectDefinitionAPI.createRelationship(
-				deletionType = "cascade",
-				en_US_label = "usersStudents",
-				name = "usersStudents",
-				objectDefinitionId1 = ${systemUserObjectId},
-				objectDefinitionId2 = ${studentObjectDefinitionId},
-				type = "manyToMany");
-		}
-
-		task ("And Given a one-to-many userStudents relationship created between them being User the parent") {
-			ObjectDefinitionAPI.createRelationship(
-				deletionType = "cascade",
-				en_US_label = "userStudents",
-				name = "userStudents",
-				objectDefinitionId1 = ${systemUserObjectId},
-				objectDefinitionId2 = ${studentObjectDefinitionId},
-				type = "oneToMany");
-		}
 	}
 
 	tearDown {
 		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
 
 		ObjectAdmin.deleteAllCustomObjectsViaAPI();
-
-		JSONUser.tearDownNonAdminUsersNoSelenium();
 
 		if (${testLiferayVirtualInstance} == "true") {
 			PortalInstances.tearDownCP();
