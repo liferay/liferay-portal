@@ -476,8 +476,7 @@ public class OrphanReferencesDataCleanupUtil {
 		OrphanReferencesDataCleanupUtil.class);
 
 	private static final List<String> _excludedTableNames = new ArrayList<>(
-		Arrays.asList(
-			"Audit_AuditEvent", "CyrusUser", "CyrusVirtual", "SystemEvent"));
+		Arrays.asList("Audit_AuditEvent", "SystemEvent"));
 	private static final List<String> _normalizedExcludedTableNames =
 		new ArrayList<>();
 	private static final RetryAcceptor _retryAcceptor = new SQLStateAcceptor();

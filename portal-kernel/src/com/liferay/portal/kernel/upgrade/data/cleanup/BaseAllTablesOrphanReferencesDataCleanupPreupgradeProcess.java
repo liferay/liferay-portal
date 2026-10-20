@@ -101,6 +101,8 @@ public abstract class BaseAllTablesOrphanReferencesDataCleanupPreupgradeProcess
 			tableNames.toArray(new String[0]),
 			sourceTableName -> {
 				if (excludedTableNames.contains(sourceTableName) ||
+					(!dbInspector.isObjectTable(sourceTableName) &&
+					 !liferayTableNames.contains(sourceTableName)) ||
 					!dbInspector.hasColumn(sourceTableName, sourceColumnName)) {
 
 					return;
@@ -116,26 +118,16 @@ public abstract class BaseAllTablesOrphanReferencesDataCleanupPreupgradeProcess
 						targetTableName, targetColumnName);
 
 					if (numericSourceColumn != numericTargetColumn) {
-						String message = StringBundler.concat(
-							"Table ", sourceTableName, " and column ",
-							sourceColumnName,
-							" has an incompatible type with table ",
-							targetTableName, " and column ", targetColumnName);
-
 						compatibleTypes = false;
 
-						if (!dbInspector.isObjectTable(sourceTableName) &&
-							!liferayTableNames.contains(sourceTableName)) {
-
-							if (_log.isDebugEnabled()) {
-								_log.debug(message);
-							}
-
-							break;
-						}
-
 						if (_log.isWarnEnabled()) {
-							_log.warn(message);
+							_log.warn(
+								StringBundler.concat(
+									"Table ", sourceTableName, " and column ",
+									sourceColumnName,
+									" has an incompatible type with table ",
+									targetTableName, " and column ",
+									targetColumnName));
 						}
 
 						break;
