@@ -5,6 +5,7 @@
 
 package com.liferay.fragment.internal.importer;
 
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.fragment.configuration.FragmentServiceConfiguration;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
@@ -1261,10 +1262,21 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			return true;
 		}
 
-		return !_isSameContent(
-			PortletFileRepositoryUtil.getPortletFileEntry(
-				fragmentEntry.getPreviewFileEntryId()),
-			zipEntry, zipFile);
+		FileEntry previewFileEntry = null;
+
+		try {
+			previewFileEntry = PortletFileRepositoryUtil.getPortletFileEntry(
+				fragmentEntry.getPreviewFileEntryId());
+		}
+		catch (NoSuchFileEntryException noSuchFileEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchFileEntryException);
+			}
+
+			return true;
+		}
+
+		return !_isSameContent(previewFileEntry, zipEntry, zipFile);
 	}
 
 	private boolean _isSameContent(
