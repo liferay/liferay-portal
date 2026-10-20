@@ -187,6 +187,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [ConcurrentMapperHashMap Usage](validations/branch/concurrent-mapper-hash-map-usage.md)
 
+1. [CacheField Usage](validations/branch/cache-field-usage.md)
+
 1. [HTML Escaping](validations/branch/html-escaping.md)
 
 1. [Full Portal Build](validations/portal/full-portal-build.md)
