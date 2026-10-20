@@ -2972,9 +2972,12 @@ public class ContactsEngineClientImpl
 
 		FilterBuilder filterBuilder = new FilterBuilder();
 
-		filterBuilder.addFilter(
-			"channelId", FilterConstants.COMPARISON_OPERATOR_EQUALS,
-			Long.valueOf(channelId));
+		if (Validator.isNotNull(channelId)) {
+			filterBuilder.addFilter(
+				"channelId", FilterConstants.COMPARISON_OPERATOR_EQUALS,
+				Long.valueOf(channelId));
+		}
+
 		filterBuilder.addFilter(
 			"name", FilterConstants.STRING_FUNCTION_CONTAINS, query);
 		filterBuilder.addFilter(
