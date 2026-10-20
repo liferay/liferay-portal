@@ -6,10 +6,7 @@
 package com.liferay.portal.security.key.secret;
 
 import com.liferay.portal.kernel.module.service.Snapshot;
-import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
-
-import java.util.Objects;
 
 /**
  * @author Pedro Victor Silvestre
@@ -21,11 +18,7 @@ public class SecretResolverUtil {
 			return value;
 		}
 
-		SecretResolver secretResolver = _secretResolverSnapshot.get();
-
-		if (secretResolver == null) {
-			throw new IllegalStateException("Secret resolver is unavailable");
-		}
+		SecretResolver secretResolver = _getSecretResolver();
 
 		return secretResolver.resolve(companyId, value);
 	}
@@ -33,15 +26,23 @@ public class SecretResolverUtil {
 	public static String resolve(
 		long companyId, String identifier, String value) {
 
-		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(value);
-
-		if ((keyReference == null) ||
-			!Objects.equals(identifier, keyReference.getIdentifier())) {
-
+		if (!KeyReferenceUtil.isKeyReference(value)) {
 			return value;
 		}
 
-		return resolve(companyId, value);
+		SecretResolver secretResolver = _getSecretResolver();
+
+		return secretResolver.resolve(companyId, identifier, value);
+	}
+
+	private static SecretResolver _getSecretResolver() {
+		SecretResolver secretResolver = _secretResolverSnapshot.get();
+
+		if (secretResolver == null) {
+			throw new IllegalStateException("Secret resolver is unavailable");
+		}
+
+		return secretResolver;
 	}
 
 	private static final Snapshot<SecretResolver> _secretResolverSnapshot =

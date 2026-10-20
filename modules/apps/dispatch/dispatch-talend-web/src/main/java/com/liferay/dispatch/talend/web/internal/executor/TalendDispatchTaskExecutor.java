@@ -29,7 +29,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.File;
 
@@ -165,21 +165,22 @@ public class TalendDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 			for (Map.Entry<String, String> propEntry :
 					dispatchTaskSettingsUnicodeProperties.entrySet()) {
 
+				String name = propEntry.getKey();
 				String value = propEntry.getValue();
 
-				if (!Objects.equals(propEntry.getKey(), "JAVA_OPTS")) {
-					value = SecretResolverUtil.resolve(
+				if (!Objects.equals(name, "JAVA_OPTS")) {
+					value = _secretResolver.resolve(
 						dispatchTrigger.getCompanyId(),
 						StringBundler.concat(
 							DispatchTrigger.class.getSimpleName(),
 							StringPool.SLASH, dispatchTrigger.getCompanyId(),
 							StringPool.SLASH,
 							dispatchTrigger.getDispatchTriggerId(),
-							StringPool.SLASH, propEntry.getKey()),
+							StringPool.SLASH, name),
 						value);
 				}
 
-				talendProcessBuilder.contextParam(propEntry.getKey(), value);
+				talendProcessBuilder.contextParam(name, value);
 			}
 		}
 
@@ -197,5 +198,8 @@ public class TalendDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 
 	@Reference
 	private ProcessExecutor _processExecutor;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

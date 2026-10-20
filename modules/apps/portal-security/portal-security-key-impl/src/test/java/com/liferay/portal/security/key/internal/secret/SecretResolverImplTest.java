@@ -195,6 +195,49 @@ public class SecretResolverImplTest {
 	}
 
 	@Test
+	public void testResolveWithIdentifier() throws Exception {
+		long companyId = RandomTestUtil.randomLong();
+
+		KeyReference keyReference = new KeyReference(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			KeyReference.Type.SECRET);
+
+		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(
+			keyReference);
+
+		Assert.assertSame(
+			keyReferenceString,
+			_secretResolverImpl.resolve(
+				companyId, RandomTestUtil.randomString(), keyReferenceString));
+
+		String plainValue = RandomTestUtil.randomString();
+
+		Assert.assertSame(
+			plainValue,
+			_secretResolverImpl.resolve(
+				companyId, keyReference.getIdentifier(), plainValue));
+
+		Assert.assertNull(
+			_secretResolverImpl.resolve(
+				companyId, keyReference.getIdentifier(), null));
+
+		Mockito.verifyNoInteractions(_secretManager);
+
+		String value = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_secretManager.getSecret(companyId, keyReference)
+		).thenReturn(
+			new Secret(keyReference, value)
+		);
+
+		Assert.assertEquals(
+			value,
+			_secretResolverImpl.resolve(
+				companyId, keyReference.getIdentifier(), keyReferenceString));
+	}
+
+	@Test
 	public void testStore() throws Exception {
 		try (AutoCloseable autoCloseable =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(

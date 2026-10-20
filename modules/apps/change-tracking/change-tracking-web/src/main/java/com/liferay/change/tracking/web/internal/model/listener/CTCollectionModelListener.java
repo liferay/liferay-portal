@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -131,7 +131,7 @@ public class CTCollectionModelListener extends BaseModelListener<CTCollection> {
 		options.addPart("client_id", ctRemote.getClientId());
 		options.addPart(
 			"client_secret",
-			SecretResolverUtil.resolve(
+			_secretResolver.resolve(
 				ctRemote.getCompanyId(),
 				StringBundler.concat(
 					CTRemote.class.getSimpleName(), StringPool.SLASH,
@@ -154,5 +154,8 @@ public class CTCollectionModelListener extends BaseModelListener<CTCollection> {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

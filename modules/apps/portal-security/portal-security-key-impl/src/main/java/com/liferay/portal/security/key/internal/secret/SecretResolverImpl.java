@@ -103,6 +103,19 @@ public class SecretResolverImpl implements SecretResolver {
 	}
 
 	@Override
+	public String resolve(long companyId, String identifier, String value) {
+		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(value);
+
+		if ((keyReference == null) ||
+			!Objects.equals(identifier, keyReference.getIdentifier())) {
+
+			return value;
+		}
+
+		return resolve(companyId, value);
+	}
+
+	@Override
 	public String store(long companyId, String identifier, String value) {
 		if (!PropsValues.FIPS_ENABLED || Validator.isNull(value)) {
 			return value;

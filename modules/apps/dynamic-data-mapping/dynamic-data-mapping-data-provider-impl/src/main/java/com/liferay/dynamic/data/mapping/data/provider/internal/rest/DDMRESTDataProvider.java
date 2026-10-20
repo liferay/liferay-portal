@@ -42,7 +42,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.ByteArrayInputStream;
 
@@ -418,7 +418,7 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 			return ddmDataProviderResponse;
 		}
 
-		String password = SecretResolverUtil.resolve(
+		String password = _secretResolver.resolve(
 			ddmDataProviderInstance.getCompanyId(),
 			StringBundler.concat(
 				DDMDataProviderInstance.class.getSimpleName(), StringPool.SLASH,
@@ -551,5 +551,8 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 	private MultiVMPool _multiVMPool;
 
 	private volatile PortalCache<String, DDMDataProviderResponse> _portalCache;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

@@ -16,17 +16,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.web.service.client.JSONWebServiceClient;
 import com.liferay.portal.json.web.service.client.JSONWebServiceClientFactory;
 import com.liferay.portal.kernel.cache.PortalCache;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
-import com.liferay.portal.security.key.KeyReference;
-import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolver;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Map;
@@ -67,110 +63,29 @@ public class DDMRESTDataProviderTest {
 		);
 
 		ReflectionTestUtil.setFieldValue(_ddmrestDataProvider, "_http", _http);
-
-		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			new Snapshot<SecretResolver>(
-				SecretResolverUtil.class, SecretResolver.class) {
-
-				@Override
-				public SecretResolver get() {
-					return _secretResolver;
-				}
-
-			});
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_secretResolver", _secretResolver);
 	}
 
 	@After
 	public void tearDown() {
-		ReflectionTestUtil.setFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			_secretResolverSnapshot);
-
 		_systemPropertiesMockedStatic.close();
 	}
 
 	@Test
 	public void testGetData() throws Exception {
-		long companyId = RandomTestUtil.randomLong();
-		long dataProviderInstanceId = RandomTestUtil.randomLong();
-
-		String keyReferenceString = _getKeyReferenceString(
-			companyId, dataProviderInstanceId);
-
-		String password = RandomTestUtil.randomString();
-
-		Mockito.when(
-			_secretResolver.resolve(companyId, keyReferenceString)
-		).thenReturn(
-			password
-		);
-
-		_testGetData(
-			companyId, dataProviderInstanceId, password, keyReferenceString);
-
-		keyReferenceString = _getKeyReferenceString(
-			companyId, dataProviderInstanceId + 1);
-
-		_testGetData(
-			companyId, dataProviderInstanceId, keyReferenceString,
-			keyReferenceString);
-	}
-
-	@Test
-	public void testGetProxySettingsMap() {
-		Mockito.when(
-			_http.isNonProxyHost(Mockito.anyString())
-		).thenReturn(
-			true
-		);
-
-		Assert.assertTrue(
-			MapUtil.isEmpty(
-				_ddmrestDataProvider.getProxySettingsMap(
-					RandomTestUtil.randomString())));
-
-		Mockito.when(
-			_http.isNonProxyHost(Mockito.anyString())
-		).thenReturn(
-			false
-		);
-
-		Assert.assertEquals(
-			HashMapBuilder.<String, Object>put(
-				"proxyHostName", _PROXY_HOST
-			).put(
-				"proxyHostPort", _PROXY_PORT
-			).build(),
-			_ddmrestDataProvider.getProxySettingsMap(
-				RandomTestUtil.randomString()));
-	}
-
-	private String _getKeyReferenceString(
-		long companyId, long dataProviderInstanceId) {
-
-		return KeyReferenceUtil.toKeyReferenceString(
-			new KeyReference(
-				StringBundler.concat(
-					DDMDataProviderInstance.class.getSimpleName(),
-					StringPool.SLASH, companyId, StringPool.SLASH,
-					dataProviderInstanceId, "/password"),
-				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
-	}
-
-	private void _testGetData(
-			long companyId, long dataProviderInstanceId,
-			String expectedPassword, String password)
-		throws Exception {
-
 		DDMDataProviderInstance ddmDataProviderInstance = Mockito.mock(
 			DDMDataProviderInstance.class);
+
+		long companyId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			ddmDataProviderInstance.getCompanyId()
 		).thenReturn(
 			companyId
 		);
+
+		long dataProviderInstanceId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			ddmDataProviderInstance.getDataProviderInstanceId()
@@ -203,6 +118,8 @@ public class DDMRESTDataProviderTest {
 			new DDMDataProviderInputParametersSettings[0]
 		);
 
+		String password = RandomTestUtil.randomString();
+
 		Mockito.when(
 			ddmRESTDataProviderSettings.password()
 		).thenReturn(
@@ -228,6 +145,20 @@ public class DDMRESTDataProviderTest {
 		ReflectionTestUtil.setFieldValue(
 			_ddmrestDataProvider, "_ddmDataProviderInstanceSettings",
 			ddmDataProviderInstanceSettings);
+
+		String resolvedPassword = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_secretResolver.resolve(
+				companyId,
+				StringBundler.concat(
+					DDMDataProviderInstance.class.getSimpleName(),
+					StringPool.SLASH, companyId, StringPool.SLASH,
+					dataProviderInstanceId, "/password"),
+				password)
+		).thenReturn(
+			resolvedPassword
+		);
 
 		JSONWebServiceClient jsonWebServiceClient = Mockito.mock(
 			JSONWebServiceClient.class);
@@ -277,7 +208,36 @@ public class DDMRESTDataProviderTest {
 
 		Map<String, Object> properties = argumentCaptor.getValue();
 
-		Assert.assertEquals(expectedPassword, properties.get("password"));
+		Assert.assertEquals(resolvedPassword, properties.get("password"));
+	}
+
+	@Test
+	public void testGetProxySettingsMap() {
+		Mockito.when(
+			_http.isNonProxyHost(Mockito.anyString())
+		).thenReturn(
+			true
+		);
+
+		Assert.assertTrue(
+			MapUtil.isEmpty(
+				_ddmrestDataProvider.getProxySettingsMap(
+					RandomTestUtil.randomString())));
+
+		Mockito.when(
+			_http.isNonProxyHost(Mockito.anyString())
+		).thenReturn(
+			false
+		);
+
+		Assert.assertEquals(
+			HashMapBuilder.<String, Object>put(
+				"proxyHostName", _PROXY_HOST
+			).put(
+				"proxyHostPort", _PROXY_PORT
+			).build(),
+			_ddmrestDataProvider.getProxySettingsMap(
+				RandomTestUtil.randomString()));
 	}
 
 	private static final String _PROXY_HOST = RandomTestUtil.randomString();
@@ -289,7 +249,6 @@ public class DDMRESTDataProviderTest {
 	private final Http _http = Mockito.mock(Http.class);
 	private final SecretResolver _secretResolver = Mockito.mock(
 		SecretResolver.class);
-	private Snapshot<SecretResolver> _secretResolverSnapshot;
 	private final MockedStatic<SystemProperties> _systemPropertiesMockedStatic =
 		Mockito.mockStatic(SystemProperties.class);
 

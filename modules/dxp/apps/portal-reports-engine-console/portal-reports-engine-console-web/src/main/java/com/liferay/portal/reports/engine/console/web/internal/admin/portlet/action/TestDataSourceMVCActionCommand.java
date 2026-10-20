@@ -14,7 +14,7 @@ import com.liferay.portal.reports.engine.console.constants.ReportsEngineConsoleP
 import com.liferay.portal.reports.engine.console.model.Source;
 import com.liferay.portal.reports.engine.console.service.SourceService;
 import com.liferay.portal.reports.engine.console.util.ReportsEngineConsoleUtil;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -46,7 +46,7 @@ public class TestDataSourceMVCActionCommand extends BaseMVCActionCommand {
 		ReportsEngineConsoleUtil.validateJDBCConnection(
 			source.getDriverClassName(), source.getDriverUrl(),
 			source.getDriverUserName(),
-			SecretResolverUtil.resolve(
+			_secretResolver.resolve(
 				source.getCompanyId(),
 				StringBundler.concat(
 					Source.class.getSimpleName(), StringPool.SLASH,
@@ -54,6 +54,9 @@ public class TestDataSourceMVCActionCommand extends BaseMVCActionCommand {
 					source.getSourceId(), "/driverPassword"),
 				source.getDriverPassword()));
 	}
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference
 	private SourceService _sourceService;

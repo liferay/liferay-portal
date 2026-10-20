@@ -9,21 +9,15 @@ import com.liferay.change.tracking.model.CTRemote;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.security.key.KeyReference;
-import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolver;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,67 +35,11 @@ public class CTCollectionModelListenerTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Before
-	public void setUp() {
-		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			new Snapshot<SecretResolver>(
-				SecretResolverUtil.class, SecretResolver.class) {
-
-				@Override
-				public SecretResolver get() {
-					return _secretResolver;
-				}
-
-			});
-	}
-
-	@After
-	public void tearDown() {
-		ReflectionTestUtil.setFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			_secretResolverSnapshot);
-	}
-
 	@Test
 	public void testGetToken() throws Exception {
-		long companyId = RandomTestUtil.randomLong();
-		long ctRemoteId = RandomTestUtil.randomLong();
-
-		String keyReferenceString = _getKeyReferenceString(
-			companyId, ctRemoteId);
+		CTRemote ctRemote = Mockito.mock(CTRemote.class);
 
 		String clientSecret = RandomTestUtil.randomString();
-
-		Mockito.when(
-			_secretResolver.resolve(companyId, keyReferenceString)
-		).thenReturn(
-			clientSecret
-		);
-
-		_testGetToken(keyReferenceString, companyId, ctRemoteId, clientSecret);
-
-		keyReferenceString = _getKeyReferenceString(companyId, ctRemoteId + 1);
-
-		_testGetToken(
-			keyReferenceString, companyId, ctRemoteId, keyReferenceString);
-	}
-
-	private String _getKeyReferenceString(long companyId, long ctRemoteId) {
-		return KeyReferenceUtil.toKeyReferenceString(
-			new KeyReference(
-				StringBundler.concat(
-					CTRemote.class.getSimpleName(), StringPool.SLASH, companyId,
-					StringPool.SLASH, ctRemoteId, "/clientSecret"),
-				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
-	}
-
-	private void _testGetToken(
-			String clientSecret, long companyId, long ctRemoteId,
-			String expectedClientSecret)
-		throws Exception {
-
-		CTRemote ctRemote = Mockito.mock(CTRemote.class);
 
 		Mockito.when(
 			ctRemote.getClientSecret()
@@ -109,16 +47,35 @@ public class CTCollectionModelListenerTest {
 			clientSecret
 		);
 
+		long companyId = RandomTestUtil.randomLong();
+
 		Mockito.when(
 			ctRemote.getCompanyId()
 		).thenReturn(
 			companyId
 		);
 
+		long ctRemoteId = RandomTestUtil.randomLong();
+
 		Mockito.when(
 			ctRemote.getCtRemoteId()
 		).thenReturn(
 			ctRemoteId
+		);
+
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		String resolvedClientSecret = RandomTestUtil.randomString();
+
+		Mockito.when(
+			secretResolver.resolve(
+				companyId,
+				StringBundler.concat(
+					CTRemote.class.getSimpleName(), StringPool.SLASH, companyId,
+					StringPool.SLASH, ctRemoteId, "/clientSecret"),
+				clientSecret)
+		).thenReturn(
+			resolvedClientSecret
 		);
 
 		CTCollectionModelListener ctCollectionModelListener =
@@ -137,6 +94,8 @@ public class CTCollectionModelListenerTest {
 
 		ReflectionTestUtil.setFieldValue(
 			ctCollectionModelListener, "_jsonFactory", new JSONFactoryImpl());
+		ReflectionTestUtil.setFieldValue(
+			ctCollectionModelListener, "_secretResolver", secretResolver);
 
 		ReflectionTestUtil.invoke(
 			ctCollectionModelListener, "_getToken",
@@ -155,11 +114,7 @@ public class CTCollectionModelListenerTest {
 
 		Map<String, String> parts = options.getParts();
 
-		Assert.assertEquals(expectedClientSecret, parts.get("client_secret"));
+		Assert.assertEquals(resolvedClientSecret, parts.get("client_secret"));
 	}
-
-	private final SecretResolver _secretResolver = Mockito.mock(
-		SecretResolver.class);
-	private Snapshot<SecretResolver> _secretResolverSnapshot;
 
 }

@@ -110,12 +110,14 @@ public class MBSubscriptionSenderTest {
 			mailingListId
 		);
 
+		String identifier = StringBundler.concat(
+			MBMailingList.class.getSimpleName(), StringPool.SLASH, companyId,
+			StringPool.SLASH, categoryId, "/outPassword");
+
 		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(
 			new KeyReference(
-				StringBundler.concat(
-					MBMailingList.class.getSimpleName(), StringPool.SLASH,
-					companyId, StringPool.SLASH, categoryId, "/outPassword"),
-				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
+				identifier, RandomTestUtil.randomString(),
+				KeyReference.Type.SECRET));
 
 		Mockito.when(
 			mbMailingList.getOutPassword()
@@ -147,7 +149,7 @@ public class MBSubscriptionSenderTest {
 		String password = RandomTestUtil.randomString();
 
 		Mockito.when(
-			_secretResolver.resolve(companyId, keyReferenceString)
+			_secretResolver.resolve(companyId, identifier, keyReferenceString)
 		).thenReturn(
 			password
 		);
@@ -164,7 +166,7 @@ public class MBSubscriptionSenderTest {
 		Assert.assertTrue(mbSubscriptionSender.hasSubscribers());
 
 		Mockito.when(
-			_secretResolver.resolve(companyId, keyReferenceString)
+			_secretResolver.resolve(companyId, identifier, keyReferenceString)
 		).thenAnswer(
 			invocation -> {
 				throw new SecretException();

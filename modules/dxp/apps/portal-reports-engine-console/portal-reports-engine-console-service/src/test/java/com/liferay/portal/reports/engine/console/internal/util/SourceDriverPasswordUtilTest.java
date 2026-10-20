@@ -63,17 +63,19 @@ public class SourceDriverPasswordUtilTest {
 		long companyId = RandomTestUtil.randomLong();
 		long sourceId = RandomTestUtil.randomLong();
 
+		String identifier = StringBundler.concat(
+			Source.class.getSimpleName(), StringPool.SLASH, companyId,
+			StringPool.SLASH, sourceId, "/driverPassword");
+
 		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(
 			new KeyReference(
-				StringBundler.concat(
-					Source.class.getSimpleName(), StringPool.SLASH, companyId,
-					StringPool.SLASH, sourceId, "/driverPassword"),
-				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
+				identifier, RandomTestUtil.randomString(),
+				KeyReference.Type.SECRET));
 
 		String driverPassword = RandomTestUtil.randomString();
 
 		Mockito.when(
-			_secretResolver.resolve(companyId, keyReferenceString)
+			_secretResolver.resolve(companyId, identifier, keyReferenceString)
 		).thenReturn(
 			driverPassword
 		);
@@ -82,11 +84,6 @@ public class SourceDriverPasswordUtilTest {
 			driverPassword,
 			SourceDriverPasswordUtil.getDriverPassword(
 				companyId, keyReferenceString, sourceId));
-
-		Assert.assertEquals(
-			keyReferenceString,
-			SourceDriverPasswordUtil.getDriverPassword(
-				companyId, keyReferenceString, sourceId + 1));
 	}
 
 	private final SecretResolver _secretResolver = Mockito.mock(

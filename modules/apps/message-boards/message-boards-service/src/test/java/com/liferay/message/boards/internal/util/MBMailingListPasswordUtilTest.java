@@ -64,18 +64,19 @@ public class MBMailingListPasswordUtilTest {
 		long companyId = RandomTestUtil.randomLong();
 		String name = RandomTestUtil.randomString();
 
+		String identifier = StringBundler.concat(
+			MBMailingList.class.getSimpleName(), StringPool.SLASH, companyId,
+			StringPool.SLASH, categoryId, StringPool.SLASH, name);
+
 		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(
 			new KeyReference(
-				StringBundler.concat(
-					MBMailingList.class.getSimpleName(), StringPool.SLASH,
-					companyId, StringPool.SLASH, categoryId, StringPool.SLASH,
-					name),
-				RandomTestUtil.randomString(), KeyReference.Type.SECRET));
+				identifier, RandomTestUtil.randomString(),
+				KeyReference.Type.SECRET));
 
 		String password = RandomTestUtil.randomString();
 
 		Mockito.when(
-			_secretResolver.resolve(companyId, keyReferenceString)
+			_secretResolver.resolve(companyId, identifier, keyReferenceString)
 		).thenReturn(
 			password
 		);
@@ -84,16 +85,6 @@ public class MBMailingListPasswordUtilTest {
 			password,
 			MBMailingListPasswordUtil.getPassword(
 				categoryId, companyId, name, keyReferenceString));
-
-		Assert.assertEquals(
-			keyReferenceString,
-			MBMailingListPasswordUtil.getPassword(
-				categoryId, companyId, RandomTestUtil.randomString(),
-				keyReferenceString));
-		Assert.assertEquals(
-			keyReferenceString,
-			MBMailingListPasswordUtil.getPassword(
-				categoryId + 1, companyId, name, keyReferenceString));
 	}
 
 	private final SecretResolver _secretResolver = Mockito.mock(

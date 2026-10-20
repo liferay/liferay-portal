@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.net.URI;
 
@@ -58,7 +58,7 @@ public class WebhookObjectActionExecutorImpl implements ObjectActionExecutor {
 			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
 		options.addHeader(
 			"x-api-key",
-			SecretResolverUtil.resolve(
+			_secretResolver.resolve(
 				companyId,
 				StringBundler.concat(
 					ObjectAction.class.getSimpleName(), StringPool.SLASH,
@@ -132,5 +132,8 @@ public class WebhookObjectActionExecutorImpl implements ObjectActionExecutor {
 
 	@Reference
 	private Http _http;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
