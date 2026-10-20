@@ -375,32 +375,35 @@ public class DDMFormDisplayContext {
 			_ddmFormInstance = _ddmFormInstanceLocalService.fetchFormInstance(
 				getFormInstanceId());
 
-			if ((_ddmFormInstance != null) && !isPreview()) {
-				DDMFormInstanceVersion latestApprovedDDMFormInstanceVersion =
-					_getLatestApprovedDDMFormInstanceVersion();
-
-				String settings =
-					latestApprovedDDMFormInstanceVersion.getSettings();
-
-				if (Validator.isNotNull(settings)) {
-					DDMStructureVersion ddmStructureVersion =
-						latestApprovedDDMFormInstanceVersion.
-							getStructureVersion();
-
-					if (!Objects.equals(
-							_ddmFormInstance.getSettings(), settings) ||
-						(_ddmFormInstance.getStructureId() !=
-							ddmStructureVersion.getStructureId())) {
-
-						_ddmFormInstance = MVCCModel.scratchClone(
-							_ddmFormInstance);
-
-						_ddmFormInstance.setStructureId(
-							ddmStructureVersion.getStructureId());
-						_ddmFormInstance.setSettings(settings);
-					}
-				}
+			if ((_ddmFormInstance == null) || isPreview()) {
+				return _ddmFormInstance;
 			}
+
+			DDMFormInstanceVersion latestApprovedDDMFormInstanceVersion =
+				_getLatestApprovedDDMFormInstanceVersion();
+
+			String settings =
+				latestApprovedDDMFormInstanceVersion.getSettings();
+
+			if (Validator.isNull(settings)) {
+				return _ddmFormInstance;
+			}
+
+			DDMStructureVersion ddmStructureVersion =
+				latestApprovedDDMFormInstanceVersion.getStructureVersion();
+
+			if (Objects.equals(_ddmFormInstance.getSettings(), settings) &&
+				(_ddmFormInstance.getStructureId() ==
+					ddmStructureVersion.getStructureId())) {
+
+				return _ddmFormInstance;
+			}
+
+			_ddmFormInstance = MVCCModel.scratchClone(_ddmFormInstance);
+
+			_ddmFormInstance.setStructureId(
+				ddmStructureVersion.getStructureId());
+			_ddmFormInstance.setSettings(settings);
 		}
 		catch (PortalException portalException) {
 
