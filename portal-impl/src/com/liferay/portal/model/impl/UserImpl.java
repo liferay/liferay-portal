@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.service.UserGroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.WebsiteLocalServiceUtil;
+import com.liferay.portal.kernel.template.TemplateRestricted;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
@@ -184,6 +185,12 @@ public class UserImpl extends UserBaseImpl {
 		}
 
 		return _contact;
+	}
+
+	@Override
+	@TemplateRestricted
+	public String getDigest() {
+		return super.getDigest();
 	}
 
 	/**
@@ -472,6 +479,24 @@ public class UserImpl extends UserBaseImpl {
 	}
 
 	@Override
+	@TemplateRestricted
+	public Date getLastFailedLoginDate() {
+		return super.getLastFailedLoginDate();
+	}
+
+	@Override
+	@TemplateRestricted
+	public Date getLastLoginDate() {
+		return super.getLastLoginDate();
+	}
+
+	@Override
+	@TemplateRestricted
+	public String getLastLoginIP() {
+		return super.getLastLoginIP();
+	}
+
+	@Override
 	public Locale getLocale() {
 		return _locale;
 	}
@@ -496,6 +521,18 @@ public class UserImpl extends UserBaseImpl {
 		}
 
 		return login;
+	}
+
+	@Override
+	@TemplateRestricted
+	public Date getLoginDate() {
+		return super.getLoginDate();
+	}
+
+	@Override
+	@TemplateRestricted
+	public String getLoginIP() {
+		return super.getLoginIP();
 	}
 
 	/**
@@ -598,6 +635,18 @@ public class UserImpl extends UserBaseImpl {
 	}
 
 	@Override
+	@TemplateRestricted
+	public String getPassword() {
+		return super.getPassword();
+	}
+
+	@Override
+	@TemplateRestricted
+	public boolean getPasswordEncrypted() {
+		return super.getPasswordEncrypted();
+	}
+
+	@Override
 	public boolean getPasswordModified() {
 		return _passwordModified;
 	}
@@ -610,6 +659,12 @@ public class UserImpl extends UserBaseImpl {
 		}
 
 		return _passwordPolicy;
+	}
+
+	@Override
+	@TemplateRestricted
+	public boolean getPasswordReset() {
+		return super.getPasswordReset();
 	}
 
 	@Override
@@ -640,6 +695,18 @@ public class UserImpl extends UserBaseImpl {
 	@Override
 	public int getPublicLayoutsPageCount() throws PortalException {
 		return LayoutLocalServiceUtil.getLayoutsCount(this, false);
+	}
+
+	@Override
+	@TemplateRestricted
+	public String getReminderQueryAnswer() {
+		return super.getReminderQueryAnswer();
+	}
+
+	@Override
+	@TemplateRestricted
+	public String getReminderQueryQuestion() {
+		return super.getReminderQueryQuestion();
 	}
 
 	@Override
