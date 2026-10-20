@@ -7,6 +7,7 @@ package com.liferay.portal.security.audit.router.internal;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -15,9 +16,13 @@ import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
@@ -28,6 +33,7 @@ import com.liferay.portal.security.audit.router.internal.constants.AuditConstant
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +42,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
@@ -128,8 +135,35 @@ public class DefaultAuditRouter implements AuditRouter {
 			auditMessage.setAction(null);
 			auditMessage.setResourceAction(null);
 			auditMessage.setResourceType(null);
+			auditMessage.setRoles(null);
 
 			return;
+		}
+
+		if (Validator.isNull(auditMessage.getRoles()) &&
+			(auditMessage.getUserId() > 0)) {
+
+			try {
+				User user = _userLocalService.fetchUser(
+					auditMessage.getUserId());
+
+				if (user != null) {
+					Set<String> roleNames = new TreeSet<>(
+						TransformUtil.transform(
+							user.getAllRoles(), Role::getName));
+
+					auditMessage.setRoles(
+						String.valueOf(JSONUtil.putAll(roleNames.toArray())));
+				}
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to get the roles of user " +
+							auditMessage.getUserId(),
+						exception);
+				}
+			}
 		}
 
 		String resourceAction = auditMessage.getResourceAction();
@@ -201,5 +235,8 @@ public class DefaultAuditRouter implements AuditRouter {
 	private volatile boolean _auditEnabled;
 	private ServiceTrackerMap<String, List<AuditMessageProcessor>>
 		_serviceTrackerMap;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
