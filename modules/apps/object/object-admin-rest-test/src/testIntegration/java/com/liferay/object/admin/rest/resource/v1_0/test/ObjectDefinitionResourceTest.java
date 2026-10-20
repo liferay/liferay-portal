@@ -216,7 +216,7 @@ public class ObjectDefinitionResourceTest
 
 		Page<ObjectDefinition> page =
 			objectDefinitionResource.getObjectDefinitionsPage(
-				null, null, "hidden eq false", null, null);
+				null, null, "hidden eq false", null, "dateCreated:desc");
 
 		Assert.assertFalse(
 			_contains(
@@ -228,7 +228,7 @@ public class ObjectDefinitionResourceTest
 				(List<ObjectDefinition>)page.getItems()));
 
 		page = objectDefinitionResource.getObjectDefinitionsPage(
-			null, null, "hidden eq true", null, null);
+			null, null, "hidden eq true", null, "dateCreated:desc");
 
 		Assert.assertTrue(
 			_contains(
