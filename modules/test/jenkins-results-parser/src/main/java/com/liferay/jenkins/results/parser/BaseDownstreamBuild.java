@@ -529,43 +529,46 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 	}
 
 	@Override
-	public synchronized URL getTestrayCaseResultURL() {
-		if (_testrayCaseResultURL != null) {
-			return _testrayCaseResultURL;
-		}
+	public URL getTestrayCaseResultURL() {
+		synchronized (_testrayCaseResultURLLock) {
+			if (_testrayCaseResultURL != null) {
+				return _testrayCaseResultURL;
+			}
 
-		String testrayImportDisabled = Environment.get(
-			"TESTRAY_IMPORT_DISABLED");
+			String testrayImportDisabled = Environment.get(
+				"TESTRAY_IMPORT_DISABLED");
 
-		if (Boolean.parseBoolean(testrayImportDisabled)) {
-			return null;
-		}
-
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		if (topLevelBuild == null) {
-			return null;
-		}
-
-		try {
-			TestrayCaseResult testrayCaseResult =
-				TestrayFactory.newDownstreamBuildTestrayCaseResult(
-					this, topLevelBuild.getTestrayContext());
-
-			if (testrayCaseResult == null) {
+			if (Boolean.parseBoolean(testrayImportDisabled)) {
 				return null;
 			}
 
-			_testrayCaseResultURL = testrayCaseResult.getTestrayCaseResultURL();
-		}
-		catch (Exception exception) {
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"Unable to create Testray case result for ", getBuildURL(),
-					":\n", exception.getMessage()));
-		}
+			TopLevelBuild topLevelBuild = getTopLevelBuild();
 
-		return _testrayCaseResultURL;
+			if (topLevelBuild == null) {
+				return null;
+			}
+
+			try {
+				TestrayCaseResult testrayCaseResult =
+					TestrayFactory.newDownstreamBuildTestrayCaseResult(
+						this, topLevelBuild.getTestrayContext());
+
+				if (testrayCaseResult == null) {
+					return null;
+				}
+
+				_testrayCaseResultURL =
+					testrayCaseResult.getTestrayCaseResultURL();
+			}
+			catch (Exception exception) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Unable to create Testray case result for ",
+						getBuildURL(), ":\n", exception.getMessage()));
+			}
+
+			return _testrayCaseResultURL;
+		}
 	}
 
 	@Override
@@ -1426,5 +1429,6 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 	private DownstreamBuildReport _downstreamBuildReport;
 	private Element _gitHubMessageElement;
 	private volatile URL _testrayCaseResultURL;
+	private final Object _testrayCaseResultURLLock = new Object();
 
 }

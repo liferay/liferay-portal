@@ -59,11 +59,13 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public void addTestrayAttachmentURL(URL testrayAttachmentURL) {
-		if (_testrayAttachmentURLs.contains(testrayAttachmentURL)) {
-			return;
-		}
+		synchronized (_testrayAttachmentURLs) {
+			if (_testrayAttachmentURLs.contains(testrayAttachmentURL)) {
+				return;
+			}
 
-		_testrayAttachmentURLs.add(testrayAttachmentURL);
+			_testrayAttachmentURLs.add(testrayAttachmentURL);
+		}
 	}
 
 	@Override
@@ -1390,33 +1392,35 @@ public abstract class BaseBuild implements Build {
 	}
 
 	@Override
-	public synchronized List<URL> getTestrayAttachmentURLs() {
-		if (!Objects.equals(getStatus(), "completed") ||
-			_testrayAttachmentURLsFound) {
+	public List<URL> getTestrayAttachmentURLs() {
+		synchronized (_testrayAttachmentURLs) {
+			if (!Objects.equals(getStatus(), "completed") ||
+				_testrayAttachmentURLsFound) {
+
+				return _testrayAttachmentURLs;
+			}
+
+			String consoleText = getConsoleText();
+
+			for (String line : consoleText.split("\\n")) {
+				Matcher matcher = _testrayCloudObjectURLPattern.matcher(line);
+
+				if (!matcher.find()) {
+					continue;
+				}
+
+				try {
+					addTestrayAttachmentURL(new URL(matcher.group("url")));
+				}
+				catch (MalformedURLException malformedURLException) {
+					throw new RuntimeException(malformedURLException);
+				}
+			}
+
+			_testrayAttachmentURLsFound = true;
 
 			return _testrayAttachmentURLs;
 		}
-
-		String consoleText = getConsoleText();
-
-		for (String line : consoleText.split("\\n")) {
-			Matcher matcher = _testrayCloudObjectURLPattern.matcher(line);
-
-			if (!matcher.find()) {
-				continue;
-			}
-
-			try {
-				addTestrayAttachmentURL(new URL(matcher.group("url")));
-			}
-			catch (MalformedURLException malformedURLException) {
-				throw new RuntimeException(malformedURLException);
-			}
-		}
-
-		_testrayAttachmentURLsFound = true;
-
-		return _testrayAttachmentURLs;
 	}
 
 	@Override
@@ -2147,9 +2151,12 @@ public abstract class BaseBuild implements Build {
 			_status = "completed";
 			_stopWatchRecordsGroup =
 				cachedDownstreamBuildReport.getStopWatchRecordsGroup();
-			_testrayAttachmentURLs.addAll(
-				cachedDownstreamBuildReport.getTestrayAttachmentURLs());
-			_testrayAttachmentURLsFound = true;
+
+			synchronized (_testrayAttachmentURLs) {
+				_testrayAttachmentURLs.addAll(
+					cachedDownstreamBuildReport.getTestrayAttachmentURLs());
+				_testrayAttachmentURLsFound = true;
+			}
 
 			_jenkinsMaster = cachedDownstreamBuildReport.getJenkinsMaster();
 

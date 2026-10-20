@@ -17,6 +17,7 @@ import java.net.URL;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.dom4j.Element;
 
@@ -420,6 +421,43 @@ public class BaseDownstreamBuildTest
 		Assert.assertSame(
 			testrayCaseResultURL,
 			createdBaseDownstreamBuild.getTestrayCaseResultURL());
+
+		AtomicBoolean monitorsAvailable = new AtomicBoolean();
+
+		BaseDownstreamBuild lockedBaseDownstreamBuild =
+			_mockGetTestrayCaseResultURL();
+
+		TopLevelBuild lockedTopLevelBuild = Mockito.mock(TopLevelBuild.class);
+
+		Mockito.when(
+			lockedBaseDownstreamBuild.getTopLevelBuild()
+		).thenReturn(
+			lockedTopLevelBuild
+		);
+
+		Mockito.when(
+			lockedTopLevelBuild.getTestrayContext()
+		).thenAnswer(
+			invocation -> {
+				Thread thread = new Thread(
+					() -> {
+						synchronized (lockedBaseDownstreamBuild) {
+							synchronized (lockedTopLevelBuild) {
+								monitorsAvailable.set(true);
+							}
+						}
+					});
+
+				thread.start();
+
+				thread.join(5000);
+
+				return null;
+			}
+		);
+
+		Assert.assertNull(lockedBaseDownstreamBuild.getTestrayCaseResultURL());
+		Assert.assertTrue(monitorsAvailable.get());
 	}
 
 	@Test
@@ -577,6 +615,9 @@ public class BaseDownstreamBuildTest
 		).thenReturn(
 			RandomTestUtil.randomString()
 		);
+
+		ReflectionTestUtil.setFieldValue(
+			baseDownstreamBuild, "_testrayCaseResultURLLock", new Object());
 
 		return baseDownstreamBuild;
 	}
