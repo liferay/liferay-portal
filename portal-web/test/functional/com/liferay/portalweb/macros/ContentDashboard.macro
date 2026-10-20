@@ -1,23 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro addMimeType(typeName = null) {
-		Click(
-			ariaLabel = "Add Duplicate Field Code File MIME types",
-			locator1 = "Button#ANY_WITH_ARIA_LABEL");
-
-		Type(
-			key_indexNumber = 2,
-			key_label = "Code File MIME types",
-			locator1 = "TextArea#ANY_LABELED_N",
-			value1 = ${typeName});
-
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro applySelectedFilter() {
 		SelectFrame(value1 = "relative=top");
 
@@ -31,69 +14,10 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro cancelSelectFilterTreeview(optionsList = null) {
-		Portlet.expandTree();
-
-		for (var optionName : list ${optionsList}) {
-			Check.checkNotVisible(
-				key_nodeName = ${optionName},
-				locator1 = "Treeview#NODE_CHECKBOX_2");
-		}
-
-		ClickNoError(
-			key_text = "Clear All",
-			locator1 = "Link#ANY");
-
-		AssertElementNotPresent(
-			key_text = "Clear All",
-			locator1 = "Link#ANY");
-
-		SelectFrame(value1 = "relative=top");
-
-		Button.clickCancel();
-	}
-
-	@summary = "Default summary"
-	macro checkMimeExtensionDisplayed(typeNameList = null) {
-		if (isSet(typeName)) {
-			AssertVisible(
-				key_nodeName = ${typeName},
-				locator1 = "Treeview#NODE_ITEM_2");
-		}
-		else {
-			for (var typeName : list ${typeNameList}) {
-				AssertVisible(
-					key_nodeName = ${typeName},
-					locator1 = "Treeview#NODE_ITEM_2");
-			}
-		}
-
-		SelectFrame(value1 = "relative=top");
-
-		Button.clickCancel();
-	}
-
-	@summary = "Default summary"
 	macro clearFilters() {
 		Click(
 			key_text = "Clear",
 			locator1 = "Button#ANY");
-	}
-
-	@summary = "Default summary"
-	macro clickMenuOfVersion(versionName = null, menuItem = null) {
-		Click.waitForMenuToggleJSClick(
-			key_version = ${versionName},
-			locator1 = "ContentDashboard#VERSION_ELLIPSIS");
-
-		if (IsVisible(locator1 = "ContentDashboard#INFO_PANEL")) {
-			MenuItem.clickNoError(menuItem = ${menuItem});
-		}
-		else {
-			ClickNoError(
-				key_menuItem = ${menuItem},
-				locator1 = "ContentDashboard#VERSION_HISTORY_ELLIPSIS");
-		}
 	}
 
 	@summary = "Default summary"
@@ -108,89 +32,8 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro clickQuickActionIcon(iconName = null, assetName = null) {
-		if (isSet(assetName)) {
-			Click.clickNoMouseOver(
-				key_assetName = ${assetName},
-				locator1 = "ContentDashboard#ROW_PANEL_ASSET_NAME");
-		}
-		else {
-			Click.clickNoMouseOver(locator1 = "ContentDashboard#ROW_PANEL");
-		}
-
-		Click.javaScriptClick(
-			locator1 = "ContentDashboard#QUICK_ACTION_ICON",
-			title = ${iconName});
-	}
-
-	@summary = "Default summary"
-	macro clickViewMore() {
-		Button.click(button = "View More");
-	}
-
-	@summary = "Default summary"
-	macro createVersionsForDocument(dmDocumentTitle = null, groupName = null, versionsCreated = null) {
-		var count = 0;
-
-		while (${count} != ${versionsCreated}) {
-			JSONDocument.checkOutFile(
-				dmDocumentTitle = ${dmDocumentTitle},
-				groupId = ${groupId},
-				groupName = ${groupName});
-
-			JSONDocument.checkInFile(
-				dmDocumentTitle = ${dmDocumentTitle},
-				groupId = ${groupId},
-				groupName = ${groupName});
-
-			var count = ${count} + 1;
-		}
-	}
-
-	@summary = "Default summary"
 	macro deleteSecondCategoryFilter() {
 		Click(locator1 = "ContentDashboard#DELETE_SECOND_FILTER_SELECTED");
-	}
-
-	@summary = "Default summary"
-	macro downloadVersion(version = null) {
-		Click.waitForMenuToggleJSClick(
-			key_tableEntry = ${version},
-			locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
-
-		ClickNoError(
-			key_text = "download",
-			locator1 = "MenuItem#ANY_ICON");
-	}
-
-	@summary = "Default summary"
-	macro editAsset(assetNewTitle = null, assetTitle = null) {
-		LexiconTable.clickEllipsisItem(
-			item = "Edit",
-			tableEntry = ${assetTitle});
-
-		if (isSet(assetNewTitle)) {
-			if (IsElementPresent(locator1 = "TextInput#TITLE")) {
-				Click(locator1 = "TextInput#TITLE");
-
-				PortletEntry.inputTitle(title = ${assetNewTitle});
-			}
-			else {
-				BlogsEntry.addTitle(entryTitle = ${assetNewTitle});
-			}
-		}
-
-		if (isSet(saveAsDraft)) {
-			PortletEntry.saveAsDraft();
-
-			Click(locator1 = "Icon#BACK");
-		}
-		else if (isSet(isWebContent)) {
-			WebContent.publishExistingWCArticleWithPermissions();
-		}
-		else {
-			Button.clickPublish();
-		}
 	}
 
 	@summary = "Default summary"
@@ -227,101 +70,10 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro filterByAuthorAll() {
-		Click(locator1 = "ManagementBar#FILTER");
-
-		Click(locator1 = "ContentDashboard#FILTER_BY_OPTION");
-	}
-
-	@summary = "Default summary"
-	macro filterByAuthorMe() {
-		Click(locator1 = "ManagementBar#FILTER");
-
-		Click(locator1 = "ContentDashboard#FILTER_BY_OPTION");
-	}
-
-	@summary = "Default summary"
 	macro filterByCategory(categoryNameList = null) {
 		ContentDashboard.openFilterModal(filterOption = "Categories");
 
 		ContentDashboard.useTreeviewFilter(optionsList = ${categoryNameList});
-
-		ContentDashboard.applySelectedFilter();
-	}
-
-	@summary = "Default summary"
-	macro filterByExtension(extensionName = null) {
-		ContentDashboard.openFilterModal(filterOption = "Extension");
-
-		if (!(isSet(extensionNameList))) {
-			var extensionNameList = ${extensionName};
-		}
-
-		ContentDashboard.useTreeviewFilter(optionsList = ${extensionNameList});
-
-		ContentDashboard.applySelectedFilter();
-	}
-
-	@summary = "Default summary"
-	macro filterByMimeParent(parentExtension = null) {
-		ContentDashboard.openFilterModal(filterOption = "Extension");
-
-		ContentDashboard.useTreeviewFilter(optionsList = ${parentExtension});
-
-		ContentDashboard.applySelectedFilter();
-	}
-
-	@summary = "Default summary"
-	macro filterBySite(siteName = null) {
-		ContentDashboard.openFilterModal(filterOption = "Site or Asset Library");
-
-		AssertClick(
-			locator1 = "NavBar#MY_SITES",
-			value1 = "My Sites");
-
-		LexiconCard.clickCardTitle(card = ${siteName});
-
-		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
-	macro filterByStatus() {
-		Click(locator1 = "ManagementBar#FILTER");
-
-		Click(locator1 = "ContentDashboard#FILTER_BY_OPTION");
-	}
-
-	@summary = "Default summary"
-	macro filterByTag(tagName = null) {
-		ContentDashboard.openFilterModal(filterOption = "Tag");
-
-		if (!(isSet(tagNameList))) {
-			var tagNameList = ${tagName};
-		}
-
-		for (var tableEntry : list ${tagNameList}) {
-			LexiconTable.checkTableCheckbox(tableEntry = ${tableEntry});
-		}
-
-		ContentDashboard.applySelectedFilter();
-	}
-
-	@summary = "Default summary"
-	macro filterByToBeReviewed() {
-		Click(locator1 = "ManagementBar#FILTER");
-
-		Click(locator1 = "ContentDashboard#FILTER_BY_OPTION");
-	}
-
-	@summary = "Default summary"
-	macro filterByType(typeName = null) {
-		ContentDashboard.openFilterModal(filterOption = "Type");
-
-		if (!(isSet(typeNameList))) {
-			var typeNameList = ${typeName};
-		}
-
-		ContentDashboard.useTreeviewFilter(optionsList = ${typeNameList});
 
 		ContentDashboard.applySelectedFilter();
 	}
@@ -343,24 +95,6 @@ definition {
 		WaitForPageLoad();
 
 		WaitForElementPresent(locator1 = "ContentDashboard#CONTENT_CHART_SVG");
-	}
-
-	@summary = "Default summary"
-	macro goToVersionHistoryPage(assetName = null) {
-		ContentDashboard.goToContentDashboard();
-
-		LexiconTable.clickEllipsisItem(
-			item = "Info",
-			tableEntry = ${assetName});
-
-		ContentDashboard.openVersionsTab();
-
-		ContentDashboard.clickViewMore();
-	}
-
-	@summary = "Default summary"
-	macro moveToPage() {
-		Click(locator1 = "ContentDashboard#PAGINATION_MOVE_TO_PAGE");
 	}
 
 	@summary = "Default summary"
@@ -399,15 +133,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro navigateToDocumentVersionHistoryPage(dmDocumentTitle = null, groupName = null, siteURLKey = null) {
-		var fileEntryId = JSONDocument.getFileEntryId(
-			dmDocumentTitle = ${dmDocumentTitle},
-			groupName = ${groupName});
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/${siteURLKey}/~/control_panel/manage?p_p_id=com_liferay_document_library_web_portlet_DLAdminPortlet&_com_liferay_document_library_web_portlet_DLAdminPortlet_mvcRenderCommandName=%2Fdocument_library%2Fview_file_entry_history&_com_liferay_document_library_web_portlet_DLAdminPortlet_fileEntryId=${fileEntryId}");
-	}
-
-	@summary = "Default summary"
 	macro openAuditGraphConfiguration() {
 		Click(
 			key_text = "cog",
@@ -428,50 +153,10 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro openInfoPanel(assetName = null) {
-		Click.javaScriptClick(
-			key_tableEntry = ${assetName},
-			key_text = "info-circle",
-			locator1 = "LexiconTable#TABLE_ENTRY_ICON");
-	}
-
-	@summary = "Default summary"
-	macro openVersionsTab() {
-		Click(locator1 = "ContentDashboard#INFO_PANEL_VERSIONS_TAB");
-	}
-
-	@summary = "Default summary"
 	macro orderByModificationDate() {
 		Click(locator1 = "ManagementBar#ORDER");
 
 		Click(locator1 = "ContentDashboard#FILTER_BY_OPTION");
-	}
-
-	@summary = "Default summary"
-	macro orderByReviewDate() {
-		Click(locator1 = "ManagementBar#ORDER");
-
-		Click(locator1 = "ContentDashboard#FILTER_BY_OPTION");
-	}
-
-	@summary = "Default summary"
-	macro orderByTitle() {
-		Click(locator1 = "ManagementBar#ORDER");
-
-		Click(locator1 = "ContentDashboard#FILTER_BY_OPTION");
-	}
-
-	@summary = "Default summary"
-	macro searchValue(webContentTitle = null) {
-		Click(locator1 = "ContentDashboard#SEARCH_FIELD");
-
-		Type(
-			locator1 = "ContentDashboard#SEARCH_FIELD",
-			value1 = ${webContentTitle});
-
-		KeyPress(
-			locator1 = "ContentDashboard#SEARCH_FIELD",
-			value1 = "\ENTER");
 	}
 
 	@summary = "Default summary"
@@ -556,36 +241,6 @@ definition {
 			AssertElementPresent(
 				filterLabel = ${filterLabel},
 				locator1 = "ContentDashboard#FILTER_LABEL");
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewAssetsTranslatedVersion(language = null) {
-		Panel.expandPanel(panel = "Properties");
-
-		ClickNoError(
-			key_language = ${language},
-			locator1 = "ContentDashboard#VIEW_TRANSLATED_ASSET_ICON");
-	}
-
-	@summary = "Default summary"
-	macro viewHistoryVersionOrder(assetVersionList = null) {
-		var count = 1;
-		var list1 = ListUtil.newListFromString(${assetVersionList});
-
-		var size = ListUtil.size(${list1});
-
-		while (${count} != ${size}) {
-			var versionName = ListUtil.get(${list1}, ${count});
-
-			AssertVisible(
-				index = ${count},
-				key_tableEntry = ${versionName},
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_INDEXED");
-
-			var count = ${count} + 1;
-
-			var count = StringUtil.valueOf(${count});
 		}
 	}
 
