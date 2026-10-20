@@ -16,12 +16,10 @@ import com.liferay.jenkins.results.parser.failure.message.generator.SourceFormat
 
 import java.io.File;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.dom4j.Document;
 import org.dom4j.Element;
 
 /**
@@ -357,42 +355,8 @@ public class SourceFormatBuild
 			return null;
 		}
 
-		File ivyXMLFile = new File(
-			portalWorkspaceGitRepository.getDirectory(),
-			JenkinsResultsParserUtil.combine(
-				"tools/sdk/dependencies/", _SOURCE_FORMATTER_PACKAGE_NAME,
-				"/ivy.xml"));
-
-		if (!ivyXMLFile.exists()) {
-			return null;
-		}
-
-		try {
-			Document document = Dom4JUtil.parse(
-				JenkinsResultsParserUtil.read(ivyXMLFile));
-
-			Element rootElement = document.getRootElement();
-
-			Element dependenciesElement = rootElement.element("dependencies");
-
-			for (Element dependencyElement :
-					dependenciesElement.elements("dependency")) {
-
-				if (!Objects.equals(
-						dependencyElement.attributeValue("name"),
-						_SOURCE_FORMATTER_PACKAGE_NAME)) {
-
-					continue;
-				}
-
-				return dependencyElement.attributeValue("rev");
-			}
-
-			return null;
-		}
-		catch (Exception exception) {
-			return null;
-		}
+		return SourceFormatterReleaseUtil.getIvyVersion(
+			portalWorkspaceGitRepository.getDirectory());
 	}
 
 	private boolean _isLatestSourceFormatterReleased() {
@@ -403,29 +367,8 @@ public class SourceFormatBuild
 			return false;
 		}
 
-		try {
-			GitWorkingDirectory gitWorkingDirectory =
-				portalWorkspaceGitRepository.getGitWorkingDirectory();
-
-			File sourceFormatterFile = new File(
-				gitWorkingDirectory.getWorkingDirectory(),
-				_SOURCE_FORMATTER_PATH);
-
-			List<LocalGitCommit> localGitCommits = gitWorkingDirectory.log(
-				1, sourceFormatterFile);
-
-			if (localGitCommits.isEmpty()) {
-				return false;
-			}
-
-			LocalGitCommit localGitCommit = localGitCommits.get(0);
-
-			return localGitCommit.isFileChanged(
-				new File(sourceFormatterFile, "bnd.bnd"));
-		}
-		catch (Exception exception) {
-			return false;
-		}
+		return SourceFormatterReleaseUtil.isReleasedSourceMatch(
+			portalWorkspaceGitRepository.getGitWorkingDirectory(), "HEAD");
 	}
 
 	private boolean _isSourceFormatterBuilt() {

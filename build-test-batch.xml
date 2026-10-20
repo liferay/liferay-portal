@@ -10551,20 +10551,68 @@ ${output.content}</echo>
 				</beanshell>
 			</try>
 			<catch>
-				<echo>Unable to find cached source-formatter. Building from source.</echo>
+				<local name="source.formatter.released.jar.resolved" />
 
-				<antcall target="compile" />
+				<beanshell>
+					<![CDATA[
+						import com.liferay.jenkins.results.parser.GitWorkingDirectory;
+						import com.liferay.jenkins.results.parser.GitWorkingDirectoryFactory;
+						import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+						import com.liferay.jenkins.results.parser.SourceFormatterReleaseUtil;
 
-				<antcall target="install-portal-snapshots" />
+						import java.io.File;
+
+						import java.net.URL;
+
+						import java.util.Properties;
+
+						try {
+							String portalDirPath = project.getBaseDir().getCanonicalPath();
+
+							GitWorkingDirectory gitWorkingDirectory = GitWorkingDirectoryFactory.newGitWorkingDirectory(project.getProperty("liferay.portal.branch"), portalDirPath, "liferay-portal");
+
+							if (SourceFormatterReleaseUtil.isReleasedSourceMatch(gitWorkingDirectory, "HEAD")) {
+								File artifactPropertiesFile = new File(project.getBaseDir(), "modules/.releng/util/source-formatter/artifact.properties");
+
+								Properties artifactProperties = JenkinsResultsParserUtil.getProperties(new File[] {artifactPropertiesFile});
+
+								File jarFile = new File(project.getBaseDir(), "tools/sdk/dependencies/com.liferay.source.formatter/lib/com.liferay.source.formatter.jar");
+
+								JenkinsResultsParserUtil.toFile(new URL(artifactProperties.getProperty("artifact.url")), jarFile);
+
+								if (jarFile.exists() && (jarFile.length() > 0)) {
+									project.setProperty("source.formatter.released.jar.resolved", "true");
+								}
+							}
+						}
+						catch (Exception exception) {
+							System.out.println("Unable to resolve the released source-formatter: " + exception.getMessage());
+						}
+					]]>
+				</beanshell>
 
 				<if>
-					<available file="modules/util/source-formatter" />
+					<equals arg1="${source.formatter.released.jar.resolved}" arg2="true" />
 					<then>
-						<gradle-execute dir="modules/util/source-formatter" task="deploy" />
+						<echo>Unable to find cached source-formatter. Resolved the released source-formatter.</echo>
 					</then>
-				</if>
+					<else>
+						<echo>Unable to find cached source-formatter. Building from source.</echo>
 
-				<antcall target="publish-source-formatter" />
+						<antcall target="compile" />
+
+						<antcall target="install-portal-snapshots" />
+
+						<if>
+							<available file="modules/util/source-formatter" />
+							<then>
+								<gradle-execute dir="modules/util/source-formatter" task="deploy" />
+							</then>
+						</if>
+
+						<antcall target="publish-source-formatter" />
+					</else>
+				</if>
 			</catch>
 		</trycatch>
 	</target>

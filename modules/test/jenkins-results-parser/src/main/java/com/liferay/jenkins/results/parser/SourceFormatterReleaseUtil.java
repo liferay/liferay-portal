@@ -1,0 +1,146 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.jenkins.results.parser;
+
+import java.io.File;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.dom4j.Document;
+import org.dom4j.Element;
+
+/**
+ * @author Calum Ragan
+ */
+public class SourceFormatterReleaseUtil {
+
+	public static String getIvyVersion(File portalDirectory) {
+		File ivyXMLFile = new File(
+			portalDirectory,
+			JenkinsResultsParserUtil.combine(
+				"tools/sdk/dependencies/", _PACKAGE_NAME, "/ivy.xml"));
+
+		if (!ivyXMLFile.exists()) {
+			return null;
+		}
+
+		try {
+			Document document = Dom4JUtil.parse(
+				JenkinsResultsParserUtil.read(ivyXMLFile));
+
+			Element rootElement = document.getRootElement();
+
+			Element dependenciesElement = rootElement.element("dependencies");
+
+			for (Element dependencyElement :
+					dependenciesElement.elements("dependency")) {
+
+				if (!Objects.equals(
+						dependencyElement.attributeValue("name"),
+						_PACKAGE_NAME)) {
+
+					continue;
+				}
+
+				return dependencyElement.attributeValue("rev");
+			}
+
+			return null;
+		}
+		catch (Exception exception) {
+			return null;
+		}
+	}
+
+	public static boolean isReleasedSourceMatch(
+		GitWorkingDirectory gitWorkingDirectory, String ref) {
+
+		try {
+			File portalDirectory = gitWorkingDirectory.getWorkingDirectory();
+
+			File artifactPropertiesFile = new File(
+				portalDirectory, _ARTIFACT_PROPERTIES_PATH);
+
+			if (!artifactPropertiesFile.exists()) {
+				return false;
+			}
+
+			Properties artifactProperties =
+				JenkinsResultsParserUtil.getProperties(artifactPropertiesFile);
+
+			String artifactGitId = artifactProperties.getProperty(
+				"artifact.git.id");
+
+			Matcher matcher = _artifactURLPattern.matcher(
+				artifactProperties.getProperty("artifact.url", ""));
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(artifactGitId) ||
+				!matcher.find() ||
+				!Objects.equals(
+					matcher.group("version"), getIvyVersion(portalDirectory))) {
+
+				return false;
+			}
+
+			GitUtil.ExecutionResult executionResult =
+				gitWorkingDirectory.executeBashCommands(
+					GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
+					GitUtil.MILLIS_TIMEOUT,
+					JenkinsResultsParserUtil.combine(
+						"git diff --name-only ", artifactGitId, " ", ref,
+						" -- ", _SOURCE_FORMATTER_PATH));
+
+			if (executionResult.getExitValue() != 0) {
+				return false;
+			}
+
+			String standardOut = executionResult.getStandardOut();
+
+			for (String modifiedFilePath : standardOut.split("\n")) {
+				modifiedFilePath = modifiedFilePath.trim();
+
+				if (modifiedFilePath.isEmpty()) {
+					continue;
+				}
+
+				if (!_versionFilePaths.contains(modifiedFilePath)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+		catch (Exception exception) {
+			return false;
+		}
+	}
+
+	private static final String _ARTIFACT_PROPERTIES_PATH =
+		"modules/.releng/util/source-formatter/artifact.properties";
+
+	private static final String _PACKAGE_NAME = "com.liferay.source.formatter";
+
+	private static final String _SOURCE_FORMATTER_PATH =
+		"modules/util/source-formatter";
+
+	private static final Pattern _artifactURLPattern = Pattern.compile(
+		"/com\\.liferay\\.source\\.formatter-(?<version>[^/]+)\\.jar$");
+	private static final List<String> _versionFilePaths = Arrays.asList(
+		_SOURCE_FORMATTER_PATH + "/bnd.bnd",
+		_SOURCE_FORMATTER_PATH + "/samples/pom.xml",
+		JenkinsResultsParserUtil.combine(
+			_SOURCE_FORMATTER_PATH, "/src/main/resources/META-INF/maven/",
+			"com.liferay/com.liferay.source.formatter/plugin-help.xml"),
+		JenkinsResultsParserUtil.combine(
+			_SOURCE_FORMATTER_PATH, "/src/main/resources/META-INF/maven/",
+			"plugin.xml"));
+
+}
