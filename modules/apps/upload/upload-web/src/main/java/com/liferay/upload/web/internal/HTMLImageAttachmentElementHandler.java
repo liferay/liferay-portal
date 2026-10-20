@@ -49,6 +49,8 @@ public class HTMLImageAttachmentElementHandler
 		Matcher matcher = _tempAttachmentPattern.matcher(content);
 
 		while (matcher.find()) {
+			String imgTag = matcher.group(0);
+
 			long fileEntryId = GetterUtil.getLong(matcher.group(1));
 
 			FileEntry fileEntry = fileEntries.get(fileEntryId);
@@ -59,8 +61,6 @@ public class HTMLImageAttachmentElementHandler
 
 				fileEntries.put(fileEntryId, fileEntry);
 			}
-
-			String imgTag = matcher.group(0);
 
 			matcher.appendReplacement(
 				sb,
