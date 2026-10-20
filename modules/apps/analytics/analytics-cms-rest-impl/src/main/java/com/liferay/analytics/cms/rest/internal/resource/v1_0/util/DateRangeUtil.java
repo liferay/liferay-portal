@@ -5,6 +5,7 @@
 
 package com.liferay.analytics.cms.rest.internal.resource.v1_0.util;
 
+import com.liferay.analytics.cms.rest.internal.resource.v1_0.TimeRange;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -49,6 +50,8 @@ public class DateRangeUtil {
 			calendar.add(Calendar.DAY_OF_MONTH, -delta);
 		}
 		else if (rangeKey != null) {
+			_validateRangeKey(rangeKey);
+
 			calendar.add(Calendar.DAY_OF_MONTH, -(rangeKey * 2));
 		}
 		else {
@@ -72,6 +75,8 @@ public class DateRangeUtil {
 			calendar.setTime(_parseRangeStart(rangeStart));
 		}
 		else if (rangeKey != null) {
+			_validateRangeKey(rangeKey);
+
 			calendar.add(Calendar.DAY_OF_MONTH, -rangeKey);
 		}
 		else {
@@ -112,6 +117,16 @@ public class DateRangeUtil {
 			throw new ValidationException(
 				"Invalid range start: " + rangeStart, parseException);
 		}
+	}
+
+	private static void _validateRangeKey(int rangeKey) {
+		for (TimeRange timeRange : TimeRange.values()) {
+			if (timeRange.getRangeKey() == rangeKey) {
+				return;
+			}
+		}
+
+		throw new ValidationException("Invalid range key: " + rangeKey);
 	}
 
 }
