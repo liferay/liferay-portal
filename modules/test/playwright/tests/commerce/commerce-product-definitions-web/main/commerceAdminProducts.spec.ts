@@ -284,8 +284,8 @@ test(
 );
 
 test(
-	'Add a price entry from the SKU price lists',
-	{tag: '@LPD-110416'},
+	'Add price entries from several price lists to a SKU',
+	{tag: ['@COMMERCE-11084', '@LPD-110416']},
 	async ({
 		apiHelpers,
 		commerceAdminProductDetailsPage,
@@ -300,13 +300,19 @@ test(
 				catalogId: catalog.id,
 			});
 
-		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
-			.getProduct(product.productId)
-			.then((product) => {
-				return product.skus;
-			});
+		const productDetails =
+			await apiHelpers.headlessCommerceAdminCatalog.getProduct(
+				product.productId
+			);
 
-		const priceList =
+		const priceList1 =
+			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
+				catalogId: catalog.id,
+				currencyCode: 'USD',
+				name: getRandomString(),
+				type: 'price-list',
+			});
+		const priceList2 =
 			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
 				catalogId: catalog.id,
 				currencyCode: 'USD',
@@ -320,31 +326,49 @@ test(
 			await commerceAdminProductDetailsPage.goToProductSkus();
 
 			await commerceAdminProductDetailsSkusPage
-				.skusTableRowLink(`${productSkus[0].sku}`)
+				.skusTableRowLink(productDetails.skus[0].sku)
 				.click();
 			await commerceAdminProductDetailsSkusPage.goToSkuTab('Price');
 			await commerceAdminProductDetailsSkusPage.skuPriceAddButton.click();
 		});
 
-		await test.step('Add the price entry', async () => {
-			await commerceAdminProductDetailsSkusPage.skuPriceListSelect.selectOption(
-				priceList.name
-			);
-			await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput.fill(
-				'15'
-			);
+		await test.step('Add a price entry for each price list', async () => {
+			await commerceAdminProductDetailsSkusPage.skuPriceListSelect
+				.nth(0)
+				.selectOption(priceList1.name);
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+				.nth(0)
+				.fill('10');
+
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModal
+				.getByRole('button', {exact: true, name: 'Add Entry'})
+				.click();
+
+			await commerceAdminProductDetailsSkusPage.skuPriceListSelect
+				.nth(1)
+				.selectOption(priceList2.name);
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+				.nth(1)
+				.fill('20');
+
 			await commerceAdminProductDetailsSkusPage.skuPriceAddModalAddButton.click();
 		});
 
 		await test.step('Check the dialog closes and the list refreshes', async () => {
 			await expect(
-				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput.first()
 			).toBeHidden();
+
 			await expect(
-				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRowLink(
-					priceList.name
-				)
-			).toBeVisible();
+				commerceAdminProductDetailsSkusPage.sidePanelFrame
+					.getByRole('row')
+					.filter({hasText: priceList1.name})
+			).toContainText('$ 10.00');
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelFrame
+					.getByRole('row')
+					.filter({hasText: priceList2.name})
+			).toContainText('$ 20.00');
 		});
 	}
 );

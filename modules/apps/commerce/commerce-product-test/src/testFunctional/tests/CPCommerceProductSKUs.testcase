@@ -117,57 +117,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for COMMERCE-11084. Admin can add price lists on a product's SKU details page"
-	@priority = 5
-	test CanAddPriceListsOnProductSKU {
-		property portal.acceptance = "true";
-
-		task ("Given a Minium site is created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-		}
-
-		task ("And a simple product with 'Minium' catalog is created") {
-			CommerceJSONProductsAPI._addCommerceProduct(
-				catalogName = "Minium",
-				productName = "Test Simple Product",
-				productType = "Simple",
-				sku = "SIMPLESKU");
-		}
-
-		task ("When admin adds some price lists on the product's SKU details page") {
-			CommerceProducts.openProductsAdmin();
-
-			CommerceNavigator.searchEntry(entryName = "Simple");
-
-			CommerceNavigator.gotoEntry(entryName = "Test Simple Product");
-
-			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
-
-			CommerceEntry.addPriceListsFromProductSKU(
-				priceLists = "Master Base Price List:10,Minium Base Price List:20",
-				skuName = "SIMPLESKU");
-		}
-
-		task ("Then the price lists are added successfully") {
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			for (var priceList : list "Master Base Price List:$ 10.00,Minium Base Price List:$ 20.00") {
-				var priceListName = StringUtil.extractFirst(${value}, ":");
-				var priceListAmount = StringUtil.extractLast(${value}, ":");
-
-				AssertElementPresent(
-					key_color = ${priceListName},
-					key_field = "Name",
-					locator1 = "FrontendDataSet#SEARCH_COLUMN_AND_ROW");
-
-				AssertElementPresent(
-					key_color = ${priceListAmount},
-					key_field = "Unit Price",
-					locator1 = "FrontendDataSet#SEARCH_COLUMN_AND_ROW");
-			}
-		}
-	}
-
 	@description = "This is a test for COMMERCE-12218. Admin can add tier price on a product's SKU details page"
 	@priority = 5
 	test CanAddTierPriceEntriesOnProductSKU {
