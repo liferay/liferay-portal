@@ -17,12 +17,9 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.layout.exporter.PortletPermissionsExporter;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
@@ -185,23 +182,10 @@ public class WidgetPageWidgetInstanceDTOConverter
 	private AdvancedStylingConfig _getAdvancedStylingConfig(
 		PortletPreferences portletPreferences) {
 
-		String portletSetupCss = portletPreferences.getValue(
-			"portletSetupCss", null);
+		JSONObject jsonObject = _jsonFactory.safeCreateJSONObject(
+			portletPreferences.getValue("portletSetupCss", null));
 
-		if (Validator.isNull(portletSetupCss)) {
-			return null;
-		}
-
-		JSONObject jsonObject = null;
-
-		try {
-			jsonObject = _jsonFactory.createJSONObject(portletSetupCss);
-		}
-		catch (JSONException jsonException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(jsonException);
-			}
-
+		if (jsonObject == null) {
 			return null;
 		}
 
@@ -372,9 +356,6 @@ public class WidgetPageWidgetInstanceDTOConverter
 
 		return null;
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		WidgetPageWidgetInstanceDTOConverter.class);
 
 	private static final Collection<String> _excludePreferencesNames =
 		ListUtil.fromArray(
