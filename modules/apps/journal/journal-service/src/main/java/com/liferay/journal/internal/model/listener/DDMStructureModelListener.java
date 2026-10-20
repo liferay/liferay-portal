@@ -8,6 +8,9 @@ package com.liferay.journal.internal.model.listener;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
+import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
+import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
@@ -24,11 +27,13 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -144,6 +149,7 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 
 	private DDMFormFieldValue _createDDMFormFieldValue(
 		DDMFormField ddmFormField, DDMFormFieldValue matchingDDMFormFieldValue,
+		DDMFormValues originalDDMFormValues,
 		List<DDMFormFieldValue> scopeDDMFormFieldValues) {
 
 		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
@@ -151,7 +157,7 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 		for (DDMFormFieldValue nestedDDMFormFieldValue :
 				_createDDMFormFieldValues(
 					ddmFormField.getNestedDDMFormFields(),
-					scopeDDMFormFieldValues)) {
+					originalDDMFormValues, scopeDDMFormFieldValues)) {
 
 			ddmFormFieldValue.addNestedDDMFormFieldValue(
 				nestedDDMFormFieldValue);
@@ -162,18 +168,49 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 
 		if (matchingDDMFormFieldValue == null) {
 			ddmFormFieldValue.setInstanceId(StringUtil.randomString());
+
+			return ddmFormFieldValue;
+		}
+
+		ddmFormFieldValue.setInstanceId(
+			matchingDDMFormFieldValue.getInstanceId());
+
+		Value value = matchingDDMFormFieldValue.getValue();
+
+		if ((value == null) ||
+			(value.isLocalized() == ddmFormField.isLocalizable())) {
+
+			ddmFormFieldValue.setValue(value);
+
+			return ddmFormFieldValue;
+		}
+
+		if (ddmFormField.isLocalizable()) {
+			Value localizedValue = new LocalizedValue(
+				originalDDMFormValues.getDefaultLocale());
+
+			for (Locale availableLocale :
+					originalDDMFormValues.getAvailableLocales()) {
+
+				localizedValue.addString(
+					availableLocale, value.getString(availableLocale));
+			}
+
+			ddmFormFieldValue.setValue(localizedValue);
 		}
 		else {
-			ddmFormFieldValue.setInstanceId(
-				matchingDDMFormFieldValue.getInstanceId());
-			ddmFormFieldValue.setValue(matchingDDMFormFieldValue.getValue());
+			ddmFormFieldValue.setValue(
+				new UnlocalizedValue(
+					GetterUtil.getString(
+						value.getString(
+							originalDDMFormValues.getDefaultLocale()))));
 		}
 
 		return ddmFormFieldValue;
 	}
 
 	private List<DDMFormFieldValue> _createDDMFormFieldValues(
-		List<DDMFormField> ddmFormFields,
+		List<DDMFormField> ddmFormFields, DDMFormValues originalDDMFormValues,
 		List<DDMFormFieldValue> scopeDDMFormFieldValues) {
 
 		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
@@ -186,7 +223,8 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 			if (matchingDDMFormFieldValues.isEmpty()) {
 				ddmFormFieldValues.add(
 					_createDDMFormFieldValue(
-						ddmFormField, null, scopeDDMFormFieldValues));
+						ddmFormField, null, originalDDMFormValues,
+						scopeDDMFormFieldValues));
 
 				continue;
 			}
@@ -202,6 +240,7 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 				ddmFormFieldValues.add(
 					_createDDMFormFieldValue(
 						ddmFormField, matchingDDMFormFieldValue,
+						originalDDMFormValues,
 						matchingDDMFormFieldValue.
 							getNestedDDMFormFieldValues()));
 			}
@@ -217,7 +256,7 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 
 		for (DDMFormFieldValue ddmFormFieldValue :
 				_createDDMFormFieldValues(
-					ddmForm.getDDMFormFields(),
+					ddmForm.getDDMFormFields(), originalDDMFormValues,
 					originalDDMFormValues.getDDMFormFieldValues())) {
 
 			ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
