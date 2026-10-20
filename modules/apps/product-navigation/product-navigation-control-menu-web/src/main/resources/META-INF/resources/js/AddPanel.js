@@ -183,7 +183,9 @@ const AddPanel = ({
 								{
 									children: contents.map(normalizeContent),
 									collectionId: 'recent-content',
-									label: Liferay.Language.get('recent[items]'),
+									label: Liferay.Language.get(
+										'recent[items]'
+									),
 								},
 							],
 							id: 'content',
