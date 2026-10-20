@@ -5,7 +5,7 @@
 
 import {test} from '@playwright/test';
 import * as fs from 'fs';
-import {getComparator} from 'playwright-core/lib/utils';
+import {utils} from 'playwright-core/lib/coreBundle';
 
 export function compareScreenshots(
 	screenshotA: Buffer,
@@ -18,7 +18,7 @@ export function compareScreenshots(
 		writeDiff?: boolean;
 	} = {}
 ) {
-	const comparator = getComparator('image/png');
+	const comparator = utils.getComparator('image/png');
 
 	const buffer = comparator(screenshotA, screenshotB);
 
