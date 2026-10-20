@@ -5,7 +5,9 @@
 
 package com.liferay.commerce.product.content.web.internal.info.item.provider;
 
+import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
+import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.util.CommerceContextThreadLocal;
@@ -16,7 +18,13 @@ import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,7 +43,7 @@ public class CPDefinitionInfoItemPermissionProvider
 			String actionId)
 		throws InfoItemPermissionException {
 
-		CommerceContext commerceContext = CommerceContextThreadLocal.get();
+		CommerceContext commerceContext = _getCommerceContext();
 
 		if (commerceContext == null) {
 			return false;
@@ -60,7 +68,7 @@ public class CPDefinitionInfoItemPermissionProvider
 			InfoItemReference infoItemReference, String actionId)
 		throws InfoItemPermissionException {
 
-		CommerceContext commerceContext = CommerceContextThreadLocal.get();
+		CommerceContext commerceContext = _getCommerceContext();
 
 		if (commerceContext == null) {
 			return false;
@@ -88,6 +96,56 @@ public class CPDefinitionInfoItemPermissionProvider
 				classPKInfoItemIdentifier.getClassPK(), portalException);
 		}
 	}
+
+	private CommerceContext _getCommerceContext() {
+		CommerceContext commerceContext = CommerceContextThreadLocal.get();
+
+		if (commerceContext != null) {
+			return commerceContext;
+		}
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if ((serviceContext == null) || (serviceContext.getRequest() == null)) {
+			return null;
+		}
+
+		HttpServletRequest httpServletRequest = serviceContext.getRequest();
+
+		commerceContext = (CommerceContext)httpServletRequest.getAttribute(
+			CommerceWebKeys.COMMERCE_CONTEXT);
+
+		if (commerceContext != null) {
+			return commerceContext;
+		}
+
+		commerceContext = _commerceContextFactory.create(httpServletRequest);
+
+		try {
+			if (commerceContext.getCommerceChannelId() == 0) {
+				return null;
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return null;
+		}
+
+		httpServletRequest.setAttribute(
+			CommerceWebKeys.COMMERCE_CONTEXT, commerceContext);
+
+		return commerceContext;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CPDefinitionInfoItemPermissionProvider.class);
+
+	@Reference
+	private CommerceContextFactory _commerceContextFactory;
 
 	@Reference
 	private CommerceProductViewPermission _commerceProductViewPermission;
