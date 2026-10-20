@@ -190,6 +190,56 @@ describe('SidebarPanelInfoView', () => {
 		expect(getByText('Clothe 2')).toBeInTheDocument();
 	});
 
+	it('renders sidebar panel with the categorization sections expanded for a basic web content', () => {
+		const {getByText} = render(_getSidebarComponent(mockedProps));
+
+		userEvent.click(getByText('categorization'));
+
+		for (const title of [
+			'internal-categories',
+			'public-categories',
+			'tags',
+		]) {
+			const panelHeader = getByText(title).closest('.panel-header');
+
+			expect(panelHeader).toHaveAttribute('aria-expanded', 'true');
+			expect(
+				panelHeader.nextElementSibling.classList.contains('collapse')
+			).toBe(false);
+		}
+	});
+
+	it('renders sidebar panel with a categorization section that collapses and expands for a basic web content', async () => {
+		const {getByText} = render(_getSidebarComponent(mockedProps));
+
+		userEvent.click(getByText('categorization'));
+
+		const panelHeader = getByText('public-categories').closest(
+			'.panel-header'
+		);
+
+		const panelCollapse = getByText('Topic 1').closest('.panel-collapse');
+
+		expect(panelHeader.nextElementSibling).toBe(panelCollapse);
+
+		userEvent.click(panelHeader);
+
+		expect(panelHeader).toHaveAttribute('aria-expanded', 'false');
+
+		await waitFor(() =>
+			expect(panelCollapse.classList.contains('collapse')).toBe(true)
+		);
+
+		userEvent.click(panelHeader);
+
+		expect(panelHeader).toHaveAttribute('aria-expanded', 'true');
+
+		await waitFor(() =>
+			expect(panelCollapse.classList.contains('collapse')).toBe(false)
+		);
+		expect(getByText('Topic 1')).toBeInTheDocument();
+	});
+
 	it('renders sidebar panel with vocabularies subtitles in the proper order for a basic web content', () => {
 		const {container, getByText} = render(
 			_getSidebarComponent(mockedProps)
