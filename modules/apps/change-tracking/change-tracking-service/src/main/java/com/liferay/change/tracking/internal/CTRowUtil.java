@@ -31,7 +31,7 @@ import java.util.Set;
 public class CTRowUtil {
 
 	public static int copyCTRows(
-			CTPersistence<?> ctPersistence, Connection connection,
+			Connection connection, CTPersistence<?> ctPersistence,
 			String selectSQL)
 		throws SQLException {
 
@@ -121,9 +121,9 @@ public class CTRowUtil {
 	}
 
 	public static String getConstraintConflictsSQL(
-		String tableName, String primaryColumnName,
-		String[] uniqueIndexColumnNames, Object[] uniqueIndexValues,
-		Map<String, Integer> tableColumnsMap, long targetCTCollectionId) {
+		long ctCollectionId, String primaryColumnName,
+		Map<String, Integer> tableColumnsMap, String tableName,
+		String[] uniqueIndexColumnNames, Object[] uniqueIndexValues) {
 
 		StringBundler sb = new StringBundler(
 			(6 * uniqueIndexColumnNames.length) + 9);
@@ -133,7 +133,7 @@ public class CTRowUtil {
 		sb.append(" from ");
 		sb.append(tableName);
 		sb.append(" where ctCollectionId = ");
-		sb.append(targetCTCollectionId);
+		sb.append(ctCollectionId);
 		sb.append(" and ");
 		sb.append(primaryColumnName);
 		sb.append(" != ?");
@@ -145,7 +145,7 @@ public class CTRowUtil {
 
 			int columnType = tableColumnsMap.get(uniqueIndexColumnName);
 
-			if (!isBlank(uniqueIndexValues[i], columnType)) {
+			if (!isBlank(columnType, uniqueIndexValues[i])) {
 				sb.append(uniqueIndexColumnName);
 				sb.append(" = ?");
 			}
@@ -166,9 +166,8 @@ public class CTRowUtil {
 	}
 
 	public static String getConstraintEntitiesSQL(
-		String tableName, String primaryColumnName,
-		String[] uniqueIndexColumnNames, long ctCollectionId,
-		Set<Long> primaryKeys) {
+		long ctCollectionId, String primaryColumnName, Set<Long> primaryKeys,
+		String tableName, String[] uniqueIndexColumnNames) {
 
 		StringBundler sb = new StringBundler();
 
@@ -259,7 +258,7 @@ public class CTRowUtil {
 		return sb.toString();
 	}
 
-	public static boolean isBlank(Object value, int columnType) {
+	public static boolean isBlank(int columnType, Object value) {
 		if ((value == null) ||
 			((columnType == Types.VARCHAR) && value.equals(""))) {
 

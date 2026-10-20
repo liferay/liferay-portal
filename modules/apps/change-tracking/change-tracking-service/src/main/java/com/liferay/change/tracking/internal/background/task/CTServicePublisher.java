@@ -118,7 +118,7 @@ public class CTServicePublisher<T extends CTModel<T>> {
 		sb.append(" and ctCollectionId = ");
 		sb.append(tempCTCollectionId);
 
-		CTRowUtil.copyCTRows(ctPersistence, connection, sb.toString());
+		CTRowUtil.copyCTRows(connection, ctPersistence, sb.toString());
 	}
 
 	private long _getPredeletedRowCount(
