@@ -242,7 +242,7 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 	public void testUpdateFromInfoItemFieldValuesWithDeletedItemIdentifiers()
 		throws Exception {
 
-		// Multiple object entries from the same tree
+		// Object entries from the same tree
 
 		Tree objectDefinitionTree = TreeTestUtil.createObjectDefinitionTree(
 			_objectDefinitionLocalService, _objectRelationshipLocalService,
