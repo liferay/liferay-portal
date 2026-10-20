@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
 
@@ -64,31 +63,27 @@ export default function DataSelection({
 				title={Liferay.Language.get('data-selection')}
 			/>
 
-			<ClayLayout.Sheet className="option-group">
+			<FormikFieldCheckbox
+				description={permissionsDescription}
+				label={permissionsLabel}
+				name="permissions"
+			/>
+
+			{deletionCount > 0 && (
 				<FormikFieldCheckbox
-					description={permissionsDescription}
-					label={permissionsLabel}
-					name="permissions"
+					description={deletionsDescription}
+					label={deletionsLabel}
+					name="deletions"
 				/>
+			)}
 
-				{deletionCount > 0 && (
-					<FormikFieldCheckbox
-						description={deletionsDescription}
-						label={deletionsLabel}
-						name="deletions"
-					/>
-				)}
-			</ClayLayout.Sheet>
-
-			<ClayLayout.Sheet className="mt-4">
-				<FormikFieldDateFilter
-					itemsCount={itemsCount}
-					lastPublishDate={lastPublishDate}
-					name="dateFilter"
-					onApplyFilter={onApplyFilter}
-					timeZoneId={timeZoneId}
-				/>
-			</ClayLayout.Sheet>
+			<FormikFieldDateFilter
+				itemsCount={itemsCount}
+				lastPublishDate={lastPublishDate}
+				name="dateFilter"
+				onApplyFilter={onApplyFilter}
+				timeZoneId={timeZoneId}
+			/>
 
 			<div className="sr-only" role="status">
 				{loading

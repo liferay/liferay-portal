@@ -93,7 +93,11 @@ export default function DateFilter({
 
 	return (
 		<>
-			<ClayLayout.ContentRow className="flex-column flex-lg-row" padded>
+			<ClayLayout.ContentRow
+				className="flex-column flex-lg-row"
+				noGutters="x"
+				padded
+			>
 				<ClayLayout.ContentCol>
 					<FieldSelectWithOption
 						formGroupProps={{className: 'mb-0'}}
@@ -147,7 +151,7 @@ export default function DateFilter({
 			</ClayLayout.ContentRow>
 
 			{appliedValue.range !== Range.All && (
-				<ClayLayout.ContentRow className="mt-4" padded>
+				<ClayLayout.ContentRow className="mt-4" noGutters="x" padded>
 					<ClayLayout.ContentCol expand>
 						<ClayAlert
 							actions={

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayLayout from '@clayui/layout';
 import React, {useId} from 'react';
 
 import ScopeSection from '../../../components/ScopeSection';
@@ -56,25 +55,21 @@ export default function DataSelectionStep({
 				title={Liferay.Language.get('data-selection')}
 			/>
 
-			<ClayLayout.Sheet className="option-group">
-				<FormikFieldCheckbox
-					description={Liferay.Language.get(
-						'export-import-permissions-help'
-					)}
-					label={Liferay.Language.get('import-permissions')}
-					name="permissions"
-				/>
-
-				{importPreview.deletionCount > 0 && (
-					<FormikFieldCheckbox
-						description={Liferay.Language.get('deletions-help')}
-						label={Liferay.Language.get(
-							'replicate-selected-deletions'
-						)}
-						name="deletions"
-					/>
+			<FormikFieldCheckbox
+				description={Liferay.Language.get(
+					'export-import-permissions-help'
 				)}
-			</ClayLayout.Sheet>
+				label={Liferay.Language.get('import-permissions')}
+				name="permissions"
+			/>
+
+			{importPreview.deletionCount > 0 && (
+				<FormikFieldCheckbox
+					description={Liferay.Language.get('deletions-help')}
+					label={Liferay.Language.get('replicate-selected-deletions')}
+					name="deletions"
+				/>
+			)}
 
 			<div data-testid="data-selection-section">
 				<FormikFieldContentSelector
