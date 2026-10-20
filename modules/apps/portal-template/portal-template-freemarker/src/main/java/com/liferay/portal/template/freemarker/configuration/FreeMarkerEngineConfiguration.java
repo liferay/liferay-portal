@@ -83,7 +83,7 @@ public interface FreeMarkerEngineConfiguration {
 	public String[] restrictedClasses();
 
 	@Meta.AD(
-		deflt = "com.liferay.portal.model.impl.CompanyInfoImpl#getAttributeGetterFunctions|com.liferay.portal.model.impl.CompanyInfoImpl#getModelAttributes|com.liferay.portal.model.impl.CompanyInfoImpl#toCacheModel|com.liferay.portal.model.impl.CompanyInfoImpl#toString|com.liferay.portal.model.impl.UserImpl#getAttributeGetterFunctions|com.liferay.portal.model.impl.UserImpl#getModelAttributes|com.liferay.portal.model.impl.UserImpl#toCacheModel|com.liferay.portal.model.impl.UserImpl#toString",
+		deflt = "com.liferay.portal.model.impl.CompanyInfoImpl#toString|com.liferay.portal.model.impl.UserImpl#toString",
 		description = "restricted-methods-help", name = "restricted-methods",
 		required = false
 	)

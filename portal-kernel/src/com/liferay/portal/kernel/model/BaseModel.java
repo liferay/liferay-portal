@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.model;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.template.TemplateRestricted;
 
 import java.io.Serializable;
 
@@ -37,6 +38,7 @@ public interface BaseModel<T>
 	public default void copyCacheFields(T source) {
 	}
 
+	@TemplateRestricted
 	public default Map<String, Function<T, Object>>
 		getAttributeGetterFunctions() {
 
@@ -57,6 +59,7 @@ public interface BaseModel<T>
 	@Override
 	public ExpandoBridge getExpandoBridge();
 
+	@TemplateRestricted
 	public Map<String, Object> getModelAttributes();
 
 	/**
@@ -163,6 +166,7 @@ public interface BaseModel<T>
 	 *
 	 * @return the cache model object
 	 */
+	@TemplateRestricted
 	public CacheModel<T> toCacheModel();
 
 	/**
