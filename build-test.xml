@@ -4041,6 +4041,35 @@ tell application "Safari" to quit
 				<equals arg1="${browser.type}" arg2="chrome" />
 				<then>
 					<get-testcase-property append="true" delimiter=" " property.name="browser.chrome.bin.args" />
+					<get-testcase-property property.name="test.liferay.virtual.instance" />
+
+					<if>
+						<equals arg1="${test.liferay.virtual.instance}" arg2="true" />
+						<then>
+							<propertyregex
+								input="${test.url}"
+								override="true"
+								property="test.url.origin"
+								regexp="(https?:\/\/[^\/]+)"
+								select="\1"
+							/>
+
+							<if>
+								<isset property="test.url.origin" />
+								<then>
+									<if>
+										<isset property="browser.chrome.bin.args" />
+										<then>
+											<var name="browser.chrome.bin.args" value="${browser.chrome.bin.args} --unsafely-treat-insecure-origin-as-secure=${test.url.origin}" />
+										</then>
+										<else>
+											<var name="browser.chrome.bin.args" value="--unsafely-treat-insecure-origin-as-secure=${test.url.origin}" />
+										</else>
+									</if>
+								</then>
+							</if>
+						</then>
+					</if>
 
 					<if>
 						<isset property="browser.chrome.bin.args" />
@@ -14188,6 +14217,7 @@ enterprise.product.enterprise.search.enabled=false</echo>
 		<prepare-selenium-app-server-properties />
 		<prepare-selenium-aws-translation-properties />
 		<prepare-selenium-azure-translation-properties />
+		<prepare-selenium-required-properties />
 		<prepare-selenium-browser />
 		<prepare-selenium-database-properties />
 		<prepare-selenium-digital-signature-properties />
@@ -14200,7 +14230,6 @@ enterprise.product.enterprise.search.enabled=false</echo>
 		<prepare-selenium-onedrive-properties />
 		<prepare-selenium-openid-properties />
 		<prepare-selenium-recaptcha-properties />
-		<prepare-selenium-required-properties />
 		<prepare-selenium-sharepoint-properties />
 		<prepare-selenium-script-management-config />
 		<prepare-selenium-site-initializer-raylife-d2c-paypal-properties />
