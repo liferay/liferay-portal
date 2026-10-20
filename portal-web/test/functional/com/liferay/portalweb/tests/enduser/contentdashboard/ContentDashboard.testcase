@@ -125,81 +125,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-146550 Bug: Filter by extension does not shown any result after duplicate a MIME type"
-	@priority = 4
-	test FilterByDuplicatedMimeType {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Add documents with different mime types") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_Audio",
-				groupName = "Test Site Name",
-				mimeType = "audio/mp3",
-				sourceFileName = "Document_1.mp3");
-
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_Code",
-				groupName = "Test Site Name",
-				mimeType = "code/html",
-				sourceFileName = "fragment_freemarker_basic.html");
-
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_Presentation",
-				groupName = "Test Site Name",
-				mimeType = "application/powerpoint",
-				sourceFileName = "Document_1.pptx");
-
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentTitle = "Document_Text",
-				groupName = "Test Site Name",
-				mimeType = "text/txt",
-				sourceFileName = "Document_1.txt");
-		}
-
-		task ("Check, in Content Dashboard, that types are correctly displayed in filter") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.openFilterModal(filterOption = "Extension");
-
-			ContentDashboard.checkMimeExtensionDisplayed(typeNameList = "Audio,Code,Presentation,Text");
-		}
-
-		task ("Add new duplicated extention") {
-			SystemSettings.openSystemSettingsAdmin();
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Documents and Media",
-				configurationName = "Service",
-				configurationScope = "System Scope");
-
-			ContentDashboard.addMimeType(typeName = "text/html");
-		}
-
-		task ("Check that types are still displayed correctly") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.openFilterModal(filterOption = "Extension");
-
-			AssertVisible(
-				key_nodeName = "Audio",
-				locator1 = "Treeview#NODE_ITEM_2");
-
-			AssertVisible(
-				key_nodeName = "Code",
-				locator1 = "Treeview#NODE_ITEM_2");
-
-			AssertVisible(
-				key_nodeName = "Presentation",
-				locator1 = "Treeview#NODE_ITEM_2");
-
-			AssertVisible(
-				key_nodeName = "Text",
-				locator1 = "Treeview#NODE_ITEM_2");
-		}
-	}
-
 	@description = "LPS-134692 Given the info panel of an asset When the user clicks on arrow next to the title of a section collapsed Then the section will be displayed"
 	@priority = 3
 	test InfoPanelExpandSection {
@@ -248,30 +173,6 @@ definition {
 			AssertVisible(
 				categoryName = "Category Name",
 				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
-		}
-	}
-
-	@description = "LPS-133354 Given The Extension filter modal When there are NOT file extensions for any MIME type Then the MIME type does NOT appear listed in the Extension modal"
-	@priority = 3
-	test NoMimeType {
-		task ("Navigate to the content Dashboard and filter by file extension") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.openFilterModal(filterOption = "Extension");
-		}
-
-		task ("Check if message of No results were found is present") {
-			if (IsElementNotPresent(locator1 = "Message#EMPTY_STATE_TEXT", value1 = "No results were found.")) {
-				DMDocument.tearDownCP();
-
-				ContentDashboard.goToContentDashboard();
-
-				ContentDashboard.openFilterModal(filterOption = "Extension");
-			}
-
-			AssertTextEquals(
-				locator1 = "Message#EMPTY_STATE_TEXT",
-				value1 = "No results were found.");
 		}
 	}
 

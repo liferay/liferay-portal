@@ -11,6 +11,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.file.criterion.FileExtensionItemSelectorCriterion;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -31,6 +32,8 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
@@ -155,6 +158,44 @@ public class ContentDashboardFileExtensionItemSelectorViewTest {
 		}
 	}
 
+	@Test
+	public void testGetDataWithDuplicatedCodeFileMimeType() throws Exception {
+		_addFileEntry(_group, "html");
+		_addFileEntry(_group, "mp3");
+		_addFileEntry(_group, "ppt");
+		_addFileEntry(_group, "txt");
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.document.library.configuration." +
+						"DLConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"codeFileMimeTypes",
+						ArrayUtil.append(_CODE_FILE_MIME_TYPES, "text/html")
+					).build())) {
+
+			Map<String, Object> data = _getData(_group);
+
+			JSONArray fileExtensionGroupsJSONArray = (JSONArray)data.get(
+				"fileExtensionGroups");
+
+			Assert.assertEquals(4, fileExtensionGroupsJSONArray.length());
+
+			_assertExtensionGroupJSONObject(
+				"mp3", "document-multimedia", "Audio",
+				fileExtensionGroupsJSONArray.getJSONObject(0));
+			_assertExtensionGroupJSONObject(
+				"html", "document-code", "Code",
+				fileExtensionGroupsJSONArray.getJSONObject(1));
+			_assertExtensionGroupJSONObject(
+				"ppt", "document-presentation", "Presentation",
+				fileExtensionGroupsJSONArray.getJSONObject(2));
+			_assertExtensionGroupJSONObject(
+				"txt", "document-text", "Text",
+				fileExtensionGroupsJSONArray.getJSONObject(3));
+		}
+	}
+
 	private FileEntry _addFileEntry(Group group, String fileExtension)
 		throws Exception {
 
@@ -252,6 +293,13 @@ public class ContentDashboardFileExtensionItemSelectorViewTest {
 
 		return themeDisplay;
 	}
+
+	private static final String[] _CODE_FILE_MIME_TYPES = {
+		"application/javascript", "text/asp", "text/css", "text/ecmascript",
+		"text/html", "text/javascript", "text/x-c", "text/x-fortran",
+		"text/x-java-source", "text/x-jsp", "text/x-pascal",
+		"text/x-script.perl", "text/x-script.perl-module", "text/xml"
+	};
 
 	@Inject(
 		filter = "component.name=com.liferay.content.dashboard.document.library.internal.item.selector.ContentDashboardFileExtensionItemSelectorView",
