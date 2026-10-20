@@ -89,7 +89,13 @@ public class ObjectEntryTestUtil {
 			objectDefinition.getObjectDefinitionId());
 	}
 
-	public static long getCreatorUserId(
+	public static String getEntityClassName(ObjectDefinition objectDefinition) {
+		return StringBundler.concat(
+			com.liferay.object.rest.dto.v1_0.ObjectEntry.class.getName(), "#",
+			objectDefinition.getName());
+	}
+
+	public static long getObjectEntryCreatorUserId(
 			String externalReferenceCode, long groupId,
 			ObjectDefinition objectDefinition)
 		throws Exception {
@@ -98,12 +104,6 @@ public class ObjectEntryTestUtil {
 			externalReferenceCode, groupId, objectDefinition);
 
 		return objectEntry.getUserId();
-	}
-
-	public static String getEntityClassName(ObjectDefinition objectDefinition) {
-		return StringBundler.concat(
-			com.liferay.object.rest.dto.v1_0.ObjectEntry.class.getName(), "#",
-			objectDefinition.getName());
 	}
 
 	public static long getObjectEntryId(
@@ -117,7 +117,7 @@ public class ObjectEntryTestUtil {
 		return objectEntry.getObjectEntryId();
 	}
 
-	public static int getStatus(
+	public static int getObjectEntryStatus(
 			String externalReferenceCode, long groupId,
 			ObjectDefinition objectDefinition)
 		throws Exception {
@@ -182,32 +182,6 @@ public class ObjectEntryTestUtil {
 			userId, objectDefinition.getObjectDefinitionId());
 	}
 
-	public static ObjectEntry updateCreatorUserId(
-			String externalReferenceCode, long groupId,
-			ObjectDefinition objectDefinition, long userId)
-		throws Exception {
-
-		ObjectEntry objectEntry = _getObjectEntry(
-			externalReferenceCode, groupId, objectDefinition);
-
-		objectEntry.setUserId(userId);
-
-		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
-	}
-
-	public static ObjectEntry updateModifiedDate(
-			String externalReferenceCode, long groupId, Date modifiedDate,
-			ObjectDefinition objectDefinition)
-		throws Exception {
-
-		ObjectEntry objectEntry = _getObjectEntry(
-			externalReferenceCode, groupId, objectDefinition);
-
-		objectEntry.setModifiedDate(modifiedDate);
-
-		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
-	}
-
 	public static ObjectEntry updateObjectEntry(
 			String externalReferenceCode, long groupId,
 			ObjectDefinition objectDefinition)
@@ -224,6 +198,32 @@ public class ObjectEntryTestUtil {
 			ServiceContextTestUtil.getServiceContext(
 				objectEntry.getCompanyId(), objectEntry.getGroupId(),
 				objectEntry.getUserId()));
+	}
+
+	public static ObjectEntry updateObjectEntryCreatorUserId(
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition, long userId)
+		throws Exception {
+
+		ObjectEntry objectEntry = _getObjectEntry(
+			externalReferenceCode, groupId, objectDefinition);
+
+		objectEntry.setUserId(userId);
+
+		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
+	}
+
+	public static ObjectEntry updateObjectEntryModifiedDate(
+			String externalReferenceCode, long groupId, Date modifiedDate,
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		ObjectEntry objectEntry = _getObjectEntry(
+			externalReferenceCode, groupId, objectDefinition);
+
+		objectEntry.setModifiedDate(modifiedDate);
+
+		return ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry);
 	}
 
 	private static ObjectDefinition _fetchObjectDefinition(

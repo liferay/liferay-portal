@@ -93,7 +93,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 	protected long getCreatorUserId(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		return ObjectEntryTestUtil.getCreatorUserId(
+		return ObjectEntryTestUtil.getObjectEntryCreatorUserId(
 			externalReferenceCode, groupId, _objectDefinition);
 	}
 
@@ -114,7 +114,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 	protected int getStatus(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		return ObjectEntryTestUtil.getStatus(
+		return ObjectEntryTestUtil.getObjectEntryStatus(
 			externalReferenceCode, groupId, _objectDefinition);
 	}
 
@@ -149,7 +149,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 			String externalReferenceCode, long groupId, long userId)
 		throws Exception {
 
-		ObjectEntryTestUtil.updateCreatorUserId(
+		ObjectEntryTestUtil.updateObjectEntryCreatorUserId(
 			externalReferenceCode, groupId, _objectDefinition, userId);
 	}
 
@@ -166,7 +166,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 			String externalReferenceCode, long groupId, Date modifiedDate)
 		throws Exception {
 
-		ObjectEntryTestUtil.updateModifiedDate(
+		ObjectEntryTestUtil.updateObjectEntryModifiedDate(
 			externalReferenceCode, groupId, modifiedDate, _objectDefinition);
 	}
 
