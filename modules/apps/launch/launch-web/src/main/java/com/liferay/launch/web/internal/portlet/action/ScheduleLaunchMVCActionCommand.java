@@ -5,7 +5,7 @@
 
 package com.liferay.launch.web.internal.portlet.action;
 
-import com.liferay.launch.set.scheduler.LaunchSetScheduler;
+import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -101,7 +101,7 @@ public class ScheduleLaunchMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		_launchSetScheduler.schedulePublish(
+		_launchSetPublisher.schedulePublish(
 			ParamUtil.getLong(actionRequest, "launchSetId"),
 			themeDisplay.getUserId(), publishDate);
 
@@ -143,7 +143,7 @@ public class ScheduleLaunchMVCActionCommand
 	private Language _language;
 
 	@Reference
-	private LaunchSetScheduler _launchSetScheduler;
+	private LaunchSetPublisher _launchSetPublisher;
 
 	@Reference
 	private Portal _portal;

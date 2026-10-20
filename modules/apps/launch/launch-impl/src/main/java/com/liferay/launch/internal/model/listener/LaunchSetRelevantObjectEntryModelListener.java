@@ -6,7 +6,7 @@
 package com.liferay.launch.internal.model.listener;
 
 import com.liferay.launch.internal.constants.LaunchDestinationNames;
-import com.liferay.launch.internal.set.scheduler.util.LaunchSetSchedulerUtil;
+import com.liferay.launch.internal.set.publisher.util.LaunchSetPublisherUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -37,7 +37,7 @@ public class LaunchSetRelevantObjectEntryModelListener
 
 		try {
 			_schedulerEngineHelper.delete(
-				LaunchSetSchedulerUtil.getJobName(objectEntry),
+				LaunchSetPublisherUtil.getJobName(objectEntry),
 				LaunchDestinationNames.LAUNCH_SET_SCHEDULED_PUBLISH,
 				StorageType.PERSISTED);
 		}

@@ -7,6 +7,8 @@ package com.liferay.launch.set.publisher;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.Date;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -15,6 +17,13 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface LaunchSetPublisher {
 
+	public Date fetchScheduledDate(long launchSetId) throws PortalException;
+
 	public void publish(long launchSetId) throws PortalException;
+
+	public void schedulePublish(long launchSetId, long userId, Date date)
+		throws PortalException;
+
+	public void unschedulePublish(long launchSetId) throws PortalException;
 
 }

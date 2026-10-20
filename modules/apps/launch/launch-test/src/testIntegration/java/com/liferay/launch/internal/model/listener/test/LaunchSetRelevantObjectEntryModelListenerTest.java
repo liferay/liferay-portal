@@ -6,7 +6,7 @@
 package com.liferay.launch.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.launch.set.scheduler.LaunchSetScheduler;
+import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -73,7 +73,7 @@ public class LaunchSetRelevantObjectEntryModelListenerTest {
 				).build(),
 				serviceContext);
 
-		_launchSetScheduler.schedulePublish(
+		_launchSetPublisher.schedulePublish(
 			launchSetObjectEntry.getObjectEntryId(),
 			TestPropsValues.getUserId(),
 			new Date(System.currentTimeMillis() + Time.DAY));
@@ -97,7 +97,7 @@ public class LaunchSetRelevantObjectEntryModelListenerTest {
 		"liferay/launch_set_scheduled_publish";
 
 	@Inject
-	private LaunchSetScheduler _launchSetScheduler;
+	private LaunchSetPublisher _launchSetPublisher;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

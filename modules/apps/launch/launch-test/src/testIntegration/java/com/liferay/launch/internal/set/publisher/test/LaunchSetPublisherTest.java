@@ -19,20 +19,28 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -42,6 +50,7 @@ import jakarta.portlet.PortletException;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.junit.After;
@@ -54,6 +63,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Alejandro Tardín
+ * @author Jose Luis Navarro
  */
 @RunWith(Arquillian.class)
 public class LaunchSetPublisherTest {
@@ -78,8 +88,40 @@ public class LaunchSetPublisherTest {
 	}
 
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
+		_launchSetPublisher.unschedulePublish(
+			_launchSetObjectEntry.getObjectEntryId());
+
 		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@Test
+	public void testFetchScheduledDate() throws Exception {
+
+		// Missing launch set
+
+		Assert.assertNull(
+			_launchSetPublisher.fetchScheduledDate(
+				RandomTestUtil.randomLong()));
+
+		// Launch set that is not scheduled
+
+		Assert.assertNull(
+			_launchSetPublisher.fetchScheduledDate(
+				_launchSetObjectEntry.getObjectEntryId()));
+
+		// Scheduled launch set
+
+		Date date = new Date(System.currentTimeMillis() + Time.DAY);
+
+		_launchSetPublisher.schedulePublish(
+			_launchSetObjectEntry.getObjectEntryId(),
+			TestPropsValues.getUserId(), date);
+
+		Assert.assertEquals(
+			date,
+			_launchSetPublisher.fetchScheduledDate(
+				_launchSetObjectEntry.getObjectEntryId()));
 	}
 
 	@Test
@@ -216,6 +258,98 @@ public class LaunchSetPublisherTest {
 			otherPublishedVersion);
 	}
 
+	@Test
+	public void testSchedulePublish() throws Exception {
+		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
+
+		// Without permission
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		_user = UserTestUtil.addUser();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		try {
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _launchSetPublisher.schedulePublish(
+					launchSetId, _user.getUserId(),
+					new Date(System.currentTimeMillis() + Time.DAY)));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+
+		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
+
+		// Date in the past
+
+		Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.schedulePublish(
+				launchSetId, TestPropsValues.getUserId(),
+				new Date(System.currentTimeMillis() - Time.MINUTE)));
+
+		// Null date
+
+		Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.schedulePublish(
+				launchSetId, TestPropsValues.getUserId(), null));
+
+		// Future date
+
+		Date date = new Date(System.currentTimeMillis() + Time.DAY);
+
+		_launchSetPublisher.schedulePublish(
+			launchSetId, TestPropsValues.getUserId(), date);
+
+		_assertScheduledDate(date, WorkflowConstants.STATUS_SCHEDULED);
+
+		// Already scheduled
+
+		Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.schedulePublish(
+				launchSetId, TestPropsValues.getUserId(),
+				new Date(System.currentTimeMillis() + Time.DAY)));
+
+		_assertScheduledDate(date, WorkflowConstants.STATUS_SCHEDULED);
+	}
+
+	@Test
+	public void testUnschedulePublish() throws Exception {
+		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
+
+		// Not scheduled
+
+		_launchSetPublisher.unschedulePublish(launchSetId);
+
+		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
+
+		// Scheduled
+
+		_launchSetPublisher.schedulePublish(
+			launchSetId, TestPropsValues.getUserId(),
+			new Date(System.currentTimeMillis() + Time.DAY));
+
+		_launchSetPublisher.unschedulePublish(launchSetId);
+
+		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
+
+		// Scheduled again
+
+		Date date = new Date(System.currentTimeMillis() + Time.WEEK);
+
+		_launchSetPublisher.schedulePublish(
+			launchSetId, TestPropsValues.getUserId(), date);
+
+		_assertScheduledDate(date, WorkflowConstants.STATUS_SCHEDULED);
+	}
+
 	private ObjectEntry _addLaunchEntryObjectEntry(
 			long launchSetId, String className, long classPK,
 			String baseVersionKey)
@@ -281,6 +415,36 @@ public class LaunchSetPublisherTest {
 		Assert.assertNull(
 			launchEntryManager.fetchDraft(
 				MapUtil.getLong(values, "classPK"), draftId));
+	}
+
+	private void _assertScheduledDate(Date expectedDate, int expectedStatus)
+		throws Exception {
+
+		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
+
+		ObjectEntry launchSetObjectEntry =
+			_objectEntryLocalService.getObjectEntry(launchSetId);
+
+		Assert.assertEquals(expectedStatus, launchSetObjectEntry.getStatus());
+
+		Date scheduledDate = _launchSetPublisher.fetchScheduledDate(
+			launchSetId);
+
+		Map<String, Serializable> values = launchSetObjectEntry.getValues();
+
+		Date scheduledDateValue = (Date)values.get("scheduledDate");
+
+		if (expectedDate == null) {
+			Assert.assertNull(scheduledDate);
+			Assert.assertNull(scheduledDateValue);
+
+			return;
+		}
+
+		Assert.assertEquals(expectedDate, scheduledDate);
+		Assert.assertEquals(
+			expectedDate.getTime() / Time.SECOND,
+			scheduledDateValue.getTime() / Time.SECOND);
 	}
 
 	private LaunchEntryManager _getJournalArticleLaunchEntryManager() {
@@ -364,5 +528,8 @@ public class LaunchSetPublisherTest {
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 	private ServiceContext _serviceContext;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }

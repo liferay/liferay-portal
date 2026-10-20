@@ -11,7 +11,7 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
-import com.liferay.launch.set.scheduler.LaunchSetScheduler;
+import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.launch.web.internal.constants.LaunchFDSNames;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
@@ -51,14 +51,14 @@ public class ViewLaunchDisplayContext {
 	public ViewLaunchDisplayContext(
 		HttpServletRequest httpServletRequest, ItemSelector itemSelector,
 		LaunchEntryManagerRegistry launchEntryManagerRegistry,
-		LaunchSetScheduler launchSetScheduler,
+		LaunchSetPublisher launchSetPublisher,
 		LiferayPortletResponse liferayPortletResponse,
 		ObjectEntryLocalService objectEntryLocalService) {
 
 		_httpServletRequest = httpServletRequest;
 		_itemSelector = itemSelector;
 		_launchEntryManagerRegistry = launchEntryManagerRegistry;
-		_launchSetScheduler = launchSetScheduler;
+		_launchSetPublisher = launchSetPublisher;
 		_liferayPortletResponse = liferayPortletResponse;
 		_objectEntryLocalService = objectEntryLocalService;
 	}
@@ -204,7 +204,7 @@ public class ViewLaunchDisplayContext {
 	}
 
 	public String getScheduledDate() throws PortalException {
-		Date scheduledDate = _launchSetScheduler.fetchScheduledDate(
+		Date scheduledDate = _launchSetPublisher.fetchScheduledDate(
 			getLaunchSetId());
 
 		if (scheduledDate == null) {
@@ -305,7 +305,7 @@ public class ViewLaunchDisplayContext {
 	private final ItemSelector _itemSelector;
 	private final LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 	private Long _launchSetId;
-	private final LaunchSetScheduler _launchSetScheduler;
+	private final LaunchSetPublisher _launchSetPublisher;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private Boolean _published;

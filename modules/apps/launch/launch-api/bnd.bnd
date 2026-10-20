@@ -3,5 +3,4 @@ Bundle-SymbolicName: com.liferay.launch.api
 Bundle-Version: 4.1.0
 Export-Package:\
 	com.liferay.launch.entry.manager,\
-	com.liferay.launch.set.publisher,\
-	com.liferay.launch.set.scheduler
+	com.liferay.launch.set.publisher

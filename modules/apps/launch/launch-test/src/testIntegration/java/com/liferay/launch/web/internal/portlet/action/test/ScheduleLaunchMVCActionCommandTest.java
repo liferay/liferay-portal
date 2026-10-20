@@ -6,7 +6,7 @@
 package com.liferay.launch.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.launch.set.scheduler.LaunchSetScheduler;
+import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -151,7 +151,7 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		Assert.assertTrue(Validator.isNull(jsonObject.getString("redirect")));
 
-		_launchSetScheduler.unschedulePublish(
+		_launchSetPublisher.unschedulePublish(
 			_launchSetObjectEntry.getObjectEntryId());
 
 		// Future date
@@ -189,7 +189,7 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		Assert.assertEquals(
 			expectedDate,
-			_launchSetScheduler.fetchScheduledDate(
+			_launchSetPublisher.fetchScheduledDate(
 				_launchSetObjectEntry.getObjectEntryId()));
 	}
 
@@ -256,7 +256,7 @@ public class ScheduleLaunchMVCActionCommandTest {
 	private ObjectEntry _launchSetObjectEntry;
 
 	@Inject
-	private LaunchSetScheduler _launchSetScheduler;
+	private LaunchSetPublisher _launchSetPublisher;
 
 	@Inject(filter = "mvc.command.name=/launch/schedule_launch")
 	private MVCActionCommand _mvcActionCommand;
