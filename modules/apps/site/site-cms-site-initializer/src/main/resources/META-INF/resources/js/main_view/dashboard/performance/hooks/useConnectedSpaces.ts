@@ -35,7 +35,7 @@ export default function useConnectedSpaces() {
 
 			spaces.forEach(({id}, index) => {
 				connectedSpaces[String(id)] =
-					infos[index].data?.connectedToSpace ?? true;
+					infos[index].data?.connectedToSpace ?? false;
 			});
 
 			setConnectedSpaces(connectedSpaces);
