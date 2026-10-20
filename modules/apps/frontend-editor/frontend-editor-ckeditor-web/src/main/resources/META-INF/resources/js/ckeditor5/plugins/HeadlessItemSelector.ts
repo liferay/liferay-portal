@@ -8,6 +8,7 @@ import {ButtonView} from '@ckeditor/ckeditor5-ui/dist/index.js';
 import {openCMSFileSelectorModal} from '@liferay/frontend-js-item-selector-web';
 
 import getIcon from '../utils/getIcon';
+import getItemSelectorGroupId from '../utils/getItemSelectorGroupId';
 
 const ALLOWED_IMAGE_FILE_EXTENSIONS = [
 	'apng',
@@ -62,10 +63,6 @@ class HeadlessItemSelector extends Plugin {
 
 		const folderMemoryKeyPrefix = `headless-item-selector:${instanceCount++}`;
 
-		const getGroupId = () =>
-			Number(editor.config.get('groupId')) ||
-			Liferay.ThemeDisplay.getScopeGroupId();
-
 		editor.ui.componentFactory.add('headlessImageSelector', () => {
 			const buttonView = new ButtonView();
 
@@ -82,7 +79,7 @@ class HeadlessItemSelector extends Plugin {
 					allowDragAndDrop: true,
 					allowedExtensions: ALLOWED_IMAGE_EXTENSIONS_CSV,
 					folderMemoryKey: `${folderMemoryKeyPrefix}:image`,
-					groupId: getGroupId(),
+					groupId: getItemSelectorGroupId(editor),
 					itemTypeLabel: Liferay.Language.get('image'),
 					onSelect: (items) => {
 						const href = items[0]?.embedded?.file?.link?.href;
@@ -122,7 +119,7 @@ class HeadlessItemSelector extends Plugin {
 					allowedExtensions: ALLOWED_VIDEO_EXTENSIONS_CSV,
 					filters: [VIDEO_FILTER],
 					folderMemoryKey: `${folderMemoryKeyPrefix}:video`,
-					groupId: getGroupId(),
+					groupId: getItemSelectorGroupId(editor),
 					itemTypeLabel: Liferay.Language.get('video'),
 					onSelect: (items) => {
 						const url =

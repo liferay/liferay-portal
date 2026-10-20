@@ -251,7 +251,7 @@ export default function openCMSFileSelectorModal({
 	 * shared between fields.
 	 */
 	folderMemoryKey?: string;
-	groupId: number;
+	groupId?: number;
 	itemTypeLabel?: string;
 	maxFileSize?: number;
 	onSelect: (items: Array<CMSFile>) => void;
@@ -294,7 +294,9 @@ export default function openCMSFileSelectorModal({
 							title: Liferay.Language.get('no-files-yet'),
 						}
 					: undefined,
-				filters: getCMSItemSelectorFilters(groupId),
+				filters: getCMSItemSelectorFilters(
+					groupId ?? Liferay.ThemeDisplay.getScopeGroupId()
+				),
 				groupedFilters: getCMSItemSelectorGroupedFilters(),
 				hideManagementBarInEmptyState: true,
 				...fdsProps,
