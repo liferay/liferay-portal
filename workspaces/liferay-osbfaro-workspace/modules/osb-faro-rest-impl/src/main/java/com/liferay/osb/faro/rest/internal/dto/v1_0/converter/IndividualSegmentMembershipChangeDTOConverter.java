@@ -54,7 +54,6 @@ public class IndividualSegmentMembershipChangeDTOConverter
 					individualSegmentMembershipChange::getIndividualName);
 				setIndividualSegmentId(
 					individualSegmentMembershipChange::getIndividualSegmentId);
-				setOperation(individualSegmentMembershipChange::getOperation);
 			}
 		};
 	}

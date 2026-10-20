@@ -38,8 +38,6 @@ public class IndividualSegmentMembershipChangeDTOConverterTest {
 			RandomTestUtil.randomString());
 		engineClientIndividualSegmentMembershipChange.setIndividualSegmentId(
 			RandomTestUtil.randomString());
-		engineClientIndividualSegmentMembershipChange.setOperation(
-			RandomTestUtil.randomString());
 
 		IndividualSegmentMembershipChange individualSegmentMembershipChange =
 			_individualSegmentMembershipChangeDTOConverter.toDTO(
@@ -71,9 +69,6 @@ public class IndividualSegmentMembershipChangeDTOConverterTest {
 			engineClientIndividualSegmentMembershipChange.
 				getIndividualSegmentId(),
 			individualSegmentMembershipChange.getIndividualSegmentId());
-		Assert.assertEquals(
-			engineClientIndividualSegmentMembershipChange.getOperation(),
-			individualSegmentMembershipChange.getOperation());
 
 		Assert.assertNull(
 			_individualSegmentMembershipChangeDTOConverter.toDTO(
