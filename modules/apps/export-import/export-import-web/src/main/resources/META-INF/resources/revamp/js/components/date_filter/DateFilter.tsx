@@ -93,12 +93,8 @@ export default function DateFilter({
 
 	return (
 		<>
-			<ClayLayout.ContentRow
-				className="flex-column flex-lg-row"
-				noGutters="x"
-				padded
-			>
-				<ClayLayout.ContentCol>
+			<ClayLayout.Row>
+				<ClayLayout.Col md={4}>
 					<FieldSelectWithOption
 						formGroupProps={{className: 'mb-0'}}
 						id="range"
@@ -112,7 +108,7 @@ export default function DateFilter({
 						options={rangeOptions}
 						value={editing.range}
 					/>
-				</ClayLayout.ContentCol>
+				</ClayLayout.Col>
 
 				{editing.range === Range.Last && (
 					<LastRangeFields
@@ -130,10 +126,7 @@ export default function DateFilter({
 					/>
 				)}
 
-				<ClayLayout.ContentCol
-					className="align-items-end d-flex justify-content-center"
-					expand
-				>
+				<ClayLayout.Col className="align-items-end d-flex" md="auto">
 					{!(
 						editing.range === Range.All &&
 						appliedValue.range === Range.All
@@ -147,36 +140,30 @@ export default function DateFilter({
 							{Liferay.Language.get('show-results')}
 						</ClayButton>
 					)}
-				</ClayLayout.ContentCol>
-			</ClayLayout.ContentRow>
+				</ClayLayout.Col>
+			</ClayLayout.Row>
 
 			{appliedValue.range !== Range.All && (
-				<ClayLayout.ContentRow className="mt-4" noGutters="x" padded>
-					<ClayLayout.ContentCol expand>
-						<ClayAlert
-							actions={
-								<ClayButton
-									borderless
-									onClick={handleClearFilters}
-									size="sm"
-								>
-									{Liferay.Language.get('clear-filters')}
-								</ClayButton>
-							}
-							className="w-100"
-							displayType="info"
-							title={sub(
-								Liferay.Language.get(
-									'x-results-found-for-colon'
-								),
-								String(itemsCount)
-							)}
-							variant="inline"
+				<ClayAlert
+					actions={
+						<ClayButton
+							borderless
+							onClick={handleClearFilters}
+							size="sm"
 						>
-							{appliedFilterSummary}
-						</ClayAlert>
-					</ClayLayout.ContentCol>
-				</ClayLayout.ContentRow>
+							{Liferay.Language.get('clear-filters')}
+						</ClayButton>
+					}
+					className="mt-4 w-100"
+					displayType="info"
+					title={sub(
+						Liferay.Language.get('x-results-found-for-colon'),
+						String(itemsCount)
+					)}
+					variant="inline"
+				>
+					{appliedFilterSummary}
+				</ClayAlert>
 			)}
 		</>
 	);

@@ -40,7 +40,7 @@ const DateRangeFields = ({
 
 	return (
 		<>
-			<ClayLayout.ContentCol>
+			<ClayLayout.Col md={3}>
 				<FieldDatePicker
 					defaultTime="00:00"
 					errorMessage={
@@ -64,9 +64,9 @@ const DateRangeFields = ({
 						start: currentYear - YEARS_OFFSET,
 					}}
 				/>
-			</ClayLayout.ContentCol>
+			</ClayLayout.Col>
 
-			<ClayLayout.ContentCol>
+			<ClayLayout.Col md={3}>
 				<FieldDatePicker
 					defaultTime={(date) => getEndDefaultTime(date, timeZoneId)}
 					errorMessage={
@@ -89,7 +89,7 @@ const DateRangeFields = ({
 						start: currentYear - YEARS_OFFSET,
 					}}
 				/>
-			</ClayLayout.ContentCol>
+			</ClayLayout.Col>
 		</>
 	);
 };
