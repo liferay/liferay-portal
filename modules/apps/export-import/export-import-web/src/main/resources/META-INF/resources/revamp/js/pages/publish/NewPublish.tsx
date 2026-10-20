@@ -306,9 +306,6 @@ export function NewPublish({
 							placeholder={Liferay.Language.get(
 								'process-name-placeholder'
 							)}
-							subtitle={Liferay.Language.get(
-								'name-your-process-and-choose-when-to-publish'
-							)}
 							title={sub(
 								Liferay.Language.get('x-details'),
 								Liferay.Language.get('publish')
