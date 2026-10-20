@@ -42,7 +42,8 @@ public class EditVocabularyDisplayContext {
 	}
 
 	public String getBackURL() throws Exception {
-		String backURL = ParamUtil.getString(_httpServletRequest, "backURL");
+		String backURL = PortalUtil.escapeRedirect(
+			ParamUtil.getString(_httpServletRequest, "backURL"));
 
 		if (Validator.isNotNull(backURL)) {
 			return backURL;

@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
 
@@ -51,7 +52,9 @@ public class ViewAssetDisplayContext {
 
 	public Map<String, Object> getAdditionalProps() throws PortalException {
 		return HashMapBuilder.<String, Object>put(
-			"backURL", ParamUtil.getString(_httpServletRequest, "backURL")
+			"backURL",
+			PortalUtil.escapeRedirect(
+				ParamUtil.getString(_httpServletRequest, "backURL"))
 		).put(
 			"className", _objectDefinition.getClassName()
 		).put(
