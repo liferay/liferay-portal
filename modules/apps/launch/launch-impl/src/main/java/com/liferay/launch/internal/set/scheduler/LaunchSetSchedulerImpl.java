@@ -11,7 +11,6 @@ import com.liferay.launch.set.scheduler.LaunchSetScheduler;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
@@ -21,8 +20,6 @@ import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
@@ -36,8 +33,8 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Jose Luis Navarro
  */
-@Component(service = AopService.class)
-public class LaunchSetSchedulerImpl implements AopService, LaunchSetScheduler {
+@Component(service = LaunchSetScheduler.class)
+public class LaunchSetSchedulerImpl implements LaunchSetScheduler {
 
 	@Override
 	public Date fetchScheduledDate(long launchSetId) throws PortalException {
@@ -62,9 +59,6 @@ public class LaunchSetSchedulerImpl implements AopService, LaunchSetScheduler {
 	}
 
 	@Override
-	@Transactional(
-		propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class
-	)
 	public void schedulePublish(long launchSetId, long userId, Date date)
 		throws PortalException {
 
@@ -113,9 +107,6 @@ public class LaunchSetSchedulerImpl implements AopService, LaunchSetScheduler {
 	}
 
 	@Override
-	@Transactional(
-		propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class
-	)
 	public void unschedulePublish(long launchSetId) throws PortalException {
 		ObjectEntry launchSetObjectEntry =
 			_objectEntryLocalService.fetchObjectEntry(launchSetId);

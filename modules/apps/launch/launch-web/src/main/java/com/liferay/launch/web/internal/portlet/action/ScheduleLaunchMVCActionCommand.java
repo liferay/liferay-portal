@@ -7,13 +7,14 @@ package com.liferay.launch.web.internal.portlet.action;
 
 import com.liferay.launch.set.scheduler.LaunchSetScheduler;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
-import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -23,8 +24,11 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletException;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.io.IOException;
 
 import java.util.Date;
 
@@ -41,10 +45,39 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class ScheduleLaunchMVCActionCommand extends BaseMVCActionCommand {
+public class ScheduleLaunchMVCActionCommand
+	extends BaseTransactionalMVCActionCommand {
 
 	@Override
-	protected void doProcessAction(
+	public boolean processAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws PortletException {
+
+		try {
+			return super.processAction(actionRequest, actionResponse);
+		}
+		catch (PortletException portletException) {
+			if (!(portletException.getCause() instanceof PortalException)) {
+				throw portletException;
+			}
+
+			try {
+				JSONPortletResponseUtil.writeJSON(
+					actionRequest, actionResponse,
+					_getErrorJSONObject(
+						actionRequest,
+						(PortalException)portletException.getCause()));
+			}
+			catch (IOException ioException) {
+				throw new PortletException(ioException);
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	protected void doTransactionalCommand(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
@@ -68,18 +101,9 @@ public class ScheduleLaunchMVCActionCommand extends BaseMVCActionCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		try {
-			_launchSetScheduler.schedulePublish(
-				ParamUtil.getLong(actionRequest, "launchSetId"),
-				themeDisplay.getUserId(), publishDate);
-		}
-		catch (Exception exception) {
-			JSONPortletResponseUtil.writeJSON(
-				actionRequest, actionResponse,
-				_getErrorJSONObject(actionRequest, exception));
-
-			return;
-		}
+		_launchSetScheduler.schedulePublish(
+			ParamUtil.getLong(actionRequest, "launchSetId"),
+			themeDisplay.getUserId(), publishDate);
 
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse,
