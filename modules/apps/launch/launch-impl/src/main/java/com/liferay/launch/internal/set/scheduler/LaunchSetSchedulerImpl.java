@@ -5,7 +5,6 @@
 
 package com.liferay.launch.internal.set.scheduler;
 
-import com.liferay.launch.exception.LaunchSetScheduleException;
 import com.liferay.launch.internal.constants.LaunchDestinationNames;
 import com.liferay.launch.internal.set.scheduler.util.LaunchSetSchedulerUtil;
 import com.liferay.launch.set.scheduler.LaunchSetScheduler;
@@ -78,12 +77,14 @@ public class LaunchSetSchedulerImpl implements AopService, LaunchSetScheduler {
 		if (launchSetObjectEntry.getStatus() !=
 				WorkflowConstants.STATUS_DRAFT) {
 
-			throw new LaunchSetScheduleException.MustBeOpen(launchSetId);
+			throw new PortalException(
+				"Launch set " + launchSetId + " must be open to be scheduled");
 		}
 
 		if ((date == null) || !date.after(new Date())) {
-			throw new LaunchSetScheduleException.MustHaveFutureDate(
-				launchSetId);
+			throw new PortalException(
+				"Launch set " + launchSetId +
+					" must be scheduled for a future date");
 		}
 
 		ServiceContext serviceContext = _createServiceContext(

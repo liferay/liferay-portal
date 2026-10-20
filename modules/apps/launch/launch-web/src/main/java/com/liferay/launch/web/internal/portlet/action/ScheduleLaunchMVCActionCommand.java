@@ -5,7 +5,6 @@
 
 package com.liferay.launch.web.internal.portlet.action;
 
-import com.liferay.launch.exception.LaunchSetScheduleException;
 import com.liferay.launch.set.scheduler.LaunchSetScheduler;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -51,14 +50,28 @@ public class ScheduleLaunchMVCActionCommand extends BaseMVCActionCommand {
 
 		hideDefaultSuccessMessage(actionRequest);
 
+		Date publishDate = new Date(
+			ParamUtil.getLong(actionRequest, "publishTime"));
+
+		if (!publishDate.after(new Date())) {
+			JSONPortletResponseUtil.writeJSON(
+				actionRequest, actionResponse,
+				JSONUtil.put(
+					"validationError",
+					_language.get(
+						_portal.getHttpServletRequest(actionRequest),
+						"the-publish-time-must-be-in-the-future")));
+
+			return;
+		}
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		try {
 			_launchSetScheduler.schedulePublish(
 				ParamUtil.getLong(actionRequest, "launchSetId"),
-				themeDisplay.getUserId(),
-				new Date(ParamUtil.getLong(actionRequest, "publishTime")));
+				themeDisplay.getUserId(), publishDate);
 		}
 		catch (Exception exception) {
 			JSONPortletResponseUtil.writeJSON(
@@ -81,23 +94,6 @@ public class ScheduleLaunchMVCActionCommand extends BaseMVCActionCommand {
 
 		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
 			actionRequest);
-
-		if (exception instanceof LaunchSetScheduleException.MustBeOpen) {
-			return JSONUtil.put(
-				"error",
-				_language.get(
-					httpServletRequest, "only-open-launches-can-be-scheduled"));
-		}
-
-		if (exception instanceof
-				LaunchSetScheduleException.MustHaveFutureDate) {
-
-			return JSONUtil.put(
-				"validationError",
-				_language.get(
-					httpServletRequest,
-					"the-publish-time-must-be-in-the-future"));
-		}
 
 		if (exception instanceof PrincipalException) {
 			return JSONUtil.put(

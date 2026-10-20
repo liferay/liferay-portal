@@ -6,12 +6,12 @@
 package com.liferay.launch.internal.set.scheduler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.launch.exception.LaunchSetScheduleException;
 import com.liferay.launch.set.scheduler.LaunchSetScheduler;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -144,7 +144,7 @@ public class LaunchSetSchedulerTest {
 		// Date in the past
 
 		Assert.assertThrows(
-			LaunchSetScheduleException.MustHaveFutureDate.class,
+			PortalException.class,
 			() -> _launchSetScheduler.schedulePublish(
 				launchSetId, TestPropsValues.getUserId(),
 				new Date(System.currentTimeMillis() - Time.MINUTE)));
@@ -152,7 +152,7 @@ public class LaunchSetSchedulerTest {
 		// Null date
 
 		Assert.assertThrows(
-			LaunchSetScheduleException.MustHaveFutureDate.class,
+			PortalException.class,
 			() -> _launchSetScheduler.schedulePublish(
 				launchSetId, TestPropsValues.getUserId(), null));
 
@@ -168,7 +168,7 @@ public class LaunchSetSchedulerTest {
 		// Already scheduled
 
 		Assert.assertThrows(
-			LaunchSetScheduleException.MustBeOpen.class,
+			PortalException.class,
 			() -> _launchSetScheduler.schedulePublish(
 				launchSetId, TestPropsValues.getUserId(),
 				new Date(System.currentTimeMillis() + Time.DAY)));

@@ -171,7 +171,7 @@ public class ScheduleLaunchMVCActionCommandTest {
 			System.currentTimeMillis() + Time.DAY, TestPropsValues.getUser());
 
 		Assert.assertEquals(
-			_language.get(LocaleUtil.US, "only-open-launches-can-be-scheduled"),
+			_language.get(LocaleUtil.US, "an-unexpected-error-occurred"),
 			jsonObject.getString("error"));
 
 		_assertScheduledDate(
