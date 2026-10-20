@@ -8,10 +8,10 @@ package com.liferay.exportimport.rest.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportProcess;
-import com.liferay.exportimport.rest.client.dto.v1_0.ExportProcessRequest;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcess;
-import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcessRequest;
+import com.liferay.exportimport.rest.client.dto.v1_0.InstanceExportProcessRequest;
+import com.liferay.exportimport.rest.client.dto.v1_0.InstanceImportProcessRequest;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportPreviewResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportProcessResource;
@@ -111,10 +111,11 @@ public class ExportImportInstancePerformanceTest {
 				"file", file
 			).build());
 
-		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
+		InstanceImportProcessRequest instanceImportProcessRequest =
+			new InstanceImportProcessRequest();
 
-		importProcessRequest.setName(RandomTestUtil.randomString());
-		importProcessRequest.setPortletDataHandlers(
+		instanceImportProcessRequest.setName(RandomTestUtil.randomString());
+		instanceImportProcessRequest.setPortletDataHandlers(
 			importPreview.getPortletDataHandlers());
 
 		try (Closeable closeable = new PerformanceTimer(
@@ -122,7 +123,7 @@ public class ExportImportInstancePerformanceTest {
 
 			ImportProcess importProcess =
 				_importProcessResource.postImportProcess(
-					null, importProcessRequest);
+					null, instanceImportProcessRequest);
 
 			ExportImportTestUtil.assertBackgroundTaskSuccessful(
 				importProcess.getId(), _IMPORT_BACKGROUND_TASK_MAX_WAIT_TIME,
@@ -136,14 +137,15 @@ public class ExportImportInstancePerformanceTest {
 		ExportPreview exportPreview = _exportPreviewResource.getExportPreview(
 			null, null, null, null, null);
 
-		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
+		InstanceExportProcessRequest instanceExportProcessRequest =
+			new InstanceExportProcessRequest();
 
-		exportProcessRequest.setName(RandomTestUtil.randomString());
-		exportProcessRequest.setPortletDataHandlers(
+		instanceExportProcessRequest.setName(RandomTestUtil.randomString());
+		instanceExportProcessRequest.setPortletDataHandlers(
 			exportPreview.getPortletDataHandlers());
 
 		ExportProcess exportProcess = _exportProcessResource.postExportProcess(
-			null, exportProcessRequest);
+			null, instanceExportProcessRequest);
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(
 			exportProcess.getId(), backgroundTaskMaxWaitTime,

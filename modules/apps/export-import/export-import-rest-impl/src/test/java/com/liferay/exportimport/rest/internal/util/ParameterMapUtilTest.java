@@ -19,6 +19,7 @@ import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerControl;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerTreeSelection;
 import com.liferay.exportimport.rest.dto.v1_0.PublishProcessRequest;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -32,6 +33,7 @@ import jakarta.ws.rs.BadRequestException;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -51,6 +53,32 @@ public class ParameterMapUtilTest {
 	@Rule
 	public static LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testPutSiteExternalReferenceCodes() {
+		_testPutSiteExternalReferenceCodes(
+			new String[] {_SITE_EXTERNAL_REFERENCE_CODE_1},
+			new String[] {_SITE_EXTERNAL_REFERENCE_CODE_1, null});
+		_testPutSiteExternalReferenceCodes(
+			new String[] {
+				_SITE_EXTERNAL_REFERENCE_CODE_1, _SITE_EXTERNAL_REFERENCE_CODE_2
+			},
+			new String[] {
+				_SITE_EXTERNAL_REFERENCE_CODE_1, _SITE_EXTERNAL_REFERENCE_CODE_2
+			});
+		_testPutSiteExternalReferenceCodes(
+			new String[] {
+				_SITE_EXTERNAL_REFERENCE_CODE_1, _SITE_EXTERNAL_REFERENCE_CODE_2
+			},
+			new String[] {
+				_SITE_EXTERNAL_REFERENCE_CODE_1,
+				_SITE_EXTERNAL_REFERENCE_CODE_2, _SITE_EXTERNAL_REFERENCE_CODE_1
+			});
+		_testPutSiteExternalReferenceCodes(null, new String[0]);
+		_testPutSiteExternalReferenceCodes(
+			null, new String[] {StringPool.BLANK, StringPool.THREE_SPACES});
+		_testPutSiteExternalReferenceCodes(null, null);
+	}
 
 	@Test
 	public void testToParameterMap() {
@@ -435,6 +463,21 @@ public class ParameterMapUtilTest {
 		};
 	}
 
+	private void _testPutSiteExternalReferenceCodes(
+		String[] expectedSiteExternalReferenceCodes,
+		String[] siteExternalReferenceCodes) {
+
+		Map<String, String[]> parameterMap = new HashMap<>();
+
+		ParameterMapUtil.putSiteExternalReferenceCodes(
+			parameterMap, siteExternalReferenceCodes);
+
+		Assert.assertArrayEquals(
+			expectedSiteExternalReferenceCodes,
+			parameterMap.get(
+				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
+	}
+
 	private PortletDataHandler _toAvailablePortletDataHandler() {
 		PortletDataHandlerChoice portletDataHandlerChoice =
 			_toPortletDataHandlerChoice("x", _CONTROL_NAME_CHOICE);
@@ -573,5 +616,11 @@ public class ParameterMapUtilTest {
 
 	private static final String _PORTLET_DATA_HANDLER_NAME =
 		"PORTLET_DATA_" + RandomTestUtil.randomString();
+
+	private static final String _SITE_EXTERNAL_REFERENCE_CODE_1 =
+		RandomTestUtil.randomString();
+
+	private static final String _SITE_EXTERNAL_REFERENCE_CODE_2 =
+		RandomTestUtil.randomString();
 
 }

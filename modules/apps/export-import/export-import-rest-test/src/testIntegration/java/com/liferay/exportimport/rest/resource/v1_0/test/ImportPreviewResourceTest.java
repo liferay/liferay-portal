@@ -15,7 +15,7 @@ import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewSite;
+import com.liferay.exportimport.rest.client.dto.v1_0.Site;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
@@ -64,7 +64,6 @@ import com.liferay.staging.StagingGroupHelper;
 import java.io.File;
 import java.io.Serializable;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -436,20 +435,18 @@ public class ImportPreviewResourceTest
 		return null;
 	}
 
-	private PreviewSite _getPreviewSite(
+	private Site _getSite(
 		ImportPreview importPreview, String externalReferenceCode) {
 
-		PreviewSite[] previewSites = importPreview.getPreviewSites();
+		Site[] sites = importPreview.getSites();
 
-		if (previewSites == null) {
+		if (sites == null) {
 			return null;
 		}
 
-		for (PreviewSite previewSite : previewSites) {
-			if (externalReferenceCode.equals(
-					previewSite.getExternalReferenceCode())) {
-
-				return previewSite;
+		for (Site site : sites) {
+			if (externalReferenceCode.equals(site.getExternalReferenceCode())) {
+				return site;
 			}
 		}
 
@@ -538,10 +535,10 @@ public class ImportPreviewResourceTest
 
 		_groupLocalService.deleteGroup(group);
 
-		PreviewSite previewSite = _getPreviewSite(
+		Site site = _getSite(
 			_postImportPreview(file), group.getExternalReferenceCode());
 
-		Assert.assertFalse(previewSite.getExistsInInstance());
+		Assert.assertFalse(site.getExistsInInstance());
 	}
 
 	private void _testPostImportPreviewWithSites() throws Exception {
@@ -555,21 +552,19 @@ public class ImportPreviewResourceTest
 		ImportPreview importPreview = _postImportPreview(
 			_exportLayoutAsFile(companyGroup.getGroupId(), group, childGroup));
 
-		PreviewSite previewSite = _getPreviewSite(
-			importPreview, group.getExternalReferenceCode());
+		Site site = _getSite(importPreview, group.getExternalReferenceCode());
 
+		Assert.assertEquals(Integer.valueOf(1), site.getChildSitesCount());
 		Assert.assertEquals(
-			Integer.valueOf(1), previewSite.getChildSitesCount());
-		Assert.assertEquals(
-			group.getDescriptiveName(), previewSite.getDescriptiveName());
-		Assert.assertTrue(previewSite.getExistsInInstance());
+			group.getDescriptiveName(), site.getDescriptiveName());
+		Assert.assertTrue(site.getExistsInInstance());
 
-		PreviewSite childPreviewSite = _getPreviewSite(
+		Site childSite = _getSite(
 			importPreview, childGroup.getExternalReferenceCode());
 
 		Assert.assertEquals(
-			previewSite.getPath() + " / " + childGroup.getDescriptiveName(),
-			childPreviewSite.getPath());
+			site.getPath() + " / " + childGroup.getDescriptiveName(),
+			childSite.getPath());
 	}
 
 	private void _testPostImportPreviewWithoutSites() throws Exception {
@@ -579,9 +574,7 @@ public class ImportPreviewResourceTest
 		ImportPreview importPreview = _postImportPreview(
 			_exportLayoutAsFile(companyGroup.getGroupId()));
 
-		Assert.assertTrue(
-			Arrays.toString(importPreview.getPreviewSites()),
-			ArrayUtil.isEmpty(importPreview.getPreviewSites()));
+		Assert.assertTrue(ArrayUtil.isEmpty(importPreview.getSites()));
 	}
 
 	private void _testPostPortletImportPreviewWithObjectEntries(
