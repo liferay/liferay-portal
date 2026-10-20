@@ -145,12 +145,14 @@ public class CompletePaymentAuthorizeNetServletTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest("GET", "");
 
+		mockHttpServletRequest.addParameter(
+			"groupId", String.valueOf(_commerceOrder.getGroupId()));
+
 		String redirect =
 			_portal.getPortalURL(mockHttpServletRequest) + "/web/guest";
 
-		mockHttpServletRequest.addParameter(
-			"groupId", String.valueOf(_commerceOrder.getGroupId()));
 		mockHttpServletRequest.addParameter("redirect", redirect);
+
 		mockHttpServletRequest.addParameter("uuid", _commerceOrder.getUuid());
 		mockHttpServletRequest.setAttribute(WebKeys.USER, _user);
 
