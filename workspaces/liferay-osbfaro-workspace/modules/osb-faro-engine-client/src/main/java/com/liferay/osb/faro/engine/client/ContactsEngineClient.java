@@ -265,10 +265,10 @@ public interface ContactsEngineClient {
 		throws FaroEngineClientException;
 
 	public Results<Account> getAccounts(
-		FaroProject faroProject, String channelId, String filterString,
-		boolean includeAnonymousUsers, String query, String rangeEnd,
-		Integer rangeKey, String rangeStart, String segmentId, int cur,
-		int delta, String sortString);
+		FaroProject faroProject, String accountLifecycleId, String channelId,
+		String filterString, boolean includeAnonymousUsers, String query,
+		String rangeEnd, Integer rangeKey, String rangeStart, String segmentId,
+		int cur, int delta, String sortString);
 
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,

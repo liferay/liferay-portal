@@ -55,9 +55,10 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 	@Override
 	public Page<Account> getWorkspaceGroupChannelAccountsPage(
-			Long groupId, String channelId, String lifecycleStage,
-			String rangeEnd, String rangeKey, String rangeStart, String search,
-			Pagination pagination, Sort[] sorts)
+			Long groupId, String channelId, String accountLifecycleId,
+			String lifecycleStage, String rangeEnd, String rangeKey,
+			String rangeStart, String search, Pagination pagination,
+			Sort[] sorts)
 		throws Exception {
 
 		FaroProject faroProject =
@@ -65,9 +66,9 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		Results<com.liferay.osb.faro.engine.client.model.Account> results =
 			_contactsEngineClient.getAccounts(
-				faroProject, channelId,
+				faroProject, accountLifecycleId, channelId,
 				_getLifecycleStageFilterString(
-					faroProject, channelId, lifecycleStage),
+					accountLifecycleId, channelId, faroProject, lifecycleStage),
 				true, search, rangeEnd, TimeRange.getRangeKey(rangeKey),
 				rangeStart, null, FaroPaginationUtil.getCur(pagination),
 				FaroPaginationUtil.getDelta(pagination),
@@ -85,11 +86,12 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			pagination, results.getTotal());
 	}
 
-	private String _getLifecycleStageFilterString(
-		FaroProject faroProject, String channelId, String lifecycleStage) {
+	private AccountLifecycle _getAccountLifecycle(
+		String accountLifecycleId, String channelId, FaroProject faroProject) {
 
-		if (Validator.isNull(lifecycleStage)) {
-			return null;
+		if (Validator.isNotNull(accountLifecycleId)) {
+			return _contactsEngineClient.getAccountLifecycle(
+				faroProject, accountLifecycleId);
 		}
 
 		List<AccountLifecycle> accountLifecycles =
@@ -103,8 +105,20 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		AccountLifecycle accountLifecycle = accountLifecycles.get(0);
 
-		accountLifecycle = _contactsEngineClient.getAccountLifecycle(
+		return _contactsEngineClient.getAccountLifecycle(
 			faroProject, accountLifecycle.getId());
+	}
+
+	private String _getLifecycleStageFilterString(
+		String accountLifecycleId, String channelId, FaroProject faroProject,
+		String lifecycleStage) {
+
+		if (Validator.isNull(lifecycleStage)) {
+			return null;
+		}
+
+		AccountLifecycle accountLifecycle = _getAccountLifecycle(
+			accountLifecycleId, channelId, faroProject);
 
 		List<AccountLifecycleStage> accountLifecycleStages =
 			accountLifecycle.getStages();

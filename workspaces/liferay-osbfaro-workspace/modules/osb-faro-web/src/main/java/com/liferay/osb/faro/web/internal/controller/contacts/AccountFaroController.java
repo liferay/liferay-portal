@@ -240,7 +240,7 @@ public class AccountFaroController extends BaseFaroController {
 
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getAccounts(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				faroProjectLocalService.getFaroProjectByGroupId(groupId), null,
 				channelId, filterString, includeAnonymousUsers, search,
 				rangeEnd, rangeKey, rangeStart, segmentId, page, pageSize,
 				sortString),
