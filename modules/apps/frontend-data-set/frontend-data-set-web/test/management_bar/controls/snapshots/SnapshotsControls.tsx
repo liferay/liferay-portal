@@ -59,7 +59,7 @@ const openActionsDropdown = async () => {
 };
 
 const openViewsDropdown = async () => {
-	await userEvent.click(screen.getByRole('button', {name: 'views'}));
+	await userEvent.click(screen.getByRole('button', {name: 'views[saved]'}));
 };
 
 const getViewLabels = () =>

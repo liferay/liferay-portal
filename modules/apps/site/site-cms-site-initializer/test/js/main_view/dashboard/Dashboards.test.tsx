@@ -102,7 +102,7 @@ describe('Dashboards', () => {
 		).not.toBeInTheDocument();
 
 		expect(
-			screen.queryByRole('button', {name: 'inventory'})
+			screen.queryByRole('button', {name: 'inventory[content]'})
 		).not.toBeInTheDocument();
 
 		expect(

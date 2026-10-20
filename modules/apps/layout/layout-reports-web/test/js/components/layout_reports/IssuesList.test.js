@@ -242,7 +242,7 @@ describe('IssuesList', () => {
 			layoutReportsIssues: mockLayoutReportsIssuesSEODetails,
 		});
 
-		const button = getByText('launch');
+		const button = getByText('launch[verb]');
 
 		userEvent.click(button);
 
@@ -254,7 +254,7 @@ describe('IssuesList', () => {
 			layoutReportsIssues: mockLayoutReportsIssuesSEODetails,
 		});
 
-		expect(screen.queryByText('launch')).not.toBeInTheDocument();
+		expect(screen.queryByText('launch[verb]')).not.toBeInTheDocument();
 	});
 
 	it('shows launch button when there is no cached data', () => {
@@ -263,6 +263,6 @@ describe('IssuesList', () => {
 			layoutReportsIssues: mockLayoutReportsIssuesSEODetails,
 		});
 
-		expect(screen.getByText('launch')).toBeInTheDocument();
+		expect(screen.getByText('launch[verb]')).toBeInTheDocument();
 	});
 });

@@ -32,7 +32,7 @@ describe('The JoinNode component should', () => {
 		const label = container.querySelector('span.node-label');
 		const description = container.querySelector('span.node-description');
 
-		expect(label).toHaveTextContent('join');
+		expect(label).toHaveTextContent('join[workflow-node]');
 		expect(description).toHaveTextContent(
 			'all-interactions-need-to-be-closed'
 		);

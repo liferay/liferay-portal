@@ -461,7 +461,7 @@ describe('Detail', () => {
 			const trafficDropdown = getAllByText('traffic')[0];
 			userEvent.click(trafficDropdown);
 			expect(getByText('search-volume')).toBeInTheDocument();
-			expect(getByText('position')).toBeInTheDocument();
+			expect(getByText('position[ranking]')).toBeInTheDocument();
 		});
 
 		it('displays the top five relevant keywords sorted by search volume when user clicks on the dropdown option search volume', async () => {
@@ -541,7 +541,7 @@ describe('Detail', () => {
 
 			const trafficDropdown = getAllByText('traffic')[0];
 			userEvent.click(trafficDropdown);
-			const searchVolumeLabel = getByText('position');
+			const searchVolumeLabel = getByText('position[ranking]');
 			userEvent.click(searchVolumeLabel);
 
 			expect(getByText('commerce')).toBeInTheDocument();

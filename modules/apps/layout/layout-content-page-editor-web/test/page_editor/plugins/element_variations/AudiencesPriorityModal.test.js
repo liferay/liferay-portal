@@ -54,7 +54,7 @@ describe('AudiencesPriorityModal', () => {
 
 		act(() => jest.runAllTimers());
 
-		const reorderButton = getByRole('button', {name: /reorder vip/i});
+		const reorderButton = getByRole('button', {name: /reorder\[arrange\] vip/i});
 
 		reorderButton.focus();
 

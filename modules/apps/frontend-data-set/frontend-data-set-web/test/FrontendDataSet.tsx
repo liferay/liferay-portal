@@ -523,7 +523,7 @@ describe('FrontendDataSet', () => {
 			) ?? '';
 
 		async function chooseView(label: string) {
-			await userEvent.click(screen.getByRole('button', {name: 'views'}));
+			await userEvent.click(screen.getByRole('button', {name: 'views[saved]'}));
 
 			await userEvent.click(await screen.findByText(label));
 		}

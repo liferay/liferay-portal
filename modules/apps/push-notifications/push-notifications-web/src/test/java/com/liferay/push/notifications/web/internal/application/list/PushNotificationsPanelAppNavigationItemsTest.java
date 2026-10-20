@@ -48,7 +48,7 @@ public class PushNotificationsPanelAppNavigationItemsTest
 			_pushNotificationsPanelApp.getPanelAppNavigationItems(
 				httpServletRequest);
 
-		assertCanonicalNames(panelAppNavigationItems, "devices", "test");
+		assertCanonicalNames(panelAppNavigationItems, "devices", "test[noun]");
 
 		PanelAppNavigationItem panelAppNavigationItem =
 			panelAppNavigationItems.get(0);

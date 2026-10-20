@@ -230,7 +230,7 @@ describe('ReorderSetsModal', () => {
 		act(() => jest.runAllTimers());
 
 		const reorderButton = getByRole('button', {
-			name: /reorder category 1/i,
+			name: /reorder\[arrange\] category 1/i,
 		});
 
 		reorderButton.focus();
@@ -243,7 +243,7 @@ describe('ReorderSetsModal', () => {
 		act(() => jest.runAllTimers());
 
 		const reorderButton = getByRole('button', {
-			name: /reorder category 1/i,
+			name: /reorder\[arrange\] category 1/i,
 		});
 
 		reorderButton.focus();
@@ -251,7 +251,7 @@ describe('ReorderSetsModal', () => {
 
 		expect(document.activeElement).toBe(
 			getByRole('button', {
-				name: /reorder category 2/i,
+				name: /reorder\[arrange\] category 2/i,
 			})
 		);
 	});
@@ -262,7 +262,7 @@ describe('ReorderSetsModal', () => {
 		act(() => jest.runAllTimers());
 
 		const reorderButton = getByRole('button', {
-			name: /reorder category 1/i,
+			name: /reorder\[arrange\] category 1/i,
 		});
 
 		reorderButton.focus();

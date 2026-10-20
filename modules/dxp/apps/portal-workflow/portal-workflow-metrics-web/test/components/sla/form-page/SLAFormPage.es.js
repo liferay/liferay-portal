@@ -193,7 +193,7 @@ describe('The SLAFormPage component should', () => {
 			const pauseDescription = getByText(
 				'time-will-not-be-considered-when'
 			);
-			const pauseField = getByText('pause');
+			const pauseField = getByText('pause[noun]');
 			const startDescription = getByText('time-will-begin-counting-when');
 			const stopDescription = getByText('time-will-stop-counting-when');
 			const timeFrameDescription = getByText(

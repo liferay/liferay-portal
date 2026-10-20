@@ -897,7 +897,7 @@ describe('MapChart legend', () => {
 		expect(markerFills.size).toBe(bucketCount);
 
 		expect(screen.getByText('less')).toBeInTheDocument();
-		expect(screen.getByText('more')).toBeInTheDocument();
+		expect(screen.getByText('more[scale]')).toBeInTheDocument();
 	});
 
 	it('marks the hovered marker as active in the list legend', () => {
