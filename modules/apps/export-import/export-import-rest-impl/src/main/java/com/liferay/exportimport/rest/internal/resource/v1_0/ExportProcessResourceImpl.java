@@ -14,8 +14,10 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
+import com.liferay.exportimport.rest.dto.v1_0.DateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcess;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.FromLastPublishDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.ProcessProgress;
 import com.liferay.exportimport.rest.dto.v1_0.Status;
 import com.liferay.exportimport.rest.internal.util.BackgroundTaskUtil;
@@ -302,6 +304,20 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			pagination.getEndPosition());
 	}
 
+	private DateFilter _getDateFilter(
+		ExportProcessRequest exportProcessRequest) {
+
+		DateFilter dateFilter = exportProcessRequest.getDateFilter();
+
+		if (dateFilter instanceof FromLastPublishDateFilter) {
+			throw new BadRequestException(
+				"A \"FromLastPublishDate\" date filter applies only to " +
+					"publications");
+		}
+
+		return dateFilter;
+	}
+
 	private DynamicQuery _getDynamicQuery(
 		Long creatorId, long groupId, String portletId, String search,
 		Integer status) {
@@ -399,9 +415,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				exportProcessRequest.getDateRangeTypeAsString(),
-				exportProcessRequest.getStartDate(),
-				exportProcessRequest.getEndDate(),
+				_getDateFilter(exportProcessRequest),
 				ParameterMapUtil.toParameterMap(
 					exportProcessRequest,
 					PortletDataHandlerUtil.getExportPortletDataHandlers(
@@ -465,9 +479,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				exportProcessRequest.getDateRangeTypeAsString(),
-				exportProcessRequest.getStartDate(),
-				exportProcessRequest.getEndDate(),
+				_getDateFilter(exportProcessRequest),
 				ParameterMapUtil.toParameterMap(
 					exportProcessRequest,
 					PortletDataHandlerUtil.getExportPortletDataHandlers(

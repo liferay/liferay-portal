@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactory;
 import com.liferay.exportimport.lar.DeletionSystemEventExporter;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
+import com.liferay.exportimport.rest.dto.v1_0.DateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
@@ -23,11 +24,14 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.ws.rs.BadRequestException;
+
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,46 +48,48 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 	@Override
 	public ExportPreview getAssetLibraryExportPreview(
-			String assetLibraryExternalReferenceCode, String dateRangeType,
-			Date endDate, Long plid, String portletId, Date startDate)
-		throws Exception {
-
-		return _getExportPreview(
-			dateRangeType, endDate,
-			GroupUtil.getAssetLibraryGroup(
-				contextCompany.getCompanyId(),
-				assetLibraryExternalReferenceCode),
-			GetterUtil.getLong(plid), portletId, startDate);
-	}
-
-	@Override
-	public ExportPreview getExportPreview(
-			String dateRangeType, Date endDate, Long plid, String portletId,
+			String assetLibraryExternalReferenceCode, String dateFilterType,
+			Date endDate, Integer hours, Long plid, String portletId,
 			Date startDate)
 		throws Exception {
 
 		return _getExportPreview(
-			dateRangeType, endDate,
-			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
+			dateFilterType, endDate,
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
+			hours, GetterUtil.getLong(plid), portletId, startDate);
+	}
+
+	@Override
+	public ExportPreview getExportPreview(
+			String dateFilterType, Date endDate, Integer hours, Long plid,
+			String portletId, Date startDate)
+		throws Exception {
+
+		return _getExportPreview(
+			dateFilterType, endDate,
+			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()), hours,
 			GetterUtil.getLong(plid), portletId, startDate);
 	}
 
 	@Override
 	public ExportPreview getSiteExportPreview(
-			String siteExternalReferenceCode, String dateRangeType,
-			Date endDate, Long plid, String portletId, Date startDate)
+			String siteExternalReferenceCode, String dateFilterType,
+			Date endDate, Integer hours, Long plid, String portletId,
+			Date startDate)
 		throws Exception {
 
 		return _getExportPreview(
-			dateRangeType, endDate,
+			dateFilterType, endDate,
 			GroupUtil.getSiteGroup(
 				contextCompany.getCompanyId(), siteExternalReferenceCode),
-			GetterUtil.getLong(plid), portletId, startDate);
+			hours, GetterUtil.getLong(plid), portletId, startDate);
 	}
 
 	private ExportPreview _getExportPreview(
-			String dateRangeType, Date endDate, Group group, long plid,
-			String portletId, Date startDate)
+			String dateFilterType, Date endDate, Group group, Integer hours,
+			long plid, String portletId, Date startDate)
 		throws Exception {
 
 		long groupId = group.getGroupId();
@@ -91,6 +97,15 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		PermissionUtil.checkExportPermission(
 			contextCompany.getCompanyId(), groupId,
 			PermissionUtil.getGroupActionId(portletId));
+
+		if (Objects.equals(
+				dateFilterType,
+				DateFilter.Type.FROM_LAST_PUBLISH_DATE.getValue())) {
+
+			throw new BadRequestException(
+				"A \"FromLastPublishDate\" date filter applies only to " +
+					"publications");
+		}
 
 		boolean portletScoped = !Validator.isBlank(portletId);
 
@@ -110,8 +125,8 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				dateRangeType, startDate, endDate, new LinkedHashMap<>(),
-				contextUser);
+				dateFilterType, startDate, endDate, hours,
+				new LinkedHashMap<>(), contextUser);
 
 		PortletDataHandler[] exportPortletDataHandlers =
 			PortletDataHandlerUtil.getExportPortletDataHandlers(

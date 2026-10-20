@@ -37,8 +37,8 @@ public class PublishPreviewResourceImpl extends BasePublishPreviewResourceImpl {
 
 	@Override
 	public PublishPreview getSitePublishPreview(
-			String siteExternalReferenceCode, String dateRangeType,
-			Date endDate, Date startDate)
+			String siteExternalReferenceCode, String dateFilterType,
+			Date endDate, Integer hours, Date startDate)
 		throws Exception {
 
 		Group stagingGroup = GroupUtil.getStagingGroup(
@@ -49,8 +49,8 @@ public class PublishPreviewResourceImpl extends BasePublishPreviewResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				dateRangeType, startDate, endDate, new LinkedHashMap<>(),
-				contextUser);
+				dateFilterType, startDate, endDate, hours,
+				new LinkedHashMap<>(), contextUser);
 
 		PortletDataHandler[] exportPortletDataHandlers =
 			PortletDataHandlerUtil.getExportPortletDataHandlers(

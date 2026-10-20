@@ -8,8 +8,12 @@ package com.liferay.exportimport.rest.internal.util;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.UserIdStrategy;
+import com.liferay.exportimport.rest.dto.v1_0.DateFilter;
+import com.liferay.exportimport.rest.dto.v1_0.DateRangeDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.FromLastPublishDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.ImportProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.LastHoursDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerBoolean;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerChoice;
@@ -26,7 +30,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.BadRequestException;
@@ -65,19 +68,36 @@ public class ParameterMapUtil {
 	}
 
 	public static Map<String, String[]> putDateRangeParameters(
-		String dateRangeType, Date startDate, Date endDate,
-		Map<String, String[]> parameterMap, User user) {
+		DateFilter dateFilter, Map<String, String[]> parameterMap, User user) {
 
-		if (dateRangeType == null) {
-			if ((endDate == null) && (startDate == null)) {
-				dateRangeType = _DATE_RANGE_TYPE_ALL;
-			}
-			else {
-				dateRangeType = _DATE_RANGE_TYPE_DATE_RANGE;
-			}
+		if (dateFilter instanceof DateRangeDateFilter dateRangeDateFilter) {
+			return putDateRangeParameters(
+				DateFilter.Type.DATE_RANGE.getValue(),
+				dateRangeDateFilter.getStartDate(),
+				dateRangeDateFilter.getEndDate(), null, parameterMap, user);
 		}
 
-		if (dateRangeType.equals(_DATE_RANGE_TYPE_ALL)) {
+		if (dateFilter instanceof FromLastPublishDateFilter) {
+			return putDateRangeParameters(
+				DateFilter.Type.FROM_LAST_PUBLISH_DATE.getValue(), null, null,
+				null, parameterMap, user);
+		}
+
+		if (dateFilter instanceof LastHoursDateFilter lastHoursDateFilter) {
+			return putDateRangeParameters(
+				DateFilter.Type.LAST_HOURS.getValue(), null, null,
+				lastHoursDateFilter.getHours(), parameterMap, user);
+		}
+
+		return putDateRangeParameters(
+			null, null, null, null, parameterMap, user);
+	}
+
+	public static Map<String, String[]> putDateRangeParameters(
+		String dateFilterType, Date startDate, Date endDate, Integer hours,
+		Map<String, String[]> parameterMap, User user) {
+
+		if (dateFilterType == null) {
 			parameterMap.put(
 				ExportImportDateUtil.RANGE,
 				new String[] {ExportImportDateUtil.RANGE_ALL});
@@ -85,7 +105,9 @@ public class ParameterMapUtil {
 			return parameterMap;
 		}
 
-		if (dateRangeType.equals(_DATE_RANGE_TYPE_FROM_LAST_PUBLISH_DATE)) {
+		if (dateFilterType.equals(
+				DateFilter.Type.FROM_LAST_PUBLISH_DATE.getValue())) {
+
 			parameterMap.put(
 				ExportImportDateUtil.RANGE,
 				new String[] {
@@ -95,27 +117,14 @@ public class ParameterMapUtil {
 			return parameterMap;
 		}
 
-		if (dateRangeType.equals(_DATE_RANGE_TYPE_LAST)) {
-			if (startDate == null) {
+		if (dateFilterType.equals(DateFilter.Type.LAST_HOURS.getValue())) {
+			if ((hours == null) || (hours < 1)) {
 				throw new BadRequestException(
-					"The last date range type needs a start date");
+					"A \"LastHours\" date filter needs a number of hours of " +
+						"at least 1");
 			}
-
-			Date date = new Date();
-
-			if (startDate.after(date)) {
-				throw new BadRequestException(
-					"The start date must be in the past for the last date " +
-						"range type");
-			}
-
-			long hours = Math.max(
-				1,
-				(date.getTime() - startDate.getTime() + (Time.HOUR / 2)) /
-					Time.HOUR);
 
 			parameterMap.put("last", new String[] {String.valueOf(hours)});
-
 			parameterMap.put(
 				ExportImportDateUtil.RANGE,
 				new String[] {ExportImportDateUtil.RANGE_LAST});
@@ -123,15 +132,16 @@ public class ParameterMapUtil {
 			return parameterMap;
 		}
 
-		if (!dateRangeType.equals(_DATE_RANGE_TYPE_DATE_RANGE)) {
+		if (!dateFilterType.equals(DateFilter.Type.DATE_RANGE.getValue())) {
 			throw new BadRequestException(
-				"The date range type \"" + dateRangeType +
-					"\" is not supported");
+				StringBundler.concat(
+					"The date filter type \"", dateFilterType,
+					"\" is not supported"));
 		}
 
 		if ((endDate == null) && (startDate == null)) {
 			throw new BadRequestException(
-				"The date range type needs a start or end date");
+				"A \"DateRange\" date filter needs a start or end date");
 		}
 
 		if ((endDate != null) && (startDate != null) &&
@@ -328,58 +338,27 @@ public class ParameterMapUtil {
 		PortletDataHandler[] availablePortletDataHandlers, Locale locale,
 		Map<String, String[]> parameterMap, TimeZone timeZone) {
 
-		PublishProcessRequest publishProcessRequest =
-			new PublishProcessRequest() {
-				{
-					setComments(
-						() -> MapUtil.getBoolean(
-							parameterMap, PortletDataHandlerKeys.COMMENTS));
-					setDateRangeType(
-						() -> PublishProcessRequest.DateRangeType.ALL);
-					setDeletions(
-						() -> MapUtil.getBoolean(
-							parameterMap, PortletDataHandlerKeys.DELETIONS));
-					setPermissions(
-						() -> MapUtil.getBoolean(
-							parameterMap, PortletDataHandlerKeys.PERMISSIONS));
-					setPortletDataHandlers(
-						() -> _toPortletDataHandlers(
-							availablePortletDataHandlers, parameterMap));
-					setRatings(
-						() -> MapUtil.getBoolean(
-							parameterMap, PortletDataHandlerKeys.RATINGS));
-				}
-			};
-
-		String range = MapUtil.getString(
-			parameterMap, ExportImportDateUtil.RANGE,
-			ExportImportDateUtil.RANGE_ALL);
-
-		if (range.equals(ExportImportDateUtil.RANGE_DATE_RANGE)) {
-			publishProcessRequest.setDateRangeType(
-				() -> PublishProcessRequest.DateRangeType.DATE_RANGE);
-			publishProcessRequest.setEndDate(
-				() -> _getDate(locale, parameterMap, "endDate", timeZone));
-			publishProcessRequest.setStartDate(
-				() -> _getDate(locale, parameterMap, "startDate", timeZone));
-		}
-		else if (range.equals(
-					ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE)) {
-
-			publishProcessRequest.setDateRangeType(
-				() ->
-					PublishProcessRequest.DateRangeType.FROM_LAST_PUBLISH_DATE);
-		}
-		else if (range.equals(ExportImportDateUtil.RANGE_LAST)) {
-			publishProcessRequest.setDateRangeType(
-				() -> PublishProcessRequest.DateRangeType.LAST);
-			publishProcessRequest.setStartDate(
-				() -> new Date(
-					System.currentTimeMillis() -
-						(MapUtil.getLong(parameterMap, "last") * Time.HOUR)));
-		}
-
-		return publishProcessRequest;
+		return new PublishProcessRequest() {
+			{
+				setComments(
+					() -> MapUtil.getBoolean(
+						parameterMap, PortletDataHandlerKeys.COMMENTS));
+				setDateFilter(
+					() -> _toDateFilter(locale, parameterMap, timeZone));
+				setDeletions(
+					() -> MapUtil.getBoolean(
+						parameterMap, PortletDataHandlerKeys.DELETIONS));
+				setPermissions(
+					() -> MapUtil.getBoolean(
+						parameterMap, PortletDataHandlerKeys.PERMISSIONS));
+				setPortletDataHandlers(
+					() -> _toPortletDataHandlers(
+						availablePortletDataHandlers, parameterMap));
+				setRatings(
+					() -> MapUtil.getBoolean(
+						parameterMap, PortletDataHandlerKeys.RATINGS));
+			}
+		};
 	}
 
 	private static Date _getDate(
@@ -799,6 +778,43 @@ public class ParameterMapUtil {
 					name + _TREE_SELECTION_SUFFIX_SUBTREES)));
 	}
 
+	private static DateFilter _toDateFilter(
+		Locale locale, Map<String, String[]> parameterMap, TimeZone timeZone) {
+
+		if (ExportImportDateUtil.isRangeDateRange(parameterMap)) {
+			return new DateRangeDateFilter() {
+				{
+					setEndDate(
+						() -> _getDate(
+							locale, parameterMap, "endDate", timeZone));
+					setStartDate(
+						() -> _getDate(
+							locale, parameterMap, "startDate", timeZone));
+					setType(() -> Type.DATE_RANGE);
+				}
+			};
+		}
+
+		if (ExportImportDateUtil.isRangeFromLastPublishDate(parameterMap)) {
+			return new FromLastPublishDateFilter() {
+				{
+					setType(() -> Type.FROM_LAST_PUBLISH_DATE);
+				}
+			};
+		}
+
+		if (ExportImportDateUtil.isRangeLast(parameterMap)) {
+			return new LastHoursDateFilter() {
+				{
+					setHours(() -> MapUtil.getInteger(parameterMap, "last"));
+					setType(() -> Type.LAST_HOURS);
+				}
+			};
+		}
+
+		return null;
+	}
+
 	private static PortletDataHandler[] _toPortletDataHandlers(
 		PortletDataHandler[] availablePortletDataHandlers,
 		Map<String, String[]> parameterMap) {
@@ -821,15 +837,6 @@ public class ParameterMapUtil {
 			},
 			PortletDataHandler.class);
 	}
-
-	private static final String _DATE_RANGE_TYPE_ALL = "ALL";
-
-	private static final String _DATE_RANGE_TYPE_DATE_RANGE = "DATE_RANGE";
-
-	private static final String _DATE_RANGE_TYPE_FROM_LAST_PUBLISH_DATE =
-		"FROM_LAST_PUBLISH_DATE";
-
-	private static final String _DATE_RANGE_TYPE_LAST = "LAST";
 
 	private static final String _TREE_SELECTION_SUFFIX_ALL = "_all";
 

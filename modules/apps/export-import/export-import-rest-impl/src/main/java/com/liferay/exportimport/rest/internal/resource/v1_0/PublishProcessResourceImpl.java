@@ -184,9 +184,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				publishProcessRequest.getDateRangeTypeAsString(),
-				publishProcessRequest.getStartDate(),
-				publishProcessRequest.getEndDate(),
+				publishProcessRequest.getDateFilter(),
 				ParameterMapUtil.toParameterMap(
 					publishProcessRequest,
 					PortletDataHandlerUtil.getExportPortletDataHandlers(
