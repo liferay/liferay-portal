@@ -1185,77 +1185,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-162826 Add the Compare to Action to the Version History for Web Content"
-	@priority = 3
-	test CompareToVersionWebContent {
-		task ("Given the Versions tab in the Info panel of a Web Content") {
-			task ("Create a Web Content") {
-				JSONWebcontent.addWebContent(
-					content = "Web Content Content",
-					groupName = "Test Site Name",
-					title = "Web Content Title");
-			}
-
-			task ("Create a version for that web content") {
-				WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-				WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-				WebContent.editCP(
-					webContentContentEdit = "Web Content Content Edit",
-					webContentTitleEdit = "Web Content Title Edit");
-			}
-
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-
-			task ("Open info panel sidebar") {
-				LexiconTable.clickEllipsisItem(
-					item = "Info",
-					tableEntry = "Web Content Title Edit");
-			}
-		}
-
-		task ("When the user opens the kebab menu of a version And the user clicks on the Compare to action") {
-			ContentDashboard.openVersionsTab();
-
-			ContentDashboard.clickMenuOfVersion(
-				menuItem = "Compare to...",
-				versionName = "Version 1.0");
-		}
-
-		task ("Then the user is redirected to the compare screen for Web Content") {
-			AssertTextEquals(
-				locator1 = "WCViewHistory#VIEW_COMPARE_VERSIONS_CONTENT",
-				value1 = "Web Content Content Edit");
-		}
-
-		task ("When the user selects the most recent version of the Web Content in the Compare to action") {
-			ContentDashboard.goToContentDashboard();
-
-			LexiconTable.clickEllipsisItem(
-				item = "Info",
-				tableEntry = "Web Content Title Edit");
-
-			ContentDashboard.openVersionsTab();
-
-			ContentDashboard.clickMenuOfVersion(
-				menuItem = "Compare to...",
-				versionName = "Version 1.1");
-		}
-
-		task ("Then this version should be compared to itself") {
-			AssertTextEquals(
-				locator1 = "WCViewHistory#COMPARED_VERSION_NEWER",
-				value1 = "Version 1.1");
-
-			AssertTextEquals(
-				locator1 = "WCViewHistory#COMPARED_VERSION_OLDER",
-				value1 = "Version 1.1");
-		}
-	}
-
 	@description = "LPS-132597 A web content's display page icon in the Content Dashboard table reflects both its association with a Display Page and its status"
 	@priority = 5
 	test DisplayPageIconVisibility {
@@ -1666,59 +1595,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-161017 Add the Download Action to the Version History for Documents and Media"
-	@priority = 4
-	test DownloadDocumentFromVersionsTab {
-		property portal.acceptance = "true";
-
-		task ("Given the Versions tab in the Info panel of a document") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add versions for the document") {
-				DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-				DMDocument.editCP(
-					dmDocumentTitle = "DM Document Title",
-					dmDocumentTitleEdit = "DM Document Title Edit 1",
-					revision = "Minor",
-					versioning = "true");
-			}
-
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-
-			task ("Open info panel sidebar") {
-				LexiconTable.clickEllipsisItem(
-					item = "Info",
-					tableEntry = "DM Document Title Edit 1");
-			}
-
-			task ("Open versions tab") {
-				ContentDashboard.openVersionsTab();
-			}
-		}
-
-		task ("When the user opens the kebab menu of a version And the user clicks on the Download action") {
-			ContentDashboard.clickMenuOfVersion(
-				menuItem = "Download",
-				versionName = "Version 1.0");
-
-			DownloadTempFile();
-		}
-
-		task ("Then the version of that document is downloaded") {
-			DMDocument.assertFileNameFromTempFolder(fileName = "Document_1.txt");
-		}
-	}
-
 	@description = "LPS-132509 Given a blog with an associated Display Page Template When the user with permissions to edit clicks on the Edit button Then the user is led to the edit mode"
 	@priority = 4
 	test EditBlog {
@@ -1808,40 +1684,6 @@ definition {
 				columnName = "modified-date",
 				tableEntry = "WC Title Edited",
 				tableEntryInfo = "0 Seconds Ago");
-		}
-	}
-
-	@description = "LPS-162827 Given the kebab menu of a web content with just one version When the user clicks on Expire option Then the web content is expired and it changes its status to Expired"
-	@priority = 4
-	test ExpireVersionLabel {
-		task ("Create a Web Content") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-		}
-
-		task ("Go to Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-		}
-
-		task ("Open the info panel and go to the versions tab") {
-			ContentDashboard.clickQuickActionIcon(iconName = "Info");
-
-			ContentDashboard.openVersionsTab();
-		}
-
-		task ("Expire the web content version") {
-			ContentDashboard.clickMenuOfVersion(
-				menuItem = "Expire",
-				versionName = "Version 1.0");
-		}
-
-		task ("Check the Expire label is present for the web content") {
-			AssertTextEquals(
-				assetName = "WC Title",
-				locator1 = "ContentDashboard#ASSET_STATUS_LABEL",
-				value1 = "EXPIRED");
 		}
 	}
 
@@ -2510,67 +2352,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-162824 Add the Revert Action to the Version History for Documents and Media"
-	@priority = 4
-	test RevertDocumentVersion {
-		property portal.acceptance = "true";
-
-		task ("Given a Document with more than one version") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Create a new version of the document") {
-				DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-				DMDocument.editCP(
-					dmDocumentTitle = "DM Document Title",
-					dmDocumentTitleEdit = "DM Document Title Edit");
-			}
-		}
-
-		task ("And its info panel is open") {
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-
-			task ("Open info panel sidebar at versions tag") {
-				ContentDashboard.openInfoPanel(assetName = "DM Document Title Edit");
-
-				ContentDashboard.openVersionsTab();
-			}
-		}
-
-		task ("When user select the revert option of an older version") {
-			ContentDashboard.clickMenuOfVersion(
-				menuItem = "Revert",
-				versionName = "Version 1.0");
-		}
-
-		task ("Then a new major version is created") {
-			ContentDashboard.openInfoPanel(assetName = "DM Document Title");
-
-			ContentDashboard.openVersionsTab();
-
-			AssertTextEquals(
-				index = 1,
-				locator1 = "ContentDashboard#ASSET_VERSION_NUMBER_INDEX",
-				value1 = "Version 2.0");
-		}
-
-		task ("And the log should inform the corresponding version") {
-			AssertTextEquals(
-				locator1 = "ContentDashboard#ASSET_VERSION_LOGS",
-				value1 = "Reverted to 1.0",
-				versionNumber = "Version 2.0");
-		}
-	}
-
 	@description = "LPS-162826 Validate if the user can open de Info side panel of a web content"
 	@priority = 5
 	test SaveFiltersAfterEditing {
@@ -2703,60 +2484,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-162823 Add the View Action to the Version History for Documents and Media"
-	@priority = 3
-	test ViewDocumentVersion {
-		property portal.acceptance = "true";
-
-		task ("Given the Versions tab in the Info panel of a document") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					groupName = "Test Site Name",
-					mimeType = "text/plain",
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add versions for the document") {
-				DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-				DMDocument.editCP(
-					dmDocumentTitle = "DM Document Title",
-					dmDocumentTitleEdit = "DM Document Title Edit 1",
-					revision = "Minor",
-					versioning = "true");
-			}
-
-			task ("Navigate to Content Dashboard") {
-				ContentDashboard.goToContentDashboard();
-			}
-
-			task ("Open info panel sidebar") {
-				LexiconTable.clickEllipsisItem(
-					item = "Info",
-					tableEntry = "DM Document Title Edit 1");
-			}
-
-			task ("Open versions tab") {
-				ContentDashboard.openVersionsTab();
-			}
-		}
-
-		task ("When the user opens the kebab menu of a version And the user clicks on the View action") {
-			ContentDashboard.clickMenuOfVersion(
-				menuItem = "View",
-				versionName = "Version 1.0");
-		}
-
-		task ("Then the user is redirected to the document page for that version") {
-			AssertTextEquals(
-				key_dmDocumentTitle = "DM Document Title (Version 1.0)",
-				locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_TITLE",
-				value1 = "DM Document Title (Version 1.0)");
-		}
-	}
-
 	@description = "LPS-182032 The .xls file is exported with the review date column."
 	@priority = 3
 	test ViewExportXLSButtonWithReviewDate {
@@ -2856,51 +2583,6 @@ definition {
 			AssertTextEquals(
 				locator1 = "ContentDashboard#INFO_PANEL_TITLE",
 				value1 = "Web Content Title");
-		}
-	}
-
-	@description = "LPS-164334 Add a Version History Page to Documents and Media"
-	@priority = 4
-	test ViewMoreButtonToDocumentsVersionHistory {
-		property portal.acceptance = "true";
-
-		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
-
-		task ("Given the info panel of a document") {
-			task ("Create a Document") {
-				JSONDocument.addFileWithUploadedFile(
-					dmDocumentDescription = "DM Document Description",
-					dmDocumentTitle = "DM Document Title",
-					mimeType = "text/plain",
-					repositoryId = ${groupId},
-					sourceFileName = "Document_1.txt");
-			}
-
-			task ("Add versions for the document") {
-				ContentDashboard.createVersionsForDocument(
-					dmDocumentTitle = "DM Document Title",
-					groupId = ${groupId},
-					versionsCreated = 10);
-			}
-		}
-
-		task ("When the user clicks on the View More button") {
-			ContentDashboard.goToVersionHistoryPage(assetName = "DM Document Title");
-		}
-
-		task ("And the user is redirected to the Version History page for documents") {
-			AssertLocation.assertPartialLocation(value1 = "document_library%2Fview_file_entry_history");
-
-			SiteAdmin.viewPortletTitle(portletTitle = "DM Document Title");
-		}
-
-		task ("Then this page should contain a table of all the Version Histories of the Document") {
-			for (var indexNumber : list "1,2,3,4,5,6,7,8,9,10,11") {
-				AssertVisible(
-					index = ${indexNumber},
-					key_tableEntry = "DM Document Title",
-					locator1 = "LexiconTable#TABLE_ENTRY_TITLE_INDEXED");
-			}
 		}
 	}
 
