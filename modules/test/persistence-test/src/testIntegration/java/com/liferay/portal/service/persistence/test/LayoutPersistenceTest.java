@@ -383,26 +383,10 @@ public class LayoutPersistenceTest {
 	}
 
 	@Test
-	public void testCountByParentPlid() throws Exception {
-		_persistence.countByParentPlid(RandomTestUtil.nextLong());
-
-		_persistence.countByParentPlid(0L);
-	}
-
-	@Test
 	public void testCountByIconImageId() throws Exception {
 		_persistence.countByIconImageId(RandomTestUtil.nextLong());
 
 		_persistence.countByIconImageId(0L);
-	}
-
-	@Test
-	public void testCountByLayoutSetPrototypeLayoutERC() throws Exception {
-		_persistence.countByLayoutSetPrototypeLayoutERC("");
-
-		_persistence.countByLayoutSetPrototypeLayoutERC("null");
-
-		_persistence.countByLayoutSetPrototypeLayoutERC((String)null);
 	}
 
 	@Test
@@ -526,18 +510,6 @@ public class LayoutPersistenceTest {
 		_persistence.countByG_P_F(0L, RandomTestUtil.randomBoolean(), "null");
 
 		_persistence.countByG_P_F(
-			0L, RandomTestUtil.randomBoolean(), (String)null);
-	}
-
-	@Test
-	public void testCountByG_P_LSPLE() throws Exception {
-		_persistence.countByG_P_LSPLE(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "");
-
-		_persistence.countByG_P_LSPLE(
-			0L, RandomTestUtil.randomBoolean(), "null");
-
-		_persistence.countByG_P_LSPLE(
 			0L, RandomTestUtil.randomBoolean(), (String)null);
 	}
 
@@ -1101,4 +1073,4 @@ public class LayoutPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-19188678
+// LIFERAY-SERVICE-BUILDER-HASH:1164010515

@@ -124,32 +124,26 @@ public class RecentLayoutSetBranchModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 1L;
+	public static final long LAYOUTSETBRANCHID_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long LAYOUTSETBRANCHID_COLUMN_BITMASK = 2L;
+	public static final long LAYOUTSETID_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long LAYOUTSETID_COLUMN_BITMASK = 4L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 8L;
+	public static final long USERID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long RECENTLAYOUTSETBRANCHID_COLUMN_BITMASK = 16L;
+	public static final long RECENTLAYOUTSETBRANCHID_COLUMN_BITMASK = 8L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.kernel.util.PropsUtil.get(
@@ -363,15 +357,6 @@ public class RecentLayoutSetBranchModelImpl
 		}
 
 		_groupId = groupId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalGroupId() {
-		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("groupId"));
 	}
 
 	@Override
@@ -799,4 +784,4 @@ public class RecentLayoutSetBranchModelImpl
 	private RecentLayoutSetBranch _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-906053198
+// LIFERAY-SERVICE-BUILDER-HASH:1292374508

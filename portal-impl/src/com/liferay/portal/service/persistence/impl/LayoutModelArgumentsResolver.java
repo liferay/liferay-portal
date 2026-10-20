@@ -182,13 +182,6 @@ public class LayoutModelArgumentsResolver implements ArgumentsResolver {
 		_whereColumnBitmasks.put("CompanyId", whereColumnBitmask);
 
 		_whereBiPredicates.put("CompanyId", whereBiPredicate);
-		_whereColumnBitmasks.put("ParentPlid", whereColumnBitmask);
-
-		_whereBiPredicates.put("ParentPlid", whereBiPredicate);
-		_whereColumnBitmasks.put(
-			"LayoutSetPrototypeLayoutERC", whereColumnBitmask);
-
-		_whereBiPredicates.put("LayoutSetPrototypeLayoutERC", whereBiPredicate);
 		_whereColumnBitmasks.put("G_T", whereColumnBitmask);
 
 		_whereBiPredicates.put("G_T", whereBiPredicate);
@@ -213,4 +206,4 @@ public class LayoutModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1634796660
+// LIFERAY-SERVICE-BUILDER-HASH:-2115989166

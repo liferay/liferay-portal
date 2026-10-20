@@ -229,13 +229,6 @@ public class LayoutFriendlyURLPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByPlid() throws Exception {
 		_persistence.countByPlid(RandomTestUtil.nextLong());
 
@@ -690,4 +683,4 @@ public class LayoutFriendlyURLPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-85683551
+// LIFERAY-SERVICE-BUILDER-HASH:424037429

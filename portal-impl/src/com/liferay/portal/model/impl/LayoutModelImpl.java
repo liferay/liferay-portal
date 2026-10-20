@@ -252,76 +252,64 @@ public class LayoutModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long LAYOUTSETPROTOTYPELAYOUTERC_COLUMN_BITMASK = 512L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
 	public static final long MASTERLAYOUTPAGETEMPLATEENTRYERC_COLUMN_BITMASK =
-		1024L;
+		512L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PARENTLAYOUTID_COLUMN_BITMASK = 2048L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long PARENTPLID_COLUMN_BITMASK = 4096L;
+	public static final long PARENTLAYOUTID_COLUMN_BITMASK = 1024L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
 	public static final long PORTLETLAYOUTPAGETEMPLATEENTRYERC_COLUMN_BITMASK =
-		8192L;
+		2048L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
 	public static final long
-		PORTLETLAYOUTPAGETEMPLATEENTRYSCOPEERC_COLUMN_BITMASK = 16384L;
+		PORTLETLAYOUTPAGETEMPLATEENTRYSCOPEERC_COLUMN_BITMASK = 4096L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIORITY_COLUMN_BITMASK = 32768L;
+	public static final long PRIORITY_COLUMN_BITMASK = 8192L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIVATELAYOUT_COLUMN_BITMASK = 65536L;
+	public static final long PRIVATELAYOUT_COLUMN_BITMASK = 16384L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long STATUS_COLUMN_BITMASK = 131072L;
+	public static final long STATUS_COLUMN_BITMASK = 32768L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SYSTEM_COLUMN_BITMASK = 262144L;
+	public static final long SYSTEM_COLUMN_BITMASK = 65536L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 524288L;
+	public static final long TYPE_COLUMN_BITMASK = 131072L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 1048576L;
+	public static final long UUID_COLUMN_BITMASK = 262144L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.kernel.util.PropsUtil.get(
@@ -889,16 +877,6 @@ public class LayoutModelImpl
 		}
 
 		_parentPlid = parentPlid;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalParentPlid() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("parentPlid"));
 	}
 
 	@JSON
@@ -2069,15 +2047,6 @@ public class LayoutModelImpl
 		}
 
 		_layoutSetPrototypeLayoutERC = layoutSetPrototypeLayoutERC;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalLayoutSetPrototypeLayoutERC() {
-		return getColumnOriginalValue("layoutSetPrototypeLayoutERC");
 	}
 
 	@JSON
@@ -3355,4 +3324,4 @@ public class LayoutModelImpl
 	private Layout _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2023542510
+// LIFERAY-SERVICE-BUILDER-HASH:1432645212

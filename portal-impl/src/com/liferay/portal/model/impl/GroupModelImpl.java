@@ -242,13 +242,7 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 16384L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 32768L;
+	public static final long UUID_COLUMN_BITMASK = 16384L;
 
 	public static final String MAPPING_TABLE_GROUPS_ORGS_NAME = "Groups_Orgs";
 
@@ -1115,16 +1109,6 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 		}
 
 		_type = type;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public int getOriginalType() {
-		return GetterUtil.getInteger(
-			this.<Integer>getColumnOriginalValue("type_"));
 	}
 
 	@JSON
@@ -2013,4 +1997,4 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 	private Group _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-349176140
+// LIFERAY-SERVICE-BUILDER-HASH:-1375888203

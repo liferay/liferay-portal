@@ -164,13 +164,6 @@ public class RecentLayoutRevisionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByGroupId() throws Exception {
-		_persistence.countByGroupId(RandomTestUtil.nextLong());
-
-		_persistence.countByGroupId(0L);
-	}
-
-	@Test
 	public void testCountByUserId() throws Exception {
 		_persistence.countByUserId(RandomTestUtil.nextLong());
 
@@ -563,4 +556,4 @@ public class RecentLayoutRevisionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2010132595
+// LIFERAY-SERVICE-BUILDER-HASH:-1697610979

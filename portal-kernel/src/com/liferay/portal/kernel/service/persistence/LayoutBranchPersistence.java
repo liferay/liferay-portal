@@ -155,72 +155,6 @@ public interface LayoutBranchPersistence extends BasePersistence<LayoutBranch> {
 	public int countByPlid(long plid);
 
 	/**
-	 * Returns an ordered range of all the layout branches where layoutSetBranchId = &#63; and plid = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutBranchModelImpl</code>.
-	 * </p>
-	 *
-	 * @param layoutSetBranchId the layout set branch ID
-	 * @param plid the plid
-	 * @param start the lower bound of the range of layout branches
-	 * @param end the upper bound of the range of layout branches (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching layout branches
-	 */
-	public java.util.List<LayoutBranch> findByL_P(
-		long layoutSetBranchId, long plid, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<LayoutBranch>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first layout branch in the ordered set where layoutSetBranchId = &#63; and plid = &#63;.
-	 *
-	 * @param layoutSetBranchId the layout set branch ID
-	 * @param plid the plid
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching layout branch
-	 * @throws NoSuchLayoutBranchException if a matching layout branch could not be found
-	 */
-	public LayoutBranch findByL_P_First(
-			long layoutSetBranchId, long plid,
-			com.liferay.portal.kernel.util.OrderByComparator<LayoutBranch>
-				orderByComparator)
-		throws NoSuchLayoutBranchException;
-
-	/**
-	 * Returns the first layout branch in the ordered set where layoutSetBranchId = &#63; and plid = &#63;.
-	 *
-	 * @param layoutSetBranchId the layout set branch ID
-	 * @param plid the plid
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching layout branch, or <code>null</code> if a matching layout branch could not be found
-	 */
-	public LayoutBranch fetchByL_P_First(
-		long layoutSetBranchId, long plid,
-		com.liferay.portal.kernel.util.OrderByComparator<LayoutBranch>
-			orderByComparator);
-
-	/**
-	 * Removes all the layout branches where layoutSetBranchId = &#63; and plid = &#63; from the database.
-	 *
-	 * @param layoutSetBranchId the layout set branch ID
-	 * @param plid the plid
-	 */
-	public void removeByL_P(long layoutSetBranchId, long plid);
-
-	/**
-	 * Returns the number of layout branches where layoutSetBranchId = &#63; and plid = &#63;.
-	 *
-	 * @param layoutSetBranchId the layout set branch ID
-	 * @param plid the plid
-	 * @return the number of matching layout branches
-	 */
-	public int countByL_P(long layoutSetBranchId, long plid);
-
-	/**
 	 * Returns the layout branch where layoutSetBranchId = &#63; and plid = &#63; and name = &#63; or throws a <code>NoSuchLayoutBranchException</code> if it could not be found.
 	 *
 	 * @param layoutSetBranchId the layout set branch ID
@@ -499,64 +433,6 @@ public interface LayoutBranchPersistence extends BasePersistence<LayoutBranch> {
 	}
 
 	/**
-	 * Returns all the layout branches where layoutSetBranchId = &#63; and plid = &#63;.
-	 *
-	 * @param layoutSetBranchId the layout set branch ID
-	 * @param plid the plid
-	 * @return the matching layout branches
-	 */
-	public default java.util.List<LayoutBranch> findByL_P(
-		long layoutSetBranchId, long plid) {
-
-		return findByL_P(
-			layoutSetBranchId, plid,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the layout branches where layoutSetBranchId = &#63; and plid = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutBranchModelImpl</code>.
-	 * </p>
-	 *
-	 * @param layoutSetBranchId the layout set branch ID
-	 * @param plid the plid
-	 * @param start the lower bound of the range of layout branches
-	 * @param end the upper bound of the range of layout branches (not inclusive)
-	 * @return the range of matching layout branches
-	 */
-	public default java.util.List<LayoutBranch> findByL_P(
-		long layoutSetBranchId, long plid, int start, int end) {
-
-		return findByL_P(layoutSetBranchId, plid, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the layout branches where layoutSetBranchId = &#63; and plid = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutBranchModelImpl</code>.
-	 * </p>
-	 *
-	 * @param layoutSetBranchId the layout set branch ID
-	 * @param plid the plid
-	 * @param start the lower bound of the range of layout branches
-	 * @param end the upper bound of the range of layout branches (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching layout branches
-	 */
-	public default java.util.List<LayoutBranch> findByL_P(
-		long layoutSetBranchId, long plid, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<LayoutBranch>
-			orderByComparator) {
-
-		return findByL_P(
-			layoutSetBranchId, plid, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the layout branches where layoutSetBranchId = &#63; and plid = &#63; and master = &#63;.
 	 *
 	 * @param layoutSetBranchId the layout set branch ID
@@ -620,4 +496,4 @@ public interface LayoutBranchPersistence extends BasePersistence<LayoutBranch> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:386074766
+// LIFERAY-SERVICE-BUILDER-HASH:1907453124
