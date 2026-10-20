@@ -311,15 +311,16 @@ public class LayoutLocalServiceWrapper
 	}
 
 	private void _copyLayoutClassedModelUsages(
-		Layout sourceLayout, Layout targetLayout) {
+		Layout sourceLayout, long[] sourceSegmentsExperiencesIds,
+		Layout targetLayout) {
 
 		long[] classNameIds = {
 			_portal.getClassNameId(FragmentEntryLink.class.getName()),
 			_portal.getClassNameId(LayoutPageTemplateStructure.class.getName())
 		};
 		List<LayoutClassedModelUsage> sourceLayoutLayoutClassedModelUsages =
-			_layoutClassedModelUsageLocalService.
-				getLayoutClassedModelUsagesByPlid(sourceLayout.getPlid());
+			_getLayoutClassedModelUsages(
+				sourceLayout, sourceSegmentsExperiencesIds);
 
 		_deleteLayoutClassedModelUsages(
 			classNameIds, sourceLayoutLayoutClassedModelUsages, targetLayout);
@@ -991,6 +992,54 @@ public class LayoutLocalServiceWrapper
 		}
 
 		return fragmentEntryLinksMap;
+	}
+
+	private List<LayoutClassedModelUsage> _getLayoutClassedModelUsages(
+		Layout layout, long[] segmentsExperiencesIds) {
+
+		Set<String> deletedPortletIds = new HashSet<>();
+
+		for (FragmentEntryLink fragmentEntryLink :
+				_fragmentEntryLinkLocalService.
+					getFragmentEntryLinksBySegmentsExperienceId(
+						layout.getGroupId(), segmentsExperiencesIds,
+						layout.getPlid(), true)) {
+
+			deletedPortletIds.addAll(
+				_portletRegistry.getFragmentEntryLinkPortletIds(
+					fragmentEntryLink));
+		}
+
+		List<LayoutClassedModelUsage> layoutClassedModelUsages =
+			_layoutClassedModelUsageLocalService.
+				getLayoutClassedModelUsagesByPlid(layout.getPlid());
+
+		if (deletedPortletIds.isEmpty()) {
+			return layoutClassedModelUsages;
+		}
+
+		for (FragmentEntryLink fragmentEntryLink :
+				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+					layout.getGroupId(), layout.getPlid())) {
+
+			if (fragmentEntryLink.isDeleted()) {
+				continue;
+			}
+
+			deletedPortletIds.removeAll(
+				_portletRegistry.getFragmentEntryLinkPortletIds(
+					fragmentEntryLink));
+		}
+
+		long portletClassNameId = _portal.getClassNameId(Portlet.class);
+
+		return ListUtil.filter(
+			layoutClassedModelUsages,
+			layoutClassedModelUsage ->
+				(layoutClassedModelUsage.getContainerType() !=
+					portletClassNameId) ||
+				!deletedPortletIds.contains(
+					layoutClassedModelUsage.getContainerKey()));
 	}
 
 	private List<String> _getLayoutPortletIds(
@@ -1680,7 +1729,8 @@ public class LayoutLocalServiceWrapper
 
 			// Copy classedModelUsages after copying the structure
 
-			_copyLayoutClassedModelUsages(_sourceLayout, _targetLayout);
+			_copyLayoutClassedModelUsages(
+				_sourceLayout, _sourceSegmentsExperiencesIds, _targetLayout);
 
 			_sites.copyExpandoBridgeAttributes(_sourceLayout, _targetLayout);
 
