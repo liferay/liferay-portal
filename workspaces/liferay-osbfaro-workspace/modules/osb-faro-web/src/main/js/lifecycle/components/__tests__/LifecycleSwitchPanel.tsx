@@ -3,7 +3,8 @@ import LifecycleSwitchPanel, {
 	LifecyclePanelView,
 } from '../LifecycleSwitchPanel';
 import mockStore from 'test/mock-store';
-import React, {useRef, useState} from 'react';
+import BasePage from 'shared/components/base-page';
+import React, {useState} from 'react';
 import {
 	act,
 	cleanup,
@@ -79,24 +80,19 @@ const Panel = ({
 	initialView?: LifecyclePanelView | null;
 	onDefaultChange?: (lifecycleId: string) => void;
 }) => {
-	const containerRef = useRef<HTMLDivElement>(null);
-
 	const [view, setView] = useState<LifecyclePanelView | null>(initialView);
 
 	return (
-		<>
-			<div ref={containerRef} />
-
+		<BasePage documentTitle="Test">
 			<span data-testid="view">{JSON.stringify(view)}</span>
 
 			<LifecycleSwitchPanel
-				containerRef={containerRef}
 				defaultChangeCount={0}
 				onDefaultChange={onDefaultChange}
 				onViewChange={setView}
 				view={view}
 			/>
-		</>
+		</BasePage>
 	);
 };
 

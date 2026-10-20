@@ -1,8 +1,16 @@
-import LifecycleSidePanel from '../LifecycleSidePanel';
-import React, {useRef} from 'react';
+import BasePage from '..';
+import mockStore from 'test/mock-store';
+import React from 'react';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {MemoryRouter} from 'react-router-dom';
+import {Provider} from 'react-redux';
+import {resetBodyWidth, setBodyWidth} from 'test/body-width';
 
 jest.unmock('react-dom');
+
+const PUSH_WIDTH = 1440;
+
+const OVERLAY_WIDTH = 1024;
 
 const Panel = ({
 	onOpenChange = jest.fn(),
@@ -13,52 +21,61 @@ const Panel = ({
 	open: boolean;
 	overlay?: boolean;
 }) => {
-	const containerRef = useRef<HTMLDivElement>(null);
+	setBodyWidth(overlay ? OVERLAY_WIDTH : PUSH_WIDTH);
 
 	return (
-		<>
-			<div data-testid="container" ref={containerRef} />
-
-			<LifecycleSidePanel
-				containerRef={containerRef}
-				onOpenChange={onOpenChange}
-				open={open}
-				overlay={overlay}
-			>
-				<button type="button">{'Inside'}</button>
-			</LifecycleSidePanel>
-		</>
+		<Provider store={mockStore()}>
+			<MemoryRouter>
+				<BasePage className="test-page" documentTitle="Test">
+					<BasePage.Sidebar onOpenChange={onOpenChange} open={open}>
+						<button type="button">{'Inside'}</button>
+					</BasePage.Sidebar>
+				</BasePage>
+			</MemoryRouter>
+		</Provider>
 	);
 };
 
-describe('LifecycleSidePanel', () => {
-	afterEach(cleanup);
+const getPage = () => document.querySelector('.test-page');
+
+describe('BasePage.Sidebar', () => {
+	afterEach(() => {
+		cleanup();
+
+		resetBodyWidth();
+	});
 
 	it('pushes the content without an overlay', () => {
 		render(<Panel open />);
 
-		expect(
-			screen.queryByTestId('lifecycle-side-panel-backdrop')
-		).toBeNull();
-		expect(screen.getByTestId('container')).toHaveClass(
-			'c-slideout-push-end'
-		);
+		expect(screen.queryByTestId('base-page-sidebar-backdrop')).toBeNull();
+		expect(getPage()).toHaveClass('c-slideout-push-end');
+		expect(getPage()).not.toHaveClass('base-page-sidebar-overlay');
 	});
 
 	it('overlays the content in overlay mode', () => {
 		render(<Panel open overlay />);
 
 		expect(
-			screen.getByTestId('lifecycle-side-panel-backdrop')
+			screen.getByTestId('base-page-sidebar-backdrop')
 		).toBeInTheDocument();
+		expect(getPage()).toHaveClass('base-page-sidebar-overlay');
+	});
+
+	it('sets its width on the page', () => {
+		render(<Panel open />);
+
+		expect(
+			(getPage() as HTMLElement).style.getPropertyValue(
+				'--base-page-sidebar-width'
+			)
+		).toBe('512px');
 	});
 
 	it('shows no overlay while closed', () => {
 		render(<Panel open={false} overlay />);
 
-		expect(
-			screen.queryByTestId('lifecycle-side-panel-backdrop')
-		).toBeNull();
+		expect(screen.queryByTestId('base-page-sidebar-backdrop')).toBeNull();
 	});
 
 	it('keeps the panel inert while closed', () => {
@@ -119,7 +136,10 @@ describe('LifecycleSidePanel', () => {
 
 			rerender(<Panel open />);
 
+			fireEvent(window, new Event('resize'));
+
 			expect(isLocked()).toBe(false);
+			expect(getPage()).not.toHaveClass('base-page-sidebar-overlay');
 		});
 
 		it('is released when the panel unmounts', () => {
@@ -170,9 +190,7 @@ describe('LifecycleSidePanel', () => {
 
 		render(<Panel onOpenChange={onOpenChange} open overlay />);
 
-		fireEvent.mouseDown(
-			screen.getByTestId('lifecycle-side-panel-backdrop')
-		);
+		fireEvent.mouseDown(screen.getByTestId('base-page-sidebar-backdrop'));
 
 		expect(onOpenChange).toHaveBeenCalledWith(false);
 	});

@@ -1,7 +1,7 @@
 import LifecycleDetailsPanel from '../LifecycleDetailsPanel';
-import LifecycleSidePanel from '../LifecycleSidePanel';
+import BasePage from 'shared/components/base-page';
 import mockStore from 'test/mock-store';
-import React, {useRef} from 'react';
+import React from 'react';
 import {
 	cleanup,
 	fireEvent,
@@ -97,24 +97,13 @@ const mockLifecycle = (lifecycle: ILifecycleDetail | null, error = false) =>
 
 const Panel = (
 	props: Partial<React.ComponentProps<typeof LifecycleDetailsPanel>>
-) => {
-	const containerRef = useRef<HTMLDivElement>(null);
-
-	return (
-		<>
-			<div ref={containerRef} />
-
-			<LifecycleSidePanel
-				containerRef={containerRef}
-				onOpenChange={jest.fn()}
-				open
-				overlay={false}
-			>
-				<LifecycleDetailsPanel lifecycleId="1" {...props} />
-			</LifecycleSidePanel>
-		</>
-	);
-};
+) => (
+	<BasePage documentTitle="Test">
+		<BasePage.Sidebar onOpenChange={jest.fn()} open>
+			<LifecycleDetailsPanel lifecycleId="1" {...props} />
+		</BasePage.Sidebar>
+	</BasePage>
+);
 
 const renderPanel = (
 	props: Partial<React.ComponentProps<typeof LifecycleDetailsPanel>> = {}

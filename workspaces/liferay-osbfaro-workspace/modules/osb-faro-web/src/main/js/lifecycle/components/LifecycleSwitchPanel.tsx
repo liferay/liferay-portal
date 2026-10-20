@@ -1,19 +1,16 @@
+import BasePage from 'shared/components/base-page';
 import LifecycleDetailsPanel from './LifecycleDetailsPanel';
-import LifecycleSidePanel from './LifecycleSidePanel';
 import LifecycleSwitchList from './LifecycleSwitchList';
 import React from 'react';
 import {ILifecycleDetail} from 'shared/api/lifecycle';
-import {MAX_PAGE_WIDTH} from 'shared/util/constants';
-import {SidePanel} from '@clayui/core';
-import {useBodyWidthBelow} from 'shared/hooks/useBodyWidthBelow';
 import {useParams} from 'react-router-dom';
+import {useSidebarOverlay} from 'shared/components/base-page/Sidebar';
 
 export type LifecyclePanelView =
 	| {type: 'switch'}
 	| {lifecycleId: string; parent?: 'switch'; type: 'details'};
 
 interface ILifecycleSwitchPanelProps {
-	containerRef: React.RefObject<HTMLElement>;
 	defaultChangeCount: number;
 	onDefaultChange: (lifecycleId: string) => void;
 	onViewChange: (view: LifecyclePanelView | null) => void;
@@ -23,7 +20,6 @@ interface ILifecycleSwitchPanelProps {
 }
 
 const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
-	containerRef,
 	defaultChangeCount,
 	onDefaultChange,
 	onViewChange,
@@ -33,7 +29,7 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 }) => {
 	const {lifecycleId} = useParams();
 
-	const overlay = useBodyWidthBelow(MAX_PAGE_WIDTH, {inclusive: true});
+	const overlay = useSidebarOverlay();
 
 	const backToSwitch = () => onViewChange({type: 'switch'});
 
@@ -47,11 +43,9 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 		overlay ? onViewChange(null) : backToSwitch();
 
 	return (
-		<LifecycleSidePanel
-			containerRef={containerRef}
+		<BasePage.Sidebar
 			onOpenChange={(open) => !open && onViewChange(null)}
 			open={!!view}
-			overlay={overlay}
 			triggerRef={triggerRef}
 		>
 			{view?.type === 'details' ? (
@@ -73,18 +67,18 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 				/>
 			) : (
 				<>
-					<SidePanel.Header
+					<BasePage.Sidebar.Header
 						className="border-bottom"
 						messages={{
 							closeAriaLabel: Liferay.Language.get('close'),
 						}}
 					>
-						<SidePanel.Title>
+						<BasePage.Sidebar.Title>
 							{Liferay.Language.get('switch-lifecycle-dashboard')}
-						</SidePanel.Title>
-					</SidePanel.Header>
+						</BasePage.Sidebar.Title>
+					</BasePage.Sidebar.Header>
 
-					<SidePanel.Body>
+					<BasePage.Sidebar.Body>
 						{view && (
 							<LifecycleSwitchList
 								defaultChangeCount={defaultChangeCount}
@@ -99,10 +93,10 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 								}
 							/>
 						)}
-					</SidePanel.Body>
+					</BasePage.Sidebar.Body>
 				</>
 			)}
-		</LifecycleSidePanel>
+		</BasePage.Sidebar>
 	);
 };
 

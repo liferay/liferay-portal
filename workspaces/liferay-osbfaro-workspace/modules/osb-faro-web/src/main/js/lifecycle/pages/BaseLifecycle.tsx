@@ -154,8 +154,6 @@ const BaseLifecycle = () => {
 		variables: {groupId: groupId!, lifecycleId: lifecycleId!},
 	});
 
-	const containerRef = useRef<HTMLDivElement>(null);
-
 	const switchButtonRef = useRef<HTMLButtonElement>(null);
 
 	const [panelView, setPanelView] = useState<LifecyclePanelView | null>(null);
@@ -278,123 +276,111 @@ const BaseLifecycle = () => {
 	}
 
 	return (
-		<>
-			<div className="lifecycle-dashboard" ref={containerRef}>
-				<LifecycleContextProvider
-					key={lifecycleId}
-					lifecycleId={lifecycleId}
+		<BasePage documentTitle={title}>
+			<LifecycleContextProvider
+				key={lifecycleId}
+				lifecycleId={lifecycleId}
+			>
+				<BasePage.Header
+					breadcrumbs={[
+						breadcrumbs.getHome({
+							channelId: channelId!,
+							groupId: groupId!,
+							label: selectedChannel?.name,
+						}),
+						breadcrumbs.getLifecycles({
+							channelId: channelId!,
+							groupId: groupId!,
+						}),
+						...(lifecycle?.name
+							? [
+									breadcrumbs.getEntityName({
+										label: lifecycle.name,
+									}),
+								]
+							: []),
+					]}
+					fluid
+					groupId={groupId!}
 				>
-					<BasePage documentTitle={title}>
-						<BasePage.Header
-							breadcrumbs={[
-								breadcrumbs.getHome({
-									channelId: channelId!,
-									groupId: groupId!,
-									label: selectedChannel?.name,
-								}),
-								breadcrumbs.getLifecycles({
-									channelId: channelId!,
-									groupId: groupId!,
-								}),
-								...(lifecycle?.name
-									? [
-											breadcrumbs.getEntityName({
-												label: lifecycle.name,
-											}),
-										]
-									: []),
-							]}
-							fluid
-							groupId={groupId!}
+					<BasePage.Row>
+						<BasePage.Header.TitleSection
+							className="mb-3"
+							sticker={
+								defaultAccountLifecycle && (
+									<LifecycleSticker className="mr-2" pinned />
+								)
+							}
+							title={title}
 						>
-							<BasePage.Row>
-								<BasePage.Header.TitleSection
-									className="mb-3"
-									sticker={
-										defaultAccountLifecycle && (
-											<LifecycleSticker
-												className="mr-2"
-												pinned
-											/>
-										)
-									}
-									title={title}
-								>
-									{!!actions.length && (
-										<BasePage.Header.PageActionsToolbar
-											actions={actions}
-										/>
+							{!!actions.length && (
+								<BasePage.Header.PageActionsToolbar
+									actions={actions}
+								/>
+							)}
+
+							<ClayButtonWithIcon
+								aria-expanded={!!panelView}
+								aria-label={Liferay.Language.get(
+									'switch-dashboard'
+								)}
+								borderless
+								className={getCN(
+									'ml-2 rounded text-secondary',
+									{active: !!panelView}
+								)}
+								data-tooltip-align="top"
+								displayType="secondary"
+								onClick={() =>
+									setPanelView(
+										panelView ? null : {type: 'switch'}
+									)
+								}
+								ref={switchButtonRef}
+								size="sm"
+								symbol="change"
+								title={Liferay.Language.get('switch-dashboard')}
+							/>
+						</BasePage.Header.TitleSection>
+					</BasePage.Row>
+				</BasePage.Header>
+				{hasContent && (
+					<BasePage.SubHeader fluid>
+						<div className="d-flex justify-content-between w-100">
+							<div className="d-flex">
+								<FilterPicker
+									className="mr-3"
+									entityLabel={Liferay.Language.get(
+										'industries'
 									)}
+									fieldMappingFieldName="industry"
+									filterKey="industryFilter"
+								/>
 
-									<ClayButtonWithIcon
-										aria-expanded={!!panelView}
-										aria-label={Liferay.Language.get(
-											'switch-dashboard'
-										)}
-										borderless
-										className={getCN(
-											'ml-2 rounded text-secondary',
-											{active: !!panelView}
-										)}
-										data-tooltip-align="top"
-										displayType="secondary"
-										onClick={() =>
-											setPanelView(
-												panelView
-													? null
-													: {type: 'switch'}
-											)
-										}
-										ref={switchButtonRef}
-										size="sm"
-										symbol="change"
-										title={Liferay.Language.get(
-											'switch-dashboard'
-										)}
-									/>
-								</BasePage.Header.TitleSection>
-							</BasePage.Row>
-						</BasePage.Header>
-						{hasContent && (
-							<BasePage.SubHeader fluid>
-								<div className="d-flex justify-content-between w-100">
-									<div className="d-flex">
-										<FilterPicker
-											className="mr-3"
-											entityLabel={Liferay.Language.get(
-												'industries'
-											)}
-											fieldMappingFieldName="industry"
-											filterKey="industryFilter"
-										/>
+								<FilterPicker
+									className="mr-3"
+									entityLabel={Liferay.Language.get(
+										'countries'
+									)}
+									fieldMappingFieldName="country"
+									filterKey="countryFilter"
+								/>
 
-										<FilterPicker
-											className="mr-3"
-											entityLabel={Liferay.Language.get(
-												'countries'
-											)}
-											fieldMappingFieldName="country"
-											filterKey="countryFilter"
-										/>
+								<SegmentDropdown
+									initialSegmentId={segmentId}
+									initialSegmentName={segmentName}
+									onFilterChange={setSegment}
+								/>
+							</div>
 
-										<SegmentDropdown
-											initialSegmentId={segmentId}
-											initialSegmentName={segmentName}
-											onFilterChange={setSegment}
-										/>
-									</div>
-
-									<TrailingNinetyDayRange />
-								</div>
-							</BasePage.SubHeader>
-						)}
-						<BasePage.Body fluid>{renderBody()}</BasePage.Body>
-					</BasePage>
-				</LifecycleContextProvider>
-			</div>
+							<TrailingNinetyDayRange />
+						</div>
+					</BasePage.SubHeader>
+				)}
+				<BasePage.Body fluid>{renderBody()}</BasePage.Body>
+			</LifecycleContextProvider>
 
 			<LifecycleSwitchPanel
-				containerRef={containerRef}
 				defaultChangeCount={defaultChange.count}
 				onDefaultChange={changeDefault}
 				onViewChange={setPanelView}
@@ -402,7 +388,7 @@ const BaseLifecycle = () => {
 				triggerRef={switchButtonRef}
 				view={panelView}
 			/>
-		</>
+		</BasePage>
 	);
 };
 

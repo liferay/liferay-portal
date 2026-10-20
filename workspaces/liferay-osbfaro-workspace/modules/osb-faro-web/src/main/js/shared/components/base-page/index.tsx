@@ -4,8 +4,9 @@ import DocumentTitle from 'shared/components/DocumentTitle';
 import getCN from 'classnames';
 import Header from './Header';
 import MaintenanceAlert from 'shared/components/MaintenanceAlert';
-import React from 'react';
+import React, {useRef} from 'react';
 import Row from './Row';
+import Sidebar, {SidebarContainerContext} from './Sidebar';
 import SubHeader from './SubHeader';
 
 interface IBasePageProps extends React.HTMLAttributes<HTMLElement> {
@@ -18,21 +19,29 @@ export const BasePage: React.FC<IBasePageProps> & {
 	Context: typeof Context;
 	Header: typeof Header;
 	Row: typeof Row;
+	Sidebar: typeof Sidebar;
 	SubHeader: typeof SubHeader;
-} = ({children, className, documentTitle}) => (
-	<div className={getCN('index-root', className)}>
-		<DocumentTitle title={documentTitle} />
+} = ({children, className, documentTitle}) => {
+	const rootRef = useRef<HTMLDivElement>(null);
 
-		<MaintenanceAlert stripe />
+	return (
+		<div className={getCN('index-root', className)} ref={rootRef}>
+			<DocumentTitle title={documentTitle} />
 
-		{children}
-	</div>
-);
+			<MaintenanceAlert stripe />
+
+			<SidebarContainerContext.Provider value={rootRef}>
+				{children}
+			</SidebarContainerContext.Provider>
+		</div>
+	);
+};
 
 BasePage.Body = Body;
 BasePage.Context = Context;
 BasePage.Header = Header;
 BasePage.Row = Row;
+BasePage.Sidebar = Sidebar;
 BasePage.SubHeader = SubHeader;
 
 export default BasePage;

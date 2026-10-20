@@ -1,14 +1,14 @@
-$lifecycleSidePanelWidth: 512px;
+.index-root:not(.base-page-sidebar-overlay) {
+	&.c-slideout-push-end {
+		padding-right: var(--base-page-sidebar-width);
+	}
 
-.lifecycle-dashboard.c-slideout-push-end {
-	padding-right: $lifecycleSidePanelWidth;
-
-	@media (max-width: $maxPageWidth) {
-		padding-right: 0;
+	&.c-slideout-push-start {
+		padding-left: var(--base-page-sidebar-width);
 	}
 }
 
-.sidebar.lifecycle-side-panel {
+.sidebar.base-page-sidebar {
 	border-left: 1px solid $cadmin-secondary-l2;
 	box-shadow: none;
 
@@ -23,6 +23,6 @@ $lifecycleSidePanelWidth: 512px;
 	}
 }
 
-.lifecycle-side-panel-backdrop {
+.base-page-sidebar-backdrop {
 	z-index: calc(#{$cadmin-zindex-c-slideout} - 1);
 }
