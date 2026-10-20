@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.template.TemplateRestricted;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
@@ -40,6 +41,7 @@ import javax.sql.DataSource;
  * @author Brian Wing Shun Chan
  * @see    com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl
  */
+@TemplateRestricted
 public interface BasePersistence<T extends BaseModel<T>> {
 
 	public void cacheResult(List<T> models);

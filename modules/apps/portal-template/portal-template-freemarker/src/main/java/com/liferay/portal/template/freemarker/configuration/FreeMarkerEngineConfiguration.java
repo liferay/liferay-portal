@@ -76,7 +76,7 @@ public interface FreeMarkerEngineConfiguration {
 	public String[] macroLibrary();
 
 	@Meta.AD(
-		deflt = "com.ibm.*|com.liferay.portal.kernel.model.Portlet|com.liferay.portal.kernel.service.persistence.BasePersistence|com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence|com.liferay.portal.spring.context.*|io.undertow.*|jakarta.portlet.PortletConfig|jakarta.portlet.PortletContext|java.io.*|java.lang.Class|java.lang.ClassLoader|java.lang.Package|java.lang.Process|java.lang.ProcessBuilder|java.lang.Runtime|java.lang.RuntimePermission|java.lang.SecurityManager|java.lang.System|java.lang.Thread|java.lang.ThreadGroup|java.lang.ThreadLocal|java.nio.*|java.nio.file.FileSystem|java.nio.file.Path|java.nio.file.spi.FileSystemProvider|org.apache.*|org.eclipse.osgi.*|org.glassfish.*|org.jboss.*|org.springframework.*|org.wildfly.*|weblogic.*",
+		deflt = "com.ibm.*|com.liferay.portal.kernel.model.Portlet|com.liferay.portal.spring.context.*|io.undertow.*|jakarta.portlet.PortletConfig|jakarta.portlet.PortletContext|java.io.*|java.lang.Class|java.lang.ClassLoader|java.lang.Package|java.lang.Process|java.lang.ProcessBuilder|java.lang.Runtime|java.lang.RuntimePermission|java.lang.SecurityManager|java.lang.System|java.lang.Thread|java.lang.ThreadGroup|java.lang.ThreadLocal|java.nio.*|java.nio.file.FileSystem|java.nio.file.Path|java.nio.file.spi.FileSystemProvider|org.apache.*|org.eclipse.osgi.*|org.glassfish.*|org.jboss.*|org.springframework.*|org.wildfly.*|weblogic.*",
 		description = "restricted-classes-help", name = "restricted-classes",
 		required = false
 	)
