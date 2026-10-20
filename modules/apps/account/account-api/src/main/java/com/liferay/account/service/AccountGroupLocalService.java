@@ -272,16 +272,6 @@ public interface AccountGroupLocalService
 	public List<AccountGroup> getAccountGroups(int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AccountGroup> getAccountGroups(
-		long companyId, int start, int end,
-		OrderByComparator<AccountGroup> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AccountGroup> getAccountGroups(
-		long companyId, String name, int start, int end,
-		OrderByComparator<AccountGroup> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AccountGroup> getAccountGroupsByAccountEntryId(
 		long accountEntryId, int start, int end);
 
@@ -296,12 +286,6 @@ public interface AccountGroupLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAccountGroupsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAccountGroupsCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public long getAccountGroupsCount(long companyId, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAccountGroupsCountByAccountEntryId(long accountEntryId);
@@ -385,4 +369,4 @@ public interface AccountGroupLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:170682256
+// LIFERAY-SERVICE-BUILDER-HASH:1170359977

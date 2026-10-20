@@ -339,28 +339,6 @@ public class AccountGroupLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.account.model.AccountGroup>
-		getAccountGroups(
-			long companyId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.account.model.AccountGroup> orderByComparator) {
-
-		return _accountGroupLocalService.getAccountGroups(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<com.liferay.account.model.AccountGroup>
-		getAccountGroups(
-			long companyId, String name, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.account.model.AccountGroup> orderByComparator) {
-
-		return _accountGroupLocalService.getAccountGroups(
-			companyId, name, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<com.liferay.account.model.AccountGroup>
 		getAccountGroupsByAccountEntryId(
 			long accountEntryId, int start, int end) {
 
@@ -384,16 +362,6 @@ public class AccountGroupLocalServiceWrapper
 	@Override
 	public int getAccountGroupsCount() {
 		return _accountGroupLocalService.getAccountGroupsCount();
-	}
-
-	@Override
-	public int getAccountGroupsCount(long companyId) {
-		return _accountGroupLocalService.getAccountGroupsCount(companyId);
-	}
-
-	@Override
-	public long getAccountGroupsCount(long companyId, String name) {
-		return _accountGroupLocalService.getAccountGroupsCount(companyId, name);
 	}
 
 	@Override
@@ -561,4 +529,4 @@ public class AccountGroupLocalServiceWrapper
 	private AccountGroupLocalService _accountGroupLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:82523321
+// LIFERAY-SERVICE-BUILDER-HASH:-941979684

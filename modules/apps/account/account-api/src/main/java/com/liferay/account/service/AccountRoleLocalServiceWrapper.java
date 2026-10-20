@@ -138,13 +138,6 @@ public class AccountRoleLocalServiceWrapper
 		return _accountRoleLocalService.deleteAccountRole(accountRoleId);
 	}
 
-	@Override
-	public void deleteAccountRolesByCompanyId(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_accountRoleLocalService.deleteAccountRolesByCompanyId(companyId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -489,4 +482,4 @@ public class AccountRoleLocalServiceWrapper
 	private AccountRoleLocalService _accountRoleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-521910250
+// LIFERAY-SERVICE-BUILDER-HASH:1819734048

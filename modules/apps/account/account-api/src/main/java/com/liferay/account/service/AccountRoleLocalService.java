@@ -129,9 +129,6 @@ public interface AccountRoleLocalService
 	public AccountRole deleteAccountRole(long accountRoleId)
 		throws PortalException;
 
-	public void deleteAccountRolesByCompanyId(long companyId)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -335,4 +332,4 @@ public interface AccountRoleLocalService
 	public AccountRole updateAccountRole(AccountRole accountRole);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1418454245
+// LIFERAY-SERVICE-BUILDER-HASH:1755458467

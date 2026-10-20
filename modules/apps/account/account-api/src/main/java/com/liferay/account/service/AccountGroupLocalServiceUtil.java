@@ -296,22 +296,6 @@ public class AccountGroupLocalServiceUtil {
 		return getService().getAccountGroups(start, end);
 	}
 
-	public static List<AccountGroup> getAccountGroups(
-		long companyId, int start, int end,
-		OrderByComparator<AccountGroup> orderByComparator) {
-
-		return getService().getAccountGroups(
-			companyId, start, end, orderByComparator);
-	}
-
-	public static List<AccountGroup> getAccountGroups(
-		long companyId, String name, int start, int end,
-		OrderByComparator<AccountGroup> orderByComparator) {
-
-		return getService().getAccountGroups(
-			companyId, name, start, end, orderByComparator);
-	}
-
 	public static List<AccountGroup> getAccountGroupsByAccountEntryId(
 		long accountEntryId, int start, int end) {
 
@@ -332,14 +316,6 @@ public class AccountGroupLocalServiceUtil {
 	 */
 	public static int getAccountGroupsCount() {
 		return getService().getAccountGroupsCount();
-	}
-
-	public static int getAccountGroupsCount(long companyId) {
-		return getService().getAccountGroupsCount(companyId);
-	}
-
-	public static long getAccountGroupsCount(long companyId, String name) {
-		return getService().getAccountGroupsCount(companyId, name);
 	}
 
 	public static int getAccountGroupsCountByAccountEntryId(
@@ -476,4 +452,4 @@ public class AccountGroupLocalServiceUtil {
 			AccountGroupLocalServiceUtil.class, AccountGroupLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-565231272
+// LIFERAY-SERVICE-BUILDER-HASH:-144651661
