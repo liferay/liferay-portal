@@ -720,6 +720,38 @@ public class CompanyLocalServiceTest {
 	}
 
 	@Test
+	public void testAddCompanyWhenCompanyIdExists() throws Exception {
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
+
+		Company company = _addCompany();
+
+		try {
+			String webId = RandomTestUtil.randomString() + "test.com";
+
+			try {
+				_companyLocalService.addCompany(
+					company.getCompanyId(), webId, webId, "test.com", 0, true,
+					true, null, null, null, null, null, null);
+
+				Assert.fail();
+			}
+			catch (IllegalArgumentException illegalArgumentException) {
+				Assert.assertEquals(
+					"Company ID " + company.getCompanyId() + " already exists",
+					illegalArgumentException.getMessage());
+			}
+
+			Company currentCompany = _companyLocalService.fetchCompany(
+				company.getCompanyId());
+
+			Assert.assertEquals(company.getWebId(), currentCompany.getWebId());
+		}
+		finally {
+			_companyLocalService.deleteCompany(company.getCompanyId());
+		}
+	}
+
+	@Test
 	public void testDeleteCompanyDeletesGroups() throws Exception {
 		Assert.assertEquals(
 			0,

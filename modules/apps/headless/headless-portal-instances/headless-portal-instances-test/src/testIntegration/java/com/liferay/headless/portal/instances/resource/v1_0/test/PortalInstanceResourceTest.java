@@ -180,6 +180,7 @@ public class PortalInstanceResourceTest
 		_testPostPortalInstanceWithAdminAndCompanyStrangers();
 		_testPostPortalInstanceWithAdminCredentials();
 		_testPostPortalInstanceWithAdminWithoutRequiredFields();
+		_testPostPortalInstanceWithExistingCompanyId();
 		_testPostPortalInstanceWithoutOmniadminPermission();
 	}
 
@@ -982,6 +983,38 @@ public class PortalInstanceResourceTest
 				"givenName", RandomTestUtil.randomString()
 			),
 			"Email address must not be null");
+	}
+
+	private void _testPostPortalInstanceWithExistingCompanyId()
+		throws Exception {
+
+		PortalInstance postPortalInstance =
+			testPostPortalInstance_addPortalInstance(randomPortalInstance());
+
+		try {
+			PortalInstance randomPortalInstance = randomPortalInstance();
+
+			randomPortalInstance.setCompanyId(
+				postPortalInstance.getCompanyId());
+
+			try {
+				portalInstanceResource.postPortalInstance(randomPortalInstance);
+
+				Assert.fail();
+			}
+			catch (Problem.ProblemException problemException) {
+				Problem problem = problemException.getProblem();
+
+				Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+				Assert.assertEquals(
+					"Company ID " + postPortalInstance.getCompanyId() +
+						" already exists",
+					problem.getTitle());
+			}
+		}
+		finally {
+			_deletePortalInstance(postPortalInstance);
+		}
 	}
 
 	private void _testPostPortalInstanceWithSiteInitializerKeyNonexistent()
