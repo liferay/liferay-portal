@@ -370,7 +370,6 @@ public class ObjectDefinitionLocalServiceImpl
 			systemObjectDefinitionManager.getLabelMap());
 		objectDefinition.setPluralLabelMap(
 			systemObjectDefinitionManager.getPluralLabelMap());
-		objectDefinition.setVersion(systemObjectDefinitionManager.getVersion());
 
 		objectDefinition = objectDefinitionPersistence.update(objectDefinition);
 
@@ -393,6 +392,8 @@ public class ObjectDefinitionLocalServiceImpl
 			_objectFieldPersistence.remove(oldObjectField);
 		}
 
+		boolean updateVersion = true;
+
 		for (ObjectField newObjectField : newObjectFields) {
 			ObjectField oldObjectField = _objectFieldPersistence.fetchByODI_N(
 				objectDefinition.getObjectDefinitionId(),
@@ -414,27 +415,43 @@ public class ObjectDefinitionLocalServiceImpl
 					newObjectField.isRequired(), newObjectField.isState(),
 					newObjectField.getObjectFieldSettings());
 			}
-			else {
-				if (!Objects.equals(
+			else if (!oldObjectField.isSystem()) {
+				_log.error(
+					StringBundler.concat(
+						"Unable to add system object field \"",
+						newObjectField.getName(), "\" to object definition \"",
+						objectDefinition.getName(),
+						"\" because a custom object field has the same name"));
+
+				updateVersion = false;
+			}
+			else if (!Objects.equals(
 						oldObjectField.getDBType(),
 						newObjectField.getDBType()) ||
-					!Objects.equals(
-						oldObjectField.isRequired(),
-						newObjectField.isRequired())) {
+					 !Objects.equals(
+						 oldObjectField.isRequired(),
+						 newObjectField.isRequired())) {
 
-					oldObjectField.setBusinessType(
-						newObjectField.getBusinessType());
-					oldObjectField.setDBType(newObjectField.getDBType());
-					oldObjectField.setRequired(newObjectField.isRequired());
+				oldObjectField.setBusinessType(
+					newObjectField.getBusinessType());
+				oldObjectField.setDBType(newObjectField.getDBType());
+				oldObjectField.setRequired(newObjectField.isRequired());
 
-					_objectFieldPersistence.update(oldObjectField);
-				}
+				_objectFieldPersistence.update(oldObjectField);
 			}
 		}
 
 		_addOrUpdateObjectActions(
 			userId, objectDefinition.getObjectDefinitionId(),
 			systemObjectDefinitionManager.getObjectActions());
+
+		if (updateVersion) {
+			objectDefinition.setVersion(
+				systemObjectDefinitionManager.getVersion());
+
+			objectDefinition = objectDefinitionPersistence.update(
+				objectDefinition);
+		}
 
 		return objectDefinition;
 	}
