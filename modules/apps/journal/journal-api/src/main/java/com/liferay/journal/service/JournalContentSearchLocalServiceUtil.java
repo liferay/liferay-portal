@@ -53,12 +53,6 @@ public class JournalContentSearchLocalServiceUtil {
 		return getService().addJournalContentSearch(journalContentSearch);
 	}
 
-	public static void checkContentSearches(long companyId)
-		throws PortalException {
-
-		getService().checkContentSearches(companyId);
-	}
-
 	/**
 	 * Creates a new journal content search with the primary key. Does not add the journal content search to the database.
 	 *
@@ -82,24 +76,11 @@ public class JournalContentSearchLocalServiceUtil {
 	}
 
 	public static void deleteArticleContentSearch(
-		long groupId, boolean privateLayout, long layoutId, String portletId) {
-
-		getService().deleteArticleContentSearch(
-			groupId, privateLayout, layoutId, portletId);
-	}
-
-	public static void deleteArticleContentSearch(
 		long groupId, boolean privateLayout, long layoutId, String portletId,
 		String articleId) {
 
 		getService().deleteArticleContentSearch(
 			groupId, privateLayout, layoutId, portletId, articleId);
-	}
-
-	public static void deleteArticleContentSearches(
-		long groupId, String articleId) {
-
-		getService().deleteArticleContentSearches(groupId, articleId);
 	}
 
 	/**
@@ -134,19 +115,6 @@ public class JournalContentSearchLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteJournalContentSearch(contentSearchId);
-	}
-
-	public static void deleteLayoutContentSearches(
-		long groupId, boolean privateLayout, long layoutId) {
-
-		getService().deleteLayoutContentSearches(
-			groupId, privateLayout, layoutId);
-	}
-
-	public static void deleteOwnerContentSearches(
-		long groupId, boolean privateLayout) {
-
-		getService().deleteOwnerContentSearches(groupId, privateLayout);
 	}
 
 	/**
@@ -260,18 +228,6 @@ public class JournalContentSearchLocalServiceUtil {
 		return getService().getArticleContentSearches();
 	}
 
-	public static List<JournalContentSearch> getArticleContentSearches(
-		long groupId, String articleId) {
-
-		return getService().getArticleContentSearches(groupId, articleId);
-	}
-
-	public static List<JournalContentSearch> getArticleContentSearches(
-		String articleId) {
-
-		return getService().getArticleContentSearches(articleId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -332,10 +288,6 @@ public class JournalContentSearchLocalServiceUtil {
 			groupId, privateLayout, articleId);
 	}
 
-	public static int getLayoutIdsCount(String articleId) {
-		return getService().getLayoutIdsCount(articleId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -352,39 +304,6 @@ public class JournalContentSearchLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static List<JournalContentSearch> getPortletContentSearches(
-		String portletId) {
-
-		return getService().getPortletContentSearches(portletId);
-	}
-
-	public static JournalContentSearch updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String articleId)
-		throws PortalException {
-
-		return getService().updateContentSearch(
-			groupId, privateLayout, layoutId, portletId, articleId);
-	}
-
-	public static JournalContentSearch updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String articleId, boolean purge)
-		throws PortalException {
-
-		return getService().updateContentSearch(
-			groupId, privateLayout, layoutId, portletId, articleId, purge);
-	}
-
-	public static List<JournalContentSearch> updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String[] articleIds)
-		throws PortalException {
-
-		return getService().updateContentSearch(
-			groupId, privateLayout, layoutId, portletId, articleIds);
 	}
 
 	/**
@@ -413,4 +332,4 @@ public class JournalContentSearchLocalServiceUtil {
 			JournalContentSearchLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:924590493
+// LIFERAY-SERVICE-BUILDER-HASH:1287658595

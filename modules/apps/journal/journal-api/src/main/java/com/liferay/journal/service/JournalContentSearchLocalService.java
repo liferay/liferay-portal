@@ -73,8 +73,6 @@ public interface JournalContentSearchLocalService
 	public JournalContentSearch addJournalContentSearch(
 		JournalContentSearch journalContentSearch);
 
-	public void checkContentSearches(long companyId) throws PortalException;
-
 	/**
 	 * Creates a new journal content search with the primary key. Does not add the journal content search to the database.
 	 *
@@ -92,13 +90,8 @@ public interface JournalContentSearchLocalService
 		throws PortalException;
 
 	public void deleteArticleContentSearch(
-		long groupId, boolean privateLayout, long layoutId, String portletId);
-
-	public void deleteArticleContentSearch(
 		long groupId, boolean privateLayout, long layoutId, String portletId,
 		String articleId);
-
-	public void deleteArticleContentSearches(long groupId, String articleId);
 
 	/**
 	 * Deletes the journal content search from the database. Also notifies the appropriate model listeners.
@@ -128,11 +121,6 @@ public interface JournalContentSearchLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public JournalContentSearch deleteJournalContentSearch(long contentSearchId)
 		throws PortalException;
-
-	public void deleteLayoutContentSearches(
-		long groupId, boolean privateLayout, long layoutId);
-
-	public void deleteOwnerContentSearches(long groupId, boolean privateLayout);
 
 	/**
 	 * @throws PortalException
@@ -223,14 +211,6 @@ public interface JournalContentSearchLocalService
 	public List<JournalContentSearch> getArticleContentSearches();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalContentSearch> getArticleContentSearches(
-		long groupId, String articleId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalContentSearch> getArticleContentSearches(
-		String articleId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -275,9 +255,6 @@ public interface JournalContentSearchLocalService
 	public int getLayoutIdsCount(
 		long groupId, boolean privateLayout, String articleId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutIdsCount(String articleId);
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -291,25 +268,6 @@ public interface JournalContentSearchLocalService
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalContentSearch> getPortletContentSearches(
-		String portletId);
-
-	public JournalContentSearch updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String articleId)
-		throws PortalException;
-
-	public JournalContentSearch updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String articleId, boolean purge)
-		throws PortalException;
-
-	public List<JournalContentSearch> updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String[] articleIds)
 		throws PortalException;
 
 	/**
@@ -342,4 +300,4 @@ public interface JournalContentSearchLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-573380658
+// LIFERAY-SERVICE-BUILDER-HASH:-1643900153

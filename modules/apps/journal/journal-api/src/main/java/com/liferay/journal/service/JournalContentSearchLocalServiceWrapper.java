@@ -50,13 +50,6 @@ public class JournalContentSearchLocalServiceWrapper
 			journalContentSearch);
 	}
 
-	@Override
-	public void checkContentSearches(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_journalContentSearchLocalService.checkContentSearches(companyId);
-	}
-
 	/**
 	 * Creates a new journal content search with the primary key. Does not add the journal content search to the database.
 	 *
@@ -85,25 +78,11 @@ public class JournalContentSearchLocalServiceWrapper
 
 	@Override
 	public void deleteArticleContentSearch(
-		long groupId, boolean privateLayout, long layoutId, String portletId) {
-
-		_journalContentSearchLocalService.deleteArticleContentSearch(
-			groupId, privateLayout, layoutId, portletId);
-	}
-
-	@Override
-	public void deleteArticleContentSearch(
 		long groupId, boolean privateLayout, long layoutId, String portletId,
 		String articleId) {
 
 		_journalContentSearchLocalService.deleteArticleContentSearch(
 			groupId, privateLayout, layoutId, portletId, articleId);
-	}
-
-	@Override
-	public void deleteArticleContentSearches(long groupId, String articleId) {
-		_journalContentSearchLocalService.deleteArticleContentSearches(
-			groupId, articleId);
 	}
 
 	/**
@@ -141,22 +120,6 @@ public class JournalContentSearchLocalServiceWrapper
 
 		return _journalContentSearchLocalService.deleteJournalContentSearch(
 			contentSearchId);
-	}
-
-	@Override
-	public void deleteLayoutContentSearches(
-		long groupId, boolean privateLayout, long layoutId) {
-
-		_journalContentSearchLocalService.deleteLayoutContentSearches(
-			groupId, privateLayout, layoutId);
-	}
-
-	@Override
-	public void deleteOwnerContentSearches(
-		long groupId, boolean privateLayout) {
-
-		_journalContentSearchLocalService.deleteOwnerContentSearches(
-			groupId, privateLayout);
 	}
 
 	/**
@@ -296,22 +259,6 @@ public class JournalContentSearchLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<JournalContentSearch> getArticleContentSearches(
-		long groupId, String articleId) {
-
-		return _journalContentSearchLocalService.getArticleContentSearches(
-			groupId, articleId);
-	}
-
-	@Override
-	public java.util.List<JournalContentSearch> getArticleContentSearches(
-		String articleId) {
-
-		return _journalContentSearchLocalService.getArticleContentSearches(
-			articleId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -380,11 +327,6 @@ public class JournalContentSearchLocalServiceWrapper
 			groupId, privateLayout, articleId);
 	}
 
-	@Override
-	public int getLayoutIdsCount(String articleId) {
-		return _journalContentSearchLocalService.getLayoutIdsCount(articleId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -405,44 +347,6 @@ public class JournalContentSearchLocalServiceWrapper
 
 		return _journalContentSearchLocalService.getPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public java.util.List<JournalContentSearch> getPortletContentSearches(
-		String portletId) {
-
-		return _journalContentSearchLocalService.getPortletContentSearches(
-			portletId);
-	}
-
-	@Override
-	public JournalContentSearch updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String articleId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _journalContentSearchLocalService.updateContentSearch(
-			groupId, privateLayout, layoutId, portletId, articleId);
-	}
-
-	@Override
-	public JournalContentSearch updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String articleId, boolean purge)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _journalContentSearchLocalService.updateContentSearch(
-			groupId, privateLayout, layoutId, portletId, articleId, purge);
-	}
-
-	@Override
-	public java.util.List<JournalContentSearch> updateContentSearch(
-			long groupId, boolean privateLayout, long layoutId,
-			String portletId, String[] articleIds)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _journalContentSearchLocalService.updateContentSearch(
-			groupId, privateLayout, layoutId, portletId, articleIds);
 	}
 
 	/**
@@ -503,4 +407,4 @@ public class JournalContentSearchLocalServiceWrapper
 	private JournalContentSearchLocalService _journalContentSearchLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-74997804
+// LIFERAY-SERVICE-BUILDER-HASH:1832070044

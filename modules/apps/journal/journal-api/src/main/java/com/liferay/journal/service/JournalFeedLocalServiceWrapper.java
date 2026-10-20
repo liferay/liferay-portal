@@ -346,23 +346,6 @@ public class JournalFeedLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<JournalFeed> getFeeds(long groupId) {
-		return _journalFeedLocalService.getFeeds(groupId);
-	}
-
-	@Override
-	public java.util.List<JournalFeed> getFeeds(
-		long groupId, int start, int end) {
-
-		return _journalFeedLocalService.getFeeds(groupId, start, end);
-	}
-
-	@Override
-	public int getFeedsCount(long groupId) {
-		return _journalFeedLocalService.getFeedsCount(groupId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -570,4 +553,4 @@ public class JournalFeedLocalServiceWrapper
 	private JournalFeedLocalService _journalFeedLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:473182990
+// LIFERAY-SERVICE-BUILDER-HASH:-1110997716

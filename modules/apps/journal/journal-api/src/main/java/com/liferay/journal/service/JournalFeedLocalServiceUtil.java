@@ -303,18 +303,6 @@ public class JournalFeedLocalServiceUtil {
 		return getService().getFeeds();
 	}
 
-	public static List<JournalFeed> getFeeds(long groupId) {
-		return getService().getFeeds(groupId);
-	}
-
-	public static List<JournalFeed> getFeeds(long groupId, int start, int end) {
-		return getService().getFeeds(groupId, start, end);
-	}
-
-	public static int getFeedsCount(long groupId) {
-		return getService().getFeedsCount(groupId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -475,4 +463,4 @@ public class JournalFeedLocalServiceUtil {
 			JournalFeedLocalServiceUtil.class, JournalFeedLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:760147481
+// LIFERAY-SERVICE-BUILDER-HASH:-270094806
