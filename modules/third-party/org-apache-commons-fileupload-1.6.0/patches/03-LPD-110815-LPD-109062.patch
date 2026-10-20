@@ -1,0 +1,26 @@
+diff --git a/org/apache/commons/fileupload/FileUploadBase.java b/org/apache/commons/fileupload/FileUploadBase.java
+index 9448ead00ce3d..afa9c09d3fa02 100644
+--- a/org/apache/commons/fileupload/FileUploadBase.java
++++ b/org/apache/commons/fileupload/FileUploadBase.java
+@@ -421,8 +421,14 @@ public abstract class FileUploadBase {
+         }
+ 
+         private long getContentLength(final FileItemHeaders headers) {
++            String header = headers.getHeader(CONTENT_LENGTH);
++
++            if ((header == null) || (header.length() == 0)) {
++                return -1;
++            }
++
+             try {
+-                return Long.parseLong(headers.getHeader(CONTENT_LENGTH));
++                return Long.parseLong(header);
+             } catch (final Exception e) {
+                 return -1;
+             }
+@@ -1474,3 +1480,4 @@ public abstract class FileUploadBase {
+     }
+ 
+ }
++/* @generated */
+\ No newline at end of file
