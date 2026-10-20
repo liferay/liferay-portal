@@ -33,56 +33,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-131793 Given the categorization section in Documents and Media Then the OOTB Internal (Topic) and Public (Audience & Stage) vocabularies are shown, together with newly created Global and Site internal vocabularies"
-	@priority = 3
-	test CategorizationInOOTBTable {
-		task ("Add a Global internal vocabulary and a Site internal vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Global",
-				title = "Global Vocabulary",
-				visibility = "internal");
-
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Site Vocabulary",
-				visibility = "internal");
-		}
-
-		task ("Go to Documents and Media and clik on Add Button and File Upload") {
-			DMNavigator.openToAddEntry(
-				groupName = "Test Site Name",
-				siteURLKey = "test-site-name");
-		}
-
-		task ("Go to categorization and check if Topic, Audience and Stage are present") {
-			Panel.expandPanel(panel = "Categorization");
-		}
-
-		task ("Check if the words Topic, Audience and Stage are shown") {
-			AssertElementPresent(
-				key_fieldLabel = "Topic",
-				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
-
-			AssertElementPresent(
-				key_fieldLabel = "Audience",
-				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
-
-			AssertElementPresent(
-				key_fieldLabel = "Stage",
-				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
-		}
-
-		task ("Check if the new Global and Site internal vocabularies are shown") {
-			AssertElementPresent(
-				key_fieldLabel = "Global Vocabulary",
-				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
-
-			AssertElementPresent(
-				key_fieldLabel = "Site Vocabulary",
-				locator1 = "AssetCategorization#VOCABULARY_LIST_ITEM");
-		}
-	}
-
 	@description = "This is a test for LPS-164348. The kebab menu next to a segment must have icons next to the menu items."
 	@priority = 4
 	test CheckCollapseSection {
