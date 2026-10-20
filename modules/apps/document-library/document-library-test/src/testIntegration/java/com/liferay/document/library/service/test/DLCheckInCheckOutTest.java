@@ -128,7 +128,7 @@ public class DLCheckInCheckOutTest {
 	}
 
 	@Test
-	public void testAdminCancelCheckout() throws Exception {
+	public void testAdminCancelCheckOut() throws Exception {
 		FileEntry fileEntry = null;
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -224,37 +224,7 @@ public class DLCheckInCheckOutTest {
 	}
 
 	@Test
-	@TestInfo("LPD-110152")
-	public void testCancelCheckOutWhenLockIsExpired() throws Exception {
-		_testCancelCheckOutWhenLockIsExpired();
-		_testCancelCheckOutWhenLockIsExpiredWithPermissionOverrideCheckout();
-		_testCancelCheckOutWhenLockIsExpiredWithoutPermissionOverrideCheckout();
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testCancelCheckOutWithoutPermissionOverrideCheckout()
-		throws Exception {
-
-		FileEntry fileEntry = null;
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_authorUser)) {
-
-			fileEntry = createFileEntry(StringUtil.randomString());
-
-			DLAppServiceUtil.checkOutFileEntry(
-				fileEntry.getFileEntryId(), _serviceContext);
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_overriderUser)) {
-
-			DLAppServiceUtil.cancelCheckOut(fileEntry.getFileEntryId());
-		}
-	}
-
-	@Test
-	public void testCancelCheckout() throws Exception {
+	public void testCancelCheckOut() throws Exception {
 		FileEntry fileEntry = createFileEntry(StringUtil.randomString());
 
 		DLAppServiceUtil.checkOutFileEntry(
@@ -268,7 +238,7 @@ public class DLCheckInCheckOutTest {
 	}
 
 	@Test
-	public void testCancelCheckoutVersion() throws Exception {
+	public void testCancelCheckOutVersion() throws Exception {
 		FileEntry fileEntry = createFileEntry(StringUtil.randomString());
 
 		DLAppServiceUtil.checkOutFileEntry(
@@ -283,7 +253,15 @@ public class DLCheckInCheckOutTest {
 	}
 
 	@Test
-	public void testCancelCheckoutWithPermissionOverrideCheckout()
+	@TestInfo("LPD-110152")
+	public void testCancelCheckOutWhenLockIsExpired() throws Exception {
+		_testCancelCheckOutWhenLockIsExpired();
+		_testCancelCheckOutWhenLockIsExpiredWithPermissionOverrideCheckout();
+		_testCancelCheckOutWhenLockIsExpiredWithoutPermissionOverrideCheckout();
+	}
+
+	@Test
+	public void testCancelCheckOutWithPermissionOverrideCheckout()
 		throws Exception {
 
 		Role role = RoleTestUtil.addRole(
@@ -321,6 +299,28 @@ public class DLCheckInCheckOutTest {
 		}
 		finally {
 			RoleLocalServiceUtil.deleteRole(role.getRoleId());
+		}
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testCancelCheckOutWithoutPermissionOverrideCheckout()
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			fileEntry = createFileEntry(StringUtil.randomString());
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), _serviceContext);
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			DLAppServiceUtil.cancelCheckOut(fileEntry.getFileEntryId());
 		}
 	}
 
