@@ -4,6 +4,8 @@
 	<checkstyle>
 		<suppress checks="CamelCaseNameCheck" files="jenkins-results-parser/src/main/java/com/liferay/jenkins/results/parser/.*" />
 		<suppress checks="CamelCaseNameCheck" files="jenkins-results-parser/src/test/java/com/liferay/jenkins/results/parser/.*" />
+		<suppress checks="MapBuilderCheck" files="jenkins-results-parser/src/main/java/com/liferay/jenkins/results/parser/.*" />
+		<suppress checks="MapBuilderCheck" files="jenkins-results-parser/src/test/java/com/liferay/jenkins/results/parser/.*" />
 		<suppress checks="ParsePrimitiveTypeCheck" files="arquillian-extension-junit-bridge/src/main/java/com/liferay/arquillian/extension/junit/bridge/server/TestBundleActivator\.java" />
 		<suppress checks="ReferenceAnnotationCheck" files="scr-reference-dynamic-greedy-test-impl/src/main/java/com/liferay/scr/reference/dynamic/greedy/test/internal/DynamicGreedyOptionalComponent\.java" />
 	</checkstyle>
