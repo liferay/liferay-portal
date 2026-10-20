@@ -11,6 +11,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
 import {getTempDir} from '../../../utils/temp';
+import {readFileFromZip} from '../../../utils/zip';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 
 export const test = mergeTests(
@@ -18,6 +19,7 @@ export const test = mergeTests(
 	exportImportPagesTest,
 	featureFlagsTest({
 		'LPD-57655': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
 	loginTest()
@@ -122,5 +124,82 @@ test(
 		await exportImportDataSelectionPage.expandSection('Content & Data');
 
 		await expect(page.getByText('Comments and Ratings')).toBeVisible();
+	}
+);
+
+test(
+	'Can export only the pages picked in the page tree picker',
+	{tag: '@LPD-104307'},
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		page,
+		site,
+	}) => {
+		const parentPageTitle = `Parent-${getRandomString()}`;
+
+		const parentPage = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: parentPageTitle,
+		});
+
+		const childPage = await apiHelpers.headlessDelivery.createSitePage({
+			parentSitePage: {friendlyUrlPath: parentPage.friendlyUrlPath},
+			siteId: site.id,
+			title: `Child-${getRandomString()}`,
+		});
+
+		const siblingPage = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: `Sibling-${getRandomString()}`,
+		});
+
+		await exportImportPage.goToExport(site.friendlyUrlPath);
+
+		await exportImportPage.clickNew();
+
+		const name = `MyExport-${getRandomString()}`;
+
+		await exportImportPage.nameInput.fill(name);
+
+		await exportImportDataSelectionPage.expandSection('Site Builder');
+
+		await page.getByRole('button', {name: 'Select Public Pages'}).click();
+
+		const pageTreePicker = page.getByRole('dialog');
+
+		await pageTreePicker
+			.getByRole('checkbox', {exact: true, name: 'Public Pages'})
+			.click();
+
+		await pageTreePicker
+			.getByRole('checkbox', {exact: true, name: parentPageTitle})
+			.click({modifiers: ['Shift']});
+
+		await pageTreePicker
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await exportImportPage.exportButton.click();
+
+		await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+
+		const exportedSitePages: Array<{externalReferenceCode: string}> =
+			JSON.parse(
+				await readFileFromZip(
+					'SitePageResourceImpl.json',
+					await exportImportPage.download(name)
+				)
+			);
+
+		const exportedExternalReferenceCodes = exportedSitePages.map(
+			(sitePage) => sitePage.externalReferenceCode
+		);
+
+		expect(exportedExternalReferenceCodes).toEqual(
+			expect.arrayContaining([parentPage.uuid, childPage.uuid])
+		);
+		expect(exportedExternalReferenceCodes).not.toContain(siblingPage.uuid);
 	}
 );
