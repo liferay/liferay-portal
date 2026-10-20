@@ -38,11 +38,13 @@ export class DisplayPageTemplatesPage {
 	 */
 	async createDefaultTemplate({
 		className,
+		classTypeKey,
 		mappedField = 'Title',
 		pageEditorPage,
 		site,
 	}: {
 		className: string;
+		classTypeKey?: string;
 		mappedField?: string;
 		pageEditorPage: PageEditorPage;
 		site: Site;
@@ -50,6 +52,7 @@ export class DisplayPageTemplatesPage {
 		const {layoutPageTemplateEntryId, name} =
 			await this.createMappedTemplate({
 				className,
+				classTypeKey,
 				mappedField,
 				pageEditorPage,
 				site,
@@ -68,11 +71,13 @@ export class DisplayPageTemplatesPage {
 	 */
 	async createMappedTemplate({
 		className,
+		classTypeKey,
 		mappedField = 'Title',
 		pageEditorPage,
 		site,
 	}: {
 		className: string;
+		classTypeKey?: string;
 		mappedField?: string;
 		pageEditorPage: PageEditorPage;
 		site: Site;
@@ -88,6 +93,7 @@ export class DisplayPageTemplatesPage {
 			await this.apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
 				{
 					classNameId,
+					classTypeKey,
 					groupId: String(site.id),
 					name,
 				}
