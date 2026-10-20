@@ -5,6 +5,7 @@
 
 package com.liferay.frontend.js.web.internal.resource;
 
+import com.liferay.frontend.js.web.internal.util.FrontendResourceUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -37,6 +38,15 @@ public class JavaScriptFrontendResource implements FrontendResource {
 		_resourceBundle = resourceBundle;
 		_sendNoCache = sendNoCache;
 		_url = url;
+	}
+
+	@Override
+	public String getCacheKey() {
+		if (_resourceBundle != null) {
+			return null;
+		}
+
+		return FrontendResourceUtil.getCacheKey(_url);
 	}
 
 	@Override

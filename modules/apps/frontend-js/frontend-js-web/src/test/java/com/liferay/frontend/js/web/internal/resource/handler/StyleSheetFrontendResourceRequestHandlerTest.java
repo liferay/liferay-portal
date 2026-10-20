@@ -8,6 +8,7 @@ package com.liferay.frontend.js.web.internal.resource.handler;
 import com.liferay.frontend.js.web.internal.resource.FrontendResource;
 import com.liferay.frontend.js.web.test.util.FrontendJSWebTestUtil;
 import com.liferay.petra.io.StreamUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.model.Theme;
@@ -17,6 +18,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.net.URL;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -135,6 +138,34 @@ public class StyleSheetFrontendResourceRequestHandlerTest
 		Assert.assertEquals(
 			ContentTypes.TEXT_CSS, frontendResource.getContentType());
 
+		URL url = hashedFilesRegistry.getResource(
+			deployHashed ? _VALID_HASHED_URL : _VALID_URL);
+
+		if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.LAST_MODIFIED) {
+			Assert.assertEquals(
+				url + "#" + LAST_MODIFIED, frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] ==
+					ExpectedCacheKey.LAST_MODIFIED_TOKENIZED) {
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					url, "#", LAST_MODIFIED,
+					"#base_url=#portal_ctx=#theme_image_path=",
+					_THEME_STATIC_RESOURCE_PATH, _THEME_IMAGES_PATH),
+				frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.URL) {
+			Assert.assertEquals(url.toString(), frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.URL_TOKENIZED) {
+			Assert.assertEquals(
+				StringBundler.concat(
+					url, "#base_url=#portal_ctx=#theme_image_path=",
+					_THEME_STATIC_RESOURCE_PATH, _THEME_IMAGES_PATH),
+				frontendResource.getCacheKey());
+		}
+
 		if (_EXPECTED_E_TAG[index] == ExpectedETag.HASH) {
 			Assert.assertEquals(_HASH, frontendResource.getETag());
 		}
@@ -249,6 +280,17 @@ public class StyleSheetFrontendResourceRequestHandlerTest
 
 	private static final long _CSS_STYLE_SHEETS_MAX_AGE = 1000;
 
+	private static final ExpectedCacheKey[] _EXPECTED_CACHE_KEY = {
+		null, null, ExpectedCacheKey.LAST_MODIFIED,
+		ExpectedCacheKey.LAST_MODIFIED, null, null,
+		ExpectedCacheKey.LAST_MODIFIED,
+		ExpectedCacheKey.LAST_MODIFIED_TOKENIZED, null, null,
+		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL_TOKENIZED, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL_TOKENIZED
+	};
+
 	private static final boolean[] _EXPECTED_CAN_HANDLE_REQUEST = {
 		false, false, true, true, false, false, true, true, false, false, true,
 		true, true, true, true, true, true, true
@@ -331,6 +373,12 @@ public class StyleSheetFrontendResourceRequestHandlerTest
 		"/o/frontend-js-web/css/main.(" + _HASH + ").css";
 
 	private static final String _VALID_URL = "/o/frontend-js-web/css/main.css";
+
+	private enum ExpectedCacheKey {
+
+		LAST_MODIFIED, LAST_MODIFIED_TOKENIZED, URL, URL_TOKENIZED
+
+	}
 
 	private enum ExpectedContent {
 

@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import java.net.URL;
+import java.net.URLConnection;
 
 import java.nio.charset.StandardCharsets;
 
@@ -74,12 +75,26 @@ public abstract class BaseFrontendResourceRequestHandlerTestCase {
 			);
 		}
 
+		URLConnection urlConnection = Mockito.mock(URLConnection.class);
+
+		Mockito.when(
+			urlConnection.getLastModified()
+		).thenReturn(
+			LAST_MODIFIED
+		);
+
 		URL url = Mockito.mock(URL.class);
 
 		Mockito.when(
 			url.getFile()
 		).thenReturn(
 			uri.substring(uri.lastIndexOf(StringPool.SLASH) + 1)
+		);
+
+		Mockito.when(
+			url.openConnection()
+		).thenReturn(
+			urlConnection
 		);
 
 		Mockito.when(
@@ -161,5 +176,7 @@ public abstract class BaseFrontendResourceRequestHandlerTestCase {
 	}
 
 	protected static final long COMPANY_ID = 100;
+
+	protected static final long LAST_MODIFIED = System.currentTimeMillis();
 
 }

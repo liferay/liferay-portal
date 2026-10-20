@@ -135,6 +135,30 @@ public class FrontendResourceFilterTest {
 	}
 
 	@Test
+	public void testGZipCacheKey() throws Exception {
+		FrontendResourceFilter frontendResourceFilter =
+			new FrontendResourceFilter();
+
+		_enableGZip(frontendResourceFilter);
+
+		String eTag = FrontendJSWebTestUtil.randomHashedFileHash();
+
+		FrontendResource frontendResource1 = _mockFrontendResource(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), eTag,
+			true, RandomTestUtil.randomLong(), false, true);
+		FrontendResource frontendResource2 = _mockFrontendResource(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), eTag,
+			true, RandomTestUtil.randomLong(), false, true);
+
+		Assert.assertEquals(
+			_getContent(frontendResource1),
+			_getGZipContent(frontendResource1, frontendResourceFilter));
+		Assert.assertEquals(
+			_getContent(frontendResource2),
+			_getGZipContent(frontendResource2, frontendResourceFilter));
+	}
+
+	@Test
 	public void testGZipDisabled() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
 			new FrontendResourceFilter();
@@ -185,7 +209,7 @@ public class FrontendResourceFilterTest {
 	}
 
 	@Test
-	public void testGZipNotCachedWithoutETag() throws Exception {
+	public void testGZipNotCachedWithoutCacheKey() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
 			new FrontendResourceFilter();
 
@@ -316,11 +340,56 @@ public class FrontendResourceFilterTest {
 			frontendResourceFilter, "_gZipEnabled", true);
 	}
 
+	private String _getContent(FrontendResource frontendResource)
+		throws Exception {
+
+		try (InputStream inputStream = frontendResource.getInputStream()) {
+			return StreamUtil.toString(inputStream);
+		}
+	}
+
+	private String _getGZipContent(
+			FrontendResource frontendResource,
+			FrontendResourceFilter frontendResourceFilter)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.addHeader("Accept-Encoding", "gzip");
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		frontendResourceFilter.send(
+			frontendResource, mockHttpServletRequest, mockHttpServletResponse);
+
+		try (GZIPInputStream gzipInputStream = new GZIPInputStream(
+				new ByteArrayInputStream(
+					mockHttpServletResponse.getContentAsByteArray()))) {
+
+			return StreamUtil.toString(gzipInputStream);
+		}
+	}
+
 	private FrontendResource _mockFrontendResource(
 		String eTag, boolean immutable, long maxAge, boolean isPrivate,
 		boolean sendNoCache) {
 
+		return _mockFrontendResource(
+			eTag, _CONTENT, eTag, immutable, maxAge, isPrivate, sendNoCache);
+	}
+
+	private FrontendResource _mockFrontendResource(
+		String cacheKey, String content, String eTag, boolean immutable,
+		long maxAge, boolean isPrivate, boolean sendNoCache) {
+
 		return new FrontendResource() {
+
+			@Override
+			public String getCacheKey() {
+				return cacheKey;
+			}
 
 			@Override
 			public String getContentType() {
@@ -337,7 +406,7 @@ public class FrontendResourceFilterTest {
 				_inputStreamCount.incrementAndGet();
 
 				return new ByteArrayInputStream(
-					_CONTENT.getBytes(StandardCharsets.UTF_8));
+					content.getBytes(StandardCharsets.UTF_8));
 			}
 
 			@Override

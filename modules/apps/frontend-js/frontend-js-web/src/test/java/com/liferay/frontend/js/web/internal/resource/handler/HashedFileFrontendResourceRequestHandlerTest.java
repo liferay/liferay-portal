@@ -15,6 +15,8 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.net.URL;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -93,6 +95,20 @@ public class HashedFileFrontendResourceRequestHandlerTest
 		Assert.assertEquals(
 			ContentTypes.APPLICATION_JSON, frontendResource.getContentType());
 
+		URL url = hashedFilesRegistry.getResource(
+			deployHashed ? _VALID_HASHED_URL : _VALID_URL);
+
+		if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.LAST_MODIFIED) {
+			Assert.assertEquals(
+				url + "#" + LAST_MODIFIED, frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.NULL) {
+			Assert.assertNull(frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.URL) {
+			Assert.assertEquals(url.toString(), frontendResource.getCacheKey());
+		}
+
 		if (_EXPECTED_E_TAG[index] == ExpectedETag.HASH) {
 			Assert.assertEquals(_HASH, frontendResource.getETag());
 		}
@@ -135,6 +151,11 @@ public class HashedFileFrontendResourceRequestHandlerTest
 
 	private static final String _CONTENT = "{}";
 
+	private static final ExpectedCacheKey[] _EXPECTED_CACHE_KEY = {
+		null, null, null, ExpectedCacheKey.LAST_MODIFIED, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL
+	};
+
 	private static final boolean[] _EXPECTED_CAN_HANDLE_REQUEST = {
 		false, false, false, true, true, true
 	};
@@ -174,6 +195,12 @@ public class HashedFileFrontendResourceRequestHandlerTest
 		"/o/frontend-js-web/index.js.(" + _HASH + ").map";
 
 	private static final String _VALID_URL = "/o/frontend-js-web/index.js.map";
+
+	private enum ExpectedCacheKey {
+
+		LAST_MODIFIED, NULL, URL
+
+	}
 
 	private enum ExpectedETag {
 

@@ -46,6 +46,11 @@ public class LanguageFrontendResource implements FrontendResource {
 	}
 
 	@Override
+	public String getCacheKey() {
+		return null;
+	}
+
+	@Override
 	public String getContentType() {
 		return ContentTypes.APPLICATION_JAVASCRIPT;
 	}

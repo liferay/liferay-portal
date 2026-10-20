@@ -5,6 +5,8 @@
 
 package com.liferay.frontend.js.web.internal.resource;
 
+import com.liferay.frontend.js.web.internal.util.FrontendResourceUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,6 +27,11 @@ public class HashedFileFrontendResource implements FrontendResource {
 		_maxAge = maxAge;
 		_sendNoCache = sendNoCache;
 		_url = url;
+	}
+
+	@Override
+	public String getCacheKey() {
+		return FrontendResourceUtil.getCacheKey(_url);
 	}
 
 	@Override

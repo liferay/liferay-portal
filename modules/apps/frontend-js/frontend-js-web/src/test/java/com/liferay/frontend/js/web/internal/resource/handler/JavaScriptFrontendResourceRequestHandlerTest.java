@@ -21,6 +21,8 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.net.URL;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
@@ -174,6 +176,20 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 			ContentTypes.APPLICATION_JAVASCRIPT,
 			frontendResource.getContentType());
 
+		URL url = hashedFilesRegistry.getResource(
+			deployHashed ? _VALID_HASHED_URL : _VALID_URL);
+
+		if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.LAST_MODIFIED) {
+			Assert.assertEquals(
+				url + "#" + LAST_MODIFIED, frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.NULL) {
+			Assert.assertNull(frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.URL) {
+			Assert.assertEquals(url.toString(), frontendResource.getCacheKey());
+		}
+
 		if (_EXPECTED_E_TAG[index] == ExpectedETag.HASH) {
 			Assert.assertEquals(_HASH, frontendResource.getETag());
 		}
@@ -267,6 +283,16 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 
 		return language;
 	}
+
+	private static final ExpectedCacheKey[] _EXPECTED_CACHE_KEY = {
+		null, null, null, null, ExpectedCacheKey.LAST_MODIFIED, null, null,
+		ExpectedCacheKey.NULL, null, null, ExpectedCacheKey.LAST_MODIFIED, null,
+		null, ExpectedCacheKey.LAST_MODIFIED, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.NULL,
+		ExpectedCacheKey.NULL, ExpectedCacheKey.NULL, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL, ExpectedCacheKey.URL
+	};
 
 	private static final boolean[] _EXPECTED_CAN_HANDLE_REQUEST = {
 		false, false, false, false, true, false, false, true, false, false,
@@ -378,6 +404,12 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 		"/o/" + _SERVLET_CONTEXT_NAME + "/__liferay__/index.js";
 
 	private MockedStatic<LocaleUtil> _localeUtilMockedStatic;
+
+	private enum ExpectedCacheKey {
+
+		LAST_MODIFIED, NULL, URL
+
+	}
 
 	private enum ExpectedContent {
 

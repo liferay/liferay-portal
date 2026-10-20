@@ -14,6 +14,18 @@ import java.io.InputStream;
 public interface FrontendResource {
 
 	/**
+	 * The key that unambiguously identifies the content returned by {@link
+	 * #getInputStream()} when it is cached in the server.
+	 *
+	 * Note that it can be null for resources that must not be cached in the
+	 * server.
+	 *
+	 * @return the cache key or null
+	 * @review
+	 */
+	public String getCacheKey();
+
+	/**
 	 * The content type as defined in HTTP specification.
 	 *
 	 * @review
