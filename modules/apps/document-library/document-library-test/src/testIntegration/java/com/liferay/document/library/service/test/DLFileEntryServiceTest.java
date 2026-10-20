@@ -12,6 +12,7 @@ import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
+import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -481,6 +483,85 @@ public class DLFileEntryServiceTest {
 		Assert.assertEquals(
 			DLUtil.getSanitizedFileName(fileName, dlFileEntry.getExtension()),
 			dlFileEntry.getFileName());
+	}
+
+	@Test
+	@TestInfo("LPD-110162")
+	public void testUpdateStatus() throws Exception {
+		DLFileEntry dlFileEntry = addDLFileEntry(
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, false);
+
+		DLFileVersion dlFileVersion = dlFileEntry.getLatestFileVersion(true);
+
+		long fileVersionId = dlFileVersion.getFileVersionId();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		User user = _addUser(dlFileEntry.getFileEntryId(), _group);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> DLFileEntryServiceUtil.updateStatus(
+					TestPropsValues.getUserId(), fileVersionId,
+					WorkflowConstants.STATUS_APPROVED, serviceContext,
+					new HashMap<String, Serializable>()));
+
+			DLFileEntryServiceUtil.updateStatus(
+				user.getUserId(), fileVersionId,
+				WorkflowConstants.STATUS_APPROVED, serviceContext,
+				new HashMap<String, Serializable>());
+		}
+
+		dlFileVersion = DLFileVersionLocalServiceUtil.getDLFileVersion(
+			fileVersionId);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, dlFileVersion.getStatus());
+		Assert.assertEquals(
+			user.getUserId(), dlFileVersion.getStatusByUserId());
+	}
+
+	@Test
+	@TestInfo("LPD-110162")
+	public void testUpdateStatusWhenFolderHasWorkflow() throws Exception {
+		DLFolder dlFolder = DLTestUtil.addDLFolder(_group.getGroupId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAttribute(
+			"restrictionType", DLFolderConstants.RESTRICTION_TYPE_WORKFLOW);
+		serviceContext.setAttribute(
+			"workflowDefinition" +
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_ALL,
+			"Single Approver@1");
+
+		DLAppServiceUtil.updateFolder(
+			dlFolder.getFolderId(), dlFolder.getName(),
+			dlFolder.getDescription(), serviceContext);
+
+		DLFileEntry dlFileEntry = addDLFileEntry(dlFolder.getFolderId(), false);
+
+		DLFileVersion dlFileVersion = dlFileEntry.getLatestFileVersion(true);
+
+		long fileVersionId = dlFileVersion.getFileVersionId();
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> DLFileEntryServiceUtil.updateStatus(
+				TestPropsValues.getUserId(), fileVersionId,
+				WorkflowConstants.STATUS_APPROVED, serviceContext,
+				new HashMap<String, Serializable>()));
+
+		dlFileVersion = DLFileVersionLocalServiceUtil.getDLFileVersion(
+			fileVersionId);
+
+		Assert.assertNotEquals(
+			WorkflowConstants.STATUS_APPROVED, dlFileVersion.getStatus());
 	}
 
 	protected DLFileEntry addDLFileEntry(long folderId, boolean appendExtension)
