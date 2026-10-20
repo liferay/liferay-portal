@@ -198,7 +198,7 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 				).put(
 					"autoTranslationEnabled",
 					() -> {
-						if (translator != null) {
+						if ((translator != null) && themeDisplay.isSignedIn()) {
 							return true;
 						}
 
