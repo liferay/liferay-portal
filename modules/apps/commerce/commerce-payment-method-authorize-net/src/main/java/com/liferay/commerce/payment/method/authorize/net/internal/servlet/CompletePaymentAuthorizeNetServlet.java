@@ -14,6 +14,7 @@ import com.liferay.commerce.payment.method.authorize.net.internal.configuration.
 import com.liferay.commerce.payment.method.authorize.net.internal.constants.AuthorizeNetCommercePaymentMethodConstants;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -110,6 +111,25 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 					httpServletRequest);
 			}
 
+			if (!cancel && _log.isWarnEnabled()) {
+				AuthorizeNetGroupServiceConfiguration
+					authorizeNetGroupServiceConfiguration =
+						_getAuthorizeNetGroupServiceConfiguration(
+							commerceOrder.getGroupId());
+
+				if (Validator.isNull(
+						authorizeNetGroupServiceConfiguration.signatureKey())) {
+
+					_log.warn(
+						StringBundler.concat(
+							"Unable to complete the payment of commerce order ",
+							commerceOrder.getCommerceOrderId(),
+							" because the Authorize.net signature key is not ",
+							"configured for group ",
+							commerceOrder.getGroupId()));
+				}
+			}
+
 			httpServletResponse.sendRedirect(redirect);
 		}
 		catch (Exception exception) {
@@ -199,19 +219,32 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 
 			AuthorizeNetGroupServiceConfiguration
 				authorizeNetGroupServiceConfiguration =
-					_configurationProvider.getConfiguration(
-						AuthorizeNetGroupServiceConfiguration.class,
-						new GroupServiceSettingsLocator(
-							commerceOrder.getGroupId(),
-							AuthorizeNetCommercePaymentMethodConstants.
-								SERVICE_NAME));
+					_getAuthorizeNetGroupServiceConfiguration(
+						commerceOrder.getGroupId());
+
+			String signatureKey = _secretResolver.resolve(
+				commerceOrder.getCompanyId(),
+				authorizeNetGroupServiceConfiguration.signatureKey());
+
+			if (Validator.isNull(signatureKey)) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Unable to verify the Authorize.net webhook ",
+							"signature because the signature key is not ",
+							"configured for group ",
+							commerceOrder.getGroupId()));
+				}
+
+				httpServletResponse.setStatus(
+					HttpServletResponse.SC_UNAUTHORIZED);
+
+				return;
+			}
 
 			if (!_isValidSignature(
 					bytes, httpServletRequest.getHeader("X-ANET-Signature"),
-					_secretResolver.resolve(
-						commerceOrder.getCompanyId(),
-						authorizeNetGroupServiceConfiguration.
-							signatureKey()))) {
+					signatureKey)) {
 
 				_log.error(
 					"Unable to verify the Authorize.net webhook signature");
@@ -264,6 +297,17 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 		finally {
 			Arrays.fill(signatureKeyBytes, (byte)0);
 		}
+	}
+
+	private AuthorizeNetGroupServiceConfiguration
+			_getAuthorizeNetGroupServiceConfiguration(long groupId)
+		throws Exception {
+
+		return _configurationProvider.getConfiguration(
+			AuthorizeNetGroupServiceConfiguration.class,
+			new GroupServiceSettingsLocator(
+				groupId,
+				AuthorizeNetCommercePaymentMethodConstants.SERVICE_NAME));
 	}
 
 	private boolean _isValidSignature(

@@ -13,6 +13,8 @@ import com.liferay.commerce.payment.method.authorize.net.internal.AuthorizeNetCo
 import com.liferay.commerce.payment.method.authorize.net.internal.configuration.AuthorizeNetGroupServiceConfiguration;
 import com.liferay.commerce.payment.method.authorize.net.internal.constants.AuthorizeNetCommercePaymentMethodConstants;
 import com.liferay.commerce.service.CommerceOrderLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -23,12 +25,17 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.key.secret.SecretResolver;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.nio.charset.StandardCharsets;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -86,6 +93,7 @@ public class CompletePaymentAuthorizeNetServletTest {
 	@Test
 	public void testDoGet() throws Exception {
 		_testDoGet();
+		_testDoGetWithBlankSignatureKey();
 		_testDoGetWithCancel();
 		_testDoGetWithCancelAndCompletedCommerceOrder();
 	}
@@ -93,6 +101,7 @@ public class CompletePaymentAuthorizeNetServletTest {
 	@Test
 	public void testDoPost() throws Exception {
 		_testDoPost();
+		_testDoPostWithBlankSignatureKey();
 		_testDoPostWithCompletedCommerceOrder();
 		_testDoPostWithInvalidJSON();
 		_testDoPostWithInvalidSignature();
@@ -266,6 +275,8 @@ public class CompletePaymentAuthorizeNetServletTest {
 			commerceOrder
 		);
 
+		_mockConfigurationProvider(_SIGNATURE_KEY);
+
 		MockHttpServletResponse mockHttpServletResponse = _get(
 			false, "http://localhost/web/guest");
 
@@ -286,6 +297,48 @@ public class CompletePaymentAuthorizeNetServletTest {
 			Mockito.eq(commerceOrderId), Mockito.any(),
 			Mockito.any(HttpServletRequest.class)
 		);
+	}
+
+	private void _testDoGetWithBlankSignatureKey() throws Exception {
+		long commerceOrderId = RandomTestUtil.randomLong();
+
+		CommerceOrder commerceOrder = _mockCommerceOrder(
+			commerceOrderId, CommerceOrderPaymentConstants.STATUS_PENDING);
+
+		Mockito.when(
+			_commercePaymentHttpHelper.getCommerceOrder(
+				Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			commerceOrder
+		);
+
+		_mockConfigurationProvider(StringPool.BLANK);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				CompletePaymentAuthorizeNetServlet.class.getName(),
+				LoggerTestUtil.WARN)) {
+
+			MockHttpServletResponse mockHttpServletResponse = _get(
+				false, "http://localhost/web/guest");
+
+			Assert.assertEquals(
+				"http://localhost/web/guest",
+				mockHttpServletResponse.getRedirectedUrl());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Unable to complete the payment of commerce order ",
+					commerceOrderId,
+					" because the Authorize.net signature key is not ",
+					"configured for group ", commerceOrder.getGroupId()),
+				logEntry.getMessage());
+		}
 	}
 
 	private void _testDoGetWithCancel() throws Exception {
@@ -380,6 +433,55 @@ public class CompletePaymentAuthorizeNetServletTest {
 			_commercePaymentEngine
 		).completePayment(
 			Mockito.eq(commerceOrderId), Mockito.eq(transactionId),
+			Mockito.any(HttpServletRequest.class)
+		);
+	}
+
+	private void _testDoPostWithBlankSignatureKey() throws Exception {
+		long commerceOrderId = RandomTestUtil.randomLong();
+
+		CommerceOrder commerceOrder = _mockCommerceOrder(
+			commerceOrderId, CommerceOrderPaymentConstants.STATUS_PENDING);
+
+		Mockito.when(
+			_commerceOrderLocalService.fetchCommerceOrder(commerceOrderId)
+		).thenReturn(
+			commerceOrder
+		);
+
+		_mockConfigurationProvider(StringPool.BLANK);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				CompletePaymentAuthorizeNetServlet.class.getName(),
+				LoggerTestUtil.WARN)) {
+
+			MockHttpServletResponse mockHttpServletResponse = _post(
+				_getAuthCaptureJSONObject(
+					commerceOrderId, RandomTestUtil.randomString()),
+				_SIGNATURE_KEY);
+
+			Assert.assertEquals(
+				HttpServletResponse.SC_UNAUTHORIZED,
+				mockHttpServletResponse.getStatus());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Unable to verify the Authorize.net webhook signature ",
+					"because the signature key is not configured for group ",
+					commerceOrder.getGroupId()),
+				logEntry.getMessage());
+		}
+
+		Mockito.verify(
+			_commercePaymentEngine, Mockito.never()
+		).completePayment(
+			Mockito.eq(commerceOrderId), Mockito.any(),
 			Mockito.any(HttpServletRequest.class)
 		);
 	}

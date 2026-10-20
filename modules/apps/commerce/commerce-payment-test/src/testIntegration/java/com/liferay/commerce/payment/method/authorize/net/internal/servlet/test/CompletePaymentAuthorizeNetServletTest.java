@@ -6,6 +6,7 @@
 package com.liferay.commerce.payment.method.authorize.net.internal.servlet.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
@@ -238,6 +239,9 @@ public class CompletePaymentAuthorizeNetServletTest {
 		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
 			_commerceOrder.getCommerceOrderId());
 
+		Assert.assertEquals(
+			CommerceOrderConstants.ORDER_STATUS_PENDING,
+			commerceOrder.getOrderStatus());
 		Assert.assertEquals(
 			CommerceOrderPaymentConstants.STATUS_COMPLETED,
 			commerceOrder.getPaymentStatus());
