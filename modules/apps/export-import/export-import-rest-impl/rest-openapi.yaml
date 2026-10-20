@@ -58,7 +58,7 @@ components:
                 status:
                     $ref: "#/components/schemas/Status"
                     description:
-                        The export process's end status.
+                        The export process's status.
                     readOnly: true
             type: object
         ExportProcessRequest:
@@ -194,7 +194,7 @@ components:
                 status:
                     $ref: "#/components/schemas/Status"
                     description:
-                        The import process's end status.
+                        The import process's status.
                     readOnly: true
             type: object
         ImportProcessRequest:
@@ -438,6 +438,8 @@ components:
                 Represents a control that selects items of a tree by external reference code. The most specific rule wins, in the order of an item list, a subtree list, the closest ancestor's subtree list, and the selectAll flag. An included list wins over the excluded one at the same level. The pages control takes the external reference codes of the Headless Admin Site API's site pages.
             type: object
         PreviewSite:
+            description:
+                Represents a site an instance process can export or import in full.
             properties:
                 childSitesCount:
                     format: int32
@@ -527,11 +529,11 @@ components:
                 status:
                     $ref: "#/components/schemas/Status"
                     description:
-                        The publish process's end status.
+                        The publish process's status.
                     readOnly: true
                 type:
                     description:
-                        How the publish process was started, either manually or by a schedule.
+                        How the publish process started, manually or by a schedule.
                     enum: [MANUAL, SCHEDULED]
                     readOnly: true
                     type: string
@@ -579,6 +581,8 @@ components:
                 -   name
             type: object
         ReportEntry:
+            description:
+                Represents an item reported by an import or publish process.
             properties:
                 classExternalReferenceCode:
                     description:
@@ -600,7 +604,7 @@ components:
                     type: integer
                 configurationId:
                     description:
-                        The report entry's configuration ID.
+                        The ID of the configuration of the process the entry belongs to.
                     format: int64
                     readOnly: true
                     type: integer
@@ -617,13 +621,13 @@ components:
                     type: string
                 dateModified:
                     description:
-                        The report entry's latest modification date.
+                        The report entry's last modification date.
                     format: date-time
                     readOnly: true
                     type: string
                 errorMessage:
                     description:
-                        The error message.
+                        The report entry's error message.
                     readOnly: true
                     type: string
                 errorStacktrace:
@@ -752,7 +756,7 @@ components:
             type: object
 info:
     description:
-        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.exportimport.rest.client', and version '1.0.13'."
+        "Exports, imports, and publishes the content of the instance, a site, an asset library, or one of their portlets. Get the preview first, then send its portlet data handlers back in the process request with the controls you want. Only the handlers and controls in the request are processed. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.exportimport.rest.client', and version '1.0.13'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -782,11 +786,15 @@ paths:
                         format: date-time
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -808,7 +816,7 @@ paths:
     "/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes":
         get:
             description:
-                Retrieves the layout export process entries of the specified asset library, or the export process entries of one of its portlets when a portlet ID is given.
+                Retrieves the export processes of the specified asset library, or of one of its portlets.
             operationId: getAssetLibraryExportProcessesPage
             parameters:
                 -   in: path
@@ -838,6 +846,8 @@ paths:
                     schema:
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to list only its processes.
                     name: portletId
                     schema:
                         type: string
@@ -873,7 +883,7 @@ paths:
             tags: ["ExportProcess"]
         post:
             description:
-                Starts an export process on the specified asset library, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview.
+                Starts an export process on the specified asset library, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
             operationId: postAssetLibraryExportProcess
             parameters:
                 -   in: path
@@ -882,11 +892,15 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -911,7 +925,7 @@ paths:
     "/asset-libraries/{assetLibraryExternalReferenceCode}/import-preview":
         post:
             description:
-                Uploads a file to import into the specified asset library and retrieves the portlet data handlers and counts it contains. The import process then imports the uploaded file.
+                Uploads a file to import into the specified asset library and retrieves its portlet data handlers and counts. The import process of the same scope imports the user's last uploaded file.
             operationId: postAssetLibraryImportPreview
             parameters:
                 -   in: path
@@ -920,11 +934,15 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -950,7 +968,7 @@ paths:
     "/asset-libraries/{assetLibraryExternalReferenceCode}/import-processes":
         get:
             description:
-                Retrieves the layout import process entries of the specified asset library, or the import process entries of one of its portlets when a portlet ID is given.
+                Retrieves the import processes of the specified asset library, or of one of its portlets.
             operationId: getAssetLibraryImportProcessesPage
             parameters:
                 -   in: path
@@ -980,6 +998,8 @@ paths:
                     schema:
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to list only its processes.
                     name: portletId
                     schema:
                         type: string
@@ -1015,7 +1035,7 @@ paths:
             tags: ["ImportProcess"]
         post:
             description:
-                Imports the file uploaded through the import preview into the specified asset library, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview.
+                Imports the user's last uploaded file into the specified asset library, or into one of its portlets. Returns a 404 when there is no uploaded file.
             operationId: postAssetLibraryImportProcess
             parameters:
                 -   in: path
@@ -1024,11 +1044,15 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -1067,11 +1091,15 @@ paths:
                         format: date-time
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -1093,7 +1121,7 @@ paths:
     "/export-preview/preview-sites":
         get:
             description:
-                Retrieves the sites that can be exported.
+                Retrieves the sites the instance can export in full.
             operationId: getExportPreviewPreviewSitesPage
             parameters:
                 -   in: query
@@ -1130,7 +1158,7 @@ paths:
     "/export-processes":
         get:
             description:
-                Retrieves the layout export process entries of the instance, or the export process entries of one of its portlets when a portlet ID is given.
+                Retrieves the export processes of the instance, or of one of its portlets.
             operationId: getExportProcessesPage
             parameters:
                 -   in: query
@@ -1155,6 +1183,8 @@ paths:
                     schema:
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to list only its processes.
                     name: portletId
                     schema:
                         type: string
@@ -1190,15 +1220,19 @@ paths:
             tags: ["ExportProcess"]
         post:
             description:
-                Starts an export process on the instance, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview and the external reference codes of the sites to export in full.
+                Starts an export process on the instance, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview and the external reference codes of the sites to export in full. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
             operationId: postExportProcess
             parameters:
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -1316,7 +1350,7 @@ paths:
     "/export-processes/{exportProcessId}/relaunch":
         post:
             description:
-                Relaunches the export process with the specified ID. The process's date selection is resolved again when it runs.
+                Relaunches the export process with the specified ID.
             operationId: postExportProcessRelaunch
             parameters:
                 -   in: path
@@ -1338,15 +1372,19 @@ paths:
     "/import-preview":
         post:
             description:
-                Uploads a file to import into the instance and retrieves the portlet data handlers, counts, and sites it contains. The import process then imports the uploaded file.
+                Uploads a file to import into the instance and retrieves its portlet data handlers, counts, and sites. The import process of the same scope imports the user's last uploaded file.
             operationId: postImportPreview
             parameters:
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -1372,7 +1410,7 @@ paths:
     "/import-processes":
         get:
             description:
-                Retrieves the layout import process entries of the instance, or the import process entries of one of its portlets when a portlet ID is given.
+                Retrieves the import processes of the instance, or of one of its portlets.
             operationId: getImportProcessesPage
             parameters:
                 -   in: query
@@ -1397,6 +1435,8 @@ paths:
                     schema:
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to list only its processes.
                     name: portletId
                     schema:
                         type: string
@@ -1432,15 +1472,19 @@ paths:
             tags: ["ImportProcess"]
         post:
             description:
-                Imports the file uploaded through the import preview into the instance, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview and the external reference codes of the sites to import in full.
+                Imports the user's last uploaded file into the instance, or into one of its portlets. Returns a 404 when there is no uploaded file.
             operationId: postImportProcess
             parameters:
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -1482,7 +1526,7 @@ paths:
             tags: ["ImportProcess"]
         get:
             description:
-                Retrieves the import process entry with the specified ID.
+                Retrieves the import process with the specified ID.
             operationId: getImportProcess
             parameters:
                 -   in: path
@@ -1538,7 +1582,7 @@ paths:
     "/import-processes/{importProcessId}/report-entries":
         get:
             description:
-                Retrieves the report entries associated with the specified import process ID.
+                Retrieves the report entries of the import process with the specified ID.
             operationId: getImportProcessReportEntriesPage
             parameters:
                 -   in: path
@@ -1669,7 +1713,7 @@ paths:
     "/publish-processes/{publishProcessId}/relaunch":
         post:
             description:
-                Relaunches the publish process with the specified ID. The process's date selection is resolved again when it runs.
+                Relaunches the publish process with the specified ID.
             operationId: postPublishProcessRelaunch
             parameters:
                 -   in: path
@@ -1691,7 +1735,7 @@ paths:
     "/publish-processes/{publishProcessId}/report-entries":
         get:
             description:
-                Retrieves the report entries associated with the specified publish process ID.
+                Retrieves the report entries of the publish process with the specified ID.
             operationId: getPublishProcessReportEntriesPage
             parameters:
                 -   in: path
@@ -1802,11 +1846,15 @@ paths:
                         format: date-time
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -1828,7 +1876,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/export-processes":
         get:
             description:
-                Retrieves the layout export process entries of the specified site, or the export process entries of one of its portlets when a portlet ID is given.
+                Retrieves the export processes of the specified site, or of one of its portlets.
             operationId: getSiteExportProcessesPage
             parameters:
                 -   in: path
@@ -1858,6 +1906,8 @@ paths:
                     schema:
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to list only its processes.
                     name: portletId
                     schema:
                         type: string
@@ -1902,11 +1952,15 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -1931,7 +1985,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/import-preview":
         post:
             description:
-                Uploads a file to import into the specified site and retrieves the portlet data handlers and counts it contains. The import process then imports the uploaded file.
+                Uploads a file to import into the specified site and retrieves its portlet data handlers and counts. The import process of the same scope imports the user's last uploaded file.
             operationId: postSiteImportPreview
             parameters:
                 -   in: path
@@ -1940,11 +1994,15 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -1970,7 +2028,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/import-processes":
         get:
             description:
-                Retrieves the layout import process entries of the specified site, or the import process entries of one of its portlets when a portlet ID is given.
+                Retrieves the import processes of the specified site, or of one of its portlets.
             operationId: getSiteImportProcessesPage
             parameters:
                 -   in: path
@@ -2000,6 +2058,8 @@ paths:
                     schema:
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to list only its processes.
                     name: portletId
                     schema:
                         type: string
@@ -2035,7 +2095,7 @@ paths:
             tags: ["ImportProcess"]
         post:
             description:
-                Imports the file uploaded through the import preview into the specified site, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview.
+                Imports the user's last uploaded file into the specified site, or into one of its portlets. Returns a 404 when there is no uploaded file.
             operationId: postSiteImportProcess
             parameters:
                 -   in: path
@@ -2044,11 +2104,15 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The ID of the page that holds the portlet. Required with portletId.
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
                         type: string
@@ -2109,7 +2173,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/publish-processes":
         get:
             description:
-                Retrieves the Publish to Live process entries for the specified site.
+                Retrieves the Publish to Live processes of the specified site.
             operationId: getSitePublishProcessesPage
             parameters:
                 -   in: path
@@ -2199,7 +2263,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/scheduled-publish-processes":
         get:
             description:
-                Retrieves the scheduled Publish to Live process entries for the specified site.
+                Retrieves the scheduled Publish to Live processes of the specified site.
             operationId: getSiteScheduledPublishProcessesPage
             parameters:
                 -   in: path
@@ -2268,7 +2332,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/scheduled-publish-processes/{scheduledPublishProcessId}":
         delete:
             description:
-                Unschedules the scheduled Publish to Live process with the given ID and deletes its draft configuration.
+                Unschedules the scheduled Publish to Live process with the specified ID.
             operationId: deleteSiteScheduledPublishProcess
             parameters:
                 -   in: path
@@ -2290,7 +2354,7 @@ paths:
             tags: ["ScheduledPublishProcess"]
         get:
             description:
-                Retrieves the scheduled Publish to Live process with the given ID.
+                Retrieves the scheduled Publish to Live process with the specified ID.
             operationId: getSiteScheduledPublishProcess
             parameters:
                 -   in: path
