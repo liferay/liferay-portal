@@ -806,6 +806,15 @@ OSB_FARO_FRONTEND_URL=${analytics.cloud.faro.frontend.url}</echo>
 
 					<print-file file.name="${analytics.cloud.docker.test.yaml}" />
 
+					<if>
+						<available file="${project.dir}/dist/liferay-docker-asah.tar" />
+						<then>
+							<execute>
+								docker load --input ${project.dir}/dist/liferay-docker-asah.tar
+							</execute>
+						</then>
+					</if>
+
 					<trycatch>
 						<try>
 							<trycatch property="analytics.cloud.error">
