@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.aop.AopInvocationHandler;
+import com.liferay.portal.template.engine.TemplateRestrictedUtil;
 import com.liferay.portal.util.PortalImpl;
 
 import freemarker.ext.beans.BeansWrapper;
@@ -136,8 +137,6 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 			return (TemplateModel)object;
 		}
 
-		Class<?> clazz = object.getClass();
-
 		if (PropsValues.TEMPLATE_ENGINE_FREEMARKER_COMPANY_RESTRICT &&
 			(object instanceof BaseModel) &&
 			!CompanyThreadLocal.isInitializingPortalInstance()) {
@@ -165,6 +164,8 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 			}
 		}
 
+		Class<?> clazz = object.getClass();
+
 		String className = clazz.getName();
 
 		if (!_allowAllClasses &&
@@ -172,14 +173,19 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 				_allowedClasses, clazz, _allowedMatchResults,
 				_allowedPackageNames)) {
 
-			if (_isMatch(
+			Set<String> methodNames =
+				TemplateRestrictedUtil.getRestrictedMethodNames(
+					clazz, _restrictedMethodNames.get(className));
+
+			if ((methodNames == null) ||
+				_isMatch(
 					_restrictedClasses, clazz, _restrictedMatchResults,
 					_restrictedPackageNames)) {
 
 				return _RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
 			}
 
-			if (_restrictedMethodNames.containsKey(className)) {
+			if (!methodNames.isEmpty()) {
 				LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
 					(LiferayFreeMarkerStringModel)
 						_RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
@@ -187,7 +193,7 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 				liferayFreeMarkerStringModel.setDeniedAccessToString(
 					_deniedAccessToStringClasses.contains(className));
 				liferayFreeMarkerStringModel.setRestrictedMethodNames(
-					_restrictedMethodNames.get(className));
+					methodNames);
 
 				return liferayFreeMarkerStringModel;
 			}

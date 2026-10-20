@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.AggregateClassLoader;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.template.engine.TemplateRestrictedUtil;
 import com.liferay.portal.util.PortalImpl;
 
 import java.util.ArrayList;
@@ -143,6 +144,13 @@ public class LiferaySecureUberspector extends SecureUberspector {
 			_classRestrictionInformations.computeIfAbsent(
 				clazz.getName(),
 				className -> {
+					if (TemplateRestrictedUtil.isRestricted(clazz)) {
+						return new ClassRestrictionInformation(
+							StringBundler.concat(
+								"Denied resolving class ", className,
+								" by @TemplateRestricted"));
+					}
+
 					for (Class<?> restrictedClass : _restrictedClasses) {
 						if (!restrictedClass.isAssignableFrom(clazz)) {
 							continue;
@@ -189,15 +197,16 @@ public class LiferaySecureUberspector extends SecureUberspector {
 	private void _checkMethodIsRestricted(Class<?> clazz, String methodName) {
 		String className = clazz.getName();
 
-		Set<String> methodNames = _restrictedMethodNames.get(className);
+		Set<String> methodNames =
+			TemplateRestrictedUtil.getRestrictedMethodNames(
+				clazz, _restrictedMethodNames.get(className));
 
 		if ((methodNames != null) &&
 			methodNames.contains(StringUtil.toLowerCase(methodName))) {
 
 			throw new IllegalArgumentException(
 				StringBundler.concat(
-					"Denied access to method ", methodName, " of ",
-					clazz.getName()));
+					"Denied access to method ", methodName, " of ", className));
 		}
 	}
 
