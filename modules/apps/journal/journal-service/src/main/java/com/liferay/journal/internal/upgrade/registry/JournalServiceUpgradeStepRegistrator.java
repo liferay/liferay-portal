@@ -95,7 +95,6 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseSQLServerDatetimeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
@@ -160,8 +159,7 @@ public class JournalServiceUpgradeStepRegistrator
 			"0.0.4.step-4", "0.0.4.step-5", new UpgradeLastPublishDate());
 
 		registry.register(
-			"0.0.4.step-5", "0.0.5",
-			new UpgradePortletSettings(_settingsLocatorHelper),
+			"0.0.4.step-5", "0.0.5", new UpgradePortletSettings(),
 			() -> {
 				try {
 					_deleteTempImages();
@@ -624,9 +622,6 @@ public class JournalServiceUpgradeStepRegistrator
 
 	@Reference
 	private RoleLocalService _roleLocalService;
-
-	@Reference
-	private SettingsLocatorHelper _settingsLocatorHelper;
 
 	@Reference
 	private SiteConnectedGroupGroupProvider _siteConnectedGroupGroupProvider;

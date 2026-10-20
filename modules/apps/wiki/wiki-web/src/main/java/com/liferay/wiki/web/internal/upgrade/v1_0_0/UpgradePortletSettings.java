@@ -5,10 +5,11 @@
 
 package com.liferay.wiki.web.internal.upgrade.v1_0_0;
 
-import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPortletKeys;
+import com.liferay.wiki.web.internal.configuration.WikiPortletInstanceConfiguration;
 
 /**
  * @author Iván Zaera
@@ -16,15 +17,13 @@ import com.liferay.wiki.constants.WikiPortletKeys;
 public class UpgradePortletSettings
 	extends com.liferay.portal.upgrade.v7_0_0.UpgradePortletSettings {
 
-	public UpgradePortletSettings(SettingsLocatorHelper settingsLocatorHelper) {
-		super(settingsLocatorHelper);
-	}
-
 	@Override
 	protected void doUpgrade() throws Exception {
 		upgradeMainPortlet(
 			WikiPortletKeys.WIKI, WikiConstants.SERVICE_NAME,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, true);
+			PortletKeys.PREFS_OWNER_TYPE_LAYOUT,
+			getKeys(WikiPortletInstanceConfiguration.class),
+			getKeys(WikiGroupServiceConfiguration.class));
 	}
 
 }

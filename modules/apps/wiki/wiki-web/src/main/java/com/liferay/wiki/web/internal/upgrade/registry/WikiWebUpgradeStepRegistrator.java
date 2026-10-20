@@ -8,7 +8,6 @@ package com.liferay.wiki.web.internal.upgrade.registry;
 import com.liferay.portal.configuration.persistence.upgrade.ConfigurationUpgradeStepFactory;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.upgrade.BaseStagingGroupTypeSettingsUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.wiki.constants.WikiPortletKeys;
@@ -29,9 +28,7 @@ public class WikiWebUpgradeStepRegistrator implements UpgradeStepRegistrator {
 	public void register(Registry registry) {
 		registry.registerInitialization();
 
-		registry.register(
-			"0.0.1", "1.0.0",
-			new UpgradePortletSettings(_settingsLocatorHelper));
+		registry.register("0.0.1", "1.0.0", new UpgradePortletSettings());
 
 		registry.register(
 			"1.0.0", "1.0.1",
@@ -62,8 +59,5 @@ public class WikiWebUpgradeStepRegistrator implements UpgradeStepRegistrator {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private SettingsLocatorHelper _settingsLocatorHelper;
 
 }

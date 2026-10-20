@@ -5,9 +5,9 @@
 
 package com.liferay.journal.internal.upgrade.v0_0_5;
 
+import com.liferay.journal.configuration.JournalGroupServiceConfiguration;
 import com.liferay.journal.constants.JournalConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
-import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.util.PortletKeys;
 
 /**
@@ -16,15 +16,12 @@ import com.liferay.portal.kernel.util.PortletKeys;
 public class UpgradePortletSettings
 	extends com.liferay.portal.upgrade.v7_0_0.UpgradePortletSettings {
 
-	public UpgradePortletSettings(SettingsLocatorHelper settingsLocatorHelper) {
-		super(settingsLocatorHelper);
-	}
-
 	@Override
 	protected void doUpgrade() throws Exception {
 		upgradeMainPortlet(
 			JournalPortletKeys.JOURNAL, JournalConstants.SERVICE_NAME,
-			PortletKeys.PREFS_OWNER_TYPE_GROUP, false);
+			PortletKeys.PREFS_OWNER_TYPE_GROUP, new String[0],
+			getKeys(JournalGroupServiceConfiguration.class));
 	}
 
 }

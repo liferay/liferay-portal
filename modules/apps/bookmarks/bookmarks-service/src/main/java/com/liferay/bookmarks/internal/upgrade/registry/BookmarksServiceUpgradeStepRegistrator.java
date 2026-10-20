@@ -12,7 +12,6 @@ import com.liferay.bookmarks.internal.upgrade.v2_0_0.UpgradeBookmarksEntryResour
 import com.liferay.bookmarks.internal.upgrade.v2_0_0.UpgradeBookmarksFolderResourceBlock;
 import com.liferay.bookmarks.model.BookmarksEntry;
 import com.liferay.portal.kernel.model.Release;
-import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.ViewCountUpgradeProcess;
@@ -34,9 +33,7 @@ public class BookmarksServiceUpgradeStepRegistrator
 
 		registry.register("0.0.2", "0.0.3", new UpgradeLastPublishDate());
 
-		registry.register(
-			"0.0.3", "1.0.0",
-			new UpgradePortletSettings(_settingsLocatorHelper));
+		registry.register("0.0.3", "1.0.0", new UpgradePortletSettings());
 
 		registry.register(
 			"1.0.0", "1.0.1", new UpgradeBookmarksEntryResourceBlock());
@@ -69,8 +66,5 @@ public class BookmarksServiceUpgradeStepRegistrator
 		target = "(&(release.bundle.symbolic.name=com.liferay.view.count.service)(&(release.schema.version>=1.0.0)))"
 	)
 	private Release _release;
-
-	@Reference
-	private SettingsLocatorHelper _settingsLocatorHelper;
 
 }
