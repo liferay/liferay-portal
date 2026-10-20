@@ -291,18 +291,6 @@ public class LayoutBranchLocalServiceWrapper
 		return _layoutBranchLocalService.getLayoutBranch(layoutBranchId);
 	}
 
-	@Override
-	public java.util.List<com.liferay.portal.kernel.model.LayoutBranch>
-		getLayoutBranches(
-			long layoutSetBranchId, long plid, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.kernel.model.LayoutBranch>
-					orderByComparator) {
-
-		return _layoutBranchLocalService.getLayoutBranches(
-			layoutSetBranchId, plid, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns a range of all the layout branches.
 	 *
@@ -425,4 +413,4 @@ public class LayoutBranchLocalServiceWrapper
 	private LayoutBranchLocalService _layoutBranchLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:389016735
+// LIFERAY-SERVICE-BUILDER-HASH:362908122

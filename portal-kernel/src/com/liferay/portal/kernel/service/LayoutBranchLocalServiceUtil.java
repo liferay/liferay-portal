@@ -259,14 +259,6 @@ public class LayoutBranchLocalServiceUtil {
 		return getService().getLayoutBranch(layoutBranchId);
 	}
 
-	public static List<LayoutBranch> getLayoutBranches(
-		long layoutSetBranchId, long plid, int start, int end,
-		OrderByComparator<LayoutBranch> orderByComparator) {
-
-		return getService().getLayoutBranches(
-			layoutSetBranchId, plid, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns a range of all the layout branches.
 	 *
@@ -364,4 +356,4 @@ public class LayoutBranchLocalServiceUtil {
 	private static volatile LayoutBranchLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1577161337
+// LIFERAY-SERVICE-BUILDER-HASH:-1066047502
