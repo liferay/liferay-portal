@@ -144,7 +144,7 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 		_receiveWithError(RandomTestUtil.randomLong());
 
 		_assertBackgroundTasks(2, BackgroundTaskConstants.STATUS_FAILED);
-		_assertStatus(WorkflowConstants.STATUS_FAILED);
+		_assertStatus(WorkflowConstants.STATUS_DRAFT);
 
 		// Scheduled launch set with a publish error
 
@@ -157,7 +157,7 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 		_receiveWithError(TestPropsValues.getUserId());
 
 		_assertBackgroundTasks(3, BackgroundTaskConstants.STATUS_FAILED);
-		_assertStatus(WorkflowConstants.STATUS_FAILED);
+		_assertStatus(WorkflowConstants.STATUS_DRAFT);
 	}
 
 	private ObjectEntry _addLaunchEntryObjectEntry(

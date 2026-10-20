@@ -32,6 +32,7 @@ export interface Launch {
 	description?: string;
 	id: number;
 	name: string;
+	scheduledDate?: string;
 	status?: {code: number};
 }
 

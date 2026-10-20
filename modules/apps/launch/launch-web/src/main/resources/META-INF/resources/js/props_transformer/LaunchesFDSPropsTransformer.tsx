@@ -8,7 +8,7 @@ import React from 'react';
 
 import {Launch, isPublished} from '../api/launches';
 import {
-	WORKFLOW_STATUS_FAILED,
+	WORKFLOW_STATUS_DRAFT,
 	WORKFLOW_STATUS_SCHEDULED,
 } from '../components/WorkflowStatusLabel';
 import openNewLaunchModal from '../modals/openNewLaunchModal';
@@ -53,7 +53,10 @@ export default function LaunchesFDSPropsTransformer({
 							);
 						}
 
-						if (itemData.status?.code === WORKFLOW_STATUS_FAILED) {
+						if (
+							itemData.scheduledDate &&
+							itemData.status?.code === WORKFLOW_STATUS_DRAFT
+						) {
 							return (
 								<ClayLabel displayType="danger">
 									{Liferay.Language.get('failed')}

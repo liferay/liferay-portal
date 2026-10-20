@@ -113,7 +113,7 @@ public class LaunchSetPublishBackgroundTaskExecutor
 
 			_objectEntryLocalService.updateStatus(
 				statusByUserId, launchSetObjectEntry.getObjectEntryId(),
-				WorkflowConstants.STATUS_FAILED, serviceContext);
+				WorkflowConstants.STATUS_DRAFT, serviceContext);
 
 			return new BackgroundTaskResult(
 				BackgroundTaskConstants.STATUS_FAILED, throwable.getMessage());
