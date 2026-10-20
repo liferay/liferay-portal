@@ -114,11 +114,6 @@ public class SourceFormatBuildTest
 		SourceFormatBuild sourceFormatBuild = Mockito.mock(
 			SourceFormatBuild.class);
 
-		Mockito.doCallRealMethod(
-		).when(
-			sourceFormatBuild
-		).getWorkspace();
-
 		Mockito.doReturn(
 			RandomTestUtil.randomString()
 		).when(
@@ -130,6 +125,11 @@ public class SourceFormatBuildTest
 		).when(
 			sourceFormatBuild
 		).getPullRequest();
+
+		Mockito.doCallRealMethod(
+		).when(
+			sourceFormatBuild
+		).getWorkspace();
 
 		WorkspaceGitRepository workspaceGitRepository = Mockito.mock(
 			WorkspaceGitRepository.class);
