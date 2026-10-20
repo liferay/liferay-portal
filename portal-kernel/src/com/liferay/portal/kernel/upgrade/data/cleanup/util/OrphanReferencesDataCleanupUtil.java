@@ -252,11 +252,16 @@ public class OrphanReferencesDataCleanupUtil {
 
 				retryCount++;
 
-				if (_log.isWarnEnabled()) {
-					_log.warn(
+				if (_log.isDebugEnabled()) {
+					_log.debug(
 						"Retrying delete after a database deadlock: " +
 							deleteSQL,
 						sqlException);
+				}
+				else if (_log.isInfoEnabled()) {
+					_log.info(
+						"Retrying delete after a database deadlock: " +
+							deleteSQL);
 				}
 
 				try {
