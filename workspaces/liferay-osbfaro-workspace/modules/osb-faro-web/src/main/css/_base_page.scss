@@ -116,14 +116,17 @@
 		width: 100%;
 	}
 
-	&:not(.base-page-sidebar-overlay) {
-		&.c-slideout-push-end {
-			padding-right: var(--base-page-sidebar-width);
-		}
+	&.c-slideout-push-end {
+		padding-right: var(--base-page-sidebar-width);
+	}
 
-		&.c-slideout-push-start {
-			padding-left: var(--base-page-sidebar-width);
-		}
+	&.c-slideout-push-start {
+		padding-left: var(--base-page-sidebar-width);
+	}
+
+	&.base-page-sidebar-overlay {
+		padding-left: 0;
+		padding-right: 0;
 	}
 
 	.base-page-sidebar-backdrop {
