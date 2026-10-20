@@ -12,16 +12,21 @@ import com.liferay.document.library.kernel.exception.FileEntryLockException;
 import com.liferay.document.library.kernel.exception.NoSuchFileVersionException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
+import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
+import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFolderServiceUtil;
 import com.liferay.document.library.kernel.store.DLStoreRequest;
 import com.liferay.document.library.kernel.store.DLStoreUtil;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.lock.Lock;
@@ -48,11 +53,13 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.DateTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -62,6 +69,7 @@ import com.liferay.portlet.documentlibrary.model.impl.DLFolderImpl;
 
 import java.io.InputStream;
 
+import java.util.Collections;
 import java.util.Date;
 
 import org.junit.After;
@@ -215,6 +223,14 @@ public class DLCheckInCheckOutTest {
 		Assert.assertEquals("1.0", fileEntry.getVersion());
 	}
 
+	@Test
+	@TestInfo("LPD-110152")
+	public void testCancelCheckOutWhenLockIsExpired() throws Exception {
+		_testCancelCheckOutWhenLockIsExpired();
+		_testCancelCheckOutWhenLockIsExpiredWithPermissionOverrideCheckout();
+		_testCancelCheckOutWhenLockIsExpiredWithoutPermissionOverrideCheckout();
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testCancelCheckOutWithoutPermissionOverrideCheckout()
 		throws Exception {
@@ -347,6 +363,13 @@ public class DLCheckInCheckOutTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-110152")
+	public void testCheckInWhenLockIsExpired() throws Exception {
+		_testCheckInWhenLockIsExpired();
+		_testCheckInWhenLockIsExpiredWithoutPermissionOverrideCheckout();
+	}
+
 	@Test(expected = FileEntryLockException.MustOwnLock.class)
 	public void testCheckInWithPermissionOverrideCheckout() throws Exception {
 		Role role = RoleTestUtil.addRole(
@@ -448,6 +471,28 @@ public class DLCheckInCheckOutTest {
 		Assert.assertEquals("PWC", fileVersion.getVersion());
 
 		getAssetEntry(fileVersion.getFileVersionId(), true);
+	}
+
+	@Test
+	@TestInfo("LPD-110152")
+	public void testCheckOutWhenLockIsExpired() throws Exception {
+		Role role = RoleTestUtil.addRole(
+			"Updater", RoleConstants.TYPE_REGULAR,
+			DLFileEntryConstants.getClassName(),
+			ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+			ActionKeys.UPDATE);
+
+		try {
+			UserLocalServiceUtil.setRoleUsers(
+				role.getRoleId(), new long[] {_overriderUser.getUserId()});
+
+			_testCheckOutWhenLockIsExpired();
+			_testCheckOutWhenLockIsExpiredWithoutCheckOutOwnership();
+		}
+		finally {
+			RoleLocalServiceUtil.deleteRole(role.getRoleId());
+		}
 	}
 
 	@Test
@@ -774,6 +819,114 @@ public class DLCheckInCheckOutTest {
 		getAssetEntry(fileVersion.getFileVersionId(), false);
 	}
 
+	@Test
+	@TestInfo("LPD-110152")
+	public void testUpdateFileEntryWhenLockIsExpired() throws Exception {
+		Role role = RoleTestUtil.addRole(
+			"Updater", RoleConstants.TYPE_REGULAR,
+			DLFileEntryConstants.getClassName(),
+			ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+			ActionKeys.UPDATE);
+
+		try {
+			UserLocalServiceUtil.setRoleUsers(
+				role.getRoleId(), new long[] {_overriderUser.getUserId()});
+
+			FileEntry fileEntry = _addCheckedOutFileEntryWithExpiredLock();
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					_overriderUser)) {
+
+				Assert.assertThrows(
+					FileEntryLockException.MustOwnLock.class,
+					() -> updateFileEntry(
+						fileEntry.getFileEntryId(), fileEntry.getFileName()));
+			}
+
+			DLFileVersion dlFileVersion =
+				DLFileVersionLocalServiceUtil.getLatestFileVersion(
+					fileEntry.getFileEntryId(), false);
+
+			Assert.assertEquals(
+				_authorUser.getUserId(), dlFileVersion.getUserId());
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					_authorUser)) {
+
+				updateFileEntry(
+					fileEntry.getFileEntryId(), fileEntry.getFileName());
+
+				DLAppServiceUtil.checkInFileEntry(
+					fileEntry.getFileEntryId(), DLVersionNumberIncrease.MINOR,
+					StringUtil.randomString(), _serviceContext);
+			}
+
+			Assert.assertFalse(
+				DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+					fileEntry.getFileEntryId()));
+		}
+		finally {
+			RoleLocalServiceUtil.deleteRole(role.getRoleId());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110152")
+	public void testUpdateFolderWhenLockIsExpired() throws Exception {
+		FileEntry fileEntry = _addCheckedOutFileEntryWithExpiredLock();
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), DLFileEntryMetadata.class.getName());
+
+		DLFileEntryType dlFileEntryType =
+			DLFileEntryTypeServiceUtil.addFileEntryType(
+				null, _group.getGroupId(), ddmStructure.getStructureId(), null,
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				ServiceContextTestUtil.getServiceContext(
+					_group, TestPropsValues.getUserId()));
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAttribute(
+			"defaultFileEntryTypeId", dlFileEntryType.getFileEntryTypeId());
+		serviceContext.setAttribute(
+			"dlFileEntryTypesSearchContainerPrimaryKeys",
+			String.valueOf(dlFileEntryType.getFileEntryTypeId()));
+		serviceContext.setAttribute(
+			"restrictionType",
+			DLFolderConstants.RESTRICTION_TYPE_FILE_ENTRY_TYPES_AND_WORKFLOW);
+
+		DLAppServiceUtil.updateFolder(
+			_folder.getFolderId(), _folder.getName(), _folder.getDescription(),
+			serviceContext);
+
+		DLFileVersion dlFileVersion =
+			DLFileVersionLocalServiceUtil.getLatestFileVersion(
+				fileEntry.getFileEntryId(), false);
+
+		Assert.assertEquals(
+			dlFileEntryType.getFileEntryTypeId(),
+			dlFileVersion.getFileEntryTypeId());
+		Assert.assertEquals(_authorUser.getUserId(), dlFileVersion.getUserId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			DLAppServiceUtil.checkInFileEntry(
+				fileEntry.getFileEntryId(), DLVersionNumberIncrease.MINOR,
+				StringUtil.randomString(), _serviceContext);
+		}
+
+		Assert.assertFalse(
+			DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+				fileEntry.getFileEntryId()));
+	}
+
 	@Test(expected = FileEntryLockException.MustOwnLock.class)
 	public void testUpdateWithPermissionOverrideCheckout() throws Exception {
 		Role role = RoleTestUtil.addRole(
@@ -885,6 +1038,28 @@ public class DLCheckInCheckOutTest {
 			content.length(), null, null, null, _serviceContext);
 	}
 
+	private FileEntry _addCheckedOutFileEntryWithExpiredLock()
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			FileEntry fileEntry = createFileEntry(StringUtil.randomString());
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), _serviceContext);
+
+			LockManagerUtil.unlock(
+				DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+			Assert.assertTrue(
+				DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+					fileEntry.getFileEntryId()));
+
+			return fileEntry;
+		}
+	}
+
 	private void _assertExpirationDate(long expirationTime, Lock lock) {
 		Date expirationDate = lock.getExpirationDate();
 
@@ -911,6 +1086,180 @@ public class DLCheckInCheckOutTest {
 				dlFileVersion.getVersion()
 			).build(),
 			new UnsyncByteArrayInputStream(_TEST_CONTENT.getBytes()));
+	}
+
+	private void _testCancelCheckOutWhenLockIsExpired() throws Exception {
+		FileEntry fileEntry = _addCheckedOutFileEntryWithExpiredLock();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			DLAppServiceUtil.cancelCheckOut(fileEntry.getFileEntryId());
+		}
+
+		Assert.assertFalse(
+			DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+				fileEntry.getFileEntryId()));
+	}
+
+	private void _testCancelCheckOutWhenLockIsExpiredWithPermissionOverrideCheckout()
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(
+			"Overrider", RoleConstants.TYPE_REGULAR,
+			DLFileEntryConstants.getClassName(),
+			ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+			ActionKeys.OVERRIDE_CHECKOUT);
+
+		try {
+			UserLocalServiceUtil.setRoleUsers(
+				role.getRoleId(), new long[] {_overriderUser.getUserId()});
+
+			FileEntry fileEntry = _addCheckedOutFileEntryWithExpiredLock();
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					_overriderUser)) {
+
+				DLAppServiceUtil.cancelCheckOut(fileEntry.getFileEntryId());
+			}
+
+			Assert.assertFalse(
+				DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+					fileEntry.getFileEntryId()));
+		}
+		finally {
+			RoleLocalServiceUtil.deleteRole(role.getRoleId());
+		}
+	}
+
+	private void _testCancelCheckOutWhenLockIsExpiredWithoutPermissionOverrideCheckout()
+		throws Exception {
+
+		FileEntry fileEntry = _addCheckedOutFileEntryWithExpiredLock();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> DLAppServiceUtil.cancelCheckOut(
+					fileEntry.getFileEntryId()));
+		}
+
+		Assert.assertTrue(
+			DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+				fileEntry.getFileEntryId()));
+	}
+
+	private void _testCheckInWhenLockIsExpired() throws Exception {
+		FileEntry fileEntry1 = _addCheckedOutFileEntryWithExpiredLock();
+		FileEntry fileEntry2 = _addCheckedOutFileEntryWithExpiredLock();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			DLAppServiceUtil.checkInFileEntry(
+				fileEntry1.getFileEntryId(), DLVersionNumberIncrease.MINOR,
+				StringUtil.randomString(), _serviceContext);
+			DLAppServiceUtil.checkInFileEntry(
+				fileEntry2.getFileEntryId(), StringUtil.randomString(),
+				_serviceContext);
+		}
+
+		Assert.assertFalse(
+			DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+				fileEntry1.getFileEntryId()));
+		Assert.assertFalse(
+			DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+				fileEntry2.getFileEntryId()));
+	}
+
+	private void _testCheckInWhenLockIsExpiredWithoutPermissionOverrideCheckout()
+		throws Exception {
+
+		FileEntry fileEntry = _addCheckedOutFileEntryWithExpiredLock();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			Assert.assertThrows(
+				FileEntryLockException.MustOwnLock.class,
+				() -> DLAppServiceUtil.checkInFileEntry(
+					fileEntry.getFileEntryId(), DLVersionNumberIncrease.MINOR,
+					StringUtil.randomString(), _serviceContext));
+			Assert.assertThrows(
+				FileEntryLockException.MustOwnLock.class,
+				() -> DLAppServiceUtil.checkInFileEntry(
+					fileEntry.getFileEntryId(), StringUtil.randomString(),
+					_serviceContext));
+		}
+
+		Assert.assertTrue(
+			DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+				fileEntry.getFileEntryId()));
+	}
+
+	private void _testCheckOutWhenLockIsExpired() throws Exception {
+		FileEntry fileEntry = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			fileEntry = createFileEntry(StringUtil.randomString());
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), null, 1, _serviceContext);
+		}
+
+		Thread.sleep(100);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			Assert.assertNull(
+				LockManagerUtil.fetchLock(
+					DLFileEntry.class.getName(), fileEntry.getFileEntryId()));
+
+			Assert.assertFalse(
+				DLFileEntryLocalServiceUtil.isFileEntryCheckedOut(
+					fileEntry.getFileEntryId()));
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), _serviceContext);
+		}
+
+		DLFileVersion dlFileVersion =
+			DLFileVersionLocalServiceUtil.getLatestFileVersion(
+				fileEntry.getFileEntryId(), false);
+
+		Assert.assertEquals(
+			_overriderUser.getUserId(), dlFileVersion.getUserId());
+	}
+
+	private void _testCheckOutWhenLockIsExpiredWithoutCheckOutOwnership()
+		throws Exception {
+
+		FileEntry fileEntry = _addCheckedOutFileEntryWithExpiredLock();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			Assert.assertThrows(
+				FileEntryLockException.MustOwnLock.class,
+				() -> DLAppServiceUtil.checkOutFileEntry(
+					fileEntry.getFileEntryId(), _serviceContext));
+		}
+
+		Assert.assertNull(
+			LockManagerUtil.fetchLock(
+				DLFileEntry.class.getName(), fileEntry.getFileEntryId()));
+
+		DLFileVersion dlFileVersion =
+			DLFileVersionLocalServiceUtil.getLatestFileVersion(
+				fileEntry.getFileEntryId(), false);
+
+		Assert.assertEquals(_authorUser.getUserId(), dlFileVersion.getUserId());
 	}
 
 	private static final String _FILE_NAME = "test1.txt";
