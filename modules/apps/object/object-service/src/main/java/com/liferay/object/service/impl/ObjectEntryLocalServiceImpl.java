@@ -1811,6 +1811,23 @@ public class ObjectEntryLocalServiceImpl
 			(BaseModel<?>)systemObjectDefinitionManager.getPersistedModel(
 				primaryKey);
 
+		Map<String, Function<Object, Object>> functions =
+			(Map<String, Function<Object, Object>>)
+				(Map<String, ?>)baseModel.getAttributeGetterFunctions();
+
+		Function<Object, Object> function = functions.get(
+			titleObjectField.getDBColumnName());
+
+		if ((function != null) && !titleObjectField.isLocalized()) {
+			Object titleFieldValue = function.apply(baseModel);
+
+			if (titleFieldValue == null) {
+				return null;
+			}
+
+			return String.valueOf(titleFieldValue);
+		}
+
 		Map<String, Object> modelAttributes = baseModel.getModelAttributes();
 
 		Object titleFieldValue = modelAttributes.get(
