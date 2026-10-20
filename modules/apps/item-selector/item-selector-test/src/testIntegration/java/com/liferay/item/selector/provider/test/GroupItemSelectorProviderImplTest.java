@@ -17,8 +17,8 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -28,7 +28,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,32 +46,30 @@ public class GroupItemSelectorProviderImplTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Before
-	public void setUp() throws Exception {
-		_group = GroupTestUtil.addGroup();
-		_user = UserTestUtil.addUser();
-	}
-
 	@Test
 	@TestInfo("LPD-110411")
 	public void testGetGroups() throws Exception {
+		User user = UserTestUtil.addUser();
+
 		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(_user);
+			PermissionCheckerFactoryUtil.create(user);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, permissionChecker)) {
+				user, permissionChecker)) {
 
 			List<Group> groups = _groupItemSelectorProvider.getGroups(
-				_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
+				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
+				null, 0, 20);
 
 			Company company = CompanyLocalServiceUtil.getCompany(
-				_group.getCompanyId());
+				TestPropsValues.getCompanyId());
 
 			Assert.assertTrue(groups.contains(company.getGroup()));
 		}
 
 		List<Group> groups = _groupItemSelectorProvider.getGroups(
-			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
+			TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(), null,
+			0, 20);
 
 		int originalGroupsSize = groups.size();
 
@@ -82,12 +79,14 @@ public class GroupItemSelectorProviderImplTest {
 		Assert.assertEquals(
 			originalGroupsSize,
 			_groupItemSelectorProvider.getGroupsCount(
-				_group.getCompanyId(), _group.getGroupId(), null));
+				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
+				null));
 
-		_childGroup = GroupTestUtil.addGroup(_group.getGroupId());
+		Group childGroup = GroupTestUtil.addGroup(TestPropsValues.getGroupId());
 
 		groups = _groupItemSelectorProvider.getGroups(
-			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
+			TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(), null,
+			0, 20);
 
 		Assert.assertEquals(
 			groups.toString(), originalGroupsSize + 1, groups.size());
@@ -95,14 +94,16 @@ public class GroupItemSelectorProviderImplTest {
 		Assert.assertEquals(
 			originalGroupsSize + 1,
 			_groupItemSelectorProvider.getGroupsCount(
-				_group.getCompanyId(), _group.getGroupId(), null));
+				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
+				null));
 
-		_childGroup.setActive(false);
+		childGroup.setActive(false);
 
-		_childGroup = _groupLocalService.updateGroup(_childGroup);
+		childGroup = _groupLocalService.updateGroup(childGroup);
 
 		groups = _groupItemSelectorProvider.getGroups(
-			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
+			TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(), null,
+			0, 20);
 
 		Assert.assertEquals(
 			groups.toString(), originalGroupsSize, groups.size());
@@ -110,7 +111,10 @@ public class GroupItemSelectorProviderImplTest {
 		Assert.assertEquals(
 			originalGroupsSize,
 			_groupItemSelectorProvider.getGroupsCount(
-				_group.getCompanyId(), _group.getGroupId(), null));
+				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
+				null));
+
+		GroupTestUtil.deleteGroup(childGroup);
 	}
 
 	@Test
@@ -124,12 +128,6 @@ public class GroupItemSelectorProviderImplTest {
 			"Site", _groupItemSelectorProvider.getLabel(LocaleUtil.US));
 	}
 
-	@DeleteAfterTestRun
-	private Group _childGroup;
-
-	@DeleteAfterTestRun
-	private Group _group;
-
 	@Inject(
 		filter = "component.name=com.liferay.item.selector.internal.provider.GroupItemSelectorProviderImpl"
 	)
@@ -137,7 +135,5 @@ public class GroupItemSelectorProviderImplTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	private User _user;
 
 }
