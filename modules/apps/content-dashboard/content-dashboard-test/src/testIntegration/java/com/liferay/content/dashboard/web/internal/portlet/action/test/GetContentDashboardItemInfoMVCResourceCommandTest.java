@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.PortletServlet;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
@@ -55,6 +56,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -259,6 +261,36 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 
 		_assertContentDashboardItemLatestVersions(
 			contentDashboardItem, jsonObject);
+	}
+
+	@Test
+	public void testServeResourceWithDeletedUser() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			user.getUserId(), _group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		_userLocalService.deleteUser(user);
+
+		Assert.assertNull(_userLocalService.fetchUser(user.getUserId()));
+
+		ContentDashboardItem<?> contentDashboardItem =
+			_contentDashboardJournalItemFactory.create(
+				journalArticle.getResourcePrimKey());
+
+		JSONObject jsonObject = _serveResource(contentDashboardItem);
+
+		Assert.assertEquals(
+			journalArticle.getTitle(LocaleUtil.US),
+			jsonObject.getString("title"));
+
+		JSONObject userJSONObject = jsonObject.getJSONObject("user");
+
+		Assert.assertEquals(
+			user.getFullName(), userJSONObject.getString("name"));
+		Assert.assertEquals(StringPool.BLANK, userJSONObject.getString("url"));
+		Assert.assertEquals(user.getUserId(), userJSONObject.getLong("userId"));
 	}
 
 	@Test
@@ -555,6 +587,9 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 	private MVCResourceCommand _mvcResourceCommand;
 
 	private ServiceContext _serviceContext;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 	private static class TestLiferayPortletURL extends MockLiferayPortletURL {
 
