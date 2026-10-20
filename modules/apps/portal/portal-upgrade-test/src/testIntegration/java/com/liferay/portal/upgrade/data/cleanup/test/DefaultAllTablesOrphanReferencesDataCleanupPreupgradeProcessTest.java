@@ -15,6 +15,9 @@ import com.liferay.portal.kernel.upgrade.data.cleanup.DefaultAllTablesOrphanRefe
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.test.log.LogCapture;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import java.util.List;
 
 import org.junit.After;
@@ -37,12 +40,25 @@ public class DefaultAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 
 	@After
 	public void tearDown() throws Exception {
+		db.runSQL("drop table " + _CUSTOM_TABLE_NAME);
 		db.runSQL("drop table " + _TABLE_NAME);
 	}
 
 	@Override
 	protected UnsafeRunnable<Exception> getInsertDataUnsafeRunnable() {
 		return () -> {
+			db.runSQL(
+				StringBundler.concat(
+					"create table ", _CUSTOM_TABLE_NAME,
+					" (customTestId LONG not null primary key, companyId ",
+					"LONG)"));
+
+			db.runSQL(
+				StringBundler.concat(
+					"insert into ", _CUSTOM_TABLE_NAME,
+					" (customTestId, companyId) values (",
+					RandomTestUtil.nextLong(), ", ", _companyId1, ")"));
+
 			db.runSQL(
 				StringBundler.concat(
 					"create table ", _TABLE_NAME,
@@ -64,8 +80,15 @@ public class DefaultAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 		getLogAssertionUnsafeBiConsumer() {
 
 		return (logCapture1, logCapture2) -> {
+			Assert.assertEquals(1, _getCount(_CUSTOM_TABLE_NAME));
+
 			List<String> messages = logCapture1.getMessages();
 
+			Assert.assertFalse(
+				messages.contains(
+					getExpectedMessage(
+						1, "companyId", _CUSTOM_TABLE_NAME,
+						new String[] {"companyId"}, "Company", _companyId1)));
 			Assert.assertTrue(
 				messages.contains(
 					getExpectedMessage(
@@ -111,6 +134,18 @@ public class DefaultAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 			"companyId", "Company");
 	}
 
+	private long _getCount(String tableName) throws Exception {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				"select count(*) as count from " + tableName);
+
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			resultSet.next();
+
+			return resultSet.getLong("count");
+		}
+	}
+
 	private void _insert(long companyId) throws Exception {
 		db.runSQL(
 			connection,
@@ -128,7 +163,9 @@ public class DefaultAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 				"', [$FALSE$])"));
 	}
 
-	private static final String _TABLE_NAME = "TestTable";
+	private static final String _CUSTOM_TABLE_NAME = "CustomTestTable";
+
+	private static final String _TABLE_NAME = "r_TestTable";
 
 	private long _companyId1;
 	private long _companyId2;

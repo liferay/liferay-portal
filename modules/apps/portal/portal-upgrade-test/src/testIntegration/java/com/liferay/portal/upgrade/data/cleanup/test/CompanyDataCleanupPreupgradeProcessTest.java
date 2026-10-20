@@ -98,7 +98,7 @@ public class CompanyDataCleanupPreupgradeProcessTest
 				"insert into Group_ (groupId, companyId, name) values (",
 				groupId, ", ", companyId, ", '", groupId, "')"));
 
-		String tableName = "test_cleanup_" + RandomTestUtil.randomString();
+		String tableName = "r_test_cleanup_" + RandomTestUtil.randomString();
 
 		runSQL(
 			StringBundler.concat(

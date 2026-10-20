@@ -196,7 +196,7 @@ public class UserAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 		return new UserAllTablesOrphanReferencesDataCleanupPreupgradeProcess();
 	}
 
-	private static final String _TABLE_NAME = "TestTable";
+	private static final String _TABLE_NAME = "r_TestTable";
 
 	private User _adminUser;
 	private long _companyId;
