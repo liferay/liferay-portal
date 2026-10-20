@@ -10,11 +10,12 @@ import {AssetStatistics} from './GovernanceService';
 export type GovernanceDimension = {
 	issues: number;
 	score: number;
+	warnings: number;
 };
 
 export type GovernanceHealth = {
 	flow: number;
-	freshness: number;
+	freshness: GovernanceDimension;
 	originality?: number;
 	quality: GovernanceDimension;
 	score: number;
@@ -23,6 +24,7 @@ export type GovernanceHealth = {
 type Signal = {
 	count: number;
 	severity: number;
+	warning?: boolean;
 };
 
 type WeightedSubScore = {
@@ -34,9 +36,7 @@ const FLOW_PENALTY = 4;
 
 const FLOW_WEIGHT = 25;
 
-const FRESHNESS_PENALTY = 3;
-
-const FRESHNESS_WEIGHT = 20;
+const FRESHNESS_WEIGHT = 30;
 
 const ORIGINALITY_PENALTY = 2;
 
@@ -47,19 +47,27 @@ const QUALITY_WEIGHT = 40;
 function getDimension(signals: Signal[], scope: number): GovernanceDimension {
 	let issues = 0;
 	let penalty = 0;
+	let warnings = 0;
 
-	for (const {count, severity} of signals) {
-		issues += count;
+	for (const {count, severity, warning} of signals) {
+		if (warning) {
+			warnings += count;
+		}
+		else {
+			issues += count;
+		}
+
 		penalty += count * severity;
 	}
 
 	if (!scope) {
-		return {issues, score: 100};
+		return {issues, score: 100, warnings};
 	}
 
 	return {
 		issues,
 		score: Math.round(Math.max(0, 100 - (penalty * 100) / scope)),
+		warnings,
 	};
 }
 
@@ -84,9 +92,18 @@ export default function getGovernanceHealth(
 ): GovernanceHealth {
 	const flow = getSubScore(statistics.inDraftCount, FLOW_PENALTY);
 
-	const freshness = getSubScore(
-		statistics.expiringSoonCount + statistics.upcomingReviewCount,
-		FRESHNESS_PENALTY
+	const freshness = getDimension(
+		[
+			{count: statistics.expiredCount, severity: 1.75},
+			{count: statistics.reviewDateOverdueCount, severity: 1.5},
+			{count: statistics.expiringSoonCount, severity: 0.5, warning: true},
+			{
+				count: statistics.upcomingReviewCount,
+				severity: 0.5,
+				warning: true,
+			},
+		],
+		statistics.totalCount
 	);
 
 	const quality = getDimension(
@@ -99,7 +116,7 @@ export default function getGovernanceHealth(
 
 	const subScores: WeightedSubScore[] = [
 		{value: flow, weight: FLOW_WEIGHT},
-		{value: freshness, weight: FRESHNESS_WEIGHT},
+		{value: freshness.score, weight: FRESHNESS_WEIGHT},
 		{value: quality.score, weight: QUALITY_WEIGHT},
 	];
 

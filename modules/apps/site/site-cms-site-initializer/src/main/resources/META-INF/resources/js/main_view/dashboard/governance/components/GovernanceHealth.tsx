@@ -66,10 +66,12 @@ function SubScore({
 	issues,
 	label,
 	value,
+	warnings = 0,
 }: {
 	issues?: number;
 	label: string;
 	value?: number;
+	warnings?: number;
 }) {
 	return (
 		<div className="cms-governance-health__sub-score">
@@ -89,6 +91,15 @@ function SubScore({
 							: Liferay.Language.get('x-active-issues'),
 						issues
 					)}
+
+					{warnings
+						? ` · ${sub(
+								warnings === 1
+									? Liferay.Language.get('x-warning')
+									: Liferay.Language.get('x-warnings'),
+								warnings
+							)}`
+						: null}
 				</span>
 			)}
 		</div>
@@ -143,8 +154,10 @@ export function GovernanceHealth() {
 					/>
 
 					<SubScore
+						issues={health.freshness.issues}
 						label={Liferay.Language.get('freshness')}
-						value={health.freshness}
+						value={health.freshness.score}
+						warnings={health.freshness.warnings}
 					/>
 
 					<SubScore

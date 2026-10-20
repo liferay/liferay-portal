@@ -42,7 +42,7 @@ const STATISTICS = {
 	approvedCount: 0,
 	brokenLinksCount: 7,
 	expiredCount: 6,
-	expiringSoonCount: 0,
+	expiringSoonCount: 2,
 	inDraftCount: 3,
 	missingRequiredFieldsCount: 4,
 	pendingCount: 4,
@@ -159,11 +159,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		expect(quality.previousSibling).toHaveTextContent('80');
 		expect(quality.nextSibling).toHaveTextContent('x-active-issues');
 
-		expect(
-			within(banner).getByText('freshness').previousSibling
-		).toHaveTextContent('100');
+		const freshness = within(banner).getByText('freshness');
 
-		expect(within(banner).getByText('87')).toBeInTheDocument();
+		expect(freshness.previousSibling).toHaveTextContent('84');
+		expect(freshness.nextSibling).toHaveTextContent(
+			'x-active-issues · x-warnings'
+		);
+
+		expect(within(banner).getByText('83')).toBeInTheDocument();
 	});
 
 	it('explains what the score measures in a popover', async () => {
