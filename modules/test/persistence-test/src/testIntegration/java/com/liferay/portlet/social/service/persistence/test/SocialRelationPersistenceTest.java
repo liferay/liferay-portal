@@ -178,13 +178,6 @@ public class SocialRelationPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByUserId1() throws Exception {
 		_persistence.countByUserId1(RandomTestUtil.nextLong());
 
@@ -588,4 +581,4 @@ public class SocialRelationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:655464744
+// LIFERAY-SERVICE-BUILDER-HASH:-1422177860

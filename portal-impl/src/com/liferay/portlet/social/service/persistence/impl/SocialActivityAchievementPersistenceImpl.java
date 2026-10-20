@@ -72,94 +72,6 @@ public class SocialActivityAchievementPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<SocialActivityAchievement, NoSuchActivityAchievementException>
-			_collectionPersistenceFinderByGroupId;
-
-	/**
-	 * Returns an ordered range of all the social activity achievements where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SocialActivityAchievementModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of social activity achievements
-	 * @param end the upper bound of the range of social activity achievements (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social activity achievements
-	 */
-	@Override
-	public List<SocialActivityAchievement> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<SocialActivityAchievement> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByGroupId.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first social activity achievement in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity achievement
-	 * @throws NoSuchActivityAchievementException if a matching social activity achievement could not be found
-	 */
-	@Override
-	public SocialActivityAchievement findByGroupId_First(
-			long groupId,
-			OrderByComparator<SocialActivityAchievement> orderByComparator)
-		throws NoSuchActivityAchievementException {
-
-		return _collectionPersistenceFinderByGroupId.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first social activity achievement in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity achievement, or <code>null</code> if a matching social activity achievement could not be found
-	 */
-	@Override
-	public SocialActivityAchievement fetchByGroupId_First(
-		long groupId,
-		OrderByComparator<SocialActivityAchievement> orderByComparator) {
-
-		return _collectionPersistenceFinderByGroupId.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the social activity achievements where groupId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 */
-	@Override
-	public void removeByGroupId(long groupId) {
-		_collectionPersistenceFinderByGroupId.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId});
-	}
-
-	/**
-	 * Returns the number of social activity achievements where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching social activity achievements
-	 */
-	@Override
-	public int countByGroupId(long groupId) {
-		return _collectionPersistenceFinderByGroupId.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId});
-	}
-
-	private CollectionPersistenceFinder
-		<SocialActivityAchievement, NoSuchActivityAchievementException>
 			_collectionPersistenceFinderByG_U;
 
 	/**
@@ -344,102 +256,6 @@ public class SocialActivityAchievementPersistenceImpl
 			FinderCacheUtil.getFinderCache(), new Object[] {groupId, name});
 	}
 
-	private CollectionPersistenceFinder
-		<SocialActivityAchievement, NoSuchActivityAchievementException>
-			_collectionPersistenceFinderByG_F;
-
-	/**
-	 * Returns an ordered range of all the social activity achievements where groupId = &#63; and firstInGroup = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SocialActivityAchievementModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param firstInGroup the first in group
-	 * @param start the lower bound of the range of social activity achievements
-	 * @param end the upper bound of the range of social activity achievements (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social activity achievements
-	 */
-	@Override
-	public List<SocialActivityAchievement> findByG_F(
-		long groupId, boolean firstInGroup, int start, int end,
-		OrderByComparator<SocialActivityAchievement> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_F.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, firstInGroup}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first social activity achievement in the ordered set where groupId = &#63; and firstInGroup = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param firstInGroup the first in group
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity achievement
-	 * @throws NoSuchActivityAchievementException if a matching social activity achievement could not be found
-	 */
-	@Override
-	public SocialActivityAchievement findByG_F_First(
-			long groupId, boolean firstInGroup,
-			OrderByComparator<SocialActivityAchievement> orderByComparator)
-		throws NoSuchActivityAchievementException {
-
-		return _collectionPersistenceFinderByG_F.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, firstInGroup}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first social activity achievement in the ordered set where groupId = &#63; and firstInGroup = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param firstInGroup the first in group
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity achievement, or <code>null</code> if a matching social activity achievement could not be found
-	 */
-	@Override
-	public SocialActivityAchievement fetchByG_F_First(
-		long groupId, boolean firstInGroup,
-		OrderByComparator<SocialActivityAchievement> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_F.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, firstInGroup}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the social activity achievements where groupId = &#63; and firstInGroup = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param firstInGroup the first in group
-	 */
-	@Override
-	public void removeByG_F(long groupId, boolean firstInGroup) {
-		_collectionPersistenceFinderByG_F.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, firstInGroup});
-	}
-
-	/**
-	 * Returns the number of social activity achievements where groupId = &#63; and firstInGroup = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param firstInGroup the first in group
-	 * @return the number of matching social activity achievements
-	 */
-	@Override
-	public int countByG_F(long groupId, boolean firstInGroup) {
-		return _collectionPersistenceFinderByG_F.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, firstInGroup});
-	}
-
 	private UniquePersistenceFinder
 		<SocialActivityAchievement, NoSuchActivityAchievementException>
 			_uniquePersistenceFinderByG_U_N;
@@ -513,107 +329,6 @@ public class SocialActivityAchievementPersistenceImpl
 		return _uniquePersistenceFinderByG_U_N.count(
 			FinderCacheUtil.getFinderCache(),
 			new Object[] {groupId, userId, name});
-	}
-
-	private CollectionPersistenceFinder
-		<SocialActivityAchievement, NoSuchActivityAchievementException>
-			_collectionPersistenceFinderByG_U_F;
-
-	/**
-	 * Returns an ordered range of all the social activity achievements where groupId = &#63; and userId = &#63; and firstInGroup = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SocialActivityAchievementModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @param firstInGroup the first in group
-	 * @param start the lower bound of the range of social activity achievements
-	 * @param end the upper bound of the range of social activity achievements (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social activity achievements
-	 */
-	@Override
-	public List<SocialActivityAchievement> findByG_U_F(
-		long groupId, long userId, boolean firstInGroup, int start, int end,
-		OrderByComparator<SocialActivityAchievement> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_U_F.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, userId, firstInGroup}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first social activity achievement in the ordered set where groupId = &#63; and userId = &#63; and firstInGroup = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @param firstInGroup the first in group
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity achievement
-	 * @throws NoSuchActivityAchievementException if a matching social activity achievement could not be found
-	 */
-	@Override
-	public SocialActivityAchievement findByG_U_F_First(
-			long groupId, long userId, boolean firstInGroup,
-			OrderByComparator<SocialActivityAchievement> orderByComparator)
-		throws NoSuchActivityAchievementException {
-
-		return _collectionPersistenceFinderByG_U_F.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, userId, firstInGroup}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first social activity achievement in the ordered set where groupId = &#63; and userId = &#63; and firstInGroup = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @param firstInGroup the first in group
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity achievement, or <code>null</code> if a matching social activity achievement could not be found
-	 */
-	@Override
-	public SocialActivityAchievement fetchByG_U_F_First(
-		long groupId, long userId, boolean firstInGroup,
-		OrderByComparator<SocialActivityAchievement> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_U_F.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, userId, firstInGroup}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the social activity achievements where groupId = &#63; and userId = &#63; and firstInGroup = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @param firstInGroup the first in group
-	 */
-	@Override
-	public void removeByG_U_F(long groupId, long userId, boolean firstInGroup) {
-		_collectionPersistenceFinderByG_U_F.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, userId, firstInGroup});
-	}
-
-	/**
-	 * Returns the number of social activity achievements where groupId = &#63; and userId = &#63; and firstInGroup = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @param firstInGroup the first in group
-	 * @return the number of matching social activity achievements
-	 */
-	@Override
-	public int countByG_U_F(long groupId, long userId, boolean firstInGroup) {
-		return _collectionPersistenceFinderByG_U_F.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, userId, firstInGroup});
 	}
 
 	public SocialActivityAchievementPersistenceImpl() {
@@ -875,34 +590,6 @@ public class SocialActivityAchievementPersistenceImpl
 	 * Initializes the social activity achievement persistence.
 	 */
 	public void afterPropertiesSet() {
-		_collectionPersistenceFinderByGroupId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_SOCIALACTIVITYACHIEVEMENT_WHERE,
-				_SQL_COUNT_SOCIALACTIVITYACHIEVEMENT_WHERE,
-				SocialActivityAchievementModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"socialActivityAchievement.", "groupId",
-					FinderColumn.Type.LONG, "=", true, true,
-					SocialActivityAchievement::getGroupId));
-
 		_collectionPersistenceFinderByG_U = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -961,36 +648,6 @@ public class SocialActivityAchievementPersistenceImpl
 				"socialActivityAchievement.", "name", FinderColumn.Type.STRING,
 				"=", true, true, SocialActivityAchievement::getName));
 
-		_collectionPersistenceFinderByG_F = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_F",
-				new String[] {
-					Long.class.getName(), Boolean.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"groupId", "firstInGroup"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_F",
-				new String[] {Long.class.getName(), Boolean.class.getName()},
-				new String[] {"groupId", "firstInGroup"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_F",
-				new String[] {Long.class.getName(), Boolean.class.getName()},
-				new String[] {"groupId", "firstInGroup"}, false),
-			_SQL_SELECT_SOCIALACTIVITYACHIEVEMENT_WHERE,
-			_SQL_COUNT_SOCIALACTIVITYACHIEVEMENT_WHERE,
-			SocialActivityAchievementModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"socialActivityAchievement.", "groupId", FinderColumn.Type.LONG,
-				"=", true, true, SocialActivityAchievement::getGroupId),
-			new FinderColumn<>(
-				"socialActivityAchievement.", "firstInGroup",
-				FinderColumn.Type.BOOLEAN, "=", true, true,
-				SocialActivityAchievement::isFirstInGroup));
-
 		_uniquePersistenceFinderByG_U_N = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -1013,45 +670,6 @@ public class SocialActivityAchievementPersistenceImpl
 			new FinderColumn<>(
 				"socialActivityAchievement.", "name", FinderColumn.Type.STRING,
 				"=", true, true, SocialActivityAchievement::getName));
-
-		_collectionPersistenceFinderByG_U_F = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U_F",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Boolean.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), OrderByComparator.class.getName()
-				},
-				new String[] {"groupId", "userId", "firstInGroup"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U_F",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Boolean.class.getName()
-				},
-				new String[] {"groupId", "userId", "firstInGroup"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U_F",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Boolean.class.getName()
-				},
-				new String[] {"groupId", "userId", "firstInGroup"}, false),
-			_SQL_SELECT_SOCIALACTIVITYACHIEVEMENT_WHERE,
-			_SQL_COUNT_SOCIALACTIVITYACHIEVEMENT_WHERE,
-			SocialActivityAchievementModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"socialActivityAchievement.", "groupId", FinderColumn.Type.LONG,
-				"=", true, true, SocialActivityAchievement::getGroupId),
-			new FinderColumn<>(
-				"socialActivityAchievement.", "userId", FinderColumn.Type.LONG,
-				"=", true, true, SocialActivityAchievement::getUserId),
-			new FinderColumn<>(
-				"socialActivityAchievement.", "firstInGroup",
-				FinderColumn.Type.BOOLEAN, "=", true, true,
-				SocialActivityAchievement::isFirstInGroup));
 
 		SocialActivityAchievementUtil.setPersistence(this);
 	}
@@ -1081,4 +699,4 @@ public class SocialActivityAchievementPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1796631014
+// LIFERAY-SERVICE-BUILDER-HASH:783997304

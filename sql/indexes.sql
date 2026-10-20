@@ -375,15 +375,12 @@ create unique index IX_7E6A9AAD on SocialActivity (classNameId, classPK, groupId
 create index IX_85370BF4 on SocialActivity (classNameId, classPK, mirrorActivityId);
 create index IX_D0E9029E on SocialActivity (classNameId, classPK, type_);
 create index IX_F885EA9C on SocialActivity (classNameId, companyId);
-create index IX_64B1BC66 on SocialActivity (companyId);
 create index IX_2A2468 on SocialActivity (groupId);
 create index IX_1271F25F on SocialActivity (mirrorActivityId);
 create index IX_121CA3CB on SocialActivity (receiverUserId);
 create index IX_3504B8BC on SocialActivity (userId);
 
-create index IX_83E16F2F on SocialActivityAchievement (groupId, firstInGroup);
 create index IX_8F6408F0 on SocialActivityAchievement (groupId, name[$COLUMN_LENGTH:75$]);
-create index IX_AABC18E9 on SocialActivityAchievement (groupId, userId, firstInGroup);
 create unique index IX_5ED94F08 on SocialActivityAchievement (groupId, userId, name[$COLUMN_LENGTH:75$], ctCollectionId);
 
 create index IX_A4B9A23B on SocialActivityCounter (classNameId, classPK);
@@ -402,7 +399,6 @@ create index IX_6D0C8733 on SocialActivitySet (userId, type_, groupId, className
 create index IX_384788CD on SocialActivitySetting (groupId, activityType);
 create unique index IX_4FC6CD18 on SocialActivitySetting (groupId, classNameId, activityType, name[$COLUMN_LENGTH:75$], ctCollectionId);
 
-create index IX_61171E99 on SocialRelation (companyId);
 create index IX_5E1F07A2 on SocialRelation (type_, companyId);
 create unique index IX_ECA579C5 on SocialRelation (type_, userId1, userId2, ctCollectionId);
 create index IX_C91168D6 on SocialRelation (type_, userId2);
@@ -411,7 +407,6 @@ create index IX_5A40D18D on SocialRelation (userId2);
 create index IX_F0CA24A5 on SocialRelation (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_E8468A49 on SocialRequest (classNameId, classPK, receiverUserId, status, type_);
-create index IX_A90FE5A0 on SocialRequest (companyId);
 create index IX_D9380CB7 on SocialRequest (receiverUserId, status);
 create unique index IX_2FE40453 on SocialRequest (userId, classNameId, classPK, receiverUserId, type_, ctCollectionId);
 create index IX_7CFF5CB8 on SocialRequest (userId, classNameId, classPK, status, type_);
