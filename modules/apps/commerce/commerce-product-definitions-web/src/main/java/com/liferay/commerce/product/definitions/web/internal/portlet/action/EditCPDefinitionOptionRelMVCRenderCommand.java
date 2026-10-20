@@ -11,7 +11,6 @@ import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionRelExcepti
 import com.liferay.commerce.product.option.CommerceOptionTypeRegistry;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.info.item.InfoItemServiceRegistry;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -51,7 +50,7 @@ public class EditCPDefinitionOptionRelMVCRenderCommand
 						_actionHelper,
 						_portal.getHttpServletRequest(renderRequest),
 						_commerceOptionTypeRegistry, _configurationProvider,
-						_infoItemServiceRegistry, _itemSelector);
+						_infoItemServiceRegistry);
 
 			renderRequest.setAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -83,9 +82,6 @@ public class EditCPDefinitionOptionRelMVCRenderCommand
 
 	@Reference
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
-
-	@Reference
-	private ItemSelector _itemSelector;
 
 	@Reference
 	private Portal _portal;

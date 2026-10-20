@@ -10,7 +10,6 @@ import com.liferay.commerce.product.definitions.web.internal.display.context.CPD
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionSpecificationOptionValueException;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.service.CPOptionCategoryService;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.list.type.service.ListTypeEntryService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -49,8 +48,7 @@ public class AddCPDefinitionSpecificationOptionValueMVCRenderCommand
 					new CPDefinitionSpecificationOptionValueDisplayContext(
 						_actionHelper,
 						_portal.getHttpServletRequest(renderRequest),
-						_cpOptionCategoryService, _itemSelector,
-						_listTypeEntryService);
+						_cpOptionCategoryService, _listTypeEntryService);
 
 			renderRequest.setAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -77,9 +75,6 @@ public class AddCPDefinitionSpecificationOptionValueMVCRenderCommand
 
 	@Reference
 	private CPOptionCategoryService _cpOptionCategoryService;
-
-	@Reference
-	private ItemSelector _itemSelector;
 
 	@Reference
 	private ListTypeEntryService _listTypeEntryService;

@@ -7,16 +7,12 @@ package com.liferay.commerce.product.definitions.web.internal.display.context;
 
 import com.liferay.commerce.product.constants.CPOptionCategoryConstants;
 import com.liferay.commerce.product.display.context.BaseCPDefinitionsDisplayContext;
-import com.liferay.commerce.product.item.selector.CPSpecificationOptionItemSelectorCriterion;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.service.CPOptionCategoryService;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SelectOption;
-import com.liferay.item.selector.ItemSelector;
-import com.liferay.item.selector.ItemSelectorReturnType;
-import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryService;
@@ -26,8 +22,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -41,7 +35,6 @@ import jakarta.portlet.PortletURL;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,12 +51,11 @@ public class CPDefinitionSpecificationOptionValueDisplayContext
 	public CPDefinitionSpecificationOptionValueDisplayContext(
 		ActionHelper actionHelper, HttpServletRequest httpServletRequest,
 		CPOptionCategoryService cpOptionCategoryService,
-		ItemSelector itemSelector, ListTypeEntryService listTypeEntryService) {
+		ListTypeEntryService listTypeEntryService) {
 
 		super(actionHelper, httpServletRequest);
 
 		_cpOptionCategoryService = cpOptionCategoryService;
-		_itemSelector = itemSelector;
 		_listTypeEntryService = listTypeEntryService;
 	}
 
@@ -126,27 +118,6 @@ public class CPDefinitionSpecificationOptionValueDisplayContext
 		}
 
 		return StringPool.BLANK;
-	}
-
-	public String getItemSelectorUrl() {
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(
-				cpRequestHelper.getRenderRequest());
-
-		CPSpecificationOptionItemSelectorCriterion
-			cpSpecificationOptionItemSelectorCriterion =
-				new CPSpecificationOptionItemSelectorCriterion();
-
-		cpSpecificationOptionItemSelectorCriterion.
-			setDesiredItemSelectorReturnTypes(
-				Collections.<ItemSelectorReturnType>singletonList(
-					new UUIDItemSelectorReturnType()));
-
-		return String.valueOf(
-			_itemSelector.getItemSelectorURL(
-				requestBackedPortletURLFactory,
-				"productSpecificationOptionsSelectItem",
-				cpSpecificationOptionItemSelectorCriterion));
 	}
 
 	@Override
@@ -226,7 +197,6 @@ public class CPDefinitionSpecificationOptionValueDisplayContext
 	private CPDefinitionSpecificationOptionValue
 		_cpDefinitionSpecificationOptionValue;
 	private final CPOptionCategoryService _cpOptionCategoryService;
-	private final ItemSelector _itemSelector;
 	private final ListTypeEntryService _listTypeEntryService;
 
 }

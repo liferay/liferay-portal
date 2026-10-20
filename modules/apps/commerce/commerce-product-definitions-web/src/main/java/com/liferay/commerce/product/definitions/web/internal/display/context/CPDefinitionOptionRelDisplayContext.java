@@ -8,7 +8,6 @@ package com.liferay.commerce.product.definitions.web.internal.display.context;
 import com.liferay.commerce.product.configuration.CPOptionConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.display.context.BaseCPDefinitionsDisplayContext;
-import com.liferay.commerce.product.item.selector.CPOptionItemSelectorCriterion;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.option.CommerceOptionType;
@@ -27,16 +26,11 @@ import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.OptionInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemServiceRegistry;
-import com.liferay.item.selector.ItemSelector;
-import com.liferay.item.selector.ItemSelectorReturnType;
-import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -53,7 +47,6 @@ import jakarta.portlet.PortletURL;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -69,15 +62,13 @@ public class CPDefinitionOptionRelDisplayContext
 		ActionHelper actionHelper, HttpServletRequest httpServletRequest,
 		CommerceOptionTypeRegistry commerceOptionTypeRegistry,
 		ConfigurationProvider configurationProvider,
-		InfoItemServiceRegistry infoItemServiceRegistry,
-		ItemSelector itemSelector) {
+		InfoItemServiceRegistry infoItemServiceRegistry) {
 
 		super(actionHelper, httpServletRequest);
 
 		_commerceOptionTypeRegistry = commerceOptionTypeRegistry;
 		_configurationProvider = configurationProvider;
 		_infoItemServiceRegistry = infoItemServiceRegistry;
-		_itemSelector = itemSelector;
 	}
 
 	public CPDefinitionOptionRel getCPDefinitionOptionRel()
@@ -201,24 +192,6 @@ public class CPDefinitionOptionRelDisplayContext
 		).build();
 	}
 
-	public String getItemSelectorUrl() {
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(
-				cpRequestHelper.getRenderRequest());
-
-		CPOptionItemSelectorCriterion cpOptionItemSelectorCriterion =
-			new CPOptionItemSelectorCriterion();
-
-		cpOptionItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			Collections.<ItemSelectorReturnType>singletonList(
-				new UUIDItemSelectorReturnType()));
-
-		return String.valueOf(
-			_itemSelector.getItemSelectorURL(
-				requestBackedPortletURLFactory, "productOptionsSelectItem",
-				cpOptionItemSelectorCriterion));
-	}
-
 	@Override
 	public PortletURL getPortletURL() throws PortalException {
 		return PortletURLBuilder.create(
@@ -339,6 +312,5 @@ public class CPDefinitionOptionRelDisplayContext
 	private final ConfigurationProvider _configurationProvider;
 	private CPDefinitionOptionRel _cpDefinitionOptionRel;
 	private final InfoItemServiceRegistry _infoItemServiceRegistry;
-	private final ItemSelector _itemSelector;
 
 }
