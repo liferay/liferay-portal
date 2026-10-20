@@ -613,8 +613,8 @@ public abstract class SecretsUtil {
 		}
 		else {
 			System.out.println(
-				"Unable to get the op connect access token from " +
-					"one.password.access.token.key");
+				"Unable to get the op connect access token from the property " +
+					"\"one.password.access.token.key\"");
 		}
 
 		_accessToken = accessToken;
@@ -651,8 +651,8 @@ public abstract class SecretsUtil {
 		}
 
 		System.out.println(
-			"Unable to get the op connect URL from " +
-				"one.password.connect.url.key");
+			"Unable to get the op connect URL from the property " +
+				"\"one.password.connect.url.key\"");
 
 		try {
 			connectURL = JenkinsResultsParserUtil.getBuildProperty(
