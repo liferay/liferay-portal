@@ -39,6 +39,24 @@ public interface FrontendCachingConfiguration {
 	public String cachingStrategy();
 
 	@Meta.AD(
+		deflt = "use-system-defaults",
+		description = "compression-strategy-help",
+		name = "compression-strategy",
+		optionLabels = {
+			"do-not-compress", "use-best-speed-compression",
+			"use-intermediate-compression", "use-maximum-compression",
+			"use-system-defaults"
+		},
+		optionValues = {
+			"do-not-compress", "use-best-speed-compression",
+			"use-intermediate-compression", "use-maximum-compression",
+			"use-system-defaults"
+		},
+		required = false
+	)
+	public String compressionStrategy();
+
+	@Meta.AD(
 		deflt = "86400", description = "css-style-sheets-max-age-help",
 		name = "css-style-sheets-max-age", required = false
 	)

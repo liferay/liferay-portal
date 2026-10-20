@@ -5,9 +5,12 @@
 
 package com.liferay.frontend.js.web.internal.servlet.filter;
 
+import com.liferay.frontend.js.web.internal.configuration.CompressionStrategy;
+import com.liferay.frontend.js.web.internal.configuration.FrontendCachingConfiguration;
 import com.liferay.frontend.js.web.internal.resource.FrontendResource;
 import com.liferay.frontend.js.web.test.util.FrontendJSWebTestUtil;
 import com.liferay.petra.io.StreamUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -21,11 +24,14 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import org.mockito.Mockito;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -46,7 +52,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testContent() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS);
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -68,7 +75,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testETag() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS);
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -85,9 +93,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testGZip() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
-
-		_enableGZip(frontendResourceFilter);
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_BEST_SPEED_COMPRESSION);
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -137,9 +144,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testGZipCacheKey() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
-
-		_enableGZip(frontendResourceFilter);
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_BEST_SPEED_COMPRESSION);
 
 		String eTag = FrontendJSWebTestUtil.randomHashedFileHash();
 
@@ -159,9 +165,42 @@ public class FrontendResourceFilterTest {
 	}
 
 	@Test
+	public void testGZipCompressionLevel() throws Exception {
+		FrontendResource frontendResource = _mockFrontendResource(
+			RandomTestUtil.randomString(), _CONTENT,
+			FrontendJSWebTestUtil.randomHashedFileHash(), true,
+			RandomTestUtil.randomLong(), false, true);
+
+		FrontendResourceFilter bestSpeedFrontendResourceFilter =
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_BEST_SPEED_COMPRESSION);
+
+		Assert.assertEquals(
+			_CONTENT,
+			_getGZipContent(frontendResource, bestSpeedFrontendResourceFilter));
+
+		FrontendResourceFilter maximumFrontendResourceFilter =
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_MAXIMUM_COMPRESSION);
+
+		Assert.assertEquals(
+			_CONTENT,
+			_getGZipContent(frontendResource, maximumFrontendResourceFilter));
+
+		Assert.assertEquals(2, _inputStreamCount.get());
+
+		Assert.assertEquals(
+			_CONTENT,
+			_getGZipContent(frontendResource, bestSpeedFrontendResourceFilter));
+
+		Assert.assertEquals(2, _inputStreamCount.get());
+	}
+
+	@Test
 	public void testGZipDisabled() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS);
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -187,9 +226,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testGZipNotAccepted() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
-
-		_enableGZip(frontendResourceFilter);
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_BEST_SPEED_COMPRESSION);
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
@@ -211,9 +249,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testGZipNotCachedWithoutCacheKey() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
-
-		_enableGZip(frontendResourceFilter);
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_BEST_SPEED_COMPRESSION);
 
 		FrontendResource frontendResource = _mockFrontendResource(
 			null, false, RandomTestUtil.randomLong(), false, true);
@@ -239,9 +276,63 @@ public class FrontendResourceFilterTest {
 	}
 
 	@Test
+	public void testGZipWhenCompressionStrategyIsDoNotCompress()
+		throws Exception {
+
+		FrontendResourceFilter frontendResourceFilter =
+			_createFrontendResourceFilter(CompressionStrategy.DO_NOT_COMPRESS);
+
+		ReflectionTestUtil.setFieldValue(
+			frontendResourceFilter, "_systemCompressionLevel",
+			Deflater.BEST_SPEED);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.addHeader("Accept-Encoding", "gzip");
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		frontendResourceFilter.send(
+			_mockFrontendResource(
+				FrontendJSWebTestUtil.randomHashedFileHash(), true,
+				RandomTestUtil.randomLong(), false, true),
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertNull(
+			mockHttpServletResponse.getHeader("Content-Encoding"));
+		Assert.assertNull(mockHttpServletResponse.getHeader("Vary"));
+		Assert.assertEquals(
+			_CONTENT, mockHttpServletResponse.getContentAsString());
+	}
+
+	@Test
+	public void testGZipWhenCompressionStrategyIsUseSystemDefaults()
+		throws Exception {
+
+		FrontendResourceFilter frontendResourceFilter =
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS);
+
+		ReflectionTestUtil.setFieldValue(
+			frontendResourceFilter, "_systemCompressionLevel",
+			Deflater.BEST_SPEED);
+
+		Assert.assertEquals(
+			_CONTENT,
+			_getGZipContent(
+				_mockFrontendResource(
+					FrontendJSWebTestUtil.randomHashedFileHash(), true,
+					RandomTestUtil.randomLong(), false, true),
+				frontendResourceFilter));
+	}
+
+	@Test
 	public void testImmutable() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS);
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -262,7 +353,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testMaxAge() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS);
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -283,7 +375,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testPrivate() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS);
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -302,7 +395,8 @@ public class FrontendResourceFilterTest {
 	@Test
 	public void testSendNoCache() throws Exception {
 		FrontendResourceFilter frontendResourceFilter =
-			new FrontendResourceFilter();
+			_createFrontendResourceFilter(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS);
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -330,14 +424,47 @@ public class FrontendResourceFilterTest {
 		Assert.assertTrue(cacheControl.contains("no-cache"));
 	}
 
-	private void _enableGZip(FrontendResourceFilter frontendResourceFilter) {
+	private FrontendResourceFilter _createFrontendResourceFilter(
+			CompressionStrategy compressionStrategy)
+		throws Exception {
+
+		FrontendResourceFilter frontendResourceFilter =
+			new FrontendResourceFilter();
+
+		FrontendCachingConfiguration frontendCachingConfiguration =
+			Mockito.mock(FrontendCachingConfiguration.class);
+
+		Mockito.when(
+			frontendCachingConfiguration.compressionStrategy()
+		).thenReturn(
+			compressionStrategy.getValue()
+		);
+
+		ConfigurationProvider configurationProvider = Mockito.mock(
+			ConfigurationProvider.class);
+
+		Mockito.when(
+			configurationProvider.getCompanyConfiguration(
+				Mockito.eq(FrontendCachingConfiguration.class),
+				Mockito.anyLong())
+		).thenReturn(
+			frontendCachingConfiguration
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			frontendResourceFilter, "_configurationProvider",
+			configurationProvider);
+
 		ReflectionTestUtil.setFieldValue(
 			frontendResourceFilter, "_gZipBytesPortalCache",
 			PortalCacheHelperUtil.getPortalCache(
 				PortalCacheManagerNames.SINGLE_VM,
 				FrontendResourceFilterTest.class.getName()));
 		ReflectionTestUtil.setFieldValue(
-			frontendResourceFilter, "_gZipEnabled", true);
+			frontendResourceFilter, "_systemCompressionLevel",
+			Deflater.NO_COMPRESSION);
+
+		return frontendResourceFilter;
 	}
 
 	private String _getContent(FrontendResource frontendResource)

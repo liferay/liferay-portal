@@ -5,12 +5,15 @@
 
 package com.liferay.frontend.js.web.internal.servlet.filter;
 
+import com.liferay.frontend.js.web.internal.configuration.CompressionStrategy;
+import com.liferay.frontend.js.web.internal.configuration.FrontendCachingConfiguration;
 import com.liferay.frontend.js.web.internal.resource.FrontendResource;
 import com.liferay.frontend.js.web.internal.resource.handler.FrontendResourceRequestHandler;
 import com.liferay.frontend.js.web.internal.resource.handler.HashedFileFrontendResourceRequestHandler;
 import com.liferay.frontend.js.web.internal.resource.handler.JavaScriptFrontendResourceRequestHandler;
 import com.liferay.frontend.js.web.internal.resource.handler.LanguageFrontendResourceRequestHandler;
 import com.liferay.frontend.js.web.internal.resource.handler.StyleSheetFrontendResourceRequestHandler;
+import com.liferay.frontend.js.web.internal.util.FrontendJSWebUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringPool;
@@ -22,13 +25,14 @@ import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.servlet.BrowserSnifferUtil;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
@@ -91,16 +95,14 @@ public class FrontendResourceFilter extends BasePortalFilter {
 
 	@Activate
 	protected void activate() {
-		_gZipCompressionLevel = GetterUtil.getInteger(
-			PropsUtil.get(PropsKeys.GZIP_COMPRESSION_LEVEL),
-			Deflater.DEFAULT_COMPRESSION);
+		_gZipBytesPortalCache = PortalCacheHelperUtil.getPortalCache(
+			PortalCacheManagerNames.SINGLE_VM, _GZIP_BYTES_PORTAL_CACHE_NAME);
 
-		_gZipEnabled = GetterUtil.getBoolean(PropsUtil.get(_GZIP_FILTER));
-
-		if (_gZipEnabled) {
-			_gZipBytesPortalCache = PortalCacheHelperUtil.getPortalCache(
-				PortalCacheManagerNames.SINGLE_VM,
-				_GZIP_BYTES_PORTAL_CACHE_NAME);
+		if (GetterUtil.getBoolean(PropsUtil.get(_GZIP_FILTER))) {
+			_systemCompressionLevel = PropsValues.GZIP_COMPRESSION_LEVEL;
+		}
+		else {
+			_systemCompressionLevel = Deflater.NO_COMPRESSION;
 		}
 
 		List<FrontendResourceRequestHandler> frontendResourceRequestHandlers =
@@ -228,13 +230,16 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		httpServletResponse.setCharacterEncoding(StringPool.UTF8);
 		httpServletResponse.setContentType(frontendResource.getContentType());
 
-		if (_gZipEnabled) {
+		int compressionLevel = _getCompressionLevel();
+
+		if (compressionLevel != Deflater.NO_COMPRESSION) {
 			httpServletResponse.addHeader("Vary", HttpHeaders.ACCEPT_ENCODING);
 
 			if (BrowserSnifferUtil.acceptsGzip(httpServletRequest)) {
-				byte[] bytes = _getGZipBytes(frontendResource);
+				byte[] gZipBytes = _getGZipBytes(
+					compressionLevel, frontendResource);
 
-				httpServletResponse.setContentLength(bytes.length);
+				httpServletResponse.setContentLength(gZipBytes.length);
 
 				httpServletResponse.setHeader(
 					HttpHeaders.CONTENT_ENCODING, "gzip");
@@ -242,7 +247,7 @@ public class FrontendResourceFilter extends BasePortalFilter {
 				ServletOutputStream servletOutputStream =
 					httpServletResponse.getOutputStream();
 
-				servletOutputStream.write(bytes);
+				servletOutputStream.write(gZipBytes);
 
 				return;
 			}
@@ -254,22 +259,59 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		}
 	}
 
-	private GZIPOutputStream _createGZipOutputStream(OutputStream outputStream)
+	private GZIPOutputStream _createGZipOutputStream(
+			int compressionLevel, OutputStream outputStream)
 		throws Exception {
 
 		return new GZIPOutputStream(outputStream) {
 			{
-				def.setLevel(_gZipCompressionLevel);
+				def.setLevel(compressionLevel);
 			}
 		};
 	}
 
-	private byte[] _getGZipBytes(FrontendResource frontendResource)
+	private int _getCompressionLevel() {
+		FrontendCachingConfiguration frontendCachingConfiguration =
+			FrontendJSWebUtil.getFrontendCachingConfiguration(
+				CompanyThreadLocal.getCompanyId(), _configurationProvider);
+
+		CompressionStrategy compressionStrategy = CompressionStrategy.fromValue(
+			frontendCachingConfiguration.compressionStrategy());
+
+		if (compressionStrategy == CompressionStrategy.DO_NOT_COMPRESS) {
+			return Deflater.NO_COMPRESSION;
+		}
+
+		if (compressionStrategy ==
+				CompressionStrategy.USE_BEST_SPEED_COMPRESSION) {
+
+			return Deflater.BEST_SPEED;
+		}
+
+		if (compressionStrategy ==
+				CompressionStrategy.USE_INTERMEDIATE_COMPRESSION) {
+
+			return 6;
+		}
+
+		if (compressionStrategy ==
+				CompressionStrategy.USE_MAXIMUM_COMPRESSION) {
+
+			return Deflater.BEST_COMPRESSION;
+		}
+
+		return _systemCompressionLevel;
+	}
+
+	private byte[] _getGZipBytes(
+			int compressionLevel, FrontendResource frontendResource)
 		throws Exception {
 
 		String cacheKey = frontendResource.getCacheKey();
 
 		if (cacheKey != null) {
+			cacheKey = compressionLevel + StringPool.POUND + cacheKey;
+
 			byte[] bytes = _gZipBytesPortalCache.get(cacheKey);
 
 			if (bytes != null) {
@@ -282,7 +324,7 @@ public class FrontendResourceFilter extends BasePortalFilter {
 
 		try (InputStream inputStream = frontendResource.getInputStream();
 			GZIPOutputStream gzipOutputStream = _createGZipOutputStream(
-				unsyncByteArrayOutputStream)) {
+				compressionLevel, unsyncByteArrayOutputStream)) {
 
 			StreamUtil.transfer(inputStream, gzipOutputStream, false);
 		}
@@ -309,8 +351,6 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		_frontendResourceRequestHandlers = new AtomicReference<>(
 			Collections.emptyList());
 	private PortalCache<String, byte[]> _gZipBytesPortalCache;
-	private int _gZipCompressionLevel;
-	private boolean _gZipEnabled;
 
 	@Reference
 	private HashedFilesRegistry _hashedFilesRegistry;
@@ -323,6 +363,8 @@ public class FrontendResourceFilter extends BasePortalFilter {
 
 	@Reference
 	private Portal _portal;
+
+	private int _systemCompressionLevel;
 
 	@Reference
 	private ThemeLocalService _themeLocalService;
