@@ -653,10 +653,10 @@ public class LayoutUtil {
 				"customCSSClassName",
 				advancedStylingConfig.getCustomCSSClassNames());
 
-			JSONObject jsonObject = JSONUtil.put(
+			JSONObject portletSetupCssJSONObject = JSONUtil.put(
 				"advancedData", advancedDataJSONObject);
 
-			map.put("portletSetupCss", jsonObject.toString());
+			map.put("portletSetupCss", portletSetupCssJSONObject.toString());
 		}
 
 		GeneralConfig generalConfig =
