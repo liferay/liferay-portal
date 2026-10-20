@@ -309,7 +309,6 @@ create unique index IX_8CCEB8CB on PortletPreferences (portletId[$COLUMN_LENGTH:
 create index IX_EF5FCC07 on PortletPreferences (portletId[$COLUMN_LENGTH:200$], ownerType, plid);
 create index IX_8DCFD52C on PortletPreferences (portletId[$COLUMN_LENGTH:200$], plid);
 
-create index IX_A1A8CB8B on RatingsEntry (classNameId, classPK, score);
 create unique index IX_119FF2EF on RatingsEntry (classNameId, classPK, userId, ctCollectionId);
 create index IX_C34DEAF2 on RatingsEntry (uuid_[$COLUMN_LENGTH:75$]);
 

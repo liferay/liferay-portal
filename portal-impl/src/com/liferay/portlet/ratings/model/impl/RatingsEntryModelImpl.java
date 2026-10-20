@@ -150,26 +150,20 @@ public class RatingsEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SCORE_COLUMN_BITMASK = 8L;
+	public static final long USERID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 16L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long ENTRYID_COLUMN_BITMASK = 64L;
+	public static final long ENTRYID_COLUMN_BITMASK = 32L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.kernel.util.PropsUtil.get(
@@ -628,16 +622,6 @@ public class RatingsEntryModelImpl
 		_score = score;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public double getOriginalScore() {
-		return GetterUtil.getDouble(
-			this.<Double>getColumnOriginalValue("score"));
-	}
-
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1043,4 +1027,4 @@ public class RatingsEntryModelImpl
 	private RatingsEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-969061475
+// LIFERAY-SERVICE-BUILDER-HASH:-663649329

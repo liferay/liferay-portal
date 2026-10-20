@@ -455,95 +455,6 @@ public class RatingsEntryUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.ratings.model.impl.RatingsEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @param start the lower bound of the range of ratings entries
-	 * @param end the upper bound of the range of ratings entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ratings entries
-	 */
-	public static List<RatingsEntry> findByC_C_S(
-		long classNameId, long classPK, double score, int start, int end,
-		OrderByComparator<RatingsEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByC_C_S(
-			classNameId, classPK, score, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first ratings entry in the ordered set where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ratings entry
-	 * @throws NoSuchEntryException if a matching ratings entry could not be found
-	 */
-	public static RatingsEntry findByC_C_S_First(
-			long classNameId, long classPK, double score,
-			OrderByComparator<RatingsEntry> orderByComparator)
-		throws com.liferay.ratings.kernel.exception.NoSuchEntryException {
-
-		return getPersistence().findByC_C_S_First(
-			classNameId, classPK, score, orderByComparator);
-	}
-
-	/**
-	 * Returns the first ratings entry in the ordered set where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ratings entry, or <code>null</code> if a matching ratings entry could not be found
-	 */
-	public static RatingsEntry fetchByC_C_S_First(
-		long classNameId, long classPK, double score,
-		OrderByComparator<RatingsEntry> orderByComparator) {
-
-		return getPersistence().fetchByC_C_S_First(
-			classNameId, classPK, score, orderByComparator);
-	}
-
-	/**
-	 * Removes all the ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63; from the database.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 */
-	public static void removeByC_C_S(
-		long classNameId, long classPK, double score) {
-
-		getPersistence().removeByC_C_S(classNameId, classPK, score);
-	}
-
-	/**
-	 * Returns the number of ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @return the number of matching ratings entries
-	 */
-	public static int countByC_C_S(
-		long classNameId, long classPK, double score) {
-
-		return getPersistence().countByC_C_S(classNameId, classPK, score);
-	}
-
-	/**
 	 * Creates a new ratings entry with the primary key. Does not add the ratings entry to the database.
 	 *
 	 * @param entryId the primary key for the new ratings entry
@@ -817,64 +728,6 @@ public class RatingsEntryUtil {
 			userId, classNameId, classPKs, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @return the matching ratings entries
-	 */
-	public static List<RatingsEntry> findByC_C_S(
-		long classNameId, long classPK, double score) {
-
-		return getPersistence().findByC_C_S(classNameId, classPK, score);
-	}
-
-	/**
-	 * Returns a range of all the ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.ratings.model.impl.RatingsEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @param start the lower bound of the range of ratings entries
-	 * @param end the upper bound of the range of ratings entries (not inclusive)
-	 * @return the range of matching ratings entries
-	 */
-	public static List<RatingsEntry> findByC_C_S(
-		long classNameId, long classPK, double score, int start, int end) {
-
-		return getPersistence().findByC_C_S(
-			classNameId, classPK, score, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.ratings.model.impl.RatingsEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @param start the lower bound of the range of ratings entries
-	 * @param end the upper bound of the range of ratings entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ratings entries
-	 */
-	public static List<RatingsEntry> findByC_C_S(
-		long classNameId, long classPK, double score, int start, int end,
-		OrderByComparator<RatingsEntry> orderByComparator) {
-
-		return getPersistence().findByC_C_S(
-			classNameId, classPK, score, start, end, orderByComparator);
-	}
-
 	public static RatingsEntryPersistence getPersistence() {
 		return _persistence;
 	}
@@ -886,4 +739,4 @@ public class RatingsEntryUtil {
 	private static volatile RatingsEntryPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2106999756
+// LIFERAY-SERVICE-BUILDER-HASH:-145771354

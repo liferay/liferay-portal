@@ -471,106 +471,6 @@ public class RatingsEntryPersistenceImpl
 			});
 	}
 
-	private CollectionPersistenceFinder<RatingsEntry, NoSuchEntryException>
-		_collectionPersistenceFinderByC_C_S;
-
-	/**
-	 * Returns an ordered range of all the ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>RatingsEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @param start the lower bound of the range of ratings entries
-	 * @param end the upper bound of the range of ratings entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ratings entries
-	 */
-	@Override
-	public List<RatingsEntry> findByC_C_S(
-		long classNameId, long classPK, double score, int start, int end,
-		OrderByComparator<RatingsEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_C_S.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {classNameId, classPK, score}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first ratings entry in the ordered set where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ratings entry
-	 * @throws NoSuchEntryException if a matching ratings entry could not be found
-	 */
-	@Override
-	public RatingsEntry findByC_C_S_First(
-			long classNameId, long classPK, double score,
-			OrderByComparator<RatingsEntry> orderByComparator)
-		throws NoSuchEntryException {
-
-		return _collectionPersistenceFinderByC_C_S.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {classNameId, classPK, score}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first ratings entry in the ordered set where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ratings entry, or <code>null</code> if a matching ratings entry could not be found
-	 */
-	@Override
-	public RatingsEntry fetchByC_C_S_First(
-		long classNameId, long classPK, double score,
-		OrderByComparator<RatingsEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_C_S.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {classNameId, classPK, score}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63; from the database.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 */
-	@Override
-	public void removeByC_C_S(long classNameId, long classPK, double score) {
-		_collectionPersistenceFinderByC_C_S.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {classNameId, classPK, score});
-	}
-
-	/**
-	 * Returns the number of ratings entries where classNameId = &#63; and classPK = &#63; and score = &#63;.
-	 *
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param score the score
-	 * @return the number of matching ratings entries
-	 */
-	@Override
-	public int countByC_C_S(long classNameId, long classPK, double score) {
-		return _collectionPersistenceFinderByC_C_S.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {classNameId, classPK, score});
-	}
-
 	public RatingsEntryPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -998,43 +898,6 @@ public class RatingsEntryPersistenceImpl
 				"ratingsEntry.", "classPK", FinderColumn.Type.LONG, "=", false,
 				true, true, RatingsEntry::getClassPK));
 
-		_collectionPersistenceFinderByC_C_S = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C_S",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Double.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), OrderByComparator.class.getName()
-				},
-				new String[] {"classNameId", "classPK", "score"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C_S",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Double.class.getName()
-				},
-				new String[] {"classNameId", "classPK", "score"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C_S",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Double.class.getName()
-				},
-				new String[] {"classNameId", "classPK", "score"}, false),
-			_SQL_SELECT_RATINGSENTRY_WHERE, _SQL_COUNT_RATINGSENTRY_WHERE,
-			RatingsEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"ratingsEntry.", "classNameId", FinderColumn.Type.LONG, "=",
-				true, true, RatingsEntry::getClassNameId),
-			new FinderColumn<>(
-				"ratingsEntry.", "classPK", FinderColumn.Type.LONG, "=", true,
-				true, RatingsEntry::getClassPK),
-			new FinderColumn<>(
-				"ratingsEntry.", "score", FinderColumn.Type.DOUBLE, "=", true,
-				true, RatingsEntry::getScore));
-
 		RatingsEntryUtil.setPersistence(this);
 	}
 
@@ -1065,4 +928,4 @@ public class RatingsEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:365147233
+// LIFERAY-SERVICE-BUILDER-HASH:-1622062226
