@@ -24,15 +24,25 @@
 
 {{- define "liferay.database.env" -}}
 {{- if include "liferay.database.engine" . }}
-{{- $profile := include "liferay.database.profile" . | fromYaml }}
-{{- with $profile.hibernateDialect }}
--   name: LIFERAY_HIBERNATE_PERIOD_DIALECT
-    value: {{ . }}
+{{- $customEnvNames := list }}
+{{- range $k, $v := .customEnv }}
+{{- range $v }}
+{{- $customEnvNames = append $customEnvNames .name }}
 {{- end }}
+{{- end }}
+{{- $profile := include "liferay.database.profile" . | fromYaml }}
+{{- if and $profile.hibernateDialect (not (has "LIFERAY_HIBERNATE_PERIOD_DIALECT" $customEnvNames)) }}
+-   name: LIFERAY_HIBERNATE_PERIOD_DIALECT
+    value: {{ $profile.hibernateDialect }}
+{{- end }}
+{{- if not (has "LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME" $customEnvNames) }}
 -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
     value: {{ $profile.driverClassName }}
+{{- end }}
+{{- if not (has "LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL" $customEnvNames) }}
 -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL
     value: {{ include "liferay.database.url" . | quote }}
+{{- end }}
 {{- else if (.database | default dict).host }}
 {{- fail "\"database.engine\" must be set when \"database.host\" is set, or Liferay falls back to its embedded Hypersonic database" }}
 {{- end }}
