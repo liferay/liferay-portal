@@ -2057,6 +2057,64 @@ exports[`View should render a Salesforce data-source page 1`] = `
                           </p>
                         </div>
                       </li>
+                      <li
+                        class="list-group-item list-group-item-flex"
+                      >
+                        <div
+                          class="autofit-col"
+                        >
+                          <div
+                            class="custom-control custom-checkbox"
+                          >
+                            <label>
+                              <input
+                                checked=""
+                                class="custom-control-input"
+                                disabled=""
+                                readonly=""
+                                type="checkbox"
+                              />
+                              <span
+                                class="custom-control-label"
+                              />
+                            </label>
+                          </div>
+                        </div>
+                        <div
+                          class="autofit-col"
+                        >
+                          <span
+                            class="sticker sticker-unstyled"
+                          >
+                            <span
+                              class="sticker-overlay"
+                            >
+                              <svg
+                                class="lexicon-icon lexicon-icon-megaphone text-secondary"
+                                role="presentation"
+                              >
+                                <use
+                                  href="#megaphone"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          class="autofit-col autofit-col-expand"
+                        >
+                          <p
+                            class="list-group-title"
+                          >
+                            Campaigns
+                          </p>
+                          <p
+                            class="list-group-text"
+                          >
+                            Represents fields from the Campaign object within Salesforce.
+                          </p>
+                        </div>
+                      </li>
                     </ul>
                   </div>
                   <button
