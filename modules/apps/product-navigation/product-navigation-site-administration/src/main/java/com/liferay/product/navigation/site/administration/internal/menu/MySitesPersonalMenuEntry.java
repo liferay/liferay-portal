@@ -51,11 +51,6 @@ import org.osgi.service.component.annotations.Reference;
 public class MySitesPersonalMenuEntry implements PersonalMenuEntry {
 
 	@Override
-	public String getIcon(PortletRequest portletRequest) {
-		return "sites";
-	}
-
-	@Override
 	public JSONObject getJSOnClickConfigJSONObject(
 		HttpServletRequest httpServletRequest) {
 
