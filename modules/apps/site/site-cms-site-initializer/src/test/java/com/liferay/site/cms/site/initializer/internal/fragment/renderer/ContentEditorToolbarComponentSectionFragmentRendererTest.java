@@ -59,13 +59,13 @@ public class ContentEditorToolbarComponentSectionFragmentRendererTest {
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
 
-		PortalUtil portalUtil = new PortalUtil();
-
-		portalUtil.setPortal(_portal);
-
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+
+		PortalUtil portalUtil = new PortalUtil();
+
+		portalUtil.setPortal(_portal);
 
 		ReflectionTestUtil.setFieldValue(
 			_contentEditorToolbarComponentSectionFragmentRenderer,
