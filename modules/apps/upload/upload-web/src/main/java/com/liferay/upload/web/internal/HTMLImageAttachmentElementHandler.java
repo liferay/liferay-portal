@@ -44,27 +44,29 @@ public class HTMLImageAttachmentElementHandler
 
 		StringBuffer sb = new StringBuffer(content.length());
 
-		Map<String, FileEntry> fileEntries = new HashMap<>();
+		Map<Long, FileEntry> fileEntries = new HashMap<>();
 
 		Matcher matcher = _tempAttachmentPattern.matcher(content);
 
 		while (matcher.find()) {
-			String fileName = matcher.group(0);
+			long fileEntryId = GetterUtil.getLong(matcher.group(1));
 
-			FileEntry fileEntry = fileEntries.get(fileName);
+			FileEntry fileEntry = fileEntries.get(fileEntryId);
 
 			if (fileEntry == null) {
 				fileEntry = saveTempFileUnsafeFunction.apply(
-					_getFileEntry(matcher));
+					_dlAppService.getFileEntry(fileEntryId));
 
-				fileEntries.put(fileName, fileEntry);
+				fileEntries.put(fileEntryId, fileEntry);
 			}
+
+			String imgTag = matcher.group(0);
 
 			matcher.appendReplacement(
 				sb,
 				Matcher.quoteReplacement(
 					_htmlImageAttachmentElementReplacer.replace(
-						fileName, fileEntry)));
+						imgTag, fileEntry)));
 		}
 
 		matcher.appendTail(sb);
@@ -76,10 +78,6 @@ public class HTMLImageAttachmentElementHandler
 	protected void activate() {
 		_htmlImageAttachmentElementReplacer =
 			new HTMLImageAttachmentElementReplacer(_portletFileRepository);
-	}
-
-	private FileEntry _getFileEntry(Matcher matcher) throws PortalException {
-		return _dlAppService.getFileEntry(GetterUtil.getLong(matcher.group(1)));
 	}
 
 	private static final String _ATTRIBUTE_LIST_REGEXP =
