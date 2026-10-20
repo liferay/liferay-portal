@@ -182,8 +182,10 @@ public class IndividualSegmentMembershipChangeResourceTest
 		Object[] arguments = _getIndividualSegmentMembershipChangesArguments(
 			rangeEndLocalDateString, rangeStartLocalDateString);
 
-		Assert.assertEquals(_toDate(LocalDate.parse(rangeEndLocalDateString)), arguments[4]);
-		Assert.assertEquals(_toDate(LocalDate.parse(rangeStartLocalDateString)), arguments[3]);
+		Assert.assertEquals(
+			_toDate(LocalDate.parse(rangeEndLocalDateString)), arguments[4]);
+		Assert.assertEquals(
+			_toDate(LocalDate.parse(rangeStartLocalDateString)), arguments[3]);
 	}
 
 	private void _testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeStart()
