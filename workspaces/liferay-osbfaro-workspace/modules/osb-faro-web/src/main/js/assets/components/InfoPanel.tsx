@@ -1,11 +1,11 @@
+import BasePage from 'shared/components/base-page';
 import ClayIcon from 'shared/components/Icon';
 import ClayLabel from '@clayui/label';
 import ClayPanel from '@clayui/panel';
 import ClaySticker from '@clayui/sticker';
 import ClayTabs from '@clayui/tabs';
 import getCN from 'classnames';
-import React, {useRef} from 'react';
-import {ClayButtonWithIcon} from '@clayui/button';
+import React from 'react';
 import {getMimeType} from '../components/mime-type';
 import {Heading} from '@clayui/core';
 import {sub} from 'shared/util/lang';
@@ -31,7 +31,6 @@ interface IInfoPanelProps {
 }
 
 const InfoPanel: React.FC<IInfoPanelProps> = ({data, onClose}) => {
-	const sidePanelRef = useRef(null);
 	const [activeTab, setActiveTab] = React.useState<number>(0);
 
 	const mimeType = getMimeType({
@@ -40,54 +39,34 @@ const InfoPanel: React.FC<IInfoPanelProps> = ({data, onClose}) => {
 	});
 
 	return (
-		<div
-			className={getCN(
-				'info-panel-root  c-slideout c-slideout-absolute c-slideout-push c-slideout-end',
-				{
-					'c-slideout-shown': !!data,
-				}
-			)}
-			id="infoPanel"
-			ref={sidePanelRef}
+		<BasePage.Sidebar
+			onOpenChange={(open) => !open && onClose()}
+			open={!!data}
 		>
-			<div
-				className={getCN('sidebar sidebar-light', {
-					'c-slideout-show': !!data,
-				})}
-				style={{width: 472}}
+			<BasePage.Sidebar.Header
+				className="px-4"
+				messages={{closeAriaLabel: Liferay.Language.get('close')}}
 			>
-				<div className="sidebar-header">
-					<div className="autofit-row">
-						<div className="autofit-col autofit-col-expand">
-							<span className="component-title">
-								<div className="align-items-center d-flex">
-									<span className="mr-3">
-										<ClaySticker
-											className={mimeType.className}
-											displayType="dark"
-										>
-											<ClayIcon symbol={mimeType.icon} />
-										</ClaySticker>
-									</span>
+				<div className="align-items-center d-flex">
+					<ClaySticker
+						className={getCN(
+							'flex-shrink-0 mr-3',
+							mimeType.className
+						)}
+						displayType="dark"
+					>
+						<ClayIcon symbol={mimeType.icon} />
+					</ClaySticker>
 
-									<Heading level={4} weight="semi-bold">
-										{data?.itemData?.assetTitle ??
-											data?.itemData?.id}
-									</Heading>
-								</div>
-							</span>
-						</div>
-						<div className="autofit-col">
-							<ClayButtonWithIcon
-								className="close"
-								displayType="unstyled"
-								onClick={() => onClose()}
-								symbol="times"
-							/>
-						</div>
-					</div>
+					<BasePage.Sidebar.Title className="flex-grow-1 text-truncate">
+						<Heading level={4} weight="semi-bold">
+							{data?.itemData?.assetTitle ?? data?.itemData?.id}
+						</Heading>
+					</BasePage.Sidebar.Title>
 				</div>
+			</BasePage.Sidebar.Header>
 
+			<BasePage.Sidebar.Body className="p-0">
 				<ClayTabs active={activeTab} onActiveChange={setActiveTab}>
 					<ClayTabs.Item
 						innerProps={{
@@ -144,8 +123,8 @@ const InfoPanel: React.FC<IInfoPanelProps> = ({data, onClose}) => {
 						/>
 					</ClayTabs.TabPane>
 				</ClayTabs.Content>
-			</div>
-		</div>
+			</BasePage.Sidebar.Body>
+		</BasePage.Sidebar>
 	);
 };
 

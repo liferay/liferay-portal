@@ -3,7 +3,8 @@
 exports[`List rendering should match the snapshot 1`] = `
 <div>
   <div
-    class="index-root"
+    class="index-root base-page-sidebar-overlay c-slideout-container"
+    style="--base-page-sidebar-width: 512px;"
   >
     <div
       class="maintenance-alert-root"
@@ -120,7 +121,7 @@ exports[`List rendering should match the snapshot 1`] = `
       </div>
     </div>
     <div
-      class="fluid-body-root pt-3 px-5 d-flex"
+      class="fluid-body-root pt-3 px-5"
     >
       <div
         class="card card-root"
@@ -222,33 +223,37 @@ exports[`List rendering should match the snapshot 1`] = `
         </div>
       </div>
       <div
-        class="info-panel-root  c-slideout c-slideout-absolute c-slideout-push c-slideout-end"
-        id="infoPanel"
+        class="c-slideout c-slideout-fixed c-slideout-push c-slideout-end"
+        style="top: 0px;"
       >
         <div
-          class="sidebar sidebar-light"
-          style="width: 472px;"
+          aria-labelledby="clay-id-74"
+          class="sidebar base-page-sidebar sidebar-light"
+          id="clay-id-73"
+          inert=""
+          style="width: 512px;"
+          tabindex="-1"
         >
           <div
-            class="sidebar-header"
+            class="c-focus-trap"
           >
             <div
-              class="autofit-row"
+              class="c-focus-trap"
             >
               <div
-                class="autofit-col autofit-col-expand"
+                class="sidebar-header px-4"
               >
-                <span
-                  class="component-title"
+                <div
+                  class="autofit-row"
                 >
                   <div
-                    class="align-items-center d-flex"
+                    class="autofit-col autofit-col-expand"
                   >
-                    <span
-                      class="mr-3"
+                    <div
+                      class="align-items-center d-flex"
                     >
                       <span
-                        class="sticker document-default sticker-dark"
+                        class="sticker flex-shrink-0 mr-3 document-default sticker-dark"
                       >
                         <span
                           class="sticker-overlay"
@@ -263,174 +268,184 @@ exports[`List rendering should match the snapshot 1`] = `
                           </svg>
                         </span>
                       </span>
-                    </span>
-                    <h4
-                      class="text-7 font-weight-semi-bold"
-                    />
+                      <span
+                        class="component-title flex-grow-1 text-truncate"
+                        id="clay-id-74"
+                      >
+                        <h4
+                          class="text-7 font-weight-semi-bold"
+                        />
+                      </span>
+                    </div>
                   </div>
-                </span>
-              </div>
-              <div
-                class="autofit-col"
-              >
-                <button
-                  class="close btn btn-monospaced btn-unstyled"
-                  type="button"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-times"
-                    role="presentation"
-                  >
-                    <use
-                      href="#times"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-          <ul
-            class="nav nav-tabs"
-            role="tablist"
-          >
-            <li
-              class="nav-item"
-              role="none"
-            >
-              <button
-                aria-controls="tabpanel-1"
-                aria-selected="true"
-                class="nav-link active btn btn-unstyled"
-                data-testid="tabItem"
-                role="tab"
-                tabindex="0"
-                type="button"
-              >
-                Details
-              </button>
-            </li>
-            <li
-              class="nav-item"
-              role="none"
-            >
-              <button
-                aria-controls="tabpanel-2"
-                aria-selected="false"
-                class="nav-link btn btn-unstyled"
-                data-testid="tabItem"
-                role="tab"
-                tabindex="-1"
-                type="button"
-              >
-                Categorization
-              </button>
-            </li>
-          </ul>
-          <div
-            class="tab-content"
-          >
-            <div
-              aria-labelledby="tab-1"
-              class="tab-pane active fade show"
-              role="tabpanel"
-              tabindex="0"
-            >
-              <div
-                class="panel panel-unstyled"
-              >
-                <div
-                  class="panel-header border-bottom"
-                >
                   <div
-                    class="panel-title text-secondary"
+                    class="autofit-col"
                   >
-                    Metadata
-                  </div>
-                </div>
-                <div
-                  class="panel-body"
-                >
-                  <div
-                    class="mb-2"
-                  >
-                    <span
-                      class="text-4 font-weight-semi-bold"
+                    <button
+                      aria-label="Close"
+                      class="close"
+                      type="button"
                     >
-                      ERC
-                    </span>
+                      <svg
+                        class="lexicon-icon lexicon-icon-times"
+                        role="presentation"
+                      >
+                        <use
+                          href="#times"
+                        />
+                      </svg>
+                    </button>
                   </div>
-                  <span
-                    class="text-3 text-secondary"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              aria-labelledby="tab-2"
-              class="tab-pane fade"
-              role="tabpanel"
-              tabindex="0"
-            >
-              <div
-                class="panel panel-unstyled"
-              >
-                <div
-                  class="panel-header border-bottom"
-                >
-                  <div
-                    class="panel-title text-secondary"
-                  >
-                    Categories
-                  </div>
-                </div>
-                <div
-                  class="panel-body"
-                >
-                  <div
-                    class="mb-2"
-                  >
-                    <span
-                      class="text-4 font-weight-semi-bold"
-                    >
-                      No Categories were found for this asset.
-                    </span>
-                  </div>
-                  <span
-                    class="text-3 text-secondary"
-                  >
-                    Go to your content management system to manage Categories.
-                  </span>
                 </div>
               </div>
               <div
-                class="panel panel-unstyled"
+                class="sidebar-body p-0"
               >
-                <div
-                  class="panel-header border-bottom"
+                <ul
+                  class="nav nav-tabs"
+                  role="tablist"
                 >
-                  <div
-                    class="panel-title text-secondary"
+                  <li
+                    class="nav-item"
+                    role="none"
                   >
-                    Tags
-                  </div>
-                </div>
-                <div
-                  class="panel-body"
-                >
-                  <div
-                    class="mb-2"
-                  >
-                    <span
-                      class="text-4 font-weight-semi-bold"
+                    <button
+                      aria-controls="tabpanel-1"
+                      aria-selected="true"
+                      class="nav-link active btn btn-unstyled"
+                      data-testid="tabItem"
+                      role="tab"
+                      tabindex="0"
+                      type="button"
                     >
-                      No Tags were found for this asset.
-                    </span>
-                  </div>
-                  <span
-                    class="text-3 text-secondary"
+                      Details
+                    </button>
+                  </li>
+                  <li
+                    class="nav-item"
+                    role="none"
                   >
-                    Go to your content management system to manage Tags.
-                  </span>
+                    <button
+                      aria-controls="tabpanel-2"
+                      aria-selected="false"
+                      class="nav-link btn btn-unstyled"
+                      data-testid="tabItem"
+                      role="tab"
+                      tabindex="-1"
+                      type="button"
+                    >
+                      Categorization
+                    </button>
+                  </li>
+                </ul>
+                <div
+                  class="tab-content"
+                >
+                  <div
+                    aria-labelledby="tab-1"
+                    class="tab-pane active fade show"
+                    role="tabpanel"
+                    tabindex="0"
+                  >
+                    <div
+                      class="panel panel-unstyled"
+                    >
+                      <div
+                        class="panel-header border-bottom"
+                      >
+                        <div
+                          class="panel-title text-secondary"
+                        >
+                          Metadata
+                        </div>
+                      </div>
+                      <div
+                        class="panel-body"
+                      >
+                        <div
+                          class="mb-2"
+                        >
+                          <span
+                            class="text-4 font-weight-semi-bold"
+                          >
+                            ERC
+                          </span>
+                        </div>
+                        <span
+                          class="text-3 text-secondary"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    aria-labelledby="tab-2"
+                    class="tab-pane fade"
+                    role="tabpanel"
+                    tabindex="0"
+                  >
+                    <div
+                      class="panel panel-unstyled"
+                    >
+                      <div
+                        class="panel-header border-bottom"
+                      >
+                        <div
+                          class="panel-title text-secondary"
+                        >
+                          Categories
+                        </div>
+                      </div>
+                      <div
+                        class="panel-body"
+                      >
+                        <div
+                          class="mb-2"
+                        >
+                          <span
+                            class="text-4 font-weight-semi-bold"
+                          >
+                            No Categories were found for this asset.
+                          </span>
+                        </div>
+                        <span
+                          class="text-3 text-secondary"
+                        >
+                          Go to your content management system to manage Categories.
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      class="panel panel-unstyled"
+                    >
+                      <div
+                        class="panel-header border-bottom"
+                      >
+                        <div
+                          class="panel-title text-secondary"
+                        >
+                          Tags
+                        </div>
+                      </div>
+                      <div
+                        class="panel-body"
+                      >
+                        <div
+                          class="mb-2"
+                        >
+                          <span
+                            class="text-4 font-weight-semi-bold"
+                          >
+                            No Tags were found for this asset.
+                          </span>
+                        </div>
+                        <span
+                          class="text-3 text-secondary"
+                        >
+                          Go to your content management system to manage Tags.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

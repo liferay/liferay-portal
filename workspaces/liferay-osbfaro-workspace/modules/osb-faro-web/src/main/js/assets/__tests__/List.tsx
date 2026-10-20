@@ -2,7 +2,13 @@ import List from 'assets/pages/List';
 import mockStore, {mockStoreDataLDP} from 'test/mock-store';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+} from '@testing-library/react';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
@@ -1182,43 +1188,36 @@ describe('List', () => {
 			expect(container.querySelector('.sticker')).toBeInTheDocument();
 		});
 
-		it('should add the sidebar-opened class to the page when the panel is open', async () => {
+		it('should push the page aside when the panel is open', async () => {
 			const {container} = await renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
-			expect(
-				container.querySelector('.sidebar-opened')
-			).toBeInTheDocument();
-		});
-
-		it('should not have the sidebar-opened class before the panel is opened', async () => {
-			const {container} = await renderList();
-
-			expect(container.querySelector('.sidebar-opened')).toBeNull();
-		});
-
-		it('should remove the sidebar-opened class after the panel is closed', async () => {
-			const {container} = await renderList();
-
-			fireEvent.click(screen.getByTestId('trigger-info-panel'));
-
-			expect(
-				container.querySelector('.sidebar-opened')
-			).toBeInTheDocument();
-
-			// ClayCore's SidePanel calls onOpenChange when closed; trigger it
-			// via the close button rendered inside the panel.
-
-			const closeButton = container.querySelector(
-				'.info-panel-root .close'
+			expect(container.querySelector('.index-root')).toHaveClass(
+				'c-slideout-push-end'
 			);
+		});
 
-			if (closeButton) {
-				fireEvent.click(closeButton);
+		it('should not push the page before the panel is opened', async () => {
+			const {container} = await renderList();
 
-				expect(container.querySelector('.sidebar-opened')).toBeNull();
-			}
+			expect(container.querySelector('.index-root')).not.toHaveClass(
+				'c-slideout-push-end'
+			);
+		});
+
+		it('should stop pushing the page after the panel is closed', async () => {
+			const {container} = await renderList();
+
+			fireEvent.click(screen.getByTestId('trigger-info-panel'));
+
+			fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+
+			await waitFor(() =>
+				expect(container.querySelector('.index-root')).not.toHaveClass(
+					'c-slideout-push-end'
+				)
+			);
 		});
 
 		it('should render the Categorization tab', async () => {
