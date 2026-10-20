@@ -38,8 +38,6 @@ public interface SettingsLocatorHelper {
 	public Settings getPortletInstanceConfigurationBeanSettings(
 		String portletId, String configurationPid, Settings parentSettings);
 
-	public Settings getServerSettings(String settingsId);
-
 	public SettingsDescriptor getSettingsDescriptor(String settingsId);
 
 }

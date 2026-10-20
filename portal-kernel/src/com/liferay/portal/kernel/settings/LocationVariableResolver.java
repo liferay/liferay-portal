@@ -162,7 +162,7 @@ public class LocationVariableResolver {
 
 		String serviceName = location.substring(0, i);
 
-		Settings settings = _settingsLocatorHelper.getServerSettings(
+		Settings settings = _settingsLocatorHelper.getConfigurationBeanSettings(
 			serviceName);
 
 		String property = location.substring(i + 1);

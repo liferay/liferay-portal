@@ -183,7 +183,8 @@ public class LocationVariableResolverTest {
 		String expectedValue = "test@liferay.com";
 
 		Mockito.when(
-			_mockSettingsLocatorHelper.getServerSettings("com.liferay.portal")
+			_mockSettingsLocatorHelper.getConfigurationBeanSettings(
+				"com.liferay.portal")
 		).thenReturn(
 			new MockSettings(
 				Collections.singletonMap(

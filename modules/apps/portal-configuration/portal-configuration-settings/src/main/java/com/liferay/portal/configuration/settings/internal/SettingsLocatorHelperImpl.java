@@ -178,11 +178,6 @@ public class SettingsLocatorHelperImpl implements SettingsLocatorHelper {
 	}
 
 	@Override
-	public Settings getServerSettings(String settingsId) {
-		return getConfigurationBeanSettings(settingsId);
-	}
-
-	@Override
 	public SettingsDescriptor getSettingsDescriptor(String settingsId) {
 		settingsId = PortletIdCodec.decodePortletName(settingsId);
 
