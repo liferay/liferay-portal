@@ -669,16 +669,31 @@ public class CommercePaymentServletTest {
 			"The entry and the order payment status become cancelled"
 		);
 
-		_addPayPalCommercePaymentMethodGroupRel();
+		_commercePaymentMethodGroupRelLocalService.
+			addCommercePaymentMethodGroupRel(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(), true, null,
+				"paypal-integration", 98, null);
 
-		CommerceOrder commerceOrder = _addPayPalCommerceOrder(_user);
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+			_user.getUserId(), _commerceChannel.getGroupId(),
+			_commerceCurrency);
+
+		_commerceOrders.add(commerceOrder);
+
+		commerceOrder.setCommercePaymentMethodKey("paypal-integration");
+
+		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			commerceOrder);
 
 		CommercePaymentEntry commercePaymentEntry =
 			_addCreatedCommercePaymentEntry(_user, commerceOrder);
 
 		MockHttpServletRequest mockHttpServletRequest =
 			_getCancelMockHttpServletRequest(
-				_user, commerceOrder, commercePaymentEntry);
+				_user, commerceOrder, commercePaymentEntry,
+				commercePaymentEntry.getTransactionCode());
 
 		_servlet.service(mockHttpServletRequest, new MockHttpServletResponse());
 
@@ -713,15 +728,36 @@ public class CommercePaymentServletTest {
 					"CommercePaymentServlet",
 				LoggerTestUtil.OFF)) {
 
-			_addPayPalCommercePaymentMethodGroupRel();
+			_commercePaymentMethodGroupRelLocalService.
+				addCommercePaymentMethodGroupRel(
+					_user.getUserId(), _commerceChannel.getGroupId(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), true, null,
+					"paypal-integration", 98, null);
 
-			CommerceOrder attackerCommerceOrder = _addPayPalCommerceOrder(
-				_user);
+			CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_commerceCurrency);
+
+			_commerceOrders.add(commerceOrder);
+
+			commerceOrder.setCommercePaymentMethodKey("paypal-integration");
+
+			CommerceOrder attackerCommerceOrder =
+				_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
 			User victimUser = UserTestUtil.addUser();
 
-			CommerceOrder victimCommerceOrder = _addPayPalCommerceOrder(
-				victimUser);
+			commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+				victimUser.getUserId(), _commerceChannel.getGroupId(),
+				_commerceCurrency);
+
+			_commerceOrders.add(commerceOrder);
+
+			commerceOrder.setCommercePaymentMethodKey("paypal-integration");
+
+			CommerceOrder victimCommerceOrder =
+				_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
 			CommercePaymentEntry victimCommercePaymentEntry =
 				_addCreatedCommercePaymentEntry(
@@ -732,7 +768,8 @@ public class CommercePaymentServletTest {
 
 			MockHttpServletRequest mockHttpServletRequest =
 				_getCancelMockHttpServletRequest(
-					_user, attackerCommerceOrder, victimCommercePaymentEntry);
+					_user, attackerCommerceOrder, victimCommercePaymentEntry,
+					victimCommercePaymentEntry.getTransactionCode());
 
 			_servlet.service(
 				mockHttpServletRequest, new MockHttpServletResponse());
@@ -751,6 +788,64 @@ public class CommercePaymentServletTest {
 			Assert.assertEquals(
 				victimOrderPaymentStatus,
 				victimCommerceOrder.getPaymentStatus());
+		}
+	}
+
+	@Test
+	public void testManagePaymentIntegrationDoesNotCancelWithInvalidToken()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"A buyer must not cancel a payment entry with an invalid token"
+		).given(
+			"An order of the buyer with a payment entry in the created status"
+		).when(
+			"the buyer requests the servlet with a token that does not match"
+		).then(
+			"The entry payment status is unchanged"
+		);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.commerce.payment.internal.servlet." +
+					"CommercePaymentServlet",
+				LoggerTestUtil.OFF)) {
+
+			_commercePaymentMethodGroupRelLocalService.
+				addCommercePaymentMethodGroupRel(
+					_user.getUserId(), _commerceChannel.getGroupId(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), true, null,
+					"paypal-integration", 98, null);
+
+			CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_commerceCurrency);
+
+			_commerceOrders.add(commerceOrder);
+
+			commerceOrder.setCommercePaymentMethodKey("paypal-integration");
+
+			commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+				commerceOrder);
+
+			CommercePaymentEntry commercePaymentEntry =
+				_addCreatedCommercePaymentEntry(_user, commerceOrder);
+
+			MockHttpServletRequest mockHttpServletRequest =
+				_getCancelMockHttpServletRequest(
+					_user, commerceOrder, commercePaymentEntry,
+					RandomTestUtil.randomString());
+
+			_servlet.service(
+				mockHttpServletRequest, new MockHttpServletResponse());
+
+			commercePaymentEntry =
+				_commercePaymentEntryLocalService.getCommercePaymentEntry(
+					commercePaymentEntry.getCommercePaymentEntryId());
+
+			Assert.assertEquals(
+				CommercePaymentEntryConstants.STATUS_CREATED,
+				commercePaymentEntry.getPaymentStatus());
 		}
 	}
 
@@ -848,29 +943,9 @@ public class CommercePaymentServletTest {
 			commercePaymentEntry);
 	}
 
-	private CommerceOrder _addPayPalCommerceOrder(User user) throws Exception {
-		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
-			user.getUserId(), _commerceChannel.getGroupId(), _commerceCurrency);
-
-		_commerceOrders.add(commerceOrder);
-
-		commerceOrder.setCommercePaymentMethodKey("paypal-integration");
-
-		return _commerceOrderLocalService.updateCommerceOrder(commerceOrder);
-	}
-
-	private void _addPayPalCommercePaymentMethodGroupRel() throws Exception {
-		_commercePaymentMethodGroupRelLocalService.
-			addCommercePaymentMethodGroupRel(
-				_user.getUserId(), _commerceChannel.getGroupId(),
-				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomLocaleStringMap(), true, null,
-				"paypal-integration", 98, null);
-	}
-
 	private MockHttpServletRequest _getCancelMockHttpServletRequest(
 		User user, CommerceOrder commerceOrder,
-		CommercePaymentEntry commercePaymentEntry) {
+		CommercePaymentEntry commercePaymentEntry, String token) {
 
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
@@ -891,6 +966,7 @@ public class CommercePaymentServletTest {
 			String.valueOf(commercePaymentEntry.getCommercePaymentEntryId()));
 		mockHttpServletRequest.addParameter("cancel", "true");
 		mockHttpServletRequest.addParameter("redirect", "false");
+		mockHttpServletRequest.addParameter("token", token);
 
 		return mockHttpServletRequest;
 	}
