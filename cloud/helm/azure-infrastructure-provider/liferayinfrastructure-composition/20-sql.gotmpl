@@ -32,6 +32,7 @@ metadata:
     labels:
         dataPlane: {{ $dataPlane }}
         dataPlaneKey: {{ index $dataPlaneKeys $dataPlane }}
+        databaseEngine: {{ $env.databaseEngine }}
     name: {{ $databaseServerName }}
 spec:
     forProvider:

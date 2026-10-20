@@ -11,10 +11,10 @@
 {{- fail "Property \"database.engine\" must be set" -}}
 {{- end -}}
 
-{{- range $observedResource := $observedResources -}}
-    {{- if and (hasPrefix "dbforpostgresql." (dig "resource" "apiVersion" "" $observedResource)) (ne $env.databaseEngine "postgresql") -}}
-        {{- fail "Unable to change the database engine of the environment. Create a new deployment to use another database engine." -}}
-    {{- end -}}
+{{- $observedDatabaseEngine := coalesce (dig "database-primary-blue" "resource" "metadata" "labels" "databaseEngine" "" $observedResources) (dig "database-primary-green" "resource" "metadata" "labels" "databaseEngine" "" $observedResources) -}}
+
+{{- if and $observedDatabaseEngine (ne $observedDatabaseEngine $env.databaseEngine) -}}
+{{- fail (printf "Unable to change the database engine of the environment from %q to %q. Create a new deployment to use another database engine." $observedDatabaseEngine $env.databaseEngine) -}}
 {{- end -}}
 
 {{- $backup := $xr.spec.backup -}}
