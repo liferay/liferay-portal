@@ -1198,6 +1198,8 @@ public class ProjectFaroController extends BaseFaroController {
 		_validateIncidentReportEmailAddresses(incidentReportEmailAddresses);
 		_validateTimeZoneId(timeZoneId);
 
+		FaroProject faroProject = null;
+
 		OSBAccountEntry osbAccountEntry = null;
 
 		if (FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
@@ -1216,13 +1218,15 @@ public class ProjectFaroController extends BaseFaroController {
 		FaroSubscriptionDisplay faroSubscriptionDisplay =
 			new FaroSubscriptionDisplay(osbAccountEntry);
 
-		User user = getUser();
+		if (Validator.isNull(salesforceAccountId)) {
+			salesforceAccountId = osbAccountEntry.getSalesforceAccountId();
+		}
 
-		FaroProject faroProject = null;
+		User user = getUser();
 
 		try {
 			faroProject = _faroProjectLocalService.addFaroProject(
-				user.getUserId(), name, null,
+				user.getUserId(), name, salesforceAccountId,
 				osbAccountEntry.getCorpEntryName(), osbAccountEntry.getName(),
 				corpProjectUuid, emailAddressDomains, friendlyURL,
 				JSONUtil.writeValueAsString(incidentReportEmailAddresses),
@@ -1249,10 +1253,6 @@ public class ProjectFaroController extends BaseFaroController {
 		if (corpProjectUuid.equals(FaroPropsValues.FARO_PROJECT_ID)) {
 			faroProject.setWeDeployKey(
 				FaroPropsValues.FARO_DEFAULT_WE_DEPLOY_KEY);
-		}
-
-		if (Validator.isNull(salesforceAccountId)) {
-			salesforceAccountId = osbAccountEntry.getSalesforceAccountId();
 		}
 
 		faroProject.setSalesforceAccountId(salesforceAccountId);

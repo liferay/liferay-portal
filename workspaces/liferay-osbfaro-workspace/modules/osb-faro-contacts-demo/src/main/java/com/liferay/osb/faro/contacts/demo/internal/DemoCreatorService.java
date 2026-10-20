@@ -170,7 +170,8 @@ public abstract class DemoCreatorService {
 		faroSubscriptionDisplay.setRealTimeSegmentsLimit(100);
 
 		FaroProject faroProject = faroProjectLocalService.addFaroProject(
-			user.getUserId(), FaroPropsValues.FARO_PROJECT_ID, null,
+			user.getUserId(), FaroPropsValues.FARO_PROJECT_ID,
+			osbAccountEntry.getSalesforceAccountId(),
 			osbAccountEntry.getCorpEntryName(), osbAccountEntry.getName(),
 			FaroPropsValues.FARO_PROJECT_ID, Collections.emptyList(),
 			StringPool.BLANK, StringPool.BLANK,
