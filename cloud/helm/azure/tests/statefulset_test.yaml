@@ -24,25 +24,41 @@ tests:
                     any: true
                     content:
                         name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
-                        value: org.postgresql.Driver
-                    path: spec.template.spec.containers[0].env
-            -   contains:
-                    any: true
-                    content:
-                        name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME
-                        value: liferay
+                        value: org.mariadb.jdbc.Driver
                     path: spec.template.spec.containers[0].env
             -   matchRegex:
                     path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
-                    pattern: ^jdbc:postgresql://\$\{env\.DATABASE_ENDPOINT\}:5432/lportal\?
+                    pattern: ^jdbc:mariadb://\$\{env\.DATABASE_ENDPOINT\}:3306/lportal(\?|$)
             -   matchRegex:
                     path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
-                    pattern: sslmode=require
+                    pattern: (\?|&)sslMode=trust(&|$)
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Connects to the Flexible Server over TLS as the application role
+        it: Connects to MySQL over TLS through the MariaDB driver
+        set:
+            global.database.engine: mysql
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
+                        value: org.postgresql.Driver
+                    path: spec.template.spec.containers[0].env
+            -   matchRegex:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    pattern: ^jdbc:postgresql://\$\{env\.DATABASE_ENDPOINT\}:5432/lportal(\?|$)
+            -   matchRegex:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    pattern: (\?|&)sslmode=require(&|$)
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Connects to PostgreSQL over TLS
+        set:
+            global.database.engine: postgresql
     -   asserts:
             -   contains:
                     any: true
