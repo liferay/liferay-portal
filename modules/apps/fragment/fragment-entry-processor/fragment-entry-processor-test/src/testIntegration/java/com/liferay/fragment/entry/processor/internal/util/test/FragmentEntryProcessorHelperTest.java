@@ -350,6 +350,70 @@ public class FragmentEntryProcessorHelperTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110845")
+	public void testGetFieldValueFromObjectDateValueWithTimeZone()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_DATE,
+						ObjectFieldConstants.DB_TYPE_DATE,
+						RandomTestUtil.randomString(), "myDate", false)),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+		Date date = DateUtil.parseDate(
+			"yyyy-MM-dd", "2026-10-20", LocaleUtil.US);
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			TestPropsValues.getGroupId(), objectDefinition.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", RandomTestUtil.randomString()
+			).put(
+				"myDate", date
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		TimeZone originalTimeZone = _themeDisplay.getTimeZone();
+
+		try {
+			_pushServiceContext(_layout, _themeDisplay);
+
+			for (String timeZoneId :
+					new String[] {"America/New_York", "Asia/Tokyo"}) {
+
+				_themeDisplay.setTimeZone(TimeZone.getTimeZone(timeZoneId));
+
+				Assert.assertEquals(
+					_formatDate(date, LocaleUtil.US, TimeZone.getDefault()),
+					_getFieldValue(
+						JSONUtil.put(
+							"className", objectDefinition.getClassName()
+						).put(
+							"classNameId",
+							_portal.getClassNameId(
+								objectDefinition.getClassName())
+						).put(
+							"classPK", objectEntry.getObjectEntryId()
+						).put(
+							"fieldId", "myDate"
+						),
+						LocaleUtil.US));
+			}
+		}
+		finally {
+			_themeDisplay.setTimeZone(originalTimeZone);
+
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@Test
 	public void testGetFieldValueFromStringValue() throws Exception {
 		DDMFormField ddmFormField = _createDDMFormField(
 			DDMFormFieldTypeConstants.TEXT);
