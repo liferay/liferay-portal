@@ -19,29 +19,52 @@ const NO_ISSUES: AssetStatistics = {
 	reviewDateOverdueCount: 0,
 	scheduledCount: 0,
 	slaBreachedWorkflowTasksCount: 0,
-	totalCount: 0,
+	totalCount: 100,
 	upcomingReviewCount: 0,
 	workflowTasksCount: 0,
 };
 
 describe('getGovernanceHealth', () => {
 	it('scores every metric it has data for at a hundred when nothing needs attention', () => {
-		const {freshness, reliability} = getGovernanceHealth(NO_ISSUES);
+		const {freshness, quality} = getGovernanceHealth(NO_ISSUES);
 
-		expect(reliability).toBe(100);
+		expect(quality).toEqual({issues: 0, score: 100});
 		expect(freshness).toBe(100);
 	});
 
-	it('penalises each reliability issue five points', () => {
-		const {reliability} = getGovernanceHealth({
+	it('penalises broken links by their share of the scope with severity two', () => {
+		const {quality} = getGovernanceHealth({
 			...NO_ISSUES,
-			brokenLinksCount: 2,
-			expiredCount: 3,
-			pendingCount: 4,
-			reviewDateOverdueCount: 1,
+			brokenLinksCount: 5,
+			totalCount: 20,
 		});
 
-		expect(reliability).toBe(50);
+		expect(quality).toEqual({issues: 5, score: 50});
+	});
+
+	it('penalises missing required data by their share of the scope with severity one and a half', () => {
+		const {quality} = getGovernanceHealth({
+			...NO_ISSUES,
+			missingRequiredFieldsCount: 10,
+		});
+
+		expect(quality).toEqual({issues: 10, score: 85});
+	});
+
+	it('adds up every quality signal before subtracting it from a hundred', () => {
+		const {quality} = getGovernanceHealth({
+			...NO_ISSUES,
+			brokenLinksCount: 7,
+			missingRequiredFieldsCount: 2,
+		});
+
+		expect(quality).toEqual({issues: 9, score: 83});
+	});
+
+	it('scores quality at a hundred when the scope has no assets', () => {
+		const {quality} = getGovernanceHealth({...NO_ISSUES, totalCount: 0});
+
+		expect(quality.score).toBe(100);
 	});
 
 	it('penalises each freshness issue three points', () => {
@@ -77,12 +100,12 @@ describe('getGovernanceHealth', () => {
 		expect(flow).toBe(88);
 	});
 
-	it('weighs reliability twice as much as freshness', () => {
+	it('weighs quality twice as much as freshness', () => {
 		const baseline = getGovernanceHealth(NO_ISSUES);
 
 		const brokenLinksOnly = getGovernanceHealth({
 			...NO_ISSUES,
-			brokenLinksCount: 6,
+			brokenLinksCount: 15,
 		});
 
 		const expiringOnly = getGovernanceHealth({
@@ -90,7 +113,7 @@ describe('getGovernanceHealth', () => {
 			expiringSoonCount: 10,
 		});
 
-		expect(brokenLinksOnly.reliability).toBe(70);
+		expect(brokenLinksOnly.quality.score).toBe(70);
 		expect(expiringOnly.freshness).toBe(70);
 
 		expect(baseline.score - brokenLinksOnly.score).toBe(14);
@@ -98,12 +121,12 @@ describe('getGovernanceHealth', () => {
 	});
 
 	it('never scores below zero however many issues there are', () => {
-		const {reliability, score} = getGovernanceHealth({
+		const {quality, score} = getGovernanceHealth({
 			...NO_ISSUES,
 			brokenLinksCount: 500,
 		});
 
-		expect(reliability).toBe(0);
+		expect(quality.score).toBe(0);
 		expect(score).toBe(53);
 	});
 });

@@ -44,10 +44,11 @@ const STATISTICS = {
 	expiredCount: 6,
 	expiringSoonCount: 0,
 	inDraftCount: 3,
+	missingRequiredFieldsCount: 4,
 	pendingCount: 4,
 	reviewDateOverdueCount: 3,
 	scheduledCount: 0,
-	totalCount: 0,
+	totalCount: 100,
 	upcomingReviewCount: 0,
 };
 
@@ -153,15 +154,16 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 			within(banner).getByText('originality').previousSibling
 		).toHaveTextContent('—');
 
-		expect(
-			within(banner).getByText('reliability').previousSibling
-		).toHaveTextContent('0');
+		const quality = within(banner).getByText('quality');
+
+		expect(quality.previousSibling).toHaveTextContent('80');
+		expect(quality.nextSibling).toHaveTextContent('x-active-issues');
 
 		expect(
 			within(banner).getByText('freshness').previousSibling
 		).toHaveTextContent('100');
 
-		expect(within(banner).getByText('49')).toBeInTheDocument();
+		expect(within(banner).getByText('87')).toBeInTheDocument();
 	});
 
 	it('explains what the score measures in a popover', async () => {
@@ -181,7 +183,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 			await screen.findByText('governance-health-help')
 		).toBeInTheDocument();
 
-		expect(screen.getByText('reliability-help')).toBeInTheDocument();
+		expect(screen.getByText('quality-help')).toBeInTheDocument();
 
 		expect(screen.getByText('flow-help')).toBeInTheDocument();
 	});

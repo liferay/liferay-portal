@@ -7,12 +7,22 @@ import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 
 import {AssetStatistics} from './GovernanceService';
 
+export type GovernanceDimension = {
+	issues: number;
+	score: number;
+};
+
 export type GovernanceHealth = {
 	flow: number;
 	freshness: number;
 	originality?: number;
-	reliability: number;
+	quality: GovernanceDimension;
 	score: number;
+};
+
+type Signal = {
+	count: number;
+	severity: number;
 };
 
 type WeightedSubScore = {
@@ -32,9 +42,26 @@ const ORIGINALITY_PENALTY = 2;
 
 const ORIGINALITY_WEIGHT = 15;
 
-const RELIABILITY_PENALTY = 5;
+const QUALITY_WEIGHT = 40;
 
-const RELIABILITY_WEIGHT = 40;
+function getDimension(signals: Signal[], scope: number): GovernanceDimension {
+	let issues = 0;
+	let penalty = 0;
+
+	for (const {count, severity} of signals) {
+		issues += count;
+		penalty += count * severity;
+	}
+
+	if (!scope) {
+		return {issues, score: 100};
+	}
+
+	return {
+		issues,
+		score: Math.round(Math.max(0, 100 - (penalty * 100) / scope)),
+	};
+}
 
 function getScore(subScores: WeightedSubScore[]) {
 	const weight = subScores.reduce((total, subScore) => {
@@ -62,22 +89,22 @@ export default function getGovernanceHealth(
 		FRESHNESS_PENALTY
 	);
 
-	const reliability = getSubScore(
-		statistics.brokenLinksCount +
-			statistics.expiredCount +
-			statistics.pendingCount +
-			statistics.reviewDateOverdueCount,
-		RELIABILITY_PENALTY
+	const quality = getDimension(
+		[
+			{count: statistics.brokenLinksCount, severity: 2},
+			{count: statistics.missingRequiredFieldsCount, severity: 1.5},
+		],
+		statistics.totalCount
 	);
 
 	const subScores: WeightedSubScore[] = [
 		{value: flow, weight: FLOW_WEIGHT},
 		{value: freshness, weight: FRESHNESS_WEIGHT},
-		{value: reliability, weight: RELIABILITY_WEIGHT},
+		{value: quality.score, weight: QUALITY_WEIGHT},
 	];
 
 	if (isNullOrUndefined(statistics.duplicatedCount)) {
-		return {flow, freshness, reliability, score: getScore(subScores)};
+		return {flow, freshness, quality, score: getScore(subScores)};
 	}
 
 	const originality = getSubScore(
@@ -91,7 +118,7 @@ export default function getGovernanceHealth(
 		flow,
 		freshness,
 		originality,
-		reliability,
+		quality,
 		score: getScore(subScores),
 	};
 }
