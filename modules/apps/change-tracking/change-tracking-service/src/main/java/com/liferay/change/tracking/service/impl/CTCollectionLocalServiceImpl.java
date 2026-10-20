@@ -1055,14 +1055,18 @@ public class CTCollectionLocalServiceImpl
 				toCTCollectionId, entry.getKey(), entry.getValue());
 		}
 
+		relatedCTEntries = getRelatedCTEntries(
+			toCTCollection.getCtCollectionId(),
+			TransformUtil.transformToLongArray(
+				ctEntries, CTEntry::getCtEntryId));
+
+		_ctClosureFactory.clearCache(fromCTCollectionId);
+		_ctClosureFactory.clearCache(toCTCollectionId);
+
 		conflictInfosMap = checkConflicts(
-			toCTCollection.getCompanyId(),
-			getRelatedCTEntries(
-				toCTCollection.getCtCollectionId(),
-				TransformUtil.transformToLongArray(
-					ctEntries, CTEntry::getCtEntryId)),
-			toCTCollectionId, toCTCollection.getName(),
-			CTConstants.CT_COLLECTION_ID_PRODUCTION, "Production");
+			toCTCollection.getCompanyId(), relatedCTEntries, toCTCollectionId,
+			toCTCollection.getName(), CTConstants.CT_COLLECTION_ID_PRODUCTION,
+			"Production");
 
 		for (Map.Entry<Long, List<ConflictInfo>> entry :
 				conflictInfosMap.entrySet()) {
@@ -1075,9 +1079,6 @@ public class CTCollectionLocalServiceImpl
 				}
 			}
 		}
-
-		_ctClosureFactory.clearCache(fromCTCollectionId);
-		_ctClosureFactory.clearCache(toCTCollectionId);
 	}
 
 	@Override

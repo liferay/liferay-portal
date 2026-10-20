@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
+import com.liferay.portal.kernel.dao.jdbc.ConnectionUtil;
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -58,8 +59,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-
-import javax.sql.DataSource;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -416,9 +415,7 @@ public class CTClosureFactoryImpl implements CTClosureFactory {
 		BasePersistence<?> basePersistence =
 			tableReferenceDefinition.getBasePersistence();
 
-		DataSource dataSource = basePersistence.getDataSource();
-
-		return dataSource.getConnection();
+		return ConnectionUtil.getConnection(basePersistence.getDataSource());
 	}
 
 	private DSLQuery _getDSLQuery(
