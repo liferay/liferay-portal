@@ -118,7 +118,10 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 							commerceOrder.getGroupId());
 
 				if (Validator.isNull(
-						authorizeNetGroupServiceConfiguration.signatureKey())) {
+						_secretResolver.resolve(
+							commerceOrder.getCompanyId(),
+							authorizeNetGroupServiceConfiguration.
+								signatureKey()))) {
 
 					_log.warn(
 						StringBundler.concat(
