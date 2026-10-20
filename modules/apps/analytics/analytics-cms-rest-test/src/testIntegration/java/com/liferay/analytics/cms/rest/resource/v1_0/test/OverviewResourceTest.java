@@ -222,6 +222,19 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 			() -> overviewResource.getContentOverview(
 				null, null, _getRangeDate(0), null, "not a date"));
 
+		_assertBadRequest(
+			"Invalid range key: -1",
+			() -> overviewResource.getContentOverview(
+				null, null, null, -1, null));
+		_assertBadRequest(
+			"Invalid range key: 14",
+			() -> overviewResource.getContentOverview(
+				null, null, null, 14, null));
+		_assertBadRequest(
+			"Invalid range key: 12345678",
+			() -> overviewResource.getContentOverview(
+				null, null, null, 12345678, null));
+
 		_testGetContentOverviewWithDepotEntryMemberUser();
 	}
 
