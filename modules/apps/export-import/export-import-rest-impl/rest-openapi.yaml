@@ -122,12 +122,6 @@ components:
                 ratings:
                     default: false
                     type: boolean
-                siteExternalReferenceCodes:
-                    description:
-                        The external reference codes of the sites to export in full, as listed by the export preview sites. Applies only to the instance.
-                    items:
-                        type: string
-                    type: array
             required:
                 -   name
             type: object
@@ -173,11 +167,11 @@ components:
                         $ref: "#/components/schemas/PortletDataHandler"
                     readOnly: true
                     type: array
-                previewSites:
+                sites:
                     description:
                         The sites the file contains, when it was exported from an instance.
                     items:
-                        $ref: "#/components/schemas/PreviewSite"
+                        $ref: "#/components/schemas/Site"
                     readOnly: true
                     type: array
             type: object
@@ -256,18 +250,40 @@ components:
                 ratings:
                     default: false
                     type: boolean
-                siteExternalReferenceCodes:
-                    description:
-                        The external reference codes of the sites to import in full, as listed in the previewSites of the import preview. Applies only to the instance.
-                    items:
-                        type: string
-                    type: array
                 userIdStrategy:
                     default: CURRENT_USER_ID
                     description:
                         Who owns the imported items. CURRENT_USER_ID keeps the original owner when it exists, and ALWAYS_CURRENT_USER_ID assigns every item to the current user.
                     enum: [CURRENT_USER_ID, ALWAYS_CURRENT_USER_ID]
                     type: string
+            type: object
+        InstanceExportProcessRequest:
+            allOf:
+                -   $ref: "#/components/schemas/ExportProcessRequest"
+                -   properties:
+                        sites:
+                            description:
+                                The sites to export in full, from the export preview's sites.
+                            items:
+                                $ref: "#/components/schemas/Site"
+                            type: array
+            description:
+                Represents an export of the instance, which can include whole sites.
+            required:
+                -   name
+            type: object
+        InstanceImportProcessRequest:
+            allOf:
+                -   $ref: "#/components/schemas/ImportProcessRequest"
+                -   properties:
+                        sites:
+                            description:
+                                The sites to import in full, from the import preview's sites.
+                            items:
+                                $ref: "#/components/schemas/Site"
+                            type: array
+            description:
+                Represents an import into the instance, which can include whole sites.
             type: object
         LastHoursDateFilter:
             allOf:
@@ -478,31 +494,6 @@ components:
                             type: array
             description:
                 Represents a control that selects items of a tree by external reference code. The most specific rule wins, in the order of an item list, a subtree list, the closest ancestor's subtree list, and the selectAll flag. An included list wins over the excluded one at the same level. The pages control takes the external reference codes of the Headless Admin Site API's site pages.
-            type: object
-        PreviewSite:
-            description:
-                Represents a site an instance process can export or import in full.
-            properties:
-                childSitesCount:
-                    format: int32
-                    readOnly: true
-                    type: integer
-                descriptiveName:
-                    readOnly: true
-                    type: string
-                existsInInstance:
-                    description:
-                        A flag that indicates whether the instance already has the site. Set only in the import preview.
-                    readOnly: true
-                    type: boolean
-                externalReferenceCode:
-                    readOnly: true
-                    type: string
-                path:
-                    description:
-                        The site's path in the site hierarchy.
-                    readOnly: true
-                    type: string
             type: object
         ProcessProgress:
             properties:
@@ -767,6 +758,34 @@ components:
             required:
                 -   cronExpression
                 -   publishProcessRequest
+            type: object
+        Site:
+            description:
+                Represents a site an instance process can export or import in full.
+            properties:
+                childSitesCount:
+                    format: int32
+                    readOnly: true
+                    type: integer
+                descriptiveName:
+                    readOnly: true
+                    type: string
+                existsInInstance:
+                    description:
+                        A flag that indicates whether the instance already has the site, which only the import preview sets.
+                    readOnly: true
+                    type: boolean
+                externalReferenceCode:
+                    description:
+                        The site's external reference code, which is the only property the instance requests send.
+                    type: string
+                path:
+                    description:
+                        The site's path in the site hierarchy.
+                    readOnly: true
+                    type: string
+            required:
+                -   externalReferenceCode
             type: object
         Status:
             properties:
@@ -1140,11 +1159,11 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ExportPreview"
             tags: ["ExportPreview"]
-    "/export-preview/preview-sites":
+    "/export-preview/sites":
         get:
             description:
                 Retrieves the sites the instance can export in full.
-            operationId: getExportPreviewPreviewSitesPage
+            operationId: getExportPreviewSitesPage
             parameters:
                 -   in: query
                     name: page
@@ -1168,14 +1187,14 @@ paths:
                         application/json:
                             schema:
                                 items:
-                                    $ref: "#/components/schemas/PreviewSite"
+                                    $ref: "#/components/schemas/Site"
                                 type: array
                         application/xml:
                             schema:
                                 items:
-                                    $ref: "#/components/schemas/PreviewSite"
+                                    $ref: "#/components/schemas/Site"
                                 type: array
-            tags: ["PreviewSite"]
+            tags: ["Site"]
             x-feature-flag: LPD-85946
     "/export-processes":
         get:
@@ -1242,7 +1261,7 @@ paths:
             tags: ["ExportProcess"]
         post:
             description:
-                Starts an export of the instance, or of one of its portlets.
+                Starts an export of the instance, or of one of its portlets. The sites in the request are exported in full, unless a portlet ID is given.
             operationId: postExportProcess
             parameters:
                 -   in: query
@@ -1255,10 +1274,10 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/ExportProcessRequest"
+                            $ref: "#/components/schemas/InstanceExportProcessRequest"
                     application/xml:
                         schema:
-                            $ref: "#/components/schemas/ExportProcessRequest"
+                            $ref: "#/components/schemas/InstanceExportProcessRequest"
             responses:
                 200:
                     content:
@@ -1480,7 +1499,7 @@ paths:
             tags: ["ImportProcess"]
         post:
             description:
-                Imports the user's last uploaded file into the instance, or into one of its portlets. Returns a 404 when there is no uploaded file.
+                Imports the user's last uploaded file into the instance, or into one of its portlets. The sites in the request are imported in full, unless a portlet ID is given. Returns a 404 when there is no uploaded file.
             operationId: postImportProcess
             parameters:
                 -   in: query
@@ -1493,10 +1512,10 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/ImportProcessRequest"
+                            $ref: "#/components/schemas/InstanceImportProcessRequest"
                     application/xml:
                         schema:
-                            $ref: "#/components/schemas/ImportProcessRequest"
+                            $ref: "#/components/schemas/InstanceImportProcessRequest"
             responses:
                 200:
                     content:
