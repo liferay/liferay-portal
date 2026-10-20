@@ -5,8 +5,11 @@
 
 package com.liferay.exportimport.internal.background.task;
 
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.kernel.exception.ExportImportIOException;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
+import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
@@ -15,16 +18,29 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.xml.Document;
+import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipReaderFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.osgi.service.component.annotations.Component;
@@ -64,8 +80,28 @@ public class LayoutImportBackgroundTaskExecutor
 
 		setPhasesTotal(backgroundTask, exportImportConfiguration);
 
-		List<FileEntry> attachmentsFileEntries =
-			backgroundTask.getAttachmentsFileEntries();
+		List<FileEntry> attachmentsFileEntries = new ArrayList<>(
+			backgroundTask.getAttachmentsFileEntries());
+
+		Map<String, Serializable> taskContextMap =
+			backgroundTask.getTaskContextMap();
+
+		long tempFileEntryId = MapUtil.getLong(
+			taskContextMap, "tempFileEntryId");
+
+		if (tempFileEntryId > 0) {
+			try {
+				attachmentsFileEntries.add(
+					_dlAppLocalService.getFileEntry(tempFileEntryId));
+			}
+			catch (NoSuchFileEntryException noSuchFileEntryException) {
+				throw new PortalException(
+					_language.get(
+						getLocale(backgroundTask),
+						"the-uploaded-file-has-expired-please-upload-it-again"),
+					noSuchFileEntryException);
+			}
+		}
 
 		File file = null;
 
@@ -74,6 +110,13 @@ public class LayoutImportBackgroundTaskExecutor
 				file = FileUtil.createTempFile("lar");
 
 				FileUtil.write(file, attachmentsFileEntry.getContentStream());
+
+				if (MapUtil.getBoolean(
+						taskContextMap, "resolvePrivateLayout")) {
+
+					exportImportConfiguration = _updatePrivateLayout(
+						exportImportConfiguration, file);
+				}
 
 				TransactionInvokerUtil.invoke(
 					transactionConfig,
@@ -122,12 +165,59 @@ public class LayoutImportBackgroundTaskExecutor
 		return BackgroundTaskResult.SUCCESS;
 	}
 
+	private ExportImportConfiguration _updatePrivateLayout(
+			ExportImportConfiguration exportImportConfiguration, File file)
+		throws Exception {
+
+		boolean privateLayout = false;
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			Document document = SAXReaderUtil.read(
+				zipReader.getEntryAsString("/manifest.xml"));
+
+			Element rootElement = document.getRootElement();
+
+			Element headerElement = rootElement.element("header");
+
+			if (headerElement != null) {
+				privateLayout = GetterUtil.getBoolean(
+					headerElement.attributeValue("private-layout"));
+			}
+		}
+
+		return _exportImportConfigurationLocalService.
+			updateExportImportConfiguration(
+				exportImportConfiguration.getUserId(),
+				exportImportConfiguration.getExportImportConfigurationId(),
+				exportImportConfiguration.getName(),
+				exportImportConfiguration.getDescription(),
+				HashMapBuilder.<String, Serializable>putAll(
+					exportImportConfiguration.getSettingsMap()
+				).put(
+					"privateLayout", privateLayout
+				).build(),
+				new ServiceContext());
+	}
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private ExportImportConfigurationLocalService
+		_exportImportConfigurationLocalService;
+
 	@Reference
 	private ExportImportLocalService _exportImportLocalService;
 
 	@Reference
 	private ExportImportReportEntryLocalService
 		_exportImportReportEntryLocalService;
+
+	@Reference
+	private Language _language;
+
+	@Reference
+	private ZipReaderFactory _zipReaderFactory;
 
 	private class LayoutImportCallable implements Callable<Void> {
 
