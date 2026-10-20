@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.Serializable;
 
@@ -316,9 +315,6 @@ public class CTServicePublisher<T extends CTModel<T>> {
 				AutoBatchPreparedStatementUtil.autoBatchWithResults(
 					connection, sb.toString())) {
 
-			int batchCount = 0;
-			int totalRowCount = 0;
-
 			for (CTEntry ctEntry : ctEntries) {
 				preparedStatement.setLong(1, ctEntry.getModelClassPK());
 
@@ -327,17 +323,9 @@ public class CTServicePublisher<T extends CTModel<T>> {
 				}
 
 				preparedStatement.addBatch();
-
-				if (++batchCount < PropsValues.HIBERNATE_JDBC_BATCH_SIZE) {
-					continue;
-				}
-
-				batchCount = 0;
-
-				for (int rowCount : preparedStatement.executeBatch()) {
-					totalRowCount += rowCount;
-				}
 			}
+
+			int totalRowCount = 0;
 
 			for (int rowCount : preparedStatement.executeBatch()) {
 				totalRowCount += rowCount;
