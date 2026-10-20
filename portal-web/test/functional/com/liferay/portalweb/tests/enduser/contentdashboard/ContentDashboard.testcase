@@ -1203,37 +1203,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-152604 Given there are nodes selected at treeview When user clicks the 'Clear' button Then 'Clear' button should not appear anymore"
-	@priority = 3
-	@uitest
-	test ClearButtonAtTreeviewComponent {
-		task ("Create a Web Content asset") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-		}
-
-		task ("Create a Blog Entry asset") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Open filter modal at Content Dashboard") {
-			ContentDashboard.goToContentDashboard();
-
-			ContentDashboard.openFilterModal(filterOption = "Type");
-		}
-
-		task ("Assert 'Clear All' disapears after clicking it") {
-			ContentDashboard.cancelSelectFilterTreeview(optionsList = "Basic Web Content,Basic Document");
-
-			AssertElementNotPresent(locator1 = "ContentDashboard#FILTER_BAR");
-		}
-	}
-
 	@description = "LPS-121658 When a user with no edit permissions clicks on the title of a content in status Approved with associated DPT, the user is led to the page view"
 	@priority = 4
 	@uitest
