@@ -49,7 +49,7 @@ public abstract class BasePublishPreviewResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-preview'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the portlet data handlers and change counts a Publish to Live on the specified site would cover. The date range type selects the counting window like it does on the publish process, defaulting to the type inferred from the given dates."
+		description = "Retrieves the portlet data handlers and change counts for a Publish to Live of the specified site."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -58,14 +58,22 @@ public abstract class BasePublishPreviewResourceImpl
 				name = "siteExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The date filter's type. Without it, all the content is counted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "dateRangeType"
+				name = "dateFilterType"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The end date of a DateRange filter.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "endDate"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The number of hours of a LastHours filter.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "hours"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The start date of a DateRange filter.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "startDate"
 			)
@@ -86,11 +94,14 @@ public abstract class BasePublishPreviewResourceImpl
 			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
 			String siteExternalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.ws.rs.QueryParam("dateRangeType")
-			String dateRangeType,
+			@jakarta.ws.rs.QueryParam("dateFilterType")
+			String dateFilterType,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("endDate")
 			Date endDate,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("hours")
+			Integer hours,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("startDate")
 			Date startDate)
@@ -544,4 +555,4 @@ public abstract class BasePublishPreviewResourceImpl
 		LogFactoryUtil.getLog(BasePublishPreviewResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1532478403
+// LIFERAY-REST-BUILDER-HASH:-1196651552

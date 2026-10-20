@@ -36,13 +36,13 @@ public interface PublishPreviewResource {
 	}
 
 	public PublishPreview getSitePublishPreview(
-			String siteExternalReferenceCode, String dateRangeType,
-			java.util.Date endDate, java.util.Date startDate)
+			String siteExternalReferenceCode, String dateFilterType,
+			java.util.Date endDate, Integer hours, java.util.Date startDate)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getSitePublishPreviewHttpResponse(
-			String siteExternalReferenceCode, String dateRangeType,
-			java.util.Date endDate, java.util.Date startDate)
+			String siteExternalReferenceCode, String dateFilterType,
+			java.util.Date endDate, Integer hours, java.util.Date startDate)
 		throws Exception;
 
 	public static class Builder {
@@ -155,13 +155,13 @@ public interface PublishPreviewResource {
 		implements PublishPreviewResource {
 
 		public PublishPreview getSitePublishPreview(
-				String siteExternalReferenceCode, String dateRangeType,
-				java.util.Date endDate, java.util.Date startDate)
+				String siteExternalReferenceCode, String dateFilterType,
+				java.util.Date endDate, Integer hours, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSitePublishPreviewHttpResponse(
-					siteExternalReferenceCode, dateRangeType, endDate,
+					siteExternalReferenceCode, dateFilterType, endDate, hours,
 					startDate);
 
 			String content = httpResponse.getContent();
@@ -224,8 +224,8 @@ public interface PublishPreviewResource {
 		}
 
 		public HttpInvoker.HttpResponse getSitePublishPreviewHttpResponse(
-				String siteExternalReferenceCode, String dateRangeType,
-				java.util.Date endDate, java.util.Date startDate)
+				String siteExternalReferenceCode, String dateFilterType,
+				java.util.Date endDate, Integer hours, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -252,14 +252,18 @@ public interface PublishPreviewResource {
 			DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 				"yyyy-MM-dd'T'HH:mm:ssXX");
 
-			if (dateRangeType != null) {
+			if (dateFilterType != null) {
 				httpInvoker.parameter(
-					"dateRangeType", String.valueOf(dateRangeType));
+					"dateFilterType", String.valueOf(dateFilterType));
 			}
 
 			if (endDate != null) {
 				httpInvoker.parameter(
 					"endDate", liferayToJSONDateFormat.format(endDate));
+			}
+
+			if (hours != null) {
+				httpInvoker.parameter("hours", String.valueOf(hours));
 			}
 
 			if (startDate != null) {
@@ -295,4 +299,4 @@ public interface PublishPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:167706403
+// LIFERAY-REST-BUILDER-HASH:-1815486008

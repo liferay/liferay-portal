@@ -43,8 +43,8 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface PublishPreviewResource {
 
 	public PublishPreview getSitePublishPreview(
-			String siteExternalReferenceCode, String dateRangeType,
-			Date endDate, Date startDate)
+			String siteExternalReferenceCode, String dateFilterType,
+			Date endDate, Integer hours, Date startDate)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -135,4 +135,4 @@ public interface PublishPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:151617465
+// LIFERAY-REST-BUILDER-HASH:-1302478293

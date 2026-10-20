@@ -43,18 +43,20 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ExportPreviewResource {
 
 	public ExportPreview getAssetLibraryExportPreview(
-			String assetLibraryExternalReferenceCode, String dateRangeType,
-			Date endDate, Long plid, String portletId, Date startDate)
-		throws Exception;
-
-	public ExportPreview getExportPreview(
-			String dateRangeType, Date endDate, Long plid, String portletId,
+			String assetLibraryExternalReferenceCode, String dateFilterType,
+			Date endDate, Integer hours, Long plid, String portletId,
 			Date startDate)
 		throws Exception;
 
+	public ExportPreview getExportPreview(
+			String dateFilterType, Date endDate, Integer hours, Long plid,
+			String portletId, Date startDate)
+		throws Exception;
+
 	public ExportPreview getSiteExportPreview(
-			String siteExternalReferenceCode, String dateRangeType,
-			Date endDate, Long plid, String portletId, Date startDate)
+			String siteExternalReferenceCode, String dateFilterType,
+			Date endDate, Integer hours, Long plid, String portletId,
+			Date startDate)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -145,4 +147,4 @@ public interface ExportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1763396433
+// LIFERAY-REST-BUILDER-HASH:232154049

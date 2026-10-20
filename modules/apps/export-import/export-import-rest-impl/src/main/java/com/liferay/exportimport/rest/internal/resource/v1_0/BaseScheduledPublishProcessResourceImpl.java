@@ -229,7 +229,7 @@ public abstract class BaseScheduledPublishProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes' -d $'{"cronExpression": ___, "publishProcessRequest": ___, "scheduleEndDate": ___, "scheduleStartDate": ___, "timeZoneId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Schedules a Publish to Live process on the specified site. The publish process request of the schedule runs every time the cron expression fires, evaluated in the given time zone between the schedule start and end dates, and its date range is resolved at every run as described for the publish process."
+		description = "Schedules a Publish to Live of the specified site. The publish process request runs every time the cron expression fires, between the start and end dates."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1125,4 +1125,4 @@ public abstract class BaseScheduledPublishProcessResourceImpl
 		LogFactoryUtil.getLog(BaseScheduledPublishProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1480566370
+// LIFERAY-REST-BUILDER-HASH:701666384

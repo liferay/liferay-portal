@@ -39,11 +39,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Represents the portlet data handlers a Publish to Live process can cover, with the number of changes each one covers in the requested date range.",
+	description = "Represents what a Publish to Live process can cover, with the change counts for the requested date filter.",
 	value = "PublishPreview"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Represents the portlet data handlers a Publish to Live process can cover, with the number of changes each one covers in the requested date range."
+	description = "Represents what a Publish to Live process can cover, with the change counts for the requested date filter."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PublishPreview")
@@ -379,4 +379,4 @@ public class PublishPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:867685441
+// LIFERAY-REST-BUILDER-HASH:-584382687

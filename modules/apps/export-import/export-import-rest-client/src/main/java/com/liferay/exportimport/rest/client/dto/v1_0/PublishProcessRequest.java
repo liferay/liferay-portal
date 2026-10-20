@@ -12,7 +12,6 @@ import jakarta.annotation.Generated;
 
 import java.io.Serializable;
 
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -47,34 +46,26 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean comments;
 
-	public DateRangeType getDateRangeType() {
-		return dateRangeType;
+	public DateFilter getDateFilter() {
+		return dateFilter;
 	}
 
-	public String getDateRangeTypeAsString() {
-		if (dateRangeType == null) {
-			return null;
-		}
-
-		return dateRangeType.toString();
+	public void setDateFilter(DateFilter dateFilter) {
+		this.dateFilter = dateFilter;
 	}
 
-	public void setDateRangeType(DateRangeType dateRangeType) {
-		this.dateRangeType = dateRangeType;
-	}
-
-	public void setDateRangeType(
-		UnsafeSupplier<DateRangeType, Exception> dateRangeTypeUnsafeSupplier) {
+	public void setDateFilter(
+		UnsafeSupplier<DateFilter, Exception> dateFilterUnsafeSupplier) {
 
 		try {
-			dateRangeType = dateRangeTypeUnsafeSupplier.get();
+			dateFilter = dateFilterUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected DateRangeType dateRangeType;
+	protected DateFilter dateFilter;
 
 	public Boolean getDeletions() {
 		return deletions;
@@ -96,27 +87,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 	}
 
 	protected Boolean deletions;
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	public void setEndDate(
-		UnsafeSupplier<Date, Exception> endDateUnsafeSupplier) {
-
-		try {
-			endDate = endDateUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Date endDate;
 
 	public String getName() {
 		return name;
@@ -203,27 +173,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean ratings;
 
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public void setStartDate(
-		UnsafeSupplier<Date, Exception> startDateUnsafeSupplier) {
-
-		try {
-			startDate = startDateUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Date startDate;
-
 	@Override
 	public PublishProcessRequest clone() throws CloneNotSupportedException {
 		return (PublishProcessRequest)super.clone();
@@ -256,39 +205,5 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 		return PublishProcessRequestSerDes.toJSON(this);
 	}
 
-	public static enum DateRangeType {
-
-		ALL("ALL"), DATE_RANGE("DATE_RANGE"),
-		FROM_LAST_PUBLISH_DATE("FROM_LAST_PUBLISH_DATE"), LAST("LAST");
-
-		public static DateRangeType create(String value) {
-			for (DateRangeType dateRangeType : values()) {
-				if (Objects.equals(dateRangeType.getValue(), value) ||
-					Objects.equals(dateRangeType.name(), value)) {
-
-					return dateRangeType;
-				}
-			}
-
-			return null;
-		}
-
-		public String getValue() {
-			return _value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-
-		private DateRangeType(String value) {
-			_value = value;
-		}
-
-		private final String _value;
-
-	}
-
 }
-// LIFERAY-REST-BUILDER-HASH:-1977898638
+// LIFERAY-REST-BUILDER-HASH:-1764469181

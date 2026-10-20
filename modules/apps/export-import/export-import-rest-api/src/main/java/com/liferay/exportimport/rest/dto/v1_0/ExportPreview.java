@@ -39,11 +39,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Represents the portlet data handlers an export can cover, with the number of items each one covers in the requested date range.",
+	description = "Represents what an export can cover, with the counts for the requested date filter.",
 	value = "ExportPreview"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Represents the portlet data handlers an export can cover, with the number of items each one covers in the requested date range."
+	description = "Represents what an export can cover, with the counts for the requested date filter."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "ExportPreview")
@@ -379,4 +379,4 @@ public class ExportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-480642478
+// LIFERAY-REST-BUILDER-HASH:1079713642

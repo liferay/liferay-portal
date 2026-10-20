@@ -5,12 +5,9 @@
 
 package com.liferay.exportimport.rest.dto.v1_0;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -29,12 +26,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -103,44 +96,32 @@ public class PublishProcessRequest implements Serializable {
 	private Supplier<Boolean> _commentsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The recipe used to resolve the publish window at every run and relaunch. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates."
+		description = "The dates that select the content, resolved again on every run. Defaults to all the content."
 	)
-	@JsonGetter("dateRangeType")
 	@Valid
-	public DateRangeType getDateRangeType() {
-		if (_dateRangeTypeSupplier != null) {
-			dateRangeType = _dateRangeTypeSupplier.get();
+	public DateFilter getDateFilter() {
+		if (_dateFilterSupplier != null) {
+			dateFilter = _dateFilterSupplier.get();
 
-			_dateRangeTypeSupplier = null;
+			_dateFilterSupplier = null;
 		}
 
-		return dateRangeType;
+		return dateFilter;
+	}
+
+	public void setDateFilter(DateFilter dateFilter) {
+		this.dateFilter = dateFilter;
+
+		_dateFilterSupplier = null;
 	}
 
 	@JsonIgnore
-	public String getDateRangeTypeAsString() {
-		DateRangeType dateRangeType = getDateRangeType();
+	public void setDateFilter(
+		UnsafeSupplier<DateFilter, Exception> dateFilterUnsafeSupplier) {
 
-		if (dateRangeType == null) {
-			return null;
-		}
-
-		return dateRangeType.toString();
-	}
-
-	public void setDateRangeType(DateRangeType dateRangeType) {
-		this.dateRangeType = dateRangeType;
-
-		_dateRangeTypeSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setDateRangeType(
-		UnsafeSupplier<DateRangeType, Exception> dateRangeTypeUnsafeSupplier) {
-
-		_dateRangeTypeSupplier = () -> {
+		_dateFilterSupplier = () -> {
 			try {
-				return dateRangeTypeUnsafeSupplier.get();
+				return dateFilterUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -152,17 +133,15 @@ public class PublishProcessRequest implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The recipe used to resolve the publish window at every run and relaunch. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates."
+		description = "The dates that select the content, resolved again on every run. Defaults to all the content."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected DateRangeType dateRangeType;
+	protected DateFilter dateFilter;
 
 	@JsonIgnore
-	private Supplier<DateRangeType> _dateRangeTypeSupplier;
+	private Supplier<DateFilter> _dateFilterSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "A flag that indicates whether the deletions recorded in the date range are published, so that the live site removes the same items."
-	)
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getDeletions() {
 		if (_deletionsSupplier != null) {
 			deletions = _deletionsSupplier.get();
@@ -196,57 +175,12 @@ public class PublishProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "A flag that indicates whether the deletions recorded in the date range are published, so that the live site removes the same items."
-	)
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean deletions;
 
 	@JsonIgnore
 	private Supplier<Boolean> _deletionsSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The publish window's end date."
-	)
-	public Date getEndDate() {
-		if (_endDateSupplier != null) {
-			endDate = _endDateSupplier.get();
-
-			_endDateSupplier = null;
-		}
-
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-
-		_endDateSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setEndDate(
-		UnsafeSupplier<Date, Exception> endDateUnsafeSupplier) {
-
-		_endDateSupplier = () -> {
-			try {
-				return endDateUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(description = "The publish window's end date.")
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Date endDate;
-
-	@JsonIgnore
-	private Supplier<Date> _endDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getName() {
@@ -419,49 +353,6 @@ public class PublishProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _ratingsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The publish window's start date."
-	)
-	public Date getStartDate() {
-		if (_startDateSupplier != null) {
-			startDate = _startDateSupplier.get();
-
-			_startDateSupplier = null;
-		}
-
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-
-		_startDateSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setStartDate(
-		UnsafeSupplier<Date, Exception> startDateUnsafeSupplier) {
-
-		_startDateSupplier = () -> {
-			try {
-				return startDateUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(description = "The publish window's start date.")
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Date startDate;
-
-	@JsonIgnore
-	private Supplier<Date> _startDateSupplier;
-
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -490,9 +381,6 @@ public class PublishProcessRequest implements Serializable {
 
 		sb.append("{");
 
-		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss'Z'");
-
 		Boolean comments = getComments();
 
 		if (comments != null) {
@@ -505,18 +393,16 @@ public class PublishProcessRequest implements Serializable {
 			sb.append(comments);
 		}
 
-		DateRangeType dateRangeType = getDateRangeType();
+		DateFilter dateFilter = getDateFilter();
 
-		if (dateRangeType != null) {
+		if (dateFilter != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"dateRangeType\": ");
+			sb.append("\"dateFilter\": ");
 
-			sb.append("\"");
-			sb.append(dateRangeType);
-			sb.append("\"");
+			sb.append(String.valueOf(dateFilter));
 		}
 
 		Boolean deletions = getDeletions();
@@ -529,22 +415,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append("\"deletions\": ");
 
 			sb.append(deletions);
-		}
-
-		Date endDate = getEndDate();
-
-		if (endDate != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"endDate\": ");
-
-			sb.append("\"");
-
-			sb.append(liferayToJSONDateFormat.format(endDate));
-
-			sb.append("\"");
 		}
 
 		String name = getName();
@@ -609,22 +479,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append(ratings);
 		}
 
-		Date startDate = getStartDate();
-
-		if (startDate != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"startDate\": ");
-
-			sb.append("\"");
-
-			sb.append(liferayToJSONDateFormat.format(startDate));
-
-			sb.append("\"");
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -636,45 +490,6 @@ public class PublishProcessRequest implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
-
-	@GraphQLName("DateRangeType")
-	public static enum DateRangeType {
-
-		ALL("ALL"), DATE_RANGE("DATE_RANGE"),
-		FROM_LAST_PUBLISH_DATE("FROM_LAST_PUBLISH_DATE"), LAST("LAST");
-
-		@JsonCreator
-		public static DateRangeType create(String value) {
-			if ((value == null) || value.equals("")) {
-				return null;
-			}
-
-			for (DateRangeType dateRangeType : values()) {
-				if (Objects.equals(dateRangeType.getValue(), value)) {
-					return dateRangeType;
-				}
-			}
-
-			throw new IllegalArgumentException("Invalid enum value: " + value);
-		}
-
-		@JsonValue
-		public String getValue() {
-			return _value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-
-		private DateRangeType(String value) {
-			_value = value;
-		}
-
-		private final String _value;
-
-	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(
@@ -786,4 +601,4 @@ public class PublishProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1394028069
+// LIFERAY-REST-BUILDER-HASH:-877541511

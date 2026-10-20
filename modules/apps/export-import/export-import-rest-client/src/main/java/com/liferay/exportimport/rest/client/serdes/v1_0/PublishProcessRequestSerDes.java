@@ -11,9 +11,6 @@ import com.liferay.exportimport.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -51,9 +48,6 @@ public class PublishProcessRequestSerDes {
 
 		sb.append("{");
 
-		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ssXX");
-
 		if (publishProcessRequest.getComments() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -64,16 +58,14 @@ public class PublishProcessRequestSerDes {
 			sb.append(publishProcessRequest.getComments());
 		}
 
-		if (publishProcessRequest.getDateRangeType() != null) {
+		if (publishProcessRequest.getDateFilter() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"dateRangeType\": ");
+			sb.append("\"dateFilter\": ");
 
-			sb.append("\"");
-			sb.append(publishProcessRequest.getDateRangeType());
-			sb.append("\"");
+			sb.append(String.valueOf(publishProcessRequest.getDateFilter()));
 		}
 
 		if (publishProcessRequest.getDeletions() != null) {
@@ -84,22 +76,6 @@ public class PublishProcessRequestSerDes {
 			sb.append("\"deletions\": ");
 
 			sb.append(publishProcessRequest.getDeletions());
-		}
-
-		if (publishProcessRequest.getEndDate() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"endDate\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				liferayToJSONDateFormat.format(
-					publishProcessRequest.getEndDate()));
-
-			sb.append("\"");
 		}
 
 		if (publishProcessRequest.getName() != null) {
@@ -163,22 +139,6 @@ public class PublishProcessRequestSerDes {
 			sb.append(publishProcessRequest.getRatings());
 		}
 
-		if (publishProcessRequest.getStartDate() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"startDate\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				liferayToJSONDateFormat.format(
-					publishProcessRequest.getStartDate()));
-
-			sb.append("\"");
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -200,9 +160,6 @@ public class PublishProcessRequestSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
-		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ssXX");
-
 		if (publishProcessRequest.getComments() == null) {
 			map.put("comments", null);
 		}
@@ -212,13 +169,13 @@ public class PublishProcessRequestSerDes {
 				String.valueOf(publishProcessRequest.getComments()));
 		}
 
-		if (publishProcessRequest.getDateRangeType() == null) {
-			map.put("dateRangeType", null);
+		if (publishProcessRequest.getDateFilter() == null) {
+			map.put("dateFilter", null);
 		}
 		else {
 			map.put(
-				"dateRangeType",
-				String.valueOf(publishProcessRequest.getDateRangeType()));
+				"dateFilter",
+				String.valueOf(publishProcessRequest.getDateFilter()));
 		}
 
 		if (publishProcessRequest.getDeletions() == null) {
@@ -228,16 +185,6 @@ public class PublishProcessRequestSerDes {
 			map.put(
 				"deletions",
 				String.valueOf(publishProcessRequest.getDeletions()));
-		}
-
-		if (publishProcessRequest.getEndDate() == null) {
-			map.put("endDate", null);
-		}
-		else {
-			map.put(
-				"endDate",
-				liferayToJSONDateFormat.format(
-					publishProcessRequest.getEndDate()));
 		}
 
 		if (publishProcessRequest.getName() == null) {
@@ -273,16 +220,6 @@ public class PublishProcessRequestSerDes {
 				"ratings", String.valueOf(publishProcessRequest.getRatings()));
 		}
 
-		if (publishProcessRequest.getStartDate() == null) {
-			map.put("startDate", null);
-		}
-		else {
-			map.put(
-				"startDate",
-				liferayToJSONDateFormat.format(
-					publishProcessRequest.getStartDate()));
-		}
-
 		return map;
 	}
 
@@ -304,13 +241,10 @@ public class PublishProcessRequestSerDes {
 			if (Objects.equals(jsonParserFieldName, "comments")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "dateRangeType")) {
+			else if (Objects.equals(jsonParserFieldName, "dateFilter")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "deletions")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "endDate")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
@@ -325,9 +259,6 @@ public class PublishProcessRequestSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "ratings")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "startDate")) {
 				return false;
 			}
 
@@ -345,23 +276,16 @@ public class PublishProcessRequestSerDes {
 						(Boolean)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "dateRangeType")) {
+			else if (Objects.equals(jsonParserFieldName, "dateFilter")) {
 				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setDateRangeType(
-						PublishProcessRequest.DateRangeType.create(
-							(String)jsonParserFieldValue));
+					publishProcessRequest.setDateFilter(
+						DateFilterSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "deletions")) {
 				if (jsonParserFieldValue != null) {
 					publishProcessRequest.setDeletions(
 						(Boolean)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "endDate")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setEndDate(
-						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
@@ -399,12 +323,6 @@ public class PublishProcessRequestSerDes {
 				if (jsonParserFieldValue != null) {
 					publishProcessRequest.setRatings(
 						(Boolean)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "startDate")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setStartDate(
-						toDate((String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -494,4 +412,4 @@ public class PublishProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-342524770
+// LIFERAY-REST-BUILDER-HASH:349872025
