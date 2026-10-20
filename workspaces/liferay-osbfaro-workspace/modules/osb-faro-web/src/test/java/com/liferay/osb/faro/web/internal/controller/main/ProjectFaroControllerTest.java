@@ -136,30 +136,22 @@ public class ProjectFaroControllerTest {
 	}
 
 	@Test
-	public void testCreateWithoutSalesforceAccountId() throws Exception {
-		String salesforceAccountId = RandomTestUtil.randomString();
-
-		FaroProject faroProject = _createFaroProject(null, salesforceAccountId);
-
-		Mockito.verify(
-			faroProject
-		).setSalesforceAccountId(
-			salesforceAccountId
-		);
-	}
-
-	@Test
 	public void testCreateWithSalesforceAccountId() throws Exception {
 		String salesforceAccountId = RandomTestUtil.randomString();
 
 		FaroProject faroProject = _createFaroProject(
-			salesforceAccountId, RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), salesforceAccountId);
 
-		Mockito.verify(
-			faroProject
-		).setSalesforceAccountId(
-			salesforceAccountId
-		);
+		_assertSalesforceAccountId(faroProject, salesforceAccountId);
+	}
+
+	@Test
+	public void testCreateWithoutSalesforceAccountId() throws Exception {
+		String salesforceAccountId = RandomTestUtil.randomString();
+
+		FaroProject faroProject = _createFaroProject(salesforceAccountId, null);
+
+		_assertSalesforceAccountId(faroProject, salesforceAccountId);
 	}
 
 	@Test
@@ -297,10 +289,32 @@ public class ProjectFaroControllerTest {
 			osbOfferingEntry.getStatus());
 	}
 
-	private FaroProject _createFaroProject(
-			String salesforceAccountId,
-			String osbAccountEntrySalesforceAccountId)
+	private void _assertSalesforceAccountId(
+			FaroProject faroProject, String salesforceAccountId)
 		throws Exception {
+
+		Mockito.verify(
+			_faroProjectLocalService
+		).addFaroProject(
+			Mockito.anyLong(), Mockito.any(), Mockito.eq(salesforceAccountId),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()
+		);
+
+		Mockito.verify(
+			faroProject
+		).setSalesforceAccountId(
+			salesforceAccountId
+		);
+	}
+
+	private FaroProject _createFaroProject(
+			String osbAccountEntrySalesforceAccountId,
+			String salesforceAccountId)
+		throws Exception {
+
+		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
 		PermissionChecker permissionChecker = Mockito.mock(
 			PermissionChecker.class);
@@ -313,15 +327,15 @@ public class ProjectFaroControllerTest {
 
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-		String corpProjectUuid = RandomTestUtil.randomString();
+		ProvisioningClient provisioningClient = Mockito.mock(
+			ProvisioningClient.class);
 
 		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
 
 		osbAccountEntry.setSalesforceAccountId(
 			osbAccountEntrySalesforceAccountId);
 
-		ProvisioningClient provisioningClient = Mockito.mock(
-			ProvisioningClient.class);
+		String corpProjectUuid = RandomTestUtil.randomString();
 
 		Mockito.when(
 			provisioningClient.getOSBAccountEntry(corpProjectUuid)
@@ -332,13 +346,8 @@ public class ProjectFaroControllerTest {
 		ReflectionTestUtils.setField(
 			_projectFaroController, "_provisioningClient", provisioningClient);
 
-		FaroProject faroProject = Mockito.mock(FaroProject.class);
-
-		FaroProjectLocalService faroProjectLocalService = Mockito.mock(
-			FaroProjectLocalService.class);
-
 		Mockito.when(
-			faroProjectLocalService.addFaroProject(
+			_faroProjectLocalService.addFaroProject(
 				Mockito.anyLong(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
@@ -349,7 +358,7 @@ public class ProjectFaroControllerTest {
 
 		ReflectionTestUtils.setField(
 			_projectFaroController, "_faroProjectLocalService",
-			faroProjectLocalService);
+			_faroProjectLocalService);
 
 		ReflectionTestUtils.setField(
 			_projectFaroController, "contactsEngineClient",
@@ -369,7 +378,7 @@ public class ProjectFaroControllerTest {
 		}
 
 		Mockito.verify(
-			faroProjectLocalService
+			_faroProjectLocalService
 		).updateFaroProject(
 			faroProject
 		);
@@ -377,6 +386,8 @@ public class ProjectFaroControllerTest {
 		return faroProject;
 	}
 
+	private final FaroProjectLocalService _faroProjectLocalService =
+		Mockito.mock(FaroProjectLocalService.class);
 	private final ProjectFaroController _projectFaroController =
 		new ProjectFaroController();
 
