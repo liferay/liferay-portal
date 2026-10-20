@@ -231,6 +231,10 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		if ((companyId == null) || (companyId == 0)) {
 			companyId = _getNextCompanyId();
 		}
+		else if (companyPersistence.fetchByPrimaryKey(companyId) != null) {
+			throw new IllegalArgumentException(
+				"Company ID " + companyId + " already exists");
+		}
 
 		Company company = companyPersistence.create(companyId);
 
