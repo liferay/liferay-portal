@@ -8,6 +8,7 @@ package com.liferay.portal.json.jabsorb.serializer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.template.TemplateRestricted;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author Tomas Polesovsky
  */
+@TemplateRestricted
 public class LiferayJSONDeserializationWhitelist {
 
 	public LiferayJSONDeserializationWhitelist() {
