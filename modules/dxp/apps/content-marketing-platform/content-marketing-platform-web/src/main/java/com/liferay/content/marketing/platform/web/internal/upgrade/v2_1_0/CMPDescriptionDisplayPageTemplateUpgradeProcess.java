@@ -10,9 +10,16 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.layout.util.structure.StyledLayoutStructureItem;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -23,6 +30,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.util.Objects;
 
@@ -39,7 +48,10 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcess
 		GroupLocalService groupLocalService,
 		LayoutLocalService layoutLocalService,
 		LayoutPageTemplateEntryLocalService layoutPageTemplateEntryLocalService,
-		ObjectDefinitionLocalService objectDefinitionLocalService) {
+		LayoutPageTemplateStructureLocalService
+			layoutPageTemplateStructureLocalService,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		SegmentsExperienceLocalService segmentsExperienceLocalService) {
 
 		_classNameLocalService = classNameLocalService;
 		_companyLocalService = companyLocalService;
@@ -48,7 +60,10 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcess
 		_layoutLocalService = layoutLocalService;
 		_layoutPageTemplateEntryLocalService =
 			layoutPageTemplateEntryLocalService;
+		_layoutPageTemplateStructureLocalService =
+			layoutPageTemplateStructureLocalService;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
+		_segmentsExperienceLocalService = segmentsExperienceLocalService;
 	}
 
 	@Override
@@ -103,6 +118,7 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcess
 			}
 
 			_upgradeFragmentEntryLinks(layout);
+			_upgradeLayoutPageTemplateStructure(layout);
 
 			Layout draftLayout = layout.fetchDraftLayout();
 
@@ -111,6 +127,7 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcess
 			}
 
 			_upgradeFragmentEntryLinks(draftLayout);
+			_upgradeLayoutPageTemplateStructure(draftLayout);
 		}
 	}
 
@@ -154,6 +171,104 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcess
 		}
 	}
 
+	private void _upgradeLayoutPageTemplateStructure(Layout layout)
+		throws Exception {
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					layout.getGroupId(), layout.getPlid());
+
+		if (layoutPageTemplateStructure == null) {
+			return;
+		}
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				layout.getPlid());
+
+		LayoutStructure layoutStructure = LayoutStructure.of(
+			layoutPageTemplateStructure.getData(segmentsExperienceId));
+
+		boolean updated = false;
+
+		for (FragmentEntryLink fragmentEntryLink :
+				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+					layout.getGroupId(), layout.getPlid())) {
+
+			if (!Objects.equals(
+					fragmentEntryLink.getRendererKey(),
+					"BASIC_COMPONENT-paragraph")) {
+
+				continue;
+			}
+
+			JSONObject editableValuesJSONObject =
+				JSONFactoryUtil.createJSONObject(
+					fragmentEntryLink.getEditableValues());
+
+			JSONObject jsonObject = editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+			if (jsonObject == null) {
+				continue;
+			}
+
+			JSONObject elementTextJSONObject = jsonObject.getJSONObject(
+				"element-text");
+
+			if ((elementTextJSONObject == null) ||
+				!Objects.equals(
+					elementTextJSONObject.getString("mappedField"),
+					"ObjectField_description")) {
+
+				continue;
+			}
+
+			LayoutStructureItem layoutStructureItem =
+				layoutStructure.getLayoutStructureItemByFragmentEntryLinkId(
+					fragmentEntryLink.getFragmentEntryLinkId());
+
+			if (!(layoutStructureItem instanceof
+					StyledLayoutStructureItem styledLayoutStructureItem)) {
+
+				continue;
+			}
+
+			String customCSS = styledLayoutStructureItem.getCustomCSS();
+
+			if (Validator.isNotNull(customCSS) &&
+				customCSS.contains(_CUSTOM_CSS)) {
+
+				continue;
+			}
+
+			if (Validator.isNull(customCSS)) {
+				styledLayoutStructureItem.setCustomCSS(_CUSTOM_CSS);
+			}
+			else {
+				styledLayoutStructureItem.setCustomCSS(
+					StringBundler.concat(
+						customCSS, StringPool.NEW_LINE, _CUSTOM_CSS));
+			}
+
+			updated = true;
+		}
+
+		if (!updated) {
+			return;
+		}
+
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructureData(
+				layout.getUserId(), layout.getGroupId(), layout.getPlid(),
+				segmentsExperienceId, layoutStructure.toString());
+	}
+
+	private static final String _CUSTOM_CSS =
+		".[$FRAGMENT_CLASS$] figure.media {\ndisplay: block;\n}";
+
 	private final ClassNameLocalService _classNameLocalService;
 	private final CompanyLocalService _companyLocalService;
 	private final FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
@@ -161,6 +276,10 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcess
 	private final LayoutLocalService _layoutLocalService;
 	private final LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+	private final LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private final SegmentsExperienceLocalService
+		_segmentsExperienceLocalService;
 
 }

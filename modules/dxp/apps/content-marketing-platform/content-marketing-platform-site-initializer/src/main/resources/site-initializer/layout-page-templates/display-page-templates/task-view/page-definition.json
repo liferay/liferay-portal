@@ -215,6 +215,7 @@
 														"pageElements": [
 															{
 																"definition": {
+																	"customCSS": ".[$FRAGMENT_CLASS$] figure.media {\ndisplay: block;\n}",
 																	"fragment": {
 																		"key": "BASIC_COMPONENT-paragraph"
 																	},
