@@ -75,9 +75,11 @@ public class LiferayJWKSService extends JwksService {
 		for (String publicPropertyName : _PUBLIC_PROPERTY_NAMES) {
 			Object value = jsonWebKey.getKeyProperty(publicPropertyName);
 
-			if (value != null) {
-				jsonWebKeyProperties.put(publicPropertyName, value);
+			if (value == null) {
+				continue;
 			}
+
+			jsonWebKeyProperties.put(publicPropertyName, value);
 		}
 
 		_jsonWebKeys = new JsonWebKeys(
