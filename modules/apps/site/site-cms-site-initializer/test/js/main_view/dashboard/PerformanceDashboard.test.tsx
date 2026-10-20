@@ -178,6 +178,42 @@ describe('PerformanceDashboard', () => {
 		expect(screen.getByLabelText('filter-by-spaces')).toBeInTheDocument();
 	});
 
+	it('keeps the filters when the selected space has no connected sites', async () => {
+		mockedSpaceService.getSpaces.mockResolvedValue([
+			{id: 1, name: 'Marketing', siteId: 11},
+			{id: 2, name: 'HR', siteId: 22},
+		] as Space[]);
+
+		jest.spyOn(PerformanceService, 'getConnectionInfo').mockImplementation(
+			async ({depotEntryGroupId}) => ({
+				data: {
+					admin: true,
+					connectedToAnalyticsCloud: true,
+					connectedToSpace: depotEntryGroupId === 11,
+					siteSyncedToAnalyticsCloud: true,
+				},
+				error: null,
+			})
+		);
+
+		renderPerformanceDashboard();
+
+		await screen.findByText('performance-overview');
+
+		fireEvent.click(screen.getByLabelText('filter-by-spaces'));
+
+		const listbox = await screen.findByRole('listbox');
+
+		fireEvent.click(
+			await within(listbox).findByRole('option', {name: 'HR'})
+		);
+
+		expect(
+			await screen.findByText('connect-sites-to-show-data')
+		).toBeInTheDocument();
+		expect(screen.getByLabelText('filter-by-spaces')).toBeInTheDocument();
+	});
+
 	it('shows the dashboard sections when there are no spaces', async () => {
 		renderPerformanceDashboard();
 
