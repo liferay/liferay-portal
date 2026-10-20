@@ -2427,12 +2427,14 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	public Layout getOrAddEmptyLayout(
 			String externalReferenceCode, long userId, long groupId,
-			boolean privateLayout, ServiceContext serviceContext)
+			boolean privateLayout)
 		throws Exception {
 
 		return EmptyModelManagerUtil.getOrAddEmptyModel(
 			Layout.class,
 			() -> {
+				ServiceContext serviceContext = new ServiceContext();
+
 				serviceContext.setAttribute(
 					"layout.instanceable.allowed", Boolean.TRUE);
 
