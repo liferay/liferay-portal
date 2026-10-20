@@ -1,6 +1,6 @@
 # Cross-Module Compile
 
-Compiles two kinds of consumer of a changed module, neither of which any other validation compiles. The first is the `testIntegration` source of a `-test` module. The second is a module carrying `.lfrbuild-portal-deprecated`, which the default profile leaves out. `ant all` compiles neither, so this runs whatever **Full Portal Build** returns. A path under `src/test` selects nothing, since that source set's output is on no consumer's classpath.
+Compiles two kinds of consumer of a changed module. No other validation compiles them completely, because **Java Unit Tests** compiles only the modules it runs. The first kind is the test code that uses the changed module, in `src/test` and `src/testIntegration`. The second kind is a module carrying `.lfrbuild-portal-deprecated`, which the default profile leaves out. `ant all` compiles neither, so this runs whatever **Full Portal Build** returns. A changed file under `src/test` selects nothing, since that source set's output is on no consumer's classpath.
 
 ## Match
 
@@ -17,7 +17,7 @@ Run every command below from `${REPO_ROOT}`. `git grep` searches from the curren
 
 ### Consumers
 
-Find consumers by two routes and take their union. A module both routes find is compiled once.
+Find consumers by two routes. Compile a consumer only once, even when both routes find it.
 
 **By module.** Take the changed modules:
 
@@ -44,9 +44,16 @@ git grep --cached --files-with-matches --fixed-strings --word-regexp '<FullyQual
 git grep --all-match --cached --files-with-matches --fixed-strings --word-regexp -e 'package <package>;' -e '<TypeName>' -- 'modules/*.java'
 ```
 
-Every file either search lists, other than the changed file itself, is a consumer file. Take the `-test` modules whose `src/testIntegration` holds one:
+Every file either search lists, other than the changed file itself, is a consumer file. For each consumer file under `src/test`, take its module. This includes the changed module itself. For each consumer file under `src/testIntegration`, take its module when the module's name ends in `-test`:
 
 ```bash
+printf '%s\n' <consumer file>... \
+	| command grep '/src/test/' \
+	| bash "${SKILL_DIR}/find_modules.sh" "${MERGE_BASE}" \
+	| cut -d " " -f1 \
+	| command grep '^modules/' \
+	| sort --unique
+
 printf '%s\n' <consumer file>... \
 	| command grep '/src/testIntegration/' \
 	| bash "${SKILL_DIR}/find_modules.sh" "${MERGE_BASE}" \
@@ -72,7 +79,7 @@ do
 done
 ```
 
-Leave out `modules/dxp/apps/saml/saml-admin-rest-test` and every module under `modules/sdk`. Convert each module to its Gradle project path with `sed "s#^modules/##; s#/#:#g"`, and keep two sorted lists: the `testIntegration` consumers and the deprecated consumers.
+Leave out `modules/dxp/apps/saml/saml-admin-rest-test` and every module under `modules/sdk`. Convert each module to its Gradle project path with `sed "s#^modules/##; s#/#:#g"`. Keep two sorted lists. The first holds the test compile tasks. A task is the project path followed by `:compileTestJava` for a `src/test` consumer, or by `:compileTestIntegrationJava` for a `src/testIntegration` consumer. An example is `apps:blogs:blogs-test:compileTestIntegrationJava`. The second list holds the deprecated consumers.
 
 Assert the search root before believing an empty result. `git grep` exits 1 with no output both for a clean scan and for a pathspec that matches nothing, so a search from the wrong directory returns, byte for byte, what a genuinely clean scan returns:
 
@@ -80,19 +87,19 @@ Assert the search root before believing an empty result. `git grep` exits 1 with
 [[ -d ${REPO_ROOT}/modules ]] || exit 1
 ```
 
-When both lists are empty, compile nothing and report **NO COVERAGE**, naming the changed modules as having no integration test or deprecated consumer.
+When both lists are empty, compile nothing and report **NO COVERAGE**, naming the changed modules as having no test or deprecated consumer.
 
 ### Compile
 
-Compile all the `testIntegration` consumers in one Gradle run, never one run per module. Gradle schedules the tasks in parallel itself, and every separate run pays the configuration cost again. Write the consumers' project paths, one per line, to `${CONSUMERS_FILE}`, such as `${LOG_DIR}/consumers.txt`:
+Pass all the test compile tasks to one Gradle run, never one run per module. Gradle schedules the tasks in parallel itself, and every separate run pays the configuration cost again. Write the tasks to `${TASKS_FILE}` one per line, using a path such as `${LOG_DIR}/test-tasks.txt`:
 
 ```bash
 TASKS=()
 
-while IFS= read -r project_path
+while IFS= read -r task_path
 do
-	TASKS+=(":${project_path}:compileTestIntegrationJava" --rerun)
-done < "${CONSUMERS_FILE}"
+	TASKS+=(":${task_path}" --rerun)
+done < "${TASKS_FILE}"
 
 ("${REPO_ROOT}/gradlew" \
 	--continue \
@@ -101,7 +108,7 @@ done < "${CONSUMERS_FILE}"
 	"${TASKS[@]}")
 ```
 
-Compile the deprecated consumers in a second run, since they exist only under their own profile and that profile leaves out the `-test` modules. Build `${TASKS}` the same way with `:compileJava` in place of `:compileTestIntegrationJava`, then:
+Compile the deprecated consumers in a second run, since they exist only under their own profile and that profile leaves out the `-test` modules. Build `${TASKS}` the same way, with `:compileJava` after each project path. Then run:
 
 ```bash
 ("${REPO_ROOT}/gradlew" \
@@ -117,7 +124,7 @@ Put `--rerun` after every task path, since it is an option on the task before it
 Count the executed compile lines and check the count against the list:
 
 ```bash
-command grep --count --extended-regexp '^> Task :.*:compileTestIntegrationJava$' "${LOG}"
+command grep --count --extended-regexp '^> Task :.*:compileTest(Integration)?Java$' "${LOG}"
 ```
 
 A consumer whose task line is missing, or ends in `UP-TO-DATE` or `FROM-CACHE`, was not compiled, so name it and report **NOT VERIFIED** for it.
@@ -136,15 +143,15 @@ command grep --fixed-strings 'only showing the first' "${LOG}"
 
 When either happened in a consumer, report **NOT VERIFIED** naming it.
 
-PASS when every consumer on both lists printed an executed compile line and the build reported `BUILD SUCCESSFUL`.
+PASS when the build reported `BUILD SUCCESSFUL` and every compile task printed an executed line.
 
 ## Checklist
 
 ```
-- [ ] Compile testIntegration: <count> consumers in one run
+- [ ] Compile tests: <count> tasks in one run
 - [ ] Compile deprecated: <count> consumers in one run
 ```
 
 ## Time Estimate
 
-Under 1 min for a few dozen consumers on a warm tree, and about 4 min for every `testIntegration` module in the repository, or 11 min cold. Add about 1 min when there are deprecated consumers.
+Under 1 min for a few dozen consumers on a warm tree, and about 4 min for every `testIntegration` module in the repository, or 11 min cold. Compiling the `src/test` consumers can take up to as long again. Add about 1 min when there are deprecated consumers.
