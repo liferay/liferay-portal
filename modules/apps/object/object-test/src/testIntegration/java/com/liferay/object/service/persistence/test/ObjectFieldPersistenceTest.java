@@ -294,15 +294,6 @@ public class ObjectFieldPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_BT() throws Exception {
-		_persistence.countByC_BT(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByC_BT(0L, "null");
-
-		_persistence.countByC_BT(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByLTDI_S() throws Exception {
 		_persistence.countByLTDI_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
@@ -786,4 +777,4 @@ public class ObjectFieldPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-158404808
+// LIFERAY-SERVICE-BUILDER-HASH:939036371

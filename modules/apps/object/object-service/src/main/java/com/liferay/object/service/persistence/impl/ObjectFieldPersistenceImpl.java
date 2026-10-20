@@ -605,98 +605,6 @@ public class ObjectFieldPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<ObjectField, NoSuchObjectFieldException>
-		_collectionPersistenceFinderByC_BT;
-
-	/**
-	 * Returns an ordered range of all the object fields where companyId = &#63; and businessType = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectFieldModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @param start the lower bound of the range of object fields
-	 * @param end the upper bound of the range of object fields (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching object fields
-	 */
-	@Override
-	public List<ObjectField> findByC_BT(
-		long companyId, String businessType, int start, int end,
-		OrderByComparator<ObjectField> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_BT.find(
-			finderCache, new Object[] {companyId, businessType}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first object field in the ordered set where companyId = &#63; and businessType = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching object field
-	 * @throws NoSuchObjectFieldException if a matching object field could not be found
-	 */
-	@Override
-	public ObjectField findByC_BT_First(
-			long companyId, String businessType,
-			OrderByComparator<ObjectField> orderByComparator)
-		throws NoSuchObjectFieldException {
-
-		return _collectionPersistenceFinderByC_BT.findFirst(
-			finderCache, new Object[] {companyId, businessType},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first object field in the ordered set where companyId = &#63; and businessType = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching object field, or <code>null</code> if a matching object field could not be found
-	 */
-	@Override
-	public ObjectField fetchByC_BT_First(
-		long companyId, String businessType,
-		OrderByComparator<ObjectField> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_BT.fetchFirst(
-			finderCache, new Object[] {companyId, businessType},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the object fields where companyId = &#63; and businessType = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 */
-	@Override
-	public void removeByC_BT(long companyId, String businessType) {
-		_collectionPersistenceFinderByC_BT.remove(
-			finderCache, new Object[] {companyId, businessType});
-	}
-
-	/**
-	 * Returns the number of object fields where companyId = &#63; and businessType = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @return the number of matching object fields
-	 */
-	@Override
-	public int countByC_BT(long companyId, String businessType) {
-		return _collectionPersistenceFinderByC_BT.count(
-			finderCache, new Object[] {companyId, businessType});
-	}
-
-	private CollectionPersistenceFinder<ObjectField, NoSuchObjectFieldException>
 		_collectionPersistenceFinderByLTDI_S;
 
 	/**
@@ -2028,34 +1936,6 @@ public class ObjectFieldPersistenceImpl
 				"objectField.", "userId", FinderColumn.Type.LONG, "=", true,
 				true, ObjectField::getUserId));
 
-		_collectionPersistenceFinderByC_BT = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_BT",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "businessType"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_BT",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "businessType"}, 0, 2, true, null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_BT",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"companyId", "businessType"}, 0, 2, false, null),
-			_SQL_SELECT_OBJECTFIELD_WHERE, _SQL_COUNT_OBJECTFIELD_WHERE,
-			ObjectFieldModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"objectField.", "companyId", FinderColumn.Type.LONG, "=", true,
-				true, ObjectField::getCompanyId),
-			new FinderColumn<>(
-				"objectField.", "businessType", FinderColumn.Type.STRING, "=",
-				true, true, ObjectField::getBusinessType));
-
 		_collectionPersistenceFinderByLTDI_S =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -2433,4 +2313,4 @@ public class ObjectFieldPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1847563862
+// LIFERAY-SERVICE-BUILDER-HASH:1935821993

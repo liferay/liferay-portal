@@ -575,86 +575,6 @@ public class ObjectFieldUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the object fields where companyId = &#63; and businessType = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.object.model.impl.ObjectFieldModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @param start the lower bound of the range of object fields
-	 * @param end the upper bound of the range of object fields (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching object fields
-	 */
-	public static List<ObjectField> findByC_BT(
-		long companyId, String businessType, int start, int end,
-		OrderByComparator<ObjectField> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByC_BT(
-			companyId, businessType, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first object field in the ordered set where companyId = &#63; and businessType = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching object field
-	 * @throws NoSuchObjectFieldException if a matching object field could not be found
-	 */
-	public static ObjectField findByC_BT_First(
-			long companyId, String businessType,
-			OrderByComparator<ObjectField> orderByComparator)
-		throws com.liferay.object.exception.NoSuchObjectFieldException {
-
-		return getPersistence().findByC_BT_First(
-			companyId, businessType, orderByComparator);
-	}
-
-	/**
-	 * Returns the first object field in the ordered set where companyId = &#63; and businessType = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching object field, or <code>null</code> if a matching object field could not be found
-	 */
-	public static ObjectField fetchByC_BT_First(
-		long companyId, String businessType,
-		OrderByComparator<ObjectField> orderByComparator) {
-
-		return getPersistence().fetchByC_BT_First(
-			companyId, businessType, orderByComparator);
-	}
-
-	/**
-	 * Removes all the object fields where companyId = &#63; and businessType = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 */
-	public static void removeByC_BT(long companyId, String businessType) {
-		getPersistence().removeByC_BT(companyId, businessType);
-	}
-
-	/**
-	 * Returns the number of object fields where companyId = &#63; and businessType = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @return the number of matching object fields
-	 */
-	public static int countByC_BT(long companyId, String businessType) {
-		return getPersistence().countByC_BT(companyId, businessType);
-	}
-
-	/**
 	 * Returns an ordered range of all the object fields where listTypeDefinitionId = &#63; and state = &#63;.
 	 *
 	 * <p>
@@ -1833,60 +1753,6 @@ public class ObjectFieldUtil {
 	}
 
 	/**
-	 * Returns all the object fields where companyId = &#63; and businessType = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @return the matching object fields
-	 */
-	public static List<ObjectField> findByC_BT(
-		long companyId, String businessType) {
-
-		return getPersistence().findByC_BT(companyId, businessType);
-	}
-
-	/**
-	 * Returns a range of all the object fields where companyId = &#63; and businessType = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.object.model.impl.ObjectFieldModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @param start the lower bound of the range of object fields
-	 * @param end the upper bound of the range of object fields (not inclusive)
-	 * @return the range of matching object fields
-	 */
-	public static List<ObjectField> findByC_BT(
-		long companyId, String businessType, int start, int end) {
-
-		return getPersistence().findByC_BT(companyId, businessType, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the object fields where companyId = &#63; and businessType = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.object.model.impl.ObjectFieldModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param businessType the business type
-	 * @param start the lower bound of the range of object fields
-	 * @param end the upper bound of the range of object fields (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching object fields
-	 */
-	public static List<ObjectField> findByC_BT(
-		long companyId, String businessType, int start, int end,
-		OrderByComparator<ObjectField> orderByComparator) {
-
-		return getPersistence().findByC_BT(
-			companyId, businessType, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the object fields where listTypeDefinitionId = &#63; and state = &#63;.
 	 *
 	 * @param listTypeDefinitionId the list type definition ID
@@ -2348,4 +2214,4 @@ public class ObjectFieldUtil {
 	private static volatile ObjectFieldPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1125938811
+// LIFERAY-SERVICE-BUILDER-HASH:1771532061

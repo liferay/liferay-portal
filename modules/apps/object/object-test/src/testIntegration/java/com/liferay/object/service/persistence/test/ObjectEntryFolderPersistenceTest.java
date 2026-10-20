@@ -248,16 +248,6 @@ public class ObjectEntryFolderPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_C_LikeT() throws Exception {
-		_persistence.countByG_C_LikeT(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "");
-
-		_persistence.countByG_C_LikeT(0L, 0L, "null");
-
-		_persistence.countByG_C_LikeT(0L, 0L, (String)null);
-	}
-
-	@Test
 	public void testCountByG_C_P_N_NotS() throws Exception {
 		_persistence.countByG_C_P_N_NotS(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -648,4 +638,4 @@ public class ObjectEntryFolderPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1884703138
+// LIFERAY-SERVICE-BUILDER-HASH:-531912730

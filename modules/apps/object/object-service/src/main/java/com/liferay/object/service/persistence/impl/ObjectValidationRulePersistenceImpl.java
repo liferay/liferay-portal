@@ -445,99 +445,6 @@ public class ObjectValidationRulePersistenceImpl
 
 	private CollectionPersistenceFinder
 		<ObjectValidationRule, NoSuchObjectValidationRuleException>
-			_collectionPersistenceFinderByODI_E;
-
-	/**
-	 * Returns an ordered range of all the object validation rules where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectValidationRuleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @param start the lower bound of the range of object validation rules
-	 * @param end the upper bound of the range of object validation rules (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching object validation rules
-	 */
-	@Override
-	public List<ObjectValidationRule> findByODI_E(
-		long objectDefinitionId, String engine, int start, int end,
-		OrderByComparator<ObjectValidationRule> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByODI_E.find(
-			finderCache, new Object[] {objectDefinitionId, engine}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first object validation rule in the ordered set where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching object validation rule
-	 * @throws NoSuchObjectValidationRuleException if a matching object validation rule could not be found
-	 */
-	@Override
-	public ObjectValidationRule findByODI_E_First(
-			long objectDefinitionId, String engine,
-			OrderByComparator<ObjectValidationRule> orderByComparator)
-		throws NoSuchObjectValidationRuleException {
-
-		return _collectionPersistenceFinderByODI_E.findFirst(
-			finderCache, new Object[] {objectDefinitionId, engine},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first object validation rule in the ordered set where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching object validation rule, or <code>null</code> if a matching object validation rule could not be found
-	 */
-	@Override
-	public ObjectValidationRule fetchByODI_E_First(
-		long objectDefinitionId, String engine,
-		OrderByComparator<ObjectValidationRule> orderByComparator) {
-
-		return _collectionPersistenceFinderByODI_E.fetchFirst(
-			finderCache, new Object[] {objectDefinitionId, engine},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the object validation rules where objectDefinitionId = &#63; and engine = &#63; from the database.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 */
-	@Override
-	public void removeByODI_E(long objectDefinitionId, String engine) {
-		_collectionPersistenceFinderByODI_E.remove(
-			finderCache, new Object[] {objectDefinitionId, engine});
-	}
-
-	/**
-	 * Returns the number of object validation rules where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @return the number of matching object validation rules
-	 */
-	@Override
-	public int countByODI_E(long objectDefinitionId, String engine) {
-		return _collectionPersistenceFinderByODI_E.count(
-			finderCache, new Object[] {objectDefinitionId, engine});
-	}
-
-	private CollectionPersistenceFinder
-		<ObjectValidationRule, NoSuchObjectValidationRuleException>
 			_collectionPersistenceFinderByODI_O;
 
 	/**
@@ -1198,38 +1105,6 @@ public class ObjectValidationRulePersistenceImpl
 				FinderColumn.Type.BOOLEAN, "=", true, true,
 				ObjectValidationRule::isActive));
 
-		_collectionPersistenceFinderByODI_E = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByODI_E",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"objectDefinitionId", "engine"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByODI_E",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"objectDefinitionId", "engine"}, 0, 2, true,
-				null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByODI_E",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"objectDefinitionId", "engine"}, 0, 2, false,
-				null),
-			_SQL_SELECT_OBJECTVALIDATIONRULE_WHERE,
-			_SQL_COUNT_OBJECTVALIDATIONRULE_WHERE,
-			ObjectValidationRuleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"objectValidationRule.", "objectDefinitionId",
-				FinderColumn.Type.LONG, "=", true, true,
-				ObjectValidationRule::getObjectDefinitionId),
-			new FinderColumn<>(
-				"objectValidationRule.", "engine", FinderColumn.Type.STRING,
-				"=", true, true, ObjectValidationRule::getEngine));
-
 		_collectionPersistenceFinderByODI_O = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1384,4 +1259,4 @@ public class ObjectValidationRulePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-307581567
+// LIFERAY-SERVICE-BUILDER-HASH:-1456204771

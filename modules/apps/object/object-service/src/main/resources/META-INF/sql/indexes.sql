@@ -37,7 +37,6 @@ create index IX_BD205C3B on ObjectEntry (uuid_[$COLUMN_LENGTH:75$]);
 
 create unique index IX_9D7AE9B8 on ObjectEntryFolder (groupId, companyId, externalReferenceCode[$COLUMN_LENGTH:75$]);
 create index IX_487A29C2 on ObjectEntryFolder (groupId, companyId, parentObjectEntryFolderId, name[$COLUMN_LENGTH:75$], status);
-create index IX_772D12BC on ObjectEntryFolder (groupId, companyId, treePath[$COLUMN_LENGTH:4000$]);
 create unique index IX_8EC73DF1 on ObjectEntryFolder (groupId, uuid_[$COLUMN_LENGTH:75$]);
 create index IX_56A855AD on ObjectEntryFolder (uuid_[$COLUMN_LENGTH:75$]);
 
@@ -47,7 +46,6 @@ create index IX_7D343B19 on ObjectEntryVersion (objectEntryId, status);
 create unique index IX_50DA0035 on ObjectEntryVersion (objectEntryId, version);
 create index IX_5C2CDBC9 on ObjectEntryVersion (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_57E61DF5 on ObjectField (companyId, businessType[$COLUMN_LENGTH:75$]);
 create index IX_EAECE0E1 on ObjectField (companyId, userId);
 create index IX_6DCE835D on ObjectField (listTypeDefinitionId, state_);
 create index IX_87111650 on ObjectField (objectDefinitionId, businessType[$COLUMN_LENGTH:75$]);
@@ -120,7 +118,6 @@ create index IX_5E1D73A7 on ObjectStateTransition (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_23EC0B65 on ObjectValidationRule (active_, engine[$COLUMN_LENGTH:255$]);
 create index IX_C476B36E on ObjectValidationRule (objectDefinitionId, active_);
-create index IX_EE533031 on ObjectValidationRule (objectDefinitionId, engine[$COLUMN_LENGTH:255$]);
 create unique index IX_88476606 on ObjectValidationRule (objectDefinitionId, externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
 create index IX_465D010A on ObjectValidationRule (objectDefinitionId, outputType[$COLUMN_LENGTH:75$]);
 create index IX_ADDDA15A on ObjectValidationRule (uuid_[$COLUMN_LENGTH:75$]);

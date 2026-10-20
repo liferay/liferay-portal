@@ -287,72 +287,6 @@ public interface ObjectValidationRulePersistence
 	public int countByODI_A(long objectDefinitionId, boolean active);
 
 	/**
-	 * Returns an ordered range of all the object validation rules where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.object.model.impl.ObjectValidationRuleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @param start the lower bound of the range of object validation rules
-	 * @param end the upper bound of the range of object validation rules (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching object validation rules
-	 */
-	public java.util.List<ObjectValidationRule> findByODI_E(
-		long objectDefinitionId, String engine, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<ObjectValidationRule>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first object validation rule in the ordered set where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching object validation rule
-	 * @throws NoSuchObjectValidationRuleException if a matching object validation rule could not be found
-	 */
-	public ObjectValidationRule findByODI_E_First(
-			long objectDefinitionId, String engine,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<ObjectValidationRule> orderByComparator)
-		throws NoSuchObjectValidationRuleException;
-
-	/**
-	 * Returns the first object validation rule in the ordered set where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching object validation rule, or <code>null</code> if a matching object validation rule could not be found
-	 */
-	public ObjectValidationRule fetchByODI_E_First(
-		long objectDefinitionId, String engine,
-		com.liferay.portal.kernel.util.OrderByComparator<ObjectValidationRule>
-			orderByComparator);
-
-	/**
-	 * Removes all the object validation rules where objectDefinitionId = &#63; and engine = &#63; from the database.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 */
-	public void removeByODI_E(long objectDefinitionId, String engine);
-
-	/**
-	 * Returns the number of object validation rules where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @return the number of matching object validation rules
-	 */
-	public int countByODI_E(long objectDefinitionId, String engine);
-
-	/**
 	 * Returns an ordered range of all the object validation rules where objectDefinitionId = &#63; and outputType = &#63;.
 	 *
 	 * <p>
@@ -816,64 +750,6 @@ public interface ObjectValidationRulePersistence
 	}
 
 	/**
-	 * Returns all the object validation rules where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @return the matching object validation rules
-	 */
-	public default java.util.List<ObjectValidationRule> findByODI_E(
-		long objectDefinitionId, String engine) {
-
-		return findByODI_E(
-			objectDefinitionId, engine,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the object validation rules where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.object.model.impl.ObjectValidationRuleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @param start the lower bound of the range of object validation rules
-	 * @param end the upper bound of the range of object validation rules (not inclusive)
-	 * @return the range of matching object validation rules
-	 */
-	public default java.util.List<ObjectValidationRule> findByODI_E(
-		long objectDefinitionId, String engine, int start, int end) {
-
-		return findByODI_E(objectDefinitionId, engine, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the object validation rules where objectDefinitionId = &#63; and engine = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.object.model.impl.ObjectValidationRuleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param objectDefinitionId the object definition ID
-	 * @param engine the engine
-	 * @param start the lower bound of the range of object validation rules
-	 * @param end the upper bound of the range of object validation rules (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching object validation rules
-	 */
-	public default java.util.List<ObjectValidationRule> findByODI_E(
-		long objectDefinitionId, String engine, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<ObjectValidationRule>
-			orderByComparator) {
-
-		return findByODI_E(
-			objectDefinitionId, engine, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the object validation rules where objectDefinitionId = &#63; and outputType = &#63;.
 	 *
 	 * @param objectDefinitionId the object definition ID
@@ -990,4 +866,4 @@ public interface ObjectValidationRulePersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-191280212
+// LIFERAY-SERVICE-BUILDER-HASH:1766011742

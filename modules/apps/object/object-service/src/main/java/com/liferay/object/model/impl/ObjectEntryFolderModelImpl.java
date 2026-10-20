@@ -169,20 +169,14 @@ public class ObjectEntryFolderModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TREEPATH_COLUMN_BITMASK = 64L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long OBJECTENTRYFOLDERID_COLUMN_BITMASK = 256L;
+	public static final long OBJECTENTRYFOLDERID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -842,15 +836,6 @@ public class ObjectEntryFolderModelImpl
 		_treePath = treePath;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalTreePath() {
-		return getColumnOriginalValue("treePath");
-	}
-
 	@JSON
 	@Override
 	public int getStatus() {
@@ -1454,4 +1439,4 @@ public class ObjectEntryFolderModelImpl
 	private ObjectEntryFolder _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-119267696
+// LIFERAY-SERVICE-BUILDER-HASH:1999930490
