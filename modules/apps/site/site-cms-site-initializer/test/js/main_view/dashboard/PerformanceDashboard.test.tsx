@@ -214,6 +214,27 @@ describe('PerformanceDashboard', () => {
 		expect(screen.getByLabelText('filter-by-spaces')).toBeInTheDocument();
 	});
 
+	it('shows the connect sites state when the connection info of the spaces cannot be fetched', async () => {
+		mockedSpaceService.getSpaces.mockResolvedValue([
+			{id: 1, name: 'Marketing', siteId: 11},
+			{id: 2, name: 'HR', siteId: 22},
+		] as Space[]);
+
+		jest.spyOn(PerformanceService, 'getConnectionInfo').mockResolvedValue({
+			data: null,
+			error: 'an-unexpected-error-occurred',
+		});
+
+		renderPerformanceDashboard();
+
+		expect(
+			await screen.findByText('connect-sites-to-show-data')
+		).toBeInTheDocument();
+		expect(
+			screen.queryByText('performance-overview')
+		).not.toBeInTheDocument();
+	});
+
 	it('shows the dashboard sections when there are no spaces', async () => {
 		renderPerformanceDashboard();
 
