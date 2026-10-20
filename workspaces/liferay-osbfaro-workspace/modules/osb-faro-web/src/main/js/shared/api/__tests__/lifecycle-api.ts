@@ -1,5 +1,9 @@
 jest.mock('shared/util/request');
 
+jest.mock('shared/util/feature-flags', () => ({
+	ENABLE_LIFECYCLE_DASHBOARDS_API: true,
+}));
+
 import sendRequest from 'shared/util/request';
 import {
 	fetchAccountLifecycles,

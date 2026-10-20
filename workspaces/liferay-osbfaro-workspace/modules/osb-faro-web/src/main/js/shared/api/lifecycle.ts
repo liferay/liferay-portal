@@ -1,7 +1,7 @@
 import sendRequest from 'shared/util/request';
 import {buildSortString, NAME} from 'shared/util/pagination';
-import {createMockLifecycleApi} from './lifecycle-mock';
-import {ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA} from 'shared/util/feature-flags';
+import {ENABLE_LIFECYCLE_DASHBOARDS_API} from 'shared/util/feature-flags';
+import {legacyLifecycleApi} from './lifecycle-legacy';
 import {OrderByDirections} from 'shared/util/constants';
 
 export interface ILifecycle {
@@ -136,13 +136,9 @@ const realLifecycleApi = {
 	setDefaultLifecycle: requestDefaultLifecycle,
 };
 
-const lifecycleApi: typeof realLifecycleApi =
-	ENABLE_LIFECYCLE_DASHBOARDS_MOCK_DATA
-		? createMockLifecycleApi({
-				...realLifecycleApi,
-				fetchLifecycleList: requestFirstLifecyclePage,
-			})
-		: realLifecycleApi;
+const lifecycleApi: typeof realLifecycleApi = ENABLE_LIFECYCLE_DASHBOARDS_API
+	? realLifecycleApi
+	: {...realLifecycleApi, ...legacyLifecycleApi};
 
 export const {
 	fetchLifecycle,

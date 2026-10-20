@@ -457,4 +457,38 @@ describe('LifecycleSwitchPanel', () => {
 			JSON.stringify({type: 'switch'})
 		);
 	});
+
+	describe('with lifecycles in the legacy format', () => {
+		beforeEach(() =>
+			mockLifecyclesPage(
+				LIFECYCLES.map(({description, id, name, stages}) => ({
+					description,
+					id,
+					name,
+					stages,
+				}))
+			)
+		);
+
+		it('shows no pin, author or modified date', () => {
+			renderPanel();
+
+			expect(screen.queryByRole('img', {name: /default/i})).toBeNull();
+			expect(screen.queryByText(/anneta smith/i)).toBeNull();
+			expect(screen.queryByText(/oct \d+, 2026/i)).toBeNull();
+		});
+
+		it('does not offer Set Default', () => {
+			renderPanel();
+
+			openRowMenu('Partner Lifecycle');
+
+			expect(
+				screen.queryByRole('menuitem', {name: /set.default/i})
+			).toBeNull();
+			expect(
+				screen.getByRole('menuitem', {name: /show.details/i})
+			).toBeInTheDocument();
+		});
+	});
 });
