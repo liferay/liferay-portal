@@ -5,7 +5,6 @@ create index IX_9226DBB4 on Address (companyId, classNameId, classPK, primary_);
 create unique index IX_C0F7C08D on Address (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_5A2093E7 on Address (countryId);
 create index IX_C8E3E87D on Address (regionId);
-create index IX_5BC8B0D4 on Address (userId);
 create index IX_381E55DA on Address (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_37B0A8A2 on AnnouncementsDelivery (companyId);
@@ -161,7 +160,6 @@ create index IX_CBC408D8 on DLFolder (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_2A2CB130 on EmailAddress (companyId, classNameId, classPK, primary_);
 create unique index IX_B4BA0791 on EmailAddress (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_7B43CD8 on EmailAddress (userId);
 create index IX_D24F3956 on EmailAddress (uuid_[$COLUMN_LENGTH:75$]);
 
 create unique index IX_4A7D3605 on ExpandoColumn (tableId, name[$COLUMN_LENGTH:75$], ctCollectionId);
@@ -502,7 +500,6 @@ create unique index IX_97DFA146 on WebDAVProps (classNameId, classPK);
 
 create index IX_1AA07A6D on Website (companyId, classNameId, classPK, primary_);
 create unique index IX_36B86556 on Website (companyId, externalReferenceCode[$COLUMN_LENGTH:75$]);
-create index IX_F75690BB on Website (userId);
 create index IX_76F15D13 on Website (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_EBA85698 on WorkflowDefinitionLink (companyId, classNameId);

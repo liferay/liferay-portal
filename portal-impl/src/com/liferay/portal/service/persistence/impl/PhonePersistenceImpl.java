@@ -261,90 +261,6 @@ public class PhonePersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<Phone, NoSuchPhoneException>
-		_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the phones where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PhoneModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of phones
-	 * @param end the upper bound of the range of phones (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching phones
-	 */
-	@Override
-	public List<Phone> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<Phone> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first phone in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching phone
-	 * @throws NoSuchPhoneException if a matching phone could not be found
-	 */
-	@Override
-	public Phone findByCompanyId_First(
-			long companyId, OrderByComparator<Phone> orderByComparator)
-		throws NoSuchPhoneException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first phone in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching phone, or <code>null</code> if a matching phone could not be found
-	 */
-	@Override
-	public Phone fetchByCompanyId_First(
-		long companyId, OrderByComparator<Phone> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the phones where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of phones where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching phones
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	private CollectionPersistenceFinder<Phone, NoSuchPhoneException>
 		_collectionPersistenceFinderByUserId;
 
 	/**
@@ -426,100 +342,6 @@ public class PhonePersistenceImpl
 	public int countByUserId(long userId) {
 		return _collectionPersistenceFinderByUserId.count(
 			FinderCacheUtil.getFinderCache(), new Object[] {userId});
-	}
-
-	private CollectionPersistenceFinder<Phone, NoSuchPhoneException>
-		_collectionPersistenceFinderByC_C;
-
-	/**
-	 * Returns an ordered range of all the phones where companyId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PhoneModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of phones
-	 * @param end the upper bound of the range of phones (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching phones
-	 */
-	@Override
-	public List<Phone> findByC_C(
-		long companyId, long classNameId, int start, int end,
-		OrderByComparator<Phone> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_C.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, classNameId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first phone in the ordered set where companyId = &#63; and classNameId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching phone
-	 * @throws NoSuchPhoneException if a matching phone could not be found
-	 */
-	@Override
-	public Phone findByC_C_First(
-			long companyId, long classNameId,
-			OrderByComparator<Phone> orderByComparator)
-		throws NoSuchPhoneException {
-
-		return _collectionPersistenceFinderByC_C.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, classNameId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first phone in the ordered set where companyId = &#63; and classNameId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching phone, or <code>null</code> if a matching phone could not be found
-	 */
-	@Override
-	public Phone fetchByC_C_First(
-		long companyId, long classNameId,
-		OrderByComparator<Phone> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_C.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, classNameId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the phones where companyId = &#63; and classNameId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param classNameId the class name ID
-	 */
-	@Override
-	public void removeByC_C(long companyId, long classNameId) {
-		_collectionPersistenceFinderByC_C.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, classNameId});
-	}
-
-	/**
-	 * Returns the number of phones where companyId = &#63; and classNameId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param classNameId the class name ID
-	 * @return the number of matching phones
-	 */
-	@Override
-	public int countByC_C(long companyId, long classNameId) {
-		return _collectionPersistenceFinderByC_C.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, classNameId});
 	}
 
 	private CollectionPersistenceFinder<Phone, NoSuchPhoneException>
@@ -1203,32 +1025,6 @@ public class PhonePersistenceImpl
 					"phone.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, Phone::getCompanyId));
 
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
-				PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
-				new FinderColumn<>(
-					"phone.", "companyId", FinderColumn.Type.LONG, "=", true,
-					true, Phone::getCompanyId));
-
 		_collectionPersistenceFinderByUserId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1254,33 +1050,6 @@ public class PhonePersistenceImpl
 				new FinderColumn<>(
 					"phone.", "userId", FinderColumn.Type.LONG, "=", true, true,
 					Phone::getUserId));
-
-		_collectionPersistenceFinderByC_C = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "classNameId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"companyId", "classNameId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"companyId", "classNameId"}, false),
-			_SQL_SELECT_PHONE_WHERE, _SQL_COUNT_PHONE_WHERE,
-			PhoneModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"phone.", "companyId", FinderColumn.Type.LONG, "=", true, true,
-				Phone::getCompanyId),
-			new FinderColumn<>(
-				"phone.", "classNameId", FinderColumn.Type.LONG, "=", true,
-				true, Phone::getClassNameId));
 
 		_collectionPersistenceFinderByC_C_C = new CollectionPersistenceFinder<>(
 			this,
@@ -1415,4 +1184,4 @@ public class PhonePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-71524696
+// LIFERAY-SERVICE-BUILDER-HASH:1774581222
