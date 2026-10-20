@@ -3,7 +3,7 @@
 {{- range $k, $v := .Values.dependencies }}
 {{- if eq $v.source "statefulset" }}
 ---
-{{- $dependence := dict "name" $k "statefulset" $v.statefulset "root" $ }}
+{{- $dependence := dict "name" $k "statefulset" (merge (dict "global" $.Values.global) $v.statefulset) "root" $ }}
 {{ include "liferay.statefulset" $dependence }}
 {{- end }}
 {{- end }}
