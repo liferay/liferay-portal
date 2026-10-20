@@ -74,6 +74,23 @@ public class SchemaManifestBuilderTest {
 	}
 
 	@Test
+	public void testSchemaManifestBuilderWithCRLFLineEndings()
+		throws Exception {
+
+		_writeBndFile(RandomTestUtil.randomString());
+
+		_buildSchemaManifest(null);
+
+		String content = StringUtil.replace(_read(_manifestFile), "\n", "\r\n");
+
+		_writeManifest(content);
+
+		_buildSchemaManifest(null);
+
+		Assert.assertEquals(content, _read(_manifestFile));
+	}
+
+	@Test
 	public void testSchemaManifestBuilderWithModule() throws Exception {
 		_writeBndFile(RandomTestUtil.randomString());
 

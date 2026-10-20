@@ -6,10 +6,12 @@
 package com.liferay.portal.tools.schema.manifest.builder;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONObjectImpl;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.ArgumentsUtil;
 
@@ -110,8 +112,10 @@ public class SchemaManifestBuilder {
 		Path manifestPath = manifestFile.toPath();
 
 		if (manifestFile.exists()) {
-			String content = new String(
-				Files.readAllBytes(manifestPath), StandardCharsets.UTF_8);
+			String content = StringUtil.replace(
+				new String(
+					Files.readAllBytes(manifestPath), StandardCharsets.UTF_8),
+				StringPool.RETURN_NEW_LINE, StringPool.NEW_LINE);
 
 			Matcher matcher = _timestampPattern.matcher(content);
 
