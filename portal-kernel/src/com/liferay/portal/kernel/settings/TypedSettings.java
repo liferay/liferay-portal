@@ -114,39 +114,6 @@ public class TypedSettings {
 		return _settings;
 	}
 
-	public void reset(String key) {
-		ModifiableSettings modifiableSettings =
-			_settings.getModifiableSettings();
-
-		modifiableSettings.reset(key);
-	}
-
-	public void setBooleanValue(String key, boolean value) {
-		setValue(key, String.valueOf(value));
-	}
-
-	public void setIntegerValue(String key, int value) {
-		setValue(key, String.valueOf(value));
-	}
-
-	public void setLongValue(String key, long value) {
-		setValue(key, String.valueOf(value));
-	}
-
-	public void setValue(String key, String value) {
-		ModifiableSettings modifiableSettings =
-			_settings.getModifiableSettings();
-
-		modifiableSettings.setValue(key, value);
-	}
-
-	public void setValues(String key, String[] values) {
-		ModifiableSettings modifiableSettings =
-			_settings.getModifiableSettings();
-
-		modifiableSettings.setValues(key, values);
-	}
-
 	private LocalizedValuesMap _toLocalizedValuesMap(JSONObject jsonObject) {
 		String defaultValue = jsonObject.getString(
 			LocaleUtil.toLanguageId(LocaleThreadLocal.getDefaultLocale()));
