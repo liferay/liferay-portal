@@ -6,7 +6,7 @@ import {ClayCheckbox} from '@clayui/form';
 import {sub} from 'shared/util/lang';
 import {toLocale} from 'shared/util/numbers';
 
-interface ISalesforceAccountsAndIndividualsProps {
+interface ISalesforceEntitiesProps {
 	accountsSyncedCount?: number;
 	campaignsSyncedCount?: number;
 	disabled?: boolean;
@@ -19,9 +19,7 @@ interface ISalesforceAccountsAndIndividualsProps {
 	type?: string;
 }
 
-const SalesforceAccountsAndIndividuals: React.FC<
-	ISalesforceAccountsAndIndividualsProps
-> = ({
+const SalesforceEntities: React.FC<ISalesforceEntitiesProps> = ({
 	accountsSyncedCount,
 	campaignsSyncedCount,
 	disabled = false,
@@ -152,4 +150,4 @@ const SalesforceAccountsAndIndividuals: React.FC<
 	</div>
 );
 
-export default SalesforceAccountsAndIndividuals;
+export default SalesforceEntities;

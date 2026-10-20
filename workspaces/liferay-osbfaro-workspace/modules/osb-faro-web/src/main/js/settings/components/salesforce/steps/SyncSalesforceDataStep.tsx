@@ -1,6 +1,6 @@
 import ClayForm from '@clayui/form';
 import React, {useEffect, useState} from 'react';
-import SalesforceAccountsAndIndividuals from 'settings/components/salesforce/SalesforceAccountsAndIndividuals';
+import SalesforceEntities from 'settings/components/salesforce/SalesforceEntities';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {Text} from '@clayui/core';
@@ -90,7 +90,7 @@ const SyncSalesforceDataStep = ({
 			</div>
 
 			{dataSource && (
-				<SalesforceAccountsAndIndividuals
+				<SalesforceEntities
 					enabledAccounts={enabledAccounts}
 					enabledIndividuals={enabledIndividuals}
 					onAccountsChange={() =>

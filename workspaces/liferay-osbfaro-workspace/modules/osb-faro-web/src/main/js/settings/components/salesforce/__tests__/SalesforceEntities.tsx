@@ -1,13 +1,13 @@
 jest.unmock('react-dom');
 
 import React from 'react';
-import SalesforceAccountsAndIndividuals from '../SalesforceAccountsAndIndividuals';
+import SalesforceEntities from '../SalesforceEntities';
 import {render} from '@testing-library/react';
 
-describe('SalesforceAccountsAndIndividuals', () => {
+describe('SalesforceEntities', () => {
 	it('renders the campaigns item checked and disabled', () => {
 		const {getByText} = render(
-			<SalesforceAccountsAndIndividuals
+			<SalesforceEntities
 				enabledAccounts={false}
 				enabledIndividuals={false}
 				onAccountsChange={jest.fn()}
@@ -37,7 +37,7 @@ describe('SalesforceAccountsAndIndividuals', () => {
 
 	it('renders the synced counts with comma separators when they are large', () => {
 		const {getByText} = render(
-			<SalesforceAccountsAndIndividuals
+			<SalesforceEntities
 				accountsSyncedCount={73085}
 				campaignsSyncedCount={1204}
 				enabledAccounts
@@ -55,7 +55,7 @@ describe('SalesforceAccountsAndIndividuals', () => {
 
 	it('renders the synced counts when they are zero', () => {
 		const {getAllByText} = render(
-			<SalesforceAccountsAndIndividuals
+			<SalesforceEntities
 				accountsSyncedCount={0}
 				campaignsSyncedCount={0}
 				enabledAccounts
@@ -71,7 +71,7 @@ describe('SalesforceAccountsAndIndividuals', () => {
 
 	it('hides the synced counts when no values are provided', () => {
 		const {getByText, queryByText} = render(
-			<SalesforceAccountsAndIndividuals
+			<SalesforceEntities
 				enabledAccounts
 				enabledIndividuals
 				onAccountsChange={jest.fn()}

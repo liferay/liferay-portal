@@ -7,7 +7,7 @@ import ClayLink from '@clayui/link';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import Loading from 'shared/components/Loading';
 import React, {useEffect, useRef, useState} from 'react';
-import SalesforceAccountsAndIndividuals from './SalesforceAccountsAndIndividuals';
+import SalesforceEntities from './SalesforceEntities';
 import URLConstants from 'shared/util/url-constants';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
@@ -446,7 +446,7 @@ const AccountAndIndividuals = ({
 				</Text>
 			</div>
 
-			<SalesforceAccountsAndIndividuals
+			<SalesforceEntities
 				accountsSyncedCount={accountsCountResponse.data}
 				campaignsSyncedCount={campaignsCountResponse.data}
 				disabled={!dataSourceActive || !currentUser.isAdmin()}
