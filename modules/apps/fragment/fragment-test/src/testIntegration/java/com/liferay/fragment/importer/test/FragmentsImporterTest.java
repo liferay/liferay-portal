@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -271,6 +272,55 @@ public class FragmentsImporterTest {
 				fragmentCollection.getFragmentCollectionId());
 
 		Assert.assertFalse(fragmentEntries.isEmpty());
+	}
+
+	@Test
+	@TestInfo("LPD-109711")
+	public void testImportFragmentEntriesWithDeletedThumbnail()
+		throws Exception {
+
+		File zipFile = _generateZipFileWithFolderResources();
+
+		try {
+			_fragmentsImporter.importFragmentEntries(
+				_user.getUserId(), _group.getGroupId(), 0, zipFile,
+				FragmentsImportStrategy.OVERWRITE, false);
+
+			List<FragmentCollection> fragmentCollections =
+				_fragmentCollectionLocalService.getFragmentCollections(
+					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			FragmentCollection fragmentCollection = fragmentCollections.get(0);
+
+			List<FragmentEntry> fragmentEntries =
+				_fragmentEntryLocalService.getFragmentEntries(
+					fragmentCollection.getFragmentCollectionId());
+
+			FragmentEntry fragmentEntry = fragmentEntries.get(0);
+
+			Assert.assertNotEquals(0, fragmentEntry.getPreviewFileEntryId());
+
+			PortletFileRepositoryUtil.deletePortletFileEntry(
+				fragmentEntry.getPreviewFileEntryId());
+
+			_fragmentsImporter.importFragmentEntries(
+				_user.getUserId(), _group.getGroupId(), 0, zipFile,
+				FragmentsImportStrategy.OVERWRITE, false);
+
+			FragmentEntry reimportedFragmentEntry =
+				_fragmentEntryLocalService.getFragmentEntry(
+					fragmentEntry.getFragmentEntryId());
+
+			Assert.assertNotEquals(
+				fragmentEntry.getPreviewFileEntryId(),
+				reimportedFragmentEntry.getPreviewFileEntryId());
+			Assert.assertNotNull(
+				PortletFileRepositoryUtil.getPortletFileEntry(
+					reimportedFragmentEntry.getPreviewFileEntryId()));
+		}
+		finally {
+			FileUtil.delete(zipFile);
+		}
 	}
 
 	@Test
