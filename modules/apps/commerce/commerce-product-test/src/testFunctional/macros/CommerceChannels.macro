@@ -105,74 +105,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addOverrideDefaultProductDisplayPageTemplate(product = null, displayPageTemplateName = null) {
-		Click(locator1 = "Button#PLUS");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Click(
-			key_menuTab = "Display Page Template",
-			locator1 = "CommerceEntry#MENU_TAB");
-
-		SelectFrame.selectFrameTop();
-
-		CommerceChannels.addProduct(
-			edit = "true",
-			product = ${product});
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Click(
-			key_tabName = "Display Page Template",
-			locator1 = "CommerceEntry#OVERRIDE_DEFAULT_DISPLAY_PAGE_SIDE_PANEL_CHOOSE_BUTTON");
-
-		SelectFrame.selectFrameTop();
-
-		SelectFrame(
-			key_title = "Select Product Display Page",
-			locator1 = "IFrame#MODAL_ANY");
-
-		Click(
-			key_entryName = ${displayPageTemplateName},
-			locator1 = "ObjectAdmin#VIEW_ENTRY_NAME_ON_PAGE");
-
-		SelectFrame.selectFrameTop();
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Click(locator1 = "Button#SAVE");
-
-		Alert.viewSuccessMessage();
-
-		Click(locator1 = "Icon#CLOSE");
-	}
-
-	@summary = "Default summary"
-	macro addProduct(product = null, edit = null) {
-		if (${edit} != "true") {
-			Click(locator1 = "Button#PLUS");
-		}
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Button.click(button = "Select Product");
-
-		SelectFrame.selectFrameTop();
-
-		SelectFrame(
-			key_title = "Select Product",
-			locator1 = "IFrame#MODAL_ANY");
-
-		CommerceNavigator.searchEntry(entryName = ${product});
-
-		Click(
-			key_entryName = ${product},
-			locator1 = "CommerceEntry#CHOOSE_ENTRY_BUTTON");
-
-		SelectFrame.selectFrameTop();
-	}
-
-	@summary = "Default summary"
 	macro addShippingMethodTrackingURL(trackingURL = null) {
 		Type(
 			key_fieldLabel = "Tracking URL",
@@ -646,37 +578,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editOverrideProductDisplayPage(product = null, newPageName = null, newPageType = null, newProduct = null) {
-		Click(
-			key_value = ${product},
-			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
-
-		MenuItem.clickNoError(menuItem = "Edit");
-
-		if (isSet(newProduct)) {
-			CommerceChannels.addProduct(
-				edit = "true",
-				product = ${newProduct});
-		}
-
-		if (isSet(newPageName) && isSet(newPageType)) {
-			CommerceChannels.chooseDisplayPageFromSidePanel(
-				pageName = ${newPageName},
-				pageType = ${newPageType});
-		}
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
-
-		Click(locator1 = "CommerceEntry#MODAL_BUTTON_CLOSE");
-
-		SelectFrame.selectFrameTop();
-	}
-
-	@summary = "Default summary"
 	macro editPaymentMethod(name = null, paymentMethod = null, description = null, active = null, priority = null) {
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = ${paymentMethod},
@@ -918,25 +819,6 @@ definition {
 	@summary = "Default summary"
 	macro overrideCategoryDisplayPage(pageType = null, category = null, pageName = null) {
 		CommerceChannels.addCategory(key_card = ${category});
-
-		CommerceChannels.chooseDisplayPageFromSidePanel(
-			pageName = ${pageName},
-			pageType = ${pageType});
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
-
-		Click(locator1 = "CommerceEntry#MODAL_BUTTON_CLOSE");
-
-		SelectFrame.selectFrameTop();
-	}
-
-	@summary = "Default summary"
-	macro overrideProductDisplayPage(product = null, pageType = null, pageName = null) {
-		CommerceChannels.addProduct(product = ${product});
 
 		CommerceChannels.chooseDisplayPageFromSidePanel(
 			pageName = ${pageName},

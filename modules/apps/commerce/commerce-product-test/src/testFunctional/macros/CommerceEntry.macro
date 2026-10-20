@@ -485,53 +485,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addPriceListsFromProductSKU(skuName = null, priceLists = null) {
-		CommerceNavigator.gotoEntry(entryName = ${skuName});
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		CommerceEntry.gotoMenuTab(menuTab = "Price");
-
-		Click(locator1 = "Button#PLUS");
-
-		SelectFrameTop();
-
-		SelectFrame(
-			key_frameTitle = "Add Price",
-			locator1 = "CommerceEntry#ANY_IFRAME");
-
-		var i = 1;
-
-		for (var priceList : list ${priceLists}) {
-			var priceListName = StringUtil.extractFirst(${priceList}, ":");
-			var priceListAmount = StringUtil.extractLast(${priceList}, ":");
-
-			Select(
-				key_fieldLabel = "Price List",
-				key_index = ${i},
-				locator1 = "CommerceEntry#GENERIC_SELECT_FIELD_N",
-				value1 = ${priceListName});
-
-			Type(
-				key_index = ${i},
-				locator1 = "CommerceEntry#INPUT_INDEX",
-				value1 = ${priceListAmount});
-
-			if (${i} == 1) {
-				Button.click(button = "Add Entry");
-			}
-
-			var i = ${i} + 1;
-		}
-
-		SelectFrameTop();
-
-		Click(
-			key_text = "Add",
-			locator1 = "Button#ANY");
-	}
-
-	@summary = "Default summary"
 	macro addPricingEntry(price = null) {
 		Type(
 			locator1 = "CommerceEntry#PRICE_FIELD",

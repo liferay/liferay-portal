@@ -73,56 +73,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addAttachments(fileNames = null) {
-		Variables.assertDefined(parameterList = ${fileNames});
-
-		for (var fileName : list ${fileNames}) {
-			Click(locator1 = "CommerceEntry#ATTACHMENT_PLUS_BUTTON");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			Click(locator1 = "Button#SELECT_FILE");
-
-			SelectFrameTop();
-
-			if (isSet(alreadyUploaded)) {
-				WaitForElementPresent(locator1 = "ItemSelector#ITEM_SELECTOR_IFRAME");
-
-				SelectFrame.selectFrameNoLoading(locator1 = "ItemSelector#ITEM_SELECTOR_IFRAME");
-
-				Click(
-					key_mgDocumentTitle = ${fileName},
-					locator1 = "MediaGallery#IMAGE_TITLE");
-			}
-			else {
-				CommerceItemSelector.uploadSingleFile(uploadFileName = ${fileName});
-			}
-
-			SelectFrameTop();
-
-			if (isSet(optionValues)) {
-				var optionValue = StringUtil.extractFirst(${optionValues}, ",");
-
-				if (${optionValue} == "") {
-					var optionValue = ${optionValues};
-				}
-
-				CommerceEntry.selectAssociatedOptionsValue(optionValue = ${optionValue});
-
-				var optionValues = StringUtil.replaceFirst(${optionValues}, "${optionValue},", "");
-			}
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			CommerceEntry.publishProductImage();
-
-			Click(locator1 = "Icon#CLOSE");
-
-			SelectFrame(value1 = "relative=top");
-		}
-	}
-
-	@summary = "Default summary"
 	macro addDiagramImages(imageTitles = null, imageType = null, productType = null) {
 		for (var imageTitle : list ${imageTitles}) {
 			echo("imageTitle is equal to ${imageTitle}");

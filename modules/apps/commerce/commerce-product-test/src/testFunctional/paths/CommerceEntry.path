@@ -156,11 +156,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CHOOSE_ENTRY_BUTTON</td>
-	<td>//tr/td[contains(.,'${key_entryName}')]//..//button[contains(.,'Choose')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ADD_TAG_BUTTON</td>
 	<td>//div/button[@title='Add Tags']</td>
 	<td></td>
@@ -378,11 +373,6 @@
 <tr>
 	<td>OVERRIDE_DEFAULT_DISPLAY_PAGE_LAYOUT</td>
 	<td>//div[contains(@class,'table')]//div[contains(text(),'${key_layout}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>OVERRIDE_DEFAULT_DISPLAY_PAGE_SIDE_PANEL_CHOOSE_BUTTON</td>
-	<td>//*[contains(.,'${key_tabName}')]//..//button[contains(.,'Choose')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1429,16 +1419,6 @@
 <tr>
 	<td>OPTION_CATEGORY</td>
 	<td>//div[contains(@class,'form-group')]/label[contains(.,'Category')]/..//span[contains(@class,'label label-secondary')]/span[contains(.,'${key_category}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>GENERIC_SELECT_FIELD_N</td>
-	<td>xpath=(//div[label[normalize-space(text())='${key_fieldLabel}']]/select)[${key_index}]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>INPUT_INDEX</td>
-	<td>xpath=(//input[contains(@class,'form-control')])[${key_index}]</td>
 	<td></td>
 </tr>
 <tr>
