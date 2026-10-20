@@ -138,9 +138,6 @@ public class CompletePaymentAuthorizeNetServletTest {
 	private MockHttpServletResponse _get(boolean cancel, String redirect)
 		throws Exception {
 
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
 		Mockito.when(
 			_portal.getPortalURL(Mockito.any(HttpServletRequest.class))
 		).thenReturn(
@@ -150,11 +147,14 @@ public class CompletePaymentAuthorizeNetServletTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		mockHttpServletRequest.setParameter("redirect", redirect);
-
 		if (cancel) {
 			mockHttpServletRequest.setParameter("cancel", "true");
 		}
+
+		mockHttpServletRequest.setParameter("redirect", redirect);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
 
 		_completePaymentAuthorizeNetServlet.doGet(
 			mockHttpServletRequest, mockHttpServletResponse);
@@ -237,24 +237,23 @@ public class CompletePaymentAuthorizeNetServletTest {
 			JSONObject jsonObject, String signatureKey)
 		throws Exception {
 
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
 		String json = jsonObject.toString();
 
 		byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-
-		mockHttpServletRequest.setContent(bytes);
 
 		String signature = ReflectionTestUtil.invoke(
 			_completePaymentAuthorizeNetServlet, "_generateHMAC",
 			new Class<?>[] {byte[].class, String.class}, bytes, signatureKey);
 
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
 		mockHttpServletRequest.addHeader(
 			"X-ANET-Signature", "sha512=" + signature);
+		mockHttpServletRequest.setContent(bytes);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
 
 		_completePaymentAuthorizeNetServlet.doPost(
 			mockHttpServletRequest, mockHttpServletResponse);

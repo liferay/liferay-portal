@@ -76,8 +76,6 @@ public class CompletePaymentAuthorizeNetServletTest {
 	public void setUp() throws Exception {
 		_originalCommerceGroup = CommerceGroupThreadLocal.get();
 
-		_user = UserTestUtil.addUser();
-
 		_group = GroupTestUtil.addGroup();
 
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
@@ -85,6 +83,8 @@ public class CompletePaymentAuthorizeNetServletTest {
 
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			_group.getGroupId(), _commerceCurrency.getCode());
+
+		_user = UserTestUtil.addUser();
 
 		_commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
 			_user.getUserId(), _commerceChannel.getGroupId(),
@@ -145,22 +145,25 @@ public class CompletePaymentAuthorizeNetServletTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest("GET", "");
 
-		mockHttpServletRequest.addParameter(
-			"groupId", String.valueOf(_commerceOrder.getGroupId()));
-		mockHttpServletRequest.addParameter("orderType", "normal");
-
 		String redirect =
 			_portal.getPortalURL(mockHttpServletRequest) + "/web/guest";
 
+		mockHttpServletRequest.addParameter(
+			"groupId", String.valueOf(_commerceOrder.getGroupId()));
 		mockHttpServletRequest.addParameter("redirect", redirect);
-
 		mockHttpServletRequest.addParameter("uuid", _commerceOrder.getUuid());
 		mockHttpServletRequest.setAttribute(WebKeys.USER, _user);
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
-		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.commerce.payment.method.authorize.net.internal." +
+					"servlet.CompletePaymentAuthorizeNetServlet",
+				LoggerTestUtil.OFF)) {
+
+			_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+		}
 
 		Assert.assertEquals(
 			redirect, mockHttpServletResponse.getRedirectedUrl());
@@ -178,8 +181,6 @@ public class CompletePaymentAuthorizeNetServletTest {
 
 	@Test
 	public void testDoPost() throws Exception {
-		String signatureKey = RandomTestUtil.randomString();
-
 		Settings settings = FallbackKeysSettingsUtil.getSettings(
 			new GroupServiceSettingsLocator(
 				_commerceChannel.getGroupId(),
@@ -187,6 +188,8 @@ public class CompletePaymentAuthorizeNetServletTest {
 
 		ModifiableSettings modifiableSettings =
 			settings.getModifiableSettings();
+
+		String signatureKey = RandomTestUtil.randomString();
 
 		modifiableSettings.setValue("signatureKey", signatureKey);
 
@@ -208,20 +211,18 @@ public class CompletePaymentAuthorizeNetServletTest {
 
 		byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
 
-		MockHttpServletResponse mockHttpServletResponse = null;
-
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.commerce.payment.method.authorize.net.internal." +
 					"servlet.CompletePaymentAuthorizeNetServlet",
 				LoggerTestUtil.OFF)) {
 
-			mockHttpServletResponse = _post(
+			MockHttpServletResponse mockHttpServletResponse = _post(
 				bytes, RandomTestUtil.randomString());
-		}
 
-		Assert.assertEquals(
-			HttpServletResponse.SC_UNAUTHORIZED,
-			mockHttpServletResponse.getStatus());
+			Assert.assertEquals(
+				HttpServletResponse.SC_UNAUTHORIZED,
+				mockHttpServletResponse.getStatus());
+		}
 
 		CommerceOrder commerceOrder =
 			_commerceOrderLocalService.getCommerceOrder(
@@ -231,7 +232,8 @@ public class CompletePaymentAuthorizeNetServletTest {
 			_commerceOrder.getPaymentStatus(),
 			commerceOrder.getPaymentStatus());
 
-		mockHttpServletResponse = _post(bytes, signatureKey);
+		MockHttpServletResponse mockHttpServletResponse = _post(
+			bytes, signatureKey);
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
@@ -251,11 +253,6 @@ public class CompletePaymentAuthorizeNetServletTest {
 	private MockHttpServletResponse _post(byte[] bytes, String signatureKey)
 		throws Exception {
 
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest("POST", "");
-
-		mockHttpServletRequest.setContent(bytes);
-
 		Mac mac = Mac.getInstance("HmacSHA512");
 
 		mac.init(
@@ -263,9 +260,13 @@ public class CompletePaymentAuthorizeNetServletTest {
 				signatureKey.getBytes(StandardCharsets.UTF_8),
 				mac.getAlgorithm()));
 
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest("POST", "");
+
 		mockHttpServletRequest.addHeader(
 			"X-ANET-Signature",
 			"sha512=" + StringUtil.bytesToHexString(mac.doFinal(bytes)));
+		mockHttpServletRequest.setContent(bytes);
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
