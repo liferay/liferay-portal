@@ -63,6 +63,7 @@ import {JSONWebServicesAnnouncementsEntryApiHelper} from './json-web-services/JS
 import {JSONWebServicesAssetDisplayPageEntryApiHelper} from './json-web-services/JSONWebServicesAssetDisplayPageEntryApiHelper';
 import {JSONWebServicesAssetListEntryApiHelper} from './json-web-services/JSONWebServicesAssetListEntryApiHelper';
 import {JSONWebServicesAudiencesEntryApiHelper} from './json-web-services/JSONWebServicesAudiencesEntryApiHelper';
+import {JSONWebServicesBlogsApiHelper} from './json-web-services/JSONWebServicesBlogsApiHelper';
 import {JSONWebServicesCalendarApiHelper} from './json-web-services/JSONWebServicesCalendarApiHelper';
 import {JSONWebServicesCalendarResourceApiHelper} from './json-web-services/JSONWebServicesCalendarResourceApiHelper';
 import {JSONWebServicesClassNameApiHelper} from './json-web-services/JSONWebServicesClassNameApiHelper';
@@ -152,6 +153,7 @@ export class ApiHelpers {
 	readonly jsonWebServicesAssetDisplayPageEntry: JSONWebServicesAssetDisplayPageEntryApiHelper;
 	readonly jsonWebServicesAssetListEntry: JSONWebServicesAssetListEntryApiHelper;
 	readonly jsonWebServicesAudiencesEntry: JSONWebServicesAudiencesEntryApiHelper;
+	readonly jsonWebServicesBlogs: JSONWebServicesBlogsApiHelper;
 	readonly jsonWebServicesCalendar: JSONWebServicesCalendarApiHelper;
 	readonly jsonWebServicesCalendarResource: JSONWebServicesCalendarResourceApiHelper;
 	readonly jsonWebServicesClassName: JSONWebServicesClassNameApiHelper;
@@ -257,6 +259,7 @@ export class ApiHelpers {
 			new JSONWebServicesAssetListEntryApiHelper(this);
 		this.jsonWebServicesAudiencesEntry =
 			new JSONWebServicesAudiencesEntryApiHelper(this);
+		this.jsonWebServicesBlogs = new JSONWebServicesBlogsApiHelper(this);
 		this.jsonWebServicesCalendar = new JSONWebServicesCalendarApiHelper(
 			this
 		);
