@@ -10,8 +10,6 @@ import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
-import com.liferay.portal.kernel.settings.SettingsDescriptor;
-import com.liferay.portal.kernel.settings.SettingsLocatorHelperUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -21,6 +19,7 @@ import com.liferay.portal.security.sso.token.constants.TokenConfigurationKeys;
 import com.liferay.portal.security.sso.token.constants.TokenConstants;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
 
 /**
  * @author Christopher Kian
@@ -43,15 +42,12 @@ public class TokenConfigurationUpgradeProcess extends UpgradeProcess {
 		ModifiableSettings modifiableSettings =
 			settings.getModifiableSettings();
 
-		SettingsDescriptor settingsDescriptor =
-			SettingsLocatorHelperUtil.getSettingsDescriptor(settingsId);
+		Enumeration<String> enumeration = dictionary.keys();
 
-		for (String name : settingsDescriptor.getAllKeys()) {
+		while (enumeration.hasMoreElements()) {
+			String name = enumeration.nextElement();
+
 			String value = dictionary.get(name);
-
-			if (value == null) {
-				continue;
-			}
 
 			String oldValue = settings.getValue(name, null);
 
