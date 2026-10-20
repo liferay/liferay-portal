@@ -7,12 +7,15 @@ package com.liferay.commerce.payment.internal.engine;
 
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
+import com.liferay.commerce.exception.CommerceOrderPaymentMethodException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.payment.engine.CommercePaymentEngine;
 import com.liferay.commerce.payment.helper.CommercePaymentHelper;
+import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
+import com.liferay.commerce.payment.integration.CommercePaymentIntegrationRegistry;
 import com.liferay.commerce.payment.method.CommercePaymentMethod;
 import com.liferay.commerce.payment.method.CommercePaymentMethodRegistry;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
@@ -158,6 +161,12 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 
 		if ((commercePaymentMethod == null) ||
 			!commercePaymentMethod.isCompleteEnabled()) {
+
+			if (_hasCommercePaymentMethodGroupRels(commerceOrder)) {
+				throw new CommerceOrderPaymentMethodException(
+					"Unable to complete payment for commerce order " +
+						commerceOrderId);
+			}
 
 			_completeOrderWithoutPaymentMethod(
 				commerceOrderId, httpServletRequest);
@@ -555,6 +564,99 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 		return commercePaymentMethods;
 	}
 
+	private boolean _hasCommercePaymentMethodGroupRels(
+			CommerceOrder commerceOrder)
+		throws Exception {
+
+		CommerceAddress commerceAddress = commerceOrder.getBillingAddress();
+
+		if (commerceAddress == null) {
+			commerceAddress = commerceOrder.getShippingAddress();
+		}
+
+		List<CommercePaymentMethodGroupRel> commercePaymentMethodGroupRels =
+			null;
+
+		if (commerceAddress != null) {
+			commercePaymentMethodGroupRels =
+				_commercePaymentMethodGroupRelLocalService.
+					getCommercePaymentMethodGroupRels(
+						commerceOrder.getGroupId(),
+						commerceAddress.getCountryId(), true);
+		}
+		else {
+			commercePaymentMethodGroupRels =
+				_commercePaymentMethodGroupRelLocalService.
+					getCommercePaymentMethodGroupRels(
+						commerceOrder.getGroupId(), true);
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		for (CommercePaymentMethodGroupRel commercePaymentMethodGroupRel :
+				commercePaymentMethodGroupRels) {
+
+			List<CommercePaymentMethodGroupRelQualifier>
+				commercePaymentMethodGroupRelQualifiers =
+					_commercePaymentMethodGroupRelQualifierLocalService.
+						getCommercePaymentMethodGroupRelQualifiers(
+							CommerceOrderType.class.getName(),
+							commercePaymentMethodGroupRel.
+								getCommercePaymentMethodGroupRelId());
+
+			if ((commerceOrder.getCommerceOrderTypeId() > 0) &&
+				ListUtil.isNotEmpty(commercePaymentMethodGroupRelQualifiers) &&
+				!ListUtil.exists(
+					commercePaymentMethodGroupRelQualifiers,
+					commercePaymentMethodGroupRelQualifier ->
+						commercePaymentMethodGroupRelQualifier.getClassPK() ==
+							commerceOrder.getCommerceOrderTypeId())) {
+
+				continue;
+			}
+
+			CommercePaymentIntegration commercePaymentIntegration =
+				_commercePaymentIntegrationRegistry.
+					getCommercePaymentIntegration(
+						commercePaymentMethodGroupRel.
+							getPaymentIntegrationKey());
+			CommercePaymentMethod commercePaymentMethod =
+				_commercePaymentMethodRegistry.getCommercePaymentMethod(
+					commercePaymentMethodGroupRel.getPaymentIntegrationKey());
+
+			if (((commercePaymentMethod == null) &&
+				 (commercePaymentIntegration == null)) ||
+				!permissionChecker.hasPermission(
+					commercePaymentMethodGroupRel.getGroupId(),
+					CommercePaymentMethodGroupRel.class.getName(),
+					commercePaymentMethodGroupRel.
+						getCommercePaymentMethodGroupRelId(),
+					ActionKeys.VIEW)) {
+
+				continue;
+			}
+
+			if (commercePaymentMethod == null) {
+				if (!commerceOrder.isSubscriptionOrder()) {
+					return true;
+				}
+
+				continue;
+			}
+
+			if ((commerceOrder.isSubscriptionOrder() &&
+				 commercePaymentMethod.isProcessRecurringEnabled()) ||
+				(!commerceOrder.isSubscriptionOrder() &&
+				 commercePaymentMethod.isProcessPaymentEnabled())) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	@Reference
 	private CommerceOrderEngine _commerceOrderEngine;
 
@@ -566,6 +668,10 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 
 	@Reference
 	private CommercePaymentHelper _commercePaymentHelper;
+
+	@Reference
+	private CommercePaymentIntegrationRegistry
+		_commercePaymentIntegrationRegistry;
 
 	@Reference
 	private CommercePaymentMethodGroupRelLocalService

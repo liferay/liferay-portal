@@ -757,7 +757,7 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 			getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
 
 		_checkManageCommerceOrderPricesPermission(
-			commerceOrder, commerceOrder.getShippingAmount(),
+			commerceOrder, shippingAmount,
 			commerceOrder.getShippingWithTaxAmount(), subtotal,
 			commerceOrder.getSubtotalWithTaxAmount(),
 			commerceOrder.getTaxAmount(), total,
