@@ -18,6 +18,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -32,6 +33,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowHandler;
+import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -2296,8 +2299,27 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		JournalArticle article = journalArticlePersistence.findByG_A_V(
 			groupId, articleId, version);
 
-		_journalArticleModelResourcePermission.check(
-			getPermissionChecker(), article, ActionKeys.UPDATE);
+		if (status == WorkflowConstants.STATUS_EXPIRED) {
+			_journalArticleModelResourcePermission.check(
+				getPermissionChecker(), article, ActionKeys.EXPIRE);
+		}
+		else {
+			_journalArticleModelResourcePermission.check(
+				getPermissionChecker(), article, ActionKeys.UPDATE);
+
+			WorkflowHandler<?> workflowHandler =
+				WorkflowHandlerRegistryUtil.getWorkflowHandler(
+					JournalArticle.class.getName());
+
+			WorkflowDefinitionLink workflowDefinitionLink =
+				workflowHandler.getWorkflowDefinitionLink(
+					article.getCompanyId(), article.getGroupId(),
+					article.getId());
+
+			if (workflowDefinitionLink != null) {
+				throw new PrincipalException();
+			}
+		}
 
 		return journalArticleLocalService.updateStatus(
 			getUserId(), article, status, articleURL, serviceContext,
