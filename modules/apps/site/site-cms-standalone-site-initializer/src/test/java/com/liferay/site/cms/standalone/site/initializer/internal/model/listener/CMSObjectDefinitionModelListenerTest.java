@@ -35,50 +35,65 @@ public class CMSObjectDefinitionModelListenerTest {
 
 	@Test
 	@TestInfo("LPD-110251")
-	public void testOnBeforeCreateInCMSFoldersWithDepotScope() {
-		_testOnBeforeCreateInCMSFoldersWithDepotScope(
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
-		_testOnBeforeCreateInCMSFoldersWithDepotScope(
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES);
-		_testOnBeforeCreateInCMSFoldersWithDepotScope(
-			ObjectFolderConstants.
-				EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS);
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeCreateOfEmptyObjectDefinitionInDefaultFolder() {
-		_cmsObjectDefinitionModelListener.onBeforeCreate(
-			_mockObjectDefinition(
-				RandomTestUtil.randomString(), 1,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_EMPTY, false));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeCreateOfEmptyObjectDefinitionWhenScopeIsNotDepot() {
-		_assertScopeFailure(
+	public void testOnBeforeCreate() {
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			ObjectDefinitionScopeException.class.getName() +
+				": Custom object definitions must have scope \"depot\"",
+			() -> _cmsObjectDefinitionModelListener.onBeforeCreate(
+				_mockObjectDefinition(
+					ObjectFolderConstants.
+						EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+					1, ObjectDefinitionConstants.SCOPE_SITE,
+					WorkflowConstants.STATUS_DRAFT, false)));
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			ObjectDefinitionScopeException.class.getName() +
+				": Custom object definitions must have scope \"depot\"",
 			() -> _cmsObjectDefinitionModelListener.onBeforeCreate(
 				_mockObjectDefinition(
 					RandomTestUtil.randomString(), 1,
 					ObjectDefinitionConstants.SCOPE_SITE,
 					WorkflowConstants.STATUS_EMPTY, false)));
-	}
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			ObjectDefinitionObjectFolderIdException.class.getName() +
+				": Custom object definitions must be in a CMS object folder",
+			() -> _cmsObjectDefinitionModelListener.onBeforeCreate(
+				_mockObjectDefinition(
+					RandomTestUtil.randomString(), 1,
+					ObjectDefinitionConstants.SCOPE_DEPOT,
+					WorkflowConstants.STATUS_DRAFT, false)));
 
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeCreateOfSystemObjectDefinition() {
+		_cmsObjectDefinitionModelListener.onBeforeCreate(
+			_mockObjectDefinition(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+				1, ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_DRAFT, false));
+		_cmsObjectDefinitionModelListener.onBeforeCreate(
+			_mockObjectDefinition(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_DRAFT, false));
+		_cmsObjectDefinitionModelListener.onBeforeCreate(
+			_mockObjectDefinition(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
+				1, ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_DRAFT, false));
 
-		// System flag
+		_cmsObjectDefinitionModelListener.onBeforeCreate(
+			_mockObjectDefinition(
+				RandomTestUtil.randomString(), 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_EMPTY, false));
 
 		_cmsObjectDefinitionModelListener.onBeforeCreate(
 			_mockObjectDefinition(
 				RandomTestUtil.randomString(), 1,
 				ObjectDefinitionConstants.SCOPE_SITE,
 				WorkflowConstants.STATUS_APPROVED, true));
-
-		// External reference code prefix
 
 		ObjectDefinition objectDefinition = _mockObjectDefinition(
 			RandomTestUtil.randomString(), 1,
@@ -98,123 +113,14 @@ public class CMSObjectDefinitionModelListenerTest {
 
 	@Test
 	@TestInfo("LPD-110251")
-	public void testOnBeforeCreateWhenFolderIsNotCMS() {
-		_assertObjectFolderFailure(
-			() -> _cmsObjectDefinitionModelListener.onBeforeCreate(
-				_mockObjectDefinition(
-					RandomTestUtil.randomString(), 1,
-					ObjectDefinitionConstants.SCOPE_DEPOT,
-					WorkflowConstants.STATUS_DRAFT, false)));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeCreateWhenScopeIsNotDepot() {
-		_assertScopeFailure(
-			() -> _cmsObjectDefinitionModelListener.onBeforeCreate(
-				_mockObjectDefinition(
-					ObjectFolderConstants.
-						EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-					1, ObjectDefinitionConstants.SCOPE_SITE,
-					WorkflowConstants.STATUS_DRAFT, false)));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeUpdateFillingEmptyObjectDefinitionInCMSFolder() {
-		_cmsObjectDefinitionModelListener.onBeforeUpdate(
-			_mockObjectDefinition(
-				RandomTestUtil.randomString(), 1,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_EMPTY, false),
-			_mockObjectDefinition(
-				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, 2,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_DRAFT, false));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeUpdateFillingEmptyObjectDefinitionInDefaultFolder() {
+	public void testOnBeforeUpdate() {
 		String objectFolderExternalReferenceCode =
 			RandomTestUtil.randomString();
 
-		_assertObjectFolderFailure(
-			() -> _cmsObjectDefinitionModelListener.onBeforeUpdate(
-				_mockObjectDefinition(
-					objectFolderExternalReferenceCode, 1,
-					ObjectDefinitionConstants.SCOPE_DEPOT,
-					WorkflowConstants.STATUS_EMPTY, false),
-				_mockObjectDefinition(
-					objectFolderExternalReferenceCode, 1,
-					ObjectDefinitionConstants.SCOPE_DEPOT,
-					WorkflowConstants.STATUS_DRAFT, false)));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeUpdateKeepingEmptyObjectDefinitionInDefaultFolder() {
-		String objectFolderExternalReferenceCode =
-			RandomTestUtil.randomString();
-
-		_cmsObjectDefinitionModelListener.onBeforeUpdate(
-			_mockObjectDefinition(
-				objectFolderExternalReferenceCode, 1,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_EMPTY, false),
-			_mockObjectDefinition(
-				objectFolderExternalReferenceCode, 1,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_EMPTY, false));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeUpdateMovingToCMSFolders() {
-		_testOnBeforeUpdateMovingToCMSFolders(
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
-		_testOnBeforeUpdateMovingToCMSFolders(
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES);
-		_testOnBeforeUpdateMovingToCMSFolders(
-			ObjectFolderConstants.
-				EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS);
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeUpdateOfSystemObjectDefinition() {
-		_cmsObjectDefinitionModelListener.onBeforeUpdate(
-			_mockObjectDefinition(
-				RandomTestUtil.randomString(), 1,
-				ObjectDefinitionConstants.SCOPE_SITE,
-				WorkflowConstants.STATUS_APPROVED, true),
-			_mockObjectDefinition(
-				RandomTestUtil.randomString(), 2,
-				ObjectDefinitionConstants.SCOPE_COMPANY,
-				WorkflowConstants.STATUS_APPROVED, true));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeUpdateWhenFolderAndScopeAreUnchanged() {
-		String objectFolderExternalReferenceCode =
-			RandomTestUtil.randomString();
-
-		_cmsObjectDefinitionModelListener.onBeforeUpdate(
-			_mockObjectDefinition(
-				objectFolderExternalReferenceCode, 1,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_DRAFT, false),
-			_mockObjectDefinition(
-				objectFolderExternalReferenceCode, 1,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_APPROVED, false));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeUpdateWhenFolderIsNotCMS() {
-		_assertObjectFolderFailure(
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			ObjectDefinitionObjectFolderIdException.class.getName() +
+				": Custom object definitions must be in a CMS object folder",
 			() -> _cmsObjectDefinitionModelListener.onBeforeUpdate(
 				_mockObjectDefinition(
 					ObjectFolderConstants.
@@ -225,12 +131,23 @@ public class CMSObjectDefinitionModelListenerTest {
 					RandomTestUtil.randomString(), 2,
 					ObjectDefinitionConstants.SCOPE_DEPOT,
 					WorkflowConstants.STATUS_APPROVED, false)));
-	}
-
-	@Test
-	@TestInfo("LPD-110251")
-	public void testOnBeforeUpdateWhenScopeIsNotDepot() {
-		_assertScopeFailure(
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			ObjectDefinitionObjectFolderIdException.class.getName() +
+				": Custom object definitions must be in a CMS object folder",
+			() -> _cmsObjectDefinitionModelListener.onBeforeUpdate(
+				_mockObjectDefinition(
+					objectFolderExternalReferenceCode, 1,
+					ObjectDefinitionConstants.SCOPE_DEPOT,
+					WorkflowConstants.STATUS_EMPTY, false),
+				_mockObjectDefinition(
+					objectFolderExternalReferenceCode, 1,
+					ObjectDefinitionConstants.SCOPE_DEPOT,
+					WorkflowConstants.STATUS_DRAFT, false)));
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			ObjectDefinitionScopeException.class.getName() +
+				": Custom object definitions must have scope \"depot\"",
 			() -> _cmsObjectDefinitionModelListener.onBeforeUpdate(
 				_mockObjectDefinition(
 					ObjectFolderConstants.
@@ -242,22 +159,74 @@ public class CMSObjectDefinitionModelListenerTest {
 						EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
 					1, ObjectDefinitionConstants.SCOPE_COMPANY,
 					WorkflowConstants.STATUS_APPROVED, false)));
-	}
 
-	private void _assertObjectFolderFailure(Runnable runnable) {
-		AssertUtils.assertFailure(
-			ModelListenerException.class,
-			ObjectDefinitionObjectFolderIdException.class.getName() +
-				": Custom object definitions must be in a CMS object folder",
-			runnable::run);
-	}
+		_cmsObjectDefinitionModelListener.onBeforeUpdate(
+			_mockObjectDefinition(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_APPROVED, false),
+			_mockObjectDefinition(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+				2, ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_APPROVED, false));
+		_cmsObjectDefinitionModelListener.onBeforeUpdate(
+			_mockObjectDefinition(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_APPROVED, false),
+			_mockObjectDefinition(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, 2,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_APPROVED, false));
+		_cmsObjectDefinitionModelListener.onBeforeUpdate(
+			_mockObjectDefinition(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_APPROVED, false),
+			_mockObjectDefinition(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
+				2, ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_APPROVED, false));
 
-	private void _assertScopeFailure(Runnable runnable) {
-		AssertUtils.assertFailure(
-			ModelListenerException.class,
-			ObjectDefinitionScopeException.class.getName() +
-				": Custom object definitions must have scope \"depot\"",
-			runnable::run);
+		_cmsObjectDefinitionModelListener.onBeforeUpdate(
+			_mockObjectDefinition(
+				RandomTestUtil.randomString(), 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_EMPTY, false),
+			_mockObjectDefinition(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, 2,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_DRAFT, false));
+
+		_cmsObjectDefinitionModelListener.onBeforeUpdate(
+			_mockObjectDefinition(
+				objectFolderExternalReferenceCode, 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_EMPTY, false),
+			_mockObjectDefinition(
+				objectFolderExternalReferenceCode, 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_EMPTY, false));
+		_cmsObjectDefinitionModelListener.onBeforeUpdate(
+			_mockObjectDefinition(
+				objectFolderExternalReferenceCode, 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_DRAFT, false),
+			_mockObjectDefinition(
+				objectFolderExternalReferenceCode, 1,
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				WorkflowConstants.STATUS_APPROVED, false));
+		_cmsObjectDefinitionModelListener.onBeforeUpdate(
+			_mockObjectDefinition(
+				RandomTestUtil.randomString(), 1,
+				ObjectDefinitionConstants.SCOPE_SITE,
+				WorkflowConstants.STATUS_APPROVED, true),
+			_mockObjectDefinition(
+				RandomTestUtil.randomString(), 2,
+				ObjectDefinitionConstants.SCOPE_COMPANY,
+				WorkflowConstants.STATUS_APPROVED, true));
 	}
 
 	private ObjectDefinition _mockObjectDefinition(
@@ -304,30 +273,6 @@ public class CMSObjectDefinitionModelListenerTest {
 		);
 
 		return objectDefinition;
-	}
-
-	private void _testOnBeforeCreateInCMSFoldersWithDepotScope(
-		String objectFolderExternalReferenceCode) {
-
-		_cmsObjectDefinitionModelListener.onBeforeCreate(
-			_mockObjectDefinition(
-				objectFolderExternalReferenceCode, 1,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_DRAFT, false));
-	}
-
-	private void _testOnBeforeUpdateMovingToCMSFolders(
-		String objectFolderExternalReferenceCode) {
-
-		_cmsObjectDefinitionModelListener.onBeforeUpdate(
-			_mockObjectDefinition(
-				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, 1,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_APPROVED, false),
-			_mockObjectDefinition(
-				objectFolderExternalReferenceCode, 2,
-				ObjectDefinitionConstants.SCOPE_DEPOT,
-				WorkflowConstants.STATUS_APPROVED, false));
 	}
 
 	private final CMSObjectDefinitionModelListener
