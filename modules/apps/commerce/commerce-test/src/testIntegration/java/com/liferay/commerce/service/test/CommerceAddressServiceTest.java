@@ -52,6 +52,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -136,157 +138,6 @@ public class CommerceAddressServiceTest {
 	}
 
 	@Test
-	public void testCommerceOrderCommerceAddress() throws Exception {
-		User ownerUser = UserTestUtil.addUser(TestPropsValues.getCompanyId());
-		User user = UserTestUtil.addUser(TestPropsValues.getCompanyId());
-
-		AccountEntry accountEntry =
-			CommerceAccountTestUtil.addBusinessAccountEntry(
-				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString() + "@liferay.com",
-				RandomTestUtil.randomString(),
-				new long[] {ownerUser.getUserId(), user.getUserId()}, null,
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId()));
-
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		RoleTestUtil.addResourcePermission(
-			role, CommerceOrderConstants.RESOURCE_NAME,
-			ResourceConstants.SCOPE_GROUP,
-			String.valueOf(accountEntry.getAccountEntryGroupId()),
-			CommerceOrderActionKeys.VIEW_COMMERCE_ORDERS);
-
-		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
-
-		CommerceChannel commerceChannel = _addCommerceChannel();
-
-		CommerceOrder commerceOrder =
-			_commerceOrderLocalService.addCommerceOrder(
-				ownerUser.getUserId(), commerceChannel.getGroupId(),
-				accountEntry.getAccountEntryId(),
-				commerceChannel.getCommerceCurrencyCode(), 0);
-
-		CommerceAddress commerceAddress = null;
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				ownerUser)) {
-
-			commerceAddress = _addCommerceAddress(
-				CommerceOrder.class.getName(),
-				commerceOrder.getCommerceOrderId(), _country.getCountryId(),
-				CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING);
-
-			_updateCommerceAddress(
-				RandomTestUtil.randomString(), commerceAddress);
-		}
-
-		commerceOrder.setOrderStatus(
-			CommerceOrderConstants.ORDER_STATUS_PENDING);
-		commerceOrder.setStatus(WorkflowConstants.STATUS_APPROVED);
-
-		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user)) {
-
-			_commerceAddressService.getCommerceAddress(
-				commerceAddress.getCommerceAddressId());
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user)) {
-
-			_updateCommerceAddress(
-				RandomTestUtil.randomString(), commerceAddress);
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-			_assertCommerceOrderPermission(commerceOrder, principalException);
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user)) {
-
-			_commerceAddressService.deleteCommerceAddress(
-				commerceAddress.getCommerceAddressId());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-			_assertCommerceOrderPermission(commerceOrder, principalException);
-		}
-	}
-
-	@Test
-	public void testContactCommerceAddress() throws Exception {
-		User ownerUser = UserTestUtil.addUser(TestPropsValues.getCompanyId());
-
-		Address address = _addressLocalService.addAddress(
-			null, ownerUser.getUserId(), Contact.class.getName(),
-			ownerUser.getContactId(), _country.getCountryId(),
-			_listTypeLocalService.getListTypeId(
-				ownerUser.getCompanyId(), "personal",
-				ListTypeConstants.CONTACT_ADDRESS),
-			0, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			false, RandomTestUtil.randomString(), false,
-			RandomTestUtil.randomString(), null, null, null,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			ServiceContextTestUtil.getServiceContext());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				ownerUser)) {
-
-			_commerceAddressService.getCommerceAddress(address.getAddressId());
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
-
-			_commerceAddressService.getCommerceAddress(address.getAddressId());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-			_assertUserPermission(ownerUser, principalException);
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
-
-			_commerceAddressService.getCommerceAddressesByCompanyId(
-				TestPropsValues.getCompanyId(), Contact.class.getName(),
-				ownerUser.getContactId());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-			_assertUserPermission(ownerUser, principalException);
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
-
-			_commerceAddressService.deleteCommerceAddress(
-				address.getAddressId());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-			_assertUserPermission(ownerUser, principalException);
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				ownerUser)) {
-
-			_commerceAddressService.deleteCommerceAddress(
-				address.getAddressId());
-		}
-	}
-
-	@Test
 	public void testDeleteCommerceAddress() throws Exception {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
@@ -324,6 +175,57 @@ public class CommerceAddressServiceTest {
 			Assert.assertEquals(
 				accountEntry.getAccountEntryId(),
 				principalException.resourceId);
+		}
+
+		User ownerUser = UserTestUtil.addUser(TestPropsValues.getCompanyId());
+		User memberUser = UserTestUtil.addUser(TestPropsValues.getCompanyId());
+
+		CommerceOrder commerceOrder = _addCommerceOrder(ownerUser, memberUser);
+
+		CommerceAddress commerceOrderCommerceAddress = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				ownerUser)) {
+
+			commerceOrderCommerceAddress = _addCommerceAddress(
+				CommerceOrder.class.getName(),
+				commerceOrder.getCommerceOrderId(), _country.getCountryId(),
+				CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING);
+		}
+
+		_placeCommerceOrder(commerceOrder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				memberUser)) {
+
+			_commerceAddressService.deleteCommerceAddress(
+				commerceOrderCommerceAddress.getCommerceAddressId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertCommerceOrderPermission(commerceOrder, principalException);
+		}
+
+		Address address = _addAddress(ownerUser);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			_commerceAddressService.deleteCommerceAddress(
+				address.getAddressId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertUserPermission(ownerUser, principalException);
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				ownerUser)) {
+
+			_commerceAddressService.deleteCommerceAddress(
+				address.getAddressId());
 		}
 	}
 
@@ -521,6 +423,87 @@ public class CommerceAddressServiceTest {
 			_commerceAddressService.getCommerceAddress(
 				guestCommerceAddress.getCommerceAddressId());
 		}
+
+		User ownerUser = UserTestUtil.addUser(TestPropsValues.getCompanyId());
+		User memberUser = UserTestUtil.addUser(TestPropsValues.getCompanyId());
+
+		CommerceOrder commerceOrder = _addCommerceOrder(ownerUser, memberUser);
+
+		CommerceAddress commerceOrderCommerceAddress = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				ownerUser)) {
+
+			commerceOrderCommerceAddress = _addCommerceAddress(
+				CommerceOrder.class.getName(),
+				commerceOrder.getCommerceOrderId(), _country.getCountryId(),
+				CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING);
+		}
+
+		_placeCommerceOrder(commerceOrder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				memberUser)) {
+
+			_commerceAddressService.getCommerceAddress(
+				commerceOrderCommerceAddress.getCommerceAddressId());
+		}
+
+		Address address = _addAddress(ownerUser);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				ownerUser)) {
+
+			_commerceAddressService.getCommerceAddress(address.getAddressId());
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			_commerceAddressService.getCommerceAddress(address.getAddressId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertUserPermission(ownerUser, principalException);
+		}
+	}
+
+	@Test
+	public void testGetCommerceAddressesByCompanyId() throws Exception {
+		User user = UserTestUtil.addUser(TestPropsValues.getCompanyId());
+
+		Address address = _addAddress(user);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			_commerceAddressService.getCommerceAddressesByCompanyId(
+				TestPropsValues.getCompanyId(), Contact.class.getName(),
+				user.getContactId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertUserPermission(user, principalException);
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			List<CommerceAddress> commerceAddresses =
+				_commerceAddressService.getCommerceAddressesByCompanyId(
+					TestPropsValues.getCompanyId(), Contact.class.getName(),
+					user.getContactId());
+
+			Assert.assertEquals(
+				commerceAddresses.toString(), 1, commerceAddresses.size());
+
+			CommerceAddress commerceAddress = commerceAddresses.get(0);
+
+			Assert.assertEquals(
+				address.getAddressId(), commerceAddress.getCommerceAddressId());
+		}
 	}
 
 	@Test
@@ -623,6 +606,53 @@ public class CommerceAddressServiceTest {
 			_updateCommerceAddress(
 				RandomTestUtil.randomString(), commerceAddress);
 		}
+
+		User ownerUser = UserTestUtil.addUser(TestPropsValues.getCompanyId());
+		User memberUser = UserTestUtil.addUser(TestPropsValues.getCompanyId());
+
+		CommerceOrder commerceOrder = _addCommerceOrder(ownerUser, memberUser);
+
+		CommerceAddress commerceOrderCommerceAddress = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				ownerUser)) {
+
+			commerceOrderCommerceAddress = _addCommerceAddress(
+				CommerceOrder.class.getName(),
+				commerceOrder.getCommerceOrderId(), _country.getCountryId(),
+				CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING);
+
+			_updateCommerceAddress(
+				RandomTestUtil.randomString(), commerceOrderCommerceAddress);
+		}
+
+		_placeCommerceOrder(commerceOrder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				memberUser)) {
+
+			_updateCommerceAddress(
+				RandomTestUtil.randomString(), commerceOrderCommerceAddress);
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertCommerceOrderPermission(commerceOrder, principalException);
+		}
+	}
+
+	private Address _addAddress(User user) throws Exception {
+		return _addressLocalService.addAddress(
+			null, user.getUserId(), Contact.class.getName(),
+			user.getContactId(), _country.getCountryId(),
+			_listTypeLocalService.getListTypeId(
+				user.getCompanyId(), "personal",
+				ListTypeConstants.CONTACT_ADDRESS),
+			0, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			false, RandomTestUtil.randomString(), false,
+			RandomTestUtil.randomString(), null, null, null,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private CommerceAddress _addCommerceAddress(
@@ -664,6 +694,37 @@ public class CommerceAddressServiceTest {
 
 		return CommerceTestUtil.addCommerceChannel(
 			TestPropsValues.getGroupId(), commerceCurrency.getCode());
+	}
+
+	private CommerceOrder _addCommerceOrder(User ownerUser, User memberUser)
+		throws Exception {
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com",
+				RandomTestUtil.randomString(),
+				new long[] {ownerUser.getUserId(), memberUser.getUserId()},
+				null,
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId()));
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(accountEntry.getAccountEntryGroupId()),
+			CommerceOrderActionKeys.VIEW_COMMERCE_ORDERS);
+
+		_userLocalService.addRoleUser(role.getRoleId(), memberUser.getUserId());
+
+		CommerceChannel commerceChannel = _addCommerceChannel();
+
+		return _commerceOrderLocalService.addCommerceOrder(
+			ownerUser.getUserId(), commerceChannel.getGroupId(),
+			accountEntry.getAccountEntryId(),
+			commerceChannel.getCommerceCurrencyCode(), 0);
 	}
 
 	private AccountEntry _addGuestAccountEntry() throws Exception {
@@ -724,6 +785,14 @@ public class CommerceAddressServiceTest {
 				_accountEntry.getAccountEntryId(), QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS),
 			CommerceAddress::getCommerceAddressId);
+	}
+
+	private void _placeCommerceOrder(CommerceOrder commerceOrder) {
+		commerceOrder.setOrderStatus(
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+		commerceOrder.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 	}
 
 	private CommerceAddress _updateCommerceAddress(
