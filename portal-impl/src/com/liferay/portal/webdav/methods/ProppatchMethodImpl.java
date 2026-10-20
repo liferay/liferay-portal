@@ -11,6 +11,10 @@ import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.WebDAVProps;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.service.WebDAVPropsLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -63,6 +67,13 @@ public class ProppatchMethodImpl extends BasePropMethodImpl {
 
 			return WebDAVUtil.SC_LOCKED;
 		}
+		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException);
+			}
+
+			return HttpServletResponse.SC_FORBIDDEN;
+		}
 		catch (Exception exception) {
 			throw new WebDAVException(exception);
 		}
@@ -82,7 +93,16 @@ public class ProppatchMethodImpl extends BasePropMethodImpl {
 
 			throw new InvalidRequestException();
 		}
-		else if (resource.isLocked()) {
+
+		ModelResourcePermission<?> modelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				resource.getClassName());
+
+		modelResourcePermission.check(
+			webDAVRequest.getPermissionChecker(), resource.getPrimaryKey(),
+			ActionKeys.UPDATE);
+
+		if (resource.isLocked()) {
 			Lock lock = resource.getLock();
 
 			if (lock == null) {
@@ -102,7 +122,7 @@ public class ProppatchMethodImpl extends BasePropMethodImpl {
 	}
 
 	protected Set<QName> processInstructions(WebDAVRequest webDAVRequest)
-		throws InvalidRequestException, LockException {
+		throws InvalidRequestException, LockException, PrincipalException {
 
 		try {
 			Set<QName> newProps = new HashSet<>();
@@ -198,6 +218,9 @@ public class ProppatchMethodImpl extends BasePropMethodImpl {
 		}
 		catch (LockException lockException) {
 			throw lockException;
+		}
+		catch (PrincipalException principalException) {
+			throw principalException;
 		}
 		catch (Exception exception) {
 			throw new InvalidRequestException(exception);
