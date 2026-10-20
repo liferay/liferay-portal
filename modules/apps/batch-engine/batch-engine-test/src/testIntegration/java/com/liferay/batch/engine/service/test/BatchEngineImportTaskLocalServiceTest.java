@@ -175,7 +175,8 @@ public class BatchEngineImportTaskLocalServiceTest {
 		Assert.assertTrue(content, content.contains(password));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_CLASS_NAME_BATCH_ENGINE_IMPORT_TASK_LOCAL_SERVICE_IMPL,
+				"com.liferay.batch.engine.service.impl." +
+					"BatchEngineImportTaskLocalServiceImpl",
 				LoggerTestUtil.ERROR)) {
 
 			batchEngineImportTask = _updateExecuteStatus(
@@ -214,11 +215,6 @@ public class BatchEngineImportTaskLocalServiceTest {
 		return _batchEngineImportTaskLocalService.updateBatchEngineImportTask(
 			batchEngineImportTask);
 	}
-
-	private static final String
-		_CLASS_NAME_BATCH_ENGINE_IMPORT_TASK_LOCAL_SERVICE_IMPL =
-			"com.liferay.batch.engine.service.impl." +
-				"BatchEngineImportTaskLocalServiceImpl";
 
 	@Inject
 	private BatchEngineImportTaskLocalService
