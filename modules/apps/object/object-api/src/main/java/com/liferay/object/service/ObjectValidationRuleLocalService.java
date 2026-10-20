@@ -299,10 +299,6 @@ public interface ObjectValidationRuleLocalService
 	public List<ObjectValidationRule> getObjectValidationRules(
 		long objectDefinitionId, boolean active);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectValidationRule> getObjectValidationRules(
-		long objectDefinitionId, String engine);
-
 	/**
 	 * Returns the number of object validation rules.
 	 *
@@ -365,4 +361,4 @@ public interface ObjectValidationRuleLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:697232372
+// LIFERAY-SERVICE-BUILDER-HASH:-901627379

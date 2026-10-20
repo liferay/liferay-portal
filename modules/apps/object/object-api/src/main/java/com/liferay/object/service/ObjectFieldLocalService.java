@@ -407,10 +407,6 @@ public interface ObjectFieldLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Map<Long, List<ObjectField>> getObjectFieldsMap(long companyId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Map<Long, List<ObjectField>> getObjectFieldsMap(
-		long companyId, String businessType);
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -478,4 +474,4 @@ public interface ObjectFieldLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1452526639
+// LIFERAY-SERVICE-BUILDER-HASH:-1707747933

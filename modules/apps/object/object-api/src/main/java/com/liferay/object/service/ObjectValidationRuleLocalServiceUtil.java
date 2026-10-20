@@ -345,13 +345,6 @@ public class ObjectValidationRuleLocalServiceUtil {
 			objectDefinitionId, active);
 	}
 
-	public static List<ObjectValidationRule> getObjectValidationRules(
-		long objectDefinitionId, String engine) {
-
-		return getService().getObjectValidationRules(
-			objectDefinitionId, engine);
-	}
-
 	/**
 	 * Returns the number of object validation rules.
 	 *
@@ -453,4 +446,4 @@ public class ObjectValidationRuleLocalServiceUtil {
 			ObjectValidationRuleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1076632941
+// LIFERAY-SERVICE-BUILDER-HASH:904551089
