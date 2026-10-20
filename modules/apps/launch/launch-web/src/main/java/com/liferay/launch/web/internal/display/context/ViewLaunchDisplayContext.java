@@ -11,7 +11,6 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
-import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.launch.web.internal.constants.LaunchFDSNames;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
@@ -19,7 +18,6 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -36,6 +34,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.Serializable;
+
 import java.time.Instant;
 
 import java.util.Date;
@@ -51,14 +51,12 @@ public class ViewLaunchDisplayContext {
 	public ViewLaunchDisplayContext(
 		HttpServletRequest httpServletRequest, ItemSelector itemSelector,
 		LaunchEntryManagerRegistry launchEntryManagerRegistry,
-		LaunchSetPublisher launchSetPublisher,
 		LiferayPortletResponse liferayPortletResponse,
 		ObjectEntryLocalService objectEntryLocalService) {
 
 		_httpServletRequest = httpServletRequest;
 		_itemSelector = itemSelector;
 		_launchEntryManagerRegistry = launchEntryManagerRegistry;
-		_launchSetPublisher = launchSetPublisher;
 		_liferayPortletResponse = liferayPortletResponse;
 		_objectEntryLocalService = objectEntryLocalService;
 	}
@@ -203,9 +201,19 @@ public class ViewLaunchDisplayContext {
 		).buildString();
 	}
 
-	public String getScheduledDate() throws PortalException {
-		Date scheduledDate = _launchSetPublisher.fetchScheduledDate(
+	public String getScheduledDate() {
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			getLaunchSetId());
+
+		if ((objectEntry == null) ||
+			(objectEntry.getStatus() != WorkflowConstants.STATUS_SCHEDULED)) {
+
+			return null;
+		}
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Date scheduledDate = (Date)values.get("scheduledDate");
 
 		if (scheduledDate == null) {
 			return null;
@@ -305,7 +313,6 @@ public class ViewLaunchDisplayContext {
 	private final ItemSelector _itemSelector;
 	private final LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 	private Long _launchSetId;
-	private final LaunchSetPublisher _launchSetPublisher;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private Boolean _published;

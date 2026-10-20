@@ -44,6 +44,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.io.Serializable;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -187,10 +188,19 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		Assert.assertEquals(expectedStatus, launchSetObjectEntry.getStatus());
 
+		Map<String, Serializable> values = launchSetObjectEntry.getValues();
+
+		Date scheduledDate = (Date)values.get("scheduledDate");
+
+		if (expectedDate == null) {
+			Assert.assertNull(scheduledDate);
+
+			return;
+		}
+
 		Assert.assertEquals(
-			expectedDate,
-			_launchSetPublisher.fetchScheduledDate(
-				_launchSetObjectEntry.getObjectEntryId()));
+			expectedDate.getTime() / Time.SECOND,
+			scheduledDate.getTime() / Time.SECOND);
 	}
 
 	private ThemeDisplay _getThemeDisplay(User user) throws Exception {

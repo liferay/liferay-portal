@@ -17,9 +17,14 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
@@ -86,27 +91,6 @@ public class LaunchSetPublisherTest {
 			_launchSetObjectEntry.getObjectEntryId());
 
 		ServiceContextThreadLocal.popServiceContext();
-	}
-
-	@Test
-	public void testFetchScheduledDate() throws Exception {
-		Assert.assertNull(
-			_launchSetPublisher.fetchScheduledDate(
-				RandomTestUtil.randomLong()));
-		Assert.assertNull(
-			_launchSetPublisher.fetchScheduledDate(
-				_launchSetObjectEntry.getObjectEntryId()));
-
-		Date date = new Date(System.currentTimeMillis() + Time.DAY);
-
-		_launchSetPublisher.schedulePublish(
-			_launchSetObjectEntry.getObjectEntryId(),
-			TestPropsValues.getUserId(), date);
-
-		Assert.assertEquals(
-			date,
-			_launchSetPublisher.fetchScheduledDate(
-				_launchSetObjectEntry.getObjectEntryId()));
 	}
 
 	@Test
@@ -373,8 +357,19 @@ public class LaunchSetPublisherTest {
 
 		Assert.assertEquals(expectedStatus, launchSetObjectEntry.getStatus());
 
-		Date scheduledDate = _launchSetPublisher.fetchScheduledDate(
-			launchSetId);
+		Date scheduledDate = null;
+
+		SchedulerResponse schedulerResponse =
+			_schedulerEngineHelper.getScheduledJob(
+				StringBundler.concat(
+					launchSetId, StringPool.AT,
+					launchSetObjectEntry.getCompanyId()),
+				"liferay/launch_set_scheduled_publish", StorageType.PERSISTED);
+
+		if (schedulerResponse != null) {
+			scheduledDate = _schedulerEngineHelper.getStartDate(
+				schedulerResponse);
+		}
 
 		Map<String, Serializable> values = launchSetObjectEntry.getValues();
 
@@ -472,6 +467,9 @@ public class LaunchSetPublisherTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private SchedulerEngineHelper _schedulerEngineHelper;
 
 	private ServiceContext _serviceContext;
 

@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
-import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -42,28 +41,6 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = LaunchSetPublisher.class)
 public class LaunchSetPublisherImpl implements LaunchSetPublisher {
-
-	@Override
-	public Date fetchScheduledDate(long launchSetId) throws PortalException {
-		ObjectEntry launchSetObjectEntry =
-			_objectEntryLocalService.fetchObjectEntry(launchSetId);
-
-		if (launchSetObjectEntry == null) {
-			return null;
-		}
-
-		SchedulerResponse schedulerResponse =
-			_schedulerEngineHelper.getScheduledJob(
-				_getJobName(launchSetObjectEntry),
-				LaunchDestinationNames.LAUNCH_SET_SCHEDULED_PUBLISH,
-				StorageType.PERSISTED);
-
-		if (schedulerResponse == null) {
-			return null;
-		}
-
-		return _schedulerEngineHelper.getStartDate(schedulerResponse);
-	}
 
 	@Override
 	public void publish(long launchSetId) throws PortalException {

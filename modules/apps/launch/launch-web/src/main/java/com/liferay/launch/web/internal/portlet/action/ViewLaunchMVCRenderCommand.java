@@ -7,7 +7,6 @@ package com.liferay.launch.web.internal.portlet.action;
 
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
-import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.launch.web.internal.constants.LaunchWebKeys;
 import com.liferay.launch.web.internal.display.context.ViewLaunchDisplayContext;
@@ -45,7 +44,6 @@ public class ViewLaunchMVCRenderCommand implements MVCRenderCommand {
 		ViewLaunchDisplayContext viewLaunchDisplayContext =
 			new ViewLaunchDisplayContext(
 				httpServletRequest, _itemSelector, _launchEntryManagerRegistry,
-				_launchSetPublisher,
 				_portal.getLiferayPortletResponse(renderResponse),
 				_objectEntryLocalService);
 
@@ -61,9 +59,6 @@ public class ViewLaunchMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;
-
-	@Reference
-	private LaunchSetPublisher _launchSetPublisher;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
