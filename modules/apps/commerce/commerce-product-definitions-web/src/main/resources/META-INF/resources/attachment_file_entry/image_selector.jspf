@@ -54,12 +54,10 @@ long fileEntryId = BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEn
 	);
 
 	if (selectFileButton) {
-		const openerWindow = Liferay.Util.getOpener();
-
 		selectFileButton.addEventListener('click', (event) => {
 			event.preventDefault();
 
-			openerWindow.Liferay.Util.openSelectionModal({
+			Liferay.Util.openSelectionModal({
 				onSelect: (selectedItem) => {
 					if (!selectedItem || !selectedItem.value) {
 						return;

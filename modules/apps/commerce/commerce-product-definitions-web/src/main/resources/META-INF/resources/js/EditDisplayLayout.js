@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {delegate, getOpener, sub} from 'frontend-js-web';
+import {openSelectionModal} from 'frontend-js-components-web';
+import {delegate, sub} from 'frontend-js-web';
 
 export default function ({
 	layoutItemSelectorUrl,
@@ -13,8 +14,6 @@ export default function ({
 	removeIcon,
 	searchContainerId,
 }) {
-	const openerWindow = getOpener();
-
 	const initProductSelection = (searchContainer) => {
 		const selectProductButton = document.getElementById(
 			`${portletNamespace}selectProduct`
@@ -27,7 +26,7 @@ export default function ({
 		selectProductButton.addEventListener('click', (event) => {
 			event.preventDefault();
 
-			openerWindow.Liferay.Util.openSelectionModal({
+			openSelectionModal({
 				onSelect: (selectedItem) => {
 					if (!selectedItem) {
 						return;
@@ -133,7 +132,7 @@ export default function ({
 
 		if (chooseLayoutButton) {
 			chooseLayoutButton.addEventListener('click', () => {
-				openerWindow.Liferay.Util.openSelectionModal({
+				openSelectionModal({
 					buttonAddLabel: Liferay.Language.get('done'),
 					multiple: true,
 					onSelect: (selectedItem) => {
@@ -158,7 +157,7 @@ export default function ({
 			chooseLayoutPageTemplateEntryButton.addEventListener(
 				'click',
 				() => {
-					openerWindow.Liferay.Util.openSelectionModal({
+					openSelectionModal({
 						buttonAddLabel: Liferay.Language.get('done'),
 						onSelect: (selectedItem) => {
 							if (!selectedItem) {
