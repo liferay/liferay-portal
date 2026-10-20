@@ -1,5 +1,5 @@
 dependencies {
-	compileOnly group: "com.liferay", name: "org.apache.commons.fileupload", version: "1.5.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.apache.commons.fileupload", version: "1.6.0.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"

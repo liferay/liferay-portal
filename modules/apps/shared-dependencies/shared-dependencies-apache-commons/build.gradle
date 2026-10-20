@@ -1,5 +1,5 @@
 dependencies {
-	compileInclude group: "com.liferay", name: "org.apache.commons.fileupload", version: "1.5.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
+	compileInclude group: "com.liferay", name: "org.apache.commons.fileupload", version: "1.6.0.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1"
 	compileInclude group: "commons-beanutils", name: "commons-beanutils", version: "1.11.0"
 	compileInclude group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileInclude group: "commons-collections", name: "commons-collections", version: "3.2.2"

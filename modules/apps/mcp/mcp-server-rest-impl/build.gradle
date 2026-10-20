@@ -43,7 +43,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay", name: "org.apache.commons.fileupload", version: "1.5.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay", name: "org.apache.commons.fileupload", version: "1.6.0.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "commons-io", name: "commons-io", version: "2.19.0"
