@@ -41,8 +41,8 @@ public class DataSourceMetricsFaroControllerTest {
 
 	@Test
 	public void testGetCampaignsCount() throws Exception {
-		String dataSourceId = RandomTestUtil.randomString();
 		long campaignsCount = RandomTestUtil.randomLong();
+		String dataSourceId = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_contactsEngineClient.getDataSourceMetricsCampaignsCount(
