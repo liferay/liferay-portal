@@ -1520,12 +1520,11 @@ public class LayoutLocalServiceWrapper
 	@Override
 	public Layout getOrAddEmptyLayout(
 			String externalReferenceCode, long userId, long groupId,
-			boolean privateLayout, ServiceContext serviceContext)
+			boolean privateLayout)
 		throws Exception {
 
 		return _layoutLocalService.getOrAddEmptyLayout(
-			externalReferenceCode, userId, groupId, privateLayout,
-			serviceContext);
+			externalReferenceCode, userId, groupId, privateLayout);
 	}
 
 	/**
@@ -2317,4 +2316,4 @@ public class LayoutLocalServiceWrapper
 	private LayoutLocalService _layoutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1614129247
+// LIFERAY-SERVICE-BUILDER-HASH:591932588

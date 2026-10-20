@@ -674,12 +674,11 @@ public class LayoutServiceUtil {
 	}
 
 	public static Layout getOrAddEmptyLayout(
-			String externalReferenceCode, long groupId, boolean privateLayout,
-			ServiceContext serviceContext)
+			String externalReferenceCode, long groupId, boolean privateLayout)
 		throws Exception {
 
 		return getService().getOrAddEmptyLayout(
-			externalReferenceCode, groupId, privateLayout, serviceContext);
+			externalReferenceCode, groupId, privateLayout);
 	}
 
 	/**
@@ -1139,4 +1138,4 @@ public class LayoutServiceUtil {
 	private static volatile LayoutService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1762366102
+// LIFERAY-SERVICE-BUILDER-HASH:1564256147

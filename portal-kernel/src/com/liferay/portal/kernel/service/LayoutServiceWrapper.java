@@ -721,12 +721,11 @@ public class LayoutServiceWrapper
 
 	@Override
 	public Layout getOrAddEmptyLayout(
-			String externalReferenceCode, long groupId, boolean privateLayout,
-			ServiceContext serviceContext)
+			String externalReferenceCode, long groupId, boolean privateLayout)
 		throws Exception {
 
 		return _layoutService.getOrAddEmptyLayout(
-			externalReferenceCode, groupId, privateLayout, serviceContext);
+			externalReferenceCode, groupId, privateLayout);
 	}
 
 	/**
@@ -1213,4 +1212,4 @@ public class LayoutServiceWrapper
 	private LayoutService _layoutService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:141789187
+// LIFERAY-SERVICE-BUILDER-HASH:415089122

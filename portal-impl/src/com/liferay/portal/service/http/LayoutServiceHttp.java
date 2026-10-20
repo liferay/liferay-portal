@@ -1899,8 +1899,7 @@ public class LayoutServiceHttp {
 
 	public static com.liferay.portal.kernel.model.Layout getOrAddEmptyLayout(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
-			long groupId, boolean privateLayout,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			long groupId, boolean privateLayout)
 		throws Exception {
 
 		try {
@@ -1909,8 +1908,7 @@ public class LayoutServiceHttp {
 				_getOrAddEmptyLayoutParameterTypes46);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, groupId, privateLayout,
-				serviceContext);
+				methodKey, externalReferenceCode, groupId, privateLayout);
 
 			Object returnObj = null;
 
@@ -3042,10 +3040,7 @@ public class LayoutServiceHttp {
 	private static final Class<?>[] _getLayoutsCountParameterTypes45 =
 		new Class[] {long.class, String.class};
 	private static final Class<?>[] _getOrAddEmptyLayoutParameterTypes46 =
-		new Class[] {
-			String.class, long.class, boolean.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
-		};
+		new Class[] {String.class, long.class, boolean.class};
 	private static final Class<?>[] _getTempFileNamesParameterTypes47 =
 		new Class[] {long.class, String.class};
 	private static final Class<?>[] _hasLayoutParameterTypes48 = new Class[] {
@@ -3124,4 +3119,4 @@ public class LayoutServiceHttp {
 		new Class[] {long.class, boolean.class, long.class, String.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1369748525
+// LIFERAY-SERVICE-BUILDER-HASH:1959307598
