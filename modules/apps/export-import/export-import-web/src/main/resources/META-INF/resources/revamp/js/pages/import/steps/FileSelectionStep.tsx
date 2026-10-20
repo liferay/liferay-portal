@@ -74,15 +74,10 @@ export default function FileSelectionStep({
 		<>
 			<SectionHeader
 				className="mt-5"
-				subtitle={Liferay.Language.get(
-					'provide-a-descriptive-name-for-your-import'
-				)}
-				subtitleId="name-description"
 				title={Liferay.Language.get('import-details')}
 			/>
 
 			<FormikFieldText
-				aria-describedby="name-description"
 				label={Liferay.Language.get('name')}
 				name="name"
 				required

@@ -132,9 +132,6 @@ export function NewExport({
 							placeholder={Liferay.Language.get(
 								'add-an-export-name'
 							)}
-							subtitle={Liferay.Language.get(
-								'provide-a-descriptive-name-for-your-file'
-							)}
 							title={sub(
 								Liferay.Language.get('x-details'),
 								Liferay.Language.get('export[noun]')

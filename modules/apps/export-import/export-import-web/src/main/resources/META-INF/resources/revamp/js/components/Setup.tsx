@@ -10,16 +10,14 @@ import {FormikFieldText} from './forms/formik';
 
 export default function Setup({
 	placeholder,
-	subtitle,
 	title,
 }: {
 	placeholder: string;
-	subtitle: string;
 	title: string;
 }) {
 	return (
 		<>
-			<SectionHeader subtitle={subtitle} title={title} />
+			<SectionHeader title={title} />
 
 			<FormikFieldText
 				label={Liferay.Language.get('name')}

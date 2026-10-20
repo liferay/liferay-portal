@@ -22,7 +22,7 @@ export default function SectionHeader({
 	title,
 }: SectionHeaderProps) {
 	return (
-		<div className={classNames('mb-1 sheet-header', className)}>
+		<div className={classNames('mb-4 sheet-header', className)}>
 			<div className="font-weight-bold mb-1 text-7" id={id}>
 				{title}
 			</div>

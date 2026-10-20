@@ -108,9 +108,6 @@ export function NewStaticSiteExport({
 				<Form noValidate>
 					<Setup
 						placeholder={Liferay.Language.get('add-an-export-name')}
-						subtitle={Liferay.Language.get(
-							'provide-a-descriptive-name-for-your-file'
-						)}
 						title={sub(
 							Liferay.Language.get('x-details'),
 							Liferay.Language.get('static-site')
@@ -118,7 +115,7 @@ export function NewStaticSiteExport({
 					/>
 
 					<SectionHeader
-						className="mb-4 mt-4"
+						className="mt-4"
 						title={Liferay.Language.get('languages')}
 					/>
 
@@ -168,7 +165,7 @@ export function NewStaticSiteExport({
 					</ClayLayout.Sheet>
 
 					<SectionHeader
-						className="mb-4 mt-4"
+						className="mt-4"
 						title={Liferay.Language.get('pages')}
 					/>
 
