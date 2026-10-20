@@ -75,6 +75,8 @@ public abstract class BaseFrontendResourceRequestHandlerTestCase {
 			);
 		}
 
+		URL url = Mockito.mock(URL.class);
+
 		URLConnection urlConnection = Mockito.mock(URLConnection.class);
 
 		Mockito.when(
@@ -82,8 +84,6 @@ public abstract class BaseFrontendResourceRequestHandlerTestCase {
 		).thenReturn(
 			LAST_MODIFIED
 		);
-
-		URL url = Mockito.mock(URL.class);
 
 		Mockito.when(
 			url.getFile()
