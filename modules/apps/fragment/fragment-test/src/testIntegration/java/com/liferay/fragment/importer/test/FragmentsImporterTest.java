@@ -642,6 +642,60 @@ public class FragmentsImporterTest {
 
 	@Test
 	@TestInfo("LPD-109711")
+	public void testImportFragmentEntriesWithUnchangedContent()
+		throws Exception {
+
+		File zipFile = _generateZipFileWithFolderResources();
+
+		try {
+			_fragmentsImporter.importFragmentEntries(
+				_user.getUserId(), _group.getGroupId(), 0, zipFile,
+				FragmentsImportStrategy.OVERWRITE, false);
+
+			List<FragmentCollection> fragmentCollections =
+				_fragmentCollectionLocalService.getFragmentCollections(
+					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			FragmentCollection fragmentCollection = fragmentCollections.get(0);
+
+			List<FragmentEntry> fragmentEntries =
+				_fragmentEntryLocalService.getFragmentEntries(
+					fragmentCollection.getFragmentCollectionId());
+
+			FragmentEntry fragmentEntry = fragmentEntries.get(0);
+
+			Assert.assertNotEquals(0, fragmentEntry.getPreviewFileEntryId());
+
+			List<FragmentEntryVersion> fragmentEntryVersions =
+				_fragmentEntryLocalService.getVersions(fragmentEntry);
+
+			_fragmentsImporter.importFragmentEntries(
+				_user.getUserId(), _group.getGroupId(), 0, zipFile,
+				FragmentsImportStrategy.OVERWRITE, false);
+
+			FragmentEntry reimportedFragmentEntry =
+				_fragmentEntryLocalService.getFragmentEntry(
+					fragmentEntry.getFragmentEntryId());
+
+			Assert.assertEquals(
+				fragmentEntry.getPreviewFileEntryId(),
+				reimportedFragmentEntry.getPreviewFileEntryId());
+
+			List<FragmentEntryVersion> reimportedFragmentEntryVersions =
+				_fragmentEntryLocalService.getVersions(reimportedFragmentEntry);
+
+			Assert.assertEquals(
+				reimportedFragmentEntryVersions.toString(),
+				fragmentEntryVersions.size(),
+				reimportedFragmentEntryVersions.size());
+		}
+		finally {
+			FileUtil.delete(zipFile);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-109711")
 	public void testImportFragmentEntriesWithUnchangedResources()
 		throws Exception {
 
@@ -834,58 +888,6 @@ public class FragmentsImporterTest {
 		Assert.assertEquals(
 			FragmentsImporterResultEntry.Type.COMPOSITION,
 			fragmentsImporterResultEntry.getType());
-	}
-
-	@Test
-	@TestInfo("LPD-109711")
-	public void testImportUnchangedFragmentEntries() throws Exception {
-		File zipFile = _generateZipFileWithFolderResources();
-
-		try {
-			_fragmentsImporter.importFragmentEntries(
-				_user.getUserId(), _group.getGroupId(), 0, zipFile,
-				FragmentsImportStrategy.OVERWRITE, false);
-
-			List<FragmentCollection> fragmentCollections =
-				_fragmentCollectionLocalService.getFragmentCollections(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			FragmentCollection fragmentCollection = fragmentCollections.get(0);
-
-			List<FragmentEntry> fragmentEntries =
-				_fragmentEntryLocalService.getFragmentEntries(
-					fragmentCollection.getFragmentCollectionId());
-
-			FragmentEntry fragmentEntry = fragmentEntries.get(0);
-
-			Assert.assertNotEquals(0, fragmentEntry.getPreviewFileEntryId());
-
-			List<FragmentEntryVersion> fragmentEntryVersions =
-				_fragmentEntryLocalService.getVersions(fragmentEntry);
-
-			_fragmentsImporter.importFragmentEntries(
-				_user.getUserId(), _group.getGroupId(), 0, zipFile,
-				FragmentsImportStrategy.OVERWRITE, false);
-
-			FragmentEntry reimportedFragmentEntry =
-				_fragmentEntryLocalService.getFragmentEntry(
-					fragmentEntry.getFragmentEntryId());
-
-			Assert.assertEquals(
-				fragmentEntry.getPreviewFileEntryId(),
-				reimportedFragmentEntry.getPreviewFileEntryId());
-
-			List<FragmentEntryVersion> reimportedFragmentEntryVersions =
-				_fragmentEntryLocalService.getVersions(reimportedFragmentEntry);
-
-			Assert.assertEquals(
-				reimportedFragmentEntryVersions.toString(),
-				fragmentEntryVersions.size(),
-				reimportedFragmentEntryVersions.size());
-		}
-		finally {
-			FileUtil.delete(zipFile);
-		}
 	}
 
 	private void _addFragmentEntryType(JSONObject jsonObject) {
