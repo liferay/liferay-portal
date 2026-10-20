@@ -103,21 +103,23 @@ public class OfflineOpenIdConnectSessionManager {
 			return true;
 		}
 
-		if (_isAccessTokenExpiringSoon(openIdConnectSession)) {
-			Message message = new Message();
+		if (!_isAccessTokenExpiringSoon(openIdConnectSession)) {
+			return false;
+		}
 
-			message.put("openIdConnectSessionId", openIdConnectSessionId);
+		Message message = new Message();
 
-			if (!_clusterMasterExecutor.isEnabled() ||
-				_clusterMasterExecutor.isMaster()) {
+		message.put("openIdConnectSessionId", openIdConnectSessionId);
 
-				_messageBus.sendMessage(
-					OpenIdConnectDestinationNames.OPENID_CONNECT_TOKEN_REFRESH,
-					message);
-			}
-			else {
-				_executeOnMaster(message);
-			}
+		if (!_clusterMasterExecutor.isEnabled() ||
+			_clusterMasterExecutor.isMaster()) {
+
+			_messageBus.sendMessage(
+				OpenIdConnectDestinationNames.OPENID_CONNECT_TOKEN_REFRESH,
+				message);
+		}
+		else {
+			_executeOnMaster(message);
 		}
 
 		return false;
@@ -497,13 +499,14 @@ public class OfflineOpenIdConnectSessionManager {
 								openIdConnectSession.
 									getOpenIdConnectSessionId());
 
-					if ((currentOpenIdConnectSession != null) &&
-						_isAccessTokenExpiringSoon(
+					if ((currentOpenIdConnectSession == null) ||
+						!_isAccessTokenExpiringSoon(
 							currentOpenIdConnectSession)) {
 
-						_extendOpenIdConnectSession(
-							currentOpenIdConnectSession);
+						continue;
 					}
+
+					_extendOpenIdConnectSession(currentOpenIdConnectSession);
 				}
 			};
 		}
