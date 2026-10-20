@@ -106,8 +106,10 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
+import com.liferay.object.service.test.system.TestSystemObjectDefinitionManager;
 import com.liferay.object.system.BaseSystemObjectDefinitionManager;
 import com.liferay.object.system.JaxRsApplicationDescriptor;
+import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
@@ -200,6 +202,9 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -2114,6 +2119,138 @@ public class ObjectDefinitionLocalServiceTest {
 			_objectActionLocalService.getObjectAction(
 				objectDefinition.getObjectDefinitionId(), "updateDeliveryType2",
 				ObjectActionTriggerConstants.KEY_ON_AFTER_ADD));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
+	public void testAddOrUpdateSystemObjectDefinitionWithCustomObjectFields()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_addUnmodifiableSystemObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName());
+
+		ObjectField longIntegerObjectField =
+			ObjectFieldUtil.addCustomObjectField(
+				new LongIntegerObjectFieldBuilder(
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).name(
+					StringUtil.randomId()
+				).objectDefinitionId(
+					objectDefinition.getObjectDefinitionId()
+				).userId(
+					TestPropsValues.getUserId()
+				).build());
+
+		String objectFieldName = StringUtil.randomId();
+
+		ObjectField textObjectField = ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				StringUtil.randomId()
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		SystemObjectDefinitionManager systemObjectDefinitionManager =
+			new TestSystemObjectDefinitionManager(
+				null, objectDefinition.getName(), null) {
+
+				@Override
+				public List<ObjectField> getObjectFields() {
+					return Arrays.asList(
+						new TextObjectFieldBuilder(
+						).labelMap(
+							LocalizedMapUtil.getLocalizedMap(
+								RandomTestUtil.randomString())
+						).name(
+							longIntegerObjectField.getName()
+						).build(),
+						new TextObjectFieldBuilder(
+						).labelMap(
+							LocalizedMapUtil.getLocalizedMap(
+								RandomTestUtil.randomString())
+						).name(
+							objectFieldName
+						).build(),
+						new TextObjectFieldBuilder(
+						).labelMap(
+							LocalizedMapUtil.getLocalizedMap(
+								RandomTestUtil.randomString())
+						).name(
+							textObjectField.getName()
+						).build());
+				}
+
+				@Override
+				public int getVersion() {
+					return 2;
+				}
+
+			};
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.object.service.impl." +
+					"ObjectDefinitionLocalServiceImpl",
+				LoggerTestUtil.ERROR)) {
+
+			objectDefinition =
+				_objectDefinitionLocalService.addOrUpdateSystemObjectDefinition(
+					TestPropsValues.getCompanyId(), 0,
+					systemObjectDefinitionManager);
+
+			Assert.assertEquals(
+				Arrays.asList(
+					StringBundler.concat(
+						"Unable to add system object field \"",
+						longIntegerObjectField.getName(),
+						"\" to object definition \"",
+						objectDefinition.getName(),
+						"\" because a custom object field has the same name"),
+					StringBundler.concat(
+						"Unable to add system object field \"",
+						textObjectField.getName(), "\" to object definition \"",
+						objectDefinition.getName(),
+						"\" because a custom object field has the same name")),
+				TransformUtil.transform(
+					logCapture.getLogEntries(), LogEntry::getMessage));
+		}
+
+		Assert.assertEquals(1, objectDefinition.getVersion());
+
+		_assertObjectField(
+			objectDefinition, longIntegerObjectField.getDBColumnName(), "Long",
+			longIntegerObjectField.getName(), false);
+		_assertObjectField(
+			objectDefinition, objectFieldName, "String", objectFieldName,
+			false);
+		_assertObjectField(
+			objectDefinition, textObjectField.getDBColumnName(), "String",
+			textObjectField.getName(), false);
+
+		_objectFieldLocalService.deleteObjectField(longIntegerObjectField);
+		_objectFieldLocalService.deleteObjectField(textObjectField);
+
+		objectDefinition =
+			_objectDefinitionLocalService.addOrUpdateSystemObjectDefinition(
+				TestPropsValues.getCompanyId(), 0,
+				systemObjectDefinitionManager);
+
+		Assert.assertEquals(2, objectDefinition.getVersion());
+
+		_assertObjectField(
+			objectDefinition, longIntegerObjectField.getName(), "String",
+			longIntegerObjectField.getName(), false);
+		_assertObjectField(
+			objectDefinition, textObjectField.getName(), "String",
+			textObjectField.getName(), false);
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
