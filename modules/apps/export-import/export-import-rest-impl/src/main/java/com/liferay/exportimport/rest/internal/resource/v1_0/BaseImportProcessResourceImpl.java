@@ -158,7 +158,7 @@ public abstract class BaseImportProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/import-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the layout import process entries of the specified asset library, or the import process entries of one of its portlets when a portlet ID is given."
+		description = "Retrieves the import processes of the specified asset library, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -187,6 +187,7 @@ public abstract class BaseImportProcessResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -250,7 +251,7 @@ public abstract class BaseImportProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/import-processes/{importProcessId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the import process entry with the specified ID."
+		description = "Retrieves the import process with the specified ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -332,7 +333,7 @@ public abstract class BaseImportProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/import-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the layout import process entries of the instance, or the import process entries of one of its portlets when a portlet ID is given."
+		description = "Retrieves the import processes of the instance, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -357,6 +358,7 @@ public abstract class BaseImportProcessResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -414,7 +416,7 @@ public abstract class BaseImportProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/import-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the layout import process entries of the specified site, or the import process entries of one of its portlets when a portlet ID is given."
+		description = "Retrieves the import processes of the specified site, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -443,6 +445,7 @@ public abstract class BaseImportProcessResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -504,7 +507,7 @@ public abstract class BaseImportProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Imports the file uploaded through the import preview into the specified asset library, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview."
+		description = "Imports the user's last uploaded file into the specified asset library, or into one of its portlets. Returns a 404 when there is no uploaded file."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -513,10 +516,12 @@ public abstract class BaseImportProcessResourceImpl
 				name = "assetLibraryExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			)
@@ -563,10 +568,12 @@ public abstract class BaseImportProcessResourceImpl
 				name = "assetLibraryExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -638,6 +645,7 @@ public abstract class BaseImportProcessResourceImpl
 				name = "creatorId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -735,15 +743,17 @@ public abstract class BaseImportProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Imports the file uploaded through the import preview into the instance, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview and the external reference codes of the sites to import in full."
+		description = "Imports the user's last uploaded file into the instance, or into one of its portlets. Returns a 404 when there is no uploaded file."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			)
@@ -780,10 +790,12 @@ public abstract class BaseImportProcessResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -845,6 +857,7 @@ public abstract class BaseImportProcessResourceImpl
 				name = "creatorId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -936,7 +949,7 @@ public abstract class BaseImportProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/import-processes' -d $'{"comments": ___, "dataStrategy": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "userIdStrategy": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Imports the file uploaded through the import preview into the specified site, or into one of its portlets when a portlet ID is given, with the portlet data handlers returned by the import preview."
+		description = "Imports the user's last uploaded file into the specified site, or into one of its portlets. Returns a 404 when there is no uploaded file."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -945,10 +958,12 @@ public abstract class BaseImportProcessResourceImpl
 				name = "siteExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			)
@@ -993,10 +1008,12 @@ public abstract class BaseImportProcessResourceImpl
 				name = "siteExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -1068,6 +1085,7 @@ public abstract class BaseImportProcessResourceImpl
 				name = "creatorId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -1932,4 +1950,4 @@ public abstract class BaseImportProcessResourceImpl
 		LogFactoryUtil.getLog(BaseImportProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:163782177
+// LIFERAY-REST-BUILDER-HASH:-70952457

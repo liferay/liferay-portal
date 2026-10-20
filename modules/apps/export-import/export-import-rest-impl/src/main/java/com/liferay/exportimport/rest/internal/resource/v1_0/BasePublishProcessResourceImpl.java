@@ -240,7 +240,7 @@ public abstract class BasePublishProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the Publish to Live process entries for the specified site."
+		description = "Retrieves the Publish to Live processes of the specified site."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -323,7 +323,7 @@ public abstract class BasePublishProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/publish-processes/{publishProcessId}/relaunch'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Relaunches the publish process with the specified ID. The process's date selection is resolved again when it runs."
+		description = "Relaunches the publish process with the specified ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1291,4 +1291,4 @@ public abstract class BasePublishProcessResourceImpl
 		LogFactoryUtil.getLog(BasePublishProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1841702546
+// LIFERAY-REST-BUILDER-HASH:-1301540705

@@ -76,7 +76,7 @@ public abstract class BaseReportEntryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/import-processes/{importProcessId}/report-entries'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the report entries associated with the specified import process ID."
+		description = "Retrieves the report entries of the import process with the specified ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -149,7 +149,7 @@ public abstract class BaseReportEntryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/publish-processes/{publishProcessId}/report-entries'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the report entries associated with the specified publish process ID."
+		description = "Retrieves the report entries of the publish process with the specified ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1125,4 +1125,4 @@ public abstract class BaseReportEntryResourceImpl
 		LogFactoryUtil.getLog(BaseReportEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:681221664
+// LIFERAY-REST-BUILDER-HASH:-1073639142

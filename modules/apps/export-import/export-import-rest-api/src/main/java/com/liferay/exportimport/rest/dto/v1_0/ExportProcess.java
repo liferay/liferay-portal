@@ -353,7 +353,7 @@ public class ExportProcess implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The export process's end status."
+		description = "The export process's status."
 	)
 	@Valid
 	public Status getStatus() {
@@ -389,7 +389,7 @@ public class ExportProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The export process's end status.")
+	@GraphQLField(description = "The export process's status.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Status status;
 
@@ -664,4 +664,4 @@ public class ExportProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1737263147
+// LIFERAY-REST-BUILDER-HASH:1193048459

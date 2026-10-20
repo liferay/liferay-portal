@@ -36,7 +36,13 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("PreviewSite")
+@GraphQLName(
+	description = "Represents a site an instance process can export or import in full.",
+	value = "PreviewSite"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "Represents a site an instance process can export or import in full."
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PreviewSite")
 public class PreviewSite implements Serializable {
@@ -479,4 +485,4 @@ public class PreviewSite implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1600542281
+// LIFERAY-REST-BUILDER-HASH:-2036966044

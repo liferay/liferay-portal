@@ -76,7 +76,7 @@ public abstract class BaseScheduledPublishProcessResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes/{scheduledPublishProcessId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Unschedules the scheduled Publish to Live process with the given ID and deletes its draft configuration."
+		description = "Unschedules the scheduled Publish to Live process with the specified ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -121,7 +121,7 @@ public abstract class BaseScheduledPublishProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes/{scheduledPublishProcessId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the scheduled Publish to Live process with the given ID."
+		description = "Retrieves the scheduled Publish to Live process with the specified ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -168,7 +168,7 @@ public abstract class BaseScheduledPublishProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the scheduled Publish to Live process entries for the specified site."
+		description = "Retrieves the scheduled Publish to Live processes of the specified site."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1125,4 +1125,4 @@ public abstract class BaseScheduledPublishProcessResourceImpl
 		LogFactoryUtil.getLog(BaseScheduledPublishProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:541475500
+// LIFERAY-REST-BUILDER-HASH:1480566370

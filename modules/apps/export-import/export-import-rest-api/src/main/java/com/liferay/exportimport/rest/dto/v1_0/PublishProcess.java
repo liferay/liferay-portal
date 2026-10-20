@@ -356,7 +356,7 @@ public class PublishProcess implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The publish process's end status."
+		description = "The publish process's status."
 	)
 	@Valid
 	public Status getStatus() {
@@ -392,7 +392,7 @@ public class PublishProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The publish process's end status.")
+	@GraphQLField(description = "The publish process's status.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Status status;
 
@@ -400,7 +400,7 @@ public class PublishProcess implements Serializable {
 	private Supplier<Status> _statusSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "How the publish process was started, either manually or by a schedule."
+		description = "How the publish process started, manually or by a schedule."
 	)
 	@JsonGetter("type")
 	@Valid
@@ -447,7 +447,7 @@ public class PublishProcess implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "How the publish process was started, either manually or by a schedule."
+		description = "How the publish process started, manually or by a schedule."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Type type;
@@ -775,4 +775,4 @@ public class PublishProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1003357096
+// LIFERAY-REST-BUILDER-HASH:-113088114

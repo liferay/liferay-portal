@@ -158,7 +158,7 @@ public abstract class BaseExportProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the layout export process entries of the specified asset library, or the export process entries of one of its portlets when a portlet ID is given."
+		description = "Retrieves the export processes of the specified asset library, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -187,6 +187,7 @@ public abstract class BaseExportProcessResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -369,7 +370,7 @@ public abstract class BaseExportProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/export-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the layout export process entries of the instance, or the export process entries of one of its portlets when a portlet ID is given."
+		description = "Retrieves the export processes of the instance, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -394,6 +395,7 @@ public abstract class BaseExportProcessResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -451,7 +453,7 @@ public abstract class BaseExportProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the layout export process entries of the specified site, or the export process entries of one of its portlets when a portlet ID is given."
+		description = "Retrieves the export processes of the specified site, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -480,6 +482,7 @@ public abstract class BaseExportProcessResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -541,7 +544,7 @@ public abstract class BaseExportProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes' -d $'{"comments": ___, "dateRangeType": ___, "deletions": ___, "endDate": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "startDate": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Starts an export process on the specified asset library, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview."
+		description = "Starts an export process on the specified asset library, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -550,10 +553,12 @@ public abstract class BaseExportProcessResourceImpl
 				name = "assetLibraryExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			)
@@ -600,10 +605,12 @@ public abstract class BaseExportProcessResourceImpl
 				name = "assetLibraryExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -675,6 +682,7 @@ public abstract class BaseExportProcessResourceImpl
 				name = "creatorId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -772,15 +780,17 @@ public abstract class BaseExportProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/export-processes' -d $'{"comments": ___, "dateRangeType": ___, "deletions": ___, "endDate": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "siteExternalReferenceCodes": ___, "startDate": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Starts an export process on the instance, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview and the external reference codes of the sites to export in full."
+		description = "Starts an export process on the instance, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview and the external reference codes of the sites to export in full. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			)
@@ -817,10 +827,12 @@ public abstract class BaseExportProcessResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -876,7 +888,7 @@ public abstract class BaseExportProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/export-processes/{exportProcessId}/relaunch'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Relaunches the export process with the specified ID. The process's date selection is resolved again when it runs."
+		description = "Relaunches the export process with the specified ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -917,6 +929,7 @@ public abstract class BaseExportProcessResourceImpl
 				name = "creatorId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -1017,10 +1030,12 @@ public abstract class BaseExportProcessResourceImpl
 				name = "siteExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			)
@@ -1065,10 +1080,12 @@ public abstract class BaseExportProcessResourceImpl
 				name = "siteExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -1140,6 +1157,7 @@ public abstract class BaseExportProcessResourceImpl
 				name = "creatorId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -2004,4 +2022,4 @@ public abstract class BaseExportProcessResourceImpl
 		LogFactoryUtil.getLog(BaseExportProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1320702764
+// LIFERAY-REST-BUILDER-HASH:-791478482

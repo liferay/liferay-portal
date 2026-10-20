@@ -66,10 +66,12 @@ public abstract class BaseExportPreviewResourceImpl
 				name = "endDate"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -134,10 +136,12 @@ public abstract class BaseExportPreviewResourceImpl
 				name = "endDate"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -200,10 +204,12 @@ public abstract class BaseExportPreviewResourceImpl
 				name = "endDate"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of the page that holds the portlet. Required with portletId.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "plid"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "portletId"
 			),
@@ -692,4 +698,4 @@ public abstract class BaseExportPreviewResourceImpl
 		LogFactoryUtil.getLog(BaseExportPreviewResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1039207846
+// LIFERAY-REST-BUILDER-HASH:1114088057

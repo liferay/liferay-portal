@@ -43,7 +43,13 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("ReportEntry")
+@GraphQLName(
+	description = "Represents an item reported by an import or publish process.",
+	value = "ReportEntry"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "Represents an item reported by an import or publish process."
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "ReportEntry")
 public class ReportEntry implements Serializable {
@@ -190,7 +196,7 @@ public class ReportEntry implements Serializable {
 	private Supplier<Long> _classPKSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The report entry's configuration ID."
+		description = "The ID of the configuration of the process the entry belongs to."
 	)
 	public Long getConfigurationId() {
 		if (_configurationIdSupplier != null) {
@@ -225,7 +231,9 @@ public class ReportEntry implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The report entry's configuration ID.")
+	@GraphQLField(
+		description = "The ID of the configuration of the process the entry belongs to."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long configurationId;
 
@@ -322,7 +330,7 @@ public class ReportEntry implements Serializable {
 	private Supplier<Date> _dateCreatedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The report entry's latest modification date."
+		description = "The report entry's last modification date."
 	)
 	public Date getDateModified() {
 		if (_dateModifiedSupplier != null) {
@@ -357,7 +365,7 @@ public class ReportEntry implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The report entry's latest modification date.")
+	@GraphQLField(description = "The report entry's last modification date.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date dateModified;
 
@@ -365,7 +373,7 @@ public class ReportEntry implements Serializable {
 	private Supplier<Date> _dateModifiedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The error message."
+		description = "The report entry's error message."
 	)
 	public String getErrorMessage() {
 		if (_errorMessageSupplier != null) {
@@ -400,7 +408,7 @@ public class ReportEntry implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The error message.")
+	@GraphQLField(description = "The report entry's error message.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String errorMessage;
 
@@ -1067,4 +1075,4 @@ public class ReportEntry implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:575295946
+// LIFERAY-REST-BUILDER-HASH:440567559

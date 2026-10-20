@@ -78,7 +78,7 @@ public abstract class BasePreviewSiteResourceImpl
 	 */
 	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-85946")
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the sites that can be exported."
+		description = "Retrieves the sites the instance can export in full."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -864,4 +864,4 @@ public abstract class BasePreviewSiteResourceImpl
 		LogFactoryUtil.getLog(BasePreviewSiteResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:101997022
+// LIFERAY-REST-BUILDER-HASH:1593458393
