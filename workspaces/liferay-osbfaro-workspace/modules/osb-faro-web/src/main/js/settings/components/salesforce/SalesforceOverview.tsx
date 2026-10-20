@@ -276,7 +276,7 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 			</Card>
 
 			<Card title={Liferay.Language.get('synced-data')}>
-				<AccountAndIndividuals
+				<SyncedDataSection
 					currentUser={currentUser}
 					dataSource={dataSource}
 					groupId={groupId}
@@ -334,7 +334,7 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 	);
 };
 
-const AccountAndIndividuals = ({
+const SyncedDataSection = ({
 	currentUser,
 	dataSource,
 	groupId,
