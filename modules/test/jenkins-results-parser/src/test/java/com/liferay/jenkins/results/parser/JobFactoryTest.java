@@ -5,9 +5,9 @@
 
 package com.liferay.jenkins.results.parser;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -75,11 +75,13 @@ public class JobFactoryTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testNewJobReusesCachedJob() {
-		mockEnvironment(
-			ImmutableMap.of(
-				"BUILD_CACHING_ENABLED", "true", "JENKINS_URL",
-				RandomTestUtil.randomString(), "MASTER_NETWORK_NAME",
-				"aws-network"));
+		Map<String, String> environmentMap = new HashMap<>();
+
+		environmentMap.put("BUILD_CACHING_ENABLED", "true");
+		environmentMap.put("JENKINS_URL", RandomTestUtil.randomString());
+		environmentMap.put("MASTER_NETWORK_NAME", "aws-network");
+
+		mockEnvironment(environmentMap);
 
 		BuildDatabase buildDatabase = Mockito.mock(BuildDatabase.class);
 
