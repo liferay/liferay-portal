@@ -21,17 +21,16 @@ public class UpgradePortletSettings
 	protected void doUpgrade() throws Exception {
 		String[] serviceKeys = getSettingsKeys(DLGroupServiceSettings.class);
 
-		upgradeMainPortlet(
-			DLPortletKeys.DOCUMENT_LIBRARY, DLConstants.SERVICE_NAME,
-			PortletKeys.PREFS_OWNER_TYPE_GROUP,
-			getSettingsKeys(DLPortletInstanceSettings.class), serviceKeys);
-
 		upgradeDisplayPortlet(
 			DLPortletKeys.DOCUMENT_LIBRARY, PortletKeys.PREFS_OWNER_TYPE_LAYOUT,
 			serviceKeys);
 		upgradeDisplayPortlet(
 			DLPortletKeys.MEDIA_GALLERY_DISPLAY,
 			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, serviceKeys);
+		upgradeMainPortlet(
+			DLPortletKeys.DOCUMENT_LIBRARY, DLConstants.SERVICE_NAME,
+			PortletKeys.PREFS_OWNER_TYPE_GROUP,
+			getSettingsKeys(DLPortletInstanceSettings.class), serviceKeys);
 	}
 
 }
