@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {act, cleanup, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -20,7 +20,7 @@ jest.mock('recharts', () => {
 	return {
 		...OriginalModule,
 		ResponsiveContainer: ({children}) => (
-			<OriginalModule.ResponsiveContainer aspect={1} width={100}>
+			<OriginalModule.ResponsiveContainer aspect={1} width={1000}>
 				{children}
 			</OriginalModule.ResponsiveContainer>
 		),
@@ -255,6 +255,7 @@ describe('AuditBarChart', () => {
 
 	afterEach(() => {
 		jest.clearAllMocks();
+		jest.useRealTimers();
 	});
 
 	afterAll(() => {
@@ -361,6 +362,8 @@ describe('AuditBarChart', () => {
 	});
 
 	it('hides the bars of an unchecked category from the legend and keeps the colors of the other categories', () => {
+		jest.useFakeTimers();
+
 		const {container} = render(
 			<AuditBarChart
 				namespace="demo_namespace"
@@ -396,6 +399,10 @@ describe('AuditBarChart', () => {
 
 		fireEvent.click(screen.getByRole('checkbox', {name: 'Substage_2'}));
 
+		act(() => {
+			jest.runAllTimers();
+		});
+
 		expect(
 			screen.getByRole('checkbox', {name: 'Substage_2'})
 		).not.toBeChecked();
@@ -406,6 +413,13 @@ describe('AuditBarChart', () => {
 			screen.getByRole('checkbox', {name: 'Substage_3'})
 		).toBeChecked();
 		expect(bars.length).toBe(6);
+		expect(
+			new Set(
+				Array.from(bars, (bar) =>
+					bar.querySelector('path').getAttribute('fill')
+				)
+			)
+		).toEqual(new Set(['#4B9FFF', '#FF5F5F']));
 		expect(getLegendColorStyle()).toBe(legendColorStyle);
 	});
 
