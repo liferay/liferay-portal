@@ -1393,7 +1393,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "If true, events from anonymous (browser-tracked) individuals are included. Defaults to false."
+                        "If false, events from anonymous (browser-tracked) individuals are left out. Defaults to true, so anonymous events are included unless this is set to false."
                     name: includeAnonymousUsers
                     schema:
                         type: boolean
