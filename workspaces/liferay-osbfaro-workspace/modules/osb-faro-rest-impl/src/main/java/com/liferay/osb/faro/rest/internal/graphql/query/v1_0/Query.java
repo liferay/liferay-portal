@@ -214,14 +214,15 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccounts(channelId: ___, groupId: ___, lifecycleStage: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccounts(accountLifecycleId: ___, channelId: ___, groupId: ___, lifecycleStage: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`."
+		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the first account lifecycle of the channel when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`."
 	)
 	public AccountPage workspaceGroupChannelAccounts(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("channelId") String channelId,
+			@GraphQLName("accountLifecycleId") String accountLifecycleId,
 			@GraphQLName("lifecycleStage") String lifecycleStage,
 			@GraphQLName("rangeEnd") String rangeEnd,
 			@GraphQLName("rangeKey") String rangeKey,
@@ -237,8 +238,9 @@ public class Query {
 			this::_populateResourceContext,
 			accountResource -> new AccountPage(
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, lifecycleStage, rangeEnd, rangeKey,
-					rangeStart, search, Pagination.of(page, pageSize),
+					groupId, channelId, accountLifecycleId, lifecycleStage,
+					rangeEnd, rangeKey, rangeStart, search,
+					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(accountResource, sortsString))));
 	}
 
@@ -618,16 +620,15 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividualSegmentMembershipChanges(groupId: ___, individualSegmentId: ___, operation: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividualSegmentMembershipChanges(groupId: ___, individualSegmentId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List the individuals who entered or left an individual segment over a date range, most recent change first, with each individual's name and email resolved. Use this to answer 'who has exited this segment recently'. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. `rangeStart` and `rangeEnd` must be given together; a request with only one of them fails. LAST_30_DAYS is used when neither `rangeKey` nor the dates are given. For the current membership list, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "Deprecated: always returns an empty page. The analytics engine does not record which individuals entered or left a segment, so do not use this to find who joined or exited a segment. `rangeStart` and `rangeEnd` must be given together; a request with only one of them fails. For how a segment grew or shrank over a date range, use `getWorkspaceGroupIndividualSegmentMembershipChangeMetric`. For the current members, use `getWorkspaceGroupChannelIndividualsPage` with `individualSegmentId`."
 	)
 	public IndividualSegmentMembershipChangePage
 			workspaceGroupIndividualSegmentMembershipChanges(
 				@GraphQLName("groupId") Long groupId,
 				@GraphQLName("individualSegmentId") String individualSegmentId,
-				@GraphQLName("operation") String operation,
 				@GraphQLName("rangeEnd") String rangeEnd,
 				@GraphQLName("rangeKey") String rangeKey,
 				@GraphQLName("rangeStart") String rangeStart,
@@ -644,9 +645,8 @@ public class Query {
 				new IndividualSegmentMembershipChangePage(
 					individualSegmentMembershipChangeResource.
 						getWorkspaceGroupIndividualSegmentMembershipChangesPage(
-							groupId, individualSegmentId, operation, rangeEnd,
-							rangeKey, rangeStart, search,
-							Pagination.of(page, pageSize),
+							groupId, individualSegmentId, rangeEnd, rangeKey,
+							rangeStart, search, Pagination.of(page, pageSize),
 							_sortsBiFunction.apply(
 								individualSegmentMembershipChangeResource,
 								sortsString))));
@@ -744,7 +744,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccountUserSessions(accountId: ___, channelId: ___, groupId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+		description = "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
 	)
 	public UserSessionPage workspaceGroupChannelAccountUserSessions(
 			@GraphQLName("groupId") Long groupId,
@@ -774,7 +774,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividualUserSessions(channelId: ___, groupId: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+		description = "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
 	)
 	public UserSessionPage workspaceGroupChannelIndividualUserSessions(
 			@GraphQLName("groupId") Long groupId,
@@ -1684,4 +1684,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2030210914
+// LIFERAY-REST-BUILDER-HASH:1423245877

@@ -188,7 +188,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 		individualSegmentMembershipChange.setIndividualId(regex);
 		individualSegmentMembershipChange.setIndividualName(regex);
 		individualSegmentMembershipChange.setIndividualSegmentId(regex);
-		individualSegmentMembershipChange.setOperation(regex);
 
 		String json = IndividualSegmentMembershipChangeSerDes.toJSON(
 			individualSegmentMembershipChange);
@@ -207,8 +206,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 			regex, individualSegmentMembershipChange.getIndividualName());
 		Assert.assertEquals(
 			regex, individualSegmentMembershipChange.getIndividualSegmentId());
-		Assert.assertEquals(
-			regex, individualSegmentMembershipChange.getOperation());
 	}
 
 	@Test
@@ -229,7 +226,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 					groupId, individualSegmentId, RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(), null, Pagination.of(1, 10),
 					null);
 
@@ -248,8 +244,8 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						irrelevantGroupId, irrelevantIndividualSegmentId, null,
-						null, null, null, null,
-						Pagination.of(1, (int)totalCount + 1), null);
+						null, null, null, Pagination.of(1, (int)totalCount + 1),
+						null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -275,7 +271,7 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 		page =
 			individualSegmentMembershipChangeResource.
 				getWorkspaceGroupIndividualSegmentMembershipChangesPage(
-					groupId, individualSegmentId, null, null, null, null, null,
+					groupId, individualSegmentId, null, null, null, null,
 					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -316,7 +312,7 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null, null, null);
+						null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			individualSegmentMembershipChangesPage.getTotalCount());
@@ -345,7 +341,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -361,7 +356,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -375,7 +369,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -390,7 +383,7 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null, Pagination.of(1, totalCount + 2), null);
+						Pagination.of(1, totalCount + 2), null);
 
 			List<IndividualSegmentMembershipChange>
 				individualSegmentMembershipChanges1 =
@@ -404,7 +397,7 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null, Pagination.of(2, totalCount + 2), null);
+						Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -420,7 +413,7 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null, Pagination.of(1, (int)totalCount + 3), null);
+						Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
 				individualSegmentMembershipChange1,
@@ -585,14 +578,14 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 			individualSegmentMembershipChangeResource.
 				getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 					groupId, individualSegmentId, null, null, null, null, null,
-					null, null);
+					null);
 
 		for (EntityField entityField : entityFields) {
 			Page<IndividualSegmentMembershipChange> ascPage =
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null, Pagination.of(1, (int)page.getTotalCount() + 1),
+						Pagination.of(1, (int)page.getTotalCount() + 1),
 						entityField.getName() + ":asc");
 
 			assertContains(
@@ -606,7 +599,7 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualSegmentMembershipChangeResource.
 					getWorkspaceGroupIndividualSegmentMembershipChangesPage(
 						groupId, individualSegmentId, null, null, null, null,
-						null, Pagination.of(1, (int)page.getTotalCount() + 1),
+						Pagination.of(1, (int)page.getTotalCount() + 1),
 						entityField.getName() + ":desc");
 
 			assertContains(
@@ -836,14 +829,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("operation", additionalAssertFieldName)) {
-				if (individualSegmentMembershipChange.getOperation() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -1045,17 +1030,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 							getIndividualSegmentId(),
 						individualSegmentMembershipChange2.
 							getIndividualSegmentId())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("operation", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						individualSegmentMembershipChange1.getOperation(),
-						individualSegmentMembershipChange2.getOperation())) {
 
 					return false;
 				}
@@ -1468,52 +1442,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 			return sb.toString();
 		}
 
-		if (entityFieldName.equals("operation")) {
-			Object object = individualSegmentMembershipChange.getOperation();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1574,8 +1502,6 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 				individualName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				individualSegmentId = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
-				operation = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 			}
 		};
@@ -1812,4 +1738,4 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 			_individualSegmentMembershipChangeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-155828556
+// LIFERAY-REST-BUILDER-HASH:8330519

@@ -36,16 +36,16 @@ public interface IndividualSegmentMembershipChangeResource {
 
 	public Page<IndividualSegmentMembershipChange>
 			getWorkspaceGroupIndividualSegmentMembershipChangesPage(
-				Long groupId, String individualSegmentId, String operation,
-				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination, String sortString)
+				Long groupId, String individualSegmentId, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
+				Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
-				Long groupId, String individualSegmentId, String operation,
-				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination, String sortString)
+				Long groupId, String individualSegmentId, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
+				Pagination pagination, String sortString)
 		throws Exception;
 
 	public static class Builder {
@@ -159,14 +159,14 @@ public interface IndividualSegmentMembershipChangeResource {
 
 		public Page<IndividualSegmentMembershipChange>
 				getWorkspaceGroupIndividualSegmentMembershipChangesPage(
-					Long groupId, String individualSegmentId, String operation,
-					String rangeEnd, String rangeKey, String rangeStart,
-					String search, Pagination pagination, String sortString)
+					Long groupId, String individualSegmentId, String rangeEnd,
+					String rangeKey, String rangeStart, String search,
+					Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
-					groupId, individualSegmentId, operation, rangeEnd, rangeKey,
+					groupId, individualSegmentId, rangeEnd, rangeKey,
 					rangeStart, search, pagination, sortString);
 
 			String content = httpResponse.getContent();
@@ -231,9 +231,9 @@ public interface IndividualSegmentMembershipChangeResource {
 
 		public HttpInvoker.HttpResponse
 				getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
-					Long groupId, String individualSegmentId, String operation,
-					String rangeEnd, String rangeKey, String rangeStart,
-					String search, Pagination pagination, String sortString)
+					Long groupId, String individualSegmentId, String rangeEnd,
+					String rangeKey, String rangeStart, String search,
+					Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -256,10 +256,6 @@ public interface IndividualSegmentMembershipChangeResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			if (operation != null) {
-				httpInvoker.parameter("operation", String.valueOf(operation));
-			}
 
 			if (rangeEnd != null) {
 				httpInvoker.parameter("rangeEnd", String.valueOf(rangeEnd));
@@ -316,4 +312,4 @@ public interface IndividualSegmentMembershipChangeResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1572279261
+// LIFERAY-REST-BUILDER-HASH:1000773198

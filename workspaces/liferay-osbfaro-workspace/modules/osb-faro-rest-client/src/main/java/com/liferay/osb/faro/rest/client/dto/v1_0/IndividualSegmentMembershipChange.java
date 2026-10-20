@@ -172,27 +172,6 @@ public class IndividualSegmentMembershipChange
 
 	protected String individualSegmentId;
 
-	public String getOperation() {
-		return operation;
-	}
-
-	public void setOperation(String operation) {
-		this.operation = operation;
-	}
-
-	public void setOperation(
-		UnsafeSupplier<String, Exception> operationUnsafeSupplier) {
-
-		try {
-			operation = operationUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String operation;
-
 	@Override
 	public IndividualSegmentMembershipChange clone()
 		throws CloneNotSupportedException {
@@ -229,4 +208,4 @@ public class IndividualSegmentMembershipChange
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1701606938
+// LIFERAY-REST-BUILDER-HASH:-1396214266

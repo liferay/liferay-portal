@@ -45,9 +45,9 @@ public interface IndividualSegmentMembershipChangeResource {
 
 	public Page<IndividualSegmentMembershipChange>
 			getWorkspaceGroupIndividualSegmentMembershipChangesPage(
-				Long groupId, String individualSegmentId, String operation,
-				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination,
+				Long groupId, String individualSegmentId, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
+				Pagination pagination,
 				com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
@@ -139,4 +139,4 @@ public interface IndividualSegmentMembershipChangeResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1323633694
+// LIFERAY-REST-BUILDER-HASH:-308660982

@@ -168,21 +168,6 @@ public class IndividualSegmentMembershipChangeSerDes {
 			sb.append("\"");
 		}
 
-		if (individualSegmentMembershipChange.getOperation() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"operation\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				_escape(individualSegmentMembershipChange.getOperation()));
-
-			sb.append("\"");
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -280,16 +265,6 @@ public class IndividualSegmentMembershipChangeSerDes {
 						getIndividualSegmentId()));
 		}
 
-		if (individualSegmentMembershipChange.getOperation() == null) {
-			map.put("operation", null);
-		}
-		else {
-			map.put(
-				"operation",
-				String.valueOf(
-					individualSegmentMembershipChange.getOperation()));
-		}
-
 		return map;
 	}
 
@@ -329,9 +304,6 @@ public class IndividualSegmentMembershipChangeSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "individualSegmentId")) {
 
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "operation")) {
 				return false;
 			}
 
@@ -384,12 +356,6 @@ public class IndividualSegmentMembershipChangeSerDes {
 
 				if (jsonParserFieldValue != null) {
 					individualSegmentMembershipChange.setIndividualSegmentId(
-						(String)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "operation")) {
-				if (jsonParserFieldValue != null) {
-					individualSegmentMembershipChange.setOperation(
 						(String)jsonParserFieldValue);
 				}
 			}
@@ -480,4 +446,4 @@ public class IndividualSegmentMembershipChangeSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1847736215
+// LIFERAY-REST-BUILDER-HASH:1166478965
