@@ -19,6 +19,8 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
@@ -38,21 +40,22 @@ import java.util.function.Supplier;
 @Generated("")
 @GraphQLName(
 	description = "Represents a site an instance process can export or import in full.",
-	value = "PreviewSite"
+	value = "Site"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Represents a site an instance process can export or import in full."
+	description = "Represents a site an instance process can export or import in full.",
+	requiredProperties = {"externalReferenceCode"}
 )
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "PreviewSite")
-public class PreviewSite implements Serializable {
+@XmlRootElement(name = "Site")
+public class Site implements Serializable {
 
-	public static PreviewSite toDTO(String json) {
-		return ObjectMapperUtil.readValue(PreviewSite.class, json);
+	public static Site toDTO(String json) {
+		return ObjectMapperUtil.readValue(Site.class, json);
 	}
 
-	public static PreviewSite unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(PreviewSite.class, json);
+	public static Site unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Site.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
@@ -138,7 +141,7 @@ public class PreviewSite implements Serializable {
 	private Supplier<String> _descriptiveNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "A flag that indicates whether the instance already has the site. Set only in the import preview."
+		description = "A flag that indicates whether the instance already has the site, which only the import preview sets."
 	)
 	public Boolean getExistsInInstance() {
 		if (_existsInInstanceSupplier != null) {
@@ -174,7 +177,7 @@ public class PreviewSite implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "A flag that indicates whether the instance already has the site. Set only in the import preview."
+		description = "A flag that indicates whether the instance already has the site, which only the import preview sets."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean existsInInstance;
@@ -182,7 +185,9 @@ public class PreviewSite implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _existsInInstanceSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The site's external reference code, which is the only property the instance requests send."
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -216,8 +221,11 @@ public class PreviewSite implements Serializable {
 		};
 	}
 
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@GraphQLField(
+		description = "The site's external reference code, which is the only property the instance requests send."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	@NotEmpty
 	protected String externalReferenceCode;
 
 	@JsonIgnore
@@ -270,13 +278,13 @@ public class PreviewSite implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof PreviewSite)) {
+		if (!(object instanceof Site)) {
 			return false;
 		}
 
-		PreviewSite previewSite = (PreviewSite)object;
+		Site site = (Site)object;
 
-		return Objects.equals(toString(), previewSite.toString());
+		return Objects.equals(toString(), site.toString());
 	}
 
 	@Override
@@ -370,7 +378,7 @@ public class PreviewSite implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.PreviewSite",
+		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.Site",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -485,4 +493,4 @@ public class PreviewSite implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2036966044
+// LIFERAY-REST-BUILDER-HASH:704668939

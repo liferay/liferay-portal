@@ -5,12 +5,12 @@
 
 package com.liferay.exportimport.rest.client.resource.v1_0;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewSite;
+import com.liferay.exportimport.rest.client.dto.v1_0.Site;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
 import com.liferay.exportimport.rest.client.problem.Problem;
-import com.liferay.exportimport.rest.client.serdes.v1_0.PreviewSiteSerDes;
+import com.liferay.exportimport.rest.client.serdes.v1_0.SiteSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -28,28 +28,27 @@ import java.util.logging.Logger;
  * @generated
  */
 @Generated("")
-public interface PreviewSiteResource {
+public interface SiteResource {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public Page<PreviewSite> getExportPreviewPreviewSitesPage(
+	public Page<Site> getExportPreviewSitesPage(
 			String search, Pagination pagination, String sortString)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse
-			getExportPreviewPreviewSitesPageHttpResponse(
-				String search, Pagination pagination, String sortString)
+	public HttpInvoker.HttpResponse getExportPreviewSitesPageHttpResponse(
+			String search, Pagination pagination, String sortString)
 		throws Exception;
 
-	public void postExportPreviewPreviewSitesPageExportBatch(
+	public void postExportPreviewSitesPageExportBatch(
 			String search, String sortString, String callbackURL,
 			String contentType, String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			postExportPreviewPreviewSitesPageExportBatchHttpResponse(
+			postExportPreviewSitesPageExportBatchHttpResponse(
 				String search, String sortString, String callbackURL,
 				String contentType, String fieldNames)
 		throws Exception;
@@ -67,8 +66,8 @@ public interface PreviewSiteResource {
 			return header("Authorization", "Bearer " + token);
 		}
 
-		public PreviewSiteResource build() {
-			return new PreviewSiteResourceImpl(this);
+		public SiteResource build() {
+			return new SiteResourceImpl(this);
 		}
 
 		public Builder contextPath(String contextPath) {
@@ -160,14 +159,14 @@ public interface PreviewSiteResource {
 
 	}
 
-	public static class PreviewSiteResourceImpl implements PreviewSiteResource {
+	public static class SiteResourceImpl implements SiteResource {
 
-		public Page<PreviewSite> getExportPreviewPreviewSitesPage(
+		public Page<Site> getExportPreviewSitesPage(
 				String search, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getExportPreviewPreviewSitesPageHttpResponse(
+				getExportPreviewSitesPageHttpResponse(
 					search, pagination, sortString);
 
 			String content = httpResponse.getContent();
@@ -218,7 +217,7 @@ public interface PreviewSiteResource {
 			}
 
 			try {
-				return Page.of(content, PreviewSiteSerDes::toDTO);
+				return Page.of(content, SiteSerDes::toDTO);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -229,9 +228,8 @@ public interface PreviewSiteResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				getExportPreviewPreviewSitesPageHttpResponse(
-					String search, Pagination pagination, String sortString)
+		public HttpInvoker.HttpResponse getExportPreviewSitesPageHttpResponse(
+				String search, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -273,7 +271,7 @@ public interface PreviewSiteResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/export-preview/preview-sites");
+						"/o/export-import/v1.0/export-preview/sites");
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -283,13 +281,13 @@ public interface PreviewSiteResource {
 			return httpInvoker.invoke();
 		}
 
-		public void postExportPreviewPreviewSitesPageExportBatch(
+		public void postExportPreviewSitesPageExportBatch(
 				String search, String sortString, String callbackURL,
 				String contentType, String fieldNames)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postExportPreviewPreviewSitesPageExportBatchHttpResponse(
+				postExportPreviewSitesPageExportBatchHttpResponse(
 					search, sortString, callbackURL, contentType, fieldNames);
 
 			String content = httpResponse.getContent();
@@ -341,7 +339,7 @@ public interface PreviewSiteResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				postExportPreviewPreviewSitesPageExportBatchHttpResponse(
+				postExportPreviewSitesPageExportBatchHttpResponse(
 					String search, String sortString, String callbackURL,
 					String contentType, String fieldNames)
 			throws Exception {
@@ -394,7 +392,7 @@ public interface PreviewSiteResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/export-preview/preview-sites/export-batch");
+						"/o/export-import/v1.0/export-preview/sites/export-batch");
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -404,16 +402,16 @@ public interface PreviewSiteResource {
 			return httpInvoker.invoke();
 		}
 
-		private PreviewSiteResourceImpl(Builder builder) {
+		private SiteResourceImpl(Builder builder) {
 			_builder = builder;
 		}
 
 		private static final Logger _logger = Logger.getLogger(
-			PreviewSiteResource.class.getName());
+			SiteResource.class.getName());
 
 		private Builder _builder;
 
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:668454112
+// LIFERAY-REST-BUILDER-HASH:1608705442

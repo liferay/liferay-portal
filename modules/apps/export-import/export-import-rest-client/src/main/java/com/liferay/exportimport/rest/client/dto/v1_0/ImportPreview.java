@@ -176,26 +176,26 @@ public class ImportPreview implements Cloneable, Serializable {
 
 	protected PortletDataHandler[] portletDataHandlers;
 
-	public PreviewSite[] getPreviewSites() {
-		return previewSites;
+	public Site[] getSites() {
+		return sites;
 	}
 
-	public void setPreviewSites(PreviewSite[] previewSites) {
-		this.previewSites = previewSites;
+	public void setSites(Site[] sites) {
+		this.sites = sites;
 	}
 
-	public void setPreviewSites(
-		UnsafeSupplier<PreviewSite[], Exception> previewSitesUnsafeSupplier) {
+	public void setSites(
+		UnsafeSupplier<Site[], Exception> sitesUnsafeSupplier) {
 
 		try {
-			previewSites = previewSitesUnsafeSupplier.get();
+			sites = sitesUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected PreviewSite[] previewSites;
+	protected Site[] sites;
 
 	@Override
 	public ImportPreview clone() throws CloneNotSupportedException {
@@ -229,4 +229,4 @@ public class ImportPreview implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:505285698
+// LIFERAY-REST-BUILDER-HASH:-1046802192

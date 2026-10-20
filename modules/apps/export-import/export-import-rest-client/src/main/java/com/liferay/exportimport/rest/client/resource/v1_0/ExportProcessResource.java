@@ -7,6 +7,7 @@ package com.liferay.exportimport.rest.client.resource.v1_0;
 
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportProcessRequest;
+import com.liferay.exportimport.rest.client.dto.v1_0.InstanceExportProcessRequest;
 import com.liferay.exportimport.rest.client.dto.v1_0.ProcessProgress;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
@@ -143,20 +144,24 @@ public interface ExportProcessResource {
 		throws Exception;
 
 	public ExportProcess postExportProcess(
-			String portletId, ExportProcessRequest exportProcessRequest)
+			String portletId,
+			InstanceExportProcessRequest instanceExportProcessRequest)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postExportProcessHttpResponse(
-			String portletId, ExportProcessRequest exportProcessRequest)
+			String portletId,
+			InstanceExportProcessRequest instanceExportProcessRequest)
 		throws Exception;
 
 	public void postExportProcessBatch(
-			String portletId, ExportProcessRequest exportProcessRequest,
+			String portletId,
+			InstanceExportProcessRequest instanceExportProcessRequest,
 			String callbackURL, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postExportProcessBatchHttpResponse(
-			String portletId, ExportProcessRequest exportProcessRequest,
+			String portletId,
+			InstanceExportProcessRequest instanceExportProcessRequest,
 			String callbackURL, Object object)
 		throws Exception;
 
@@ -1642,11 +1647,13 @@ public interface ExportProcessResource {
 		}
 
 		public ExportProcess postExportProcess(
-				String portletId, ExportProcessRequest exportProcessRequest)
+				String portletId,
+				InstanceExportProcessRequest instanceExportProcessRequest)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postExportProcessHttpResponse(portletId, exportProcessRequest);
+				postExportProcessHttpResponse(
+					portletId, instanceExportProcessRequest);
 
 			String content = httpResponse.getContent();
 
@@ -1708,13 +1715,14 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postExportProcessHttpResponse(
-				String portletId, ExportProcessRequest exportProcessRequest)
+				String portletId,
+				InstanceExportProcessRequest instanceExportProcessRequest)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
 
 			httpInvoker.body(
-				exportProcessRequest.toString(), "application/json");
+				instanceExportProcessRequest.toString(), "application/json");
 
 			if (_builder._locale != null) {
 				httpInvoker.header(
@@ -1753,13 +1761,15 @@ public interface ExportProcessResource {
 		}
 
 		public void postExportProcessBatch(
-				String portletId, ExportProcessRequest exportProcessRequest,
+				String portletId,
+				InstanceExportProcessRequest instanceExportProcessRequest,
 				String callbackURL, Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postExportProcessBatchHttpResponse(
-					portletId, exportProcessRequest, callbackURL, object);
+					portletId, instanceExportProcessRequest, callbackURL,
+					object);
 
 			String content = httpResponse.getContent();
 
@@ -1810,7 +1820,8 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postExportProcessBatchHttpResponse(
-				String portletId, ExportProcessRequest exportProcessRequest,
+				String portletId,
+				InstanceExportProcessRequest instanceExportProcessRequest,
 				String callbackURL, Object object)
 			throws Exception {
 
@@ -2512,4 +2523,4 @@ public interface ExportProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:780217
+// LIFERAY-REST-BUILDER-HASH:718576558

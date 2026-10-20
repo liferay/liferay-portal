@@ -1,0 +1,339 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.exportimport.rest.client.dto.v1_0;
+
+import com.liferay.exportimport.rest.client.function.UnsafeSupplier;
+import com.liferay.exportimport.rest.client.serdes.v1_0.InstanceImportProcessRequestSerDes;
+
+import jakarta.annotation.Generated;
+
+import java.io.Serializable;
+
+import java.util.Objects;
+
+/**
+ * @author Petteri Karttunen
+ * @generated
+ */
+@Generated("")
+public class InstanceImportProcessRequest implements Cloneable, Serializable {
+
+	public static InstanceImportProcessRequest toDTO(String json) {
+		return InstanceImportProcessRequestSerDes.toDTO(json);
+	}
+
+	public Boolean getComments() {
+		return comments;
+	}
+
+	public void setComments(Boolean comments) {
+		this.comments = comments;
+	}
+
+	public void setComments(
+		UnsafeSupplier<Boolean, Exception> commentsUnsafeSupplier) {
+
+		try {
+			comments = commentsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean comments;
+
+	public DataStrategy getDataStrategy() {
+		return dataStrategy;
+	}
+
+	public String getDataStrategyAsString() {
+		if (dataStrategy == null) {
+			return null;
+		}
+
+		return dataStrategy.toString();
+	}
+
+	public void setDataStrategy(DataStrategy dataStrategy) {
+		this.dataStrategy = dataStrategy;
+	}
+
+	public void setDataStrategy(
+		UnsafeSupplier<DataStrategy, Exception> dataStrategyUnsafeSupplier) {
+
+		try {
+			dataStrategy = dataStrategyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected DataStrategy dataStrategy;
+
+	public Boolean getDeletions() {
+		return deletions;
+	}
+
+	public void setDeletions(Boolean deletions) {
+		this.deletions = deletions;
+	}
+
+	public void setDeletions(
+		UnsafeSupplier<Boolean, Exception> deletionsUnsafeSupplier) {
+
+		try {
+			deletions = deletionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean deletions;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
+		try {
+			name = nameUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String name;
+
+	public Boolean getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Boolean permissions) {
+		this.permissions = permissions;
+	}
+
+	public void setPermissions(
+		UnsafeSupplier<Boolean, Exception> permissionsUnsafeSupplier) {
+
+		try {
+			permissions = permissionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean permissions;
+
+	public PortletDataHandler[] getPortletDataHandlers() {
+		return portletDataHandlers;
+	}
+
+	public void setPortletDataHandlers(
+		PortletDataHandler[] portletDataHandlers) {
+
+		this.portletDataHandlers = portletDataHandlers;
+	}
+
+	public void setPortletDataHandlers(
+		UnsafeSupplier<PortletDataHandler[], Exception>
+			portletDataHandlersUnsafeSupplier) {
+
+		try {
+			portletDataHandlers = portletDataHandlersUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected PortletDataHandler[] portletDataHandlers;
+
+	public Boolean getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(Boolean ratings) {
+		this.ratings = ratings;
+	}
+
+	public void setRatings(
+		UnsafeSupplier<Boolean, Exception> ratingsUnsafeSupplier) {
+
+		try {
+			ratings = ratingsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean ratings;
+
+	public Site[] getSites() {
+		return sites;
+	}
+
+	public void setSites(Site[] sites) {
+		this.sites = sites;
+	}
+
+	public void setSites(
+		UnsafeSupplier<Site[], Exception> sitesUnsafeSupplier) {
+
+		try {
+			sites = sitesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Site[] sites;
+
+	public UserIdStrategy getUserIdStrategy() {
+		return userIdStrategy;
+	}
+
+	public String getUserIdStrategyAsString() {
+		if (userIdStrategy == null) {
+			return null;
+		}
+
+		return userIdStrategy.toString();
+	}
+
+	public void setUserIdStrategy(UserIdStrategy userIdStrategy) {
+		this.userIdStrategy = userIdStrategy;
+	}
+
+	public void setUserIdStrategy(
+		UnsafeSupplier<UserIdStrategy, Exception>
+			userIdStrategyUnsafeSupplier) {
+
+		try {
+			userIdStrategy = userIdStrategyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected UserIdStrategy userIdStrategy;
+
+	@Override
+	public InstanceImportProcessRequest clone()
+		throws CloneNotSupportedException {
+
+		return (InstanceImportProcessRequest)super.clone();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+
+		if (!(object instanceof InstanceImportProcessRequest)) {
+			return false;
+		}
+
+		InstanceImportProcessRequest instanceImportProcessRequest =
+			(InstanceImportProcessRequest)object;
+
+		return Objects.equals(
+			toString(), instanceImportProcessRequest.toString());
+	}
+
+	@Override
+	public int hashCode() {
+		String string = toString();
+
+		return string.hashCode();
+	}
+
+	public String toString() {
+		return InstanceImportProcessRequestSerDes.toJSON(this);
+	}
+
+	public static enum DataStrategy {
+
+		MIRROR("MIRROR"), MIRROR_OVERWRITE("MIRROR_OVERWRITE"),
+		COPY_AS_NEW("COPY_AS_NEW");
+
+		public static DataStrategy create(String value) {
+			for (DataStrategy dataStrategy : values()) {
+				if (Objects.equals(dataStrategy.getValue(), value) ||
+					Objects.equals(dataStrategy.name(), value)) {
+
+					return dataStrategy;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private DataStrategy(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
+	public static enum UserIdStrategy {
+
+		CURRENT_USER_ID("CURRENT_USER_ID"),
+		ALWAYS_CURRENT_USER_ID("ALWAYS_CURRENT_USER_ID");
+
+		public static UserIdStrategy create(String value) {
+			for (UserIdStrategy userIdStrategy : values()) {
+				if (Objects.equals(userIdStrategy.getValue(), value) ||
+					Objects.equals(userIdStrategy.name(), value)) {
+
+					return userIdStrategy;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private UserIdStrategy(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
+}
+// LIFERAY-REST-BUILDER-HASH:-2018327541

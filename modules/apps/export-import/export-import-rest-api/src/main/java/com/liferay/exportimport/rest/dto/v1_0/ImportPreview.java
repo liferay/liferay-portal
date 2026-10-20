@@ -360,29 +360,29 @@ public class ImportPreview implements Serializable {
 		description = "The sites the file contains, when it was exported from an instance."
 	)
 	@Valid
-	public PreviewSite[] getPreviewSites() {
-		if (_previewSitesSupplier != null) {
-			previewSites = _previewSitesSupplier.get();
+	public Site[] getSites() {
+		if (_sitesSupplier != null) {
+			sites = _sitesSupplier.get();
 
-			_previewSitesSupplier = null;
+			_sitesSupplier = null;
 		}
 
-		return previewSites;
+		return sites;
 	}
 
-	public void setPreviewSites(PreviewSite[] previewSites) {
-		this.previewSites = previewSites;
+	public void setSites(Site[] sites) {
+		this.sites = sites;
 
-		_previewSitesSupplier = null;
+		_sitesSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setPreviewSites(
-		UnsafeSupplier<PreviewSite[], Exception> previewSitesUnsafeSupplier) {
+	public void setSites(
+		UnsafeSupplier<Site[], Exception> sitesUnsafeSupplier) {
 
-		_previewSitesSupplier = () -> {
+		_sitesSupplier = () -> {
 			try {
-				return previewSitesUnsafeSupplier.get();
+				return sitesUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -397,10 +397,10 @@ public class ImportPreview implements Serializable {
 		description = "The sites the file contains, when it was exported from an instance."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected PreviewSite[] previewSites;
+	protected Site[] sites;
 
 	@JsonIgnore
-	private Supplier<PreviewSite[]> _previewSitesSupplier;
+	private Supplier<Site[]> _sitesSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -538,21 +538,21 @@ public class ImportPreview implements Serializable {
 			sb.append("]");
 		}
 
-		PreviewSite[] previewSites = getPreviewSites();
+		Site[] sites = getSites();
 
-		if (previewSites != null) {
+		if (sites != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"previewSites\": ");
+			sb.append("\"sites\": ");
 
 			sb.append("[");
 
-			for (int i = 0; i < previewSites.length; i++) {
-				sb.append(String.valueOf(previewSites[i]));
+			for (int i = 0; i < sites.length; i++) {
+				sb.append(String.valueOf(sites[i]));
 
-				if ((i + 1) < previewSites.length) {
+				if ((i + 1) < sites.length) {
 					sb.append(", ");
 				}
 			}
@@ -682,4 +682,4 @@ public class ImportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-163968113
+// LIFERAY-REST-BUILDER-HASH:-1576045759

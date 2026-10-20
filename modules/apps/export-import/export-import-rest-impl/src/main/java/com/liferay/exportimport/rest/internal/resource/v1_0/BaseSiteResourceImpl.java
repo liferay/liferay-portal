@@ -6,8 +6,8 @@
 package com.liferay.exportimport.rest.internal.resource.v1_0;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
-import com.liferay.exportimport.rest.dto.v1_0.PreviewSite;
-import com.liferay.exportimport.rest.resource.v1_0.PreviewSiteResource;
+import com.liferay.exportimport.rest.dto.v1_0.Site;
+import com.liferay.exportimport.rest.resource.v1_0.SiteResource;
 import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
@@ -67,14 +67,14 @@ import java.util.Set;
  */
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
-public abstract class BasePreviewSiteResourceImpl
-	implements EntityModelResource, PreviewSiteResource,
-			   VulcanBatchEngineTaskItemDelegate<PreviewSite> {
+public abstract class BaseSiteResourceImpl
+	implements EntityModelResource, SiteResource,
+			   VulcanBatchEngineTaskItemDelegate<Site> {
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/export-preview/preview-sites'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/export-preview/sites'  -u 'test@liferay.com:test'
 	 */
 	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-85946")
 	@io.swagger.v3.oas.annotations.Operation(
@@ -101,13 +101,13 @@ public abstract class BasePreviewSiteResourceImpl
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "PreviewSite")}
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/export-preview/preview-sites")
+	@jakarta.ws.rs.Path("/export-preview/sites")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Page<PreviewSite> getExportPreviewPreviewSitesPage(
+	public Page<Site> getExportPreviewSitesPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
@@ -122,7 +122,7 @@ public abstract class BasePreviewSiteResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/export-preview/preview-sites/export-batch'  -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/export-preview/sites/export-batch'  -u 'test@liferay.com:test'
 	 */
 	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-85946")
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -150,14 +150,14 @@ public abstract class BasePreviewSiteResourceImpl
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "PreviewSite")}
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
 	)
 	@jakarta.ws.rs.Consumes("application/json")
-	@jakarta.ws.rs.Path("/export-preview/preview-sites/export-batch")
+	@jakarta.ws.rs.Path("/export-preview/sites/export-batch")
 	@jakarta.ws.rs.POST
 	@jakarta.ws.rs.Produces("application/json")
 	@Override
-	public Response postExportPreviewPreviewSitesPageExportBatch(
+	public Response postExportPreviewSitesPageExportBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
@@ -189,16 +189,14 @@ public abstract class BasePreviewSiteResourceImpl
 
 		return responseBuilder.entity(
 			vulcanBatchEngineExportTaskResource.postExportTask(
-				PreviewSite.class.getName(), callbackURL, contentType,
-				fieldNames)
+				Site.class.getName(), callbackURL, contentType, fieldNames)
 		).build();
 	}
 
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
-			Collection<PreviewSite> previewSites,
-			Map<String, Serializable> parameters)
+			Collection<Site> sites, Map<String, Serializable> parameters)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -207,8 +205,7 @@ public abstract class BasePreviewSiteResourceImpl
 
 	@Override
 	public void delete(
-			Collection<PreviewSite> previewSites,
-			Map<String, Serializable> parameters)
+			Collection<Site> sites, Map<String, Serializable> parameters)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -232,7 +229,7 @@ public abstract class BasePreviewSiteResourceImpl
 	}
 
 	public String getResourceName() {
-		return "PreviewSite";
+		return "Site";
 	}
 
 	public String getVersion() {
@@ -240,7 +237,7 @@ public abstract class BasePreviewSiteResourceImpl
 	}
 
 	@Override
-	public Page<PreviewSite> read(
+	public Page<Site> read(
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts,
@@ -254,7 +251,7 @@ public abstract class BasePreviewSiteResourceImpl
 				throw new NotFoundException();
 			}
 
-			return getExportPreviewPreviewSitesPage(search, pagination, sorts);
+			return getExportPreviewSitesPage(search, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(
@@ -295,8 +292,7 @@ public abstract class BasePreviewSiteResourceImpl
 
 	@Override
 	public void update(
-			Collection<PreviewSite> previewSites,
-			Map<String, Serializable> parameters)
+			Collection<Site> sites, Map<String, Serializable> parameters)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -316,8 +312,7 @@ public abstract class BasePreviewSiteResourceImpl
 
 	public void setContextBatchUnsafeBiConsumer(
 		UnsafeBiConsumer
-			<Collection<PreviewSite>,
-			 UnsafeFunction<PreviewSite, PreviewSite, Exception>, Exception>
+			<Collection<Site>, UnsafeFunction<Site, Site, Exception>, Exception>
 				contextBatchUnsafeBiConsumer) {
 
 		this.contextBatchUnsafeBiConsumer = contextBatchUnsafeBiConsumer;
@@ -325,8 +320,8 @@ public abstract class BasePreviewSiteResourceImpl
 
 	public void setContextBatchUnsafeConsumer(
 		UnsafeBiConsumer
-			<Collection<PreviewSite>, UnsafeConsumer<PreviewSite, Exception>,
-			 Exception> contextBatchUnsafeConsumer) {
+			<Collection<Site>, UnsafeConsumer<Site, Exception>, Exception>
+				contextBatchUnsafeConsumer) {
 
 		this.contextBatchUnsafeConsumer = contextBatchUnsafeConsumer;
 	}
@@ -835,12 +830,11 @@ public abstract class BasePreviewSiteResourceImpl
 
 	protected AcceptLanguage contextAcceptLanguage;
 	protected UnsafeBiConsumer
-		<Collection<PreviewSite>,
-		 UnsafeFunction<PreviewSite, PreviewSite, Exception>, Exception>
+		<Collection<Site>, UnsafeFunction<Site, Site, Exception>, Exception>
 			contextBatchUnsafeBiConsumer;
 	protected UnsafeBiConsumer
-		<Collection<PreviewSite>, UnsafeConsumer<PreviewSite, Exception>,
-		 Exception> contextBatchUnsafeConsumer;
+		<Collection<Site>, UnsafeConsumer<Site, Exception>, Exception>
+			contextBatchUnsafeConsumer;
 	protected com.liferay.portal.kernel.model.Company contextCompany;
 	protected HttpServletRequest contextHttpServletRequest;
 	protected HttpServletResponse contextHttpServletResponse;
@@ -861,7 +855,7 @@ public abstract class BasePreviewSiteResourceImpl
 		vulcanBatchEngineImportTaskResource;
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BasePreviewSiteResourceImpl.class);
+		LogFactoryUtil.getLog(BaseSiteResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1593458393
+// LIFERAY-REST-BUILDER-HASH:-462942885

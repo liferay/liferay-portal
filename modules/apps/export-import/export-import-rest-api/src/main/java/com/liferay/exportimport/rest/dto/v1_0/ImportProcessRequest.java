@@ -374,55 +374,6 @@ public class ImportProcessRequest implements Serializable {
 	private Supplier<Boolean> _ratingsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The external reference codes of the sites to import in full, as listed in the previewSites of the import preview. Applies only to the instance."
-	)
-	public String[] getSiteExternalReferenceCodes() {
-		if (_siteExternalReferenceCodesSupplier != null) {
-			siteExternalReferenceCodes =
-				_siteExternalReferenceCodesSupplier.get();
-
-			_siteExternalReferenceCodesSupplier = null;
-		}
-
-		return siteExternalReferenceCodes;
-	}
-
-	public void setSiteExternalReferenceCodes(
-		String[] siteExternalReferenceCodes) {
-
-		this.siteExternalReferenceCodes = siteExternalReferenceCodes;
-
-		_siteExternalReferenceCodesSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSiteExternalReferenceCodes(
-		UnsafeSupplier<String[], Exception>
-			siteExternalReferenceCodesUnsafeSupplier) {
-
-		_siteExternalReferenceCodesSupplier = () -> {
-			try {
-				return siteExternalReferenceCodesUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The external reference codes of the sites to import in full, as listed in the previewSites of the import preview. Applies only to the instance."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String[] siteExternalReferenceCodes;
-
-	@JsonIgnore
-	private Supplier<String[]> _siteExternalReferenceCodesSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Who owns the imported items. CURRENT_USER_ID keeps the original owner when it exists, and ALWAYS_CURRENT_USER_ID assigns every item to the current user."
 	)
 	@JsonGetter("userIdStrategy")
@@ -607,32 +558,6 @@ public class ImportProcessRequest implements Serializable {
 			sb.append("\"ratings\": ");
 
 			sb.append(ratings);
-		}
-
-		String[] siteExternalReferenceCodes = getSiteExternalReferenceCodes();
-
-		if (siteExternalReferenceCodes != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"siteExternalReferenceCodes\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < siteExternalReferenceCodes.length; i++) {
-				sb.append("\"");
-
-				sb.append(_escape(siteExternalReferenceCodes[i]));
-
-				sb.append("\"");
-
-				if ((i + 1) < siteExternalReferenceCodes.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
 		}
 
 		UserIdStrategy userIdStrategy = getUserIdStrategy();
@@ -849,4 +774,4 @@ public class ImportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-251623681
+// LIFERAY-REST-BUILDER-HASH:1575541177

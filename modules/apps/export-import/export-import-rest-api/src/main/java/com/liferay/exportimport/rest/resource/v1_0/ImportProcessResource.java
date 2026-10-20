@@ -7,6 +7,7 @@ package com.liferay.exportimport.rest.resource.v1_0;
 
 import com.liferay.exportimport.rest.dto.v1_0.ImportProcess;
 import com.liferay.exportimport.rest.dto.v1_0.ImportProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.InstanceImportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ProcessProgress;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -98,11 +99,13 @@ public interface ImportProcessResource {
 		throws Exception;
 
 	public ImportProcess postImportProcess(
-			String portletId, ImportProcessRequest importProcessRequest)
+			String portletId,
+			InstanceImportProcessRequest instanceImportProcessRequest)
 		throws Exception;
 
 	public Response postImportProcessBatch(
-			String portletId, ImportProcessRequest importProcessRequest,
+			String portletId,
+			InstanceImportProcessRequest instanceImportProcessRequest,
 			String callbackURL, Object object)
 		throws Exception;
 
@@ -228,4 +231,4 @@ public interface ImportProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1785623425
+// LIFERAY-REST-BUILDER-HASH:209619033

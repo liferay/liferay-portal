@@ -5,9 +5,9 @@
 
 package com.liferay.exportimport.rest.internal.resource.v1_0.factory;
 
-import com.liferay.exportimport.rest.internal.resource.v1_0.BasePreviewSiteResourceImpl;
+import com.liferay.exportimport.rest.internal.resource.v1_0.BaseSiteResourceImpl;
 import com.liferay.exportimport.rest.internal.security.permission.LiberalPermissionChecker;
-import com.liferay.exportimport.rest.resource.v1_0.PreviewSiteResource;
+import com.liferay.exportimport.rest.resource.v1_0.SiteResource;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -58,29 +58,28 @@ import org.osgi.service.component.annotations.ReferenceScope;
  * @generated
  */
 @Component(
-	property = "resource.locator.key=/export-import/v1.0/PreviewSite",
-	service = PreviewSiteResource.Factory.class
+	property = "resource.locator.key=/export-import/v1.0/Site",
+	service = SiteResource.Factory.class
 )
 @Generated("")
-public class PreviewSiteResourceFactoryImpl
-	implements PreviewSiteResource.Factory {
+public class SiteResourceFactoryImpl implements SiteResource.Factory {
 
 	@Override
-	public PreviewSiteResource.Builder create() {
-		return new PreviewSiteResource.Builder() {
+	public SiteResource.Builder create() {
+		return new SiteResource.Builder() {
 
 			@Override
-			public PreviewSiteResource build() {
+			public SiteResource build() {
 				if (_user == null) {
 					throw new IllegalArgumentException("User is not set");
 				}
 
-				Function<InvocationHandler, PreviewSiteResource>
-					previewSiteResourceProxyProviderFunction =
+				Function<InvocationHandler, SiteResource>
+					siteResourceProxyProviderFunction =
 						ResourceProxyProviderFunctionHolder.
-							_previewSiteResourceProxyProviderFunction;
+							_siteResourceProxyProviderFunction;
 
-				return previewSiteResourceProxyProviderFunction.apply(
+				return siteResourceProxyProviderFunction.apply(
 					(proxy, method, arguments) -> _invoke(
 						method, arguments, _checkPermissions,
 						_httpServletRequest, _httpServletResponse,
@@ -88,7 +87,7 @@ public class PreviewSiteResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewSiteResource.Builder checkPermissions(
+			public SiteResource.Builder checkPermissions(
 				boolean checkPermissions) {
 
 				_checkPermissions = checkPermissions;
@@ -97,7 +96,7 @@ public class PreviewSiteResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewSiteResource.Builder httpServletRequest(
+			public SiteResource.Builder httpServletRequest(
 				HttpServletRequest httpServletRequest) {
 
 				_httpServletRequest = httpServletRequest;
@@ -106,7 +105,7 @@ public class PreviewSiteResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewSiteResource.Builder httpServletResponse(
+			public SiteResource.Builder httpServletResponse(
 				HttpServletResponse httpServletResponse) {
 
 				_httpServletResponse = httpServletResponse;
@@ -115,7 +114,7 @@ public class PreviewSiteResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewSiteResource.Builder preferredLocale(
+			public SiteResource.Builder preferredLocale(
 				Locale preferredLocale) {
 
 				_preferredLocale = preferredLocale;
@@ -124,14 +123,14 @@ public class PreviewSiteResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewSiteResource.Builder uriInfo(UriInfo uriInfo) {
+			public SiteResource.Builder uriInfo(UriInfo uriInfo) {
 				_uriInfo = uriInfo;
 
 				return this;
 			}
 
 			@Override
-			public PreviewSiteResource.Builder user(User user) {
+			public SiteResource.Builder user(User user) {
 				_user = user;
 
 				return this;
@@ -147,16 +146,15 @@ public class PreviewSiteResourceFactoryImpl
 		};
 	}
 
-	private static Function<InvocationHandler, PreviewSiteResource>
+	private static Function<InvocationHandler, SiteResource>
 		_getProxyProviderFunction() {
 
 		Class<?> proxyClass = ProxyUtil.getProxyClass(
-			PreviewSiteResource.class.getClassLoader(),
-			PreviewSiteResource.class);
+			SiteResource.class.getClassLoader(), SiteResource.class);
 
 		try {
-			Constructor<PreviewSiteResource> constructor =
-				(Constructor<PreviewSiteResource>)proxyClass.getConstructor(
+			Constructor<SiteResource> constructor =
+				(Constructor<SiteResource>)proxyClass.getConstructor(
 					InvocationHandler.class);
 
 			return invocationHandler -> {
@@ -184,7 +182,7 @@ public class PreviewSiteResourceFactoryImpl
 
 		if (!_featureFlagChecker.isEnabled(
 				user.getCompanyId(),
-				BasePreviewSiteResourceImpl.class.getMethod(
+				BaseSiteResourceImpl.class.getMethod(
 					method.getName(), method.getParameterTypes()))) {
 
 			throw new NotFoundException();
@@ -206,38 +204,36 @@ public class PreviewSiteResourceFactoryImpl
 				new LiberalPermissionChecker(user));
 		}
 
-		PreviewSiteResource previewSiteResource =
-			_componentServiceObjects.getService();
+		SiteResource siteResource = _componentServiceObjects.getService();
 
-		previewSiteResource.setContextAcceptLanguage(
+		siteResource.setContextAcceptLanguage(
 			new AcceptLanguageImpl(httpServletRequest, preferredLocale, user));
 
 		Company company = _companyLocalService.getCompany(user.getCompanyId());
 
-		previewSiteResource.setContextCompany(company);
+		siteResource.setContextCompany(company);
 
-		previewSiteResource.setContextHttpServletRequest(httpServletRequest);
-		previewSiteResource.setContextHttpServletResponse(httpServletResponse);
-		previewSiteResource.setContextUriInfo(uriInfo);
-		previewSiteResource.setContextUser(user);
-		previewSiteResource.setExpressionConvert(_expressionConvert);
-		previewSiteResource.setFilterParserProvider(_filterParserProvider);
-		previewSiteResource.setGroupLocalService(_groupLocalService);
-		previewSiteResource.setResourceActionLocalService(
-			_resourceActionLocalService);
-		previewSiteResource.setResourcePermissionLocalService(
+		siteResource.setContextHttpServletRequest(httpServletRequest);
+		siteResource.setContextHttpServletResponse(httpServletResponse);
+		siteResource.setContextUriInfo(uriInfo);
+		siteResource.setContextUser(user);
+		siteResource.setExpressionConvert(_expressionConvert);
+		siteResource.setFilterParserProvider(_filterParserProvider);
+		siteResource.setGroupLocalService(_groupLocalService);
+		siteResource.setResourceActionLocalService(_resourceActionLocalService);
+		siteResource.setResourcePermissionLocalService(
 			_resourcePermissionLocalService);
-		previewSiteResource.setRoleLocalService(_roleLocalService);
-		previewSiteResource.setSortParserProvider(_sortParserProvider);
+		siteResource.setRoleLocalService(_roleLocalService);
+		siteResource.setSortParserProvider(_sortParserProvider);
 
 		try {
-			return method.invoke(previewSiteResource, arguments);
+			return method.invoke(siteResource, arguments);
 		}
 		catch (InvocationTargetException invocationTargetException) {
 			throw invocationTargetException.getTargetException();
 		}
 		finally {
-			_componentServiceObjects.ungetService(previewSiteResource);
+			_componentServiceObjects.ungetService(siteResource);
 
 			PrincipalThreadLocal.setName(name);
 
@@ -249,8 +245,7 @@ public class PreviewSiteResourceFactoryImpl
 	private CompanyLocalService _companyLocalService;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<PreviewSiteResource>
-		_componentServiceObjects;
+	private ComponentServiceObjects<SiteResource> _componentServiceObjects;
 
 	@Reference
 	private PermissionCheckerFactory _defaultPermissionCheckerFactory;
@@ -286,9 +281,8 @@ public class PreviewSiteResourceFactoryImpl
 
 	private static class ResourceProxyProviderFunctionHolder {
 
-		private static final Function<InvocationHandler, PreviewSiteResource>
-			_previewSiteResourceProxyProviderFunction =
-				_getProxyProviderFunction();
+		private static final Function<InvocationHandler, SiteResource>
+			_siteResourceProxyProviderFunction = _getProxyProviderFunction();
 
 	}
 
@@ -343,4 +337,4 @@ public class PreviewSiteResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1813096451
+// LIFERAY-REST-BUILDER-HASH:-1423808461

@@ -141,36 +141,6 @@ public class ImportProcessRequestSerDes {
 			sb.append(importProcessRequest.getRatings());
 		}
 
-		if (importProcessRequest.getSiteExternalReferenceCodes() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"siteExternalReferenceCodes\": ");
-
-			sb.append("[");
-
-			for (int i = 0;
-				 i <
-					 importProcessRequest.
-						 getSiteExternalReferenceCodes().length;
-				 i++) {
-
-				sb.append(
-					_toJSON(
-						importProcessRequest.getSiteExternalReferenceCodes()
-							[i]));
-
-				if ((i + 1) < importProcessRequest.
-						getSiteExternalReferenceCodes().length) {
-
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
 		if (importProcessRequest.getUserIdStrategy() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -263,16 +233,6 @@ public class ImportProcessRequestSerDes {
 				"ratings", String.valueOf(importProcessRequest.getRatings()));
 		}
 
-		if (importProcessRequest.getSiteExternalReferenceCodes() == null) {
-			map.put("siteExternalReferenceCodes", null);
-		}
-		else {
-			map.put(
-				"siteExternalReferenceCodes",
-				String.valueOf(
-					importProcessRequest.getSiteExternalReferenceCodes()));
-		}
-
 		if (importProcessRequest.getUserIdStrategy() == null) {
 			map.put("userIdStrategy", null);
 		}
@@ -321,11 +281,6 @@ public class ImportProcessRequestSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "ratings")) {
-				return false;
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "siteExternalReferenceCodes")) {
-
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "userIdStrategy")) {
@@ -394,14 +349,6 @@ public class ImportProcessRequestSerDes {
 				if (jsonParserFieldValue != null) {
 					importProcessRequest.setRatings(
 						(Boolean)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "siteExternalReferenceCodes")) {
-
-				if (jsonParserFieldValue != null) {
-					importProcessRequest.setSiteExternalReferenceCodes(
-						toStrings((Object[])jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "userIdStrategy")) {
@@ -498,4 +445,4 @@ public class ImportProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2093682242
+// LIFERAY-REST-BUILDER-HASH:-1822998027

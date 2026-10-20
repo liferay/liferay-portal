@@ -357,55 +357,6 @@ public class ExportProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _ratingsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The external reference codes of the sites to export in full, as listed by the export preview sites. Applies only to the instance."
-	)
-	public String[] getSiteExternalReferenceCodes() {
-		if (_siteExternalReferenceCodesSupplier != null) {
-			siteExternalReferenceCodes =
-				_siteExternalReferenceCodesSupplier.get();
-
-			_siteExternalReferenceCodesSupplier = null;
-		}
-
-		return siteExternalReferenceCodes;
-	}
-
-	public void setSiteExternalReferenceCodes(
-		String[] siteExternalReferenceCodes) {
-
-		this.siteExternalReferenceCodes = siteExternalReferenceCodes;
-
-		_siteExternalReferenceCodesSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSiteExternalReferenceCodes(
-		UnsafeSupplier<String[], Exception>
-			siteExternalReferenceCodesUnsafeSupplier) {
-
-		_siteExternalReferenceCodesSupplier = () -> {
-			try {
-				return siteExternalReferenceCodesUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The external reference codes of the sites to export in full, as listed by the export preview sites. Applies only to the instance."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String[] siteExternalReferenceCodes;
-
-	@JsonIgnore
-	private Supplier<String[]> _siteExternalReferenceCodesSupplier;
-
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -532,32 +483,6 @@ public class ExportProcessRequest implements Serializable {
 			sb.append(ratings);
 		}
 
-		String[] siteExternalReferenceCodes = getSiteExternalReferenceCodes();
-
-		if (siteExternalReferenceCodes != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"siteExternalReferenceCodes\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < siteExternalReferenceCodes.length; i++) {
-				sb.append("\"");
-
-				sb.append(_escape(siteExternalReferenceCodes[i]));
-
-				sb.append("\"");
-
-				if ((i + 1) < siteExternalReferenceCodes.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -680,4 +605,4 @@ public class ExportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-806231154
+// LIFERAY-REST-BUILDER-HASH:-2122297828

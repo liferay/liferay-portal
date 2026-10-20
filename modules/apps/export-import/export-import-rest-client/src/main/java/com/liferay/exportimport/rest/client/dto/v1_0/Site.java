@@ -6,7 +6,7 @@
 package com.liferay.exportimport.rest.client.dto.v1_0;
 
 import com.liferay.exportimport.rest.client.function.UnsafeSupplier;
-import com.liferay.exportimport.rest.client.serdes.v1_0.PreviewSiteSerDes;
+import com.liferay.exportimport.rest.client.serdes.v1_0.SiteSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,10 +19,10 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class PreviewSite implements Cloneable, Serializable {
+public class Site implements Cloneable, Serializable {
 
-	public static PreviewSite toDTO(String json) {
-		return PreviewSiteSerDes.toDTO(json);
+	public static Site toDTO(String json) {
+		return SiteSerDes.toDTO(json);
 	}
 
 	public Integer getChildSitesCount() {
@@ -129,8 +129,8 @@ public class PreviewSite implements Cloneable, Serializable {
 	protected String path;
 
 	@Override
-	public PreviewSite clone() throws CloneNotSupportedException {
-		return (PreviewSite)super.clone();
+	public Site clone() throws CloneNotSupportedException {
+		return (Site)super.clone();
 	}
 
 	@Override
@@ -139,13 +139,13 @@ public class PreviewSite implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof PreviewSite)) {
+		if (!(object instanceof Site)) {
 			return false;
 		}
 
-		PreviewSite previewSite = (PreviewSite)object;
+		Site site = (Site)object;
 
-		return Objects.equals(toString(), previewSite.toString());
+		return Objects.equals(toString(), site.toString());
 	}
 
 	@Override
@@ -156,8 +156,8 @@ public class PreviewSite implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return PreviewSiteSerDes.toJSON(this);
+		return SiteSerDes.toJSON(this);
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:793238128
+// LIFERAY-REST-BUILDER-HASH:1351954548

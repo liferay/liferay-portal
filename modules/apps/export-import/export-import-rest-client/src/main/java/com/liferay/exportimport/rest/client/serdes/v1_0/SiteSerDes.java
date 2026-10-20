@@ -5,7 +5,7 @@
 
 package com.liferay.exportimport.rest.client.serdes.v1_0;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewSite;
+import com.liferay.exportimport.rest.client.dto.v1_0.Site;
 import com.liferay.exportimport.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,24 +22,22 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class PreviewSiteSerDes {
+public class SiteSerDes {
 
-	public static PreviewSite toDTO(String json) {
-		PreviewSiteJSONParser previewSiteJSONParser =
-			new PreviewSiteJSONParser();
+	public static Site toDTO(String json) {
+		SiteJSONParser siteJSONParser = new SiteJSONParser();
 
-		return previewSiteJSONParser.parseToDTO(json);
+		return siteJSONParser.parseToDTO(json);
 	}
 
-	public static PreviewSite[] toDTOs(String json) {
-		PreviewSiteJSONParser previewSiteJSONParser =
-			new PreviewSiteJSONParser();
+	public static Site[] toDTOs(String json) {
+		SiteJSONParser siteJSONParser = new SiteJSONParser();
 
-		return previewSiteJSONParser.parseToDTOs(json);
+		return siteJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(PreviewSite previewSite) {
-		if (previewSite == null) {
+	public static String toJSON(Site site) {
+		if (site == null) {
 			return "null";
 		}
 
@@ -47,17 +45,17 @@ public class PreviewSiteSerDes {
 
 		sb.append("{");
 
-		if (previewSite.getChildSitesCount() != null) {
+		if (site.getChildSitesCount() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
 			sb.append("\"childSitesCount\": ");
 
-			sb.append(previewSite.getChildSitesCount());
+			sb.append(site.getChildSitesCount());
 		}
 
-		if (previewSite.getDescriptiveName() != null) {
+		if (site.getDescriptiveName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -66,22 +64,22 @@ public class PreviewSiteSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(previewSite.getDescriptiveName()));
+			sb.append(_escape(site.getDescriptiveName()));
 
 			sb.append("\"");
 		}
 
-		if (previewSite.getExistsInInstance() != null) {
+		if (site.getExistsInInstance() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
 			sb.append("\"existsInInstance\": ");
 
-			sb.append(previewSite.getExistsInInstance());
+			sb.append(site.getExistsInInstance());
 		}
 
-		if (previewSite.getExternalReferenceCode() != null) {
+		if (site.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -90,12 +88,12 @@ public class PreviewSiteSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(previewSite.getExternalReferenceCode()));
+			sb.append(_escape(site.getExternalReferenceCode()));
 
 			sb.append("\"");
 		}
 
-		if (previewSite.getPath() != null) {
+		if (site.getPath() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -104,7 +102,7 @@ public class PreviewSiteSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(previewSite.getPath()));
+			sb.append(_escape(site.getPath()));
 
 			sb.append("\"");
 		}
@@ -115,76 +113,71 @@ public class PreviewSiteSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		PreviewSiteJSONParser previewSiteJSONParser =
-			new PreviewSiteJSONParser();
+		SiteJSONParser siteJSONParser = new SiteJSONParser();
 
-		return previewSiteJSONParser.parseToMap(json);
+		return siteJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(PreviewSite previewSite) {
-		if (previewSite == null) {
+	public static Map<String, String> toMap(Site site) {
+		if (site == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (previewSite.getChildSitesCount() == null) {
+		if (site.getChildSitesCount() == null) {
 			map.put("childSitesCount", null);
 		}
 		else {
 			map.put(
-				"childSitesCount",
-				String.valueOf(previewSite.getChildSitesCount()));
+				"childSitesCount", String.valueOf(site.getChildSitesCount()));
 		}
 
-		if (previewSite.getDescriptiveName() == null) {
+		if (site.getDescriptiveName() == null) {
 			map.put("descriptiveName", null);
 		}
 		else {
 			map.put(
-				"descriptiveName",
-				String.valueOf(previewSite.getDescriptiveName()));
+				"descriptiveName", String.valueOf(site.getDescriptiveName()));
 		}
 
-		if (previewSite.getExistsInInstance() == null) {
+		if (site.getExistsInInstance() == null) {
 			map.put("existsInInstance", null);
 		}
 		else {
 			map.put(
-				"existsInInstance",
-				String.valueOf(previewSite.getExistsInInstance()));
+				"existsInInstance", String.valueOf(site.getExistsInInstance()));
 		}
 
-		if (previewSite.getExternalReferenceCode() == null) {
+		if (site.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
 		else {
 			map.put(
 				"externalReferenceCode",
-				String.valueOf(previewSite.getExternalReferenceCode()));
+				String.valueOf(site.getExternalReferenceCode()));
 		}
 
-		if (previewSite.getPath() == null) {
+		if (site.getPath() == null) {
 			map.put("path", null);
 		}
 		else {
-			map.put("path", String.valueOf(previewSite.getPath()));
+			map.put("path", String.valueOf(site.getPath()));
 		}
 
 		return map;
 	}
 
-	public static class PreviewSiteJSONParser
-		extends BaseJSONParser<PreviewSite> {
+	public static class SiteJSONParser extends BaseJSONParser<Site> {
 
 		@Override
-		protected PreviewSite createDTO() {
-			return new PreviewSite();
+		protected Site createDTO() {
+			return new Site();
 		}
 
 		@Override
-		protected PreviewSite[] createDTOArray(int size) {
-			return new PreviewSite[size];
+		protected Site[] createDTOArray(int size) {
+			return new Site[size];
 		}
 
 		@Override
@@ -212,38 +205,35 @@ public class PreviewSiteSerDes {
 
 		@Override
 		protected void setField(
-			PreviewSite previewSite, String jsonParserFieldName,
+			Site site, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "childSitesCount")) {
 				if (jsonParserFieldValue != null) {
-					previewSite.setChildSitesCount(
+					site.setChildSitesCount(
 						Integer.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "descriptiveName")) {
 				if (jsonParserFieldValue != null) {
-					previewSite.setDescriptiveName(
-						(String)jsonParserFieldValue);
+					site.setDescriptiveName((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "existsInInstance")) {
 				if (jsonParserFieldValue != null) {
-					previewSite.setExistsInInstance(
-						(Boolean)jsonParserFieldValue);
+					site.setExistsInInstance((Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
 						jsonParserFieldName, "externalReferenceCode")) {
 
 				if (jsonParserFieldValue != null) {
-					previewSite.setExternalReferenceCode(
-						(String)jsonParserFieldValue);
+					site.setExternalReferenceCode((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "path")) {
 				if (jsonParserFieldValue != null) {
-					previewSite.setPath((String)jsonParserFieldValue);
+					site.setPath((String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -333,4 +323,4 @@ public class PreviewSiteSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-449639162
+// LIFERAY-REST-BUILDER-HASH:452796636

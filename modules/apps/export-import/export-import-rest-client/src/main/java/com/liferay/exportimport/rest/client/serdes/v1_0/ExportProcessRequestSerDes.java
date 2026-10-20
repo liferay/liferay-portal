@@ -139,36 +139,6 @@ public class ExportProcessRequestSerDes {
 			sb.append(exportProcessRequest.getRatings());
 		}
 
-		if (exportProcessRequest.getSiteExternalReferenceCodes() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"siteExternalReferenceCodes\": ");
-
-			sb.append("[");
-
-			for (int i = 0;
-				 i <
-					 exportProcessRequest.
-						 getSiteExternalReferenceCodes().length;
-				 i++) {
-
-				sb.append(
-					_toJSON(
-						exportProcessRequest.getSiteExternalReferenceCodes()
-							[i]));
-
-				if ((i + 1) < exportProcessRequest.
-						getSiteExternalReferenceCodes().length) {
-
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -249,16 +219,6 @@ public class ExportProcessRequestSerDes {
 				"ratings", String.valueOf(exportProcessRequest.getRatings()));
 		}
 
-		if (exportProcessRequest.getSiteExternalReferenceCodes() == null) {
-			map.put("siteExternalReferenceCodes", null);
-		}
-		else {
-			map.put(
-				"siteExternalReferenceCodes",
-				String.valueOf(
-					exportProcessRequest.getSiteExternalReferenceCodes()));
-		}
-
 		return map;
 	}
 
@@ -298,11 +258,6 @@ public class ExportProcessRequestSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "ratings")) {
-				return false;
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "siteExternalReferenceCodes")) {
-
 				return false;
 			}
 
@@ -367,14 +322,6 @@ public class ExportProcessRequestSerDes {
 				if (jsonParserFieldValue != null) {
 					exportProcessRequest.setRatings(
 						(Boolean)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "siteExternalReferenceCodes")) {
-
-				if (jsonParserFieldValue != null) {
-					exportProcessRequest.setSiteExternalReferenceCodes(
-						toStrings((Object[])jsonParserFieldValue));
 				}
 			}
 		}
@@ -464,4 +411,4 @@ public class ExportProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1823777578
+// LIFERAY-REST-BUILDER-HASH:1015287136

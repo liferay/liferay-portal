@@ -13,13 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewSite;
+import com.liferay.exportimport.rest.client.dto.v1_0.Site;
 import com.liferay.exportimport.rest.client.dto.v1_0.Type;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
-import com.liferay.exportimport.rest.client.resource.v1_0.PreviewSiteResource;
-import com.liferay.exportimport.rest.client.serdes.v1_0.PreviewSiteSerDes;
+import com.liferay.exportimport.rest.client.resource.v1_0.SiteResource;
+import com.liferay.exportimport.rest.client.serdes.v1_0.SiteSerDes;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -79,7 +79,7 @@ import org.junit.Test;
  * @generated
  */
 @Generated("")
-public abstract class BasePreviewSiteResourceTestCase {
+public abstract class BaseSiteResourceTestCase {
 
 	@ClassRule
 	@Rule
@@ -102,12 +102,12 @@ public abstract class BasePreviewSiteResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
-		_previewSiteResource.setContextCompany(testCompany);
+		_siteResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
 			testCompany.getCompanyId());
 
-		previewSiteResource = PreviewSiteResource.builder(
+		siteResource = SiteResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -129,23 +129,23 @@ public abstract class BasePreviewSiteResourceTestCase {
 	public void testClientSerDesToDTO() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		PreviewSite previewSite1 = randomPreviewSite();
+		Site site1 = randomSite();
 
-		String json = objectMapper.writeValueAsString(previewSite1);
+		String json = objectMapper.writeValueAsString(site1);
 
-		PreviewSite previewSite2 = PreviewSiteSerDes.toDTO(json);
+		Site site2 = SiteSerDes.toDTO(json);
 
-		Assert.assertTrue(equals(previewSite1, previewSite2));
+		Assert.assertTrue(equals(site1, site2));
 	}
 
 	@Test
 	public void testClientSerDesToJSON() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		PreviewSite previewSite = randomPreviewSite();
+		Site site = randomSite();
 
-		String json1 = objectMapper.writeValueAsString(previewSite);
-		String json2 = PreviewSiteSerDes.toJSON(previewSite);
+		String json1 = objectMapper.writeValueAsString(site);
+		String json2 = SiteSerDes.toJSON(site);
 
 		Assert.assertEquals(
 			objectMapper.readTree(json1), objectMapper.readTree(json2));
@@ -173,52 +173,46 @@ public abstract class BasePreviewSiteResourceTestCase {
 	public void testEscapeRegexInStringFields() throws Exception {
 		String regex = "^[0-9]+(\\.[0-9]{1,2})\"?";
 
-		PreviewSite previewSite = randomPreviewSite();
+		Site site = randomSite();
 
-		previewSite.setDescriptiveName(regex);
-		previewSite.setExternalReferenceCode(regex);
-		previewSite.setPath(regex);
+		site.setDescriptiveName(regex);
+		site.setExternalReferenceCode(regex);
+		site.setPath(regex);
 
-		String json = PreviewSiteSerDes.toJSON(previewSite);
+		String json = SiteSerDes.toJSON(site);
 
 		Assert.assertFalse(json.contains(regex));
 
-		previewSite = PreviewSiteSerDes.toDTO(json);
+		site = SiteSerDes.toDTO(json);
 
-		Assert.assertEquals(regex, previewSite.getDescriptiveName());
-		Assert.assertEquals(regex, previewSite.getExternalReferenceCode());
-		Assert.assertEquals(regex, previewSite.getPath());
+		Assert.assertEquals(regex, site.getDescriptiveName());
+		Assert.assertEquals(regex, site.getExternalReferenceCode());
+		Assert.assertEquals(regex, site.getPath());
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewSitesPage() throws Exception {
-		Page<PreviewSite> page =
-			previewSiteResource.getExportPreviewPreviewSitesPage(
-				null, Pagination.of(1, 10), null);
+	public void testGetExportPreviewSitesPage() throws Exception {
+		Page<Site> page = siteResource.getExportPreviewSitesPage(
+			null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
-		PreviewSite previewSite1 =
-			testGetExportPreviewPreviewSitesPage_addPreviewSite(
-				randomPreviewSite());
+		Site site1 = testGetExportPreviewSitesPage_addSite(randomSite());
 
-		PreviewSite previewSite2 =
-			testGetExportPreviewPreviewSitesPage_addPreviewSite(
-				randomPreviewSite());
+		Site site2 = testGetExportPreviewSitesPage_addSite(randomSite());
 
-		page = previewSiteResource.getExportPreviewPreviewSitesPage(
+		page = siteResource.getExportPreviewSitesPage(
 			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
-		assertContains(previewSite1, (List<PreviewSite>)page.getItems());
-		assertContains(previewSite2, (List<PreviewSite>)page.getItems());
-		assertValid(
-			page, testGetExportPreviewPreviewSitesPage_getExpectedActions());
+		assertContains(site1, (List<Site>)page.getItems());
+		assertContains(site2, (List<Site>)page.getItems());
+		assertValid(page, testGetExportPreviewSitesPage_getExpectedActions());
 	}
 
 	protected Map<String, Map<String, String>>
-			testGetExportPreviewPreviewSitesPage_getExpectedActions()
+			testGetExportPreviewSitesPage_getExpectedActions()
 		throws Exception {
 
 		Map<String, Map<String, String>> expectedActions = new HashMap<>();
@@ -227,147 +221,120 @@ public abstract class BasePreviewSiteResourceTestCase {
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewSitesPageWithPagination()
-		throws Exception {
+	public void testGetExportPreviewSitesPageWithPagination() throws Exception {
+		Page<Site> sitesPage = siteResource.getExportPreviewSitesPage(
+			null, null, null);
 
-		Page<PreviewSite> previewSitesPage =
-			previewSiteResource.getExportPreviewPreviewSitesPage(
-				null, null, null);
+		int totalCount = GetterUtil.getInteger(sitesPage.getTotalCount());
 
-		int totalCount = GetterUtil.getInteger(
-			previewSitesPage.getTotalCount());
+		Site site1 = testGetExportPreviewSitesPage_addSite(randomSite());
 
-		PreviewSite previewSite1 =
-			testGetExportPreviewPreviewSitesPage_addPreviewSite(
-				randomPreviewSite());
+		Site site2 = testGetExportPreviewSitesPage_addSite(randomSite());
 
-		PreviewSite previewSite2 =
-			testGetExportPreviewPreviewSitesPage_addPreviewSite(
-				randomPreviewSite());
-
-		PreviewSite previewSite3 =
-			testGetExportPreviewPreviewSitesPage_addPreviewSite(
-				randomPreviewSite());
+		Site site3 = testGetExportPreviewSitesPage_addSite(randomSite());
 
 		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
 
 		int pageSizeLimit = 500;
 
 		if (totalCount >= (pageSizeLimit - 2)) {
-			Page<PreviewSite> page1 =
-				previewSiteResource.getExportPreviewPreviewSitesPage(
-					null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
+			Page<Site> page1 = siteResource.getExportPreviewSitesPage(
+				null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+					pageSizeLimit),
+				null);
 
 			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
 
-			assertContains(previewSite1, (List<PreviewSite>)page1.getItems());
+			assertContains(site1, (List<Site>)page1.getItems());
 
-			Page<PreviewSite> page2 =
-				previewSiteResource.getExportPreviewPreviewSitesPage(
-					null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
+			Page<Site> page2 = siteResource.getExportPreviewSitesPage(
+				null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+					pageSizeLimit),
+				null);
 
-			assertContains(previewSite2, (List<PreviewSite>)page2.getItems());
+			assertContains(site2, (List<Site>)page2.getItems());
 
-			Page<PreviewSite> page3 =
-				previewSiteResource.getExportPreviewPreviewSitesPage(
-					null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
+			Page<Site> page3 = siteResource.getExportPreviewSitesPage(
+				null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+					pageSizeLimit),
+				null);
 
-			assertContains(previewSite3, (List<PreviewSite>)page3.getItems());
+			assertContains(site3, (List<Site>)page3.getItems());
 		}
 		else {
-			Page<PreviewSite> page1 =
-				previewSiteResource.getExportPreviewPreviewSitesPage(
-					null, Pagination.of(1, totalCount + 2), null);
+			Page<Site> page1 = siteResource.getExportPreviewSitesPage(
+				null, Pagination.of(1, totalCount + 2), null);
 
-			List<PreviewSite> previewSites1 =
-				(List<PreviewSite>)page1.getItems();
+			List<Site> sites1 = (List<Site>)page1.getItems();
 
 			Assert.assertEquals(
-				previewSites1.toString(), totalCount + 2, previewSites1.size());
+				sites1.toString(), totalCount + 2, sites1.size());
 
-			Page<PreviewSite> page2 =
-				previewSiteResource.getExportPreviewPreviewSitesPage(
-					null, Pagination.of(2, totalCount + 2), null);
+			Page<Site> page2 = siteResource.getExportPreviewSitesPage(
+				null, Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
-			List<PreviewSite> previewSites2 =
-				(List<PreviewSite>)page2.getItems();
+			List<Site> sites2 = (List<Site>)page2.getItems();
 
-			Assert.assertEquals(
-				previewSites2.toString(), 1, previewSites2.size());
+			Assert.assertEquals(sites2.toString(), 1, sites2.size());
 
-			Page<PreviewSite> page3 =
-				previewSiteResource.getExportPreviewPreviewSitesPage(
-					null, Pagination.of(1, (int)totalCount + 3), null);
+			Page<Site> page3 = siteResource.getExportPreviewSitesPage(
+				null, Pagination.of(1, (int)totalCount + 3), null);
 
-			assertContains(previewSite1, (List<PreviewSite>)page3.getItems());
-			assertContains(previewSite2, (List<PreviewSite>)page3.getItems());
-			assertContains(previewSite3, (List<PreviewSite>)page3.getItems());
+			assertContains(site1, (List<Site>)page3.getItems());
+			assertContains(site2, (List<Site>)page3.getItems());
+			assertContains(site3, (List<Site>)page3.getItems());
 		}
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewSitesPageWithSortDateTime()
+	public void testGetExportPreviewSitesPageWithSortDateTime()
 		throws Exception {
 
-		testGetExportPreviewPreviewSitesPageWithSort(
+		testGetExportPreviewSitesPageWithSort(
 			EntityField.Type.DATE_TIME,
-			(entityField, previewSite1, previewSite2) -> {
+			(entityField, site1, site2) -> {
 				BeanTestUtil.setProperty(
-					previewSite1, entityField.getName(),
+					site1, entityField.getName(),
 					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
 			});
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewSitesPageWithSortDouble()
-		throws Exception {
-
-		testGetExportPreviewPreviewSitesPageWithSort(
+	public void testGetExportPreviewSitesPageWithSortDouble() throws Exception {
+		testGetExportPreviewSitesPageWithSort(
 			EntityField.Type.DOUBLE,
-			(entityField, previewSite1, previewSite2) -> {
-				BeanTestUtil.setProperty(
-					previewSite1, entityField.getName(), 0.1);
-				BeanTestUtil.setProperty(
-					previewSite2, entityField.getName(), 0.5);
+			(entityField, site1, site2) -> {
+				BeanTestUtil.setProperty(site1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(site2, entityField.getName(), 0.5);
 			});
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewSitesPageWithSortInteger()
+	public void testGetExportPreviewSitesPageWithSortInteger()
 		throws Exception {
 
-		testGetExportPreviewPreviewSitesPageWithSort(
+		testGetExportPreviewSitesPageWithSort(
 			EntityField.Type.INTEGER,
-			(entityField, previewSite1, previewSite2) -> {
-				BeanTestUtil.setProperty(
-					previewSite1, entityField.getName(), 0);
-				BeanTestUtil.setProperty(
-					previewSite2, entityField.getName(), 1);
+			(entityField, site1, site2) -> {
+				BeanTestUtil.setProperty(site1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(site2, entityField.getName(), 1);
 			});
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewSitesPageWithSortString()
-		throws Exception {
-
-		testGetExportPreviewPreviewSitesPageWithSort(
+	public void testGetExportPreviewSitesPageWithSortString() throws Exception {
+		testGetExportPreviewSitesPageWithSort(
 			EntityField.Type.STRING,
-			(entityField, previewSite1, previewSite2) -> {
-				Class<?> clazz = previewSite1.getClass();
+			(entityField, site1, site2) -> {
+				Class<?> clazz = site1.getClass();
 
 				String entityFieldName = entityField.getName();
 
@@ -378,21 +345,21 @@ public abstract class BasePreviewSiteResourceTestCase {
 
 				if (returnType.isAssignableFrom(Map.class)) {
 					BeanTestUtil.setProperty(
-						previewSite1, entityFieldName,
+						site1, entityFieldName,
 						Collections.singletonMap("Aaa", "Aaa"));
 					BeanTestUtil.setProperty(
-						previewSite2, entityFieldName,
+						site2, entityFieldName,
 						Collections.singletonMap("Bbb", "Bbb"));
 				}
 				else if (entityFieldName.contains("email")) {
 					BeanTestUtil.setProperty(
-						previewSite1, entityFieldName,
+						site1, entityFieldName,
 						"aaa" +
 							StringUtil.toLowerCase(
 								RandomTestUtil.randomString()) +
 									"@liferay.com");
 					BeanTestUtil.setProperty(
-						previewSite2, entityFieldName,
+						site2, entityFieldName,
 						"bbb" +
 							StringUtil.toLowerCase(
 								RandomTestUtil.randomString()) +
@@ -400,12 +367,12 @@ public abstract class BasePreviewSiteResourceTestCase {
 				}
 				else {
 					BeanTestUtil.setProperty(
-						previewSite1, entityFieldName,
+						site1, entityFieldName,
 						"aaa" +
 							StringUtil.toLowerCase(
 								RandomTestUtil.randomString()));
 					BeanTestUtil.setProperty(
-						previewSite2, entityFieldName,
+						site2, entityFieldName,
 						"bbb" +
 							StringUtil.toLowerCase(
 								RandomTestUtil.randomString()));
@@ -413,9 +380,9 @@ public abstract class BasePreviewSiteResourceTestCase {
 			});
 	}
 
-	protected void testGetExportPreviewPreviewSitesPageWithSort(
+	protected void testGetExportPreviewSitesPageWithSort(
 			EntityField.Type type,
-			UnsafeTriConsumer<EntityField, PreviewSite, PreviewSite, Exception>
+			UnsafeTriConsumer<EntityField, Site, Site, Exception>
 				unsafeTriConsumer)
 		throws Exception {
 
@@ -425,46 +392,38 @@ public abstract class BasePreviewSiteResourceTestCase {
 			return;
 		}
 
-		PreviewSite previewSite1 = randomPreviewSite();
-		PreviewSite previewSite2 = randomPreviewSite();
+		Site site1 = randomSite();
+		Site site2 = randomSite();
 
 		for (EntityField entityField : entityFields) {
-			unsafeTriConsumer.accept(entityField, previewSite1, previewSite2);
+			unsafeTriConsumer.accept(entityField, site1, site2);
 		}
 
-		previewSite1 = testGetExportPreviewPreviewSitesPage_addPreviewSite(
-			previewSite1);
+		site1 = testGetExportPreviewSitesPage_addSite(site1);
 
-		previewSite2 = testGetExportPreviewPreviewSitesPage_addPreviewSite(
-			previewSite2);
+		site2 = testGetExportPreviewSitesPage_addSite(site2);
 
-		Page<PreviewSite> page =
-			previewSiteResource.getExportPreviewPreviewSitesPage(
-				null, null, null);
+		Page<Site> page = siteResource.getExportPreviewSitesPage(
+			null, null, null);
 
 		for (EntityField entityField : entityFields) {
-			Page<PreviewSite> ascPage =
-				previewSiteResource.getExportPreviewPreviewSitesPage(
-					null, Pagination.of(1, (int)page.getTotalCount() + 1),
-					entityField.getName() + ":asc");
+			Page<Site> ascPage = siteResource.getExportPreviewSitesPage(
+				null, Pagination.of(1, (int)page.getTotalCount() + 1),
+				entityField.getName() + ":asc");
 
-			assertContains(previewSite1, (List<PreviewSite>)ascPage.getItems());
-			assertContains(previewSite2, (List<PreviewSite>)ascPage.getItems());
+			assertContains(site1, (List<Site>)ascPage.getItems());
+			assertContains(site2, (List<Site>)ascPage.getItems());
 
-			Page<PreviewSite> descPage =
-				previewSiteResource.getExportPreviewPreviewSitesPage(
-					null, Pagination.of(1, (int)page.getTotalCount() + 1),
-					entityField.getName() + ":desc");
+			Page<Site> descPage = siteResource.getExportPreviewSitesPage(
+				null, Pagination.of(1, (int)page.getTotalCount() + 1),
+				entityField.getName() + ":desc");
 
-			assertContains(
-				previewSite2, (List<PreviewSite>)descPage.getItems());
-			assertContains(
-				previewSite1, (List<PreviewSite>)descPage.getItems());
+			assertContains(site2, (List<Site>)descPage.getItems());
+			assertContains(site1, (List<Site>)descPage.getItems());
 		}
 	}
 
-	protected PreviewSite testGetExportPreviewPreviewSitesPage_addPreviewSite(
-			PreviewSite previewSite)
+	protected Site testGetExportPreviewSitesPage_addSite(Site site)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -476,21 +435,18 @@ public abstract class BasePreviewSiteResourceTestCase {
 		Assert.assertTrue(true);
 	}
 
-	protected void assertContains(
-		PreviewSite previewSite, List<PreviewSite> previewSites) {
-
+	protected void assertContains(Site site, List<Site> sites) {
 		boolean contains = false;
 
-		for (PreviewSite item : previewSites) {
-			if (equals(previewSite, item)) {
+		for (Site item : sites) {
+			if (equals(site, item)) {
 				contains = true;
 
 				break;
 			}
 		}
 
-		Assert.assertTrue(
-			previewSites + " does not contain " + previewSite, contains);
+		Assert.assertTrue(sites + " does not contain " + site, contains);
 	}
 
 	protected void assertHttpResponseStatusCode(
@@ -501,56 +457,54 @@ public abstract class BasePreviewSiteResourceTestCase {
 			expectedHttpResponseStatusCode, actualHttpResponse.getStatusCode());
 	}
 
-	protected void assertEquals(
-		PreviewSite previewSite1, PreviewSite previewSite2) {
-
+	protected void assertEquals(Site site1, Site site2) {
 		Assert.assertTrue(
-			previewSite1 + " does not equal " + previewSite2,
-			equals(previewSite1, previewSite2));
+			site1 + " does not equal " + site2, equals(site1, site2));
 	}
 
-	protected void assertEquals(
-		List<PreviewSite> previewSites1, List<PreviewSite> previewSites2) {
+	protected void assertEquals(List<Site> sites1, List<Site> sites2) {
+		Assert.assertEquals(sites1.size(), sites2.size());
 
-		Assert.assertEquals(previewSites1.size(), previewSites2.size());
+		for (int i = 0; i < sites1.size(); i++) {
+			Site site1 = sites1.get(i);
+			Site site2 = sites2.get(i);
 
-		for (int i = 0; i < previewSites1.size(); i++) {
-			PreviewSite previewSite1 = previewSites1.get(i);
-			PreviewSite previewSite2 = previewSites2.get(i);
-
-			assertEquals(previewSite1, previewSite2);
+			assertEquals(site1, site2);
 		}
 	}
 
 	protected void assertEqualsIgnoringOrder(
-		List<PreviewSite> previewSites1, List<PreviewSite> previewSites2) {
+		List<Site> sites1, List<Site> sites2) {
 
-		Assert.assertEquals(previewSites1.size(), previewSites2.size());
+		Assert.assertEquals(sites1.size(), sites2.size());
 
-		for (PreviewSite previewSite1 : previewSites1) {
+		for (Site site1 : sites1) {
 			boolean contains = false;
 
-			for (PreviewSite previewSite2 : previewSites2) {
-				if (equals(previewSite1, previewSite2)) {
+			for (Site site2 : sites2) {
+				if (equals(site1, site2)) {
 					contains = true;
 
 					break;
 				}
 			}
 
-			Assert.assertTrue(
-				previewSites2 + " does not contain " + previewSite1, contains);
+			Assert.assertTrue(sites2 + " does not contain " + site1, contains);
 		}
 	}
 
-	protected void assertValid(PreviewSite previewSite) throws Exception {
+	protected void assertValid(Site site) throws Exception {
 		boolean valid = true;
+
+		if (site.getExternalReferenceCode() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals("childSitesCount", additionalAssertFieldName)) {
-				if (previewSite.getChildSitesCount() == null) {
+				if (site.getChildSitesCount() == null) {
 					valid = false;
 				}
 
@@ -558,7 +512,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 			}
 
 			if (Objects.equals("descriptiveName", additionalAssertFieldName)) {
-				if (previewSite.getDescriptiveName() == null) {
+				if (site.getDescriptiveName() == null) {
 					valid = false;
 				}
 
@@ -566,7 +520,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 			}
 
 			if (Objects.equals("existsInInstance", additionalAssertFieldName)) {
-				if (previewSite.getExistsInInstance() == null) {
+				if (site.getExistsInInstance() == null) {
 					valid = false;
 				}
 
@@ -576,7 +530,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
-				if (previewSite.getExternalReferenceCode() == null) {
+				if (site.getExternalReferenceCode() == null) {
 					valid = false;
 				}
 
@@ -584,7 +538,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 			}
 
 			if (Objects.equals("path", additionalAssertFieldName)) {
-				if (previewSite.getPath() == null) {
+				if (site.getPath() == null) {
 					valid = false;
 				}
 
@@ -599,19 +553,18 @@ public abstract class BasePreviewSiteResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
-	protected void assertValid(Page<PreviewSite> page) {
+	protected void assertValid(Page<Site> page) {
 		assertValid(page, Collections.emptyMap());
 	}
 
 	protected void assertValid(
-		Page<PreviewSite> page,
-		Map<String, Map<String, String>> expectedActions) {
+		Page<Site> page, Map<String, Map<String, String>> expectedActions) {
 
 		boolean valid = false;
 
-		java.util.Collection<PreviewSite> previewSites = page.getItems();
+		java.util.Collection<Site> sites = page.getItems();
 
-		int size = previewSites.size();
+		int size = sites.size();
 
 		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
 			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
@@ -653,7 +606,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
-					com.liferay.exportimport.rest.dto.v1_0.PreviewSite.class)) {
+					com.liferay.exportimport.rest.dto.v1_0.Site.class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -701,10 +654,8 @@ public abstract class BasePreviewSiteResourceTestCase {
 		return new String[0];
 	}
 
-	protected boolean equals(
-		PreviewSite previewSite1, PreviewSite previewSite2) {
-
-		if (previewSite1 == previewSite2) {
+	protected boolean equals(Site site1, Site site2) {
+		if (site1 == site2) {
 			return true;
 		}
 
@@ -713,8 +664,8 @@ public abstract class BasePreviewSiteResourceTestCase {
 
 			if (Objects.equals("childSitesCount", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						previewSite1.getChildSitesCount(),
-						previewSite2.getChildSitesCount())) {
+						site1.getChildSitesCount(),
+						site2.getChildSitesCount())) {
 
 					return false;
 				}
@@ -724,8 +675,8 @@ public abstract class BasePreviewSiteResourceTestCase {
 
 			if (Objects.equals("descriptiveName", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						previewSite1.getDescriptiveName(),
-						previewSite2.getDescriptiveName())) {
+						site1.getDescriptiveName(),
+						site2.getDescriptiveName())) {
 
 					return false;
 				}
@@ -735,8 +686,8 @@ public abstract class BasePreviewSiteResourceTestCase {
 
 			if (Objects.equals("existsInInstance", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						previewSite1.getExistsInInstance(),
-						previewSite2.getExistsInInstance())) {
+						site1.getExistsInInstance(),
+						site2.getExistsInInstance())) {
 
 					return false;
 				}
@@ -748,8 +699,8 @@ public abstract class BasePreviewSiteResourceTestCase {
 					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
-						previewSite1.getExternalReferenceCode(),
-						previewSite2.getExternalReferenceCode())) {
+						site1.getExternalReferenceCode(),
+						site2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -758,9 +709,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 			}
 
 			if (Objects.equals("path", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						previewSite1.getPath(), previewSite2.getPath())) {
-
+				if (!Objects.deepEquals(site1.getPath(), site2.getPath())) {
 					return false;
 				}
 
@@ -823,13 +772,13 @@ public abstract class BasePreviewSiteResourceTestCase {
 	protected java.util.Collection<EntityField> getEntityFields()
 		throws Exception {
 
-		if (!(_previewSiteResource instanceof EntityModelResource)) {
+		if (!(_siteResource instanceof EntityModelResource)) {
 			throw new UnsupportedOperationException(
 				"Resource is not an instance of EntityModelResource");
 		}
 
 		EntityModelResource entityModelResource =
-			(EntityModelResource)_previewSiteResource;
+			(EntityModelResource)_siteResource;
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
@@ -862,7 +811,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 	}
 
 	protected String getFilterString(
-		EntityField entityField, String operator, PreviewSite previewSite) {
+		EntityField entityField, String operator, Site site) {
 
 		StringBundler sb = new StringBundler();
 
@@ -875,13 +824,13 @@ public abstract class BasePreviewSiteResourceTestCase {
 		sb.append(" ");
 
 		if (entityFieldName.equals("childSitesCount")) {
-			sb.append(String.valueOf(previewSite.getChildSitesCount()));
+			sb.append(String.valueOf(site.getChildSitesCount()));
 
 			return sb.toString();
 		}
 
 		if (entityFieldName.equals("descriptiveName")) {
-			Object object = previewSite.getDescriptiveName();
+			Object object = site.getDescriptiveName();
 
 			String value = String.valueOf(object);
 
@@ -932,7 +881,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 		}
 
 		if (entityFieldName.equals("externalReferenceCode")) {
-			Object object = previewSite.getExternalReferenceCode();
+			Object object = site.getExternalReferenceCode();
 
 			String value = String.valueOf(object);
 
@@ -978,7 +927,7 @@ public abstract class BasePreviewSiteResourceTestCase {
 		}
 
 		if (entityFieldName.equals("path")) {
-			Object object = previewSite.getPath();
+			Object object = site.getPath();
 
 			String value = String.valueOf(object);
 
@@ -1067,8 +1016,8 @@ public abstract class BasePreviewSiteResourceTestCase {
 			invoke(queryGraphQLField.toString()));
 	}
 
-	protected PreviewSite randomPreviewSite() throws Exception {
-		return new PreviewSite() {
+	protected Site randomSite() throws Exception {
+		return new Site() {
 			{
 				childSitesCount = RandomTestUtil.randomInt();
 				descriptiveName = StringUtil.toLowerCase(
@@ -1081,17 +1030,17 @@ public abstract class BasePreviewSiteResourceTestCase {
 		};
 	}
 
-	protected PreviewSite randomIrrelevantPreviewSite() throws Exception {
-		PreviewSite randomIrrelevantPreviewSite = randomPreviewSite();
+	protected Site randomIrrelevantSite() throws Exception {
+		Site randomIrrelevantSite = randomSite();
 
-		return randomIrrelevantPreviewSite;
+		return randomIrrelevantSite;
 	}
 
-	protected PreviewSite randomPatchPreviewSite() throws Exception {
-		return randomPreviewSite();
+	protected Site randomPatchSite() throws Exception {
+		return randomSite();
 	}
 
-	protected PreviewSiteResource previewSiteResource;
+	protected SiteResource siteResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
@@ -1290,15 +1239,15 @@ public abstract class BasePreviewSiteResourceTestCase {
 	}
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BasePreviewSiteResourceTestCase.class);
+		LogFactoryUtil.getLog(BaseSiteResourceTestCase.class);
 
 	private static Format _format;
 
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private com.liferay.exportimport.rest.resource.v1_0.PreviewSiteResource
-		_previewSiteResource;
+	private com.liferay.exportimport.rest.resource.v1_0.SiteResource
+		_siteResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:432997891
+// LIFERAY-REST-BUILDER-HASH:942038916

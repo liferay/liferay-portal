@@ -173,31 +173,6 @@ public class ExportProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean ratings;
 
-	public String[] getSiteExternalReferenceCodes() {
-		return siteExternalReferenceCodes;
-	}
-
-	public void setSiteExternalReferenceCodes(
-		String[] siteExternalReferenceCodes) {
-
-		this.siteExternalReferenceCodes = siteExternalReferenceCodes;
-	}
-
-	public void setSiteExternalReferenceCodes(
-		UnsafeSupplier<String[], Exception>
-			siteExternalReferenceCodesUnsafeSupplier) {
-
-		try {
-			siteExternalReferenceCodes =
-				siteExternalReferenceCodesUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String[] siteExternalReferenceCodes;
-
 	@Override
 	public ExportProcessRequest clone() throws CloneNotSupportedException {
 		return (ExportProcessRequest)super.clone();
@@ -231,4 +206,4 @@ public class ExportProcessRequest implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-536053540
+// LIFERAY-REST-BUILDER-HASH:-1170817952

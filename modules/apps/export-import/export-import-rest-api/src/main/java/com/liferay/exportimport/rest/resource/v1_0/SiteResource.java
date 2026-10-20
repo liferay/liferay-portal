@@ -5,7 +5,7 @@
 
 package com.liferay.exportimport.rest.resource.v1_0;
 
-import com.liferay.exportimport.rest.dto.v1_0.PreviewSite;
+import com.liferay.exportimport.rest.dto.v1_0.Site;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -44,14 +44,14 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface PreviewSiteResource {
+public interface SiteResource {
 
-	public Page<PreviewSite> getExportPreviewPreviewSitesPage(
+	public Page<Site> getExportPreviewSitesPage(
 			String search, Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
-	public Response postExportPreviewPreviewSitesPageExportBatch(
+	public Response postExportPreviewSitesPageExportBatch(
 			String search, com.liferay.portal.kernel.search.Sort[] sorts,
 			String callbackURL, String contentType, String fieldNames)
 		throws Exception;
@@ -126,7 +126,7 @@ public interface PreviewSiteResource {
 	@ProviderType
 	public interface Builder {
 
-		public PreviewSiteResource build();
+		public SiteResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -152,4 +152,4 @@ public interface PreviewSiteResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1091929170
+// LIFERAY-REST-BUILDER-HASH:-196263694

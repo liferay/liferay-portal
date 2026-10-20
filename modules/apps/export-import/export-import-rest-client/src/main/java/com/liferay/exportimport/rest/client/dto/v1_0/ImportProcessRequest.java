@@ -181,31 +181,6 @@ public class ImportProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean ratings;
 
-	public String[] getSiteExternalReferenceCodes() {
-		return siteExternalReferenceCodes;
-	}
-
-	public void setSiteExternalReferenceCodes(
-		String[] siteExternalReferenceCodes) {
-
-		this.siteExternalReferenceCodes = siteExternalReferenceCodes;
-	}
-
-	public void setSiteExternalReferenceCodes(
-		UnsafeSupplier<String[], Exception>
-			siteExternalReferenceCodesUnsafeSupplier) {
-
-		try {
-			siteExternalReferenceCodes =
-				siteExternalReferenceCodesUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String[] siteExternalReferenceCodes;
-
 	public UserIdStrategy getUserIdStrategy() {
 		return userIdStrategy;
 	}
@@ -337,4 +312,4 @@ public class ImportProcessRequest implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1152533771
+// LIFERAY-REST-BUILDER-HASH:543266703
