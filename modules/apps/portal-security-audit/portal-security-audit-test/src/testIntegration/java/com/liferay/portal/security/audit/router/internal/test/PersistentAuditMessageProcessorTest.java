@@ -13,18 +13,30 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRequestContext;
 import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.audit.AuditRouter;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -44,8 +56,68 @@ public class PersistentAuditMessageProcessorTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
+	@FeatureFlag("LPD-6417")
 	@Test
-	public void testProcessCorrelationIdPersistsAfterClear() throws Exception {
+	public void testProcess() throws Exception {
+		_testProcessCorrelationIdPersistsAfterClear();
+		_testProcessRolesPersistAfterRoleChanges();
+	}
+
+	private Role _addRole() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_roles.add(role);
+
+		return role;
+	}
+
+	private String _createEventType() {
+		return StringUtil.toUpperCase(RandomTestUtil.randomString());
+	}
+
+	private AuditEvent _getAuditEvent(long companyId, String eventType) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			List<AuditEvent> auditEvents =
+				_auditEventLocalService.getAuditEvents(
+					companyId, 0, 0, null, null, null, null, null, null, null,
+					null, null, eventType, null, 0, null, false, 0, 1);
+
+			return auditEvents.get(0);
+		}
+	}
+
+	private int _getAuditEventsCount(long companyId, String eventType) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			return _auditEventLocalService.getAuditEventsCount(
+				companyId, 0, 0, null, null, null, null, null, null, null, null,
+				null, eventType, null, 0, null, false);
+		}
+	}
+
+	private void _route(long companyId, long userId, String eventType)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			_auditRouter.route(
+				new AuditMessage(
+					companyId, userId, RandomTestUtil.randomString(),
+					eventType));
+		}
+	}
+
+	private void _route(long companyId, String eventType) throws Exception {
+		_route(companyId, RandomTestUtil.randomLong(), eventType);
+	}
+
+	private void _testProcessCorrelationIdPersistsAfterClear()
+		throws Exception {
+
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					PersistentAuditMessageProcessorConfiguration.class.
@@ -102,41 +174,70 @@ public class PersistentAuditMessageProcessorTest {
 		}
 	}
 
-	private String _createEventType() {
-		return StringUtil.toUpperCase(RandomTestUtil.randomString());
-	}
+	private void _testProcessRolesPersistAfterRoleChanges() throws Exception {
+		_user = UserTestUtil.addUser();
 
-	private AuditEvent _getAuditEvent(long companyId, String eventType) {
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+		Role role1 = _addRole();
+		Role role2 = _addRole();
 
-			List<AuditEvent> auditEvents =
-				_auditEventLocalService.getAuditEvents(
-					companyId, 0, 0, null, null, null, null, null, null, null,
-					null, null, eventType, null, 0, null, false, 0, 1);
+		_userLocalService.addRoleUser(role1.getRoleId(), _user.getUserId());
+		_userLocalService.addRoleUser(role2.getRoleId(), _user.getUserId());
 
-			return auditEvents.get(0);
+		String eventType = _createEventType();
+		Role role3 = _addRole();
+		String roleName = role1.getName();
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					PersistentAuditMessageProcessorConfiguration.class.
+						getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"bufferSize", 2000
+					).put(
+						"flushInterval", _FLUSH_INTERVAL
+					).build())) {
+
+			_route(
+				TestPropsValues.getCompanyId(), _user.getUserId(), eventType);
+
+			_userLocalService.deleteRoleUser(
+				role1.getRoleId(), _user.getUserId());
+
+			role1.setName(RandomTestUtil.randomString());
+
+			_roleLocalService.updateRole(role1);
+
+			_roleLocalService.deleteRole(role2);
+
+			_userLocalService.addRoleUser(role3.getRoleId(), _user.getUserId());
+
+			Assert.assertEquals(
+				0,
+				_getAuditEventsCount(
+					TestPropsValues.getCompanyId(), eventType));
 		}
-	}
 
-	private int _getAuditEventsCount(long companyId, String eventType) {
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					PersistentAuditMessageProcessorConfiguration.class.
+						getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"bufferSize", 1
+					).put(
+						"flushInterval", _FLUSH_INTERVAL
+					).build())) {
 
-			return _auditEventLocalService.getAuditEventsCount(
-				companyId, 0, 0, null, null, null, null, null, null, null, null,
-				null, eventType, null, 0, null, false);
-		}
-	}
+			_route(TestPropsValues.getCompanyId(), _createEventType());
 
-	private void _route(long companyId, String eventType) throws Exception {
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+			AuditEvent auditEvent = _getAuditEvent(
+				TestPropsValues.getCompanyId(), eventType);
 
-			_auditRouter.route(
-				new AuditMessage(
-					companyId, RandomTestUtil.randomLong(),
-					RandomTestUtil.randomString(), eventType));
+			List<String> roleNames = JSONUtil.toStringList(
+				JSONFactoryUtil.createJSONArray(auditEvent.getRoles()));
+
+			Assert.assertTrue(roleNames.contains(role2.getName()));
+			Assert.assertFalse(roleNames.contains(role3.getName()));
+			Assert.assertTrue(roleNames.contains(roleName));
 		}
 	}
 
@@ -147,5 +248,17 @@ public class PersistentAuditMessageProcessorTest {
 
 	@Inject
 	private AuditRouter _auditRouter;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@DeleteAfterTestRun
+	private final List<Role> _roles = new ArrayList<>();
+
+	@DeleteAfterTestRun
+	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

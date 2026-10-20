@@ -12,12 +12,28 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -26,6 +42,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -82,7 +99,8 @@ public class DefaultAuditRouterTest {
 		_testRoute(null, null, "ADD", "instance.unknown.add", "unknown");
 
 		AuditMessage auditMessage = _getAuditMessage(
-			RandomTestUtil.randomString(), null, "ASSIGN");
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
+			"ASSIGN");
 
 		auditMessage.setResourceType("organization");
 
@@ -93,7 +111,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertEquals("organization", auditMessage.getResourceType());
 
 		auditMessage = _getAuditMessage(
-			User.class.getName(), "AI_HUB", RandomTestUtil.randomString());
+			RandomTestUtil.randomLong(), User.class.getName(), "AI_HUB",
+			RandomTestUtil.randomString());
 
 		auditMessage.setAction("submit");
 
@@ -104,8 +123,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertEquals("user", auditMessage.getResourceType());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomString(), "AI_HUB",
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			"AI_HUB", RandomTestUtil.randomString());
 
 		auditMessage.setAction("submit");
 		auditMessage.setResourceType("prompt");
@@ -117,8 +136,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertEquals("prompt", auditMessage.getResourceType());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		auditMessage.setResourceAction("ai_hub.prompt.submit");
 
@@ -129,8 +148,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertNull(auditMessage.getResourceType());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		String resourceType = RandomTestUtil.randomString();
 
@@ -143,13 +162,95 @@ public class DefaultAuditRouterTest {
 			"ai_hub.prompt.submit", auditMessage.getResourceAction());
 		Assert.assertEquals(resourceType, auditMessage.getResourceType());
 
+		_regularRole = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		_userGroup = UserGroupTestUtil.addUserGroup();
+
+		_roleLocalService.addGroupRole(
+			_userGroup.getGroupId(), _regularRole.getRoleId());
+
+		_group = GroupTestUtil.addGroup();
+		_siteRole = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
+		_user = UserTestUtil.addUser();
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			_user.getUserId(), _group.getGroupId(),
+			new long[] {_siteRole.getRoleId()});
+
+		_organization = OrganizationTestUtil.addOrganization();
+		_organizationRole = RoleTestUtil.addRole(
+			RoleConstants.TYPE_ORGANIZATION);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			_user.getUserId(), _organization.getGroupId(),
+			new long[] {_organizationRole.getRoleId()});
+
+		_userLocalService.addRoleUser(
+			_regularRole.getRoleId(), _user.getUserId());
+		_userLocalService.addUserGroupUser(
+			_userGroup.getUserGroupId(), _user.getUserId());
+
+		auditMessage = _getAuditMessage(
+			_user.getUserId(), RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString());
+
+		_auditRouter.route(auditMessage);
+
+		List<String> roleNames = JSONUtil.toStringList(
+			JSONFactoryUtil.createJSONArray(auditMessage.getRoles()));
+
+		Assert.assertEquals(
+			new ArrayList<>(new TreeSet<>(roleNames)), roleNames);
+		Assert.assertTrue(roleNames.contains(_organizationRole.getName()));
+		Assert.assertTrue(roleNames.contains(_regularRole.getName()));
+		Assert.assertTrue(roleNames.contains(_siteRole.getName()));
+
+		auditMessage = _getAuditMessage(
+			_user.getUserId(), RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString());
+
+		String roles = RandomTestUtil.randomString();
+
+		auditMessage.setRoles(roles);
+
+		_auditRouter.route(auditMessage);
+
+		Assert.assertEquals(roles, auditMessage.getRoles());
+
+		auditMessage = _getAuditMessage(
+			_userLocalService.getGuestUserId(TestPropsValues.getCompanyId()),
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString());
+
+		_auditRouter.route(auditMessage);
+
+		roleNames = JSONUtil.toStringList(
+			JSONFactoryUtil.createJSONArray(auditMessage.getRoles()));
+
+		Assert.assertTrue(roleNames.contains(RoleConstants.GUEST));
+
+		auditMessage = _getAuditMessage(
+			0, RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString());
+
+		_auditRouter.route(auditMessage);
+
+		Assert.assertNull(auditMessage.getRoles());
+
+		auditMessage = _getAuditMessage(
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString());
+
+		_auditRouter.route(auditMessage);
+
+		Assert.assertNull(auditMessage.getRoles());
+
 		auditMessage = new AuditMessage(
-			CompanyConstants.SYSTEM, RandomTestUtil.randomLong(),
+			CompanyConstants.SYSTEM, _user.getUserId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		auditMessage.setAction(RandomTestUtil.randomString());
 		auditMessage.setResourceAction(RandomTestUtil.randomString());
 		auditMessage.setResourceType(RandomTestUtil.randomString());
+		auditMessage.setRoles(RandomTestUtil.randomString());
 
 		_auditRouter.route(auditMessage);
 
@@ -157,9 +258,11 @@ public class DefaultAuditRouterTest {
 		Assert.assertNull(auditMessage.getAction());
 		Assert.assertNull(auditMessage.getResourceAction());
 		Assert.assertNull(auditMessage.getResourceType());
+		Assert.assertNull(auditMessage.getRoles());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomString(), null, RandomTestUtil.randomString());
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString());
 
 		String resourceAction = RandomTestUtil.randomString();
 
@@ -185,14 +288,14 @@ public class DefaultAuditRouterTest {
 	}
 
 	private AuditMessage _getAuditMessage(
-			String className, String contextName, String eventType)
+			long userId, String className, String contextName, String eventType)
 		throws Exception {
 
 		return new AuditMessage(
-			RandomTestUtil.randomLong(), TestPropsValues.getCompanyId(),
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomLong(), null, className,
-			RandomTestUtil.randomString(), contextName, eventType, null);
+			RandomTestUtil.randomLong(), TestPropsValues.getCompanyId(), userId,
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomLong(),
+			null, className, RandomTestUtil.randomString(), contextName,
+			eventType, null);
 	}
 
 	private void _testRoute(
@@ -201,7 +304,7 @@ public class DefaultAuditRouterTest {
 		throws Exception {
 
 		AuditMessage auditMessage = _getAuditMessage(
-			className, contextName, eventType);
+			RandomTestUtil.randomLong(), className, contextName, eventType);
 
 		_auditRouter.route(auditMessage);
 
@@ -217,12 +320,13 @@ public class DefaultAuditRouterTest {
 					false, "LPD-6417")) {
 
 			AuditMessage auditMessage = _getAuditMessage(
-				RandomTestUtil.randomString(), null,
+				_user.getUserId(), RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString());
 
 			auditMessage.setAction(RandomTestUtil.randomString());
 			auditMessage.setResourceAction(RandomTestUtil.randomString());
 			auditMessage.setResourceType(RandomTestUtil.randomString());
+			auditMessage.setRoles(RandomTestUtil.randomString());
 
 			_auditRouter.route(auditMessage);
 
@@ -230,6 +334,7 @@ public class DefaultAuditRouterTest {
 			Assert.assertNull(auditMessage.getAction());
 			Assert.assertNull(auditMessage.getResourceAction());
 			Assert.assertNull(auditMessage.getResourceType());
+			Assert.assertNull(auditMessage.getRoles());
 		}
 	}
 
@@ -238,6 +343,36 @@ public class DefaultAuditRouterTest {
 	@Inject
 	private AuditRouter _auditRouter;
 
+	@DeleteAfterTestRun
+	private Group _group;
+
+	@DeleteAfterTestRun
+	private Organization _organization;
+
+	@DeleteAfterTestRun
+	private Role _organizationRole;
+
+	@DeleteAfterTestRun
+	private Role _regularRole;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
 	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
+
+	@DeleteAfterTestRun
+	private Role _siteRole;
+
+	@DeleteAfterTestRun
+	private User _user;
+
+	@DeleteAfterTestRun
+	private UserGroup _userGroup;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
