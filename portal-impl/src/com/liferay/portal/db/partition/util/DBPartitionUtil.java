@@ -593,9 +593,15 @@ public class DBPartitionUtil {
 	}
 
 	private static void _addDBPartition(Connection connection, long companyId)
-		throws PortalException {
+		throws PortalException, SQLException {
 
 		String partitionName = getPartitionName(companyId);
+
+		if (_dbPartitionDB.existsPartition(connection, partitionName)) {
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"Database partition ", partitionName, " already exists"));
+		}
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				_dbPartitionDB.getCreatePartitionSQL(

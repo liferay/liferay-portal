@@ -93,12 +93,6 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		for (long companyId : COMPANY_IDS) {
-			db.runSQL(
-				dbPartitionDB.getCreatePartitionSQL(
-					connection, getPartitionName(companyId)));
-		}
-
 		_scheduleJob(PortalInstancePool.getDefaultCompanyId(), _JOB_NAME_1);
 		_scheduleJob(PortalInstancePool.getDefaultCompanyId(), _JOB_NAME_2);
 	}
@@ -114,6 +108,10 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 	@TestInfo("LPS-198239")
 	public void testAccessCompanyByCompanyThreadLocal() throws Exception {
 		for (long companyId : COMPANY_IDS) {
+			db.runSQL(
+				dbPartitionDB.getCreatePartitionSQL(
+					connection, getPartitionName(companyId)));
+
 			try (SafeCloseable safeCloseable =
 					CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
 						companyId);
