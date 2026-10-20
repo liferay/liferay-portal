@@ -25,10 +25,11 @@ jobs:
 
                     function main {
                         local helm_lint_args=()
+                        local render_values_file="cloud/scripts/tests/render-values/${{matrix.chart}}.yaml"
 
-                        if [[ -f cloud/scripts/tests/render-values/${{matrix.chart}}.yaml ]]
+                        if [[ -f ${render_values_file} ]]
                         then
-                            helm_lint_args=("--values" "cloud/scripts/tests/render-values/${{matrix.chart}}.yaml")
+                            helm_lint_args=("--values" "${render_values_file}")
                         fi
 
                         helm lint "cloud/helm/${{matrix.chart}}" "${helm_lint_args[@]}"
