@@ -30,12 +30,16 @@ public class TransactionAttributeAdapter
 
 		_transactionAttribute = transactionAttribute;
 		_strictReadOnly = strictReadOnly;
+
+		_isolation = Isolation.getIsolation(
+			transactionAttribute.getIsolationLevel());
+		_propagation = Propagation.getPropagation(
+			transactionAttribute.getPropagationBehavior());
 	}
 
 	@Override
 	public Isolation getIsolation() {
-		return Isolation.getIsolation(
-			_transactionAttribute.getIsolationLevel());
+		return _isolation;
 	}
 
 	@Override
@@ -55,8 +59,7 @@ public class TransactionAttributeAdapter
 
 	@Override
 	public Propagation getPropagation() {
-		return Propagation.getPropagation(
-			_transactionAttribute.getPropagationBehavior());
+		return _propagation;
 	}
 
 	@Override
@@ -89,6 +92,8 @@ public class TransactionAttributeAdapter
 		return _transactionAttribute.rollbackOn(throwable);
 	}
 
+	private final Isolation _isolation;
+	private final Propagation _propagation;
 	private final boolean _strictReadOnly;
 	private final TransactionAttribute _transactionAttribute;
 
