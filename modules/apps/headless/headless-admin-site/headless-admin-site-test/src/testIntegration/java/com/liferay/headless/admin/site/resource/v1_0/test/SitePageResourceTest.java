@@ -1094,26 +1094,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertEquals(SitePage.Type.PAGE_SET_PAGE, sitePage.getType());
 	}
 
-	private void _assertPageSpecifications(
-			ContentPageSpecification draftContentPageSpecification,
-			ContentPageSpecification publishedContentPageSpecification,
-			SitePage sitePage)
-		throws Exception {
-
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
-			sitePage.getExternalReferenceCode(), testGroup.getGroupId());
-
-		PageSpecification.Status status = PageSpecification.Status.APPROVED;
-
-		if (!layout.isPublished()) {
-			status = PageSpecification.Status.DRAFT;
-		}
-
-		PageSpecificationsTestUtil.assertPageSpecifications(
-			draftContentPageSpecification, publishedContentPageSpecification,
-			sitePage.getPageSpecifications(), layout, status);
-	}
-
 	private void _assertPageSpecificationVersions(
 			Layout layout, PageSpecificationVersion[] pageSpecificationVersions)
 		throws Exception {
@@ -1159,6 +1139,26 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertEquals(
 			Arrays.toString(pageSpecificationVersions),
 			layoutContentVersions.size(), pageSpecificationVersions.length);
+	}
+
+	private void _assertPageSpecifications(
+			ContentPageSpecification draftContentPageSpecification,
+			ContentPageSpecification publishedContentPageSpecification,
+			SitePage sitePage)
+		throws Exception {
+
+		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+			sitePage.getExternalReferenceCode(), testGroup.getGroupId());
+
+		PageSpecification.Status status = PageSpecification.Status.APPROVED;
+
+		if (!layout.isPublished()) {
+			status = PageSpecification.Status.DRAFT;
+		}
+
+		PageSpecificationsTestUtil.assertPageSpecifications(
+			draftContentPageSpecification, publishedContentPageSpecification,
+			sitePage.getPageSpecifications(), layout, status);
 	}
 
 	private void _assertParentAndPriority(
@@ -2491,62 +2491,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertEquals(0, page.getTotalCount());
 	}
 
-	private void _testGetSiteSitePageSitePagesPageWithoutViewPermission()
-		throws Exception {
-
-		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
-
-		Layout restrictedLayout = LayoutTestUtil.addTypePortletLayout(
-			testGroup, parentLayout.getPlid());
-		Layout viewableLayout = LayoutTestUtil.addTypePortletLayout(
-			testGroup, parentLayout.getPlid());
-
-		LayoutTestUtil.addTypePortletLayout(
-			testGroup, restrictedLayout.getPlid());
-
-		for (String roleName :
-				new String[] {
-					RoleConstants.GUEST, RoleConstants.SITE_MEMBER,
-					RoleConstants.USER
-				}) {
-
-			Role role = _roleLocalService.getRole(
-				testCompany.getCompanyId(), roleName);
-
-			_resourcePermissionLocalService.removeResourcePermission(
-				testCompany.getCompanyId(), Layout.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(restrictedLayout.getPlid()), role.getRoleId(),
-				ActionKeys.VIEW);
-		}
-
-		Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
-			testGroup.getExternalReferenceCode(),
-			parentLayout.getExternalReferenceCode(), true,
-			Pagination.of(1, 10));
-
-		Assert.assertEquals(3, page.getTotalCount());
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(testCompany, password);
-
-		SitePageResource userSitePageResource = _getSitePageResource(
-			user.getEmailAddress(), password);
-
-		for (Boolean flatten : new Boolean[] {null, true}) {
-			page = userSitePageResource.getSiteSitePageSitePagesPage(
-				testGroup.getExternalReferenceCode(),
-				parentLayout.getExternalReferenceCode(), flatten,
-				Pagination.of(1, 10));
-
-			Assert.assertEquals(1, page.getTotalCount());
-
-			_assertExternalReferenceCodes(
-				Collections.singletonList(viewableLayout), page);
-		}
-	}
-
 	private void _testGetSiteSitePageSitePagesPageWithPermissions()
 		throws Exception {
 
@@ -2608,6 +2552,115 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_assertExternalReferenceCodes(
 				Collections.singletonList(childLayout), page);
 		}
+	}
+
+	private void _testGetSiteSitePageSitePagesPageWithoutViewPermission()
+		throws Exception {
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		Layout restrictedLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, parentLayout.getPlid());
+		Layout viewableLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, parentLayout.getPlid());
+
+		LayoutTestUtil.addTypePortletLayout(
+			testGroup, restrictedLayout.getPlid());
+
+		for (String roleName :
+				new String[] {
+					RoleConstants.GUEST, RoleConstants.SITE_MEMBER,
+					RoleConstants.USER
+				}) {
+
+			Role role = _roleLocalService.getRole(
+				testCompany.getCompanyId(), roleName);
+
+			_resourcePermissionLocalService.removeResourcePermission(
+				testCompany.getCompanyId(), Layout.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(restrictedLayout.getPlid()), role.getRoleId(),
+				ActionKeys.VIEW);
+		}
+
+		Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
+			testGroup.getExternalReferenceCode(),
+			parentLayout.getExternalReferenceCode(), true,
+			Pagination.of(1, 10));
+
+		Assert.assertEquals(3, page.getTotalCount());
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		SitePageResource userSitePageResource = _getSitePageResource(
+			user.getEmailAddress(), password);
+
+		for (Boolean flatten : new Boolean[] {null, true}) {
+			page = userSitePageResource.getSiteSitePageSitePagesPage(
+				testGroup.getExternalReferenceCode(),
+				parentLayout.getExternalReferenceCode(), flatten,
+				Pagination.of(1, 10));
+
+			Assert.assertEquals(1, page.getTotalCount());
+
+			_assertExternalReferenceCodes(
+				Collections.singletonList(viewableLayout), page);
+		}
+	}
+
+	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
+		throws Exception {
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"friendlyUrlHistory,pageSpecifications," +
+				"pageSpecificationVersions.pageSpecification");
+
+		_assertNestedFields(
+			sitePageResource.getSiteSitePage(
+				testGroup.getExternalReferenceCode(),
+				sitePage.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		String customApplicationDecorator = RandomTestUtil.randomString();
+		String customCSS = RandomTestUtil.randomString();
+		String customCSSClassName = RandomTestUtil.randomString();
+
+		LayoutTestUtil.addPortletToLayout(
+			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			HashMapBuilder.put(
+				"portletSetupCss",
+				new String[] {
+					JSONUtil.put(
+						"advancedData",
+						JSONUtil.put(
+							"customCSS", customCSS
+						).put(
+							"customCSSClassName", customCSSClassName
+						)
+					).toString()
+				}
+			).put(
+				"portletSetupPortletDecoratorId",
+				new String[] {customApplicationDecorator}
+			).build());
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode());
+
+		_assertWidgetPageWidgetInstances(
+			null, 1, customApplicationDecorator, customCSS, customCSSClassName,
+			sitePage);
 	}
 
 	private void _testGetSiteSitePagesPageWithFlatten() throws Exception {
@@ -2677,59 +2730,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					testGroup.getGroupId()),
 				sitePage.getPageSpecificationVersions());
 		}
-	}
-
-	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
-		throws Exception {
-
-		SitePageResource sitePageResource = _getSitePageResource(
-			"friendlyUrlHistory,pageSpecifications," +
-				"pageSpecificationVersions.pageSpecification");
-
-		_assertNestedFields(
-			sitePageResource.getSiteSitePage(
-				testGroup.getExternalReferenceCode(),
-				sitePage.getExternalReferenceCode()));
-	}
-
-	private void _testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances()
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
-
-		String customApplicationDecorator = RandomTestUtil.randomString();
-		String customCSS = RandomTestUtil.randomString();
-		String customCSSClassName = RandomTestUtil.randomString();
-
-		LayoutTestUtil.addPortletToLayout(
-			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
-			HashMapBuilder.put(
-				"portletSetupCss",
-				new String[] {
-					JSONUtil.put(
-						"advancedData",
-						JSONUtil.put(
-							"customCSS", customCSS
-						).put(
-							"customCSSClassName", customCSSClassName
-						)
-					).toString()
-				}
-			).put(
-				"portletSetupPortletDecoratorId",
-				new String[] {customApplicationDecorator}
-			).build());
-
-		SitePageResource sitePageResource = _getSitePageResource(
-			"pageSpecifications");
-
-		SitePage sitePage = sitePageResource.getSiteSitePage(
-			testGroup.getExternalReferenceCode(),
-			layout.getExternalReferenceCode());
-
-		_assertWidgetPageWidgetInstances(
-			null, 1, customApplicationDecorator, customCSS, customCSSClassName,
-			sitePage);
 	}
 
 	private SitePage _testPatchSiteSitePage(
