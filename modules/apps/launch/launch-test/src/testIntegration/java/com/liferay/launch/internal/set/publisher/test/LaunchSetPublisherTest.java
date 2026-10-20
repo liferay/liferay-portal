@@ -97,20 +97,12 @@ public class LaunchSetPublisherTest {
 
 	@Test
 	public void testFetchScheduledDate() throws Exception {
-
-		// Missing launch set
-
 		Assert.assertNull(
 			_launchSetPublisher.fetchScheduledDate(
 				RandomTestUtil.randomLong()));
-
-		// Launch set that is not scheduled
-
 		Assert.assertNull(
 			_launchSetPublisher.fetchScheduledDate(
 				_launchSetObjectEntry.getObjectEntryId()));
-
-		// Scheduled launch set
 
 		Date date = new Date(System.currentTimeMillis() + Time.DAY);
 
@@ -262,8 +254,6 @@ public class LaunchSetPublisherTest {
 	public void testSchedulePublish() throws Exception {
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
 
-		// Without permission
-
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
@@ -285,22 +275,15 @@ public class LaunchSetPublisherTest {
 
 		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
 
-		// Date in the past
-
 		Assert.assertThrows(
 			PortalException.class,
 			() -> _launchSetPublisher.schedulePublish(
 				launchSetId, TestPropsValues.getUserId(),
 				new Date(System.currentTimeMillis() - Time.MINUTE)));
-
-		// Null date
-
 		Assert.assertThrows(
 			PortalException.class,
 			() -> _launchSetPublisher.schedulePublish(
 				launchSetId, TestPropsValues.getUserId(), null));
-
-		// Future date
 
 		Date date = new Date(System.currentTimeMillis() + Time.DAY);
 
@@ -309,14 +292,11 @@ public class LaunchSetPublisherTest {
 
 		_assertScheduledDate(date, WorkflowConstants.STATUS_SCHEDULED);
 
-		// Already scheduled
-
 		Assert.assertThrows(
 			PortalException.class,
 			() -> _launchSetPublisher.schedulePublish(
 				launchSetId, TestPropsValues.getUserId(),
 				new Date(System.currentTimeMillis() + Time.DAY)));
-
 		_assertScheduledDate(date, WorkflowConstants.STATUS_SCHEDULED);
 	}
 
@@ -324,13 +304,9 @@ public class LaunchSetPublisherTest {
 	public void testUnschedulePublish() throws Exception {
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
 
-		// Not scheduled
-
 		_launchSetPublisher.unschedulePublish(launchSetId);
 
 		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
-
-		// Scheduled
 
 		_launchSetPublisher.schedulePublish(
 			launchSetId, TestPropsValues.getUserId(),
@@ -339,8 +315,6 @@ public class LaunchSetPublisherTest {
 		_launchSetPublisher.unschedulePublish(launchSetId);
 
 		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
-
-		// Scheduled again
 
 		Date date = new Date(System.currentTimeMillis() + Time.WEEK);
 
