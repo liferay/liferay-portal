@@ -294,6 +294,17 @@ tests:
     -   asserts:
             -   contains:
                     content:
+                        name: database.engine
+                        value: postgresql
+                    path: spec.sources[0].helm.parameters
+                template: templates/application-infrastructure-provider.yaml
+        it: Passes the database engine to the infrastructure provider application
+        set:
+            database:
+                engine: postgresql
+    -   asserts:
+            -   contains:
+                    content:
                         name: deploymentContext.deploymentName
                         value: liferay-test
                     path: spec.sources[0].helm.parameters
