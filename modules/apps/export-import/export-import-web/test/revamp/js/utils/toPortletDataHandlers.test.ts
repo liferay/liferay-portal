@@ -8,7 +8,10 @@ import {
 	CONTROL_NAME_VISIBILITY,
 	PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS,
 } from '../../../../src/main/resources/META-INF/resources/revamp/js/utils/contentSelection';
-import {toPortletDataHandlers} from '../../../../src/main/resources/META-INF/resources/revamp/js/utils/toPortletDataHandlers';
+import {
+	toPortletDataHandlerTreeSelection,
+	toPortletDataHandlers,
+} from '../../../../src/main/resources/META-INF/resources/revamp/js/utils/toPortletDataHandlers';
 
 import type {PortletDataHandlerSection} from '../../../../src/main/resources/META-INF/resources/revamp/js/types/portletDataHandler';
 
@@ -135,11 +138,14 @@ describe('toPortletDataHandlers', () => {
 		).toEqual([]);
 	});
 
-	it('sends the pages control with the selected visibility', () => {
+	it('sends the pages as a selection of the pages control', () => {
 		expect(
 			toPortletDataHandlers(PORTLET_DATA_HANDLER_SECTIONS, {
 				'category.site_administration.build': {
 					[PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS]: {
+						all: true,
+						excludedSubtrees: ['archive'],
+						items: ['news'],
 						privateLayout: true,
 					},
 				},
@@ -153,6 +159,42 @@ describe('toPortletDataHandlers', () => {
 						name: CONTROL_NAME_VISIBILITY,
 						portletDataHandlerControls: [
 							{
+								excludedSubtreeExternalReferenceCodes: [
+									'archive',
+								],
+								itemExternalReferenceCodes: ['news'],
+								name: CONTROL_NAME_PAGES,
+								selectAll: true,
+								selected: true,
+								type: 'TreeSelection',
+							},
+						],
+						type: 'Choice',
+					},
+				],
+			},
+		]);
+	});
+
+	it('sends every page without a selection when all pages are selected', () => {
+		expect(
+			toPortletDataHandlers(PORTLET_DATA_HANDLER_SECTIONS, {
+				'category.site_administration.build': {
+					[PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS]: {
+						all: true,
+						privateLayout: false,
+					},
+				},
+			})
+		).toEqual([
+			{
+				name: PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS,
+				portletDataHandlerControls: [
+					{
+						choice: 'public-pages',
+						name: CONTROL_NAME_VISIBILITY,
+						portletDataHandlerControls: [
+							{
 								name: CONTROL_NAME_PAGES,
 								selected: true,
 								type: 'TreeSelection',
@@ -163,5 +205,27 @@ describe('toPortletDataHandlers', () => {
 				],
 			},
 		]);
+	});
+});
+
+describe('toPortletDataHandlerTreeSelection', () => {
+	it('maps the selected subtrees and items to lists', () => {
+		expect(
+			toPortletDataHandlerTreeSelection({
+				excludedItems: ['home'],
+				privateLayout: false,
+				subtrees: ['news'],
+			})
+		).toEqual({
+			excludedItemExternalReferenceCodes: ['home'],
+			selectAll: false,
+			subtreeExternalReferenceCodes: ['news'],
+		});
+	});
+
+	it('returns no lists when every page is selected', () => {
+		expect(
+			toPortletDataHandlerTreeSelection({all: true, privateLayout: true})
+		).toEqual({});
 	});
 });

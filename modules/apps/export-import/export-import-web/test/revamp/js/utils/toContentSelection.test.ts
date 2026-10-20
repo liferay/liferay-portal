@@ -158,6 +158,10 @@ describe('toContentSelection', () => {
 								name: CONTROL_NAME_VISIBILITY,
 								portletDataHandlerControls: [
 									{
+										excludedSubtreeExternalReferenceCodes: [
+											'archive',
+										],
+										itemExternalReferenceCodes: ['news'],
 										name: CONTROL_NAME_PAGES,
 										selectAll: true,
 										selected: true,
@@ -172,7 +176,12 @@ describe('toContentSelection', () => {
 			})
 		).toEqual({
 			'category.site_administration.build': {
-				[PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS]: {privateLayout: true},
+				[PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS]: {
+					all: true,
+					excludedSubtrees: ['archive'],
+					items: ['news'],
+					privateLayout: true,
+				},
 			},
 		});
 
@@ -185,7 +194,10 @@ describe('toContentSelection', () => {
 			})
 		).toEqual({
 			'category.site_administration.build': {
-				[PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS]: {privateLayout: false},
+				[PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS]: {
+					all: true,
+					privateLayout: false,
+				},
 			},
 		});
 	});
