@@ -9,9 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -49,13 +46,8 @@ public class GroupItemSelectorProviderImplTest {
 	@Test
 	@TestInfo("LPD-110411")
 	public void testGetGroups() throws Exception {
-		User user = UserTestUtil.addUser();
-
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(user);
-
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, permissionChecker)) {
+				UserTestUtil.addUser())) {
 
 			List<Group> groups = _groupItemSelectorProvider.getGroups(
 				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
