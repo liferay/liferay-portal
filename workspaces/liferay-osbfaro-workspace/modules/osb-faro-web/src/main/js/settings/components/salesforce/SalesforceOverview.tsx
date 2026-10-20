@@ -374,6 +374,12 @@ const AccountAndIndividuals = ({
 		variables: {groupId, id: dataSource.id!},
 	});
 
+	const campaignsCountResponse = useRequest({
+		dataSourceFn: (params) =>
+			fetchConnectorEntityCount(Entity.Campaigns, params),
+		variables: {groupId, id: dataSource.id!},
+	});
+
 	const userCountResponse = useRequest({
 		dataSourceFn: (params) =>
 			fetchConnectorEntityCount(Entity.Users, params),
@@ -386,11 +392,19 @@ const AccountAndIndividuals = ({
 
 	const dataSourceActive = dataSource.status === DataSourceStatuses.Active;
 
-	if (accountsCountResponse.error || userCountResponse.error) {
+	if (
+		accountsCountResponse.error ||
+		campaignsCountResponse.error ||
+		userCountResponse.error
+	) {
 		return <ErrorDisplay />;
 	}
 
-	if (accountsCountResponse.loading || userCountResponse.loading) {
+	if (
+		accountsCountResponse.loading ||
+		campaignsCountResponse.loading ||
+		userCountResponse.loading
+	) {
 		return <Loading spacer />;
 	}
 
@@ -434,6 +448,7 @@ const AccountAndIndividuals = ({
 
 			<SalesforceAccountsAndIndividuals
 				accountsSyncedCount={accountsCountResponse.data}
+				campaignsSyncedCount={campaignsCountResponse.data}
 				disabled={!dataSourceActive || !currentUser.isAdmin()}
 				enabledAccounts={enabledAllAccounts}
 				enabledIndividuals={enabledAllIndividuals}

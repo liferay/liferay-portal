@@ -8,6 +8,7 @@ import {toLocale} from 'shared/util/numbers';
 
 interface ISalesforceAccountsAndIndividualsProps {
 	accountsSyncedCount?: number;
+	campaignsSyncedCount?: number;
 	disabled?: boolean;
 	enabledAccounts: boolean;
 	enabledIndividuals: boolean;
@@ -22,6 +23,7 @@ const SalesforceAccountsAndIndividuals: React.FC<
 	ISalesforceAccountsAndIndividualsProps
 > = ({
 	accountsSyncedCount,
+	campaignsSyncedCount,
 	disabled = false,
 	enabledAccounts,
 	enabledIndividuals,
@@ -105,6 +107,42 @@ const SalesforceAccountsAndIndividuals: React.FC<
 							<ClayList.ItemText>
 								{sub(Liferay.Language.get('x-items-synced'), [
 									toLocale(individualsSyncedCount),
+								])}
+							</ClayList.ItemText>
+						)}
+				</ClayList.ItemField>
+			</ClayList.Item>
+
+			<ClayList.Item flex>
+				<ClayList.ItemField>
+					<ClayCheckbox checked disabled readOnly />
+				</ClayList.ItemField>
+
+				<ClayList.ItemField>
+					<ClaySticker displayType="unstyled">
+						<ClayIcon
+							className="text-secondary"
+							symbol="megaphone"
+						/>
+					</ClaySticker>
+				</ClayList.ItemField>
+
+				<ClayList.ItemField expand>
+					<ClayList.ItemTitle>
+						{Liferay.Language.get('campaigns')}
+					</ClayList.ItemTitle>
+
+					<ClayList.ItemText>
+						{Liferay.Language.get(
+							'represents-fields-from-the-campaign-object-within-salesforce'
+						)}
+					</ClayList.ItemText>
+
+					{campaignsSyncedCount !== undefined &&
+						campaignsSyncedCount >= 0 && (
+							<ClayList.ItemText>
+								{sub(Liferay.Language.get('x-items-synced'), [
+									toLocale(campaignsSyncedCount),
 								])}
 							</ClayList.ItemText>
 						)}

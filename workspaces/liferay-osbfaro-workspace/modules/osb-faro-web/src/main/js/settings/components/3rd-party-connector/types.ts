@@ -2,6 +2,7 @@ import {ComponentType} from 'react';
 
 export enum Entity {
 	Accounts = 'accounts',
+	Campaigns = 'campaigns',
 	Events = 'events',
 	Individuals = 'individuals',
 	Sites = 'sites',

@@ -10,6 +10,10 @@ const ENTITY_DISPLAY: Record<Entity, EntityDisplay> = {
 		icon: 'briefcase',
 		label: Liferay.Language.get('accounts'),
 	},
+	[Entity.Campaigns]: {
+		icon: 'megaphone',
+		label: Liferay.Language.get('campaigns'),
+	},
 	[Entity.Events]: {
 		icon: 'click',
 		label: Liferay.Language.get('events'),
