@@ -1181,6 +1181,12 @@ public class UserImpl extends UserBaseImpl {
 		_userGroups = null;
 	}
 
+	@Override
+	@TemplateRestricted
+	public String toString() {
+		return super.toString();
+	}
+
 	protected String getProfileFriendlyURL() {
 		if (!_HAS_USERS_PROFILE_FRIENDLY_URL) {
 			return null;

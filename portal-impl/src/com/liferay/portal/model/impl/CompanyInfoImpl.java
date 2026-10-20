@@ -35,4 +35,10 @@ public class CompanyInfoImpl extends CompanyInfoBaseImpl {
 		return super.getKey();
 	}
 
+	@Override
+	@TemplateRestricted
+	public String toString() {
+		return super.toString();
+	}
+
 }
