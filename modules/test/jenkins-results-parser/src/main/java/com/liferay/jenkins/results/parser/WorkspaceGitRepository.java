@@ -59,9 +59,6 @@ public interface WorkspaceGitRepository extends LocalGitRepository {
 
 	public void setUp();
 
-	public void setUsePullRequestBaseRepository(
-		boolean usePullRequestBaseRepository);
-
 	public void storeCommitHistory(List<String> commitSHAs);
 
 	public void synchronizeToGitHubDev();

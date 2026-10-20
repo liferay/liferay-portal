@@ -672,8 +672,9 @@ public class BaseWorkspaceGitRepositoryTest
 			defaultWorkspaceGitRepository, "_upstreamRemoteGitRef",
 			upstreamRemoteGitRef);
 
-		defaultWorkspaceGitRepository.setUsePullRequestBaseRepository(
-			usePullRequestBaseRepository);
+		ReflectionTestUtil.invoke(
+			defaultWorkspaceGitRepository, "_setUsePullRequestBaseRepository",
+			new Class<?>[] {boolean.class}, usePullRequestBaseRepository);
 
 		try (MockedStatic<GitHubDevSyncUtil> gitHubDevSyncUtilMockedStatic =
 				Mockito.mockStatic(GitHubDevSyncUtil.class)) {
@@ -949,8 +950,9 @@ public class BaseWorkspaceGitRepositoryTest
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
 			_newDefaultWorkspaceGitRepository(true);
 
-		defaultWorkspaceGitRepository.setUsePullRequestBaseRepository(
-			usePullRequestBaseRepository);
+		ReflectionTestUtil.invoke(
+			defaultWorkspaceGitRepository, "_setUsePullRequestBaseRepository",
+			new Class<?>[] {boolean.class}, usePullRequestBaseRepository);
 
 		String expectedUsername = "liferay";
 

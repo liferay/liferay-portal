@@ -320,7 +320,7 @@ public abstract class BaseWorkspaceGitRepository
 		}
 
 		_setBaseBranchUsername(username);
-		setUsePullRequestBaseRepository(true);
+		_setUsePullRequestBaseRepository(true);
 		_upstreamRemoteGitRef = null;
 
 		_updateRemoteGitRefs();
@@ -392,13 +392,6 @@ public abstract class BaseWorkspaceGitRepository
 		}
 
 		setSetUp(true);
-	}
-
-	@Override
-	public void setUsePullRequestBaseRepository(
-		boolean usePullRequestBaseRepository) {
-
-		put("use_pull_request_base_repository", usePullRequestBaseRepository);
 	}
 
 	@Override
@@ -1528,6 +1521,12 @@ public abstract class BaseWorkspaceGitRepository
 
 	private void _setSenderBranchUsername(String username) {
 		put("sender_branch_username", username);
+	}
+
+	private void _setUsePullRequestBaseRepository(
+		boolean usePullRequestBaseRepository) {
+
+		put("use_pull_request_base_repository", usePullRequestBaseRepository);
 	}
 
 	private void _updateRemoteGitRefs() {
