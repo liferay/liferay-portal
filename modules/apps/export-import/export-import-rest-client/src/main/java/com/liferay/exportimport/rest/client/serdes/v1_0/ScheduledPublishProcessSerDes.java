@@ -121,18 +121,6 @@ public class ScheduledPublishProcessSerDes {
 			sb.append("\"");
 		}
 
-		if (scheduledPublishProcess.getPublishProcessRequest() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"publishProcessRequest\": ");
-
-			sb.append(
-				String.valueOf(
-					scheduledPublishProcess.getPublishProcessRequest()));
-		}
-
 		if (scheduledPublishProcess.getScheduleEndDate() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -163,6 +151,21 @@ public class ScheduledPublishProcessSerDes {
 					scheduledPublishProcess.getScheduleStartDate()));
 
 			sb.append("\"");
+		}
+
+		if (scheduledPublishProcess.getScheduledPublishProcessRequest() !=
+				null) {
+
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scheduledPublishProcessRequest\": ");
+
+			sb.append(
+				String.valueOf(
+					scheduledPublishProcess.
+						getScheduledPublishProcessRequest()));
 		}
 
 		sb.append("}");
@@ -232,16 +235,6 @@ public class ScheduledPublishProcessSerDes {
 					scheduledPublishProcess.getNextFireDate()));
 		}
 
-		if (scheduledPublishProcess.getPublishProcessRequest() == null) {
-			map.put("publishProcessRequest", null);
-		}
-		else {
-			map.put(
-				"publishProcessRequest",
-				String.valueOf(
-					scheduledPublishProcess.getPublishProcessRequest()));
-		}
-
 		if (scheduledPublishProcess.getScheduleEndDate() == null) {
 			map.put("scheduleEndDate", null);
 		}
@@ -260,6 +253,19 @@ public class ScheduledPublishProcessSerDes {
 				"scheduleStartDate",
 				liferayToJSONDateFormat.format(
 					scheduledPublishProcess.getScheduleStartDate()));
+		}
+
+		if (scheduledPublishProcess.getScheduledPublishProcessRequest() ==
+				null) {
+
+			map.put("scheduledPublishProcessRequest", null);
+		}
+		else {
+			map.put(
+				"scheduledPublishProcessRequest",
+				String.valueOf(
+					scheduledPublishProcess.
+						getScheduledPublishProcessRequest()));
 		}
 
 		return map;
@@ -295,15 +301,16 @@ public class ScheduledPublishProcessSerDes {
 			else if (Objects.equals(jsonParserFieldName, "nextFireDate")) {
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "publishProcessRequest")) {
-
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "scheduleEndDate")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "scheduleStartDate")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"scheduledPublishProcessRequest")) {
+
 				return false;
 			}
 
@@ -345,15 +352,6 @@ public class ScheduledPublishProcessSerDes {
 						toDate((String)jsonParserFieldValue));
 				}
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "publishProcessRequest")) {
-
-				if (jsonParserFieldValue != null) {
-					scheduledPublishProcess.setPublishProcessRequest(
-						PublishProcessRequestSerDes.toDTO(
-							(String)jsonParserFieldValue));
-				}
-			}
 			else if (Objects.equals(jsonParserFieldName, "scheduleEndDate")) {
 				if (jsonParserFieldValue != null) {
 					scheduledPublishProcess.setScheduleEndDate(
@@ -364,6 +362,16 @@ public class ScheduledPublishProcessSerDes {
 				if (jsonParserFieldValue != null) {
 					scheduledPublishProcess.setScheduleStartDate(
 						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"scheduledPublishProcessRequest")) {
+
+				if (jsonParserFieldValue != null) {
+					scheduledPublishProcess.setScheduledPublishProcessRequest(
+						ScheduledPublishProcessRequestSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -453,4 +461,4 @@ public class ScheduledPublishProcessSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1983231032
+// LIFERAY-REST-BUILDER-HASH:-659678655

@@ -127,30 +127,6 @@ public class ScheduledPublishProcess implements Cloneable, Serializable {
 
 	protected Date nextFireDate;
 
-	public PublishProcessRequest getPublishProcessRequest() {
-		return publishProcessRequest;
-	}
-
-	public void setPublishProcessRequest(
-		PublishProcessRequest publishProcessRequest) {
-
-		this.publishProcessRequest = publishProcessRequest;
-	}
-
-	public void setPublishProcessRequest(
-		UnsafeSupplier<PublishProcessRequest, Exception>
-			publishProcessRequestUnsafeSupplier) {
-
-		try {
-			publishProcessRequest = publishProcessRequestUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected PublishProcessRequest publishProcessRequest;
-
 	public Date getScheduleEndDate() {
 		return scheduleEndDate;
 	}
@@ -193,6 +169,31 @@ public class ScheduledPublishProcess implements Cloneable, Serializable {
 
 	protected Date scheduleStartDate;
 
+	public ScheduledPublishProcessRequest getScheduledPublishProcessRequest() {
+		return scheduledPublishProcessRequest;
+	}
+
+	public void setScheduledPublishProcessRequest(
+		ScheduledPublishProcessRequest scheduledPublishProcessRequest) {
+
+		this.scheduledPublishProcessRequest = scheduledPublishProcessRequest;
+	}
+
+	public void setScheduledPublishProcessRequest(
+		UnsafeSupplier<ScheduledPublishProcessRequest, Exception>
+			scheduledPublishProcessRequestUnsafeSupplier) {
+
+		try {
+			scheduledPublishProcessRequest =
+				scheduledPublishProcessRequestUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ScheduledPublishProcessRequest scheduledPublishProcessRequest;
+
 	@Override
 	public ScheduledPublishProcess clone() throws CloneNotSupportedException {
 		return (ScheduledPublishProcess)super.clone();
@@ -226,4 +227,4 @@ public class ScheduledPublishProcess implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-81337665
+// LIFERAY-REST-BUILDER-HASH:-1277917853

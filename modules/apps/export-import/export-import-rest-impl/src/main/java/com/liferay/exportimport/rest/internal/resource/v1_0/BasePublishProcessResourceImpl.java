@@ -355,10 +355,10 @@ public abstract class BasePublishProcessResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-processes' -d $'{"comments": ___, "cronExpression": ___, "dateRangeType": ___, "deletions": ___, "endDate": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "scheduleEndDate": ___, "scheduleStartDate": ___, "startDate": ___, "timeZoneId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-processes' -d $'{"comments": ___, "dateRangeType": ___, "deletions": ___, "endDate": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "startDate": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Starts a Publish to Live process on the specified site with the portlet data handlers returned by the publish preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches and scheduled occurrences. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run. When a cron expression is given, the publish is scheduled to recur instead of running immediately."
+		description = "Starts a Publish to Live process on the specified site with the portlet data handlers returned by the publish preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -392,7 +392,7 @@ public abstract class BasePublishProcessResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-processes/batch' -d $'{"comments": ___, "cronExpression": ___, "dateRangeType": ___, "deletions": ___, "endDate": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "scheduleEndDate": ___, "scheduleStartDate": ___, "startDate": ___, "timeZoneId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-processes/batch' -d $'{"comments": ___, "dateRangeType": ___, "deletions": ___, "endDate": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "startDate": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1291,4 +1291,4 @@ public abstract class BasePublishProcessResourceImpl
 		LogFactoryUtil.getLog(BasePublishProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1935096901
+// LIFERAY-REST-BUILDER-HASH:-1841702546

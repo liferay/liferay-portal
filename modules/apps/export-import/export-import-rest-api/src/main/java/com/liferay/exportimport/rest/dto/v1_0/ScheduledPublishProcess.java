@@ -272,55 +272,6 @@ public class ScheduledPublishProcess implements Serializable {
 	private Supplier<Date> _nextFireDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The publish process request the scheduled publication was created with, including its cron expression and time zone, which can be reused to create a new scheduled publication."
-	)
-	@Valid
-	public PublishProcessRequest getPublishProcessRequest() {
-		if (_publishProcessRequestSupplier != null) {
-			publishProcessRequest = _publishProcessRequestSupplier.get();
-
-			_publishProcessRequestSupplier = null;
-		}
-
-		return publishProcessRequest;
-	}
-
-	public void setPublishProcessRequest(
-		PublishProcessRequest publishProcessRequest) {
-
-		this.publishProcessRequest = publishProcessRequest;
-
-		_publishProcessRequestSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setPublishProcessRequest(
-		UnsafeSupplier<PublishProcessRequest, Exception>
-			publishProcessRequestUnsafeSupplier) {
-
-		_publishProcessRequestSupplier = () -> {
-			try {
-				return publishProcessRequestUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The publish process request the scheduled publication was created with, including its cron expression and time zone, which can be reused to create a new scheduled publication."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected PublishProcessRequest publishProcessRequest;
-
-	@JsonIgnore
-	private Supplier<PublishProcessRequest> _publishProcessRequestSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The date the scheduled publication stops firing."
 	)
 	public Date getScheduleEndDate() {
@@ -409,6 +360,57 @@ public class ScheduledPublishProcess implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Date> _scheduleStartDateSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The request the scheduled publish process was created with."
+	)
+	@Valid
+	public ScheduledPublishProcessRequest getScheduledPublishProcessRequest() {
+		if (_scheduledPublishProcessRequestSupplier != null) {
+			scheduledPublishProcessRequest =
+				_scheduledPublishProcessRequestSupplier.get();
+
+			_scheduledPublishProcessRequestSupplier = null;
+		}
+
+		return scheduledPublishProcessRequest;
+	}
+
+	public void setScheduledPublishProcessRequest(
+		ScheduledPublishProcessRequest scheduledPublishProcessRequest) {
+
+		this.scheduledPublishProcessRequest = scheduledPublishProcessRequest;
+
+		_scheduledPublishProcessRequestSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScheduledPublishProcessRequest(
+		UnsafeSupplier<ScheduledPublishProcessRequest, Exception>
+			scheduledPublishProcessRequestUnsafeSupplier) {
+
+		_scheduledPublishProcessRequestSupplier = () -> {
+			try {
+				return scheduledPublishProcessRequestUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The request the scheduled publish process was created with."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected ScheduledPublishProcessRequest scheduledPublishProcessRequest;
+
+	@JsonIgnore
+	private Supplier<ScheduledPublishProcessRequest>
+		_scheduledPublishProcessRequestSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -513,19 +515,6 @@ public class ScheduledPublishProcess implements Serializable {
 			sb.append("\"");
 		}
 
-		PublishProcessRequest publishProcessRequest =
-			getPublishProcessRequest();
-
-		if (publishProcessRequest != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"publishProcessRequest\": ");
-
-			sb.append(String.valueOf(publishProcessRequest));
-		}
-
 		Date scheduleEndDate = getScheduleEndDate();
 
 		if (scheduleEndDate != null) {
@@ -556,6 +545,19 @@ public class ScheduledPublishProcess implements Serializable {
 			sb.append(liferayToJSONDateFormat.format(scheduleStartDate));
 
 			sb.append("\"");
+		}
+
+		ScheduledPublishProcessRequest scheduledPublishProcessRequest =
+			getScheduledPublishProcessRequest();
+
+		if (scheduledPublishProcessRequest != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scheduledPublishProcessRequest\": ");
+
+			sb.append(String.valueOf(scheduledPublishProcessRequest));
 		}
 
 		sb.append("}");
@@ -680,4 +682,4 @@ public class ScheduledPublishProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1355833038
+// LIFERAY-REST-BUILDER-HASH:118238188

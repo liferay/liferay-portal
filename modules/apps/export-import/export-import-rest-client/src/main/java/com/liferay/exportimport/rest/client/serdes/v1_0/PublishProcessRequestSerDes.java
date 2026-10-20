@@ -64,20 +64,6 @@ public class PublishProcessRequestSerDes {
 			sb.append(publishProcessRequest.getComments());
 		}
 
-		if (publishProcessRequest.getCronExpression() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"cronExpression\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(publishProcessRequest.getCronExpression()));
-
-			sb.append("\"");
-		}
-
 		if (publishProcessRequest.getDateRangeType() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -177,38 +163,6 @@ public class PublishProcessRequestSerDes {
 			sb.append(publishProcessRequest.getRatings());
 		}
 
-		if (publishProcessRequest.getScheduleEndDate() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"scheduleEndDate\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				liferayToJSONDateFormat.format(
-					publishProcessRequest.getScheduleEndDate()));
-
-			sb.append("\"");
-		}
-
-		if (publishProcessRequest.getScheduleStartDate() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"scheduleStartDate\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				liferayToJSONDateFormat.format(
-					publishProcessRequest.getScheduleStartDate()));
-
-			sb.append("\"");
-		}
-
 		if (publishProcessRequest.getStartDate() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -221,20 +175,6 @@ public class PublishProcessRequestSerDes {
 			sb.append(
 				liferayToJSONDateFormat.format(
 					publishProcessRequest.getStartDate()));
-
-			sb.append("\"");
-		}
-
-		if (publishProcessRequest.getTimeZoneId() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"timeZoneId\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(publishProcessRequest.getTimeZoneId()));
 
 			sb.append("\"");
 		}
@@ -270,15 +210,6 @@ public class PublishProcessRequestSerDes {
 			map.put(
 				"comments",
 				String.valueOf(publishProcessRequest.getComments()));
-		}
-
-		if (publishProcessRequest.getCronExpression() == null) {
-			map.put("cronExpression", null);
-		}
-		else {
-			map.put(
-				"cronExpression",
-				String.valueOf(publishProcessRequest.getCronExpression()));
 		}
 
 		if (publishProcessRequest.getDateRangeType() == null) {
@@ -342,26 +273,6 @@ public class PublishProcessRequestSerDes {
 				"ratings", String.valueOf(publishProcessRequest.getRatings()));
 		}
 
-		if (publishProcessRequest.getScheduleEndDate() == null) {
-			map.put("scheduleEndDate", null);
-		}
-		else {
-			map.put(
-				"scheduleEndDate",
-				liferayToJSONDateFormat.format(
-					publishProcessRequest.getScheduleEndDate()));
-		}
-
-		if (publishProcessRequest.getScheduleStartDate() == null) {
-			map.put("scheduleStartDate", null);
-		}
-		else {
-			map.put(
-				"scheduleStartDate",
-				liferayToJSONDateFormat.format(
-					publishProcessRequest.getScheduleStartDate()));
-		}
-
 		if (publishProcessRequest.getStartDate() == null) {
 			map.put("startDate", null);
 		}
@@ -370,15 +281,6 @@ public class PublishProcessRequestSerDes {
 				"startDate",
 				liferayToJSONDateFormat.format(
 					publishProcessRequest.getStartDate()));
-		}
-
-		if (publishProcessRequest.getTimeZoneId() == null) {
-			map.put("timeZoneId", null);
-		}
-		else {
-			map.put(
-				"timeZoneId",
-				String.valueOf(publishProcessRequest.getTimeZoneId()));
 		}
 
 		return map;
@@ -400,9 +302,6 @@ public class PublishProcessRequestSerDes {
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
 			if (Objects.equals(jsonParserFieldName, "comments")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "cronExpression")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateRangeType")) {
@@ -428,16 +327,7 @@ public class PublishProcessRequestSerDes {
 			else if (Objects.equals(jsonParserFieldName, "ratings")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "scheduleEndDate")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "scheduleStartDate")) {
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "startDate")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "timeZoneId")) {
 				return false;
 			}
 
@@ -453,12 +343,6 @@ public class PublishProcessRequestSerDes {
 				if (jsonParserFieldValue != null) {
 					publishProcessRequest.setComments(
 						(Boolean)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "cronExpression")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setCronExpression(
-						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateRangeType")) {
@@ -517,28 +401,10 @@ public class PublishProcessRequestSerDes {
 						(Boolean)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "scheduleEndDate")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setScheduleEndDate(
-						toDate((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "scheduleStartDate")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setScheduleStartDate(
-						toDate((String)jsonParserFieldValue));
-				}
-			}
 			else if (Objects.equals(jsonParserFieldName, "startDate")) {
 				if (jsonParserFieldValue != null) {
 					publishProcessRequest.setStartDate(
 						toDate((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "timeZoneId")) {
-				if (jsonParserFieldValue != null) {
-					publishProcessRequest.setTimeZoneId(
-						(String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -628,4 +494,4 @@ public class PublishProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1914358814
+// LIFERAY-REST-BUILDER-HASH:-342524770

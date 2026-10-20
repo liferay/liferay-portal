@@ -338,6 +338,18 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 
 		Map<String, Map<String, String>> expectedActions = new HashMap<>();
 
+		Map createBatchAction = new HashMap<>();
+		createBatchAction.put("method", "POST");
+		createBatchAction.put(
+			"href",
+			("http://localhost:" + PortalUtil.getPortalServerPort(false) +
+				"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes/batch").
+					replace(
+						"{siteExternalReferenceCode}",
+						String.valueOf(siteExternalReferenceCode)));
+
+		expectedActions.put("createBatch", createBatchAction);
+
 		return expectedActions;
 	}
 
@@ -651,6 +663,29 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 	}
 
 	@Test
+	public void testPostSiteScheduledPublishProcess() throws Exception {
+		ScheduledPublishProcess randomScheduledPublishProcess =
+			randomScheduledPublishProcess();
+
+		ScheduledPublishProcess postScheduledPublishProcess =
+			testPostSiteScheduledPublishProcess_addScheduledPublishProcess(
+				randomScheduledPublishProcess);
+
+		assertEquals(
+			randomScheduledPublishProcess, postScheduledPublishProcess);
+		assertValid(postScheduledPublishProcess);
+	}
+
+	protected ScheduledPublishProcess
+			testPostSiteScheduledPublishProcess_addScheduledPublishProcess(
+				ScheduledPublishProcess scheduledPublishProcess)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Assert.assertTrue(true);
 	}
@@ -783,18 +818,6 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"publishProcessRequest", additionalAssertFieldName)) {
-
-				if (scheduledPublishProcess.getPublishProcessRequest() ==
-						null) {
-
-					valid = false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("scheduleEndDate", additionalAssertFieldName)) {
 				if (scheduledPublishProcess.getScheduleEndDate() == null) {
 					valid = false;
@@ -807,6 +830,19 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 					"scheduleStartDate", additionalAssertFieldName)) {
 
 				if (scheduledPublishProcess.getScheduleStartDate() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"scheduledPublishProcessRequest",
+					additionalAssertFieldName)) {
+
+				if (scheduledPublishProcess.
+						getScheduledPublishProcessRequest() == null) {
+
 					valid = false;
 				}
 
@@ -991,19 +1027,6 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"publishProcessRequest", additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						scheduledPublishProcess1.getPublishProcessRequest(),
-						scheduledPublishProcess2.getPublishProcessRequest())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("scheduleEndDate", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						scheduledPublishProcess1.getScheduleEndDate(),
@@ -1021,6 +1044,22 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 				if (!Objects.deepEquals(
 						scheduledPublishProcess1.getScheduleStartDate(),
 						scheduledPublishProcess2.getScheduleStartDate())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"scheduledPublishProcessRequest",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						scheduledPublishProcess1.
+							getScheduledPublishProcessRequest(),
+						scheduledPublishProcess2.
+							getScheduledPublishProcessRequest())) {
 
 					return false;
 				}
@@ -1254,11 +1293,6 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 			return sb.toString();
 		}
 
-		if (entityFieldName.equals("publishProcessRequest")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
 		if (entityFieldName.equals("scheduleEndDate")) {
 			if (operator.equals("between")) {
 				Date date = scheduledPublishProcess.getScheduleEndDate();
@@ -1319,6 +1353,11 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("scheduledPublishProcessRequest")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		throw new IllegalArgumentException(
@@ -1607,4 +1646,4 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 			ScheduledPublishProcessResource _scheduledPublishProcessResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1136165245
+// LIFERAY-REST-BUILDER-HASH:-238724286

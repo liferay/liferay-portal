@@ -47,27 +47,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean comments;
 
-	public String getCronExpression() {
-		return cronExpression;
-	}
-
-	public void setCronExpression(String cronExpression) {
-		this.cronExpression = cronExpression;
-	}
-
-	public void setCronExpression(
-		UnsafeSupplier<String, Exception> cronExpressionUnsafeSupplier) {
-
-		try {
-			cronExpression = cronExpressionUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String cronExpression;
-
 	public DateRangeType getDateRangeType() {
 		return dateRangeType;
 	}
@@ -224,48 +203,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean ratings;
 
-	public Date getScheduleEndDate() {
-		return scheduleEndDate;
-	}
-
-	public void setScheduleEndDate(Date scheduleEndDate) {
-		this.scheduleEndDate = scheduleEndDate;
-	}
-
-	public void setScheduleEndDate(
-		UnsafeSupplier<Date, Exception> scheduleEndDateUnsafeSupplier) {
-
-		try {
-			scheduleEndDate = scheduleEndDateUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Date scheduleEndDate;
-
-	public Date getScheduleStartDate() {
-		return scheduleStartDate;
-	}
-
-	public void setScheduleStartDate(Date scheduleStartDate) {
-		this.scheduleStartDate = scheduleStartDate;
-	}
-
-	public void setScheduleStartDate(
-		UnsafeSupplier<Date, Exception> scheduleStartDateUnsafeSupplier) {
-
-		try {
-			scheduleStartDate = scheduleStartDateUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Date scheduleStartDate;
-
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -286,27 +223,6 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 	}
 
 	protected Date startDate;
-
-	public String getTimeZoneId() {
-		return timeZoneId;
-	}
-
-	public void setTimeZoneId(String timeZoneId) {
-		this.timeZoneId = timeZoneId;
-	}
-
-	public void setTimeZoneId(
-		UnsafeSupplier<String, Exception> timeZoneIdUnsafeSupplier) {
-
-		try {
-			timeZoneId = timeZoneIdUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String timeZoneId;
 
 	@Override
 	public PublishProcessRequest clone() throws CloneNotSupportedException {
@@ -375,4 +291,4 @@ public class PublishProcessRequest implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1195671275
+// LIFERAY-REST-BUILDER-HASH:-1977898638

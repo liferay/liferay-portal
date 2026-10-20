@@ -6,6 +6,7 @@
 package com.liferay.exportimport.rest.client.resource.v1_0;
 
 import com.liferay.exportimport.rest.client.dto.v1_0.ScheduledPublishProcess;
+import com.liferay.exportimport.rest.client.dto.v1_0.ScheduledPublishProcessRequest;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
@@ -61,6 +62,29 @@ public interface ScheduledPublishProcessResource {
 			getSiteScheduledPublishProcessesPageHttpResponse(
 				String siteExternalReferenceCode, String search,
 				Pagination pagination, String sortString)
+		throws Exception;
+
+	public ScheduledPublishProcess postSiteScheduledPublishProcess(
+			String siteExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse postSiteScheduledPublishProcessHttpResponse(
+			String siteExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest)
+		throws Exception;
+
+	public void postSiteScheduledPublishProcessBatch(
+			String siteExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest,
+			String callbackURL, Object object)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			postSiteScheduledPublishProcessBatchHttpResponse(
+				String siteExternalReferenceCode,
+				ScheduledPublishProcessRequest scheduledPublishProcessRequest,
+				String callbackURL, Object object)
 		throws Exception;
 
 	public void postSiteScheduledPublishProcessesPageExportBatch(
@@ -537,6 +561,232 @@ public interface ScheduledPublishProcessResource {
 			return httpInvoker.invoke();
 		}
 
+		public ScheduledPublishProcess postSiteScheduledPublishProcess(
+				String siteExternalReferenceCode,
+				ScheduledPublishProcessRequest scheduledPublishProcessRequest)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postSiteScheduledPublishProcessHttpResponse(
+					siteExternalReferenceCode, scheduledPublishProcessRequest);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return ScheduledPublishProcessSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postSiteScheduledPublishProcessHttpResponse(
+					String siteExternalReferenceCode,
+					ScheduledPublishProcessRequest
+						scheduledPublishProcessRequest)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(
+				scheduledPublishProcessRequest.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes");
+
+			httpInvoker.path(
+				"siteExternalReferenceCode", siteExternalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public void postSiteScheduledPublishProcessBatch(
+				String siteExternalReferenceCode,
+				ScheduledPublishProcessRequest scheduledPublishProcessRequest,
+				String callbackURL, Object object)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postSiteScheduledPublishProcessBatchHttpResponse(
+					siteExternalReferenceCode, scheduledPublishProcessRequest,
+					callbackURL, object);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postSiteScheduledPublishProcessBatchHttpResponse(
+					String siteExternalReferenceCode,
+					ScheduledPublishProcessRequest
+						scheduledPublishProcessRequest,
+					String callbackURL, Object object)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(object.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (callbackURL != null) {
+				httpInvoker.parameter(
+					"callbackURL", String.valueOf(callbackURL));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes/batch");
+
+			httpInvoker.path(
+				"siteExternalReferenceCode", siteExternalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
 		public void postSiteScheduledPublishProcessesPageExportBatch(
 				String siteExternalReferenceCode, String search,
 				String sortString, String callbackURL, String contentType,
@@ -676,4 +926,4 @@ public interface ScheduledPublishProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1547821772
+// LIFERAY-REST-BUILDER-HASH:680749466

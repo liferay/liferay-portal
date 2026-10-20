@@ -6,6 +6,7 @@
 package com.liferay.exportimport.rest.resource.v1_0;
 
 import com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcess;
+import com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcessRequest;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -58,6 +59,17 @@ public interface ScheduledPublishProcessResource {
 			String siteExternalReferenceCode, String search,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
+	public ScheduledPublishProcess postSiteScheduledPublishProcess(
+			String siteExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest)
+		throws Exception;
+
+	public Response postSiteScheduledPublishProcessBatch(
+			String siteExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest,
+			String callbackURL, Object object)
 		throws Exception;
 
 	public Response postSiteScheduledPublishProcessesPageExportBatch(
@@ -162,4 +174,4 @@ public interface ScheduledPublishProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2009188273
+// LIFERAY-REST-BUILDER-HASH:-53018269

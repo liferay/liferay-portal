@@ -103,52 +103,7 @@ public class PublishProcessRequest implements Serializable {
 	private Supplier<Boolean> _commentsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "A cron expression. When set, the publish is scheduled to recur instead of running immediately."
-	)
-	public String getCronExpression() {
-		if (_cronExpressionSupplier != null) {
-			cronExpression = _cronExpressionSupplier.get();
-
-			_cronExpressionSupplier = null;
-		}
-
-		return cronExpression;
-	}
-
-	public void setCronExpression(String cronExpression) {
-		this.cronExpression = cronExpression;
-
-		_cronExpressionSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setCronExpression(
-		UnsafeSupplier<String, Exception> cronExpressionUnsafeSupplier) {
-
-		_cronExpressionSupplier = () -> {
-			try {
-				return cronExpressionUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "A cron expression. When set, the publish is scheduled to recur instead of running immediately."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String cronExpression;
-
-	@JsonIgnore
-	private Supplier<String> _cronExpressionSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The recipe used to resolve the publish window at every run, relaunch, and scheduled occurrence. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates."
+		description = "The recipe used to resolve the publish window at every run and relaunch. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates."
 	)
 	@JsonGetter("dateRangeType")
 	@Valid
@@ -197,7 +152,7 @@ public class PublishProcessRequest implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The recipe used to resolve the publish window at every run, relaunch, and scheduled occurrence. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates."
+		description = "The recipe used to resolve the publish window at every run and relaunch. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected DateRangeType dateRangeType;
@@ -465,96 +420,6 @@ public class PublishProcessRequest implements Serializable {
 	private Supplier<Boolean> _ratingsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When the scheduled publish stops recurring. Applies only when a cron expression is given."
-	)
-	public Date getScheduleEndDate() {
-		if (_scheduleEndDateSupplier != null) {
-			scheduleEndDate = _scheduleEndDateSupplier.get();
-
-			_scheduleEndDateSupplier = null;
-		}
-
-		return scheduleEndDate;
-	}
-
-	public void setScheduleEndDate(Date scheduleEndDate) {
-		this.scheduleEndDate = scheduleEndDate;
-
-		_scheduleEndDateSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setScheduleEndDate(
-		UnsafeSupplier<Date, Exception> scheduleEndDateUnsafeSupplier) {
-
-		_scheduleEndDateSupplier = () -> {
-			try {
-				return scheduleEndDateUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "When the scheduled publish stops recurring. Applies only when a cron expression is given."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Date scheduleEndDate;
-
-	@JsonIgnore
-	private Supplier<Date> _scheduleEndDateSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When the scheduled publish starts. Applies only when a cron expression is given. Defaults to now."
-	)
-	public Date getScheduleStartDate() {
-		if (_scheduleStartDateSupplier != null) {
-			scheduleStartDate = _scheduleStartDateSupplier.get();
-
-			_scheduleStartDateSupplier = null;
-		}
-
-		return scheduleStartDate;
-	}
-
-	public void setScheduleStartDate(Date scheduleStartDate) {
-		this.scheduleStartDate = scheduleStartDate;
-
-		_scheduleStartDateSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setScheduleStartDate(
-		UnsafeSupplier<Date, Exception> scheduleStartDateUnsafeSupplier) {
-
-		_scheduleStartDateSupplier = () -> {
-			try {
-				return scheduleStartDateUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "When the scheduled publish starts. Applies only when a cron expression is given. Defaults to now."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Date scheduleStartDate;
-
-	@JsonIgnore
-	private Supplier<Date> _scheduleStartDateSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The publish window's start date."
 	)
 	public Date getStartDate() {
@@ -597,51 +462,6 @@ public class PublishProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Date> _startDateSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The time zone the cron expression is evaluated in. Defaults to the server time zone."
-	)
-	public String getTimeZoneId() {
-		if (_timeZoneIdSupplier != null) {
-			timeZoneId = _timeZoneIdSupplier.get();
-
-			_timeZoneIdSupplier = null;
-		}
-
-		return timeZoneId;
-	}
-
-	public void setTimeZoneId(String timeZoneId) {
-		this.timeZoneId = timeZoneId;
-
-		_timeZoneIdSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setTimeZoneId(
-		UnsafeSupplier<String, Exception> timeZoneIdUnsafeSupplier) {
-
-		_timeZoneIdSupplier = () -> {
-			try {
-				return timeZoneIdUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The time zone the cron expression is evaluated in. Defaults to the server time zone."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String timeZoneId;
-
-	@JsonIgnore
-	private Supplier<String> _timeZoneIdSupplier;
-
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -683,22 +503,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append("\"comments\": ");
 
 			sb.append(comments);
-		}
-
-		String cronExpression = getCronExpression();
-
-		if (cronExpression != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"cronExpression\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(cronExpression));
-
-			sb.append("\"");
 		}
 
 		DateRangeType dateRangeType = getDateRangeType();
@@ -805,38 +609,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append(ratings);
 		}
 
-		Date scheduleEndDate = getScheduleEndDate();
-
-		if (scheduleEndDate != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"scheduleEndDate\": ");
-
-			sb.append("\"");
-
-			sb.append(liferayToJSONDateFormat.format(scheduleEndDate));
-
-			sb.append("\"");
-		}
-
-		Date scheduleStartDate = getScheduleStartDate();
-
-		if (scheduleStartDate != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"scheduleStartDate\": ");
-
-			sb.append("\"");
-
-			sb.append(liferayToJSONDateFormat.format(scheduleStartDate));
-
-			sb.append("\"");
-		}
-
 		Date startDate = getStartDate();
 
 		if (startDate != null) {
@@ -849,22 +621,6 @@ public class PublishProcessRequest implements Serializable {
 			sb.append("\"");
 
 			sb.append(liferayToJSONDateFormat.format(startDate));
-
-			sb.append("\"");
-		}
-
-		String timeZoneId = getTimeZoneId();
-
-		if (timeZoneId != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"timeZoneId\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(timeZoneId));
 
 			sb.append("\"");
 		}
@@ -1030,4 +786,4 @@ public class PublishProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:508001307
+// LIFERAY-REST-BUILDER-HASH:-1394028069
