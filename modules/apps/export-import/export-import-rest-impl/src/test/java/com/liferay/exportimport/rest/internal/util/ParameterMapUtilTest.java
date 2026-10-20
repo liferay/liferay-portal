@@ -8,7 +8,10 @@ package com.liferay.exportimport.rest.internal.util;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.rest.dto.v1_0.Choice;
+import com.liferay.exportimport.rest.dto.v1_0.DateFilter;
+import com.liferay.exportimport.rest.dto.v1_0.DateRangeDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.LastHoursDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerBoolean;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerChoice;
@@ -27,6 +30,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.ws.rs.BadRequestException;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -234,6 +238,44 @@ public class ParameterMapUtilTest {
 
 	@Test
 	public void testToPublishProcessRequest() {
+		PublishProcessRequest publishProcessRequest =
+			new PublishProcessRequest();
+
+		publishProcessRequest.setComments(true);
+
+		DateRangeDateFilter dateRangeDateFilter = new DateRangeDateFilter();
+
+		long time = System.currentTimeMillis() / Time.SECOND * Time.SECOND;
+
+		dateRangeDateFilter.setEndDate(new Date(time + Time.DAY));
+		dateRangeDateFilter.setStartDate(new Date(time));
+
+		dateRangeDateFilter.setType(DateFilter.Type.DATE_RANGE);
+
+		publishProcessRequest.setDateFilter(dateRangeDateFilter);
+
+		PortletDataHandlerTreeSelection portletDataHandlerTreeSelection =
+			_toPortletDataHandlerTreeSelection(
+				_CONTROL_NAME_PAGES, false, true);
+
+		portletDataHandlerTreeSelection.setSubtreeExternalReferenceCodes(
+			new String[] {"a"});
+
+		publishProcessRequest.setPortletDataHandlers(
+			new PortletDataHandler[] {
+				_toPortletDataHandler(
+					_PORTLET_DATA_HANDLER_NAME, null,
+					_toPortletDataHandlerBoolean(
+						_CONTROL_NAME_BOOLEAN, true,
+						_toPortletDataHandlerChoice("y", _CONTROL_NAME_CHOICE)),
+					_toPortletDataHandlerChoice(
+						"y", _CONTROL_NAME_VISIBILITY,
+						portletDataHandlerTreeSelection))
+			});
+
+		PortletDataHandler[] availablePortletDataHandlers =
+			_getAvailablePortletDataHandlers();
+
 		User user = Mockito.mock(User.class);
 
 		Mockito.when(
@@ -248,47 +290,11 @@ public class ParameterMapUtilTest {
 			TimeZoneUtil.GMT
 		);
 
-		Date endDate = new Date(System.currentTimeMillis() + Time.DAY);
-		Date startDate = new Date(
-			System.currentTimeMillis() - (System.currentTimeMillis() % 1000));
-
-		PortletDataHandlerTreeSelection portletDataHandlerTreeSelection =
-			_toPortletDataHandlerTreeSelection(
-				_CONTROL_NAME_PAGES, false, true);
-
-		portletDataHandlerTreeSelection.setSubtreeExternalReferenceCodes(
-			new String[] {"a"});
-
-		PublishProcessRequest publishProcessRequest =
-			new PublishProcessRequest();
-
-		publishProcessRequest.setComments(true);
-		publishProcessRequest.setDateRangeType(
-			PublishProcessRequest.DateRangeType.DATE_RANGE);
-		publishProcessRequest.setEndDate(endDate);
-		publishProcessRequest.setPortletDataHandlers(
-			new PortletDataHandler[] {
-				_toPortletDataHandler(
-					_PORTLET_DATA_HANDLER_NAME, null,
-					_toPortletDataHandlerBoolean(
-						_CONTROL_NAME_BOOLEAN, true,
-						_toPortletDataHandlerChoice("y", _CONTROL_NAME_CHOICE)),
-					_toPortletDataHandlerChoice(
-						"y", _CONTROL_NAME_VISIBILITY,
-						portletDataHandlerTreeSelection))
-			});
-		publishProcessRequest.setStartDate(startDate);
-
-		PortletDataHandler[] availablePortletDataHandlers =
-			_getAvailablePortletDataHandlers();
-
 		PublishProcessRequest reversedPublishProcessRequest =
 			ParameterMapUtil.toPublishProcessRequest(
 				availablePortletDataHandlers, LocaleUtil.US,
 				ParameterMapUtil.putDateRangeParameters(
-					publishProcessRequest.getDateRangeTypeAsString(),
-					publishProcessRequest.getStartDate(),
-					publishProcessRequest.getEndDate(),
+					dateRangeDateFilter,
 					ParameterMapUtil.toParameterMap(
 						publishProcessRequest, availablePortletDataHandlers),
 					user),
@@ -297,21 +303,26 @@ public class ParameterMapUtilTest {
 		Assert.assertEquals(
 			Boolean.TRUE, reversedPublishProcessRequest.getComments());
 		Assert.assertEquals(
-			PublishProcessRequest.DateRangeType.DATE_RANGE,
-			reversedPublishProcessRequest.getDateRangeType());
-		Assert.assertEquals(
 			Boolean.FALSE, reversedPublishProcessRequest.getDeletions());
+
+		DateRangeDateFilter reversedDateRangeDateFilter =
+			(DateRangeDateFilter)reversedPublishProcessRequest.getDateFilter();
+
 		Assert.assertEquals(
-			_toSeconds(endDate),
-			_toSeconds(reversedPublishProcessRequest.getEndDate()));
+			dateRangeDateFilter.getEndDate(),
+			reversedDateRangeDateFilter.getEndDate());
 		Assert.assertEquals(
-			startDate, reversedPublishProcessRequest.getStartDate());
+			dateRangeDateFilter.getStartDate(),
+			reversedDateRangeDateFilter.getStartDate());
+		Assert.assertEquals(
+			DateFilter.Type.DATE_RANGE, reversedDateRangeDateFilter.getType());
 
 		PortletDataHandler[] portletDataHandlers =
 			reversedPublishProcessRequest.getPortletDataHandlers();
 
 		Assert.assertEquals(
-			portletDataHandlers.toString(), 1, portletDataHandlers.length);
+			Arrays.toString(portletDataHandlers), 1,
+			portletDataHandlers.length);
 
 		PortletDataHandler portletDataHandler = portletDataHandlers[0];
 
@@ -322,7 +333,7 @@ public class ParameterMapUtilTest {
 			portletDataHandler.getPortletDataHandlerControls();
 
 		Assert.assertEquals(
-			portletDataHandlerControls.toString(), 3,
+			Arrays.toString(portletDataHandlerControls), 3,
 			portletDataHandlerControls.length);
 
 		PortletDataHandlerBoolean portletDataHandlerBoolean =
@@ -361,13 +372,13 @@ public class ParameterMapUtilTest {
 				(PortletDataHandlerTreeSelection)
 					nestedPortletDataHandlerControls[0];
 
-		Assert.assertEquals(
-			Boolean.FALSE,
-			reversedPortletDataHandlerTreeSelection.getSelectAll());
 		Assert.assertArrayEquals(
 			new String[0],
 			reversedPortletDataHandlerTreeSelection.
 				getItemExternalReferenceCodes());
+		Assert.assertEquals(
+			Boolean.FALSE,
+			reversedPortletDataHandlerTreeSelection.getSelectAll());
 		Assert.assertEquals(
 			Boolean.TRUE,
 			reversedPortletDataHandlerTreeSelection.getSelected());
@@ -378,7 +389,7 @@ public class ParameterMapUtilTest {
 	}
 
 	@Test
-	public void testToPublishProcessRequestWhenDateRangeIsLast() {
+	public void testToPublishProcessRequestWhenDateFilterIsLastHours() {
 		PublishProcessRequest publishProcessRequest =
 			ParameterMapUtil.toPublishProcessRequest(
 				_getAvailablePortletDataHandlers(), null,
@@ -390,18 +401,12 @@ public class ParameterMapUtilTest {
 				).build(),
 				null);
 
+		LastHoursDateFilter lastHoursDateFilter =
+			(LastHoursDateFilter)publishProcessRequest.getDateFilter();
+
+		Assert.assertEquals(Integer.valueOf(2), lastHoursDateFilter.getHours());
 		Assert.assertEquals(
-			PublishProcessRequest.DateRangeType.LAST,
-			publishProcessRequest.getDateRangeType());
-
-		Date startDate = publishProcessRequest.getStartDate();
-
-		Assert.assertTrue(
-			startDate.before(
-				new Date(System.currentTimeMillis() - (2 * Time.HOUR) + 1000)));
-		Assert.assertTrue(
-			startDate.after(
-				new Date(System.currentTimeMillis() - (2 * Time.HOUR) - 1000)));
+			DateFilter.Type.LAST_HOURS, lastHoursDateFilter.getType());
 	}
 
 	private void _assertBadRequest(
@@ -549,10 +554,6 @@ public class ParameterMapUtilTest {
 			PortletDataHandlerControl.Type.TREE_SELECTION);
 
 		return portletDataHandlerTreeSelection;
-	}
-
-	private long _toSeconds(Date date) {
-		return date.getTime() / 1000;
 	}
 
 	private static final String _CONTROL_NAME_BOOLEAN =
