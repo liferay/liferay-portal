@@ -1,4 +1,4 @@
-# Checks for 
+# Checks for .*ignore
 
 Check | Category | Description
 ----- | -------- | -----------
