@@ -11,9 +11,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -34,6 +37,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -292,8 +296,14 @@ public class SharepointDocumentWorkspaceServlet extends HttpServlet {
 
 		Element membersEl = resultsEl.addElement("Members");
 
-		List<User> users = UserLocalServiceUtil.getGroupUsers(
-			group.getGroupId());
+		List<User> users = Collections.emptyList();
+
+		if (GroupPermissionUtil.contains(
+				PermissionThreadLocal.getPermissionChecker(), group,
+				ActionKeys.VIEW_MEMBERS)) {
+
+			users = UserLocalServiceUtil.getGroupUsers(group.getGroupId());
+		}
 
 		for (User member : users) {
 			responseElement = new MemberResponseElement(member, true);
