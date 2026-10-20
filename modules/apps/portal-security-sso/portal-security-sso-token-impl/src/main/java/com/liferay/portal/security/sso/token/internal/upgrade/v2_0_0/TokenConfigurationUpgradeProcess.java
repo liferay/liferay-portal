@@ -12,14 +12,13 @@ import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.security.sso.token.constants.LegacyTokenPropsKeys;
 import com.liferay.portal.security.sso.token.constants.TokenConfigurationKeys;
 import com.liferay.portal.security.sso.token.constants.TokenConstants;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Christopher Kian
@@ -32,8 +31,7 @@ public class TokenConfigurationUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _storeSettings(
-			long companyId, String settingsId,
-			Dictionary<String, String> dictionary)
+			long companyId, String settingsId, Map<String, String> map)
 		throws Exception {
 
 		Settings settings = FallbackKeysSettingsUtil.getSettings(
@@ -42,12 +40,10 @@ public class TokenConfigurationUpgradeProcess extends UpgradeProcess {
 		ModifiableSettings modifiableSettings =
 			settings.getModifiableSettings();
 
-		Enumeration<String> enumeration = dictionary.keys();
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			String name = entry.getKey();
 
-		while (enumeration.hasMoreElements()) {
-			String name = enumeration.nextElement();
-
-			String value = dictionary.get(name);
+			String value = entry.getValue();
 
 			String oldValue = settings.getValue(name, null);
 
@@ -64,8 +60,7 @@ public class TokenConfigurationUpgradeProcess extends UpgradeProcess {
 	private void _upgradeConfiguration() throws Exception {
 		CompanyLocalServiceUtil.forEachCompanyId(
 			companyId -> {
-				Dictionary<String, String> dictionary =
-					new HashMapDictionary<>();
+				Map<String, String> map = new HashMap<>();
 
 				for (String[] renamePropertykeys :
 						_RENAME_PROPERTY_KEYS_ARRAY) {
@@ -77,12 +72,11 @@ public class TokenConfigurationUpgradeProcess extends UpgradeProcess {
 						continue;
 					}
 
-					dictionary.put(renamePropertykeys[1], propertyValue);
+					map.put(renamePropertykeys[1], propertyValue);
 				}
 
-				if (!dictionary.isEmpty()) {
-					_storeSettings(
-						companyId, TokenConstants.SERVICE_NAME, dictionary);
+				if (!map.isEmpty()) {
+					_storeSettings(companyId, TokenConstants.SERVICE_NAME, map);
 				}
 
 				CompanyLocalServiceUtil.removePreferences(
