@@ -83,124 +83,6 @@ public class AccountRolePersistenceImpl
 		FINDER_CLASS_NAME_ENTITY + ".List2";
 
 	private FilterCollectionPersistenceFinder<AccountRole, NoSuchRoleException>
-		_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the account roles where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>AccountRoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of account roles
-	 * @param end the upper bound of the range of account roles (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching account roles
-	 */
-	@Override
-	public List<AccountRole> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<AccountRole> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first account role in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching account role
-	 * @throws NoSuchRoleException if a matching account role could not be found
-	 */
-	@Override
-	public AccountRole findByCompanyId_First(
-			long companyId, OrderByComparator<AccountRole> orderByComparator)
-		throws NoSuchRoleException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first account role in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching account role, or <code>null</code> if a matching account role could not be found
-	 */
-	@Override
-	public AccountRole fetchByCompanyId_First(
-		long companyId, OrderByComparator<AccountRole> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the account roles that the user has permissions to view where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>AccountRoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of account roles
-	 * @param end the upper bound of the range of account roles (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching account roles that the user has permission to view
-	 */
-	@Override
-	public List<AccountRole> filterFindByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<AccountRole> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.filterFind(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, companyId, 0);
-	}
-
-	/**
-	 * Removes all the account roles where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of account roles where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching account roles
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of account roles that the user has permission to view where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching account roles that the user has permission to view
-	 */
-	@Override
-	public int filterCountByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.filterCount(
-			finderCache, new Object[] {companyId}, companyId, 0);
-	}
-
-	private FilterCollectionPersistenceFinder<AccountRole, NoSuchRoleException>
 		_collectionPersistenceFinderByAccountEntryId;
 
 	/**
@@ -961,33 +843,6 @@ public class AccountRolePersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_collectionPersistenceFinderByCompanyId =
-			new FilterCollectionPersistenceFinder<>(
-				this, AccountRole::getAccountRoleId,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				"", AccountRoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				_SQL_COUNT_ACCOUNTROLE_WHERE, _SQL_SELECT_ACCOUNTROLE_WHERE,
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				"",
-				new FinderColumn<>(
-					"accountRole.", "companyId", FinderColumn.Type.LONG, "=",
-					true, true, AccountRole::getCompanyId));
-
 		_collectionPersistenceFinderByAccountEntryId =
 			new FilterCollectionPersistenceFinder<>(
 				this, AccountRole::getAccountRoleId,
@@ -1136,4 +991,4 @@ public class AccountRolePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:900203606
+// LIFERAY-SERVICE-BUILDER-HASH:704132952

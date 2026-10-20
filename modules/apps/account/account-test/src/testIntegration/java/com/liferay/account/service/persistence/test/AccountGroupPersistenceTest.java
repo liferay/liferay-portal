@@ -235,36 +235,11 @@ public class AccountGroupPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByC_D() throws Exception {
 		_persistence.countByC_D(
 			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
 
 		_persistence.countByC_D(0L, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByC_LikeN() throws Exception {
-		_persistence.countByC_LikeN(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByC_LikeN(0L, "null");
-
-		_persistence.countByC_LikeN(0L, (String)null);
-	}
-
-	@Test
-	public void testCountByC_T() throws Exception {
-		_persistence.countByC_T(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByC_T(0L, "null");
-
-		_persistence.countByC_T(0L, (String)null);
 	}
 
 	@Test
@@ -623,4 +598,4 @@ public class AccountGroupPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:433306853
+// LIFERAY-SERVICE-BUILDER-HASH:545631725
