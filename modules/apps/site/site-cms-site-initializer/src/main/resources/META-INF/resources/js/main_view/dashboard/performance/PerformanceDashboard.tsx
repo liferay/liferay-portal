@@ -8,9 +8,12 @@ import {
 	ConnectSites,
 	ConnectToAnalyticsCloud,
 } from '@liferay/analytics-reports-js-components-web';
-import React from 'react';
+import React, {useContext} from 'react';
 
-import {PerformanceContextProvider} from './PerformanceContext';
+import {
+	PerformanceContext,
+	PerformanceContextProvider,
+} from './PerformanceContext';
 import {AudienceAndDistribution} from './components/AudienceAndDistribution';
 import {ContentConsumption} from './components/ContentConsumption';
 import {Filters} from './components/Filters';
@@ -54,6 +57,8 @@ export default function PerformanceDashboard({
 }
 
 function Sections() {
+	const {space} = useContext(PerformanceContext);
+
 	const {connected, loading} = useConnectedSpaces();
 
 	if (loading) {
@@ -61,7 +66,13 @@ function Sections() {
 	}
 
 	if (!connected) {
-		return <ConnectSites />;
+		return (
+			<>
+				{space.value !== 'all' ? <Filters /> : null}
+
+				<ConnectSites />
+			</>
+		);
 	}
 
 	return (
