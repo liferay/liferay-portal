@@ -5,7 +5,7 @@
 
 package com.liferay.launch.internal.messaging;
 
-import com.liferay.launch.internal.background.task.LaunchSetPublishBackgroundTaskExecutor;
+import com.liferay.launch.internal.background.task.LaunchSetScheduledPublishBackgroundTaskExecutor;
 import com.liferay.launch.internal.constants.LaunchDestinationNames;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -72,7 +72,7 @@ public class LaunchSetScheduledPublishMessageListener
 				message.getLong("userId"),
 				BackgroundTaskConstants.GROUP_ID_DEFAULT,
 				String.valueOf(launchSetObjectEntry.getObjectEntryId()), null,
-				LaunchSetPublishBackgroundTaskExecutor.class,
+				LaunchSetScheduledPublishBackgroundTaskExecutor.class,
 				HashMapBuilder.<String, Serializable>put(
 					"launchSetId", launchSetObjectEntry.getObjectEntryId()
 				).build(),

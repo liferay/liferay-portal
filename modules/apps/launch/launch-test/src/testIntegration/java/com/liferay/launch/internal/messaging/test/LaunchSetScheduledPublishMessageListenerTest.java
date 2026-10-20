@@ -226,7 +226,7 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 			_backgroundTaskManager.getBackgroundTasks(
 				BackgroundTaskConstants.GROUP_ID_DEFAULT,
 				"com.liferay.launch.internal.background.task." +
-					"LaunchSetPublishBackgroundTaskExecutor"),
+					"LaunchSetScheduledPublishBackgroundTaskExecutor"),
 			backgroundTask -> Objects.equals(
 				backgroundTask.getName(),
 				String.valueOf(_launchSetObjectEntry.getObjectEntryId())));
@@ -282,7 +282,7 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 	private void _receiveWithError(long userId) throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.launch.internal.background.task." +
-					"LaunchSetPublishBackgroundTaskExecutor",
+					"LaunchSetScheduledPublishBackgroundTaskExecutor",
 				LoggerTestUtil.ERROR)) {
 
 			_receive(_launchSetObjectEntry.getObjectEntryId(), userId);
