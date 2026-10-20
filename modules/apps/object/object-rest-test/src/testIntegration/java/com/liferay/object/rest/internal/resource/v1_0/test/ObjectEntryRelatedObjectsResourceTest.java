@@ -1578,6 +1578,15 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				null),
 			Http.Method.PATCH);
 
+		Assert.assertEquals(
+			objectEntry.getExternalReferenceCode(),
+			jsonObject.getString(
+				StringBundler.concat(
+					"r_", objectRelationship.getName(), "_",
+					StringUtil.replaceLast(
+						objectDefinition.getPKObjectFieldName(), "Id",
+						"ERC"))));
+
 		nestedObjectEntryJSONObject = jsonObject.getJSONObject(
 			objectRelationship.getName());
 
