@@ -319,23 +319,6 @@ public class DLFileEntryLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteRepositoryFileEntries(long repositoryId, long folderId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_dlFileEntryLocalService.deleteRepositoryFileEntries(
-			repositoryId, folderId);
-	}
-
-	@Override
-	public void deleteRepositoryFileEntries(
-			long repositoryId, long folderId, boolean includeTrashedEntries)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_dlFileEntryLocalService.deleteRepositoryFileEntries(
-			repositoryId, folderId, includeTrashedEntries);
-	}
-
-	@Override
 	public <T> T dslQuery(com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
 		return _dlFileEntryLocalService.dslQuery(dslQuery);
 	}
@@ -867,42 +850,6 @@ public class DLFileEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<DLFileEntry> getGroupFileEntries(
-		long groupId, int start, int end) {
-
-		return _dlFileEntryLocalService.getGroupFileEntries(
-			groupId, start, end);
-	}
-
-	@Override
-	public java.util.List<DLFileEntry> getGroupFileEntries(
-		long groupId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<DLFileEntry>
-			orderByComparator) {
-
-		return _dlFileEntryLocalService.getGroupFileEntries(
-			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<DLFileEntry> getGroupFileEntries(
-		long groupId, long userId, int start, int end) {
-
-		return _dlFileEntryLocalService.getGroupFileEntries(
-			groupId, userId, start, end);
-	}
-
-	@Override
-	public java.util.List<DLFileEntry> getGroupFileEntries(
-		long groupId, long userId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<DLFileEntry>
-			orderByComparator) {
-
-		return _dlFileEntryLocalService.getGroupFileEntries(
-			groupId, userId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<DLFileEntry> getGroupFileEntries(
 		long groupId, long userId, long rootFolderId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<DLFileEntry>
 			orderByComparator) {
@@ -921,17 +868,6 @@ public class DLFileEntryLocalServiceWrapper
 		return _dlFileEntryLocalService.getGroupFileEntries(
 			groupId, userId, repositoryId, rootFolderId, start, end,
 			orderByComparator);
-	}
-
-	@Override
-	public int getGroupFileEntriesCount(long groupId) {
-		return _dlFileEntryLocalService.getGroupFileEntriesCount(groupId);
-	}
-
-	@Override
-	public int getGroupFileEntriesCount(long groupId, long userId) {
-		return _dlFileEntryLocalService.getGroupFileEntriesCount(
-			groupId, userId);
 	}
 
 	@Override
@@ -1230,4 +1166,4 @@ public class DLFileEntryLocalServiceWrapper
 	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1288768180
+// LIFERAY-SERVICE-BUILDER-HASH:-1899145284

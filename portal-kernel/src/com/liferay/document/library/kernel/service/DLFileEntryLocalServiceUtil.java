@@ -294,21 +294,6 @@ public class DLFileEntryLocalServiceUtil {
 		getService().deleteRepositoryFileEntries(repositoryId);
 	}
 
-	public static void deleteRepositoryFileEntries(
-			long repositoryId, long folderId)
-		throws PortalException {
-
-		getService().deleteRepositoryFileEntries(repositoryId, folderId);
-	}
-
-	public static void deleteRepositoryFileEntries(
-			long repositoryId, long folderId, boolean includeTrashedEntries)
-		throws PortalException {
-
-		getService().deleteRepositoryFileEntries(
-			repositoryId, folderId, includeTrashedEntries);
-	}
-
 	public static <T> T dslQuery(DSLQuery dslQuery) {
 		return getService().dslQuery(dslQuery);
 	}
@@ -762,34 +747,6 @@ public class DLFileEntryLocalServiceUtil {
 	}
 
 	public static List<DLFileEntry> getGroupFileEntries(
-		long groupId, int start, int end) {
-
-		return getService().getGroupFileEntries(groupId, start, end);
-	}
-
-	public static List<DLFileEntry> getGroupFileEntries(
-		long groupId, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator) {
-
-		return getService().getGroupFileEntries(
-			groupId, start, end, orderByComparator);
-	}
-
-	public static List<DLFileEntry> getGroupFileEntries(
-		long groupId, long userId, int start, int end) {
-
-		return getService().getGroupFileEntries(groupId, userId, start, end);
-	}
-
-	public static List<DLFileEntry> getGroupFileEntries(
-		long groupId, long userId, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator) {
-
-		return getService().getGroupFileEntries(
-			groupId, userId, start, end, orderByComparator);
-	}
-
-	public static List<DLFileEntry> getGroupFileEntries(
 		long groupId, long userId, long rootFolderId, int start, int end,
 		OrderByComparator<DLFileEntry> orderByComparator) {
 
@@ -804,14 +761,6 @@ public class DLFileEntryLocalServiceUtil {
 		return getService().getGroupFileEntries(
 			groupId, userId, repositoryId, rootFolderId, start, end,
 			orderByComparator);
-	}
-
-	public static int getGroupFileEntriesCount(long groupId) {
-		return getService().getGroupFileEntriesCount(groupId);
-	}
-
-	public static int getGroupFileEntriesCount(long groupId, long userId) {
-		return getService().getGroupFileEntriesCount(groupId, userId);
 	}
 
 	public static
@@ -1049,4 +998,4 @@ public class DLFileEntryLocalServiceUtil {
 	private static volatile DLFileEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-965612732
+// LIFERAY-SERVICE-BUILDER-HASH:-1539987740
