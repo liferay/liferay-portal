@@ -325,92 +325,6 @@ public class DLFileVersionPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<DLFileVersion, NoSuchFileVersionException>
-			_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the document library file versions where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DLFileVersionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of document library file versions
-	 * @param end the upper bound of the range of document library file versions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching document library file versions
-	 */
-	@Override
-	public List<DLFileVersion> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<DLFileVersion> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first document library file version in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching document library file version
-	 * @throws NoSuchFileVersionException if a matching document library file version could not be found
-	 */
-	@Override
-	public DLFileVersion findByCompanyId_First(
-			long companyId, OrderByComparator<DLFileVersion> orderByComparator)
-		throws NoSuchFileVersionException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first document library file version in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching document library file version, or <code>null</code> if a matching document library file version could not be found
-	 */
-	@Override
-	public DLFileVersion fetchByCompanyId_First(
-		long companyId, OrderByComparator<DLFileVersion> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the document library file versions where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of document library file versions where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching document library file versions
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	private CollectionPersistenceFinder
-		<DLFileVersion, NoSuchFileVersionException>
 			_collectionPersistenceFinderByFileEntryId;
 
 	/**
@@ -1029,158 +943,6 @@ public class DLFileVersionPersistenceImpl
 		return _collectionPersistenceFinderByF_S.count(
 			FinderCacheUtil.getFinderCache(),
 			new Object[] {fileEntryId, ArrayUtil.sortedUnique(statuses)});
-	}
-
-	private CollectionPersistenceFinder
-		<DLFileVersion, NoSuchFileVersionException>
-			_collectionPersistenceFinderByLtD_S;
-
-	/**
-	 * Returns all the document library file versions where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @return the matching document library file versions
-	 */
-	@Override
-	public List<DLFileVersion> findByLtD_S(Date displayDate, int status) {
-		return findByLtD_S(
-			displayDate, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the document library file versions where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DLFileVersionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param start the lower bound of the range of document library file versions
-	 * @param end the upper bound of the range of document library file versions (not inclusive)
-	 * @return the range of matching document library file versions
-	 */
-	@Override
-	public List<DLFileVersion> findByLtD_S(
-		Date displayDate, int status, int start, int end) {
-
-		return findByLtD_S(displayDate, status, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the document library file versions where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DLFileVersionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param start the lower bound of the range of document library file versions
-	 * @param end the upper bound of the range of document library file versions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching document library file versions
-	 */
-	@Override
-	public List<DLFileVersion> findByLtD_S(
-		Date displayDate, int status, int start, int end,
-		OrderByComparator<DLFileVersion> orderByComparator) {
-
-		return findByLtD_S(
-			displayDate, status, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the document library file versions where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DLFileVersionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param start the lower bound of the range of document library file versions
-	 * @param end the upper bound of the range of document library file versions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching document library file versions
-	 */
-	@Override
-	public List<DLFileVersion> findByLtD_S(
-		Date displayDate, int status, int start, int end,
-		OrderByComparator<DLFileVersion> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByLtD_S.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {displayDate, status}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first document library file version in the ordered set where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching document library file version
-	 * @throws NoSuchFileVersionException if a matching document library file version could not be found
-	 */
-	@Override
-	public DLFileVersion findByLtD_S_First(
-			Date displayDate, int status,
-			OrderByComparator<DLFileVersion> orderByComparator)
-		throws NoSuchFileVersionException {
-
-		return _collectionPersistenceFinderByLtD_S.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {displayDate, status}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first document library file version in the ordered set where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching document library file version, or <code>null</code> if a matching document library file version could not be found
-	 */
-	@Override
-	public DLFileVersion fetchByLtD_S_First(
-		Date displayDate, int status,
-		OrderByComparator<DLFileVersion> orderByComparator) {
-
-		return _collectionPersistenceFinderByLtD_S.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {displayDate, status}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the document library file versions where displayDate &lt; &#63; and status = &#63; from the database.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 */
-	@Override
-	public void removeByLtD_S(Date displayDate, int status) {
-		_collectionPersistenceFinderByLtD_S.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {displayDate, status});
-	}
-
-	/**
-	 * Returns the number of document library file versions where displayDate &lt; &#63; and status = &#63;.
-	 *
-	 * @param displayDate the display date
-	 * @param status the status
-	 * @return the number of matching document library file versions
-	 */
-	@Override
-	public int countByLtD_S(Date displayDate, int status) {
-		return _collectionPersistenceFinderByLtD_S.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {displayDate, status});
 	}
 
 	private CollectionPersistenceFinder
@@ -1936,32 +1698,6 @@ public class DLFileVersionPersistenceImpl
 					"dlFileVersion.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, DLFileVersion::getCompanyId));
 
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_DLFILEVERSION_WHERE, _SQL_COUNT_DLFILEVERSION_WHERE,
-				DLFileVersionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
-				new FinderColumn<>(
-					"dlFileVersion.", "companyId", FinderColumn.Type.LONG, "=",
-					true, true, DLFileVersion::getCompanyId));
-
 		_collectionPersistenceFinderByFileEntryId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -2113,31 +1849,6 @@ public class DLFileVersionPersistenceImpl
 			new ArrayableFinderColumn<>(
 				"dlFileVersion.", "status", FinderColumn.Type.INTEGER, "=",
 				false, true, true, DLFileVersion::getStatus));
-
-		_collectionPersistenceFinderByLtD_S = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByLtD_S",
-				new String[] {
-					Date.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"displayDate", "status"}, true),
-			null,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtD_S",
-				new String[] {Date.class.getName(), Integer.class.getName()},
-				new String[] {"displayDate", "status"}, false),
-			_SQL_SELECT_DLFILEVERSION_WHERE, _SQL_COUNT_DLFILEVERSION_WHERE,
-			DLFileVersionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"dlFileVersion.", "displayDate", FinderColumn.Type.DATE, "<",
-				true, true, DLFileVersion::getDisplayDate),
-			new FinderColumn<>(
-				"dlFileVersion.", "status", FinderColumn.Type.INTEGER, "=",
-				true, true, DLFileVersion::getStatus));
 
 		_collectionPersistenceFinderByG_F_S = new CollectionPersistenceFinder<>(
 			this,
@@ -2296,4 +2007,4 @@ public class DLFileVersionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1398016236
+// LIFERAY-SERVICE-BUILDER-HASH:1465298420

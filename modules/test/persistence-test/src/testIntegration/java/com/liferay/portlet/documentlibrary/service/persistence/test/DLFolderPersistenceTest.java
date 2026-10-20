@@ -19,18 +19,14 @@ import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
-import com.liferay.portal.security.permission.SimplePermissionChecker;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
@@ -284,13 +280,6 @@ public class DLFolderPersistenceTest {
 	}
 
 	@Test
-	public void testCountByGroupId() throws Exception {
-		_persistence.countByGroupId(RandomTestUtil.nextLong());
-
-		_persistence.countByGroupId(0L);
-	}
-
-	@Test
 	public void testCountByCompanyId() throws Exception {
 		_persistence.countByCompanyId(RandomTestUtil.nextLong());
 
@@ -337,15 +326,6 @@ public class DLFolderPersistenceTest {
 	}
 
 	@Test
-	public void testCountByP_N() throws Exception {
-		_persistence.countByP_N(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByP_N(0L, "null");
-
-		_persistence.countByP_N(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByGtF_C_P() throws Exception {
 		_persistence.countByGtF_C_P(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -371,15 +351,6 @@ public class DLFolderPersistenceTest {
 		_persistence.countByG_P_N(0L, 0L, "null");
 
 		_persistence.countByG_P_N(0L, 0L, (String)null);
-	}
-
-	@Test
-	public void testCountByGtF_C_P_NotS() throws Exception {
-		_persistence.countByGtF_C_P_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByGtF_C_P_NotS(0L, 0L, 0L, 0);
 	}
 
 	@Test
@@ -474,30 +445,6 @@ public class DLFolderPersistenceTest {
 	public void testFindAll() throws Exception {
 		_persistence.findAll(
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, getOrderByComparator());
-	}
-
-	@Test
-	public void testFilterFindByGroupId() throws Exception {
-		PermissionThreadLocal.setPermissionChecker(
-			new SimplePermissionChecker() {
-				{
-					init(TestPropsValues.getUser());
-				}
-
-				@Override
-				public boolean isCompanyAdmin(long companyId) {
-					return false;
-				}
-
-			});
-
-		Assert.assertTrue(InlineSQLHelperUtil.isEnabled(0));
-
-		_persistence.filterFindByGroupId(
-			0, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		_persistence.filterFindByGroupId(
-			0, QueryUtil.ALL_POS, QueryUtil.ALL_POS, getOrderByComparator());
 	}
 
 	protected OrderByComparator<DLFolder> getOrderByComparator() {
@@ -877,4 +824,4 @@ public class DLFolderPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-390643385
+// LIFERAY-SERVICE-BUILDER-HASH:-2066973059
