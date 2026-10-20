@@ -7,6 +7,8 @@ package com.liferay.launch.web.internal.portlet.action;
 
 import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -17,6 +19,7 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -101,9 +104,14 @@ public class ScheduleLaunchMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		long launchSetId = ParamUtil.getLong(actionRequest, "launchSetId");
+
+		_objectEntryService.checkModelResourcePermission(
+			_objectEntryLocalService.getObjectEntry(launchSetId),
+			ActionKeys.UPDATE);
+
 		_launchSetPublisher.schedulePublish(
-			ParamUtil.getLong(actionRequest, "launchSetId"),
-			themeDisplay.getUserId(), publishDate);
+			launchSetId, themeDisplay.getUserId(), publishDate);
 
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse,
@@ -144,6 +152,12 @@ public class ScheduleLaunchMVCActionCommand
 
 	@Reference
 	private LaunchSetPublisher _launchSetPublisher;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectEntryService _objectEntryService;
 
 	@Reference
 	private Portal _portal;

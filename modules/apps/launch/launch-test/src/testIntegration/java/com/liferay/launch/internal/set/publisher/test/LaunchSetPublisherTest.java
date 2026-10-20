@@ -19,23 +19,16 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -253,27 +246,6 @@ public class LaunchSetPublisherTest {
 	@Test
 	public void testSchedulePublish() throws Exception {
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		_user = UserTestUtil.addUser();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_user));
-
-		try {
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> _launchSetPublisher.schedulePublish(
-					launchSetId, _user.getUserId(),
-					new Date(System.currentTimeMillis() + Time.DAY)));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
-
-		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
 
 		Assert.assertThrows(
 			PortalException.class,
@@ -502,8 +474,5 @@ public class LaunchSetPublisherTest {
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 	private ServiceContext _serviceContext;
-
-	@DeleteAfterTestRun
-	private User _user;
 
 }

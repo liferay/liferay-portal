@@ -5,15 +5,12 @@
 
 package com.liferay.launch.internal.model.listener;
 
-import com.liferay.launch.internal.constants.LaunchDestinationNames;
-import com.liferay.launch.internal.set.publisher.util.LaunchSetPublisherUtil;
+import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
-import com.liferay.portal.kernel.scheduler.SchedulerException;
-import com.liferay.portal.kernel.scheduler.StorageType;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -36,17 +33,15 @@ public class LaunchSetRelevantObjectEntryModelListener
 		throws ModelListenerException {
 
 		try {
-			_schedulerEngineHelper.delete(
-				LaunchSetPublisherUtil.getJobName(objectEntry),
-				LaunchDestinationNames.LAUNCH_SET_SCHEDULED_PUBLISH,
-				StorageType.PERSISTED);
+			_launchSetPublisher.unschedulePublish(
+				objectEntry.getObjectEntryId());
 		}
-		catch (SchedulerException schedulerException) {
-			throw new ModelListenerException(schedulerException);
+		catch (PortalException portalException) {
+			throw new ModelListenerException(portalException);
 		}
 	}
 
 	@Reference
-	private SchedulerEngineHelper _schedulerEngineHelper;
+	private LaunchSetPublisher _launchSetPublisher;
 
 }

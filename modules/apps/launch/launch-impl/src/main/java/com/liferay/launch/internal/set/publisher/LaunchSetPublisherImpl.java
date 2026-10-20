@@ -8,13 +8,13 @@ package com.liferay.launch.internal.set.publisher;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.launch.internal.constants.LaunchDestinationNames;
-import com.liferay.launch.internal.set.publisher.util.LaunchSetPublisherUtil;
 import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.messaging.Message;
@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -55,7 +54,7 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 
 		SchedulerResponse schedulerResponse =
 			_schedulerEngineHelper.getScheduledJob(
-				LaunchSetPublisherUtil.getJobName(launchSetObjectEntry),
+				_getJobName(launchSetObjectEntry),
 				LaunchDestinationNames.LAUNCH_SET_SCHEDULED_PUBLISH,
 				StorageType.PERSISTED);
 
@@ -133,9 +132,6 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 		ObjectEntry launchSetObjectEntry =
 			_objectEntryLocalService.getObjectEntry(launchSetId);
 
-		_objectEntryService.checkModelResourcePermission(
-			launchSetObjectEntry, ActionKeys.UPDATE);
-
 		if (launchSetObjectEntry.getStatus() !=
 				WorkflowConstants.STATUS_DRAFT) {
 
@@ -167,7 +163,7 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 
 		_schedulerEngineHelper.schedule(
 			_triggerFactory.createTrigger(
-				LaunchSetPublisherUtil.getJobName(launchSetObjectEntry),
+				_getJobName(launchSetObjectEntry),
 				LaunchDestinationNames.LAUNCH_SET_SCHEDULED_PUBLISH, date, null,
 				0, null),
 			StorageType.PERSISTED, String.valueOf(launchSetId),
@@ -179,15 +175,20 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 		ObjectEntry launchSetObjectEntry =
 			_objectEntryLocalService.fetchObjectEntry(launchSetId);
 
-		if ((launchSetObjectEntry == null) ||
-			(launchSetObjectEntry.getStatus() !=
-				WorkflowConstants.STATUS_SCHEDULED)) {
-
+		if (launchSetObjectEntry == null) {
 			return;
 		}
 
-		_objectEntryService.checkModelResourcePermission(
-			launchSetObjectEntry, ActionKeys.UPDATE);
+		_schedulerEngineHelper.delete(
+			_getJobName(launchSetObjectEntry),
+			LaunchDestinationNames.LAUNCH_SET_SCHEDULED_PUBLISH,
+			StorageType.PERSISTED);
+
+		if (launchSetObjectEntry.getStatus() !=
+				WorkflowConstants.STATUS_SCHEDULED) {
+
+			return;
+		}
 
 		long userId = PrincipalThreadLocal.getUserId();
 
@@ -200,11 +201,6 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 
 		_updateScheduledDate(
 			launchSetObjectEntry, userId, null, serviceContext);
-
-		_schedulerEngineHelper.delete(
-			LaunchSetPublisherUtil.getJobName(launchSetObjectEntry),
-			LaunchDestinationNames.LAUNCH_SET_SCHEDULED_PUBLISH,
-			StorageType.PERSISTED);
 	}
 
 	private ServiceContext _createServiceContext(
@@ -217,6 +213,12 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
 		return serviceContext;
+	}
+
+	private String _getJobName(ObjectEntry launchSetObjectEntry) {
+		return StringBundler.concat(
+			launchSetObjectEntry.getObjectEntryId(), StringPool.AT,
+			launchSetObjectEntry.getCompanyId());
 	}
 
 	private void _updateScheduledDate(
@@ -239,9 +241,6 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ObjectEntryService _objectEntryService;
 
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
