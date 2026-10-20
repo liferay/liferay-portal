@@ -25,7 +25,7 @@ export default function ScopeSection({
 			role="group"
 		>
 			<SectionHeader
-				className="mt-4"
+				className="mt-5"
 				id={labelId}
 				subtitle={subtitle}
 				subtitleId={subtitleId}

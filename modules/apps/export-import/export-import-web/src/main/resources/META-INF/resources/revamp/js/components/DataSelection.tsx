@@ -57,7 +57,7 @@ export default function DataSelection({
 	return (
 		<>
 			<SectionHeader
-				className="mt-4"
+				className="mt-5"
 				id={LABEL_ID}
 				subtitle={subtitle}
 				title={Liferay.Language.get('data-selection')}
