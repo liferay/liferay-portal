@@ -19,7 +19,7 @@ const Body: React.FC<IBodyProps> = ({
 	if (fluid) {
 		return (
 			<div
-				className={getCN('fluid-body-root', className, {
+				className={getCN('fluid-body-root pt-3 px-5', className, {
 					disabled,
 					'sidebar-opened': sidebarOpened,
 				})}

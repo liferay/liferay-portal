@@ -105,9 +105,7 @@ const LifecycleRedirect = () => {
 				</BasePage.Row>
 			</BasePage.Header>
 
-			<BasePage.Body className="pt-3 px-5" pageContainer={false}>
-				{renderBody()}
-			</BasePage.Body>
+			<BasePage.Body fluid>{renderBody()}</BasePage.Body>
 		</BasePage>
 	);
 };

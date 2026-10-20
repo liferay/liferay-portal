@@ -113,14 +113,11 @@
 	}
 
 	.fluid-body-root {
-		display: flex;
-
 		&.sidebar-opened .card-root {
 			max-width: calc(100% - 488px - 1rem);
 		}
 
 		.card-root {
-			margin: 1rem;
 			width: 100%;
 		}
 

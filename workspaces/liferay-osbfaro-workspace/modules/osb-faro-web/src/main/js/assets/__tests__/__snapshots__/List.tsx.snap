@@ -120,7 +120,7 @@ exports[`List rendering should match the snapshot 1`] = `
       </div>
     </div>
     <div
-      class="fluid-body-root"
+      class="fluid-body-root pt-3 px-5 d-flex"
     >
       <div
         class="card card-root"
