@@ -23,14 +23,22 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.lang.reflect.InvocationTargetException;
+
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -116,6 +124,104 @@ public class OrphanReferencesDataCleanupUtilTest {
 					OrphanReferencesDataCleanupUtilTest.class.getName(), "')")),
 			false, null, "companyId", "Audit_AuditEvent", "companyId",
 			"Company");
+	}
+
+	@Test
+	public void testCleanUpTableWithDeadlockRetry() throws Exception {
+		long companyId = RandomTestUtil.nextLong();
+
+		_db.runSQL(
+			_connection,
+			StringBundler.concat(
+				"insert into Portlet (mvccVersion, id_, companyId, portletId, ",
+				"active_) values (0, ", RandomTestUtil.nextLong(), ", ",
+				companyId, ", '", RandomTestUtil.randomString(),
+				"', [$FALSE$])"));
+		_db.runSQL(
+			_connection,
+			StringBundler.concat(
+				"insert into Portlet (mvccVersion, id_, companyId, portletId, ",
+				"active_) values (0, ", RandomTestUtil.nextLong(), ", ",
+				companyId, ", '", RandomTestUtil.randomString(),
+				"', [$FALSE$])"));
+
+		AtomicReference<String> deleteSQLAtomicReference =
+			new AtomicReference<>();
+
+		Connection connection = (Connection)ProxyUtil.newProxyInstance(
+			OrphanReferencesDataCleanupUtilTest.class.getClassLoader(),
+			new Class<?>[] {Connection.class},
+			(proxy, method, args) -> {
+				if (Objects.equals(method.getName(), "prepareStatement")) {
+					String sql = (String)args[0];
+
+					if (sql.startsWith("delete") &&
+						deleteSQLAtomicReference.compareAndSet(null, sql)) {
+
+						throw new SQLException(
+							RandomTestUtil.randomString(), "40001");
+					}
+				}
+
+				try {
+					return method.invoke(_connection, args);
+				}
+				catch (InvocationTargetException invocationTargetException) {
+					throw invocationTargetException.getCause();
+				}
+			});
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OrphanReferencesDataCleanupUtil.class.getName(),
+				LoggerTestUtil.INFO)) {
+
+			OrphanReferencesDataCleanupUtil.cleanUpTable(
+				connection, null, false, null,
+				_dbInspector.normalizeName("companyId"),
+				_dbInspector.normalizeName("Portlet"),
+				new String[] {_dbInspector.normalizeName("companyId")},
+				_dbInspector.normalizeName("Company"));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Retrying delete after a database deadlock: " +
+					deleteSQLAtomicReference.get(),
+				logEntry.getMessage());
+			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
+			Assert.assertNull(logEntry.getThrowable());
+
+			logEntry = logEntries.get(1);
+
+			Assert.assertEquals(
+				_getCleanUpTableExpectedMessage(
+					2, false, "companyId", "Portlet", "companyId", "Company",
+					companyId),
+				logEntry.getMessage());
+
+			try (PreparedStatement preparedStatement =
+					_connection.prepareStatement(
+						"select count(*) as portletCount from Portlet where " +
+							"companyId = ?")) {
+
+				preparedStatement.setLong(1, companyId);
+
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					resultSet.next();
+
+					Assert.assertEquals(0, resultSet.getLong("portletCount"));
+				}
+			}
+		}
+		finally {
+			_db.runSQL(
+				_connection,
+				"delete from Portlet where companyId = " + companyId);
+		}
 	}
 
 	@Test
