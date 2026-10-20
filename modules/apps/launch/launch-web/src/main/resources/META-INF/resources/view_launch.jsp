@@ -18,6 +18,8 @@ String launchSetName = viewLaunchDisplayContext.getLaunchSetName();
 if (Validator.isNotNull(launchSetName)) {
 	renderResponse.setTitle(launchSetName);
 }
+
+String scheduledDate = viewLaunchDisplayContext.getScheduledDate();
 %>
 
 <liferay-ui:error exception="<%= PortalException.class %>" message="unable-to-publish-the-launch" />
@@ -44,6 +46,21 @@ if (Validator.isNotNull(launchSetName)) {
 
 		<div>
 			<react:component
+				module="{LaunchScheduleButton} from launch-web"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"published", viewLaunchDisplayContext.isPublished()
+					).put(
+						"scheduledDate", scheduledDate
+					).put(
+						"scheduleLaunchURL", viewLaunchDisplayContext.getScheduleLaunchURL()
+					).build()
+				%>'
+			/>
+		</div>
+
+		<div>
+			<react:component
 				module="{LaunchPublishButton} from launch-web"
 				props='<%=
 					HashMapBuilder.<String, Object>put(
@@ -51,9 +68,7 @@ if (Validator.isNotNull(launchSetName)) {
 					).put(
 						"publishLaunchURL", viewLaunchDisplayContext.getPublishLaunchURL()
 					).put(
-						"scheduledDate", viewLaunchDisplayContext.getScheduledDate()
-					).put(
-						"scheduleLaunchURL", viewLaunchDisplayContext.getScheduleLaunchURL()
+						"scheduled", scheduledDate != null
 					).build()
 				%>'
 			/>
