@@ -16,6 +16,9 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -43,6 +46,50 @@ public class HTMLImageAttachmentElementHandlerTest {
 			Mockito.mock(PortletFileRepository.class));
 
 		_htmlImageAttachmentElementHandler.activate();
+	}
+
+	@Test
+	public void testReplaceAttachmentElementsSavesEachFileEntryOnce()
+		throws Exception {
+
+		Mockito.when(
+			_dlAppService.getFileEntry(Mockito.anyLong())
+		).thenReturn(
+			Mockito.mock(FileEntry.class)
+		);
+
+		List<FileEntry> savedFileEntries = new ArrayList<>();
+
+		String content =
+			_htmlImageAttachmentElementHandler.replaceAttachmentElements(
+				StringBundler.concat(
+					"<img alt=\"a\" ", EditorConstants.ATTRIBUTE_DATA_IMAGE_ID,
+					"=\"7\" /><img alt=\"b\" ",
+					EditorConstants.ATTRIBUTE_DATA_IMAGE_ID, "=\"7\" />"),
+				fileEntry -> {
+					savedFileEntries.add(fileEntry);
+
+					return fileEntry;
+				});
+
+		Assert.assertEquals(
+			savedFileEntries.toString(), 1, savedFileEntries.size());
+
+		Assert.assertTrue(content, content.contains("alt=\"a\""));
+		Assert.assertTrue(content, content.contains("alt=\"b\""));
+
+		savedFileEntries.clear();
+
+		_htmlImageAttachmentElementHandler.replaceAttachmentElements(
+			_getContent(7) + _getContent(7),
+			fileEntry -> {
+				savedFileEntries.add(fileEntry);
+
+				return fileEntry;
+			});
+
+		Assert.assertEquals(
+			savedFileEntries.toString(), 1, savedFileEntries.size());
 	}
 
 	@Test
