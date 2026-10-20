@@ -220,24 +220,11 @@ public interface SocialActivityAchievementLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialActivityAchievement> getGroupAchievements(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SocialActivityAchievement> getGroupAchievements(
 		long groupId, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupAchievementsCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getGroupAchievementsCount(long groupId, String name);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialActivityAchievement> getGroupFirstAchievements(
-		long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupFirstAchievementsCount(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -329,4 +316,4 @@ public interface SocialActivityAchievementLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-37699237
+// LIFERAY-SERVICE-BUILDER-HASH:-325002159

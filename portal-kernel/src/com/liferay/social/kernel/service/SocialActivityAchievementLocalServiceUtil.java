@@ -234,33 +234,13 @@ public class SocialActivityAchievementLocalServiceUtil {
 	}
 
 	public static List<SocialActivityAchievement> getGroupAchievements(
-		long groupId) {
-
-		return getService().getGroupAchievements(groupId);
-	}
-
-	public static List<SocialActivityAchievement> getGroupAchievements(
 		long groupId, String name) {
 
 		return getService().getGroupAchievements(groupId, name);
 	}
 
-	public static int getGroupAchievementsCount(long groupId) {
-		return getService().getGroupAchievementsCount(groupId);
-	}
-
 	public static int getGroupAchievementsCount(long groupId, String name) {
 		return getService().getGroupAchievementsCount(groupId, name);
-	}
-
-	public static List<SocialActivityAchievement> getGroupFirstAchievements(
-		long groupId) {
-
-		return getService().getGroupFirstAchievements(groupId);
-	}
-
-	public static int getGroupFirstAchievementsCount(long groupId) {
-		return getService().getGroupFirstAchievementsCount(groupId);
 	}
 
 	public static
@@ -368,4 +348,4 @@ public class SocialActivityAchievementLocalServiceUtil {
 	private static volatile SocialActivityAchievementLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1862992362
+// LIFERAY-SERVICE-BUILDER-HASH:1616206332

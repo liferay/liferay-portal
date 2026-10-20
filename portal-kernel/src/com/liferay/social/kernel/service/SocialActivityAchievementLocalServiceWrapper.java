@@ -269,14 +269,6 @@ public class SocialActivityAchievementLocalServiceWrapper
 
 	@Override
 	public java.util.List<SocialActivityAchievement> getGroupAchievements(
-		long groupId) {
-
-		return _socialActivityAchievementLocalService.getGroupAchievements(
-			groupId);
-	}
-
-	@Override
-	public java.util.List<SocialActivityAchievement> getGroupAchievements(
 		long groupId, String name) {
 
 		return _socialActivityAchievementLocalService.getGroupAchievements(
@@ -284,29 +276,9 @@ public class SocialActivityAchievementLocalServiceWrapper
 	}
 
 	@Override
-	public int getGroupAchievementsCount(long groupId) {
-		return _socialActivityAchievementLocalService.getGroupAchievementsCount(
-			groupId);
-	}
-
-	@Override
 	public int getGroupAchievementsCount(long groupId, String name) {
 		return _socialActivityAchievementLocalService.getGroupAchievementsCount(
 			groupId, name);
-	}
-
-	@Override
-	public java.util.List<SocialActivityAchievement> getGroupFirstAchievements(
-		long groupId) {
-
-		return _socialActivityAchievementLocalService.getGroupFirstAchievements(
-			groupId);
-	}
-
-	@Override
-	public int getGroupFirstAchievementsCount(long groupId) {
-		return _socialActivityAchievementLocalService.
-			getGroupFirstAchievementsCount(groupId);
 	}
 
 	@Override
@@ -461,4 +433,4 @@ public class SocialActivityAchievementLocalServiceWrapper
 		_socialActivityAchievementLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-991762209
+// LIFERAY-SERVICE-BUILDER-HASH:-1286381843
