@@ -43,6 +43,8 @@ liferay-dxp-operator:
         enabled: true
         mountPath: /marketplace
     namespaceOverride: dxp-operator-system
+    onlineActivationWorkflow:
+        enabled: true
     podSecurityContext:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch

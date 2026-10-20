@@ -220,6 +220,32 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Leaves the Liferay service account to the infrastructure composition
     -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        name: liferay-default.licensing.onlineActivationWorkflow.enabled
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Leaves the online activation workflow off when the DXP operator does not run it
+        set:
+            operatorApplications:
+                dxpOperator:
+                    values:
+                        onlineActivationWorkflow:
+                            enabled: false
+    -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        name: liferay-default.licensing.onlineActivationWorkflow.enabled
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Leaves the online activation workflow off when the DXP operator is disabled
+        set:
+            operatorApplications:
+                dxpOperator:
+                    enabled: false
+    -   asserts:
             -   contains:
                     content:
                         namespace: argocd-system
@@ -555,6 +581,20 @@ tests:
         set:
             liferay:
                 valuesPrefix: liferay-aws.liferay-default.
+    -   asserts:
+            -   contains:
+                    content:
+                        name: liferay-default.licensing.onlineActivationWorkflow.enabled
+                        value: "true"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Turns the online activation workflow on when the DXP operator runs it
+        set:
+            operatorApplications:
+                dxpOperator:
+                    values:
+                        onlineActivationWorkflow:
+                            enabled: true
     -   asserts:
             -   equal:
                     path: spec.generators[0].git.repoURL

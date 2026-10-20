@@ -69,6 +69,10 @@ spec:
                             -   name: {{ printf "%sclientExtensions.delivery.operatorServiceAccount.namespace" .Values.liferay.valuesPrefix }}
                                 value: {{ $dxpOperator.namespace | quote }}
                             {{- end }}
+                            {{- if and $dxpOperator.enabled (dig "onlineActivationWorkflow" "enabled" false ($dxpOperator.values | default dict)) }}
+                            -   name: {{ printf "%slicensing.onlineActivationWorkflow.enabled" .Values.liferay.valuesPrefix }}
+                                value: "true"
+                            {{- end }}
                             -   name: {{ printf "%snetwork.gatewayName" .Values.liferay.valuesPrefix }}
                                 value: {{ printf "%s-%s-gateway" $layout.projectId $layout.environmentId | quote }}
                             {{- with .Values.liferay.parameters }}

@@ -387,6 +387,10 @@ resource "kubernetes_manifest" "liferay_applicationset" {
 											value=var.liferay_git_repo_config.target.slugEnvironmentId
 										},
 										{
+											name="${local.liferay_helm_chart_config.values_scope_prefix}licensing.onlineActivationWorkflow.enabled"
+											value="true"
+										},
+										{
 											name="${local.liferay_helm_chart_config.values_scope_prefix}marketplace.csi.volumeAttributes.ip"
 											value=local.filestore_ip
 										},

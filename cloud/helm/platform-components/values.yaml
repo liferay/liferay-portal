@@ -278,6 +278,8 @@ operatorApplications:
             clientExtensions:
                 enabled: true
             fullnameOverride: dxp-operator
+            onlineActivationWorkflow:
+                enabled: true
     eckOperator:
         chart: eck-operator
         enabled: true

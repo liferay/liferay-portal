@@ -401,7 +401,7 @@ licensing:
     onlineActivationWorkflow:
         clusterRoleName: online-activation-cluster-role
         clusterWorkflowTemplateName: online-activation-cluster-workflow-template
-        enabled: true
+        enabled: false
         serviceAccountName: online-activation-service-account
         ttlSecondsAfterCompletion: 3600
         userAccess:
