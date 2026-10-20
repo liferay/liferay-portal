@@ -324,7 +324,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					RandomTestUtil.randomString()
 				).buildString()));
 
-		_testGetSiteSitePageWithWidgetPageTypeWithAdvancedStylingConfig();
 		_testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances();
 	}
 
@@ -1388,7 +1387,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	private void _assertWidgetPageWidgetInstances(
 		GeneralConfig.ApplicationDecorator applicationDecorator, int count,
-		String customApplicationDecorator, SitePage sitePage) {
+		String customApplicationDecorator, String customCSS,
+		String customCSSClassName, SitePage sitePage) {
 
 		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
 			_getWidgetPageWidgetInstances(sitePage);
@@ -1398,6 +1398,15 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 			WidgetLookAndFeelConfig widgetLookAndFeelConfig =
 				widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
+
+			AdvancedStylingConfig advancedStylingConfig =
+				widgetLookAndFeelConfig.getAdvancedStylingConfig();
+
+			Assert.assertEquals(
+				customCSS, advancedStylingConfig.getCustomCSS());
+			Assert.assertEquals(
+				customCSSClassName,
+				advancedStylingConfig.getCustomCSSClassNames());
 
 			GeneralConfig generalConfig =
 				widgetLookAndFeelConfig.getGeneralConfig();
@@ -2318,15 +2327,25 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		};
 	}
 
-	private void _setWidgetPageWidgetInstancesApplicationDecorator(
+	private void _setWidgetPageWidgetInstancesWidgetLookAndFeelConfig(
 		GeneralConfig.ApplicationDecorator applicationDecorator,
-		String customApplicationDecorator, SitePage sitePage) {
+		String customApplicationDecorator, String customCSS,
+		String customCSSClassName, SitePage sitePage) {
 
 		for (WidgetPageWidgetInstance widgetPageWidgetInstance :
 				_getWidgetPageWidgetInstances(sitePage)) {
 
 			WidgetLookAndFeelConfig widgetLookAndFeelConfig =
 				new WidgetLookAndFeelConfig();
+
+			AdvancedStylingConfig advancedStylingConfig =
+				new AdvancedStylingConfig();
+
+			advancedStylingConfig.setCustomCSS(customCSS);
+			advancedStylingConfig.setCustomCSSClassNames(customCSSClassName);
+
+			widgetLookAndFeelConfig.setAdvancedStylingConfig(
+				advancedStylingConfig);
 
 			GeneralConfig generalConfig = new GeneralConfig();
 
@@ -2604,11 +2623,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				sitePage.getExternalReferenceCode()));
 	}
 
-	private void _testGetSiteSitePageWithWidgetPageTypeWithAdvancedStylingConfig()
+	private void _testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances()
 		throws Exception {
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
 
+		String customApplicationDecorator = RandomTestUtil.randomString();
 		String customCSS = RandomTestUtil.randomString();
 		String customCSSClassName = RandomTestUtil.randomString();
 
@@ -2616,81 +2636,17 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
 			HashMapBuilder.put(
 				"portletSetupCss",
-				() -> {
-					JSONObject advancedDataJSONObject = JSONUtil.put(
-						"customCSS", customCSS);
-
-					advancedDataJSONObject.put(
-						"customCSSClassName", customCSSClassName);
-
-					JSONObject jsonObject = JSONUtil.put(
-						"advancedData", advancedDataJSONObject);
-
-					return new String[] {jsonObject.toString()};
+				new String[] {
+					JSONUtil.put(
+						"advancedData",
+						JSONUtil.put(
+							"customCSS", customCSS
+						).put(
+							"customCSSClassName", customCSSClassName
+						)
+					).toString()
 				}
-			).build());
-
-		SitePageResource sitePageResource = _getSitePageResource(
-			"pageSpecifications");
-
-		SitePage sitePage = sitePageResource.getSiteSitePage(
-			testGroup.getExternalReferenceCode(),
-			layout.getExternalReferenceCode());
-
-		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
-			_getWidgetPageWidgetInstances(sitePage);
-
-		Assert.assertEquals(
-			widgetPageWidgetInstances.toString(), 1,
-			widgetPageWidgetInstances.size());
-
-		WidgetPageWidgetInstance widgetPageWidgetInstance =
-			widgetPageWidgetInstances.get(0);
-
-		WidgetLookAndFeelConfig widgetLookAndFeelConfig =
-			widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
-
-		AdvancedStylingConfig advancedStylingConfig =
-			widgetLookAndFeelConfig.getAdvancedStylingConfig();
-
-		Assert.assertNotNull(
-			widgetPageWidgetInstance.toString(), advancedStylingConfig);
-		Assert.assertEquals(customCSS, advancedStylingConfig.getCustomCSS());
-		Assert.assertEquals(
-			customCSSClassName, advancedStylingConfig.getCustomCSSClassNames());
-
-		Layout malformedLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
-
-		LayoutTestUtil.addPortletToLayout(
-			malformedLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
-			HashMapBuilder.put(
-				"portletSetupCss", new String[] {RandomTestUtil.randomString()}
-			).build());
-
-		sitePage = sitePageResource.getSiteSitePage(
-			testGroup.getExternalReferenceCode(),
-			malformedLayout.getExternalReferenceCode());
-
-		widgetPageWidgetInstances = _getWidgetPageWidgetInstances(sitePage);
-
-		widgetPageWidgetInstance = widgetPageWidgetInstances.get(0);
-
-		widgetLookAndFeelConfig =
-			widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
-
-		Assert.assertNull(widgetLookAndFeelConfig.getAdvancedStylingConfig());
-	}
-
-	private void _testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances()
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
-
-		String customApplicationDecorator = RandomTestUtil.randomString();
-
-		LayoutTestUtil.addPortletToLayout(
-			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
-			HashMapBuilder.put(
+			).put(
 				"portletSetupPortletDecoratorId",
 				new String[] {customApplicationDecorator}
 			).build());
@@ -2703,7 +2659,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			layout.getExternalReferenceCode());
 
 		_assertWidgetPageWidgetInstances(
-			null, 1, customApplicationDecorator, sitePage);
+			null, 1, customApplicationDecorator, customCSS, customCSSClassName,
+			sitePage);
 	}
 
 	private void _testGetSiteSitePagesPageWithFlatten() throws Exception {
@@ -5530,12 +5487,16 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				UnsafeFunction<SitePage, SitePage, Exception> unsafeFunction)
 		throws Exception {
 
-		_setWidgetPageWidgetInstancesApplicationDecorator(
-			applicationDecorator, customApplicationDecorator, sitePage);
+		String customCSS = RandomTestUtil.randomString();
+		String customCSSClassName = RandomTestUtil.randomString();
+
+		_setWidgetPageWidgetInstancesWidgetLookAndFeelConfig(
+			applicationDecorator, customApplicationDecorator, customCSS,
+			customCSSClassName, sitePage);
 
 		_assertWidgetPageWidgetInstances(
 			expectedApplicationDecorator, 3, expectedCustomApplicationDecorator,
-			unsafeFunction.apply(sitePage));
+			customCSS, customCSSClassName, unsafeFunction.apply(sitePage));
 	}
 
 	private void _testUpdateSiteSitePageWithPriority(
