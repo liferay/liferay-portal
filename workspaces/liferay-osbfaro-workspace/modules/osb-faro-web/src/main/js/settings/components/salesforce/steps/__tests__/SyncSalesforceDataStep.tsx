@@ -35,7 +35,9 @@ const getCheckboxes = () =>
 
 describe('SyncSalesforceDataStep', () => {
 	it('renders the campaigns item checked and disabled without a synced count', () => {
-		render(<SyncSalesforceDataStep onNext={jest.fn()} onPrev={jest.fn()} />);
+		render(
+			<SyncSalesforceDataStep onNext={jest.fn()} onPrev={jest.fn()} />
+		);
 
 		expect(screen.getByText('Campaigns')).toBeTruthy();
 		expect(
