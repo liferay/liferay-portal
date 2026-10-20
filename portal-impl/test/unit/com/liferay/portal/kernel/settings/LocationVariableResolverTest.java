@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -181,14 +182,12 @@ public class LocationVariableResolverTest {
 	public void testResolveVariableWithServerProperty() {
 		String expectedValue = "test@liferay.com";
 
-		MemorySettings memorySettings = new MemorySettings();
-
-		memorySettings.setValue("admin.email.from.address", expectedValue);
-
 		Mockito.when(
 			_mockSettingsLocatorHelper.getServerSettings("com.liferay.portal")
 		).thenReturn(
-			memorySettings
+			new MockSettings(
+				Collections.singletonMap(
+					"admin.email.from.address", expectedValue))
 		);
 
 		Assert.assertEquals(

@@ -9,12 +9,14 @@ import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.LocalizationImpl;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -72,23 +74,21 @@ public class TypedSettingsTest {
 
 		localizationUtil.setLocalization(new LocalizationImpl());
 
-		ModifiableSettings modifiableSettings = new MemorySettings();
-
 		ReflectionTestUtil.setFieldValue(
 			JSONFactoryUtil.class, "_jsonFactory", new JSONFactoryImpl());
 
-		modifiableSettings.setValue(
-			_KEY,
-			JSONUtil.put(
-				"en_GB", "value_en_GB"
-			).put(
-				"en_US", "value_en_US"
-			).put(
-				"es_ES", "value_es_ES"
-			).toString());
-
 		_typedSettings = new TypedSettings(
-			modifiableSettings, _availableLocales);
+			new MockSettings(
+				Collections.singletonMap(
+					_KEY,
+					JSONUtil.put(
+						"en_GB", "value_en_GB"
+					).put(
+						"en_US", "value_en_US"
+					).put(
+						"es_ES", "value_es_ES"
+					).toString())),
+			_availableLocales);
 	}
 
 	private void _setUpPropertiesLocalizedValues() {
@@ -96,15 +96,18 @@ public class TypedSettingsTest {
 
 		localizationUtil.setLocalization(new LocalizationImpl());
 
-		ModifiableSettings modifiableSettings = new MemorySettings();
-
-		modifiableSettings.setValue(_KEY, "valueDefault");
-		modifiableSettings.setValue(_KEY + "_en_GB", "value_en_GB");
-		modifiableSettings.setValue(_KEY + "_en_US", "value_en_US");
-		modifiableSettings.setValue(_KEY + "_es_ES", "value_es_ES");
-
 		_typedSettings = new TypedSettings(
-			modifiableSettings, _availableLocales);
+			new MockSettings(
+				HashMapBuilder.put(
+					_KEY, "valueDefault"
+				).put(
+					_KEY + "_en_GB", "value_en_GB"
+				).put(
+					_KEY + "_en_US", "value_en_US"
+				).put(
+					_KEY + "_es_ES", "value_es_ES"
+				).build()),
+			_availableLocales);
 	}
 
 	private static final String _KEY = "key";
