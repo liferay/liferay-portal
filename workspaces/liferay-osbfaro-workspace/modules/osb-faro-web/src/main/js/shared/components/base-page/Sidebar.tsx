@@ -74,11 +74,14 @@ const Sidebar: React.FC<ISidebarProps> & {
 			return;
 		}
 
+		// The focus trap makes the backdrop inert, so a click on it lands on
+		// whichever of its ancestors is still hit testable.
+
 		const handleMouseDown = ({target}: MouseEvent) => {
 			if (
-				target === backdropRef.current ||
-				target === document.body ||
-				target === document.documentElement
+				target instanceof Node &&
+				backdropRef.current &&
+				target.contains(backdropRef.current)
 			) {
 				onOpenChange(false);
 			}

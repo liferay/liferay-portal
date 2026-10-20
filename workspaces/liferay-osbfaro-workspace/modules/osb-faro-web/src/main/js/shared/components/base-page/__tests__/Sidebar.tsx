@@ -27,6 +27,8 @@ const Panel = ({
 		<Provider store={mockStore()}>
 			<MemoryRouter>
 				<BasePage className="test-page" documentTitle="Test">
+					<div data-testid="page-content" />
+
 					<BasePage.Sidebar onOpenChange={onOpenChange} open={open}>
 						<button type="button">{'Inside'}</button>
 					</BasePage.Sidebar>
@@ -203,6 +205,26 @@ describe('BasePage.Sidebar', () => {
 		fireEvent.mouseDown(document.body);
 
 		expect(onOpenChange).toHaveBeenCalledWith(false);
+	});
+
+	it('closes when a click passes through the inert backdrop to the page', () => {
+		const onOpenChange = jest.fn();
+
+		render(<Panel onOpenChange={onOpenChange} open overlay />);
+
+		fireEvent.mouseDown(getPage()!);
+
+		expect(onOpenChange).toHaveBeenCalledWith(false);
+	});
+
+	it('stays open when the page content is clicked', () => {
+		const onOpenChange = jest.fn();
+
+		render(<Panel onOpenChange={onOpenChange} open overlay />);
+
+		fireEvent.mouseDown(screen.getByTestId('page-content'));
+
+		expect(onOpenChange).not.toHaveBeenCalled();
 	});
 
 	it('stays open when the panel itself is clicked', () => {
