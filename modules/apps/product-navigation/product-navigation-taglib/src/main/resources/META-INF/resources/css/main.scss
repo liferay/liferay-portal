@@ -24,6 +24,14 @@
 	.dropdown-item-indicator {
 		padding-right: 0.5rem;
 	}
+
+	.dropdown-section .dropdown-subheader {
+		padding: 0;
+
+		.lexicon-icon {
+			font-size: 1rem;
+		}
+	}
 }
 
 div.personal-menu-dropdown {

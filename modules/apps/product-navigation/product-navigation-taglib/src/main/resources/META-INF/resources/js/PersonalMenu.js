@@ -8,6 +8,7 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClaySticker from '@clayui/sticker';
+import {SideNavigationColorSchemeButton} from '@liferay/application-list-taglib';
 import {fetch, loadModule, sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
@@ -59,15 +60,20 @@ const defaultItems = [
 
 function PersonalMenu({
 	color,
+	colorSchemeSessionKey,
 	isImpersonated,
 	itemsURL,
 	label,
+	showColorSchemeButton,
 	size,
 	userName,
 	userPortraitURL,
 }) {
 	const [items, setItems] = useState(defaultItems);
+	const keyboardInteractionRef = useRef(false);
+	const pointerOpenRef = useRef(false);
 	const preloadPromiseRef = useRef();
+	const triggerRef = useRef(null);
 
 	function preloadItems() {
 		if (!preloadPromiseRef.current) {
@@ -79,28 +85,92 @@ function PersonalMenu({
 		}
 	}
 
+	// Clay moves the focus into the menu when it opens. Keep that for
+	// keyboard users, also when the items arrive after the menu is open, and
+	// give the focus back to the trigger when the menu was opened with a
+	// pointer, so the header button does not get focused and show its tooltip.
+
 	useEffect(() => {
-		if (preloadPromiseRef.current) {
-			const firstMenuItem = document.querySelector(
-				'.dropdown-menu-personal-menu [role=menuitem]'
+		if (preloadPromiseRef.current && keyboardInteractionRef.current) {
+			const firstElement = document.querySelector(
+				'.dropdown-menu-personal-menu button, .dropdown-menu-personal-menu [role=menuitem]'
 			);
-			firstMenuItem?.focus();
+
+			firstElement?.focus();
 		}
 	}, [items]);
 
+	const onActiveChange = (active) => {
+		pointerOpenRef.current = active && !keyboardInteractionRef.current;
+	};
+
+	const onHeaderFocus = () => {
+		if (pointerOpenRef.current) {
+			triggerRef.current?.focus();
+
+			pointerOpenRef.current = false;
+		}
+	};
+
+	// ClayDropDownWithItems only forwards function refs to the trigger.
+
+	const triggerProps = {
+		onFocus: preloadItems,
+		onKeyDown: () => {
+			keyboardInteractionRef.current = true;
+		},
+		onMouseOver: preloadItems,
+		onPointerDown: () => {
+			keyboardInteractionRef.current = false;
+		},
+		ref: (node) => {
+			triggerRef.current = node;
+		},
+	};
+
+	let headerContent;
+	let menuItems = items;
+
+	if (
+		showColorSchemeButton &&
+		Liferay.FeatureFlags['LPD-57922'] &&
+		items[0]?.type === 'group'
+	) {
+		const [{label: userLabel, ...firstGroup}, ...otherItems] = items;
+
+		headerContent = (
+			<div
+				className="align-items-center d-flex dropdown-subheader justify-content-between"
+				onFocus={onHeaderFocus}
+			>
+				{userLabel}
+
+				<SideNavigationColorSchemeButton
+					className="c-ml-2 c-mr-n1"
+					colorSchemeSessionKey={colorSchemeSessionKey}
+					size="xs"
+				/>
+			</div>
+		);
+
+		menuItems = [firstGroup, ...otherItems];
+	}
+
 	return (
 		<ClayDropDownWithItems
-			items={items}
+			headerContent={headerContent}
+			items={menuItems}
 			menuElementAttrs={{className: 'dropdown-menu-personal-menu'}}
+			onActiveChange={onActiveChange}
 			trigger={
 				label ? (
 					<div
+						{...triggerProps}
 						dangerouslySetInnerHTML={{__html: label}}
-						onFocus={preloadItems}
-						onMouseOver={preloadItems}
 					/>
 				) : (
 					<ClayButton
+						{...triggerProps}
 						aria-label={sub(
 							Liferay.Language.get('x-user-profile'),
 							userName
@@ -108,8 +178,6 @@ function PersonalMenu({
 						className="rounded-circle"
 						data-qa-id="userPersonalMenu"
 						displayType="unstyled"
-						onFocus={preloadItems}
-						onMouseOver={preloadItems}
 						title={Liferay.Language.get('user-profile-menu')}
 					>
 						<span
@@ -154,7 +222,9 @@ function PersonalMenu({
 }
 
 PersonalMenu.propTypes = {
+	colorSchemeSessionKey: PropTypes.string,
 	itemsURL: PropTypes.string,
+	showColorSchemeButton: PropTypes.bool,
 };
 
 export default PersonalMenu;
