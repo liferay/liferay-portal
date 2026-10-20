@@ -709,6 +709,42 @@ public class DLExportImportPortletPreferencesProcessorTest {
 				"selectedGroupExternalReferenceCode", null));
 	}
 
+	@Test
+	@TestInfo("LPD-109596")
+	public void testImportSelectedCompanyGroupWithoutRootFolder()
+		throws Exception {
+
+		String sourceCompanyGroupExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		_portletPreferences.setValue(
+			"selectedGroupExternalReferenceCode",
+			sourceCompanyGroupExternalReferenceCode);
+
+		PortletDataContext importPortletDataContext =
+			ExportImportTestUtil.getImportPortletDataContext(
+				_group.getCompanyId(), _group.getGroupId(),
+				new HashMap<String, String[]>(),
+				sourceCompanyGroupExternalReferenceCode);
+
+		importPortletDataContext.setPlid(_layout.getPlid());
+		importPortletDataContext.setPortletId(DLPortletKeys.DOCUMENT_LIBRARY);
+		importPortletDataContext.setSourceGroupId(TestPropsValues.getGroupId());
+
+		Map<String, String> portletPreferencesValues =
+			_getPortletPreferencesValues(
+				_exportImportPortletPreferencesProcessor.
+					processImportPortletPreferences(
+						importPortletDataContext, _portletPreferences));
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			_group.getCompanyId());
+
+		Assert.assertEquals(
+			companyGroup.getExternalReferenceCode(),
+			portletPreferencesValues.get("selectedGroupExternalReferenceCode"));
+	}
+
 	private String _addDLPortletToLayout(Group group, Layout layout)
 		throws Exception {
 
