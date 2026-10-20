@@ -38,6 +38,15 @@ public class CMSObjectDefinitionModelListenerTest {
 	public void testOnBeforeCreate() {
 		AssertUtils.assertFailure(
 			ModelListenerException.class,
+			ObjectDefinitionObjectFolderIdException.class.getName() +
+				": Custom object definitions must be in a CMS object folder",
+			() -> _cmsObjectDefinitionModelListener.onBeforeCreate(
+				_mockObjectDefinition(
+					RandomTestUtil.randomString(), 1,
+					ObjectDefinitionConstants.SCOPE_DEPOT,
+					WorkflowConstants.STATUS_DRAFT, false)));
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
 			ObjectDefinitionScopeException.class.getName() +
 				": Custom object definitions must have scope \"depot\"",
 			() -> _cmsObjectDefinitionModelListener.onBeforeCreate(
@@ -55,15 +64,6 @@ public class CMSObjectDefinitionModelListenerTest {
 					RandomTestUtil.randomString(), 1,
 					ObjectDefinitionConstants.SCOPE_SITE,
 					WorkflowConstants.STATUS_EMPTY, false)));
-		AssertUtils.assertFailure(
-			ModelListenerException.class,
-			ObjectDefinitionObjectFolderIdException.class.getName() +
-				": Custom object definitions must be in a CMS object folder",
-			() -> _cmsObjectDefinitionModelListener.onBeforeCreate(
-				_mockObjectDefinition(
-					RandomTestUtil.randomString(), 1,
-					ObjectDefinitionConstants.SCOPE_DEPOT,
-					WorkflowConstants.STATUS_DRAFT, false)));
 
 		_cmsObjectDefinitionModelListener.onBeforeCreate(
 			_mockObjectDefinition(
@@ -114,9 +114,6 @@ public class CMSObjectDefinitionModelListenerTest {
 	@Test
 	@TestInfo("LPD-110251")
 	public void testOnBeforeUpdate() {
-		String objectFolderExternalReferenceCode =
-			RandomTestUtil.randomString();
-
 		AssertUtils.assertFailure(
 			ModelListenerException.class,
 			ObjectDefinitionObjectFolderIdException.class.getName() +
@@ -131,6 +128,10 @@ public class CMSObjectDefinitionModelListenerTest {
 					RandomTestUtil.randomString(), 2,
 					ObjectDefinitionConstants.SCOPE_DEPOT,
 					WorkflowConstants.STATUS_APPROVED, false)));
+
+		String objectFolderExternalReferenceCode =
+			RandomTestUtil.randomString();
+
 		AssertUtils.assertFailure(
 			ModelListenerException.class,
 			ObjectDefinitionObjectFolderIdException.class.getName() +
@@ -144,6 +145,7 @@ public class CMSObjectDefinitionModelListenerTest {
 					objectFolderExternalReferenceCode, 1,
 					ObjectDefinitionConstants.SCOPE_DEPOT,
 					WorkflowConstants.STATUS_DRAFT, false)));
+
 		AssertUtils.assertFailure(
 			ModelListenerException.class,
 			ObjectDefinitionScopeException.class.getName() +
@@ -209,6 +211,7 @@ public class CMSObjectDefinitionModelListenerTest {
 				objectFolderExternalReferenceCode, 1,
 				ObjectDefinitionConstants.SCOPE_DEPOT,
 				WorkflowConstants.STATUS_EMPTY, false));
+
 		_cmsObjectDefinitionModelListener.onBeforeUpdate(
 			_mockObjectDefinition(
 				objectFolderExternalReferenceCode, 1,
@@ -218,6 +221,7 @@ public class CMSObjectDefinitionModelListenerTest {
 				objectFolderExternalReferenceCode, 1,
 				ObjectDefinitionConstants.SCOPE_DEPOT,
 				WorkflowConstants.STATUS_APPROVED, false));
+
 		_cmsObjectDefinitionModelListener.onBeforeUpdate(
 			_mockObjectDefinition(
 				RandomTestUtil.randomString(), 1,
