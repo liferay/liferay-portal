@@ -440,12 +440,6 @@ public class CommercePaymentServlet extends HttpServlet {
 					httpServletRequest, commercePaymentEntry);
 			}
 
-			String token = ParamUtil.getString(httpServletRequest, "token");
-
-			if (!Validator.isBlank(token)) {
-				commercePaymentEntry.setTransactionCode(token);
-			}
-
 			if (commercePaymentEntry.getPaymentStatus() ==
 					CommercePaymentEntryConstants.STATUS_CREATED) {
 
