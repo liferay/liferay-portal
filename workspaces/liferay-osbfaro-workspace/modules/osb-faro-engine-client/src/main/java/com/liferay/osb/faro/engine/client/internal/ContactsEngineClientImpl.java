@@ -2346,6 +2346,28 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
+	public long getDataSourceMetricsCampaignsCount(
+		FaroProject faroProject, String dataSourceId) {
+
+		RestTemplate restTemplate = getRestTemplate(faroProject);
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject);
+
+		uriVariables.put("dataSourceId", dataSourceId);
+
+		ResponseEntity<Long> responseEntity = restTemplate.exchange(
+			getTemplatedURL(
+				faroProject, Rels.DATA_SOURCE_METRICS_CAMPAIGNS_COUNT),
+			HttpMethod.GET, HttpEntity.EMPTY, Long.class, uriVariables);
+
+		if (responseEntity.getBody() == null) {
+			return 0L;
+		}
+
+		return responseEntity.getBody();
+	}
+
+	@Override
 	public long getDataSourceMetricsEventsCount(
 		FaroProject faroProject, String dataSourceId) {
 

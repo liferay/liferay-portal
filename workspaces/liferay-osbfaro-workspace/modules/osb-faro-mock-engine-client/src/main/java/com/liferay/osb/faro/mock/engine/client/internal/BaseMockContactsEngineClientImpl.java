@@ -889,6 +889,14 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
+	public long getDataSourceMetricsCampaignsCount(
+		FaroProject faroProject, String dataSourceId) {
+
+		return contactsEngineClient.getDataSourceMetricsCampaignsCount(
+			faroProject, dataSourceId);
+	}
+
+	@Override
 	public long getDataSourceMetricsEventsCount(
 		FaroProject faroProject, String dataSourceId) {
 

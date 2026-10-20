@@ -43,6 +43,21 @@ public class DataSourceMetricsFaroController extends BaseFaroController {
 	}
 
 	@GET
+	@Path("/{dataSourceId}/campaigns_count")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public Long getCampaignsCount(
+			@PathParam("groupId") long groupId,
+			@PathParam("dataSourceId") String dataSourceId)
+		throws Exception {
+
+		FaroProject faroProject =
+			faroProjectLocalService.getFaroProjectByGroupId(groupId);
+
+		return contactsEngineClient.getDataSourceMetricsCampaignsCount(
+			faroProject, dataSourceId);
+	}
+
+	@GET
 	@Path("/{dataSourceId}/events_count")
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public Long getEventsCount(

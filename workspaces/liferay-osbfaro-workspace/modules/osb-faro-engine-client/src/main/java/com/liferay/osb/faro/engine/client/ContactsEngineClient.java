@@ -451,6 +451,9 @@ public interface ContactsEngineClient {
 	public long getDataSourceMetricsAccountsCount(
 		FaroProject faroProject, String dataSourceId);
 
+	public long getDataSourceMetricsCampaignsCount(
+		FaroProject faroProject, String dataSourceId);
+
 	public long getDataSourceMetricsEventsCount(
 		FaroProject faroProject, String dataSourceId);
 
