@@ -17,11 +17,7 @@ function addOpenSelectionModalEvent({namespace, url}) {
 }
 
 function openSelectionModal({namespace, url}) {
-	const openerWindow = Liferay.Util.getOpener();
-
-	openerWindow.originalOpenerLiferay = Liferay;
-
-	return openerWindow.Liferay.Util.openModal({
+	return Liferay.Util.openModal({
 		buttons: [
 			{
 				displayType: 'secondary',
