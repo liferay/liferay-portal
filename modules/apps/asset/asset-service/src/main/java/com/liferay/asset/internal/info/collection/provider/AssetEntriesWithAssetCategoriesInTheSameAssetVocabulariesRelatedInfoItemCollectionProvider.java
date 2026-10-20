@@ -104,7 +104,7 @@ public class
 
 		try {
 			AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-				assetCategories, collectionQuery, _getGroupIds(assetEntry));
+				assetCategories, collectionQuery, _getGroupIds());
 
 			SearchContext searchContext = _getSearchContext(assetEntry);
 
@@ -255,20 +255,11 @@ public class
 			serviceContext.getCompanyId(), true);
 	}
 
-	private long[] _getGroupIds(AssetEntry assetEntry) throws PortalException {
+	private long[] _getGroupIds() throws PortalException {
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
 		long scopeGroupId = serviceContext.getScopeGroupId();
-
-		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
-			assetEntry.getGroupId());
-
-		if ((depotEntry == null) ||
-			(depotEntry.getType() != DepotConstants.TYPE_SPACE)) {
-
-			return new long[] {scopeGroupId};
-		}
 
 		return ArrayUtil.append(
 			new long[] {scopeGroupId},
