@@ -229,11 +229,10 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 
 		result = _populateFlags(statement, result);
 
+		Map<String, Object> map = _convertObjectToMap(result, null, statement);
+
 		String name = variableStatement.getName();
-
 		Object variableResult = _executeStatement(variableStatement);
-
-		Map<String, Object> map = _convertObjectToMap(statement, result, null);
 
 		if (!variableStatement.isInner()) {
 			map.put(name.substring(1), variableResult);
@@ -261,7 +260,7 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 
 			for (Object innerListElement : innerList) {
 				Map<String, Object> newInnerListElement = _convertObjectToMap(
-					statement, innerListElement, innerObjectName);
+					innerListElement, innerObjectName, statement);
 
 				newInnerListElement.put(innerPropertyName, variableResult);
 
@@ -272,7 +271,7 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 		}
 		else {
 			Map<String, Object> innerMap = _convertObjectToMap(
-				statement, innerObject, innerObjectName);
+				innerObject, innerObjectName, statement);
 
 			innerMap.put(innerPropertyName, variableResult);
 
@@ -351,7 +350,7 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 	}
 
 	private Map<String, Object> _convertObjectToMap(
-		Statement statement, Object object, String prefix) {
+		Object object, String prefix, Statement statement) {
 
 		if (object instanceof Map) {
 			return (Map<String, Object>)object;
@@ -360,13 +359,11 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 		Map<String, Object> map = _toJSONMap(object);
 
 		for (String name : map.keySet()) {
-			String include = name;
-
 			if (prefix != null) {
-				include = prefix + "." + name;
+				name = prefix + StringPool.PERIOD + name;
 			}
 
-			_addInclude(statement, include);
+			_addInclude(statement, name);
 		}
 
 		return map;
@@ -458,7 +455,7 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 			return result;
 		}
 
-		Map<String, Object> map = _convertObjectToMap(statement, result, null);
+		Map<String, Object> map = _convertObjectToMap(result, null, statement);
 
 		Map<String, Object> whitelistMap = new HashMap<>();
 
@@ -657,9 +654,8 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 			return null;
 		}
 
-		Map<String, Object> map = _toJSONMap(object);
-
 		int index = propertyName.indexOf(CharPool.PERIOD);
+		Map<String, Object> map = _toJSONMap(object);
 
 		if (index == -1) {
 			return map.get(propertyName);
