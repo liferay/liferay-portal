@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsException;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 
@@ -22,8 +21,8 @@ import jakarta.portlet.ValidatorException;
 
 import java.io.IOException;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,8 +39,8 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 
 	protected abstract Set<String> getLegacyPropertyKeys();
 
-	protected Dictionary<String, String> getPropertyValues(long companyId) {
-		Dictionary<String, String> dictionary = new HashMapDictionary<>();
+	protected Map<String, String> getPropertyValues(long companyId) {
+		Map<String, String> map = new HashMap<>();
 
 		for (String[] renamePropertykeys : getRenamePropertyKeysArray()) {
 			String propertyValue = PrefsPropsUtil.getString(
@@ -51,10 +50,10 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 				continue;
 			}
 
-			dictionary.put(renamePropertykeys[1], propertyValue);
+			map.put(renamePropertykeys[1], propertyValue);
 		}
 
-		return dictionary;
+		return map;
 	}
 
 	protected String[][] getRenamePropertyKeysArray() {
@@ -64,8 +63,7 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 	protected abstract String getSettingsId();
 
 	protected void storeSettings(
-			long companyId, String settingsId,
-			Dictionary<String, String> dictionary)
+			long companyId, String settingsId, Map<String, String> map)
 		throws IOException, SettingsException, ValidatorException {
 
 		Settings settings = FallbackKeysSettingsUtil.getSettings(
@@ -74,12 +72,10 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 		ModifiableSettings modifiableSettings =
 			settings.getModifiableSettings();
 
-		Enumeration<String> enumeration = dictionary.keys();
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			String name = entry.getKey();
 
-		while (enumeration.hasMoreElements()) {
-			String name = enumeration.nextElement();
-
-			String value = dictionary.get(name);
+			String value = entry.getValue();
 
 			String oldValue = settings.getValue(name, null);
 
@@ -99,11 +95,10 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 
 			companyLocalService.forEachCompanyId(
 				companyId -> {
-					Dictionary<String, String> dictionary = getPropertyValues(
-						companyId);
+					Map<String, String> map = getPropertyValues(companyId);
 
-					if (!dictionary.isEmpty()) {
-						storeSettings(companyId, getSettingsId(), dictionary);
+					if (!map.isEmpty()) {
+						storeSettings(companyId, getSettingsId(), map);
 					}
 
 					Set<String> keys = getLegacyPropertyKeys();

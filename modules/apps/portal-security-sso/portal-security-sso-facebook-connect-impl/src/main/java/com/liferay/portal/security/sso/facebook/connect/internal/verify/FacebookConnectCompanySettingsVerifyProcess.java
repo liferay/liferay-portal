@@ -15,7 +15,7 @@ import com.liferay.portal.security.sso.facebook.connect.constants.LegacyFacebook
 import com.liferay.portal.verify.BaseCompanySettingsVerifyProcess;
 import com.liferay.portal.verify.VerifyProcess;
 
-import java.util.Dictionary;
+import java.util.Map;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -40,20 +40,19 @@ public class FacebookConnectCompanySettingsVerifyProcess
 	}
 
 	@Override
-	protected Dictionary<String, String> getPropertyValues(long companyId) {
-		Dictionary<String, String> dictionary = super.getPropertyValues(
-			companyId);
+	protected Map<String, String> getPropertyValues(long companyId) {
+		Map<String, String> map = super.getPropertyValues(companyId);
 
 		String oauthRedirectURL = _prefsProps.getString(
 			companyId, LegacyFacebookConnectPropsKeys.OAUTH_REDIRECT_URL);
 
 		if (oauthRedirectURL != null) {
-			dictionary.put(
+			map.put(
 				FacebookConnectConfigurationKeys.OAUTH_REDIRECT_URL,
 				_upgradeLegacyRedirectURI(oauthRedirectURL));
 		}
 
-		return dictionary;
+		return map;
 	}
 
 	@Override
