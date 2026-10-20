@@ -59,6 +59,9 @@ public class PublishProcessDisplayContext {
 			"privateLayoutsAvailable",
 			_publishSourceGroup.isPrivateLayoutsEnabled() &&
 			_publishSourceGroup.hasPrivateLayouts()
+		).put(
+			"siteExternalReferenceCode",
+			_publishSourceGroup.getExternalReferenceCode()
 		).build();
 	}
 

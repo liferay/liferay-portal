@@ -235,6 +235,8 @@ public class ExportImportProcessDisplayContext {
 			"privateLayoutsAvailable",
 			!_staticSite && !liveGroup.isLayoutSetPrototype() &&
 			liveGroup.isPrivateLayoutsEnabled() && liveGroup.hasPrivateLayouts()
+		).put(
+			"siteExternalReferenceCode", liveGroup.getExternalReferenceCode()
 		).build();
 	}
 

@@ -8,6 +8,7 @@ import {
 	PortletDataHandler,
 	PortletDataHandlerControl,
 	PortletDataHandlerSection,
+	PortletDataHandlerTreeSelection,
 } from '../types/portletDataHandler';
 import {
 	CHOICE_NAME_PRIVATE_PAGES,
@@ -18,6 +19,7 @@ import {
 	PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS,
 	PortletDataHandlerSelection,
 	getNestedPortletDataHandlerControls,
+	isAllLayoutsSelected,
 } from './contentSelection';
 
 export function toPortletDataHandlers(
@@ -76,6 +78,34 @@ export function toPortletDataHandlers(
 	return portletDataHandlers;
 }
 
+export function toPortletDataHandlerTreeSelection(
+	layoutSetSelection: LayoutSetSelection
+): Partial<PortletDataHandlerTreeSelection> {
+	if (isAllLayoutsSelected(layoutSetSelection)) {
+		return {};
+	}
+
+	const {
+		all = false,
+		excludedItems,
+		excludedSubtrees,
+		items,
+		subtrees,
+	} = layoutSetSelection;
+
+	return {
+		...(excludedItems?.length && {
+			excludedItemExternalReferenceCodes: excludedItems,
+		}),
+		...(excludedSubtrees?.length && {
+			excludedSubtreeExternalReferenceCodes: excludedSubtrees,
+		}),
+		...(items?.length && {itemExternalReferenceCodes: items}),
+		selectAll: all,
+		...(subtrees?.length && {subtreeExternalReferenceCodes: subtrees}),
+	};
+}
+
 function toLayoutSetPortletDataHandler(
 	portletDataHandler: PortletDataHandler,
 	portletDataHandlerSelection: PortletDataHandlerSelection
@@ -83,10 +113,11 @@ function toLayoutSetPortletDataHandler(
 	const layoutSetSelection = (
 		typeof portletDataHandlerSelection === 'object'
 			? portletDataHandlerSelection
-			: {}
+			: {all: true}
 	) as LayoutSetSelection;
 
 	const pagesPortletDataHandlerControl: PortletDataHandlerControl = {
+		...toPortletDataHandlerTreeSelection(layoutSetSelection),
 		name: CONTROL_NAME_PAGES,
 		selected: true,
 		type: 'TreeSelection',

@@ -56,7 +56,26 @@ function toLayoutSetSelection(
 		visibilityPortletDataHandlerControl.choice ===
 			CHOICE_NAME_PRIVATE_PAGES;
 
-	return {privateLayout};
+	if (pagesPortletDataHandlerControl?.type !== 'TreeSelection') {
+		return {all: true, privateLayout};
+	}
+
+	const {
+		excludedItemExternalReferenceCodes: excludedItems,
+		excludedSubtreeExternalReferenceCodes: excludedSubtrees,
+		itemExternalReferenceCodes: items,
+		selectAll: all = true,
+		subtreeExternalReferenceCodes: subtrees,
+	} = pagesPortletDataHandlerControl;
+
+	return {
+		...(all && {all: true}),
+		...(excludedItems?.length && {excludedItems}),
+		...(excludedSubtrees?.length && {excludedSubtrees}),
+		...(items?.length && {items}),
+		privateLayout,
+		...(subtrees?.length && {subtrees}),
+	};
 }
 
 function toPortletDataHandlerSelection(

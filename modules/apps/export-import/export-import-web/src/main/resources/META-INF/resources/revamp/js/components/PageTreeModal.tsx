@@ -21,11 +21,15 @@ export interface PageTreeModalConfiguration {
 	groupId: number;
 	pageSize: number;
 	privateLayoutsAvailable: boolean;
+	siteExternalReferenceCode: string;
 	title?: string;
 }
 
 interface Props
-	extends Omit<PageTreeModalConfiguration, 'privateLayoutsAvailable'> {
+	extends Omit<
+		PageTreeModalConfiguration,
+		'privateLayoutsAvailable' | 'siteExternalReferenceCode'
+	> {
 	initialAll?: boolean;
 	initialSelectedIds: string[];
 	onClose: () => void;

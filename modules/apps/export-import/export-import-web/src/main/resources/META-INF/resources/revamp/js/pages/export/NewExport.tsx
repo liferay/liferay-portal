@@ -178,9 +178,10 @@ export function NewExport({
 							)}
 							loading={loading}
 							onApplyFilter={handleApplyFilter}
-							pageTreeModalConfiguration={
-								pageTreeModalConfiguration
-							}
+							pageTreeModalConfiguration={{
+								...pageTreeModalConfiguration,
+								title: Liferay.Language.get('pages-to-export'),
+							}}
 							permissionsDescription={Liferay.Language.get(
 								'export-import-permissions-help'
 							)}
