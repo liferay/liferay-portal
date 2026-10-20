@@ -162,7 +162,7 @@ public class JournalArticleServiceTest {
 	@Test
 	public void testAddArticleDefaultValues() throws Exception {
 		_testAddArticleDefaultValuesWithInvalidClassNameId();
-		_testAddArticleDefaultValuesWithNoPermissions();
+		_testAddArticleDefaultValuesWithoutUpdatePermission();
 	}
 
 	@Test(expected = StorageFieldRequiredException.class)
@@ -279,7 +279,7 @@ public class JournalArticleServiceTest {
 		_testDeleteArticleDefaultValues();
 		_testDeleteArticleDefaultValuesWithInvalidArticle();
 		_testDeleteArticleDefaultValuesWithInvalidDDMStructureId();
-		_testDeleteArticleDefaultValuesWithNoPermissions();
+		_testDeleteArticleDefaultValuesWithoutUpdatePermission();
 	}
 
 	@Test
@@ -1257,7 +1257,7 @@ public class JournalArticleServiceTest {
 	public void testUpdateArticleDefaultValues() throws Exception {
 		_testUpdateArticleDefaultValues();
 		_testUpdateArticleDefaultValuesWithInvalidArticle();
-		_testUpdateArticleDefaultValuesWithNoPermissions();
+		_testUpdateArticleDefaultValuesWithoutUpdatePermission();
 	}
 
 	@Test
@@ -1580,7 +1580,7 @@ public class JournalArticleServiceTest {
 		}
 	}
 
-	private void _assertThrowsPrincipalException(
+	private void _assertThrowsPrincipalExceptionWithoutUpdatePermission(
 			DDMStructure ddmStructure, ThrowingRunnable throwingRunnable)
 		throws Exception {
 
@@ -1649,13 +1649,13 @@ public class JournalArticleServiceTest {
 			_journalArticleLocalService.getArticlesCount(_group.getGroupId()));
 	}
 
-	private void _testAddArticleDefaultValuesWithNoPermissions()
+	private void _testAddArticleDefaultValuesWithoutUpdatePermission()
 		throws Exception {
 
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
 
-		_assertThrowsPrincipalException(
+		_assertThrowsPrincipalExceptionWithoutUpdatePermission(
 			ddmStructure,
 			() -> _addArticleDefaultValues(
 				PortalUtil.getClassNameId(DDMStructure.class),
@@ -1715,14 +1715,14 @@ public class JournalArticleServiceTest {
 				_group.getGroupId(), journalArticle.getArticleId()));
 	}
 
-	private void _testDeleteArticleDefaultValuesWithNoPermissions()
+	private void _testDeleteArticleDefaultValuesWithoutUpdatePermission()
 		throws Exception {
 
 		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
 			TestPropsValues.getUserId(), _group.getGroupId(),
 			RandomTestUtil.randomString());
 
-		_assertThrowsPrincipalException(
+		_assertThrowsPrincipalExceptionWithoutUpdatePermission(
 			journalArticle.getDDMStructure(),
 			() -> _deleteArticleDefaultValues(
 				journalArticle.getArticleId(),
@@ -1758,13 +1758,13 @@ public class JournalArticleServiceTest {
 			"Version 1", _article.getTitle(LocaleUtil.getDefault()));
 	}
 
-	private void _testUpdateArticleDefaultValuesWithNoPermissions()
+	private void _testUpdateArticleDefaultValuesWithoutUpdatePermission()
 		throws Exception {
 
 		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
 			TestPropsValues.getUserId(), _group.getGroupId(), "Title");
 
-		_assertThrowsPrincipalException(
+		_assertThrowsPrincipalExceptionWithoutUpdatePermission(
 			journalArticle.getDDMStructure(),
 			() -> _updateArticleDefaultValues(journalArticle));
 
