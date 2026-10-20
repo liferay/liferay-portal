@@ -117,6 +117,24 @@ describe('openCMSFileSelectorModal', () => {
 		expect(options[1]).toHaveTextContent('table');
 	});
 
+	it('opens without a group and lists the files', async () => {
+		openModal({
+			onSelect: jest.fn(),
+		});
+
+		await screen.findByRole('dialog');
+
+		await waitFor(() => {
+			expect(getDecodedSearchURLs().length).toBeGreaterThan(0);
+		});
+
+		expect(
+			mockedFetch.mock.calls.every(
+				([url]) => !url?.toString?.().includes('undefined')
+			)
+		).toBe(true);
+	});
+
 	it('fetches with a folder-inclusive root filter', async () => {
 		openModal({
 			groupId: 123,
