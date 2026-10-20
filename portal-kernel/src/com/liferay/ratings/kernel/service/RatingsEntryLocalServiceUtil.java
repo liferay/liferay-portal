@@ -252,18 +252,6 @@ public class RatingsEntryLocalServiceUtil {
 		return getService().getEntries(className, classPK);
 	}
 
-	public static List<RatingsEntry> getEntries(
-		String className, long classPK, double score) {
-
-		return getService().getEntries(className, classPK, score);
-	}
-
-	public static int getEntriesCount(
-		String className, long classPK, double score) {
-
-		return getService().getEntriesCount(className, classPK, score);
-	}
-
 	public static RatingsEntry getEntry(
 			long userId, String className, long classPK)
 		throws PortalException {
@@ -390,4 +378,4 @@ public class RatingsEntryLocalServiceUtil {
 	private static volatile RatingsEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1767854303
+// LIFERAY-SERVICE-BUILDER-HASH:587787003

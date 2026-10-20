@@ -241,13 +241,6 @@ public interface RatingsEntryLocalService
 	public List<RatingsEntry> getEntries(String className, long classPK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<RatingsEntry> getEntries(
-		String className, long classPK, double score);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getEntriesCount(String className, long classPK, double score);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public RatingsEntry getEntry(long userId, String className, long classPK)
 		throws PortalException;
 
@@ -352,4 +345,4 @@ public interface RatingsEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:463923618
+// LIFERAY-SERVICE-BUILDER-HASH:668661917

@@ -281,19 +281,6 @@ public class RatingsEntryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<RatingsEntry> getEntries(
-		String className, long classPK, double score) {
-
-		return _ratingsEntryLocalService.getEntries(className, classPK, score);
-	}
-
-	@Override
-	public int getEntriesCount(String className, long classPK, double score) {
-		return _ratingsEntryLocalService.getEntriesCount(
-			className, classPK, score);
-	}
-
-	@Override
 	public RatingsEntry getEntry(long userId, String className, long classPK)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -460,4 +447,4 @@ public class RatingsEntryLocalServiceWrapper
 	private RatingsEntryLocalService _ratingsEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2123119885
+// LIFERAY-SERVICE-BUILDER-HASH:1558973665
