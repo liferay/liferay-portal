@@ -85,7 +85,17 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public String getBaseBranchSHA() {
-		return getString("base_branch_sha");
+		String baseBranchSHA = optString("base_branch_sha");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(baseBranchSHA)) {
+			return baseBranchSHA;
+		}
+
+		if (_isPullRequest() || _isRebase()) {
+			return _getBaseBranchHeadSHA();
+		}
+
+		return getSenderBranchSHA();
 	}
 
 	@Override
@@ -224,7 +234,13 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public String getSenderBranchSHA() {
-		return getString("sender_branch_sha");
+		String senderBranchSHA = optString("sender_branch_sha");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(senderBranchSHA)) {
+			return senderBranchSHA;
+		}
+
+		return _getSenderBranchHeadSHA();
 	}
 
 	@Override
@@ -305,8 +321,9 @@ public abstract class BaseWorkspaceGitRepository
 
 		_setBaseBranchUsername(username);
 		setUsePullRequestBaseRepository(true);
-
 		_upstreamRemoteGitRef = null;
+
+		_updateRemoteGitRefs();
 	}
 
 	@Override
@@ -320,7 +337,7 @@ public abstract class BaseWorkspaceGitRepository
 			throw new RuntimeException("GitHub URL is null");
 		}
 
-		if (gitHubURL.equals(optString("git_hub_url")) && !_rebase) {
+		if (gitHubURL.equals(optString("git_hub_url")) && !_isRebase()) {
 			return;
 		}
 
@@ -328,52 +345,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		_setGitHubURL(gitHubURL);
 
-		if (PullRequest.isValidGitHubPullRequestURL(gitHubURL)) {
-			PullRequest pullRequest = PullRequestFactory.newPullRequest(
-				gitHubURL);
-
-			if (_isUsePullRequestBaseRepository()) {
-				_upstreamRemoteGitRef = _getUpstreamRemoteGitRef();
-			}
-			else {
-				_upstreamRemoteGitRef =
-					pullRequest.getUpstreamRemoteGitBranch();
-			}
-
-			_setBaseBranchHeadSHA(_upstreamRemoteGitRef.getSHA());
-			setBaseBranchSHA(_upstreamRemoteGitRef.getSHA());
-			_setBaseBranchUsername(_upstreamRemoteGitRef.getUsername());
-
-			_senderRemoteGitRef = pullRequest.getSenderRemoteGitBranch();
-
-			_setSenderBranchHeadSHA(_senderRemoteGitRef.getSHA());
-			_setSenderBranchName(_senderRemoteGitRef.getName());
-			setSenderBranchSHA(_senderRemoteGitRef.getSHA());
-			_setSenderBranchUsername(_senderRemoteGitRef.getUsername());
-		}
-		else if (GitUtil.isValidGitHubRefURL(gitHubURL)) {
-			_upstreamRemoteGitRef = _getUpstreamRemoteGitRef();
-
-			_setBaseBranchHeadSHA(_upstreamRemoteGitRef.getSHA());
-			setBaseBranchSHA(_upstreamRemoteGitRef.getSHA());
-			_setBaseBranchUsername(_upstreamRemoteGitRef.getUsername());
-
-			_senderRemoteGitRef = GitUtil.getRemoteGitRef(gitHubURL);
-
-			_setSenderBranchHeadSHA(_senderRemoteGitRef.getSHA());
-			_setSenderBranchName(_senderRemoteGitRef.getName());
-			setSenderBranchSHA(_senderRemoteGitRef.getSHA());
-			_setSenderBranchUsername(_senderRemoteGitRef.getUsername());
-
-			if (_rebase) {
-				_setBaseBranchHeadSHA(_upstreamRemoteGitRef.getSHA());
-				setBaseBranchSHA(_upstreamRemoteGitRef.getSHA());
-				_setBaseBranchUsername(_upstreamRemoteGitRef.getUsername());
-			}
-		}
-		else {
-			throw new RuntimeException("Invalid GitHub URL " + gitHubURL);
-		}
+		_updateRemoteGitRefs();
 
 		validateKeys(_REQUIRED_KEYS);
 
@@ -387,7 +359,7 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public void setRebase(boolean rebase) {
-		_rebase = rebase;
+		put("rebase", rebase);
 	}
 
 	@Override
@@ -398,10 +370,6 @@ public abstract class BaseWorkspaceGitRepository
 		}
 
 		put("sender_branch_sha", branchSHA);
-
-		if (!_isPullRequest()) {
-			setBaseBranchSHA(branchSHA);
-		}
 	}
 
 	@Override
@@ -760,7 +728,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
 
-		if (_rebase) {
+		if (_isRebase()) {
 			gitWorkingDirectory.createLocalGitBranch(
 				getUpstreamBranchName(), true, getBaseBranchSHA());
 		}
@@ -773,7 +741,7 @@ public abstract class BaseWorkspaceGitRepository
 			gitWorkingDirectory.createLocalGitBranch(
 				getUpstreamBranchName(), true, getBaseBranchSHA());
 
-		if (_rebase) {
+		if (_isRebase()) {
 			gitWorkingDirectory.rebase(
 				true, baseLocalGitBranch, localGitBranch);
 		}
@@ -1516,6 +1484,10 @@ public abstract class BaseWorkspaceGitRepository
 		return PullRequest.isValidGitHubPullRequestURL(getGitHubURL());
 	}
 
+	private boolean _isRebase() {
+		return getBoolean("rebase");
+	}
+
 	private boolean _isUsePullRequestBaseRepository() {
 		return getBoolean("use_pull_request_base_repository");
 	}
@@ -1558,12 +1530,43 @@ public abstract class BaseWorkspaceGitRepository
 		put("sender_branch_username", username);
 	}
 
+	private void _updateRemoteGitRefs() {
+		String gitHubURL = getGitHubURL();
+
+		if (PullRequest.isValidGitHubPullRequestURL(gitHubURL)) {
+			PullRequest pullRequest = PullRequestFactory.newPullRequest(
+				gitHubURL);
+
+			if (_isUsePullRequestBaseRepository()) {
+				_upstreamRemoteGitRef = _getUpstreamRemoteGitRef();
+			}
+			else {
+				_upstreamRemoteGitRef =
+					pullRequest.getUpstreamRemoteGitBranch();
+			}
+
+			_senderRemoteGitRef = pullRequest.getSenderRemoteGitBranch();
+		}
+		else if (GitUtil.isValidGitHubRefURL(gitHubURL)) {
+			_upstreamRemoteGitRef = _getUpstreamRemoteGitRef();
+			_senderRemoteGitRef = GitUtil.getRemoteGitRef(gitHubURL);
+		}
+		else {
+			throw new RuntimeException("Invalid GitHub URL " + gitHubURL);
+		}
+
+		_setBaseBranchHeadSHA(_upstreamRemoteGitRef.getSHA());
+		_setBaseBranchUsername(_upstreamRemoteGitRef.getUsername());
+		_setSenderBranchHeadSHA(_senderRemoteGitRef.getSHA());
+		_setSenderBranchName(_senderRemoteGitRef.getName());
+		_setSenderBranchUsername(_senderRemoteGitRef.getUsername());
+	}
+
 	private static final int _MAX_BASE_BRANCH_SHA_LENGTH = 7;
 
 	private static final String[] _REQUIRED_KEYS = {
-		"base_branch_head_sha", "base_branch_sha", "base_branch_username",
-		"git_hub_url", "sender_branch_head_sha", "sender_branch_name",
-		"sender_branch_sha", "sender_branch_username"
+		"base_branch_head_sha", "base_branch_username", "git_hub_url",
+		"sender_branch_head_sha", "sender_branch_name", "sender_branch_username"
 	};
 
 	private String _branchName;
@@ -1572,7 +1575,6 @@ public abstract class BaseWorkspaceGitRepository
 	private LocalGitBranch _localGitBranch;
 	private List<String> _patchSHAs;
 	private final Set<String> _propertyOptions = new HashSet<>();
-	private boolean _rebase;
 	private RemoteGitRef _senderRemoteGitRef;
 	private boolean _setUp;
 	private boolean _snapshot;
