@@ -6114,6 +6114,15 @@
 		"to": "fetchLayoutPageTemplateEntry(param#0#, 0L, param#1#, param#2#)"
 	},
 	{
+		"classNames": [
+			"CommerceVirtualOrderItemLocalService",
+			"CommerceVirtualOrderItemLocalServiceUtil"
+		],
+		"from": "regex:(?<variableName>\\w+)\\.addCommerceVirtualOrderItem\\(\\s*(?<commerceOrderItemId>[\\w.]+(?:\\(\\))?),\\s*(?<cpDefinitionVirtualSetting>\\w+)\\.getFileEntryId\\(\\),\\s*\\k<cpDefinitionVirtualSetting>\\.getUrl\\(\\),\\s*(?<activationStatus>[\\w.]+(?:\\(\\))?),\\s*(?<duration>[\\w.]+(?:\\(\\))?),\\s*(?<usages>[\\w.]+(?:\\(\\))?),\\s*(?<maxUsages>[\\w.]+(?:\\(\\))?),\\s*(?<serviceContext>[\\w.]+(?:\\(\\))?)\\s*\\)",
+		"issueKey": "LPD-99286",
+		"to": "${variableName}.addCommerceVirtualOrderItem(${commerceOrderItemId}, ${cpDefinitionVirtualSetting}.getCPDVirtualSettingFileEntries(), ${activationStatus}, ${duration}, ${maxUsages}, ${serviceContext})"
+	},
+	{
 		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_BATCH_PLANNER",
 		"issueKey": "LPD-100257",
 		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DEVELOPER_INTEGRATION",

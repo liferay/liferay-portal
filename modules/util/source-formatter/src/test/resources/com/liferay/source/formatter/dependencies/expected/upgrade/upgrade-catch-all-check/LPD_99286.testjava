@@ -1,0 +1,32 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Micaelle Silva
+ */
+public class LPD_99286 {
+
+	public void method(
+		long commerceOrderItemId,
+		CPDefinitionVirtualSetting cpDefinitionVirtualSetting,
+		int activationStatus, long duration, int usages, int maxUsages,
+		ServiceContext serviceContext) {
+
+		CommerceVirtualOrderItemLocalServiceUtil.addCommerceVirtualOrderItem(commerceOrderItemId, cpDefinitionVirtualSetting.getCPDVirtualSettingFileEntries(), activationStatus, duration, maxUsages, serviceContext);
+
+		_commerceVirtualOrderItemLocalService.addCommerceVirtualOrderItem(commerceOrderItemId, cpDefinitionVirtualSetting.getCPDVirtualSettingFileEntries(), activationStatus, duration, maxUsages, serviceContext);
+
+		_commerceVirtualOrderItemLocalService.addCommerceVirtualOrderItem(commerceOrderItemId, cpDefinitionVirtualSetting.getCPDVirtualSettingFileEntries(), CommerceOrderConstants.ORDER_STATUS_COMPLETED, cpDefinitionVirtualSetting.getDuration(), cpDefinitionVirtualSetting.getMaxUsages(), serviceContext);
+	}
+
+	@Reference
+	private CommerceVirtualOrderItemLocalService
+		_commerceVirtualOrderItemLocalService;
+
+}
