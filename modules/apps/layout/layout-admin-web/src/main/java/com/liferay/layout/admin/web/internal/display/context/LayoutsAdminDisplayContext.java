@@ -15,6 +15,7 @@ import com.liferay.client.extension.type.CET;
 import com.liferay.client.extension.type.item.selector.CETItemSelectorCriterion;
 import com.liferay.client.extension.type.item.selector.CETItemSelectorReturnType;
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -148,7 +149,8 @@ public class LayoutsAdminDisplayContext {
 		LayoutSetPrototypeHelper layoutSetPrototypeHelper,
 		LayoutSetSEORobotsProvider layoutSetSEORobotsProvider,
 		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse) {
+		LiferayPortletResponse liferayPortletResponse,
+		SiteConnectedGroupGroupProvider siteConnectedGroupGroupProvider) {
 
 		_itemSelector = itemSelector;
 		_layoutActionsHelper = layoutActionsHelper;
@@ -157,6 +159,7 @@ public class LayoutsAdminDisplayContext {
 		_layoutSetSEORobotsProvider = layoutSetSEORobotsProvider;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+		_siteConnectedGroupGroupProvider = siteConnectedGroupGroupProvider;
 
 		httpServletRequest = PortalUtil.getHttpServletRequest(
 			liferayPortletRequest);
@@ -1752,7 +1755,7 @@ public class LayoutsAdminDisplayContext {
 		return _hasLayouts;
 	}
 
-	public boolean hasRequiredVocabularies() {
+	public boolean hasRequiredVocabularies() throws PortalException {
 		long classNameId = PortalUtil.getClassNameId(Layout.class);
 
 		List<AssetVocabulary> assetVocabularies =
@@ -1963,7 +1966,7 @@ public class LayoutsAdminDisplayContext {
 		return false;
 	}
 
-	public boolean isShowCategorization() {
+	public boolean isShowCategorization() throws PortalException {
 		long classNameId = PortalUtil.getClassNameId(Layout.class);
 
 		List<AssetVocabulary> assetVocabularies =
@@ -2326,9 +2329,10 @@ public class LayoutsAdminDisplayContext {
 		).buildString();
 	}
 
-	private long[] _getGroupIds() {
-		return PortalUtil.getCurrentAndAncestorSiteGroupIds(
-			themeDisplay.getScopeGroupId());
+	private long[] _getGroupIds() throws PortalException {
+		return _siteConnectedGroupGroupProvider.
+			getCurrentAndAncestorSiteAndDepotGroupIds(
+				themeDisplay.getScopeGroupId());
 	}
 
 	private String _getHelpText() {
@@ -2667,6 +2671,8 @@ public class LayoutsAdminDisplayContext {
 	private Layout _selLayout;
 	private LayoutSet _selLayoutSet;
 	private Long _selPlid;
+	private final SiteConnectedGroupGroupProvider
+		_siteConnectedGroupGroupProvider;
 	private String _tabs1;
 	private String _themeId;
 	private String[] _types;
