@@ -520,6 +520,13 @@ test(
 			await expect(
 				contentDashboardPage.getQuickAction(
 					pendingWebContentTitle,
+					'Info'
+				)
+			).toBeVisible();
+
+			await expect(
+				contentDashboardPage.getQuickAction(
+					pendingWebContentTitle,
 					'View Metrics'
 				)
 			).toHaveCount(0);

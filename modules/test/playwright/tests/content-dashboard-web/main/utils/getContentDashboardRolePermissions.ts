@@ -5,7 +5,9 @@
 
 import {RolePermission} from '../../../../utils/createUserWithPermissions';
 
-export default function getContentDashboardRolePermissions(companyId: string) {
+export default function getContentDashboardRolePermissions(
+	companyId: string
+): RolePermission[] {
 	return [
 		{
 			actionIds: ['ACCESS_IN_CONTROL_PANEL'],
@@ -26,5 +28,5 @@ export default function getContentDashboardRolePermissions(companyId: string) {
 			resourceName: 'com.liferay.portal.kernel.model.Group',
 			scope: 1,
 		},
-	] as RolePermission[];
+	];
 }

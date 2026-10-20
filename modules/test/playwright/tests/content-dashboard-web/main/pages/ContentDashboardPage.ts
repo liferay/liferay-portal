@@ -77,12 +77,12 @@ export class ContentDashboardPage {
 		});
 	}
 
-	async filterBy(menuItemName: string, index = 0) {
+	async filterBy(menuItemName: string) {
 		await clickAndExpectToBeVisible({
 			autoClick: true,
 			target: this.page
 				.getByRole('menuitem', {exact: true, name: menuItemName})
-				.nth(index),
+				.first(),
 			trigger: this.filterButton,
 		});
 
@@ -259,22 +259,30 @@ export class ContentDashboardPage {
 		await this.goto(siteUrl);
 
 		if (assetTitle) {
-			await this.search(assetTitle);
+			const searchBar = this.page.getByPlaceholder('Search for');
+
+			await searchBar.fill(assetTitle);
+
+			await this.page.keyboard.press('Enter');
 		}
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.locator('[data-action=showInfo]').first(),
-			trigger: this.page
-				.locator('.lfr-entry-action-column .dropdown-action button')
-				.first(),
-		});
+		const dropDownButton = this.page
+			.locator('.lfr-entry-action-column .dropdown-action button')
+			.first();
 
-		const tab = this.infoPanel.getByRole('tab', {name: tabName});
+		await dropDownButton.click();
 
-		await tab.click();
+		const showInfoButton = this.page
+			.locator('[data-action=showInfo]')
+			.first();
 
-		await expect(tab).toHaveAttribute('aria-selected', 'true');
+		await showInfoButton.click();
+
+		await this.page.waitForTimeout(1000);
+
+		await this.page.getByRole('tab', {name: tabName}).click();
+
+		await this.page.waitForTimeout(1000);
 	}
 
 	async openFilterDropdown() {

@@ -10,10 +10,12 @@ import path from 'path';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import getRandomString from '../../../utils/getRandomString';
 import addApprovedStructuredContent from '../../../utils/structured-content/addApprovedStructuredContent';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForPageToBeLoaded} from '../../../utils/waitForPageToBeLoaded';
+import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
 import {contentDashboardPagesTest} from './fixtures/contentDashboardPagesTest';
 import getDocumentFile from './utils/getDocumentFile';
@@ -22,13 +24,29 @@ export const test = mergeTests(
 	contentDashboardPagesTest,
 	dataApiHelpersTest,
 	isolatedSiteTest,
-	loginTest()
+	journalPagesTest,
+	loginTest(),
+	pageEditorPagesTest
 );
 
 test(
 	'Info panel shows the details of a web content',
 	{tag: ['@LPS-114912', '@LPS-116840']},
-	async ({apiHelpers, contentDashboardPage, page, site}) => {
+	async ({
+		apiHelpers,
+		contentDashboardPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		await displayPageTemplatesPage.createDefaultTemplate({
+			className: 'com.liferay.journal.model.JournalArticle',
+			classTypeKey: 'BASIC-WEB-CONTENT',
+			pageEditorPage,
+			site,
+		});
+
 		const basicWebContentTitle = getRandomString();
 
 		await addApprovedStructuredContent({
@@ -61,6 +79,15 @@ test(
 		await contentDashboardPage.goto(undefined, {scopeId: site.id});
 
 		await test.step('IconInfo, WebContentInfoPanel', async () => {
+			await contentDashboardPage.getRow(basicWebContentTitle).hover();
+
+			await expect(
+				contentDashboardPage.getQuickAction(
+					basicWebContentTitle,
+					'View'
+				)
+			).toBeVisible();
+
 			await contentDashboardPage.clickQuickAction(
 				basicWebContentTitle,
 				'Info'
@@ -398,6 +425,8 @@ test(
 						.getByLabel('Control Menu')
 						.getByRole('heading', {name: title})
 				).toBeVisible();
+
+				await waitForPageToBeLoaded(page);
 
 				await page.goBack();
 

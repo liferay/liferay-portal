@@ -75,6 +75,7 @@ test(
 		browser,
 		contentDashboardPage,
 		globalMenuPage,
+		page,
 		site,
 	}) => {
 		const [firstCategory, secondCategory] = await addGlobalCategories({
@@ -139,10 +140,6 @@ test(
 		await test.step('AssetNotFilteredByMe', async () => {
 			await globalMenuPage.goToApplications('Content Dashboard');
 
-			await expect(
-				contentDashboardPage.getAppliedFilter('Author:')
-			).toHaveCount(0);
-
 			await contentDashboardPage.search(keyword);
 
 			await expect(
@@ -152,6 +149,10 @@ test(
 			await expect(
 				contentDashboardPage.getRow(authorWebContentTitle)
 			).toBeVisible();
+
+			await expect(page.locator('.tbar-section .label-item')).toHaveCount(
+				0
+			);
 		});
 
 		await test.step('FilterBlogByAuthor', async () => {
@@ -810,7 +811,7 @@ test(
 			).toHaveCount(0);
 		});
 
-		await test.step('FilterByStatusScheduled', async () => {
+		await test.step('Status filters raise no page errors', async () => {
 			expect(pageErrors).toEqual([]);
 		});
 	}

@@ -11,6 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
+import {openFieldset} from '../../../utils/openFieldset';
 import {
 	gotoPage,
 	nextPage,
@@ -20,6 +21,7 @@ import {
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 import addApprovedStructuredContent from '../../../utils/structured-content/addApprovedStructuredContent';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import {contentDashboardPagesTest} from './fixtures/contentDashboardPagesTest';
 import getContentDashboardRolePermissions from './utils/getContentDashboardRolePermissions';
 
@@ -27,6 +29,7 @@ export const test = mergeTests(
 	contentDashboardPagesTest,
 	dataApiHelpersTest,
 	isolatedSiteTest,
+	journalPagesTest,
 	loginTest(),
 	usersAndOrganizationsPagesTest
 );
@@ -107,7 +110,14 @@ test(
 	{
 		tag: ['@LPS-111323', '@LPS-124236', '@LPS-132254', '@LPS-182032'],
 	},
-	async ({apiHelpers, contentDashboardPage, page, site}) => {
+	async ({
+		apiHelpers,
+		contentDashboardPage,
+		journalEditArticlePage,
+		journalPage,
+		page,
+		site,
+	}) => {
 		const basicWebContentStructureId =
 			await getBasicWebContentStructureId(apiHelpers);
 
@@ -207,9 +217,23 @@ test(
 					'review-date'
 				)
 			).toHaveText('-');
+
+			await journalPage.goto(site.friendlyUrlPath);
+
+			await journalEditArticlePage.editArticle(
+				neverReviewWebContentTitle
+			);
+
+			const scheduleFieldset = await openFieldset(page, 'Schedule');
+
+			await expect(
+				scheduleFieldset.getByLabel('Never Review', {exact: true})
+			).toBeChecked();
 		});
 
 		await test.step('FilterByToBeReviewed', async () => {
+			await contentDashboardPage.goto(undefined, {scopeId: site.id});
+
 			await contentDashboardPage.filterBy('To Be Reviewed');
 
 			await expect(
@@ -279,14 +303,14 @@ test(
 				'Showing 1 to 20 of 21 entries.',
 				{exact: true}
 			);
+			await expect(firstPageResults).toBeVisible();
+
+			await nextPage(page);
+
 			const secondPageResults = page.getByText(
 				'Showing 21 to 21 of 21 entries.',
 				{exact: true}
 			);
-
-			await expect(firstPageResults).toBeVisible();
-
-			await nextPage(page);
 
 			await expect(secondPageResults).toBeVisible();
 
