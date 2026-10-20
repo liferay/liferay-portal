@@ -6,7 +6,6 @@
 package com.liferay.portal.security.sso.facebook.connect.internal.verify;
 
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -96,11 +95,6 @@ public class FacebookConnectCompanySettingsVerifyProcess
 		return FacebookConnectConstants.SERVICE_NAME;
 	}
 
-	@Override
-	protected SettingsLocatorHelper getSettingsLocatorHelper() {
-		return _settingsLocatorHelper;
-	}
-
 	private String _upgradeLegacyRedirectURI(String legacyRedirectURI) {
 		if (Validator.isNull(legacyRedirectURI)) {
 			return legacyRedirectURI;
@@ -116,8 +110,5 @@ public class FacebookConnectCompanySettingsVerifyProcess
 
 	@Reference
 	private PrefsProps _prefsProps;
-
-	@Reference
-	private SettingsLocatorHelper _settingsLocatorHelper;
 
 }

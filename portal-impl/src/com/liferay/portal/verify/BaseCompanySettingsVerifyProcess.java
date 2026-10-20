@@ -13,9 +13,7 @@ import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
-import com.liferay.portal.kernel.settings.SettingsDescriptor;
 import com.liferay.portal.kernel.settings.SettingsException;
-import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
@@ -25,6 +23,7 @@ import jakarta.portlet.ValidatorException;
 import java.io.IOException;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Set;
 
 /**
@@ -64,8 +63,6 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 
 	protected abstract String getSettingsId();
 
-	protected abstract SettingsLocatorHelper getSettingsLocatorHelper();
-
 	protected void storeSettings(
 			long companyId, String settingsId,
 			Dictionary<String, String> dictionary)
@@ -77,18 +74,12 @@ public abstract class BaseCompanySettingsVerifyProcess extends VerifyProcess {
 		ModifiableSettings modifiableSettings =
 			settings.getModifiableSettings();
 
-		SettingsLocatorHelper settingsLocatorHelper =
-			getSettingsLocatorHelper();
+		Enumeration<String> enumeration = dictionary.keys();
 
-		SettingsDescriptor settingsDescriptor =
-			settingsLocatorHelper.getSettingsDescriptor(settingsId);
+		while (enumeration.hasMoreElements()) {
+			String name = enumeration.nextElement();
 
-		for (String name : settingsDescriptor.getAllKeys()) {
 			String value = dictionary.get(name);
-
-			if (value == null) {
-				continue;
-			}
 
 			String oldValue = settings.getValue(name, null);
 
