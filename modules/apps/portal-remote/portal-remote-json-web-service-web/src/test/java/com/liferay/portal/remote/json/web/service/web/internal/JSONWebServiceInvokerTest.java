@@ -503,6 +503,35 @@ public class JSONWebServiceInvokerTest extends BaseJSONWebServiceTestCase {
 	}
 
 	@Test
+	public void testPropertyFlagDoesNotLeakHiddenField() throws Exception {
+		Map<String, Object> params = new LinkedHashMap<>();
+
+		Map<String, Object> map1 = LinkedHashMapBuilder.<String, Object>put(
+			"$bar = /foo/bar", params
+		).build();
+
+		Map<String, Object> map2 = new LinkedHashMap<>();
+
+		params.put("$world = /foo/hello-world", map2);
+
+		map2.put("userId", 1);
+		map2.put("@worldName", "$bar.secret");
+
+		String json = toJSON(map1);
+
+		JSONWebServiceAction jsonWebServiceAction = prepareInvokerAction(json);
+
+		Object result = jsonWebServiceAction.invoke();
+
+		JSONWebServiceInvokerAction.InvokerResult invokerResult =
+			(JSONWebServiceInvokerAction.InvokerResult)result;
+
+		json = invokerResult.toJSONString();
+
+		Assert.assertFalse(json, json.contains("secret"));
+	}
+
+	@Test
 	public void testPropertyInner() throws Exception {
 		Map<String, Object> params = new LinkedHashMap<>();
 
