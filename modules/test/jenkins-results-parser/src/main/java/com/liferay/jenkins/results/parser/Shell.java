@@ -220,6 +220,16 @@ public class Shell {
 		String standardOut = JenkinsResultsParserUtil.readInputStream(
 			process.getInputStream(), true);
 
+		if (executionRequest.isPrintCommands()) {
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(standardOut)) {
+				System.out.println(standardOut);
+			}
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(standardError)) {
+				System.out.println(standardError);
+			}
+		}
+
 		if (JenkinsResultsParserUtil.debug) {
 			System.out.println("Output stream: " + standardOut);
 		}
