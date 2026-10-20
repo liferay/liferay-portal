@@ -31,7 +31,7 @@ public class PublishProcessesTableFDSView extends BaseProcessesTableFDSView {
 			_fdsTableSchemaBuilderFactory.create();
 
 		return fdsTableSchemaBuilder.add(
-			"name", "title",
+			"name", "name",
 			fdsTableSchemaField -> {
 				fdsTableSchemaField.setContentRenderer("processTitleRenderer");
 				fdsTableSchemaField.setSortable(true);

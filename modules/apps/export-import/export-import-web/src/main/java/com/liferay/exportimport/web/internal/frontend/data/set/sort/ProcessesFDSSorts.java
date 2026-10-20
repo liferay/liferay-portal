@@ -62,7 +62,7 @@ public class ProcessesFDSSorts implements FDSSorts {
 			).setKey(
 				"name"
 			).setLabel(
-				LanguageUtil.get(httpServletRequest, "title")
+				LanguageUtil.get(httpServletRequest, "name")
 			).build()
 		).build();
 	}

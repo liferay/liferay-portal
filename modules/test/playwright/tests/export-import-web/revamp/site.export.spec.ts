@@ -93,12 +93,12 @@ test(
 
 		await expect(exportImportPage.taskStatusLabel(name2)).toBeVisible();
 
-		await exportImportPage.sortBy('Title');
-		let values = await exportImportPage.getColumnValues('Title');
+		await exportImportPage.sortBy('Name');
+		let values = await exportImportPage.getColumnValues('Name');
 		expect(values).toEqual([...values].sort((a, b) => a.localeCompare(b)));
 
-		await exportImportPage.sortBy('Title');
-		values = await exportImportPage.getColumnValues('Title');
+		await exportImportPage.sortBy('Name');
+		values = await exportImportPage.getColumnValues('Name');
 		expect(values).toEqual([...values].sort((a, b) => b.localeCompare(a)));
 	}
 );
