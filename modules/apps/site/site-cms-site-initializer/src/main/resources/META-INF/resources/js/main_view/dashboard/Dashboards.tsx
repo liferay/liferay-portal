@@ -24,7 +24,7 @@ import EnterpriseOnlyPlaceholder from '../../common/components/EnterpriseOnlyPla
 
 const TABS = {
 	governance: Liferay.Language.get('governance'),
-	inventory: Liferay.Language.get('inventory'),
+	inventory: Liferay.Language.get('inventory[content]'),
 	performance: Liferay.Language.get('performance'),
 } as const;
 

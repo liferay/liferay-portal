@@ -33,7 +33,7 @@ public class UploadConfigurationIcon extends BasePortletConfigurationIcon {
 
 	@Override
 	public String getMessage(PortletRequest portletRequest) {
-		return _language.get(getLocale(portletRequest), "upload");
+		return _language.get(getLocale(portletRequest), "upload[verb]");
 	}
 
 	@Override

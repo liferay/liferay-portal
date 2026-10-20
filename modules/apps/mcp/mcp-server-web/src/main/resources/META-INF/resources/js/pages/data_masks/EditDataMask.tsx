@@ -228,7 +228,7 @@ function ReplacementConfigurationSection({readOnly}: {readOnly: boolean}) {
 			<FormField
 				disabled={readOnly}
 				id="dataMaskReplacement"
-				label={Liferay.Language.get('replacement')}
+				label={Liferay.Language.get('replacement[text]')}
 				name="replacementValue"
 				required
 			/>

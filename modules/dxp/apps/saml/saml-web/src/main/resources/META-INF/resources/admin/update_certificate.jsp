@@ -96,7 +96,7 @@ X509Certificate x509Certificate = (X509Certificate)request.getAttribute(SamlWebK
 
 						<aui:input label="locality" name="certificateLocality" value='<%= ParamUtil.getString(request, "certificateLocality") %>' />
 
-						<aui:input label="state" name="certificateState" value='<%= ParamUtil.getString(request, "certificateState") %>' />
+						<aui:input label="state[region]" name="certificateState" value='<%= ParamUtil.getString(request, "certificateState") %>' />
 
 						<aui:input label="country" name="certificateCountry" value='<%= ParamUtil.getString(request, "certificateCountry") %>' />
 

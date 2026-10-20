@@ -48,7 +48,7 @@
 
 				${htmlUtil.escape(assetRenderer.getSummary(renderRequest, renderResponse))}
 
-				<a href="${viewURL}"><@liferay.language key="read-more" /><span class="hide-accessible sr-only"><@liferay.language key="about" />${entryTitle}</span> &raquo;</a>
+				<a href="${viewURL}"><@liferay.language key="read-more" /><span class="hide-accessible sr-only"><@liferay.language key="about[preposition]" />${entryTitle}</span> &raquo;</a>
 			</div>
 
 			<@getRatings />

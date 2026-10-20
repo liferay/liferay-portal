@@ -20,7 +20,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface SolrConfiguration {
 
 	@Meta.AD(
-		deflt = "BASIC", optionLabels = {"basic", "cert"},
+		deflt = "BASIC", optionLabels = {"basic[authentication]", "cert"},
 		optionValues = {"BASIC", "CERT"}, required = false
 	)
 	public String authenticationMode();

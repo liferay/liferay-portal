@@ -52,7 +52,7 @@ const SnapshotsControlsTrigger = React.forwardRef(
 	) => (
 		<ClayButton
 			{...otherProps}
-			aria-label={Liferay.Language.get('views')}
+			aria-label={Liferay.Language.get('views[saved]')}
 			className="dropdown-toggle snapshot-selection"
 			displayType="unstyled"
 			ref={ref}

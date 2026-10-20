@@ -61,7 +61,7 @@ const EnvelopeDetail = ({
 			{concatValues(recipients?.signers.map(({email}) => email))}
 		</QuestionLine>
 
-		<QuestionLine question={Liferay.Language.get('from')}>
+		<QuestionLine question={Liferay.Language.get('from[sender]')}>
 			{senderEmailAddress}
 		</QuestionLine>
 

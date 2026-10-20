@@ -15,7 +15,7 @@ SearchFacet searchFacet = (SearchFacet)request.getAttribute("facet_configuration
 	<aui:input label="display-facet" name='<%= searchFacet.getClassName() + "displayFacet" %>' type="checkbox" value="<%= !searchFacet.isStatic() %>" />
 
 	<div class="facet-configuration-options" id="<portlet:namespace /><%= AUIUtil.normalizeId(searchFacet.getClassName()) %>Options">
-		<aui:input label="weight" name='<%= searchFacet.getClassName() + "weight" %>' value="<%= searchFacet.getWeight() %>" />
+		<aui:input label="weight[priority]" name='<%= searchFacet.getClassName() + "weight" %>' value="<%= searchFacet.getWeight() %>" />
 
 		<%
 		searchFacet.includeConfiguration(request, PipingServletResponseFactory.createPipingServletResponse(pageContext));

@@ -44,7 +44,7 @@ export default function MapChartLegendScale({
 			</ul>
 
 			<span className="chart-map-legend-scale-label">
-				{Liferay.Language.get('more')}
+				{Liferay.Language.get('more[scale]')}
 			</span>
 		</div>
 	);

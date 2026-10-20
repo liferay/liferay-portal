@@ -151,7 +151,7 @@ export default function EditableLinkPanel({item}) {
 			{isMapped(linkConfig) && (
 				<ClayForm.Group small>
 					<label htmlFor={prefixId}>
-						{Liferay.Language.get('prefix')}
+						{Liferay.Language.get('prefix[string]')}
 					</label>
 
 					<ClaySelectWithOption

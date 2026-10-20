@@ -69,7 +69,7 @@ export default function AddCommentForm({fragmentEntryLinkId}) {
 				onSubmitButtonClick={_handleCommentButtonClick}
 				onTextareaChange={_handleTextareaChange}
 				showButtons={showButtons}
-				submitButtonLabel={Liferay.Language.get('comment')}
+				submitButtonLabel={Liferay.Language.get('comment[verb]')}
 				textareaContent={textareaContent}
 			/>
 		</div>

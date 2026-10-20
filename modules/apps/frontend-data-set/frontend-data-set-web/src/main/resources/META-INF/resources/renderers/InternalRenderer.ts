@@ -75,7 +75,7 @@ export const INTERNAL_RENDERERS: Array<IInternalRenderer> = [
 	},
 	{
 		component: LabelRenderer,
-		label: Liferay.Language.get('label'),
+		label: Liferay.Language.get('label[badge]'),
 		name: 'label',
 		type: 'internal',
 	},

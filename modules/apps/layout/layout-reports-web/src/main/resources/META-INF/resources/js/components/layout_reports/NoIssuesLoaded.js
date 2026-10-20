@@ -51,7 +51,7 @@ export default function NoIssuesLoaded() {
 			</p>
 
 			<ClayButton displayType="secondary" onClick={onLaunchButtonClick}>
-				{Liferay.Language.get('launch')}
+				{Liferay.Language.get('launch[verb]')}
 			</ClayButton>
 		</div>
 	);

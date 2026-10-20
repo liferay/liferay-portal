@@ -339,11 +339,11 @@ const NumericInputMask: React.FC<
 					onFocus={onFocus}
 					options={[
 						{
-							label: Liferay.Language.get('prefix'),
+							label: Liferay.Language.get('prefix[string]'),
 							value: 'prefix',
 						},
 						{
-							label: Liferay.Language.get('suffix'),
+							label: Liferay.Language.get('suffix[value]'),
 							value: 'suffix',
 						},
 					]}

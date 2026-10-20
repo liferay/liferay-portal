@@ -17,7 +17,7 @@ export default function JoinNode({
 }) {
 	if (!label || !label[defaultLanguageId]) {
 		label = {
-			[defaultLanguageId]: Liferay.Language.get('join'),
+			[defaultLanguageId]: Liferay.Language.get('join[workflow-node]'),
 		};
 	}
 

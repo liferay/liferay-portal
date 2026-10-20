@@ -23,7 +23,7 @@ function useTrigger() {
 		<ClayButton onClick={() => setOpen(!open)}>
 			{open
 				? Liferay.Language.get('close')
-				: Liferay.Language.get('open')}
+				: Liferay.Language.get('open[verb]')}
 		</ClayButton>
 	);
 

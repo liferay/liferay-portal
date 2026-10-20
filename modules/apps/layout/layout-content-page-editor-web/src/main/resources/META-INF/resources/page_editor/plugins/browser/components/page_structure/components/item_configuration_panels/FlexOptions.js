@@ -10,7 +10,7 @@ import {SelectField} from '../../../../../../app/components/fragment_configurati
 
 const ALIGN_OPTIONS = [
 	{
-		label: Liferay.Language.get('start'),
+		label: Liferay.Language.get('start[alignment]'),
 		value: 'align-items-start',
 	},
 	{
@@ -48,7 +48,7 @@ const FLEX_WRAP_OPTIONS = [
 
 const JUSTIFY_OPTIONS = [
 	{
-		label: Liferay.Language.get('start'),
+		label: Liferay.Language.get('start[alignment]'),
 		value: '',
 	},
 	{
@@ -60,7 +60,7 @@ const JUSTIFY_OPTIONS = [
 		value: 'justify-content-end',
 	},
 	{
-		label: Liferay.Language.get('between'),
+		label: Liferay.Language.get('between[alignment]'),
 		value: 'justify-content-between',
 	},
 	{

@@ -141,7 +141,7 @@ const DefaultView = ({
 							size="xs"
 						>
 							{additionalProps?.termDescription && !isOpen
-								? Liferay.Language.get('read')
+								? Liferay.Language.get('read[verb]')
 								: value
 									? Liferay.Language.get('edit')
 									: Liferay.Language.get('add')}

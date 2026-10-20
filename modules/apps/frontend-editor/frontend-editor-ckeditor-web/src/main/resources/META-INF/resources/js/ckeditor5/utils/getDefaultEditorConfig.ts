@@ -349,7 +349,7 @@ const getDefaultEditorConfig = ({
 				{
 					classes: ['text-primary'],
 					element: 'span',
-					name: Liferay.Language.get('primary'),
+					name: Liferay.Language.get('primary[style]'),
 				},
 				{
 					classes: ['text-secondary'],

@@ -111,7 +111,7 @@ public class ViewRelatedAssetsSectionDisplayContext
 			).setIcon(
 				"upload-multiple"
 			).setLabel(
-				LanguageUtil.get(httpServletRequest, "upload")
+				LanguageUtil.get(httpServletRequest, "upload[verb]")
 			).build(),
 			DropdownItemBuilder.putData(
 				"action", "selectAssets"

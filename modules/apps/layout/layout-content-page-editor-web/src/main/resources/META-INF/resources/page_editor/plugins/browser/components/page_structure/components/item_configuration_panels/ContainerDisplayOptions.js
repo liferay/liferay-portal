@@ -16,7 +16,7 @@ import {FlexOptions} from './FlexOptions';
 
 const DISPLAY_OPTIONS = [
 	{
-		label: Liferay.Language.get('block'),
+		label: Liferay.Language.get('block[display]'),
 		value: CONTENT_DISPLAY_OPTIONS.block,
 	},
 	{

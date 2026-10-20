@@ -25,7 +25,7 @@ AUI.add(
 		const TPL_BLOCK_IMG =
 			'<span>' +
 			'<span class="taglib-text">' +
-			Liferay.Language.get('blocked') +
+			Liferay.Language.get('blocked[user]') +
 			'</span>' +
 			'</span>';
 

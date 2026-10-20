@@ -49,7 +49,7 @@ CommerceChannelAccountEntryRel commerceChannelAccountEntryRel = commerceChannelA
 
 		<aui:input checked="<%= (commerceChannelAccountEntryRel == null) ? false : commerceChannelAccountEntryRel.isOverrideEligibility() %>" helpMessage="override-eligibility-help" label="override-eligibility" name="overrideEligibility" type="toggle-switch" />
 
-		<aui:select label="term" name="classPK" required="<%= true %>">
+		<aui:select label="term[condition]" name="classPK" required="<%= true %>">
 
 			<%
 			for (CommerceTermEntry commerceTermEntry : commerceChannelAccountEntryRelDisplayContext.getCommerceTermEntries()) {

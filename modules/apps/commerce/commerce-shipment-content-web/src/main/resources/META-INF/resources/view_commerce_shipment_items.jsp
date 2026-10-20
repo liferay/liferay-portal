@@ -163,7 +163,7 @@ if (commerceAddress != null) {
 
 	<div class="autofit-col autofit-col-expand">
 		<div class="autofit-section">
-			<h3 class="shipment-details-title"><liferay-ui:message key="method" /></h3>
+			<h3 class="shipment-details-title"><liferay-ui:message key="method[shipping]" /></h3>
 
 			<%
 			String shippingMethodName = commerceShipmentContentDisplayContext.getCommerceShipmentShippingMethodName(commerceShipment);

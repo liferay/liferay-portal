@@ -134,7 +134,7 @@ export function remainingTimeFormat(
 	}
 
 	const onTimeText = onTime
-		? Liferay.Language.get('left')
+		? Liferay.Language.get('left[remaining]')
 		: Liferay.Language.get('overdue');
 
 	return [durationText, onTimeText];

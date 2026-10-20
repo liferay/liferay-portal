@@ -137,7 +137,7 @@ public interface SearchLocationDDMFormFieldTypeSettings
 	@DDMFormField(
 		label = "%visible-fields",
 		optionLabels = {
-			"%address", "%city", "%state", "%postal-code", "%country"
+			"%address", "%city", "%state[region]", "%postal-code", "%country"
 		},
 		optionValues = {"address", "city", "state", "postal-code", "country"},
 		properties = {

@@ -59,7 +59,7 @@ renderResponse.setTitle((oAuthClientPRLocalMetadata == null) ? LanguageUtil.get(
 					<aui:input helpMessage="oauth-client-pr-local-metadata-scopes-supported-help" label="oauth-client-pr-local-metadata-scopes-supported" name="scopesSupported" type="text" value="<%= request.getAttribute(OAuthClientWebKeys.SCOPES_SUPPORTED) %>" />
 				</aui:fieldset>
 
-				<aui:fieldset label="publishing">
+				<aui:fieldset label="publishing[noun]">
 					<aui:input checked="<%= (oAuthClientPRLocalMetadata != null) ? oAuthClientPRLocalMetadata.getLocalWellKnownEnabled() : false %>" label="enable" name="localWellKnownEnabled" type="checkbox" />
 
 					<aui:input helpMessage="oauth-client-pr-local-well-known-uri-help" label="oauth-client-pr-local-well-known-uri" name="localWellKnownURI" readonly="true" type="text" value="<%= (oAuthClientPRLocalMetadata != null) ? oAuthClientPRLocalMetadata.getLocalWellKnownURI() : StringPool.BLANK %>" />

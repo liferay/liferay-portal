@@ -21,7 +21,7 @@ const REPEATABLE_ITERATION_TYPE_OPTIONS = [
 		value: ALL_OPTION,
 	},
 	{
-		label: Liferay.Language.get('first'),
+		label: Liferay.Language.get('first[item]'),
 		value: FIRST_OPTION,
 	},
 	{

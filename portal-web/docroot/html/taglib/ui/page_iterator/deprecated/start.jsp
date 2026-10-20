@@ -259,7 +259,7 @@ NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 				<li class="<%= (cur != 1) ? "" : "disabled" %> first page-item">
 					<liferay-ui:csp>
 						<a href="<%= (cur != 1) ? _getHREF(formName, namespace + curParam, 1, jsCall, url, urlAnchor) : "javascript:void(0);" %>" page-link onclick="<%= ((cur != 1) && forcePost) ? _getOnClick(namespace, curParam, 1) : "" %>" tabIndex="<%= (cur != 1) ? "0" : "-1" %>" target="<%= target %>">
-							<%= PortalUtil.isRightToLeft(request) ? "&rarr;" : "&larr;" %> <liferay-ui:message key="first" />
+							<%= PortalUtil.isRightToLeft(request) ? "&rarr;" : "&larr;" %> <liferay-ui:message key="first[pagination]" />
 						</a>
 					</liferay-ui:csp>
 				</li>

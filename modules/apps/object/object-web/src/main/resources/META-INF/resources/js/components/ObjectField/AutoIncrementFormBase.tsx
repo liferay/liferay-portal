@@ -40,7 +40,7 @@ export function AutoIncrementFormBase({
 			<Input
 				disabled={disabled}
 				feedbackMessage={Liferay.Language.get('optional')}
-				label={Liferay.Language.get('prefix')}
+				label={Liferay.Language.get('prefix[string]')}
 				onBlur={(event) => {
 					event.stopPropagation();
 
@@ -121,7 +121,7 @@ export function AutoIncrementFormBase({
 			<Input
 				disabled={disabled}
 				feedbackMessage={Liferay.Language.get('optional')}
-				label={Liferay.Language.get('suffix')}
+				label={Liferay.Language.get('suffix[value]')}
 				onBlur={(event) => {
 					event.stopPropagation();
 

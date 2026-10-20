@@ -136,7 +136,7 @@ if (portletTitleBasedNavigation) {
 						</c:when>
 						<c:otherwise>
 							<aui:select name="priority">
-								<aui:option label="normal" selected="<%= (entry != null) && (entry.getPriority() == 0) %>" value="0" />
+								<aui:option label="normal[priority]" selected="<%= (entry != null) && (entry.getPriority() == 0) %>" value="0" />
 								<aui:option label="important" selected="<%= (entry != null) && (entry.getPriority() == 1) %>" value="1" />
 							</aui:select>
 						</c:otherwise>

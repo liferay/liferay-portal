@@ -141,7 +141,7 @@ const OrderNotesView = ({
 							onClick={() => onOpenChange(true)}
 							size="xs"
 						>
-							{Liferay.Language.get('open')}
+							{Liferay.Language.get('open[verb]')}
 						</ClayButton>
 					)}
 				</div>

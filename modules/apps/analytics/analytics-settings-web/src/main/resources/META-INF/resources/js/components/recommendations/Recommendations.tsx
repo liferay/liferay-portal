@@ -51,7 +51,7 @@ const header: {
 	{
 		displayText: false,
 		key: 'toggle',
-		value: Liferay.Language.get('toggle'),
+		value: Liferay.Language.get('toggle[noun]'),
 		width: '80px',
 	},
 ];

@@ -49,7 +49,7 @@ boolean numberInputType = (type == ExpandoColumnConstants.DOUBLE) || (type == Ex
 
 <c:if test="<%= propertyDisplayType.equals(ExpandoColumnConstants.PROPERTY_DISPLAY_TYPE_INPUT_FIELD) %>">
 	<aui:field-wrapper>
-		<aui:input inlineLabel="right" label="secret" labelCssClass="simple-toggle-switch" name="Property--secret--" type="toggle-switch" value="<%= propertySecret %>" />
+		<aui:input inlineLabel="right" label="secret[adjective]" labelCssClass="simple-toggle-switch" name="Property--secret--" type="toggle-switch" value="<%= propertySecret %>" />
 
 		<div class="form-text">
 			<liferay-ui:message key="custom-field-secret-help" />

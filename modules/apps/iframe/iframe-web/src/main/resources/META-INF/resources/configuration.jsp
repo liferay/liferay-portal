@@ -85,14 +85,14 @@ sb.append("\n");
 				</clay:alert>
 
 				<aui:select label="authentication-type" name="preferences--authType--" value="<%= iFrameDisplayContext.getAuthType() %>">
-					<aui:option label="basic" />
+					<aui:option label="basic[authentication]" value="basic" />
 					<aui:option label="form" />
 				</aui:select>
 
 				<div id="<portlet:namespace />formAuthOptions">
 					<aui:select name="preferences--formMethod--" value="<%= iFrameDisplayContext.getFormMethod() %>">
 						<aui:option label="get" />
-						<aui:option label="post" />
+						<aui:option label="post[http-method]" value="post" />
 					</aui:select>
 
 					<aui:field-wrapper label="user-name">

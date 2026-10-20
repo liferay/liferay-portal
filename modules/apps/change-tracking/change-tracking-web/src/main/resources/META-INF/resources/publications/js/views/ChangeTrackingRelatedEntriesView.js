@@ -246,7 +246,7 @@ export default function ChangeTrackingRelatedEntriesView({
 						</ClayTable.Cell>
 
 						<ClayTable.Cell headingCell style={{width: '95%'}}>
-							{Liferay.Language.get('change')}
+							{Liferay.Language.get('change[noun]')}
 						</ClayTable.Cell>
 					</ClayTable.Row>
 				</ClayTable.Head>

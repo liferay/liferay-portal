@@ -34,8 +34,8 @@ type TrafficChannelsApiResponse = {
 
 const trafficChannelsNames: Record<string, string> = {
 	'affiliates': Liferay.Language.get('affiliates'),
-	'direct': Liferay.Language.get('direct'),
-	'display': Liferay.Language.get('display'),
+	'direct': Liferay.Language.get('direct[traffic-channel]'),
+	'display': Liferay.Language.get('display[advertising]'),
 	'email': Liferay.Language.get('email'),
 	'organic': Liferay.Language.get('organic'),
 	'other': Liferay.Language.get('other'),

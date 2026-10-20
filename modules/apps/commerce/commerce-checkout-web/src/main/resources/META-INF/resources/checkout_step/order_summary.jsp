@@ -375,7 +375,7 @@ if (priceDisplayType.equals(CommercePricingConstants.TAX_INCLUDED_IN_PRICE)) {
 					<c:if test="<%= Validator.isNotNull(commerceShippingOptionName) %>">
 						<div class="panel-body shipping-method">
 							<div class="h5">
-								<liferay-ui:message key="method" />
+								<liferay-ui:message key="method[shipping]" />
 							</div>
 
 							<div class="shipping-description">

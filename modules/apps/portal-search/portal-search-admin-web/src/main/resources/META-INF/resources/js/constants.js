@@ -20,7 +20,7 @@ export const EXECUTION_MODES = {
 	},
 	SYNC: {
 		description: Liferay.Language.get('reindex-mode-sync-description'),
-		label: Liferay.Language.get('sync'),
+		label: Liferay.Language.get('sync[mode]'),
 		symbol: 'reload',
 		value: 'sync',
 	},

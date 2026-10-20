@@ -75,7 +75,7 @@ export default {
 	},
 	state: {
 		icon: 'geolocation',
-		title: Liferay.Language.get('state'),
+		title: Liferay.Language.get('state[region]'),
 	},
 	text: {
 		icon: 'text',

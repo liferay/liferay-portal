@@ -9,7 +9,7 @@ import React from 'react';
 
 const PAGINATION_TYPE_OPTIONS = [
 	{label: Liferay.Language.get('none'), value: 'none'},
-	{label: Liferay.Language.get('numeric'), value: 'numeric'},
+	{label: Liferay.Language.get('numeric[pagination]'), value: 'numeric'},
 	{label: Liferay.Language.get('simple'), value: 'simple'},
 ];
 

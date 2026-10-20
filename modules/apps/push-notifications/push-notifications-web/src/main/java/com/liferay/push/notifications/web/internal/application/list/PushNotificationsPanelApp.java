@@ -61,13 +61,13 @@ public class PushNotificationsPanelApp extends BasePanelApp {
 				).buildString(),
 				_language.get(themeDisplay.getLocale(), "devices")),
 			new PanelAppNavigationItem(
-				_language.get(LocaleUtil.ENGLISH, "test"),
+				_language.get(LocaleUtil.ENGLISH, "test[noun]"),
 				PortletURLBuilder.create(
 					getPortletURL(httpServletRequest)
 				).setTabs1(
 					"test"
 				).buildString(),
-				_language.get(themeDisplay.getLocale(), "test")));
+				_language.get(themeDisplay.getLocale(), "test[noun]")));
 	}
 
 	@Override

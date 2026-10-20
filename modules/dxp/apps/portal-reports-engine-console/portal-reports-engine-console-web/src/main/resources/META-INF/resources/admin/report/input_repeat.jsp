@@ -149,7 +149,7 @@ int yearlyType = ParamUtil.getInteger(request, "yearlyType");
 					<aui:option label="last" selected="<%= yearlyPos == -1 %>" value="-1" />
 				</aui:select>
 
-				<aui:select cssClass="input-container" inlineField="<%= true %>" inlineLabel="right" label="of" name="yearlyDay1">
+				<aui:select cssClass="input-container" inlineField="<%= true %>" inlineLabel="right" label="of[date-time]" name="yearlyDay1">
 					<aui:option label="<%= days[0] %>" selected="<%= yearlyDay1 == Calendar.SUNDAY %>" value="<%= Calendar.SUNDAY %>" />
 					<aui:option label="<%= days[1] %>" selected="<%= yearlyDay1 == Calendar.MONDAY %>" value="<%= Calendar.MONDAY %>" />
 					<aui:option label="<%= days[2] %>" selected="<%= yearlyDay1 == Calendar.TUESDAY %>" value="<%= Calendar.TUESDAY %>" />

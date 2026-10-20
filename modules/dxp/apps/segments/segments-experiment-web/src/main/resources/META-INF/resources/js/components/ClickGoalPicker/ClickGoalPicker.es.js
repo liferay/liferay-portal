@@ -679,7 +679,7 @@ function TargetTopper({allowEdit, geometry, isEditing, selector}) {
 			}}
 		>
 			<span className="mr-2 text-truncate">
-				{isEditing ? selector : Liferay.Language.get('target')}
+				{isEditing ? selector : Liferay.Language.get('target[element]')}
 			</span>
 
 			{allowEdit && (

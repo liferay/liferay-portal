@@ -614,7 +614,7 @@ export default function CalendarView({
 				}}
 				moreLinkContent={(arg) => (
 					<>
-						{`${arg.num} ${Liferay.Language.get('more')}`}
+						{`${arg.num} ${Liferay.Language.get('more[count]')}`}
 
 						<span className="inline-item inline-item-after">
 							<ClayIcon symbol="caret-bottom" />

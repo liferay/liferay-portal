@@ -146,7 +146,7 @@ if (portletTitleBasedNavigation) {
 
 						<br />
 
-						<aui:fieldset label="incoming">
+						<aui:fieldset label="incoming[mail]">
 
 							<%
 							String protocol = BeanParamUtil.getString(mailingList, request, "inProtocol", "pop3");

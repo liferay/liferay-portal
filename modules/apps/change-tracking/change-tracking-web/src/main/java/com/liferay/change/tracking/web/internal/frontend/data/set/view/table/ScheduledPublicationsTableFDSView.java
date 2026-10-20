@@ -43,7 +43,7 @@ public class ScheduledPublicationsTableFDSView
 		).add(
 			"description", "description"
 		).add(
-			addDateFDSTableSchemaField("dateScheduled", "publishing")
+			addDateFDSTableSchemaField("dateScheduled", "publishing[noun]")
 		).add(
 			addDateFDSTableSchemaField("dateModified", "last-modified")
 		).add(

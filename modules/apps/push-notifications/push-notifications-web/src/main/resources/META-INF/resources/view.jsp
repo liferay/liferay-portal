@@ -31,7 +31,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 					navigationItem -> {
 						navigationItem.setActive(tabs1.equals("test"));
 						navigationItem.setHref(renderResponse.createRenderURL(), "tabs1", "test");
-						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "test"));
+						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "test[noun]"));
 					});
 			}
 		}

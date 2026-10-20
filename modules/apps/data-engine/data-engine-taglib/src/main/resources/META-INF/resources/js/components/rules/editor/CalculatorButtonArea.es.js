@@ -11,7 +11,7 @@ import React from 'react';
 const ONE_TO_NINE = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 const OPERATORS = [
-	{label: Liferay.Language.get('add'), value: '+'},
+	{label: Liferay.Language.get('add[math]'), value: '+'},
 	{label: Liferay.Language.get('divide'), value: '/'},
 	{label: Liferay.Language.get('multiply'), value: '*'},
 	{label: Liferay.Language.get('subtract'), value: '-'},

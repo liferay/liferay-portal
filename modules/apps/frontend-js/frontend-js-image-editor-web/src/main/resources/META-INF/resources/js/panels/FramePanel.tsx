@@ -22,7 +22,7 @@ const FRAME_LABELS: Record<FrameKind, string> = {
 	dashed: Liferay.Language.get('dashed'),
 	double: Liferay.Language.get('double-line'),
 	inset: Liferay.Language.get('inset'),
-	line: Liferay.Language.get('line'),
+	line: Liferay.Language.get('line[frame]'),
 	mat: Liferay.Language.get('mat'),
 	none: Liferay.Language.get('none'),
 	polaroid: Liferay.Language.get('print[noun]'),
