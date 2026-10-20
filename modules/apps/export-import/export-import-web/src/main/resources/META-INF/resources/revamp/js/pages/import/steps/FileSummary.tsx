@@ -43,7 +43,7 @@ export default function FileSummary({
 	const {author, exportDate, fileName, fileSize} = importPreview;
 
 	return (
-		<ClayLayout.Sheet>
+		<ClayLayout.Sheet className="mt-5">
 			<ClayLayout.SheetHeader className="mb-1">
 				<div className="mb-2 sheet-title">
 					{Liferay.Language.get('file-summary')}

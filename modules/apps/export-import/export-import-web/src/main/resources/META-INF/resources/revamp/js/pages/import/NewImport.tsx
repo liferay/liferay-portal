@@ -43,9 +43,6 @@ export function NewImport({
 	return (
 		<Wizard backURL={backURL}>
 			<WizardStep
-				description={Liferay.Language.get(
-					'name-your-import-process-and-upload-your-file'
-				)}
 				initialValues={{
 					fileSelector: undefined,
 					name: '',
