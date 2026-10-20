@@ -95,7 +95,6 @@ definition {
 				-H Content-Type: application/json \
 				-d {
 					"comments": true,
-					"dateRangeType": "ALL",
 					"name": "${exportProcessName}",
 					"portletDataHandlers": ${portletDataHandlers},
 					"ratings": true
