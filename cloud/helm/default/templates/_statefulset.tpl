@@ -59,7 +59,7 @@ spec:
             {{- end }}
             containers:
                 -   #
-                    {{- $databaseEnv := include "liferay.databaseEnv" .statefulset | trim }}
+                    {{- $databaseEnv := include "liferay.database.env" .statefulset | trim }}
                     {{- if or .statefulset.env $databaseEnv .statefulset.customEnv }}
                     env:
                         {{- with .statefulset.env }}
