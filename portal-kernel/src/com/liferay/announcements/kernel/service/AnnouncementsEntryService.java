@@ -68,4 +68,4 @@ public interface AnnouncementsEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2133405100
+// LIFERAY-SERVICE-BUILDER-HASH:619271924
