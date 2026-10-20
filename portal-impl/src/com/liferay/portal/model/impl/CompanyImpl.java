@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
+import com.liferay.portal.kernel.template.TemplateRestricted;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -183,6 +184,7 @@ public class CompanyImpl extends CompanyBaseImpl {
 	}
 
 	@Override
+	@TemplateRestricted
 	public String getKey() {
 		CompanyInfo companyInfo = getCompanyInfo();
 
@@ -190,6 +192,7 @@ public class CompanyImpl extends CompanyBaseImpl {
 	}
 
 	@Override
+	@TemplateRestricted
 	public Key getKeyObj() {
 		if (_keyObj == null) {
 			String key = getKey();

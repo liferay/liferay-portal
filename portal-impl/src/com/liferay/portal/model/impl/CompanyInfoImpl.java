@@ -5,6 +5,8 @@
 
 package com.liferay.portal.model.impl;
 
+import com.liferay.portal.kernel.template.TemplateRestricted;
+
 /**
  * The extended model implementation for the CompanyInfo service. Represents a
  * row in the &quot;CompanyInfo&quot; database table, with each column mapped to
@@ -27,5 +29,10 @@ public class CompanyInfoImpl extends CompanyInfoBaseImpl {
 	 * info model instance should use the {@link
 	 * com.liferay.portal.kernel.model.CompanyInfo} interface instead.
 	 */
+	@Override
+	@TemplateRestricted
+	public String getKey() {
+		return super.getKey();
+	}
 
 }
