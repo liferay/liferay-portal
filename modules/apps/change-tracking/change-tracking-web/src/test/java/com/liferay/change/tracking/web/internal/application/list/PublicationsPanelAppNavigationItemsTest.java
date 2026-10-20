@@ -76,7 +76,7 @@ public class PublicationsPanelAppNavigationItemsTest
 		panelAppNavigationItem = panelAppNavigationItems.get(
 			panelAppNavigationItems.size() - 1);
 
-		assertCanonicalName("history", panelAppNavigationItem);
+		assertCanonicalName("history[record]", panelAppNavigationItem);
 		assertParameterValue(
 			"/change_tracking/view_history", panelAppNavigationItem,
 			"mvcRenderCommandName");

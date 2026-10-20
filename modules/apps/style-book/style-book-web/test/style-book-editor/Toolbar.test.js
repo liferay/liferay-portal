@@ -391,7 +391,7 @@ describe('Toolbar', () => {
 		});
 
 		await act(async () => {
-			userEvent.click(screen.getByLabelText('history'));
+			userEvent.click(screen.getByLabelText('history[record]'));
 		});
 
 		await act(async () => {

@@ -123,7 +123,7 @@ describe('FriendlyURLHistory', () => {
 		});
 
 		it('renders a modal when user clicks on history button', async () => {
-			const title = await result.findByText('history');
+			const title = await result.findByText('history[record]');
 
 			expect(title).toBeTruthy();
 		});

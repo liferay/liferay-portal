@@ -255,7 +255,9 @@ describe('RatingsSelectStars', () => {
 				});
 
 				it('updates the average score of 1 vote', async () => {
-					expect(result.queryByText('5.0 (1 vote)')).toBeTruthy();
+					expect(
+						result.queryByText('5.0 (1 vote[noun])')
+					).toBeTruthy();
 				});
 			});
 
