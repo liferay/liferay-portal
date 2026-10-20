@@ -312,18 +312,18 @@ public class ExportImportProcessDisplayContext {
 
 			if (ScopeUtil.isInstanceScoped(_group)) {
 				return exportPreviewResource.getExportPreview(
-					null, null, plid, portletId, null);
+					null, null, null, plid, portletId, null);
 			}
 
 			if (_group.isDepot()) {
 				return exportPreviewResource.getAssetLibraryExportPreview(
-					_group.getExternalReferenceCode(), null, null, plid,
+					_group.getExternalReferenceCode(), null, null, null, plid,
 					portletId, null);
 			}
 
 			return exportPreviewResource.getSiteExportPreview(
-				_group.getExternalReferenceCode(), null, null, plid, portletId,
-				null);
+				_group.getExternalReferenceCode(), null, null, null, plid,
+				portletId, null);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get export preview", exception);
