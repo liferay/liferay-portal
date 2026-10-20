@@ -87,6 +87,12 @@ export class HeadlessAdminTaxonomyApiHelper {
 		this.basePath = 'headless-admin-taxonomy/v1.0';
 	}
 
+	async deleteTaxonomyCategory(taxonomyCategoryId: number) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/taxonomy-categories/${taxonomyCategoryId}`
+		);
+	}
+
 	/**
 	 * It allows deleting a tag.
 	 *
@@ -106,6 +112,15 @@ export class HeadlessAdminTaxonomyApiHelper {
 	async deleteTaxonomyVocabulary(vocabularyId: number) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/taxonomy-vocabularies/${vocabularyId}`
+		);
+	}
+
+	async getSiteTaxonomyVocabularyByExternalReferenceCode(
+		siteId: string,
+		externalReferenceCode: string
+	) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/taxonomy-vocabularies/by-external-reference-code/${externalReferenceCode}`
 		);
 	}
 

@@ -806,6 +806,11 @@ export class DataApiHelpers extends ApiHelpers {
 				else if (item.type === 'sxpElement') {
 					await this.searchExperiences.deleteSXPElement(item.id);
 				}
+				else if (item.type === 'taxonomyCategory') {
+					await this.headlessAdminTaxonomy.deleteTaxonomyCategory(
+						item.id
+					);
+				}
 				else if (item.type === 'taxonomyVocabulary') {
 					await this.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
 						item.id
