@@ -1,8 +1,41 @@
 components:
     schemas:
+        DateFilter:
+            description:
+                Represents the dates that select the content of a process. The type determines the other properties.
+            discriminator:
+                mapping:
+                    DateRange: "#/components/schemas/DateRangeDateFilter"
+                    FromLastPublishDate: "#/components/schemas/FromLastPublishDateFilter"
+                    LastHours: "#/components/schemas/LastHoursDateFilter"
+                propertyName: type
+            properties:
+                type:
+                    enum: [DateRange, FromLastPublishDate, LastHours]
+                    type: string
+            required:
+                -   type
+            type: object
+        DateRangeDateFilter:
+            allOf:
+                -   $ref: "#/components/schemas/DateFilter"
+                -   properties:
+                        endDate:
+                            description:
+                                The end date. Defaults to the time of each run.
+                            format: date-time
+                            type: string
+                        startDate:
+                            description:
+                                The start date. Without it, the filter has no lower bound.
+                            format: date-time
+                            type: string
+            description:
+                Represents the content modified between a start and an end date. At least one of the dates is required.
+            type: object
         ExportPreview:
             description:
-                Represents the portlet data handlers an export can cover, with the number of items each one covers in the requested date range.
+                Represents what an export can cover, with the counts for the requested date filter.
             properties:
                 additionCount:
                     format: int64
@@ -66,21 +99,13 @@ components:
                 comments:
                     default: false
                     type: boolean
-                dateRangeType:
+                dateFilter:
+                    $ref: "#/components/schemas/DateFilter"
                     description:
-                        The recipe used to resolve the export window at every run. ALL exports everything, DATE_RANGE exports the window between the start and end dates, resolving a missing end date as the run time, and LAST exports a window of whole hours ending at the run time, derived from the start date. When absent, the type is inferred from the given dates.
-                    enum: [ALL, DATE_RANGE, LAST]
-                    type: string
+                        The dates that select the content, resolved again on every run. Defaults to all the content.
                 deletions:
                     default: false
-                    description:
-                        A flag that indicates whether the deletions recorded in the date range are exported, so that an import removes the same items.
                     type: boolean
-                endDate:
-                    description:
-                        The export window's end date.
-                    format: date-time
-                    type: string
                 name:
                     description:
                         The export process's name, also used as the file name.
@@ -103,13 +128,15 @@ components:
                     items:
                         type: string
                     type: array
-                startDate:
-                    description:
-                        The export window's start date.
-                    format: date-time
-                    type: string
             required:
                 -   name
+            type: object
+        FromLastPublishDateFilter:
+            allOf:
+                -   $ref: "#/components/schemas/DateFilter"
+                -   properties: {}
+            description:
+                Represents the changes since each item's last publication. Applies only to publications.
             type: object
         ImportPreview:
             description:
@@ -241,6 +268,21 @@ components:
                         Who owns the imported items. CURRENT_USER_ID keeps the original owner when it exists, and ALWAYS_CURRENT_USER_ID assigns every item to the current user.
                     enum: [CURRENT_USER_ID, ALWAYS_CURRENT_USER_ID]
                     type: string
+            type: object
+        LastHoursDateFilter:
+            allOf:
+                -   $ref: "#/components/schemas/DateFilter"
+                -   properties:
+                        hours:
+                            description:
+                                The number of hours before each run.
+                            format: int32
+                            minimum: 1
+                            type: integer
+                    required:
+                        -   hours
+            description:
+                Represents the content modified in the hours before each run.
             type: object
         Origin:
             properties:
@@ -473,7 +515,7 @@ components:
             type: object
         PublishPreview:
             description:
-                Represents the portlet data handlers a Publish to Live process can cover, with the number of changes each one covers in the requested date range.
+                Represents what a Publish to Live process can cover, with the change counts for the requested date filter.
             properties:
                 additionCount:
                     format: int64
@@ -543,21 +585,13 @@ components:
                 comments:
                     default: false
                     type: boolean
-                dateRangeType:
+                dateFilter:
+                    $ref: "#/components/schemas/DateFilter"
                     description:
-                        The recipe used to resolve the publish window at every run and relaunch. ALL publishes everything, DATE_RANGE publishes the window between the start and end dates, resolving a missing end date as the run time, LAST publishes a window of whole hours ending at the run time, derived from the start date, and FROM_LAST_PUBLISH_DATE publishes the changes recorded since each entity's own last publish. When absent, the type is inferred from the given dates.
-                    enum: [ALL, DATE_RANGE, FROM_LAST_PUBLISH_DATE, LAST]
-                    type: string
+                        The dates that select the content, resolved again on every run. Defaults to all the content.
                 deletions:
                     default: false
-                    description:
-                        A flag that indicates whether the deletions recorded in the date range are published, so that the live site removes the same items.
                     type: boolean
-                endDate:
-                    description:
-                        The publish window's end date.
-                    format: date-time
-                    type: string
                 name:
                     type: string
                 permissions:
@@ -572,11 +606,6 @@ components:
                 ratings:
                     default: false
                     type: boolean
-                startDate:
-                    description:
-                        The publish window's start date.
-                    format: date-time
-                    type: string
             required:
                 -   name
             type: object
@@ -767,7 +796,7 @@ paths:
     "/asset-libraries/{assetLibraryExternalReferenceCode}/export-preview":
         get:
             description:
-                Retrieves the portlet data handlers and counts an export of the specified asset library, or of one of its portlets when a portlet ID is given, would cover in the given date range.
+                Retrieves the portlet data handlers and counts for an export of the specified asset library, or of one of its portlets.
             operationId: getAssetLibraryExportPreview
             parameters:
                 -   in: path
@@ -776,15 +805,27 @@ paths:
                     schema:
                         type: string
                 -   in: query
-                    name: dateRangeType
+                    description:
+                        The date filter's type. Without it, all the content is counted.
+                    name: dateFilterType
                     schema:
-                        enum: [ALL, DATE_RANGE, LAST]
+                        enum: [DateRange, LastHours]
                         type: string
                 -   in: query
+                    description:
+                        The end date of a DateRange filter.
                     name: endDate
                     schema:
                         format: date-time
                         type: string
+                -   in: query
+                    description:
+                        The number of hours of a LastHours filter.
+                    name: hours
+                    schema:
+                        format: int32
+                        minimum: 1
+                        type: integer
                 -   in: query
                     description:
                         The ID of the page that holds the portlet. Required with portletId.
@@ -799,6 +840,8 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The start date of a DateRange filter.
                     name: startDate
                     schema:
                         format: date-time
@@ -883,7 +926,7 @@ paths:
             tags: ["ExportProcess"]
         post:
             description:
-                Starts an export process on the specified asset library, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
+                Starts an export of the specified asset library, or of one of its portlets.
             operationId: postAssetLibraryExportProcess
             parameters:
                 -   in: path
@@ -1077,19 +1120,31 @@ paths:
     "/export-preview":
         get:
             description:
-                Retrieves the portlet data handlers and counts an export of the instance, or of one of its portlets when a portlet ID is given, would cover in the given date range.
+                Retrieves the portlet data handlers and counts for an export of the instance, or of one of its portlets.
             operationId: getExportPreview
             parameters:
                 -   in: query
-                    name: dateRangeType
+                    description:
+                        The date filter's type. Without it, all the content is counted.
+                    name: dateFilterType
                     schema:
-                        enum: [ALL, DATE_RANGE, LAST]
+                        enum: [DateRange, LastHours]
                         type: string
                 -   in: query
+                    description:
+                        The end date of a DateRange filter.
                     name: endDate
                     schema:
                         format: date-time
                         type: string
+                -   in: query
+                    description:
+                        The number of hours of a LastHours filter.
+                    name: hours
+                    schema:
+                        format: int32
+                        minimum: 1
+                        type: integer
                 -   in: query
                     description:
                         The ID of the page that holds the portlet. Required with portletId.
@@ -1104,6 +1159,8 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The start date of a DateRange filter.
                     name: startDate
                     schema:
                         format: date-time
@@ -1220,7 +1277,7 @@ paths:
             tags: ["ExportProcess"]
         post:
             description:
-                Starts an export process on the instance, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview and the external reference codes of the sites to export in full. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
+                Starts an export of the instance, or of one of its portlets.
             operationId: postExportProcess
             parameters:
                 -   in: query
@@ -1827,7 +1884,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/export-preview":
         get:
             description:
-                Retrieves the portlet data handlers and counts an export of the specified site, or of one of its portlets when a portlet ID is given, would cover in the given date range.
+                Retrieves the portlet data handlers and counts for an export of the specified site, or of one of its portlets.
             operationId: getSiteExportPreview
             parameters:
                 -   in: path
@@ -1836,15 +1893,27 @@ paths:
                     schema:
                         type: string
                 -   in: query
-                    name: dateRangeType
+                    description:
+                        The date filter's type. Without it, all the content is counted.
+                    name: dateFilterType
                     schema:
-                        enum: [ALL, DATE_RANGE, LAST]
+                        enum: [DateRange, LastHours]
                         type: string
                 -   in: query
+                    description:
+                        The end date of a DateRange filter.
                     name: endDate
                     schema:
                         format: date-time
                         type: string
+                -   in: query
+                    description:
+                        The number of hours of a LastHours filter.
+                    name: hours
+                    schema:
+                        format: int32
+                        minimum: 1
+                        type: integer
                 -   in: query
                     description:
                         The ID of the page that holds the portlet. Required with portletId.
@@ -1859,6 +1928,8 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The start date of a DateRange filter.
                     name: startDate
                     schema:
                         format: date-time
@@ -1943,7 +2014,7 @@ paths:
             tags: ["ExportProcess"]
         post:
             description:
-                Starts an export process on the specified site, or on one of its portlets when a portlet ID is given, with the portlet data handlers returned by the export preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
+                Starts an export of the specified site, or of one of its portlets.
             operationId: postSiteExportProcess
             parameters:
                 -   in: path
@@ -2137,7 +2208,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/publish-preview":
         get:
             description:
-                Retrieves the portlet data handlers and change counts a Publish to Live on the specified site would cover. The date range type selects the counting window like it does on the publish process, defaulting to the type inferred from the given dates.
+                Retrieves the portlet data handlers and change counts for a Publish to Live of the specified site.
             operationId: getSitePublishPreview
             parameters:
                 -   in: path
@@ -2146,16 +2217,30 @@ paths:
                     schema:
                         type: string
                 -   in: query
-                    name: dateRangeType
+                    description:
+                        The date filter's type. Without it, all the content is counted.
+                    name: dateFilterType
                     schema:
-                        enum: [ALL, DATE_RANGE, FROM_LAST_PUBLISH_DATE, LAST]
+                        enum: [DateRange, FromLastPublishDate, LastHours]
                         type: string
                 -   in: query
+                    description:
+                        The end date of a DateRange filter.
                     name: endDate
                     schema:
                         format: date-time
                         type: string
                 -   in: query
+                    description:
+                        The number of hours of a LastHours filter.
+                    name: hours
+                    schema:
+                        format: int32
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        The start date of a DateRange filter.
                     name: startDate
                     schema:
                         format: date-time
@@ -2234,7 +2319,7 @@ paths:
             tags: ["PublishProcess"]
         post:
             description:
-                Starts a Publish to Live process on the specified site with the portlet data handlers returned by the publish preview. The date range type and dates select the content and are resolved every time the process runs, including relaunches. When no type is given, it is inferred from the dates - no dates cover all content, both dates cover that fixed date range, and a start date alone covers the window from the start date until each run.
+                Starts a Publish to Live of the specified site.
             operationId: postSitePublishProcess
             parameters:
                 -   in: path
@@ -2303,7 +2388,7 @@ paths:
             tags: ["ScheduledPublishProcess"]
         post:
             description:
-                Schedules a Publish to Live process on the specified site. The publish process request of the schedule runs every time the cron expression fires, evaluated in the given time zone between the schedule start and end dates, and its date range is resolved at every run as described for the publish process.
+                Schedules a Publish to Live of the specified site. The publish process request runs every time the cron expression fires, between the start and end dates.
             operationId: postSiteScheduledPublishProcess
             parameters:
                 -   in: path
