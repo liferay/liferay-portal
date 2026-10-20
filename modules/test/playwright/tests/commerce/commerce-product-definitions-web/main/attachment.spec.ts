@@ -10,7 +10,10 @@ import * as path from 'path';
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTemplatesPagesTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getGlobalSiteId from '../../../../utils/getGlobalSiteId';
 import getRandomString from '../../../../utils/getRandomString';
@@ -20,7 +23,10 @@ export const test = mergeTests(
 	apiHelpersTest,
 	commercePagesTest,
 	dataApiHelpersTest,
-	loginTest()
+	displayPageTemplatesPagesTest,
+	isolatedSiteTest,
+	loginTest(),
+	pageEditorPagesTest
 );
 
 test('LPD-3209 The download URL is present when the file entry is a file upload', async ({
@@ -230,6 +236,126 @@ test(
 					}
 				)
 			).toBeVisible();
+		});
+	}
+);
+
+test(
+	'Product attachments show in a collection display fragment',
+	{tag: '@COMMERCE-9434'},
+	async ({
+		apiHelpers,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			siteGroupId: site.id,
+		});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		const attachmentTitles = [getRandomString(), getRandomString()];
+
+		for (const attachmentTitle of attachmentTitles) {
+			const document = await apiHelpers.headlessDelivery.postDocument(
+				site.id,
+				createReadStream(
+					path.join(__dirname, '/dependencies/attachment.txt')
+				),
+				{fileName: `${attachmentTitle}.txt`, title: attachmentTitle}
+			);
+
+			apiHelpers.data.push({id: document.id, type: 'document'});
+
+			await apiHelpers.headlessCommerceAdminCatalog.postAttachment(
+				product.productId,
+				document.id,
+				attachmentTitle
+			);
+		}
+
+		await test.step('Add a collection display of the product attachments', async () => {
+			const className =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					'com.liferay.commerce.product.model.CPDefinition'
+				);
+
+			const displayPageTemplateName = getRandomString();
+
+			const displayPageTemplate =
+				await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+					{
+						classNameId: className.classNameId,
+						groupId: site.id,
+						name: displayPageTemplateName,
+					}
+				);
+
+			apiHelpers.data.push({
+				id: displayPageTemplate.layoutPageTemplateEntryId,
+				type: 'layoutPageTemplateEntry',
+			});
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+				{
+					layoutPageTemplateEntryId:
+						displayPageTemplate.layoutPageTemplateEntryId,
+				}
+			);
+
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			await pageEditorPage.addFragment(
+				'Content Display',
+				'Collection Display'
+			);
+			await pageEditorPage.selectFragment(
+				await pageEditorPage.getFragmentId('Collection Display')
+			);
+
+			await page.getByText('Select a collection to display.').click();
+
+			await pageEditorPage.chooseCollectionDisplayCollection(
+				'Related Items Collection Providers',
+				'Product Attachments'
+			);
+			await pageEditorPage.waitForChangesSaved();
+
+			await page
+				.getByLabel('Style Display', {exact: true})
+				.selectOption('Bordered List');
+
+			await pageEditorPage.waitForChangesSaved();
+
+			await displayPageTemplatesPage.publishTemplate();
+		});
+
+		await test.step('Check the attachments on the product page', async () => {
+			await page.goto(
+				`/web${site.friendlyUrlPath}/p/${product.urls['en_US']}`
+			);
+
+			for (const attachmentTitle of attachmentTitles) {
+				await expect(
+					page
+						.getByRole('listitem')
+						.filter({hasText: attachmentTitle})
+						.getByRole('link', {name: 'Download'})
+				).toBeVisible();
+			}
 		});
 	}
 );
