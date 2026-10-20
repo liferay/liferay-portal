@@ -728,6 +728,7 @@ public class PostUpgradeVerifyDatabaseStateTest
 			Connection connection = DataAccess.getConnection()) {
 
 			db.alterTableDropColumn(connection, tableName, columnName);
+
 			db.alterTableAddColumn(
 				connection, tableName, columnName, columnType);
 		}
