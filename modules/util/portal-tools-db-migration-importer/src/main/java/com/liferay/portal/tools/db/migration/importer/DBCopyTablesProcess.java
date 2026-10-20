@@ -92,18 +92,16 @@ public class DBCopyTablesProcess {
 		List<String> targetColumnNames = _targetColumnNamesMap.get(
 			targetTableName);
 
-		if (sourceColumnNames.size() < targetColumnNames.size()) {
-			Set<String> sourceColumnNamesSet = new TreeSet<String>(
-				String.CASE_INSENSITIVE_ORDER) {
+		Set<String> sourceColumnNamesSet = new TreeSet<String>(
+			String.CASE_INSENSITIVE_ORDER) {
 
-				{
-					addAll(sourceColumnNames);
-				}
-			};
+			{
+				addAll(sourceColumnNames);
+			}
+		};
 
-			targetColumnNames.removeIf(
-				columnName -> !sourceColumnNamesSet.contains(columnName));
-		}
+		targetColumnNames.removeIf(
+			columnName -> !sourceColumnNamesSet.contains(columnName));
 
 		String selectSQL = StringBundler.concat(
 			"select ", StringUtil.merge(sourceColumnNames), " from ",
