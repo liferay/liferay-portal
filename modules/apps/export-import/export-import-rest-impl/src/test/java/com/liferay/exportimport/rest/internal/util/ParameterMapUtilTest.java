@@ -189,7 +189,8 @@ public class ParameterMapUtilTest {
 	@Test
 	public void testToParameterMapWhenRequestIsInvalid() {
 		_assertBadRequest(
-			"No portlet data handler exists with name \"unknown\"",
+			"No portlet data handler exists with name \"unknown\" in the " +
+				"preview of this scope",
 			_toPortletDataHandler("unknown", null));
 		_assertBadRequest(
 			"The choice \"z\" is not one of the choices of the control \"" +
