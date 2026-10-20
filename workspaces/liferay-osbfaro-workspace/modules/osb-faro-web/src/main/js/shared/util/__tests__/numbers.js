@@ -61,6 +61,21 @@ describe('toThousands', () => {
 		expect(toThousands(1000000000000)).toEqual('1T');
 	});
 
+	it('should not truncate a value with a single decimal', () => {
+		for (const [suffix, threshold] of [
+			['K', 1e3],
+			['M', 1e6],
+			['B', 1e9],
+			['T', 1e12],
+		]) {
+			for (let tenths = 10; tenths < 1000; tenths++) {
+				expect(toThousands(tenths * (threshold / 10))).toEqual(
+					`${tenths / 10}${suffix}`
+				);
+			}
+		}
+	});
+
 	it('should return an empty string if parameter it is not a number', () => {
 		expect(toThousands('test')).toEqual('');
 		expect(toThousands([])).toEqual('');
@@ -70,15 +85,15 @@ describe('toThousands', () => {
 
 describe('toThousandsBase', () => {
 	it('should truncate the mantissa rather than round it', () => {
-		const setFactor = (factor) => 2453 * factor;
+		const getMantissa = (threshold) => 2453 / threshold;
 
-		expect(toThousandsBase(2453, setFactor, 'en-US')).toEqual('2.4K');
+		expect(toThousandsBase(2453, getMantissa, 'en-US')).toEqual('2.4K');
 	});
 
 	it('should let the caller customize the mantissa, e.g. for toThousandsABTesting', () => {
-		const setFactor = (factor) => Math.trunc(2453 * factor);
+		const getMantissa = (threshold) => Math.trunc(2453 / threshold);
 
-		expect(toThousandsBase(2453, setFactor, 'en-US')).toEqual('2K');
+		expect(toThousandsBase(2453, getMantissa, 'en-US')).toEqual('2K');
 	});
 });
 
