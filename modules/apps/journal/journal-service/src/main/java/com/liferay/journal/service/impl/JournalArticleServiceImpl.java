@@ -253,7 +253,7 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), ddmStructure, ActionKeys.UPDATE);
 
-		_checkDefaultValuesArticle(classNameId, classPK, ddmStructureId);
+		_checkClassNameIdAndClassPK(classNameId, classPK, ddmStructureId);
 
 		return journalArticleLocalService.addArticleDefaultValues(
 			getUserId(), groupId, classNameId, classPK, titleMap,
@@ -369,7 +369,7 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		JournalArticle journalArticle = journalArticleLocalService.getArticle(
 			groupId, articleId);
 
-		_checkDefaultValuesArticle(
+		_checkClassNameIdAndClassPK(
 			journalArticle.getClassNameId(), journalArticle.getClassPK(),
 			ddmStructureId);
 
@@ -2219,7 +2219,7 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), ddmStructure, ActionKeys.UPDATE);
 
-		_checkDefaultValuesArticle(
+		_checkClassNameIdAndClassPK(
 			journalArticle.getClassNameId(), journalArticle.getClassPK(),
 			journalArticle.getDDMStructureId());
 
@@ -2304,7 +2304,7 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			new HashMap<String, Serializable>());
 	}
 
-	private void _checkDefaultValuesArticle(
+	private void _checkClassNameIdAndClassPK(
 			long classNameId, long classPK, long ddmStructureId)
 		throws PortalException {
 
