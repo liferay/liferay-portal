@@ -71,13 +71,8 @@ public class TestDataSourceMVCActionCommandTest {
 			sourceId
 		);
 
-		SourceService sourceService = Mockito.mock(SourceService.class);
-
-		Mockito.when(
-			sourceService.getSource(sourceId)
-		).thenReturn(
-			source
-		);
+		TestDataSourceMVCActionCommand testDataSourceMVCActionCommand =
+			new TestDataSourceMVCActionCommand();
 
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
 
@@ -94,11 +89,17 @@ public class TestDataSourceMVCActionCommandTest {
 			resolvedDriverPassword
 		);
 
-		TestDataSourceMVCActionCommand testDataSourceMVCActionCommand =
-			new TestDataSourceMVCActionCommand();
-
 		ReflectionTestUtil.setFieldValue(
 			testDataSourceMVCActionCommand, "_secretResolver", secretResolver);
+
+		SourceService sourceService = Mockito.mock(SourceService.class);
+
+		Mockito.when(
+			sourceService.getSource(sourceId)
+		).thenReturn(
+			source
+		);
+
 		ReflectionTestUtil.setFieldValue(
 			testDataSourceMVCActionCommand, "_sourceService", sourceService);
 

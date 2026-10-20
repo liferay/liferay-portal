@@ -15,12 +15,12 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalClassPathUtil;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -75,10 +75,9 @@ public class TalendDispatchTaskExecutorTest {
 			companyId
 		);
 
+		String javaOpts = RandomTestUtil.randomString();
 		String name = RandomTestUtil.randomString();
 		String value = RandomTestUtil.randomString();
-
-		String javaOpts = RandomTestUtil.randomString();
 
 		Mockito.when(
 			dispatchTrigger.getDispatchTaskSettingsUnicodeProperties()
@@ -123,11 +122,9 @@ public class TalendDispatchTaskExecutorTest {
 				RandomTestUtil.randomString()
 			).build());
 
-		List<String> mainMethodArguments = Arrays.asList(
-			talendProcess.getMainMethodArguments());
-
 		Assert.assertTrue(
-			mainMethodArguments.contains(
+			ArrayUtil.contains(
+				talendProcess.getMainMethodArguments(),
 				StringBundler.concat(
 					"--context_param ", name, StringPool.EQUAL,
 					resolvedValue)));

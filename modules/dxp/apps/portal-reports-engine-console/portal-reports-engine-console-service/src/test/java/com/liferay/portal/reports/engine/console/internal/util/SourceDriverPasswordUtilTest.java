@@ -17,7 +17,6 @@ import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -38,7 +37,7 @@ public class SourceDriverPasswordUtilTest {
 
 	@Before
 	public void setUp() {
-		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+		ReflectionTestUtil.setFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			new Snapshot<SecretResolver>(
 				SecretResolverUtil.class, SecretResolver.class) {
@@ -49,13 +48,6 @@ public class SourceDriverPasswordUtilTest {
 				}
 
 			});
-	}
-
-	@After
-	public void tearDown() {
-		ReflectionTestUtil.setFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			_secretResolverSnapshot);
 	}
 
 	@Test
@@ -72,22 +64,21 @@ public class SourceDriverPasswordUtilTest {
 				identifier, RandomTestUtil.randomString(),
 				KeyReference.Type.SECRET));
 
-		String driverPassword = RandomTestUtil.randomString();
+		String resolvedDriverPassword = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_secretResolver.resolve(companyId, identifier, keyReferenceString)
 		).thenReturn(
-			driverPassword
+			resolvedDriverPassword
 		);
 
 		Assert.assertEquals(
-			driverPassword,
+			resolvedDriverPassword,
 			SourceDriverPasswordUtil.getDriverPassword(
 				companyId, keyReferenceString, sourceId));
 	}
 
 	private final SecretResolver _secretResolver = Mockito.mock(
 		SecretResolver.class);
-	private Snapshot<SecretResolver> _secretResolverSnapshot;
 
 }

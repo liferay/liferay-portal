@@ -73,16 +73,16 @@ public class MBMailingListPasswordUtilTest {
 				identifier, RandomTestUtil.randomString(),
 				KeyReference.Type.SECRET));
 
-		String password = RandomTestUtil.randomString();
+		String resolvedPassword = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_secretResolver.resolve(companyId, identifier, keyReferenceString)
 		).thenReturn(
-			password
+			resolvedPassword
 		);
 
 		Assert.assertEquals(
-			password,
+			resolvedPassword,
 			MBMailingListPasswordUtil.getPassword(
 				categoryId, companyId, name, keyReferenceString));
 	}

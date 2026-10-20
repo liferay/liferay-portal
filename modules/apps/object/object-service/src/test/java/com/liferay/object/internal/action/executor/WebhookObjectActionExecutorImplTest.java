@@ -38,6 +38,14 @@ public class WebhookObjectActionExecutorImplTest {
 
 	@Test
 	public void testExecute() throws Exception {
+		WebhookObjectActionExecutorImpl webhookObjectActionExecutorImpl =
+			new WebhookObjectActionExecutorImpl();
+
+		Http http = Mockito.mock(Http.class);
+
+		ReflectionTestUtil.setFieldValue(
+			webhookObjectActionExecutorImpl, "_http", http);
+
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
 
 		long companyId = RandomTestUtil.randomLong();
@@ -56,14 +64,6 @@ public class WebhookObjectActionExecutorImplTest {
 		).thenReturn(
 			resolvedSecret
 		);
-
-		WebhookObjectActionExecutorImpl webhookObjectActionExecutorImpl =
-			new WebhookObjectActionExecutorImpl();
-
-		Http http = Mockito.mock(Http.class);
-
-		ReflectionTestUtil.setFieldValue(
-			webhookObjectActionExecutorImpl, "_http", http);
 
 		ReflectionTestUtil.setFieldValue(
 			webhookObjectActionExecutorImpl, "_secretResolver", secretResolver);

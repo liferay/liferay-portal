@@ -63,21 +63,6 @@ public class CTCollectionModelListenerTest {
 			ctRemoteId
 		);
 
-		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
-
-		String resolvedClientSecret = RandomTestUtil.randomString();
-
-		Mockito.when(
-			secretResolver.resolve(
-				companyId,
-				StringBundler.concat(
-					CTRemote.class.getSimpleName(), StringPool.SLASH, companyId,
-					StringPool.SLASH, ctRemoteId, "/clientSecret"),
-				clientSecret)
-		).thenReturn(
-			resolvedClientSecret
-		);
-
 		CTCollectionModelListener ctCollectionModelListener =
 			new CTCollectionModelListener();
 
@@ -94,6 +79,22 @@ public class CTCollectionModelListenerTest {
 
 		ReflectionTestUtil.setFieldValue(
 			ctCollectionModelListener, "_jsonFactory", new JSONFactoryImpl());
+
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		String resolvedClientSecret = RandomTestUtil.randomString();
+
+		Mockito.when(
+			secretResolver.resolve(
+				companyId,
+				StringBundler.concat(
+					CTRemote.class.getSimpleName(), StringPool.SLASH, companyId,
+					StringPool.SLASH, ctRemoteId, "/clientSecret"),
+				clientSecret)
+		).thenReturn(
+			resolvedClientSecret
+		);
+
 		ReflectionTestUtil.setFieldValue(
 			ctCollectionModelListener, "_secretResolver", secretResolver);
 

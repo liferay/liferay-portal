@@ -25,7 +25,6 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -46,20 +45,19 @@ public class MBSubscriptionSenderTest {
 
 	@Before
 	public void setUp() {
-		_mbMailingListLocalServiceSnapshot =
-			ReflectionTestUtil.getAndSetFieldValue(
-				MBMailingListLocalServiceUtil.class, "_serviceSnapshot",
-				new Snapshot<MBMailingListLocalService>(
-					MBMailingListLocalServiceUtil.class,
-					MBMailingListLocalService.class) {
+		ReflectionTestUtil.setFieldValue(
+			MBMailingListLocalServiceUtil.class, "_serviceSnapshot",
+			new Snapshot<MBMailingListLocalService>(
+				MBMailingListLocalServiceUtil.class,
+				MBMailingListLocalService.class) {
 
-					@Override
-					public MBMailingListLocalService get() {
-						return _mbMailingListLocalService;
-					}
+				@Override
+				public MBMailingListLocalService get() {
+					return _mbMailingListLocalService;
+				}
 
-				});
-		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+			});
+		ReflectionTestUtil.setFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			new Snapshot<SecretResolver>(
 				SecretResolverUtil.class, SecretResolver.class) {
@@ -70,16 +68,6 @@ public class MBSubscriptionSenderTest {
 				}
 
 			});
-	}
-
-	@After
-	public void tearDown() {
-		ReflectionTestUtil.setFieldValue(
-			MBMailingListLocalServiceUtil.class, "_serviceSnapshot",
-			_mbMailingListLocalServiceSnapshot);
-		ReflectionTestUtil.setFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			_secretResolverSnapshot);
 	}
 
 	@Test
@@ -146,12 +134,12 @@ public class MBSubscriptionSenderTest {
 			mbMailingList
 		);
 
-		String password = RandomTestUtil.randomString();
+		String resolvedPassword = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_secretResolver.resolve(companyId, identifier, keyReferenceString)
 		).thenReturn(
-			password
+			resolvedPassword
 		);
 
 		MBSubscriptionSender mbSubscriptionSender = new MBSubscriptionSender();
@@ -161,7 +149,7 @@ public class MBSubscriptionSenderTest {
 		SMTPAccount smtpAccount = ReflectionTestUtil.getFieldValue(
 			mbSubscriptionSender, "smtpAccount");
 
-		Assert.assertEquals(password, smtpAccount.getPassword());
+		Assert.assertEquals(resolvedPassword, smtpAccount.getPassword());
 
 		Assert.assertTrue(mbSubscriptionSender.hasSubscribers());
 
@@ -195,10 +183,7 @@ public class MBSubscriptionSenderTest {
 
 	private final MBMailingListLocalService _mbMailingListLocalService =
 		Mockito.mock(MBMailingListLocalService.class);
-	private Snapshot<MBMailingListLocalService>
-		_mbMailingListLocalServiceSnapshot;
 	private final SecretResolver _secretResolver = Mockito.mock(
 		SecretResolver.class);
-	private Snapshot<SecretResolver> _secretResolverSnapshot;
 
 }
