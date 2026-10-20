@@ -9,6 +9,13 @@ describe('getEntityDisplay', () => {
 		});
 	});
 
+	it('returns Campaigns label and megaphone icon', () => {
+		expect(getEntityDisplay(Entity.Campaigns)).toEqual({
+			icon: 'megaphone',
+			label: 'Campaigns',
+		});
+	});
+
 	it('returns Events label and click icon', () => {
 		expect(getEntityDisplay(Entity.Events)).toEqual({
 			icon: 'click',
