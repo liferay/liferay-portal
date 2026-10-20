@@ -12,6 +12,7 @@ export default function addApprovedStructuredContent({
 	siteId,
 	tags,
 	title,
+	viewableBy,
 }: {
 	apiHelpers: ApiHelpers;
 	categoryIds?: number[];
@@ -19,6 +20,7 @@ export default function addApprovedStructuredContent({
 	siteId: string;
 	tags?: string[];
 	title: string;
+	viewableBy?: string;
 }): Promise<StructuredContent> {
 	return apiHelpers.headlessDelivery.postStructuredContent({
 		categoryIds,
@@ -27,5 +29,6 @@ export default function addApprovedStructuredContent({
 		siteId,
 		tags,
 		title,
+		viewableBy,
 	});
 }
