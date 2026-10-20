@@ -42,6 +42,29 @@ function buildResourceURL(resourceCommand: string): string {
 	return url.toString();
 }
 
+function getSelectedValue(selection: any) {
+	if (!selection) {
+		return null;
+	}
+
+	if (typeof selection.value === 'string') {
+		try {
+			return JSON.parse(selection.value);
+		}
+		catch (error) {
+			return null;
+		}
+	}
+
+	if (selection.value && typeof selection.value === 'object') {
+		return selection.value;
+	}
+
+	const [selectedValue] = Object.values(selection);
+
+	return selectedValue ?? null;
+}
+
 async function openInfoItemSelector(
 	handleSelectedEntity: (selected: any) => void
 ) {
@@ -62,13 +85,22 @@ async function openInfoItemSelector(
 		return;
 	}
 
-	openSelectionModal({
-		onSelect: (selection: any) => {
-			if (!selection) {
-				return;
-			}
+	const relayedEventName = `${eventName}NotEmpty`;
 
-			const selectedValue = JSON.parse(selection.value);
+	const eventHandler = Liferay.on(eventName, (event: any) => {
+		const selection = event.data || event;
+
+		if (!selection || !Object.keys(selection).length) {
+			return;
+		}
+
+		Liferay.fire(relayedEventName, {data: selection});
+	});
+
+	openSelectionModal({
+		onClose: () => eventHandler.detach(),
+		onSelect: (selection: any) => {
+			const selectedValue = getSelectedValue(selection);
 
 			if (!selectedValue) {
 				return;
@@ -76,7 +108,7 @@ async function openInfoItemSelector(
 
 			handleSelectedEntity(selectedValue);
 		},
-		selectEventName: eventName,
+		selectEventName: relayedEventName,
 		title: Liferay.Language.get('select-an-entity'),
 		url,
 	});

@@ -523,6 +523,97 @@ test(
 );
 
 test(
+	'Mapping a token to a selected entity accepts a category from the category tree',
+	{tag: '@LPD-110881'},
+	async ({
+		apiHelpers,
+		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
+		layout,
+		page,
+	}) => {
+		const taxonomyCategoryName = getRandomString();
+
+		const taxonomyVocabulary =
+			await apiHelpers.headlessAdminTaxonomy.postSiteTaxonomyVocabulary({
+				name: getRandomString(),
+				siteId: layout.groupId,
+			});
+
+		try {
+			await apiHelpers.headlessAdminTaxonomy.postTaxonomyVocabularyTaxonomyCategory(
+				{
+					name: taxonomyCategoryName,
+					vocabularyId: taxonomyVocabulary.id,
+				}
+			);
+
+			const dataSet =
+				await test.step('Create a data set with tokens in its API URL', async () =>
+					createTokenizedDataSet({
+						dataSetManagerApiHelpers,
+					}));
+
+			await test.step('Assign the data set and choose the entity mapping mode for {path}', async () => {
+				await dataSetFragmentPage.addDataSetFragment(layout);
+
+				await dataSetFragmentPage.selectDataSetButton.click();
+
+				await dataSetFragmentPage.selectDataSet(dataSet.label);
+
+				await dataSetFragmentPage.selectToken('path');
+
+				await dataSetFragmentPage.selectMappingMode(
+					MAPPING_MODE.CONTENT
+				);
+			});
+
+			const iframe = page.frameLocator(
+				'iframe[title="Select an Entity"]'
+			);
+
+			await test.step('Assert that opening the categories keeps the entity selector open', async () => {
+				await dataSetFragmentPage.tokenMappingSelectEntityButton.click();
+
+				await iframe
+					.getByRole('menuitem', {exact: true, name: 'Categories'})
+					.click();
+
+				await expect(
+					iframe.getByRole('heading', {name: 'Categories'})
+				).toBeVisible();
+			});
+
+			await test.step('Select the category and assert that it becomes the entity', async () => {
+				await iframe.getByText(taxonomyVocabulary.name).first().click();
+
+				await iframe
+					.getByText(taxonomyCategoryName, {exact: true})
+					.first()
+					.click();
+
+				await expect(
+					dataSetFragmentPage.tokenMappingEntityInput
+				).toHaveValue(taxonomyCategoryName);
+
+				await dataSetFragmentPage.tokenMappingFieldSelect.selectOption({
+					label: 'ID',
+				});
+
+				await expect(
+					dataSetFragmentPage.tokenMappingTokenStatusLabel
+				).toHaveText('Mapped');
+			});
+		}
+		finally {
+			await apiHelpers.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
+				taxonomyVocabulary.id
+			);
+		}
+	}
+);
+
+test(
 	'Mapping a token to the page context entity is offered on display page templates',
 	{tag: ['@LPD-93809', '@LPD-99359']},
 	async ({
