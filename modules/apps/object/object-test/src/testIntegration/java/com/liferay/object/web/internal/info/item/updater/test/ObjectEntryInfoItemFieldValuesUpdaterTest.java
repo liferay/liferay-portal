@@ -21,6 +21,7 @@ import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.RelatedInfoFieldValue;
 import com.liferay.info.field.type.FileInfoFieldType;
 import com.liferay.info.field.type.MultiselectInfoFieldType;
+import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.updater.InfoItemFieldValuesUpdater;
@@ -45,12 +46,14 @@ import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
+import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectEntryTreeFactory;
@@ -65,6 +68,7 @@ import com.liferay.portal.kernel.exception.InfoFormException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
@@ -83,6 +87,10 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
@@ -90,12 +98,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Carolina Barbosa
@@ -508,6 +523,78 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 	}
 
 	@Test
+	public void testUpdateFromInfoItemFieldValuesWithNestedManyToManyObjectRelationship()
+		throws Exception {
+
+		_testUpdateFromInfoItemFieldValuesWithNestedManyToManyObjectRelationship(
+			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT);
+		_testUpdateFromInfoItemFieldValuesWithNestedManyToManyObjectRelationship(
+			TestObjectEntryManager.STORAGE_TYPE);
+	}
+
+	@Test
+	public void testUpdateFromInfoItemFieldValuesWithNondefaultStorageType()
+		throws Exception {
+
+		TestObjectEntryManager testObjectEntryManager =
+			new TestObjectEntryManager();
+
+		ServiceRegistration<ObjectEntryManager> serviceRegistration = _register(
+			testObjectEntryManager);
+
+		ObjectDefinition objectDefinition = _publishObjectDefinition(
+			Collections.singletonList(
+				new TextObjectFieldBuilder(
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					"name"
+				).build()),
+			TestObjectEntryManager.STORAGE_TYPE);
+
+		ObjectEntry objectEntry = objectEntryLocalService.createObjectEntry(0);
+
+		objectEntry.setExternalReferenceCode(RandomTestUtil.randomString());
+		objectEntry.setCompanyId(TestPropsValues.getCompanyId());
+		objectEntry.setObjectDefinitionId(
+			objectDefinition.getObjectDefinitionId());
+		objectEntry.setValues(new HashMap<>());
+
+		String value = RandomTestUtil.randomString();
+
+		_updateFromInfoItemFieldValues(
+			InfoItemFieldValues.builder(
+			).infoFieldValue(
+				new InfoFieldValue<>(
+					InfoField.builder(
+					).infoFieldType(
+						TextInfoFieldType.INSTANCE
+					).namespace(
+						ObjectField.class.getSimpleName()
+					).name(
+						"name"
+					).build(),
+					value)
+			).build(),
+			objectDefinition, objectEntry);
+
+		com.liferay.object.rest.dto.v1_0.ObjectEntry dtoObjectEntry =
+			testObjectEntryManager.getDTOObjectEntry();
+
+		Assert.assertEquals(
+			objectEntry.getExternalReferenceCode(),
+			dtoObjectEntry.getExternalReferenceCode());
+
+		Map<String, Object> properties = dtoObjectEntry.getProperties();
+
+		Assert.assertEquals(value, properties.get("name"));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		serviceRegistration.unregister();
+	}
+
+	@Test
 	public void testUpdateFromInfoItemFieldValuesWithObjectRelationship()
 		throws Exception {
 
@@ -849,6 +936,38 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			objectEntryFolder.getObjectEntryFolderId());
 	}
 
+	private ObjectDefinition _publishObjectDefinition(
+			List<ObjectField> objectFields, String storageType)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.addCustomObjectDefinition(
+				null, TestPropsValues.getUserId(), 0, null, null, false, false,
+				true, false, true, false, false, false, false, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionTestUtil.getRandomName(), null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				true, ObjectDefinitionConstants.SCOPE_COMPANY, storageType,
+				Collections.emptyList(), objectFields, Collections.emptyList(),
+				ServiceContextTestUtil.getServiceContext());
+
+		return _objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId());
+	}
+
+	private ServiceRegistration<ObjectEntryManager> _register(
+		ObjectEntryManager objectEntryManager) {
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			ObjectEntryInfoItemFieldValuesUpdaterTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		return bundleContext.registerService(
+			ObjectEntryManager.class, objectEntryManager, null);
+	}
+
 	private void _testUpdateFromInfoItemFieldValuesWithAttachmentObjectField(
 			boolean showFilesInLibrary, String storageDLFolderPath)
 		throws Exception {
@@ -1033,6 +1152,183 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
+	private void
+			_testUpdateFromInfoItemFieldValuesWithNestedManyToManyObjectRelationship(
+				String storageType)
+		throws Exception {
+
+		TestObjectEntryManager testObjectEntryManager =
+			new TestObjectEntryManager();
+
+		ServiceRegistration<ObjectEntryManager> serviceRegistration = _register(
+			testObjectEntryManager);
+
+		ObjectDefinition childObjectDefinition = _publishObjectDefinition(
+			Collections.singletonList(
+				new TextObjectFieldBuilder(
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					"text"
+				).build()),
+			storageType);
+		ObjectDefinition parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"text"
+					).build()));
+		ObjectDefinition relatedObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"text"
+					).build()));
+
+		String namespace = ObjectEntryInfoItemUtil.getInfoFieldNamespace(
+			childObjectDefinition,
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, parentObjectDefinition,
+				childObjectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY));
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, childObjectDefinition,
+				relatedObjectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectEntry parentObjectEntry = ObjectEntryTestUtil.addObjectEntry(
+			0, parentObjectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"text", RandomTestUtil.randomString()
+			).build());
+		ObjectEntry relatedObjectEntry = ObjectEntryTestUtil.addObjectEntry(
+			0, relatedObjectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"text", RandomTestUtil.randomString()
+			).build());
+
+		RelatedInfoFieldValue.RelatedInfoFieldValueIdentifier
+			relatedInfoFieldValueIdentifier =
+				new RelatedInfoFieldValue.RelatedInfoFieldValueIdentifier(
+					StringUtil.randomId(),
+					parentObjectEntry.getExternalReferenceCode());
+		InfoField<RelationshipInfoFieldType> relationshipInfoField =
+			InfoField.builder(
+			).infoFieldType(
+				RelationshipInfoFieldType.INSTANCE
+			).namespace(
+				namespace
+			).name(
+				ObjectRelationshipConstants.
+					OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX +
+						objectRelationship.getName()
+			).attribute(
+				RelationshipInfoFieldType.MULTIPLE, true
+			).build();
+		InfoField<TextInfoFieldType> textInfoField = InfoField.builder(
+		).infoFieldType(
+			TextInfoFieldType.INSTANCE
+		).namespace(
+			namespace
+		).name(
+			"text"
+		).build();
+
+		_updateFromInfoItemFieldValues(
+			InfoItemFieldValues.builder(
+			).infoFieldValue(
+				new InfoFieldValue<>(
+					InfoField.builder(
+					).infoFieldType(
+						TextInfoFieldType.INSTANCE
+					).namespace(
+						ObjectField.class.getSimpleName()
+					).name(
+						"text"
+					).build(),
+					RandomTestUtil.randomString())
+			).infoFieldValue(
+				new InfoFieldValue<>(
+					relationshipInfoField,
+					new RelatedInfoFieldValue<>(
+						HashMapBuilder.
+							<RelatedInfoFieldValue.
+								RelatedInfoFieldValueIdentifier,
+							 InfoFieldValue<Object>>put(
+								relatedInfoFieldValueIdentifier,
+								new InfoFieldValue<>(
+									relationshipInfoField,
+									Collections.singletonList(
+										String.valueOf(
+											relatedObjectEntry.
+												getObjectEntryId())))
+							).build()))
+			).infoFieldValue(
+				new InfoFieldValue<>(
+					textInfoField,
+					new RelatedInfoFieldValue<>(
+						HashMapBuilder.
+							<RelatedInfoFieldValue.
+								RelatedInfoFieldValueIdentifier,
+							 InfoFieldValue<Object>>put(
+								relatedInfoFieldValueIdentifier,
+								new InfoFieldValue<>(
+									textInfoField,
+									RandomTestUtil.randomString())
+							).build()))
+			).build(),
+			parentObjectDefinition, parentObjectEntry);
+
+		if (childObjectDefinition.isDefaultStorageType()) {
+			ObjectEntry childObjectEntry = _getObjectEntry(
+				relatedInfoFieldValueIdentifier.getExternalReferenceCode(),
+				childObjectDefinition.getName());
+
+			List<ObjectEntry> objectEntries =
+				objectEntryLocalService.getManyToManyObjectEntries(
+					childObjectEntry.getGroupId(),
+					objectRelationship.getObjectRelationshipId(),
+					childObjectEntry.getObjectEntryId(), true, false, null,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				objectEntries.toString(), 1, objectEntries.size());
+
+			ObjectEntry objectEntry = objectEntries.get(0);
+
+			Assert.assertEquals(
+				relatedObjectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryId());
+		}
+		else {
+			com.liferay.object.rest.dto.v1_0.ObjectEntry dtoObjectEntry =
+				testObjectEntryManager.getDTOObjectEntry();
+
+			Assert.assertEquals(
+				relatedInfoFieldValueIdentifier.getExternalReferenceCode(),
+				dtoObjectEntry.getExternalReferenceCode());
+		}
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			childObjectDefinition);
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			parentObjectDefinition);
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			relatedObjectDefinition);
+
+		serviceRegistration.unregister();
+	}
+
 	private void _updateFromInfoItemFieldValues(
 			InfoItemFieldValues infoItemFieldValues,
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
@@ -1079,5 +1375,84 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 
 	@Inject
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
+
+	private static class TestObjectEntryManager implements ObjectEntryManager {
+
+		public static final String STORAGE_TYPE = RandomTestUtil.randomString();
+
+		@Override
+		public com.liferay.object.rest.dto.v1_0.ObjectEntry addObjectEntry(
+			DTOConverterContext dtoConverterContext,
+			ObjectDefinition objectDefinition,
+			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry,
+			String scopeKey) {
+
+			return objectEntry;
+		}
+
+		@Override
+		public void deleteObjectEntry(
+			long companyId, DTOConverterContext dtoConverterContext,
+			String externalReferenceCode, ObjectDefinition objectDefinition,
+			String scopeKey) {
+		}
+
+		public com.liferay.object.rest.dto.v1_0.ObjectEntry
+			getDTOObjectEntry() {
+
+			return _dtoObjectEntry;
+		}
+
+		@Override
+		public Page<com.liferay.object.rest.dto.v1_0.ObjectEntry>
+			getObjectEntries(
+				long companyId, ObjectDefinition objectDefinition,
+				String scopeKey, Aggregation aggregation,
+				DTOConverterContext dtoConverterContext, String filterString,
+				Pagination pagination, String search, Sort[] sorts) {
+
+			return Page.of(Collections.emptyList());
+		}
+
+		@Override
+		public com.liferay.object.rest.dto.v1_0.ObjectEntry getObjectEntry(
+			long companyId, DTOConverterContext dtoConverterContext,
+			String externalReferenceCode, ObjectDefinition objectDefinition,
+			String scopeKey) {
+
+			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
+				new com.liferay.object.rest.dto.v1_0.ObjectEntry();
+
+			objectEntry.setExternalReferenceCode(externalReferenceCode);
+			objectEntry.setProperties(new HashMap<>());
+
+			return objectEntry;
+		}
+
+		@Override
+		public String getStorageLabel(Locale locale) {
+			return RandomTestUtil.randomString();
+		}
+
+		@Override
+		public String getStorageType() {
+			return STORAGE_TYPE;
+		}
+
+		@Override
+		public com.liferay.object.rest.dto.v1_0.ObjectEntry updateObjectEntry(
+			long companyId, DTOConverterContext dtoConverterContext,
+			String externalReferenceCode, ObjectDefinition objectDefinition,
+			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry,
+			String scopeKey) {
+
+			_dtoObjectEntry = objectEntry;
+
+			return objectEntry;
+		}
+
+		private com.liferay.object.rest.dto.v1_0.ObjectEntry _dtoObjectEntry;
+
+	}
 
 }
