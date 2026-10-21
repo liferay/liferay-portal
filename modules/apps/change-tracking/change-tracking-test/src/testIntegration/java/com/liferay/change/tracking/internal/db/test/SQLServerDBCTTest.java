@@ -110,6 +110,62 @@ public class SQLServerDBCTTest {
 	}
 
 	@Test
+	public void testPublishCTCollectionWithDeletions() throws Exception {
+		long parentCTSChildId = 0;
+
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			parentCTSChildId = CTSampleTestUtil.addCTSChild();
+
+			CTSampleTestUtil.addCTSChild(
+				0, parentCTSChildId, null, _BATCH_SIZE_HIBERNATE);
+		}
+
+		List<CTSChild> ctsChildren =
+			_ctsChildLocalService.getCTSChildrenByParentCTSChildId(
+				parentCTSChildId);
+
+		try (LoggingTimer loggingTimer = new LoggingTimer();
+			SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			for (CTSChild ctsChild : ctsChildren) {
+				_ctsChildLocalService.deleteCTSChild(ctsChild);
+			}
+		}
+
+		for (CTSChild ctsChild : ctsChildren.subList(0, 5)) {
+			_ctsChildLocalService.deleteCTSChild(ctsChild);
+		}
+
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			_ctCollectionService.publishCTCollection(
+				TestPropsValues.getUserId(), _ctCollection.getCtCollectionId());
+		}
+
+		_ctCollection = _ctCollectionLocalService.getCTCollection(
+			_ctCollection.getCtCollectionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, _ctCollection.getStatus());
+
+		try (LoggingTimer loggingTimer = new LoggingTimer();
+
+			Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select * from CTSChild where ctCollectionId = 0 and " +
+					"parentCTSChildId = ?")) {
+
+			preparedStatement.setLong(1, parentCTSChildId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertFalse(resultSet.next());
+			}
+		}
+	}
+
+	@Test
 	public void testPublishCTCollectionWithOver2000CTEntries()
 		throws Exception {
 
