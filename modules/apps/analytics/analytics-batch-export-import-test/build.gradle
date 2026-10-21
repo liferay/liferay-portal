@@ -1,6 +1,7 @@
 dependencies {
 	testIntegrationImplementation project(":apps:analytics:analytics-batch-export-import-api")
 	testIntegrationImplementation project(":apps:analytics:analytics-dxp-entity-rest-api")
+	testIntegrationImplementation project(":apps:analytics:analytics-message-storage-api")
 	testIntegrationImplementation project(":apps:analytics:analytics-settings-api")
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:dispatch:dispatch-api")
