@@ -47,7 +47,6 @@ export default function DataSelectionStep({
 			)}
 
 			<SectionHeader
-				className="mt-5"
 				id={labelId}
 				subtitle={Liferay.Language.get(
 					'select-the-data-from-your-file-that-you-would-like-to-import'

@@ -90,10 +90,7 @@ export default function PublishScheduler({
 
 	return (
 		<>
-			<SectionHeader
-				className="mt-5"
-				title={Liferay.Language.get('when-to-publish')}
-			/>
+			<SectionHeader title={Liferay.Language.get('when-to-publish')} />
 
 			<ClayForm.Group>
 				<FieldRadio

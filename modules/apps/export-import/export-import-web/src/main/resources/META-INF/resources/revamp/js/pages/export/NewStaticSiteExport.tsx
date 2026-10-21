@@ -114,10 +114,7 @@ export function NewStaticSiteExport({
 						)}
 					/>
 
-					<SectionHeader
-						className="mt-4"
-						title={Liferay.Language.get('languages')}
-					/>
+					<SectionHeader title={Liferay.Language.get('languages')} />
 
 					<ClayLayout.Sheet>
 						<ClayMultiSelect
@@ -164,10 +161,7 @@ export function NewStaticSiteExport({
 						</ClayMultiSelect>
 					</ClayLayout.Sheet>
 
-					<SectionHeader
-						className="mt-4"
-						title={Liferay.Language.get('pages')}
-					/>
+					<SectionHeader title={Liferay.Language.get('pages')} />
 
 					<ClayLayout.Sheet>
 						<ClayCheckbox

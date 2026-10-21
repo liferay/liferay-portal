@@ -72,10 +72,7 @@ export default function FileSelectionStep({
 
 	return (
 		<>
-			<SectionHeader
-				className="mt-5"
-				title={Liferay.Language.get('import-details')}
-			/>
+			<SectionHeader title={Liferay.Language.get('import-details')} />
 
 			<FormikFieldText
 				label={Liferay.Language.get('name')}
@@ -84,7 +81,6 @@ export default function FileSelectionStep({
 			/>
 
 			<SectionHeader
-				className="mt-5"
 				id="fileSelector-label"
 				subtitle={Liferay.Language.get(
 					'select-and-upload-your-prepared-file'

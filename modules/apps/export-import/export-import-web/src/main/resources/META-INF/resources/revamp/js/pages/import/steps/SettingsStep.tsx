@@ -60,7 +60,6 @@ export default function SettingsStep({scope}: {scope: Scope}) {
 	return (
 		<>
 			<SectionHeader
-				className="mt-5"
 				id="userIdStrategy-label"
 				title={Liferay.Language.get('authorship-of-the-content')}
 			/>
@@ -89,7 +88,6 @@ export default function SettingsStep({scope}: {scope: Scope}) {
 			/>
 
 			<SectionHeader
-				className="mt-5"
 				id="dataStrategy-label"
 				title={Liferay.Language.get('update-data')}
 			/>

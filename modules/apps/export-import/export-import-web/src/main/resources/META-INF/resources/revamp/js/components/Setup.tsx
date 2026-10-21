@@ -17,7 +17,7 @@ export default function Setup({
 }) {
 	return (
 		<>
-			<SectionHeader title={title} />
+			<SectionHeader first title={title} />
 
 			<FormikFieldText
 				label={Liferay.Language.get('name')}
