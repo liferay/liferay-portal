@@ -440,6 +440,7 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 			testGroup.getGroupId(), searchResult.getTitle(),
 			searchResult.getDescription());
 
+		searchResult.setDateCreated(journalArticle.getCreateDate());
 		searchResult.setDateModified(journalArticle.getModifiedDate());
 
 		return searchResult;
