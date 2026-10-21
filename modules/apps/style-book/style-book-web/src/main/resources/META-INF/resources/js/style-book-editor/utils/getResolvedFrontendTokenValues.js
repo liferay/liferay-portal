@@ -5,7 +5,7 @@
 
 import {getFrontendTokenValue} from './getFrontendTokenValue';
 
-export function getResolvedFrontendTokensValues(frontendTokensValues) {
+export function getResolvedFrontendTokenValues(frontendTokensValues) {
 	return Object.fromEntries(
 		Object.entries(frontendTokensValues).map(
 			([name, frontendTokenValue]) => [

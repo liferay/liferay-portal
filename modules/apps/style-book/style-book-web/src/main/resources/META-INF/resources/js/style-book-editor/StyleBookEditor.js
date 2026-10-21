@@ -18,7 +18,7 @@ import {useCloseProductMenu} from './useCloseProductMenu';
 import {getFrontendTokenDefinitionsFactory} from './utils/getFrontendTokenDefinitionsFactory';
 import {getFrontendTokenValuesSorter} from './utils/getFrontendTokenValuesSorter';
 import {getFrontendTokensFactory} from './utils/getFrontendTokensFactory';
-import {getResolvedFrontendTokensValues} from './utils/getResolvedFrontendTokensValues';
+import {getResolvedFrontendTokenValues} from './utils/getResolvedFrontendTokenValues';
 
 const StyleBookEditor = React.memo(() => {
 	useCloseProductMenu();
@@ -96,7 +96,7 @@ export default function ({
 		redirectURL,
 		resolveFrontendTokenValues: (frontendTokensValues) =>
 			sortFrontendTokenValues(
-				getResolvedFrontendTokensValues(frontendTokensValues)
+				getResolvedFrontendTokenValues(frontendTokensValues)
 			),
 		saveDraftURL,
 		styleBookEntryId,
