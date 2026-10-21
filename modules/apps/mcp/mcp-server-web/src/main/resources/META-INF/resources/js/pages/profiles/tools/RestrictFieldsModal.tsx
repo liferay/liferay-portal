@@ -9,13 +9,14 @@ import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayManagementToolbar from '@clayui/management-toolbar';
 import ClayModal from '@clayui/modal';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import AutoSearch from '../../../components/AutoSearch';
 import CountBadge from '../../../components/CountBadge';
 import FilterResultsStatus from '../../../components/FilterResultsStatus';
 import Highlight from '../../../components/Highlight';
 import SelectedItemsBar from '../../../components/SelectedItemsBar';
+import useTreeFilter from '../../../hooks/useTreeFilter';
 import {getTool} from '../../../services/getTool';
 import {patchProfileTool} from '../../../services/patchProfileTool';
 import {ProfileTool} from '../../../types';
@@ -46,21 +47,27 @@ export default function RestrictFieldsModal({
 	const [expandedKeys, setExpandedKeys] = useState<Set<React.Key>>(new Set());
 	const [items, setItems] = useState<FieldTreeItem[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [query, setQuery] = useState('');
 	const [saving, setSaving] = useState(false);
 	const [selectedKeys, setSelectedKeys] = useState<Set<React.Key>>(new Set());
 	const [treeVersion, setTreeVersion] = useState(0);
 
-	const expandedKeysBeforeFilterRef = useRef<Set<React.Key> | null>(null);
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const treeRef = useRef<HTMLDivElement>(null);
 
-	const trimmedQuery = query.trim();
-
-	const {matchCount, visibleKeys} = useMemo(
-		() => filterFieldTree(items, trimmedQuery),
-		[items, trimmedQuery]
-	);
+	const {
+		getRowClassName,
+		isVisible,
+		matchCount,
+		onSearch,
+		query,
+		trimmedQuery,
+	} = useTreeFilter({
+		expandedKeys,
+		filter: filterFieldTree,
+		items,
+		onExpandedChange: setExpandedKeys,
+		restoreExpansion: true,
+	});
 
 	useEffect(() => {
 		if (treeVersion) {
@@ -111,24 +118,6 @@ export default function RestrictFieldsModal({
 		setTreeVersion((previousVersion) => previousVersion + 1);
 	};
 
-	const onSearch = (value: string) => {
-		setQuery(value);
-
-		if (!value.trim()) {
-			setExpandedKeys(
-				expandedKeysBeforeFilterRef.current ?? expandedKeys
-			);
-
-			expandedKeysBeforeFilterRef.current = null;
-
-			return;
-		}
-
-		expandedKeysBeforeFilterRef.current ??= expandedKeys;
-
-		setExpandedKeys(filterFieldTree(items, value).expandedKeys);
-	};
-
 	const save = async () => {
 		setSaving(true);
 
@@ -149,12 +138,6 @@ export default function RestrictFieldsModal({
 		onSaved();
 		onClose();
 	};
-
-	const isVisible = (item: FieldTreeItem) =>
-		!trimmedQuery || visibleKeys.has(item.id);
-
-	const getRowClassName = (item: FieldTreeItem) =>
-		isVisible(item) ? undefined : 'd-none';
 
 	const isExpandable = (item: FieldTreeItem) =>
 		!!item.children?.length && item.children.some(isVisible);

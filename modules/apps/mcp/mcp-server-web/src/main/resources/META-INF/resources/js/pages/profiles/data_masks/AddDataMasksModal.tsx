@@ -15,6 +15,7 @@ import CountBadge from '../../../components/CountBadge';
 import FilterResultsStatus from '../../../components/FilterResultsStatus';
 import Highlight from '../../../components/Highlight';
 import SelectedItemsBar from '../../../components/SelectedItemsBar';
+import useTreeFilter from '../../../hooks/useTreeFilter';
 import {postProfileDataMask} from '../../../services/postProfileDataMask';
 import {DataMask} from '../../../types';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
@@ -45,34 +46,22 @@ export default function AddDataMasksModal({
 	const [expandedKeys, setExpandedKeys] = useState<Set<React.Key>>(
 		() => new Set(tree.map((group) => group.id))
 	);
-	const [query, setQuery] = useState('');
 	const [saving, setSaving] = useState(false);
 	const [selectedKeys, setSelectedKeys] = useState<Set<React.Key>>(new Set());
 
-	const trimmedQuery = query.trim();
-
-	const {matchCount, visibleKeys} = useMemo(
-		() => filterDataMaskTree(tree, trimmedQuery),
-		[tree, trimmedQuery]
-	);
+	const {getRowClassName, matchCount, onSearch, query, trimmedQuery} =
+		useTreeFilter({
+			expandedKeys,
+			filter: filterDataMaskTree,
+			items: tree,
+			onExpandedChange: setExpandedKeys,
+		});
 
 	const selectedExternalReferenceCodes =
 		getSelectedDataMaskExternalReferenceCodes(
 			tree,
 			selectedKeys as Set<string | number>
 		);
-
-	const onSearch = (value: string) => {
-		setQuery(value);
-
-		setExpandedKeys(filterDataMaskTree(tree, value).expandedKeys);
-	};
-
-	const isVisible = (item: DataMaskTreeItem) =>
-		!trimmedQuery || visibleKeys.has(item.id);
-
-	const getRowClassName = (item: DataMaskTreeItem) =>
-		isVisible(item) ? undefined : 'd-none';
 
 	const addSelected = async () => {
 		setSaving(true);
