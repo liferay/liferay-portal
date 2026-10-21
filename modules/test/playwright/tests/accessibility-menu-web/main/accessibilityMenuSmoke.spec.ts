@@ -72,6 +72,10 @@ async function expectAccessibilityMenuToBeAvailableFromUserProfileMenu(
 		await expect(accessibilityModal).toBeHidden();
 	}
 	else if (expectedStatus === 'hidden') {
+		await expect(
+			page.getByRole('menuitem', {name: 'Sign Out'})
+		).toBeVisible();
+
 		await expect(accessibilityMenuItem).toBeHidden();
 
 		await page.keyboard.press('Escape');
@@ -85,6 +89,23 @@ async function expectAccessibilityMenuToBeAvailableFromKeyboard(
 
 	await accessibilityMenuPage.closeButton.click();
 }
+
+test.afterEach(async ({accessibilityMenuPage, systemSettingsPage}) => {
+	await systemSettingsPage.goToSystemSetting(
+		SETTING_CATEGORY_KEY,
+		SETTING_CONFIGURATION_NAME
+	);
+
+	await expect(
+		accessibilityMenuPage.enableAccessibilityMenuCheckbox
+	).toBeVisible();
+
+	if (
+		await accessibilityMenuPage.enableAccessibilityMenuCheckbox.isChecked()
+	) {
+		await systemSettingsPage.resetToDefaultValues();
+	}
+});
 
 test(
 	'Verifies that the user can enable it by Site Settings',
