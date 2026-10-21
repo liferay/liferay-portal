@@ -3216,7 +3216,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.sidecar.agent.jar!asm.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>org.objectweb.asm</project-name>
 				<project-url>http://asm.ow2.org</project-url>
 				<licenses>
@@ -5763,7 +5763,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.asm.jar!asm-analysis.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>org.objectweb.asm.tree.analysis</project-name>
 				<project-url>http://asm.ow2.org</project-url>
 				<licenses>
@@ -5775,7 +5775,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.asm.jar!asm-commons.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>org.objectweb.asm.commons</project-name>
 				<project-url>http://asm.ow2.org</project-url>
 				<licenses>
@@ -5787,7 +5787,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.asm.jar!asm-tree.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>org.objectweb.asm.tree</project-name>
 				<project-url>http://asm.ow2.org</project-url>
 				<licenses>
@@ -5799,7 +5799,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.asm.jar!asm-util.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>org.objectweb.asm.util</project-name>
 				<project-url>http://asm.ow2.org</project-url>
 				<licenses>
@@ -5811,7 +5811,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.asm.jar!asm.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>org.objectweb.asm</project-name>
 				<project-url>http://asm.ow2.org</project-url>
 				<licenses>
@@ -7954,7 +7954,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/asm-commons.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>ASM</project-name>
 				<project-url>http://asm.ow2.io</project-url>
 				<licenses>
@@ -7966,7 +7966,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/asm-tree.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>ASM</project-name>
 				<project-url>http://asm.ow2.io</project-url>
 				<licenses>
@@ -7978,7 +7978,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/asm.jar</file-name>
-				<version>9.7</version>
+				<version>9.11.1</version>
 				<project-name>ASM</project-name>
 				<project-url>http://asm.ow2.io</project-url>
 				<licenses>
