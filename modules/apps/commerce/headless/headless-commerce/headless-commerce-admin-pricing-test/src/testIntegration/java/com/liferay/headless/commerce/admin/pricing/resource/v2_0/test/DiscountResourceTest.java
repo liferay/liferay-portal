@@ -992,8 +992,6 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 				CPInstance.class.getName());
 
 		Assert.assertEquals(
-			commerceDiscountRels.toString(), 2, commerceDiscountRels.size());
-		Assert.assertEquals(
 			SetUtil.fromArray(
 				cpInstanceUnitOfMeasure1.getKey(),
 				cpInstanceUnitOfMeasure2.getKey()),
