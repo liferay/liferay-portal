@@ -77,7 +77,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.ow2.asm", name: "asm", version: "9.7"
+	compileOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
 	compileOnly group: "org.reactivestreams", name: "reactive-streams", version: "1.0.4"
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")

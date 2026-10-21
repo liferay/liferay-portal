@@ -51,7 +51,7 @@ dependencies {
 	compileOnly group: "org.codehaus.woodstox", name: "stax2-api", version: "4.2.2"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.ow2.asm", name: "asm", version: "9.7"
+	compileOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
 	compileOnly group: "org.reactivestreams", name: "reactive-streams", version: "1.0.4"
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-string")

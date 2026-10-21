@@ -8,7 +8,7 @@ dependencies {
 	compileOnly group: "org.jodd", name: "jodd-json", version: "6.0.3"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.ow2.asm", name: "asm", version: "9.7"
+	compileOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
 	compileOnly group: "org.springframework", name: "spring-web", version: "6.2.19"
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:portal-remote:portal-remote-json-web-service-api")

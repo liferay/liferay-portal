@@ -56,7 +56,7 @@ dependencies {
 	implementation group: "net.saliman", name: "gradle-properties-plugin", version: "1.4.6"
 
 	runtimeOnly group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.19"
-	runtimeOnly group: "org.ow2.asm", name: "asm", version: "9.7"
+	runtimeOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
 }
 
 downloadNodeInfo {
