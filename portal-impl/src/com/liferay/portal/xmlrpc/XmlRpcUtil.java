@@ -112,6 +112,7 @@ public class XmlRpcUtil {
 			}
 
 			options.setBody(requestXML, ContentTypes.TEXT_XML, StringPool.UTF8);
+			options.setFollowRedirects(false);
 			options.setLocation(url);
 			options.setPost(true);
 
