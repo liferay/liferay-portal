@@ -743,7 +743,7 @@ public class CollaboratorResourceTest {
 	}
 
 	@Test
-	@TestInfo("LPD-48130")
+	@TestInfo({"LPD-48130", "LPD-110883"})
 	public void testPostObjectEntryCollaboratorsPage() throws Exception {
 		JSONObject collaboratorJSONObject1 = _getUserCollaboratorJSONObject();
 		JSONObject collaboratorJSONObject2 =
@@ -1024,6 +1024,58 @@ public class CollaboratorResourceTest {
 				_classNameLocalService.getClassNameId(
 					objectEntry.getModelClassName()),
 				objectEntry.getObjectEntryId()));
+
+		String password = RandomTestUtil.randomString();
+
+		User user4 = _addRoleUser(password);
+
+		objectEntry = _addObjectEntry(user4.getUserId());
+
+		String endpoint = StringBundler.concat(
+			_objectDefinition.getRESTContextPath(), StringPool.SLASH,
+			objectEntry.getObjectEntryId(), "/collaborators");
+
+		HTTPTestUtil.customize(
+		).withCredentials(
+			user4.getEmailAddress(), password
+		).apply(
+			() -> {
+				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+					JSONUtil.put(
+						_getUserCollaboratorJSONObject(user3)
+					).toString(),
+					endpoint, Http.Method.POST);
+
+				Assert.assertEquals(
+					"NOT_FOUND", jsonObject.getString("status"));
+			}
+		);
+
+		long classNameId = _classNameLocalService.getClassNameId(
+			objectEntry.getModelClassName());
+
+		Assert.assertNull(
+			_sharingEntryLocalService.fetchSharingEntry(
+				0, 0, user3.getUserId(), classNameId,
+				objectEntry.getObjectEntryId()));
+
+		HTTPTestUtil.customize(
+		).withCredentials(
+			user4.getEmailAddress(), password
+		).apply(
+			() -> HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					_getEmailCollaboratorJSONObject(user3.getEmailAddress())
+				).toString(),
+				endpoint, Http.Method.POST)
+		);
+
+		Assert.assertNotNull(
+			_sharingEntryLocalService.fetchSharingEntry(
+				0, 0, user3.getUserId(), classNameId,
+				objectEntry.getObjectEntryId()));
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 	}
 
 	@Test
@@ -1155,21 +1207,58 @@ public class CollaboratorResourceTest {
 	}
 
 	@Test
-	@TestInfo("LPD-48130")
+	@TestInfo({"LPD-48130", "LPD-110883"})
 	public void testPutObjectEntryCollaboratorByTypeCollaborator()
 		throws Exception {
 
-		ObjectEntry objectEntry = _addObjectEntry();
+		ObjectEntry objectEntry1 = _addObjectEntry();
 
 		UserGroup userGroup = _addUserGroup();
 
 		_assertPutObjectEntryCollaborator(
 			StringBundler.concat(
 				_objectDefinition.getRESTContextPath(), StringPool.SLASH,
-				objectEntry.getObjectEntryId(),
+				objectEntry1.getObjectEntryId(),
 				"/collaborators/by-type/UserGroup/",
 				userGroup.getUserGroupId()),
 			userGroup);
+
+		String password = RandomTestUtil.randomString();
+
+		User user1 = _addUser();
+
+		User user2 = _addRoleUser(password);
+
+		ObjectEntry objectEntry2 = _addObjectEntry(user2.getUserId());
+
+		HTTPTestUtil.customize(
+		).withCredentials(
+			user2.getEmailAddress(), password
+		).apply(
+			() -> {
+				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+					_getUserCollaboratorJSONObject(
+						user1
+					).toString(),
+					StringBundler.concat(
+						_objectDefinition.getRESTContextPath(),
+						StringPool.SLASH, objectEntry2.getObjectEntryId(),
+						"/collaborators/by-type/User/", user1.getUserId()),
+					Http.Method.PUT);
+
+				Assert.assertEquals(
+					"NOT_FOUND", jsonObject.getString("status"));
+			}
+		);
+
+		Assert.assertNull(
+			_sharingEntryLocalService.fetchSharingEntry(
+				0, 0, user1.getUserId(),
+				_classNameLocalService.getClassNameId(
+					objectEntry2.getModelClassName()),
+				objectEntry2.getObjectEntryId()));
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry2);
 	}
 
 	@Test
@@ -1243,14 +1332,48 @@ public class CollaboratorResourceTest {
 	}
 
 	private ObjectEntry _addObjectEntry() throws Exception {
+		return _addObjectEntry(TestPropsValues.getUserId());
+	}
+
+	private ObjectEntry _addObjectEntry(long userId) throws Exception {
 		return _objectEntryLocalService.addObjectEntry(
-			_group.getGroupId(), TestPropsValues.getUserId(),
+			_group.getGroupId(), userId,
 			_objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				"title", RandomTestUtil.randomString()
 			).build(),
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+				_group.getGroupId(), userId));
+	}
+
+	private User _addRoleUser(String password) throws Exception {
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			_role, _objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.UPDATE);
+		RoleTestUtil.addResourcePermission(
+			_role, _objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext());
+
+		user.setEmailAddressVerified(true);
+
+		user = _userLocalService.updateUser(user);
+
+		_users.add(user);
+
+		_userLocalService.addRoleUser(_role.getRoleId(), user.getUserId());
+
+		return user;
 	}
 
 	private User _addUser() throws Exception {
