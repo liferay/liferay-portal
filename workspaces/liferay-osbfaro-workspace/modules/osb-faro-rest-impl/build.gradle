@@ -9,6 +9,7 @@ dependencies {
 	testImplementation group: "com.liferay", name: "com.liferay.portal.vulcan.impl", version: "5.0.157"
 	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.12.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.12.JAKARTA-LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	testImplementation group: "junit", name: "junit", version: "4.13.1"

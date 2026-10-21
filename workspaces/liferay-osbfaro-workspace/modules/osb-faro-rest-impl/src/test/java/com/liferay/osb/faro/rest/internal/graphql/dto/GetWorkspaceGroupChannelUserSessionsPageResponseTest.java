@@ -7,12 +7,18 @@ package com.liferay.osb.faro.rest.internal.graphql.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+
 import java.time.Instant;
 
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -20,18 +26,35 @@ import org.junit.Test;
  */
 public class GetWorkspaceGroupChannelUserSessionsPageResponseTest {
 
+	@Before
+	public void setUp() {
+		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
+
+		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+	}
+
 	@Test
 	public void testDeserialize() throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 
+		JSONObject jsonObject = JSONUtil.put(
+			"userSessionBag",
+			JSONUtil.put(
+				"totalPageGroupsMetric", JSONUtil.put("value", 7.0)
+			).put(
+				"userSessions",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"completeDate", "Tue Oct 20 06:52:32 GMT 2026"
+					).put(
+						"createDate", "Tue Oct 20 06:41:05 GMT 2026"
+					))
+			));
+
 		GetWorkspaceGroupChannelUserSessionsPageResponse
 			getWorkspaceGroupChannelUserSessionsPageResponse =
 				objectMapper.readValue(
-					"{\"userSessionBag\": {\"totalPageGroupsMetric\": " +
-						"{\"value\": 7.0}, \"userSessions\": [{" +
-							"\"completeDate\": \"Tue Oct 20 06:52:32 GMT " +
-								"2026\", \"createDate\": \"Tue Oct 20 " +
-									"06:41:05 GMT 2026\"}]}}",
+					jsonObject.toString(),
 					GetWorkspaceGroupChannelUserSessionsPageResponse.class);
 
 		GetWorkspaceGroupChannelUserSessionsPageResponse.UserSessionBag
