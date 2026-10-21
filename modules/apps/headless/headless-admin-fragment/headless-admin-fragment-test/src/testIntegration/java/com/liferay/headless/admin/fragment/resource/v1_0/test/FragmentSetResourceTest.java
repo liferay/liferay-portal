@@ -125,7 +125,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		super.testDeleteDesignLibraryFragmentSet();
 
 		_testDeleteDesignLibraryFragmentSetWithAssetLibraryExternalReferenceCodeProblemException();
-		_testDeleteDesignLibraryFragmentSetWithFeatureFlagDisabledProblemException();
+		_testDeleteDesignLibraryFragmentSetWithFeatureFlagDisabled();
 		_testDeleteDesignLibraryFragmentSetWithSiteExternalReferenceCodeProblemException();
 	}
 
@@ -678,7 +678,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				RandomTestUtil.randomString()));
 	}
 
-	private void _testDeleteDesignLibraryFragmentSetWithFeatureFlagDisabledProblemException()
+	private void _testDeleteDesignLibraryFragmentSetWithFeatureFlagDisabled()
 		throws Exception {
 
 		try (PropsTemporarySwapper propsTemporarySwapper =
@@ -691,11 +691,9 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			FragmentCollection fragmentCollection = _addFragmentCollection(
 				group);
 
-			_assertProblemException(
-				"BAD_REQUEST",
-				"Feature flag LPD-57283 is disabled for company " +
-					testCompany.getCompanyId(),
-				() -> fragmentSetResource.deleteDesignLibraryFragmentSet(
+			assertHttpResponseStatusCode(
+				404,
+				fragmentSetResource.deleteDesignLibraryFragmentSetHttpResponse(
 					group.getExternalReferenceCode(),
 					fragmentCollection.getExternalReferenceCode()));
 		}
