@@ -18,7 +18,8 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 public class LayoutPageTemplateEntryLayoutProviderUtil {
 
 	public static Layout getLayoutPageTemplateEntryLayout(
-		long groupId, String externalReferenceCode, long plid) {
+		long companyId, String externalReferenceCode, long groupId,
+		String layoutPageTemplateEntryScopeERC, long plid) {
 
 		LayoutPageTemplateEntryLayoutProvider
 			layoutPageTemplateEntryLayoutProvider =
@@ -30,7 +31,8 @@ public class LayoutPageTemplateEntryLayoutProviderUtil {
 
 		return layoutPageTemplateEntryLayoutProvider.
 			getLayoutPageTemplateEntryLayout(
-				groupId, externalReferenceCode, plid);
+				companyId, externalReferenceCode, groupId,
+				layoutPageTemplateEntryScopeERC, plid);
 	}
 
 	public static LayoutPrototype getLayoutPageTemplateEntryLayoutPrototype(
