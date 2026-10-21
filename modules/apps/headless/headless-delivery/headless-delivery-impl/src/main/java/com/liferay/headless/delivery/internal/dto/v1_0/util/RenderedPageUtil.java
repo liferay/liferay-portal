@@ -39,9 +39,8 @@ public class RenderedPageUtil {
 				layout, layoutPageTemplateEntryLocalService, portal);
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					layout.getMasterLayoutPageTemplateEntryERC(),
-					layout.getGroupId());
+				fetchLayoutPageTemplateEntryByPlid(
+					layout.getMasterLayoutPlid());
 
 		return new RenderedPage() {
 			{
