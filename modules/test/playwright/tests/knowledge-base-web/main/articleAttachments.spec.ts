@@ -21,7 +21,7 @@ const test = mergeTests(
 
 test(
 	'Articles can be added with an attachment and the attachment can be replaced',
-	{tag: ['@LPS-137116', '@LPS-154208']},
+	{tag: ['@LPD-110921', '@LPS-137116', '@LPS-154208']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,

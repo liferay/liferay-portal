@@ -18,15 +18,19 @@ const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
 	knowledgeBasePages,
-	loginTest(),
+	loginTest()
+);
+
+const assetPublisherTest = mergeTests(
+	test,
 	featureFlagsTest({
 		'LPD-39304': {enabled: true},
 	})
 );
 
-test(
+assetPublisherTest(
 	'Expired articles are hidden from the Knowledge Base Display and Asset Publisher widgets',
-	{tag: '@LPS-161758'},
+	{tag: ['@LPD-110921', '@LPS-161758']},
 	async ({apiHelpers, knowledgeBasePage, page, site}) => {
 		const content = getRandomString();
 		const title = getRandomString();
@@ -104,7 +108,7 @@ test(
 
 test(
 	'Approved articles close to their expiration date show the Expiring Soon label',
-	{tag: ['@LPS-161758', '@LPS-184220']},
+	{tag: ['@LPD-110921', '@LPS-161758', '@LPS-184220']},
 	async ({apiHelpers, knowledgeBasePage, site}) => {
 		const workflowDefinition =
 			await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(

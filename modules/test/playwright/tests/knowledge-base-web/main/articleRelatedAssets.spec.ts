@@ -22,7 +22,7 @@ const test = mergeTests(
 
 test(
 	'Articles can be added with a related asset and the related asset can be replaced',
-	{tag: ['@LPS-137116', '@LPS-154208']},
+	{tag: ['@LPD-110921', '@LPS-137116', '@LPS-154208']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,

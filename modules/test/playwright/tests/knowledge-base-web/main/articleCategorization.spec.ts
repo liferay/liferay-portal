@@ -9,6 +9,8 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {knowledgeBasePages} from '../../../fixtures/knowledgeBasePagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {KnowledgeBaseUrls} from './utils/knowledgeBaseUrls';
@@ -22,7 +24,7 @@ const test = mergeTests(
 
 test(
 	'Articles require a category of a required vocabulary',
-	{tag: ['@LPS-137116', '@LPS-158414']},
+	{tag: ['@LPD-110921', '@LPS-137116', '@LPS-158414']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,
@@ -70,12 +72,15 @@ test(
 		await test.step('CanAddArticleWithCategory', async () => {
 			await knowledgeBaseEditArticlePage.expandPanel('Categorization');
 
-			await page
-				.getByRole('button', {name: `Select ${vocabulary.name}`})
-				.click();
-
 			const selectCategoryModal = page.getByRole('dialog', {
 				name: `Select ${vocabulary.name}`,
+			});
+
+			await clickAndExpectToBeVisible({
+				target: selectCategoryModal,
+				trigger: page.getByRole('button', {
+					name: `Select ${vocabulary.name}`,
+				}),
 			});
 
 			await selectCategoryModal
@@ -113,7 +118,7 @@ test(
 
 test(
 	'Article categories and tags can be replaced',
-	{tag: '@LPS-154208'},
+	{tag: ['@LPD-110921', '@LPS-154208']},
 	async ({apiHelpers, knowledgeBaseEditArticlePage, page, site}) => {
 		const vocabulary =
 			await apiHelpers.headlessAdminTaxonomy.postSiteTaxonomyVocabulary({
@@ -154,18 +159,26 @@ test(
 		const tag2 = getRandomString();
 
 		await test.step('CanReplaceArticleCategory', async () => {
-			await page
-				.getByRole('button', {name: `Remove ${category1.name}`})
-				.click();
+			const removeCategory1Button = page.getByRole('button', {
+				name: `Remove ${category1.name}`,
+			});
+
+			await clickAndExpectToBeHidden({
+				target: removeCategory1Button,
+				trigger: removeCategory1Button,
+			});
 
 			await page.keyboard.press('Escape');
 
-			await page
-				.getByRole('button', {name: `Select ${vocabulary.name}`})
-				.click();
-
 			const selectCategoryModal = page.getByRole('dialog', {
 				name: `Select ${vocabulary.name}`,
+			});
+
+			await clickAndExpectToBeVisible({
+				target: selectCategoryModal,
+				trigger: page.getByRole('button', {
+					name: `Select ${vocabulary.name}`,
+				}),
 			});
 
 			await selectCategoryModal

@@ -26,7 +26,7 @@ const test = mergeTests(
 
 test(
 	'Article row actions add child articles, subscribe and print',
-	{tag: ['@LPS-137116', '@LPS-156216']},
+	{tag: ['@LPD-110921', '@LPS-137116', '@LPS-156216']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,
@@ -131,7 +131,7 @@ test(
 
 test(
 	'Articles can be moved to a folder from the move modal',
-	{tag: '@LPS-189119'},
+	{tag: ['@LPD-110921', '@LPS-189119']},
 	async ({
 		apiHelpers,
 		knowledgeBasePage,
@@ -158,28 +158,27 @@ test(
 
 		await knowledgeBasePage.clickRowAction(title, 'Move');
 
-		const moveDialog = page.getByRole('dialog', {
-			name: `Move "${title}" To`,
-		});
-
-		await moveDialog
-			.frameLocator('iframe')
-			.getByRole('treeitem', {name: folder.name})
-			.click();
-
-		await moveDialog.getByRole('button', {name: 'Save'}).click();
+		await knowledgeBasePage.selectMoveTargetAndSave(title, folder.name);
 
 		await waitForAlert(page);
 
 		await knowledgeBasePage.goto(site.friendlyUrlPath);
 
-		await page.getByRole('link', {exact: true, name: folder.name}).click();
+		const articleLink = page.getByRole('link', {exact: true, name: title});
 
-		await page.getByRole('link', {exact: true, name: title}).click();
+		await clickAndExpectToBeVisible({
+			target: articleLink,
+			trigger: page.getByRole('link', {exact: true, name: folder.name}),
+		});
 
-		await expect(knowledgeBaseViewArticlePage.articleTitle).toHaveText(
-			title
-		);
+		await expect(async () => {
+			await articleLink.click({timeout: 1000});
+
+			await expect(knowledgeBaseViewArticlePage.articleTitle).toHaveText(
+				title,
+				{timeout: 2000}
+			);
+		}).toPass();
 		await expect(knowledgeBaseViewArticlePage.articleBody).toContainText(
 			content
 		);
@@ -188,7 +187,7 @@ test(
 
 test(
 	'Articles can be sorted and deleted in the table view',
-	{tag: ['@LPS-128095', '@LPS-174036']},
+	{tag: ['@LPD-110921', '@LPS-128095', '@LPS-174036']},
 	async ({apiHelpers, browser, site}) => {
 		const titlePrefix = getRandomString();
 

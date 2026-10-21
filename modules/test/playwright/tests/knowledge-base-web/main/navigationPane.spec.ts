@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {knowledgeBasePages} from '../../../fixtures/knowledgeBasePagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
@@ -21,7 +22,7 @@ const test = mergeTests(
 
 test(
 	'Articles can be edited, subscribed and given children and permissions from the navigation pane',
-	{tag: ['@LPS-156215']},
+	{tag: ['@LPD-110921', '@LPS-156215']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,
@@ -70,10 +71,12 @@ test(
 
 			await knowledgeBasePage.openFoldersAndArticlesPanel();
 
-			await knowledgeBasePage
-				.getTreeItem(title)
-				.getByRole('button', {exact: true, name: title})
-				.click();
+			await clickAndExpectToBeVisible({
+				target: knowledgeBasePage.getTreeItem(childTitle),
+				trigger: knowledgeBasePage
+					.getTreeItem(title)
+					.getByRole('button', {exact: true, name: title}),
+			});
 
 			await expect(async () => {
 				await knowledgeBasePage
@@ -134,15 +137,16 @@ test(
 
 			await knowledgeBasePage.getTreeItem(editedTitle).hover();
 
-			await knowledgeBasePage
-				.getTreeItem(editedTitle)
-				.getByRole('button', {name: 'Actions'})
-				.first()
-				.click();
-
-			await expect(
-				page.getByRole('menuitem', {exact: true, name: 'Unsubscribe'})
-			).toBeVisible();
+			await clickAndExpectToBeVisible({
+				target: page.getByRole('menuitem', {
+					exact: true,
+					name: 'Unsubscribe',
+				}),
+				trigger: knowledgeBasePage
+					.getTreeItem(editedTitle)
+					.getByRole('button', {name: 'Actions'})
+					.first(),
+			});
 
 			await page.keyboard.press('Escape');
 		});
@@ -180,7 +184,7 @@ test(
 
 test(
 	'Articles can be moved and deleted from the navigation pane',
-	{tag: ['@LPS-156215']},
+	{tag: ['@LPD-110921', '@LPS-156215']},
 	async ({apiHelpers, knowledgeBasePage, page, site}) => {
 		const folder =
 			await apiHelpers.headlessDelivery.postSiteKnowledgeBaseFolder({
@@ -203,16 +207,7 @@ test(
 		await test.step('CanMoveArticleFromNavigationPane', async () => {
 			await knowledgeBasePage.clickTreeItemAction(title, 'Move');
 
-			const moveDialog = page.getByRole('dialog', {
-				name: `Move "${title}" To`,
-			});
-
-			await moveDialog
-				.frameLocator('iframe')
-				.getByRole('treeitem', {name: folder.name})
-				.click();
-
-			await moveDialog.getByRole('button', {name: 'Save'}).click();
+			await knowledgeBasePage.selectMoveTargetAndSave(title, folder.name);
 
 			await waitForAlert(page);
 
@@ -220,18 +215,20 @@ test(
 
 			await knowledgeBasePage.openFoldersAndArticlesPanel();
 
-			await knowledgeBasePage
-				.getTreeItem(folder.name)
-				.getByRole('button', {exact: true, name: folder.name})
-				.click();
+			await clickAndExpectToBeVisible({
+				target: knowledgeBasePage.getTreeItem(title),
+				trigger: knowledgeBasePage
+					.getTreeItem(folder.name)
+					.getByRole('button', {exact: true, name: folder.name}),
+			});
 
-			await expect(knowledgeBasePage.getTreeItem(title)).toBeVisible();
-
-			await page
-				.getByRole('link', {exact: true, name: folder.name})
-				.click();
-
-			await expect(knowledgeBasePage.getRow(title)).toBeVisible();
+			await clickAndExpectToBeVisible({
+				target: knowledgeBasePage.getRow(title),
+				trigger: page.getByRole('link', {
+					exact: true,
+					name: folder.name,
+				}),
+			});
 		});
 
 		await test.step('CanDeleteArticleFromNavigationPane', async () => {
@@ -247,13 +244,15 @@ test(
 
 			await expect(knowledgeBasePage.getTreeItem(title)).toHaveCount(0);
 
-			await page
-				.getByRole('link', {exact: true, name: folder.name})
-				.click();
-
-			await expect(
-				page.getByRole('heading', {name: 'This folder is empty.'})
-			).toBeVisible();
+			await clickAndExpectToBeVisible({
+				target: page.getByRole('heading', {
+					name: 'This folder is empty.',
+				}),
+				trigger: page.getByRole('link', {
+					exact: true,
+					name: folder.name,
+				}),
+			});
 		});
 	}
 );

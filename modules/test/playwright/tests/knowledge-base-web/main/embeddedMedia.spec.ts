@@ -11,6 +11,7 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {knowledgeBasePages} from '../../../fixtures/knowledgeBasePagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {isImageLoaded} from '../../../utils/isImageLoaded';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -25,7 +26,7 @@ const test = mergeTests(
 
 test(
 	'Images from Documents and Media still render after the file is moved to a folder',
-	{tag: '@LPS-154502'},
+	{tag: ['@LPD-110921', '@LPS-154502']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,
@@ -65,15 +66,27 @@ test(
 			title
 		);
 
-		await page.getByRole('button', {name: 'Image'}).click();
-
 		const itemSelector = page.frameLocator('iframe[title="Select Item"]');
 
-		await itemSelector
-			.getByRole('link', {name: 'Documents and Media'})
-			.click();
+		const documentsAndMediaLink = itemSelector.getByRole('link', {
+			name: 'Documents and Media',
+		});
 
-		await itemSelector.getByText(documentTitle, {exact: true}).click();
+		await clickAndExpectToBeVisible({
+			target: documentsAndMediaLink,
+			trigger: page.getByRole('button', {name: 'Image'}),
+		});
+
+		const documentItem = itemSelector.getByText(documentTitle, {
+			exact: true,
+		});
+
+		await clickAndExpectToBeVisible({
+			target: documentItem,
+			trigger: documentsAndMediaLink,
+		});
+
+		await documentItem.click();
 
 		await expect(
 			knowledgeBaseEditArticlePage.contentFrameLocator.locator(

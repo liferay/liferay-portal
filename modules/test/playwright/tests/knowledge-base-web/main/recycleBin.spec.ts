@@ -24,7 +24,7 @@ const test = mergeTests(
 
 test(
 	'Articles and folders can be restored from the Recycle Bin',
-	{tag: '@LPS-188061'},
+	{tag: ['@LPD-110921', '@LPS-188061']},
 	async ({apiHelpers, knowledgeBasePage, page, site}) => {
 		const title = getRandomString();
 
@@ -71,9 +71,10 @@ test(
 
 			await knowledgeBasePage.goto(site.friendlyUrlPath);
 
-			await childArticlesLink.click();
-
-			await expect(knowledgeBasePage.getRow(childTitle)).toBeVisible();
+			await clickAndExpectToBeVisible({
+				target: knowledgeBasePage.getRow(childTitle),
+				trigger: childArticlesLink,
+			});
 		});
 
 		await test.step('CanRestoreChildArticleFromRecycleBin', async () => {
@@ -96,9 +97,10 @@ test(
 
 			await knowledgeBasePage.goto(site.friendlyUrlPath);
 
-			await childArticlesLink.click();
-
-			await expect(knowledgeBasePage.getRow(childTitle)).toBeVisible();
+			await clickAndExpectToBeVisible({
+				target: knowledgeBasePage.getRow(childTitle),
+				trigger: childArticlesLink,
+			});
 		});
 
 		await test.step('CanRestoreFolderWithContentsFromRecycleBin', async () => {
@@ -135,20 +137,20 @@ test(
 
 			await knowledgeBasePage.goto(site.friendlyUrlPath);
 
-			await page
-				.getByRole('link', {exact: true, name: folder.name})
-				.click();
-
-			await expect(
-				knowledgeBasePage.getRow(folderArticleTitle)
-			).toBeVisible();
+			await clickAndExpectToBeVisible({
+				target: knowledgeBasePage.getRow(folderArticleTitle),
+				trigger: page.getByRole('link', {
+					exact: true,
+					name: folder.name,
+				}),
+			});
 		});
 	}
 );
 
 test(
 	'Deleted articles can be restored with the undo action',
-	{tag: '@LPS-188061'},
+	{tag: ['@LPD-110921', '@LPS-188061']},
 	async ({apiHelpers, knowledgeBasePage, page, site}) => {
 		const draftTitle = getRandomString();
 

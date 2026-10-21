@@ -38,26 +38,43 @@ const customFieldTest = test.extend<{customFieldName: string}>({
 		async ({page}, use) => {
 			const customFieldName = getRandomString().replace(/-/g, '');
 
+			const addCustomFieldLink = page.getByRole('link', {
+				name: 'Add Custom Field',
+			});
+
 			const gotoKnowledgeBaseArticleCustomFields = async () => {
 				await page.goto(
 					'/group/control_panel/manage?p_p_id=com_liferay_expando_web_portlet_ExpandoPortlet'
 				);
 
-				await page
-					.getByRole('link', {
+				await clickAndExpectToBeVisible({
+					target: addCustomFieldLink,
+					trigger: page.getByRole('link', {
 						exact: true,
 						name: 'Knowledge Base Article',
-					})
-					.click();
+					}),
+				});
 			};
 
 			await gotoKnowledgeBaseArticleCustomFields();
 
-			await page.getByRole('link', {name: 'Add Custom Field'}).click();
+			const inputFieldLink = page.getByRole('link', {
+				name: 'Input Field',
+			});
 
-			await page.getByRole('link', {name: 'Input Field'}).click();
+			await clickAndExpectToBeVisible({
+				target: inputFieldLink,
+				trigger: addCustomFieldLink,
+			});
 
-			await page.getByText('Field Name Required').fill(customFieldName);
+			const fieldNameInput = page.getByText('Field Name Required');
+
+			await clickAndExpectToBeVisible({
+				target: fieldNameInput,
+				trigger: inputFieldLink,
+			});
+
+			await fieldNameInput.fill(customFieldName);
 
 			await page.getByRole('button', {name: 'Save'}).click();
 
@@ -89,7 +106,7 @@ const customFieldTest = test.extend<{customFieldName: string}>({
 
 customFieldTest(
 	'Custom field values of an article are shown and updated in the Knowledge Base Display widget',
-	{tag: '@LRQA-41349'},
+	{tag: ['@LPD-110921', '@LRQA-41349']},
 	async ({
 		apiHelpers,
 		customFieldName,
@@ -179,7 +196,7 @@ customFieldTest(
 
 test(
 	'Articles show the source URL link in the Knowledge Base Display widget when it is enabled',
-	{tag: '@LRQA-41349'},
+	{tag: ['@LPD-110921', '@LRQA-41349']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,

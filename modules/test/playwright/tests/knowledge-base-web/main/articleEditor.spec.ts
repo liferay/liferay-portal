@@ -22,7 +22,7 @@ const test = mergeTests(
 
 test(
 	'Articles can be added and edited as drafts',
-	{tag: '@LPS-137116'},
+	{tag: ['@LPD-110921', '@LPS-137116']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,
@@ -119,7 +119,7 @@ test(
 
 test(
 	'Article friendly URLs can be customized and must be unique',
-	{tag: ['@LPS-137116', '@LPS-154208']},
+	{tag: ['@LPD-110921', '@LPS-137116', '@LPS-154208']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,
@@ -229,7 +229,7 @@ test(
 
 test(
 	'Articles can be added with a description and HTML content',
-	{tag: ['@LPS-137116', '@LPS-172372']},
+	{tag: ['@LPD-110921', '@LPS-137116', '@LPS-172372']},
 	async ({
 		knowledgeBaseEditArticlePage,
 		knowledgeBaseViewArticlePage,
@@ -288,7 +288,7 @@ test(
 
 test(
 	'Articles cannot be added without a title or content',
-	{tag: '@LPS-137116'},
+	{tag: ['@LPD-110921', '@LPS-137116']},
 	async ({knowledgeBaseEditArticlePage, knowledgeBasePage, page, site}) => {
 		await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
 
@@ -332,7 +332,7 @@ test(
 
 test(
 	'Articles can be added from the empty state button',
-	{tag: '@LPS-158706'},
+	{tag: ['@LPD-110921', '@LPS-158706']},
 	async ({
 		knowledgeBaseEditArticlePage,
 		knowledgeBasePage,

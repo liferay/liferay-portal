@@ -84,6 +84,28 @@ export class KnowledgeBasePage {
 		});
 	}
 
+	async selectMoveTargetAndSave(title: string, targetName: string) {
+		const moveDialog = this.page.getByRole('dialog', {
+			name: `Move "${title}" To`,
+		});
+
+		const moveFrame = moveDialog.frameLocator('iframe');
+
+		const targetTreeItem = moveFrame.getByRole('treeitem', {
+			name: targetName,
+		});
+
+		await expect(async () => {
+			await targetTreeItem.click({timeout: 1000});
+
+			await expect(targetTreeItem).toHaveClass(/(^|\s)active(\s|$)/, {
+				timeout: 1000,
+			});
+		}).toPass();
+
+		await moveDialog.getByRole('button', {name: 'Save'}).click();
+	}
+
 	async openFoldersAndArticlesPanel() {
 		await expect(async () => {
 			if (!(await this.foldersAndArticlesPanel.isVisible())) {

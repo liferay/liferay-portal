@@ -22,7 +22,7 @@ const test = mergeTests(
 
 test(
 	'Article info panel, versions and history show every version of the article',
-	{tag: ['@LPS-156216', '@LPS-159175', '@LPS-167472']},
+	{tag: ['@LPD-110921', '@LPS-156216', '@LPS-159175', '@LPS-167472']},
 	async ({
 		apiHelpers,
 		knowledgeBasePage,
@@ -143,7 +143,7 @@ test(
 
 test(
 	'Article view shows the toolbar actions and lists submitted suggestions',
-	{tag: ['@LPS-160369', '@LPS-170293']},
+	{tag: ['@LPD-110921', '@LPS-160369', '@LPS-170293']},
 	async ({apiHelpers, knowledgeBaseViewArticlePage, page, site}) => {
 		const title = getRandomString();
 
