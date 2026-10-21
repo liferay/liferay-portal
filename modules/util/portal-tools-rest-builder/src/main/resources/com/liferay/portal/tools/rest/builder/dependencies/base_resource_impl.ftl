@@ -1186,21 +1186,33 @@ public abstract class Base${schemaName}ResourceImpl
 			</#if>
 		}
 
-		public Set<String> getAvailableCreateStrategies() {
-			return SetUtil.fromArray(
-				<#if createStrategies?has_content>
-					"${createStrategies?join("\", \"")}"
-				</#if>
-			);
-		}
+		<#assign upsertFeatureFlagConditions = [] />
 
-		public Set<String> getAvailableUpdateStrategies() {
-			return SetUtil.fromArray(
-				<#if updateStrategies?has_content>
-					"${updateStrategies?join("\", \"")}"
-				</#if>
-			);
-		}
+		<#if putByExternalReferenceCodeBatchJavaMethodSignature?? || putParentByExternalReferenceCodeBatchJavaMethodSignatures?has_content>
+			<#assign upsertFeatureFlagConditions = upsertFeatureFlagConditions + [getFeatureFlagCondition([["putByExternalReferenceCode", "putParentByExternalReferenceCode"]])] />
+		</#if>
+
+		<#if freeMarkerTool.hasPartialUpsertVulcanBatchImplementation(configYAML, javaMethodSignatures)>
+			<#assign upsertFeatureFlagConditions = upsertFeatureFlagConditions + [getFeatureFlagCondition([["getByExternalReferenceCode", "getParentByExternalReferenceCode"], ["patch"], ["post", "postParent", "postParentByExternalReferenceCode"]])] />
+		</#if>
+
+		<@getAvailableStrategiesMethod
+			strategies = createStrategies
+			strategyFeatureFlagConditions = {
+				"INSERT": [getFeatureFlagCondition([["post", "postParent", "postParentByExternalReferenceCode"]])],
+				"UPSERT": upsertFeatureFlagConditions
+			}
+			type = "Create"
+		/>
+
+		<@getAvailableStrategiesMethod
+			strategies = updateStrategies
+			strategyFeatureFlagConditions = {
+				"PARTIAL_UPDATE": [getFeatureFlagCondition([["patch"]])],
+				"UPDATE": [getFeatureFlagCondition([["put"]])]
+			}
+			type = "Update"
+		/>
 
 		@Override
 		public EntityModel getEntityModel(Map<String, List<String>> multivaluedMap) throws Exception {
@@ -2103,6 +2115,51 @@ public abstract class Base${schemaName}ResourceImpl
 	String resourceName = getPermissionCheckerResourceName(${hasParentSchema?then(parentIdentifierParameter + ", ", "") + identifierParameter});
 </#macro>
 
+<#macro getAvailableStrategiesMethod
+	strategies
+	strategyFeatureFlagConditions
+	type
+>
+	<#local
+		featureFlagConditions = []
+		unconditionalStrategies = []
+	/>
+
+	<#list strategies as strategy>
+		<#if strategyFeatureFlagConditions[strategy]?seq_contains("")>
+			<#local unconditionalStrategies = unconditionalStrategies + [strategy] />
+
+			<#continue>
+		</#if>
+
+		<#list strategyFeatureFlagConditions[strategy] as featureFlagCondition>
+			<#if !featureFlagConditions?seq_contains(featureFlagCondition)>
+				<#local featureFlagConditions = featureFlagConditions + [featureFlagCondition] />
+			</#if>
+		</#list>
+	</#list>
+
+	public Set<String> getAvailable${type}Strategies() {
+		<#if !featureFlagConditions?has_content>
+			return SetUtil.fromArray(<#if strategies?has_content>"${strategies?join("\", \"")}"</#if>);
+		<#else>
+			Set<String> ${type?uncap_first}Strategies = SetUtil.fromArray(<#if unconditionalStrategies?has_content>"${unconditionalStrategies?join("\", \"")}"</#if>);
+
+			<#list featureFlagConditions as featureFlagCondition>
+				if (${featureFlagCondition}) {
+					<#list strategies as strategy>
+						<#if strategyFeatureFlagConditions[strategy]?seq_contains(featureFlagCondition) && !unconditionalStrategies?seq_contains(strategy)>
+							${type?uncap_first}Strategies.add("${strategy}");
+						</#if>
+					</#list>
+				}
+			</#list>
+
+			return ${type?uncap_first}Strategies;
+		</#if>
+	}
+</#macro>
+
 <#macro getCreateBatchJavaMethodParameters
 	javaMethodSignature
 	schemaVarName
@@ -2141,6 +2198,44 @@ public abstract class Base${schemaName}ResourceImpl
 		<#sep>, </#sep>
 	</#list>
 </#macro>
+
+<#function getFeatureFlagCondition resourceMethodTypesList>
+	<#local featureFlagConditions = [] />
+
+	<#list resourceMethodTypesList as resourceMethodTypes>
+		<#local featureFlags = [] />
+
+		<#list javaMethodSignatures?filter(javaMethodSignature -> resourceMethodTypes?seq_contains(freeMarkerTool.getResourceMethodType(configYAML, javaMethodSignature)!"")) as javaMethodSignature>
+			<#local featureFlag = freeMarkerTool.getFeatureFlag(javaMethodSignature, openAPIYAML)!"" />
+
+			<#if !featureFlag?has_content>
+				<#local featureFlags = [] />
+
+				<#break>
+			</#if>
+
+			<#if !featureFlags?seq_contains(featureFlag)>
+				<#local featureFlags = featureFlags + [featureFlag] />
+			</#if>
+		</#list>
+
+		<#if !featureFlags?has_content>
+			<#continue>
+		</#if>
+
+		<#local featureFlagCondition = featureFlags?map(featureFlag -> "FeatureFlagManagerUtil.isEnabled(CompanyThreadLocal.getCompanyId(), \"" + featureFlag + "\")")?join(" || ") />
+
+		<#if (featureFlags?size > 1) && (resourceMethodTypesList?size > 1)>
+			<#local featureFlagCondition = "(" + featureFlagCondition + ")" />
+		</#if>
+
+		<#if !featureFlagConditions?seq_contains(featureFlagCondition)>
+			<#local featureFlagConditions = featureFlagConditions + [featureFlagCondition] />
+		</#if>
+	</#list>
+
+	<#return featureFlagConditions?join(" && ") />
+</#function>
 
 <#macro getReadBatchJavaMethodParameters
 	javaMethodParameters
