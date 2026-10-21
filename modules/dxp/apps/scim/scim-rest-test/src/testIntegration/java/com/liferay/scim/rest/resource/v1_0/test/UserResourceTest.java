@@ -329,171 +329,10 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 	@Override
 	@Test
 	public void testPostV2User() throws Exception {
-		User postUser1 = randomUser();
-
-		userResource.postV2User(postUser1);
-
-		com.liferay.portal.kernel.model.User portalUser1 =
-			_userLocalService.getUserByExternalReferenceCode(
-				postUser1.getExternalId(), TestPropsValues.getCompanyId());
-
-		assertEquals(
-			postUser1, _getUser(String.valueOf(portalUser1.getUserId())));
-
-		// Provision an existing inactive user with SCIM client ID set
-
-		_userLocalService.updateStatus(
-			portalUser1, WorkflowConstants.STATUS_INACTIVE,
-			new ServiceContext());
-
-		Assert.assertFalse(portalUser1.isActive());
-
-		postUser1.setActive(true);
-
-		userResource.postV2User(postUser1);
-
-		com.liferay.portal.kernel.model.User updatedPortalUser1 =
-			_userLocalService.getUserByExternalReferenceCode(
-				postUser1.getExternalId(), TestPropsValues.getCompanyId());
-
-		Assert.assertTrue(updatedPortalUser1.isActive());
-
-		// Provision an existing inactive user with no SCIM client ID set
-
-		com.liferay.portal.kernel.model.User portalUser2 =
-			UserTestUtil.addUser();
-
-		_userLocalService.updateStatus(
-			portalUser2, WorkflowConstants.STATUS_INACTIVE,
-			new ServiceContext());
-
-		Assert.assertFalse(portalUser2.isActive());
-
-		User postUser2 = _createUser(portalUser2);
-
-		HttpInvoker.HttpResponse httpResponse =
-			userResource.postV2UserHttpResponse(postUser2);
-
-		portalUser2 = _userLocalService.getUserByExternalReferenceCode(
-			postUser2.getExternalId(), TestPropsValues.getCompanyId());
-
-		Assert.assertTrue(portalUser2.isActive());
-
-		postUser2 = User.toDTO(httpResponse.getContent());
-
-		Assert.assertEquals(
-			portalUser2.getUserId(), GetterUtil.getInteger(postUser2.getId()));
-
-		com.liferay.portal.kernel.model.User updatedPortalUser2 =
-			_userLocalService.getUser(portalUser2.getUserId());
-
-		Assert.assertEquals(
-			postUser2.getExternalId(),
-			updatedPortalUser2.getExternalReferenceCode());
-
-		// Provision an existing user provided by another SCIM client
-
-		com.liferay.portal.kernel.model.User portalUser3 =
-			UserTestUtil.addUser();
-
-		ScimTestUtil.saveSCIMClientId(
-			com.liferay.portal.kernel.model.User.class.getName(),
-			portalUser3.getUserId(), portalUser3.getCompanyId());
-
-		User postUser3 = _createUser(portalUser3);
-
-		assertHttpResponseStatusCode(
-			409, userResource.postV2UserHttpResponse(postUser3));
-
-		User postUser4 = randomUser();
-
-		String expectedFormattedAddress = RandomTestUtil.randomString();
-		String expectedStreetAddress = RandomTestUtil.randomString();
-
-		postUser4.setAddresses(
-			new Address[] {
-				new Address() {
-					{
-						country = RandomTestUtil.randomString();
-						locality = RandomTestUtil.randomString();
-						primary = true;
-						streetAddress = expectedStreetAddress;
-						type = RandomTestUtil.randomString();
-					}
-				},
-				new Address() {
-					{
-						formatted = expectedFormattedAddress;
-						locality = RandomTestUtil.randomString();
-					}
-				},
-				new Address() {
-					{
-						country = RandomTestUtil.randomString();
-						type = RandomTestUtil.randomString();
-					}
-				}
-			});
-
-		postUser4.setActive((Boolean)null);
-
-		assertHttpResponseStatusCode(
-			201, userResource.postV2UserHttpResponse(postUser4));
-
-		com.liferay.portal.kernel.model.User portalUser4 =
-			_userLocalService.getUserByExternalReferenceCode(
-				postUser4.getExternalId(), TestPropsValues.getCompanyId());
-
-		Assert.assertTrue(portalUser4.isActive());
-
-		List<com.liferay.portal.kernel.model.Address> addresses =
-			_addressLocalService.getAddresses(
-				portalUser4.getCompanyId(), Contact.class.getName(),
-				portalUser4.getContactId());
-
-		Assert.assertEquals(addresses.toString(), 2, addresses.size());
-
-		ListType listType = _listTypeLocalService.fetchListType(
-			portalUser4.getCompanyId(), "other",
-			Contact.class.getName() + ".address");
-
-		List<String> streets = new ArrayList<>();
-
-		for (com.liferay.portal.kernel.model.Address address : addresses) {
-			Assert.assertEquals(0, address.getCountryId());
-			Assert.assertEquals(
-				listType.getListTypeId(), address.getListTypeId());
-
-			streets.add(address.getStreet1());
-		}
-
-		Assert.assertTrue(streets.contains(expectedFormattedAddress));
-		Assert.assertTrue(streets.contains(expectedStreetAddress));
-
-		assertHttpResponseStatusCode(
-			204,
-			userResource.deleteV2UserHttpResponse(
-				String.valueOf(portalUser4.getUserId())));
-
-		assertHttpResponseStatusCode(
-			404,
-			userResource.getV2UserByIdHttpResponse(
-				String.valueOf(portalUser4.getUserId())));
-
-		postUser4.setActive(true);
-
-		assertHttpResponseStatusCode(
-			201, userResource.postV2UserHttpResponse(postUser4));
-
-		assertHttpResponseStatusCode(
-			200,
-			userResource.getV2UserByIdHttpResponse(
-				String.valueOf(portalUser4.getUserId())));
-
-		portalUser4 = _userLocalService.getUserByExternalReferenceCode(
-			postUser4.getExternalId(), TestPropsValues.getCompanyId());
-
-		Assert.assertTrue(portalUser4.isActive());
+		_testPostV2UserWithAddresses();
+		_testPostV2UserWithInactiveUserWithSCIMClientId();
+		_testPostV2UserWithInactiveUserWithoutSCIMClientId();
+		_testPostV2UserWithUserProvidedByAnotherSCIMClient();
 
 		ConfigurationTestUtil.deleteConfiguration(_pid);
 
@@ -772,6 +611,178 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 		Assert.assertEquals(portraitId, portalUser.getPortraitId());
 		Assert.assertTrue(
 			ArrayUtil.contains(portalUser.getRoleIds(), role.getRoleId()));
+	}
+
+	private void _testPostV2UserWithAddresses() throws Exception {
+		User postUser = randomUser();
+
+		String expectedFormattedAddress = RandomTestUtil.randomString();
+		String expectedStreetAddress = RandomTestUtil.randomString();
+
+		postUser.setAddresses(
+			new Address[] {
+				new Address() {
+					{
+						country = RandomTestUtil.randomString();
+						locality = RandomTestUtil.randomString();
+						primary = true;
+						streetAddress = expectedStreetAddress;
+						type = RandomTestUtil.randomString();
+					}
+				},
+				new Address() {
+					{
+						formatted = expectedFormattedAddress;
+						locality = RandomTestUtil.randomString();
+					}
+				},
+				new Address() {
+					{
+						country = RandomTestUtil.randomString();
+						type = RandomTestUtil.randomString();
+					}
+				}
+			});
+
+		postUser.setActive((Boolean)null);
+
+		assertHttpResponseStatusCode(
+			201, userResource.postV2UserHttpResponse(postUser));
+
+		com.liferay.portal.kernel.model.User portalUser =
+			_userLocalService.getUserByExternalReferenceCode(
+				postUser.getExternalId(), TestPropsValues.getCompanyId());
+
+		Assert.assertTrue(portalUser.isActive());
+
+		List<com.liferay.portal.kernel.model.Address> addresses =
+			_addressLocalService.getAddresses(
+				portalUser.getCompanyId(), Contact.class.getName(),
+				portalUser.getContactId());
+
+		Assert.assertEquals(addresses.toString(), 2, addresses.size());
+
+		ListType listType = _listTypeLocalService.fetchListType(
+			portalUser.getCompanyId(), "other",
+			Contact.class.getName() + ".address");
+
+		List<String> streets = new ArrayList<>();
+
+		for (com.liferay.portal.kernel.model.Address address : addresses) {
+			Assert.assertEquals(0, address.getCountryId());
+			Assert.assertEquals(
+				listType.getListTypeId(), address.getListTypeId());
+
+			streets.add(address.getStreet1());
+		}
+
+		Assert.assertTrue(streets.contains(expectedFormattedAddress));
+		Assert.assertTrue(streets.contains(expectedStreetAddress));
+
+		assertHttpResponseStatusCode(
+			204,
+			userResource.deleteV2UserHttpResponse(
+				String.valueOf(portalUser.getUserId())));
+
+		assertHttpResponseStatusCode(
+			404,
+			userResource.getV2UserByIdHttpResponse(
+				String.valueOf(portalUser.getUserId())));
+
+		postUser.setActive(true);
+
+		assertHttpResponseStatusCode(
+			201, userResource.postV2UserHttpResponse(postUser));
+
+		assertHttpResponseStatusCode(
+			200,
+			userResource.getV2UserByIdHttpResponse(
+				String.valueOf(portalUser.getUserId())));
+
+		portalUser = _userLocalService.getUserByExternalReferenceCode(
+			postUser.getExternalId(), TestPropsValues.getCompanyId());
+
+		Assert.assertTrue(portalUser.isActive());
+	}
+
+	private void _testPostV2UserWithInactiveUserWithSCIMClientId()
+		throws Exception {
+
+		User postUser = randomUser();
+
+		userResource.postV2User(postUser);
+
+		com.liferay.portal.kernel.model.User portalUser =
+			_userLocalService.getUserByExternalReferenceCode(
+				postUser.getExternalId(), TestPropsValues.getCompanyId());
+
+		assertEquals(
+			postUser, _getUser(String.valueOf(portalUser.getUserId())));
+
+		_userLocalService.updateStatus(
+			portalUser, WorkflowConstants.STATUS_INACTIVE,
+			new ServiceContext());
+
+		Assert.assertFalse(portalUser.isActive());
+
+		postUser.setActive(true);
+
+		userResource.postV2User(postUser);
+
+		com.liferay.portal.kernel.model.User updatedPortalUser =
+			_userLocalService.getUserByExternalReferenceCode(
+				postUser.getExternalId(), TestPropsValues.getCompanyId());
+
+		Assert.assertTrue(updatedPortalUser.isActive());
+	}
+
+	private void _testPostV2UserWithInactiveUserWithoutSCIMClientId()
+		throws Exception {
+
+		com.liferay.portal.kernel.model.User portalUser =
+			UserTestUtil.addUser();
+
+		_userLocalService.updateStatus(
+			portalUser, WorkflowConstants.STATUS_INACTIVE,
+			new ServiceContext());
+
+		Assert.assertFalse(portalUser.isActive());
+
+		User postUser = _createUser(portalUser);
+
+		HttpInvoker.HttpResponse httpResponse =
+			userResource.postV2UserHttpResponse(postUser);
+
+		portalUser = _userLocalService.getUserByExternalReferenceCode(
+			postUser.getExternalId(), TestPropsValues.getCompanyId());
+
+		Assert.assertTrue(portalUser.isActive());
+
+		postUser = User.toDTO(httpResponse.getContent());
+
+		Assert.assertEquals(
+			portalUser.getUserId(), GetterUtil.getInteger(postUser.getId()));
+
+		com.liferay.portal.kernel.model.User updatedPortalUser =
+			_userLocalService.getUser(portalUser.getUserId());
+
+		Assert.assertEquals(
+			postUser.getExternalId(),
+			updatedPortalUser.getExternalReferenceCode());
+	}
+
+	private void _testPostV2UserWithUserProvidedByAnotherSCIMClient()
+		throws Exception {
+
+		com.liferay.portal.kernel.model.User portalUser =
+			UserTestUtil.addUser();
+
+		ScimTestUtil.saveSCIMClientId(
+			com.liferay.portal.kernel.model.User.class.getName(),
+			portalUser.getUserId(), portalUser.getCompanyId());
+
+		assertHttpResponseStatusCode(
+			409, userResource.postV2UserHttpResponse(_createUser(portalUser)));
 	}
 
 	private static final String _PREFIX = StringUtil.toLowerCase(
