@@ -13,7 +13,7 @@ import ClayModal from '@clayui/modal';
 import {SearchResultsMessage} from '@liferay/layout-js-components-web';
 import {openToast} from 'frontend-js-components-web';
 import {navigate, sub} from 'frontend-js-web';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import useTaxonomyCategoryTreeNodes, {
 	ITaxonomyCategory,
@@ -213,6 +213,8 @@ function TreeItemSelectorModal({
 
 	const itemsById = useMemo(() => flattenById(nodes), [nodes]);
 
+	const skipSelectionChangeRef = useRef(false);
+
 	const parentById = useMemo(() => buildParentMap(nodes), [nodes]);
 
 	useEffect(() => {
@@ -294,6 +296,12 @@ function TreeItemSelectorModal({
 	};
 
 	const handleSelectionChange = (keys: Set<React.Key>) => {
+		if (skipSelectionChangeRef.current) {
+			skipSelectionChangeRef.current = false;
+
+			return;
+		}
+
 		setSelectedKeys(keys);
 
 		if (!multiSelect) {
@@ -328,6 +336,18 @@ function TreeItemSelectorModal({
 			parentSelection: false,
 			selectionMode: shiftKey ? 'multiple-recursive' : null,
 		});
+	};
+
+	const handleCheckboxChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+		selection: Parameters<typeof toggleWithShift>[0],
+		id: React.Key
+	) => {
+		const {shiftKey} = event.nativeEvent as MouseEvent;
+
+		toggleWithShift(selection, id, shiftKey);
+
+		skipSelectionChangeRef.current = shiftKey;
 	};
 
 	const handleShiftKeyDown = (
@@ -536,12 +556,10 @@ function TreeItemSelectorModal({
 											<ClayCheckbox
 												checked={selection.has(item.id)}
 												onChange={(event) =>
-													toggleWithShift(
+													handleCheckboxChange(
+														event,
 														selection,
-														item.id,
-														(
-															event.nativeEvent as MouseEvent
-														).shiftKey
+														item.id
 													)
 												}
 												onClick={(event) =>
@@ -580,12 +598,10 @@ function TreeItemSelectorModal({
 																child.id
 															)}
 															onChange={(event) =>
-																toggleWithShift(
+																handleCheckboxChange(
+																	event,
 																	selection,
-																	child.id,
-																	(
-																		event.nativeEvent as MouseEvent
-																	).shiftKey
+																	child.id
 																)
 															}
 															onClick={(event) =>
