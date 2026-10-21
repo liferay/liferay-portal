@@ -128,6 +128,35 @@ public class SourceFormatterReleaseUtilTest
 	}
 
 	@Test
+	public void testIsReleasedSourceMatchWithDocumentationChange()
+		throws Exception {
+
+		String readmeGitDiff = _getGitDiff(
+			RandomTestUtil.randomString(),
+			"modules/util/source-formatter/README.md",
+			RandomTestUtil.randomString());
+
+		Assert.assertFalse(
+			_isReleasedSourceMatch(
+				0,
+				JenkinsResultsParserUtil.combine(
+					readmeGitDiff,
+					_getGitDiff(
+						RandomTestUtil.randomString(), _BND_PATH,
+						RandomTestUtil.randomString()))));
+		Assert.assertTrue(
+			_isReleasedSourceMatch(
+				0,
+				JenkinsResultsParserUtil.combine(
+					readmeGitDiff, _getVersionBumpGitDiff(),
+					_getGitDiff(
+						RandomTestUtil.randomString(),
+						"modules/util/source-formatter/src/main/resources" +
+							"/documentation/all_checks.md",
+						RandomTestUtil.randomString()))));
+	}
+
+	@Test
 	public void testIsReleasedSourceMatchWithEmptyDiff() throws Exception {
 		Assert.assertTrue(_isReleasedSourceMatch(0, ""));
 	}
