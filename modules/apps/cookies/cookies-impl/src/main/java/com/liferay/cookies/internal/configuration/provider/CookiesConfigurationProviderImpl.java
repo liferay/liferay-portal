@@ -15,8 +15,6 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -322,21 +320,7 @@ public class CookiesConfigurationProviderImpl
 		throws Exception {
 
 		if (scope == ExtendedObjectClassDefinition.Scope.SYSTEM) {
-			try {
-				CookiesPreferenceHandlingConfiguration
-					cookiesPreferenceHandlingConfiguration =
-						_configurationProvider.getSystemConfiguration(
-							CookiesPreferenceHandlingConfiguration.class);
-
-				if (cookiesPreferenceHandlingConfiguration != null) {
-					return true;
-				}
-			}
-			catch (ConfigurationException configurationException) {
-				_log.error(configurationException);
-
-				return false;
-			}
+			return true;
 		}
 
 		if (_getScopedConfiguration(scope, scopePK) == null) {
@@ -588,9 +572,6 @@ public class CookiesConfigurationProviderImpl
 
 		return configurations[0];
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CookiesConfigurationProviderImpl.class);
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
