@@ -733,7 +733,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 
 		return kbArticlePersistence.fetchByG_ERC_First(
 			groupId, externalReferenceCode,
-			KBArticleVersionComparator.getInstance(true));
+			KBArticleVersionComparator.getInstance(false));
 	}
 
 	@Override
@@ -742,7 +742,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 
 		KBArticle latestKBArticle = kbArticlePersistence.fetchByG_ERC_First(
 			groupId, externalReferenceCode,
-			KBArticleVersionComparator.getInstance(true));
+			KBArticleVersionComparator.getInstance(false));
 
 		if ((latestKBArticle == null) ||
 			(status == WorkflowConstants.STATUS_ANY) ||
