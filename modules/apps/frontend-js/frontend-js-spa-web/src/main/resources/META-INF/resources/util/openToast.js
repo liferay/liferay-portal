@@ -33,7 +33,7 @@ export function openToast(type, title, message) {
 
 	const html = `
 <div class="alert-container cadmin container">
-	<div class="alert-notifications alert-notifications-fixed" id="ToastAlertContainer">
+	<div class="alert-notifications alert-notifications-fixed" id="SPAToastAlertContainer">
 		<div class="lfr-tooltip-scope">
 			<div class="alert alert-dismissible alert-${CLASS_NAME_MAP[type]} mb-3">
 				<div class="alert-autofit-row autofit-row" role="alert">
