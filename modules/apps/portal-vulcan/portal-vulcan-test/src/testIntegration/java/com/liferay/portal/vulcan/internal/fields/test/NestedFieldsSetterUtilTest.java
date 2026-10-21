@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
@@ -204,6 +205,42 @@ public class NestedFieldsSetterUtilTest {
 				)),
 			HashMapBuilder.put(
 				"nestedFields", "productOptions,skus"
+			).build(),
+			"v1.0");
+	}
+
+	@FeatureFlag(enable = false, value = _FEATURE_FLAG_KEY)
+	@Test
+	public void testGetNestedFieldsWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		String json = HTTPTestUtil.invokeToString(
+			null,
+			"test-vulcan/v1.0/products?nestedFields=featureFlagCategories",
+			Http.Method.GET);
+
+		Assert.assertFalse(json, json.contains("featureFlagCategories"));
+	}
+
+	@FeatureFlag(_FEATURE_FLAG_KEY)
+	@Test
+	public void testGetNestedFieldsWhenFeatureFlagIsEnabled() throws Exception {
+		_test(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"featureFlagCategories",
+					JSONUtil.putAll(JSONUtil.put("id", 1))
+				).put(
+					"id", 1
+				),
+				JSONUtil.put(
+					"featureFlagCategories",
+					JSONUtil.putAll(JSONUtil.put("id", 1))
+				).put(
+					"id", 2
+				)),
+			HashMapBuilder.put(
+				"nestedFields", "featureFlagCategories"
 			).build(),
 			"v1.0");
 	}
@@ -694,6 +731,10 @@ public class NestedFieldsSetterUtilTest {
 			return _externalCode;
 		}
 
+		public Category[] getFeatureFlagCategories() {
+			return _featureFlagCategories;
+		}
+
 		public Long getId() {
 			return _id;
 		}
@@ -716,6 +757,7 @@ public class NestedFieldsSetterUtilTest {
 
 		private Category[] _categories;
 		private String _externalCode;
+		private Category[] _featureFlagCategories;
 		private Long _id;
 		private ProductOption[] _productOptions;
 		private Sku[] _skus;
@@ -794,6 +836,12 @@ public class NestedFieldsSetterUtilTest {
 			}
 
 			return "codigoExterno";
+		}
+
+		@com.liferay.portal.vulcan.feature.flag.FeatureFlag(_FEATURE_FLAG_KEY)
+		@NestedField("featureFlagCategories")
+		public List<Category> getFeatureFlagCategories() {
+			return Arrays.asList(_toCategory(1L));
 		}
 
 		@NestedField("productOptionValues")
@@ -1164,6 +1212,8 @@ public class NestedFieldsSetterUtilTest {
 
 		_test(expectedJSONArray, queryParameters, true, version);
 	}
+
+	private static final String _FEATURE_FLAG_KEY = "NESTED-FIELD-123";
 
 	@Inject
 	private BatchEngineExportTaskExecutor _batchEngineExportTaskExecutor;

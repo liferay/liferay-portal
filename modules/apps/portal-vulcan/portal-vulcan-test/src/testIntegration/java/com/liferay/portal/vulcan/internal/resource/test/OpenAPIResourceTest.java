@@ -9,13 +9,33 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.vulcan.feature.flag.FeatureFlag;
+import com.liferay.portal.vulcan.internal.test.util.FeatureFlagManagerTestUtil;
 import com.liferay.portal.vulcan.internal.test.util.URLConnectionUtil;
+import com.liferay.portal.vulcan.resource.OpenAPIResource;
+
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.io.InputStream;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -64,6 +84,60 @@ public class OpenAPIResourceTest {
 		}
 	}
 
+	@Test
+	public void testGetOpenAPIWithUndeclaredFeatureFlag() throws Exception {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.resource." +
+					"OpenAPIResourceImpl",
+				LoggerTestUtil.WARN);
+			SafeCloseable safeCloseable =
+				FeatureFlagManagerTestUtil.swapWithSafeCloseable(
+					_featureFlagManager)) {
+
+			Response response = _openAPIResource.getOpenAPI(
+				Collections.singleton(TestResource.class), "yaml");
+
+			Assert.assertEquals(200, response.getStatus());
+
+			String yaml = (String)response.getEntity();
+
+			Assert.assertTrue(yaml, yaml.contains("/v1.0/tests:"));
+			Assert.assertFalse(
+				yaml, yaml.contains("/v1.0/undeclared-feature-flag-tests:"));
+
+			List<String> messages = TransformUtil.transform(
+				logCapture.getLogEntries(), LogEntry::getMessage);
+
+			Assert.assertTrue(
+				messages.toString(),
+				messages.contains(
+					StringBundler.concat(
+						"Feature flag ", _FEATURE_FLAG_KEY_UNDECLARED,
+						" is not available for company ",
+						TestPropsValues.getCompanyId())));
+		}
+	}
+
+	@Path("/v1.0")
+	public static class TestResource {
+
+		@GET
+		@Path("/tests")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getTestsPage() {
+			return "[]";
+		}
+
+		@FeatureFlag(_FEATURE_FLAG_KEY_UNDECLARED)
+		@GET
+		@Path("/undeclared-feature-flag-tests")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getUndeclaredFeatureFlagTestsPage() {
+			return "[]";
+		}
+
+	}
+
 	private String _getPath(InputStream inputStream, String path)
 		throws Exception {
 
@@ -74,6 +148,14 @@ public class OpenAPIResourceTest {
 		return jsonNode.asText();
 	}
 
+	private static final String _FEATURE_FLAG_KEY_UNDECLARED = "UNDECLARED-123";
+
+	@Inject
+	private FeatureFlagManager _featureFlagManager;
+
 	private final ObjectMapper _objectMapper = new ObjectMapper();
+
+	@Inject
+	private OpenAPIResource _openAPIResource;
 
 }

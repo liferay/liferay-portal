@@ -7,12 +7,20 @@ package com.liferay.portal.vulcan.internal.application.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.application.HeadlessApplicationProvider;
+import com.liferay.portal.vulcan.internal.test.util.FeatureFlagManagerTestUtil;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -96,29 +104,6 @@ public class HeadlessApplicationProviderTest {
 			_bundleContext.registerService(
 				Application.class, new TestApplication(),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"liferay.auth.verifier", true
-				).put(
-					"liferay.oauth2", false
-				).put(
-					"osgi.jaxrs.application.base",
-					"/test-vulcan-application-unversioned"
-				).put(
-					"osgi.jaxrs.extension.select",
-					"(osgi.jaxrs.name=Liferay.Vulcan)"
-				).put(
-					"osgi.jaxrs.name", "Test.Vulcan.Unversioned"
-				).build()),
-			_bundleContext.registerService(
-				TestResource.class, new TestResource(),
-				HashMapDictionaryBuilder.<String, Object>put(
-					"osgi.jaxrs.application.select",
-					"(osgi.jaxrs.name=Test.Vulcan.Unversioned)"
-				).put(
-					"osgi.jaxrs.resource", "true"
-				).build()),
-			_bundleContext.registerService(
-				Application.class, new TestApplication(),
-				HashMapDictionaryBuilder.<String, Object>put(
 					"companyId",
 					Collections.singletonList(
 						String.valueOf(TestPropsValues.getCompanyId()))
@@ -138,6 +123,37 @@ public class HeadlessApplicationProviderTest {
 			_bundleContext.registerService(
 				Application.class, new TestApplication(),
 				HashMapDictionaryBuilder.<String, Object>put(
+					"liferay.auth.verifier", true
+				).put(
+					"liferay.oauth2", false
+				).put(
+					"osgi.jaxrs.application.base",
+					"/test-vulcan-application-feature-flag"
+				).put(
+					"osgi.jaxrs.extension.select",
+					"(osgi.jaxrs.name=Liferay.Vulcan)"
+				).put(
+					"osgi.jaxrs.name", "Test.Vulcan.FeatureFlag"
+				).build()),
+			_bundleContext.registerService(
+				TestFeatureFlagResource_v1_0.class,
+				new TestFeatureFlagResource_v1_0(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"api.version", "v1.0"
+				).put(
+					"openapi.resource", "true"
+				).put(
+					"openapi.resource.path",
+					"/test-vulcan-application-feature-flag"
+				).put(
+					"osgi.jaxrs.application.select",
+					"(osgi.jaxrs.name=Test.Vulcan.FeatureFlag)"
+				).put(
+					"osgi.jaxrs.resource", "true"
+				).build()),
+			_bundleContext.registerService(
+				Application.class, new TestApplication(),
+				HashMapDictionaryBuilder.<String, Object>put(
 					"companyId",
 					Collections.singletonList(
 						String.valueOf(TestPropsValues.getCompanyId() + 1))
@@ -153,6 +169,60 @@ public class HeadlessApplicationProviderTest {
 					"(osgi.jaxrs.name=Liferay.Vulcan)"
 				).put(
 					"osgi.jaxrs.name", "Test.Vulcan.OtherCompany"
+				).build()),
+			_bundleContext.registerService(
+				Application.class, new TestApplication(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"liferay.auth.verifier", true
+				).put(
+					"liferay.oauth2", false
+				).put(
+					"osgi.jaxrs.application.base",
+					"/test-vulcan-application-undeclared-feature-flag"
+				).put(
+					"osgi.jaxrs.extension.select",
+					"(osgi.jaxrs.name=Liferay.Vulcan)"
+				).put(
+					"osgi.jaxrs.name", "Test.Vulcan.UndeclaredFeatureFlag"
+				).build()),
+			_bundleContext.registerService(
+				TestUndeclaredFeatureFlagResource_v1_0.class,
+				new TestUndeclaredFeatureFlagResource_v1_0(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"api.version", "v1.0"
+				).put(
+					"openapi.resource", "true"
+				).put(
+					"openapi.resource.path",
+					"/test-vulcan-application-undeclared-feature-flag"
+				).put(
+					"osgi.jaxrs.application.select",
+					"(osgi.jaxrs.name=Test.Vulcan.UndeclaredFeatureFlag)"
+				).put(
+					"osgi.jaxrs.resource", "true"
+				).build()),
+			_bundleContext.registerService(
+				Application.class, new TestApplication(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"liferay.auth.verifier", true
+				).put(
+					"liferay.oauth2", false
+				).put(
+					"osgi.jaxrs.application.base",
+					"/test-vulcan-application-unversioned"
+				).put(
+					"osgi.jaxrs.extension.select",
+					"(osgi.jaxrs.name=Liferay.Vulcan)"
+				).put(
+					"osgi.jaxrs.name", "Test.Vulcan.Unversioned"
+				).build()),
+			_bundleContext.registerService(
+				TestResource.class, new TestResource(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"osgi.jaxrs.application.select",
+					"(osgi.jaxrs.name=Test.Vulcan.Unversioned)"
+				).put(
+					"osgi.jaxrs.resource", "true"
 				).build()));
 	}
 
@@ -162,7 +232,7 @@ public class HeadlessApplicationProviderTest {
 	}
 
 	@Test
-	public void testGetApplications() {
+	public void testGetApplications() throws Exception {
 		HeadlessApplicationProvider.Application application = _getApplication(
 			"/test-vulcan-application");
 
@@ -249,11 +319,75 @@ public class HeadlessApplicationProviderTest {
 		Assert.assertNull(_getApplication("/test-vulcan-application-added"));
 	}
 
+	@FeatureFlag(enable = false, value = _FEATURE_FLAG_KEY)
+	@Test
+	public void testGetApplicationsWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		Assert.assertNull(
+			_getApplication("/test-vulcan-application-feature-flag"));
+	}
+
+	@FeatureFlag(_FEATURE_FLAG_KEY)
+	@Test
+	public void testGetApplicationsWhenFeatureFlagIsEnabled() throws Exception {
+		HeadlessApplicationProvider.Application application = _getApplication(
+			"/test-vulcan-application-feature-flag");
+
+		Assert.assertEquals(
+			ListUtil.fromArray("v1.0"),
+			TransformUtil.transform(
+				application.getOpenAPIDocuments(),
+				HeadlessApplicationProvider.OpenAPIDocument::getVersion));
+	}
+
+	@Test
+	public void testGetApplicationsWhenFeatureFlagIsUndeclared()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.application." +
+					"HeadlessApplicationProviderImpl",
+				LoggerTestUtil.WARN);
+			SafeCloseable safeCloseable =
+				FeatureFlagManagerTestUtil.swapWithSafeCloseable(
+					_featureFlagManager)) {
+
+			Assert.assertNull(
+				_getApplication(
+					"/test-vulcan-application-undeclared-feature-flag"));
+
+			List<String> messages = TransformUtil.transform(
+				logCapture.getLogEntries(), LogEntry::getMessage);
+
+			Assert.assertTrue(
+				messages.toString(),
+				messages.contains(
+					StringBundler.concat(
+						"Feature flag ", _FEATURE_FLAG_KEY_UNDECLARED,
+						" is not available for company ",
+						TestPropsValues.getCompanyId())));
+		}
+	}
+
 	public static class TestApplication extends Application {
 
 		@Override
 		public Set<Object> getSingletons() {
 			return Collections.singleton(this);
+		}
+
+	}
+
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag(_FEATURE_FLAG_KEY)
+	@Path("/v1.0")
+	public static class TestFeatureFlagResource_v1_0 {
+
+		@GET
+		@Path("/openapi.{type:json|yaml}")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getOpenAPI(@PathParam("type") String type) {
+			return type;
 		}
 
 	}
@@ -307,11 +441,28 @@ public class HeadlessApplicationProviderTest {
 
 	}
 
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag(
+		_FEATURE_FLAG_KEY_UNDECLARED
+	)
+	@Path("/v1.0")
+	public static class TestUndeclaredFeatureFlagResource_v1_0 {
+
+		@GET
+		@Path("/openapi.{type:json|yaml}")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getOpenAPI(@PathParam("type") String type) {
+			return type;
+		}
+
+	}
+
 	private HeadlessApplicationProvider.Application _getApplication(
-		String basePath) {
+			String basePath)
+		throws Exception {
 
 		for (HeadlessApplicationProvider.Application application :
-				_headlessApplicationProvider.getApplications()) {
+				_headlessApplicationProvider.getApplications(
+					TestPropsValues.getCompanyId())) {
 
 			if (basePath.equals(application.getBasePath())) {
 				return application;
@@ -349,7 +500,14 @@ public class HeadlessApplicationProviderTest {
 		return null;
 	}
 
+	private static final String _FEATURE_FLAG_KEY = "APPLICATION-123";
+
+	private static final String _FEATURE_FLAG_KEY_UNDECLARED = "UNDECLARED-123";
+
 	private BundleContext _bundleContext;
+
+	@Inject
+	private FeatureFlagManager _featureFlagManager;
 
 	@Inject
 	private HeadlessApplicationProvider _headlessApplicationProvider;
