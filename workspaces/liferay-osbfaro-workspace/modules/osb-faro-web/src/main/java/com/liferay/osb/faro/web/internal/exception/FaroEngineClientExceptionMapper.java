@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
@@ -73,6 +74,18 @@ public class FaroEngineClientExceptionMapper
 			_log.error(exception);
 
 			responseBuilder = Response.serverError();
+
+			ErrorResponse errorResponse = new ErrorResponse();
+
+			errorResponse.setMessage(
+				"The analytics engine returned an unexpected response");
+			errorResponse.setStatus(
+				Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			errorResponse.setTimestamp(System.currentTimeMillis());
+
+			responseBuilder.entity(errorResponse);
+
+			responseBuilder.type(MediaType.APPLICATION_JSON_TYPE);
 		}
 
 		return responseBuilder.build();
