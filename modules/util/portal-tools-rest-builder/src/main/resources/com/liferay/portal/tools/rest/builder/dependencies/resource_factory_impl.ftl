@@ -1,5 +1,6 @@
 package ${configYAML.apiPackagePath}.internal.resource.${escapedVersion}.factory;
 
+import ${configYAML.apiPackagePath}.internal.resource.${escapedVersion}.Base${schemaName}ResourceImpl;
 import ${configYAML.apiPackagePath}.internal.security.permission.LiberalPermissionChecker;
 import ${configYAML.apiPackagePath}.resource.${escapedVersion}.${schemaName}Resource;
 
@@ -24,11 +25,13 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.feature.flag.FeatureFlagChecker;
 import ${configYAML.javaEEPackage}.annotation.Generated;
 
 import ${configYAML.javaEEPackage}.servlet.http.HttpServletRequest;
 import ${configYAML.javaEEPackage}.servlet.http.HttpServletResponse;
 
+import ${configYAML.javaEEPackage}.ws.rs.NotFoundException;
 import ${configYAML.javaEEPackage}.ws.rs.core.UriInfo;
 
 import java.lang.reflect.Constructor;
@@ -142,6 +145,14 @@ public class ${schemaName}ResourceFactoryImpl implements ${schemaName}Resource.F
 	}
 
 	private Object _invoke(Method method, Object[] arguments, boolean checkPermissions, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Locale preferredLocale, UriInfo uriInfo, User user) throws Throwable {
+		<#assign generateFeatureFlag = freeMarkerTool.isGenerateFeatureFlag(configYAML, openAPIYAML, schemaName) />
+
+		<#if generateFeatureFlag>
+			if (!_featureFlagChecker.isEnabled(user.getCompanyId(), Base${schemaName}ResourceImpl.class.getMethod(method.getName(), method.getParameterTypes()))) {
+				throw new NotFoundException();
+			}
+
+		</#if>
 		String name = PrincipalThreadLocal.getName();
 
 		PrincipalThreadLocal.setName(user.getUserId());
@@ -203,6 +214,11 @@ public class ${schemaName}ResourceFactoryImpl implements ${schemaName}Resource.F
 		target = "(result.class.name=com.liferay.portal.kernel.search.filter.Filter)"
 	)
 	private ExpressionConvert<Filter> _expressionConvert;
+
+	<#if generateFeatureFlag>
+		@Reference
+		private FeatureFlagChecker _featureFlagChecker;
+	</#if>
 
 	@Reference
 	private FilterParserProvider _filterParserProvider;
