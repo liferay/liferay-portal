@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -295,6 +296,17 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		GroupPermissionUtil.check(
 			getPermissionChecker(), folder.getGroupId(),
 			ActionKeys.EXPORT_IMPORT_LAYOUTS);
+
+		Repository repository =
+			PortletFileRepositoryUtil.fetchPortletRepository(
+				folder.getGroupId(), _PORTLET_REPOSITORY_ID);
+
+		if ((repository == null) ||
+			(repository.getRepositoryId() != folder.getRepositoryId())) {
+
+			throw new PrincipalException(
+				"Folder " + stagingRequestId + " is not a staging request");
+		}
 	}
 
 	private void _checkTarget(
@@ -338,6 +350,8 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 					" to layout ", targetPlid));
 		}
 	}
+
+	private static final String _PORTLET_REPOSITORY_ID = "134";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		StagingServiceImpl.class);
