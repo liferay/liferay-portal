@@ -131,71 +131,51 @@ public class RestrictedLiferayObjectWrapperTest
 
 	@Test
 	public void testGetWithAllowedClass() throws Exception {
-		_testGetWithAllowedClass("*", "com.liferay.portal.template.freemarker");
-		_testGetWithAllowedClass("*", TestLiferayMethodObject.class.getName());
 		_testGetWithAllowedClass(
-			"com.liferay.portal.*", "com.liferay.portal.template.freemarker");
+			"*", new TestLiferayMethodObject("test"),
+			"com.liferay.portal.template.freemarker");
 		_testGetWithAllowedClass(
-			"com.liferay.portal.*", TestLiferayMethodObject.class.getName());
+			"*", new TestLiferayMethodObject("test"),
+			TestLiferayMethodObject.class.getName());
+		_testGetWithAllowedClass(
+			"com.liferay.portal.*", new TestLiferayMethodObject("test"),
+			"com.liferay.portal.template.freemarker");
+		_testGetWithAllowedClass(
+			"com.liferay.portal.*", new TestLiferayMethodObject("test"),
+			TestLiferayMethodObject.class.getName());
 		_testGetWithAllowedClass(
 			"com.liferay.portal.template.freemarker",
+			new TestLiferayMethodObject("test"),
 			"com.liferay.portal.template.freemarker");
 		_testGetWithAllowedClass(
 			"com.liferay.portal.template.freemarker",
+			new TestLiferayMethodObject("test"),
 			TestLiferayMethodObject.class.getName());
 		_testGetWithAllowedClass(
 			TestLiferayMethodObject.class.getName(),
+			new TestLiferayMethodObject("test"),
 			"com.liferay.portal.template.freemarker");
 		_testGetWithAllowedClass(
 			TestLiferayMethodObject.class.getName(),
+			new TestLiferayMethodObject("test"),
 			TestLiferayMethodObject.class.getName());
 	}
 
 	@Test
 	public void testGetWithRestrictedClass() throws Exception {
-		_testGetWithRestrictedClass("com.liferay.portal.*");
-		_testGetWithRestrictedClass("com.liferay.portal.template.freemarker");
-		_testGetWithRestrictedClass(TestLiferayMethodObject.class.getName());
+		_testGetWithRestrictedClass(
+			new TestLiferayMethodObject("test"), "com.liferay.portal.*");
+		_testGetWithRestrictedClass(
+			new TestLiferayMethodObject("test"),
+			"com.liferay.portal.template.freemarker");
+		_testGetWithRestrictedClass(
+			new TestLiferayMethodObject("test"),
+			TestLiferayMethodObject.class.getName());
 	}
 
 	@Test
 	public void testGetWithRestrictedMethodNames() throws Exception {
-		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper =
-			new RestrictedLiferayObjectWrapper(
-				null, null,
-				new String[] {
-					TestLiferayMethodObject.class.getName() + "#getName",
-					TestLiferayMethodObject.class.getName() + "#toString"
-				});
-
-		TemplateModel templateModel = restrictedLiferayObjectWrapper.wrap(
-			new TestLiferayMethodObject("test"));
-
-		Assert.assertThat(
-			templateModel,
-			CoreMatchers.instanceOf(LiferayFreeMarkerStringModel.class));
-
-		LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
-			(LiferayFreeMarkerStringModel)templateModel;
-
-		_testGetWithRestricted("Name", liferayFreeMarkerStringModel);
-		_testGetWithRestricted("getName", liferayFreeMarkerStringModel);
-		_testGetWithRestricted("getname", liferayFreeMarkerStringModel);
-		_testGetWithRestricted("name", liferayFreeMarkerStringModel);
-
-		Assert.assertEquals(
-			"Denied access to the toString method in class " +
-				TestLiferayMethodObject.class,
-			liferayFreeMarkerStringModel.getAsString());
-
-		SimpleMethodModel simpleMethodModel =
-			(SimpleMethodModel)liferayFreeMarkerStringModel.get("generate");
-
-		TemplateModel resultTemplateModel =
-			(TemplateModel)simpleMethodModel.exec(
-				Collections.singletonList(new SimpleScalar("generate")));
-
-		Assert.assertEquals("test-generate", resultTemplateModel.toString());
+		_testGetWithRestrictedMethodNames(new TestLiferayMethodObject("test"));
 	}
 
 	@Test
@@ -329,6 +309,81 @@ public class RestrictedLiferayObjectWrapperTest
 			"TEMPLATE_ENGINE_FREEMARKER_TRANSACTION_READ_ONLY", true);
 
 		_testWrap();
+	}
+
+	public static class TestBaseModel extends BaseModelImpl<TestBaseModel> {
+
+		@Override
+		public Object clone() {
+			return null;
+		}
+
+		@Override
+		public TestBaseModel cloneWithOriginalValues() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public int compareTo(TestBaseModel testBaseModel) {
+			return 0;
+		}
+
+		public Map<String, Function<TestBaseModel, Object>>
+			getAttributeGetterFunctions() {
+
+			return Collections.singletonMap(
+				"companyId", TestBaseModel::getCompanyId);
+		}
+
+		public long getCompanyId() {
+			return _companyId;
+		}
+
+		@Override
+		public Map<String, Object> getModelAttributes() {
+			return null;
+		}
+
+		@Override
+		public Class<?> getModelClass() {
+			return null;
+		}
+
+		@Override
+		public String getModelClassName() {
+			return null;
+		}
+
+		@Override
+		public Serializable getPrimaryKeyObj() {
+			return null;
+		}
+
+		@Override
+		public boolean isEntityCacheEnabled() {
+			return false;
+		}
+
+		@Override
+		public boolean isFinderCacheEnabled() {
+			return false;
+		}
+
+		@Override
+		public void setPrimaryKeyObj(Serializable primaryKeyObj) {
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(_companyId);
+		}
+
+		private TestBaseModel(long companyId) {
+			_companyId = companyId;
+		}
+
+		private final long _companyId;
+
 	}
 
 	public class TestLiferayMethodObject {
@@ -489,7 +544,7 @@ public class RestrictedLiferayObjectWrapperTest
 	}
 
 	private void _testGetWithAllowedClass(
-			String allowedClassName, String restrictedClassName)
+			String allowedClassName, Object object, String restrictedClassName)
 		throws Exception {
 
 		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper =
@@ -498,7 +553,7 @@ public class RestrictedLiferayObjectWrapperTest
 				new String[] {restrictedClassName}, null);
 
 		TemplateModel templateModel = restrictedLiferayObjectWrapper.wrap(
-			new TestLiferayMethodObject("test"));
+			object);
 
 		Assert.assertThat(
 			templateModel,
@@ -538,15 +593,18 @@ public class RestrictedLiferayObjectWrapperTest
 				InvalidPropertyException.class,
 				templateModelException.getClass());
 
+			Object object = liferayFreeMarkerStringModel.getWrappedObject();
+
 			Assert.assertEquals(
 				StringBundler.concat(
 					"Denied access to method or field ", key, " of ",
-					TestLiferayMethodObject.class),
+					object.getClass()),
 				templateModelException.getMessage());
 		}
 	}
 
-	private void _testGetWithRestrictedClass(String restrictedClassName)
+	private void _testGetWithRestrictedClass(
+			Object object, String restrictedClassName)
 		throws Exception {
 
 		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper =
@@ -554,7 +612,7 @@ public class RestrictedLiferayObjectWrapperTest
 				null, new String[] {restrictedClassName}, null);
 
 		TemplateModel templateModel = restrictedLiferayObjectWrapper.wrap(
-			new TestLiferayMethodObject("test"));
+			object);
 
 		Assert.assertThat(
 			templateModel,
@@ -568,6 +626,47 @@ public class RestrictedLiferayObjectWrapperTest
 		_testGetWithRestricted("getName", liferayFreeMarkerStringModel);
 		_testGetWithRestricted("getname", liferayFreeMarkerStringModel);
 		_testGetWithRestricted("name", liferayFreeMarkerStringModel);
+	}
+
+	private void _testGetWithRestrictedMethodNames(Object object)
+		throws Exception {
+
+		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper =
+			new RestrictedLiferayObjectWrapper(
+				null, null,
+				new String[] {
+					TestLiferayMethodObject.class.getName() + "#getName",
+					TestLiferayMethodObject.class.getName() + "#toString"
+				});
+
+		TemplateModel templateModel = restrictedLiferayObjectWrapper.wrap(
+			object);
+
+		Assert.assertThat(
+			templateModel,
+			CoreMatchers.instanceOf(LiferayFreeMarkerStringModel.class));
+
+		LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
+			(LiferayFreeMarkerStringModel)templateModel;
+
+		_testGetWithRestricted("Name", liferayFreeMarkerStringModel);
+		_testGetWithRestricted("getName", liferayFreeMarkerStringModel);
+		_testGetWithRestricted("getname", liferayFreeMarkerStringModel);
+		_testGetWithRestricted("name", liferayFreeMarkerStringModel);
+
+		Assert.assertEquals(
+			"Denied access to the toString method in class " +
+				object.getClass(),
+			liferayFreeMarkerStringModel.getAsString());
+
+		SimpleMethodModel simpleMethodModel =
+			(SimpleMethodModel)liferayFreeMarkerStringModel.get("generate");
+
+		TemplateModel resultTemplateModel =
+			(TemplateModel)simpleMethodModel.exec(
+				Collections.singletonList(new SimpleScalar("generate")));
+
+		Assert.assertEquals("test-generate", resultTemplateModel.toString());
 	}
 
 	private void _testWrap() throws Exception {
@@ -606,81 +705,6 @@ public class RestrictedLiferayObjectWrapperTest
 			new RestrictedLiferayObjectWrapper(
 				null, new String[] {StringPool.BLANK}, null));
 		testWrap(new RestrictedLiferayObjectWrapper(null, null, null));
-	}
-
-	private static class TestBaseModel extends BaseModelImpl<TestBaseModel> {
-
-		@Override
-		public Object clone() {
-			return null;
-		}
-
-		@Override
-		public TestBaseModel cloneWithOriginalValues() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public int compareTo(TestBaseModel testBaseModel) {
-			return 0;
-		}
-
-		public Map<String, Function<TestBaseModel, Object>>
-			getAttributeGetterFunctions() {
-
-			return Collections.singletonMap(
-				"companyId", TestBaseModel::getCompanyId);
-		}
-
-		public long getCompanyId() {
-			return _companyId;
-		}
-
-		@Override
-		public Map<String, Object> getModelAttributes() {
-			return null;
-		}
-
-		@Override
-		public Class<?> getModelClass() {
-			return null;
-		}
-
-		@Override
-		public String getModelClassName() {
-			return null;
-		}
-
-		@Override
-		public Serializable getPrimaryKeyObj() {
-			return null;
-		}
-
-		@Override
-		public boolean isEntityCacheEnabled() {
-			return false;
-		}
-
-		@Override
-		public boolean isFinderCacheEnabled() {
-			return false;
-		}
-
-		@Override
-		public void setPrimaryKeyObj(Serializable primaryKeyObj) {
-		}
-
-		@Override
-		public String toString() {
-			return String.valueOf(_companyId);
-		}
-
-		private TestBaseModel(long companyId) {
-			_companyId = companyId;
-		}
-
-		private final long _companyId;
-
 	}
 
 	private static class TestLocalService implements BaseLocalService {
