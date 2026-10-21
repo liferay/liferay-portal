@@ -8,7 +8,6 @@ package com.liferay.oauth2.provider.shortcut.internal.instance.lifecycle;
 import com.liferay.oauth2.provider.constants.ClientProfile;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.constants.OAuth2ApplicationConstants;
-import com.liferay.oauth2.provider.constants.OAuth2ProviderActionKeys;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
@@ -21,14 +20,7 @@ import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.ResourcePermission;
-import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 
@@ -74,48 +66,16 @@ public class DynamicRegistrationPortalInstanceLifecycleListener
 		User user = _userLocalService.getUserByScreenName(
 			company.getCompanyId(), "default-service-account");
 
-		OAuth2Application oAuth2Application =
-			_oAuth2ApplicationLocalService.addOAuth2Application(
-				company.getCompanyId(), user.getUserId(), user.getScreenName(),
-				Collections.singletonList(GrantType.CLIENT_CREDENTIALS),
-				"client_secret_post", user.getUserId(),
-				OAuth2SecureRandomGenerator.generateClientId(),
-				ClientProfile.HEADLESS_SERVER.id(),
-				OAuth2SecureRandomGenerator.generateClientSecret(), null, null,
-				null, 0, null,
-				OAuth2ApplicationConstants.NAME_DYNAMIC_REGISTRATOR, null,
-				Collections.emptyList(), false, false, null,
-				new ServiceContext());
-
-		Role role = _roleLocalService.fetchRole(
-			oAuth2Application.getCompanyId(), RoleConstants.OWNER);
-
-		if (role == null) {
-			return;
-		}
-
-		ResourcePermission resourcePermission =
-			_resourcePermissionLocalService.fetchResourcePermission(
-				oAuth2Application.getCompanyId(),
-				OAuth2Application.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(oAuth2Application.getPrimaryKey()),
-				role.getRoleId());
-
-		if (resourcePermission != null) {
-			return;
-		}
-
-		_resourcePermissionLocalService.setResourcePermissions(
-			oAuth2Application.getCompanyId(), OAuth2Application.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(oAuth2Application.getPrimaryKey()), role.getRoleId(),
-			new String[] {
-				ActionKeys.VIEW, ActionKeys.UPDATE, ActionKeys.DELETE,
-				ActionKeys.PERMISSIONS, OAuth2ProviderActionKeys.CREATE_TOKEN,
-				OAuth2ProviderActionKeys.REGISTER_APPLICATION,
-				OAuth2ProviderActionKeys.REVOKE_TOKEN
-			});
+		_oAuth2ApplicationLocalService.addOAuth2Application(
+			company.getCompanyId(), user.getUserId(), user.getScreenName(),
+			Collections.singletonList(GrantType.CLIENT_CREDENTIALS),
+			"client_secret_post", user.getUserId(),
+			OAuth2SecureRandomGenerator.generateClientId(),
+			ClientProfile.HEADLESS_SERVER.id(),
+			OAuth2SecureRandomGenerator.generateClientSecret(), null, null,
+			null, 0, null, OAuth2ApplicationConstants.NAME_DYNAMIC_REGISTRATOR,
+			null, Collections.emptyList(), false, false, null,
+			new ServiceContext());
 	}
 
 	private void _deleteClientCredentialsGrants(long companyId)
@@ -184,12 +144,6 @@ public class DynamicRegistrationPortalInstanceLifecycleListener
 
 	@Reference
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
-
-	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	@Reference
-	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
