@@ -126,6 +126,20 @@ public class PasswordFieldUtil {
 		return field.getName();
 	}
 
+	private static boolean _hasSchemaAnnotation(Class<?> clazz) {
+		if (clazz.isAnnotationPresent(Schema.class)) {
+			return true;
+		}
+
+		for (Method method : clazz.getMethods()) {
+			if (method.isAnnotationPresent(Schema.class)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private static boolean _isPasswordField(Class<?> clazz, Field field) {
 		if (_isPasswordSchema(field.getAnnotation(Schema.class))) {
 			return true;
@@ -160,7 +174,7 @@ public class PasswordFieldUtil {
 		Class<?> clazz, Set<Class<?>> classes, String prefix,
 		Set<String> passwordFieldNames) {
 
-		if (!clazz.isAnnotationPresent(Schema.class) || !classes.add(clazz)) {
+		if (!_hasSchemaAnnotation(clazz) || !classes.add(clazz)) {
 			return;
 		}
 
