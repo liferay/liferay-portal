@@ -65,14 +65,14 @@ tests:
         template: templates/workloads.yaml
     -   asserts:
             -   failedTemplate:
-                    errorMessage: '"database.host" must be set when "database.engine" is set'
+                    errorMessage: "\"database.host\" must be set when \"database.engine\" is set"
         it: Fails when the database engine is set without a host
         set:
             database.engine: postgresql
         template: templates/workloads.yaml
     -   asserts:
             -   failedTemplate:
-                    errorMessage: '"database.engine" must be set when "database.host" is set, or Liferay falls back to its embedded Hypersonic database'
+                    errorMessage: "\"database.engine\" must be set when \"database.host\" is set, or Liferay falls back to its embedded Hypersonic database"
         it: Fails when the database host is set without an engine
         set:
             database.host: db.example.com
