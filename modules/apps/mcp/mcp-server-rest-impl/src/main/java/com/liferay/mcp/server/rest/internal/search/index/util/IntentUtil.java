@@ -116,6 +116,8 @@ public class IntentUtil {
 
 	private static final String _INTENT_DEPLOY = "deploy";
 
+	private static final String _INTENT_EXPORT = "export";
+
 	private static final String _INTENT_MOVE = "move";
 
 	private static final String _INTENT_PUBLISH = "publish";
@@ -157,6 +159,8 @@ public class IntentUtil {
 			"Deploy", _INTENT_DEPLOY
 		).put(
 			"Expire", _INTENT_UNPUBLISH
+		).put(
+			"ExportBatch", _INTENT_EXPORT
 		).put(
 			"Move", _INTENT_MOVE
 		).put(
@@ -220,6 +224,8 @@ public class IntentUtil {
 			"edit", Arrays.asList(_INTENT_UPDATE, _INTENT_REPLACE)
 		).put(
 			"expire", Arrays.asList(_INTENT_UNPUBLISH)
+		).put(
+			"export", Arrays.asList(_INTENT_EXPORT)
 		).put(
 			"fetch", Arrays.asList(INTENT_READ, INTENT_LIST)
 		).put(
