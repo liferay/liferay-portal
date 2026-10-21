@@ -100,7 +100,7 @@ public class ExternalStatusMonitor extends BaseMonitor {
 
 	@Override
 	protected String getDefaultLinkURL() {
-		return _componentsURL;
+		return _statusPageURL;
 	}
 
 	private Set<String> _getComponentNames(Map<String, String> parameters) {
