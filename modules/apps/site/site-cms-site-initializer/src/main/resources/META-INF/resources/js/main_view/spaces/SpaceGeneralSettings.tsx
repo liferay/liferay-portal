@@ -29,7 +29,7 @@ import {
 	validate,
 } from '../../common/components/forms/validations';
 import SpaceService from '../../common/services/SpaceService';
-import {LogoColor, Space} from '../../common/types/Space';
+import {LogoColor, MapProviderKey, Space} from '../../common/types/Space';
 import {ERC_MAX_LENGTH} from '../../common/utils/constants';
 import focusInvalidElement from '../../common/utils/focusInvalidElement';
 import SpaceBaseFields from './SpaceBaseFields';
@@ -39,11 +39,15 @@ const MINUTES_PER_DAY = 1440;
 
 export default function SpaceGeneralSettings({
 	backURL,
+	companyGoogleMapsAPIKey,
+	companyMapProviderKey,
 	groupId,
 	setSpace,
 	space,
 }: {
 	backURL?: string;
+	companyGoogleMapsAPIKey?: string;
+	companyMapProviderKey?: MapProviderKey;
 	groupId: string;
 	setSpace?: React.Dispatch<React.SetStateAction<any>>;
 	space: Space;
@@ -72,9 +76,15 @@ export default function SpaceGeneralSettings({
 			description: space.description,
 			erc: initialERC,
 			friendlyURL: initialFriendlyURL,
-			googleMapsAPIKey: space.settings?.googleMapsAPIKey ?? '',
+			googleMapsAPIKey:
+				space.settings?.googleMapsAPIKey ||
+				companyGoogleMapsAPIKey ||
+				'',
 			logoColor: space.settings?.logoColor as LogoColor,
-			mapProviderKey: space.settings?.mapProviderKey ?? 'OpenStreetMap',
+			mapProviderKey:
+				space.settings?.mapProviderKey ??
+				companyMapProviderKey ??
+				'OpenStreetMap',
 			name: space.name,
 			sharingEnabled: space.settings?.sharingEnabled ?? false,
 			trashEnabled: space.settings?.trashEnabled ?? true,
@@ -156,7 +166,9 @@ export default function SpaceGeneralSettings({
 				setFieldValue('friendlyURL', updatedSpace.friendlyURL ?? '');
 				setFieldValue(
 					'googleMapsAPIKey',
-					updatedSpace.settings?.googleMapsAPIKey ?? ''
+					updatedSpace.settings?.googleMapsAPIKey ||
+						companyGoogleMapsAPIKey ||
+						''
 				);
 				setShowGoogleMapsAPIKey(false);
 

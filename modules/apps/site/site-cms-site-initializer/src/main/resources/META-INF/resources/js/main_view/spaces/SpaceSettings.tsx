@@ -9,13 +9,19 @@ import React, {useEffect, useState} from 'react';
 import Toolbar from '../../common/components/Toolbar';
 import VerticalNavLayout from '../../common/components/VerticalNavLayout';
 import SpaceService from '../../common/services/SpaceService';
-import {LabelValueObject, Space} from '../../common/types/Space';
+import {
+	LabelValueObject,
+	MapProviderKey,
+	Space,
+} from '../../common/types/Space';
 import SpaceGeneralSettings from './SpaceGeneralSettings';
 import SpaceLanguageSettings from './SpaceLanguageSettings';
 
 interface SpaceSettingsProps {
 	backURL: string;
 	companyAvailableLanguages: LabelValueObject[];
+	companyGoogleMapsAPIKey?: string;
+	companyMapProviderKey?: MapProviderKey;
 	externalReferenceCode: string;
 	groupId: string;
 }
@@ -23,6 +29,8 @@ interface SpaceSettingsProps {
 export default function SpaceSettings({
 	backURL,
 	companyAvailableLanguages,
+	companyGoogleMapsAPIKey,
+	companyMapProviderKey,
 	externalReferenceCode,
 	groupId,
 }: SpaceSettingsProps) {
@@ -43,6 +51,8 @@ export default function SpaceSettings({
 			component: (
 				<SpaceGeneralSettings
 					backURL={backURL}
+					companyGoogleMapsAPIKey={companyGoogleMapsAPIKey}
+					companyMapProviderKey={companyMapProviderKey}
 					groupId={groupId}
 					setSpace={setSpace}
 					space={space}
