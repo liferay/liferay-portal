@@ -49,18 +49,5 @@ Export-Package:\
 	com.liferay.portal.vulcan.yaml.config,\
 	com.liferay.portal.vulcan.yaml.exception,\
 	com.liferay.portal.vulcan.yaml.graphql,\
-	com.liferay.portal.vulcan.yaml.openapi,\
-	\
-	graphql.annotations.annotationTypes;version="6.0"
-Import-Package:\
-	!graphql.annotations.directives.*,\
-	!graphql.annotations.processor.typeFunctions.*,\
-	!graphql.annotations.typeResolvers.*,\
-	\
-	!graphql.introspection.*,\
-	\
-	!graphql.schema.*,\
-	\
-	*
+	com.liferay.portal.vulcan.yaml.openapi
 -fixupmessages: "^Classes found in the wrong directory: \\\\{META-INF/versions/9/";is:=warning
--includeresource: @graphql-java-annotations-[0-9.]*.jar!/graphql/annotations/annotationTypes/*
