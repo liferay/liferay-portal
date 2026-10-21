@@ -50,19 +50,22 @@ public class SchemaManifestBuilderTest {
 
 		Instant.parse(timestamp);
 
+		String randomTimestamp = String.valueOf(
+			Instant.ofEpochSecond(RandomTestUtil.randomInt()));
+
 		_writeManifest(
 			StringUtil.replace(
-				_read(_manifestFile), timestamp, "2000-01-01T00:00:00Z"));
+				_read(_manifestFile), timestamp, randomTimestamp));
 
 		_buildSchemaManifest(null);
 
-		Assert.assertEquals("2000-01-01T00:00:00Z", _assertManifest(module));
+		Assert.assertEquals(randomTimestamp, _assertManifest(module));
 
 		_writeManifest("{}");
 
 		_buildSchemaManifest(null);
 
-		Assert.assertNotEquals("2000-01-01T00:00:00Z", _assertManifest(module));
+		Assert.assertNotEquals(randomTimestamp, _assertManifest(module));
 
 		module = RandomTestUtil.randomString();
 
