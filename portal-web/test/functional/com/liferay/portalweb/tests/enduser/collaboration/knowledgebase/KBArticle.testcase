@@ -1017,41 +1017,6 @@ definition {
 			listEntryLabel = "Draft");
 	}
 
-	@description = "This test ensures that users can restore the expired article from the recycle bin."
-	@priority = 3
-	test CanRestoreExpiredArticleFromRecycleBin {
-		property custom.properties = "feature.flag.LPS-188058=true";
-
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Expire",
-			rowEntry = "Knowledge Base Article Title");
-
-		KBArticle.deleteCP(
-			kbArticleTitle = "Knowledge Base Article Title",
-			moveToRecycleBin = "true");
-
-		KBArticle.viewDefaultCP();
-
-		RecycleBin.openRecycleBinAdmin(siteURLKey = "guest");
-
-		RecycleBin.restoreCP(
-			assetName = "Knowledge Base Article Title",
-			assetType = "Knowledge Base Article");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		LexiconList.viewListEntryLabel(
-			listEntry = "Knowledge Base Article Title",
-			listEntryLabel = "Expired");
-	}
-
 	@description = "This test ensures that users can restore the kb folder from the recycle bin."
 	@priority = 5
 	test CanRestoreFolderWithContentsFromRecycleBin {

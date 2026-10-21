@@ -1642,6 +1642,26 @@ public class KBArticleLocalServiceTest {
 		Assert.assertNull(latestKBArticle.getReviewDate());
 	}
 
+	@Test
+	public void testRestoreExpiredKBArticleFromTrash() throws Exception {
+		KBArticle kbArticle = _addKbArticle();
+
+		_kbArticleLocalService.expireKBArticle(
+			_user.getUserId(), kbArticle.getResourcePrimKey(), _serviceContext);
+
+		_kbArticleLocalService.moveKBArticleToTrash(
+			_user.getUserId(), kbArticle.getResourcePrimKey());
+
+		_kbArticleLocalService.restoreKBArticleFromTrash(
+			_user.getUserId(), kbArticle.getResourcePrimKey());
+
+		kbArticle = _kbArticleLocalService.getLatestKBArticle(
+			kbArticle.getResourcePrimKey(), WorkflowConstants.STATUS_ANY);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EXPIRED, kbArticle.getStatus());
+	}
+
 	@FeatureFlag("LPD-11003")
 	@Test
 	public void testRevertKBArticleWithLock() throws PortalException {
