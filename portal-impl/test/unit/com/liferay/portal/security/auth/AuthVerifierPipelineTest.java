@@ -7,6 +7,7 @@ package com.liferay.portal.security.auth;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -110,7 +111,7 @@ public class AuthVerifierPipelineTest {
 		throws PortalException {
 
 		AuthVerifierResult authVerifierResult = _verifyRequest(
-			"", impersonated, _BASE_URL + "/regular/*",
+			StringPool.BLANK, impersonated, _BASE_URL + "/regular/*",
 			_BASE_URL + "/regular/" + RandomTestUtil.randomString());
 
 		Assert.assertSame(expectedState, authVerifierResult.getState());
@@ -225,22 +226,21 @@ public class AuthVerifierPipelineTest {
 	}
 
 	private void _testVerifyRequest() throws PortalException {
-		String contextPath = "";
 		String includeURLs = StringBundler.concat(
 			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
 
 		String legacyRequestURI = StringBundler.concat(
-			contextPath, _BASE_URL, "/legacy/", RandomTestUtil.randomString());
+			_BASE_URL, "/legacy/", RandomTestUtil.randomString());
 		String regularRequestURI = StringBundler.concat(
-			contextPath, _BASE_URL, "/regular/", RandomTestUtil.randomString());
+			_BASE_URL, "/regular/", RandomTestUtil.randomString());
 
 		AuthVerifierResult.State expectedState =
 			AuthVerifierResult.State.SUCCESS;
 
 		_assertAuthVerifierResult(
-			contextPath, includeURLs, legacyRequestURI, expectedState);
+			StringPool.BLANK, includeURLs, legacyRequestURI, expectedState);
 		_assertAuthVerifierResult(
-			contextPath, includeURLs, regularRequestURI, expectedState);
+			StringPool.BLANK, includeURLs, regularRequestURI, expectedState);
 	}
 
 	private void _testVerifyRequestWithContextPath() throws PortalException {
@@ -287,9 +287,9 @@ public class AuthVerifierPipelineTest {
 		_user.setStatus(WorkflowConstants.STATUS_INACTIVE);
 
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, true);
-		_assertAuthVerifierResultForUser(
 			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, true);
 	}
 
 	private void _testVerifyRequestWithIncompleteSetupUser()
@@ -301,34 +301,33 @@ public class AuthVerifierPipelineTest {
 		_user.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
-		_assertAuthVerifierResultForUser(
 			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
 
 		_user.setPasswordReset(true);
 		_user.setEmailAddressVerified(true);
 
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
-		_assertAuthVerifierResultForUser(
 			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
 	}
 
 	private void _testVerifyRequestWithNonmatchingRequestURI()
 		throws PortalException {
 
-		String contextPath = "";
 		String includeURLs = StringBundler.concat(
 			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
 
 		String requestURI = StringBundler.concat(
-			contextPath, _BASE_URL, "/", RandomTestUtil.randomString());
+			_BASE_URL, "/", RandomTestUtil.randomString());
 
 		AuthVerifierResult.State expectedState =
 			AuthVerifierResult.State.UNSUCCESSFUL;
 
 		_assertAuthVerifierResult(
-			contextPath, includeURLs, requestURI, expectedState);
+			StringPool.BLANK, includeURLs, requestURI, expectedState);
 	}
 
 	private AuthVerifierResult _verifyRequest(
@@ -389,9 +388,9 @@ public class AuthVerifierPipelineTest {
 
 	private static final long _DO_AS_USER_ID = RandomTestUtil.randomLong();
 
-	private static final long _GUEST_USER_ID = _DO_AS_USER_ID + 2;
+	private static final long _GUEST_USER_ID = _DO_AS_USER_ID + 1;
 
-	private static final long _REAL_USER_ID = _DO_AS_USER_ID + 1;
+	private static final long _REAL_USER_ID = _DO_AS_USER_ID + 2;
 
 	private AuthVerifier _authVerifier;
 	private AuthVerifierConfiguration _authVerifierConfiguration;
