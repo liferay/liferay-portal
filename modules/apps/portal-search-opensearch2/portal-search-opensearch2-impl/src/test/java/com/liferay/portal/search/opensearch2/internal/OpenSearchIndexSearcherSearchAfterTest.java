@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.internal.sort.FieldSortImpl;
 import com.liferay.portal.search.internal.sort.ScoreSortImpl;
+import com.liferay.portal.search.opensearch2.configuration.DeepPaginationConfiguration;
 import com.liferay.portal.search.opensearch2.internal.connection.TestOpenSearchConnectionManager;
 import com.liferay.portal.search.opensearch2.internal.deep.pagination.configuration.DeepPaginationConfigurationWrapper;
 import com.liferay.portal.search.opensearch2.internal.indexing.OpenSearchIndexingFixture;
@@ -212,22 +213,31 @@ public class OpenSearchIndexSearcherSearchAfterTest {
 	}
 
 	private static void _setUpDeepPagination(int pointInTimeKeepAliveSeconds) {
-		DeepPaginationConfigurationWrapper deepPaginationConfigurationWrapper =
-			Mockito.mock(DeepPaginationConfigurationWrapper.class);
+		DeepPaginationConfiguration deepPaginationConfiguration = Mockito.mock(
+			DeepPaginationConfiguration.class);
 
 		Mockito.doReturn(
 			true
 		).when(
-			deepPaginationConfigurationWrapper
-		).isEnableDeepPagination(
-			_indexingFixture.getCompanyId()
-		);
+			deepPaginationConfiguration
+		).enableDeepPagination();
 
 		Mockito.doReturn(
 			pointInTimeKeepAliveSeconds
 		).when(
+			deepPaginationConfiguration
+		).pointInTimeKeepAliveSeconds();
+
+		DeepPaginationConfigurationWrapper deepPaginationConfigurationWrapper =
+			Mockito.mock(DeepPaginationConfigurationWrapper.class);
+
+		Mockito.doReturn(
+			deepPaginationConfiguration
+		).when(
 			deepPaginationConfigurationWrapper
-		).getPointInTimeKeepAliveSeconds();
+		).getDeepPaginationConfiguration(
+			_indexingFixture.getCompanyId()
+		);
 
 		ReflectionTestUtil.setFieldValue(
 			_indexSearcher, "_deepPaginationConfigurationWrapper",

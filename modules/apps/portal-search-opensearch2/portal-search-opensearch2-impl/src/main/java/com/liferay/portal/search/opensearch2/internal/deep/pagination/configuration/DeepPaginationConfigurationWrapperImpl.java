@@ -44,22 +44,7 @@ public class DeepPaginationConfigurationWrapperImpl
 		}
 	}
 
-	@Override
-	public int getPointInTimeKeepAliveSeconds() {
-		return _deepPaginationConfiguration.pointInTimeKeepAliveSeconds();
-	}
-
-	@Override
-	public boolean isEnableDeepPagination(long companyId) {
-		_deepPaginationConfiguration = getDeepPaginationConfiguration(
-			companyId);
-
-		return _deepPaginationConfiguration.enableDeepPagination();
-	}
-
 	@Reference
 	private ConfigurationProvider _configurationProvider;
-
-	private DeepPaginationConfiguration _deepPaginationConfiguration;
 
 }

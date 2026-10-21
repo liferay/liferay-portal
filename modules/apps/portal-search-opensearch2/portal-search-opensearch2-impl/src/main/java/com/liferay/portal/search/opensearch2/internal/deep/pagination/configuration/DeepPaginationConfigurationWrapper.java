@@ -15,8 +15,4 @@ public interface DeepPaginationConfigurationWrapper {
 	public DeepPaginationConfiguration getDeepPaginationConfiguration(
 		long companyId);
 
-	public int getPointInTimeKeepAliveSeconds();
-
-	public boolean isEnableDeepPagination(long companyId);
-
 }
