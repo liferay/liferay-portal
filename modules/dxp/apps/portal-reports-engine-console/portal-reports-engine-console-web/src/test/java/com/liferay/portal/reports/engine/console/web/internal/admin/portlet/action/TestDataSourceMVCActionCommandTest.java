@@ -47,6 +47,11 @@ public class TestDataSourceMVCActionCommandTest {
 			String.valueOf(sourceId)
 		);
 
+		TestDataSourceMVCActionCommand testDataSourceMVCActionCommand =
+			new TestDataSourceMVCActionCommand();
+
+		SourceService sourceService = Mockito.mock(SourceService.class);
+
 		Source source = Mockito.mock(Source.class);
 
 		long companyId = RandomTestUtil.randomLong();
@@ -71,8 +76,14 @@ public class TestDataSourceMVCActionCommandTest {
 			sourceId
 		);
 
-		TestDataSourceMVCActionCommand testDataSourceMVCActionCommand =
-			new TestDataSourceMVCActionCommand();
+		Mockito.when(
+			sourceService.getSource(sourceId)
+		).thenReturn(
+			source
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			testDataSourceMVCActionCommand, "_sourceService", sourceService);
 
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
 
@@ -91,17 +102,6 @@ public class TestDataSourceMVCActionCommandTest {
 
 		ReflectionTestUtil.setFieldValue(
 			testDataSourceMVCActionCommand, "_secretResolver", secretResolver);
-
-		SourceService sourceService = Mockito.mock(SourceService.class);
-
-		Mockito.when(
-			sourceService.getSource(sourceId)
-		).thenReturn(
-			source
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			testDataSourceMVCActionCommand, "_sourceService", sourceService);
 
 		try (MockedStatic<ReportsEngineConsoleUtil>
 				reportsEngineConsoleUtilMockedStatic = Mockito.mockStatic(

@@ -74,6 +74,9 @@ public class DDMRESTDataProviderTest {
 
 	@Test
 	public void testGetData() throws Exception {
+		DDMDataProviderInstanceService ddmDataProviderInstanceService =
+			Mockito.mock(DDMDataProviderInstanceService.class);
+
 		DDMDataProviderInstance ddmDataProviderInstance = Mockito.mock(
 			DDMDataProviderInstance.class);
 
@@ -93,9 +96,6 @@ public class DDMRESTDataProviderTest {
 			dataProviderInstanceId
 		);
 
-		DDMDataProviderInstanceService ddmDataProviderInstanceService =
-			Mockito.mock(DDMDataProviderInstanceService.class);
-
 		String ddmDataProviderId = RandomTestUtil.randomString();
 
 		Mockito.when(
@@ -108,6 +108,9 @@ public class DDMRESTDataProviderTest {
 		ReflectionTestUtil.setFieldValue(
 			_ddmrestDataProvider, "_ddmDataProviderInstanceService",
 			ddmDataProviderInstanceService);
+
+		DDMDataProviderInstanceSettings ddmDataProviderInstanceSettings =
+			Mockito.mock(DDMDataProviderInstanceSettings.class);
 
 		DDMRESTDataProviderSettings ddmRESTDataProviderSettings = Mockito.mock(
 			DDMRESTDataProviderSettings.class);
@@ -131,9 +134,6 @@ public class DDMRESTDataProviderTest {
 		).thenReturn(
 			"http://" + RandomTestUtil.randomString()
 		);
-
-		DDMDataProviderInstanceSettings ddmDataProviderInstanceSettings =
-			Mockito.mock(DDMDataProviderInstanceSettings.class);
 
 		Mockito.when(
 			ddmDataProviderInstanceSettings.getSettings(
@@ -160,6 +160,9 @@ public class DDMRESTDataProviderTest {
 			resolvedPassword
 		);
 
+		JSONWebServiceClientFactory jsonWebServiceClientFactory = Mockito.mock(
+			JSONWebServiceClientFactory.class);
+
 		JSONWebServiceClient jsonWebServiceClient = Mockito.mock(
 			JSONWebServiceClient.class);
 
@@ -169,9 +172,6 @@ public class DDMRESTDataProviderTest {
 		).thenReturn(
 			"{}"
 		);
-
-		JSONWebServiceClientFactory jsonWebServiceClientFactory = Mockito.mock(
-			JSONWebServiceClientFactory.class);
 
 		Mockito.when(
 			jsonWebServiceClientFactory.getInstance(
