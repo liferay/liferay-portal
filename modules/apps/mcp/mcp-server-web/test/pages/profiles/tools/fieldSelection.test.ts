@@ -13,7 +13,7 @@ import {
 import {mockPageTool} from '../../../mocks/mockPageTool';
 import {mockTool} from '../../../mocks/mockTool';
 
-import type {FieldTreeItem} from '../../../../src/main/resources/META-INF/resources/js/pages/profiles/tools/types';
+import type {FieldTreeItem} from '../../../../src/main/resources/META-INF/resources/js/pages/profiles/tools/fieldSelection';
 
 function flatten(items: FieldTreeItem[]): string[] {
 	return items.flatMap((item) => [item.id, ...flatten(item.children ?? [])]);

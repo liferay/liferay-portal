@@ -16,14 +16,14 @@ import FilterResultsStatus from '../../../components/FilterResultsStatus';
 import Highlight from '../../../components/Highlight';
 import SelectedItemsBar from '../../../components/SelectedItemsBar';
 import {postProfileDataMask} from '../../../services/postProfileDataMask';
-import {DataMask, DataMaskTreeItem} from '../../../types';
+import {DataMask} from '../../../types';
+import {openErrorToast, openSuccessToast} from '../../../utils';
 import {
+	DataMaskTreeItem,
 	buildDataMaskTree,
 	filterDataMaskTree,
 	getSelectedDataMaskExternalReferenceCodes,
-	openErrorToast,
-	openSuccessToast,
-} from '../../../utils';
+} from './dataMaskSelection';
 
 interface AddDataMasksModalProps {
 	dataMasks: DataMask[];

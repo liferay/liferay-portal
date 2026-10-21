@@ -21,13 +21,13 @@ import {patchProfileTool} from '../../../services/patchProfileTool';
 import {ProfileTool} from '../../../types';
 import {openErrorToast, openSuccessToast} from '../../../utils';
 import {
+	FieldTreeItem,
 	buildFieldTree,
 	filterFieldTree,
 	getExpandedKeys,
 	getSelectedKeys,
 	toRestrictFields,
 } from './fieldSelection';
-import {FieldTreeItem} from './types';
 
 interface RestrictFieldsModalProps {
 	onClose: () => void;

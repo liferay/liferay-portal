@@ -7,7 +7,13 @@ import {Key} from 'react';
 
 import {JSONSchema, TreeFilter} from '../../../types';
 import {filterTree} from '../../../utils';
-import {FieldTreeItem} from './types';
+
+export type FieldTreeItem = {
+	children?: FieldTreeItem[];
+	fieldCount: number;
+	id: string;
+	name: string;
+};
 
 const EXCLUDED_FIELD_NAMES = new Set([
 	'actions',

@@ -31,13 +31,6 @@ export type DataMaskPayload = {
 	replacementValue: string;
 };
 
-export type DataMaskTreeItem = {
-	children?: DataMaskTreeItem[];
-	id: string;
-	maskCount: number;
-	name: string;
-};
-
 export type TreeFilter = {
 	expandedKeys: Set<string>;
 	matchCount: number;
@@ -159,12 +152,6 @@ export type ToolSet = {
 
 export type ToolSummary = {
 	description?: string;
-	name: string;
-};
-
-export type ToolTreeItem = {
-	children?: ToolTreeItem[];
-	id: string;
 	name: string;
 };
 

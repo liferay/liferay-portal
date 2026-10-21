@@ -16,16 +16,16 @@ import {getProfileTools} from '../../../services/getProfileTools';
 import {getToolSetTools} from '../../../services/getToolSetTools';
 import {getToolSets} from '../../../services/getToolSets';
 import {postProfileTool} from '../../../services/postProfileTool';
-import {ProfileTool, ToolSet, ToolSummary, ToolTreeItem} from '../../../types';
+import {ProfileTool, ToolSet, ToolSummary} from '../../../types';
+import {openErrorToast, openSuccessToast} from '../../../utils';
 import {
+	ToolTreeItem,
 	buildToolChildren,
 	buildToolWaves,
 	getAvailableToolSets,
 	getSelectedTools,
 	isToolOfToolSet,
-	openErrorToast,
-	openSuccessToast,
-} from '../../../utils';
+} from './toolSelection';
 
 interface AddToolsModalProps {
 	onAdded: () => void;
