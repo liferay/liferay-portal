@@ -37,6 +37,9 @@ public class CTCollectionModelListenerTest {
 
 	@Test
 	public void testGetToken() throws Exception {
+		CTCollectionModelListener ctCollectionModelListener =
+			new CTCollectionModelListener();
+
 		CTRemote ctRemote = Mockito.mock(CTRemote.class);
 
 		String clientSecret = RandomTestUtil.randomString();
@@ -62,9 +65,6 @@ public class CTCollectionModelListenerTest {
 		).thenReturn(
 			ctRemoteId
 		);
-
-		CTCollectionModelListener ctCollectionModelListener =
-			new CTCollectionModelListener();
 
 		Http http = Mockito.mock(Http.class);
 

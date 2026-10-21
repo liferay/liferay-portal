@@ -37,6 +37,9 @@ public class TestDataSourceMVCActionCommandTest {
 
 	@Test
 	public void testDoProcessAction() throws Exception {
+		TestDataSourceMVCActionCommand testDataSourceMVCActionCommand =
+			new TestDataSourceMVCActionCommand();
+
 		ActionRequest actionRequest = Mockito.mock(ActionRequest.class);
 
 		long sourceId = RandomTestUtil.randomLong();
@@ -46,9 +49,6 @@ public class TestDataSourceMVCActionCommandTest {
 		).thenReturn(
 			String.valueOf(sourceId)
 		);
-
-		TestDataSourceMVCActionCommand testDataSourceMVCActionCommand =
-			new TestDataSourceMVCActionCommand();
 
 		SourceService sourceService = Mockito.mock(SourceService.class);
 
