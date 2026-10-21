@@ -48,7 +48,7 @@ const views = [
 				{
 					contentRenderer: 'accountNameRenderer',
 					fieldName: 'accountName',
-					label: Liferay.Language.get('name'),
+					label: Liferay.Language.get('account-name'),
 					sortable: true,
 					truncate: true,
 				},
