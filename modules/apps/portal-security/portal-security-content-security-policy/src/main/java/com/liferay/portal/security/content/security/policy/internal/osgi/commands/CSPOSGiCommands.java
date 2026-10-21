@@ -72,18 +72,6 @@ public class CSPOSGiCommands implements OSGiCommands {
 	}
 
 	public void resetSystemConfiguration() throws ConfigurationException {
-		ContentSecurityPolicyConfiguration contentSecurityPolicyConfiguration =
-			_configurationProvider.getSystemConfiguration(
-				ContentSecurityPolicyConfiguration.class);
-
-		if (contentSecurityPolicyConfiguration == null) {
-			System.out.println(
-				"There is no system level content security policy " +
-					"configuration");
-
-			return;
-		}
-
 		_configurationProvider.deleteSystemConfiguration(
 			ContentSecurityPolicyConfiguration.class);
 	}
