@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.ProtectedPrincipal;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -235,11 +234,9 @@ public class AuthorizationCodeGrantServiceContainerRequestFilter
 
 	private String _getLoginURL() throws ConfigurationException {
 		AuthorizeScreenConfiguration authorizeScreenConfiguration =
-			_configurationProvider.getConfiguration(
+			_configurationProvider.getCompanyConfiguration(
 				AuthorizeScreenConfiguration.class,
-				new CompanyServiceSettingsLocator(
-					_portal.getCompanyId(_httpServletRequest),
-					AuthorizeScreenConfiguration.class.getName()));
+				_portal.getCompanyId(_httpServletRequest));
 
 		String loginURL = authorizeScreenConfiguration.loginURL();
 

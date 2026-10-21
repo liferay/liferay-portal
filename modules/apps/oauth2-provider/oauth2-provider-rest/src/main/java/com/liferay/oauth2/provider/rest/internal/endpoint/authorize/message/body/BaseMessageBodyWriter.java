@@ -10,7 +10,6 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -123,10 +122,8 @@ public abstract class BaseMessageBodyWriter<T> implements MessageBodyWriter<T> {
 		throws ConfigurationException {
 
 		AuthorizeScreenConfiguration authorizeScreenConfiguration =
-			configurationProvider.getConfiguration(
-				AuthorizeScreenConfiguration.class,
-				new CompanyServiceSettingsLocator(
-					companyId, AuthorizeScreenConfiguration.class.getName()));
+			configurationProvider.getCompanyConfiguration(
+				AuthorizeScreenConfiguration.class, companyId);
 
 		return authorizeScreenConfiguration.authorizeScreenURL();
 	}
