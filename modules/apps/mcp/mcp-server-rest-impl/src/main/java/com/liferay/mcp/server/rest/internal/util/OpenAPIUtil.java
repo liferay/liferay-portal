@@ -408,6 +408,44 @@ public class OpenAPIUtil {
 		return false;
 	}
 
+	public static boolean isNestedSchema(JSONObject propertyJSONObject) {
+		if (propertyJSONObject == null) {
+			return false;
+		}
+
+		if (Validator.isNotNull(propertyJSONObject.getString("$ref"))) {
+			return true;
+		}
+
+		JSONObject additionalPropertiesJSONObject =
+			propertyJSONObject.getJSONObject("additionalProperties");
+
+		if ((additionalPropertiesJSONObject != null) &&
+			Validator.isNotNull(
+				additionalPropertiesJSONObject.getString("$ref"))) {
+
+			return true;
+		}
+
+		JSONObject itemsJSONObject = propertyJSONObject.getJSONObject("items");
+
+		if ((itemsJSONObject != null) &&
+			Validator.isNotNull(itemsJSONObject.getString("$ref"))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public static boolean isPathParameter(String value) {
+		if (getPathParameter(value) != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private static String _addLocalizedRestrictFields(
 		JSONObject openAPIJSONObject, JSONObject operationJSONObject,
 		String restrictFields) {
