@@ -13,7 +13,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.security.key.secret.SecretResolver;
 
@@ -110,11 +109,9 @@ public class CommerceAvalaraConnectorImpl implements CommerceAvalaraConnector {
 	private AvaTaxClient _getAvaTaxClient() throws PortalException {
 		CommerceAvalaraConnectorConfiguration
 			commerceAvalaraConnectorConfiguration =
-				_configurationProvider.getConfiguration(
+				_configurationProvider.getCompanyConfiguration(
 					CommerceAvalaraConnectorConfiguration.class,
-					new CompanyServiceSettingsLocator(
-						CompanyThreadLocal.getCompanyId(),
-						CommerceAvalaraConnectorConfiguration.class.getName()));
+					CompanyThreadLocal.getCompanyId());
 
 		return _getAvaTaxClient(
 			commerceAvalaraConnectorConfiguration.accountNumber(),

@@ -51,7 +51,6 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -450,11 +449,9 @@ public class CPDefinitionsDisplayContext
 		CPDefinition cpDefinition = getCPDefinition();
 
 		CProductVersionConfiguration cProductVersionConfiguration =
-			_configurationProvider.getConfiguration(
+			_configurationProvider.getCompanyConfiguration(
 				CProductVersionConfiguration.class,
-				new CompanyServiceSettingsLocator(
-					cpDefinition.getCompanyId(),
-					CProductVersionConfiguration.class.getName()));
+				cpDefinition.getCompanyId());
 
 		if (((cpDefinition != null) && cpDefinition.isDraft()) ||
 			cProductVersionConfiguration.enabled()) {
@@ -583,11 +580,9 @@ public class CPDefinitionsDisplayContext
 
 	private boolean _isVersioningEnabled() throws PortalException {
 		CProductVersionConfiguration cProductVersionConfiguration =
-			ConfigurationProviderUtil.getConfiguration(
+			ConfigurationProviderUtil.getCompanyConfiguration(
 				CProductVersionConfiguration.class,
-				new CompanyServiceSettingsLocator(
-					cpRequestHelper.getCompanyId(),
-					CProductVersionConfiguration.class.getName()));
+				cpRequestHelper.getCompanyId());
 
 		return cProductVersionConfiguration.enabled();
 	}

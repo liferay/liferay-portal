@@ -137,7 +137,6 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -2186,11 +2185,8 @@ public class CPDefinitionLocalServiceImpl
 
 		try {
 			CProductVersionConfiguration cProductVersionConfiguration =
-				_configurationProvider.getConfiguration(
-					CProductVersionConfiguration.class,
-					new CompanyServiceSettingsLocator(
-						companyId,
-						CProductVersionConfiguration.class.getName()));
+				_configurationProvider.getCompanyConfiguration(
+					CProductVersionConfiguration.class, companyId);
 
 			threshold = cProductVersionConfiguration.versionThreshold();
 		}
@@ -3454,11 +3450,8 @@ public class CPDefinitionLocalServiceImpl
 	private boolean _isVersioningEnabled(long companyId) {
 		try {
 			CProductVersionConfiguration cProductVersionConfiguration =
-				_configurationProvider.getConfiguration(
-					CProductVersionConfiguration.class,
-					new CompanyServiceSettingsLocator(
-						companyId,
-						CProductVersionConfiguration.class.getName()));
+				_configurationProvider.getCompanyConfiguration(
+					CProductVersionConfiguration.class, companyId);
 
 			if (cProductVersionConfiguration.enabled()) {
 				return true;
