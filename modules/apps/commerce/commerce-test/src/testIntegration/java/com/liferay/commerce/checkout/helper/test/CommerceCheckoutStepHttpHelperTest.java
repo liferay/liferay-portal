@@ -93,8 +93,6 @@ public class CommerceCheckoutStepHttpHelperTest {
 			String.valueOf(CommerceChannelConstants.SITE_TYPE_B2B));
 
 		modifiableSettings.store();
-
-		_countryLocalService.deleteCompanyCountries(_group.getCompanyId());
 	}
 
 	@After
