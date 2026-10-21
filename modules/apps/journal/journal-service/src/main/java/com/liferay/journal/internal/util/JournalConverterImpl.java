@@ -145,13 +145,27 @@ public class JournalConverterImpl implements JournalConverter {
 
 		rootElement.addAttribute("version", "1.0");
 
-		DDMFieldsCounter ddmFieldsCounter = new DDMFieldsCounter();
-
 		DDMForm ddmForm = ddmStructure.getDDMForm();
 
-		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
+		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
+
+		if (ddmFormFields.isEmpty()) {
+			return document;
+		}
+
+		DDMFieldsCounter ddmFieldsCounter = new DDMFieldsCounter();
+
+		Field fieldsDisplayField = ddmFields.get(DDM.FIELDS_DISPLAY_NAME);
+
+		String[] fieldsDisplayNames = _getDDMFieldsDisplayValues(
+			fieldsDisplayField);
+		String[] fieldsDisplayValues = _splitFieldsDisplayValue(
+			fieldsDisplayField);
+
+		for (DDMFormField ddmFormField : ddmFormFields) {
 			_updateDynamicElementElement(
-				ddmFields, ddmFieldsCounter, ddmFormField, rootElement, -1);
+				ddmFields, ddmFieldsCounter, ddmFormField, rootElement, -1,
+				fieldsDisplayNames, fieldsDisplayValues);
 		}
 
 		return document;
@@ -265,20 +279,14 @@ public class JournalConverterImpl implements JournalConverter {
 	}
 
 	private int _countFieldRepetition(
-			Fields ddmFields, String fieldName, String parentFieldName,
-			int parentOffset)
-		throws Exception {
-
-		Field fieldsDisplayField = ddmFields.get(DDM.FIELDS_DISPLAY_NAME);
-
-		String[] fieldsDisplayValues = _getDDMFieldsDisplayValues(
-			fieldsDisplayField);
+		String fieldName, String[] fieldsDisplayNames, String parentFieldName,
+		int parentOffset) {
 
 		int offset = -1;
 
 		int repetitions = 0;
 
-		for (String fieldDisplayName : fieldsDisplayValues) {
+		for (String fieldDisplayName : fieldsDisplayNames) {
 			if (offset > parentOffset) {
 				break;
 			}
@@ -462,14 +470,9 @@ public class JournalConverterImpl implements JournalConverter {
 	}
 
 	private String _getFieldInstanceId(
-		Fields ddmFields, String fieldName, int index) {
-
-		Field fieldsDisplayField = ddmFields.get(DDM.FIELDS_DISPLAY_NAME);
+		String fieldName, String[] fieldsDisplayValues, int index) {
 
 		String prefix = fieldName.concat(DDM.INSTANCE_SEPARATOR);
-
-		String[] fieldsDisplayValues = StringUtil.split(
-			(String)fieldsDisplayField.getValue());
 
 		for (String fieldsDisplayValue : fieldsDisplayValues) {
 			if (!fieldsDisplayValue.startsWith(prefix)) {
@@ -727,17 +730,17 @@ public class JournalConverterImpl implements JournalConverter {
 	}
 
 	private void _updateDynamicElementElement(
-			Fields ddmFields, DDMFieldsCounter ddmFieldsCounter,
-			DDMFormField ddmFormField, Element dynamicElementElement,
-			int parentOffset)
-		throws Exception {
+		Fields ddmFields, DDMFieldsCounter ddmFieldsCounter,
+		DDMFormField ddmFormField, Element dynamicElementElement,
+		int parentOffset, String[] fieldsDisplayNames,
+		String[] fieldsDisplayValues) {
 
 		String ddmFormFieldName = ddmFormField.getName();
 
 		int count = ddmFieldsCounter.get(ddmFormFieldName);
 
 		int repetitions = _countFieldRepetition(
-			ddmFields, ddmFormFieldName,
+			ddmFormFieldName, fieldsDisplayNames,
 			dynamicElementElement.attributeValue("name"), parentOffset);
 
 		for (int i = 0; i < repetitions; i++) {
@@ -751,7 +754,8 @@ public class JournalConverterImpl implements JournalConverter {
 
 			childDynamicElementElement.addAttribute(
 				"instance-id",
-				_getFieldInstanceId(ddmFields, ddmFormFieldName, count + i));
+				_getFieldInstanceId(
+					ddmFormFieldName, fieldsDisplayValues, count + i));
 
 			childDynamicElementElement.addAttribute("name", ddmFormFieldName);
 			childDynamicElementElement.addAttribute(
@@ -775,7 +779,8 @@ public class JournalConverterImpl implements JournalConverter {
 				for (DDMFormField nestedDDMFormField : nestedDDMFormFields) {
 					_updateDynamicElementElement(
 						ddmFields, ddmFieldsCounter, nestedDDMFormField,
-						childDynamicElementElement, count + i);
+						childDynamicElementElement, count + i,
+						fieldsDisplayNames, fieldsDisplayValues);
 				}
 			}
 
