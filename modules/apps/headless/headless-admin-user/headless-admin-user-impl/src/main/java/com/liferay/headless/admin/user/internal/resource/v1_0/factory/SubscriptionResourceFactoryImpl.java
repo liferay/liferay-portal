@@ -329,4 +329,4 @@ public class SubscriptionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2025831580
+// LIFERAY-REST-BUILDER-HASH:-272499057

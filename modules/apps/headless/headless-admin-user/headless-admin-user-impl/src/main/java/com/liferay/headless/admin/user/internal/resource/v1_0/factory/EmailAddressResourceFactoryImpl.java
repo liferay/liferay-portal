@@ -329,4 +329,4 @@ public class EmailAddressResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1361418169
+// LIFERAY-REST-BUILDER-HASH:1220740817

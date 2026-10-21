@@ -330,4 +330,4 @@ public class ReindexStatusResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-742673643
+// LIFERAY-REST-BUILDER-HASH:2042234297

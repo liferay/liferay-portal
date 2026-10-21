@@ -340,4 +340,4 @@ public class KeywordQueryContributorResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:558674286
+// LIFERAY-REST-BUILDER-HASH:-1192804288

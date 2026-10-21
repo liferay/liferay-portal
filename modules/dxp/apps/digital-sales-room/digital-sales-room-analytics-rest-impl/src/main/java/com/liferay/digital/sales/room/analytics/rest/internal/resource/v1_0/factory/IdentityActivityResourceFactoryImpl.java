@@ -332,4 +332,4 @@ public class IdentityActivityResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-887659539
+// LIFERAY-REST-BUILDER-HASH:-701266868

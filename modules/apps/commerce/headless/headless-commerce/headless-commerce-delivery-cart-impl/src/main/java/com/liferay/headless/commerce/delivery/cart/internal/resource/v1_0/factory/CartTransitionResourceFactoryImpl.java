@@ -330,4 +330,4 @@ public class CartTransitionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-521763867
+// LIFERAY-REST-BUILDER-HASH:1124931233

@@ -342,4 +342,4 @@ public class ObjectEntryHistogramMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-580302356
+// LIFERAY-REST-BUILDER-HASH:615738293

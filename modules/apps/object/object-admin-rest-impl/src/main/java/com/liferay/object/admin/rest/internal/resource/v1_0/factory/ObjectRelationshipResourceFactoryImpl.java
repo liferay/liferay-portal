@@ -333,4 +333,4 @@ public class ObjectRelationshipResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1652734073
+// LIFERAY-REST-BUILDER-HASH:-1043932153

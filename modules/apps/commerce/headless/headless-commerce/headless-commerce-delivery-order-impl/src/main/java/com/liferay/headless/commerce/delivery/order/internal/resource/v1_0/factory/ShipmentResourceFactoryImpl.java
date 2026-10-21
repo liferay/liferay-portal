@@ -326,4 +326,4 @@ public class ShipmentResourceFactoryImpl implements ShipmentResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1131175437
+// LIFERAY-REST-BUILDER-HASH:1964000110

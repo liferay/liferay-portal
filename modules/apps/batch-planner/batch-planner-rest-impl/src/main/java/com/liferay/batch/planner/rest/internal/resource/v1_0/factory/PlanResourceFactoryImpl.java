@@ -323,4 +323,4 @@ public class PlanResourceFactoryImpl implements PlanResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:728733581
+// LIFERAY-REST-BUILDER-HASH:-1054817485

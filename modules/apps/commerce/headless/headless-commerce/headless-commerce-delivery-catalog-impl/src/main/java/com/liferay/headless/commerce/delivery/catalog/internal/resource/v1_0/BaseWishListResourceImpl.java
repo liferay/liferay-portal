@@ -1171,4 +1171,4 @@ public abstract class BaseWishListResourceImpl
 		LogFactoryUtil.getLog(BaseWishListResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1593497894
+// LIFERAY-REST-BUILDER-HASH:-1492319855

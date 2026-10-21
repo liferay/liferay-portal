@@ -329,4 +329,4 @@ public class PlacedOrderResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1664896641
+// LIFERAY-REST-BUILDER-HASH:1525085473

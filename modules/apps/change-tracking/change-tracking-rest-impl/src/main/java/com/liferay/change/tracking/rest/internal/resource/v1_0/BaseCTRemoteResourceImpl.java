@@ -1226,4 +1226,4 @@ public abstract class BaseCTRemoteResourceImpl
 		LogFactoryUtil.getLog(BaseCTRemoteResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-566802508
+// LIFERAY-REST-BUILDER-HASH:1233216650

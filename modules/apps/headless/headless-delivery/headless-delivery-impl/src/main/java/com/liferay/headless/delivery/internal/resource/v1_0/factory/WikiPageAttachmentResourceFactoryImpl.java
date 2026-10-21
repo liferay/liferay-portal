@@ -333,4 +333,4 @@ public class WikiPageAttachmentResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1893026102
+// LIFERAY-REST-BUILDER-HASH:47329754

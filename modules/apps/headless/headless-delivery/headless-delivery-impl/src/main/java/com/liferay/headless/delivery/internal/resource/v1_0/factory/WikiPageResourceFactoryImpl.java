@@ -326,4 +326,4 @@ public class WikiPageResourceFactoryImpl implements WikiPageResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:910250495
+// LIFERAY-REST-BUILDER-HASH:-1935253144

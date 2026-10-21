@@ -13,6 +13,7 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -769,6 +770,30 @@ public abstract class BaseAccountResourceImpl
 			accountUnsafeFunction = account -> postAccount(account);
 		}
 
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				accountUnsafeFunction = account -> {
+					Account getAccount = null;
+					Account persistedAccount = null;
+
+					try {
+						getAccount = getAccountByExternalReferenceCode(
+							account.getExternalReferenceCode());
+
+						patchAccount(getAccount.getId(), account);
+					}
+					catch (NoSuchModelException noSuchModelException) {
+						persistedAccount = postAccount(account);
+					}
+
+					return persistedAccount;
+				};
+			}
+		}
+
 		if (accountUnsafeFunction == null) {
 			throw new NotSupportedException(
 				"Create strategy \"" + createStrategy +
@@ -839,7 +864,7 @@ public abstract class BaseAccountResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT");
+		return SetUtil.fromArray("INSERT", "UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -1508,4 +1533,4 @@ public abstract class BaseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1529205368
+// LIFERAY-REST-BUILDER-HASH:1039215480

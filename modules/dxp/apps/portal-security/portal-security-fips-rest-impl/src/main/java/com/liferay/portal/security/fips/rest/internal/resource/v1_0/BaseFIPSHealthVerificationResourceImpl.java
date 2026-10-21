@@ -509,4 +509,4 @@ public abstract class BaseFIPSHealthVerificationResourceImpl
 		LogFactoryUtil.getLog(BaseFIPSHealthVerificationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:579588150
+// LIFERAY-REST-BUILDER-HASH:2018401114

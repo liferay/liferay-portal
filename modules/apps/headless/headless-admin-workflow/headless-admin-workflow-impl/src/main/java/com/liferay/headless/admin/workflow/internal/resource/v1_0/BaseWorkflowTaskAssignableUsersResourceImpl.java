@@ -513,4 +513,4 @@ public abstract class BaseWorkflowTaskAssignableUsersResourceImpl
 			BaseWorkflowTaskAssignableUsersResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-320450053
+// LIFERAY-REST-BUILDER-HASH:-78603447

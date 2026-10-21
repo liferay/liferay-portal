@@ -5,6 +5,7 @@
 
 package com.liferay.headless.cms.internal.resource.v1_0.factory;
 
+import com.liferay.headless.cms.internal.resource.v1_0.BaseMissingRequiredFieldsAssetResourceImpl;
 import com.liferay.headless.cms.internal.security.permission.LiberalPermissionChecker;
 import com.liferay.headless.cms.resource.v1_0.MissingRequiredFieldsAssetResource;
 import com.liferay.portal.kernel.model.Company;
@@ -27,12 +28,14 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.feature.flag.FeatureFlagChecker;
 
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.lang.reflect.Constructor;
@@ -183,6 +186,14 @@ public class MissingRequiredFieldsAssetResourceFactoryImpl
 			UriInfo uriInfo, User user)
 		throws Throwable {
 
+		if (!_featureFlagChecker.isEnabled(
+				user.getCompanyId(),
+				BaseMissingRequiredFieldsAssetResourceImpl.class.getMethod(
+					method.getName(), method.getParameterTypes()))) {
+
+			throw new NotFoundException();
+		}
+
 		String name = PrincipalThreadLocal.getName();
 
 		PrincipalThreadLocal.setName(user.getUserId());
@@ -260,6 +271,9 @@ public class MissingRequiredFieldsAssetResourceFactoryImpl
 		target = "(result.class.name=com.liferay.portal.kernel.search.filter.Filter)"
 	)
 	private ExpressionConvert<Filter> _expressionConvert;
+
+	@Reference
+	private FeatureFlagChecker _featureFlagChecker;
 
 	@Reference
 	private FilterParserProvider _filterParserProvider;
@@ -342,4 +356,4 @@ public class MissingRequiredFieldsAssetResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1605145131
+// LIFERAY-REST-BUILDER-HASH:-1574431953

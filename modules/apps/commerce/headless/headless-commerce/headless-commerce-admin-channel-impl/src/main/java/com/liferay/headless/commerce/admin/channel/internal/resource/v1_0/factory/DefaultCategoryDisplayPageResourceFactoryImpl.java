@@ -342,4 +342,4 @@ public class DefaultCategoryDisplayPageResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-11044030
+// LIFERAY-REST-BUILDER-HASH:-1142129621

@@ -608,4 +608,4 @@ public abstract class BaseCookiesConsentPreferenceResourceImpl
 		LogFactoryUtil.getLog(BaseCookiesConsentPreferenceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-619871194
+// LIFERAY-REST-BUILDER-HASH:495945000

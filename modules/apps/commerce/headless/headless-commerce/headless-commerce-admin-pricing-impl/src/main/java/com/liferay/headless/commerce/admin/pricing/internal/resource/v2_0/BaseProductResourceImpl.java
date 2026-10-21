@@ -590,4 +590,4 @@ public abstract class BaseProductResourceImpl implements ProductResource {
 		LogFactoryUtil.getLog(BaseProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1412006301
+// LIFERAY-REST-BUILDER-HASH:1394313789

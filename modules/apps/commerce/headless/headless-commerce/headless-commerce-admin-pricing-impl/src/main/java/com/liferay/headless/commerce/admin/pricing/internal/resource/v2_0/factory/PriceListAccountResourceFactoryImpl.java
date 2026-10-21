@@ -332,4 +332,4 @@ public class PriceListAccountResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-220190710
+// LIFERAY-REST-BUILDER-HASH:1809689049

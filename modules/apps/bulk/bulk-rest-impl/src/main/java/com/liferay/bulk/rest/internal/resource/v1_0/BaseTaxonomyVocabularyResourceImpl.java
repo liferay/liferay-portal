@@ -595,4 +595,4 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 		LogFactoryUtil.getLog(BaseTaxonomyVocabularyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1763972632
+// LIFERAY-REST-BUILDER-HASH:-1923461540

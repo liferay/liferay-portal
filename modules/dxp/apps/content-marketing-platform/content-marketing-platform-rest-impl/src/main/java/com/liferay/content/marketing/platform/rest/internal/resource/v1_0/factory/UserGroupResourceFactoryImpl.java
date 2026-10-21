@@ -326,4 +326,4 @@ public class UserGroupResourceFactoryImpl implements UserGroupResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1946479314
+// LIFERAY-REST-BUILDER-HASH:-416362251

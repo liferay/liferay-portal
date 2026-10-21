@@ -535,4 +535,4 @@ public abstract class BaseUserGroupResourceImpl implements UserGroupResource {
 		LogFactoryUtil.getLog(BaseUserGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1951287539
+// LIFERAY-REST-BUILDER-HASH:1161811691

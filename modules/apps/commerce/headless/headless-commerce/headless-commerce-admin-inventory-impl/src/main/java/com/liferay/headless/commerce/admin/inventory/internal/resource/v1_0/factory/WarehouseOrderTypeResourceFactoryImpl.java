@@ -333,4 +333,4 @@ public class WarehouseOrderTypeResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:503391674
+// LIFERAY-REST-BUILDER-HASH:-60419809

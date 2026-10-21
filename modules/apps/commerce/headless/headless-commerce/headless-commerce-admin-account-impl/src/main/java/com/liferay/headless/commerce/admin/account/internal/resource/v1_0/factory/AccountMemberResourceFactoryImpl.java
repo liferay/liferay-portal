@@ -330,4 +330,4 @@ public class AccountMemberResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1917695530
+// LIFERAY-REST-BUILDER-HASH:-733375620

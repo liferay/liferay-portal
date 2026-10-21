@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Stefano Motta
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-96666")
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/openapi.properties",
 	service = OpenAPIResourceImpl.class
@@ -94,4 +95,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:642381760
+// LIFERAY-REST-BUILDER-HASH:-893389226

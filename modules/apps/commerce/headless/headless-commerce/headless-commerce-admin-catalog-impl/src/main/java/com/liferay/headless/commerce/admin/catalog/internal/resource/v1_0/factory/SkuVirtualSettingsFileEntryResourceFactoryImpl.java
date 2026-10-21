@@ -344,4 +344,4 @@ public class SkuVirtualSettingsFileEntryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:119603976
+// LIFERAY-REST-BUILDER-HASH:-1398552628

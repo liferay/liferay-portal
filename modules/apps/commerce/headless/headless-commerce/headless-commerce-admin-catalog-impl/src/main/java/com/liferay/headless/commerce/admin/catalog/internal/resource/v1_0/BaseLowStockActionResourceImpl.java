@@ -810,4 +810,4 @@ public abstract class BaseLowStockActionResourceImpl
 		LogFactoryUtil.getLog(BaseLowStockActionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1295460955
+// LIFERAY-REST-BUILDER-HASH:-1279991543

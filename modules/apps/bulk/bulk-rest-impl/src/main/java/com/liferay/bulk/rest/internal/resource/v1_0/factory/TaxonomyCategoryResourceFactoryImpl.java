@@ -332,4 +332,4 @@ public class TaxonomyCategoryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-125779004
+// LIFERAY-REST-BUILDER-HASH:1166150352

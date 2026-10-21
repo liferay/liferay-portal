@@ -516,4 +516,4 @@ public abstract class BaseSLAResultResourceImpl implements SLAResultResource {
 		LogFactoryUtil.getLog(BaseSLAResultResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1900634894
+// LIFERAY-REST-BUILDER-HASH:-25487918

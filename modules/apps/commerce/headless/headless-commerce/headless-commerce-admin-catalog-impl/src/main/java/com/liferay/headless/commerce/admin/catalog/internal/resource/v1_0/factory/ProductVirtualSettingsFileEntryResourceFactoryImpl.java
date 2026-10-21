@@ -347,4 +347,4 @@ public class ProductVirtualSettingsFileEntryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-950999038
+// LIFERAY-REST-BUILDER-HASH:-927549880

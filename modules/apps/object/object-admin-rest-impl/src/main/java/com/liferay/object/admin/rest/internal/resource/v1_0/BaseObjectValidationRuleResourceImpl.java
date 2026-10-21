@@ -1498,4 +1498,4 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		LogFactoryUtil.getLog(BaseObjectValidationRuleResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:974548722
+// LIFERAY-REST-BUILDER-HASH:1188904788

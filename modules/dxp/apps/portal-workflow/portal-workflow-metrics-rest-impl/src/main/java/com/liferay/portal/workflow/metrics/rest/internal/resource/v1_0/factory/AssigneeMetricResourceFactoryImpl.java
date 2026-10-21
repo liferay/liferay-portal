@@ -330,4 +330,4 @@ public class AssigneeMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1723522817
+// LIFERAY-REST-BUILDER-HASH:348123631

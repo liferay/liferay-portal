@@ -326,4 +326,4 @@ public class WikiNodeResourceFactoryImpl implements WikiNodeResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1468654662
+// LIFERAY-REST-BUILDER-HASH:285561146

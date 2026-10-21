@@ -330,4 +330,4 @@ public class EmbeddingModelResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1131336372
+// LIFERAY-REST-BUILDER-HASH:506372631

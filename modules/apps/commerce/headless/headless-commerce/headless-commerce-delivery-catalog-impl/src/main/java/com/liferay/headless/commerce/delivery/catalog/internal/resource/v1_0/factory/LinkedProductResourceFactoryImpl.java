@@ -330,4 +330,4 @@ public class LinkedProductResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1727625758
+// LIFERAY-REST-BUILDER-HASH:343003920

@@ -3,54 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-	import {AssetLibraryTestEntity} from '../models/AssetLibraryTestEntity';
-	import {BatchTestEntity} from '../models/BatchTestEntity';
-	import {BatchTestEntityAction} from '../models/BatchTestEntityAction';
-	import {ChildTestEntity1} from '../models/ChildTestEntity1';
-	import {ChildTestEntity2} from '../models/ChildTestEntity2';
-	import {ChildTestEntity3} from '../models/ChildTestEntity3';
-	import {CompanyTestEntity} from '../models/CompanyTestEntity';
-	import {EntityModelResourceTestEntity1} from '../models/EntityModelResourceTestEntity1';
-	import {EntityModelResourceTestEntity2} from '../models/EntityModelResourceTestEntity2';
-	import {EnumTestEntity} from '../models/EnumTestEntity';
-	import {ERCAssetLibraryTestEntity} from '../models/ERCAssetLibraryTestEntity';
-	import {ERCScopedTestEntity} from '../models/ERCScopedTestEntity';
-	import {ERCSiteTestEntity} from '../models/ERCSiteTestEntity';
 	import {Facet} from '../models/Facet';
 	import {FacetValue} from '../models/FacetValue';
-	import {Filter} from '../models/Filter';
-	import {JSONMapAttributeTestEntity} from '../models/JSONMapAttributeTestEntity';
-	import {MultipartTestEntity} from '../models/MultipartTestEntity';
-	import {NestedArrayItemsTestEntity} from '../models/NestedArrayItemsTestEntity';
-	import {NestedTestEntity} from '../models/NestedTestEntity';
-	import {ObjectArrayPropertyTestEntity} from '../models/ObjectArrayPropertyTestEntity';
-	import {OneOfPropertyTestEntity} from '../models/OneOfPropertyTestEntity';
-	import {PageAssetLibraryTestEntity} from '../models/PageAssetLibraryTestEntity';
-	import {PageBatchTestEntity} from '../models/PageBatchTestEntity';
-	import {PageCompanyTestEntity} from '../models/PageCompanyTestEntity';
-	import {PageEntityModelResourceTestEntity1} from '../models/PageEntityModelResourceTestEntity1';
-	import {PageERCAssetLibraryTestEntity} from '../models/PageERCAssetLibraryTestEntity';
-	import {PageERCScopedTestEntity} from '../models/PageERCScopedTestEntity';
-	import {PageERCSiteTestEntity} from '../models/PageERCSiteTestEntity';
-	import {PageFilter} from '../models/PageFilter';
-	import {PagePermission} from '../models/PagePermission';
-	import {PageSchema} from '../models/PageSchema';
-	import {PageScopedTestEntity} from '../models/PageScopedTestEntity';
-	import {PageSharedInternalModelBatchTestEntity} from '../models/PageSharedInternalModelBatchTestEntity';
-	import {PageSiteTestEntity} from '../models/PageSiteTestEntity';
-	import {PageSort} from '../models/PageSort';
-	import {PageTestEntity} from '../models/PageTestEntity';
-	import {Permission} from '../models/Permission';
-	import {ReferencingTestEntity} from '../models/ReferencingTestEntity';
-	import {Schema} from '../models/Schema';
-	import {ScopedTestEntity} from '../models/ScopedTestEntity';
-	import {SharedInternalModelBatchTestEntity} from '../models/SharedInternalModelBatchTestEntity';
-	import {SiteTestEntity} from '../models/SiteTestEntity';
-	import {Sort} from '../models/Sort';
-	import {StringTestEntity} from '../models/StringTestEntity';
-	import {TestEntity} from '../models/TestEntity';
-	import {TestEntityAddress} from '../models/TestEntityAddress';
-	import {UnreferencedTestEntity} from '../models/UnreferencedTestEntity';
+	import {FeatureFlagApplicationTestEntity} from '../models/FeatureFlagApplicationTestEntity';
+	import {PageFeatureFlagApplicationTestEntity} from '../models/PageFeatureFlagApplicationTestEntity';
 
 /**
  * @author Alejandro Tardín
@@ -85,54 +41,10 @@ const primitives = new Set([
 	"any",
 ]);
 const typeMap: {[index: string]: any} = {
-	AssetLibraryTestEntity,
-	BatchTestEntity,
-	BatchTestEntityAction,
-	ChildTestEntity1,
-	ChildTestEntity2,
-	ChildTestEntity3,
-	CompanyTestEntity,
-	EntityModelResourceTestEntity1,
-	EntityModelResourceTestEntity2,
-	EnumTestEntity,
-	ERCAssetLibraryTestEntity,
-	ERCScopedTestEntity,
-	ERCSiteTestEntity,
 	Facet,
 	FacetValue,
-	Filter,
-	JSONMapAttributeTestEntity,
-	MultipartTestEntity,
-	NestedArrayItemsTestEntity,
-	NestedTestEntity,
-	ObjectArrayPropertyTestEntity,
-	OneOfPropertyTestEntity,
-	PageAssetLibraryTestEntity,
-	PageBatchTestEntity,
-	PageCompanyTestEntity,
-	PageEntityModelResourceTestEntity1,
-	PageERCAssetLibraryTestEntity,
-	PageERCScopedTestEntity,
-	PageERCSiteTestEntity,
-	PageFilter,
-	PagePermission,
-	PageSchema,
-	PageScopedTestEntity,
-	PageSharedInternalModelBatchTestEntity,
-	PageSiteTestEntity,
-	PageSort,
-	PageTestEntity,
-	Permission,
-	ReferencingTestEntity,
-	Schema,
-	ScopedTestEntity,
-	SharedInternalModelBatchTestEntity,
-	SiteTestEntity,
-	Sort,
-	StringTestEntity,
-	TestEntity,
-	TestEntityAddress,
-	UnreferencedTestEntity,
+	FeatureFlagApplicationTestEntity,
+	PageFeatureFlagApplicationTestEntity,
 };
 
 export class ObjectSerializer {

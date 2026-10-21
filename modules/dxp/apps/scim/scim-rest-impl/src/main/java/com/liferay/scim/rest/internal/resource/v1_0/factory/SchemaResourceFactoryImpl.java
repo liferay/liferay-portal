@@ -324,4 +324,4 @@ public class SchemaResourceFactoryImpl implements SchemaResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1795468245
+// LIFERAY-REST-BUILDER-HASH:1136301717

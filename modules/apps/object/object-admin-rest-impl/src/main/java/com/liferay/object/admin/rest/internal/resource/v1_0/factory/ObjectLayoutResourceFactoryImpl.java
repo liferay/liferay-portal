@@ -329,4 +329,4 @@ public class ObjectLayoutResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:263942797
+// LIFERAY-REST-BUILDER-HASH:-1973017293

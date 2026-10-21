@@ -329,4 +329,4 @@ public class DataLayoutResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1431870217
+// LIFERAY-REST-BUILDER-HASH:-15391125

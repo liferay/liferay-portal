@@ -333,4 +333,4 @@ public class TestEntityAddressResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:870236498
+// LIFERAY-REST-BUILDER-HASH:1652982500

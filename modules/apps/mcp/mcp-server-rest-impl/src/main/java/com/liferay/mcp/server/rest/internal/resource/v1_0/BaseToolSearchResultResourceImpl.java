@@ -39,6 +39,7 @@ import java.util.Map;
  * @author Alejandro Tardín
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-63311")
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseToolSearchResultResourceImpl
@@ -533,4 +534,4 @@ public abstract class BaseToolSearchResultResourceImpl
 		LogFactoryUtil.getLog(BaseToolSearchResultResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1772084335
+// LIFERAY-REST-BUILDER-HASH:1969146350

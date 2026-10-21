@@ -12,7 +12,9 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -44,6 +46,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -63,6 +66,7 @@ import java.util.Set;
  * @author Thiago Buarque
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49852")
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseLanguageOverrideResourceImpl
@@ -375,6 +379,12 @@ public abstract class BaseLanguageOverrideResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-49852")) {
+
+				throw new NotFoundException();
+			}
+
 			languageOverrideUnsafeFunction =
 				languageOverride -> postLanguageOverride(languageOverride);
 		}
@@ -386,6 +396,12 @@ public abstract class BaseLanguageOverrideResourceImpl
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
 				languageOverrideUnsafeFunction = languageOverride -> {
 					LanguageOverride persistedLanguageOverride = null;
+
+					if (!FeatureFlagManagerUtil.isEnabled(
+							CompanyThreadLocal.getCompanyId(), "LPD-49852")) {
+
+						throw new NotFoundException();
+					}
 
 					persistedLanguageOverride =
 						putLanguageOverrideByExternalReferenceCode(
@@ -427,6 +443,12 @@ public abstract class BaseLanguageOverrideResourceImpl
 		UnsafeFunction<LanguageOverride, LanguageOverride, Exception>
 			languageOverrideUnsafeFunction = languageOverride -> {
 				if (languageOverride.getExternalReferenceCode() != null) {
+					if (!FeatureFlagManagerUtil.isEnabled(
+							CompanyThreadLocal.getCompanyId(), "LPD-49852")) {
+
+						throw new NotFoundException();
+					}
+
 					deleteLanguageOverrideByExternalReferenceCode(
 						languageOverride.getExternalReferenceCode());
 
@@ -453,7 +475,16 @@ public abstract class BaseLanguageOverrideResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT", "UPSERT");
+		Set<String> createStrategies = SetUtil.fromArray();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-49852")) {
+
+			createStrategies.add("INSERT");
+			createStrategies.add("UPSERT");
+		}
+
+		return createStrategies;
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -483,6 +514,12 @@ public abstract class BaseLanguageOverrideResourceImpl
 			com.liferay.portal.kernel.search.Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-49852")) {
+
+			throw new NotFoundException();
+		}
 
 		return getLanguageOverridesPage(search, pagination, sorts);
 	}
@@ -1091,4 +1128,4 @@ public abstract class BaseLanguageOverrideResourceImpl
 		LogFactoryUtil.getLog(BaseLanguageOverrideResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1628981695
+// LIFERAY-REST-BUILDER-HASH:1053770644

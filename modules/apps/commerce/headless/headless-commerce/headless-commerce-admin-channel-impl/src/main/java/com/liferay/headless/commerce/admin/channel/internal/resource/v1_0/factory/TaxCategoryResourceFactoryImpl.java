@@ -329,4 +329,4 @@ public class TaxCategoryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1421637423
+// LIFERAY-REST-BUILDER-HASH:154765897

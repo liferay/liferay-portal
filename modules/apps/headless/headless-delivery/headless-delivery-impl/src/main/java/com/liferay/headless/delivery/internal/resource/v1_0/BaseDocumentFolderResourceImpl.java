@@ -2912,4 +2912,4 @@ public abstract class BaseDocumentFolderResourceImpl
 		LogFactoryUtil.getLog(BaseDocumentFolderResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:592621843
+// LIFERAY-REST-BUILDER-HASH:1457138909

@@ -12,7 +12,9 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -44,6 +46,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -74,6 +77,7 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-pr-local-metadata/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-63415")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -108,6 +112,7 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-pr-local-metadata/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-63415")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -145,6 +150,7 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-pr-local-metadatas'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-63415")
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(
@@ -167,6 +173,7 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-pr-local-metadatas' -d $'{"dateCreated": ___, "dateModified": ___, "externalReferenceCode": ___, "localWellKnownEnabled": ___, "localWellKnownURI": ___, "metadataJSON": ___, "protectedResourceURI": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-63415")
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(
@@ -191,6 +198,7 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-pr-local-metadatas/batch'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-63415")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -240,6 +248,7 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-pr-local-metadatas/export-batch'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-63415")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -305,6 +314,7 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-pr-local-metadata/by-external-reference-code/{externalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "externalReferenceCode": ___, "localWellKnownEnabled": ___, "localWellKnownURI": ___, "metadataJSON": ___, "protectedResourceURI": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-63415")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -354,6 +364,12 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-63415")) {
+
+				throw new NotFoundException();
+			}
+
 			oAuthClientPRLocalMetadataUnsafeFunction =
 				oAuthClientPRLocalMetadata -> postOAuthClientPRLocalMetadata(
 					oAuthClientPRLocalMetadata);
@@ -368,6 +384,13 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 					oAuthClientPRLocalMetadata -> {
 						OAuthClientPRLocalMetadata
 							persistedOAuthClientPRLocalMetadata = null;
+
+						if (!FeatureFlagManagerUtil.isEnabled(
+								CompanyThreadLocal.getCompanyId(),
+								"LPD-63415")) {
+
+							throw new NotFoundException();
+						}
 
 						persistedOAuthClientPRLocalMetadata =
 							putOAuthClientPRLocalMetadataByExternalReferenceCode(
@@ -419,6 +442,13 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 						if (oAuthClientPRLocalMetadata.
 								getExternalReferenceCode() != null) {
 
+							if (!FeatureFlagManagerUtil.isEnabled(
+									CompanyThreadLocal.getCompanyId(),
+									"LPD-63415")) {
+
+								throw new NotFoundException();
+							}
+
 							deleteOAuthClientPRLocalMetadataByExternalReferenceCode(
 								oAuthClientPRLocalMetadata.
 									getExternalReferenceCode());
@@ -451,7 +481,16 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT", "UPSERT");
+		Set<String> createStrategies = SetUtil.fromArray();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-63415")) {
+
+			createStrategies.add("INSERT");
+			createStrategies.add("UPSERT");
+		}
+
+		return createStrategies;
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -481,6 +520,12 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 			com.liferay.portal.kernel.search.Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-63415")) {
+
+			throw new NotFoundException();
+		}
 
 		return getOAuthClientPRLocalMetadatasPage();
 	}
@@ -1093,4 +1138,4 @@ public abstract class BaseOAuthClientPRLocalMetadataResourceImpl
 		LogFactoryUtil.getLog(BaseOAuthClientPRLocalMetadataResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:517956176
+// LIFERAY-REST-BUILDER-HASH:-741771636

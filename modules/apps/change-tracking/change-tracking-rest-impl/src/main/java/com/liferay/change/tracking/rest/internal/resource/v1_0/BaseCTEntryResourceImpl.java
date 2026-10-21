@@ -943,4 +943,4 @@ public abstract class BaseCTEntryResourceImpl
 		LogFactoryUtil.getLog(BaseCTEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:807697494
+// LIFERAY-REST-BUILDER-HASH:898050296

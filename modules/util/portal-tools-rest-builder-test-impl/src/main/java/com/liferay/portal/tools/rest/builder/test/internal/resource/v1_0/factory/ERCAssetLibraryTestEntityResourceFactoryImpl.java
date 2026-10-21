@@ -342,4 +342,4 @@ public class ERCAssetLibraryTestEntityResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1122579756
+// LIFERAY-REST-BUILDER-HASH:-409995097

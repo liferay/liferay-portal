@@ -324,4 +324,4 @@ public class KeywordResourceFactoryImpl implements KeywordResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1736003966
+// LIFERAY-REST-BUILDER-HASH:-257710982

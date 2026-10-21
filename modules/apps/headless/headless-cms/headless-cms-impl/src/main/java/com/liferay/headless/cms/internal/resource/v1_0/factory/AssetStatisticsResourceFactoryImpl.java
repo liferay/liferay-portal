@@ -332,4 +332,4 @@ public class AssetStatisticsResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-372234820
+// LIFERAY-REST-BUILDER-HASH:1977084224

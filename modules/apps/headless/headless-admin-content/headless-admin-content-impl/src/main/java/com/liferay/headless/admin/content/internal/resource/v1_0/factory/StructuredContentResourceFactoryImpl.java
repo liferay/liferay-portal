@@ -333,4 +333,4 @@ public class StructuredContentResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1618837509
+// LIFERAY-REST-BUILDER-HASH:2131012529

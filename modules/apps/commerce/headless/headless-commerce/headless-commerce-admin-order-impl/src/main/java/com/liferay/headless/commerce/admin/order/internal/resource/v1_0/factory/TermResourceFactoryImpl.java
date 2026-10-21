@@ -323,4 +323,4 @@ public class TermResourceFactoryImpl implements TermResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2142078029
+// LIFERAY-REST-BUILDER-HASH:73545343

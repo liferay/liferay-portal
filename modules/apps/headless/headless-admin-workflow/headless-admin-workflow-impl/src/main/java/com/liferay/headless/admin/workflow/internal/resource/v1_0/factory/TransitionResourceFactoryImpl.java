@@ -329,4 +329,4 @@ public class TransitionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:24836204
+// LIFERAY-REST-BUILDER-HASH:1335696731

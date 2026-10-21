@@ -337,4 +337,4 @@ public class ReferencingTestEntityResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1885045638
+// LIFERAY-REST-BUILDER-HASH:-874698742

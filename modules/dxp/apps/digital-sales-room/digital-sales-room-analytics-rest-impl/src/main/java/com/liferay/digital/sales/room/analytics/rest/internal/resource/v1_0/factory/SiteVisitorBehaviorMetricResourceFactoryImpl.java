@@ -342,4 +342,4 @@ public class SiteVisitorBehaviorMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-791607185
+// LIFERAY-REST-BUILDER-HASH:-1400379994

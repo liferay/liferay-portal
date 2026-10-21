@@ -332,4 +332,4 @@ public class MeasurementUnitResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1046567850
+// LIFERAY-REST-BUILDER-HASH:118313933

@@ -323,4 +323,4 @@ public class RoleResourceFactoryImpl implements RoleResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-262931627
+// LIFERAY-REST-BUILDER-HASH:26451589

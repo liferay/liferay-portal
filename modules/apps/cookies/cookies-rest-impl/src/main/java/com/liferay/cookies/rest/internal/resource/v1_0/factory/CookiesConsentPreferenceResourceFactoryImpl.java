@@ -340,4 +340,4 @@ public class CookiesConsentPreferenceResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1055236041
+// LIFERAY-REST-BUILDER-HASH:-1961740059

@@ -326,4 +326,4 @@ public class DiscountResourceFactoryImpl implements DiscountResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1281143869
+// LIFERAY-REST-BUILDER-HASH:-1916925093

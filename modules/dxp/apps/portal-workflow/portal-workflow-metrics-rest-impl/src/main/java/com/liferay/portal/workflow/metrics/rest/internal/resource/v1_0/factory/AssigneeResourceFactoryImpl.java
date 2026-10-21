@@ -326,4 +326,4 @@ public class AssigneeResourceFactoryImpl implements AssigneeResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1159521999
+// LIFERAY-REST-BUILDER-HASH:-1438309553

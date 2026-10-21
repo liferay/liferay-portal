@@ -324,4 +324,4 @@ public class AddressResourceFactoryImpl implements AddressResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:595637678
+// LIFERAY-REST-BUILDER-HASH:226365711

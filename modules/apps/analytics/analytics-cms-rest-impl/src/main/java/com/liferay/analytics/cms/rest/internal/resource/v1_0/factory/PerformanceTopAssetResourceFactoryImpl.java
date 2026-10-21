@@ -335,4 +335,4 @@ public class PerformanceTopAssetResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1250273519
+// LIFERAY-REST-BUILDER-HASH:-184678368

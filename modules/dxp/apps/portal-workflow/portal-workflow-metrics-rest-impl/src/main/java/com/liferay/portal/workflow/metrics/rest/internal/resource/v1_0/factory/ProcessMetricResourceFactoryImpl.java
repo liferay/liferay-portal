@@ -330,4 +330,4 @@ public class ProcessMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1599758181
+// LIFERAY-REST-BUILDER-HASH:-1491176899

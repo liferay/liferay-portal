@@ -333,4 +333,4 @@ public class ListTypeDefinitionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1846711722
+// LIFERAY-REST-BUILDER-HASH:-1963244110

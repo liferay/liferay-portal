@@ -333,4 +333,4 @@ public class OrderAccountGroupResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2070663175
+// LIFERAY-REST-BUILDER-HASH:413508313

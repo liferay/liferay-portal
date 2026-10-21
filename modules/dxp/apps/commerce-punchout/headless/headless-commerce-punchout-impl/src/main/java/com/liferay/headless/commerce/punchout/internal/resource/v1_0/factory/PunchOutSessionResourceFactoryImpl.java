@@ -332,4 +332,4 @@ public class PunchOutSessionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:340789982
+// LIFERAY-REST-BUILDER-HASH:-1140800495

@@ -53,6 +53,7 @@ public abstract class BaseMissingRequiredFieldsAssetResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-cms/v1.0/missing-required-fields-assets'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-82226")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -555,4 +556,4 @@ public abstract class BaseMissingRequiredFieldsAssetResourceImpl
 		LogFactoryUtil.getLog(BaseMissingRequiredFieldsAssetResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-473232690
+// LIFERAY-REST-BUILDER-HASH:-1818471966

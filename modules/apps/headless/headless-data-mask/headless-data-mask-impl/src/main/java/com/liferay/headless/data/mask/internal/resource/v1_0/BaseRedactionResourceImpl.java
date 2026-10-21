@@ -542,4 +542,4 @@ public abstract class BaseRedactionResourceImpl implements RedactionResource {
 		LogFactoryUtil.getLog(BaseRedactionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1541624706
+// LIFERAY-REST-BUILDER-HASH:-1023911604

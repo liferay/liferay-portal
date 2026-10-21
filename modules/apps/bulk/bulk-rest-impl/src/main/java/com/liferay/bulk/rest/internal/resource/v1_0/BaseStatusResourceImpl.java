@@ -502,4 +502,4 @@ public abstract class BaseStatusResourceImpl implements StatusResource {
 		LogFactoryUtil.getLog(BaseStatusResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:321316795
+// LIFERAY-REST-BUILDER-HASH:1119359619

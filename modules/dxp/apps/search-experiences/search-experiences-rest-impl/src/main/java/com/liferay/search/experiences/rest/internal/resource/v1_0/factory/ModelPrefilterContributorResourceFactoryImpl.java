@@ -342,4 +342,4 @@ public class ModelPrefilterContributorResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1261989851
+// LIFERAY-REST-BUILDER-HASH:-1142817942

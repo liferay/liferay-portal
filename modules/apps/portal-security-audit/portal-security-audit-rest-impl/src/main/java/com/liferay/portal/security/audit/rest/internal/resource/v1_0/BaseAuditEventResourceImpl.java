@@ -576,4 +576,4 @@ public abstract class BaseAuditEventResourceImpl
 		LogFactoryUtil.getLog(BaseAuditEventResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1423262424
+// LIFERAY-REST-BUILDER-HASH:-1358107430

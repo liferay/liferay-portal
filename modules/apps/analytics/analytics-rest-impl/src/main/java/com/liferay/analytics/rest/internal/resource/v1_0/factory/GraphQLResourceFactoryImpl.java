@@ -51,7 +51,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceScope;
 
 /**
- * @author Marcos Martins
+ * @author Ivica Cardic
  * @generated
  */
 @Component(
@@ -324,4 +324,4 @@ public class GraphQLResourceFactoryImpl implements GraphQLResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-700597743
+// LIFERAY-REST-BUILDER-HASH:1153783893

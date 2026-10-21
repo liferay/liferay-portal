@@ -329,4 +329,4 @@ public class AuditEventResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1928804481
+// LIFERAY-REST-BUILDER-HASH:438066350

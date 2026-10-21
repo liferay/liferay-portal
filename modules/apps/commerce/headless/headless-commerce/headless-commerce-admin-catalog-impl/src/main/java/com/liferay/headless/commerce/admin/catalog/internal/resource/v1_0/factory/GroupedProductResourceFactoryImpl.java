@@ -330,4 +330,4 @@ public class GroupedProductResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:336401486
+// LIFERAY-REST-BUILDER-HASH:1684818260

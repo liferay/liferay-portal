@@ -12,7 +12,9 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -44,6 +46,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -63,6 +66,7 @@ import java.util.Set;
  * @author Thiago Buarque
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-65399")
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseInstanceConfigurationResourceImpl
@@ -384,6 +388,12 @@ public abstract class BaseInstanceConfigurationResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
+
+				throw new NotFoundException();
+			}
+
 			instanceConfigurationUnsafeFunction =
 				instanceConfiguration -> postInstanceConfiguration(
 					instanceConfiguration);
@@ -396,6 +406,12 @@ public abstract class BaseInstanceConfigurationResourceImpl
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
 				instanceConfigurationUnsafeFunction = instanceConfiguration -> {
 					InstanceConfiguration persistedInstanceConfiguration = null;
+
+					if (!FeatureFlagManagerUtil.isEnabled(
+							CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
+
+						throw new NotFoundException();
+					}
 
 					persistedInstanceConfiguration = putInstanceConfiguration(
 						instanceConfiguration.getExternalReferenceCode(),
@@ -442,7 +458,16 @@ public abstract class BaseInstanceConfigurationResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT", "UPSERT");
+		Set<String> createStrategies = SetUtil.fromArray();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
+
+			createStrategies.add("INSERT");
+			createStrategies.add("UPSERT");
+		}
+
+		return createStrategies;
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -472,6 +497,12 @@ public abstract class BaseInstanceConfigurationResourceImpl
 			com.liferay.portal.kernel.search.Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
+
+			throw new NotFoundException();
+		}
 
 		return getInstanceConfigurationsPage(pagination);
 	}
@@ -1082,4 +1113,4 @@ public abstract class BaseInstanceConfigurationResourceImpl
 		LogFactoryUtil.getLog(BaseInstanceConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-751733153
+// LIFERAY-REST-BUILDER-HASH:1877202069

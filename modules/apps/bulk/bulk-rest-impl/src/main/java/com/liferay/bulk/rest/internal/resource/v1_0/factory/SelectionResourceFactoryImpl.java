@@ -326,4 +326,4 @@ public class SelectionResourceFactoryImpl implements SelectionResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:179383357
+// LIFERAY-REST-BUILDER-HASH:578962916

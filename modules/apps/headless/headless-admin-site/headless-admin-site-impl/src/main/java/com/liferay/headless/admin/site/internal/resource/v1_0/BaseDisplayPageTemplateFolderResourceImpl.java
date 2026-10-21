@@ -89,6 +89,7 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Deletes a specific display page template folder of a design library."
 	)
@@ -185,6 +186,7 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves a specific display page template folder of a design library."
 	)
@@ -247,6 +249,7 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}/permissions'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -310,6 +313,7 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-template-folders'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves the display page template folders of a design library."
 	)
@@ -1048,6 +1052,7 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}/permissions'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -2255,4 +2260,4 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 		LogFactoryUtil.getLog(BaseDisplayPageTemplateFolderResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-150620143
+// LIFERAY-REST-BUILDER-HASH:-1304223107

@@ -329,4 +329,4 @@ public class ExperimentResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-617100671
+// LIFERAY-REST-BUILDER-HASH:706754758

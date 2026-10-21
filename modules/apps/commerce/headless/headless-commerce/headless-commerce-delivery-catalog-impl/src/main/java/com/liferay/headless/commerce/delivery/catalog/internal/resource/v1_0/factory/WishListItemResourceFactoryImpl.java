@@ -329,4 +329,4 @@ public class WishListItemResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1470523636
+// LIFERAY-REST-BUILDER-HASH:-1958323302

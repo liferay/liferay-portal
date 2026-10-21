@@ -1416,4 +1416,4 @@ public abstract class BaseCartCommentResourceImpl
 		LogFactoryUtil.getLog(BaseCartCommentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:471127995
+// LIFERAY-REST-BUILDER-HASH:1595453831

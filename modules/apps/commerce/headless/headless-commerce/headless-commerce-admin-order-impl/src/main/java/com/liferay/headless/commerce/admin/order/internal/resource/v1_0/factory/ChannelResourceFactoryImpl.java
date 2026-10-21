@@ -324,4 +324,4 @@ public class ChannelResourceFactoryImpl implements ChannelResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:643354662
+// LIFERAY-REST-BUILDER-HASH:-1977925501

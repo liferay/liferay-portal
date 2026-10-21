@@ -2008,4 +2008,4 @@ public abstract class BaseWikiNodeResourceImpl
 		LogFactoryUtil.getLog(BaseWikiNodeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:757526946
+// LIFERAY-REST-BUILDER-HASH:-2019009472

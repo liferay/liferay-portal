@@ -518,4 +518,4 @@ public abstract class BaseCaptchaResourceImpl implements CaptchaResource {
 		LogFactoryUtil.getLog(BaseCaptchaResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-807372703
+// LIFERAY-REST-BUILDER-HASH:1107838235

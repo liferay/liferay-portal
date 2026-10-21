@@ -323,4 +323,4 @@ public class FormResourceFactoryImpl implements FormResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:315796252
+// LIFERAY-REST-BUILDER-HASH:-1368134890

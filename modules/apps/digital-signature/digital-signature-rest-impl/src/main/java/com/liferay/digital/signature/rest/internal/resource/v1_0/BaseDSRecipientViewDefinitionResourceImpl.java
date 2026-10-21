@@ -894,4 +894,4 @@ public abstract class BaseDSRecipientViewDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseDSRecipientViewDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1486088544
+// LIFERAY-REST-BUILDER-HASH:59783141

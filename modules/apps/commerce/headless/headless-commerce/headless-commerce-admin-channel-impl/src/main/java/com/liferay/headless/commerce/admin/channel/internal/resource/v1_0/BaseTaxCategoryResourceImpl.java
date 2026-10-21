@@ -12,6 +12,7 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -412,6 +413,31 @@ public abstract class BaseTaxCategoryResourceImpl
 				taxCategory);
 		}
 
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				taxCategoryUnsafeFunction = taxCategory -> {
+					TaxCategory getTaxCategory = null;
+					TaxCategory persistedTaxCategory = null;
+
+					try {
+						getTaxCategory = getTaxCategoryByExternalReferenceCode(
+							taxCategory.getExternalReferenceCode());
+
+						persistedTaxCategory = patchTaxCategory(
+							getTaxCategory.getId(), taxCategory);
+					}
+					catch (NoSuchModelException noSuchModelException) {
+						persistedTaxCategory = postTaxCategory(taxCategory);
+					}
+
+					return persistedTaxCategory;
+				};
+			}
+		}
+
 		if (taxCategoryUnsafeFunction == null) {
 			throw new NotSupportedException(
 				"Create strategy \"" + createStrategy +
@@ -444,7 +470,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT");
+		return SetUtil.fromArray("INSERT", "UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -1113,4 +1139,4 @@ public abstract class BaseTaxCategoryResourceImpl
 		LogFactoryUtil.getLog(BaseTaxCategoryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1497658001
+// LIFERAY-REST-BUILDER-HASH:-1871491786

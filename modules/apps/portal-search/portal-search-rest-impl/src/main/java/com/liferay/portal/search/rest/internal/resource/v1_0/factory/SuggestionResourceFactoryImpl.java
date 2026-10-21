@@ -329,4 +329,4 @@ public class SuggestionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2100665944
+// LIFERAY-REST-BUILDER-HASH:-410694907

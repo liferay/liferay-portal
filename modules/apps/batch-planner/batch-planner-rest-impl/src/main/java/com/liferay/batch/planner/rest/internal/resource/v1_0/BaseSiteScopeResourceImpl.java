@@ -525,4 +525,4 @@ public abstract class BaseSiteScopeResourceImpl implements SiteScopeResource {
 		LogFactoryUtil.getLog(BaseSiteScopeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-304267186
+// LIFERAY-REST-BUILDER-HASH:-1993647558

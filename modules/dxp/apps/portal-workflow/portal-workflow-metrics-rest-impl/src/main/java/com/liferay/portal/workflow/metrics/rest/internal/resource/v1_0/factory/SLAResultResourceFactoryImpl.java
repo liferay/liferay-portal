@@ -326,4 +326,4 @@ public class SLAResultResourceFactoryImpl implements SLAResultResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:519991609
+// LIFERAY-REST-BUILDER-HASH:1410793553

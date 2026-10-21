@@ -342,4 +342,4 @@ public class DSRecipientViewDefinitionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:606625444
+// LIFERAY-REST-BUILDER-HASH:1352446499

@@ -332,4 +332,4 @@ public class DocumentsMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1786064986
+// LIFERAY-REST-BUILDER-HASH:-1349178408

@@ -324,4 +324,4 @@ public class StatusResourceFactoryImpl implements StatusResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-854213842
+// LIFERAY-REST-BUILDER-HASH:-1403401564

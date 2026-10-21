@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Marcos Martins
+ * @author Ivica Cardic
  * @generated
  */
 @Generated("")
@@ -505,4 +505,4 @@ public abstract class BaseGraphQLResourceImpl implements GraphQLResource {
 		LogFactoryUtil.getLog(BaseGraphQLResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1138148951
+// LIFERAY-REST-BUILDER-HASH:-17574737

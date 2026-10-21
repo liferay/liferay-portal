@@ -329,4 +329,4 @@ public class DataListViewResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1748414764
+// LIFERAY-REST-BUILDER-HASH:826330529

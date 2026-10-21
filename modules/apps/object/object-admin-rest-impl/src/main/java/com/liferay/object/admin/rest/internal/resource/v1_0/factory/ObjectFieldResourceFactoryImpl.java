@@ -329,4 +329,4 @@ public class ObjectFieldResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-211761681
+// LIFERAY-REST-BUILDER-HASH:-1714968715

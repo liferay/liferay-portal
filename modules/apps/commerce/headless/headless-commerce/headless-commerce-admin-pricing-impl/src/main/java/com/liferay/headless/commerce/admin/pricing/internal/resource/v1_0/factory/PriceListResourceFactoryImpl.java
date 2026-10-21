@@ -326,4 +326,4 @@ public class PriceListResourceFactoryImpl implements PriceListResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-615508604
+// LIFERAY-REST-BUILDER-HASH:-362300775

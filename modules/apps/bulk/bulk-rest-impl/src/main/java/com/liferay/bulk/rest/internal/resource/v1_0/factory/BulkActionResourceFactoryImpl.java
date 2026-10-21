@@ -329,4 +329,4 @@ public class BulkActionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-726238524
+// LIFERAY-REST-BUILDER-HASH:-620083511

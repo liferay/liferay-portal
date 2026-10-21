@@ -654,4 +654,4 @@ public abstract class BaseProductShippingConfigurationResourceImpl
 			BaseProductShippingConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2018596541
+// LIFERAY-REST-BUILDER-HASH:1692410681

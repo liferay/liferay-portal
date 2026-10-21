@@ -329,4 +329,4 @@ public class CollaboratorResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1956547287
+// LIFERAY-REST-BUILDER-HASH:1002214214

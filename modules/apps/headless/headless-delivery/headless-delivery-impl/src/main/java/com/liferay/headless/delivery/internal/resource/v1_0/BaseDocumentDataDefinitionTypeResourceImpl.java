@@ -1507,4 +1507,4 @@ public abstract class BaseDocumentDataDefinitionTypeResourceImpl
 		LogFactoryUtil.getLog(BaseDocumentDataDefinitionTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1824547929
+// LIFERAY-REST-BUILDER-HASH:-998840850

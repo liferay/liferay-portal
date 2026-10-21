@@ -1260,4 +1260,4 @@ public abstract class BaseDataListViewResourceImpl
 		LogFactoryUtil.getLog(BaseDataListViewResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:921209129
+// LIFERAY-REST-BUILDER-HASH:-2019474771

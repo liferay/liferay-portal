@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Marcos Martins
+ * @author Ivica Cardic
  * @generated
  */
 @Component(

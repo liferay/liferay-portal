@@ -12,7 +12,9 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -43,6 +45,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -73,6 +76,7 @@ public abstract class BasePreviewSiteResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/export-preview/preview-sites'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-85946")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves the sites that can be exported."
 	)
@@ -120,6 +124,7 @@ public abstract class BasePreviewSiteResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/export-preview/preview-sites/export-batch'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-85946")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -243,6 +248,12 @@ public abstract class BasePreviewSiteResourceImpl
 		throws Exception {
 
 		if (parameters.containsKey("search")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-85946")) {
+
+				throw new NotFoundException();
+			}
+
 			return getExportPreviewPreviewSitesPage(search, pagination, sorts);
 		}
 		else {
@@ -853,4 +864,4 @@ public abstract class BasePreviewSiteResourceImpl
 		LogFactoryUtil.getLog(BasePreviewSiteResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1328620091
+// LIFERAY-REST-BUILDER-HASH:101997022

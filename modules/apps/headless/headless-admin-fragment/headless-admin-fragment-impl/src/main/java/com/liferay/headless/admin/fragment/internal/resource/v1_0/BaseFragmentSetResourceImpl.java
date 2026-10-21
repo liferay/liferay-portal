@@ -12,7 +12,9 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -44,6 +46,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -74,6 +77,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-fragment/v1.0/design-libraries/{designLibraryExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Deletes a specific fragment set of a design library."
 	)
@@ -115,6 +119,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-fragment/v1.0/sites/{siteExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-39244")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Deletes a specific fragment set of a site."
 	)
@@ -156,6 +161,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-fragment/v1.0/design-libraries/{designLibraryExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves a specific fragment set of a design library."
 	)
@@ -207,6 +213,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-fragment/v1.0/design-libraries/{designLibraryExternalReferenceCode}/fragment-sets'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves the fragment sets of the design library."
 	)
@@ -265,6 +272,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-fragment/v1.0/sites/{siteExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-39244")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves a specific fragment set of a site."
 	)
@@ -316,6 +324,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-fragment/v1.0/sites/{siteExternalReferenceCode}/fragment-sets'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-39244")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves the fragment sets of the site."
 	)
@@ -372,6 +381,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-fragment/v1.0/sites/{siteExternalReferenceCode}/fragment-sets' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "externalReferenceCode": ___, "key": ___, "marketplace": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-39244")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Adds a new fragment set."
 	)
@@ -407,6 +417,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-fragment/v1.0/sites/{siteExternalReferenceCode}/fragment-sets/batch'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-39244")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -461,6 +472,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-fragment/v1.0/sites/{siteExternalReferenceCode}/fragment-sets/export-batch'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-39244")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -538,6 +550,7 @@ public abstract class BaseFragmentSetResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-fragment/v1.0/sites/{siteExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "externalReferenceCode": ___, "key": ___, "marketplace": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-39244")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the fragment set with the given external reference code, or creates it if it does not exist. On update, `dateModified`, `description`, and `name` are honored; any values sent for `dateCreated`, `externalReferenceCode`, `key`, and `marketplace` are ignored."
 	)
@@ -601,6 +614,12 @@ public abstract class BaseFragmentSetResourceImpl
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
 			if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (!FeatureFlagManagerUtil.isEnabled(
+						CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
+
+					throw new NotFoundException();
+				}
+
 				fragmentSetUnsafeFunction = fragmentSet -> postSiteFragmentSet(
 					(String)parameters.get("siteExternalReferenceCode"),
 					fragmentSet);
@@ -620,6 +639,13 @@ public abstract class BaseFragmentSetResourceImpl
 					FragmentSet persistedFragmentSet = null;
 
 					if (parameters.containsKey("siteExternalReferenceCode")) {
+						if (!FeatureFlagManagerUtil.isEnabled(
+								CompanyThreadLocal.getCompanyId(),
+								"LPD-39244")) {
+
+							throw new NotFoundException();
+						}
+
 						persistedFragmentSet = putSiteFragmentSet(
 							(String)parameters.get("siteExternalReferenceCode"),
 							fragmentSet.getExternalReferenceCode(),
@@ -665,6 +691,12 @@ public abstract class BaseFragmentSetResourceImpl
 		UnsafeFunction<FragmentSet, FragmentSet, Exception>
 			fragmentSetUnsafeFunction = fragmentSet -> {
 				if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (!FeatureFlagManagerUtil.isEnabled(
+							CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
+
+						throw new NotFoundException();
+					}
+
 					deleteSiteFragmentSet(
 						(String)parameters.get("siteExternalReferenceCode"),
 						fragmentSet.getExternalReferenceCode());
@@ -692,7 +724,16 @@ public abstract class BaseFragmentSetResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT", "UPSERT");
+		Set<String> createStrategies = SetUtil.fromArray();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
+
+			createStrategies.add("INSERT");
+			createStrategies.add("UPSERT");
+		}
+
+		return createStrategies;
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -724,6 +765,12 @@ public abstract class BaseFragmentSetResourceImpl
 		throws Exception {
 
 		if (parameters.containsKey("siteExternalReferenceCode")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
+
+				throw new NotFoundException();
+			}
+
 			return getSiteFragmentSetsPage(
 				(String)parameters.get("siteExternalReferenceCode"), filter,
 				pagination);
@@ -1336,4 +1383,4 @@ public abstract class BaseFragmentSetResourceImpl
 		LogFactoryUtil.getLog(BaseFragmentSetResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-316978317
+// LIFERAY-REST-BUILDER-HASH:-73883082

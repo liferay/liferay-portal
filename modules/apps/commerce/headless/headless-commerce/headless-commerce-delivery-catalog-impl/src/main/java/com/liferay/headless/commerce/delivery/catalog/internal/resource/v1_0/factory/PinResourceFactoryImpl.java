@@ -321,4 +321,4 @@ public class PinResourceFactoryImpl implements PinResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:151863755
+// LIFERAY-REST-BUILDER-HASH:440818942

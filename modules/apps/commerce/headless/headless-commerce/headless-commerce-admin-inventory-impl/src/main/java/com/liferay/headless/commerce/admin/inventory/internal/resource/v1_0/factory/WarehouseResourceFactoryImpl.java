@@ -326,4 +326,4 @@ public class WarehouseResourceFactoryImpl implements WarehouseResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-821439138
+// LIFERAY-REST-BUILDER-HASH:-1323433739

@@ -773,4 +773,4 @@ public abstract class BaseEmbeddingModelResourceImpl
 		LogFactoryUtil.getLog(BaseEmbeddingModelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2098480668
+// LIFERAY-REST-BUILDER-HASH:1468195220

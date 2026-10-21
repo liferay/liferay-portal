@@ -330,4 +330,4 @@ public class ConnectionInfoResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1653804373
+// LIFERAY-REST-BUILDER-HASH:-1641311145

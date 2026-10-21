@@ -332,4 +332,4 @@ public class WorkflowInstanceResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:387142771
+// LIFERAY-REST-BUILDER-HASH:17652981

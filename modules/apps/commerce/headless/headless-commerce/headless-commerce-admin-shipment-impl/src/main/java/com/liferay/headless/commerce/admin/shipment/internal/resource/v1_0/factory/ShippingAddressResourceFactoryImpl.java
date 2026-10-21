@@ -332,4 +332,4 @@ public class ShippingAddressResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-375984276
+// LIFERAY-REST-BUILDER-HASH:9023576

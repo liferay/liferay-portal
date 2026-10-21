@@ -326,4 +326,4 @@ public class CategoryResourceFactoryImpl implements CategoryResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1328416850
+// LIFERAY-REST-BUILDER-HASH:-772594967

@@ -37,6 +37,7 @@ import java.util.Map;
  * @author Stefano Motta
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-96666")
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseLinkResourceImpl implements LinkResource {
@@ -568,4 +569,4 @@ public abstract class BaseLinkResourceImpl implements LinkResource {
 		LogFactoryUtil.getLog(BaseLinkResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1806255782
+// LIFERAY-REST-BUILDER-HASH:283253046

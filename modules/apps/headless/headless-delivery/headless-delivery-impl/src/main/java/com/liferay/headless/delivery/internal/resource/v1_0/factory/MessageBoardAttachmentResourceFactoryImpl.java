@@ -338,4 +338,4 @@ public class MessageBoardAttachmentResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1724516726
+// LIFERAY-REST-BUILDER-HASH:-1757250342

@@ -329,4 +329,4 @@ public class FieldSummaryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:79474559
+// LIFERAY-REST-BUILDER-HASH:-1285795763

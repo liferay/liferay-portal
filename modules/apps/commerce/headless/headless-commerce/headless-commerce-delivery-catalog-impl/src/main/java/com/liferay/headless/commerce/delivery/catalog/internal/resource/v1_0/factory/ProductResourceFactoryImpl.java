@@ -324,4 +324,4 @@ public class ProductResourceFactoryImpl implements ProductResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1883042183
+// LIFERAY-REST-BUILDER-HASH:-197104046

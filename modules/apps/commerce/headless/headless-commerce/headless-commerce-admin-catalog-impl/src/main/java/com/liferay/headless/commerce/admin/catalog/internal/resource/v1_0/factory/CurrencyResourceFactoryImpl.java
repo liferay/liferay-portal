@@ -326,4 +326,4 @@ public class CurrencyResourceFactoryImpl implements CurrencyResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1736718323
+// LIFERAY-REST-BUILDER-HASH:-887122795

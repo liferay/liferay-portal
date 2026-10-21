@@ -321,4 +321,4 @@ public class SkuResourceFactoryImpl implements SkuResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:971378782
+// LIFERAY-REST-BUILDER-HASH:-1132213862

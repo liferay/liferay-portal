@@ -324,4 +324,4 @@ public class CatalogResourceFactoryImpl implements CatalogResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-528287606
+// LIFERAY-REST-BUILDER-HASH:-1323627550

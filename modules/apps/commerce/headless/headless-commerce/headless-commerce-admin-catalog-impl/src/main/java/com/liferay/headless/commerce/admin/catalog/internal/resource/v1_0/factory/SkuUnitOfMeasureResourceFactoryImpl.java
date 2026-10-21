@@ -332,4 +332,4 @@ public class SkuUnitOfMeasureResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:368282692
+// LIFERAY-REST-BUILDER-HASH:-1093983501

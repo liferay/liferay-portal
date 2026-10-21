@@ -347,4 +347,4 @@ public class PaymentMethodGroupRelOrderTypeResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1835113755
+// LIFERAY-REST-BUILDER-HASH:-1809359993

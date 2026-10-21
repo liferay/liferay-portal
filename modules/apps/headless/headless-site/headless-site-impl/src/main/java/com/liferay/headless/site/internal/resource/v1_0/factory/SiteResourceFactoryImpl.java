@@ -323,4 +323,4 @@ public class SiteResourceFactoryImpl implements SiteResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-819499630
+// LIFERAY-REST-BUILDER-HASH:1881846938

@@ -330,4 +330,4 @@ public class VisitFrequencyResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1014065735
+// LIFERAY-REST-BUILDER-HASH:-1215014812

@@ -335,4 +335,4 @@ public class ERCScopedTestEntityResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:761846269
+// LIFERAY-REST-BUILDER-HASH:11638381

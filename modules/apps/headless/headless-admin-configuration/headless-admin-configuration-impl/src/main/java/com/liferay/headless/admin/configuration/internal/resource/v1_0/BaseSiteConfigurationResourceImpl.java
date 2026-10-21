@@ -12,7 +12,9 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -44,6 +46,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -63,6 +66,7 @@ import java.util.Set;
  * @author Thiago Buarque
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-65399")
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseSiteConfigurationResourceImpl
@@ -378,6 +382,12 @@ public abstract class BaseSiteConfigurationResourceImpl
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
 			if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (!FeatureFlagManagerUtil.isEnabled(
+						CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
+
+					throw new NotFoundException();
+				}
+
 				siteConfigurationUnsafeFunction =
 					siteConfiguration -> postSiteSiteConfiguration(
 						(String)parameters.get("siteExternalReferenceCode"),
@@ -398,6 +408,13 @@ public abstract class BaseSiteConfigurationResourceImpl
 					SiteConfiguration persistedSiteConfiguration = null;
 
 					if (parameters.containsKey("siteExternalReferenceCode")) {
+						if (!FeatureFlagManagerUtil.isEnabled(
+								CompanyThreadLocal.getCompanyId(),
+								"LPD-65399")) {
+
+							throw new NotFoundException();
+						}
+
 						persistedSiteConfiguration = putSiteSiteConfiguration(
 							(String)parameters.get("siteExternalReferenceCode"),
 							siteConfiguration.getExternalReferenceCode(),
@@ -445,7 +462,16 @@ public abstract class BaseSiteConfigurationResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT", "UPSERT");
+		Set<String> createStrategies = SetUtil.fromArray();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
+
+			createStrategies.add("INSERT");
+			createStrategies.add("UPSERT");
+		}
+
+		return createStrategies;
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -477,6 +503,12 @@ public abstract class BaseSiteConfigurationResourceImpl
 		throws Exception {
 
 		if (parameters.containsKey("siteExternalReferenceCode")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
+
+				throw new NotFoundException();
+			}
+
 			return getSiteSiteConfigurationsPage(
 				(String)parameters.get("siteExternalReferenceCode"),
 				pagination);
@@ -1091,4 +1123,4 @@ public abstract class BaseSiteConfigurationResourceImpl
 		LogFactoryUtil.getLog(BaseSiteConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-532316947
+// LIFERAY-REST-BUILDER-HASH:-168988563

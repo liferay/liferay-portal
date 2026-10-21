@@ -329,4 +329,4 @@ public class SamlProviderResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1693331325
+// LIFERAY-REST-BUILDER-HASH:1830146506

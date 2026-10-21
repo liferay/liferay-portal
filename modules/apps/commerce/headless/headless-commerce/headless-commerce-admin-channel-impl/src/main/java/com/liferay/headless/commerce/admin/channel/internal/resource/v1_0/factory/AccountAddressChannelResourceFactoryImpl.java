@@ -337,4 +337,4 @@ public class AccountAddressChannelResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1966809569
+// LIFERAY-REST-BUILDER-HASH:-326591020

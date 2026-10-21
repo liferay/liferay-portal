@@ -514,4 +514,4 @@ public abstract class BaseDatabaseSchemaExportResourceImpl
 		LogFactoryUtil.getLog(BaseDatabaseSchemaExportResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:533583199
+// LIFERAY-REST-BUILDER-HASH:1415527333

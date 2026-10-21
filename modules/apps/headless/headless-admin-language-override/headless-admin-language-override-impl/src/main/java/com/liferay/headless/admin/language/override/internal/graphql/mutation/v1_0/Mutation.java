@@ -33,6 +33,7 @@ import org.osgi.service.component.ComponentServiceObjects;
  * @author Thiago Buarque
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49852")
 @Generated("")
 public class Mutation {
 
@@ -201,4 +202,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1653057350
+// LIFERAY-REST-BUILDER-HASH:-1914111419

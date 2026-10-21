@@ -580,4 +580,4 @@ public abstract class BasePerformanceAssetConsumptionResourceImpl
 			BasePerformanceAssetConsumptionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-155038268
+// LIFERAY-REST-BUILDER-HASH:1154097046

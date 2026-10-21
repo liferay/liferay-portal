@@ -326,4 +326,4 @@ public class WishListResourceFactoryImpl implements WishListResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1239517191
+// LIFERAY-REST-BUILDER-HASH:763171336

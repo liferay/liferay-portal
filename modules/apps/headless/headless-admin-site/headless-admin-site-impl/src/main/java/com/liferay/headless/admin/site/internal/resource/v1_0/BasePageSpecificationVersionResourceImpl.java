@@ -72,6 +72,7 @@ public abstract class BasePageSpecificationVersionResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specification-versions/{pageSpecificationVersionExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-10622")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Deletes a specific page specification version of a site page."
 	)
@@ -128,6 +129,7 @@ public abstract class BasePageSpecificationVersionResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specification-versions/{pageSpecificationVersionExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-10622")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves a specific page specification version of a site page."
 	)
@@ -198,6 +200,7 @@ public abstract class BasePageSpecificationVersionResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specification-versions'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-10622")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves all the page specification versions of a site page."
 	)
@@ -258,6 +261,7 @@ public abstract class BasePageSpecificationVersionResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specification-versions/{pageSpecificationVersionExternalReferenceCode}/restore'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-10622")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Restores a page specification version as the current draft of a site page."
 	)
@@ -975,4 +979,4 @@ public abstract class BasePageSpecificationVersionResourceImpl
 		LogFactoryUtil.getLog(BasePageSpecificationVersionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:863640331
+// LIFERAY-REST-BUILDER-HASH:-1457895273

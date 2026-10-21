@@ -333,4 +333,4 @@ public class MostActiveVisitorsResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-316821112
+// LIFERAY-REST-BUILDER-HASH:-823668110

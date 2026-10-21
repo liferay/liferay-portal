@@ -324,4 +324,4 @@ public class CommentResourceFactoryImpl implements CommentResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-737915371
+// LIFERAY-REST-BUILDER-HASH:-1992846550

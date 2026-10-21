@@ -329,4 +329,4 @@ public class AttachmentResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2100113223
+// LIFERAY-REST-BUILDER-HASH:-1189453700

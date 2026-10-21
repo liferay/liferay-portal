@@ -4800,6 +4800,7 @@ public class Mutation {
 			});
 	}
 
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPS-178052")
 	@GraphQLField(description = "Adds a new site page")
 	public SitePage createSiteSitePage(
 			@GraphQLName("siteKey") @NotEmpty String siteKey,
@@ -4813,6 +4814,7 @@ public class Mutation {
 				Long.valueOf(siteKey), sitePage));
 	}
 
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPS-178052")
 	@GraphQLField
 	public Response createSiteSitePageBatch(
 			@GraphQLName("siteKey") @NotEmpty String siteKey,
@@ -6961,4 +6963,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-996168166
+// LIFERAY-REST-BUILDER-HASH:1524934042

@@ -337,4 +337,4 @@ public class AssetPermissionActionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-928710905
+// LIFERAY-REST-BUILDER-HASH:1962783323

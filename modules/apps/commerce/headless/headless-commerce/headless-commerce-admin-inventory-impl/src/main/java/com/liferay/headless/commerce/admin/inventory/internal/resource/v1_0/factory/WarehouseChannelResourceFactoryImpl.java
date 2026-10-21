@@ -332,4 +332,4 @@ public class WarehouseChannelResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-173465037
+// LIFERAY-REST-BUILDER-HASH:1350540257

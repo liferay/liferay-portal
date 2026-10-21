@@ -546,4 +546,4 @@ public abstract class BaseAssetDeviceMetricResourceImpl
 		LogFactoryUtil.getLog(BaseAssetDeviceMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-564453255
+// LIFERAY-REST-BUILDER-HASH:892572127

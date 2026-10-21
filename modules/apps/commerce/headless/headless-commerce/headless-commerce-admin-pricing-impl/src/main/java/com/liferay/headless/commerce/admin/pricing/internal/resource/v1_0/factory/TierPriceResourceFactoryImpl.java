@@ -326,4 +326,4 @@ public class TierPriceResourceFactoryImpl implements TierPriceResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:58291332
+// LIFERAY-REST-BUILDER-HASH:-844061543

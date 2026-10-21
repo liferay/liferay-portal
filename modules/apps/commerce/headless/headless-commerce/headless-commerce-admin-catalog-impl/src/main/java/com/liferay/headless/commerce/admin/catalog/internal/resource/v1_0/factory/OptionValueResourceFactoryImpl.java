@@ -329,4 +329,4 @@ public class OptionValueResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-878748471
+// LIFERAY-REST-BUILDER-HASH:-1398017524

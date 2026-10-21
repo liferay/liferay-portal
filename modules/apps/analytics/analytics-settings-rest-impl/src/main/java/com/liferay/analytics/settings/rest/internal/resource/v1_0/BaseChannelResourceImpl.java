@@ -578,4 +578,4 @@ public abstract class BaseChannelResourceImpl
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:962772571
+// LIFERAY-REST-BUILDER-HASH:-51564987

@@ -324,4 +324,4 @@ public class GroupResourceFactoryImpl implements GroupResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2070339981
+// LIFERAY-REST-BUILDER-HASH:816797537

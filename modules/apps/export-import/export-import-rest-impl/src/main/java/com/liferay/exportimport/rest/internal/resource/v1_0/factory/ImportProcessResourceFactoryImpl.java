@@ -330,4 +330,4 @@ public class ImportProcessResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1939129430
+// LIFERAY-REST-BUILDER-HASH:547115638

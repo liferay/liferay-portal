@@ -1101,4 +1101,4 @@ public abstract class BaseDiscountSkuResourceImpl
 		LogFactoryUtil.getLog(BaseDiscountSkuResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1327173555
+// LIFERAY-REST-BUILDER-HASH:-1850306884

@@ -12,7 +12,9 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -44,6 +46,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -74,6 +77,7 @@ public abstract class BaseOAuthClientEntryResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-entries/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -106,6 +110,7 @@ public abstract class BaseOAuthClientEntryResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-entries'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OAuthClientEntry")
@@ -124,6 +129,7 @@ public abstract class BaseOAuthClientEntryResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-entries/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -158,6 +164,7 @@ public abstract class BaseOAuthClientEntryResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-entries/export-batch'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -221,6 +228,7 @@ public abstract class BaseOAuthClientEntryResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-entries' -d $'{"authRequestParametersJSON": ___, "authServerWellKnownURI": ___, "clientId": ___, "customClaims": ___, "dateCreated": ___, "dateModified": ___, "externalReferenceCode": ___, "infoJSON": ___, "matcherField": ___, "metadataCacheTime": ___, "oAuthClientASLocalMetadata": ___, "oidcUserInfoMapperJSON": ___, "tokenConnectionTimeout": ___, "tokenRequestParametersJSON": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OAuthClientEntry")
@@ -243,6 +251,7 @@ public abstract class BaseOAuthClientEntryResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-entries/batch'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -289,6 +298,7 @@ public abstract class BaseOAuthClientEntryResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-entries/by-external-reference-code/{externalReferenceCode}' -d $'{"authRequestParametersJSON": ___, "authServerWellKnownURI": ___, "clientId": ___, "customClaims": ___, "dateCreated": ___, "dateModified": ___, "externalReferenceCode": ___, "infoJSON": ___, "matcherField": ___, "metadataCacheTime": ___, "oAuthClientASLocalMetadata": ___, "oidcUserInfoMapperJSON": ___, "tokenConnectionTimeout": ___, "tokenRequestParametersJSON": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -334,6 +344,12 @@ public abstract class BaseOAuthClientEntryResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-49855")) {
+
+				throw new NotFoundException();
+			}
+
 			oAuthClientEntryUnsafeFunction =
 				oAuthClientEntry -> postOAuthClientEntry(oAuthClientEntry);
 		}
@@ -345,6 +361,12 @@ public abstract class BaseOAuthClientEntryResourceImpl
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
 				oAuthClientEntryUnsafeFunction = oAuthClientEntry -> {
 					OAuthClientEntry persistedOAuthClientEntry = null;
+
+					if (!FeatureFlagManagerUtil.isEnabled(
+							CompanyThreadLocal.getCompanyId(), "LPD-49855")) {
+
+						throw new NotFoundException();
+					}
 
 					persistedOAuthClientEntry =
 						putOAuthClientEntryByExternalReferenceCode(
@@ -386,6 +408,12 @@ public abstract class BaseOAuthClientEntryResourceImpl
 		UnsafeFunction<OAuthClientEntry, OAuthClientEntry, Exception>
 			oAuthClientEntryUnsafeFunction = oAuthClientEntry -> {
 				if (oAuthClientEntry.getExternalReferenceCode() != null) {
+					if (!FeatureFlagManagerUtil.isEnabled(
+							CompanyThreadLocal.getCompanyId(), "LPD-49855")) {
+
+						throw new NotFoundException();
+					}
+
 					deleteOAuthClientEntryByExternalReferenceCode(
 						oAuthClientEntry.getExternalReferenceCode());
 
@@ -412,7 +440,16 @@ public abstract class BaseOAuthClientEntryResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT", "UPSERT");
+		Set<String> createStrategies = SetUtil.fromArray();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-49855")) {
+
+			createStrategies.add("INSERT");
+			createStrategies.add("UPSERT");
+		}
+
+		return createStrategies;
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -442,6 +479,12 @@ public abstract class BaseOAuthClientEntryResourceImpl
 			com.liferay.portal.kernel.search.Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-49855")) {
+
+			throw new NotFoundException();
+		}
 
 		return getOAuthClientEntriesPage();
 	}
@@ -1050,4 +1093,4 @@ public abstract class BaseOAuthClientEntryResourceImpl
 		LogFactoryUtil.getLog(BaseOAuthClientEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1062737892
+// LIFERAY-REST-BUILDER-HASH:-345632082

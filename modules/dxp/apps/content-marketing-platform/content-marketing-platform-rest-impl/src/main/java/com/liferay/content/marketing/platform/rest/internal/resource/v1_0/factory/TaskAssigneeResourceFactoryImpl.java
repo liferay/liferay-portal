@@ -329,4 +329,4 @@ public class TaskAssigneeResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:998787300
+// LIFERAY-REST-BUILDER-HASH:-2095595977

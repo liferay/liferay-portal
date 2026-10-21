@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Thiago Buarque
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49852")
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/openapi.properties",
 	service = OpenAPIResourceImpl.class
@@ -92,4 +93,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:331776522
+// LIFERAY-REST-BUILDER-HASH:-1928224247

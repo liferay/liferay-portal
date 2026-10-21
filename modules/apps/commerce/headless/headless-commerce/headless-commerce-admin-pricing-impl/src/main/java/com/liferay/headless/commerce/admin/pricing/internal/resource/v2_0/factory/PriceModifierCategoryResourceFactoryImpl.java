@@ -337,4 +337,4 @@ public class PriceModifierCategoryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1068529158
+// LIFERAY-REST-BUILDER-HASH:1072966777

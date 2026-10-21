@@ -329,4 +329,4 @@ public class SXPBlueprintResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:105829334
+// LIFERAY-REST-BUILDER-HASH:905800626

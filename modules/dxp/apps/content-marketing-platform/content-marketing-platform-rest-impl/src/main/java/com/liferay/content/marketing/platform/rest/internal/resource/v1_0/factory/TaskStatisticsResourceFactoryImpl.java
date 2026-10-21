@@ -330,4 +330,4 @@ public class TaskStatisticsResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1561168192
+// LIFERAY-REST-BUILDER-HASH:1030225647

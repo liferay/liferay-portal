@@ -35,6 +35,7 @@ import org.osgi.service.component.ComponentServiceObjects;
  * @author Thiago Buarque
  * @generated
  */
+@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49852")
 @Generated("")
 public class Query {
 
@@ -180,4 +181,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2035292836
+// LIFERAY-REST-BUILDER-HASH:1178089021

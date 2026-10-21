@@ -329,4 +329,4 @@ public class ExpiredAssetResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1296615226
+// LIFERAY-REST-BUILDER-HASH:-1935941903

@@ -280,6 +280,7 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/site-initializer'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-19870")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1791,4 +1792,4 @@ public abstract class BaseSiteResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:308364969
+// LIFERAY-REST-BUILDER-HASH:756030107

@@ -333,4 +333,4 @@ public class PortalInstanceCopyResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1457608924
+// LIFERAY-REST-BUILDER-HASH:-1204359508

@@ -326,4 +326,4 @@ public class CalendarResourceFactoryImpl implements CalendarResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2022546084
+// LIFERAY-REST-BUILDER-HASH:-187207287

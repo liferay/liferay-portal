@@ -324,4 +324,4 @@ public class ProcessResourceFactoryImpl implements ProcessResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1673049035
+// LIFERAY-REST-BUILDER-HASH:-80386659

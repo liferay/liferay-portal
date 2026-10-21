@@ -1466,4 +1466,4 @@ public abstract class BaseSXPBlueprintResourceImpl
 		LogFactoryUtil.getLog(BaseSXPBlueprintResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-742764380
+// LIFERAY-REST-BUILDER-HASH:44066076

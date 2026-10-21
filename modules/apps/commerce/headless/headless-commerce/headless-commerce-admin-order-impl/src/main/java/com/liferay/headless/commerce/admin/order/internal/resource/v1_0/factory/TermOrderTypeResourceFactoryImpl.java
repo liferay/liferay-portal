@@ -330,4 +330,4 @@ public class TermOrderTypeResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-490914413
+// LIFERAY-REST-BUILDER-HASH:836443233

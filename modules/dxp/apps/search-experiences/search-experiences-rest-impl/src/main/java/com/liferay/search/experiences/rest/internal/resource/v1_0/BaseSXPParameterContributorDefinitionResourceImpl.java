@@ -825,4 +825,4 @@ public abstract class BaseSXPParameterContributorDefinitionResourceImpl
 			BaseSXPParameterContributorDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:644484421
+// LIFERAY-REST-BUILDER-HASH:123722877

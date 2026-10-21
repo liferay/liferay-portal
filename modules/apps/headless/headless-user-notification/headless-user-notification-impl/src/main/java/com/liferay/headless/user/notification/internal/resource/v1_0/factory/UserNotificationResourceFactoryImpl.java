@@ -332,4 +332,4 @@ public class UserNotificationResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:934746501
+// LIFERAY-REST-BUILDER-HASH:1657816519

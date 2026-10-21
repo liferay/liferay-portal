@@ -608,4 +608,4 @@ public abstract class BasePerformanceMetricResourceImpl
 		LogFactoryUtil.getLog(BasePerformanceMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:844765758
+// LIFERAY-REST-BUILDER-HASH:1487190884

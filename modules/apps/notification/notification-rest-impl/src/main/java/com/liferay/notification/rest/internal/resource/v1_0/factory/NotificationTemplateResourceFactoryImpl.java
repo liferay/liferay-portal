@@ -335,4 +335,4 @@ public class NotificationTemplateResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1957918248
+// LIFERAY-REST-BUILDER-HASH:-93932261

@@ -332,4 +332,4 @@ public class DocumentShortcutResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:161560211
+// LIFERAY-REST-BUILDER-HASH:321951602

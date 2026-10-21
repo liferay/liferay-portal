@@ -1161,4 +1161,4 @@ public abstract class BaseNotificationQueueEntryResourceImpl
 		LogFactoryUtil.getLog(BaseNotificationQueueEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1184223779
+// LIFERAY-REST-BUILDER-HASH:217108380

@@ -329,4 +329,4 @@ public class ReportEntryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:559408442
+// LIFERAY-REST-BUILDER-HASH:1888152014

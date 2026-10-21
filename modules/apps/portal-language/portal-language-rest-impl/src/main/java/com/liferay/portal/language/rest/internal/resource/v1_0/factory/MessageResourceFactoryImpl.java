@@ -324,4 +324,4 @@ public class MessageResourceFactoryImpl implements MessageResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1221440527
+// LIFERAY-REST-BUILDER-HASH:-1476211013

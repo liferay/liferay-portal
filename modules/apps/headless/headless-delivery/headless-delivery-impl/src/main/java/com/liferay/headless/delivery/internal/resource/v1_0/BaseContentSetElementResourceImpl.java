@@ -368,6 +368,7 @@ public abstract class BaseContentSetElementResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-delivery/v1.0/sites/{siteId}/content-set-providers/by-key/{key}/content-set-elements'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-32867")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1084,4 +1085,4 @@ public abstract class BaseContentSetElementResourceImpl
 		LogFactoryUtil.getLog(BaseContentSetElementResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1938804704
+// LIFERAY-REST-BUILDER-HASH:-1814510966

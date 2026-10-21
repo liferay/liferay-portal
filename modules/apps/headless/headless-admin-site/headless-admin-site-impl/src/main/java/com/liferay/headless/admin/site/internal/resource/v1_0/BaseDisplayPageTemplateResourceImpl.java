@@ -90,6 +90,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Deletes a specific display page template of a design library."
 	)
@@ -182,6 +183,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves a specific display page template of a design library."
 	)
@@ -242,6 +244,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/permissions'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -302,6 +305,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves the display page templates of a design library."
 	)
@@ -867,6 +871,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/copy'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Copies a specific display page template of a design library, leaving the copy with the default permissions."
 	)
@@ -915,6 +920,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/copy-with-permission'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Copies a specific display page template of a design library, carrying the source's permissions into the copy."
 	)
@@ -966,6 +972,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/mark-as-default'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Marks a display page template of a design library as the default for its content type."
 	)
@@ -1017,6 +1024,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/unmark-as-default'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Stops a display page template of a design library from being the default for its content type."
 	)
@@ -1421,6 +1429,7 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/design-libraries/{designLibraryExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/permissions'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57283")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -2598,4 +2607,4 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 		LogFactoryUtil.getLog(BaseDisplayPageTemplateResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-331603534
+// LIFERAY-REST-BUILDER-HASH:-354825510

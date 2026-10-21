@@ -73,6 +73,7 @@ public abstract class BasePageSpecificationVersionPageExperienceResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specification-versions/{pageSpecificationVersionExternalReferenceCode}/page-specification-version-page-experiences'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-10622")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves the page experiences of a page specification version."
 	)
@@ -808,4 +809,4 @@ public abstract class BasePageSpecificationVersionPageExperienceResourceImpl
 			BasePageSpecificationVersionPageExperienceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-54441390
+// LIFERAY-REST-BUILDER-HASH:-869139477

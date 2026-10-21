@@ -330,4 +330,4 @@ public class PublishProcessResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:307787157
+// LIFERAY-REST-BUILDER-HASH:1835165865

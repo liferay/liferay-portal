@@ -338,4 +338,4 @@ public class FIPSHealthVerificationResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:133416870
+// LIFERAY-REST-BUILDER-HASH:1904132668

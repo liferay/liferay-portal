@@ -323,4 +323,4 @@ public class NodeResourceFactoryImpl implements NodeResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:549553232
+// LIFERAY-REST-BUILDER-HASH:-371857375

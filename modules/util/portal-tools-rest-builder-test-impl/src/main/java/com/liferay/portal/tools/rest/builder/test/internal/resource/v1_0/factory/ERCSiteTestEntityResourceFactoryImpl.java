@@ -333,4 +333,4 @@ public class ERCSiteTestEntityResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1804266464
+// LIFERAY-REST-BUILDER-HASH:-1414179281

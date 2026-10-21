@@ -323,4 +323,4 @@ public class SortResourceFactoryImpl implements SortResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1624209756
+// LIFERAY-REST-BUILDER-HASH:1446533553

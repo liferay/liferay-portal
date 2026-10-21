@@ -507,4 +507,4 @@ public abstract class BaseSelectionResourceImpl implements SelectionResource {
 		LogFactoryUtil.getLog(BaseSelectionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1129753603
+// LIFERAY-REST-BUILDER-HASH:-1547124913

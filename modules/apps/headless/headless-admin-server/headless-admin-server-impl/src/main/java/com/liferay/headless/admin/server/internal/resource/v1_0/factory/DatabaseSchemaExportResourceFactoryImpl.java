@@ -335,4 +335,4 @@ public class DatabaseSchemaExportResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1434898940
+// LIFERAY-REST-BUILDER-HASH:-647310752

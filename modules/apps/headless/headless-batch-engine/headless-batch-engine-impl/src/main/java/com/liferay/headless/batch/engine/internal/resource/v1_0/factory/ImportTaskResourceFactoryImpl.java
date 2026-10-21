@@ -329,4 +329,4 @@ public class ImportTaskResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1276298721
+// LIFERAY-REST-BUILDER-HASH:4142139

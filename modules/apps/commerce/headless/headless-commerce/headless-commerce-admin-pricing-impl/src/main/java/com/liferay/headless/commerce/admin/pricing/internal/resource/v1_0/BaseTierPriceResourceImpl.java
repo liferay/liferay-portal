@@ -12,6 +12,7 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -573,6 +574,40 @@ public abstract class BaseTierPriceResourceImpl
 			}
 		}
 
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				tierPriceUnsafeFunction = tierPrice -> {
+					TierPrice getTierPrice = null;
+					TierPrice persistedTierPrice = null;
+
+					try {
+						getTierPrice = getTierPriceByExternalReferenceCode(
+							tierPrice.getExternalReferenceCode());
+
+						patchTierPrice(getTierPrice.getId(), tierPrice);
+					}
+					catch (NoSuchModelException noSuchModelException) {
+						if (parameters.containsKey("externalReferenceCode")) {
+							persistedTierPrice =
+								postPriceEntryByExternalReferenceCodeTierPrice(
+									(String)parameters.get(
+										"externalReferenceCode"),
+									tierPrice);
+						}
+						else {
+							throw new NotSupportedException(
+								"One of the following parameters must be specified: [externalReferenceCode]");
+						}
+					}
+
+					return persistedTierPrice;
+				};
+			}
+		}
+
 		if (tierPriceUnsafeFunction == null) {
 			throw new NotSupportedException(
 				"Create strategy \"" + createStrategy +
@@ -644,7 +679,7 @@ public abstract class BaseTierPriceResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT");
+		return SetUtil.fromArray("INSERT", "UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -1316,4 +1351,4 @@ public abstract class BaseTierPriceResourceImpl
 		LogFactoryUtil.getLog(BaseTierPriceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1634161477
+// LIFERAY-REST-BUILDER-HASH:-1330905298

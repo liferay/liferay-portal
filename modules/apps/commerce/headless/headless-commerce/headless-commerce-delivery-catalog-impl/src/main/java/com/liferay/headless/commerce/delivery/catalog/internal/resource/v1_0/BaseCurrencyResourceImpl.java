@@ -860,4 +860,4 @@ public abstract class BaseCurrencyResourceImpl
 		LogFactoryUtil.getLog(BaseCurrencyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1791166957
+// LIFERAY-REST-BUILDER-HASH:1109735459

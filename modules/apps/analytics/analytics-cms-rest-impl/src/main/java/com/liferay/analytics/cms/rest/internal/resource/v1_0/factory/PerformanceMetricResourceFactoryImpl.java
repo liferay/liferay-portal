@@ -333,4 +333,4 @@ public class PerformanceMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-429161430
+// LIFERAY-REST-BUILDER-HASH:2038008582

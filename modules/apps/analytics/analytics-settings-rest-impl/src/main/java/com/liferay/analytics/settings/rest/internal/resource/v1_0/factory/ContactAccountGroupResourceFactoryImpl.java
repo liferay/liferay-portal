@@ -335,4 +335,4 @@ public class ContactAccountGroupResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2134834341
+// LIFERAY-REST-BUILDER-HASH:287738671

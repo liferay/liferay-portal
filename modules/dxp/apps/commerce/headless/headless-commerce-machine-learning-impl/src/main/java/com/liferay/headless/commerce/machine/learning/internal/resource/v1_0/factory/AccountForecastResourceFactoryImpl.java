@@ -332,4 +332,4 @@ public class AccountForecastResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1850257714
+// LIFERAY-REST-BUILDER-HASH:729808824

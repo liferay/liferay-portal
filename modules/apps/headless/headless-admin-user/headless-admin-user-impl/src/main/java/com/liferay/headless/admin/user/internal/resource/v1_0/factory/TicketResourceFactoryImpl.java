@@ -324,4 +324,4 @@ public class TicketResourceFactoryImpl implements TicketResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:98570619
+// LIFERAY-REST-BUILDER-HASH:-1191404279

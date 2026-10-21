@@ -1151,4 +1151,4 @@ public abstract class BaseMultipartTestEntityResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:873351163
+// LIFERAY-REST-BUILDER-HASH:1544574295

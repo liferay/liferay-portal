@@ -323,4 +323,4 @@ public class CartResourceFactoryImpl implements CartResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1979941744
+// LIFERAY-REST-BUILDER-HASH:1403504065

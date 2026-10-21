@@ -333,4 +333,4 @@ public class AssetLibraryScopeResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-602553799
+// LIFERAY-REST-BUILDER-HASH:738815061

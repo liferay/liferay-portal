@@ -329,4 +329,4 @@ public class CTCollectionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1439899531
+// LIFERAY-REST-BUILDER-HASH:-1725100238

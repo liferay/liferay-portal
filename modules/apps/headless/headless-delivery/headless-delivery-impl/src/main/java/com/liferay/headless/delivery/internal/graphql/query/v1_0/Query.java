@@ -1029,6 +1029,7 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {contentSetProviderByKeyContentSetElements(key: ___, page: ___, pageSize: ___, siteKey: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-32867")
 	@GraphQLField
 	public ContentSetElementPage contentSetProviderByKeyContentSetElements(
 			@GraphQLName("siteKey") @NotEmpty String siteKey,
@@ -7729,4 +7730,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1851934736
+// LIFERAY-REST-BUILDER-HASH:961325294

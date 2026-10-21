@@ -338,4 +338,4 @@ public class NotificationQueueEntryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-549983449
+// LIFERAY-REST-BUILDER-HASH:-1922029467

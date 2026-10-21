@@ -326,4 +326,4 @@ public class RedactionResourceFactoryImpl implements RedactionResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:792659567
+// LIFERAY-REST-BUILDER-HASH:439161846

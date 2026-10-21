@@ -329,4 +329,4 @@ public class SkuForecastResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-110615070
+// LIFERAY-REST-BUILDER-HASH:976750424

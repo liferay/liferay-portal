@@ -324,4 +324,4 @@ public class FieldResourceFactoryImpl implements FieldResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-544206590
+// LIFERAY-REST-BUILDER-HASH:-1537440001

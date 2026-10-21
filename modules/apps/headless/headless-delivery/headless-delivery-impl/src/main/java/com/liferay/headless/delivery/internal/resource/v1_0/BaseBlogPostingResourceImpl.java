@@ -2404,4 +2404,4 @@ public abstract class BaseBlogPostingResourceImpl
 		LogFactoryUtil.getLog(BaseBlogPostingResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1695157901
+// LIFERAY-REST-BUILDER-HASH:-1508414269

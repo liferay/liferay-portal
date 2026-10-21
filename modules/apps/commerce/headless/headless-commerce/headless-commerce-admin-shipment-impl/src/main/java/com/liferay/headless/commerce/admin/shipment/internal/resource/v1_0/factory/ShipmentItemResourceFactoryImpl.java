@@ -329,4 +329,4 @@ public class ShipmentItemResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1428533619
+// LIFERAY-REST-BUILDER-HASH:657063008

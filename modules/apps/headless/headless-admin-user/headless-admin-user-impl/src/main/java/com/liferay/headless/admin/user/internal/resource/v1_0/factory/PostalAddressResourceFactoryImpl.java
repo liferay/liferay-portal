@@ -330,4 +330,4 @@ public class PostalAddressResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1858362714
+// LIFERAY-REST-BUILDER-HASH:315585961

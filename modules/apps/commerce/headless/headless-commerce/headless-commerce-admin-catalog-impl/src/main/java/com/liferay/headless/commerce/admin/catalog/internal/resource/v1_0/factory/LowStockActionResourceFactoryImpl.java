@@ -330,4 +330,4 @@ public class LowStockActionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1058485141
+// LIFERAY-REST-BUILDER-HASH:-1056923042

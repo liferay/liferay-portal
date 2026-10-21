@@ -522,4 +522,4 @@ public abstract class BaseDataSourceResourceImpl implements DataSourceResource {
 		LogFactoryUtil.getLog(BaseDataSourceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1723141042
+// LIFERAY-REST-BUILDER-HASH:558453064

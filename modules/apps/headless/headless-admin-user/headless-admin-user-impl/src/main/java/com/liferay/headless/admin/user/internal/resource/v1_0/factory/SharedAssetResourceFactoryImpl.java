@@ -329,4 +329,4 @@ public class SharedAssetResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1369841609
+// LIFERAY-REST-BUILDER-HASH:871701866

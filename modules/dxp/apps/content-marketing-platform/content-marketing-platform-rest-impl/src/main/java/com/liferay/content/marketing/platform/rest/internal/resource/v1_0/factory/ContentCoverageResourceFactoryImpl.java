@@ -332,4 +332,4 @@ public class ContentCoverageResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-470044285
+// LIFERAY-REST-BUILDER-HASH:941205291

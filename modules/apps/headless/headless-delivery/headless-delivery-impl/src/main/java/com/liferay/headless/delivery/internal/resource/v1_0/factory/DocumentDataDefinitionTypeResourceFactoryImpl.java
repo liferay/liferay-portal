@@ -342,4 +342,4 @@ public class DocumentDataDefinitionTypeResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1900879132
+// LIFERAY-REST-BUILDER-HASH:1697404600

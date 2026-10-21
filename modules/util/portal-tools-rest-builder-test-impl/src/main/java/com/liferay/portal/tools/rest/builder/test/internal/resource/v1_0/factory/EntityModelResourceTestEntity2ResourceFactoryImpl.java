@@ -347,4 +347,4 @@ public class EntityModelResourceTestEntity2ResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-299417363
+// LIFERAY-REST-BUILDER-HASH:-1538751149

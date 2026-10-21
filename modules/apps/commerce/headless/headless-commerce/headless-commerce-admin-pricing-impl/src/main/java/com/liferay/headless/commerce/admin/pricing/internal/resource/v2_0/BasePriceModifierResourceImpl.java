@@ -12,6 +12,7 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -632,6 +633,42 @@ public abstract class BasePriceModifierResourceImpl
 			}
 		}
 
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				priceModifierUnsafeFunction = priceModifier -> {
+					PriceModifier getPriceModifier = null;
+					PriceModifier persistedPriceModifier = null;
+
+					try {
+						getPriceModifier =
+							getPriceModifierByExternalReferenceCode(
+								priceModifier.getExternalReferenceCode());
+
+						patchPriceModifier(
+							getPriceModifier.getId(), priceModifier);
+					}
+					catch (NoSuchModelException noSuchModelException) {
+						if (parameters.containsKey("externalReferenceCode")) {
+							persistedPriceModifier =
+								postPriceListByExternalReferenceCodePriceModifier(
+									(String)parameters.get(
+										"externalReferenceCode"),
+									priceModifier);
+						}
+						else {
+							throw new NotSupportedException(
+								"One of the following parameters must be specified: [externalReferenceCode]");
+						}
+					}
+
+					return persistedPriceModifier;
+				};
+			}
+		}
+
 		if (priceModifierUnsafeFunction == null) {
 			throw new NotSupportedException(
 				"Create strategy \"" + createStrategy +
@@ -703,7 +740,7 @@ public abstract class BasePriceModifierResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT");
+		return SetUtil.fromArray("INSERT", "UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -1377,4 +1414,4 @@ public abstract class BasePriceModifierResourceImpl
 		LogFactoryUtil.getLog(BasePriceModifierResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-221462524
+// LIFERAY-REST-BUILDER-HASH:1937136389

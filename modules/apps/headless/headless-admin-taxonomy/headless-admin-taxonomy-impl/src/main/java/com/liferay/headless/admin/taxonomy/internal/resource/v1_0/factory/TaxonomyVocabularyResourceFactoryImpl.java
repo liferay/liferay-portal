@@ -333,4 +333,4 @@ public class TaxonomyVocabularyResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1151079386
+// LIFERAY-REST-BUILDER-HASH:460701197

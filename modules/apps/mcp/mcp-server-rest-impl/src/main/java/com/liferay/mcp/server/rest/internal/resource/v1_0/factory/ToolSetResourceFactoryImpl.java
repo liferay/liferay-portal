@@ -5,6 +5,7 @@
 
 package com.liferay.mcp.server.rest.internal.resource.v1_0.factory;
 
+import com.liferay.mcp.server.rest.internal.resource.v1_0.BaseToolSetResourceImpl;
 import com.liferay.mcp.server.rest.internal.security.permission.LiberalPermissionChecker;
 import com.liferay.mcp.server.rest.resource.v1_0.ToolSetResource;
 import com.liferay.portal.kernel.model.Company;
@@ -27,12 +28,14 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.feature.flag.FeatureFlagChecker;
 
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.lang.reflect.Constructor;
@@ -177,6 +180,14 @@ public class ToolSetResourceFactoryImpl implements ToolSetResource.Factory {
 			UriInfo uriInfo, User user)
 		throws Throwable {
 
+		if (!_featureFlagChecker.isEnabled(
+				user.getCompanyId(),
+				BaseToolSetResourceImpl.class.getMethod(
+					method.getName(), method.getParameterTypes()))) {
+
+			throw new NotFoundException();
+		}
+
 		String name = PrincipalThreadLocal.getName();
 
 		PrincipalThreadLocal.setName(user.getUserId());
@@ -244,6 +255,9 @@ public class ToolSetResourceFactoryImpl implements ToolSetResource.Factory {
 		target = "(result.class.name=com.liferay.portal.kernel.search.filter.Filter)"
 	)
 	private ExpressionConvert<Filter> _expressionConvert;
+
+	@Reference
+	private FeatureFlagChecker _featureFlagChecker;
 
 	@Reference
 	private FilterParserProvider _filterParserProvider;
@@ -324,4 +338,4 @@ public class ToolSetResourceFactoryImpl implements ToolSetResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:588864588
+// LIFERAY-REST-BUILDER-HASH:-783874373
