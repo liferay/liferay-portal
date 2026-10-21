@@ -23,11 +23,41 @@ import java.util.TreeSet;
  */
 public class IntentUtil {
 
+	public static final String INTENT_COPY = "copy";
+
 	public static final String INTENT_CREATE = "create";
+
+	public static final String INTENT_DELETE = "delete";
+
+	public static final String INTENT_DEPLOY = "deploy";
+
+	public static final String INTENT_EXPORT = "export";
 
 	public static final String INTENT_LIST = "list";
 
+	public static final String INTENT_MOVE = "move";
+
+	public static final String INTENT_PUBLISH = "publish";
+
 	public static final String INTENT_READ = "read";
+
+	public static final String INTENT_REPLACE = "replace";
+
+	public static final String INTENT_RESTORE = "restore";
+
+	public static final String INTENT_SUBSCRIBE = "subscribe";
+
+	public static final String INTENT_TRANSLATE = "translate";
+
+	public static final String INTENT_UNDEPLOY = "undeploy";
+
+	public static final String INTENT_UNPUBLISH = "unpublish";
+
+	public static final String INTENT_UNSUBSCRIBE = "unsubscribe";
+
+	public static final String INTENT_UPDATE = "update";
+
+	public static final String INTENT_VALIDATE = "validate";
 
 	public static Set<String> getIntents(String verb) {
 		return SetUtil.fromList(
@@ -110,82 +140,52 @@ public class IntentUtil {
 		return _verbIntents.containsKey(s);
 	}
 
-	private static final String _INTENT_COPY = "copy";
-
-	private static final String _INTENT_DELETE = "delete";
-
-	private static final String _INTENT_DEPLOY = "deploy";
-
-	private static final String _INTENT_EXPORT = "export";
-
-	private static final String _INTENT_MOVE = "move";
-
-	private static final String _INTENT_PUBLISH = "publish";
-
-	private static final String _INTENT_REPLACE = "replace";
-
-	private static final String _INTENT_RESTORE = "restore";
-
-	private static final String _INTENT_SUBSCRIBE = "subscribe";
-
-	private static final String _INTENT_TRANSLATE = "translate";
-
-	private static final String _INTENT_UNDEPLOY = "undeploy";
-
-	private static final String _INTENT_UNPUBLISH = "unpublish";
-
-	private static final String _INTENT_UNSUBSCRIBE = "unsubscribe";
-
-	private static final String _INTENT_UPDATE = "update";
-
-	private static final String _INTENT_VALIDATE = "validate";
-
 	private static final Map<String, String> _methodIntents =
 		HashMapBuilder.put(
-			"delete", _INTENT_DELETE
+			"delete", INTENT_DELETE
 		).put(
-			"patch", _INTENT_UPDATE
+			"patch", INTENT_UPDATE
 		).put(
 			"post", INTENT_CREATE
 		).put(
-			"put", _INTENT_REPLACE
+			"put", INTENT_REPLACE
 		).build();
 	private static final Map<String, String> _toolActionIntents =
 		HashMapBuilder.put(
-			"Copy", _INTENT_COPY
+			"Copy", INTENT_COPY
 		).put(
-			"CopyReplace", _INTENT_COPY
+			"CopyReplace", INTENT_COPY
 		).put(
-			"Deploy", _INTENT_DEPLOY
+			"Deploy", INTENT_DEPLOY
 		).put(
-			"Expire", _INTENT_UNPUBLISH
+			"Expire", INTENT_UNPUBLISH
 		).put(
-			"ExportBatch", _INTENT_EXPORT
+			"ExportBatch", INTENT_EXPORT
 		).put(
-			"Move", _INTENT_MOVE
+			"Move", INTENT_MOVE
 		).put(
-			"MoveReplace", _INTENT_MOVE
+			"MoveReplace", INTENT_MOVE
 		).put(
-			"Publish", _INTENT_PUBLISH
+			"Publish", INTENT_PUBLISH
 		).put(
-			"Restore", _INTENT_RESTORE
+			"Restore", INTENT_RESTORE
 		).put(
-			"Subscribe", _INTENT_SUBSCRIBE
+			"Subscribe", INTENT_SUBSCRIBE
 		).put(
-			"Translation", _INTENT_TRANSLATE
+			"Translation", INTENT_TRANSLATE
 		).put(
-			"TranslationLanguage", _INTENT_TRANSLATE
+			"TranslationLanguage", INTENT_TRANSLATE
 		).put(
-			"Undeploy", _INTENT_UNDEPLOY
+			"Undeploy", INTENT_UNDEPLOY
 		).put(
-			"Unsubscribe", _INTENT_UNSUBSCRIBE
+			"Unsubscribe", INTENT_UNSUBSCRIBE
 		).put(
-			"Validate", _INTENT_VALIDATE
+			"Validate", INTENT_VALIDATE
 		).build();
 	private static final Map<String, List<String>> _verbIntents =
 		HashMapBuilder.<String, List<String>>put(
 			"activate",
-			Arrays.asList(_INTENT_PUBLISH, _INTENT_DEPLOY, _INTENT_UPDATE)
+			Arrays.asList(INTENT_PUBLISH, INTENT_DEPLOY, INTENT_UPDATE)
 		).put(
 			"add", Arrays.asList(INTENT_CREATE)
 		).put(
@@ -197,101 +197,101 @@ public class IntentUtil {
 		).put(
 			"browse", Arrays.asList(INTENT_LIST, INTENT_READ)
 		).put(
-			"change", Arrays.asList(_INTENT_UPDATE, _INTENT_REPLACE)
+			"change", Arrays.asList(INTENT_UPDATE, INTENT_REPLACE)
 		).put(
-			"check", Arrays.asList(_INTENT_VALIDATE, INTENT_LIST, INTENT_READ)
+			"check", Arrays.asList(INTENT_VALIDATE, INTENT_LIST, INTENT_READ)
 		).put(
-			"clone", Arrays.asList(_INTENT_COPY)
+			"clone", Arrays.asList(INTENT_COPY)
 		).put(
-			"copy", Arrays.asList(_INTENT_COPY)
+			"copy", Arrays.asList(INTENT_COPY)
 		).put(
 			"create", Arrays.asList(INTENT_CREATE)
 		).put(
-			"deactivate", Arrays.asList(_INTENT_UNDEPLOY, _INTENT_UPDATE)
+			"deactivate", Arrays.asList(INTENT_UNDEPLOY, INTENT_UPDATE)
 		).put(
-			"delete", Arrays.asList(_INTENT_DELETE)
+			"delete", Arrays.asList(INTENT_DELETE)
 		).put(
-			"deploy", Arrays.asList(_INTENT_DEPLOY)
+			"deploy", Arrays.asList(INTENT_DEPLOY)
 		).put(
-			"destroy", Arrays.asList(_INTENT_DELETE)
+			"destroy", Arrays.asList(INTENT_DELETE)
 		).put(
-			"detach", Arrays.asList(_INTENT_DELETE)
+			"detach", Arrays.asList(INTENT_DELETE)
 		).put(
-			"disassociate", Arrays.asList(_INTENT_DELETE)
+			"disassociate", Arrays.asList(INTENT_DELETE)
 		).put(
-			"duplicate", Arrays.asList(_INTENT_COPY)
+			"duplicate", Arrays.asList(INTENT_COPY)
 		).put(
-			"edit", Arrays.asList(_INTENT_UPDATE, _INTENT_REPLACE)
+			"edit", Arrays.asList(INTENT_UPDATE, INTENT_REPLACE)
 		).put(
-			"expire", Arrays.asList(_INTENT_UNPUBLISH)
+			"expire", Arrays.asList(INTENT_UNPUBLISH)
 		).put(
-			"export", Arrays.asList(_INTENT_EXPORT)
+			"export", Arrays.asList(INTENT_EXPORT)
 		).put(
 			"fetch", Arrays.asList(INTENT_READ, INTENT_LIST)
 		).put(
 			"find", Arrays.asList(INTENT_LIST, INTENT_READ)
 		).put(
-			"follow", Arrays.asList(_INTENT_SUBSCRIBE)
+			"follow", Arrays.asList(INTENT_SUBSCRIBE)
 		).put(
 			"get", Arrays.asList(INTENT_READ, INTENT_LIST)
 		).put(
 			"get all", Arrays.asList(INTENT_LIST)
 		).put(
-			"get rid of", Arrays.asList(_INTENT_DELETE)
+			"get rid of", Arrays.asList(INTENT_DELETE)
 		).put(
 			"link", Arrays.asList(INTENT_CREATE)
 		).put(
 			"list", Arrays.asList(INTENT_LIST, INTENT_READ)
 		).put(
-			"localize", Arrays.asList(_INTENT_TRANSLATE)
+			"localize", Arrays.asList(INTENT_TRANSLATE)
 		).put(
 			"look up", Arrays.asList(INTENT_READ, INTENT_LIST)
 		).put(
 			"make", Arrays.asList(INTENT_CREATE)
 		).put(
-			"make live", Arrays.asList(_INTENT_PUBLISH)
+			"make live", Arrays.asList(INTENT_PUBLISH)
 		).put(
-			"modify", Arrays.asList(_INTENT_UPDATE, _INTENT_REPLACE)
+			"modify", Arrays.asList(INTENT_UPDATE, INTENT_REPLACE)
 		).put(
-			"move", Arrays.asList(_INTENT_MOVE)
+			"move", Arrays.asList(INTENT_MOVE)
 		).put(
 			"open", Arrays.asList(INTENT_READ, INTENT_LIST)
 		).put(
-			"overwrite", Arrays.asList(_INTENT_REPLACE)
+			"overwrite", Arrays.asList(INTENT_REPLACE)
 		).put(
-			"patch", Arrays.asList(_INTENT_UPDATE)
+			"patch", Arrays.asList(INTENT_UPDATE)
 		).put(
 			"place", Arrays.asList(INTENT_CREATE)
 		).put(
 			"post", Arrays.asList(INTENT_CREATE)
 		).put(
-			"publish", Arrays.asList(_INTENT_PUBLISH)
+			"publish", Arrays.asList(INTENT_PUBLISH)
 		).put(
-			"put", Arrays.asList(_INTENT_REPLACE)
+			"put", Arrays.asList(INTENT_REPLACE)
 		).put(
 			"read", Arrays.asList(INTENT_READ, INTENT_LIST)
 		).put(
-			"recover", Arrays.asList(_INTENT_RESTORE)
+			"recover", Arrays.asList(INTENT_RESTORE)
 		).put(
 			"relate", Arrays.asList(INTENT_CREATE)
 		).put(
-			"relocate", Arrays.asList(_INTENT_MOVE)
+			"relocate", Arrays.asList(INTENT_MOVE)
 		).put(
-			"remove", Arrays.asList(_INTENT_DELETE)
+			"remove", Arrays.asList(INTENT_DELETE)
 		).put(
-			"rename", Arrays.asList(_INTENT_UPDATE, _INTENT_REPLACE)
+			"rename", Arrays.asList(INTENT_UPDATE, INTENT_REPLACE)
 		).put(
-			"replace", Arrays.asList(_INTENT_REPLACE)
+			"replace", Arrays.asList(INTENT_REPLACE)
 		).put(
-			"restore", Arrays.asList(_INTENT_RESTORE)
+			"restore", Arrays.asList(INTENT_RESTORE)
 		).put(
-			"retire", Arrays.asList(_INTENT_UNPUBLISH)
+			"retire", Arrays.asList(INTENT_UNPUBLISH)
 		).put(
 			"retrieve", Arrays.asList(INTENT_READ, INTENT_LIST)
 		).put(
 			"see", Arrays.asList(INTENT_LIST, INTENT_READ)
 		).put(
-			"set", Arrays.asList(_INTENT_REPLACE, _INTENT_UPDATE)
+			"set", Arrays.asList(INTENT_REPLACE, INTENT_UPDATE)
 		).put(
 			"set up", Arrays.asList(INTENT_CREATE)
 		).put(
@@ -303,41 +303,41 @@ public class IntentUtil {
 		).put(
 			"submit", Arrays.asList(INTENT_CREATE)
 		).put(
-			"subscribe", Arrays.asList(_INTENT_SUBSCRIBE)
+			"subscribe", Arrays.asList(INTENT_SUBSCRIBE)
 		).put(
-			"transfer", Arrays.asList(_INTENT_MOVE)
+			"transfer", Arrays.asList(INTENT_MOVE)
 		).put(
-			"translate", Arrays.asList(_INTENT_TRANSLATE)
+			"translate", Arrays.asList(INTENT_TRANSLATE)
 		).put(
-			"unassign", Arrays.asList(_INTENT_DELETE)
+			"unassign", Arrays.asList(INTENT_DELETE)
 		).put(
-			"undelete", Arrays.asList(_INTENT_RESTORE)
+			"undelete", Arrays.asList(INTENT_RESTORE)
 		).put(
-			"undeploy", Arrays.asList(_INTENT_UNDEPLOY)
+			"undeploy", Arrays.asList(INTENT_UNDEPLOY)
 		).put(
-			"unfollow", Arrays.asList(_INTENT_UNSUBSCRIBE)
+			"unfollow", Arrays.asList(INTENT_UNSUBSCRIBE)
 		).put(
-			"unlink", Arrays.asList(_INTENT_DELETE)
+			"unlink", Arrays.asList(INTENT_DELETE)
 		).put(
-			"unpublish", Arrays.asList(_INTENT_UNPUBLISH)
+			"unpublish", Arrays.asList(INTENT_UNPUBLISH)
 		).put(
-			"unsubscribe", Arrays.asList(_INTENT_UNSUBSCRIBE)
+			"unsubscribe", Arrays.asList(INTENT_UNSUBSCRIBE)
 		).put(
-			"unwatch", Arrays.asList(_INTENT_UNSUBSCRIBE)
+			"unwatch", Arrays.asList(INTENT_UNSUBSCRIBE)
 		).put(
-			"update", Arrays.asList(_INTENT_UPDATE, _INTENT_REPLACE)
+			"update", Arrays.asList(INTENT_UPDATE, INTENT_REPLACE)
 		).put(
 			"upload", Arrays.asList(INTENT_CREATE)
 		).put(
-			"upsert", Arrays.asList(_INTENT_REPLACE)
+			"upsert", Arrays.asList(INTENT_REPLACE)
 		).put(
-			"validate", Arrays.asList(_INTENT_VALIDATE)
+			"validate", Arrays.asList(INTENT_VALIDATE)
 		).put(
-			"verify", Arrays.asList(_INTENT_VALIDATE)
+			"verify", Arrays.asList(INTENT_VALIDATE)
 		).put(
 			"view", Arrays.asList(INTENT_READ, INTENT_LIST)
 		).put(
-			"watch", Arrays.asList(_INTENT_SUBSCRIBE)
+			"watch", Arrays.asList(INTENT_SUBSCRIBE)
 		).put(
 			"write", Arrays.asList(INTENT_CREATE)
 		).build();
