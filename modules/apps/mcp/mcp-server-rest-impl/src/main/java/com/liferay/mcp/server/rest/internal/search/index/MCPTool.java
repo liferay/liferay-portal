@@ -14,7 +14,7 @@ import com.liferay.petra.string.StringBundler;
 public class MCPTool {
 
 	public MCPTool(
-		boolean collection, boolean deprecated, String description,
+		String collection, boolean deprecated, String description,
 		String entityName, String[] expansions, String intent, String method,
 		String operationVariant, String[] parameterNames, String path,
 		String[] requiredPropertyCollections, String[] schemaPropertyNames,
@@ -34,6 +34,10 @@ public class MCPTool {
 		_schemaPropertyNames = schemaPropertyNames;
 		_toolName = toolName;
 		_toolSetName = toolSetName;
+	}
+
+	public String getCollection() {
+		return _collection;
 	}
 
 	public String getDescription() {
@@ -88,10 +92,6 @@ public class MCPTool {
 		return _toolSetName;
 	}
 
-	public boolean isCollection() {
-		return _collection;
-	}
-
 	public boolean isDeprecated() {
 		return _deprecated;
 	}
@@ -103,7 +103,7 @@ public class MCPTool {
 			"}");
 	}
 
-	private final boolean _collection;
+	private final String _collection;
 	private final boolean _deprecated;
 	private final String _description;
 	private final String _entityName;

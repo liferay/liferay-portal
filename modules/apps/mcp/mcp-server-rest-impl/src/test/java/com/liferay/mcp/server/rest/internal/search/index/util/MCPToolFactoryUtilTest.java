@@ -85,6 +85,7 @@ public class MCPToolFactoryUtilTest {
 			),
 			"/sites/{siteId}/blog-postings");
 
+		Assert.assertNull(mcpTool.getCollection());
 		Assert.assertEquals("BlogPosting", mcpTool.getEntityName());
 
 		String[] expansions = mcpTool.getExpansions();
@@ -114,7 +115,6 @@ public class MCPToolFactoryUtilTest {
 			"test-v1.0#postSiteBlogPosting", mcpTool.getToolKey());
 		Assert.assertEquals("postSiteBlogPosting", mcpTool.getToolName());
 		Assert.assertEquals("test-v1.0", mcpTool.getToolSetName());
-		Assert.assertFalse(mcpTool.isCollection());
 		Assert.assertFalse(mcpTool.isDeprecated());
 	}
 
@@ -165,8 +165,8 @@ public class MCPToolFactoryUtilTest {
 		_assertExpansion(expansions, "get all blog postings in a site");
 		_assertExpansion(expansions, "list blog postings in a site");
 
+		Assert.assertEquals("blogpostings", mcpTool.getCollection());
 		Assert.assertEquals(IntentUtil.INTENT_LIST, mcpTool.getIntent());
-		Assert.assertTrue(mcpTool.isCollection());
 	}
 
 	@Test
@@ -379,6 +379,16 @@ public class MCPToolFactoryUtilTest {
 					"/{externalReferenceCode}",
 				"getSiteBlogPostingByExternalReferenceCode"),
 			"fetch blog posting in a site by external reference code");
+	}
+
+	@Test
+	public void testGetMCPToolsWithQualifierAfterCollection() {
+		MCPTool mcpTool = _getMCPTool(
+			"get",
+			_getOperationJSONObject(true, "Keyword", "getKeywordsRankedPage"),
+			"/keywords/ranked");
+
+		Assert.assertNull(mcpTool.getCollection());
 	}
 
 	@Test

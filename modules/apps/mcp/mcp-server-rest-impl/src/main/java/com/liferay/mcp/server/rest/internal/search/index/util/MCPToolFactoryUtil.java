@@ -62,6 +62,29 @@ public class MCPToolFactoryUtil {
 		return mcpTools;
 	}
 
+	private static String _getCollection(
+		boolean collection, String entityName, String method,
+		String operationVariant, String path) {
+
+		if (!collection || Validator.isNotNull(operationVariant) ||
+			!Objects.equals(method, "get")) {
+
+			return null;
+		}
+
+		String[] pathParts = StringUtil.split(path, CharPool.SLASH);
+
+		String pathPart = pathParts[pathParts.length - 1];
+
+		if (OpenAPIUtil.isPathParameter(pathPart) ||
+			!_isEntityPathPart(entityName, pathPart)) {
+
+			return null;
+		}
+
+		return WordUtil.normalize(pathPart);
+	}
+
 	private static String _getDescription(JSONObject operationJSONObject) {
 		String description = StringUtil.trim(
 			operationJSONObject.getString("description"));
@@ -187,7 +210,9 @@ public class MCPToolFactoryUtil {
 				openAPIJSONObject, operationJSONObject);
 
 		return new MCPTool(
-			collection, operationJSONObject.getBoolean("deprecated"),
+			_getCollection(
+				collection, entityName, method, operationVariant, path),
+			operationJSONObject.getBoolean("deprecated"),
 			_getDescription(operationJSONObject), entityName,
 			_getExpansions(
 				collection, WordUtil.toPhrase(entityName), intent,
@@ -707,11 +732,17 @@ public class MCPToolFactoryUtil {
 	private static boolean _isEntityPathPart(
 		String entityName, String pathPart) {
 
-		String entityPhrase = _toSingularPhrase(entityName);
-		String pathPartPhrase = _toSingularPhrase(_toEntityName(pathPart));
+		String normalizedPathPart = WordUtil.normalize(
+			_toSingularPhrase(_toEntityName(pathPart)));
 
-		return StringUtil.endsWith(
-			StringPool.SPACE + entityPhrase, StringPool.SPACE + pathPartPhrase);
+		if (Validator.isNull(normalizedPathPart)) {
+			return false;
+		}
+
+		String normalizedEntityName = WordUtil.normalize(
+			_toSingularPhrase(entityName));
+
+		return normalizedEntityName.endsWith(normalizedPathPart);
 	}
 
 	private static boolean _isPluralTarget(
