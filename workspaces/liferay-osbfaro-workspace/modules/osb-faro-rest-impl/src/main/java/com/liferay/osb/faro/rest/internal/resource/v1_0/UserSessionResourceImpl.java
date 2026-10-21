@@ -127,8 +127,9 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 			return 0;
 		}
 
-		return totalPageGroupsMetric.getValue(
-		).longValue();
+		Double value = totalPageGroupsMetric.getValue();
+
+		return value.longValue();
 	}
 
 	@Reference
