@@ -112,7 +112,7 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 				String.valueOf(_journalArticle.getVersion())),
 			title);
 
-		// Missing launch set
+		// Missing launch set, for example deleted after it was scheduled
 
 		_receive(RandomTestUtil.randomLong());
 
