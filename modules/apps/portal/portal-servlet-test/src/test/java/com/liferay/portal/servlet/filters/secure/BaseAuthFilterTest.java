@@ -294,9 +294,9 @@ public class BaseAuthFilterTest {
 	}
 
 	@Test
-	public void testProcessFilterWithRegularUser() {
+	public void testProcessFilter() {
 		try {
-			_portalUtil.setPortal(new RegularUserTestPortalImpl());
+			_portalUtil.setPortal(new TestUserPortalImpl());
 
 			_processFilter();
 
@@ -406,19 +406,6 @@ public class BaseAuthFilterTest {
 	private MockHttpServletResponse _mockHttpServletResponse;
 	private MockHttpSession _mockHttpSession;
 
-	private static class RegularUserTestPortalImpl extends PortalImpl {
-
-		@Override
-		public User initUser(HttpServletRequest httpServletRequest) {
-			User user = new UserImpl();
-
-			user.setType(UserConstants.TYPE_REGULAR);
-
-			return user;
-		}
-
-	}
-
 	private static class TestAccessControlImpl extends AccessControlImpl {
 
 		@Override
@@ -459,6 +446,19 @@ public class BaseAuthFilterTest {
 		@Override
 		public User initUser(HttpServletRequest httpServletRequest) {
 			return new UserImpl();
+		}
+
+	}
+
+	private static class TestUserPortalImpl extends PortalImpl {
+
+		@Override
+		public User initUser(HttpServletRequest httpServletRequest) {
+			User user = new UserImpl();
+
+			user.setType(UserConstants.TYPE_REGULAR);
+
+			return user;
 		}
 
 	}
