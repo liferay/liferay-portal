@@ -11,14 +11,14 @@ import {Form, FormikProvider, useFormik} from 'formik';
 import {navigate} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import {FormField} from '../forms/FormField';
-import {FormSection} from '../forms/FormSection';
-import {FormToggle} from '../forms/FormToggle';
-import {getProfile} from '../services/getProfile';
-import {patchProfile} from '../services/patchProfile';
-import {postProfile} from '../services/postProfile';
-import {Profile, ProfileFormValues, ProfilePayload} from '../types';
-import {openErrorToast, openSuccessToast} from '../utils';
+import {FormField} from '../../../components/forms/FormField';
+import {FormSection} from '../../../components/forms/FormSection';
+import {FormToggle} from '../../../components/forms/FormToggle';
+import {getProfile} from '../../../services/getProfile';
+import {patchProfile} from '../../../services/patchProfile';
+import {postProfile} from '../../../services/postProfile';
+import {Profile, ProfileFormValues, ProfilePayload} from '../../../types';
+import {openErrorToast, openSuccessToast} from '../../../utils';
 
 interface EditProfileViewProps {
 	backURL: string;

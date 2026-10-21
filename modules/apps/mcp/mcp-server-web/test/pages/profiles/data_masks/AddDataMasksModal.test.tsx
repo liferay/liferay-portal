@@ -12,12 +12,12 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
-import AddDataMasksModal from '../../src/main/resources/META-INF/resources/js/profiles/AddDataMasksModal';
+import AddDataMasksModal from '../../../../src/main/resources/META-INF/resources/js/pages/profiles/data_masks/AddDataMasksModal';
 
 import type {
 	DataMask,
 	DataMaskTypeKey,
-} from '../../src/main/resources/META-INF/resources/js/types';
+} from '../../../../src/main/resources/META-INF/resources/js/types';
 
 const PROFILE_ERC = 'PROFILE_ERC';
 

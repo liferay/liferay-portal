@@ -7,12 +7,12 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {openModal} from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
-import OrderableTable from '../components/OrderableTable';
-import {getDataMasks} from '../services/getDataMasks';
-import {getProfileDataMasks} from '../services/getProfileDataMasks';
-import {patchProfileDataMask} from '../services/patchProfileDataMask';
-import {DataMask, ProfileDataMaskRow} from '../types';
-import {openErrorToast} from '../utils';
+import OrderableTable from '../../../components/OrderableTable';
+import {getDataMasks} from '../../../services/getDataMasks';
+import {getProfileDataMasks} from '../../../services/getProfileDataMasks';
+import {patchProfileDataMask} from '../../../services/patchProfileDataMask';
+import {DataMask, ProfileDataMaskRow} from '../../../types';
+import {openErrorToast} from '../../../utils';
 import AddDataMasksModal from './AddDataMasksModal';
 import RemoveDataMaskModal from './RemoveDataMaskModal';
 

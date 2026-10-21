@@ -10,13 +10,13 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
-import SelectedItemsBar from '../components/SelectedItemsBar';
-import {RequestResult} from '../services/ApiHelper';
-import {getProfileTools} from '../services/getProfileTools';
-import {getToolSetTools} from '../services/getToolSetTools';
-import {getToolSets} from '../services/getToolSets';
-import {postProfileTool} from '../services/postProfileTool';
-import {ProfileTool, ToolSet, ToolSummary, ToolTreeItem} from '../types';
+import SelectedItemsBar from '../../../components/SelectedItemsBar';
+import {RequestResult} from '../../../services/ApiHelper';
+import {getProfileTools} from '../../../services/getProfileTools';
+import {getToolSetTools} from '../../../services/getToolSetTools';
+import {getToolSets} from '../../../services/getToolSets';
+import {postProfileTool} from '../../../services/postProfileTool';
+import {ProfileTool, ToolSet, ToolSummary, ToolTreeItem} from '../../../types';
 import {
 	buildToolChildren,
 	buildToolWaves,
@@ -25,7 +25,7 @@ import {
 	isToolOfToolSet,
 	openErrorToast,
 	openSuccessToast,
-} from '../utils';
+} from '../../../utils';
 
 interface AddToolsModalProps {
 	onAdded: () => void;

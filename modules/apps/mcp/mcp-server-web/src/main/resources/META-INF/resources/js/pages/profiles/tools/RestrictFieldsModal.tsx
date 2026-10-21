@@ -11,23 +11,23 @@ import ClayManagementToolbar from '@clayui/management-toolbar';
 import ClayModal from '@clayui/modal';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
-import AutoSearch from '../../components/AutoSearch';
-import CountBadge from '../../components/CountBadge';
-import FilterResultsStatus from '../../components/FilterResultsStatus';
-import Highlight from '../../components/Highlight';
-import SelectedItemsBar from '../../components/SelectedItemsBar';
-import {getTool} from '../../services/getTool';
-import {patchProfileTool} from '../../services/patchProfileTool';
-import {ProfileTool} from '../../types';
-import {openErrorToast, openSuccessToast} from '../../utils';
-import {FieldTreeItem} from './types';
+import AutoSearch from '../../../components/AutoSearch';
+import CountBadge from '../../../components/CountBadge';
+import FilterResultsStatus from '../../../components/FilterResultsStatus';
+import Highlight from '../../../components/Highlight';
+import SelectedItemsBar from '../../../components/SelectedItemsBar';
+import {getTool} from '../../../services/getTool';
+import {patchProfileTool} from '../../../services/patchProfileTool';
+import {ProfileTool} from '../../../types';
+import {openErrorToast, openSuccessToast} from '../../../utils';
 import {
 	buildFieldTree,
 	filterFieldTree,
 	getExpandedKeys,
 	getSelectedKeys,
 	toRestrictFields,
-} from './utils';
+} from './fieldSelection';
+import {FieldTreeItem} from './types';
 
 interface RestrictFieldsModalProps {
 	onClose: () => void;

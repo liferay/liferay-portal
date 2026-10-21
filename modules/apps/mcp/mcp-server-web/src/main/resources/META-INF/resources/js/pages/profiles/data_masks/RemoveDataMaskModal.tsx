@@ -9,10 +9,10 @@ import ClayModal, {useModal} from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
-import {deleteProfileDataMask} from '../services/deleteProfileDataMask';
-import {patchProfileDataMask} from '../services/patchProfileDataMask';
-import {ProfileDataMaskRow} from '../types';
-import {openErrorToast, openSuccessToast} from '../utils';
+import {deleteProfileDataMask} from '../../../services/deleteProfileDataMask';
+import {patchProfileDataMask} from '../../../services/patchProfileDataMask';
+import {ProfileDataMaskRow} from '../../../types';
+import {openErrorToast, openSuccessToast} from '../../../utils';
 
 interface RemoveDataMaskModalProps {
 	onClose: () => void;

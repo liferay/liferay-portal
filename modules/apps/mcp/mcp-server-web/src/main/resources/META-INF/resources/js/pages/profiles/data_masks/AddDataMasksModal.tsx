@@ -10,20 +10,20 @@ import ClayManagementToolbar from '@clayui/management-toolbar';
 import ClayModal from '@clayui/modal';
 import React, {useMemo, useState} from 'react';
 
-import AutoSearch from '../components/AutoSearch';
-import CountBadge from '../components/CountBadge';
-import FilterResultsStatus from '../components/FilterResultsStatus';
-import Highlight from '../components/Highlight';
-import SelectedItemsBar from '../components/SelectedItemsBar';
-import {postProfileDataMask} from '../services/postProfileDataMask';
-import {DataMask, DataMaskTreeItem} from '../types';
+import AutoSearch from '../../../components/AutoSearch';
+import CountBadge from '../../../components/CountBadge';
+import FilterResultsStatus from '../../../components/FilterResultsStatus';
+import Highlight from '../../../components/Highlight';
+import SelectedItemsBar from '../../../components/SelectedItemsBar';
+import {postProfileDataMask} from '../../../services/postProfileDataMask';
+import {DataMask, DataMaskTreeItem} from '../../../types';
 import {
 	buildDataMaskTree,
 	filterDataMaskTree,
 	getSelectedDataMaskExternalReferenceCodes,
 	openErrorToast,
 	openSuccessToast,
-} from '../utils';
+} from '../../../utils';
 
 interface AddDataMasksModalProps {
 	dataMasks: DataMask[];

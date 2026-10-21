@@ -10,7 +10,7 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
-import {FormToggle} from '../../src/main/resources/META-INF/resources/js/forms/FormToggle';
+import {FormToggle} from '../../../src/main/resources/META-INF/resources/js/components/forms/FormToggle';
 
 function renderToggle(active: boolean, disabled?: boolean) {
 	return render(

@@ -10,19 +10,19 @@ import {Form, FormikProvider, useFormik} from 'formik';
 import {navigate} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import {FormField} from '../forms/FormField';
-import {FormSection} from '../forms/FormSection';
-import {FormToggle} from '../forms/FormToggle';
-import {getPrompt} from '../services/getPrompt';
-import {patchPrompt} from '../services/patchPrompt';
-import {postPrompt} from '../services/postPrompt';
-import {Prompt, PromptFormValues, PromptPayload} from '../types';
+import {FormField} from '../../components/forms/FormField';
+import {FormSection} from '../../components/forms/FormSection';
+import {FormToggle} from '../../components/forms/FormToggle';
+import {getPrompt} from '../../services/getPrompt';
+import {patchPrompt} from '../../services/patchPrompt';
+import {postPrompt} from '../../services/postPrompt';
+import {Prompt, PromptFormValues, PromptPayload} from '../../types';
 import {
 	openErrorToast,
 	openSuccessToast,
 	required,
 	toIdentifier,
-} from '../utils';
+} from '../../utils';
 
 interface EditPromptProps {
 	backURL: string;

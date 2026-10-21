@@ -5,8 +5,8 @@
 
 import {Key} from 'react';
 
-import {JSONSchema, TreeFilter} from '../../types';
-import {filterTree} from '../../utils';
+import {JSONSchema, TreeFilter} from '../../../types';
+import {filterTree} from '../../../utils';
 import {FieldTreeItem} from './types';
 
 const EXCLUDED_FIELD_NAMES = new Set([

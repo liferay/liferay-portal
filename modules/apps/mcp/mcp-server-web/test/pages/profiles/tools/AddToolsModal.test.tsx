@@ -10,7 +10,7 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
-import AddToolsModal from '../../src/main/resources/META-INF/resources/js/profiles/AddToolsModal';
+import AddToolsModal from '../../../../src/main/resources/META-INF/resources/js/pages/profiles/tools/AddToolsModal';
 
 const PROFILE_ERC = 'PROFILE_ERC';
 

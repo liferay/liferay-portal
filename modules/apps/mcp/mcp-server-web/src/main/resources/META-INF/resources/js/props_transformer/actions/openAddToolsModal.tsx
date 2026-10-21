@@ -6,7 +6,7 @@
 import {openModal} from 'frontend-js-components-web';
 import React from 'react';
 
-import AddToolsModal from '../../profiles/AddToolsModal';
+import AddToolsModal from '../../pages/profiles/tools/AddToolsModal';
 
 interface OpenAddToolsModalProps {
 	loadData: () => void;

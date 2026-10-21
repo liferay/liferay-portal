@@ -10,13 +10,13 @@ import {Form, FormikProvider, useFormik, useFormikContext} from 'formik';
 import {navigate} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import {FormField} from '../forms/FormField';
-import {FormSection} from '../forms/FormSection';
-import {getDataMask} from '../services/getDataMask';
-import {patchDataMask} from '../services/patchDataMask';
-import {postDataMask} from '../services/postDataMask';
-import {DataMask, DataMaskFormValues, DataMaskPayload} from '../types';
-import {isSystemMask, openErrorToast, openSuccessToast} from '../utils';
+import {FormField} from '../../components/forms/FormField';
+import {FormSection} from '../../components/forms/FormSection';
+import {getDataMask} from '../../services/getDataMask';
+import {patchDataMask} from '../../services/patchDataMask';
+import {postDataMask} from '../../services/postDataMask';
+import {DataMask, DataMaskFormValues, DataMaskPayload} from '../../types';
+import {isSystemMask, openErrorToast, openSuccessToast} from '../../utils';
 import {DataMaskRegexTester} from './DataMaskRegexTester';
 
 interface EditDataMaskProps {

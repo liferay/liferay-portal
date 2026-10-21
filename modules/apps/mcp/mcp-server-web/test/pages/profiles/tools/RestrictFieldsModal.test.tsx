@@ -12,9 +12,9 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
-import RestrictFieldsModal from '../../../src/main/resources/META-INF/resources/js/profiles/restrict_fields/RestrictFieldsModal';
-import {mockPageTool} from '../../mocks/mockPageTool';
-import {mockTool} from '../../mocks/mockTool';
+import RestrictFieldsModal from '../../../../src/main/resources/META-INF/resources/js/pages/profiles/tools/RestrictFieldsModal';
+import {mockPageTool} from '../../../mocks/mockPageTool';
+import {mockTool} from '../../../mocks/mockTool';
 
 const profileTool = {
 	externalReferenceCode: 'PROFILE_TOOL_ERC',
