@@ -263,6 +263,10 @@ public class FaroProjectAdminDisplay {
 		FaroUser faroUser = FaroUserLocalServiceUtil.fetchOwnerFaroUser(
 			_groupId);
 
+		if (faroUser == null) {
+			return null;
+		}
+
 		if (faroUser.getLiveUserId() <= 0) {
 			return faroUser.getEmailAddress();
 		}
