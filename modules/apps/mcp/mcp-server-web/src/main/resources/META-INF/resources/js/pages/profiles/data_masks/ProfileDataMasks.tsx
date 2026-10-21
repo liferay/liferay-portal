@@ -15,6 +15,10 @@ import {ProfileDataMaskRow} from '../../../types/ProfileDataMask';
 import {openErrorToast} from '../../../utils/toasts';
 import AddDataMasksModal from './AddDataMasksModal';
 import RemoveDataMaskModal from './RemoveDataMaskModal';
+import {
+	getAvailableDataMasks,
+	getNextExecutionOrder,
+} from './dataMaskSelection';
 
 interface ProfileDataMasksProps {
 	profileERC: string;
@@ -24,9 +28,6 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 	const [dataMasks, setDataMasks] = useState<DataMask[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [rows, setRows] = useState<ProfileDataMaskRow[]>([]);
-	const [rowToRemove, setRowToRemove] = useState<ProfileDataMaskRow | null>(
-		null
-	);
 
 	const loadRows = useCallback(async () => {
 		const [associationsResult, dataMasksResult] = await Promise.all([
@@ -139,27 +140,26 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 		openModal({
 			contentComponent: ({closeModal}: {closeModal: () => void}) => (
 				<AddDataMasksModal
-					dataMasks={dataMasks.filter(
-						(mask) =>
-							!rows.some(
-								(row) =>
-									row.dataMaskExternalReferenceCode ===
-									mask.externalReferenceCode
-							)
-					)}
-					nextExecutionOrder={
-						rows.reduce(
-							(maxExecutionOrder, row) =>
-								Math.max(maxExecutionOrder, row.executionOrder),
-							0
-						) + 1
-					}
+					dataMasks={getAvailableDataMasks(dataMasks, rows)}
+					nextExecutionOrder={getNextExecutionOrder(rows)}
 					onAdded={loadRows}
 					onClose={closeModal}
 					profileExternalReferenceCode={profileERC}
 				/>
 			),
 			size: 'lg',
+		});
+
+	const openRemoveDataMaskModal = (row: ProfileDataMaskRow) =>
+		openModal({
+			contentComponent: ({closeModal}: {closeModal: () => void}) => (
+				<RemoveDataMaskModal
+					onClose={closeModal}
+					onRemoved={loadRows}
+					row={row}
+				/>
+			),
+			status: 'danger',
 		});
 
 	if (loading) {
@@ -178,7 +178,7 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 						icon: 'times-circle',
 						label: Liferay.Language.get('remove'),
 						onClick: ({item}: {item: ProfileDataMaskRow}) =>
-							setRowToRemove(item),
+							openRemoveDataMaskModal(item),
 					},
 				]}
 				creationMenuItems={[
@@ -204,14 +204,6 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 				noItemsTitle={Liferay.Language.get('no-data-masks')}
 				onOrderChange={onOrderChange}
 			/>
-
-			{rowToRemove && (
-				<RemoveDataMaskModal
-					onClose={() => setRowToRemove(null)}
-					onRemoved={loadRows}
-					row={rowToRemove}
-				/>
-			)}
 		</div>
 	);
 }

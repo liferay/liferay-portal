@@ -6,6 +6,8 @@
 import {
 	buildDataMaskTree,
 	filterDataMaskTree,
+	getAvailableDataMasks,
+	getNextExecutionOrder,
 	getSelectedDataMaskExternalReferenceCodes,
 } from '../../../../src/main/resources/META-INF/resources/js/pages/profiles/data_masks/dataMaskSelection';
 
@@ -13,6 +15,22 @@ import type {
 	DataMask,
 	DataMaskTypeKey,
 } from '../../../../src/main/resources/META-INF/resources/js/types/DataMask';
+import type {ProfileDataMaskRow} from '../../../../src/main/resources/META-INF/resources/js/types/ProfileDataMask';
+
+function createRow(
+	dataMaskExternalReferenceCode: string,
+	executionOrder: number
+): ProfileDataMaskRow {
+	return {
+		dataMaskExternalReferenceCode,
+		description: '',
+		executionOrder,
+		externalReferenceCode: `ROW_${dataMaskExternalReferenceCode}`,
+		id: executionOrder,
+		name: dataMaskExternalReferenceCode,
+		type: 'System',
+	};
+}
 
 function createDataMask(
 	key: DataMaskTypeKey,
@@ -143,5 +161,41 @@ describe('getSelectedDataMaskExternalReferenceCodes', () => {
 		expect(
 			getSelectedDataMaskExternalReferenceCodes(tree, new Set())
 		).toEqual([]);
+	});
+});
+
+describe('getAvailableDataMasks', () => {
+	const dataMasks = [
+		createDataMask('system', 'Email Address', 'SYSTEM_1'),
+		createDataMask('system', 'Phone Number', 'SYSTEM_2'),
+		createDataMask('custom', 'Project Codename', 'CUSTOM_1'),
+	];
+
+	it('leaves out the masks the profile already uses', () => {
+		expect(
+			getAvailableDataMasks(dataMasks, [
+				createRow('SYSTEM_2', 0),
+				createRow('CUSTOM_1', 1),
+			]).map((dataMask) => dataMask.externalReferenceCode)
+		).toEqual(['SYSTEM_1']);
+	});
+
+	it('returns every mask when the profile uses none', () => {
+		expect(getAvailableDataMasks(dataMasks, [])).toEqual(dataMasks);
+	});
+});
+
+describe('getNextExecutionOrder', () => {
+	it('follows the highest execution order in use', () => {
+		expect(
+			getNextExecutionOrder([
+				createRow('SYSTEM_1', 3),
+				createRow('CUSTOM_1', 1),
+			])
+		).toBe(4);
+	});
+
+	it('starts at one when the profile has no masks', () => {
+		expect(getNextExecutionOrder([])).toBe(1);
 	});
 });

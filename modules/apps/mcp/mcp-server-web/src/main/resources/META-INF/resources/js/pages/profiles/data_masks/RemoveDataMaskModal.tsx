@@ -5,7 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import {ClayInput} from '@clayui/form';
-import ClayModal, {useModal} from '@clayui/modal';
+import ClayModal from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
@@ -26,8 +26,6 @@ export default function RemoveDataMaskModal({
 }: RemoveDataMaskModalProps) {
 	const [reason, setReason] = useState('');
 	const [saving, setSaving] = useState(false);
-
-	const {observer} = useModal({onClose});
 
 	const remove = async () => {
 		setSaving(true);
@@ -68,8 +66,10 @@ export default function RemoveDataMaskModal({
 	};
 
 	return (
-		<ClayModal observer={observer} status="danger">
-			<ClayModal.Header>
+		<>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('remove-data-mask')}
 			</ClayModal.Header>
 
@@ -118,6 +118,6 @@ export default function RemoveDataMaskModal({
 					</ClayButton.Group>
 				}
 			/>
-		</ClayModal>
+		</>
 	);
 }

@@ -4,6 +4,7 @@
  */
 
 import {DataMask, DataMaskTypeKey} from '../../../types/DataMask';
+import {ProfileDataMaskRow} from '../../../types/ProfileDataMask';
 import filterTree, {TreeFilter} from '../../../utils/filterTree';
 
 export type DataMaskTreeItem = {
@@ -64,6 +65,32 @@ export function filterDataMaskTree(
 		tree,
 		(item) =>
 			!item.children && item.name.toLowerCase().includes(loweredQuery)
+	);
+}
+
+export function getAvailableDataMasks(
+	dataMasks: DataMask[],
+	rows: ProfileDataMaskRow[]
+): DataMask[] {
+	const assignedExternalReferenceCodes = new Set(
+		rows.map((row) => row.dataMaskExternalReferenceCode)
+	);
+
+	return dataMasks.filter(
+		(dataMask) =>
+			!assignedExternalReferenceCodes.has(
+				dataMask.externalReferenceCode ?? ''
+			)
+	);
+}
+
+export function getNextExecutionOrder(rows: ProfileDataMaskRow[]): number {
+	return (
+		rows.reduce(
+			(maxExecutionOrder, row) =>
+				Math.max(maxExecutionOrder, row.executionOrder),
+			0
+		) + 1
 	);
 }
 
