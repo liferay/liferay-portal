@@ -23,24 +23,33 @@ import com.liferay.portal.kernel.model.Groups_RolesTable;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.Users_RolesTable;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayActionRequest;
 import com.liferay.portal.kernel.portlet.LiferayStateAwareResponse;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.servlet.PortletServlet;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -97,6 +106,35 @@ public class RolesAdminPortletTest {
 		_ctCollectionLocalService.deleteCTCollection(_ctCollection);
 
 		GroupTestUtil.deleteGroup(_group);
+	}
+
+	@Test
+	public void testCopyRole() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		User user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			LiferayActionRequest liferayActionRequest =
+				_getLiferayActionRequest(
+					"copyRole",
+					HashMapBuilder.put(
+						"roleId", String.valueOf(role.getRoleId())
+					).put(
+						"roleName", RandomTestUtil.randomString()
+					).build());
+
+			_portlet.processAction(
+				liferayActionRequest,
+				new CustomMockLiferayPortletActionResponse());
+
+			Assert.assertTrue(
+				SessionErrors.contains(
+					liferayActionRequest,
+					PrincipalException.MustHavePermission.class));
+		}
 	}
 
 	@Test
@@ -227,27 +265,8 @@ public class RolesAdminPortletTest {
 		);
 	}
 
-	private ThemeDisplay _getThemeDisplay() throws Exception {
-		ThemeDisplay themeDisplay = new ThemeDisplay();
-
-		themeDisplay.setCompany(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
-		themeDisplay.setLayout(_layout);
-		themeDisplay.setLayoutSet(_layout.getLayoutSet());
-		themeDisplay.setLayoutTypePortlet(
-			(LayoutTypePortlet)_layout.getLayoutType());
-		themeDisplay.setPermissionChecker(
-			PermissionThreadLocal.getPermissionChecker());
-		themeDisplay.setScopeGroupId(TestPropsValues.getGroupId());
-		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
-		themeDisplay.setUser(TestPropsValues.getUser());
-
-		return themeDisplay;
-	}
-
-	private void _processAction(
-			String actionName, CTCollection ctCollection,
-			Map<String, String> params)
+	private LiferayActionRequest _getLiferayActionRequest(
+			String actionName, Map<String, String> params)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -261,6 +280,8 @@ public class RolesAdminPortletTest {
 				entry.getKey(), entry.getValue());
 		}
 
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
 		mockLiferayPortletActionRequest.setAttribute(
 			PortletServlet.PORTLET_SERVLET_REQUEST,
 			mockLiferayPortletActionRequest.getHttpServletRequest());
@@ -268,7 +289,9 @@ public class RolesAdminPortletTest {
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.PORTLET_ID, RolesAdminPortletKeys.ROLES_ADMIN);
 		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _getThemeDisplay());
+			WebKeys.THEME_DISPLAY, themeDisplay);
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.USER_ID, themeDisplay.getUserId());
 
 		LiferayActionRequest liferayActionRequest = ActionRequestFactory.create(
 			mockLiferayPortletActionRequest.getHttpServletRequest(),
@@ -278,6 +301,37 @@ public class RolesAdminPortletTest {
 
 		liferayActionRequest.setPortletRequestDispatcherRequest(
 			mockLiferayPortletActionRequest.getHttpServletRequest());
+
+		return liferayActionRequest;
+	}
+
+	private ThemeDisplay _getThemeDisplay() throws Exception {
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setLayout(_layout);
+		themeDisplay.setLayoutSet(_layout.getLayoutSet());
+		themeDisplay.setLayoutTypePortlet(
+			(LayoutTypePortlet)_layout.getLayoutType());
+		themeDisplay.setPermissionChecker(permissionChecker);
+		themeDisplay.setScopeGroupId(TestPropsValues.getGroupId());
+		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
+		themeDisplay.setUser(permissionChecker.getUser());
+
+		return themeDisplay;
+	}
+
+	private void _processAction(
+			String actionName, CTCollection ctCollection,
+			Map<String, String> params)
+		throws Exception {
+
+		LiferayActionRequest liferayActionRequest = _getLiferayActionRequest(
+			actionName, params);
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
