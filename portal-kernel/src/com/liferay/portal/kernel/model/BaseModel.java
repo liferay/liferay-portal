@@ -120,6 +120,7 @@ public interface BaseModel<T>
 	/**
 	 * Reset all original fields to current values.
 	 */
+	@TemplateRestricted
 	public void resetOriginalValues();
 
 	/**
@@ -129,10 +130,13 @@ public interface BaseModel<T>
 	 *        entity cache
 	 * @see   com.liferay.portal.kernel.dao.orm.EntityCache
 	 */
+	@TemplateRestricted
 	public void setCachedModel(boolean cachedModel);
 
+	@TemplateRestricted
 	public void setExpandoBridgeAttributes(BaseModel<?> baseModel);
 
+	@TemplateRestricted
 	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge);
 
 	/**
@@ -142,8 +146,10 @@ public interface BaseModel<T>
 	 * @param serviceContext the service context to be applied
 	 * @see   ServiceContext#getExpandoBridgeAttributes()
 	 */
+	@TemplateRestricted
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext);
 
+	@TemplateRestricted
 	public void setModelAttributes(Map<String, Object> attributes);
 
 	/**
@@ -151,6 +157,7 @@ public interface BaseModel<T>
 	 *
 	 * @param n whether this model instance does not yet exist in the database
 	 */
+	@TemplateRestricted
 	public void setNew(boolean n);
 
 	/**
@@ -159,6 +166,7 @@ public interface BaseModel<T>
 	 * @param primaryKeyObj the primary key of this model instance
 	 */
 	@Override
+	@TemplateRestricted
 	public void setPrimaryKeyObj(Serializable primaryKeyObj);
 
 	/**
