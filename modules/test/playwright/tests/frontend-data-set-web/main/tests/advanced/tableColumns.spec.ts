@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
@@ -212,5 +212,83 @@ test(
 				});
 			});
 		}
+	}
+);
+
+test(
+	'Action column stays frozen during horizontal scroll',
+	{tag: '@LPD-106210'},
+	async ({fdsSamplePage, page}) => {
+		const actionsHeaderCell = fdsSamplePage.table.headerCells.last();
+		const firstRowActionsCell = fdsSamplePage.table.bodyRows
+			.first()
+			.locator('.cell-item-actions');
+		const scrollContainer = page.locator('.fds .table-responsive');
+
+		async function getRightEdge(locator: Locator) {
+			const boundingBox = await locator.boundingBox();
+
+			return boundingBox.x + boundingBox.width;
+		}
+
+		await test.step('Narrow the viewport to force horizontal scroll', async () => {
+			await page.setViewportSize({height: 900, width: 700});
+
+			await expect
+				.poll(() =>
+					scrollContainer.evaluate(
+						(element) => element.scrollWidth > element.clientWidth
+					)
+				)
+				.toBe(true);
+		});
+
+		for (const scrollPosition of ['start', 'middle', 'end']) {
+			await test.step(`Check the action column is pinned to the right edge at the ${scrollPosition}`, async () => {
+				await scrollContainer.evaluate((element, scrollPosition) => {
+					const maxScrollLeft =
+						element.scrollWidth - element.clientWidth;
+
+					element.scrollLeft =
+						scrollPosition === 'start'
+							? 0
+							: scrollPosition === 'middle'
+								? maxScrollLeft / 2
+								: maxScrollLeft;
+				}, scrollPosition);
+
+				const containerRightEdge = await scrollContainer.evaluate(
+					(element) =>
+						element.getBoundingClientRect().left +
+						element.clientLeft +
+						element.clientWidth
+				);
+
+				expect(
+					Math.abs(
+						(await getRightEdge(actionsHeaderCell)) -
+							containerRightEdge
+					)
+				).toBeLessThanOrEqual(2);
+
+				expect(
+					Math.abs(
+						(await getRightEdge(firstRowActionsCell)) -
+							containerRightEdge
+					)
+				).toBeLessThanOrEqual(2);
+			});
+		}
+
+		await test.step('Open the row actions with the table scrolled to the middle', async () => {
+			await scrollContainer.evaluate((element) => {
+				element.scrollLeft =
+					(element.scrollWidth - element.clientWidth) / 2;
+			});
+
+			await fdsSamplePage.table.itemActionButtons.first().click();
+
+			await expect(fdsSamplePage.dropdownMenu).toBeVisible();
+		});
 	}
 );
