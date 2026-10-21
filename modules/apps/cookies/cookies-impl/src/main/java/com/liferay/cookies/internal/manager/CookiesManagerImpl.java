@@ -143,14 +143,16 @@ public class CookiesManagerImpl implements CookiesManager {
 		}
 
 		if (cookie.getMaxAge() != 0) {
-			CookiesPreferenceHandlingConfiguration
-				cookiesPreferenceHandlingConfiguration =
-					_getCookiesPreferenceHandlingConfiguration(
-						httpServletRequest);
+			if (httpServletRequest != null) {
+				CookiesPreferenceHandlingConfiguration
+					cookiesPreferenceHandlingConfiguration =
+						_getCookiesPreferenceHandlingConfiguration(
+							httpServletRequest);
 
-			if (!cookiesPreferenceHandlingConfiguration.enabled()) {
-				_deleteCookieConsentCookies(
-					httpServletRequest, httpServletResponse);
+				if (!cookiesPreferenceHandlingConfiguration.enabled()) {
+					_deleteCookieConsentCookies(
+						httpServletRequest, httpServletResponse);
+				}
 			}
 
 			if (!hasConsentType(consentType, httpServletRequest)) {
@@ -547,22 +549,17 @@ public class CookiesManagerImpl implements CookiesManager {
 			HttpServletRequest httpServletRequest) {
 
 		try {
-			if (httpServletRequest != null) {
-				long groupId = _portal.getScopeGroupId(httpServletRequest);
+			long groupId = _portal.getScopeGroupId(httpServletRequest);
 
-				if (groupId > 0) {
-					return _configurationProvider.getGroupConfiguration(
-						CookiesPreferenceHandlingConfiguration.class,
-						_portal.getCompanyId(httpServletRequest), groupId);
-				}
-
-				return _configurationProvider.getCompanyConfiguration(
+			if (groupId > 0) {
+				return _configurationProvider.getGroupConfiguration(
 					CookiesPreferenceHandlingConfiguration.class,
-					_portal.getCompanyId(httpServletRequest));
+					_portal.getCompanyId(httpServletRequest), groupId);
 			}
 
-			return _configurationProvider.getSystemConfiguration(
-				CookiesPreferenceHandlingConfiguration.class);
+			return _configurationProvider.getCompanyConfiguration(
+				CookiesPreferenceHandlingConfiguration.class,
+				_portal.getCompanyId(httpServletRequest));
 		}
 		catch (PortalException portalException) {
 			return ReflectionUtil.throwException(portalException);
