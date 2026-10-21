@@ -20,11 +20,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,12 +45,14 @@ public abstract class BaseTopLevelBuildReport
 		}
 
 		if (downstreamBuildReport.isBuildCached()) {
-			_cachedDownstreamBuildReports.add(downstreamBuildReport);
+			_cachedDownstreamBuildReports.put(
+				downstreamBuildReport.getAxisName(), downstreamBuildReport);
 
 			return;
 		}
 
-		_downstreamBuildReports.add(downstreamBuildReport);
+		_downstreamBuildReports.put(
+			downstreamBuildReport.getAxisName(), downstreamBuildReport);
 	}
 
 	@Override
@@ -221,25 +222,14 @@ public abstract class BaseTopLevelBuildReport
 	public synchronized DownstreamBuildReport getDownstreamBuildReport(
 		String axisName) {
 
-		for (DownstreamBuildReport downstreamBuildReport :
-				_downstreamBuildReports) {
+		DownstreamBuildReport downstreamBuildReport =
+			_downstreamBuildReports.get(axisName);
 
-			if (Objects.equals(downstreamBuildReport.getAxisName(), axisName)) {
-				return downstreamBuildReport;
-			}
+		if (downstreamBuildReport != null) {
+			return downstreamBuildReport;
 		}
 
-		for (DownstreamBuildReport cachedDownstreamBuildReport :
-				_cachedDownstreamBuildReports) {
-
-			if (Objects.equals(
-					cachedDownstreamBuildReport.getAxisName(), axisName)) {
-
-				return cachedDownstreamBuildReport;
-			}
-		}
-
-		return null;
+		return _cachedDownstreamBuildReports.get(axisName);
 	}
 
 	@Override
@@ -248,8 +238,8 @@ public abstract class BaseTopLevelBuildReport
 
 		List<DownstreamBuildReport> downstreamBuildReports = new ArrayList<>();
 
-		downstreamBuildReports.addAll(_cachedDownstreamBuildReports);
-		downstreamBuildReports.addAll(_downstreamBuildReports);
+		downstreamBuildReports.addAll(_cachedDownstreamBuildReports.values());
+		downstreamBuildReports.addAll(_downstreamBuildReports.values());
 
 		return downstreamBuildReports;
 	}
@@ -756,12 +746,12 @@ public abstract class BaseTopLevelBuildReport
 				"<strong[^>]*>(?<status>[A-Z]+)<\\/strong> - <a href=\\\"",
 				"(?<buildURL>[^\\\"]+)\\\">Build URL<\\/a>.*"));
 
-	private final Set<DownstreamBuildReport> _cachedDownstreamBuildReports =
-		new HashSet<>();
+	private final Map<String, DownstreamBuildReport>
+		_cachedDownstreamBuildReports = new HashMap<>();
 	private ControllerBuildReport _controllerBuildReport;
 	private List<FailureReport> _distinctFailureReports;
-	private final Set<DownstreamBuildReport> _downstreamBuildReports =
-		new HashSet<>();
+	private final Map<String, DownstreamBuildReport> _downstreamBuildReports =
+		new HashMap<>();
 	private List<FailureReport> _failureReports;
 	private JobReport _jobReport;
 	private TopLevelBuildReport _previousTopLevelBuildReport;
