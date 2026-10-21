@@ -55,8 +55,7 @@ const DEFAULT_PROPS = {
 };
 
 const INSTANCE_PROPS = {
-	exportPreviewSitesAPIURL:
-		'/o/export-import/v1.0/export-preview/preview-sites',
+	exportPreviewSitesAPIURL: '/o/export-import/v1.0/export-preview/sites',
 	siteSelectionEnabled: true,
 };
 
@@ -268,7 +267,7 @@ describe('NewExport', () => {
 
 	it('keeps the entity types deselected after exporting only sites', async () => {
 		fetch.mockResponse(async (request) => {
-			if (request.url.includes('preview-sites')) {
+			if (request.url.includes('/export-preview/sites')) {
 				return JSON.stringify({
 					items: [
 						{
@@ -334,7 +333,7 @@ describe('NewExport', () => {
 
 		expect(JSON.parse(String(getExportCall()?.[1]?.body))).toMatchObject({
 			portletDataHandlers: [],
-			siteExternalReferenceCodes: ['erc-support'],
+			sites: [{externalReferenceCode: 'erc-support'}],
 		});
 	});
 

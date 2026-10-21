@@ -424,7 +424,7 @@ describe('NewImport', () => {
 			Promise.resolve({
 				data: {
 					...mockImportPreview,
-					previewSites: [
+					sites: [
 						{
 							descriptiveName: 'Support',
 							existsInInstance: true,

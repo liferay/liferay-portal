@@ -13,9 +13,9 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import SitesControl from '../../../../../../src/main/resources/META-INF/resources/revamp/js/components/forms/site_selector/SitesControl';
-import {PreviewSite} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
+import {Site} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
 
-const PREVIEW_SITES: PreviewSite[] = [
+const SITES: Site[] = [
 	{
 		childSitesCount: 1,
 		descriptiveName: 'Marketing',
@@ -40,9 +40,9 @@ const renderControl = (
 	const renderResult = render(
 		<SitesControl
 			onChange={onChange}
-			previewSites={PREVIEW_SITES}
 			selectedExternalReferenceCodes={[]}
-			totalCount={PREVIEW_SITES.length}
+			sites={SITES}
+			totalCount={SITES.length}
 			{...props}
 		/>
 	);
@@ -56,12 +56,12 @@ const openDialog = () =>
 const findRow = async (title: string) =>
 	(await screen.findByText(title)).closest('tr') as HTMLElement;
 
-const PREVIEW_SITES_PAGE = JSON.stringify({
-	items: PREVIEW_SITES,
+const SITES_PAGE = JSON.stringify({
+	items: SITES,
 	lastPage: 1,
 	page: 1,
 	pageSize: 20,
-	totalCount: PREVIEW_SITES.length,
+	totalCount: SITES.length,
 });
 
 describe('SitesControl', () => {
@@ -77,7 +77,7 @@ describe('SitesControl', () => {
 
 	beforeEach(() => {
 		fetch.resetMocks();
-		fetch.mockResponse(PREVIEW_SITES_PAGE);
+		fetch.mockResponse(SITES_PAGE);
 	});
 
 	it('shows the total number of sites available', () => {
@@ -102,11 +102,8 @@ describe('SitesControl', () => {
 
 	it('names selected sites that go by the same name rather than counting them', () => {
 		renderControl({
-			previewSites: [
-				PREVIEW_SITES[0],
-				{...PREVIEW_SITES[1], descriptiveName: 'Marketing'},
-			],
 			selectedExternalReferenceCodes: ['erc-marketing', 'erc-support'],
+			sites: [SITES[0], {...SITES[1], descriptiveName: 'Marketing'}],
 		});
 
 		expect(
@@ -221,12 +218,12 @@ describe('SitesControl', () => {
 	});
 
 	describe('reading the sites from the API', () => {
-		const API_URL = '/o/export-import/v1.0/export-preview/preview-sites';
+		const API_URL = '/o/export-import/v1.0/export-preview/sites';
 
 		it('hands the picked sites back to the row', async () => {
 			const {onChange} = renderControl({
 				apiURL: API_URL,
-				previewSites: undefined,
+				sites: undefined,
 			});
 
 			await openDialog();
@@ -243,7 +240,7 @@ describe('SitesControl', () => {
 		it('names the sites after they are picked', async () => {
 			const {rerender} = renderControl({
 				apiURL: API_URL,
-				previewSites: undefined,
+				sites: undefined,
 			});
 
 			await openDialog();
@@ -271,8 +268,8 @@ describe('SitesControl', () => {
 		it('reopening keeps what was already picked', async () => {
 			renderControl({
 				apiURL: API_URL,
-				previewSites: undefined,
 				selectedExternalReferenceCodes: ['erc-support'],
+				sites: undefined,
 			});
 
 			await openDialog();
@@ -283,7 +280,7 @@ describe('SitesControl', () => {
 		});
 
 		it('shows where each site sits', async () => {
-			renderControl({apiURL: API_URL, previewSites: undefined});
+			renderControl({apiURL: API_URL, sites: undefined});
 
 			await openDialog();
 
@@ -295,7 +292,7 @@ describe('SitesControl', () => {
 		});
 
 		it('asks the API for the sites in ascending order', async () => {
-			renderControl({apiURL: API_URL, previewSites: undefined});
+			renderControl({apiURL: API_URL, sites: undefined});
 
 			await openDialog();
 
@@ -307,7 +304,7 @@ describe('SitesControl', () => {
 		});
 
 		it('asks the API for the sites in descending order', async () => {
-			renderControl({apiURL: API_URL, previewSites: undefined});
+			renderControl({apiURL: API_URL, sites: undefined});
 
 			await openDialog();
 
@@ -327,7 +324,7 @@ describe('SitesControl', () => {
 		it('keeps the page URL untouched while browsing the sites', async () => {
 			const search = window.location.search;
 
-			renderControl({apiURL: API_URL, previewSites: undefined});
+			renderControl({apiURL: API_URL, sites: undefined});
 
 			await openDialog();
 
@@ -348,7 +345,7 @@ describe('SitesControl', () => {
 	});
 
 	it('lists the sites from the file by title', async () => {
-		renderControl({previewSites: [...PREVIEW_SITES].reverse()});
+		renderControl({sites: [...SITES].reverse()});
 
 		await openDialog();
 

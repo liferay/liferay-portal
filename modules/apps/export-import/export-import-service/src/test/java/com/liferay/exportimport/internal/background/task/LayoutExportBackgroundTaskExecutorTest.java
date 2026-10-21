@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -183,6 +185,14 @@ public class LayoutExportBackgroundTaskExecutorTest {
 			companyId
 		);
 
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			exportImportConfiguration.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
 		Mockito.when(
 			exportImportConfiguration.getSettingsMap()
 		).thenReturn(
@@ -201,14 +211,32 @@ public class LayoutExportBackgroundTaskExecutorTest {
 		LayoutExportBackgroundTaskExecutor layoutExportBackgroundTaskExecutor =
 			_spy(exportImportConfiguration);
 
+		StagingGroupHelper stagingGroupHelper = Mockito.mock(
+			StagingGroupHelper.class);
+
+		Mockito.when(
+			stagingGroupHelper.isCompanyGroup(companyId, groupId)
+		).thenReturn(
+			true
+		);
+
 		try (MockedStatic<FeatureFlagManagerUtil>
 				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-					FeatureFlagManagerUtil.class)) {
+					FeatureFlagManagerUtil.class);
+			MockedStatic<StagingGroupHelperUtil>
+				stagingGroupHelperUtilMockedStatic = Mockito.mockStatic(
+					StagingGroupHelperUtil.class)) {
 
 			featureFlagManagerUtilMockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")
 			).thenReturn(
 				true
+			);
+
+			stagingGroupHelperUtilMockedStatic.when(
+				StagingGroupHelperUtil::getStagingGroupHelper
+			).thenReturn(
+				stagingGroupHelper
 			);
 
 			layoutExportBackgroundTaskExecutor.execute(backgroundTask);

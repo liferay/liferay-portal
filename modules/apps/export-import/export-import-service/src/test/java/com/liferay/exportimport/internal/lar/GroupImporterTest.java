@@ -36,6 +36,8 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.xml.SAXReaderImpl;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,6 +80,7 @@ public class GroupImporterTest {
 		_groupService = Mockito.mock(GroupService.class);
 		_portletDataContextFactory = Mockito.mock(
 			PortletDataContextFactory.class);
+		_stagingGroupHelper = Mockito.mock(StagingGroupHelper.class);
 
 		_groupImporter = new GroupImporter(
 			Mockito.mock(ClassNameLocalService.class), _exportImportHelper,
@@ -99,7 +102,19 @@ public class GroupImporterTest {
 		);
 
 		Mockito.when(
+			_portletDataContext.getGroupId()
+		).thenReturn(
+			_GROUP_ID
+		);
+
+		Mockito.when(
 			_exportImportHelper.isGroupSupported(Mockito.any())
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_stagingGroupHelper.isCompanyGroup(_COMPANY_ID, _GROUP_ID)
 		).thenReturn(
 			true
 		);
@@ -191,7 +206,16 @@ public class GroupImporterTest {
 				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
 					FeatureFlagManagerUtil.class);
 			MockedStatic<GroupPermissionUtil> groupPermissionUtilMockedStatic =
-				Mockito.mockStatic(GroupPermissionUtil.class)) {
+				Mockito.mockStatic(GroupPermissionUtil.class);
+			MockedStatic<StagingGroupHelperUtil>
+				stagingGroupHelperUtilMockedStatic = Mockito.mockStatic(
+					StagingGroupHelperUtil.class)) {
+
+			stagingGroupHelperUtilMockedStatic.when(
+				StagingGroupHelperUtil::getStagingGroupHelper
+			).thenReturn(
+				_stagingGroupHelper
+			);
 
 			featureFlagManagerUtilMockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
@@ -276,6 +300,23 @@ public class GroupImporterTest {
 		_verifyReportEntry(
 			"group", ExportImportReportEntryConstants.TYPE_ERROR,
 			"is not supported");
+	}
+
+	@Test
+	public void testImportGroupsWhenGroupIsNotTheInstanceGroup()
+		throws Exception {
+
+		_setUpExportImportGroups(_createExportImportGroup("group", null));
+
+		Mockito.when(
+			_stagingGroupHelper.isCompanyGroup(_COMPANY_ID, _GROUP_ID)
+		).thenReturn(
+			false
+		);
+
+		Assert.assertTrue(ListUtil.isEmpty(_importGroups("group")));
+
+		Mockito.verifyNoInteractions(_exportImportHelper);
 	}
 
 	@Test
@@ -601,7 +642,16 @@ public class GroupImporterTest {
 				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
 					FeatureFlagManagerUtil.class);
 			MockedStatic<GroupPermissionUtil> groupPermissionUtilMockedStatic =
-				Mockito.mockStatic(GroupPermissionUtil.class)) {
+				Mockito.mockStatic(GroupPermissionUtil.class);
+			MockedStatic<StagingGroupHelperUtil>
+				stagingGroupHelperUtilMockedStatic = Mockito.mockStatic(
+					StagingGroupHelperUtil.class)) {
+
+			stagingGroupHelperUtilMockedStatic.when(
+				StagingGroupHelperUtil::getStagingGroupHelper
+			).thenReturn(
+				_stagingGroupHelper
+			);
 
 			featureFlagManagerUtilMockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
@@ -819,5 +869,6 @@ public class GroupImporterTest {
 	private String _manifestXml;
 	private PortletDataContext _portletDataContext;
 	private PortletDataContextFactory _portletDataContextFactory;
+	private StagingGroupHelper _stagingGroupHelper;
 
 }

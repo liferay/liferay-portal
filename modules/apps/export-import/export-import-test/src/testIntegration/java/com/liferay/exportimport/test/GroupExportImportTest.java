@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -43,6 +44,7 @@ import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.staging.StagingGroupHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,7 +83,7 @@ public class GroupExportImportTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_companyGroup = _groupLocalService.getCompanyGroup(
+		_companyGroup = _stagingGroupHelper.fetchCompanyGroup(
 			TestPropsValues.getCompanyId());
 
 		_group = GroupTestUtil.addGroup();
@@ -124,6 +126,16 @@ public class GroupExportImportTest {
 			path.endsWith(
 				_group.getDescriptiveName(
 					LocaleUtil.fromLanguageId(_group.getDefaultLanguageId()))));
+	}
+
+	@Test
+	@TestInfo("LPD-111134")
+	public void testExportGroupsWhenGroupIsNotTheInstanceGroup()
+		throws Exception {
+
+		_assertExportGroupsIsSkipped(
+			_groupLocalService.getCompanyGroup(TestPropsValues.getCompanyId()));
+		_assertExportGroupsIsSkipped(GroupTestUtil.addGroup());
 	}
 
 	@Test
@@ -333,6 +345,22 @@ public class GroupExportImportTest {
 				layout2.getExternalReferenceCode(), group2.getGroupId()));
 	}
 
+	private void _assertExportGroupsIsSkipped(Group group) throws Exception {
+		File file = _exportLayouts(group.getGroupId(), _group);
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			String manifest = _getManifest(zipReader);
+
+			Assert.assertFalse(manifest.contains("<groups>"));
+
+			Assert.assertNull(
+				zipReader.getEntryAsInputStream(_getGroupManifestPath(_group)));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
 	private void _deleteLayout(Layout layout) throws Exception {
 		_layoutLocalService.deleteLayout(
 			layout,
@@ -341,6 +369,12 @@ public class GroupExportImportTest {
 	}
 
 	private File _exportLayouts(Group... groups) throws Exception {
+		return _exportLayouts(_companyGroup.getGroupId(), groups);
+	}
+
+	private File _exportLayouts(long groupId, Group... groups)
+		throws Exception {
+
 		_file = _exportImportLocalService.exportLayoutsAsFile(
 			_exportImportConfigurationLocalService.
 				addDraftExportImportConfiguration(
@@ -348,8 +382,7 @@ public class GroupExportImportTest {
 					ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT,
 					ExportImportConfigurationSettingsMapFactoryUtil.
 						buildExportLayoutSettingsMap(
-							TestPropsValues.getUser(),
-							_companyGroup.getGroupId(), false, null,
+							TestPropsValues.getUser(), groupId, false, null,
 							_getParameterMap(
 								_getExternalReferenceCodes(groups)))));
 
@@ -430,7 +463,7 @@ public class GroupExportImportTest {
 			new String[] {Boolean.TRUE.toString()}
 		).put(
 			PortletDataHandlerKeys.PORTLET_DATA_ALL,
-			new String[] {Boolean.TRUE.toString()}
+			new String[] {Boolean.FALSE.toString()}
 		).build();
 
 		if (groupExternalReferenceCodes.length == 0) {
@@ -503,6 +536,9 @@ public class GroupExportImportTest {
 
 	@Inject
 	private LayoutService _layoutService;
+
+	@Inject
+	private StagingGroupHelper _stagingGroupHelper;
 
 	@Inject
 	private ZipReaderFactory _zipReaderFactory;
