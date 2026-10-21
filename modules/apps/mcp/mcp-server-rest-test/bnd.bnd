@@ -14,16 +14,10 @@ Import-Package:\
 	\
 	!org.joni.*,\
 	\
-	!org.json.*,\
-	\
-	!org.skyscreamer.*,\
-	\
 	*
 -includeresource:\
 	com.liferay.mcp.server.rest.client.jar=com.liferay.mcp.server.rest.client-*.jar;lib:=true,\
 	reactor-core-[0-9.]*.jar;lib:=true,\
-	@json-[0-9]*.jar;lib:=true,\
 	@json-schema-validator-[0-9.]*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar;lib:=true,\
 	@mcp-core-[0-9.]*.jar;lib=true,\
 	@mcp-json-jackson2-[0-9.]*.jar;lib=true

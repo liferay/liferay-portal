@@ -7,8 +7,7 @@ dependencies {
 	testIntegrationImplementation group: "io.modelcontextprotocol.sdk", name: "mcp-core", version: "1.1.5"
 	testIntegrationImplementation group: "io.modelcontextprotocol.sdk", name: "mcp-json-jackson2", version: "1.1.5"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
-	testIntegrationImplementation group: "org.json", name: "json", version: "20231013"
-	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.5.0"
+	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-test-util")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
