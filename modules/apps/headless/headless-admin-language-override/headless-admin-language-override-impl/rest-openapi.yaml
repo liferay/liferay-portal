@@ -89,6 +89,7 @@ info:
         url: http://www.apache.org/licenses/LICENSE-2.0.html
     title: Language Override
     version: v1.0
+    x-feature-flag: LPD-49852
 openapi: 3.0.1
 paths:
     "/language-overrides":

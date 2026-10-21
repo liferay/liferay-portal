@@ -30,6 +30,7 @@ info:
         url: http://www.apache.org/licenses/LICENSE-2.0.html
     title: Liferay Admin Configuration Headless API
     version: v1.0
+    x-feature-flag: LPD-65399
 openapi: 3.0.1
 paths:
     "/instance-configurations":

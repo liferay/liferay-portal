@@ -23,6 +23,7 @@ info:
         url: http://www.apache.org/licenses/LICENSE-2.0.html
     title: ""
     version: v1.0
+    x-feature-flag: LPD-62272
 openapi: 3.0.1
 paths:
     "/authorization-tokens":

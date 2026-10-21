@@ -1082,6 +1082,7 @@ paths:
                                     $ref: "#/components/schemas/PreviewSite"
                                 type: array
             tags: ["PreviewSite"]
+            x-feature-flag: LPD-85946
     "/export-processes":
         get:
             description:

@@ -13124,6 +13124,7 @@ paths:
                                     $ref: "#/components/schemas/ContentSetElement"
                                 type: array
             tags: ["ContentSetElement"]
+            x-feature-flag: LPD-32867
     "/sites/{siteId}/content-sets/by-key/{key}/content-set-elements":
         get:
             description:
@@ -16147,6 +16148,7 @@ paths:
                         default response
             # @review
             tags: ["SitePage"]
+            x-feature-flag: LPS-178052
     "/sites/{siteId}/site-pages/{friendlyUrlPath}":
         get:
             # @review

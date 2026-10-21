@@ -109,6 +109,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["OAuthClientASLocalMetadata"]
+            x-feature-flag: LPD-49855
         get:
             operationId: getOAuthClientASLocalMetadataByExternalReferenceCode
             parameters:
@@ -127,6 +128,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientASLocalMetadata"
             tags: ["OAuthClientASLocalMetadata"]
+            x-feature-flag: LPD-49855
         put:
             operationId: putOAuthClientASLocalMetadataByExternalReferenceCode
             parameters:
@@ -153,6 +155,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientASLocalMetadata"
             tags: ["OAuthClientASLocalMetadata"]
+            x-feature-flag: LPD-49855
     "/oauth-client-as-local-metadatas":
         get:
             operationId: getOAuthClientASLocalMetadatasPage
@@ -170,6 +173,7 @@ paths:
                                     $ref: "#/components/schemas/OAuthClientASLocalMetadata"
                                 type: array
             tags: ["OAuthClientASLocalMetadata"]
+            x-feature-flag: LPD-49855
         post:
             operationId: postOAuthClientASLocalMetadata
             requestBody:
@@ -190,6 +194,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientASLocalMetadata"
             tags: ["OAuthClientASLocalMetadata"]
+            x-feature-flag: LPD-49855
     "/oauth-client-entries":
         get:
             operationId: getOAuthClientEntriesPage
@@ -207,6 +212,7 @@ paths:
                                     $ref: "#/components/schemas/OAuthClientEntry"
                                 type: array
             tags: ["OAuthClientEntry"]
+            x-feature-flag: LPD-49855
         post:
             operationId: postOAuthClientEntry
             requestBody:
@@ -227,6 +233,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientEntry"
             tags: ["OAuthClientEntry"]
+            x-feature-flag: LPD-49855
     "/oauth-client-entries/by-external-reference-code/{externalReferenceCode}":
         delete:
             operationId: deleteOAuthClientEntryByExternalReferenceCode
@@ -242,6 +249,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["OAuthClientEntry"]
+            x-feature-flag: LPD-49855
         get:
             operationId: getOAuthClientEntryByExternalReferenceCode
             parameters:
@@ -260,6 +268,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientEntry"
             tags: ["OAuthClientEntry"]
+            x-feature-flag: LPD-49855
         put:
             operationId: putOAuthClientEntryByExternalReferenceCode
             parameters:
@@ -286,6 +295,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientEntry"
             tags: ["OAuthClientEntry"]
+            x-feature-flag: LPD-49855
     "/oauth-client-pr-local-metadata/by-external-reference-code/{externalReferenceCode}":
         delete:
             operationId: deleteOAuthClientPRLocalMetadataByExternalReferenceCode
@@ -301,6 +311,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["OAuthClientPRLocalMetadata"]
+            x-feature-flag: LPD-63415
         get:
             operationId: getOAuthClientPRLocalMetadataByExternalReferenceCode
             parameters:
@@ -319,6 +330,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
             tags: ["OAuthClientPRLocalMetadata"]
+            x-feature-flag: LPD-63415
         put:
             operationId: putOAuthClientPRLocalMetadataByExternalReferenceCode
             parameters:
@@ -345,6 +357,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
             tags: ["OAuthClientPRLocalMetadata"]
+            x-feature-flag: LPD-63415
     "/oauth-client-pr-local-metadatas":
         get:
             operationId: getOAuthClientPRLocalMetadatasPage
@@ -362,6 +375,7 @@ paths:
                                     $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
                                 type: array
             tags: ["OAuthClientPRLocalMetadata"]
+            x-feature-flag: LPD-63415
         post:
             operationId: postOAuthClientPRLocalMetadata
             requestBody:
@@ -382,3 +396,4 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
             tags: ["OAuthClientPRLocalMetadata"]
+            x-feature-flag: LPD-63415

@@ -986,6 +986,7 @@ paths:
                                     $ref: "#/components/schemas/FragmentSet"
                                 type: array
             tags: ["FragmentSet"]
+            x-feature-flag: LPD-57283
     "/design-libraries/{designLibraryExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}":
         delete:
             description:
@@ -1008,6 +1009,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["FragmentSet"]
+            x-feature-flag: LPD-57283
         get:
             description:
                 Retrieves a specific fragment set of a design library.
@@ -1041,6 +1043,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/FragmentSet"
             tags: ["FragmentSet"]
+            x-feature-flag: LPD-57283
     "/sites/{siteExternalReferenceCode}/fragment-sets":
         get:
             description:
@@ -1086,6 +1089,7 @@ paths:
                                     $ref: "#/components/schemas/FragmentSet"
                                 type: array
             tags: ["FragmentSet"]
+            x-feature-flag: LPD-39244
         post:
             description:
                 Adds a new fragment set.
@@ -1114,6 +1118,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/FragmentSet"
             tags: ["FragmentSet"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}":
         delete:
             description:
@@ -1136,6 +1141,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["FragmentSet"]
+            x-feature-flag: LPD-39244
         get:
             description:
                 Retrieves a specific fragment set of a site.
@@ -1169,6 +1175,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/FragmentSet"
             tags: ["FragmentSet"]
+            x-feature-flag: LPD-39244
         put:
             description:
                 Updates the fragment set with the given external reference code, or creates it if it does not exist. On update, `dateModified`, `description`, and `name` are honored; any values sent for `dateCreated`, `externalReferenceCode`, `key`, and `marketplace` are ignored.
@@ -1210,6 +1217,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/FragmentSet"
             tags: ["FragmentSet"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}/fragments":
         get:
             description:
@@ -1256,6 +1264,7 @@ paths:
                                     $ref: "#/components/schemas/Fragment"
                                 type: array
             tags: ["Fragment"]
+            x-feature-flag: LPD-39244
         post:
             description:
                 Adds a new fragment to a fragment set.
@@ -1289,6 +1298,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Fragment"
             tags: ["Fragment"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}/resource-files":
         get:
             description:
@@ -1335,6 +1345,7 @@ paths:
                                     $ref: "#/components/schemas/ResourceFile"
                                 type: array
             tags: ["ResourceFile"]
+            x-feature-flag: LPD-39244
         post:
             description:
                 Adds a new resource file to a fragment set.
@@ -1368,6 +1379,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ResourceFile"
             tags: ["ResourceFile"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/fragment-sets/{fragmentSetExternalReferenceCode}/resource-folders":
         get:
             description:
@@ -1414,6 +1426,7 @@ paths:
                                     $ref: "#/components/schemas/ResourceFolder"
                                 type: array
             tags: ["ResourceFolder"]
+            x-feature-flag: LPD-39244
         post:
             description:
                 Adds a new resource folder to a fragment set.
@@ -1447,6 +1460,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ResourceFolder"
             tags: ["ResourceFolder"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/fragments":
         get:
             description:
@@ -1492,6 +1506,7 @@ paths:
                                     $ref: "#/components/schemas/Fragment"
                                 type: array
             tags: ["Fragment"]
+            x-feature-flag: LPD-39244
         post:
             description:
                 Adds a new fragment to a site.
@@ -1520,6 +1535,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Fragment"
             tags: ["Fragment"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/fragments/{fragmentExternalReferenceCode}":
         delete:
             description:
@@ -1542,6 +1558,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["Fragment"]
+            x-feature-flag: LPD-39244
         get:
             description:
                 Retrieves a specific fragment of a site.
@@ -1575,6 +1592,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Fragment"
             tags: ["Fragment"]
+            x-feature-flag: LPD-39244
         put:
             description:
                 Updates the fragment with the given external reference code, or creates it if it does not exist.
@@ -1616,6 +1634,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Fragment"
             tags: ["Fragment"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/resource-files":
         get:
             description:
@@ -1661,6 +1680,7 @@ paths:
                                     $ref: "#/components/schemas/ResourceFile"
                                 type: array
             tags: ["ResourceFile"]
+            x-feature-flag: LPD-39244
         post:
             description:
                 Adds a new resource file to the site.
@@ -1689,6 +1709,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ResourceFile"
             tags: ["ResourceFile"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/resource-files/{resourceFileExternalReferenceCode}":
         delete:
             description:
@@ -1711,6 +1732,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["ResourceFile"]
+            x-feature-flag: LPD-39244
         get:
             description:
                 Retrieves a specific resource file of a site.
@@ -1744,6 +1766,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ResourceFile"
             tags: ["ResourceFile"]
+            x-feature-flag: LPD-39244
         put:
             description:
                 Updates the resource file with the given external reference code, or creates it if it does not exist. On update, `fileURLReference` and `name` are required, `dateModified` is honored, and any values sent for `dateCreated`, `externalReferenceCode`, `fragmentSet`, `fragmentSetExternalReferenceCode`, `resourceFolder`, and `resourceFolderExternalReferenceCode` are ignored.
@@ -1785,6 +1808,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ResourceFile"
             tags: ["ResourceFile"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/resource-folders":
         get:
             description:
@@ -1830,6 +1854,7 @@ paths:
                                     $ref: "#/components/schemas/ResourceFolder"
                                 type: array
             tags: ["ResourceFolder"]
+            x-feature-flag: LPD-39244
         post:
             description:
                 Adds a new resource folder to the site.
@@ -1858,6 +1883,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ResourceFolder"
             tags: ["ResourceFolder"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/resource-folders/{resourceFolderExternalReferenceCode}":
         delete:
             description:
@@ -1880,6 +1906,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["ResourceFolder"]
+            x-feature-flag: LPD-39244
         get:
             description:
                 Retrieves a specific resource folder of a site.
@@ -1913,6 +1940,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ResourceFolder"
             tags: ["ResourceFolder"]
+            x-feature-flag: LPD-39244
         put:
             description:
                 Updates the resource folder with the given external reference code, or creates it if it does not exist. On update, `dateModified` and `name` are honored; any values sent for `dateCreated`, `externalReferenceCode`, `fragmentSet`, `fragmentSetExternalReferenceCode`, `parentResourceFolder`, and `parentResourceFolderExternalReferenceCode` are ignored.
@@ -1954,6 +1982,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ResourceFolder"
             tags: ["ResourceFolder"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/resource-folders/{resourceFolderExternalReferenceCode}/resource-files":
         get:
             description:
@@ -2000,6 +2029,7 @@ paths:
                                     $ref: "#/components/schemas/ResourceFile"
                                 type: array
             tags: ["ResourceFile"]
+            x-feature-flag: LPD-39244
     "/sites/{siteExternalReferenceCode}/resource-folders/{resourceFolderExternalReferenceCode}/resource-folders":
         get:
             description:
@@ -2046,3 +2076,4 @@ paths:
                                     $ref: "#/components/schemas/ResourceFolder"
                                 type: array
             tags: ["ResourceFolder"]
+            x-feature-flag: LPD-39244

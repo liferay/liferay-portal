@@ -288,6 +288,7 @@ paths:
                                     $ref: "#/components/schemas/BrokenLinkAsset"
                                 type: array
             tags: ["BrokenLinkAsset"]
+            x-feature-flag: LPD-82226
     "/missing-required-fields-assets":
         get:
             operationId: getMissingRequiredFieldsAssetsPage
@@ -327,3 +328,4 @@ paths:
                                     $ref: "#/components/schemas/MissingRequiredFieldsAsset"
                                 type: array
             tags: ["MissingRequiredFieldsAsset"]
+            x-feature-flag: LPD-82226
