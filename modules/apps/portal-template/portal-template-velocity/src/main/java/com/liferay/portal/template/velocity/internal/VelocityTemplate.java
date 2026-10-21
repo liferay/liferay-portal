@@ -6,6 +6,7 @@
 package com.liferay.portal.template.velocity.internal;
 
 import com.liferay.petra.function.UnsafeSupplierValue;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.template.StringTemplateResource;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.template.TemplateException;
@@ -134,11 +135,11 @@ public class VelocityTemplate extends BaseTemplate {
 		TemplateResourceThreadLocal.setTemplateResource(
 			TemplateConstants.LANG_TYPE_VM, templateResource);
 
-		if (_restricted) {
-			RestrictedTemplateThreadLocal.setRestricted(true);
-		}
+		try (SafeCloseable safeCloseable =
+				RestrictedTemplateThreadLocal.setRestrictedWithSafeCloseable(
+					_restricted ||
+					RestrictedTemplateThreadLocal.isRestricted())) {
 
-		try {
 			Template template = _velocityEngine.getTemplate(
 				getTemplateResourceUUID(templateResource),
 				TemplateConstants.DEFAUT_ENCODING);
@@ -148,10 +149,6 @@ public class VelocityTemplate extends BaseTemplate {
 		finally {
 			TemplateResourceThreadLocal.setTemplateResource(
 				TemplateConstants.LANG_TYPE_VM, null);
-
-			if (_restricted) {
-				RestrictedTemplateThreadLocal.setRestricted(false);
-			}
 		}
 	}
 

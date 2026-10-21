@@ -6,6 +6,7 @@
 package com.liferay.portal.template.velocity.internal;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.lang.SafeCloseable;
 
 /**
  * @author Tina Tian
@@ -16,11 +17,13 @@ public class RestrictedTemplateThreadLocal {
 		return _restricted.get();
 	}
 
-	public static void setRestricted(boolean restricted) {
-		_restricted.set(restricted);
+	public static SafeCloseable setRestrictedWithSafeCloseable(
+		boolean restricted) {
+
+		return _restricted.setWithSafeCloseable(restricted);
 	}
 
-	private static final ThreadLocal<Boolean> _restricted =
+	private static final CentralizedThreadLocal<Boolean> _restricted =
 		new CentralizedThreadLocal<>(
 			RestrictedTemplateThreadLocal.class + "._restricted",
 			() -> Boolean.FALSE);
