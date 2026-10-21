@@ -7,9 +7,6 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.File;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -321,18 +318,30 @@ public class SourceFormatterReleaseUtilTest
 	public void testIsReleasedSourceMatchWithVersionFileChange()
 		throws Exception {
 
-		List<String> versionFilePaths = Arrays.asList(
-			_BND_PATH, _PLUGIN_HELP_PATH, _PLUGIN_PATH, _POM_PATH);
-
-		for (String versionFilePath : versionFilePaths) {
-			Assert.assertFalse(
-				versionFilePath,
-				_isReleasedSourceMatch(
-					0,
-					_getGitDiff(
-						"<name>Liferay Source Formatter 1.0.1644</name>",
-						versionFilePath, "<version>1.0.1643</version>")));
-		}
+		Assert.assertFalse(
+			_isReleasedSourceMatch(
+				0,
+				_getGitDiff(
+					"<name>Liferay Source Formatter 1.0.1644</name>", _BND_PATH,
+					"<version>1.0.1643</version>")));
+		Assert.assertFalse(
+			_isReleasedSourceMatch(
+				0,
+				_getGitDiff(
+					"<name>Liferay Source Formatter 1.0.1644</name>",
+					_PLUGIN_HELP_PATH, "<version>1.0.1643</version>")));
+		Assert.assertFalse(
+			_isReleasedSourceMatch(
+				0,
+				_getGitDiff(
+					"<name>Liferay Source Formatter 1.0.1644</name>",
+					_PLUGIN_PATH, "<version>1.0.1643</version>")));
+		Assert.assertFalse(
+			_isReleasedSourceMatch(
+				0,
+				_getGitDiff(
+					"<name>Liferay Source Formatter 1.0.1644</name>", _POM_PATH,
+					"<version>1.0.1643</version>")));
 	}
 
 	@Test
