@@ -192,7 +192,7 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.launch.web.internal.portlet.action." +
-					"ScheduleLaunchMVCActionCommand",
+					"BaseLaunchMVCActionCommand",
 				LoggerTestUtil.WARN)) {
 
 			jsonObject = _processAction(
