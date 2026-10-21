@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.BaseService;
+import com.liferay.portal.kernel.template.TemplateRestricted;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
@@ -159,6 +160,12 @@ public class RestrictedLiferayObjectWrapperTest
 			TestLiferayMethodObject.class.getName(),
 			new TestLiferayMethodObject("test"),
 			TestLiferayMethodObject.class.getName());
+		_testGetWithAllowedClass(
+			TestTemplateRestrictedMethodObject.class.getName(),
+			new TestTemplateRestrictedMethodObject("test"), StringPool.BLANK);
+		_testGetWithAllowedClass(
+			TestTemplateRestrictedObject.class.getName(),
+			new TestTemplateRestrictedObject("test"), StringPool.BLANK);
 	}
 
 	@Test
@@ -171,11 +178,15 @@ public class RestrictedLiferayObjectWrapperTest
 		_testGetWithRestrictedClass(
 			new TestLiferayMethodObject("test"),
 			TestLiferayMethodObject.class.getName());
+		_testGetWithRestrictedClass(
+			new TestTemplateRestrictedObject("test"), StringPool.BLANK);
 	}
 
 	@Test
 	public void testGetWithRestrictedMethodNames() throws Exception {
 		_testGetWithRestrictedMethodNames(new TestLiferayMethodObject("test"));
+		_testGetWithRestrictedMethodNames(
+			new TestTemplateRestrictedMethodObject("test"));
 	}
 
 	@Test
@@ -756,6 +767,36 @@ public class RestrictedLiferayObjectWrapperTest
 			}
 
 			return null;
+		}
+
+	}
+
+	private class TestTemplateRestrictedMethodObject
+		extends TestLiferayMethodObject {
+
+		@Override
+		@TemplateRestricted
+		public String getName() {
+			return super.getName();
+		}
+
+		@Override
+		@TemplateRestricted
+		public String toString() {
+			return super.toString();
+		}
+
+		private TestTemplateRestrictedMethodObject(String name) {
+			super(name);
+		}
+
+	}
+
+	@TemplateRestricted
+	private class TestTemplateRestrictedObject extends TestLiferayMethodObject {
+
+		private TestTemplateRestrictedObject(String name) {
+			super(name);
 		}
 
 	}
