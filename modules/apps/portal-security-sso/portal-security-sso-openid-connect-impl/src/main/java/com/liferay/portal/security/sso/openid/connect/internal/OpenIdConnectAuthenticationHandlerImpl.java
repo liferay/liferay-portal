@@ -77,6 +77,7 @@ import java.util.Map;
 
 import net.minidev.json.JSONObject;
 
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -127,7 +128,7 @@ public class OpenIdConnectAuthenticationHandlerImpl
 
 		OIDCClientInformation oidcClientInformation =
 			OpenIdConnectClientInformationUtil.getOIDCClientInformation(
-				oAuthClientEntry);
+				_configurationAdmin, oAuthClientEntry);
 
 		OIDCProviderMetadata oidcProviderMetadata =
 			_authorizationServerMetadataResolver.resolveOIDCProviderMetadata(
@@ -492,6 +493,9 @@ public class OpenIdConnectAuthenticationHandlerImpl
 	@Reference
 	private AuthorizationServerMetadataResolver
 		_authorizationServerMetadataResolver;
+
+	@Reference
+	private ConfigurationAdmin _configurationAdmin;
 
 	@Reference
 	private Language _language;

@@ -102,7 +102,7 @@ public abstract class BaseSamlTestCase {
 
 		_setupPortal();
 
-		_setupSecretResolver();
+		_setUpSecretResolver();
 
 		_setupMetadata();
 
@@ -775,7 +775,7 @@ public abstract class BaseSamlTestCase {
 		);
 	}
 
-	private void _setupSecretResolver() {
+	private void _setUpSecretResolver() {
 		secretResolver = Mockito.mock(SecretResolver.class);
 
 		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(

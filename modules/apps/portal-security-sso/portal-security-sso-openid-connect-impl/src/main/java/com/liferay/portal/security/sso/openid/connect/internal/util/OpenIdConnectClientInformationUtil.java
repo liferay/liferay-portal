@@ -9,7 +9,6 @@ import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.CompanyConstants;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.security.key.KeyReference;
@@ -34,32 +33,30 @@ import org.osgi.service.cm.ConfigurationAdmin;
 public class OpenIdConnectClientInformationUtil {
 
 	public static OIDCClientInformation getOIDCClientInformation(
+			ConfigurationAdmin configurationAdmin,
 			OAuthClientEntry oAuthClientEntry)
 		throws Exception {
 
 		JSONObject jsonObject = JSONObjectUtils.parse(
 			oAuthClientEntry.getInfoJSON());
 
-		Object clientSecret = jsonObject.get("client_secret");
+		String clientSecret = GetterUtil.getString(
+			jsonObject.get("client_secret"));
 
-		if ((clientSecret instanceof String clientSecretString) &&
-			_isResolvable(clientSecretString, oAuthClientEntry)) {
-
+		if (_isResolvable(clientSecret, configurationAdmin, oAuthClientEntry)) {
 			jsonObject.put(
 				"client_secret",
 				SecretResolverUtil.resolve(
-					oAuthClientEntry.getCompanyId(), clientSecretString));
+					oAuthClientEntry.getCompanyId(), clientSecret));
 		}
 
 		return OIDCClientInformation.parse(jsonObject);
 	}
 
 	private static boolean _isOpenIdConnectProviderClientSecret(
-			long companyId, String keyReferenceString)
+			long companyId, ConfigurationAdmin configurationAdmin,
+			String keyReferenceString)
 		throws Exception {
-
-		ConfigurationAdmin configurationAdmin =
-			_configurationAdminSnapshot.get();
 
 		Configuration[] configurations = configurationAdmin.listConfigurations(
 			StringBundler.concat(
@@ -94,7 +91,8 @@ public class OpenIdConnectClientInformationUtil {
 	}
 
 	private static boolean _isResolvable(
-			String clientSecret, OAuthClientEntry oAuthClientEntry)
+			String clientSecret, ConfigurationAdmin configurationAdmin,
+			OAuthClientEntry oAuthClientEntry)
 		throws Exception {
 
 		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
@@ -108,7 +106,8 @@ public class OpenIdConnectClientInformationUtil {
 				oAuthClientEntry.getCompanyId())) {
 
 			return _isOpenIdConnectProviderClientSecret(
-				oAuthClientEntry.getCompanyId(), clientSecret);
+				oAuthClientEntry.getCompanyId(), configurationAdmin,
+				clientSecret);
 		}
 
 		return Objects.equals(
@@ -118,9 +117,5 @@ public class OpenIdConnectClientInformationUtil {
 				oAuthClientEntry.getCompanyId(), StringPool.SLASH,
 				oAuthClientEntry.getOAuthClientEntryId()));
 	}
-
-	private static final Snapshot<ConfigurationAdmin>
-		_configurationAdminSnapshot = new Snapshot<>(
-			OpenIdConnectClientInformationUtil.class, ConfigurationAdmin.class);
 
 }

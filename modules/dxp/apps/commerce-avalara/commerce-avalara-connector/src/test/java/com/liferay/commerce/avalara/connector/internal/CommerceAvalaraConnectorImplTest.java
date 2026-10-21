@@ -6,19 +6,26 @@
 package com.liferay.commerce.avalara.connector.internal;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import org.junit.Assert;
+import java.util.List;
+
+import net.avalara.avatax.rest.client.AvaTaxClient;
+
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 
 /**
@@ -32,7 +39,12 @@ public class CommerceAvalaraConnectorImplTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testResolveLicenseKey() {
+	public void testGetAvaTaxClient() {
+		CommerceAvalaraConnectorImpl commerceAvalaraConnectorImpl =
+			new CommerceAvalaraConnectorImpl();
+
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
 		long companyId = RandomTestUtil.randomLong();
 		String keyReferenceString = KeyReferenceUtil.toKeyReferenceString(
 			new KeyReference(
@@ -40,28 +52,41 @@ public class CommerceAvalaraConnectorImplTest {
 				KeyReference.Type.SECRET));
 		String licenseKey = RandomTestUtil.randomString();
 
-		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
-
 		Mockito.when(
 			secretResolver.resolve(companyId, keyReferenceString)
 		).thenReturn(
 			licenseKey
 		);
 
-		CommerceAvalaraConnectorImpl commerceAvalaraConnectorImpl =
-			new CommerceAvalaraConnectorImpl();
-
 		ReflectionTestUtil.setFieldValue(
 			commerceAvalaraConnectorImpl, "_secretResolver", secretResolver);
 
-		try (SafeCloseable safeCloseable =
+		try (MockedConstruction<AvaTaxClient> avaTaxClientMockedConstruction =
+				Mockito.mockConstruction(AvaTaxClient.class);
+			SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
 
-			Assert.assertEquals(
-				licenseKey,
-				ReflectionTestUtil.invoke(
-					commerceAvalaraConnectorImpl, "_resolveLicenseKey",
-					new Class<?>[] {String.class}, keyReferenceString));
+			String accountNumber = RandomTestUtil.randomString();
+
+			ReflectionTestUtil.invoke(
+				commerceAvalaraConnectorImpl, "_getAvaTaxClient",
+				new Class<?>[] {String.class, String.class, String.class},
+				accountNumber, keyReferenceString,
+				RandomTestUtil.randomString());
+
+			List<AvaTaxClient> avaTaxClients =
+				avaTaxClientMockedConstruction.constructed();
+
+			AvaTaxClient avaTaxClient = avaTaxClients.get(0);
+
+			String securityHeader = StringBundler.concat(
+				accountNumber, StringPool.COLON, licenseKey);
+
+			Mockito.verify(
+				avaTaxClient
+			).withSecurity(
+				Base64.encode(securityHeader.getBytes())
+			);
 		}
 	}
 

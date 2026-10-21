@@ -27,7 +27,6 @@ import com.nimbusds.openid.connect.sdk.rp.OIDCClientInformation;
 
 import java.util.Dictionary;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -51,22 +50,7 @@ public class OpenIdConnectClientInformationUtilTest {
 
 	@Before
 	public void setUp() {
-		_configurationAdminSnapshot = ReflectionTestUtil.getAndSetFieldValue(
-			OpenIdConnectClientInformationUtil.class,
-			"_configurationAdminSnapshot",
-			new Snapshot<ConfigurationAdmin>(
-				OpenIdConnectClientInformationUtil.class,
-				ConfigurationAdmin.class) {
-
-				@Override
-				public ConfigurationAdmin get() {
-					return _configurationAdmin;
-				}
-
-			});
-		_originalUserLocalService = ReflectionTestUtil.getAndSetFieldValue(
-			UserLocalServiceUtil.class, "_service", _userLocalService);
-		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+		ReflectionTestUtil.setFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			new Snapshot<SecretResolver>(
 				SecretResolverUtil.class, SecretResolver.class) {
@@ -77,18 +61,8 @@ public class OpenIdConnectClientInformationUtilTest {
 				}
 
 			});
-	}
-
-	@After
-	public void tearDown() {
 		ReflectionTestUtil.setFieldValue(
-			OpenIdConnectClientInformationUtil.class,
-			"_configurationAdminSnapshot", _configurationAdminSnapshot);
-		ReflectionTestUtil.setFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			_secretResolverSnapshot);
-		ReflectionTestUtil.setFieldValue(
-			UserLocalServiceUtil.class, "_service", _originalUserLocalService);
+			UserLocalServiceUtil.class, "_service", _userLocalService);
 	}
 
 	@Test
@@ -243,7 +217,7 @@ public class OpenIdConnectClientInformationUtilTest {
 
 		OIDCClientInformation oidcClientInformation =
 			OpenIdConnectClientInformationUtil.getOIDCClientInformation(
-				oAuthClientEntry);
+				_configurationAdmin, oAuthClientEntry);
 
 		Secret secret = oidcClientInformation.getSecret();
 
@@ -252,11 +226,8 @@ public class OpenIdConnectClientInformationUtilTest {
 
 	private final ConfigurationAdmin _configurationAdmin = Mockito.mock(
 		ConfigurationAdmin.class);
-	private Snapshot<ConfigurationAdmin> _configurationAdminSnapshot;
-	private UserLocalService _originalUserLocalService;
 	private final SecretResolver _secretResolver = Mockito.mock(
 		SecretResolver.class);
-	private Snapshot<SecretResolver> _secretResolverSnapshot;
 	private final UserLocalService _userLocalService = Mockito.mock(
 		UserLocalService.class);
 
