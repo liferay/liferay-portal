@@ -63,14 +63,14 @@ const BASE_ITEM_ACTION_IDS: IItemActionsData['id'][] = [
 ];
 
 const EXPIRATION_ITEM_ACTION_IDS: IItemActionsData['id'][] = [
-	...BASE_ITEM_ACTION_IDS,
 	'update-expiration-date',
+	...BASE_ITEM_ACTION_IDS,
 	'delete',
 ];
 
 const REVIEW_ITEM_ACTION_IDS: IItemActionsData['id'][] = [
-	...BASE_ITEM_ACTION_IDS,
 	'update-review-date',
+	...BASE_ITEM_ACTION_IDS,
 	'delete',
 ];
 

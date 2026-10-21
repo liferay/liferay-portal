@@ -311,7 +311,7 @@ describe('[CMS Dashboard] Freshness', () => {
 		);
 	});
 
-	it('offers the update expiration date action before delete on the expiration lists', async () => {
+	it('offers the update expiration date action first on the expiration lists', async () => {
 		renderFreshness();
 
 		await expandList('expiring-soon');
@@ -321,15 +321,15 @@ describe('[CMS Dashboard] Freshness', () => {
 				({data}: {data: {id: string}}) => data.id
 			)
 		).toEqual([
+			'update-expiration-date',
 			'actionLink',
 			'view-content',
 			'view-file',
-			'update-expiration-date',
 			'delete',
 		]);
 	});
 
-	it('offers the update review date action before delete on the review lists', async () => {
+	it('offers the update review date action first on the review lists', async () => {
 		renderFreshness();
 
 		await expandList('overdue-reviews');
@@ -339,10 +339,10 @@ describe('[CMS Dashboard] Freshness', () => {
 				({data}: {data: {id: string}}) => data.id
 			)
 		).toEqual([
+			'update-review-date',
 			'actionLink',
 			'view-content',
 			'view-file',
-			'update-review-date',
 			'delete',
 		]);
 	});
