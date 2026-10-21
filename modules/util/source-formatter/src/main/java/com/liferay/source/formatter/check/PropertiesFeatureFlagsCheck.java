@@ -93,10 +93,14 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		List<String> featureFlagKeys = new ArrayList<>();
 
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
-			_allFileNames, new String[] {"**/test/**"},
+			_allFileNames,
 			new String[] {
-				"**/bnd.bnd", "**/*.java", "**/*.js", "**/*.json", "**/*.jsp",
-				"**/*.jspf", "**/*.jsx", "**/*.ts", "**/*.tsx"
+				"**/portal-tools-rest-builder-test-impl/**", "**/test/**"
+			},
+			new String[] {
+				"**/bnd.bnd", "**/rest-openapi*.yaml", "**/*.java", "**/*.js",
+				"**/*.json", "**/*.jsp", "**/*.jspf", "**/*.jsx", "**/*.ts",
+				"**/*.tsx"
 			},
 			getSourceFormatterExcludes(), true);
 
@@ -147,6 +151,10 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 				featureFlagKeys.addAll(
 					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
 						fileContent, false, "isEnabled"));
+			}
+			else if (fileName.endsWith(".yaml")) {
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern6));
 			}
 			else {
 				featureFlagKeys.addAll(
@@ -486,6 +494,8 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		"\"feature\\.flag\\.key=([A-Z]+-\\d+)\"");
 	private static final Pattern _featureFlagPattern5 = Pattern.compile(
 		"featureFlagKey = \"([A-Z]+-\\d+)\"");
+	private static final Pattern _featureFlagPattern6 = Pattern.compile(
+		"x-feature-flag: \"?([A-Z]+-\\d+)");
 	private static final Pattern _featureFlagUIPattern = Pattern.compile(
 		"(\n|\\A)##\n## Feature Flag UI\n##(\n\n[\\s\\S]*?)(?=(\n\n##|\\Z))");
 	private static final Pattern _featureFlagsPattern = Pattern.compile(
