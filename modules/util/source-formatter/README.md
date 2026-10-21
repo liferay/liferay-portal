@@ -99,7 +99,7 @@ Checks are configured in the following files:
    - [Upgrade](src/main/resources/documentation/upgrade_checks.md#upgrade-checks)
 
 - ### By File Extensions:
-   - [](src/main/resources/documentation/ignore_source_processor_checks.md#checks-for-)
+   - [.*ignore](src/main/resources/documentation/ignore_source_processor_checks.md#checks-for-ignore)
    - [.action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd](src/main/resources/documentation/xml_source_processor_checks.md#checks-for-action-function-jelly-jrxml-macro-pom-project-properties-qti-svg-testcase-toggle-tpl-wsdl-xlf-xml-or-xsd)
    - [.bnd](src/main/resources/documentation/bnd_source_processor_checks.md#checks-for-bnd)
    - [.bnd, .ftl, .gradle, .html, .java, .js, .jsp, .jspf, .jspx, .jsx, .properties, .tld, .ts, .tsx, or .xml](src/main/resources/documentation/jakarta_transform_source_processor_checks.md#checks-for-bnd-ftl-gradle-html-java-js-jsp-jspf-jspx-jsx-properties-tld-ts-tsx-or-xml)
@@ -109,7 +109,6 @@ Checks are configured in the following files:
    - [.cql](src/main/resources/documentation/cql_source_processor_checks.md#checks-for-cql)
    - [.css or .scss](src/main/resources/documentation/css_source_processor_checks.md#checks-for-css-or-scss)
    - [.dtd](src/main/resources/documentation/dtd_source_processor_checks.md#checks-for-dtd)
-   - [.eslintignore, .prettierignore, or .properties](src/main/resources/documentation/properties_source_processor_checks.md#checks-for-eslintignore-prettierignore-or-properties)
    - [.expect, .sh, or .tpl](src/main/resources/documentation/sh_source_processor_checks.md#checks-for-expect-sh-or-tpl)
    - [.ftl](src/main/resources/documentation/ftl_source_processor_checks.md#checks-for-ftl)
    - [.ftl, .html, .jsp, .jspf, .jspx, or .vm](src/main/resources/documentation/csp_source_processor_checks.md#checks-for-ftl-html-jsp-jspf-jspx-or-vm)
@@ -128,6 +127,7 @@ Checks are configured in the following files:
    - [.lfrbuild-*](src/main/resources/documentation/lfr_build_source_processor_checks.md#checks-for-lfrbuild)
    - [.list](src/main/resources/documentation/list_source_processor_checks.md#checks-for-list)
    - [.markdown or .md](src/main/resources/documentation/markdown_source_processor_checks.md#checks-for-markdown-or-md)
+   - [.properties](src/main/resources/documentation/properties_source_processor_checks.md#checks-for-properties)
    - [.py](src/main/resources/documentation/python_source_processor_checks.md#checks-for-py)
    - [.soy](src/main/resources/documentation/soy_source_processor_checks.md#checks-for-soy)
    - [.sql](src/main/resources/documentation/sql_source_processor_checks.md#checks-for-sql)
