@@ -3,5 +3,4 @@ Bundle-SymbolicName: com.liferay.object.admin.rest.test
 Bundle-Version: 1.0.0
 -includeresource:\
 	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
-	com.liferay.object.admin.rest.client.jar=com.liferay.object.admin.rest.client-*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar
+	com.liferay.object.admin.rest.client.jar=com.liferay.object.admin.rest.client-*.jar;lib:=true

@@ -3,5 +3,4 @@ Bundle-SymbolicName: com.liferay.notification.rest.test
 Bundle-Version: 1.0.0
 -includeresource:\
 	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
-	com.liferay.notification.rest.client.jar=com.liferay.notification.rest.client-*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar
+	com.liferay.notification.rest.client.jar=com.liferay.notification.rest.client-*.jar;lib:=true

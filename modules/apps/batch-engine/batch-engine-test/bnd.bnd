@@ -40,5 +40,4 @@ Import-Package:\
 -includeresource:\
 	com.liferay.headless.admin.user.client.jar=com.liferay.headless.admin.user.client-*.jar;lib:=true,\
 	commons-compress-[0-9.]*.jar;lib:=true,\
-	xmlbeans-[0-9.]*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar
+	xmlbeans-[0-9.]*.jar;lib:=true
