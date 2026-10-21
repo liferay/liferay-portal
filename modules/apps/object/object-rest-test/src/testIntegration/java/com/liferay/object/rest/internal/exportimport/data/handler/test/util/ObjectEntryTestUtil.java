@@ -34,18 +34,6 @@ import java.util.Objects;
  */
 public class ObjectEntryTestUtil {
 
-	public static ObjectEntry addEmptyObjectEntry(
-			String externalReferenceCode, long groupId,
-			ObjectDefinition objectDefinition, long userId)
-		throws Exception {
-
-		objectDefinition = _getObjectDefinition(groupId, objectDefinition);
-
-		return ObjectEntryLocalServiceUtil.getOrAddEmptyObjectEntry(
-			externalReferenceCode, _getGroupId(groupId, objectDefinition),
-			userId, objectDefinition.getObjectDefinitionId());
-	}
-
 	public static ObjectEntry addObjectEntry(
 			String externalReferenceCode, long groupId,
 			ObjectDefinition objectDefinition, long userId)
@@ -126,6 +114,18 @@ public class ObjectEntryTestUtil {
 			externalReferenceCode, groupId, objectDefinition);
 
 		return objectEntry.getStatus();
+	}
+
+	public static ObjectEntry getOrAddEmptyObjectEntry(
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition, long userId)
+		throws Exception {
+
+		objectDefinition = _getObjectDefinition(groupId, objectDefinition);
+
+		return ObjectEntryLocalServiceUtil.getOrAddEmptyObjectEntry(
+			externalReferenceCode, _getGroupId(groupId, objectDefinition),
+			userId, objectDefinition.getObjectDefinitionId());
 	}
 
 	public static boolean hasObjectEntry(

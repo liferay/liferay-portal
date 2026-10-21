@@ -63,7 +63,7 @@ public class ObjectEntryCompanyBatchEnginePortletDataHandlerTest
 	protected void addEmptyEntry(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		ObjectEntryTestUtil.addEmptyObjectEntry(
+		ObjectEntryTestUtil.getOrAddEmptyObjectEntry(
 			externalReferenceCode, groupId, _objectDefinition,
 			TestPropsValues.getUserId());
 	}
