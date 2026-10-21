@@ -123,7 +123,7 @@ public class JournalContentConfigurationActionTest {
 	}
 
 	@Test
-	public void testProcessActionWhenArticleIsFromAssetLibrary()
+	public void testProcessActionWhenArticleIsFromDepotEntry()
 		throws Exception {
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
