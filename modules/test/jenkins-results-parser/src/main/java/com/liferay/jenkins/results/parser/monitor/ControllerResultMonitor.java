@@ -11,7 +11,6 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +112,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 				statuses);
 
 			if (statuses.size() > statusesCount) {
-				linkURLs = Collections.emptyList();
+				linkURLs = getConfiguredLinkURLs();
 			}
 		}
 		else {

@@ -87,6 +87,10 @@ public abstract class BaseMonitor implements Monitor {
 		return Boolean.parseBoolean(value);
 	}
 
+	protected List<String> getConfiguredLinkURLs() {
+		return _linkURLs;
+	}
+
 	protected CronSchedule getCronSchedule(String jobName, String masterName)
 		throws Exception {
 
