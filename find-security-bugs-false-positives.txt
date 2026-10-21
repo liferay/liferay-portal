@@ -1810,8 +1810,6 @@ com/liferay/commerce/machine/learning/internal/recommendation/model/BaseCommerce
 com/liferay/commerce/machine/learning/internal/recommendation/search/index/ProductContentCommerceMLRecommendationIndexer.getDocumentType()Ljava/lang/String;:SAFE
 com/liferay/commerce/machine/learning/internal/recommendation/search/index/ProductInteractionCommerceMLRecommendationIndexer.getDocumentType()Ljava/lang/String;:SAFE
 com/liferay/commerce/machine/learning/internal/recommendation/search/index/UserCommerceMLRecommendationIndexer.getDocumentType()Ljava/lang/String;:SAFE
-com/liferay/commerce/media/internal/configuration/definition/CommerceMediaDefaultImageConfigurationPidMapping.getConfigurationBeanClass()Ljava/lang/Class;:SAFE
-com/liferay/commerce/media/internal/configuration/definition/CommerceMediaDefaultImageConfigurationPidMapping.getConfigurationPid()Ljava/lang/String;:SAFE
 com/liferay/commerce/model/CPDAvailabilityEstimate$1.get(Lcom/liferay/commerce/model/CPDAvailabilityEstimate;)Ljava/lang/Long;:SAFE
 com/liferay/commerce/model/CPDAvailabilityEstimate$1.get(Ljava/lang/Object;)Ljava/lang/Object;:SAFE
 com/liferay/commerce/model/CPDAvailabilityEstimate$1.getAttributeClass()Ljava/lang/Class;:SAFE
