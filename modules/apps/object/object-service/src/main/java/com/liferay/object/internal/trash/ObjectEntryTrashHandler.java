@@ -10,7 +10,6 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEvent;
@@ -75,12 +74,7 @@ public class ObjectEntryTrashHandler extends BaseTrashHandler {
 
 	@Override
 	public TrashedModel getTrashedModel(long classPK) {
-		try {
-			return _objectEntryService.fetchObjectEntry(classPK);
-		}
-		catch (PortalException portalException) {
-			return ReflectionUtil.throwException(portalException);
-		}
+		return _objectEntryLocalService.fetchObjectEntry(classPK);
 	}
 
 	@Override
