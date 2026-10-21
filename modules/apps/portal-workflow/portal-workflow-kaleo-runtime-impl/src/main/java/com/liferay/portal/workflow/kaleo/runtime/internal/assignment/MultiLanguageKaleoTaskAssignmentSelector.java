@@ -9,7 +9,6 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
@@ -65,10 +64,8 @@ public class MultiLanguageKaleoTaskAssignmentSelector
 			executionContext.getKaleoTaskInstanceToken();
 
 		WorkflowTaskScriptConfiguration workflowTaskScriptConfiguration =
-			_configurationProvider.getConfiguration(
-				WorkflowTaskScriptConfiguration.class,
-				new SystemSettingsLocator(
-					WorkflowTaskScriptConfiguration.class.getName()));
+			_configurationProvider.getSystemConfiguration(
+				WorkflowTaskScriptConfiguration.class);
 
 		int scriptedAssignmentCacheExpirationTime =
 			workflowTaskScriptConfiguration.

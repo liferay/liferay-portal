@@ -100,7 +100,7 @@ public class MultiLanguageKaleoTaskAssignmentSelectorTest {
 			_getWorkflowTaskScriptConfiguration();
 
 		Mockito.when(
-			configurationProvider.getConfiguration(Mockito.any(), Mockito.any())
+			configurationProvider.getSystemConfiguration(Mockito.any())
 		).thenReturn(
 			workflowTaskScriptConfiguration
 		);
