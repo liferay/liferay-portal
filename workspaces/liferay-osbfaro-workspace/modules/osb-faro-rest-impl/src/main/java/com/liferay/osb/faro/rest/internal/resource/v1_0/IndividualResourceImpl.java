@@ -13,9 +13,13 @@ import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,8 +37,8 @@ public class IndividualResourceImpl extends BaseIndividualResourceImpl {
 	@Override
 	public Page<Individual> getWorkspaceGroupChannelIndividualsPage(
 			Long groupId, String channelId, String accountId,
-			String activityStatus, Boolean includeAnonymousUsers,
-			String individualSegmentId, String interestName, String rangeEnd,
+			String activityStatus, String individualSegmentId,
+			String interestName, String profileType, String rangeEnd,
 			String rangeKey, String rangeStart, String search,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
@@ -43,12 +47,12 @@ public class IndividualResourceImpl extends BaseIndividualResourceImpl {
 			_contactsEngineClient.getIndividuals(
 				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
 				accountId, null, activityStatus, channelId, null, null, null,
-				(includeAnonymousUsers != null) && includeAnonymousUsers,
-				individualSegmentId, null, interestName, null, search, rangeEnd,
+				false, individualSegmentId, _getIndividualTypes(profileType),
+				interestName, null, search, rangeEnd,
 				TimeRange.getRangeKey(rangeKey), rangeStart,
 				FaroPaginationUtil.getCur(pagination),
 				FaroPaginationUtil.getDelta(pagination),
-				FaroPaginationUtil.toOrderByFields(sorts));
+				FaroPaginationUtil.toOrderByFields(sorts, true));
 
 		return Page.of(
 			transform(
@@ -74,6 +78,14 @@ public class IndividualResourceImpl extends BaseIndividualResourceImpl {
 			_contactsEngineClient.getIndividual(
 				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
 				individualId, channelId));
+	}
+
+	private List<String> _getIndividualTypes(String profileType) {
+		if (Validator.isNull(profileType)) {
+			return null;
+		}
+
+		return Collections.singletonList(profileType);
 	}
 
 	@Reference

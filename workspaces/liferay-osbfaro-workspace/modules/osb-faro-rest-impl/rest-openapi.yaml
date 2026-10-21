@@ -314,7 +314,7 @@ components:
             type: object
         Individual:
             description:
-                "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser-tracked only)."
+                "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only)."
             properties:
                 accountName:
                     description:
@@ -399,7 +399,7 @@ components:
                     type: string
                 profileType:
                     description:
-                        "Profile classification. KNOWN individuals are identified by email/account; ANONYMOUS individuals are browser-tracked only."
+                        "Profile classification. KNOWN individuals are identified by email/account; ANONYMOUS individuals are browser tracked only."
                     enum: [ANONYMOUS, KNOWN]
                     readOnly: true
                     type: string
@@ -1388,7 +1388,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "If false, events from anonymous (browser-tracked) individuals are left out. Defaults to true, so anonymous events are included unless this is set to false."
+                        "If false, events from anonymous (browser tracked) individuals are left out. Defaults to true, so anonymous events are included unless this is set to false."
                     name: includeAnonymousUsers
                     schema:
                         type: boolean
@@ -1525,7 +1525,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/individuals":
         get:
             description:
-                "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, or date range, and searchable by name or email with `search`. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
+                "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
             operationId: getWorkspaceGroupChannelIndividualsPage
             parameters:
                 -   in: path
@@ -1551,16 +1551,11 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Optional engagement classification to restrict results to individuals with that activity status. The set of values is defined by the analytics engine."
+                        "Optional engagement classification to restrict results to individuals with that activity status."
                     name: activityStatus
                     schema:
+                        enum: [ACTIVE, INACTIVE]
                         type: string
-                -   in: query
-                    description:
-                        "If true, anonymous (browser-tracked) individuals are included. Defaults to false."
-                    name: includeAnonymousUsers
-                    schema:
-                        type: boolean
                 -   in: query
                     description:
                         "Optional individual segment ID to restrict results to members of that segment."
@@ -1585,6 +1580,14 @@ paths:
                     name: pageSize
                     schema:
                         type: integer
+                -   in: query
+                    description:
+                        "Optional profile classification to restrict results to. KNOWN keeps only individuals identified by email or account; ANONYMOUS keeps only browser tracked individuals. Both are returned when omitted."
+                    example: KNOWN
+                    name: profileType
+                    schema:
+                        enum: [ANONYMOUS, KNOWN]
+                        type: string
                 -   in: query
                     description:
                         "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
@@ -1613,7 +1616,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Sort expression `column:asc|desc`."
+                        "Sort expression `column:asc|desc`. Sortable columns: accountName, activitiesCount, averageSessionDuration, emailAddress, firstActivityDate, knownSinceDate, lastActivityDate, lastSessionCountry, sessionsCount. Only one column is sorted on."
                     example: lastActivityDate:desc
                     name: sort
                     schema:
