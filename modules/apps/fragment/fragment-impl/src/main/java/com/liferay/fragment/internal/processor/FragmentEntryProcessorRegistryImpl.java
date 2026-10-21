@@ -281,6 +281,10 @@ public class FragmentEntryProcessorRegistryImpl
 		throws PortalException {
 
 		if (fragmentEntryLink.isTypePortlet()) {
+			if (fragmentEntryProcessorContext.isDisablePortletRender()) {
+				return StringPool.BLANK;
+			}
+
 			return _renderWidgetHTML(
 				fragmentEntryLink, fragmentEntryProcessorContext);
 		}

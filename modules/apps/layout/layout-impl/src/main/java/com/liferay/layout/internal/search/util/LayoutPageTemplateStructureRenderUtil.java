@@ -21,6 +21,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,6 +86,8 @@ public class LayoutPageTemplateStructureRenderUtil {
 			DefaultFragmentRendererContext fragmentRendererContext =
 				new DefaultFragmentRendererContext(fragmentEntryLink);
 
+			fragmentRendererContext.setDisablePortletRender(
+				ServerDetector.isJBoss() || ServerDetector.isWildfly());
 			fragmentRendererContext.setLocale(locale);
 			fragmentRendererContext.setMode(FragmentEntryLinkConstants.INDEX);
 
