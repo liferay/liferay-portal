@@ -18,7 +18,7 @@ openapi.resource.path=${configYAML.application.baseURI}
 batch.engine.entity.class.name=${javaDataType}
 batch.engine.task.item.delegate=true
 batch.planner.export.enabled=${freeMarkerTool.hasReadVulcanBatchImplementation(configYAML, javaMethodSignatures)?c}
-batch.planner.import.enabled=${freeMarkerTool.getVulcanBatchImplementationCreateStrategies(javaMethodSignatures, freeMarkerTool.getDTOProperties(configYAML, openAPIYAML, schema, allSchemas))?has_content?c}
+batch.planner.import.enabled=${freeMarkerTool.getVulcanBatchImplementationCreateStrategies(configYAML, javaMethodSignatures, freeMarkerTool.getDTOProperties(configYAML, openAPIYAML, schema, allSchemas))?has_content?c}
 </#if>
 <#if generateCRUD>
 crud.entity.class.name=${javaDataType}
