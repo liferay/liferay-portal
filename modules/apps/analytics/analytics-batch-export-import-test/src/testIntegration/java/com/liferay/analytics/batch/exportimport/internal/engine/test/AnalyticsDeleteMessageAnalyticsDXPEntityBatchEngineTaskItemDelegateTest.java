@@ -74,8 +74,8 @@ public class
 
 	@Test
 	public void testRead() throws Exception {
-		_testReadWithoutResourceLastModifiedDate();
 		_testReadWithResourceLastModifiedDate();
+		_testReadWithoutResourceLastModifiedDate();
 	}
 
 	private void _testReadWithResourceLastModifiedDate() throws Exception {
