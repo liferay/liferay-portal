@@ -53,7 +53,7 @@ public class AnalyticsDeleteMessageAnalyticsDXPEntityBatchEngineTaskItemDelegate
 		List<AnalyticsDeleteMessage> analyticsDeleteMessages = null;
 		int totalCount = 0;
 
-		Date modifiedDate = _getModifiedDate(filter);
+		Date modifiedDate = _getModifiedDate(filter, parameters);
 
 		if (modifiedDate != null) {
 			analyticsDeleteMessages =
@@ -86,7 +86,16 @@ public class AnalyticsDeleteMessageAnalyticsDXPEntityBatchEngineTaskItemDelegate
 			pagination, totalCount);
 	}
 
-	private Date _getModifiedDate(Filter filter) {
+	private Date _getModifiedDate(
+		Filter filter, Map<String, Serializable> parameters) {
+
+		Serializable resourceLastModifiedDate = parameters.get(
+			"resourceLastModifiedDate");
+
+		if (resourceLastModifiedDate != null) {
+			return (Date)resourceLastModifiedDate;
+		}
+
 		if (!(filter instanceof QueryFilter)) {
 			return null;
 		}
