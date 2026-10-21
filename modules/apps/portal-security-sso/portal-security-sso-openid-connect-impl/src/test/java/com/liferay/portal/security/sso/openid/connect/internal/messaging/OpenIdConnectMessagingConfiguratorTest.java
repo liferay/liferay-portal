@@ -38,6 +38,9 @@ public class OpenIdConnectMessagingConfiguratorTest {
 
 	@Test
 	public void testActivate() {
+		OpenIdConnectMessagingConfigurator openIdConnectMessagingConfigurator =
+			new OpenIdConnectMessagingConfigurator();
+
 		DestinationFactory destinationFactory = Mockito.mock(
 			DestinationFactory.class);
 
@@ -56,9 +59,6 @@ public class OpenIdConnectMessagingConfiguratorTest {
 		).thenReturn(
 			destination
 		);
-
-		OpenIdConnectMessagingConfigurator openIdConnectMessagingConfigurator =
-			new OpenIdConnectMessagingConfigurator();
 
 		ReflectionTestUtil.setFieldValue(
 			openIdConnectMessagingConfigurator, "_destinationFactory",

@@ -601,10 +601,6 @@ public class OfflineOpenIdConnectSessionManagerTest {
 				authServerWellKnownURI, clientId, companyId,
 				openIdConnectSessionLocalService);
 
-		AccessToken refreshedAccessToken = _createAccessToken();
-		RefreshToken refreshedRefreshToken = new RefreshToken(
-			RandomTestUtil.randomString());
-
 		String refreshedIssuer = RandomTestUtil.randomString();
 		String refreshedSessionId = RandomTestUtil.randomString();
 
@@ -617,6 +613,10 @@ public class OfflineOpenIdConnectSessionManagerTest {
 			).build());
 
 		String refreshedIdTokenString = plainJWT.serialize();
+
+		AccessToken refreshedAccessToken = _createAccessToken();
+		RefreshToken refreshedRefreshToken = new RefreshToken(
+			RandomTestUtil.randomString());
 
 		OpenIdConnectSession openIdConnectSession = _createOpenIdConnectSession(
 			authServerWellKnownURI, clientId, companyId,
