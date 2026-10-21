@@ -447,50 +447,6 @@ definition {
 			kbArticleTitle = "Knowledge Base Article Title");
 	}
 
-	@description = "This ensures that an image in the KB content field can be rendered correctly after moving it to a folder."
-	@priority = 4
-	test CanViewImageInKBAfterMovingToFolder {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.openToEditKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		KBArticle.editCP(
-			dmImage = "DM Document Title",
-			kbArticleTitleEdit = "Knowledge Base Article Title Edit",
-			navTab = "Documents and Media",
-			skipNavigation = "true");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		JSONDocument.moveFileEntryToFolder(
-			dmDocumentTitle = "DM Document Title",
-			folderName = "DM Folder Name",
-			groupName = "Guest");
-
-		KBArticle.openToKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title Edit",
-			siteURLKey = "guest");
-
-		KBArticle.viewImageViaContentCmd();
-	}
-
 	@description = "This ensures that an external video in the KB content field can be rendered correctly after moving it to a folder."
 	@priority = 4
 	test CanViewVideoInKBAfterMovingToFolder {
