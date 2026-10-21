@@ -63,10 +63,12 @@ public class LayoutPageTemplateEntryLayoutProviderUtilTest {
 	}
 
 	@Test
-	@TestInfo("LPD-99345")
+	@TestInfo({"LPD-99345", "LPD-108819"})
 	public void testGetLayoutPageTemplateEntryLayout() throws Throwable {
-		long groupId = RandomTestUtil.randomLong();
+		long companyId = RandomTestUtil.randomLong();
 		String externalReferenceCode = RandomTestUtil.randomString();
+		long groupId = RandomTestUtil.randomLong();
+		String layoutPageTemplateEntryScopeERC = RandomTestUtil.randomString();
 		long plid = RandomTestUtil.randomLong();
 
 		Layout layout = Mockito.mock(Layout.class);
@@ -78,7 +80,8 @@ public class LayoutPageTemplateEntryLayoutProviderUtilTest {
 		Mockito.when(
 			layoutPageTemplateEntryLayoutProvider.
 				getLayoutPageTemplateEntryLayout(
-					groupId, externalReferenceCode, plid)
+					companyId, externalReferenceCode, groupId,
+					layoutPageTemplateEntryScopeERC, plid)
 		).thenReturn(
 			layout
 		);
@@ -93,13 +96,15 @@ public class LayoutPageTemplateEntryLayoutProviderUtilTest {
 			layout,
 			LayoutPageTemplateEntryLayoutProviderUtil.
 				getLayoutPageTemplateEntryLayout(
-					groupId, externalReferenceCode, plid));
+					companyId, externalReferenceCode, groupId,
+					layoutPageTemplateEntryScopeERC, plid));
 
 		_testLogsDebugMessageWhenProviderIsUnavailable(
 			() ->
 				LayoutPageTemplateEntryLayoutProviderUtil.
 					getLayoutPageTemplateEntryLayout(
-						groupId, externalReferenceCode, plid));
+						companyId, externalReferenceCode, groupId,
+						layoutPageTemplateEntryScopeERC, plid));
 	}
 
 	@Test
