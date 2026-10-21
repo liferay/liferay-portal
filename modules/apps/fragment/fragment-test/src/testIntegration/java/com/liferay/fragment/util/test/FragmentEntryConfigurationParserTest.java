@@ -75,6 +75,50 @@ public class FragmentEntryConfigurationParserTest {
 	}
 
 	@Test
+	public void testGetConfigurationJSONObject() throws Exception {
+		JSONObject configurationJSONObject = _readJSONObject(
+			"configuration.json");
+
+		JSONObject expectedConfigurationJSONObject = _readJSONObject(
+			"expected-configuration-default-values.json");
+
+		JSONObject configurationValuesJSONObject =
+			_fragmentEntryConfigurationParser.getConfigurationJSONObject(
+				configurationJSONObject, JSONFactoryUtil.createJSONObject(),
+				LocaleUtil.US);
+
+		Assert.assertEquals(
+			expectedConfigurationJSONObject.toString(),
+			configurationValuesJSONObject.toString());
+
+		configurationValuesJSONObject =
+			_fragmentEntryConfigurationParser.getConfigurationJSONObject(
+				configurationJSONObject,
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"bodyAppliedStyle", "dark"
+					).put(
+						"bodyNumberOfColumns", "5"
+					).put(
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString()
+					)),
+				LocaleUtil.US);
+
+		expectedConfigurationJSONObject.put(
+			"bodyAppliedStyle", "dark"
+		).put(
+			"bodyNumberOfColumns", 5
+		);
+
+		Assert.assertEquals(
+			expectedConfigurationJSONObject.toString(),
+			configurationValuesJSONObject.toString());
+	}
+
+	@Test
 	@TestInfo("LPD-67912")
 	public void testGetConfigurationJSONObjectURLConfigurationWithMappedLayout()
 		throws Exception {
