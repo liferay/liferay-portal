@@ -402,16 +402,16 @@ public abstract class BaseMockContactsEngineClientImpl
 	public Results<AccountLifecycleStageTransition>
 			getAccountLifecycleStageTransitions(
 				FaroProject faroProject, String country,
-				String fromLifecycleStage, String id, String industry,
+				String fromAccountLifecycleStageId, String id, String industry,
 				String rangeEnd, Integer rangeKey, String rangeStart,
-				Long segmentId, String toLifecycleStage, int cur, int delta,
-				List<OrderByField> orderByFields)
+				Long segmentId, String toAccountLifecycleStageId, int cur,
+				int delta, List<OrderByField> orderByFields)
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getAccountLifecycleStageTransitions(
-			faroProject, country, fromLifecycleStage, id, industry, rangeEnd,
-			rangeKey, rangeStart, segmentId, toLifecycleStage, cur, delta,
-			orderByFields);
+			faroProject, country, fromAccountLifecycleStageId, id, industry,
+			rangeEnd, rangeKey, rangeStart, segmentId,
+			toAccountLifecycleStageId, cur, delta, orderByFields);
 	}
 
 	@Override
@@ -426,13 +426,13 @@ public abstract class BaseMockContactsEngineClientImpl
 	@Override
 	public Results<AccountLifecycle> getAccountLifecycles(
 			FaroProject faroProject, Long channelId,
-			Boolean defaultAccountLifecycle, String query, int cur, int delta,
-			String sortString)
+			Boolean defaultAccountLifecycle, String externalReferenceCode,
+			String query, int cur, int delta, String sortString)
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getAccountLifecycles(
-			faroProject, channelId, defaultAccountLifecycle, query, cur, delta,
-			sortString);
+			faroProject, channelId, defaultAccountLifecycle,
+			externalReferenceCode, query, cur, delta, sortString);
 	}
 
 	@Override
@@ -1345,11 +1345,11 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
-	public void updateAccountLifecycleStageRule(
+	public AccountLifecycle updateAccountLifecycleStageRule(
 		FaroProject faroProject, String filterMetadata, String filterString,
 		String id, String name, String stageId) {
 
-		contactsEngineClient.updateAccountLifecycleStageRule(
+		return contactsEngineClient.updateAccountLifecycleStageRule(
 			faroProject, filterMetadata, filterString, id, name, stageId);
 	}
 
