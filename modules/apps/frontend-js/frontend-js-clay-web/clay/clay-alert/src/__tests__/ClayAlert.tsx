@@ -156,6 +156,21 @@ describe('ClayAlert', () => {
 
 		expect(container).toMatchSnapshot();
 	});
+
+	it('focuses the alert when autoFocus is set', () => {
+		render(<ClayAlert autoFocus title="Hello!" />);
+
+		const alert = document.querySelector('[role="alert"]');
+
+		expect(document.activeElement).toBe(alert);
+		expect(alert).toHaveAttribute('tabindex', '-1');
+	});
+
+	it('does not move focus without autoFocus', () => {
+		render(<ClayAlert title="Hello!" />);
+
+		expect(document.activeElement).toBe(document.body);
+	});
 });
 
 describe('IncrementalInteractions', () => {
@@ -488,6 +503,16 @@ describe('IncrementalInteractions', () => {
 		});
 
 		expect(onClose).not.toHaveBeenCalled();
+	});
+
+	it('does not move focus when autoFocus changes to true', () => {
+		const {rerender} = render(<ClayAlert title="Hello!" />);
+
+		expect(document.activeElement).toBe(document.body);
+
+		rerender(<ClayAlert autoFocus title="Hello!" />);
+
+		expect(document.activeElement).toBe(document.body);
 	});
 
 	it('calls onClose after the remaining time when the mouse leaves after a pause', () => {
