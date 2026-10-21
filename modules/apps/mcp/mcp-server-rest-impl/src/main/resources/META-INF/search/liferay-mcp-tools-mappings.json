@@ -1,0 +1,100 @@
+{
+	"dynamic": "strict",
+	"properties": {
+		"collection": {
+			"type": "keyword"
+		},
+		"deprecated": {
+			"type": "boolean"
+		},
+		"description": {
+			"analyzer": "mcp_tool_index",
+			"search_analyzer": "mcp_tool_search",
+			"type": "text"
+		},
+		"entityName": {
+			"fields": {
+				"split": {
+					"analyzer": "mcp_tool_split",
+					"search_analyzer": "mcp_tool_search",
+					"type": "text"
+				}
+			},
+			"type": "keyword"
+		},
+		"expansion": {
+			"analyzer": "mcp_tool_index",
+			"fields": {
+				"phrase": {
+					"analyzer": "mcp_tool_phrase",
+					"type": "text"
+				}
+			},
+			"search_analyzer": "mcp_tool_search",
+			"type": "text"
+		},
+		"intent": {
+			"type": "keyword"
+		},
+		"method": {
+			"index": false,
+			"type": "keyword"
+		},
+		"operationVariant": {
+			"type": "keyword"
+		},
+		"parameterNames": {
+			"analyzer": "mcp_tool_index",
+			"search_analyzer": "mcp_tool_search",
+			"type": "text"
+		},
+		"path": {
+			"analyzer": "mcp_tool_index",
+			"search_analyzer": "mcp_tool_search",
+			"type": "text"
+		},
+		"pathLength": {
+			"type": "integer"
+		},
+		"pathParameterCount": {
+			"type": "integer"
+		},
+		"pathPartCount": {
+			"type": "integer"
+		},
+		"requiredPropertyCollections": {
+			"index": false,
+			"type": "keyword"
+		},
+		"schemaPropertyNames": {
+			"analyzer": "mcp_tool_index",
+			"search_analyzer": "mcp_tool_search",
+			"type": "text"
+		},
+		"timestamp": {
+			"type": "date"
+		},
+		"toolName": {
+			"fields": {
+				"split": {
+					"analyzer": "mcp_tool_split",
+					"search_analyzer": "mcp_tool_search",
+					"type": "text"
+				}
+			},
+			"type": "keyword"
+		},
+		"toolSetHash": {
+			"type": "keyword"
+		},
+		"toolSetName": {
+			"type": "keyword"
+		},
+		"toolSetSize": {
+			"type": "integer"
+		},
+		"uid": {
+			"type": "keyword"
+		}
+	}
+}

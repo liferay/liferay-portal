@@ -1,0 +1,109 @@
+{
+	"analysis": {
+		"analyzer": {
+			"mcp_tool_index": {
+				"filter": [
+					"mcp_tool_word_delimiter",
+					"flatten_graph",
+					"lowercase",
+					"asciifolding",
+					"mcp_tool_stemmer"
+				],
+				"tokenizer": "standard",
+				"type": "custom"
+			},
+			"mcp_tool_phrase": {
+				"char_filter": [
+					"mcp_tool_case",
+					"mcp_tool_article",
+					"mcp_tool_anchor"
+				],
+				"filter": [
+					"lowercase",
+					"asciifolding",
+					"mcp_tool_stemmer"
+				],
+				"tokenizer": "standard",
+				"type": "custom"
+			},
+			"mcp_tool_search": {
+				"char_filter": [
+					"mcp_tool_case",
+					"mcp_tool_article"
+				],
+				"filter": [
+					"lowercase",
+					"asciifolding",
+					"mcp_tool_synonym",
+					"mcp_tool_word_delimiter",
+					"mcp_tool_stemmer"
+				],
+				"tokenizer": "standard",
+				"type": "custom"
+			},
+			"mcp_tool_split": {
+				"char_filter": [
+					"mcp_tool_case",
+					"mcp_tool_acronym"
+				],
+				"filter": [
+					"mcp_tool_word_delimiter",
+					"flatten_graph",
+					"lowercase",
+					"asciifolding",
+					"unique",
+					"mcp_tool_stemmer"
+				],
+				"tokenizer": "standard",
+				"type": "custom"
+			}
+		},
+		"char_filter": {
+			"mcp_tool_acronym": {
+				"pattern": "([A-Z]+)([A-Z][a-z])",
+				"replacement": "$1 $2",
+				"type": "pattern_replace"
+			},
+			"mcp_tool_anchor": {
+				"pattern": "^",
+				"replacement": "phrasehead ",
+				"type": "pattern_replace"
+			},
+			"mcp_tool_article": {
+				"pattern": "(?i)\\b(?:a|an|the)\\s+",
+				"replacement": "",
+				"type": "pattern_replace"
+			},
+			"mcp_tool_case": {
+				"pattern": "([a-z0-9])([A-Z])",
+				"replacement": "$1 $2",
+				"type": "pattern_replace"
+			}
+		},
+		"filter": {
+			"mcp_tool_stemmer": {
+				"language": "light_english",
+				"type": "stemmer"
+			},
+			"mcp_tool_synonym": {
+				"synonyms": [
+				],
+				"type": "synonym_graph"
+			},
+			"mcp_tool_word_delimiter": {
+				"catenate_words": false,
+				"generate_number_parts": true,
+				"generate_word_parts": true,
+				"preserve_original": true,
+				"split_on_case_change": true,
+				"split_on_numerics": true,
+				"type": "word_delimiter_graph"
+			}
+		}
+	},
+	"index.auto_expand_replicas": "0-all",
+	"index.default_pipeline": "timestamp",
+	"index.number_of_shards": 1,
+	"index.similarity.default.b": 0.35,
+	"index.similarity.default.type": "BM25"
+}
