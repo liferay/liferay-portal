@@ -96,19 +96,19 @@ public abstract class BaseSamlTestCase {
 	public void setUp() throws Exception {
 		Class.forName(ConfigurationServiceBootstrapUtil.class.getName());
 
-		_setupConfiguration();
-		_setupIdentifiers();
-		_setupParserPool();
+		_setUpConfiguration();
+		_setUpIdentifiers();
+		_setUpParserPool();
 
-		_setupPortal();
+		_setUpPortal();
 
 		_setUpSecretResolver();
 
-		_setupMetadata();
+		_setUpMetadata();
 
-		_setupSamlBindings();
+		_setUpSamlBindings();
 
-		_setupSamlPeerBindingsLocalService();
+		_setUpSamlPeerBindingsLocalService();
 	}
 
 	@After
@@ -504,7 +504,7 @@ public abstract class BaseSamlTestCase {
 		return serviceMock;
 	}
 
-	private void _setupConfiguration() {
+	private void _setUpConfiguration() {
 		Thread currentThread = Thread.currentThread();
 
 		ClassLoaderPool.register(
@@ -576,7 +576,7 @@ public abstract class BaseSamlTestCase {
 		);
 	}
 
-	private void _setupIdentifiers() {
+	private void _setUpIdentifiers() {
 		samlIdentifierGenerator = IdentifierGeneratorStrategyFactory.create(16);
 
 		identifierGenerationStrategy = Mockito.mock(
@@ -626,7 +626,7 @@ public abstract class BaseSamlTestCase {
 		);
 	}
 
-	private void _setupMetadata() throws Exception {
+	private void _setUpMetadata() throws Exception {
 		fileSystemKeyStoreManagerImpl = new FileSystemKeyStoreManagerImpl();
 
 		ReflectionTestUtil.invoke(
@@ -665,7 +665,7 @@ public abstract class BaseSamlTestCase {
 				SamlSpIdpConnectionLocalService.class));
 	}
 
-	private void _setupParserPool() {
+	private void _setUpParserPool() {
 		XMLObjectProviderRegistry xmlObjectProviderRegistry =
 			ConfigurationServiceBootstrapUtil.get(
 				XMLObjectProviderRegistry.class);
@@ -673,7 +673,7 @@ public abstract class BaseSamlTestCase {
 		parserPool = xmlObjectProviderRegistry.getParserPool();
 	}
 
-	private void _setupPortal() throws Exception {
+	private void _setUpPortal() throws Exception {
 		httpClient = Mockito.mock(HttpClient.class);
 
 		PortalUtil portalUtil = new PortalUtil();
@@ -748,7 +748,7 @@ public abstract class BaseSamlTestCase {
 			UserLocalServiceUtil.class, UserLocalService.class);
 	}
 
-	private void _setupSamlBindings() {
+	private void _setUpSamlBindings() {
 		samlBindingProvider = new SamlBindingProvider();
 
 		ReflectionTestUtil.setFieldValue(
@@ -763,7 +763,7 @@ public abstract class BaseSamlTestCase {
 			});
 	}
 
-	private void _setupSamlPeerBindingsLocalService() throws Exception {
+	private void _setUpSamlPeerBindingsLocalService() throws Exception {
 		samlPeerBindingLocalService = getMockPortletService(
 			SamlPeerBindingLocalServiceUtil.class,
 			SamlPeerBindingLocalService.class);
