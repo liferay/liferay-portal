@@ -45,10 +45,6 @@ spec:
                                 value: liferay-gateway-class
                             -   name: gateway.name
                                 value: {{ printf "%s-%s-gateway" $layout.projectId $layout.environmentId | quote }}
-                            {{- with .Values.database.engine }}
-                            -   name: global.database.engine
-                                value: {{ . | quote }}
-                            {{- end }}
                             -   name: projectId
                                 value: {{ $layout.projectId | quote }}
                             {{- with .Values.infrastructure.parameters }}

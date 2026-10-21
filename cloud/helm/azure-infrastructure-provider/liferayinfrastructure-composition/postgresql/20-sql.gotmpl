@@ -76,7 +76,7 @@ spec:
         tags:
             active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
             should-back-up: "true"
-        version: {{ $database.version | quote }}
+        version: {{ $database.version | default "16" | quote }}
     {{- if $isDatabaseRestoreTarget }}
     initProvider:
         createMode: PointInTimeRestore

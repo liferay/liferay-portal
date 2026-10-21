@@ -122,8 +122,6 @@ spec:
                                             default: 32
                                             type: integer
                                         version:
-                                            default: "16"
-                                            pattern: ^[0-9]+(\.[0-9]+)*$
                                             type: string
                                     type: object
                                 environmentId:

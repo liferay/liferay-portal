@@ -1,7 +1,7 @@
 {{- if .Values.enabled -}}
 {{- $database := deepCopy (.Values.database | default dict) -}}
-{{- if and (eq (dig "database" "engine" "" (.Values.global | default dict)) "mysql") (not $database.version) -}}
-{{- $_ := set $database "version" "8.4" -}}
+{{- with $database.version -}}
+{{- $_ := set $database "version" (toString .) -}}
 {{- end -}}
 {{- $searchEngine := include "search.engine" . -}}
 apiVersion: liferay.com/v1alpha1
