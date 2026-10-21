@@ -848,6 +848,10 @@
 			<category name="Bug Prevention" />
 			<description name="Ensure `setExpandoBridgeAttributes` is the final setter called on a model before model persistence." />
 		</check>
+		<check name="JavaFeatureFlagAnnotationCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that feature flags are declared with `x-feature-flag` in `rest-openapi.yaml` instead of using the annotation `@FeatureFlag`." />
+		</check>
 		<check name="JavaFeatureFlagManagerUtilCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds cases where `FeatureFlagManagerUtil.isEnabled` should be used and incorrect use of it." />
