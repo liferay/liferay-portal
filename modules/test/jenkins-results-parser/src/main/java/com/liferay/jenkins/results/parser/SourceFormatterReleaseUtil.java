@@ -123,6 +123,7 @@ public class SourceFormatterReleaseUtil {
 		List<String> addedLines = new ArrayList<>();
 		List<String> removedLines = new ArrayList<>();
 
+		boolean documentation = false;
 		boolean hunk = false;
 
 		Pattern versionPattern = Pattern.compile(
@@ -132,9 +133,18 @@ public class SourceFormatterReleaseUtil {
 
 		for (String line : gitDiff.split("\n")) {
 			if (line.startsWith("diff --git ")) {
-				if (!_versionFilePaths.contains(
-						line.substring(line.indexOf(" b/") + 3))) {
+				String filePath = line.substring(line.indexOf(" b/") + 3);
 
+				documentation =
+					filePath.equals(
+						JenkinsResultsParserUtil.combine(
+							_SOURCE_FORMATTER_PATH, "/README.md")) ||
+					filePath.startsWith(
+						JenkinsResultsParserUtil.combine(
+							_SOURCE_FORMATTER_PATH,
+							"/src/main/resources/documentation/"));
+
+				if (!documentation && !_versionFilePaths.contains(filePath)) {
 					return false;
 				}
 
@@ -149,7 +159,7 @@ public class SourceFormatterReleaseUtil {
 				continue;
 			}
 
-			if (!hunk) {
+			if (documentation || !hunk) {
 				continue;
 			}
 
