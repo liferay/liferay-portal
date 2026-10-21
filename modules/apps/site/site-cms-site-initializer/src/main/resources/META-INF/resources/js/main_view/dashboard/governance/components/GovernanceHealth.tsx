@@ -18,13 +18,13 @@ import './GovernanceHealth.scss';
 
 const MAX_SCORE = 100;
 
-const METRICS = [
-	Liferay.Language.get('quality-help'),
-	Liferay.Language.get('freshness-help'),
-	Liferay.Language.get('operations-help'),
+const SCORE_RULES = [
+	Liferay.Language.get('governance-health-issues-help'),
+	Liferay.Language.get('governance-health-warnings-help'),
+	Liferay.Language.get('governance-health-informational-help'),
 ];
 
-function ScoreHelp({title}: {title: string}) {
+function ScoreHelp() {
 	const [show, setShow] = useState(false);
 
 	return (
@@ -32,7 +32,7 @@ function ScoreHelp({title}: {title: string}) {
 			alignPosition="right-top"
 			closeOnClickOutside
 			disableScroll
-			header={title}
+			header={Liferay.Language.get('about-this-dashboard')}
 			onShowChange={setShow}
 			show={show}
 			trigger={
@@ -50,8 +50,8 @@ function ScoreHelp({title}: {title: string}) {
 			<p>{Liferay.Language.get('governance-health-help')}</p>
 
 			<ul className="mb-0 pl-4">
-				{METRICS.map((metric) => (
-					<li key={metric}>{metric}</li>
+				{SCORE_RULES.map((rule) => (
+					<li key={rule}>{rule}</li>
 				))}
 			</ul>
 		</ClayPopover>
@@ -117,7 +117,7 @@ export function GovernanceHealth() {
 						{title}
 					</Text>
 
-					<ScoreHelp title={title} />
+					<ScoreHelp />
 				</div>
 
 				{loadingStatistics ? (

@@ -187,9 +187,13 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 			await screen.findByText('governance-health-help')
 		).toBeInTheDocument();
 
-		expect(screen.getByText('quality-help')).toBeInTheDocument();
+		expect(
+			screen.getByText('governance-health-issues-help')
+		).toBeInTheDocument();
 
-		expect(screen.getByText('operations-help')).toBeInTheDocument();
+		expect(
+			screen.getByText('governance-health-warnings-help')
+		).toBeInTheDocument();
 	});
 
 	it('closes the popover with the escape key', async () => {
