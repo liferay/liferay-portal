@@ -1,3 +1,11 @@
+---
+
+paths:
+  - "**/notification-templates/**"
+  - "**/object-actions/**"
+
+---
+
 # Object Actions Catalog
 
 > **Before authoring:** Load `manage-object-logic` before authoring an action, notification template, or workflow — this card is the catalog, that skill is the procedure.

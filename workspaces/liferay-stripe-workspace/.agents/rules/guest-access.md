@@ -1,3 +1,12 @@
+---
+
+paths:
+  - "**/fragments/**"
+  - "**/layouts/**"
+  - "**/resource-permissions.json"
+
+---
+
 # Guest Access
 
 What an anonymous visitor can and cannot read. Every rule here fails **silently** — the page returns 200, the entry saves, nothing appears in the log — and every one of them looks correct to a signed in author, because the author's own session has the access the visitor lacks.

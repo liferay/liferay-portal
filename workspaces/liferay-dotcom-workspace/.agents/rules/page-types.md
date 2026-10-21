@@ -1,3 +1,11 @@
+---
+
+paths:
+  - "**/layout-page-templates/**"
+  - "**/layouts/**"
+
+---
+
 # Page Types
 
 > **Before authoring:** Load `manage-pages` before authoring a page, and `scaffold-fragment` before authoring a fragment placed on one.

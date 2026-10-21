@@ -68,9 +68,7 @@ Create four files for each fragment:
   <div data-lfr-editable-id="image" data-lfr-editable-type="image">
     <img alt="" src="" />
   </div>
-  <div data-lfr-editable-id="title" data-lfr-editable-type="rich-text">
-    <h2>Heading</h2>
-  </div>
+  <h2 data-lfr-editable-id="title" data-lfr-editable-type="text">Heading</h2>
   <div data-lfr-editable-id="body" data-lfr-editable-type="rich-text">
     <p>Body text here.</p>
   </div>
@@ -81,6 +79,8 @@ Create four files for each fragment:
 ```
 
 Editable type values: `rich-text`, `text`, `image`, `link`, `html`, `background-image`.
+
+**Make a heading the editable element itself, as a `text` editable.** Do not wrap an `<h1>`–`<h3>` inside a `rich-text` region. A page that sets the title through `fragmentFields` replaces the region's inner markup, so the wrapped heading renders as a plain `div` and the page loses its heading, its outline, and every heading style (`manage-pages` → "A Literal Override Replaces the Editable's Inner Markup"). With the heading tag as the editable, the override replaces only its text: verified on 2026.Q2, where `<h2 data-lfr-editable-type="text">` with a per page override still rendered as an `h2`.
 
 **`index.css`** — scoped styles
 

@@ -1,3 +1,10 @@
+---
+
+paths:
+  - "**/client-extension.yaml"
+
+---
+
 # Client Extension Types
 
 > **Before authoring:** Load `scaffold-client-extension` before writing any `client-extension.yaml`, and `theme-and-design` for `themeCSS` / `globalCSS`.

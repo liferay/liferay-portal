@@ -1,3 +1,11 @@
+---
+
+paths:
+  - "**/*.config"
+  - "**/portal-ext.properties"
+
+---
+
 # Feature Flags Catalog
 
 > **Before authoring:** Load `feature-flags` before enabling anything here — it owns the per environment mechanism and the restart.

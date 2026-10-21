@@ -169,7 +169,7 @@ Two consequences, both quiet:
 - **CSS targeting the inner tag stops matching.** A rule written `.section-heading__title h2` styles the fragment's default and nothing else, so the placements you actually ship lose their sizing. Style the wrapper class itself, or list both.
 - **Site wide `h1`…`h4` rules skip these headings entirely** — there is no heading element left to match. This is the trap for the master page heading rule in `skills/theme-and-design/SKILL.md`: the selector must name the title wrapper classes alongside the tags, or the overridden headings — the ones on every real page — silently keep the body font.
 
-It also means the page has no `<h2>` where the author intended one. Where document outline matters, put the heading tag *outside* the editable region and let the override fill a `<span>` within it.
+It also means the page has no `<h2>` where the author intended one. Make the heading tag the editable element itself, `<h2 data-lfr-editable-id="title" data-lfr-editable-type="text">`, and the override replaces only its text, keeping the `h2`. Verified on 2026.Q2 (`scaffold-fragment` → `index.html`).
 
 #### Per Instance Configuration — `fragmentConfig`
 
@@ -436,5 +436,11 @@ Expect `200 OK`.
 1. **Assert real data, not markup presence.** Grep for a value that only exists in the database (an actual event name) *and* confirm the fragment's placeholder strings are absent — placeholders still present means the mapping did not resolve.
 
 1. **Check each page's own text.** Reusing a section fragment across pages carries its default text with it; a heading that reads "Upcoming Events" on the register page is a 200 with wrong content. Set per page values with a literal `fragmentFields` entry rather than relying on the fragment default.
+
+1. **Check that every page has a heading.** Each page needs at least one `h1`–`h3`, with an `h1` on the home page, or it has no outline and the site's heading style has nothing to apply to. A count of `0` on a page whose title is overridden means the heading is wrapped inside a `rich-text` region (see "A Literal Override Replaces the Editable's Inner Markup").
+
+	```bash
+	curl --silent --url "http://localhost:${PORT}/web/<site>/<page>" | grep --count --extended-regexp '<h[1-3][ >]'
+	```
 
 1. **Open it in a browser before declaring success.** Anything driven by JavaScript — a computed value, a populated `select` — is invisible to `curl`, which executes none of it. Confirm signed out too: sign in state changes what client side calls return.

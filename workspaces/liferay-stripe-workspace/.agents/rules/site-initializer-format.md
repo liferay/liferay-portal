@@ -1,3 +1,10 @@
+---
+
+paths:
+  - "**/site-initializer/**"
+
+---
+
 # Site Initializer Format
 
 > **Before authoring:** Load the skill for whatever you are about to author into this tree — `manage-objects`, `manage-pages`, `scaffold-fragment`, `theme-and-design`, or `manage-roles-permissions`. This card is the file format; the skills hold the failure modes.
@@ -165,7 +172,7 @@ client-extensions/<name>/
       <NN-name>.json
     object-relationships/         # One raw ObjectRelationship DTO per file
       <name>.json
-    object-fields/                # Fields added to already existing objects
+    object-fields/                # {"objectDefinitionId", "object-fields": [...]}; Aggregation fields go here (manage-objects)
     object-folders/               # Object folders
     object-actions/               # Object actions
     object-entries/               # Seed object entry data
@@ -176,6 +183,7 @@ client-extensions/<name>/
       <style-book-name>/
         style-book.json
     thumbnail.png                 # Site thumbnail (displayed in Site Admin)
+    workflow-definitions/         # Kaleo definition only; link it over REST (manage-object-logic → Approval Workflow)
 ```
 
 ## Objects and Picklists
@@ -228,6 +236,7 @@ A raw `ObjectDefinition`. Reference a picklist by **ERC**, via `listTypeDefiniti
 			"required": true
 		}
 	],
+	"panelCategoryKey": "control_panel.object",
 	"pluralLabel": {
 		"en_US": "Registrations"
 	},
@@ -235,6 +244,8 @@ A raw `ObjectDefinition`. Reference a picklist by **ERC**, via `listTypeDefiniti
 	"titleObjectFieldName": "attendeeName"
 }
 ```
+
+Keep `panelCategoryKey` because the object has no admin menu entry without it. See `skills/manage-objects/SKILL.md`.
 
 Custom field names are validated against a reserved list. `name`, `email`, `location`, and `company` are fine; `status`, `id`, `creator`, `keywords`, and `userId` are rejected. A collision throws `ObjectFieldNameException$MustNotBeReserved`, which **aborts initialization and rolls back the entire site creation transaction**, leaving no site, no objects, and no picklists. See `skills/manage-objects/SKILL.md` for the full list.
 
@@ -592,6 +603,8 @@ A page selects its master through its **own** `page-definition.json`, in a top l
 }
 ```
 
+That covers the tree's pages only. New pages take the site's default master, which the tree cannot set: an extra key in `master-page.json` makes the importer drop the master page. Mark it over REST after each provision (`skills/theme-and-design/SKILL.md` → "Mark It as the Site Default").
+
 ## `layout-set/public/metadata.json`
 
 Controls theme assignment and theme settings for the public (nonprivate) layout set. A theme is named by `themeId`, or by display name with `themeName`:
@@ -610,9 +623,13 @@ Controls theme assignment and theme settings for the public (nonprivate) layout 
 
 Use the `settings` block to switch off the stock theme chrome when a master page supplies a branded header and footer — otherwise both render, one above the other. Prefer this over hiding `#banner` / `#footer` with CSS: the setting is scoped to this layout set, whereas a `globalCSS` CET is injected instance wide and there is no site specific `body` class to scope such a rule to.
 
-> **A `themeCSS` CET cannot be selected from the initializer tree.** Liferay attaches one through a `ClientExtensionEntryRel` on the layout, the master layout, or the layout set, and `BundleSiteInitializer` has **no handler** that creates that relation — there is no key in `metadata.json` for it either. A deployed themeCSS CET is therefore *available* but not *applied* until someone picks it in Site Administration → Design → Theme, and that selection is lost on every reprovision.
+> **The tree cannot attach a theme CET.** Liferay attaches `themeCSS`, `themeFavicon`, and `themeSpritemap` through a `ClientExtensionEntryRel` on the layout, the master layout, or the layout set. `BundleSiteInitializer` never writes that row — the class does not mention `ClientExtensionEntryRel` at all — and there is no key in `metadata.json` for it, so a CET deployed by the tree alone is *available* but not *applied*.
 >
-> Plan accordingly. Appearance that must survive delete and redeploy has to come from things the tree can express: a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings. Reach for a themeCSS CET for Clay level overrides that have no token — Classic exposes no `headings*` style book tokens, for instance — and state plainly that applying it needs a manual step.
+> Attaching it over REST does not work either: the write persists, but the rendering does not change. See `skills/theme-and-design/SKILL.md` → "Apply to Site".
+>
+> None of that is a reason to skip the client extension. Build and deploy it anyway — a `themeFavicon` is the only way to deliver a browser tab icon at all — and treat **selecting** it as a manual step that must be redone after a reprovision.
+>
+> The tree *can* carry a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings unaided, and none of them needs reattaching. A browser tab icon is not among them. No handler writes the site record's favicon column either, so a custom favicon needs a `themeFavicon` CET and the manual selection.
 
 ## `client-extension.yaml` for the Initializer
 

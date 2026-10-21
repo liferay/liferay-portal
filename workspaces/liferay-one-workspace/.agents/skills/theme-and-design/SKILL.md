@@ -29,9 +29,11 @@ A `themeCSS` CET injects custom CSS that overrides Clay Design System variables.
 >
 > 1. **It needs its own project.** `themeCSS` is classified `frontend`; a `siteInitializer` is `batch`, and the workspace plugin forbids that combination. The theme is always a sibling project — see `rules/client-extension-types.md` → "Which Types May Share a Project".
 >
-> 1. **It cannot be applied from the initializer tree.** Liferay attaches a themeCSS CET via a `ClientExtensionEntryRel` on the layout, master layout, or layout set. `BundleSiteInitializer` has no handler for that relation and `metadata.json` has no key for it, so a deployed CET is available but inert until someone selects it in Site Administration → Design → Theme — and that selection does not survive a reprovision.
+> 1. **Nothing attaches it automatically — selecting it is a manual step.** Liferay attaches a themeCSS CET through a `ClientExtensionEntryRel` on the layout, master layout, or layout set. `BundleSiteInitializer` never writes that row (the class does not mention `ClientExtensionEntryRel` at all), and attaching it over REST does not take effect on this build (see "Apply to Site" below). So a deployed CET is available but inert until someone picks it in Site Administration → Design → Theme, and that selection is lost on every reprovision.
 >
-> So decide up front where each part of the look lives. Anything that must survive delete and redeploy belongs in the style book, the master page, fragment CSS, or layout set settings. Use the themeCSS CET for Clay level overrides that have no style book token (Classic exposes no `headings*` tokens), and say plainly that it needs the manual selection step.
+> **Build it anyway.** That is a limit of the platform, not a reason to skip the project, and skipping it loses two things. A `themeFavicon` is the *only* way to deliver a browser tab icon — there is no style book token for it and no initializer key that sets one, so no favicon ships at all without this project. And Clay level overrides with no style book token (Classic exposes no `headings*` tokens) can otherwise live only in a master page fragment rule.
+>
+> Deliver the project, deploy it, and say plainly in the handover that selecting it is manual and has to be redone after a reprovision. An undelivered theme extension is a gap in the work, not a simplification. Put everything that *can* live in the style book, the master page, and fragment CSS there, and let this project carry the rest.
 
 #### Scaffold
 
@@ -107,7 +109,9 @@ Build the SCSS to CSS: `blade gw buildClientExtension` or configure the Sass bui
 
 #### Apply to Site
 
-After deployment, go to Site Administration → Design → Theme → Configure and select the deployed theme CSS client extension.
+After deployment, go to Site Administration → Design → Theme → Configure and select the deployed theme CSS client extension. The selection is lost on every reprovision, so redo it after each one.
+
+Do not try to attach it over REST. A page specification's `settings` accept `themeCSSClientExtension` and `favIcon`, and the write persists, but the rendered pages never pick them up. Put colors and tokens in the style book and heading rules in a master page fragment (see "Site Wide CSS With No Token" under Layer 2), and tell the user that selecting the theme extension, and the favicon it carries, is manual.
 
 ### Layer 2: Style Book
 
@@ -170,7 +174,7 @@ Recoloring buttons takes the whole `btnPrimary*` set, not just the background �
 
 ##### Site Wide CSS With No Token — Put It in a Master Page Fragment
 
-This is the gap the two constraints at the top of this skill create: the value has no style book token, and a themeCSS CET reverts to unselected on every reprovision. The reproducible answer is the **master page's header fragment**.
+This is the gap the two constraints at the top of this skill create: the value has no style book token, and a themeCSS CET has to be reattached after every reprovision. Where a themeCSS CET is not otherwise warranted, the **master page's header fragment** carries such a rule with nothing to reattach.
 
 A fragment's `index.css` is a stylesheet on the page, so its rules can target anything — they are not confined to the fragment's markup. A fragment placed in the master page loads on **every page using that master**, which makes it the one place site wide CSS can live and still survive delete and redeploy:
 
@@ -316,6 +320,37 @@ curl \
 
 The `DropZone` element must carry a `definition.fragmentSettings` block — a **bare** `{"type": "DropZone"}` does not render, and the master shows an empty body. Use `{"definition": {"fragmentSettings": {"unallowedFragments": []}}, "type": "DropZone"}` so page specific content can be placed inside the master. Note `version` is the **number** `1.1` (not the string `"1.0"`) for a master with a working drop zone. Custom header/footer fragments are referenced by `key` (the fragment's directory name) + `siteKey` (`[$GROUP_KEY$]`), exactly as in a page `page-definition.json` (see `manage-pages`); the content area is a `DropZone` element, **not** a `LAYOUT_DROP_ZONE` fragment. Master pages are typically authored in the initializer tree under `layout-page-templates/master-pages/<name>/page-definition.json` (where `pageDefinition`/`page-definition.json` is the correct importer format). Note: the **live** `headless-admin-site` `MasterPage` DTO uses `pageSpecifications`, not `pageDefinition` — prefer the initializer path, or verify the live write shape against the OpenAPI spec (`get-openapi` MCP tool, or `GET /o/headless-admin-site/v1.0/openapi.json`).
 
+#### Mark It as the Site Default
+
+`settings.masterPage.key` in each `page-definition.json` applies the master to the pages in the tree. Pages created later, in the UI or over REST, get the site's **default** master instead, so mark yours as the default, or new pages render without the header and footer.
+
+The tree cannot do this. `master-page.json` accepts only `key` and `name`, and an extra key such as `"defaultTemplate": true` makes the importer drop the master page: the site provisions with no master and every page loses its header and footer. Mark it over REST after each provision by sending the master page back with `markedAsDefault` set:
+
+```bash
+SITE="http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>"
+
+ERC=$(curl \
+	--silent \
+	--url "${SITE}/master-pages" \
+	--user "test@liferay.com:test" \
+	| jq --raw-output '.items[] | select(.key == "<master-name>") | .externalReferenceCode')
+
+curl \
+	--silent \
+	--url "${SITE}/master-pages/${ERC}" \
+	--user "test@liferay.com:test" \
+	| jq '.markedAsDefault = true' \
+	| curl \
+		--data @- \
+		--header "Content-Type: application/json" \
+		--request PUT \
+		--silent \
+		--url "${SITE}/master-pages/${ERC}" \
+		--user "test@liferay.com:test"
+```
+
+Verified on 2026.Q2: the response and a fresh `GET .../master-pages` both show `"markedAsDefault": true`. A reprovision deletes the site and the flag with it, so repeat the call after every reprovision.
+
 Consult learn.liferay.com for the full master page template reference (search `master page templates`).
 
 ## Accessibility
@@ -341,7 +376,9 @@ To replace the Liferay favicon or icon spritemap, use the companion CET types:
   type: themeSpritemap
 ```
 
-Deploy alongside the `themeCSS` CET.
+Ship these in the same `frontend` project as the `themeCSS` CET, with the icon files actually present. A `url` that points at nothing deploys cleanly and delivers no icon.
+
+`themeFavicon` is the only route to a browser tab icon. There is no style book token for a favicon, and no initializer handler writes the site record's own favicon column either, so a site with no favicon project keeps the product default no matter how thoroughly it is otherwise rebranded. Selecting it is the same manual step as selecting the theme (see "Apply to Site").
 
 ## globalCSS Versus themeCSS
 

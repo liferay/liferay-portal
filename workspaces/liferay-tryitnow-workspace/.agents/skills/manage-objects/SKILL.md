@@ -47,6 +47,7 @@ curl \
 	--data '{
 		"label": {"en_US": "<Label>"},
 		"name": "<Name>",
+		"panelCategoryKey": "control_panel.object",
 		"pluralLabel": {"en_US": "<PluralLabel>"},
 		"scope": "company"
 	}' \
@@ -60,6 +61,8 @@ curl \
 **Do not send `"storageType": "default"` on create** — it returns `400 ObjectDefinitionStorageTypeException`. Omit `storageType` and Liferay assigns default DB storage (for external storage, see `integrate-external-data`).
 
 Save the returned `id` as `<definition-id>`.
+
+**Set `panelCategoryKey`, or administrators cannot find the object.** The object still publishes and its REST endpoint works, but it has no entry in the admin menus, so nobody can browse its entries in the UI. `control_panel.object` lists it under Control Panel → Object. For an object that already exists, `PATCH /o/object-admin/v1.0/object-definitions/<definition-id>` with `{"panelCategoryKey": "control_panel.object"}` adds it without republishing.
 
 #### Prefer Creating Fields Inline
 
@@ -80,6 +83,7 @@ curl \
 				"required": true
 			}
 		],
+		"panelCategoryKey": "control_panel.object",
 		"pluralLabel": {"en_US": "<PluralLabel>"},
 		"scope": "company",
 		"titleObjectFieldName": "<fieldName>"
@@ -145,6 +149,14 @@ Save the returned `id` as `<list-type-id>`. Then add a `Picklist` field referenc
 > **A public form cannot fetch this picklist.** Guest gets 403 from the list type REST endpoint, so a `<select>` populated by fetch renders empty and the entry saves blank looking like success. Ship the options in the fragment markup. See `rules/guest-access.md`.
 
 Writing a picklist value accepts **either** the object form `{"key": "vegan"}` or the bare string `"vegan"`. Both persist identically and both read back as `{key, name}`. An unknown key is rejected with `400 Object field name "<field>" is not mapped to a valid list type entry`.
+
+#### A List Type Entry `key` With an Underscore or a Hyphen Returns 500
+
+`POST .../list-type-definitions/{id}/list-type-entries` fails with a bare `500 Internal Server Error` when `key` contains an underscore or a hyphen, and so does an entry in the inline `listTypeEntries` array of the definition create call. `gluten_free`, `dairy_free`, and `test-hyphen` all failed this way, while `glutenfree` and `testCamel` succeeded. Verified on a self hosted 2026.Q1 bundle.
+
+The response carries no validation message, so it reads like a transient server fault rather than a rejected key. The **inline** array is worse: in some orderings the create call returns `200` and silently drops the *good* entries along with the bad one. Compare the length of the `listTypeEntries` you read back with what you sent rather than trusting the `200`.
+
+Use camelCase for every list type entry `key`: `glutenFree`, not `gluten_free` or `gluten-free`. Object field names permit digits after the first letter, but they were not tested with an underscore or a hyphen, so do not assume either limit carries over.
 
 #### A `state` Picklist Requires `defaultValue` and `defaultValueType`
 
@@ -247,7 +259,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-`function` accepts `COUNT`, `SUM`, `AVERAGE`, `MIN`, `MAX` (`ObjectFieldSettingConstants`); anything but `COUNT` also needs the child field to aggregate. Liferay adds a third `filters` setting itself.
+`function` accepts `COUNT`, `SUM`, `AVERAGE`, `MIN`, `MAX` (`ObjectFieldSettingConstants`); anything but `COUNT` also needs the child field to aggregate. Omitting `"required"` returns a bare `500` (a `NullPointerException` in `ObjectFieldResourceImpl`), not a validation message, so always send it.
 
 Three behaviors that decide whether you can use it:
 
@@ -256,6 +268,63 @@ Three behaviors that decide whether you can use it:
 - **It is computed, so it is read only.** Do not send it on a POST or PATCH.
 
 Whether an Aggregation field can be *mapped* into a Collection fragment is a separate question — `manage-pages` → "Mapping Limits" says aggregates cannot be mapped, and that was not retested here. Reading it over REST from fragment JavaScript is verified.
+
+#### Count Only Some Children
+
+Add a `filters` setting. Each filter carries `filterBy`, `filterType`, and a `json` value. `filterBy` and `filterType` sent as top level settings are rejected. To leave rejected entries out of a count (workflow status `4`, denied):
+
+```json
+{
+	"name": "filters",
+	"value": [
+		{
+			"filterBy": "status",
+			"filterType": "excludes",
+			"json": {
+				"not": {
+					"in": [
+						4
+					]
+				}
+			}
+		}
+	]
+}
+```
+
+Verified on 2026.Q2: two pending children counted `2`, and rejecting one through the workflow dropped it to `1`. `includes` takes `{"in": [...]}` instead. For a custom field, `filterBy` is the field name and the values are its stored values, such as picklist keys. `eq` and `ne` take `{"eq": <value>}` and `{"ne": <value>}`. Source: `InclusionOperatorsObjectFilterParser` and `EqualityOperatorsObjectFilterParser`.
+
+#### In a Site Initializer
+
+An Aggregation field names a relationship, so it cannot go in `object-definitions/`, which runs before `object-relationships/`. Put it in `object-fields/<name>.json`, which runs after them. The file wraps the fields:
+
+```json
+{
+	"object-fields": [
+		{
+			"businessType": "Aggregation",
+			"label": {
+				"en_US": "Registrations"
+			},
+			"name": "registrationCount",
+			"objectFieldSettings": [
+				{
+					"name": "function",
+					"value": "COUNT"
+				},
+				{
+					"name": "objectRelationshipName",
+					"value": "eventRegistrations"
+				}
+			],
+			"required": false
+		}
+	],
+	"objectDefinitionId": "[$OBJECT_DEFINITION_ID:Event$]"
+}
+```
+
+A bare field DTO at the top level is skipped without a log line, because the handler reads only the `object-fields` array. Source: `_addOrUpdateObjectFields` in `BundleSiteInitializer`.
 
 ### Add Validations
 

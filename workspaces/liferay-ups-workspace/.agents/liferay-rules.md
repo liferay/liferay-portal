@@ -107,7 +107,7 @@ Site building is **site initializer first**: the `siteInitializer` CET tree is t
 
 ## Reference Cards
 
-Reference cards under `rules/` hold the data skills look up. Skills cite the card path explicitly. Every card is loaded in every session, so a card states the **fact** and routes to the skill that holds the **procedure** — read the card, then load the skill it names.
+Reference cards under `rules/` hold the data skills look up. Skills cite the card path explicitly. A card with `paths` frontmatter loads on its own once you read or edit a file it covers; until then, read it from `.claude/rules/<card>` when a skill cites it or the list below names the topic. A card states the **fact** and routes to the skill that holds the **procedure** — read the card, then load the skill it names.
 
 - `rules/client-extension-types.md` — client extension types, their yaml, and which types may share a project
 - `rules/guest-access.md` — what an anonymous visitor can and cannot read; read before building anything public
