@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.audit.constants.AuditEventConstants;
 import com.liferay.portal.security.audit.storage.comparator.AuditEventCreateDateComparator;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.base.AuditEventLocalServiceBaseImpl;
@@ -218,16 +219,6 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 					StringPool.PERCENT + clientIP + StringPool.PERCENT));
 		}
 
-		Property contextNameProperty = PropertyFactoryUtil.forName(
-			"contextName");
-
-		if (Validator.isNotNull(contextName)) {
-			junction.add(contextNameProperty.eq(contextName));
-		}
-		else if (andSearch) {
-			junction.add(contextNameProperty.isNull());
-		}
-
 		if (Validator.isNotNull(serverName)) {
 			junction.add(
 				RestrictionsFactoryUtil.ilike(
@@ -256,6 +247,12 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 			dynamicQuery.add(property.eq(companyId));
 		}
 
+		if (Validator.isNotNull(contextName)) {
+			Property property = PropertyFactoryUtil.forName("contextName");
+
+			dynamicQuery.add(property.eq(contextName));
+		}
+
 		if (createDateGT != null) {
 			Property property = PropertyFactoryUtil.forName("createDate");
 
@@ -269,6 +266,14 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 		}
 
 		return dynamicQuery.add(junction);
+	}
+
+	private String _getContextName(AuditMessage auditMessage) {
+		if (Validator.isBlank(auditMessage.getContextName())) {
+			return AuditEventConstants.CONTEXT_NAME_INSTANCE;
+		}
+
+		return auditMessage.getContextName();
 	}
 
 	private AuditEvent _toAuditEvent(
@@ -288,7 +293,7 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 		auditEvent.setClassPK(auditMessage.getClassPK());
 		auditEvent.setClientHost(auditMessage.getClientHost());
 		auditEvent.setClientIP(auditMessage.getClientIP());
-		auditEvent.setContextName(auditMessage.getContextName());
+		auditEvent.setContextName(_getContextName(auditMessage));
 		auditEvent.setCorrelationId(auditMessage.getCorrelationId());
 		auditEvent.setEventType(auditMessage.getEventType());
 		auditEvent.setHttpMethod(auditMessage.getHttpMethod());

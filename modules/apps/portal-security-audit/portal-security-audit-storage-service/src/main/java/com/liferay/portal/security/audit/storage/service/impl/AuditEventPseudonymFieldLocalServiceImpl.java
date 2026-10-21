@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.audit.constants.AuditEventConstants;
 import com.liferay.portal.security.audit.storage.exception.AuditEventPseudonymFieldValueException;
 import com.liferay.portal.security.audit.storage.model.AuditEventPseudonymField;
 import com.liferay.portal.security.audit.storage.service.base.AuditEventPseudonymFieldLocalServiceBaseImpl;
@@ -46,7 +47,7 @@ public class AuditEventPseudonymFieldLocalServiceImpl
 		}
 
 		if (Validator.isBlank(contextName)) {
-			contextName = "INSTANCE";
+			contextName = AuditEventConstants.CONTEXT_NAME_INSTANCE;
 		}
 
 		String valueHash = DigesterUtil.digestHex(DigesterUtil.SHA_256, value);

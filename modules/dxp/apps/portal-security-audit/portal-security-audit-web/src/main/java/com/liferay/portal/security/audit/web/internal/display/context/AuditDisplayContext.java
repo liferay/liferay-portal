@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.AuditEvent;
+import com.liferay.portal.security.audit.constants.AuditEventConstants;
 import com.liferay.portal.security.audit.storage.comparator.AuditEventCreateDateComparator;
 import com.liferay.portal.security.audit.web.internal.AuditEventManagerUtil;
 
@@ -240,15 +241,17 @@ public class AuditDisplayContext {
 				() -> AuditEventManagerUtil.getAuditEvents(
 					_themeDisplay.getCompanyId(), getGroupId(), getUserId(),
 					getUserName(), startDate, endDate, null, getClassName(),
-					getClassPK(), getClientHost(), getClientIP(), null,
-					getEventType(), getServerName(), getServerPort(), null,
+					getClassPK(), getClientHost(), getClientIP(),
+					AuditEventConstants.CONTEXT_NAME_INSTANCE, getEventType(),
+					getServerName(), getServerPort(), null,
 					displayTerms.isAndOperator(), range[0], range[1],
 					new AuditEventCreateDateComparator()),
 				AuditEventManagerUtil.getAuditEventsCount(
 					_themeDisplay.getCompanyId(), getGroupId(), getUserId(),
 					getUserName(), startDate, endDate, null, getClassName(),
-					getClassPK(), getClientHost(), getClientIP(), null,
-					getEventType(), getServerName(), getServerPort(), null,
+					getClassPK(), getClientHost(), getClientIP(),
+					AuditEventConstants.CONTEXT_NAME_INSTANCE, getEventType(),
+					getServerName(), getServerPort(), null,
 					displayTerms.isAndOperator()));
 		}
 		else {
@@ -261,14 +264,16 @@ public class AuditDisplayContext {
 				() -> AuditEventManagerUtil.getAuditEvents(
 					_themeDisplay.getCompanyId(), getGroupId(),
 					Long.valueOf(number), keywords, null, null, null, keywords,
-					keywords, keywords, keywords, null, keywords, keywords,
-					Integer.valueOf(number), null, false, range[0], range[1],
-					new AuditEventCreateDateComparator()),
+					keywords, keywords, keywords,
+					AuditEventConstants.CONTEXT_NAME_INSTANCE, keywords,
+					keywords, Integer.valueOf(number), null, false, range[0],
+					range[1], new AuditEventCreateDateComparator()),
 				AuditEventManagerUtil.getAuditEventsCount(
 					_themeDisplay.getCompanyId(), getGroupId(),
 					Long.valueOf(number), keywords, null, null, null, keywords,
-					keywords, keywords, keywords, null, keywords, keywords,
-					Integer.valueOf(number), null, false));
+					keywords, keywords, keywords,
+					AuditEventConstants.CONTEXT_NAME_INSTANCE, keywords,
+					keywords, Integer.valueOf(number), null, false));
 		}
 
 		return _searchContainer;
