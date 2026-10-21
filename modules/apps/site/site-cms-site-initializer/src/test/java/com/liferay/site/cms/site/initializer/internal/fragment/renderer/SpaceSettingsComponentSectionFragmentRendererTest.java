@@ -22,8 +22,12 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PrefsProps;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import jakarta.portlet.PortletPreferences;
 
 import java.util.Collections;
 import java.util.Map;
@@ -61,6 +65,16 @@ public class SpaceSettingsComponentSectionFragmentRendererTest {
 		PortalUtil portalUtil = new PortalUtil();
 
 		portalUtil.setPortal(_portal);
+
+		Mockito.when(
+			_prefsProps.getPreferences(Mockito.anyLong())
+		).thenReturn(
+			Mockito.mock(PortletPreferences.class)
+		);
+
+		PrefsPropsUtil prefsPropsUtil = new PrefsPropsUtil();
+
+		prefsPropsUtil.setPrefsProps(_prefsProps);
 
 		ReflectionTestUtil.setFieldValue(
 			_spaceSettingsComponentSectionFragmentRenderer,
@@ -213,6 +227,9 @@ public class SpaceSettingsComponentSectionFragmentRendererTest {
 
 	@Mock
 	private Portal _portal;
+
+	@Mock
+	private PrefsProps _prefsProps;
 
 	private final SpaceSettingsComponentSectionFragmentRenderer
 		_spaceSettingsComponentSectionFragmentRenderer =

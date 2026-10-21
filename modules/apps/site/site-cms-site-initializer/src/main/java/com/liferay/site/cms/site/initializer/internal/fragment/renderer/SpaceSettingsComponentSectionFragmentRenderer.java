@@ -8,6 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.map.util.MapProviderHelperUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -24,8 +25,11 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.util.InfoItemUtil;
+
+import jakarta.portlet.PortletPreferences;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -106,6 +110,18 @@ public class SpaceSettingsComponentSectionFragmentRenderer
 				ParamUtil.getString(httpServletRequest, "redirect"))
 		).put(
 			"companyAvailableLanguages", jsonArray
+		).put(
+			"companyGoogleMapsAPIKey",
+			() -> {
+				PortletPreferences companyPortletPreferences =
+					PrefsPropsUtil.getPreferences(themeDisplay.getCompanyId());
+
+				return companyPortletPreferences.getValue(
+					"googleMapsAPIKey", null);
+			}
+		).put(
+			"companyMapProviderKey",
+			MapProviderHelperUtil.getMapProviderKey(themeDisplay.getCompanyId())
 		).put(
 			"externalReferenceCode", group.getExternalReferenceCode()
 		).put(
