@@ -7,9 +7,11 @@ package com.liferay.headless.admin.site.internal.util;
 
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.scope.Scope;
 
@@ -87,8 +89,15 @@ public class LogUtil {
 			_log.warn(sb.toString());
 		}
 
+		Long groupId = ItemScopeUtil.getItemGroupId(
+			CompanyThreadLocal.getCompanyId(), scope, scopeId);
+
+		if (groupId == null) {
+			groupId = scopeId;
+		}
+
 		EmptyModelManagerUtil.reportMissingReference(
-			className, externalReferenceCode, scopeId);
+			className, externalReferenceCode, groupId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(LogUtil.class);
