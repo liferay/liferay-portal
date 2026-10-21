@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -1149,6 +1150,65 @@ public class KBArticleLocalServiceTest {
 			kbArticle.getUrlTitle());
 
 		Assert.assertEquals(2, kbArticle.getVersion());
+	}
+
+	@Test
+	@TestInfo("LPD-111094")
+	public void testFetchLatestKBArticleByExternalReferenceCode()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		KBArticle kbArticle = _kbArticleLocalService.addKBArticle(
+			externalReferenceCode, _user.getUserId(), _kbFolderClassNameId,
+			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(), null,
+			StringPool.BLANK, new Date(), null, null, null, _serviceContext);
+
+		for (int i = 0; i < 2; i++) {
+			kbArticle = _kbArticleLocalService.updateKBArticle(
+				_user.getUserId(), kbArticle.getResourcePrimKey(),
+				StringUtil.randomString(), StringUtil.randomString(),
+				StringUtil.randomString(), null, null,
+				kbArticle.getDisplayDate(), null, null, null, null,
+				_serviceContext);
+		}
+
+		Assert.assertEquals(3, kbArticle.getVersion());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, kbArticle.getStatus());
+
+		KBArticle latestKBArticle =
+			_kbArticleLocalService.fetchLatestKBArticleByExternalReferenceCode(
+				_group.getGroupId(), externalReferenceCode);
+
+		Assert.assertEquals(3, latestKBArticle.getVersion());
+
+		_serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		kbArticle = _kbArticleLocalService.updateKBArticle(
+			_user.getUserId(), kbArticle.getResourcePrimKey(),
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), null, null, kbArticle.getDisplayDate(),
+			null, null, null, null, _serviceContext);
+
+		Assert.assertEquals(4, kbArticle.getVersion());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, kbArticle.getStatus());
+
+		latestKBArticle =
+			_kbArticleLocalService.fetchLatestKBArticleByExternalReferenceCode(
+				_group.getGroupId(), externalReferenceCode);
+
+		Assert.assertEquals(4, latestKBArticle.getVersion());
+
+		latestKBArticle =
+			_kbArticleLocalService.fetchLatestKBArticleByExternalReferenceCode(
+				_group.getGroupId(), externalReferenceCode,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertEquals(3, latestKBArticle.getVersion());
 	}
 
 	@Test
