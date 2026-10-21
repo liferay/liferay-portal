@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Shared Dependencies ASM
 Bundle-SymbolicName: com.liferay.shared.dependencies.asm
 Bundle-Version: 1.0.5
--exportcontents: org.objectweb.asm.*;version='9.7.0'
+-exportcontents: org.objectweb.asm.*;version='9.11.1'
