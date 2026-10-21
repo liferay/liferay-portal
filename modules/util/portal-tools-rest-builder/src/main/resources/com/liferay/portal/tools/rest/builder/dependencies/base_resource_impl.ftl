@@ -100,6 +100,9 @@ import java.util.Set;
  * @author ${configYAML.author}
  * @generated
  */
+<#if openAPIYAML.info.featureFlag?has_content>
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("${openAPIYAML.info.featureFlag}")
+</#if>
 @Generated("")
 <#if configYAML.application??>
 	@${configYAML.javaEEPackage}.ws.rs.Path("/${openAPIYAML.info.version}")

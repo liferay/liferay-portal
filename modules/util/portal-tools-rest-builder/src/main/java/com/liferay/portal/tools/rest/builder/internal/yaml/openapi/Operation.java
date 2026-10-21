@@ -18,6 +18,10 @@ public class Operation {
 		return _description;
 	}
 
+	public String getFeatureFlag() {
+		return _featureFlag;
+	}
+
 	public String getOperationId() {
 		return _operationId;
 	}
@@ -58,6 +62,10 @@ public class Operation {
 		_description = description;
 	}
 
+	public void setFeatureFlag(String featureFlag) {
+		_featureFlag = featureFlag;
+	}
+
 	public void setOperationId(String operationId) {
 		_operationId = operationId;
 	}
@@ -81,6 +89,7 @@ public class Operation {
 	private boolean _calculatedOperationId;
 	private boolean _deprecated;
 	private String _description;
+	private String _featureFlag;
 	private String _operationId;
 	private List<Parameter> _parameters = new ArrayList<>();
 	private RequestBody _requestBody;

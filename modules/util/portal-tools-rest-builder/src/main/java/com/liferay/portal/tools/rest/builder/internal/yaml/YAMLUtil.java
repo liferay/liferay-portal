@@ -10,10 +10,18 @@ import com.liferay.portal.tools.rest.builder.internal.yaml.config.ConfigYAML;
 import com.liferay.portal.tools.rest.builder.internal.yaml.config.Security;
 import com.liferay.portal.tools.rest.builder.internal.yaml.exception.InvalidYAMLException;
 import com.liferay.portal.tools.rest.builder.internal.yaml.exception.OpenAPIValidatorException;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Delete;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Get;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Head;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Info;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Items;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.OpenAPIYAML;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Options;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Parameter;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Patch;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.PathItem;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Post;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Put;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Schema;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.XML;
 
@@ -142,6 +150,21 @@ public class YAMLUtil {
 
 		Constructor openAPIYAMLConstructor = new Constructor(
 			OpenAPIYAML.class, loaderOptions);
+
+		for (Class<?> clazz :
+				new Class<?>[] {
+					Delete.class, Get.class, Head.class, Info.class,
+					Options.class, Patch.class, Post.class, Put.class
+				}) {
+
+			TypeDescription typeDescription = new TypeDescription(clazz);
+
+			typeDescription.substituteProperty(
+				"x-feature-flag", String.class, "getFeatureFlag",
+				"setFeatureFlag");
+
+			openAPIYAMLConstructor.addTypeDescription(typeDescription);
+		}
 
 		TypeDescription itemsTypeDescription = new TypeDescription(Items.class);
 

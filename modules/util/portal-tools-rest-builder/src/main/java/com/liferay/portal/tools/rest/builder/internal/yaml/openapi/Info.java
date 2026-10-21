@@ -14,6 +14,10 @@ public class Info {
 		return _description;
 	}
 
+	public String getFeatureFlag() {
+		return _featureFlag;
+	}
+
 	public License getLicense() {
 		return _license;
 	}
@@ -30,6 +34,10 @@ public class Info {
 		_description = description;
 	}
 
+	public void setFeatureFlag(String featureFlag) {
+		_featureFlag = featureFlag;
+	}
+
 	public void setLicense(License license) {
 		_license = license;
 	}
@@ -43,6 +51,7 @@ public class Info {
 	}
 
 	private String _description;
+	private String _featureFlag;
 	private License _license;
 	private String _title;
 	private String _version;

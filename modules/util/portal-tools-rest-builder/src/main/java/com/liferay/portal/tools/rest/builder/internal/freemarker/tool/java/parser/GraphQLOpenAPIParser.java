@@ -9,6 +9,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.rest.builder.internal.freemarker.tool.java.JavaMethodParameter;
 import com.liferay.portal.tools.rest.builder.internal.freemarker.tool.java.JavaMethodSignature;
 import com.liferay.portal.tools.rest.builder.internal.freemarker.tool.java.parser.util.OpenAPIParserUtil;
@@ -83,6 +84,15 @@ public class GraphQLOpenAPIParser {
 			sb.append(")");
 
 			methodAnnotations.add(sb.toString());
+		}
+
+		String featureFlag = operation.getFeatureFlag();
+
+		if (Validator.isNotNull(featureFlag)) {
+			methodAnnotations.add(
+				StringBundler.concat(
+					"@com.liferay.portal.vulcan.feature.flag.FeatureFlag(\"",
+					featureFlag, "\")"));
 		}
 
 		String methodAnnotation = _getMethodAnnotationGraphQLName(

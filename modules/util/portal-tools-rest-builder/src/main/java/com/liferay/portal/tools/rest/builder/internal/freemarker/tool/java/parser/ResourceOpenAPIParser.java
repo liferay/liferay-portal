@@ -27,6 +27,7 @@ import com.liferay.portal.tools.rest.builder.internal.yaml.config.ConfigYAML;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Content;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Delete;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Get;
+import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Info;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.OpenAPIYAML;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Operation;
 import com.liferay.portal.tools.rest.builder.internal.yaml.openapi.Parameter;
@@ -54,6 +55,30 @@ import java.util.function.Consumer;
  * @author Peter Shin
  */
 public class ResourceOpenAPIParser {
+
+	public static String getFeatureFlag(
+		JavaMethodSignature javaMethodSignature, OpenAPIYAML openAPIYAML) {
+
+		Info info = openAPIYAML.getInfo();
+		Operation operation = javaMethodSignature.getOperation();
+
+		if ((operation == null) ||
+			Validator.isNull(operation.getFeatureFlag())) {
+
+			return info.getFeatureFlag();
+		}
+
+		if (Validator.isNotNull(info.getFeatureFlag())) {
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"Operation \"", operation.getOperationId(),
+					"\" declares feature flag \"", operation.getFeatureFlag(),
+					"\" but its API already declares feature flag \"",
+					info.getFeatureFlag(), "\""));
+		}
+
+		return operation.getFeatureFlag();
+	}
 
 	public static List<JavaMethodSignature> getJavaMethodSignatures(
 		ConfigYAML configYAML, OpenAPIYAML openAPIYAML, String schemaName) {
@@ -189,6 +214,15 @@ public class ResourceOpenAPIParser {
 						"@io.swagger.v3.oas.annotations.Operation(",
 						requestBodyAnnotation, ")"));
 			}
+		}
+
+		String featureFlag = operation.getFeatureFlag();
+
+		if (Validator.isNotNull(featureFlag)) {
+			methodAnnotations.add(
+				StringBundler.concat(
+					"@com.liferay.portal.vulcan.feature.flag.FeatureFlag(\"",
+					featureFlag, "\")"));
 		}
 
 		if (operation.getTags() != null) {
@@ -781,6 +815,7 @@ public class ResourceOpenAPIParser {
 			batchOperation.setDeprecated(true);
 		}
 
+		batchOperation.setFeatureFlag(operation.getFeatureFlag());
 		batchOperation.setParameters(
 			_getBatchParameters(
 				batchOperationType, configYAML, operation, schemaName));

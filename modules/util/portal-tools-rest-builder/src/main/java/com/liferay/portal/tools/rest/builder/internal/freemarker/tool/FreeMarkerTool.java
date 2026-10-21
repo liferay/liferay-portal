@@ -414,6 +414,13 @@ public class FreeMarkerTool {
 		return null;
 	}
 
+	public String getFeatureFlag(
+		JavaMethodSignature javaMethodSignature, OpenAPIYAML openAPIYAML) {
+
+		return ResourceOpenAPIParser.getFeatureFlag(
+			javaMethodSignature, openAPIYAML);
+	}
+
 	public String getGraphQLArguments(
 		List<JavaMethodParameter> javaMethodParameters, String schemaVarName) {
 
