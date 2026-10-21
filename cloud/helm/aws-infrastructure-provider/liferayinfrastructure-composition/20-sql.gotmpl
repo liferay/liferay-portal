@@ -45,7 +45,7 @@ spec:
                 projectId: {{ $projectId }}
         deletionProtection: {{ and (not $forceDestroy) (eq $dataPlane $activeDataPlane) }}
         engine: postgres
-        engineVersion: {{ $database.version | quote }}
+        engineVersion: {{ $database.version | default "16" | quote }}
         iamDatabaseAuthenticationEnabled: true
         identifier: {{ $baseName }}-database-{{ $dataPlane }}
         instanceClass: {{ $database.instanceType | default "db.t3.medium" }}

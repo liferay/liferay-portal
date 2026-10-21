@@ -109,7 +109,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "engineVersion: \\{\\{ \\$database\\.version \\| quote \\}\\}"
+                    pattern: "engineVersion: \\{\\{ \\$database\\.version \\| default \"16\" \\| quote \\}\\}"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
