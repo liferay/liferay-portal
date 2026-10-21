@@ -99,11 +99,13 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		PortalPermissionUtil.contains(
-			getPermissionChecker(), ActionKeys.ADD_ROLE);
+		PortalPermissionUtil.check(getPermissionChecker(), ActionKeys.ADD_ROLE);
+
+		RolePermissionUtil.check(
+			getPermissionChecker(), sourceRoleId, ActionKeys.VIEW);
 
 		return roleLocalService.copyRole(
-			userId, name, sourceRoleId, serviceContext);
+			getUserId(), name, sourceRoleId, serviceContext);
 	}
 
 	/**
