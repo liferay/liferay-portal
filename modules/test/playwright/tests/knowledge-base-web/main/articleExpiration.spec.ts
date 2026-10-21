@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {knowledgeBasePages} from '../../../fixtures/knowledgeBasePagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -17,7 +18,10 @@ const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
 	knowledgeBasePages,
-	loginTest()
+	loginTest(),
+	featureFlagsTest({
+		'LPD-39304': {enabled: true},
+	})
 );
 
 test(
