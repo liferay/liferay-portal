@@ -14,6 +14,8 @@ import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +67,7 @@ public class RunningBuildDurationMonitorTest
 		_setComputerAPIJSONObject(_MASTER_NAME_2);
 
 		_testExecute(
-			0, _getOKMessage(_SECONDS_DAY), 0, MonitorResult.Status.OK);
+			null, 0, _getOKMessage(_SECONDS_DAY), 0, MonitorResult.Status.OK);
 
 		_setComputerAPIJSONObject(
 			_MASTER_NAME_1,
@@ -83,7 +85,7 @@ public class RunningBuildDurationMonitorTest
 					3600)));
 
 		_testExecute(
-			0, _getOKMessage(_SECONDS_DAY), 2, MonitorResult.Status.OK);
+			null, 0, _getOKMessage(_SECONDS_DAY), 2, MonitorResult.Status.OK);
 
 		String buildURL = _newBuildURL(_MASTER_NAME_1);
 		String fullDisplayName = RandomTestUtil.randomString();
@@ -96,13 +98,9 @@ public class RunningBuildDurationMonitorTest
 					buildURL, fullDisplayName, _SECONDS_DAY + 1)));
 
 		_testExecute(
-			1,
-			JenkinsResultsParserUtil.combine(
-				_getCountMessage("1 build", _SECONDS_DAY), ". ",
-				_getBuildMessage(
-					buildURL, fullDisplayName, _MASTER_NAME_1,
-					_SECONDS_DAY + 1)),
-			2, MonitorResult.Status.CRITICAL);
+			Collections.singletonList(_getRemoteBuildURL(buildURL)), 1,
+			_getCountMessage(1, _SECONDS_DAY), 2,
+			MonitorResult.Status.CRITICAL);
 
 		String agentBuildURL = _newBuildURL(_MASTER_NAME_1);
 		String agentFullDisplayName = RandomTestUtil.randomString();
@@ -135,19 +133,12 @@ public class RunningBuildDurationMonitorTest
 					_SECONDS_DAY + 60)));
 
 		_testExecute(
-			3,
-			JenkinsResultsParserUtil.join(
-				". ", _getCountMessage("3 builds", _SECONDS_DAY),
-				_getBuildMessage(
-					flyweightBuildURL, flyweightFullDisplayName, _MASTER_NAME_1,
-					3 * _SECONDS_DAY),
-				_getBuildMessage(
-					agentBuildURL, agentFullDisplayName, _MASTER_NAME_1,
-					2 * _SECONDS_DAY),
-				_getBuildMessage(
-					secondMasterBuildURL, secondMasterFullDisplayName,
-					_MASTER_NAME_2, _SECONDS_DAY + 60)),
-			4, MonitorResult.Status.CRITICAL);
+			Arrays.asList(
+				_getRemoteBuildURL(flyweightBuildURL),
+				_getRemoteBuildURL(agentBuildURL),
+				_getRemoteBuildURL(secondMasterBuildURL)),
+			3, _getCountMessage(3, _SECONDS_DAY), 4,
+			MonitorResult.Status.CRITICAL);
 
 		JSONObject executorJSONObject = _newExecutorJSONObject(
 			_newBuildURL(_MASTER_NAME_1), RandomTestUtil.randomString(),
@@ -165,7 +156,7 @@ public class RunningBuildDurationMonitorTest
 		_setComputerAPIJSONObject(_MASTER_NAME_2);
 
 		_testExecute(
-			0, _getOKMessage(_SECONDS_DAY), 0, MonitorResult.Status.OK);
+			null, 0, _getOKMessage(_SECONDS_DAY), 0, MonitorResult.Status.OK);
 	}
 
 	@Test
@@ -191,12 +182,13 @@ public class RunningBuildDurationMonitorTest
 		Assert.assertFalse(
 			jenkinsMasters.contains(JenkinsMaster.getInstance(_MASTER_NAME_2)));
 
-		String expectedMessage = JenkinsResultsParserUtil.combine(
-			_getCountMessage("1 build", _SECONDS_DAY), ". ",
-			_getBuildMessage(
-				buildURL, fullDisplayName, _MASTER_NAME_2, _SECONDS_DAY + 1));
+		List<String> expectedLinkURLs = Collections.singletonList(
+			_getRemoteBuildURL(buildURL));
+		String expectedMessage = _getCountMessage(1, _SECONDS_DAY);
 
-		_testExecute(1, expectedMessage, 1, MonitorResult.Status.CRITICAL);
+		_testExecute(
+			expectedLinkURLs, 1, expectedMessage, 1,
+			MonitorResult.Status.CRITICAL);
 
 		verifyURLReaderAttemptsCount(
 			1, "http://" + _MASTER_NAME_2 + "/computer/api/json");
@@ -223,10 +215,108 @@ public class RunningBuildDurationMonitorTest
 		ReflectionTestUtil.setFieldValue(
 			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
 
-		_testExecute(1, expectedMessage, 1, MonitorResult.Status.CRITICAL);
+		_testExecute(
+			expectedLinkURLs, 1, expectedMessage, 1,
+			MonitorResult.Status.CRITICAL);
 
 		verifyURLReaderAttemptsCount(
 			1, "http://" + _MASTER_NAME_2 + "/computer/api/json");
+	}
+
+	@Test
+	public void testExecuteLinkURLs() throws Exception {
+		String buildURL1 = _newBuildURL(_MASTER_NAME_1);
+
+		_setComputerAPIJSONObject(
+			_MASTER_NAME_1,
+			JenkinsMasterTestUtil.getComputerJSONObject(
+				RandomTestUtil.randomString(),
+				_newExecutorJSONObject(
+					buildURL1, RandomTestUtil.randomString(),
+					_SECONDS_DAY + 60)));
+
+		String buildURL2 = _newBuildURL(_MASTER_NAME_2);
+
+		_setComputerAPIJSONObject(
+			_MASTER_NAME_2,
+			JenkinsMasterTestUtil.getComputerJSONObject(
+				RandomTestUtil.randomString(),
+				_newExecutorJSONObject(
+					buildURL2, RandomTestUtil.randomString(),
+					3 * _SECONDS_DAY)));
+
+		_testExecute(
+			Arrays.asList(
+				_getRemoteBuildURL(buildURL2), _getRemoteBuildURL(buildURL1)),
+			2, _getCountMessage(2, _SECONDS_DAY), 2,
+			MonitorResult.Status.CRITICAL);
+	}
+
+	@Test
+	public void testExecuteLinkURLsMaximum() throws Exception {
+		_setComputerAPIJSONObject(_MASTER_NAME_2);
+
+		List<String> buildURLs = new ArrayList<>();
+		List<JSONObject> executorJSONObjects = new ArrayList<>();
+
+		for (int i = 1; i <= 11; i++) {
+			String buildURL = _newBuildURL(_MASTER_NAME_1);
+
+			buildURLs.add(0, _getRemoteBuildURL(buildURL));
+
+			executorJSONObjects.add(
+				_newExecutorJSONObject(
+					buildURL, RandomTestUtil.randomString(), _SECONDS_DAY + i));
+		}
+
+		List<JSONObject> tenExecutorJSONObjects = executorJSONObjects.subList(
+			0, 10);
+
+		_setComputerAPIJSONObject(
+			_MASTER_NAME_1,
+			JenkinsMasterTestUtil.getComputerJSONObject(
+				RandomTestUtil.randomString(),
+				tenExecutorJSONObjects.toArray(new JSONObject[0])));
+
+		_testExecute(
+			buildURLs.subList(1, 11), 10, _getCountMessage(10, _SECONDS_DAY),
+			10, MonitorResult.Status.CRITICAL);
+
+		_setComputerAPIJSONObject(
+			_MASTER_NAME_1,
+			JenkinsMasterTestUtil.getComputerJSONObject(
+				RandomTestUtil.randomString(),
+				executorJSONObjects.toArray(new JSONObject[0])));
+
+		_testExecute(
+			buildURLs.subList(0, 10), 11,
+			_getCountMessage(11, _SECONDS_DAY) + " (the 10 longest are linked)",
+			11, MonitorResult.Status.CRITICAL);
+	}
+
+	@Test
+	public void testExecuteLinkURLsParameter() throws Exception {
+		String buildURL = _newBuildURL(_MASTER_NAME_1);
+
+		_setComputerAPIJSONObject(
+			_MASTER_NAME_1,
+			JenkinsMasterTestUtil.getComputerJSONObject(
+				RandomTestUtil.randomString(),
+				_newExecutorJSONObject(
+					buildURL, RandomTestUtil.randomString(),
+					_SECONDS_DAY + 1)));
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		String linkURL = "https://" + RandomTestUtil.randomString();
+
+		monitorProperties.setProperty("monitor[a].parameter[links]", linkURL);
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(
+			Arrays.asList(linkURL, _getRemoteBuildURL(buildURL)),
+			monitorResult.getLinkURLs());
 	}
 
 	@Test
@@ -260,17 +350,9 @@ public class RunningBuildDurationMonitorTest
 		_setComputerAPIJSONObject(_MASTER_NAME_2);
 
 		_testExecuteThreshold(
-			JenkinsResultsParserUtil.combine(
-				_getCountMessage("1 build", 0), ". ",
-				_getBuildMessage(
-					buildURL, fullDisplayName, _MASTER_NAME_1, 7200)),
-			MonitorResult.Status.CRITICAL, 0);
+			_getCountMessage(1, 0), MonitorResult.Status.CRITICAL, 0);
 		_testExecuteThreshold(
-			JenkinsResultsParserUtil.combine(
-				_getCountMessage("1 build", 7199), ". ",
-				_getBuildMessage(
-					buildURL, fullDisplayName, _MASTER_NAME_1, 7200)),
-			MonitorResult.Status.CRITICAL, 7199);
+			_getCountMessage(1, 7199), MonitorResult.Status.CRITICAL, 7199);
 		_testExecuteThreshold(
 			_getOKMessage(7200), MonitorResult.Status.OK, 7200);
 	}
@@ -286,10 +368,11 @@ public class RunningBuildDurationMonitorTest
 			"http://" + _MASTER_NAME_2 + "/computer/api/json");
 
 		String unreadableMessage = JenkinsResultsParserUtil.combine(
-			"Unable to read running builds on ", _MASTER_NAME_2, ": ",
-			exceptionMessage);
+			"Unable to read running builds on http://", _MASTER_NAME_2,
+			".liferay.com: ", exceptionMessage);
 
-		_testExecute(0, unreadableMessage, 0, MonitorResult.Status.UNKNOWN);
+		_testExecute(
+			null, 0, unreadableMessage, 0, MonitorResult.Status.UNKNOWN);
 
 		setURLReaderOutput(
 			"{}", "http://" + _MASTER_NAME_2 + "/computer/api/json");
@@ -301,7 +384,9 @@ public class RunningBuildDurationMonitorTest
 		Assert.assertTrue(
 			message,
 			message.startsWith(
-				"Unable to read running builds on " + _MASTER_NAME_2 + ": "));
+				JenkinsResultsParserUtil.combine(
+					"Unable to read running builds on http://", _MASTER_NAME_2,
+					".liferay.com: ")));
 
 		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
 
@@ -320,13 +405,9 @@ public class RunningBuildDurationMonitorTest
 			"http://" + _MASTER_NAME_2 + "/computer/api/json");
 
 		_testExecute(
-			1,
-			JenkinsResultsParserUtil.join(
-				". ", _getCountMessage("1 build", _SECONDS_DAY),
-				_getBuildMessage(
-					buildURL, fullDisplayName, _MASTER_NAME_1,
-					_SECONDS_DAY + 1),
-				unreadableMessage),
+			Collections.singletonList(_getRemoteBuildURL(buildURL)), 1,
+			JenkinsResultsParserUtil.combine(
+				_getCountMessage(1, _SECONDS_DAY), ". ", unreadableMessage),
 			1, MonitorResult.Status.CRITICAL);
 	}
 
@@ -395,19 +476,17 @@ public class RunningBuildDurationMonitorTest
 		}
 	}
 
-	private String _getBuildMessage(
-		String buildURL, String fullDisplayName, String masterName,
-		long seconds) {
+	private String _getCountMessage(int count, long seconds) {
+		if (count == 1) {
+			return JenkinsResultsParserUtil.combine(
+				"1 build in cohort ", _COHORT_NAME,
+				" has been running for more than ",
+				JenkinsResultsParserUtil.toDurationString(seconds * 1000));
+		}
 
 		return JenkinsResultsParserUtil.combine(
-			masterName, " ", fullDisplayName, " has been running for ",
-			JenkinsResultsParserUtil.toDurationString(seconds * 1000), " at ",
-			buildURL);
-	}
-
-	private String _getCountMessage(String builds, long seconds) {
-		return JenkinsResultsParserUtil.combine(
-			builds, " in cohort ", _COHORT_NAME, " over the ceiling of ",
+			String.valueOf(count), " builds in cohort ", _COHORT_NAME,
+			" have been running for more than ",
 			JenkinsResultsParserUtil.toDurationString(seconds * 1000));
 	}
 
@@ -415,6 +494,11 @@ public class RunningBuildDurationMonitorTest
 		return JenkinsResultsParserUtil.combine(
 			"No build in cohort ", _COHORT_NAME, " has run longer than ",
 			JenkinsResultsParserUtil.toDurationString(seconds * 1000));
+	}
+
+	private String _getRemoteBuildURL(String buildURL) {
+		return buildURL.replaceFirst(
+			"^http://([^/]+)/", "https://$1.liferay.com/");
 	}
 
 	private String _newBuildURL(String masterName) {
@@ -463,11 +547,13 @@ public class RunningBuildDurationMonitorTest
 	}
 
 	private void _testExecute(
-		int expectedLongRunningBuildsCount, String expectedMessage,
-		int expectedRunningBuildsCount, MonitorResult.Status expectedStatus) {
+		List<String> expectedLinkURLs, int expectedLongRunningBuildsCount,
+		String expectedMessage, int expectedRunningBuildsCount,
+		MonitorResult.Status expectedStatus) {
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
+		testEquals(expectedLinkURLs, monitorResult.getLinkURLs());
 		testEquals(expectedMessage, monitorResult.getMessage());
 
 		Map<String, String> metrics = monitorResult.getMetrics();
