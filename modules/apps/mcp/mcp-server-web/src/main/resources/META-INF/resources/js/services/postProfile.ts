@@ -4,11 +4,9 @@
  */
 
 import {Profile, ProfilePayload} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROFILES_URL} from './constants';
 
-export function postProfile(
-	payload: ProfilePayload
-): Promise<RequestResult<Profile>> {
+export function postProfile(payload: ProfilePayload) {
 	return ApiHelper.post<Profile>(PROFILES_URL, payload);
 }

@@ -4,13 +4,13 @@
  */
 
 import {ProfileDataMask} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROFILE_DATA_MASKS_URL} from './constants';
 
 export function patchProfileDataMask(
 	id: number,
 	payload: Partial<ProfileDataMask>
-): Promise<RequestResult<ProfileDataMask>> {
+) {
 	return ApiHelper.patch<ProfileDataMask>(
 		`${PROFILE_DATA_MASKS_URL}/${id}`,
 		payload

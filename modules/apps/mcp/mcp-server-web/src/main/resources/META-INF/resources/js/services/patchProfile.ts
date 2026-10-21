@@ -4,13 +4,13 @@
  */
 
 import {Profile, ProfilePayload} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROFILES_URL} from './constants';
 
 export function patchProfile(
 	externalReferenceCode: string,
 	payload: ProfilePayload
-): Promise<RequestResult<Profile>> {
+) {
 	return ApiHelper.patch<Profile>(
 		`${PROFILES_URL}/by-external-reference-code/${externalReferenceCode}`,
 		payload

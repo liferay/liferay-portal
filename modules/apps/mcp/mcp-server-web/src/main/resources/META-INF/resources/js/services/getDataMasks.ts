@@ -6,13 +6,10 @@
 import {addParams} from 'frontend-js-web';
 
 import {DataMask} from '../types';
-import {RequestResult} from './ApiHelper';
 import {DATA_MASKS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';
 
-export function getDataMasks(): Promise<
-	RequestResult<{items: DataMask[]; totalCount: number}>
-> {
+export function getDataMasks() {
 	return fetchAllItems<DataMask>((page, pageSize) =>
 		addParams(
 			{page: String(page), pageSize: String(pageSize)},

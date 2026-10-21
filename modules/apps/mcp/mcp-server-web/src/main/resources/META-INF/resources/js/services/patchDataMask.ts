@@ -4,12 +4,9 @@
  */
 
 import {DataMask, DataMaskPayload} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {DATA_MASKS_URL} from './constants';
 
-export function patchDataMask(
-	id: number,
-	payload: DataMaskPayload
-): Promise<RequestResult<DataMask>> {
+export function patchDataMask(id: number, payload: DataMaskPayload) {
 	return ApiHelper.patch<DataMask>(`${DATA_MASKS_URL}/${id}`, payload);
 }

@@ -4,12 +4,10 @@
  */
 
 import {Profile} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROFILES_URL} from './constants';
 
-export function getProfile(
-	externalReferenceCode: string
-): Promise<RequestResult<Profile>> {
+export function getProfile(externalReferenceCode: string) {
 	return ApiHelper.get<Profile>(
 		`${PROFILES_URL}/by-external-reference-code/${externalReferenceCode}`
 	);

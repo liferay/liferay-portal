@@ -4,11 +4,9 @@
  */
 
 import {Prompt, PromptPayload} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROMPTS_URL} from './constants';
 
-export function postPrompt(
-	payload: PromptPayload
-): Promise<RequestResult<Prompt>> {
+export function postPrompt(payload: PromptPayload) {
 	return ApiHelper.post<Prompt>(PROMPTS_URL, payload);
 }

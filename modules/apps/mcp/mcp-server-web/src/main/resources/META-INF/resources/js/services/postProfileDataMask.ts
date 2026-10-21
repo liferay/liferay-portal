@@ -4,11 +4,9 @@
  */
 
 import {ProfileDataMask} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROFILE_DATA_MASKS_URL} from './constants';
 
-export function postProfileDataMask(
-	payload: ProfileDataMask
-): Promise<RequestResult<ProfileDataMask>> {
+export function postProfileDataMask(payload: ProfileDataMask) {
 	return ApiHelper.post<ProfileDataMask>(PROFILE_DATA_MASKS_URL, payload);
 }

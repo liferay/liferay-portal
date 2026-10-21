@@ -138,10 +138,7 @@ export type ToolSet = {
 	name: string;
 };
 
-export type ToolSummary = {
-	description?: string;
-	name: string;
-};
+export type ToolSummary = Pick<Tool, 'name'>;
 
 export type Prompt = {
 	dateModified?: string;

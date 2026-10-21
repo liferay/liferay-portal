@@ -4,13 +4,13 @@
  */
 
 import {ProfileTool} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROFILE_TOOLS_URL} from './constants';
 
 export function patchProfileTool(
 	externalReferenceCode: string,
 	payload: Partial<ProfileTool>
-): Promise<RequestResult<ProfileTool>> {
+) {
 	return ApiHelper.patch<ProfileTool>(
 		`${PROFILE_TOOLS_URL}/by-external-reference-code/${encodeURIComponent(
 			externalReferenceCode

@@ -6,16 +6,15 @@
 import {addParams} from 'frontend-js-web';
 
 import {ProfileTool} from '../types';
-import {RequestResult} from './ApiHelper';
 import {PROFILE_TOOLS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';
 
-export function getProfileTools(
-	profileExternalReferenceCode: string
-): Promise<RequestResult<{items: ProfileTool[]; totalCount: number}>> {
+export function getProfileTools(profileExternalReferenceCode: string) {
 	const filter = `r_mcpServerProfileToTools_l_mcpServerProfileERC eq '${profileExternalReferenceCode}'`;
 
-	return fetchAllItems<ProfileTool>((page, pageSize) =>
+	return fetchAllItems<
+		Pick<ProfileTool, 'externalReferenceCode' | 'toolName' | 'toolSetName'>
+	>((page, pageSize) =>
 		addParams(
 			{
 				fields: 'externalReferenceCode,toolName,toolSetName',

@@ -4,9 +4,9 @@
  */
 
 import {Prompt} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROMPTS_URL} from './constants';
 
-export function getPrompt(id: number): Promise<RequestResult<Prompt>> {
+export function getPrompt(id: number) {
 	return ApiHelper.get<Prompt>(`${PROMPTS_URL}/${id}`);
 }

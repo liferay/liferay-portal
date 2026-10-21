@@ -4,12 +4,9 @@
  */
 
 import {Prompt, PromptPayload} from '../types';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROMPTS_URL} from './constants';
 
-export function patchPrompt(
-	id: number,
-	payload: PromptPayload
-): Promise<RequestResult<Prompt>> {
+export function patchPrompt(id: number, payload: PromptPayload) {
 	return ApiHelper.patch<Prompt>(`${PROMPTS_URL}/${id}`, payload);
 }

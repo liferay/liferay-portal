@@ -7,7 +7,7 @@ import {addParams} from 'frontend-js-web';
 
 import {ProfileDataMask} from '../types';
 import toODataStringLiteral from '../utils/toODataStringLiteral';
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {PROFILE_DATA_MASKS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';
 
@@ -16,9 +16,7 @@ export interface ProfileDataMaskFilters {
 	mcpServerProfileExternalReferenceCode?: string;
 }
 
-export function getProfileDataMasks(
-	filters: ProfileDataMaskFilters = {}
-): Promise<RequestResult<{items: ProfileDataMask[]; totalCount: number}>> {
+export function getProfileDataMasks(filters: ProfileDataMaskFilters = {}) {
 	if (filters.dataMaskExternalReferenceCode) {
 		return ApiHelper.get<{items: ProfileDataMask[]; totalCount: number}>(
 			addParams(

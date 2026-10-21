@@ -6,11 +6,10 @@
 import {addParams} from 'frontend-js-web';
 
 import {ToolSet} from '../types';
-import {RequestResult} from './ApiHelper';
 import {TOOL_SETS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';
 
-export async function getToolSets(): Promise<RequestResult<ToolSet[]>> {
+export async function getToolSets() {
 	const {data, error} = await fetchAllItems<ToolSet>((page, pageSize) =>
 		addParams(
 			{page: String(page), pageSize: String(pageSize)},

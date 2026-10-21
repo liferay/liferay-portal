@@ -5,7 +5,7 @@
 
 import {addParams} from 'frontend-js-web';
 
-import ApiHelper, {RequestResult} from './ApiHelper';
+import ApiHelper from './ApiHelper';
 import {REDACTION_URL} from './constants';
 
 export type RedactionRequest = {
@@ -20,9 +20,7 @@ export type Redaction = {
 	output: string;
 };
 
-export function getRedaction(
-	request: RedactionRequest
-): Promise<RequestResult<Redaction>> {
+export function getRedaction(request: RedactionRequest) {
 	const params: Record<string, string> = {
 		detectionRegex: request.detectionRegex,
 		replacementValue: request.replacementValue,
