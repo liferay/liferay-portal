@@ -365,6 +365,20 @@ public class VelocityTemplateTest {
 		Assert.assertEquals(_TEST_VALUE, result);
 	}
 
+	@Test
+	public void testProcessTemplate9() throws Exception {
+		Template template = new VelocityTemplate(
+			new MockTemplateResource(_TEMPLATE_FILE_NAME), null,
+			_velocityEngine, _templateContextHelper, _templateResourceCache,
+			true);
+
+		RestrictedTemplateThreadLocal.setRestricted(true);
+
+		template.processTemplate(new UnsyncStringWriter());
+
+		Assert.assertTrue(RestrictedTemplateThreadLocal.isRestricted());
+	}
+
 	private static final String _TEMPLATE_FILE_NAME = "test.vm";
 
 	private static final String _TEST_KEY = "TEST_KEY";
