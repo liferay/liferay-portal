@@ -129,9 +129,9 @@ public class SourceFormatterReleaseUtil {
 
 		for (String line : gitDiff.split("\n")) {
 			if (line.startsWith("diff --git ")) {
-				index = line.indexOf(" b/");
+				if (!_versionFilePaths.contains(
+						line.substring(line.indexOf(" b/") + 3))) {
 
-				if (!_versionFilePaths.contains(line.substring(index + 3))) {
 					return false;
 				}
 
