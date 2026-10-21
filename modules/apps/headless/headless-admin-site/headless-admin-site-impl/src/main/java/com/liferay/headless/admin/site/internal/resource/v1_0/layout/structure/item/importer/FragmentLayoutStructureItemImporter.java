@@ -7,6 +7,8 @@ package com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.
 
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.listener.FragmentEntryLinkListener;
+import com.liferay.fragment.listener.FragmentEntryLinkListenerRegistry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.processor.PortletRegistry;
@@ -108,6 +110,21 @@ public class FragmentLayoutStructureItemImporter
 			fragmentEntryLink = _updateFragmentEntryLink(
 				fragmentEntryLink, fragmentInstance,
 				layoutStructureItemImporterContext, pageElementDefinition);
+
+			FragmentEntryLinkListenerRegistry
+				fragmentEntryLinkListenerRegistry =
+					_fragmentEntryLinkListenerRegistryServiceTracker.
+						getService();
+
+			if (fragmentEntryLinkListenerRegistry != null) {
+				for (FragmentEntryLinkListener fragmentEntryLinkListener :
+						fragmentEntryLinkListenerRegistry.
+							getFragmentEntryLinkListeners()) {
+
+					fragmentEntryLinkListener.onUpdateFragmentEntryLink(
+						fragmentEntryLink);
+				}
+			}
 		}
 
 		if (fragmentEntryLink == null) {
@@ -451,6 +468,13 @@ public class FragmentLayoutStructureItemImporter
 			false);
 	}
 
+	private static final ServiceTracker
+		<FragmentEntryLinkListenerRegistry, FragmentEntryLinkListenerRegistry>
+			_fragmentEntryLinkListenerRegistryServiceTracker =
+				ServiceTrackerFactory.open(
+					FrameworkUtil.getBundle(
+						FragmentLayoutStructureItemImporter.class),
+					FragmentEntryLinkListenerRegistry.class);
 	private static final ServiceTracker<PortletRegistry, PortletRegistry>
 		_portletRegistryServiceTracker = ServiceTrackerFactory.open(
 			FrameworkUtil.getBundle(FragmentLayoutStructureItemImporter.class),
