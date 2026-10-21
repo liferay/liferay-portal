@@ -14,12 +14,14 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.fields.NestedFieldsContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
+import com.liferay.portal.vulcan.internal.feature.flag.FeatureFlagUtil;
 import com.liferay.portal.vulcan.jaxrs.context.ContextDataInjector;
 import com.liferay.portal.vulcan.pagination.Page;
 
@@ -268,7 +270,7 @@ public class NestedFieldsSetterUtil {
 
 				field.set(item, value);
 
-				if (childNestedField == null) {
+				if ((childNestedField == null) || (value == null)) {
 					continue;
 				}
 
@@ -533,6 +535,12 @@ public class NestedFieldsSetterUtil {
 				Map.Entry<String, Class<?>>[] resourceMethodArgNameTypeEntries,
 				ServiceObjects<Object> serviceObjects)
 			throws Exception {
+
+			if (!FeatureFlagUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), resourceMethod)) {
+
+				return null;
+			}
 
 			Object resource = serviceObjects.getService();
 
