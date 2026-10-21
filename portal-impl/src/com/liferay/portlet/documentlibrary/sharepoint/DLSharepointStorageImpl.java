@@ -92,8 +92,8 @@ public class DLSharepointStorageImpl extends BaseSharepointStorageImpl {
 
 		ServiceContext serviceContext = new ServiceContext();
 
-		serviceContext.setAddGroupPermissions(true);
-		serviceContext.setAddGuestPermissions(true);
+		serviceContext.deriveDefaultPermissions(
+			groupId, DLFolderConstants.getClassName());
 
 		DLAppServiceUtil.addFolder(
 			null, groupId, parentFolderId, folderName, description,
@@ -346,8 +346,8 @@ public class DLSharepointStorageImpl extends BaseSharepointStorageImpl {
 
 		ServiceContext serviceContext = new ServiceContext();
 
-		serviceContext.setAddGroupPermissions(true);
-		serviceContext.setAddGuestPermissions(true);
+		serviceContext.deriveDefaultPermissions(
+			groupId, DLFileEntryConstants.getClassName());
 
 		String contentType = GetterUtil.get(
 			httpServletRequest.getHeader(HttpHeaders.CONTENT_TYPE),
