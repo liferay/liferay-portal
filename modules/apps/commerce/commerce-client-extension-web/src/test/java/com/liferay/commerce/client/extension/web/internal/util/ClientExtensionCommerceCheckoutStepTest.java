@@ -115,6 +115,30 @@ public class ClientExtensionCommerceCheckoutStepTest {
 				Mockito.mock(HttpServletResponse.class)));
 	}
 
+	@Test
+	public void testIsContinueAfterPayment() {
+		Assert.assertFalse(
+			_clientExtensionCommerceCheckoutStep.isContinueAfterPayment());
+
+		Mockito.when(
+			_commerceCheckoutStepCET.getContinueAfterPayment()
+		).thenReturn(
+			true
+		);
+
+		ClientExtensionCommerceCheckoutStep
+			clientExtensionCommerceCheckoutStep =
+				new ClientExtensionCommerceCheckoutStep(
+					_commerceCheckoutStepCET,
+					_commercePaymentMethodGroupRelLocalService, _http,
+					_jsonFactory, _jspRenderer, _localOAuthClient,
+					_oAuth2ApplicationLocalService, _portalCatapult,
+					_servletContext, _userService);
+
+		Assert.assertTrue(
+			clientExtensionCommerceCheckoutStep.isContinueAfterPayment());
+	}
+
 	private HttpServletRequest _getHttpServletRequest() {
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
