@@ -13,6 +13,7 @@ export type GovernanceDimension = {
 
 export type GovernanceHealth = {
 	freshness: GovernanceDimension;
+	issues: number;
 	operations: GovernanceDimension;
 	quality: GovernanceDimension;
 	score: number;
@@ -30,6 +31,10 @@ const OPERATIONS_WEIGHT = 30;
 
 const QUALITY_WEIGHT = 40;
 
+function getScore(score: number, issues: number) {
+	return issues ? Math.min(score, 99) : score;
+}
+
 function getDimension(signals: Signal[], warnings = 0): GovernanceDimension {
 	let issues = 0;
 	let penalty = 0;
@@ -42,9 +47,11 @@ function getDimension(signals: Signal[], warnings = 0): GovernanceDimension {
 		}
 	}
 
-	const score = Math.round(Math.max(0, 100 - penalty));
-
-	return {issues, score: issues ? Math.min(score, 99) : score, warnings};
+	return {
+		issues,
+		score: getScore(Math.round(Math.max(0, 100 - penalty)), issues),
+		warnings,
+	};
 }
 
 export default function getGovernanceHealth(
@@ -90,15 +97,21 @@ export default function getGovernanceHealth(
 		},
 	]);
 
+	const issues = freshness.issues + operations.issues + quality.issues;
+
 	return {
 		freshness,
+		issues,
 		operations,
 		quality,
-		score: Math.round(
-			(freshness.score * FRESHNESS_WEIGHT +
-				operations.score * OPERATIONS_WEIGHT +
-				quality.score * QUALITY_WEIGHT) /
-				100
+		score: getScore(
+			Math.round(
+				(freshness.score * FRESHNESS_WEIGHT +
+					operations.score * OPERATIONS_WEIGHT +
+					quality.score * QUALITY_WEIGHT) /
+					100
+			),
+			issues
 		),
 	};
 }

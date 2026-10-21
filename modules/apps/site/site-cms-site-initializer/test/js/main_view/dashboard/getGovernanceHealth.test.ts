@@ -35,6 +35,18 @@ describe('getGovernanceHealth', () => {
 		expect(score).toBe(100);
 	});
 
+	it('adds up the issues of every dimension without the warnings', () => {
+		const {issues} = getGovernanceHealth({
+			...NO_ISSUES,
+			brokenLinksCount: 2,
+			expiredCount: 3,
+			expiringSoonCount: 4,
+			longStandingDraftsCount: 1,
+		});
+
+		expect(issues).toBe(6);
+	});
+
 	it('penalises broken links by their share of the scope with severity two', () => {
 		const {quality} = getGovernanceHealth({
 			...NO_ISSUES,
@@ -65,13 +77,14 @@ describe('getGovernanceHealth', () => {
 	});
 
 	it('caps the score at ninety-nine while any issue remains', () => {
-		const {quality} = getGovernanceHealth({
+		const {quality, score} = getGovernanceHealth({
 			...NO_ISSUES,
 			brokenLinksCount: 1,
 			totalCount: 1000,
 		});
 
 		expect(quality).toEqual({issues: 1, score: 99, warnings: 0});
+		expect(score).toBe(99);
 	});
 
 	it('scores quality at a hundred when the scope has no assets', () => {

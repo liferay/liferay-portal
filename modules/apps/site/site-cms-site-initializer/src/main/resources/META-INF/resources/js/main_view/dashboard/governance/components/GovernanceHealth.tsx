@@ -35,6 +35,7 @@ function ScoreHelp() {
 			header={Liferay.Language.get('about-this-dashboard')}
 			onShowChange={setShow}
 			show={show}
+			size="lg"
 			trigger={
 				<ClayButtonWithIcon
 					aria-expanded={show}
@@ -58,6 +59,26 @@ function ScoreHelp() {
 	);
 }
 
+function getIssuesLabel(issues: number, warnings = 0) {
+	const issuesLabel = sub(
+		issues === 1
+			? Liferay.Language.get('x-issue')
+			: Liferay.Language.get('x-issues'),
+		issues
+	);
+
+	if (!warnings) {
+		return issuesLabel;
+	}
+
+	return `${issuesLabel} · ${sub(
+		warnings === 1
+			? Liferay.Language.get('x-warning')
+			: Liferay.Language.get('x-warnings'),
+		warnings
+	)}`;
+}
+
 function SubScore({
 	dimension: {issues, score, warnings},
 	label,
@@ -76,21 +97,7 @@ function SubScore({
 			</span>
 
 			<span className="d-block text-2 text-secondary">
-				{sub(
-					issues === 1
-						? Liferay.Language.get('x-active-issue')
-						: Liferay.Language.get('x-active-issues'),
-					issues
-				)}
-
-				{warnings
-					? ` · ${sub(
-							warnings === 1
-								? Liferay.Language.get('x-warning')
-								: Liferay.Language.get('x-warnings'),
-							warnings
-						)}`
-					: null}
+				{getIssuesLabel(issues, warnings)}
 			</span>
 		</div>
 	);
@@ -105,14 +112,15 @@ export function GovernanceHealth() {
 
 	return (
 		<section
+			aria-busy={loadingStatistics}
 			aria-label={title}
 			className="align-items-lg-center cms-governance-health d-flex flex-column flex-lg-row justify-content-between my-4 pl-4 pr-4 pr-lg-5 py-4 rounded-lg"
 			style={{
 				backgroundImage: `url(${getImage('governance_health_banner.svg')})`,
 			}}
 		>
-			<div className="flex-shrink-0 mb-2">
-				<div className="align-items-center d-flex my-1">
+			<div className="flex-shrink-0 my-2">
+				<div className="align-items-center d-flex mb-2">
 					<Text size={6} weight="semi-bold">
 						{title}
 					</Text>
@@ -120,16 +128,22 @@ export function GovernanceHealth() {
 					<ScoreHelp />
 				</div>
 
-				{loadingStatistics ? (
-					<ClayLoadingIndicator size="sm" />
-				) : health ? (
-					<div className="align-items-baseline d-flex mb-1">
-						<Text size={11} weight="bold">
-							{health.score}
-						</Text>
+				{health ? (
+					<>
+						<div className="align-items-baseline d-flex">
+							<Text size={11} weight="bold">
+								{health.score}
+							</Text>
 
-						<Text size={9}>/{MAX_SCORE}</Text>
-					</div>
+							<Text size={9}>/{MAX_SCORE}</Text>
+						</div>
+
+						<Text color="secondary" size={3}>
+							{getIssuesLabel(health.issues)}
+						</Text>
+					</>
+				) : loadingStatistics ? (
+					<ClayLoadingIndicator size="sm" />
 				) : null}
 			</div>
 
