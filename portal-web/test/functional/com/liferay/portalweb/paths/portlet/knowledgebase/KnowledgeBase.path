@@ -85,11 +85,6 @@
 <!--ARTICLE_TABLE-->
 
 <tr>
-	<td>ARTICLE_TABLE_ARTICLE_STATUS</td>
-	<td>//div[contains(.,'${key_kbArticleTitle}')]//span[@class='text-default']//span[@class='workflow-status']/span</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ARTICLE_TABLE_EXPIRATION_STATUS</td>
 	<td>//a[contains(.,'${key_kbArticleTitle}')]/parent::h2/following-sibling::span[@class='text-default']//span[contains(@class,'label-warning')]/span</td>
 	<td></td>
@@ -314,16 +309,6 @@
 <tr>
 	<td>MOVE_NEW_PARENT_PRIORITY_LABEL</td>
 	<td>//div[contains(@id,'knowledge_base_web') and contains(@id,'newParent')]//label[contains(@class,'control-label') and contains(.,'Priority')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MOVE_MODAL_SEARCH_BAR</td>
-	<td>//div[contains(@class,'container-fluid')]//div[contains(@class,'input-group-sm')]//input[@placeholder='Search for']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MOVE_MODAL_SEARCH_RESULT</td>
-	<td>//ul[contains(@class,'list-group')]//div[contains(@class,'autofit-col')]//span[contains(.,'${key_itemName}')]</td>
 	<td></td>
 </tr>
 

@@ -387,73 +387,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addCPWithInvalidAttachmentSize(kbArticleAttachment = null, maxFileSize = null, kbArticleContent = null, kbArticleTitle = null) {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Basic Article");
-
-		AssertElementPresent(locator1 = "TextInput#TITLE");
-
-		Type(
-			locator1 = "TextInput#TITLE",
-			value1 = ${kbArticleTitle});
-
-		CKEditor.addContent(content = ${kbArticleContent});
-
-		KBArticle.selectAttachmentCP(kbArticleAttachment = ${kbArticleAttachment});
-
-		AssertTextEquals(
-			locator1 = "MessageBoardsThread#MESSAGE_ATTACHMENT_INVALID_SIZE_ERROR",
-			value1 = "Please enter a file with a valid file size no larger than ${maxFileSize}KB.");
-
-		KBArticle.clickPublish();
-	}
-
-	@summary = "Default summary"
-	macro addCPWithInvalidTitle(kbArticleContent = null, kbArticleTitle = null) {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Basic Article");
-
-		AssertElementPresent(locator1 = "TextInput#TITLE");
-
-		Type(
-			locator1 = "TextInput#TITLE",
-			value1 = ${kbArticleTitle});
-
-		CKEditor.addContent(content = ${kbArticleContent});
-
-		ProductMenuHelper.closeProductMenu();
-
-		KBArticle.clickPublish();
-
-		AssertElementPresent(locator1 = "TextInput#REQUIRED_ALERT");
-	}
-
-	@summary = "Default summary"
-	macro addCPWithTextFieldCustomField(customFieldText = null, kbArticleContent = null, kbArticleTitle = null) {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.click(menuItem = "Basic Article");
-
-		AssertElementPresent(locator1 = "TextInput#TITLE");
-
-		Type(
-			locator1 = "TextInput#TITLE",
-			value1 = ${kbArticleTitle});
-
-		CKEditor.addContent(content = ${kbArticleContent});
-
-		Panel.expandPanel(panel = "Custom Fields");
-
-		Type(
-			locator1 = "TextInput#CUSTOM_FIELD",
-			value1 = ${customFieldText});
-
-		KBArticle.clickPublish();
-	}
-
-	@summary = "Default summary"
 	macro addPGViaAP(kbArticleContent = null, kbArticleTitle = null) {
 		AssetPublisherPortlet.addAsset(assetType = "Knowledge Base Article");
 
@@ -1174,30 +1107,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro removeAttachment(attachmentName = null) {
-		ClickNoError(
-			key_attachmentName = ${attachmentName},
-			locator1 = "KnowledgeBaseArticle#ATTACHMENTS_REMOVE");
-
-		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
-	}
-
-	@summary = "Default summary"
-	macro searchArticleInMoveModal(searchItem = null, kbArticleTitle = null) {
-		var key_rowEntry = ${kbArticleTitle};
-
-		Click(locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
-
-		MenuItem.click(menuItem = "Move");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		Type(
-			locator1 = "KnowledgeBase#MOVE_MODAL_SEARCH_BAR",
-			value1 = ${searchItem});
-	}
-
-	@summary = "Default summary"
 	macro searchForKB(knowledgeBaseName = null) {
 		var key_knowledgeBaseName = ${knowledgeBaseName};
 
@@ -1437,41 +1346,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewActionsDetailsToolbar() {
-		AssertVisible(
-			key_text = "pencil",
-			locator1 = "Icon#ANY");
-
-		AssertVisible(
-			key_text = "info-circle-open",
-			locator1 = "Icon#ANY");
-
-		AssertVisible(locator1 = "Button#SUBSCRIBE");
-
-		AssertVisible(locator1 = "Icon#NAVBAR_ELLIPSIS");
-
-		if (isSet(moreActions)) {
-			Click(locator1 = "Icon#NAVBAR_ELLIPSIS");
-
-			MenuItem.viewVisible(menuItem = "Edit");
-
-			MenuItem.viewVisible(menuItem = "Add Child Article");
-
-			MenuItem.viewVisible(menuItem = "Subscribe");
-
-			MenuItem.viewVisible(menuItem = "History");
-
-			MenuItem.viewVisible(menuItem = "Print");
-
-			MenuItem.viewVisible(menuItem = "Move");
-
-			MenuItem.viewVisible(menuItem = "Permissions");
-
-			MenuItem.viewVisible(menuItem = "Delete");
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewActiveActionsManagementToolbar(title = null) {
 		AssertElementNotPresent(locator1 = "Checkbox#LEXICON_SELECT_ALL_CONTAINER_DISABLED");
 
@@ -1496,42 +1370,6 @@ definition {
 		AssertVisible(
 			key_title = ${title},
 			locator1 = "KnowledgeBaseArticle#INFO_TITLE_VISIBLE");
-	}
-
-	@summary = "Default summary"
-	macro viewArticleHistoryCP(kbArticleContentRemovedDiff = null, kbArticleContentAddedDiff = null, kbArticleVersionOld = null, kbArticleVersionNew = null, kbArticleTitle = null) {
-		Click(
-			key_rowEntry = ${kbArticleTitle},
-			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
-
-		MenuItem.click(menuItem = "History");
-
-		Check(
-			key_versionNumber = ${kbArticleVersionNew},
-			locator1 = "KnowledgeBaseArticle#HISTORY_SELECT_VERSION_CHECKBOX",
-			value1 = ${kbArticleVersionNew});
-
-		Check(
-			key_versionNumber = ${kbArticleVersionOld},
-			locator1 = "KnowledgeBaseArticle#HISTORY_SELECT_VERSION_CHECKBOX",
-			value1 = ${kbArticleVersionOld});
-
-		AssertClick(
-			locator1 = "Button#COMPARE_VERSIONS",
-			value1 = "Compare Versions");
-
-		if (isSet(kbArticleContentRemovedDiff)) {
-			AssertTextEquals(
-				key_kbArticleContentRemovedDiff = ${kbArticleContentRemovedDiff},
-				locator1 = "KnowledgeBaseArticle#HISTORY_CONTENT_REMOVED_DIFF",
-				value1 = ${kbArticleContentRemovedDiff});
-		}
-
-		if (isSet(kbArticleContentAddedDiff)) {
-			AssertTextEquals(
-				locator1 = "KnowledgeBaseArticle#HISTORY_CONTENT_ADDED_DIFF",
-				value1 = ${kbArticleContentAddedDiff});
-		}
 	}
 
 	@summary = "Default summary"
@@ -1612,25 +1450,6 @@ definition {
 			value1 = "Attachments");
 
 		AssertElementPresent(locator1 = "KnowledgeBaseArticle#ATTACHMENTS_SAVED_ATTACHMENTS_CONTAINER");
-	}
-
-	@summary = "Default summary"
-	macro viewBlogsEntryRelatedAsset(kbArticleRelatedAssetTitle = null) {
-		var key_kbArticleRelatedAssetTitle = ${kbArticleRelatedAssetTitle};
-
-		AssertClick.assertTextClickAt(
-			locator1 = "AssetRelatedAssets#KB_RELATED_ASSETS_LINKS",
-			value1 = ${kbArticleRelatedAssetTitle});
-
-		WaitForPageLoad();
-
-		AssertTextEquals(
-			locator1 = "BlogsEntry#CONTENT_GENERIC",
-			value1 = "Blogs Entry Content");
-
-		AssertTextEquals(
-			locator1 = "BlogsEntry#TITLE_GENERIC",
-			value1 = "Blogs Entry Title");
 	}
 
 	@summary = "Default summary"
@@ -1813,22 +1632,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewCPWithHTML(kbArticleContent = null, kbArticleTitle = null) {
-		AssertClick(
-			key_kbArticleTitle = ${kbArticleTitle},
-			locator1 = "KnowledgeBase#DESCRIPTIVE_VIEW_ARTICLE_TITLE",
-			value1 = ${kbArticleTitle});
-
-		AssertTextEquals(
-			locator1 = "KnowledgeBaseArticle#TITLE",
-			value1 = ${kbArticleTitle});
-
-		AssertTextEquals(
-			locator1 = "KnowledgeBaseArticle#HTML_BOLD_CONTENT",
-			value1 = ${kbArticleContent});
-	}
-
-	@summary = "Default summary"
 	macro viewDefaultCP() {
 		if (isSet(newFolder)) {
 			AssertTextEquals(
@@ -1868,38 +1671,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewFieldRequiredAsterisk(fieldLabel = null) {
-		LexiconEntry.gotoAddMenuItem(menuItem = "Basic Article");
-
-		for (var fieldFieldLabel : list ${fieldLabel}) {
-			FormFields.viewRequiredAsteriskDataField(fieldFieldLabel = ${fieldFieldLabel});
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewFriendlyURLCP(kbArticleFriendlyURL = null, kbArticleTitle = null) {
-		if (!(isSet(skipNavigation))) {
-			Click(
-				key_rowEntry = ${kbArticleTitle},
-				locator1 = "Icon#ROW_VERTICAL_ELLIPSIS_2");
-
-			MenuItem.click(menuItem = "Edit");
-		}
-
-		Panel.expandPanel(panel = "Configuration");
-
-		AssertTextEquals(
-			locator1 = "KnowledgeBaseArticle#EDIT_FRIENDLY_URL_FIELD",
-			value1 = ${kbArticleFriendlyURL});
-
-		if (isSet(disabledFriendlyURLField)) {
-			AssertElementPresent(
-				key_fieldLabel = "Friendly URL",
-				locator1 = "FormFields#FIELD_DISABLED_TEXT");
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewImageIsPresent(contentImageName = null, kbArticleTitle = null) {
 		Click(
 			key_kbArticleTitle = ${kbArticleTitle},
@@ -1913,56 +1684,6 @@ definition {
 	@summary = "Default summary"
 	macro viewImageViaContentCmd() {
 		AssertElementPresent(locator1 = "KnowledgeBaseArticle#CONTENT_IMAGE");
-	}
-
-	@summary = "Default summary"
-	macro viewInfoPanel(workflowStatus = null, childArticlesQuantity = null, viewQuantity = null, kbArticleTitle = null, versionNumber = null) {
-		Click(locator1 = "Button#OPEN");
-
-		AssertTextEquals(
-			locator1 = "KnowledgeBaseArticle#INFO_TITLE",
-			value1 = ${kbArticleTitle});
-
-		if (isSet(versionNumber)) {
-			AssertTextEquals(
-				key_dmDocumentVersionNumber = ${versionNumber},
-				locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_VERSION",
-				value1 = "VERSION ${versionNumber}");
-		}
-
-		if (isSet(workflowStatus)) {
-			AssertTextEquals(
-				locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_WORKFLOW_STATUS",
-				value1 = ${workflowStatus});
-		}
-
-		if (isSet(viewsQuantity)) {
-			AssertVisible(
-				key_sectionContent = ${viewQuantity},
-				key_sectionTitle = "Views",
-				locator1 = "KnowledgeBase#SIDE_PANEL_INFO");
-		}
-
-		if (isSet(childArticlesQuantity)) {
-			AssertVisible(
-				key_sectionContent = ${childArticlesQuantity},
-				key_sectionTitle = "Child Articles",
-				locator1 = "KnowledgeBase#SIDE_PANEL_INFO");
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewInfoPanelVersions(entryVersion = null, userName = null) {
-		Navigator.gotoNavTab(navTab = "Versions");
-
-		AssertTextEquals(
-			key_entryVersion = ${entryVersion},
-			locator1 = "KnowledgeBaseArticle#INFO_VERSION_TITLE",
-			value1 = ${entryVersion});
-
-		var modifiedDate = DateUtil.getFormattedCurrentDate("MMMM d");
-
-		AssertElementPresent(locator1 = "//li[contains(*,'${entryVersion}')]//div[@class='list-group-subtitle'][contains(text(),'By ${userName}, on ${modifiedDate}')]");
 	}
 
 	@summary = "Default summary"
@@ -2111,25 +1832,6 @@ definition {
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "AP#ASSET_ABSTRACT_DESCRIPTION",
-			value1 = ${kbArticleContent});
-	}
-
-	@summary = "Default summary"
-	macro viewPrintContent(kbArticleContent = null, kbArticleTitle = null) {
-		Click(
-			key_rowEntry = ${kbArticleTitle},
-			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
-
-		MenuItem.click(menuItem = "Print");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		AssertTextEquals(
-			locator1 = "KnowledgeBaseArticle#TITLE_PRINT_PREVIEW",
-			value1 = ${kbArticleTitle});
-
-		AssertTextEquals(
-			locator1 = "KnowledgeBaseArticle#CONTENT",
 			value1 = ${kbArticleContent});
 	}
 

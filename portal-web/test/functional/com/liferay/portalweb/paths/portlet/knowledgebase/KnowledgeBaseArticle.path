@@ -16,18 +16,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>TITLE_PRINT_PREVIEW</td>
-	<td>//div[contains(@class,'kb-title')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>CONTENT</td>
 	<td>//div[contains(@class,'kb-entity-body')]//p</td>
-	<td></td>
-</tr>
-<tr>
-	<td>HTML_BOLD_CONTENT</td>
-	<td>//div[contains(@class,'kb-entity-body')]//b</td>
 	<td></td>
 </tr>
 <tr>
@@ -87,11 +77,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ATTACHMENTS_REMOVE</td>
-	<td>//div//span[contains(.,'${key_attachmentName}')]//following-sibling::span//span[*[name()='svg'][contains(@class,'icon-trash')]]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ATTACHMENTS_SAVED_ATTACHMENTS_CONTAINER</td>
 	<td>//div[contains(@id,'AttachmentsContainer')]//span</td>
 	<td></td>
@@ -146,11 +131,6 @@
 <!--INFO_PANEL-->
 
 <tr>
-	<td>INFO_TITLE</td>
-	<td>//div[@class= 'info-panel-content']//div[@class='sidebar-header']//div[contains(@class,'component-title')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>INFO_TITLE_VISIBLE</td>
 	<td>//div[@class='sidebar-header']//div[contains(@class,'component-title') and contains(.,'${key_title}')]</td>
 	<td></td>
@@ -158,11 +138,6 @@
 <tr>
 	<td>INFO_VERSION_SUBTITLE</td>
 	<td>//li[contains(.,'${key_entryVersion}')]//div[@class='list-group-subtitle']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>INFO_VERSION_TITLE</td>
-	<td>//div[contains(.,'${key_entryVersion}') and contains(@class,'list-group-title')]</td>
 	<td></td>
 </tr>
 <tr>
