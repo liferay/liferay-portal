@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
@@ -73,9 +74,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -508,10 +507,7 @@ public class ContentLayoutTestUtil {
 
 	public static MVCActionCommand getMVCActionCommand(String mvcCommandName) {
 		try {
-			Bundle bundle = FrameworkUtil.getBundle(
-				ContentLayoutTestUtil.class);
-
-			BundleContext bundleContext = bundle.getBundleContext();
+			BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
 			Collection<ServiceReference<MVCActionCommand>>
 				mvcActionCommandReferences = bundleContext.getServiceReferences(
