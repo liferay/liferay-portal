@@ -25,6 +25,7 @@ jobs:
             -   push-rc-image-dxp-operator
             -   push-rc-infrastructure
             -   push-rc-observability
+            -   push-rc-observability-paas
             -   push-rc-platform
             -   push-rc-platform-components
             -   update-staging-charts
@@ -161,6 +162,15 @@ jobs:
         with:
             chart_name: observability
             working_directory: ./cloud/helm/observability
+    check-observability-paas:
+        needs:
+            -   test-cloud-helm-chart
+            -   test-cloud-helm-chart-smoke
+            -   test-cloud-terraform
+        uses: ./.github/workflows/ci-reusable-check-helm-chart-version.yaml
+        with:
+            chart_name: observability-paas
+            working_directory: ./cloud/helm/observability-paas
     check-platform:
         needs:
             -   test-cloud-helm-chart
@@ -293,6 +303,14 @@ jobs:
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
             source_image_ref: ${{needs.push-rc-observability.outputs.image_ref}}
+    promote-rc-observability-paas:
+        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-observability-paas.result == 'success'}}
+        needs:
+            -   approve-release
+            -   push-rc-observability-paas
+        uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
+        with:
+            source_image_ref: ${{needs.push-rc-observability-paas.outputs.image_ref}}
     promote-rc-platform:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-platform.result == 'success'}}
         needs:
@@ -542,6 +560,13 @@ jobs:
         with:
             chart_name: observability
             working_directory: ./cloud/helm/observability
+    push-rc-observability-paas:
+        if: ${{needs.check-observability-paas.outputs.should_release == 'true'}}
+        needs: check-observability-paas
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: observability-paas
+            working_directory: ./cloud/helm/observability-paas
     push-rc-platform:
         if: ${{needs.check-platform.outputs.should_release == 'true'}}
         needs: check-platform
@@ -573,6 +598,7 @@ jobs:
             -   promote-rc-image-dxp-operator
             -   promote-rc-infrastructure
             -   promote-rc-observability
+            -   promote-rc-observability-paas
             -   promote-rc-platform
             -   promote-rc-platform-components
             -   publish-aws-marketplace
@@ -593,6 +619,7 @@ jobs:
             -   push-rc-image-dxp-operator
             -   push-rc-infrastructure
             -   push-rc-observability
+            -   push-rc-observability-paas
             -   push-rc-platform
             -   push-rc-platform-components
         permissions:
@@ -626,6 +653,7 @@ jobs:
                     DIGEST_liferay_platform: ${{needs.promote-rc-platform.outputs.image_digest}}
                     DIGEST_liferay_platform_components: ${{needs.promote-rc-platform-components.outputs.image_digest}}
                     DIGEST_observability: ${{needs.promote-rc-observability.outputs.image_digest}}
+                    DIGEST_observability_paas: ${{needs.promote-rc-observability-paas.outputs.image_digest}}
                     IMAGE_DIGEST_liferay_dxp_operator: ${{needs.promote-rc-image-dxp-operator.outputs.image_digest}}
                     IMAGE_VERSION_liferay_dxp_operator: ${{needs.push-rc-image-dxp-operator.outputs.version}}
                     VERSION_liferay_aws: ${{needs.push-rc-aws.outputs.chart_version}}
@@ -641,6 +669,7 @@ jobs:
                     VERSION_liferay_platform: ${{needs.push-rc-platform.outputs.chart_version}}
                     VERSION_liferay_platform_components: ${{needs.push-rc-platform-components.outputs.chart_version}}
                     VERSION_observability: ${{needs.push-rc-observability.outputs.chart_version}}
+                    VERSION_observability_paas: ${{needs.push-rc-observability-paas.outputs.chart_version}}
                 name: Record the release
                 run: |
                     set -o errexit
@@ -740,7 +769,8 @@ jobs:
                             liferay-infrastructure \
                             liferay-platform \
                             liferay-platform-components \
-                            observability
+                            observability \
+                            observability-paas
                         do
                             local digest_key="DIGEST_${chart//-/_}"
                             local version_key="VERSION_${chart//-/_}"

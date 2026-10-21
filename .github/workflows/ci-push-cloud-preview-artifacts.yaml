@@ -74,6 +74,8 @@ jobs:
                         working_directory: ./cloud/helm/platform-components
                     -   chart_name: observability
                         working_directory: ./cloud/helm/observability
+                    -   chart_name: observability-paas
+                        working_directory: ./cloud/helm/observability-paas
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: ${{matrix.chart_name}}
