@@ -22,9 +22,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -47,6 +49,7 @@ import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResourceFactory;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.feature.flag.FeatureFlagChecker;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLTypeExtension;
@@ -60,6 +63,7 @@ import com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfig
 import com.liferay.portal.vulcan.internal.configuration.VulcanCompanyConfiguration;
 import com.liferay.portal.vulcan.internal.configuration.VulcanConfiguration;
 import com.liferay.portal.vulcan.internal.configuration.util.ConfigurationUtil;
+import com.liferay.portal.vulcan.internal.feature.flag.FeatureFlagUtil;
 import com.liferay.portal.vulcan.internal.graphql.constants.GraphQLConstants;
 import com.liferay.portal.vulcan.internal.graphql.data.fetcher.GraphQLDTOContributorDataFetcher;
 import com.liferay.portal.vulcan.internal.graphql.data.fetcher.LiferayMethodDataFetcher;
@@ -100,6 +104,7 @@ import graphql.annotations.processor.retrievers.fieldBuilders.method.MethodNameB
 import graphql.annotations.processor.retrievers.fieldBuilders.method.MethodTypeBuilder;
 import graphql.annotations.processor.searchAlgorithms.BreadthFirstSearch;
 import graphql.annotations.processor.searchAlgorithms.ParentalSearch;
+import graphql.annotations.processor.searchAlgorithms.SearchAlgorithm;
 import graphql.annotations.processor.typeBuilders.EnumBuilder;
 import graphql.annotations.processor.typeBuilders.InputObjectBuilder;
 import graphql.annotations.processor.typeBuilders.InterfaceBuilder;
@@ -191,6 +196,7 @@ import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
@@ -239,6 +245,22 @@ public class GraphQLServletExtender {
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
+		_featureFlagListenerServiceRegistration = bundleContext.registerService(
+			FeatureFlagListener.class,
+			(companyId, featureFlagKey, enabled) -> {
+				synchronized (_servletDataServiceTrackerList) {
+					if (companyId == CompanyConstants.SYSTEM) {
+						_servlets.clear();
+					}
+					else {
+						_servlets.remove(companyId);
+					}
+				}
+			},
+			HashMapDictionaryBuilder.<String, Object>put(
+				"feature.flag.key", "*"
+			).build());
+
 		_liferayGraphQLFieldRetriever = new LiferayGraphQLFieldRetriever();
 
 		GraphQLInterfaceRetriever graphQLInterfaceRetriever =
@@ -277,13 +299,16 @@ public class GraphQLServletExtender {
 		ParentalSearch parentalSearch = new ParentalSearch(
 			graphQLObjectInfoRetriever);
 
+		FeatureFlagSearchAlgorithm featureFlagSearchAlgorithm =
+			new FeatureFlagSearchAlgorithm(breadthFirstSearch);
+
 		GraphQLExtensionsHandler graphQLExtensionsHandler =
 			new GraphQLExtensionsHandler() {
 				{
 					setFieldRetriever(_liferayGraphQLFieldRetriever);
 					setFieldSearchAlgorithm(parentalSearch);
 					setGraphQLObjectInfoRetriever(graphQLObjectInfoRetriever);
-					setMethodSearchAlgorithm(breadthFirstSearch);
+					setMethodSearchAlgorithm(featureFlagSearchAlgorithm);
 				}
 			};
 
@@ -294,7 +319,7 @@ public class GraphQLServletExtender {
 				setGraphQLFieldRetriever(_liferayGraphQLFieldRetriever);
 				setGraphQLInterfaceRetriever(graphQLInterfaceRetriever);
 				setGraphQLObjectInfoRetriever(graphQLObjectInfoRetriever);
-				setMethodSearchAlgorithm(breadthFirstSearch);
+				setMethodSearchAlgorithm(featureFlagSearchAlgorithm);
 			}
 
 			public GraphQLType getGraphQLType(
@@ -590,7 +615,7 @@ public class GraphQLServletExtender {
 		_liferayMethodDataFetchingProcessor =
 			new LiferayMethodDataFetchingProcessor(
 				_bundleContext, _companyLocalService, _depotEntryLocalService,
-				_expressionConvert, _filterParserProvider,
+				_expressionConvert, _featureFlagChecker, _filterParserProvider,
 				_graphQLContributorServiceTrackerList, _groupLocalService,
 				_language, _paginationProvider, _portal,
 				_resourceActionLocalService, _resourcePermissionLocalService,
@@ -726,6 +751,8 @@ public class GraphQLServletExtender {
 
 	@Deactivate
 	protected void deactivate() {
+		_featureFlagListenerServiceRegistration.unregister();
+
 		_graphQLContributorServiceTrackerList.close();
 
 		_serviceTrackerMap.close();
@@ -1304,6 +1331,19 @@ public class GraphQLServletExtender {
 		return GetterUtil.getInteger(version.replaceAll("\\D", ""), 1);
 	}
 
+	private boolean _isFeatureFlagEnabled(Method method) {
+		try {
+			return FeatureFlagUtil.isEnabled(_companyId, method);
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(exception);
+			}
+
+			return false;
+		}
+	}
+
 	private boolean _isGraphQLEnabled(ServletData servletData)
 		throws Exception {
 
@@ -1337,7 +1377,9 @@ public class GraphQLServletExtender {
 			ConfigurationUtil.getExcludedOperationIds(
 				_companyId, _configurationAdmin, _getPath(servletData));
 
-		if (excludedOperationIds.contains(method.getName())) {
+		if (excludedOperationIds.contains(method.getName()) ||
+			!_isFeatureFlagEnabled(method)) {
+
 			return false;
 		}
 
@@ -2086,6 +2128,12 @@ public class GraphQLServletExtender {
 	private ExpressionConvert<Filter> _expressionConvert;
 
 	@Reference
+	private FeatureFlagChecker _featureFlagChecker;
+
+	private ServiceRegistration<FeatureFlagListener>
+		_featureFlagListenerServiceRegistration;
+
+	@Reference
 	private FilterParserProvider _filterParserProvider;
 
 	private ServiceTrackerList<GraphQLContributor>
@@ -2665,6 +2713,29 @@ public class GraphQLServletExtender {
 					dataFetcherExceptionHandlerParameters.getSourceLocation())
 			).build();
 		}
+
+	}
+
+	private class FeatureFlagSearchAlgorithm implements SearchAlgorithm {
+
+		public FeatureFlagSearchAlgorithm(SearchAlgorithm searchAlgorithm) {
+			_searchAlgorithm = searchAlgorithm;
+		}
+
+		@Override
+		public boolean isFound(Member member) throws CannotCastMemberException {
+			if (!_searchAlgorithm.isFound(member)) {
+				return false;
+			}
+
+			if (!(member instanceof Method)) {
+				return true;
+			}
+
+			return _isFeatureFlagEnabled((Method)member);
+		}
+
+		private final SearchAlgorithm _searchAlgorithm;
 
 	}
 
