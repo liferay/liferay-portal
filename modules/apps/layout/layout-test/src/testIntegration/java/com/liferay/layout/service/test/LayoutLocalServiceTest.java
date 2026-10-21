@@ -502,6 +502,47 @@ public class LayoutLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-111077")
+	public void testFetchDraftLayout() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		Layout mainDraftLayout = _layoutLocalService.fetchDraftLayout(
+			layout.getPlid());
+
+		Assert.assertNotNull(mainDraftLayout);
+		Assert.assertEquals(0, mainDraftLayout.getLaunchSetId());
+
+		Assert.assertEquals(
+			mainDraftLayout,
+			_layoutLocalService.fetchDraftLayout(layout.getPlid(), 0));
+
+		long launchSetId = RandomTestUtil.randomLong();
+
+		Assert.assertNull(
+			_layoutLocalService.fetchDraftLayout(
+				layout.getPlid(), launchSetId));
+
+		Layout launchDraftLayout = _addLaunchDraftLayout(launchSetId, layout);
+
+		Assert.assertEquals(
+			launchDraftLayout,
+			_layoutLocalService.fetchDraftLayout(
+				layout.getPlid(), launchSetId));
+
+		Assert.assertEquals(
+			mainDraftLayout,
+			_layoutLocalService.fetchDraftLayout(layout.getPlid()));
+		Assert.assertEquals(
+			mainDraftLayout,
+			_layoutLocalService.fetchDraftLayout(layout.getPlid(), 0));
+		Assert.assertNull(
+			_layoutLocalService.fetchDraftLayout(
+				layout.getPlid(), RandomTestUtil.randomLong()));
+	}
+
+	@Test
 	public void testGetLayoutWithOldFriendlyURLWhenNewLayoutWithSameNameIsCreated()
 		throws Exception {
 
@@ -1251,6 +1292,26 @@ public class LayoutLocalServiceTest {
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_group.getGroupId(), false, _serviceContext);
 		}
+	}
+
+	private Layout _addLaunchDraftLayout(long launchSetId, Layout layout)
+		throws Exception {
+
+		Layout launchDraftLayout = _layoutLocalService.addLayout(
+			StringBundler.concat(
+				layout.getExternalReferenceCode(), "-launch-", launchSetId),
+			TestPropsValues.getUserId(), layout.getGroupId(),
+			layout.isPrivateLayout(), layout.getParentLayoutId(),
+			_portal.getClassNameId(Layout.class), layout.getPlid(),
+			layout.getNameMap(), layout.getTitleMap(),
+			layout.getDescriptionMap(), layout.getKeywordsMap(),
+			layout.getRobotsMap(), layout.getType(), layout.getTypeSettings(),
+			true, true, Collections.emptyMap(),
+			layout.getMasterLayoutPageTemplateEntryERC(), _serviceContext);
+
+		launchDraftLayout.setLaunchSetId(launchSetId);
+
+		return _layoutLocalService.updateLayout(launchDraftLayout);
 	}
 
 	private void _assertExternalReferenceCodes(
