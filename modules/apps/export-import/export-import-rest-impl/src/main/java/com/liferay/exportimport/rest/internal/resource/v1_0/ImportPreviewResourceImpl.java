@@ -27,9 +27,13 @@ import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ImportPreviewResource;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
@@ -299,6 +303,35 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		}
 	}
 
+	private String _getMessage(JSONObject jsonObject) {
+		JSONArray messageListItemsJSONArray = jsonObject.getJSONArray(
+			"messageListItems");
+
+		if (JSONUtil.isEmpty(messageListItemsJSONArray)) {
+			return jsonObject.getString("message");
+		}
+
+		StringBundler sb = new StringBundler(
+			(messageListItemsJSONArray.length() * 7) + 1);
+
+		sb.append(jsonObject.getString("message"));
+
+		for (int i = 0; i < messageListItemsJSONArray.length(); i++) {
+			JSONObject messageListItemJSONObject =
+				messageListItemsJSONArray.getJSONObject(i);
+
+			sb.append(StringPool.NEW_LINE);
+			sb.append(messageListItemJSONObject.getString("type"));
+			sb.append(StringPool.SPACE);
+			sb.append(messageListItemJSONObject.getString("name"));
+			sb.append(StringPool.COLON);
+			sb.append(StringPool.SPACE);
+			sb.append(messageListItemJSONObject.getString("info"));
+		}
+
+		return sb.toString();
+	}
+
 	private Site[] _getSites(List<ExportImportGroup> exportImportGroups) {
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-85946")) {
@@ -384,7 +417,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 				contextAcceptLanguage.getPreferredLocale(), portalException,
 				exportImportConfiguration);
 
-			throw new BadRequestException(jsonObject.getString("message"));
+			throw new BadRequestException(_getMessage(jsonObject));
 		}
 		finally {
 			_exportImportConfigurationLocalService.
