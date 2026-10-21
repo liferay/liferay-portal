@@ -1147,7 +1147,7 @@ definition {
 	@summary = "Default summary"
 	macro viewNoConnectedSiteCP() {
 		AssertTextEquals(
-			locator1 = "Message#SUBTITLE",
+			locator1 = "Message#EMPTY_INFO_COMPACT",
 			value1 = "No sites are connected yet.");
 	}
 

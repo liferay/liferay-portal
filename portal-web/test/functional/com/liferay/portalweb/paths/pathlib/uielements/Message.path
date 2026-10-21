@@ -52,17 +52,22 @@
 </tr>
 <tr>
 	<td>EMPTY_DEPOT_ROLE</td>
-	<td>//div[contains(@id,'depotRoles')]/p[contains(@class,'text-secondary')]</td>
+	<td>//div[contains(@id,'depotRoles')]/div[contains(@class,'c-empty-state')]/p[contains(@class,'c-empty-state-text')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>EMPTY_INFO</td>
-	<td>//div[contains(@class,'taglib-empty-result-message')]</td>
+	<td>//div[contains(concat(' ',normalize-space(@class),' '),' taglib-empty-result-message ') or div[contains(@class,'c-empty-state-image') and contains(@class,'result-message-header')]]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>EMPTY_INFO_2</td>
 	<td>//div[contains(@class,'panel-default')][2]//div[contains(@class,'empty-result-message')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EMPTY_INFO_COMPACT</td>
+	<td>//div[contains(concat(' ',normalize-space(@class),' '),' c-empty-state ')]/p[contains(@class,'c-empty-state-text')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -82,12 +87,12 @@
 </tr>
 <tr>
 	<td>EMPTY_INFO_DEPOT_HIDE</td>
-	<td>//div[not(contains(@class,'hide'))]//p[contains(@class,'text-secondary')]</td>
+	<td>//div[not(contains(@class,'hide'))]//p[contains(@class,'c-empty-state-text')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>EMPTY_INFO_TAGLIB</td>
-	<td>//div[contains(@class,'taglib-empty-result-message')]</td>
+	<td>//div[contains(concat(' ',normalize-space(@class),' '),' taglib-empty-result-message ') or div[contains(@class,'c-empty-state-image') and contains(@class,'result-message-header')]]</td>
 	<td></td>
 </tr>
 <tr>

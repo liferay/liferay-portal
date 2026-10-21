@@ -148,7 +148,7 @@
 </tr>
 <tr>
 	<td>MESSAGE_NO_SEGMENTS</td>
-	<td>//div[contains(@class, 'taglib-empty-result-message')]/div[contains(.,'There are no segments')]</td>
+	<td>//div[div[contains(@class,'c-empty-state-image') and contains(@class,'result-message-header')]]/div[contains(@class,'c-empty-state-text') and contains(.,'There are no segments')]</td>
 	<td></td>
 </tr>
 <tr>

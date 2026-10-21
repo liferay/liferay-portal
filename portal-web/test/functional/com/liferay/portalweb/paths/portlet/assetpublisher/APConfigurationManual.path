@@ -12,7 +12,7 @@
 <tbody>
 <tr>
 	<td>ASSET_SELECTION_MANUAL_NONE</td>
-	<td>//div[contains(@id,'assetEntriesSearchContainerEmptyResultsMessage')]/p</td>
+	<td>//div[contains(@id,'assetEntriesSearchContainerEmptyResultsMessage')]/div[contains(@class,'c-empty-state')]/p[contains(@class,'c-empty-state-text')]</td>
 	<td></td>
 </tr>
 <tr>
