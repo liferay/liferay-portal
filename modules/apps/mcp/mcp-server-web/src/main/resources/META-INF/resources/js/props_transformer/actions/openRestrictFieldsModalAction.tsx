@@ -9,7 +9,7 @@ import React from 'react';
 import RestrictFieldsModal from '../../pages/profiles/tools/RestrictFieldsModal';
 import {ProfileToolActionContext} from '../../types/ProfileTool';
 
-export default function openRestrictFieldsModal({
+export default function openRestrictFieldsModalAction({
 	itemData,
 	loadData,
 }: ProfileToolActionContext) {

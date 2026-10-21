@@ -8,15 +8,15 @@ import React from 'react';
 
 import AddToolsModal from '../../pages/profiles/tools/AddToolsModal';
 
-interface OpenAddToolsModalProps {
+interface OpenAddToolsModalActionProps {
 	loadData: () => void;
 	profileERC: string;
 }
 
-export default function openAddToolsModal({
+export default function openAddToolsModalAction({
 	loadData,
 	profileERC,
-}: OpenAddToolsModalProps) {
+}: OpenAddToolsModalActionProps) {
 	openModal({
 		className: 'modal-height-full',
 		contentComponent: ({closeModal}: {closeModal: () => void}) => (
