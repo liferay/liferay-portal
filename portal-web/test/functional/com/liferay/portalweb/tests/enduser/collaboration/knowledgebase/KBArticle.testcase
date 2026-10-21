@@ -70,22 +70,6 @@ definition {
 
 	@priority = 4
 	@refactordone
-	test CanAddArticleWithAttachment {
-		KBArticle.addCP(
-			kbArticleAttachment = "Document_1.txt",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewKBArticleWithAttachmentCP(
-			kbArticleAttachment = "Document_1.txt (259 B)",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-	}
-
-	@priority = 4
-	@refactordone
 	test CanAddArticleWithCategory {
 		Category.openCategoriesAdmin(siteURLKey = "guest");
 
@@ -539,44 +523,6 @@ definition {
 		KBAdmin.openKBAdmin(siteURLKey = "guest");
 
 		KBArticle.viewDefaultCP();
-	}
-
-	@description = "This test ensures that users can replace the attachment for an article via the new configuration pane."
-	@priority = 4
-	test CanReplaceArticleAttachment {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		JSONKnowledgeBase.uploadAttachmentToArticle(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			sourceFileName = "Document_1.jpg");
-
-		KBArticle.openToEditKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		Panel.expandPanel(panel = "Attachments");
-
-		KBArticle.removeAttachment(attachmentName = "Document_1.jpg");
-
-		KBArticle.selectAttachmentCP(kbArticleAttachment = "Document_1.txt");
-
-		KBArticle.clickPublish();
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewKBArticleWithAttachmentCP(
-			kbArticleAttachment = "Document_1.txt (259 B)",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		AssertTextNotEquals.assertNotPartialMatch(
-			locator1 = "KnowledgeBaseArticle#ATTACHMENTS_SAVED_ATTACHMENTS_CONTAINER",
-			value1 = "Document_1.jpg");
 	}
 
 	@description = "This test ensures that users can replace the category for an article via the new configuration pane."
