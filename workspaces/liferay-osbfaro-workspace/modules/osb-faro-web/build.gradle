@@ -51,7 +51,7 @@ dependencies {
 	testImplementation group: "org.jodd", name: "jodd-json", version: "6.0.3"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "5.14.2"
 	testImplementation group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
-	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.5.0"
+	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testImplementation group: "org.springframework", name: "spring-core", version: "6.2.19"
 	testImplementation group: "org.springframework", name: "spring-test", version: "6.2.19"
 	testImplementation project(":modules:osb-faro-api")

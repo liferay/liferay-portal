@@ -46,5 +46,5 @@ dependencies {
 	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "commons-io", name: "commons-io", version: "2.19.0"
-	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.5.0"
+	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 }
