@@ -14,7 +14,7 @@
 		</span>
 
 		<%
-		ExportImportServiceConfiguration exportImportServiceConfiguration = ConfigurationProviderUtil.getSystemConfiguration(ExportImportServiceConfiguration.class);
+		ExportImportServiceConfiguration exportImportServiceConfiguration = ConfigurationProviderUtil.getCompanyConfiguration(ExportImportServiceConfiguration.class, company.getCompanyId());
 		%>
 
 		<liferay-staging:checkbox
