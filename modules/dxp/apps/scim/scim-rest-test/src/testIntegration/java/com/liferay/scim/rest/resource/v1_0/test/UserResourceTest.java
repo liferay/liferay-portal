@@ -332,7 +332,9 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 		_testPostV2UserWithAddresses();
 		_testPostV2UserWithInactiveUserWithSCIMClientId();
 		_testPostV2UserWithInactiveUserWithoutSCIMClientId();
+		_testPostV2UserWithNameGivenName();
 		_testPostV2UserWithUserProvidedByAnotherSCIMClient();
+		_testPostV2UserWithoutName();
 
 		ConfigurationTestUtil.deleteConfiguration(_pid);
 
@@ -771,6 +773,30 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 			updatedPortalUser.getExternalReferenceCode());
 	}
 
+	private void _testPostV2UserWithNameGivenName() throws Exception {
+		User postUser = randomUser();
+
+		String expectedFirstName = RandomTestUtil.randomString();
+
+		postUser.setName(
+			new Name() {
+				{
+					givenName = expectedFirstName;
+				}
+			});
+
+		assertHttpResponseStatusCode(
+			201, userResource.postV2UserHttpResponse(postUser));
+
+		com.liferay.portal.kernel.model.User portalUser =
+			_userLocalService.getUserByExternalReferenceCode(
+				postUser.getExternalId(), TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(expectedFirstName, portalUser.getFirstName());
+		Assert.assertEquals(
+			postUser.getDisplayName(), portalUser.getLastName());
+	}
+
 	private void _testPostV2UserWithUserProvidedByAnotherSCIMClient()
 		throws Exception {
 
@@ -783,6 +809,24 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 
 		assertHttpResponseStatusCode(
 			409, userResource.postV2UserHttpResponse(_createUser(portalUser)));
+	}
+
+	private void _testPostV2UserWithoutName() throws Exception {
+		User postUser = randomUser();
+
+		postUser.setName((Name)null);
+
+		assertHttpResponseStatusCode(
+			201, userResource.postV2UserHttpResponse(postUser));
+
+		com.liferay.portal.kernel.model.User portalUser =
+			_userLocalService.getUserByExternalReferenceCode(
+				postUser.getExternalId(), TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(
+			postUser.getDisplayName(), portalUser.getFirstName());
+		Assert.assertEquals(
+			postUser.getDisplayName(), portalUser.getLastName());
 	}
 
 	private static final String _PREFIX = StringUtil.toLowerCase(
