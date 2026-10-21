@@ -216,15 +216,6 @@ public class SourceFormatterReleaseUtilTest
 	}
 
 	@Test
-	public void testIsReleasedSourceMatchWithoutArtifactProperties()
-		throws Exception {
-
-		_artifactPropertiesFile.delete();
-
-		_assertNotReleasedSourceMatch();
-	}
-
-	@Test
 	public void testIsReleasedSourceMatchWithReorderedLines() throws Exception {
 		Assert.assertFalse(
 			_isReleasedSourceMatch(
@@ -313,6 +304,15 @@ public class SourceFormatterReleaseUtilTest
 						"<name>Liferay Source Formatter 1.0.1644</name>",
 						versionFilePath, "<version>1.0.1643</version>")));
 		}
+	}
+
+	@Test
+	public void testIsReleasedSourceMatchWithoutArtifactProperties()
+		throws Exception {
+
+		_artifactPropertiesFile.delete();
+
+		_assertNotReleasedSourceMatch();
 	}
 
 	@Rule
