@@ -256,18 +256,18 @@ public class BatchEngineExportTaskExecutorImpl
 		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
 			new UnsyncByteArrayOutputStream();
 
-		try (BatchEngineTaskItemDelegateSafeCloseable
+		try (BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
+				_getBatchEngineExportTaskItemWriter(
+					batchEngineExportTask, parameters, settings,
+					unsyncByteArrayOutputStream);
+
+			BatchEngineTaskItemDelegateSafeCloseable
 				batchEngineTaskItemDelegateSafeCloseable =
 					_batchEngineTaskItemDelegateRegistry.
 						getBatchEngineTaskItemDelegateWithSafeCloseable(
 							batchEngineExportTask.getCompanyId(),
 							batchEngineExportTask.getClassName(),
 							batchEngineExportTask.getTaskItemDelegateName());
-
-			BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
-				_getBatchEngineExportTaskItemWriter(
-					batchEngineExportTask, parameters, settings,
-					unsyncByteArrayOutputStream);
 
 			SafeCloseable safeCloseable = _getNestedFieldsContextSafeCloseable(
 				batchEngineTaskItemDelegateSafeCloseable, parameters)) {
