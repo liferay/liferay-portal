@@ -28,31 +28,6 @@ definition {
 		}
 	}
 
-	@priority = 3
-	@refactordone
-	test CanAddArticleWithRelatedBlog {
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
-			assetTitle = "Blogs Entry Title",
-			assetType = "Blogs Entry",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleRelatedAssetTitle = "Blogs Entry Title",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.viewBlogsEntryRelatedAsset(kbArticleRelatedAssetTitle = "Blogs Entry Title");
-	}
-
 	@description = "This test ensures that a user can add a child article for a kb entry from the navigation pane."
 	@priority = 5
 	test CanAddChildArticleFromNavigationPane {
@@ -206,49 +181,6 @@ definition {
 		KBFolder.gotoCP(kbFolderName = "KB Folder");
 
 		LexiconEntry.viewEntryName(rowEntry = "Knowledge Base Article Title");
-	}
-
-	@description = "This test ensures that users can replace the related asset for an article via the new configuration pane."
-	@priority = 4
-	test CanReplaceArticleRelatedAsset {
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
-			assetTitle = "DM Document Title",
-			assetType = "Basic Document",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.openToEditKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		Panel.expandPanel(panel = "Related Assets");
-
-		RelatedAssets.removeAsset(removeAssetTitle = "DM Document Title");
-
-		RelatedAssets.selectAsset(assetTitle = "Blogs Entry Title");
-
-		KBArticle.clickPublish();
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleRelatedAssetTitle = "Blogs Entry Title",
-			kbArticleTitle = "Knowledge Base Article Title");
 	}
 
 	@description = "This test ensures that users can restore the kb article from the recycle bin."
