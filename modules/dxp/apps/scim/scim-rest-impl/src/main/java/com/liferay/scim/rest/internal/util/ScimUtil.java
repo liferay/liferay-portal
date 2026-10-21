@@ -244,7 +244,7 @@ public class ScimUtil {
 		scimUser.setEntitlements(_getEntitlements(user));
 		scimUser.setExternalReferenceCode(user.getExternalId());
 
-		ScimName scimName = user.getName();
+		ScimName scimName = _getScimName(user);
 
 		scimUser.setFirstName(scimName.getGivenName());
 
@@ -891,6 +891,36 @@ public class ScimUtil {
 		}
 
 		return scimAddresses;
+	}
+
+	private static ScimName _getScimName(User user) throws Exception {
+		ScimName scimName = user.getName();
+
+		if (scimName == null) {
+			scimName = new ScimName();
+		}
+
+		String fullName = scimName.getFormatted();
+
+		if (Validator.isNull(fullName)) {
+			fullName = user.getDisplayName();
+		}
+
+		if (Validator.isNull(fullName)) {
+			fullName = user.getUserName();
+		}
+
+		fullName = StringUtil.trim(fullName);
+
+		if (Validator.isNull(scimName.getFamilyName())) {
+			scimName.setFamilyName(fullName);
+		}
+
+		if (Validator.isNull(scimName.getGivenName())) {
+			scimName.setGivenName(fullName);
+		}
+
+		return scimName;
 	}
 
 	private static String[] _getScimValues(
