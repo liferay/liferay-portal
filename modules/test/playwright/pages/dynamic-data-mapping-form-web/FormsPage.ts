@@ -12,6 +12,7 @@ export class FormsPage {
 	readonly closeButton: Locator;
 	readonly continueButton: Locator;
 	readonly dataProvidersTab: Locator;
+	readonly elementSetsTab: Locator;
 	readonly emptyResultNewFormButton: Locator;
 	readonly exportImportIframe: FrameLocator;
 	readonly formsHeader: Locator;
@@ -38,6 +39,10 @@ export class FormsPage {
 		});
 		this.dataProvidersTab = page.getByRole('link', {
 			name: 'Data Providers',
+		});
+		this.elementSetsTab = page.getByRole('link', {
+			exact: true,
+			name: 'Element Sets',
 		});
 		this.emptyResultNewFormButton = page.getByText('New Form', {
 			exact: true,
@@ -101,9 +106,13 @@ export class FormsPage {
 		await this.managementToolbarNewButton.click();
 	}
 
-	async goTo(siteUrl?: Site['friendlyUrlPath']) {
+	async goTo(siteUrl?: Site['friendlyUrlPath'], tab?: string) {
+		const tabParam = tab
+			? `&_com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormAdminPortlet_currentTab=${tab}`
+			: '';
+
 		await this.page.goto(
-			`/group${siteUrl || '/guest'}${PORTLET_URLS.forms}`,
+			`/group${siteUrl || '/guest'}${PORTLET_URLS.forms}${tabParam}`,
 			{waitUntil: 'networkidle'}
 		);
 	}
