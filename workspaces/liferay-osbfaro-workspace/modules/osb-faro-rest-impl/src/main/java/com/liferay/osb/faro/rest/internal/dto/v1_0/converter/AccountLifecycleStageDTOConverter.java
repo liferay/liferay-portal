@@ -41,10 +41,10 @@ public class AccountLifecycleStageDTOConverter
 		return new AccountLifecycleStage() {
 			{
 				setDescription(accountLifecycleStage::getDescription);
-				setDisplayOrder(accountLifecycleStage::getDisplayOrder);
 				setId(accountLifecycleStage::getId);
 				setMaxDuration(accountLifecycleStage::getMaxDuration);
-				setStageType(accountLifecycleStage::getStageType);
+				setName(accountLifecycleStage::getName);
+				setPosition(accountLifecycleStage::getPosition);
 			}
 		};
 	}

@@ -25,7 +25,6 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -97,7 +96,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 		Results<AccountLifecycle> results =
 			_contactsEngineClient.getAccountLifecycles(
 				faroProject, GetterUtil.getLong(channelId), Boolean.TRUE, null,
-				1, 1, null);
+				null, 1, 1, null);
 
 		List<AccountLifecycle> accountLifecycles = results.getItems();
 
@@ -120,29 +119,20 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 		AccountLifecycle accountLifecycle = _getAccountLifecycle(
 			accountLifecycleId, channelId, faroProject);
 
-		List<AccountLifecycleStage> accountLifecycleStages =
-			accountLifecycle.getStages();
+		AccountLifecycleStage accountLifecycleStage =
+			accountLifecycle.getAccountLifecycleStage(lifecycleStage);
 
-		if (ListUtil.isNotEmpty(accountLifecycleStages)) {
-			for (AccountLifecycleStage accountLifecycleStage :
-					accountLifecycleStages) {
-
-				if (Objects.equals(
-						accountLifecycleStage.getStageType(), lifecycleStage)) {
-
-					return StringBundler.concat(
-						"(lifecycleStatus@",
-						accountLifecycle.getExternalReferenceCode(), " in ('",
-						accountLifecycleStage.getExternalReferenceCode(),
-						"'))");
-				}
-			}
+		if (accountLifecycleStage != null) {
+			return StringBundler.concat(
+				"(lifecycleStatus@",
+				accountLifecycle.getExternalReferenceCode(), " in ('",
+				accountLifecycleStage.getExternalReferenceCode(), "'))");
 		}
 
 		throw new IllegalArgumentException(
 			StringBundler.concat(
-				"No lifecycle stage was found with the name \"", lifecycleStage,
-				"\""));
+				"No account lifecycle stage was found with the name \"",
+				lifecycleStage, "\""));
 	}
 
 	@Reference(

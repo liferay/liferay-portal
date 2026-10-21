@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.rest.internal.dto.v1_0.converter;
 
 import com.liferay.osb.faro.rest.dto.v1_0.AccountLifecycleStage;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,10 +26,12 @@ public class AccountLifecycleStageDTOConverterTest {
 					AccountLifecycleStage();
 
 		engineClientAccountLifecycleStage.setDescription("Pipeline");
-		engineClientAccountLifecycleStage.setDisplayOrder(3);
 		engineClientAccountLifecycleStage.setId("stage-1");
 		engineClientAccountLifecycleStage.setMaxDuration(30);
-		engineClientAccountLifecycleStage.setStageType("PIPELINE");
+		engineClientAccountLifecycleStage.setName(
+			RandomTestUtil.randomString());
+		engineClientAccountLifecycleStage.setPosition(
+			RandomTestUtil.randomInt());
 
 		AccountLifecycleStage accountLifecycleStage =
 			_accountLifecycleStageDTOConverter.toDTO(
@@ -38,17 +41,17 @@ public class AccountLifecycleStageDTOConverterTest {
 			engineClientAccountLifecycleStage.getDescription(),
 			accountLifecycleStage.getDescription());
 		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getDisplayOrder(),
-			accountLifecycleStage.getDisplayOrder());
-		Assert.assertEquals(
 			engineClientAccountLifecycleStage.getId(),
 			accountLifecycleStage.getId());
 		Assert.assertEquals(
 			engineClientAccountLifecycleStage.getMaxDuration(),
 			accountLifecycleStage.getMaxDuration());
 		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getStageType(),
-			accountLifecycleStage.getStageType());
+			engineClientAccountLifecycleStage.getName(),
+			accountLifecycleStage.getName());
+		Assert.assertEquals(
+			engineClientAccountLifecycleStage.getPosition(),
+			accountLifecycleStage.getPosition());
 	}
 
 	private final AccountLifecycleStageDTOConverter

@@ -125,9 +125,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		accountLifecycleStage.setExternalReferenceCode(
 			"stage-" + accountLifecycleId);
 		accountLifecycleStage.setId(accountLifecycleId + "_AT_RISK");
-		accountLifecycleStage.setStageType("AT_RISK");
+		accountLifecycleStage.setName("At Risk");
 
-		accountLifecycle.setStages(
+		accountLifecycle.setAccountLifecycleStages(
 			Collections.singletonList(accountLifecycleStage));
 
 		accountLifecycles.put(accountLifecycleId, accountLifecycle);
@@ -231,7 +231,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 			Assert.assertEquals(
-				"No lifecycle stage was found with the name \"PIPELINE\"",
+				"No account lifecycle stage was found with the name " +
+					"\"PIPELINE\"",
 				illegalArgumentException.getMessage());
 		}
 	}

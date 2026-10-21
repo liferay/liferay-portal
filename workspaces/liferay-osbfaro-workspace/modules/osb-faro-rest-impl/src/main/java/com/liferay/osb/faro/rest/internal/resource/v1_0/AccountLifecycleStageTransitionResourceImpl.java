@@ -6,13 +6,18 @@
 package com.liferay.osb.faro.rest.internal.resource.v1_0;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
+import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
+import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
 import com.liferay.osb.faro.engine.client.model.Results;
+import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.rest.dto.v1_0.AccountLifecycleStageTransition;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.converter.FaroDTOConverterContext;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
 import com.liferay.osb.faro.rest.resource.v1_0.AccountLifecycleStageTransitionResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -41,15 +46,29 @@ public class AccountLifecycleStageTransitionResourceImpl
 				String toLifecycleStage, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
+		FaroProject faroProject =
+			_faroProjectLocalService.getFaroProjectByGroupId(groupId);
+
+		AccountLifecycle accountLifecycle = null;
+
+		if (Validator.isNotNull(fromLifecycleStage) ||
+			Validator.isNotNull(toLifecycleStage)) {
+
+			accountLifecycle = _contactsEngineClient.getAccountLifecycle(
+				faroProject, accountLifecycleId);
+		}
+
 		Results
 			<com.liferay.osb.faro.engine.client.model.
 				AccountLifecycleStageTransition> results =
 					_contactsEngineClient.getAccountLifecycleStageTransitions(
-						_faroProjectLocalService.getFaroProjectByGroupId(
-							groupId),
-						country, fromLifecycleStage, accountLifecycleId,
-						industry, rangeEnd, TimeRange.getRangeKey(rangeKey),
-						rangeStart, segmentId, toLifecycleStage,
+						faroProject, country,
+						_getAccountLifecycleStageId(
+							accountLifecycle, fromLifecycleStage),
+						accountLifecycleId, industry, rangeEnd,
+						TimeRange.getRangeKey(rangeKey), rangeStart, segmentId,
+						_getAccountLifecycleStageId(
+							accountLifecycle, toLifecycleStage),
 						FaroPaginationUtil.getCur(pagination),
 						FaroPaginationUtil.getDelta(pagination),
 						FaroPaginationUtil.toOrderByFields(sorts));
@@ -65,6 +84,27 @@ public class AccountLifecycleStageTransitionResourceImpl
 							contextAcceptLanguage.getPreferredLocale()),
 						accountLifecycleStageTransition)),
 			pagination, results.getTotal());
+	}
+
+	private String _getAccountLifecycleStageId(
+		AccountLifecycle accountLifecycle, String accountLifecycleStageName) {
+
+		if (Validator.isNull(accountLifecycleStageName)) {
+			return null;
+		}
+
+		AccountLifecycleStage accountLifecycleStage =
+			accountLifecycle.getAccountLifecycleStage(
+				accountLifecycleStageName);
+
+		if (accountLifecycleStage == null) {
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"No account lifecycle stage was found with the name \"",
+					accountLifecycleStageName, "\""));
+		}
+
+		return accountLifecycleStage.getId();
 	}
 
 	@Reference(

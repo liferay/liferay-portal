@@ -66,7 +66,7 @@ public class AccountDTOConverter
 							LifecycleStage lifecycleStage = lifecycleStages.get(
 								0);
 
-						return lifecycleStage.getStageType();
+						return lifecycleStage.getName();
 					});
 				setNumberOfEmployees(account::getNumberOfEmployees);
 				setWebsite(account::getWebsite);
