@@ -16,10 +16,6 @@ public class AccountLifecycleStageStatus {
 		return _description;
 	}
 
-	public Integer getDisplayOrder() {
-		return _displayOrder;
-	}
-
 	public Date getEndDate() {
 		if (_endDate == null) {
 			return null;
@@ -36,8 +32,12 @@ public class AccountLifecycleStageStatus {
 		return _maxDuration;
 	}
 
-	public String getStageType() {
-		return _stageType;
+	public String getName() {
+		return _name;
+	}
+
+	public Integer getPosition() {
+		return _position;
 	}
 
 	public Date getStartDate() {
@@ -50,10 +50,6 @@ public class AccountLifecycleStageStatus {
 
 	public void setDescription(String description) {
 		_description = description;
-	}
-
-	public void setDisplayOrder(Integer displayOrder) {
-		_displayOrder = displayOrder;
 	}
 
 	public void setEndDate(Date endDate) {
@@ -70,8 +66,12 @@ public class AccountLifecycleStageStatus {
 		_maxDuration = maxDuration;
 	}
 
-	public void setStageType(String stageType) {
-		_stageType = stageType;
+	public void setName(String name) {
+		_name = name;
+	}
+
+	public void setPosition(Integer position) {
+		_position = position;
 	}
 
 	public void setStartDate(Date startDate) {
@@ -81,11 +81,11 @@ public class AccountLifecycleStageStatus {
 	}
 
 	private String _description;
-	private Integer _displayOrder;
 	private Date _endDate;
 	private String _id;
 	private Integer _maxDuration;
-	private String _stageType;
+	private String _name;
+	private Integer _position;
 	private Date _startDate;
 
 }

@@ -25,10 +25,6 @@ public class AccountLifecycleStage {
 		return _description;
 	}
 
-	public Integer getDisplayOrder() {
-		return _displayOrder;
-	}
-
 	public String getExternalReferenceCode() {
 		return _externalReferenceCode;
 	}
@@ -41,12 +37,16 @@ public class AccountLifecycleStage {
 		return _maxDuration;
 	}
 
-	public String getSegmentId() {
-		return _segmentId;
+	public String getName() {
+		return _name;
 	}
 
-	public String getStageType() {
-		return _stageType;
+	public Integer getPosition() {
+		return _position;
+	}
+
+	public String getSegmentId() {
+		return _segmentId;
 	}
 
 	public void setAccountLifecycleId(String accountLifecycleId) {
@@ -63,10 +63,6 @@ public class AccountLifecycleStage {
 		_description = description;
 	}
 
-	public void setDisplayOrder(Integer displayOrder) {
-		_displayOrder = displayOrder;
-	}
-
 	public void setExternalReferenceCode(String externalReferenceCode) {
 		_externalReferenceCode = externalReferenceCode;
 	}
@@ -79,22 +75,26 @@ public class AccountLifecycleStage {
 		_maxDuration = maxDuration;
 	}
 
-	public void setSegmentId(String segmentId) {
-		_segmentId = segmentId;
+	public void setName(String name) {
+		_name = name;
 	}
 
-	public void setStageType(String stageType) {
-		_stageType = stageType;
+	public void setPosition(Integer position) {
+		_position = position;
+	}
+
+	public void setSegmentId(String segmentId) {
+		_segmentId = segmentId;
 	}
 
 	private String _accountLifecycleId;
 	private AccountLifecycleStageRule _accountLifecycleStageRule;
 	private String _description;
-	private Integer _displayOrder;
 	private String _externalReferenceCode;
 	private String _id;
 	private Integer _maxDuration;
+	private String _name;
+	private Integer _position;
 	private String _segmentId;
-	private String _stageType;
 
 }

@@ -269,20 +269,20 @@ public class Account {
 			return _lifecycleName;
 		}
 
-		public String getStageType() {
-			return _stageType;
+		public String getName() {
+			return _name;
 		}
 
 		public void setLifecycleName(String lifecycleName) {
 			_lifecycleName = lifecycleName;
 		}
 
-		public void setStageType(String stageType) {
-			_stageType = stageType;
+		public void setName(String name) {
+			_name = name;
 		}
 
 		private String _lifecycleName;
-		private String _stageType;
+		private String _name;
 
 	}
 
