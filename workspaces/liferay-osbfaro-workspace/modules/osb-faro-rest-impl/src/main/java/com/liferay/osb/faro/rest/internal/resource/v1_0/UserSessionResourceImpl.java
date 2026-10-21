@@ -57,6 +57,24 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 			rangeKey, rangeStart, search);
 	}
 
+	private long _getTotalCount(
+		GetWorkspaceGroupChannelUserSessionsPageResponse.UserSessionBag
+			userSessionBag) {
+
+		GetWorkspaceGroupChannelEventMetricsResponse.Metric
+			totalPageGroupsMetric = userSessionBag.getTotalPageGroupsMetric();
+
+		if ((totalPageGroupsMetric == null) ||
+			(totalPageGroupsMetric.getValue() == null)) {
+
+			return 0;
+		}
+
+		Double value = totalPageGroupsMetric.getValue();
+
+		return value.longValue();
+	}
+
 	private Page<UserSession> _getUserSessionsPage(
 			String accountId, String channelId, String entityId, Long groupId,
 			Pagination pagination, String rangeEnd, String rangeKey,
@@ -112,24 +130,6 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 						contextAcceptLanguage.getPreferredLocale()),
 					userSession)),
 			pagination, _getTotalCount(userSessionBag));
-	}
-
-	private long _getTotalCount(
-		GetWorkspaceGroupChannelUserSessionsPageResponse.UserSessionBag
-			userSessionBag) {
-
-		GetWorkspaceGroupChannelEventMetricsResponse.Metric
-			totalPageGroupsMetric = userSessionBag.getTotalPageGroupsMetric();
-
-		if ((totalPageGroupsMetric == null) ||
-			(totalPageGroupsMetric.getValue() == null)) {
-
-			return 0;
-		}
-
-		Double value = totalPageGroupsMetric.getValue();
-
-		return value.longValue();
 	}
 
 	@Reference
