@@ -15,9 +15,9 @@ Tests assert behavior perceptible to the user, not internal implementation. Ask 
 
 ## File Naming
 
-Place tests in a sibling `test` directory at the module root, mirroring the subpath under `src/main/resources/META-INF/resources/js`. A source file at `src/main/resources/META-INF/resources/js/utils/convertRGBtoHex.ts` has its test at `test/utils/convertRGBtoHex.ts`.
+Place tests in a sibling `test` directory at the module root, mirroring the subpath under `src/main/resources/META-INF/resources/js`, and name each one after its unit with a `.test` suffix before the extension. A source file at `src/main/resources/META-INF/resources/js/utils/convertRGBtoHex.ts` has its test at `test/utils/convertRGBtoHex.test.ts`, and one at `js/components/ColorPicker.tsx` has it at `test/components/ColorPicker.test.tsx`.
 
-The shared Jest config in `modules/frontend-sdk/node-scripts/util/jest/getJestConfig.js` picks up every file under `test` via a `testMatch` pattern, except `test/stories` and `test/__lib__` which are excluded so they can hold fixtures, helpers, and Storybook artifacts.
+The shared Jest config in `modules/frontend-sdk/node-scripts/util/jest/getJestConfig.js` picks up every file under `test` via a `testMatch` pattern, with or without the suffix, except `test/stories` and `test/__lib__` which are excluded so they can hold fixtures, helpers, and Storybook artifacts. The suffix does not keep a file out of the run: put shared mocks in `test/__lib__`, or exclude their folder in the module's `package.json` with `jest.testPathIgnorePatterns`, as `mcp-server-web` does for `test/mocks/`.
 
 Do not colocate tests next to source files, and do not use `__tests__` directories.
 
