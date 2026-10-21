@@ -258,6 +258,33 @@ public class ControllerResultMonitorTest
 	}
 
 	@Test
+	public void testExecuteLinkURLsParameter() throws Exception {
+		String linkURL = "https://" + RandomTestUtil.randomString();
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty("monitor[a].parameter[links]", linkURL);
+
+		setURLReaderOutput(
+			new JSONObject(
+			).put(
+				"builds",
+				new JSONArray(
+				).put(
+					_newBuildJSONObject(
+						600, _newResultDescription("", 2001, "FAILURE"), 1001,
+						"SUCCESS")
+				)
+			).toString(),
+			_JOB_API_URL);
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(
+			Collections.singletonList(linkURL), monitorResult.getLinkURLs());
+	}
+
+	@Test
 	public void testExecuteMissingTimestamp() throws Exception {
 		_testExecute(
 			JenkinsResultsParserUtil.combine(
