@@ -8,15 +8,20 @@ import {addParams} from 'frontend-js-web';
 import {ProfileDataMask} from '../types/ProfileDataMask';
 import toODataStringLiteral from '../utils/toODataStringLiteral';
 import ApiHelper from './ApiHelper';
-import {PROFILE_DATA_MASKS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';
+
+const PROFILE_DATA_MASKS_URL = '/o/mcp/server-profile-data-masks';
 
 export interface ProfileDataMaskFilters {
 	dataMaskExternalReferenceCode?: string;
 	mcpServerProfileExternalReferenceCode?: string;
 }
 
-export function getProfileDataMasks(filters: ProfileDataMaskFilters = {}) {
+function deleteProfileDataMask(id: number) {
+	return ApiHelper.del<void>(`${PROFILE_DATA_MASKS_URL}/${id}`);
+}
+
+function getProfileDataMasks(filters: ProfileDataMaskFilters = {}) {
 	if (filters.dataMaskExternalReferenceCode) {
 		return ApiHelper.get<{items: ProfileDataMask[]; totalCount: number}>(
 			addParams(
@@ -53,3 +58,21 @@ export function getProfileDataMasks(filters: ProfileDataMaskFilters = {}) {
 		addParams({}, PROFILE_DATA_MASKS_URL)
 	);
 }
+
+function patchProfileDataMask(id: number, payload: Partial<ProfileDataMask>) {
+	return ApiHelper.patch<ProfileDataMask>(
+		`${PROFILE_DATA_MASKS_URL}/${id}`,
+		payload
+	);
+}
+
+function postProfileDataMask(payload: ProfileDataMask) {
+	return ApiHelper.post<ProfileDataMask>(PROFILE_DATA_MASKS_URL, payload);
+}
+
+export default {
+	deleteProfileDataMask,
+	getProfileDataMasks,
+	patchProfileDataMask,
+	postProfileDataMask,
+};

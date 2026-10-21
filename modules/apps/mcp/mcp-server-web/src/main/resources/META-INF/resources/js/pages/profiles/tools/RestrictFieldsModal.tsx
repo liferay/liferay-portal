@@ -17,8 +17,8 @@ import FilterResultsStatus from '../../../components/FilterResultsStatus';
 import Highlight from '../../../components/Highlight';
 import SelectedItemsBar from '../../../components/SelectedItemsBar';
 import useTreeFilter from '../../../hooks/useTreeFilter';
-import {getTool} from '../../../services/getTool';
-import {patchProfileTool} from '../../../services/patchProfileTool';
+import ProfileToolService from '../../../services/ProfileToolService';
+import ToolService from '../../../services/ToolService';
 import {ProfileTool} from '../../../types/ProfileTool';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 import {
@@ -85,7 +85,7 @@ export default function RestrictFieldsModal({
 	useEffect(() => {
 		let isMounted = true;
 
-		getTool(toolSetName, toolName).then(({data, error}) => {
+		ToolService.getTool(toolSetName, toolName).then(({data, error}) => {
 			if (!isMounted) {
 				return;
 			}
@@ -121,9 +121,12 @@ export default function RestrictFieldsModal({
 	const save = async () => {
 		setSaving(true);
 
-		const {error} = await patchProfileTool(externalReferenceCode, {
-			restrictFields: toRestrictFields(items, selectedKeys),
-		});
+		const {error} = await ProfileToolService.patchProfileTool(
+			externalReferenceCode,
+			{
+				restrictFields: toRestrictFields(items, selectedKeys),
+			}
+		);
 
 		setSaving(false);
 

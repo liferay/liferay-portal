@@ -13,9 +13,7 @@ import React, {useEffect, useState} from 'react';
 import {FormField} from '../../components/forms/FormField';
 import {FormSection} from '../../components/forms/FormSection';
 import {FormToggle} from '../../components/forms/FormToggle';
-import {getPrompt} from '../../services/getPrompt';
-import {patchPrompt} from '../../services/patchPrompt';
-import {postPrompt} from '../../services/postPrompt';
+import PromptService from '../../services/PromptService';
 import {Prompt, PromptFormValues, PromptPayload} from '../../types/Prompt';
 import required from '../../utils/required';
 import toIdentifier from '../../utils/toIdentifier';
@@ -37,7 +35,7 @@ export default function EditPrompt({backURL, promptId}: EditPromptProps) {
 
 		let isMounted = true;
 
-		getPrompt(promptId).then(({data, error}) => {
+		PromptService.getPrompt(promptId).then(({data, error}) => {
 			if (!isMounted) {
 				return;
 			}
@@ -113,8 +111,8 @@ function EditPromptView({backURL, prompt}: EditPromptViewProps) {
 			};
 
 			const {data: saved, error} = prompt?.id
-				? await patchPrompt(prompt.id, payload)
-				: await postPrompt(payload);
+				? await PromptService.patchPrompt(prompt.id, payload)
+				: await PromptService.postPrompt(payload);
 
 			if (error) {
 				openErrorToast(error);

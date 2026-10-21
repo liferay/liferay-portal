@@ -7,9 +7,10 @@ import {addParams} from 'frontend-js-web';
 
 import {Redaction, RedactionRequest} from '../types/Redaction';
 import ApiHelper from './ApiHelper';
-import {REDACTION_URL} from './constants';
 
-export function getRedaction(request: RedactionRequest) {
+const REDACTION_URL = '/o/headless-data-mask/v1.0/redaction';
+
+function getRedaction(request: RedactionRequest) {
 	const params: Record<string, string> = {
 		detectionRegex: request.detectionRegex,
 		replacementValue: request.replacementValue,
@@ -22,3 +23,7 @@ export function getRedaction(request: RedactionRequest) {
 
 	return ApiHelper.get<Redaction>(addParams(params, REDACTION_URL));
 }
+
+export default {
+	getRedaction,
+};

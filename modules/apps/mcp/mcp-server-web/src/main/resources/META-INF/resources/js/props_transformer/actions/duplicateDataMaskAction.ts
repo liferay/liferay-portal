@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {postDataMask} from '../../services/postDataMask';
+import DataMaskService from '../../services/DataMaskService';
 import {DataMaskActionContext} from '../../types/DataMask';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
@@ -11,7 +11,7 @@ export default async function duplicateDataMaskAction({
 	itemData,
 	loadData,
 }: DataMaskActionContext) {
-	const {data: saved, error} = await postDataMask({
+	const {data: saved, error} = await DataMaskService.postDataMask({
 		description: itemData.description ?? '',
 		detectionRegex: itemData.detectionRegex,
 		maskType: {key: 'custom'},

@@ -13,10 +13,8 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import SelectedItemsBar from '../../../components/SelectedItemsBar';
 import {RequestResult} from '../../../services/ApiHelper';
-import {getProfileTools} from '../../../services/getProfileTools';
-import {getToolSetTools} from '../../../services/getToolSetTools';
-import {getToolSets} from '../../../services/getToolSets';
-import {postProfileTool} from '../../../services/postProfileTool';
+import ProfileToolService from '../../../services/ProfileToolService';
+import ToolService from '../../../services/ToolService';
 import {ProfileTool} from '../../../types/ProfileTool';
 import {ToolSet, ToolSummary} from '../../../types/Tool';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
@@ -56,7 +54,7 @@ export default function AddToolsModal({
 
 	const loadToolSet = useCallback((toolSetName: string) => {
 		if (!toolsCacheRef.current[toolSetName]) {
-			toolsCacheRef.current[toolSetName] = getToolSetTools(
+			toolsCacheRef.current[toolSetName] = ToolService.getToolSetTools(
 				toolSetName
 			).then((result) => {
 				if (result.data) {
@@ -99,8 +97,8 @@ export default function AddToolsModal({
 
 		const loadAvailableToolSets = async () => {
 			const [toolSetsResult, profileToolsResult] = await Promise.all([
-				getToolSets(),
-				getProfileTools(profileERC),
+				ToolService.getToolSets(),
+				ProfileToolService.getProfileTools(profileERC),
 			]);
 
 			if (!isMounted) {
@@ -275,7 +273,7 @@ export default function AddToolsModal({
 			results.push(
 				...(await Promise.all(
 					wave.map((selectedTool) =>
-						postProfileTool({
+						ProfileToolService.postProfileTool({
 							r_mcpServerProfileToTools_l_mcpServerProfileERC:
 								profileERC,
 							toolName: selectedTool.toolName,

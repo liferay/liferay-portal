@@ -12,9 +12,7 @@ import React, {useEffect, useState} from 'react';
 
 import {FormField} from '../../components/forms/FormField';
 import {FormSection} from '../../components/forms/FormSection';
-import {getDataMask} from '../../services/getDataMask';
-import {patchDataMask} from '../../services/patchDataMask';
-import {postDataMask} from '../../services/postDataMask';
+import DataMaskService from '../../services/DataMaskService';
 import {
 	DataMask,
 	DataMaskFormValues,
@@ -40,7 +38,7 @@ export default function EditDataMask({backURL, dataMaskId}: EditDataMaskProps) {
 
 		let active = true;
 
-		getDataMask(dataMaskId).then(({data, error}) => {
+		DataMaskService.getDataMask(dataMaskId).then(({data, error}) => {
 			if (!active) {
 				return;
 			}
@@ -99,8 +97,8 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 			};
 
 			const {data: saved, error} = dataMask?.id
-				? await patchDataMask(dataMask.id, payload)
-				: await postDataMask(payload);
+				? await DataMaskService.patchDataMask(dataMask.id, payload)
+				: await DataMaskService.postDataMask(payload);
 
 			if (error) {
 				openErrorToast(error);

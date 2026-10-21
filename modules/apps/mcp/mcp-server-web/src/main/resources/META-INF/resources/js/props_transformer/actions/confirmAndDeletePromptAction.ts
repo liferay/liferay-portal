@@ -6,7 +6,7 @@
 import {openModal} from 'frontend-js-components-web';
 import {escapeHTML} from 'frontend-js-web';
 
-import {deletePrompt} from '../../services/deletePrompt';
+import PromptService from '../../services/PromptService';
 import {PromptActionContext} from '../../types/Prompt';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
@@ -46,7 +46,7 @@ export default function confirmAndDeletePromptAction({
 				onClick: async ({processClose}: {processClose: () => void}) => {
 					processClose();
 
-					const {error} = await deletePrompt(id);
+					const {error} = await PromptService.deletePrompt(id);
 
 					if (error) {
 						openErrorToast(error);

@@ -5,8 +5,8 @@
 
 import {openModal} from 'frontend-js-components-web';
 
-import {deleteDataMask} from '../../services/deleteDataMask';
-import {getProfileDataMasks} from '../../services/getProfileDataMasks';
+import DataMaskService from '../../services/DataMaskService';
+import ProfileDataMaskService from '../../services/ProfileDataMaskService';
 import {DataMaskActionContext} from '../../types/DataMask';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
@@ -17,7 +17,7 @@ async function getAssociatedProfilesCount(
 		return 0;
 	}
 
-	const {data, error} = await getProfileDataMasks({
+	const {data, error} = await ProfileDataMaskService.getProfileDataMasks({
 		dataMaskExternalReferenceCode,
 	});
 
@@ -79,7 +79,7 @@ export default async function confirmAndDeleteDataMaskAction({
 				onClick: async ({processClose}: {processClose: () => void}) => {
 					processClose();
 
-					const {error} = await deleteDataMask(id);
+					const {error} = await DataMaskService.deleteDataMask(id);
 
 					if (error) {
 						openErrorToast(error);

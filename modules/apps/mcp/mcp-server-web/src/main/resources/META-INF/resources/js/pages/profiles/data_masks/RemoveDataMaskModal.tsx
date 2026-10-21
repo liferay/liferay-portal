@@ -9,8 +9,7 @@ import ClayModal, {useModal} from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
-import {deleteProfileDataMask} from '../../../services/deleteProfileDataMask';
-import {patchProfileDataMask} from '../../../services/patchProfileDataMask';
+import ProfileDataMaskService from '../../../services/ProfileDataMaskService';
 import {ProfileDataMaskRow} from '../../../types/ProfileDataMask';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 
@@ -33,9 +32,10 @@ export default function RemoveDataMaskModal({
 	const remove = async () => {
 		setSaving(true);
 
-		const {error: patchError} = await patchProfileDataMask(row.id, {
-			deleteReason: reason,
-		});
+		const {error: patchError} =
+			await ProfileDataMaskService.patchProfileDataMask(row.id, {
+				deleteReason: reason,
+			});
 
 		if (patchError) {
 			setSaving(false);
@@ -45,7 +45,8 @@ export default function RemoveDataMaskModal({
 			return;
 		}
 
-		const {error: deleteError} = await deleteProfileDataMask(row.id);
+		const {error: deleteError} =
+			await ProfileDataMaskService.deleteProfileDataMask(row.id);
 
 		setSaving(false);
 

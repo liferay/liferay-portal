@@ -8,9 +8,8 @@ import {openModal} from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import OrderableTable from '../../../components/OrderableTable';
-import {getDataMasks} from '../../../services/getDataMasks';
-import {getProfileDataMasks} from '../../../services/getProfileDataMasks';
-import {patchProfileDataMask} from '../../../services/patchProfileDataMask';
+import DataMaskService from '../../../services/DataMaskService';
+import ProfileDataMaskService from '../../../services/ProfileDataMaskService';
 import {DataMask} from '../../../types/DataMask';
 import {ProfileDataMaskRow} from '../../../types/ProfileDataMask';
 import {openErrorToast} from '../../../utils/toasts';
@@ -31,10 +30,10 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 
 	const loadRows = useCallback(async () => {
 		const [associationsResult, dataMasksResult] = await Promise.all([
-			getProfileDataMasks({
+			ProfileDataMaskService.getProfileDataMasks({
 				mcpServerProfileExternalReferenceCode: profileERC,
 			}),
-			getDataMasks(),
+			DataMaskService.getDataMasks(),
 		]);
 
 		const error = associationsResult.error || dataMasksResult.error;
@@ -117,7 +116,7 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 					return Promise.resolve({error: undefined});
 				}
 
-				return patchProfileDataMask(row.id, {
+				return ProfileDataMaskService.patchProfileDataMask(row.id, {
 					executionOrder: row.executionOrder,
 				});
 			})

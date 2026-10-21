@@ -17,7 +17,7 @@ import FilterResultsStatus from '../../../components/FilterResultsStatus';
 import Highlight from '../../../components/Highlight';
 import SelectedItemsBar from '../../../components/SelectedItemsBar';
 import useTreeFilter from '../../../hooks/useTreeFilter';
-import {postProfileDataMask} from '../../../services/postProfileDataMask';
+import ProfileDataMaskService from '../../../services/ProfileDataMaskService';
 import {DataMask} from '../../../types/DataMask';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 import {
@@ -70,7 +70,7 @@ export default function AddDataMasksModal({
 		const results = await Promise.all(
 			selectedExternalReferenceCodes.map(
 				(dataMaskExternalReferenceCode, index) =>
-					postProfileDataMask({
+					ProfileDataMaskService.postProfileDataMask({
 						dataMaskExternalReferenceCode,
 						executionOrder: nextExecutionOrder + index,
 						mcpServerProfileExternalReferenceCode:

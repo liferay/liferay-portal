@@ -14,9 +14,7 @@ import React, {useEffect, useState} from 'react';
 import {FormField} from '../../../components/forms/FormField';
 import {FormSection} from '../../../components/forms/FormSection';
 import {FormToggle} from '../../../components/forms/FormToggle';
-import {getProfile} from '../../../services/getProfile';
-import {patchProfile} from '../../../services/patchProfile';
-import {postProfile} from '../../../services/postProfile';
+import ProfileService from '../../../services/ProfileService';
 import {
 	Profile,
 	ProfileFormValues,
@@ -47,7 +45,7 @@ export default function EditProfileView({
 
 		let isMounted = true;
 
-		getProfile(profileERC).then(({data, error}) => {
+		ProfileService.getProfile(profileERC).then(({data, error}) => {
 			if (!isMounted) {
 				return;
 			}
@@ -119,8 +117,11 @@ function ProfileForm({
 			};
 
 			const {data: saved, error} = profile?.externalReferenceCode
-				? await patchProfile(profile.externalReferenceCode, payload)
-				: await postProfile(payload);
+				? await ProfileService.patchProfile(
+						profile.externalReferenceCode,
+						payload
+					)
+				: await ProfileService.postProfile(payload);
 
 			if (error) {
 				openErrorToast(error);

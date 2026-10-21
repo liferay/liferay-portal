@@ -6,7 +6,7 @@
 import {openModal} from 'frontend-js-components-web';
 import {escapeHTML} from 'frontend-js-web';
 
-import {deleteProfile} from '../../services/deleteProfile';
+import ProfileService from '../../services/ProfileService';
 import {ProfileActionContext} from '../../types/Profile';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
@@ -46,7 +46,9 @@ export default function confirmAndDeleteProfileAction({
 				onClick: async ({processClose}: {processClose: () => void}) => {
 					processClose();
 
-					const {error} = await deleteProfile(externalReferenceCode);
+					const {error} = await ProfileService.deleteProfile(
+						externalReferenceCode
+					);
 
 					if (error) {
 						openErrorToast(error);

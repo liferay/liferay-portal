@@ -9,7 +9,7 @@ import ClayLayout from '@clayui/layout';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
-import {getRedaction} from '../../services/getRedaction';
+import RedactionService from '../../services/RedactionService';
 import {Redaction} from '../../types/Redaction';
 
 interface DataMaskRegexTesterProps {
@@ -36,7 +36,7 @@ export function DataMaskRegexTester({
 	const handleTest = async () => {
 		setTesting(true);
 
-		const {data, error} = await getRedaction({
+		const {data, error} = await RedactionService.getRedaction({
 			detectionRegex,
 			replacementRegex,
 			replacementValue,
