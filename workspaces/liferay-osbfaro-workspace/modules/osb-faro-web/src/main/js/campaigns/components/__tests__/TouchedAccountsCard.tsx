@@ -87,7 +87,7 @@ describe('TouchedAccountsCard', () => {
 		renderCard();
 
 		expect(getFields().map(({label}: any) => label)).toEqual([
-			'Name',
+			'Account Name',
 			'Lifecycle Stage',
 			'Pipeline Value',
 			'Closed Won',
