@@ -15,7 +15,7 @@ EditProfileDisplayContext editProfileDisplayContext = new EditProfileDisplayCont
 	cssClass="container-fluid-max-xl container-view"
 >
 	<react:component
-		module="{EditProfileView} from mcp-server-web"
+		module="{EditProfileInfo} from mcp-server-web"
 		props="<%= editProfileDisplayContext.getEditProfileProps() %>"
 	/>
 </clay:container-fluid>

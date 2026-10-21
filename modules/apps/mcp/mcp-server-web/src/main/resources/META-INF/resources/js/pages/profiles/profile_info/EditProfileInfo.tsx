@@ -22,19 +22,19 @@ import {
 } from '../../../types/Profile';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 
-interface EditProfileViewProps {
+interface EditProfileInfoProps {
 	backURL: string;
 	editProfileURL: string;
 	portletNamespace: string;
 	profileERC: string;
 }
 
-export default function EditProfileView({
+export default function EditProfileInfo({
 	backURL,
 	editProfileURL,
 	portletNamespace,
 	profileERC,
-}: EditProfileViewProps) {
+}: EditProfileInfoProps) {
 	const [loading, setLoading] = useState(Boolean(profileERC));
 	const [profile, setProfile] = useState<Profile | null>(null);
 

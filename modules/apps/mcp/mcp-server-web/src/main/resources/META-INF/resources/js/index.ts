@@ -4,8 +4,8 @@
  */
 
 export {default as EditDataMask} from './pages/data_masks/EditDataMask';
-export {default as ProfileDataMasks} from './pages/profiles/data_masks/ProfileDataMasks';
-export {default as EditProfileView} from './pages/profiles/profile_info/EditProfileView';
+export {default as EditProfileDataMasks} from './pages/profiles/data_masks/EditProfileDataMasks';
+export {default as EditProfileInfo} from './pages/profiles/profile_info/EditProfileInfo';
 export {default as EditPrompt} from './pages/prompts/EditPrompt';
 export {default as DataMasksFDSPropsTransformer} from './props_transformer/DataMasksFDSPropsTransformer';
 export {default as ProfileToolsFDSPropsTransformer} from './props_transformer/ProfileToolsFDSPropsTransformer';

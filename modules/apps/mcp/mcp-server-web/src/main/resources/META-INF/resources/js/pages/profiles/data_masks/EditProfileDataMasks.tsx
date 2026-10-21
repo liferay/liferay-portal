@@ -20,11 +20,13 @@ import {
 	getNextExecutionOrder,
 } from './dataMaskSelection';
 
-interface ProfileDataMasksProps {
+interface EditProfileDataMasksProps {
 	profileERC: string;
 }
 
-export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
+export default function EditProfileDataMasks({
+	profileERC,
+}: EditProfileDataMasksProps) {
 	const [dataMasks, setDataMasks] = useState<DataMask[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [rows, setRows] = useState<ProfileDataMaskRow[]>([]);
