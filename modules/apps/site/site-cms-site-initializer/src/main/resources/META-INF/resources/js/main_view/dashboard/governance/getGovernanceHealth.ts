@@ -22,7 +22,6 @@ type Signal = {
 	count: number;
 	scope: number;
 	severity: number;
-	warning?: boolean;
 };
 
 const FRESHNESS_WEIGHT = 30;
@@ -31,29 +30,21 @@ const OPERATIONS_WEIGHT = 30;
 
 const QUALITY_WEIGHT = 40;
 
-function getDimension(signals: Signal[]): GovernanceDimension {
+function getDimension(signals: Signal[], warnings = 0): GovernanceDimension {
 	let issues = 0;
 	let penalty = 0;
-	let warnings = 0;
 
-	for (const {count, scope, severity, warning} of signals) {
-		if (warning) {
-			warnings += count;
-		}
-		else {
-			issues += count;
-		}
+	for (const {count, scope, severity} of signals) {
+		issues += count;
 
 		if (scope) {
 			penalty += (count * severity * 100) / scope;
 		}
 	}
 
-	return {
-		issues,
-		score: Math.round(Math.max(0, 100 - penalty)),
-		warnings,
-	};
+	const score = Math.round(Math.max(0, 100 - penalty));
+
+	return {issues, score: issues ? Math.min(score, 99) : score, warnings};
 }
 
 export default function getGovernanceHealth(
@@ -62,30 +53,24 @@ export default function getGovernanceHealth(
 	const assets = statistics.totalCount;
 	const tasks = statistics.workflowTasksCount;
 
-	const freshness = getDimension([
-		{count: statistics.expiredCount, scope: assets, severity: 1.75},
-		{
-			count: statistics.reviewDateOverdueCount,
-			scope: assets,
-			severity: 1.5,
-		},
-		{
-			count: statistics.expiringSoonCount,
-			scope: assets,
-			severity: 0.5,
-			warning: true,
-		},
-		{
-			count: statistics.upcomingReviewCount,
-			scope: assets,
-			severity: 0.5,
-			warning: true,
-		},
-	]);
+	const freshness = getDimension(
+		[
+			{count: statistics.expiredCount, scope: assets, severity: 1.75},
+			{
+				count: statistics.reviewDateOverdueCount,
+				scope: assets,
+				severity: 1.5,
+			},
+		],
+		statistics.expiringSoonCount + statistics.upcomingReviewCount
+	);
 
 	const operations = getDimension([
 		{
-			count: statistics.overdueWorkflowTasksCount,
+			count: Math.max(
+				statistics.overdueWorkflowTasksCount,
+				statistics.slaBreachedWorkflowTasksCount
+			),
 			scope: tasks,
 			severity: 2,
 		},
@@ -93,11 +78,6 @@ export default function getGovernanceHealth(
 			count: statistics.longStandingDraftsCount,
 			scope: assets,
 			severity: 1.5,
-		},
-		{
-			count: statistics.slaBreachedWorkflowTasksCount,
-			scope: tasks,
-			severity: 2,
 		},
 	]);
 

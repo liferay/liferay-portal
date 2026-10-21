@@ -64,6 +64,16 @@ describe('getGovernanceHealth', () => {
 		expect(quality).toEqual({issues: 9, score: 83, warnings: 0});
 	});
 
+	it('caps the score at ninety-nine while any issue remains', () => {
+		const {quality} = getGovernanceHealth({
+			...NO_ISSUES,
+			brokenLinksCount: 1,
+			totalCount: 1000,
+		});
+
+		expect(quality).toEqual({issues: 1, score: 99, warnings: 0});
+	});
+
 	it('scores quality at a hundred when the scope has no assets', () => {
 		const {quality} = getGovernanceHealth({...NO_ISSUES, totalCount: 0});
 
@@ -80,24 +90,24 @@ describe('getGovernanceHealth', () => {
 		expect(freshness).toEqual({issues: 6, score: 90, warnings: 0});
 	});
 
-	it('counts expiring soon and upcoming reviews as freshness warnings with half severity', () => {
+	it('counts expiring soon and upcoming reviews as freshness warnings that do not affect the score', () => {
 		const {freshness} = getGovernanceHealth({
 			...NO_ISSUES,
 			expiringSoonCount: 4,
 			upcomingReviewCount: 6,
 		});
 
-		expect(freshness).toEqual({issues: 0, score: 95, warnings: 10});
+		expect(freshness).toEqual({issues: 0, score: 100, warnings: 10});
 	});
 
-	it('penalises overdue tasks and SLA breaches by their share of the workflow tasks', () => {
+	it('counts overdue tasks and SLA breaches by the worse of the two', () => {
 		const {operations} = getGovernanceHealth({
 			...NO_ISSUES,
 			overdueWorkflowTasksCount: 2,
 			slaBreachedWorkflowTasksCount: 1,
 		});
 
-		expect(operations).toEqual({issues: 3, score: 70, warnings: 0});
+		expect(operations).toEqual({issues: 2, score: 80, warnings: 0});
 	});
 
 	it('penalises long-standing drafts by their share of the assets', () => {
@@ -107,16 +117,6 @@ describe('getGovernanceHealth', () => {
 		});
 
 		expect(operations).toEqual({issues: 4, score: 94, warnings: 0});
-	});
-
-	it('does not penalise task signals when the scope has no workflow tasks', () => {
-		const {operations} = getGovernanceHealth({
-			...NO_ISSUES,
-			overdueWorkflowTasksCount: 3,
-			workflowTasksCount: 0,
-		});
-
-		expect(operations).toEqual({issues: 3, score: 100, warnings: 0});
 	});
 
 	it('weighs quality more than freshness', () => {

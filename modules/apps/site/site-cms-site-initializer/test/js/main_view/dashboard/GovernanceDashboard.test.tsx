@@ -157,17 +157,17 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 
 		const freshness = within(banner).getByText('freshness');
 
-		expect(freshness.previousSibling).toHaveTextContent('84');
+		expect(freshness.previousSibling).toHaveTextContent('85');
 		expect(freshness.nextSibling).toHaveTextContent(
 			'x-active-issues · x-warnings'
 		);
 
 		const operations = within(banner).getByText('operations');
 
-		expect(operations.previousSibling).toHaveTextContent('67');
+		expect(operations.previousSibling).toHaveTextContent('77');
 		expect(operations.nextSibling).toHaveTextContent('x-active-issues');
 
-		expect(within(banner).getByText('77')).toBeInTheDocument();
+		expect(within(banner).getByText('81')).toBeInTheDocument();
 	});
 
 	it('explains what the score measures in a popover', async () => {
