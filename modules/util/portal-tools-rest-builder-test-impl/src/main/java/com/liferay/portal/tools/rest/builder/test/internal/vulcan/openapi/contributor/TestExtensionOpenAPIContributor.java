@@ -39,6 +39,10 @@ public class TestExtensionOpenAPIContributor implements OpenAPIContributor {
 
 		Schema testEntitySchema = schemas.get("TestEntity");
 
+		if (testEntitySchema == null) {
+			return;
+		}
+
 		testEntitySchema.addExtension("x-test", true);
 	}
 

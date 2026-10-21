@@ -3,4 +3,6 @@ Bundle-SymbolicName: com.liferay.portal.tools.rest.builder.test.api
 Bundle-Version: 1.0.0
 Export-Package:\
 	com.liferay.portal.tools.rest.builder.test.dto.v1_0,\
-	com.liferay.portal.tools.rest.builder.test.resource.v1_0
+	com.liferay.portal.tools.rest.builder.test.dto.v2_0,\
+	com.liferay.portal.tools.rest.builder.test.resource.v1_0,\
+	com.liferay.portal.tools.rest.builder.test.resource.v2_0
