@@ -5,12 +5,12 @@
 
 package com.liferay.commerce.payment.internal.servlet.test;
 
-import com.liferay.commerce.constants.CommercePaymentEntryConstants;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
+import com.liferay.commerce.constants.CommercePaymentEntryConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
@@ -902,22 +902,6 @@ public class CommercePaymentServletTest {
 				_commerceCurrency));
 	}
 
-	private CommerceOrder _addGuestCommerceOrder() throws Exception {
-		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
-			StringPool.BLANK, _user.getUserId(),
-			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
-			RandomTestUtil.randomString(), null, null, null, null,
-			StringPool.BLANK, AccountConstants.ACCOUNT_ENTRY_TYPE_GUEST,
-			WorkflowConstants.STATUS_APPROVED,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		return _updateCommerceOrder(
-			_commerceOrderLocalService.addCommerceOrder(
-				_user.getUserId(), _commerceChannel.getGroupId(),
-				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
-				0));
-	}
-
 	private CommercePaymentEntry _addCreatedCommercePaymentEntry(
 			User user, CommerceOrder commerceOrder)
 		throws Exception {
@@ -941,6 +925,22 @@ public class CommercePaymentServletTest {
 
 		return _commercePaymentEntryLocalService.updateCommercePaymentEntry(
 			commercePaymentEntry);
+	}
+
+	private CommerceOrder _addGuestCommerceOrder() throws Exception {
+		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
+			StringPool.BLANK, _user.getUserId(),
+			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
+			RandomTestUtil.randomString(), null, null, null, null,
+			StringPool.BLANK, AccountConstants.ACCOUNT_ENTRY_TYPE_GUEST,
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		return _updateCommerceOrder(
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0));
 	}
 
 	private MockHttpServletRequest _getCancelMockHttpServletRequest(
