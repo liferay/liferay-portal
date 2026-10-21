@@ -215,7 +215,7 @@ describe('TreeItemSelectorModal', () => {
 		expect(emittedItems[0].id).toEqual(ROOT_LEAF.id);
 	});
 
-	it('selects a parent and its children with Shift+Space in multi-select', async () => {
+	const renderExpandedTree = async () => {
 		const user = userEvent.setup();
 
 		const {findByRole} = render(
@@ -224,11 +224,14 @@ describe('TreeItemSelectorModal', () => {
 
 		const modal = await findByRole('dialog');
 
-		const parentNode = (await within(modal).findByText('Parent')).closest(
-			'.treeview-link'
-		) as HTMLElement;
+		const getNode = (name: string) =>
+			within(modal)
+				.getByText(name)
+				.closest('.treeview-link') as HTMLElement;
 
-		parentNode.focus();
+		await within(modal).findByText('Parent');
+
+		getNode('Parent').focus();
 
 		await user.keyboard('{ArrowRight}');
 
@@ -240,7 +243,13 @@ describe('TreeItemSelectorModal', () => {
 				.closest('.treeview-item')
 				?.querySelector('input[type="checkbox"]') as HTMLInputElement;
 
-		parentNode.focus();
+		return {getCheckbox, getNode, user};
+	};
+
+	it('selects a parent and its children with Shift+Space in multi-select', async () => {
+		const {getCheckbox, getNode, user} = await renderExpandedTree();
+
+		getNode('Parent').focus();
 
 		await user.keyboard('{Shift>} {/Shift}');
 
@@ -249,6 +258,63 @@ describe('TreeItemSelectorModal', () => {
 		});
 
 		expect(getCheckbox('Beta')).toBeChecked();
+		expect(getCheckbox('Parent')).toBeChecked();
+	});
+
+	it('selects a parent and its children with Shift+Enter in multi-select', async () => {
+		const {getCheckbox, getNode, user} = await renderExpandedTree();
+
+		getNode('Parent').focus();
+
+		await user.keyboard('{Shift>}{Enter}{/Shift}');
+
+		await waitFor(() => {
+			expect(getCheckbox('Alpha')).toBeChecked();
+		});
+
+		expect(getCheckbox('Beta')).toBeChecked();
+		expect(getCheckbox('Parent')).toBeChecked();
+	});
+
+	it('selects only the child with Shift+Space on a child in multi-select', async () => {
+		const {getCheckbox, getNode, user} = await renderExpandedTree();
+
+		getNode('Alpha').focus();
+
+		await user.keyboard('{Shift>} {/Shift}');
+
+		await waitFor(() => {
+			expect(getCheckbox('Alpha')).toBeChecked();
+		});
+
+		expect(getCheckbox('Beta')).not.toBeChecked();
+		expect(getCheckbox('Parent')).not.toBeChecked();
+	});
+
+	it('selects and deselects a parent and its children with Shift+click in multi-select', async () => {
+		const {getCheckbox, user} = await renderExpandedTree();
+
+		await user.keyboard('{Shift>}');
+
+		await user.click(getCheckbox('Parent'));
+
+		await waitFor(() => {
+			expect(getCheckbox('Alpha')).toBeChecked();
+		});
+
+		expect(getCheckbox('Beta')).toBeChecked();
+		expect(getCheckbox('Parent')).toBeChecked();
+
+		await user.click(getCheckbox('Parent'));
+
+		await waitFor(() => {
+			expect(getCheckbox('Alpha')).not.toBeChecked();
+		});
+
+		expect(getCheckbox('Beta')).not.toBeChecked();
+		expect(getCheckbox('Parent')).not.toBeChecked();
+
+		await user.keyboard('{/Shift}');
 	});
 
 	it('keeps ancestor nodes visible when search matches a descendant only', async () => {
