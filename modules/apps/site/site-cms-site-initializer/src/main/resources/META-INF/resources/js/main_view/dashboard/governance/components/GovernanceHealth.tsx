@@ -67,7 +67,9 @@ function SubScore({
 }) {
 	return (
 		<div className="cms-governance-health__sub-score">
-			<span className="d-block font-weight-bold text-7">{score}</span>
+			<span className="d-block font-weight-semi-bold text-9">
+				{score}
+			</span>
 
 			<span className="d-block font-weight-semi-bold text-3 text-secondary">
 				{label}
@@ -104,12 +106,12 @@ export function GovernanceHealth() {
 	return (
 		<section
 			aria-label={title}
-			className="align-items-md-center cms-governance-health d-flex flex-column flex-md-row justify-content-between my-4 pl-4 pr-4 pr-md-5 py-3 rounded-lg"
+			className="align-items-lg-center cms-governance-health d-flex flex-column flex-lg-row justify-content-between my-4 pl-4 pr-4 pr-lg-5 py-4 rounded-lg"
 			style={{
 				backgroundImage: `url(${getImage('governance_health_banner.svg')})`,
 			}}
 		>
-			<div className="mb-2">
+			<div className="flex-shrink-0 mb-2">
 				<div className="align-items-center d-flex my-1">
 					<Text size={6} weight="semi-bold">
 						{title}
@@ -122,19 +124,17 @@ export function GovernanceHealth() {
 					<ClayLoadingIndicator size="sm" />
 				) : health ? (
 					<div className="align-items-baseline d-flex mb-1">
-						<Text size={9} weight="bold">
+						<Text size={11} weight="bold">
 							{health.score}
 						</Text>
 
-						<Text color="secondary" size={7}>
-							/{MAX_SCORE}
-						</Text>
+						<Text size={9}>/{MAX_SCORE}</Text>
 					</div>
 				) : null}
 			</div>
 
 			{health ? (
-				<div className="c-gap-4 c-gap-md-5 d-flex flex-wrap mr-md-3 mt-3 mt-md-4">
+				<div className="c-gap-4 d-flex flex-wrap mt-3 mt-lg-0">
 					<SubScore
 						dimension={health.quality}
 						label={Liferay.Language.get('quality')}
