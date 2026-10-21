@@ -43,6 +43,14 @@ public class PasswordFieldUtilTest {
 	}
 
 	@Test
+	public void testGetPasswordFieldNamesWithoutClassSchema() {
+		Assert.assertEquals(
+			Set.of("credential.password", "password"),
+			PasswordFieldUtil.getPasswordFieldNames(
+				UnannotatedTestEntity.class));
+	}
+
+	@Test
 	public void testToString() throws Exception {
 		TestEntity testEntity = new TestEntity();
 
@@ -163,6 +171,46 @@ public class PasswordFieldUtilTest {
 
 		protected Credential credential;
 		protected Credential[] credentials;
+		protected String name;
+		protected String password;
+
+	}
+
+	public static class UnannotatedCredential {
+
+		@Schema
+		public String getLogin() {
+			return login;
+		}
+
+		@Schema(format = "password")
+		public String getPassword() {
+			return password;
+		}
+
+		protected String login;
+		protected String password;
+
+	}
+
+	public static class UnannotatedTestEntity {
+
+		@Schema
+		public UnannotatedCredential getCredential() {
+			return credential;
+		}
+
+		@Schema
+		public String getName() {
+			return name;
+		}
+
+		@Schema(format = "password")
+		public String getPassword() {
+			return password;
+		}
+
+		protected UnannotatedCredential credential;
 		protected String name;
 		protected String password;
 
