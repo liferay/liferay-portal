@@ -47,7 +47,7 @@ public class AccountDisplay {
 		if (ListUtil.isNotEmpty(lifecycleStages)) {
 			Account.LifecycleStage lifecycleStage = lifecycleStages.get(0);
 
-			_lifecycleStage = lifecycleStage.getStageType();
+			_lifecycleStage = lifecycleStage.getName();
 		}
 
 		_modifiedDate = account.getModifiedDate();

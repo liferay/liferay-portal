@@ -12,6 +12,7 @@ import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.exception.FaroEngineClientException;
 import com.liferay.osb.faro.engine.client.exception.NoSuchEntryException;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
+import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageTransition;
 import com.liferay.osb.faro.engine.client.model.LifecycleTriggerResult;
 import com.liferay.osb.faro.engine.client.model.Results;
@@ -35,6 +36,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -68,12 +70,29 @@ public class NotificationHelper {
 	}
 
 	public void sendLifecycleNotifications(
-			String frequency, String lifecycleId,
+			String frequency, String accountLifecycleKey,
 			Map<Long, List<LifecycleTriggerType>> lifecycleTriggerTypesByUserId,
 			NotificationContext notificationContext)
 		throws Exception {
 
 		Group group = notificationContext.getGroup();
+
+		String accountLifecycleId = _getAccountLifecycleId(
+			notificationContext.getFaroProject(), accountLifecycleKey);
+
+		if (accountLifecycleId == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to find account lifecycle " + accountLifecycleKey);
+			}
+
+			_notificationPreferencesHelper.
+				removeLifecycleNotificationPreferences(
+					group.getGroupId(),
+					Collections.singleton(accountLifecycleKey));
+
+			return;
+		}
 
 		Map<Long, User> users = _resolveUsers(
 			group.getGroupId(), lifecycleTriggerTypesByUserId.keySet());
@@ -101,7 +120,7 @@ public class NotificationHelper {
 			try {
 				LifecycleTriggerResult lifecycleTriggerResult =
 					_getLifecycleTriggerResult(
-						faroProject, lifecycleId, lifecycleTriggerType,
+						faroProject, accountLifecycleId, lifecycleTriggerType,
 						_emailReportHelper.getRangeKey(frequency));
 
 				long count = lifecycleTriggerResult.getCount();
@@ -113,7 +132,7 @@ public class NotificationHelper {
 				if (accountLifecycle == null) {
 					accountLifecycle =
 						_contactsEngineClient.getAccountLifecycle(
-							faroProject, lifecycleId);
+							faroProject, accountLifecycleId);
 
 					if (accountLifecycle == null) {
 						return;
@@ -178,7 +197,8 @@ public class NotificationHelper {
 			catch (Exception exception) {
 				_log.error(
 					"Unable to send " + lifecycleTriggerType.getKey() +
-						" notifications for lifecycle " + lifecycleId,
+						" notifications for account lifecycle " +
+							accountLifecycleId,
 					exception);
 			}
 		}
@@ -371,8 +391,52 @@ public class NotificationHelper {
 		subscriptionSender.flushNotifications();
 	}
 
+	private String _getAccountLifecycleId(
+			FaroProject faroProject, String accountLifecycleKey)
+		throws Exception {
+
+		String externalReferenceCode = accountLifecycleKey;
+
+		if (Validator.isNumber(accountLifecycleKey)) {
+			AccountLifecycle accountLifecycle = null;
+
+			try {
+				accountLifecycle = _contactsEngineClient.getAccountLifecycle(
+					faroProject, accountLifecycleKey);
+			}
+			catch (NoSuchEntryException noSuchEntryException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(noSuchEntryException);
+				}
+
+				return null;
+			}
+
+			externalReferenceCode = accountLifecycle.getExternalReferenceCode();
+
+			if (Validator.isNull(externalReferenceCode)) {
+				return accountLifecycle.getId();
+			}
+		}
+
+		Results<AccountLifecycle> results =
+			_contactsEngineClient.getAccountLifecycles(
+				faroProject, null, null, externalReferenceCode, null, 1, 1,
+				null);
+
+		List<AccountLifecycle> accountLifecycles = results.getItems();
+
+		if (ListUtil.isEmpty(accountLifecycles)) {
+			return null;
+		}
+
+		AccountLifecycle accountLifecycle = accountLifecycles.get(0);
+
+		return accountLifecycle.getId();
+	}
+
 	private LifecycleTriggerResult _getLifecycleTriggerResult(
-			FaroProject faroProject, String lifecycleId,
+			FaroProject faroProject, String accountLifecycleId,
 			LifecycleTriggerType lifecycleTriggerType, int rangeKey)
 		throws Exception {
 
@@ -381,21 +445,43 @@ public class NotificationHelper {
 		if (lifecycleTriggerType == LifecycleTriggerType.NEW_ACCOUNTS) {
 			lifecycleTriggerResult =
 				_contactsEngineClient.getNewAccountsLifecycleTriggerResult(
-					faroProject, lifecycleId, rangeKey);
+					faroProject, accountLifecycleId, rangeKey);
 		}
 		else if (lifecycleTriggerType ==
 					LifecycleTriggerType.NEW_STALLED_ACCOUNTS) {
 
 			lifecycleTriggerResult =
 				_contactsEngineClient.getStalledAccountsLifecycleTriggerResult(
-					faroProject, lifecycleId, rangeKey);
+					faroProject, accountLifecycleId, rangeKey);
 		}
 		else {
+			String toAccountLifecycleStageId = null;
+
+			if (lifecycleTriggerType.getToLifecycleStage() != null) {
+				AccountLifecycle accountLifecycle =
+					_contactsEngineClient.getAccountLifecycle(
+						faroProject, accountLifecycleId);
+
+				if (accountLifecycle == null) {
+					return new LifecycleTriggerResult();
+				}
+
+				AccountLifecycleStage accountLifecycleStage =
+					accountLifecycle.getAccountLifecycleStage(
+						lifecycleTriggerType.getToLifecycleStage());
+
+				if (accountLifecycleStage == null) {
+					return new LifecycleTriggerResult();
+				}
+
+				toAccountLifecycleStageId = accountLifecycleStage.getId();
+			}
+
 			Results<AccountLifecycleStageTransition> results =
 				_contactsEngineClient.getAccountLifecycleStageTransitions(
-					faroProject, null, null, lifecycleId, null, null, rangeKey,
-					null, null, lifecycleTriggerType.getToLifecycleStage(), 0,
-					2, null);
+					faroProject, null, null, accountLifecycleId, null, null,
+					rangeKey, null, null, toAccountLifecycleStageId, 0, 2,
+					null);
 
 			lifecycleTriggerResult = new LifecycleTriggerResult();
 

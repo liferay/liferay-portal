@@ -243,13 +243,13 @@ public class AccountFaroController extends BaseFaroController {
 					accountLifecycleId);
 
 			List<Map<String, String>> items = TransformUtil.transform(
-				accountLifecycle.getStages(),
+				accountLifecycle.getAccountLifecycleStages(),
 				stage -> HashMapBuilder.put(
 					"externalReferenceCode", stage.getExternalReferenceCode()
 				).put(
 					"id", stage.getId()
 				).put(
-					"stageType", stage.getStageType()
+					"name", stage.getName()
 				).build());
 
 			return new FaroFDSResultsDisplay<>(

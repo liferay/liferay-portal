@@ -58,8 +58,8 @@ public class AccountLifecycleFaroControllerTest {
 
 		Mockito.when(
 			_contactsEngineClient.getAccountLifecycles(
-				_faroProject, channelId, defaultAccountLifecycle, search, page,
-				pageSize, sortString)
+				_faroProject, channelId, defaultAccountLifecycle, null, search,
+				page, pageSize, sortString)
 		).thenReturn(
 			new Results<>(Collections.emptyList(), total)
 		);
@@ -98,6 +98,29 @@ public class AccountLifecycleFaroControllerTest {
 			accountLifecycle,
 			_accountLifecycleFaroController.patchAccountLifecycle(
 				RandomTestUtil.randomLong(), id, defaultAccountLifecycle));
+	}
+
+	@Test
+	public void testUpdateAccountLifecycleStageRule() throws Exception {
+		AccountLifecycle accountLifecycle = new AccountLifecycle();
+		String filterMetadata = RandomTestUtil.randomString();
+		String filterString = RandomTestUtil.randomString();
+		String id = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+		String stageId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_contactsEngineClient.updateAccountLifecycleStageRule(
+				_faroProject, filterMetadata, filterString, id, name, stageId)
+		).thenReturn(
+			accountLifecycle
+		);
+
+		Assert.assertSame(
+			accountLifecycle,
+			_accountLifecycleFaroController.updateAccountLifecycleStageRule(
+				RandomTestUtil.randomLong(), id, stageId, filterString,
+				filterMetadata, name));
 	}
 
 	private final AccountLifecycleFaroController

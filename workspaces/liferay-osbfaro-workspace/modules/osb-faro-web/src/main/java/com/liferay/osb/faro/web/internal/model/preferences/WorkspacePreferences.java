@@ -193,6 +193,14 @@ public class WorkspacePreferences {
 		}
 	}
 
+	public boolean removeLifecycleNotificationPreferences(
+		Collection<String> keys) {
+
+		Set<String> keySet = _lifecycleNotificationPreferences.keySet();
+
+		return keySet.removeAll(keys);
+	}
+
 	public boolean removeSegmentNotificationPreferences(
 		Collection<String> segmentIds) {
 

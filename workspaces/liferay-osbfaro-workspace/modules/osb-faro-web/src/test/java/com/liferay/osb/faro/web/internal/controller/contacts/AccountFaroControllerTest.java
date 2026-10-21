@@ -174,11 +174,11 @@ public class AccountFaroControllerTest {
 
 		accountLifecycleStage.setId(id);
 
-		String stageType = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
 
-		accountLifecycleStage.setStageType(stageType);
+		accountLifecycleStage.setName(name);
 
-		accountLifecycle.setStages(
+		accountLifecycle.setAccountLifecycleStages(
 			Collections.singletonList(accountLifecycleStage));
 
 		String accountLifecycleId = RandomTestUtil.randomString();
@@ -210,7 +210,7 @@ public class AccountFaroControllerTest {
 		Assert.assertEquals(
 			externalReferenceCode, stageMap.get("externalReferenceCode"));
 		Assert.assertEquals(id, stageMap.get("id"));
-		Assert.assertEquals(stageType, stageMap.get("stageType"));
+		Assert.assertEquals(name, stageMap.get("name"));
 	}
 
 	private final AccountFaroController _accountFaroController =

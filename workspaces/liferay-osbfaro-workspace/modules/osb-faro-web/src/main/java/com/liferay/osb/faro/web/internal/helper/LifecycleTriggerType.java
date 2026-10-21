@@ -12,10 +12,10 @@ public enum LifecycleTriggerType {
 
 	ACCOUNT_STAGE_CHANGES("accountStageChanges", "account-stage-changes", null),
 	NET_NEW_PIPELINE_ACCOUNTS(
-		"netNewPipelineAccounts", "net-new-pipeline-accounts", "PIPELINE"),
+		"netNewPipelineAccounts", "net-new-pipeline-accounts", "Pipeline"),
 	NEW_ACCOUNTS("newAccounts", "new-accounts", null),
 	NEW_AT_RISK_ACCOUNTS(
-		"newAtRiskAccounts", "new-at-risk-accounts", "AT_RISK"),
+		"newAtRiskAccounts", "new-at-risk-accounts", "At Risk"),
 	NEW_STALLED_ACCOUNTS("newStalledAccounts", "new-stalled-accounts", null);
 
 	public String getKey() {
