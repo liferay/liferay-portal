@@ -2,6 +2,8 @@
 
 <Configuration strict="true">
 	<Loggers>
-		<Logger level="ERROR" name="io.modelcontextprotocol.server.DefaultMcpStatelessServerHandler" />
+		<Logger level="WARN" name="io.modelcontextprotocol.server.DefaultMcpStatelessServerHandler">
+			<Filter onMatch="DENY" onMismatch="NEUTRAL" regex="Missing handler for notification type: notifications/initialized" type="RegexFilter" />
+		</Logger>
 	</Loggers>
 </Configuration>
