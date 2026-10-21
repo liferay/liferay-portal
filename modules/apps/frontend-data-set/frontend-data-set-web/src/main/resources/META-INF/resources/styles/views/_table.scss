@@ -35,8 +35,34 @@
 		color: $gray-900;
 	}
 
+	.table-responsive {
+		border-color: $table-list-border-color;
+		border-radius: $table-list-border-radius;
+		border-style: solid;
+		border-width: $table-list-border-width;
+
+		> table {
+			border-radius: 0;
+			border-width: 0;
+		}
+	}
+
 	table {
 		table-layout: auto !important;
+
+		tbody tr > td.cell-item-actions,
+		thead tr > th:last-child {
+			background-color: $white;
+			box-shadow: -4px 0 8px -4px unquote('hsl(from #{$gray-900} h s l / 0.15)');
+			position: sticky;
+			right: 0;
+			z-index: 2;
+		}
+
+		tbody tr:hover > td.cell-item-actions,
+		tbody tr.table-active > td.cell-item-actions {
+			background-color: inherit;
+		}
 
 		.dnd-th-resizer {
 			cursor: col-resize;
