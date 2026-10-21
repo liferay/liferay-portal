@@ -9,15 +9,18 @@ import React from 'react';
 
 import AdaptiveMediaProgress from '../src/main/resources/META-INF/resources/js/AdaptiveMediaProgress';
 
-function createMenu() {
+function createMenu({adapting = false, uuid = 'uuid'} = {}) {
 	const menu = document.createElement('ul');
 
+	const entryClass = adapting ? 'disabled' : '';
+	const onClickAttribute = adapting ? 'data-onclick' : 'onclick';
+
 	menu.innerHTML = `
-		<li>
-			<a id="_portlet_icon-adapt-remaininguuid" onclick="adaptRemaining()">Adapt Remaining</a>
+		<li class="${entryClass}">
+			<a id="_portlet_icon-adapt-remaining${uuid}" ${onClickAttribute}="adaptRemaining()">Adapt Remaining</a>
 		</li>
-		<li>
-			<a id="_portlet_icon-disable-uuid" onclick="disable()">Disable</a>
+		<li class="${entryClass}">
+			<a id="_portlet_icon-disable-${uuid}" ${onClickAttribute}="disable()">Disable</a>
 		</li>
 	`;
 
@@ -94,5 +97,53 @@ describe('AdaptiveMediaProgress', () => {
 
 	it('enables the disable entry when the menu is added after mount', async () => {
 		await adaptRemainingAfterMenuCloses(createMenu());
+	});
+
+	it('enables the disable entry when an autostarted progress ends after the menu is closed', async () => {
+		const menu = createMenu({adapting: true, uuid: 'auto'});
+
+		document.body.appendChild(menu);
+
+		fetch.mockResponseOnce(
+			JSON.stringify({adaptedImages: 1, errors: 0, totalImages: 2})
+		);
+
+		render(
+			<AdaptiveMediaProgress
+				adaptedImages={1}
+				adaptiveMediaProgressComponentId="adaptiveMediaProgress"
+				autoStartProgress
+				namespace="_portlet_"
+				percentageUrl="http://localhost/percentage"
+				totalImages={2}
+				uuid="auto"
+			/>
+		);
+
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		const disableEntry = screen.getByText('Disable');
+
+		expect(disableEntry.parentElement).toHaveClass('disabled');
+
+		menu.remove();
+
+		fetch.mockResponseOnce(
+			JSON.stringify({adaptedImages: 2, errors: 0, totalImages: 2})
+		);
+
+		await act(async () => {
+			jest.runOnlyPendingTimers();
+		});
+
+		expect(screen.getByRole('progressbar')).toHaveAttribute(
+			'aria-valuenow',
+			'100'
+		);
+
+		expect(disableEntry.parentElement).not.toHaveClass('disabled');
+		expect(disableEntry).toHaveAttribute('onclick', 'disable()');
 	});
 });
