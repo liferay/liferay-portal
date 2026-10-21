@@ -108,7 +108,7 @@ done < "${TASKS_FILE}"
 	"${TASKS[@]}")
 ```
 
-Compile the deprecated consumers in a second run, since they exist only under their own profile and that profile leaves out the `-test` modules. Build `${TASKS}` the same way, with `:compileJava` after each project path. Then run:
+Compile the deprecated consumers in a second run, since they exist only under their own profile and that profile leaves out the `-test` modules. Build `${TASKS}` the same way from the deprecated consumers, with `:compileJava` after each project path. Then run:
 
 ```bash
 ("${REPO_ROOT}/gradlew" \

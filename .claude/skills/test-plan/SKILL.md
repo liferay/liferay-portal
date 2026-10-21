@@ -38,7 +38,7 @@ Read the changed files to understand what the changes actually do — not merely
 Every plan includes these tests:
 
 - **Smoke Tests**: For each row of the table after this list that the diff matches, include that row's test from `modules/test/portal-smoke-test`.
-- **Tests the Branch Changed**: Include every integration test, Playwright spec, and Poshi testcase that `git diff master...HEAD --name-only` lists.
+- **Tests the Branch Changed**: Include every integration test, Playwright spec, and Poshi testcase that `git diff --name-only master...HEAD` lists.
 
 | Changed Path | Condition | Test |
 | --- | --- | --- |
@@ -81,15 +81,15 @@ The 20 minutes include starting or restarting the portal. They do not include bu
 
 1. Poshi tests (approximately 2–5 minutes each).
 
-Drop a candidate test only when it does not fit the budget or when reading the test shows that it does not reach the change. Never drop a test because of reasoning about the change without reading the test.
+Drop a candidate test only when it does not fit the budget or when reading the test shows that it does not reach the change. Never drop a test on reasoning about the change alone, without reading the test.
 
 When the change affects many modules (for example, a framework change), do not attempt to test every single module. Choose a diverse sample that covers different usage patterns of the changed code.
 
 ### Build and Start the Portal
 
-When `<bundles>` holds no `tomcat-*` directory, build the bundle first. From the repository root, run `ant -f build-dist.xml unzip-tomcat`. Then run `ant all -Dgradle.stop.daemon.enabled=false`.
+When `<bundles>` holds no `tomcat-*` directory, build the bundle first. From the repository root, run `ant -buildfile build-dist.xml unzip-tomcat`. Then run `ant all -Dgradle.stop.daemon.enabled=false`.
 
-Deploy the branch to the bundle unless the step above or the `pr-check` skill already did. The `pr-check` skill already deployed the branch when a log under `build/pr-check/full-portal-build` or `build/pr-check/per-module-compile` reports `BUILD SUCCESSFUL`. The log must also be newer than the commit time that `git log -1 --format=%ct HEAD` prints. Otherwise, when the branch changes portal core, run `ant all -Dgradle.stop.daemon.enabled=false` from the repository root. Then run `<gradlew> deploy` from each changed module outside portal core whose name does not end in `-test`. Portal core is `portal-impl`, `portal-kernel`, `portal-test`, `portal-web`, `support-tomcat`, and the `util-*` projects.
+Deploy the branch to the bundle unless the step above or the `pr-check` skill already did. The `pr-check` skill already deployed the branch when a log under `build/pr-check/full-portal-build` or `build/pr-check/per-module-compile` reports `BUILD SUCCESSFUL`. The log must also be newer than the commit time that `git log --format=%ct --max-count=1 HEAD` prints. Otherwise, run `ant all -Dgradle.stop.daemon.enabled=false` from the repository root when the branch changes portal core, and run `<gradlew> deploy` from each changed module outside portal core whose name does not end in `-test`. Portal core is `portal-impl`, `portal-kernel`, `portal-test`, `portal-web`, `support-tomcat`, and the `util-*` projects.
 
 Probe the portal as `.claude/rules/tomcat.md` describes. Bounce it when the branch changes portal core. Otherwise, start it when it is not ready.
 
