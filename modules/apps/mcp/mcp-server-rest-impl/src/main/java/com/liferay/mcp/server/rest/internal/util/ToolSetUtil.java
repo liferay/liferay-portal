@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -51,6 +52,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ToolSetUtil {
 
 	public static void clearOpenAPIJSONObjectCache(long companyId) {
+		if (companyId == CompanyConstants.SYSTEM) {
+			_openAPIJSONObjects.clear();
+
+			return;
+		}
+
 		Set<String> keys = _openAPIJSONObjects.keySet();
 
 		keys.removeIf(key -> key.startsWith(companyId + StringPool.POUND));
