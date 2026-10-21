@@ -54,6 +54,4 @@ Import-Package:\
 	!sun.security.*,\
 	\
 	*
--includeresource:\
-	mockserver-netty-no-dependencies-[0-9.]*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar
+-includeresource: mockserver-netty-no-dependencies-[0-9.]*.jar;lib:=true
