@@ -130,6 +130,16 @@ describe('NewStaticSiteExport', () => {
 				getExportFormData().getAll('_portletNamespace_languageIds')
 			).toEqual(['en_US', 'es_ES'])
 		);
+
+		await waitFor(() =>
+			expect(Liferay.Util.navigate).toHaveBeenCalledWith('/some/back/url')
+		);
+
+		expect(Liferay.Util.openToast).toHaveBeenCalledWith({
+			message: 'the-process-has-started',
+			type: 'success',
+		});
+		expect(screen.getByRole('button', {name: /^export$/i})).toBeDisabled();
 	});
 
 	it('exports the pages selected through the modal', async () => {

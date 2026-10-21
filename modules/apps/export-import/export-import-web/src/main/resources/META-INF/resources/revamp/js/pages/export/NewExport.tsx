@@ -4,8 +4,6 @@
  */
 
 import ClayAlert from '@clayui/alert';
-import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
 import {Form, Formik} from 'formik';
 import {sub} from 'frontend-js-web';
 import React from 'react';
@@ -28,6 +26,7 @@ import {
 	withSelectedLayoutSetCount,
 } from '../../utils/contentSelection';
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
+import {navigateToProcesses} from '../../utils/navigateToProcesses';
 import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
 import SiteSelection from './components/SiteSelection';
 
@@ -84,7 +83,7 @@ export function NewExport({
 	return (
 		<Formik
 			initialValues={initialFormValues}
-			onSubmit={async (values) => {
+			onSubmit={async (values, formikHelpers) => {
 				const result = await postExportProcess({
 					exportProcessRequest: {
 						...toProcessRequestFlags(values.contentSelection),
@@ -116,7 +115,11 @@ export function NewExport({
 					return;
 				}
 
-				Liferay.Util.navigate(backURL);
+				navigateToProcesses(
+					formikHelpers,
+					Liferay.Language.get('the-process-has-started'),
+					backURL
+				);
 			}}
 			validate={(values) =>
 				getProcessFormErrors(values, siteSelectionEnabled)
@@ -211,24 +214,14 @@ export function NewExport({
 							)}
 
 						<Footer
-							actionButton={
-								<ClayButton
-									disabled={
-										formik.isSubmitting || !formik.isValid
-									}
-									type="submit"
-								>
-									<span className="inline-item inline-item-before">
-										<ClayIcon
-											className="mr-1"
-											symbol="export"
-										/>
-									</span>
-
-									{Liferay.Language.get('export')}
-								</ClayButton>
-							}
+							actionButtonLabel={Liferay.Language.get('export')}
+							actionButtonSymbol="export"
 							backURL={backURL}
+							continueDisabled={
+								formik.isSubmitting ||
+								formik.status?.submitted ||
+								!formik.isValid
+							}
 						/>
 					</Form>
 				);

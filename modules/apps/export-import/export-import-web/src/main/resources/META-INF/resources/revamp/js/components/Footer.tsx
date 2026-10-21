@@ -10,12 +10,14 @@ import ClayLink from '@clayui/link';
 import React from 'react';
 
 function Footer({
-	actionButton,
+	actionButtonLabel = Liferay.Language.get('continue'),
+	actionButtonSymbol,
 	backURL,
 	continueDisabled,
 	onPrevious,
 }: {
-	actionButton?: React.ReactElement;
+	actionButtonLabel?: string;
+	actionButtonSymbol?: string;
 	backURL: string;
 	continueDisabled?: boolean;
 	onPrevious?: () => void;
@@ -45,16 +47,18 @@ function Footer({
 							{Liferay.Language.get('cancel')}
 						</ClayLink>
 
-						{actionButton ? (
-							actionButton
-						) : (
-							<ClayButton
-								disabled={continueDisabled}
-								type="submit"
-							>
-								{Liferay.Language.get('continue')}
-							</ClayButton>
-						)}
+						<ClayButton disabled={continueDisabled} type="submit">
+							{actionButtonSymbol && (
+								<span className="inline-item inline-item-before">
+									<ClayIcon
+										className="mr-1"
+										symbol={actionButtonSymbol}
+									/>
+								</span>
+							)}
+
+							{actionButtonLabel}
+						</ClayButton>
 					</div>
 				</ClayLayout.Col>
 			</ClayLayout.Row>

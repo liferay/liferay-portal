@@ -4,8 +4,6 @@
  */
 
 import ClayAlert from '@clayui/alert';
-import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
 import {Form, Formik, FormikValues} from 'formik';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
@@ -31,6 +29,7 @@ import {
 } from '../../utils/contentSelection';
 import {toWallClockDateTime, toZonedDate} from '../../utils/dateTime';
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
+import {navigateToProcesses} from '../../utils/navigateToProcesses';
 import {toContentSelection} from '../../utils/toContentSelection';
 import {toDateFilterValues} from '../../utils/toDateFilterValues';
 import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
@@ -219,7 +218,7 @@ export function NewPublish({
 	return (
 		<Formik
 			initialValues={initialFormValues}
-			onSubmit={async (values) => {
+			onSubmit={async (values, formikHelpers) => {
 				const scheduleValues = values.scheduleValues;
 
 				const scheduled = scheduleValues.enabled;
@@ -283,7 +282,13 @@ export function NewPublish({
 					}
 				}
 
-				Liferay.Util.navigate(
+				navigateToProcesses(
+					formikHelpers,
+					scheduled
+						? Liferay.Language.get(
+								'the-publication-has-been-scheduled'
+							)
+						: Liferay.Language.get('the-process-has-started'),
 					scheduled ? scheduledBackURL : processesBackURL
 				);
 			}}
@@ -376,30 +381,20 @@ export function NewPublish({
 						/>
 
 						<Footer
-							actionButton={
-								<ClayButton
-									disabled={
-										formik.isSubmitting || !formik.isValid
-									}
-									type="submit"
-								>
-									<span className="inline-item inline-item-before">
-										<ClayIcon
-											className="mr-1"
-											symbol="change"
-										/>
-									</span>
-
-									{formik.values.scheduleValues.enabled
-										? Liferay.Language.get(
-												'schedule-publication-to-live'
-											)
-										: Liferay.Language.get(
-												'publish-to-live'
-											)}
-								</ClayButton>
+							actionButtonLabel={
+								formik.values.scheduleValues.enabled
+									? Liferay.Language.get(
+											'schedule-publication-to-live'
+										)
+									: Liferay.Language.get('publish-to-live')
 							}
+							actionButtonSymbol="change"
 							backURL={backURL}
+							continueDisabled={
+								formik.isSubmitting ||
+								formik.status?.submitted ||
+								!formik.isValid
+							}
 						/>
 					</Form>
 				);

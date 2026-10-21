@@ -723,6 +723,14 @@ describe('NewExport', () => {
 					'/some/back/url'
 				)
 			);
+
+			expect(Liferay.Util.openToast).toHaveBeenCalledWith({
+				message: 'the-process-has-started',
+				type: 'success',
+			});
+			expect(
+				screen.getByRole('button', {name: /^export$/i})
+			).toBeDisabled();
 		});
 
 		it('exports all private pages when private pages are the default', async () => {

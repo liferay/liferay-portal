@@ -14,6 +14,7 @@ import {
 	within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import fetch from 'jest-fetch-mock';
 import React from 'react';
 
 import {NewImport} from '../../../../../src/main/resources/META-INF/resources/revamp/js/pages/import/NewImport';
@@ -324,6 +325,30 @@ describe('NewImport', () => {
 		).not.toBeInTheDocument();
 
 		await checkAccessibility({context: container});
+	});
+
+	it('disables Import and goes to the processes list once the import has started', async () => {
+		fetch.mockResponseOnce(JSON.stringify({id: 1}));
+
+		await goToDataSelectionStep();
+
+		await user.click(screen.getByRole('button', {name: /continue/i}));
+
+		const importButton = screen.getByRole('button', {name: /^import$/i});
+
+		await waitFor(() => expect(importButton).toBeEnabled());
+
+		await user.click(importButton);
+
+		await waitFor(() =>
+			expect(Liferay.Util.navigate).toHaveBeenCalledWith('/some/back/url')
+		);
+
+		expect(Liferay.Util.openToast).toHaveBeenCalledWith({
+			message: 'the-process-has-started',
+			type: 'success',
+		});
+		expect(screen.getByRole('button', {name: /^import$/i})).toBeDisabled();
 	});
 
 	it('shows the section as indeterminate and summarizes the selected handlers when the selection is partial', async () => {

@@ -205,6 +205,14 @@ describe('NewPublish', () => {
 		expect(Liferay.Util.navigate).toHaveBeenCalledWith(
 			DEFAULT_PROPS.processesBackURL
 		);
+
+		expect(Liferay.Util.openToast).toHaveBeenCalledWith({
+			message: 'the-process-has-started',
+			type: 'success',
+		});
+		expect(
+			screen.getByRole('button', {name: /publish-to-live/i})
+		).toBeDisabled();
 	});
 
 	it('selects the schedule option when it is the default', async () => {
@@ -536,6 +544,11 @@ describe('NewPublish', () => {
 		expect(Liferay.Util.navigate).toHaveBeenCalledWith(
 			DEFAULT_PROPS.scheduledBackURL
 		);
+
+		expect(Liferay.Util.openToast).toHaveBeenCalledWith({
+			message: 'the-publication-has-been-scheduled',
+			type: 'success',
+		});
 	});
 
 	it('drops the end date once the repetition goes back to never', async () => {
