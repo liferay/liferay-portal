@@ -143,4 +143,4 @@ public interface UserSessionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1913414387
+// LIFERAY-REST-BUILDER-HASH:-2143864957

@@ -324,4 +324,4 @@ public class EventResourceFactoryImpl implements EventResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-651304893
+// LIFERAY-REST-BUILDER-HASH:390188622

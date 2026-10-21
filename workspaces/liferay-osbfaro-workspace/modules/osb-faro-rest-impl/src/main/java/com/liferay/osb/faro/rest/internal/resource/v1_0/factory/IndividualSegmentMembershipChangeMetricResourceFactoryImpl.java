@@ -356,4 +356,4 @@ public class IndividualSegmentMembershipChangeMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1564422063
+// LIFERAY-REST-BUILDER-HASH:1187546690

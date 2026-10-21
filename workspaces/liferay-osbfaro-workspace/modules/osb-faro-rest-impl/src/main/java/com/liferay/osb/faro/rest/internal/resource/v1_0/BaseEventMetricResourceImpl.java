@@ -679,4 +679,4 @@ public abstract class BaseEventMetricResourceImpl
 		LogFactoryUtil.getLog(BaseEventMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1812173030
+// LIFERAY-REST-BUILDER-HASH:343109136

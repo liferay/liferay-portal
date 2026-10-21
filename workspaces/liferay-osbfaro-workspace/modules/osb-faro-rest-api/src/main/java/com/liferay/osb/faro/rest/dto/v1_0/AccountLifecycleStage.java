@@ -495,4 +495,4 @@ public class AccountLifecycleStage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:794576626
+// LIFERAY-REST-BUILDER-HASH:-859749662

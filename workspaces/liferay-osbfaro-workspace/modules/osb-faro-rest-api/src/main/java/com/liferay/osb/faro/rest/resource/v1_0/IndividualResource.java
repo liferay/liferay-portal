@@ -45,8 +45,8 @@ public interface IndividualResource {
 
 	public Page<Individual> getWorkspaceGroupChannelIndividualsPage(
 			Long groupId, String channelId, String accountId,
-			String activityStatus, Boolean includeAnonymousUsers,
-			String individualSegmentId, String interestName, String rangeEnd,
+			String activityStatus, String individualSegmentId,
+			String interestName, String profileType, String rangeEnd,
 			String rangeKey, String rangeStart, String search,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
@@ -144,4 +144,4 @@ public interface IndividualResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-187450540
+// LIFERAY-REST-BUILDER-HASH:509362093

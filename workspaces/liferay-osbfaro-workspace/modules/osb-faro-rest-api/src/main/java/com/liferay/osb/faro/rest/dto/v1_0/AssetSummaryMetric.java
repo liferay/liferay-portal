@@ -846,4 +846,4 @@ public class AssetSummaryMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1464376927
+// LIFERAY-REST-BUILDER-HASH:-644473243

@@ -570,4 +570,4 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 		LogFactoryUtil.getLog(BaseSearchTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1712225075
+// LIFERAY-REST-BUILDER-HASH:37530097

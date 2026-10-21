@@ -429,4 +429,4 @@ public class IndividualSegmentMembershipChangeMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2515084
+// LIFERAY-REST-BUILDER-HASH:-1775168678

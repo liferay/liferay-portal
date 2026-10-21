@@ -70,7 +70,7 @@ public abstract class BaseEventResourceImpl implements EventResource {
 				name = "accountId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "If false, events from anonymous (browser-tracked) individuals are left out. Defaults to true, so anonymous events are included unless this is set to false.",
+				description = "If false, events from anonymous (browser tracked) individuals are left out. Defaults to true, so anonymous events are included unless this is set to false.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "includeAnonymousUsers"
 			),
@@ -608,4 +608,4 @@ public abstract class BaseEventResourceImpl implements EventResource {
 		LogFactoryUtil.getLog(BaseEventResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-767983046
+// LIFERAY-REST-BUILDER-HASH:1436036831

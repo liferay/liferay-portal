@@ -132,4 +132,4 @@ public interface WorkspaceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1952711373
+// LIFERAY-REST-BUILDER-HASH:1235500749

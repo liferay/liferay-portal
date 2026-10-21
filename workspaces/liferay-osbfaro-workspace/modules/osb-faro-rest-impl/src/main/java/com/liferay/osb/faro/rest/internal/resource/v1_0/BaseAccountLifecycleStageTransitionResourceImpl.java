@@ -637,4 +637,4 @@ public abstract class BaseAccountLifecycleStageTransitionResourceImpl
 			BaseAccountLifecycleStageTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1554487101
+// LIFERAY-REST-BUILDER-HASH:-1867158011

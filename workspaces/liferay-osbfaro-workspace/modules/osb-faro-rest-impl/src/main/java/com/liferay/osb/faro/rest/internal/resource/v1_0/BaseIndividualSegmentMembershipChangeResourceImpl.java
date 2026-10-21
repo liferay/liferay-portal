@@ -605,4 +605,4 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceImpl
 			BaseIndividualSegmentMembershipChangeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-523097739
+// LIFERAY-REST-BUILDER-HASH:-1681078099

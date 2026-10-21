@@ -329,4 +329,4 @@ public class EventMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:226424211
+// LIFERAY-REST-BUILDER-HASH:1652344558

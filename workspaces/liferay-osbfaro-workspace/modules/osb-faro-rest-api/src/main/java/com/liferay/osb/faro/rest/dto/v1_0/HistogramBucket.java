@@ -318,4 +318,4 @@ public class HistogramBucket implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-930972094
+// LIFERAY-REST-BUILDER-HASH:-166098610

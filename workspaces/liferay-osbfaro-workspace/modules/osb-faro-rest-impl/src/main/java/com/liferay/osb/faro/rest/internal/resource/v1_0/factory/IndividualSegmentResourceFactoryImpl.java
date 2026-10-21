@@ -333,4 +333,4 @@ public class IndividualSegmentResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1421599613
+// LIFERAY-REST-BUILDER-HASH:253680462

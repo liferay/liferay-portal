@@ -36,8 +36,8 @@ public interface IndividualResource {
 
 	public Page<Individual> getWorkspaceGroupChannelIndividualsPage(
 			Long groupId, String channelId, String accountId,
-			String activityStatus, Boolean includeAnonymousUsers,
-			String individualSegmentId, String interestName, String rangeEnd,
+			String activityStatus, String individualSegmentId,
+			String interestName, String profileType, String rangeEnd,
 			String rangeKey, String rangeStart, String search,
 			Pagination pagination, String sortString)
 		throws Exception;
@@ -45,10 +45,10 @@ public interface IndividualResource {
 	public HttpInvoker.HttpResponse
 			getWorkspaceGroupChannelIndividualsPageHttpResponse(
 				Long groupId, String channelId, String accountId,
-				String activityStatus, Boolean includeAnonymousUsers,
-				String individualSegmentId, String interestName,
-				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination, String sortString)
+				String activityStatus, String individualSegmentId,
+				String interestName, String profileType, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
+				Pagination pagination, String sortString)
 		throws Exception;
 
 	public Individual getWorkspaceGroupIndividual(
@@ -169,18 +169,17 @@ public interface IndividualResource {
 
 		public Page<Individual> getWorkspaceGroupChannelIndividualsPage(
 				Long groupId, String channelId, String accountId,
-				String activityStatus, Boolean includeAnonymousUsers,
-				String individualSegmentId, String interestName,
-				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination, String sortString)
+				String activityStatus, String individualSegmentId,
+				String interestName, String profileType, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
+				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getWorkspaceGroupChannelIndividualsPageHttpResponse(
 					groupId, channelId, accountId, activityStatus,
-					includeAnonymousUsers, individualSegmentId, interestName,
-					rangeEnd, rangeKey, rangeStart, search, pagination,
-					sortString);
+					individualSegmentId, interestName, profileType, rangeEnd,
+					rangeKey, rangeStart, search, pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -244,10 +243,10 @@ public interface IndividualResource {
 		public HttpInvoker.HttpResponse
 				getWorkspaceGroupChannelIndividualsPageHttpResponse(
 					Long groupId, String channelId, String accountId,
-					String activityStatus, Boolean includeAnonymousUsers,
-					String individualSegmentId, String interestName,
-					String rangeEnd, String rangeKey, String rangeStart,
-					String search, Pagination pagination, String sortString)
+					String activityStatus, String individualSegmentId,
+					String interestName, String profileType, String rangeEnd,
+					String rangeKey, String rangeStart, String search,
+					Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -280,12 +279,6 @@ public interface IndividualResource {
 					"activityStatus", String.valueOf(activityStatus));
 			}
 
-			if (includeAnonymousUsers != null) {
-				httpInvoker.parameter(
-					"includeAnonymousUsers",
-					String.valueOf(includeAnonymousUsers));
-			}
-
 			if (individualSegmentId != null) {
 				httpInvoker.parameter(
 					"individualSegmentId", String.valueOf(individualSegmentId));
@@ -294,6 +287,11 @@ public interface IndividualResource {
 			if (interestName != null) {
 				httpInvoker.parameter(
 					"interestName", String.valueOf(interestName));
+			}
+
+			if (profileType != null) {
+				httpInvoker.parameter(
+					"profileType", String.valueOf(profileType));
 			}
 
 			if (rangeEnd != null) {
@@ -463,4 +461,4 @@ public interface IndividualResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-872593037
+// LIFERAY-REST-BUILDER-HASH:-993259501

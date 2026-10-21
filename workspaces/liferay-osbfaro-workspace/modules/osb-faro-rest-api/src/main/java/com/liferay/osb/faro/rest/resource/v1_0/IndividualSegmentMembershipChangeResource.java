@@ -139,4 +139,4 @@ public interface IndividualSegmentMembershipChangeResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-308660982
+// LIFERAY-REST-BUILDER-HASH:-1384060272

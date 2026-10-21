@@ -140,4 +140,4 @@ public interface EventMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1410662072
+// LIFERAY-REST-BUILDER-HASH:672232056

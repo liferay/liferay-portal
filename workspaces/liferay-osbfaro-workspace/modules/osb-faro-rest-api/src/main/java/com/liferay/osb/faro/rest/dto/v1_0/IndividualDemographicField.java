@@ -502,4 +502,4 @@ public class IndividualDemographicField implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1309568801
+// LIFERAY-REST-BUILDER-HASH:-1728020745

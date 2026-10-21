@@ -505,4 +505,4 @@ public class Metric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1432321054
+// LIFERAY-REST-BUILDER-HASH:383137004

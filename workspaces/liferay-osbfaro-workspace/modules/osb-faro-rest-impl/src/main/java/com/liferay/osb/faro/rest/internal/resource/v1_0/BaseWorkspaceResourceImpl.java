@@ -507,4 +507,4 @@ public abstract class BaseWorkspaceResourceImpl implements WorkspaceResource {
 		LogFactoryUtil.getLog(BaseWorkspaceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:936712522
+// LIFERAY-REST-BUILDER-HASH:-1835891518

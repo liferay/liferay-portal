@@ -703,4 +703,4 @@ public abstract class BaseIndividualSegmentResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualSegmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1891508513
+// LIFERAY-REST-BUILDER-HASH:-730101209

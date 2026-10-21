@@ -347,4 +347,4 @@ public class AccountLifecycleStageTransitionResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1424063473
+// LIFERAY-REST-BUILDER-HASH:1818510614

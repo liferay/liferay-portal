@@ -453,19 +453,19 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividuals(accountId: ___, activityStatus: ___, channelId: ___, groupId: ___, includeAnonymousUsers: ___, individualSegmentId: ___, interestName: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividuals(accountId: ___, activityStatus: ___, channelId: ___, groupId: ___, individualSegmentId: ___, interestName: ___, page: ___, pageSize: ___, profileType: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, or date range, and searchable by name or email with `search`. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
+		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
 	)
 	public IndividualPage workspaceGroupChannelIndividuals(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("channelId") String channelId,
 			@GraphQLName("accountId") String accountId,
 			@GraphQLName("activityStatus") String activityStatus,
-			@GraphQLName("includeAnonymousUsers") Boolean includeAnonymousUsers,
 			@GraphQLName("individualSegmentId") String individualSegmentId,
 			@GraphQLName("interestName") String interestName,
+			@GraphQLName("profileType") String profileType,
 			@GraphQLName("rangeEnd") String rangeEnd,
 			@GraphQLName("rangeKey") String rangeKey,
 			@GraphQLName("rangeStart") String rangeStart,
@@ -481,9 +481,8 @@ public class Query {
 			individualResource -> new IndividualPage(
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
 					groupId, channelId, accountId, activityStatus,
-					includeAnonymousUsers, individualSegmentId, interestName,
-					rangeEnd, rangeKey, rangeStart, search,
-					Pagination.of(page, pageSize),
+					individualSegmentId, interestName, profileType, rangeEnd,
+					rangeKey, rangeStart, search, Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(individualResource, sortsString))));
 	}
 
@@ -1684,4 +1683,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1423245877
+// LIFERAY-REST-BUILDER-HASH:487741159

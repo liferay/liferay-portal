@@ -329,4 +329,4 @@ public class IndividualResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-652922034
+// LIFERAY-REST-BUILDER-HASH:824180634

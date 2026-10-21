@@ -314,4 +314,4 @@ public class EventMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-76050088
+// LIFERAY-REST-BUILDER-HASH:-2049004746

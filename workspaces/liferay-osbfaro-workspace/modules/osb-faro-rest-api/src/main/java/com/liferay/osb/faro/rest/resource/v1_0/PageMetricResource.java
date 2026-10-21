@@ -139,4 +139,4 @@ public interface PageMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:22928821
+// LIFERAY-REST-BUILDER-HASH:79676399

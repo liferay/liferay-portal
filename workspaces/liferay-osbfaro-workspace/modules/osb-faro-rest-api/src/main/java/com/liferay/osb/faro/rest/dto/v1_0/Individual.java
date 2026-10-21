@@ -46,11 +46,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser-tracked only).",
+	description = "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only).",
 	value = "Individual"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser-tracked only)."
+	description = "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only)."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Individual")
@@ -692,7 +692,7 @@ public class Individual implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Profile classification. KNOWN individuals are identified by email/account; ANONYMOUS individuals are browser-tracked only."
+		description = "Profile classification. KNOWN individuals are identified by email/account; ANONYMOUS individuals are browser tracked only."
 	)
 	@JsonGetter("profileType")
 	@Valid
@@ -741,7 +741,7 @@ public class Individual implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Profile classification. KNOWN individuals are identified by email/account; ANONYMOUS individuals are browser-tracked only."
+		description = "Profile classification. KNOWN individuals are identified by email/account; ANONYMOUS individuals are browser tracked only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected ProfileType profileType;
@@ -1222,4 +1222,4 @@ public class Individual implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1023108069
+// LIFERAY-REST-BUILDER-HASH:-324686737

@@ -324,4 +324,4 @@ public class AccountResourceFactoryImpl implements AccountResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1942386510
+// LIFERAY-REST-BUILDER-HASH:2131443160

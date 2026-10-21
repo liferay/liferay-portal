@@ -326,4 +326,4 @@ public class WorkspaceResourceFactoryImpl implements WorkspaceResource.Factory {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1510447558
+// LIFERAY-REST-BUILDER-HASH:1797102408

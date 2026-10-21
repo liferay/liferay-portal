@@ -140,4 +140,4 @@ public interface AccountLifecycleStageTransitionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-947199327
+// LIFERAY-REST-BUILDER-HASH:1049593859

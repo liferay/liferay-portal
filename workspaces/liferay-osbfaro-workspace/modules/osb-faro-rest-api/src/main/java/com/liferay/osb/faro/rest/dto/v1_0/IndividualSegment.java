@@ -1238,4 +1238,4 @@ public class IndividualSegment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:177341574
+// LIFERAY-REST-BUILDER-HASH:398042786

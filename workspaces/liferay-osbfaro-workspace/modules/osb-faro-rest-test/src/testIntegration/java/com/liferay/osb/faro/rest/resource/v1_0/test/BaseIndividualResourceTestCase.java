@@ -205,7 +205,7 @@ public abstract class BaseIndividualResourceTestCase {
 		Page<Individual> page =
 			individualResource.getWorkspaceGroupChannelIndividualsPage(
 				groupId, channelId, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), null, Pagination.of(1, 10),
@@ -2042,4 +2042,4 @@ public abstract class BaseIndividualResourceTestCase {
 		_individualResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:741254865
+// LIFERAY-REST-BUILDER-HASH:-809678242

@@ -54,7 +54,7 @@ public abstract class BaseIndividualResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individuals'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, or date range, and searchable by name or email with `search`. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
+		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -74,14 +74,9 @@ public abstract class BaseIndividualResourceImpl
 				name = "accountId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Optional engagement classification to restrict results to individuals with that activity status. The set of values is defined by the analytics engine.",
+				description = "Optional engagement classification to restrict results to individuals with that activity status.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "activityStatus"
-			),
-			@io.swagger.v3.oas.annotations.Parameter(
-				description = "If true, anonymous (browser-tracked) individuals are included. Defaults to false.",
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "includeAnonymousUsers"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Optional individual segment ID to restrict results to members of that segment.",
@@ -102,6 +97,12 @@ public abstract class BaseIndividualResourceImpl
 				description = "Page size.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Optional profile classification to restrict results to. KNOWN keeps only individuals identified by email or account; ANONYMOUS keeps only browser tracked individuals. Both are returned when omitted.",
+				example = "KNOWN",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "profileType"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative.",
@@ -125,7 +126,7 @@ public abstract class BaseIndividualResourceImpl
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Sort expression `column:asc|desc`.",
+				description = "Sort expression `column:asc|desc`. Sortable columns: accountName, activitiesCount, averageSessionDuration, emailAddress, firstActivityDate, knownSinceDate, lastActivityDate, lastSessionCountry, sessionsCount. Only one column is sorted on.",
 				example = "lastActivityDate:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -155,14 +156,14 @@ public abstract class BaseIndividualResourceImpl
 			@jakarta.ws.rs.QueryParam("activityStatus")
 			String activityStatus,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.ws.rs.QueryParam("includeAnonymousUsers")
-			Boolean includeAnonymousUsers,
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("individualSegmentId")
 			String individualSegmentId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("interestName")
 			String interestName,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("profileType")
+			String profileType,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("rangeEnd")
 			String rangeEnd,
@@ -686,4 +687,4 @@ public abstract class BaseIndividualResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1766015658
+// LIFERAY-REST-BUILDER-HASH:1526630616

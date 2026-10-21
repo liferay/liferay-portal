@@ -314,4 +314,4 @@ public class SearchTerm implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-892784764
+// LIFERAY-REST-BUILDER-HASH:-42517766
