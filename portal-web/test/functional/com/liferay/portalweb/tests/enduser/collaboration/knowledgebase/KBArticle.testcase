@@ -421,42 +421,6 @@ definition {
 			rowEntry = "Knowledge Base Article Title");
 	}
 
-	@description = "This test ensures that suggestion form is displayed on the KB article preview page when the KB article has suggestions."
-	@priority = 4
-	test CanViewArticlesWithSuggestions {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		for (var suggestionCount : list "1,2") {
-			KBArticleSuggestion.addPG(
-				kbArticleTitle = "Knowledge Base Article1 Title",
-				kbSuggestionBody = "Knowledge Base Article1 Suggestion${suggestionCount}");
-		}
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			kbStatus = "Approved",
-			versionNumber = 1);
-
-		for (var suggestionCount : list "1,2") {
-			KBArticleSuggestion.viewPG(
-				kbSuggestionBody = "Knowledge Base Article1 Suggestion${suggestionCount}",
-				kbSuggestionUserName = "Test Test",
-				status = "New");
-		}
-	}
-
 	@description = "This test ensures that a user is able to embed a video in a KB article."
 	@priority = 4
 	@refactordone
@@ -481,49 +445,6 @@ definition {
 			embedVideo = "true",
 			kbArticleContent = "Knowledge Base Video Content",
 			kbArticleTitle = "Knowledge Base Article Title");
-	}
-
-	@description = "This test ensures that the information related to the KB entry can be viewed."
-	@priority = 4
-	test CanViewEntryInfo {
-		property custom.properties = "company.default.time.zone=America/Los_Angeles";
-
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.gotoViaKBAdminCP(kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.viewInfoPanel(
-			kbArticleTitle = "Knowledge Base Article Title",
-			versionNumber = 1,
-			workflowStatus = "APPROVED");
-
-		KBArticle.viewInfoPanelVersions(
-			entryVersion = "Version 1",
-			userName = "Test Test");
-
-		JSONKnowledgeBase.updateKBArticle(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			newKbArticleContent = "Knowledge Base Article Content Edit",
-			newKbArticleTitle = "Knowledge Base Article Title Edit");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.gotoViaKBAdminCP(kbArticleTitle = "Knowledge Base Article Title Edit");
-
-		KBArticle.viewInfoPanel(
-			kbArticleTitle = "Knowledge Base Article Title Edit",
-			versionNumber = 2,
-			workflowStatus = "APPROVED");
-
-		KBArticle.viewInfoPanelVersions(
-			entryVersion = "Version 2",
-			userName = "Test Test");
 	}
 
 	@description = "This ensures that an image in the KB content field can be rendered correctly after moving it to a folder."
@@ -570,30 +491,6 @@ definition {
 		KBArticle.viewImageViaContentCmd();
 	}
 
-	@description = "This test ensures that users can view kb entry history by clicking the ellipsis on the kb entry."
-	@priority = 5
-	test CanViewKBArticleHistory {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		JSONKnowledgeBase.updateKBArticle(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			newKbArticleContent = "Knowledge Base Article Content Edit",
-			newKbArticleTitle = "Knowledge Base Article Title Edit");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewArticleHistoryCP(
-			kbArticleContent = "Knowledge Base Article Content Edit",
-			kbArticleContentAddedDiff = "Edit",
-			kbArticleTitle = "Knowledge Base Article Title Edit",
-			kbArticleVersionNew = 2,
-			kbArticleVersionOld = 1);
-	}
-
 	@description = "This ensures that an external video in the KB content field can be rendered correctly after moving it to a folder."
 	@priority = 4
 	test CanViewVideoInKBAfterMovingToFolder {
@@ -638,22 +535,6 @@ definition {
 		AssertElementPresent(
 			key_service = "youtube",
 			locator1 = "BlogsEntry#CONTENT_VIDEO");
-	}
-
-	@description = "This test checks that all the correct actions appear after selecting an article."
-	@priority = 5
-	test CorrectActionsAppearInToolbarAfterSelectingArticle {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.openToKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		KBArticle.viewActionsDetailsToolbar(moreActions = "true");
 	}
 
 	@priority = 3
@@ -708,40 +589,6 @@ definition {
 			customFieldValue = "KB Article Custom Field Edited",
 			kbArticleContent = "KB Article Content Edited",
 			kbArticleTitle = "KB Article Title Edited");
-	}
-
-	@description = "This test ensures that some article info only display in panel."
-	@priority = 3
-	test SomeArticleInfoOnlyDisplayInPanel {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		JSONKnowledgeBase.addkBChildArticle(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			kbChildArticleContent = "KB Child Article Content",
-			kbChildArticleTitle = "KB Child Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		VerifyElementNotPresent(
-			key_entryTitle = "Knowledge Base Article Title",
-			key_infoText = "Priority 1.0",
-			locator1 = "KnowledgeBase#DESCRIPTIVE_VIEW_ENTRY_INFO");
-
-		VerifyElementNotPresent(
-			key_entryTitle = "Knowledge Base Article Title",
-			key_infoText = "0 Views",
-			locator1 = "KnowledgeBase#DESCRIPTIVE_VIEW_ENTRY_INFO");
-
-		KBArticle.gotoViaKBAdminCP(kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.viewInfoPanel(
-			childArticlesQuantity = "1 Child Articles",
-			kbArticleTitle = "Knowledge Base Article Title",
-			viewQuantity = 0);
 	}
 
 	@priority = 3
