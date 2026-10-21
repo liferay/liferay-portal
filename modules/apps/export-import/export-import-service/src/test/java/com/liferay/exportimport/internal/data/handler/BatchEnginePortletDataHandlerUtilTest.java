@@ -6,12 +6,14 @@
 package com.liferay.exportimport.internal.data.handler;
 
 import com.liferay.changeset.service.ChangesetEntryLocalService;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -73,18 +75,8 @@ public class BatchEnginePortletDataHandlerUtilTest {
 
 	@Test
 	public void testBuildExportParametersWithEndDate() {
-		Date endDate = _getDate(0);
-
-		Map<String, Serializable> parameters =
-			BatchEnginePortletDataHandlerUtil.buildExportParameters(
-				_changesetEntryLocalService, _classNameLocalService,
-				_mockExportImportDescriptor(), _mockGroupLocalService(null),
-				_mockPortletDataContext(endDate, null, null),
-				_getStagingGroupHelper(false));
-
-		Assert.assertEquals(
-			"dateModified le " + _dateFormat.format(endDate),
-			parameters.get("filter"));
+		_testBuildExportParametersWithEndDate(RandomTestUtil.randomString());
+		_testBuildExportParametersWithEndDate(Layout.class.getName());
 	}
 
 	@Test
@@ -115,30 +107,10 @@ public class BatchEnginePortletDataHandlerUtilTest {
 
 	@Test
 	public void testBuildExportParametersWithEndDateAndStartDateAndFilterParameter() {
-		Date endDate = _getDate(0);
-		Date startDate = _getDate(-1);
-
-		Map<String, Serializable> parameters =
-			BatchEnginePortletDataHandlerUtil.buildExportParameters(
-				_changesetEntryLocalService, _classNameLocalService,
-				_mockExportImportDescriptor(
-					null, null,
-					HashMapBuilder.<String, Serializable>put(
-						"filter", "param1 eq value1"
-					).put(
-						"param2", "value2"
-					).build()),
-				_mockGroupLocalService(null),
-				_mockPortletDataContext(endDate, null, startDate),
-				_getStagingGroupHelper(false));
-
-		Assert.assertEquals(
-			StringBundler.concat(
-				"dateModified le ", _dateFormat.format(endDate),
-				" and dateModified ge ", _dateFormat.format(startDate),
-				" and (param1 eq value1)"),
-			parameters.get("filter"));
-		Assert.assertEquals("value2", parameters.get("param2"));
+		_testBuildExportParametersWithEndDateAndStartDateAndFilterParameter(
+			RandomTestUtil.randomString());
+		_testBuildExportParametersWithEndDateAndStartDateAndFilterParameter(
+			Layout.class.getName());
 	}
 
 	@Test
@@ -224,19 +196,17 @@ public class BatchEnginePortletDataHandlerUtilTest {
 	}
 
 	@Test
+	public void testBuildExportParametersWithRangeFromLastPublishDate() {
+		_testBuildExportParametersWithRangeFromLastPublishDate(
+			"externalReferenceCode in ('')", RandomTestUtil.randomString());
+		_testBuildExportParametersWithRangeFromLastPublishDate(
+			StringPool.BLANK, Layout.class.getName());
+	}
+
+	@Test
 	public void testBuildExportParametersWithStartDate() {
-		Date startDate = _getDate(-1);
-
-		Map<String, Serializable> parameters =
-			BatchEnginePortletDataHandlerUtil.buildExportParameters(
-				_changesetEntryLocalService, _classNameLocalService,
-				_mockExportImportDescriptor(), _mockGroupLocalService(null),
-				_mockPortletDataContext(null, null, startDate),
-				_getStagingGroupHelper(false));
-
-		Assert.assertEquals(
-			"dateModified ge " + _dateFormat.format(startDate),
-			parameters.get("filter"));
+		_testBuildExportParametersWithStartDate(RandomTestUtil.randomString());
+		_testBuildExportParametersWithStartDate(Layout.class.getName());
 	}
 
 	@Test
@@ -462,6 +432,92 @@ public class BatchEnginePortletDataHandlerUtilTest {
 		);
 
 		return portletDataContext;
+	}
+
+	private void _testBuildExportParametersWithEndDate(String modelClassName) {
+		Date endDate = _getDate(0);
+
+		Map<String, Serializable> parameters =
+			BatchEnginePortletDataHandlerUtil.buildExportParameters(
+				_changesetEntryLocalService, _classNameLocalService,
+				_mockExportImportDescriptor(modelClassName, null, null),
+				_mockGroupLocalService(null),
+				_mockPortletDataContext(endDate, null, null),
+				_getStagingGroupHelper(false));
+
+		Assert.assertEquals(
+			"dateModified le " + _dateFormat.format(endDate),
+			parameters.get("filter"));
+	}
+
+	private void
+		_testBuildExportParametersWithEndDateAndStartDateAndFilterParameter(
+			String modelClassName) {
+
+		Date endDate = _getDate(0);
+		Date startDate = _getDate(-1);
+
+		Map<String, Serializable> parameters =
+			BatchEnginePortletDataHandlerUtil.buildExportParameters(
+				_changesetEntryLocalService, _classNameLocalService,
+				_mockExportImportDescriptor(
+					modelClassName, null,
+					HashMapBuilder.<String, Serializable>put(
+						"filter", "param1 eq value1"
+					).put(
+						"param2", "value2"
+					).build()),
+				_mockGroupLocalService(null),
+				_mockPortletDataContext(endDate, null, startDate),
+				_getStagingGroupHelper(false));
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"dateModified le ", _dateFormat.format(endDate),
+				" and dateModified ge ", _dateFormat.format(startDate),
+				" and (param1 eq value1)"),
+			parameters.get("filter"));
+		Assert.assertEquals("value2", parameters.get("param2"));
+	}
+
+	private void _testBuildExportParametersWithRangeFromLastPublishDate(
+		String expectedFilter, String modelClassName) {
+
+		Map<String, Serializable> parameters =
+			BatchEnginePortletDataHandlerUtil.buildExportParameters(
+				_changesetEntryLocalService, _classNameLocalService,
+				_mockExportImportDescriptor(modelClassName, null, null),
+				_mockGroupLocalService(null),
+				_mockPortletDataContext(
+					_getDate(0),
+					HashMapBuilder.put(
+						ExportImportDateUtil.RANGE,
+						new String[] {
+							ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE
+						}
+					).build(),
+					_getDate(-1)),
+				_getStagingGroupHelper(false));
+
+		Assert.assertEquals(expectedFilter, parameters.get("filter"));
+	}
+
+	private void _testBuildExportParametersWithStartDate(
+		String modelClassName) {
+
+		Date startDate = _getDate(-1);
+
+		Map<String, Serializable> parameters =
+			BatchEnginePortletDataHandlerUtil.buildExportParameters(
+				_changesetEntryLocalService, _classNameLocalService,
+				_mockExportImportDescriptor(modelClassName, null, null),
+				_mockGroupLocalService(null),
+				_mockPortletDataContext(null, null, startDate),
+				_getStagingGroupHelper(false));
+
+		Assert.assertEquals(
+			"dateModified ge " + _dateFormat.format(startDate),
+			parameters.get("filter"));
 	}
 
 	private void _testBuildParametersWithGroup(boolean companyGroup) {

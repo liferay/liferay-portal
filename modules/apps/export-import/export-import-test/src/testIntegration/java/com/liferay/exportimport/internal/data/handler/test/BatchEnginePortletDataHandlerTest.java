@@ -1665,6 +1665,57 @@ public class BatchEnginePortletDataHandlerTest {
 	}
 
 	@Test
+	public void testExportImportLayoutsWithDateRange() throws Exception {
+		Group group1 = GroupTestUtil.addGroup();
+
+		Date date = new Date();
+
+		Layout layout1 = _updateModifiedDate(
+			LayoutTestUtil.addTypePortletLayout(group1),
+			new Date(date.getTime() - (4 * Time.DAY)));
+		Layout layout2 = _updateModifiedDate(
+			LayoutTestUtil.addTypePortletLayout(group1),
+			new Date(date.getTime() - (2 * Time.DAY)));
+
+		Layout layout3 = LayoutTestUtil.addTypePortletLayout(group1);
+
+		File larFile = new ExportImportExecutor(
+		).withDateRange(
+			new Date(date.getTime() - (3 * Time.DAY)),
+			new Date(date.getTime() - Time.DAY)
+		).withGroupId(
+			group1.getGroupId()
+		).withIncludeLayoutSetLayouts(
+		).withLayoutId(
+			layout1.getLayoutId()
+		).withLayoutId(
+			layout2.getLayoutId()
+		).withLayoutId(
+			layout3.getLayoutId()
+		).executeExport();
+
+		Group group2 = GroupTestUtil.addGroup();
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group2.getGroupId()
+		).withIncludeLayoutSetLayouts(
+		).withLARFile(
+			larFile
+		).executeImport();
+
+		Assert.assertNull(
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				layout1.getExternalReferenceCode(), group2.getGroupId()));
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				layout2.getExternalReferenceCode(), group2.getGroupId()));
+		Assert.assertNull(
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				layout3.getExternalReferenceCode(), group2.getGroupId()));
+	}
+
+	@Test
 	public void testExportImportListTypeDefinitions() throws Exception {
 		Group group = _stagingGroupHelper.fetchCompanyGroup(
 			TestPropsValues.getCompanyId());
@@ -6769,6 +6820,12 @@ public class BatchEnginePortletDataHandlerTest {
 
 		return notificationRecipientSetting.getName() + StringPool.EQUAL +
 			notificationRecipientSetting.getValue(LocaleUtil.getDefault());
+	}
+
+	private Layout _updateModifiedDate(Layout layout, Date modifiedDate) {
+		layout.setModifiedDate(modifiedDate);
+
+		return _layoutLocalService.updateLayout(layout);
 	}
 
 	private static final String _FILE_NAME_PREFIX_NOTIFICATION_TEMPLATES =
