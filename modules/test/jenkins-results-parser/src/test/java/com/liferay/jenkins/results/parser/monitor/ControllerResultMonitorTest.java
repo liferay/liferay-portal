@@ -259,9 +259,9 @@ public class ControllerResultMonitorTest
 
 	@Test
 	public void testExecuteLinkURLsParameter() throws Exception {
-		String linkURL = "https://" + RandomTestUtil.randomString();
-
 		Properties monitorProperties = _newMonitorProperties();
+
+		String linkURL = "https://" + RandomTestUtil.randomString();
 
 		monitorProperties.setProperty("monitor[a].parameter[links]", linkURL);
 
