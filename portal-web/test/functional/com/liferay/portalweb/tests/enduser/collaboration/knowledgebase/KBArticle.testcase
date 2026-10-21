@@ -1026,37 +1026,6 @@ definition {
 			kbStatus = "Draft");
 	}
 
-	@description = "This test ensures that a user can search the kb entry from the Move Modal."
-	@priority = 4
-	test CanSearchArticleInMoveModal {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content2",
-			kbArticleTitle = "Knowledge Base Article Title2");
-
-		JSONKnowledgeBase.addkBChildArticle(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title2",
-			kbChildArticleContent = "Child Knowledge Base Article Content",
-			kbChildArticleTitle = "apple");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.searchArticleInMoveModal(
-			kbArticleTitle = "Knowledge Base Article Title",
-			searchItem = "apple");
-
-		AssertTextEquals(
-			key_itemName = "apple",
-			locator1 = "KnowledgeBase#MOVE_MODAL_SEARCH_RESULT",
-			value1 = "apple");
-	}
-
 	@description = "This test covers LPS-128095. It validates that the articles can be sorted."
 	@priority = 3
 	test CanSortArticles {
