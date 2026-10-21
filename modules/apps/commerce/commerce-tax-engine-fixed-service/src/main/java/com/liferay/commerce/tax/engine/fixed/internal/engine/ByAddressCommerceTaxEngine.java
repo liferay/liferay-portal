@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.math.BigDecimal;
@@ -132,12 +131,8 @@ public class ByAddressCommerceTaxEngine implements CommerceTaxEngine {
 		try {
 			CommerceTaxByAddressTypeConfiguration
 				commerceTaxByAddressTypeConfiguration =
-					_configurationProvider.getConfiguration(
-						CommerceTaxByAddressTypeConfiguration.class,
-						new GroupServiceSettingsLocator(
-							groupId,
-							CommerceTaxByAddressTypeConfiguration.class.
-								getName()));
+					_configurationProvider.getGroupConfiguration(
+						CommerceTaxByAddressTypeConfiguration.class, groupId);
 
 			return commerceTaxByAddressTypeConfiguration.
 				taxAppliedToShippingAddress();

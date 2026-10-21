@@ -6,7 +6,6 @@
 package com.liferay.commerce.media.internal;
 
 import com.liferay.commerce.media.CommerceMediaProvider;
-import com.liferay.commerce.media.constants.CommerceMediaConstants;
 import com.liferay.commerce.media.internal.configuration.CommerceMediaDefaultImageConfiguration;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -16,7 +15,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.PropsKeys;
 
 import org.osgi.service.component.annotations.Component;
@@ -34,10 +32,9 @@ public class CommerceMediaProviderImpl implements CommerceMediaProvider {
 
 		CommerceMediaDefaultImageConfiguration
 			commerceMediaDefaultImageConfiguration =
-				_configurationProvider.getConfiguration(
-					CommerceMediaDefaultImageConfiguration.class,
-					new GroupServiceSettingsLocator(
-						groupId, CommerceMediaConstants.SERVICE_NAME));
+				_configurationProvider.getGroupConfiguration(
+					CommerceMediaDefaultImageConfiguration.class, companyId,
+					groupId);
 
 		FileEntry fileEntry = null;
 

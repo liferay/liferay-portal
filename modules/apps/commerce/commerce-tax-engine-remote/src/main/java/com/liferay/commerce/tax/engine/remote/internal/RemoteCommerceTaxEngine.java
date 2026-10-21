@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.key.secret.SecretResolver;
@@ -165,11 +164,8 @@ public class RemoteCommerceTaxEngine implements CommerceTaxEngine {
 		throws CommerceTaxEngineException {
 
 		try {
-			return _configurationProvider.getConfiguration(
-				RemoteCommerceTaxConfiguration.class,
-				new GroupServiceSettingsLocator(
-					commerceChannelGroupId,
-					RemoteCommerceTaxConfiguration.class.getName()));
+			return _configurationProvider.getGroupConfiguration(
+				RemoteCommerceTaxConfiguration.class, commerceChannelGroupId);
 		}
 		catch (ConfigurationException configurationException) {
 			throw new CommerceTaxEngineException(configurationException);
