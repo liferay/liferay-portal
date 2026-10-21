@@ -104,7 +104,7 @@ spec:
                                                 name: database-app-password
                                     -   name: MYSQL_HOST
                                         value: {{ $activeDatabaseFqdn }}
-                                image: mysql:8.4
+                                image: mysql:{{ $databaseVersion }}
                                 name: sql-runner
                                 resources:
                                     limits:

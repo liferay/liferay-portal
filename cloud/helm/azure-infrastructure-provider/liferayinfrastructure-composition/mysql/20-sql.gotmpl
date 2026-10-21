@@ -1,4 +1,5 @@
 {{- $database := $xr.spec.database -}}
+{{- $databaseVersion := $database.version | default "8.4" -}}
 {{- $observedDatabaseDataPlanes := list -}}
 
 {{- $restore := $database.restore | default dict -}}
@@ -69,7 +70,7 @@ spec:
         tags:
             active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
             should-back-up: "true"
-        version: {{ $database.version | default "8.4" | quote }}
+        version: {{ $databaseVersion | quote }}
     {{- if $isDatabaseRestoreTarget }}
     initProvider:
         createMode: PointInTimeRestore
