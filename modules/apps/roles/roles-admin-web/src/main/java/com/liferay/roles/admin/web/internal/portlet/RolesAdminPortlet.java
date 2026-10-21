@@ -138,7 +138,7 @@ public class RolesAdminPortlet extends MVCPortlet {
 		Role targetRole = null;
 
 		try {
-			targetRole = _roleLocalService.copyRole(
+			targetRole = _roleService.copyRole(
 				_portal.getUserId(actionRequest),
 				ParamUtil.getString(actionRequest, "roleName"), roleId,
 				ServiceContextFactory.getInstance(
