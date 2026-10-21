@@ -71,6 +71,21 @@ const COMMANDS = {
 		parameters: '',
 		script: './gitmerge/setup.mjs',
 	},
+	'refresh:yarn-lock': {
+		description: `
+		Refresh some entries of the yarn.lock file of the current directory
+		(for example, 'modules' or a workspace) so that they resolve to the
+		highest versions their ranges allow.
+
+		The entries are read from the standard input, one header line per
+		entry, as the 'Lock refresh' tab of the report:outdated report copies
+		them: paste them and press Ctrl+D, or pipe a file. The command deletes
+		those entries from yarn.lock and runs 'yarn install' to resolve them
+		again, without touching any package.json.
+`,
+		parameters: '',
+		script: './refresh/yarn-lock.mjs',
+	},
 	'report:build': {
 		description: `
 		Generates an aggregated report of build timings.
