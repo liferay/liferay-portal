@@ -62,7 +62,7 @@ export interface IClayAlertProps
 	/**
 	 * Callback function for when the 'x' is clicked.
 	 */
-	onClose?: () => void;
+	onClose?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
 
 	/**
 	 * The alert role is for important, and usually time-sensitive, information.
