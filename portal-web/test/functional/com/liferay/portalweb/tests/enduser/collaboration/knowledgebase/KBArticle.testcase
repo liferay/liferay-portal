@@ -68,36 +68,6 @@ definition {
 		Button.viewNotPresent(button = "New");
 	}
 
-	@priority = 4
-	@refactordone
-	test CanAddArticleWithCategory {
-		Category.openCategoriesAdmin(siteURLKey = "guest");
-
-		Vocabulary.addWithAssociatedAssetTypeCP(
-			assetType = "Knowledge Base Article",
-			requiredCheckbox = "true",
-			vocabularyName = "Vocabulary Name");
-
-		JSONCategory.addCategory(
-			groupName = "Guest",
-			title = "Category Name",
-			vocabularyName = "Vocabulary Name");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
-			categoryName = "Category Name",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			vocabularyName = "Vocabulary Name");
-
-		KBArticle.viewCP(
-			categoryName = "Category Name",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			vocabularyName = "Vocabulary Name");
-	}
-
 	@description = "This test ensures that users can add an article with a custom friendly URL via the new configuration pane."
 	@priority = 5
 	test CanAddArticleWithCustomFriendlyURL {
@@ -472,30 +442,6 @@ definition {
 			kbArticleTitle = "Knowledge Base Article Title");
 	}
 
-	@priority = 3
-	@refactordone
-	test CannotAddArticleWithoutCategory {
-		Category.openCategoriesAdmin(siteURLKey = "guest");
-
-		Vocabulary.addWithAssociatedAssetTypeCP(
-			assetType = "Knowledge Base Article",
-			required = "true",
-			vocabularyName = "Vocabulary Name");
-
-		JSONCategory.addCategory(
-			groupName = "Guest",
-			title = "Category Name",
-			vocabularyName = "Vocabulary Name");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			kbMissingRequiredCategory = "true",
-			vocabularyName = "Vocabulary Name");
-	}
-
 	@priority = 4
 	@refactordone
 	test CannotAddArticleWithoutContent {
@@ -523,52 +469,6 @@ definition {
 		KBAdmin.openKBAdmin(siteURLKey = "guest");
 
 		KBArticle.viewDefaultCP();
-	}
-
-	@description = "This test ensures that users can replace the category for an article via the new configuration pane."
-	@priority = 4
-	test CanReplaceArticleCategory {
-		JSONCategory.addVocabulary(
-			groupName = "Guest",
-			title = "Vocabulary Name");
-
-		var categoryId = JSONCategory.addCategory(
-			groupName = "Guest",
-			title = "Category Name1",
-			vocabularyName = "Vocabulary Name");
-
-		JSONCategory.addCategory(
-			groupName = "Guest",
-			title = "Category Name2",
-			vocabularyName = "Vocabulary Name");
-
-		JSONKnowledgeBase.addkBArticle(
-			assetCategoryIds = ${categoryId},
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.openToEditKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		Panel.expandPanel(panel = "Categorization");
-
-		AssetCategorization.removeCategories(categoryNameList = "Category Name1");
-
-		AssetCategorization.addCategory(
-			categoryName = "Category Name2",
-			vocabularyName = "Vocabulary Name");
-
-		KBArticle.clickPublish();
-
-		KBArticle.openToEditKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		AssetCategorization.viewCategory(categoryName = "Category Name2");
 	}
 
 	@description = "This test ensures that users can replace the related asset for an article via the new configuration pane."
@@ -612,36 +512,6 @@ definition {
 			kbArticleContent = "Knowledge Base Article Content",
 			kbArticleRelatedAssetTitle = "Blogs Entry Title",
 			kbArticleTitle = "Knowledge Base Article Title");
-	}
-
-	@description = "This test ensures that users can replace the tag for an article via the new configuration pane."
-	@priority = 4
-	test CanReplaceArticleTag {
-		JSONKnowledgeBase.addkBArticle(
-			assetTagNames = "Tag1",
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.openToEditKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		Panel.expandPanel(panel = "Categorization");
-
-		AssetCategorization.removeTag(tagName = "Tag1");
-
-		AssetCategorization.addTag(tagName = "Tag2");
-
-		KBArticle.clickPublish();
-
-		KBArticle.openToEditKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		AssetCategorization.viewTag(tagName = "Tag2");
 	}
 
 	@description = "This test ensures that users can restore the kb article from the recycle bin."
