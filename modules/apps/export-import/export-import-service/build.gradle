@@ -24,7 +24,6 @@ dependencies {
 	compileOnly project(":apps:export-import:export-import-changeset-api")
 	compileOnly project(":apps:export-import:export-import-report-api")
 	compileOnly project(":apps:fragment:fragment-api")
-	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:layout:layout-admin-api")
 	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:layout:layout-set-prototype-api")

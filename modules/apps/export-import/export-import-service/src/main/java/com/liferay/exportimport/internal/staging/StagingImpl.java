@@ -54,7 +54,6 @@ import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepositoryHelper;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepositoryRegistryUtil;
-import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 import com.liferay.petra.string.StringBundler;
@@ -92,6 +91,7 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.RecentLayoutBranch;
 import com.liferay.portal.kernel.model.RecentLayoutRevision;
 import com.liferay.portal.kernel.model.RecentLayoutSetBranch;
+import com.liferay.portal.kernel.model.ResourcedModel;
 import com.liferay.portal.kernel.model.StagedGroupedModel;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.model.TypedModel;
@@ -268,7 +268,7 @@ public class StagingImpl implements Staging {
 
 		if ((model instanceof
 				ExternalReferenceCodeModel externalReferenceCodeModel) &&
-			!(model instanceof JournalArticle)) {
+			!(model instanceof ResourcedModel)) {
 
 			_changesetEntryLocalService.fetchOrAddChangesetEntry(
 				changesetCollection.getChangesetCollectionId(),
