@@ -1,9 +1,16 @@
 Bundle-Name: Liferay Portal Remote JAXRS Whiteboard
 Bundle-SymbolicName: com.liferay.portal.remote.jaxrs.whiteboard
 Bundle-Version: 12.0.19
-Export-Package:\
-	com.liferay.portal.remote.jaxrs.whiteboard.lifecycle,\
-	\
+Export-Package: com.liferay.portal.remote.jaxrs.whiteboard.lifecycle
+Provide-Capability:\
+	osgi.contract;\
+		osgi.contract=JakartaRESTfulWebServices;\
+		uses:="jakarta.ws.rs,jakarta.ws.rs.client,jakarta.ws.rs.ext,jakarta.ws.rs.sse,jakarta.ws.rs.container,jakarta.ws.rs.core";\
+		version:Version="3.1.0"
+Require-Capability:\
+	osgi.extender;\
+		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"
+-exportcontents:\
 	javax.wsdl;version="1.2",\
 	javax.wsdl.extensions;version="1.2",\
 	javax.wsdl.extensions.http;version="1.2",\
@@ -13,12 +20,4 @@ Export-Package:\
 	javax.wsdl.extensions.soap12;version="1.2",\
 	javax.wsdl.factory;version="1.2",\
 	javax.wsdl.xml;version="1.2"
-Provide-Capability:\
-	osgi.contract;\
-		osgi.contract=JakartaRESTfulWebServices;\
-		uses:="jakarta.ws.rs,jakarta.ws.rs.client,jakarta.ws.rs.ext,jakarta.ws.rs.sse,jakarta.ws.rs.container,jakarta.ws.rs.core";\
-		version:Version="3.1.0"
-Require-Capability:\
-	osgi.extender;\
-		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"
 -includeresource: OSGI-INF/configurator=configurator
