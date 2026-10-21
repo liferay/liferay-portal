@@ -20,6 +20,7 @@ import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -51,13 +53,17 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.tools.rest.builder.test.client.custom.field.CustomField;
 import com.liferay.portal.tools.rest.builder.test.client.custom.field.CustomValue;
 import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.BatchTestEntity;
+import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.ChildTestEntity1;
+import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.ChildTestEntity2;
 import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.CompanyTestEntity;
 import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.SharedInternalModelBatchTestEntity;
+import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.TestEntity;
 import com.liferay.portal.tools.rest.builder.test.client.http.HttpInvoker;
 import com.liferay.portal.tools.rest.builder.test.client.pagination.Page;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.BatchTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.CompanyTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.SharedInternalModelBatchTestEntityResource;
+import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.TestEntityResource;
 import com.liferay.portal.vulcan.extension.ExtensionProvider;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
 import com.liferay.staging.StagingGroupHelper;
@@ -143,6 +149,16 @@ public class BatchTestEntityExportImportTest {
 			).locale(
 				LocaleUtil.getDefault()
 			).build();
+		_testEntityResource = TestEntityResource.builder(
+		).authentication(
+			testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	@After
@@ -171,6 +187,13 @@ public class BatchTestEntityExportImportTest {
 				deleteSharedInternalModelBatchTestEntityByExternalReferenceCode(
 					sharedInternalModelBatchTestEntity.
 						getExternalReferenceCode());
+		}
+
+		Page<TestEntity> testEntitiesPage =
+			_testEntityResource.getTestEntitiesPage(null);
+
+		for (TestEntity testEntity : testEntitiesPage.getItems()) {
+			_testEntityResource.deleteTestEntity(testEntity.getId(), null);
 		}
 	}
 
@@ -766,6 +789,132 @@ public class BatchTestEntityExportImportTest {
 	}
 
 	@Test
+	@TestInfo("LPD-86581")
+	public void testExportImportReplicateDeletionsWithChildTestEntities()
+		throws Exception {
+
+		Page<TestEntity> testEntitiesPage =
+			_testEntityResource.getTestEntitiesPage(null);
+
+		long testEntitiesCount = testEntitiesPage.getTotalCount();
+
+		TestEntity[] testEntities = {
+			_testEntityResource.postTestEntity(
+				new ChildTestEntity1() {
+					{
+						externalReferenceCode = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						name = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						type = Type.CHILD_TEST_ENTITY1;
+					}
+				}),
+			_testEntityResource.postTestEntity(
+				new ChildTestEntity1() {
+					{
+						externalReferenceCode = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						name = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						type = Type.CHILD_TEST_ENTITY1;
+					}
+				}),
+			_testEntityResource.postTestEntity(
+				new ChildTestEntity2() {
+					{
+						externalReferenceCode = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						name = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						type = Type.CHILD_TEST_ENTITY2;
+					}
+				}),
+			_testEntityResource.postTestEntity(
+				new ChildTestEntity2() {
+					{
+						externalReferenceCode = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						name = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						type = Type.CHILD_TEST_ENTITY2;
+					}
+				})
+		};
+
+		testEntitiesPage = _testEntityResource.getTestEntitiesPage(null);
+
+		Assert.assertEquals(
+			testEntitiesCount + 4, testEntitiesPage.getTotalCount());
+
+		_systemEventLocalService.addSystemEvent(
+			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
+			RandomTestUtil.randomString(), _CLASS_NAME_TEST_ENTITY,
+			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
+			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
+			StringPool.BLANK);
+		_systemEventLocalService.addSystemEvent(
+			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
+			testEntities[0].getExternalReferenceCode(), _CLASS_NAME_TEST_ENTITY,
+			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
+			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
+			StringPool.BLANK);
+		_systemEventLocalService.addSystemEvent(
+			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
+			testEntities[2].getExternalReferenceCode(), _CLASS_NAME_TEST_ENTITY,
+			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
+			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
+			StringPool.BLANK);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			File larFile = _exportLayout(true);
+
+			_exportImportLocalService.importLayoutsDataDeletions(
+				_exportImportConfigurationLocalService.
+					addDraftExportImportConfiguration(
+						TestPropsValues.getUserId(),
+						ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
+						ExportImportConfigurationSettingsMapFactoryUtil.
+							buildImportLayoutSettingsMap(
+								TestPropsValues.getUser(),
+								_companyGroup.getGroupId(), false, new long[0],
+								HashMapBuilder.put(
+									PortletDataHandlerKeys.DELETIONS,
+									new String[] {Boolean.TRUE.toString()}
+								).build())),
+				larFile);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+		}
+
+		testEntitiesPage = _testEntityResource.getTestEntitiesPage(null);
+
+		Assert.assertEquals(
+			testEntitiesCount + 2, testEntitiesPage.getTotalCount());
+
+		List<String> externalReferenceCodes = TransformUtil.transform(
+			testEntitiesPage.getItems(), TestEntity::getExternalReferenceCode);
+
+		Assert.assertFalse(
+			externalReferenceCodes.contains(
+				testEntities[0].getExternalReferenceCode()));
+		Assert.assertFalse(
+			externalReferenceCodes.contains(
+				testEntities[2].getExternalReferenceCode()));
+		Assert.assertTrue(
+			externalReferenceCodes.contains(
+				testEntities[1].getExternalReferenceCode()));
+		Assert.assertTrue(
+			externalReferenceCodes.contains(
+				testEntities[3].getExternalReferenceCode()));
+	}
+
+	@Test
 	@TestInfo("LPD-65186")
 	public void testExportImportRollbackOnError() throws Exception {
 		BatchTestEntity batchTestEntity =
@@ -978,6 +1127,9 @@ public class BatchTestEntityExportImportTest {
 		"com_liferay_portal_tools_rest_builder_test_portlet_" +
 			"BatchTestEntityPortlet";
 
+	private static final String _CLASS_NAME_TEST_ENTITY =
+		"com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity";
+
 	private BatchTestEntityResource _batchTestEntityResource;
 	private Group _companyGroup;
 	private CompanyTestEntityResource _companyTestEntityResource;
@@ -1001,6 +1153,8 @@ public class BatchTestEntityExportImportTest {
 
 	@Inject
 	private SystemEventLocalService _systemEventLocalService;
+
+	private TestEntityResource _testEntityResource;
 
 	@Inject
 	private UserLocalService _userLocalService;
