@@ -97,6 +97,9 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.staging.configuration.StagingConfiguration;
+import com.liferay.wiki.model.WikiNode;
+import com.liferay.wiki.model.WikiPage;
+import com.liferay.wiki.test.util.WikiTestUtil;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -451,6 +454,34 @@ public class StagingImplTest {
 			_changesetEntryLocalService.getChangesetEntriesCount(
 				changesetCollection.getChangesetCollectionId(),
 				layoutClassNameId));
+	}
+
+	@Test
+	@TestInfo("LPD-108089")
+	public void testLocalStagingChangesetEntryFollowsLatestWikiPageVersion()
+		throws Exception {
+
+		enableLocalStaging(true);
+
+		Group stagingGroup = _group.getStagingGroup();
+
+		WikiNode wikiNode = WikiTestUtil.addNode(stagingGroup.getGroupId());
+
+		WikiPage wikiPage = WikiTestUtil.addPage(
+			stagingGroup.getGroupId(), wikiNode.getNodeId(), true);
+
+		wikiPage = WikiTestUtil.updatePage(wikiPage);
+
+		ChangesetCollection changesetCollection =
+			_changesetCollectionLocalService.fetchOrAddChangesetCollection(
+				stagingGroup.getGroupId(),
+				StagingConstants.RANGE_FROM_LAST_PUBLISH_DATE_CHANGESET_NAME);
+
+		Assert.assertNotNull(
+			_changesetEntryLocalService.fetchChangesetEntry(
+				changesetCollection.getChangesetCollectionId(),
+				PortalUtil.getClassNameId(WikiPage.class),
+				wikiPage.getPageId()));
 	}
 
 	@Test

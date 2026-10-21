@@ -26,5 +26,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:style-book:style-book-api")
+	testIntegrationImplementation project(":apps:wiki:wiki-api")
+	testIntegrationImplementation project(":apps:wiki:wiki-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
