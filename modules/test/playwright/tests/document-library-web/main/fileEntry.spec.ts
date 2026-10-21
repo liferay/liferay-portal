@@ -217,7 +217,7 @@ test(
 
 		const toastAlertContainer = page.locator('[id="ToastAlertContainer"]');
 
-		await expect(toastAlertContainer).toBeVisible();
+		await expect(toastAlertContainer.locator('.alert')).toBeVisible();
 
 		await expect(toastAlertContainer).toContainText(`Success:${title}`);
 

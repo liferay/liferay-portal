@@ -12,7 +12,7 @@
 <tbody>
 <tr>
 	<td>ALERT_TOAST_CONTAINER</td>
-	<td>//*[@id='ToastAlertContainer']</td>
+	<td>//*[@id='ToastAlertContainer']//*[contains(@class,'alert-notifications-fixed')]</td>
 	<td></td>
 </tr>
 <tr>
