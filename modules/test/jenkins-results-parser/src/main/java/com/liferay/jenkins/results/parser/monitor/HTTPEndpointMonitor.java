@@ -75,7 +75,7 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 
 	@Override
 	protected String getDefaultLinkURL() {
-		return _endpointURL;
+		return _remoteEndpointURL;
 	}
 
 	private String _getFailureMessage(Exception exception) {
