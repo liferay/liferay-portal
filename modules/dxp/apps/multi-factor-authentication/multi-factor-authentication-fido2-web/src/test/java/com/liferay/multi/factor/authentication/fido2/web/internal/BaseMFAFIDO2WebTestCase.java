@@ -6,7 +6,6 @@
 package com.liferay.multi.factor.authentication.fido2.web.internal;
 
 import com.liferay.multi.factor.authentication.fido2.web.internal.audit.MFAFIDO2AuditMessageBuilder;
-import com.liferay.multi.factor.authentication.fido2.web.internal.checker.FIDO2BrowserSetupMFAChecker;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.audit.AuditMessage;
@@ -15,6 +14,7 @@ import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -85,9 +85,7 @@ public abstract class BaseMFAFIDO2WebTestCase {
 		Assert.assertEquals(
 			doAsUserId, additionalInfoJSONObject.getString("doAsUserId", null));
 
-		Assert.assertEquals(
-			FIDO2BrowserSetupMFAChecker.class.getName(),
-			auditMessage.getClassName());
+		Assert.assertEquals(User.class.getName(), auditMessage.getClassName());
 		Assert.assertEquals(
 			String.valueOf(selectedUserId), auditMessage.getClassPK());
 		Assert.assertEquals(eventType, auditMessage.getEventType());

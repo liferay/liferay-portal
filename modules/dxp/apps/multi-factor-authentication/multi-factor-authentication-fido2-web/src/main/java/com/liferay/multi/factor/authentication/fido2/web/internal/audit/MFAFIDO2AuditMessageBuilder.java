@@ -55,19 +55,15 @@ public class MFAFIDO2AuditMessageBuilder {
 		return auditMessage;
 	}
 
-	public AuditMessage buildSetupAddedAuditMessage(
-		long userId, String checkerClassName) {
-
+	public AuditMessage buildSetupAddedAuditMessage(long userId) {
 		return AuditMessageBuilder.buildAuditMessage(
-			checkerClassName, userId, MFAFIDO2EventTypes.MFA_FIDO2_SETUP_ADDED,
-			null);
+			User.class.getName(), userId,
+			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_ADDED, null);
 	}
 
-	public AuditMessage buildSetupRemovedAuditMessage(
-		long userId, String checkerClassName) {
-
+	public AuditMessage buildSetupRemovedAuditMessage(long userId) {
 		return AuditMessageBuilder.buildAuditMessage(
-			checkerClassName, userId,
+			User.class.getName(), userId,
 			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, null);
 	}
 

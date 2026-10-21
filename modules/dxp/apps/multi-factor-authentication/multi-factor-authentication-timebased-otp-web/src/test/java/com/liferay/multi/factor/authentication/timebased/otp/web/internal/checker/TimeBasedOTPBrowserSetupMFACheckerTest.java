@@ -266,9 +266,7 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 		Assert.assertEquals(
 			doAsUserId, additionalInfoJSONObject.getString("doAsUserId", null));
 
-		Assert.assertEquals(
-			TimeBasedOTPBrowserSetupMFAChecker.class.getName(),
-			auditMessage.getClassName());
+		Assert.assertEquals(User.class.getName(), auditMessage.getClassName());
 		Assert.assertEquals(
 			String.valueOf(selectedUserId), auditMessage.getClassPK());
 		Assert.assertEquals(eventType, auditMessage.getEventType());

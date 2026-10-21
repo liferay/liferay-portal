@@ -194,7 +194,7 @@ public class FIDO2BrowserSetupMFAChecker
 
 			mfaFIDO2AuditMessageBuilder.routeAuditMessage(
 				mfaFIDO2AuditMessageBuilder.buildSetupRemovedAuditMessage(
-					userId, _getClassName()));
+					userId));
 		}
 	}
 
@@ -223,7 +223,7 @@ public class FIDO2BrowserSetupMFAChecker
 			if (mfaFIDO2AuditMessageBuilder != null) {
 				mfaFIDO2AuditMessageBuilder.routeAuditMessage(
 					mfaFIDO2AuditMessageBuilder.buildSetupAddedAuditMessage(
-						userId, _getClassName()));
+						userId));
 			}
 
 			return true;
