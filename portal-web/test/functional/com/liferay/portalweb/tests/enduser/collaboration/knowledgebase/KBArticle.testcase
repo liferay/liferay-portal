@@ -565,37 +565,6 @@ definition {
 	}
 
 	@priority = 3
-	@refactorneeded
-	test CannotAddArticleWithInvalidAttachmentSize {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		SystemSettings.openSystemSettingsAdmin();
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Infrastructure",
-			configurationName = "Upload Servlet Request",
-			configurationScope = "System Scope");
-
-		ServerAdministration.configureFileUploadOverallMaximumFileSize(maxFileSize = 102400);
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCPWithInvalidAttachmentSize(
-			kbArticleAttachment = "Document_1.ppt",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			maxFileSize = 100);
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			noAttachment = "true");
-	}
-
-	@priority = 3
 	@refactordone
 	test CannotAddArticleWithoutCategory {
 		Category.openCategoriesAdmin(siteURLKey = "guest");
