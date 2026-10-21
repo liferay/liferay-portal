@@ -9,21 +9,9 @@ import ClayProgressBar from '@clayui/progress-bar';
 import {useIsMounted, useTimeout} from '@liferay/frontend-js-react-web';
 import {fetch, sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {disableEntryIcon, enableEntryIcon} from './utils/entryIcons';
-
-const iconElements = new Map();
-
-function getIconElement(id) {
-	const element = document.getElementById(id);
-
-	if (element) {
-		iconElements.set(id, element);
-	}
-
-	return element || iconElements.get(id);
-}
 
 const AdaptiveMediaProgress = ({
 	adaptedImages,
@@ -39,6 +27,18 @@ const AdaptiveMediaProgress = ({
 }) => {
 	const delay = useTimeout();
 	const isMounted = useIsMounted();
+
+	const iconElementsRef = useRef(new Map());
+
+	const getIconElement = useCallback((id) => {
+		const element = document.getElementById(id);
+
+		if (element) {
+			iconElementsRef.current.set(id, element);
+		}
+
+		return element || iconElementsRef.current.get(id);
+	}, []);
 
 	const [showLoadingIndicator, setShowLoadingIndicator] =
 		useState(autoStartProgress);
@@ -82,6 +82,7 @@ const AdaptiveMediaProgress = ({
 			});
 	}, [
 		delay,
+		getIconElement,
 		intervalSpeed,
 		isMounted,
 		namespace,
@@ -108,13 +109,21 @@ const AdaptiveMediaProgress = ({
 
 			return delay(updateProgress, intervalSpeed);
 		},
-		[delay, intervalSpeed, isMounted, namespace, updateProgress, uuid]
+		[
+			delay,
+			getIconElement,
+			intervalSpeed,
+			isMounted,
+			namespace,
+			updateProgress,
+			uuid,
+		]
 	);
 
 	useEffect(() => {
 		getIconElement(`${namespace}icon-adapt-remaining${uuid}`);
 		getIconElement(`${namespace}icon-disable-${uuid}`);
-	}, [namespace, uuid]);
+	}, [getIconElement, namespace, uuid]);
 
 	const onClickRetry = () => {
 		setImagesFailed(0);
@@ -128,7 +137,7 @@ const AdaptiveMediaProgress = ({
 		}
 	}, [autoStartProgress, updateProgress]);
 
-	if (!Liferay.component(adaptiveMediaProgressComponentId)) {
+	useEffect(() => {
 		Liferay.component(
 			adaptiveMediaProgressComponentId,
 			{
@@ -138,7 +147,11 @@ const AdaptiveMediaProgress = ({
 				destroyOnNavigate: true,
 			}
 		);
-	}
+
+		return () => {
+			Liferay.destroyComponent(adaptiveMediaProgressComponentId);
+		};
+	}, [adaptiveMediaProgressComponentId, startProgress]);
 
 	return imagesFailed > 0 ? (
 		<div className="progress-error-container">

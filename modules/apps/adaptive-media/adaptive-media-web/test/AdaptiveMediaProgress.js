@@ -25,8 +25,6 @@ function createMenu() {
 }
 
 async function adaptRemainingAfterMenuCloses(menu) {
-	Liferay.component.mockReturnValueOnce(undefined);
-
 	render(
 		<AdaptiveMediaProgress
 			adaptedImages={0}
@@ -40,7 +38,9 @@ async function adaptRemainingAfterMenuCloses(menu) {
 
 	document.body.appendChild(menu);
 
-	const [, {startProgress}] = Liferay.component.mock.calls[1];
+	const [, {startProgress}] = Liferay.component.mock.calls.find(
+		([id]) => id === 'adaptiveMediaProgress'
+	);
 
 	fetch.mockResponseOnce('');
 
