@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.security.audit.constants.AuditEventConstants;
 import com.liferay.portal.security.audit.storage.exception.AuditEventPseudonymFieldValueException;
 import com.liferay.portal.security.audit.storage.model.AuditEventPseudonymField;
 import com.liferay.portal.security.audit.storage.service.AuditEventPseudonymFieldLocalService;
@@ -45,7 +46,8 @@ public class AuditEventPseudonymFieldLocalServiceTest {
 
 	@Test
 	public void testAddAuditEventPseudonymField() throws Exception {
-		_testAddAuditEventPseudonymField("INSTANCE");
+		_testAddAuditEventPseudonymField(
+			AuditEventConstants.CONTEXT_NAME_INSTANCE);
 		_testAddAuditEventPseudonymField(StringPool.BLANK);
 		_testAddAuditEventPseudonymField(null);
 
@@ -117,7 +119,8 @@ public class AuditEventPseudonymFieldLocalServiceTest {
 				TestPropsValues.getCompanyId(), contextName, _NAME, value);
 
 		Assert.assertEquals(
-			"INSTANCE", auditEventPseudonymField.getContextName());
+			AuditEventConstants.CONTEXT_NAME_INSTANCE,
+			auditEventPseudonymField.getContextName());
 		Assert.assertEquals(
 			DigesterUtil.digestHex(DigesterUtil.SHA_256, value),
 			auditEventPseudonymField.getValueHash());

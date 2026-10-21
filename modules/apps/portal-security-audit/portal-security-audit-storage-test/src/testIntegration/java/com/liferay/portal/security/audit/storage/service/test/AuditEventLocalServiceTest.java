@@ -6,9 +6,11 @@
 package com.liferay.portal.security.audit.storage.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.security.audit.constants.AuditEventConstants;
 import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuilder;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
@@ -106,6 +108,25 @@ public class AuditEventLocalServiceTest {
 				auditEvent.getAuditEventId());
 
 		Assert.assertEquals(companyId, persistedAuditEvent.getCompanyId());
+
+		_testAddAuditEvent(StringPool.BLANK);
+		_testAddAuditEvent(null);
+	}
+
+	private void _testAddAuditEvent(String contextName) {
+		AuditMessage auditMessage = AuditMessageBuilder.buildAuditMessage(
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong(), contextName,
+			RandomTestUtil.randomString(), new ArrayList<>());
+
+		auditMessage.setCompanyId(RandomTestUtil.randomLong());
+
+		AuditEvent auditEvent = _auditEventLocalService.addAuditEvent(
+			auditMessage);
+
+		Assert.assertEquals(
+			AuditEventConstants.CONTEXT_NAME_INSTANCE,
+			auditEvent.getContextName());
 	}
 
 	@Inject

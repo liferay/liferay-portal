@@ -122,6 +122,18 @@ public class AuditEventResourceTest extends BaseAuditEventResourceTestCase {
 		assertContains(auditEvent1, (List<AuditEvent>)page.getItems());
 		assertContains(auditEvent2, (List<AuditEvent>)page.getItems());
 
+		page = auditEventResource.getAuditEventsPage(
+			new Long[] {
+				accountEntry1.getAccountEntryId(),
+				accountEntry2.getAccountEntryId()
+			},
+			null, null, null, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		assertContains(auditEvent1, (List<AuditEvent>)page.getItems());
+		assertContains(auditEvent2, (List<AuditEvent>)page.getItems());
+
 		User user = UserTestUtil.addUser(
 			testCompany, PropsValues.DEFAULT_ADMIN_PASSWORD);
 
@@ -171,7 +183,6 @@ public class AuditEventResourceTest extends BaseAuditEventResourceTestCase {
 		AuditEvent auditEvent = super.randomAuditEvent();
 
 		auditEvent.setAccountId(0L);
-		auditEvent.setContextName((String)null);
 
 		return auditEvent;
 	}
