@@ -5,12 +5,15 @@
 
 package com.liferay.portal.search.opensearch2.internal;
 
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchPaginationUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.BaseIndexSearcher;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Hits;
@@ -47,7 +50,6 @@ import com.liferay.portal.search.legacy.searcher.SearchResponseBuilderFactory;
 import com.liferay.portal.search.opensearch2.configuration.DeepPaginationConfiguration;
 import com.liferay.portal.search.opensearch2.constants.OpenSearchSearchContextAttributes;
 import com.liferay.portal.search.opensearch2.internal.configuration.OpenSearchConfigurationWrapper;
-import com.liferay.portal.search.opensearch2.internal.deep.pagination.configuration.DeepPaginationConfigurationWrapper;
 import com.liferay.portal.search.opensearch2.internal.util.JsonpUtil;
 import com.liferay.portal.search.opensearch2.internal.util.SetterUtil;
 import com.liferay.portal.search.pit.PointInTime;
@@ -432,15 +434,28 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 			return null;
 		}
 
-		DeepPaginationConfiguration deepPaginationConfiguration =
-			_deepPaginationConfigurationWrapper.getDeepPaginationConfiguration(
-				companyId);
+		try {
+			DeepPaginationConfiguration deepPaginationConfiguration =
+				_configurationProvider.getSystemConfiguration(
+					DeepPaginationConfiguration.class);
 
-		if (!deepPaginationConfiguration.enableDeepPagination()) {
+			if (deepPaginationConfiguration.enableDeepPagination()) {
+				return deepPaginationConfiguration;
+			}
+
+			deepPaginationConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					DeepPaginationConfiguration.class, companyId);
+
+			if (deepPaginationConfiguration.enableDeepPagination()) {
+				return deepPaginationConfiguration;
+			}
+
 			return null;
 		}
-
-		return deepPaginationConfiguration;
+		catch (ConfigurationException configurationException) {
+			return ReflectionUtil.throwException(configurationException);
+		}
 	}
 
 	private String _getExceptionMessage(RuntimeException runtimeException) {
@@ -813,8 +828,7 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 		OpenSearchIndexSearcher.class);
 
 	@Reference
-	private DeepPaginationConfigurationWrapper
-		_deepPaginationConfigurationWrapper;
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private IndexNameBuilder _indexNameBuilder;
