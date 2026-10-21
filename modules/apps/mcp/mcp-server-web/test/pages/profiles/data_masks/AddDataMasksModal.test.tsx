@@ -17,7 +17,7 @@ import AddDataMasksModal from '../../../../src/main/resources/META-INF/resources
 import type {
 	DataMask,
 	DataMaskTypeKey,
-} from '../../../../src/main/resources/META-INF/resources/js/types';
+} from '../../../../src/main/resources/META-INF/resources/js/types/DataMask';
 
 const PROFILE_ERC = 'PROFILE_ERC';
 

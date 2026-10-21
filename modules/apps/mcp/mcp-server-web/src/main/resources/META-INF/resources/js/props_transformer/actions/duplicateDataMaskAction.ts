@@ -4,13 +4,13 @@
  */
 
 import {postDataMask} from '../../services/postDataMask';
-import {ActionContext} from '../../types';
+import {DataMaskActionContext} from '../../types/DataMask';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 export default async function duplicateDataMaskAction({
 	itemData,
 	loadData,
-}: ActionContext) {
+}: DataMaskActionContext) {
 	const {data: saved, error} = await postDataMask({
 		description: itemData.description ?? '',
 		detectionRegex: itemData.detectionRegex,

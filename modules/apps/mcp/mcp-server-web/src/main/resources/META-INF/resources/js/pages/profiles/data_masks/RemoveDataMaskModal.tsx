@@ -11,7 +11,7 @@ import React, {useState} from 'react';
 
 import {deleteProfileDataMask} from '../../../services/deleteProfileDataMask';
 import {patchProfileDataMask} from '../../../services/patchProfileDataMask';
-import {ProfileDataMaskRow} from '../../../types';
+import {ProfileDataMaskRow} from '../../../types/ProfileDataMask';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 
 interface RemoveDataMaskModalProps {

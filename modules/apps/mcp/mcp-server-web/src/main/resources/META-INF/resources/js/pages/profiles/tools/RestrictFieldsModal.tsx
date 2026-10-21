@@ -19,7 +19,7 @@ import SelectedItemsBar from '../../../components/SelectedItemsBar';
 import useTreeFilter from '../../../hooks/useTreeFilter';
 import {getTool} from '../../../services/getTool';
 import {patchProfileTool} from '../../../services/patchProfileTool';
-import {ProfileTool} from '../../../types';
+import {ProfileTool} from '../../../types/ProfileTool';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 import {
 	FieldTreeItem,

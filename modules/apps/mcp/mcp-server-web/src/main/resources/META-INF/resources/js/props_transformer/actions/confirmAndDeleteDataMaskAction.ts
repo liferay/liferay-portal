@@ -7,7 +7,7 @@ import {openModal} from 'frontend-js-components-web';
 
 import {deleteDataMask} from '../../services/deleteDataMask';
 import {getProfileDataMasks} from '../../services/getProfileDataMasks';
-import {ActionContext} from '../../types';
+import {DataMaskActionContext} from '../../types/DataMask';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 async function getAssociatedProfilesCount(
@@ -49,7 +49,7 @@ function deleteBody(associatedProfilesCount: number) {
 export default async function confirmAndDeleteDataMaskAction({
 	itemData,
 	loadData,
-}: ActionContext) {
+}: DataMaskActionContext) {
 	const {externalReferenceCode, id, name} = itemData;
 
 	if (id === undefined) {

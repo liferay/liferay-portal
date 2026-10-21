@@ -7,7 +7,7 @@ import {openModal} from 'frontend-js-components-web';
 import {escapeHTML} from 'frontend-js-web';
 
 import {deletePrompt} from '../../services/deletePrompt';
-import {PromptActionContext} from '../../types';
+import {PromptActionContext} from '../../types/Prompt';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 export default function confirmAndDeletePromptAction({

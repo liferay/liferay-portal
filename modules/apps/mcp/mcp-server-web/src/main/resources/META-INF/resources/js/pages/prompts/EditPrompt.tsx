@@ -16,7 +16,7 @@ import {FormToggle} from '../../components/forms/FormToggle';
 import {getPrompt} from '../../services/getPrompt';
 import {patchPrompt} from '../../services/patchPrompt';
 import {postPrompt} from '../../services/postPrompt';
-import {Prompt, PromptFormValues, PromptPayload} from '../../types';
+import {Prompt, PromptFormValues, PromptPayload} from '../../types/Prompt';
 import required from '../../utils/required';
 import toIdentifier from '../../utils/toIdentifier';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';

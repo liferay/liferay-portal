@@ -15,7 +15,11 @@ import {FormSection} from '../../components/forms/FormSection';
 import {getDataMask} from '../../services/getDataMask';
 import {patchDataMask} from '../../services/patchDataMask';
 import {postDataMask} from '../../services/postDataMask';
-import {DataMask, DataMaskFormValues, DataMaskPayload} from '../../types';
+import {
+	DataMask,
+	DataMaskFormValues,
+	DataMaskPayload,
+} from '../../types/DataMask';
 import isSystemMask from '../../utils/isSystemMask';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 import {DataMaskRegexTester} from './DataMaskRegexTester';

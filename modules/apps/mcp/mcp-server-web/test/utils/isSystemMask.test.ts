@@ -5,7 +5,7 @@
 
 import isSystemMask from '../../src/main/resources/META-INF/resources/js/utils/isSystemMask';
 
-import type {DataMask} from '../../src/main/resources/META-INF/resources/js/types';
+import type {DataMask} from '../../src/main/resources/META-INF/resources/js/types/DataMask';
 
 describe('isSystemMask', () => {
 	const dataMask = (key: string): DataMask => ({

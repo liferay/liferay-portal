@@ -5,20 +5,9 @@
 
 import {addParams} from 'frontend-js-web';
 
+import {Redaction, RedactionRequest} from '../types/Redaction';
 import ApiHelper from './ApiHelper';
 import {REDACTION_URL} from './constants';
-
-export type RedactionRequest = {
-	detectionRegex: string;
-	replacementRegex: string;
-	replacementValue: string;
-	text: string;
-};
-
-export type Redaction = {
-	error?: string;
-	output: string;
-};
 
 export function getRedaction(request: RedactionRequest) {
 	const params: Record<string, string> = {

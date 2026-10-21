@@ -7,7 +7,7 @@ import {openModal} from 'frontend-js-components-web';
 import {escapeHTML} from 'frontend-js-web';
 
 import {deleteProfile} from '../../services/deleteProfile';
-import {ProfileActionContext} from '../../types';
+import {ProfileActionContext} from '../../types/Profile';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 export default function confirmAndDeleteProfileAction({

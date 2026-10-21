@@ -5,7 +5,7 @@
 
 import {addParams} from 'frontend-js-web';
 
-import {ProfileTool} from '../types';
+import {ProfileTool} from '../types/ProfileTool';
 import {PROFILE_TOOLS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';
 

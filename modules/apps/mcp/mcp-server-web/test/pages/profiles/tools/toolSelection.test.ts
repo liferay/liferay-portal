@@ -11,10 +11,8 @@ import {
 	isToolOfToolSet,
 } from '../../../../src/main/resources/META-INF/resources/js/pages/profiles/tools/toolSelection';
 
-import type {
-	ProfileTool,
-	ToolSet,
-} from '../../../../src/main/resources/META-INF/resources/js/types';
+import type {ProfileTool} from '../../../../src/main/resources/META-INF/resources/js/types/ProfileTool';
+import type {ToolSet} from '../../../../src/main/resources/META-INF/resources/js/types/Tool';
 
 function createProfileTool(toolSetName: string, toolName: string): ProfileTool {
 	return {

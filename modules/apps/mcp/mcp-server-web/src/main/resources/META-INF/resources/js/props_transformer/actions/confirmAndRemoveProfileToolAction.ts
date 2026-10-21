@@ -7,7 +7,7 @@ import {openModal} from 'frontend-js-components-web';
 import {escapeHTML} from 'frontend-js-web';
 
 import {deleteProfileTool} from '../../services/deleteProfileTool';
-import {ProfileToolActionContext} from '../../types';
+import {ProfileToolActionContext} from '../../types/ProfileTool';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 export default function confirmAndRemoveProfileToolAction({

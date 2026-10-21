@@ -17,7 +17,11 @@ import {FormToggle} from '../../../components/forms/FormToggle';
 import {getProfile} from '../../../services/getProfile';
 import {patchProfile} from '../../../services/patchProfile';
 import {postProfile} from '../../../services/postProfile';
-import {Profile, ProfileFormValues, ProfilePayload} from '../../../types';
+import {
+	Profile,
+	ProfileFormValues,
+	ProfilePayload,
+} from '../../../types/Profile';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 
 interface EditProfileViewProps {

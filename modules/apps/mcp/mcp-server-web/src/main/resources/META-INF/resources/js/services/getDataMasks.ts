@@ -5,7 +5,7 @@
 
 import {addParams} from 'frontend-js-web';
 
-import {DataMask} from '../types';
+import {DataMask} from '../types/DataMask';
 import {DATA_MASKS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';
 

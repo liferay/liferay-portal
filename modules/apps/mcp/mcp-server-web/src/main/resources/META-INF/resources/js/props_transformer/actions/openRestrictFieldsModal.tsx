@@ -7,7 +7,7 @@ import {openModal} from 'frontend-js-components-web';
 import React from 'react';
 
 import RestrictFieldsModal from '../../pages/profiles/tools/RestrictFieldsModal';
-import {ProfileToolActionContext} from '../../types';
+import {ProfileToolActionContext} from '../../types/ProfileTool';
 
 export default function openRestrictFieldsModal({
 	itemData,

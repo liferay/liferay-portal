@@ -12,7 +12,7 @@ import {
 import type {
 	DataMask,
 	DataMaskTypeKey,
-} from '../../../../src/main/resources/META-INF/resources/js/types';
+} from '../../../../src/main/resources/META-INF/resources/js/types/DataMask';
 
 function createDataMask(
 	key: DataMaskTypeKey,

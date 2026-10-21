@@ -9,7 +9,8 @@ import ClayLayout from '@clayui/layout';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
-import {Redaction, getRedaction} from '../../services/getRedaction';
+import {getRedaction} from '../../services/getRedaction';
+import {Redaction} from '../../types/Redaction';
 
 interface DataMaskRegexTesterProps {
 	detectionRegex: string;

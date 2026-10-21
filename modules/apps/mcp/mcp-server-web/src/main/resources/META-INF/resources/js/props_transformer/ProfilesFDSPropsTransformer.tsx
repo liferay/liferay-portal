@@ -5,7 +5,7 @@
 
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
-import {Profile} from '../types';
+import {Profile} from '../types/Profile';
 import confirmAndDeleteProfileAction from './actions/confirmAndDeleteProfileAction';
 import MCPStatusRenderer from './cell_renderers/MCPStatusRenderer';
 

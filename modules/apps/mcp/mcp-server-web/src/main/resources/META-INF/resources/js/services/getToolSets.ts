@@ -5,7 +5,7 @@
 
 import {addParams} from 'frontend-js-web';
 
-import {ToolSet} from '../types';
+import {ToolSet} from '../types/Tool';
 import {TOOL_SETS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';
 

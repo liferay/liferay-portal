@@ -5,7 +5,7 @@
 
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
-import {Prompt} from '../types';
+import {Prompt} from '../types/Prompt';
 import confirmAndDeletePromptAction from './actions/confirmAndDeletePromptAction';
 import duplicatePromptAction from './actions/duplicatePromptAction';
 import MCPStatusRenderer from './cell_renderers/MCPStatusRenderer';

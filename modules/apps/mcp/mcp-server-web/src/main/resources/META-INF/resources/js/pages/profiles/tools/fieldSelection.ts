@@ -5,7 +5,7 @@
 
 import {Key} from 'react';
 
-import {JSONSchema} from '../../../types';
+import {JSONSchema} from '../../../types/Tool';
 import filterTree, {TreeFilter} from '../../../utils/filterTree';
 
 export type FieldTreeItem = {
