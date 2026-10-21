@@ -23,6 +23,11 @@ import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.test.util.DLTestUtil;
@@ -47,6 +52,7 @@ import com.liferay.headless.delivery.client.dto.v1_0.PageElement;
 import com.liferay.headless.delivery.client.dto.v1_0.PagePermission;
 import com.liferay.headless.delivery.client.dto.v1_0.PageSettings;
 import com.liferay.headless.delivery.client.dto.v1_0.ParentSitePage;
+import com.liferay.headless.delivery.client.dto.v1_0.RenderedPage;
 import com.liferay.headless.delivery.client.dto.v1_0.SEOSettings;
 import com.liferay.headless.delivery.client.dto.v1_0.Settings;
 import com.liferay.headless.delivery.client.dto.v1_0.SiteMapSettings;
@@ -59,6 +65,9 @@ import com.liferay.headless.delivery.client.problem.Problem;
 import com.liferay.headless.delivery.client.resource.v1_0.SitePageResource;
 import com.liferay.headless.delivery.client.serdes.v1_0.SitePageSerDes;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutFriendlyURLRandomizerBumper;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -99,6 +108,7 @@ import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -225,32 +235,20 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		PrincipalThreadLocal.setName(_originalName);
 	}
 
+	@FeatureFlag("LPD-57283")
 	@Override
 	@Test
-	@TestInfo({"LPD-67244", "LPD-75168", "LPD-75364"})
+	@TestInfo({"LPD-67244", "LPD-75168", "LPD-75364", "LPD-108819"})
 	public void testGetSiteSitePage() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+		super.testGetSiteSitePage();
 
-		String friendlyURL = layout.getFriendlyURL();
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			testGroup.getCompanyId(), true, "LPD-57283");
 
-		SitePage sitePage = sitePageResource.getSiteSitePage(
-			testGroup.getGroupId(), friendlyURL.substring(1));
-
-		Assert.assertNotNull(sitePage);
-		Assert.assertEquals(
-			layout.getName(LocaleUtil.getDefault()), sitePage.getTitle());
-
-		try {
-			sitePageResource.getSiteSitePage(
-				testGroup.getGroupId(), URLEncoder.encode("aaa/bbb"));
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Assert.assertNotNull(problemException);
-		}
-
+		_testGetSiteSitePage();
+		_testGetSiteSitePageWithDesignLibraryMasterPage();
 		_testGetSiteSitePageWithLocalization();
+		_testGetSiteSitePageWithMasterPage();
 		_testGetSiteSitePageWithoutPermissions();
 	}
 
@@ -614,6 +612,15 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			).buildString());
 	}
 
+	private LayoutPageTemplateEntry _addMasterLayoutPageTemplateEntry(
+			long groupId)
+		throws Exception {
+
+		return LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+			groupId, LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+			WorkflowConstants.STATUS_APPROVED);
+	}
+
 	private void _assertEqualsIgnoringOrder(
 		TaxonomyCategoryBrief[] taxonomyCategoryBriefs1,
 		TaxonomyCategoryBrief[] taxonomyCategoryBriefs2) {
@@ -642,6 +649,19 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					" does not contain " + taxonomyCategoryBrief1,
 				contains);
 		}
+	}
+
+	private void _assertMasterPage(
+			String friendlyURL, String masterPageId, String masterPageName)
+		throws Exception {
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getGroupId(), friendlyURL.substring(1));
+
+		RenderedPage renderedPage = sitePage.getRenderedPage();
+
+		Assert.assertEquals(masterPageId, renderedPage.getMasterPageId());
+		Assert.assertEquals(masterPageName, renderedPage.getMasterPageName());
 	}
 
 	private String _getRandomFriendlyURL() {
@@ -823,6 +843,29 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		).build();
 	}
 
+	private void _testGetSiteSitePage() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+
+		String friendlyURL = layout.getFriendlyURL();
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getGroupId(), friendlyURL.substring(1));
+
+		Assert.assertNotNull(sitePage);
+		Assert.assertEquals(
+			layout.getName(LocaleUtil.getDefault()), sitePage.getTitle());
+
+		try {
+			sitePageResource.getSiteSitePage(
+				testGroup.getGroupId(), URLEncoder.encode("aaa/bbb"));
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Assert.assertNotNull(problemException);
+		}
+	}
+
 	private void _testGetSiteSitePageRenderedPage() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
@@ -956,6 +999,39 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					"'")));
 	}
 
+	private void _testGetSiteSitePageWithDesignLibraryMasterPage()
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), testGroup.getGroupId());
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addMasterLayoutPageTemplateEntry(depotEntry.getGroupId());
+		Group group = depotEntry.getGroup();
+
+		LayoutTestUtil.updateMasterLayoutPageTemplateEntryERC(
+			layout, layoutPageTemplateEntry.getExternalReferenceCode(),
+			group.getExternalReferenceCode());
+
+		_assertMasterPage(
+			layout.getFriendlyURL(),
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryKey(),
+			layoutPageTemplateEntry.getName());
+
+		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
+			depotEntryGroupRel);
+
+		_assertMasterPage(layout.getFriendlyURL(), null, null);
+	}
+
 	private void _testGetSiteSitePageWithLocalization() throws Exception {
 		User user = testCompany.getGuestUser();
 
@@ -1060,6 +1136,21 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		Assert.assertEquals(friendlyUrlPath, sitePage.getFriendlyUrlPath());
 		Assert.assertEquals(id, sitePage.getId());
+	}
+
+	private void _testGetSiteSitePageWithMasterPage() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addMasterLayoutPageTemplateEntry(testGroup.getGroupId());
+
+		_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			layoutPageTemplateEntry.getExternalReferenceCode());
+
+		_assertMasterPage(
+			layout.getFriendlyURL(),
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryKey(),
+			layoutPageTemplateEntry.getName());
 	}
 
 	private void _testGetSiteSitePageWithoutPermissions() throws Exception {
@@ -2553,6 +2644,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private ExpandoColumnLocalService _expandoColumnLocalService;

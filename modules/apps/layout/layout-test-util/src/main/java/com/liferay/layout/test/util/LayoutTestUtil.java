@@ -738,6 +738,18 @@ public class LayoutTestUtil {
 			layout.getTypeSettings());
 	}
 
+	public static Layout updateMasterLayoutPageTemplateEntryERC(
+		Layout layout, String masterLayoutPageTemplateEntryERC,
+		String masterLayoutPageTemplateEntryScopeERC) {
+
+		layout.setMasterLayoutPageTemplateEntryERC(
+			masterLayoutPageTemplateEntryERC);
+		layout.setMasterLayoutPageTemplateEntryScopeERC(
+			masterLayoutPageTemplateEntryScopeERC);
+
+		return LayoutLocalServiceUtil.updateLayout(layout);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(LayoutTestUtil.class);
 
 }
