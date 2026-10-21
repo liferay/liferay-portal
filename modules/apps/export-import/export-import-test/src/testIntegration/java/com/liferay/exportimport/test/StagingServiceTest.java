@@ -7,6 +7,9 @@ package com.liferay.exportimport.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.document.library.kernel.exception.NoSuchFolderException;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.test.util.DLAppTestUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
@@ -17,6 +20,8 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -72,6 +77,50 @@ public class StagingServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110878")
+	public void testCleanUpStagingRequest() throws Exception {
+		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			long stagingRequestId = _addStagingRequest(file);
+
+			StagingServiceUtil.cleanUpStagingRequest(stagingRequestId);
+
+			Assert.assertThrows(
+				NoSuchFolderException.class,
+				() -> PortletFileRepositoryUtil.getPortletFolder(
+					stagingRequestId));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110878")
+	public void testCleanUpStagingRequestWithFolder() throws Exception {
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+
+		DLAppTestUtil.addFileEntry(folder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.cleanUpStagingRequest(
+					folder.getFolderId()));
+		}
+
+		Assert.assertEquals(
+			1,
+			DLFileEntryLocalServiceUtil.getFileEntriesCount(
+				_group.getGroupId(), folder.getFolderId()));
+	}
+
+	@Test
 	@TestInfo("LPD-110192")
 	public void testPublishStagingRequest() throws Exception {
 		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
@@ -113,6 +162,24 @@ public class StagingServiceTest {
 
 		Assert.assertEquals(
 			1, LayoutLocalServiceUtil.getLayoutsCount(_targetGroup, false));
+	}
+
+	@Test
+	@TestInfo("LPD-110878")
+	public void testPublishStagingRequestWithFolder() throws Exception {
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			ExportImportConfiguration exportImportConfiguration =
+				_addExportImportConfiguration(_group);
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.publishStagingRequest(
+					folder.getFolderId(), exportImportConfiguration));
+		}
 	}
 
 	@Test
@@ -181,6 +248,29 @@ public class StagingServiceTest {
 		finally {
 			FileUtil.delete(file);
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-110878")
+	public void testUpdateStagingRequestWithFolder() throws Exception {
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+
+		DLAppTestUtil.addFileEntry(folder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.updateStagingRequest(
+					folder.getFolderId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomBytes()));
+		}
+
+		Assert.assertEquals(
+			1,
+			DLFileEntryLocalServiceUtil.getFileEntriesCount(
+				_group.getGroupId(), folder.getFolderId()));
 	}
 
 	private ExportImportConfiguration _addExportImportConfiguration(
