@@ -258,28 +258,29 @@ public class BatchEnginePortletDataHandlerUtil {
 			exportImportDescriptor,
 		List<String> filterStrings, PortletDataContext portletDataContext) {
 
-		if (Objects.equals(
-				exportImportDescriptor.getModelClassName(),
-				Layout.class.getName())) {
-
-			return;
-		}
-
 		if (ExportImportDateUtil.isRangeFromLastPublishDate(
-				portletDataContext) &&
-			!ExportImportThreadLocal.isInitialLayoutStagingInProcess()) {
+				portletDataContext)) {
 
-			String lastPublishDateFilterString =
-				_getLastPublishDateFilterString(
-					changesetEntryLocalService, classNameLocalService,
+			if (Objects.equals(
 					exportImportDescriptor.getModelClassName(),
-					portletDataContext);
+					Layout.class.getName())) {
 
-			if (Validator.isNotNull(lastPublishDateFilterString)) {
-				filterStrings.add(lastPublishDateFilterString);
+				return;
 			}
 
-			return;
+			if (!ExportImportThreadLocal.isInitialLayoutStagingInProcess()) {
+				String lastPublishDateFilterString =
+					_getLastPublishDateFilterString(
+						changesetEntryLocalService, classNameLocalService,
+						exportImportDescriptor.getModelClassName(),
+						portletDataContext);
+
+				if (Validator.isNotNull(lastPublishDateFilterString)) {
+					filterStrings.add(lastPublishDateFilterString);
+				}
+
+				return;
+			}
 		}
 
 		String dateRangeFilterString = _getDateRangeFilterString(
