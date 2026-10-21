@@ -140,7 +140,7 @@ public class LaunchSetScheduledPublishBackgroundTaskExecutor
 	static {
 		TransactionConfig.Builder builder = new TransactionConfig.Builder();
 
-		builder.setPropagation(Propagation.REQUIRES_NEW);
+		builder.setPropagation(Propagation.REQUIRED);
 		builder.setRollbackForClasses(Exception.class);
 
 		_transactionConfig = builder.build();
