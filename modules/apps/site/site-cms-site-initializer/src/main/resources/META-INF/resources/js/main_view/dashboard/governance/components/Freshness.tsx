@@ -276,7 +276,7 @@ export function Freshness({
 				</ClayLayout.Col>
 
 				<ClayLayout.Col lg={6}>
-					<ClayLayout.Row>
+					<ClayLayout.Row className="h-100">
 						{FRESHNESS_CARDS.map((card) => {
 							const count = statistics?.[card.statKey] ?? 0;
 							const expanded = card === expandedCard;
