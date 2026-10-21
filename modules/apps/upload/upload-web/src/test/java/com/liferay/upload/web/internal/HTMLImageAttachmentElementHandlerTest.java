@@ -60,8 +60,6 @@ public class HTMLImageAttachmentElementHandlerTest {
 				return "/final/" + fileEntry.getFileEntryId();
 			}
 		);
-
-		_htmlImageAttachmentElementHandler.activate();
 	}
 
 	@Test

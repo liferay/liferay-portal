@@ -19,7 +19,6 @@ import com.liferay.upload.AttachmentElementHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -78,7 +77,8 @@ public class HTMLImageAttachmentElementHandler
 
 			sb.append(content.substring(lastIndex, startIndex));
 			sb.append(
-				_htmlImageAttachmentElementReplacer.replace(imgTag, fileEntry));
+				HTMLImageAttachmentElementReplacerUtil.replace(
+					imgTag, fileEntry, _portletFileRepository));
 
 			lastIndex = endIndex;
 
@@ -88,12 +88,6 @@ public class HTMLImageAttachmentElementHandler
 		sb.append(content.substring(lastIndex));
 
 		return sb.toString();
-	}
-
-	@Activate
-	protected void activate() {
-		_htmlImageAttachmentElementReplacer =
-			new HTMLImageAttachmentElementReplacer(_portletFileRepository);
 	}
 
 	private long _getFileEntryId(String content, int index) {
@@ -125,9 +119,6 @@ public class HTMLImageAttachmentElementHandler
 
 	@Reference
 	private DLAppService _dlAppService;
-
-	private HTMLImageAttachmentElementReplacer
-		_htmlImageAttachmentElementReplacer;
 
 	@Reference
 	private PortletFileRepository _portletFileRepository;

@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 /**
  * @author Alejandro Tardín
  */
-public class HTMLImageAttachmentElementReplacerTest {
+public class HTMLImageAttachmentElementReplacerUtilTest {
 
 	@ClassRule
 	@Rule
@@ -52,9 +52,6 @@ public class HTMLImageAttachmentElementReplacerTest {
 		).thenReturn(
 			_FILE_ENTRY_IMAGE_URL
 		);
-
-		_htmlImageAttachmentElementReplacer =
-			new HTMLImageAttachmentElementReplacer(_portletFileRepository);
 	}
 
 	@Test
@@ -66,8 +63,8 @@ public class HTMLImageAttachmentElementReplacerTest {
 			"<img class=\"custom\" src=\"%s\" data-fileentryid=\"%s\" />",
 			_FILE_ENTRY_IMAGE_URL, _IMAGE_FILE_ENTRY_ID);
 
-		String actualTag = _htmlImageAttachmentElementReplacer.replace(
-			originalImgTag, _fileEntry);
+		String actualTag = HTMLImageAttachmentElementReplacerUtil.replace(
+			originalImgTag, _fileEntry, _portletFileRepository);
 
 		Assert.assertEquals(expectedImgTag, actualTag);
 	}
@@ -81,8 +78,8 @@ public class HTMLImageAttachmentElementReplacerTest {
 			"<img src=\"%s\" data-fileentryid=\"%s\" />", _FILE_ENTRY_IMAGE_URL,
 			_IMAGE_FILE_ENTRY_ID);
 
-		String actualTag = _htmlImageAttachmentElementReplacer.replace(
-			originalImgTag, _fileEntry);
+		String actualTag = HTMLImageAttachmentElementReplacerUtil.replace(
+			originalImgTag, _fileEntry, _portletFileRepository);
 
 		Assert.assertEquals(expectedImgTag, actualTag);
 	}
@@ -94,8 +91,6 @@ public class HTMLImageAttachmentElementReplacerTest {
 		RandomTestUtil.randomLong();
 
 	private FileEntry _fileEntry;
-	private HTMLImageAttachmentElementReplacer
-		_htmlImageAttachmentElementReplacer;
 	private PortletFileRepository _portletFileRepository;
 
 }

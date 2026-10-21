@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -17,15 +17,12 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
  * @author Alejandro Tardín
  * @author Jürgen Kappler
  */
-public class HTMLImageAttachmentElementReplacer {
+public class HTMLImageAttachmentElementReplacerUtil {
 
-	public HTMLImageAttachmentElementReplacer(
+	public static String replace(
+		String imgTag, FileEntry fileEntry,
 		PortletFileRepository portletFileRepository) {
 
-		_portletFileRepository = portletFileRepository;
-	}
-
-	public String replace(String imgTag, FileEntry fileEntry) {
 		int dataImageIdIndex = imgTag.indexOf(_DATA_IMAGE_ID_PREFIX);
 
 		int dataImageIdEndIndex = imgTag.indexOf(
@@ -37,7 +34,7 @@ public class HTMLImageAttachmentElementReplacer {
 			endIndex--;
 		}
 
-		String fileEntryURL = _portletFileRepository.getPortletFileEntryURL(
+		String fileEntryURL = portletFileRepository.getPortletFileEntryURL(
 			null, fileEntry, StringPool.BLANK);
 
 		StringBundler sb = new StringBundler(8);
@@ -78,7 +75,5 @@ public class HTMLImageAttachmentElementReplacer {
 		EditorConstants.ATTRIBUTE_DATA_IMAGE_ID + "=\"";
 
 	private static final String _SRC_PREFIX = " src=\"";
-
-	private final PortletFileRepository _portletFileRepository;
 
 }
