@@ -113,7 +113,7 @@ renderResponse.setTitle((structure == null) ? LanguageUtil.get(request, "new-ele
 					).put(
 						"portletNamespace", liferayPortletResponse.getNamespace()
 					).put(
-						"redirectURL", HtmlUtil.escape(redirect)
+						"redirectURL", PortalUtil.escapeRedirect(redirect)
 					).put(
 						"spritemap", themeDisplay.getPathThemeSpritemap()
 					).put(
