@@ -133,7 +133,8 @@ public class HeadlessDiscoveryAPIApplication extends Application {
 		}
 
 		Map<String, List<HeadlessApplicationProvider.ResourceMethod>>
-			resourceMethodsMap = _getResourceMethodsMap();
+			resourceMethodsMap = _getResourceMethodsMap(
+				_portal.getCompanyId(httpServletRequest));
 
 		Map<String, Resource> resourcesMap = new TreeMap<>();
 
@@ -247,7 +248,7 @@ public class HeadlessDiscoveryAPIApplication extends Application {
 	}
 
 	private Map<String, List<HeadlessApplicationProvider.ResourceMethod>>
-		_getResourceMethodsMap() {
+		_getResourceMethodsMap(long companyId) {
 
 		Map<String, List<HeadlessApplicationProvider.ResourceMethod>>
 			resourceMethodsMap = new TreeMap<>();
@@ -257,7 +258,7 @@ public class HeadlessDiscoveryAPIApplication extends Application {
 		String serverURL = StringUtil.removeSubstring(absolutePath, "/api/");
 
 		for (HeadlessApplicationProvider.Application application :
-				_headlessApplicationProvider.getApplications()) {
+				_headlessApplicationProvider.getApplications(companyId)) {
 
 			for (HeadlessApplicationProvider.ResourceMethod resourceMethod :
 					application.getResourceMethods()) {

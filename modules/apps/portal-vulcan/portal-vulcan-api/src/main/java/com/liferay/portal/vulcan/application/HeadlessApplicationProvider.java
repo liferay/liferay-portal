@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface HeadlessApplicationProvider {
 
-	public List<Application> getApplications();
+	public List<Application> getApplications(long companyId);
 
 	public interface Application {
 

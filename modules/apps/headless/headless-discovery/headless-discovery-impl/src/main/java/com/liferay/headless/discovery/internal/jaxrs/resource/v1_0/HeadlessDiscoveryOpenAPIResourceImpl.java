@@ -108,7 +108,8 @@ public class HeadlessDiscoveryOpenAPIResourceImpl {
 			openAPIDocumentsMap = new TreeMap<>();
 
 		for (HeadlessApplicationProvider.Application application :
-				_headlessApplicationProvider.getApplications()) {
+				_headlessApplicationProvider.getApplications(
+					_portal.getCompanyId(_httpServletRequest))) {
 
 			if (StringUtil.equals(
 					HeadlessDiscoveryOpenAPIApplication.BASE_PATH,

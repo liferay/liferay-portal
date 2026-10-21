@@ -28,7 +28,7 @@ public class ToolSetResourceImpl extends BaseToolSetResourceImpl {
 		FeatureFlagManagerUtil.checkEnabled(
 			contextCompany.getCompanyId(), "LPD-63311");
 
-		return ToolSetUtil.getToolSetsPage();
+		return ToolSetUtil.getToolSetsPage(contextCompany.getCompanyId());
 	}
 
 }
