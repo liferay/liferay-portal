@@ -69,7 +69,10 @@ public class SourceFormatterReleaseUtil {
 			artifactProperties.load(
 				new StringReader(
 					JenkinsResultsParserUtil.read(
-						new File(portalDirectory, _ARTIFACT_PROPERTIES_PATH))));
+						new File(
+							portalDirectory,
+							"modules/.releng/util/source-formatter" +
+								"/artifact.properties"))));
 
 			String artifactGitId = artifactProperties.getProperty(
 				"artifact.git.id");
@@ -162,9 +165,6 @@ public class SourceFormatterReleaseUtil {
 
 		return addedLines.equals(removedLines);
 	}
-
-	private static final String _ARTIFACT_PROPERTIES_PATH =
-		"modules/.releng/util/source-formatter/artifact.properties";
 
 	private static final String _PACKAGE_NAME = "com.liferay.source.formatter";
 
