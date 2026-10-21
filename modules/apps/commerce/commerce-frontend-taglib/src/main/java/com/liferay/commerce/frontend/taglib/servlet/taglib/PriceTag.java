@@ -6,7 +6,6 @@
 package com.liferay.commerce.frontend.taglib.servlet.taglib;
 
 import com.liferay.commerce.configuration.CommercePriceConfiguration;
-import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.frontend.helper.ProductHelper;
@@ -30,7 +29,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -255,10 +253,8 @@ public class PriceTag extends IncludeTag {
 
 	private boolean _isDisplayDiscountLevels() throws ConfigurationException {
 		CommercePriceConfiguration commercePriceConfiguration =
-			configurationProvider.getConfiguration(
-				CommercePriceConfiguration.class,
-				new SystemSettingsLocator(
-					CommerceConstants.SERVICE_NAME_COMMERCE_PRICE));
+			configurationProvider.getSystemConfiguration(
+				CommercePriceConfiguration.class);
 
 		return commercePriceConfiguration.displayDiscountLevels();
 	}

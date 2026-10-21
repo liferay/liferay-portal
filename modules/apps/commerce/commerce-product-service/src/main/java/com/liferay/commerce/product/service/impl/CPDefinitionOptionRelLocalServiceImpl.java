@@ -56,7 +56,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -1099,9 +1098,8 @@ public class CPDefinitionOptionRelLocalServiceImpl
 	private CPOptionConfiguration _getCPOptionConfiguration()
 		throws ConfigurationException {
 
-		return _configurationProvider.getConfiguration(
-			CPOptionConfiguration.class,
-			new SystemSettingsLocator(CPConstants.SERVICE_NAME_CP_OPTION));
+		return _configurationProvider.getSystemConfiguration(
+			CPOptionConfiguration.class);
 	}
 
 	private boolean _hasCPDefinitionSKUContributorCPDefinitionOptionRel(

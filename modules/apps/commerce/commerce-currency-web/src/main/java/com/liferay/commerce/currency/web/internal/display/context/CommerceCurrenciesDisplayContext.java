@@ -11,7 +11,6 @@ import com.liferay.commerce.currency.constants.CommerceCurrencyActionKeys;
 import com.liferay.commerce.currency.constants.CommerceCurrencyConstants;
 import com.liferay.commerce.currency.constants.CommerceCurrencyExchangeRateConstants;
 import com.liferay.commerce.currency.constants.CommerceCurrencyPortletKeys;
-import com.liferay.commerce.currency.constants.RoundingTypeConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.currency.util.CommercePriceFormatter;
@@ -36,7 +35,6 @@ import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -438,9 +436,8 @@ public class CommerceCurrenciesDisplayContext {
 	private RoundingTypeConfiguration _getRoundingTypeConfiguration()
 		throws ConfigurationException {
 
-		return _configurationProvider.getConfiguration(
-			RoundingTypeConfiguration.class,
-			new SystemSettingsLocator(RoundingTypeConstants.SERVICE_NAME));
+		return _configurationProvider.getSystemConfiguration(
+			RoundingTypeConfiguration.class);
 	}
 
 	private RowChecker _getRowChecker() {

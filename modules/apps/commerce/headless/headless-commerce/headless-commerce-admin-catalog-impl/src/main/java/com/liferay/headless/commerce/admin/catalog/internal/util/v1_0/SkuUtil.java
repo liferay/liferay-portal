@@ -40,7 +40,6 @@ import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -457,10 +456,8 @@ public class SkuUtil {
 		throws Exception {
 
 		CommercePricingConfiguration commercePricingConfiguration =
-			configurationProvider.getConfiguration(
-				CommercePricingConfiguration.class,
-				new SystemSettingsLocator(
-					CommercePricingConstants.SERVICE_NAME));
+			configurationProvider.getSystemConfiguration(
+				CommercePricingConfiguration.class);
 
 		return commercePricingConfiguration.commercePricingCalculationKey();
 	}

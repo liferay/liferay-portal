@@ -9,7 +9,6 @@ import com.liferay.commerce.currency.configuration.CommerceCurrencyConfiguration
 import com.liferay.commerce.currency.configuration.RoundingTypeConfiguration;
 import com.liferay.commerce.currency.constants.CommerceCurrencyConstants;
 import com.liferay.commerce.currency.constants.CommerceCurrencyExchangeRateConstants;
-import com.liferay.commerce.currency.constants.RoundingTypeConstants;
 import com.liferay.commerce.currency.exception.CommerceCurrencyCodeException;
 import com.liferay.commerce.currency.exception.CommerceCurrencyNameException;
 import com.liferay.commerce.currency.exception.CommerceCurrencyRateException;
@@ -50,7 +49,6 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
@@ -132,10 +130,8 @@ public class CommerceCurrencyLocalServiceImpl
 
 		if (Validator.isNull(roundingMode)) {
 			RoundingTypeConfiguration roundingTypeConfiguration =
-				_configurationProvider.getConfiguration(
-					RoundingTypeConfiguration.class,
-					new SystemSettingsLocator(
-						RoundingTypeConstants.SERVICE_NAME));
+				_configurationProvider.getSystemConfiguration(
+					RoundingTypeConfiguration.class);
 
 			RoundingMode roundingModeEnum =
 				roundingTypeConfiguration.roundingMode();
@@ -311,10 +307,8 @@ public class CommerceCurrencyLocalServiceImpl
 			String symbol = jsonObject.getString("symbol");
 
 			RoundingTypeConfiguration roundingTypeConfiguration =
-				_configurationProvider.getConfiguration(
-					RoundingTypeConfiguration.class,
-					new SystemSettingsLocator(
-						RoundingTypeConstants.SERVICE_NAME));
+				_configurationProvider.getSystemConfiguration(
+					RoundingTypeConfiguration.class);
 
 			Map<Locale, String> nameMap = HashMapBuilder.put(
 				serviceContext.getLocale(), jsonObject.getString("name")
@@ -464,10 +458,8 @@ public class CommerceCurrencyLocalServiceImpl
 
 		if (Validator.isNull(roundingMode)) {
 			RoundingTypeConfiguration roundingTypeConfiguration =
-				_configurationProvider.getConfiguration(
-					RoundingTypeConfiguration.class,
-					new SystemSettingsLocator(
-						RoundingTypeConstants.SERVICE_NAME));
+				_configurationProvider.getSystemConfiguration(
+					RoundingTypeConfiguration.class);
 
 			RoundingMode roundingModeEnum =
 				roundingTypeConfiguration.roundingMode();

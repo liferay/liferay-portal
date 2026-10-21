@@ -6,10 +6,8 @@
 package com.liferay.commerce.pricing.web.internal.util;
 
 import com.liferay.commerce.pricing.configuration.CommercePricingConfiguration;
-import com.liferay.commerce.pricing.constants.CommercePricingConstants;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 
 /**
  * @author Riccardo Alberti
@@ -21,10 +19,8 @@ public class CommercePricingUtil {
 		throws ConfigurationException {
 
 		CommercePricingConfiguration commercePricingConfiguration =
-			configurationProvider.getConfiguration(
-				CommercePricingConfiguration.class,
-				new SystemSettingsLocator(
-					CommercePricingConstants.SERVICE_NAME));
+			configurationProvider.getSystemConfiguration(
+				CommercePricingConfiguration.class);
 
 		return commercePricingConfiguration.commercePricingCalculationKey();
 	}

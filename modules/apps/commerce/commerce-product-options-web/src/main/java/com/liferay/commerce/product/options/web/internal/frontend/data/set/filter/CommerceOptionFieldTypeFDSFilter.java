@@ -6,7 +6,6 @@
 package com.liferay.commerce.product.options.web.internal.frontend.data.set.filter;
 
 import com.liferay.commerce.product.configuration.CPOptionConfiguration;
-import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.option.CommerceOptionType;
 import com.liferay.commerce.product.option.CommerceOptionTypeRegistry;
 import com.liferay.commerce.product.options.web.internal.constants.CommerceOptionFDSNames;
@@ -18,7 +17,6 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +41,9 @@ public class CommerceOptionFieldTypeFDSFilter extends BaseSelectionFDSFilter {
 		CPOptionConfiguration cpOptionConfiguration = null;
 
 		try {
-			cpOptionConfiguration = _configurationProvider.getConfiguration(
-				CPOptionConfiguration.class,
-				new SystemSettingsLocator(CPConstants.SERVICE_NAME_CP_OPTION));
+			cpOptionConfiguration =
+				_configurationProvider.getSystemConfiguration(
+					CPOptionConfiguration.class);
 		}
 		catch (ConfigurationException configurationException) {
 			_log.error(configurationException);

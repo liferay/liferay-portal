@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -357,10 +356,8 @@ public class MiniCartTag extends IncludeTag {
 	private boolean _isDisplayDiscountLevels() {
 		try {
 			CommercePriceConfiguration commercePriceConfiguration =
-				_configurationProvider.getConfiguration(
-					CommercePriceConfiguration.class,
-					new SystemSettingsLocator(
-						CommerceConstants.SERVICE_NAME_COMMERCE_PRICE));
+				_configurationProvider.getSystemConfiguration(
+					CommercePriceConfiguration.class);
 
 			return commercePriceConfiguration.displayDiscountLevels();
 		}

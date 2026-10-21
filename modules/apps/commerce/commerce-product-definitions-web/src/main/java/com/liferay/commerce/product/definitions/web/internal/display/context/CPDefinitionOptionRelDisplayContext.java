@@ -38,7 +38,6 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -150,9 +149,8 @@ public class CPDefinitionOptionRelDisplayContext
 
 	public String getCommerceOptionTypeKeys() throws PortalException {
 		CPOptionConfiguration cpOptionConfiguration =
-			_configurationProvider.getConfiguration(
-				CPOptionConfiguration.class,
-				new SystemSettingsLocator(CPConstants.SERVICE_NAME_CP_OPTION));
+			_configurationProvider.getSystemConfiguration(
+				CPOptionConfiguration.class);
 
 		return StringUtil.merge(
 			ArrayUtil.filter(
@@ -170,9 +168,8 @@ public class CPDefinitionOptionRelDisplayContext
 			_commerceOptionTypeRegistry.getCommerceOptionTypes();
 
 		CPOptionConfiguration cpOptionConfiguration =
-			_configurationProvider.getConfiguration(
-				CPOptionConfiguration.class,
-				new SystemSettingsLocator(CPConstants.SERVICE_NAME_CP_OPTION));
+			_configurationProvider.getSystemConfiguration(
+				CPOptionConfiguration.class);
 
 		String[] allowedCommerceOptionTypes =
 			cpOptionConfiguration.allowedCommerceOptionTypes();

@@ -7,7 +7,6 @@ package com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.convert
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.configuration.CommercePriceConfiguration;
-import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
@@ -60,7 +59,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -189,11 +187,8 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 				setDisplayDiscountLevels(
 					() -> {
 						CommercePriceConfiguration commercePriceConfiguration =
-							_configurationProvider.getConfiguration(
-								CommercePriceConfiguration.class,
-								new SystemSettingsLocator(
-									CommerceConstants.
-										SERVICE_NAME_COMMERCE_PRICE));
+							_configurationProvider.getSystemConfiguration(
+								CommercePriceConfiguration.class);
 
 						return commercePriceConfiguration.
 							displayDiscountLevels();

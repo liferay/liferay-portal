@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
-import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
@@ -123,10 +122,8 @@ public class PricingCommerceHealthStatus implements CommerceHealthStatus {
 		throws PortalException {
 
 		CommercePricingConfiguration commercePricingConfiguration =
-			_configurationProvider.getConfiguration(
-				CommercePricingConfiguration.class,
-				new SystemSettingsLocator(
-					CommercePricingConstants.SERVICE_NAME));
+			_configurationProvider.getSystemConfiguration(
+				CommercePricingConfiguration.class);
 
 		if (Objects.equals(
 				commercePricingConfiguration.commercePricingCalculationKey(),
@@ -275,10 +272,8 @@ public class PricingCommerceHealthStatus implements CommerceHealthStatus {
 		@Override
 		public Object call() throws Exception {
 			CommercePricingConfiguration commercePricingConfiguration =
-				_configurationProvider.getConfiguration(
-					CommercePricingConfiguration.class,
-					new SystemSettingsLocator(
-						CommercePricingConstants.SERVICE_NAME));
+				_configurationProvider.getSystemConfiguration(
+					CommercePricingConfiguration.class);
 
 			if (Objects.equals(
 					commercePricingConfiguration.
