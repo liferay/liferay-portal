@@ -683,7 +683,6 @@ public class OfflineOpenIdConnectSessionManagerTest {
 		String authServerWellKnownURI = RandomTestUtil.randomString();
 		String clientId = RandomTestUtil.randomString();
 		long companyId = RandomTestUtil.randomLong();
-
 		OpenIdConnectSessionLocalService openIdConnectSessionLocalService =
 			Mockito.mock(OpenIdConnectSessionLocalService.class);
 
