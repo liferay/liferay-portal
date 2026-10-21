@@ -33,11 +33,13 @@ import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngin
 import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.StreamUtil;
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -455,6 +457,26 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 				continue;
 			}
 
+			ExportImportVulcanBatchEngineTaskItemDelegate.ExportImportDescriptor
+				exportImportDescriptor =
+					registration.getExportImportDescriptor();
+
+			JSONArray jsonArray = JSONUtil.toJSONArray(
+				JSONUtil.toStringList(
+					JSONFactoryUtil.createJSONArray(
+						StringUtil.read(inputStream)),
+					"externalReferenceCode"),
+				externalReferenceCode ->
+					exportImportDescriptor.getDeletionJSONObject(
+						externalReferenceCode,
+						portletDataContext.getScopeGroupId()));
+
+			if (jsonArray.length() == 0) {
+				continue;
+			}
+
+			String json = jsonArray.toString();
+
 			BatchEngineImportTask batchEngineDeleteTask =
 				_batchEngineImportTaskService.addBatchEngineImportTask(
 					null, portletDataContext.getCompanyId(), _getUserId(), 100,
@@ -463,7 +485,8 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 						_normalize(
 							registration.getFileName(),
 							portletDataContext.getSourceGroupId()),
-						inputStream),
+						new UnsyncByteArrayInputStream(
+							json.getBytes(StringPool.UTF8))),
 					"JSON", BatchEngineTaskExecuteStatus.INITIAL.name(),
 					Collections.emptyMap(),
 					BatchEngineImportTaskConstants.

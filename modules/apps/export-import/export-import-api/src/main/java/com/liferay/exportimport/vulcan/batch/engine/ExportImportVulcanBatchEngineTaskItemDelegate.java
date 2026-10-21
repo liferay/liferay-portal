@@ -6,6 +6,8 @@
 package com.liferay.exportimport.vulcan.batch.engine;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.staging.StagingGroupHelper;
@@ -31,6 +33,12 @@ public interface ExportImportVulcanBatchEngineTaskItemDelegate<T>
 
 		public default Function<T, Boolean> getApplicableModelFunction() {
 			return null;
+		}
+
+		public default JSONObject getDeletionJSONObject(
+			String externalReferenceCode, long groupId) {
+
+			return JSONUtil.put("externalReferenceCode", externalReferenceCode);
 		}
 
 		public default String getDescription(Locale locale) {
