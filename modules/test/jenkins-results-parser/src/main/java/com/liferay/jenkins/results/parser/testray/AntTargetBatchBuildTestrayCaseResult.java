@@ -240,19 +240,8 @@ public class AntTargetBatchBuildTestrayCaseResult
 			return _testClassReport;
 		}
 
-		String testClassName = _getTestClassName();
-
-		for (TestClassReport testClassReport :
-				downstreamBuildReport.getTestClassReports()) {
-
-			if (!Objects.equals(
-					testClassName, testClassReport.getTestClassName())) {
-
-				continue;
-			}
-
-			_testClassReport = testClassReport;
-		}
+		_testClassReport = downstreamBuildReport.getTestClassReport(
+			_getTestClassName());
 
 		return _testClassReport;
 	}

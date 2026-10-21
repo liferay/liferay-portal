@@ -26,6 +26,8 @@ public interface DownstreamBuildReport extends BuildReport {
 
 	public int getSkipCount();
 
+	public TestClassReport getTestClassReport(String testClassName);
+
 	public List<TestClassReport> getTestClassReports();
 
 	public List<TestReport> getTestReports();

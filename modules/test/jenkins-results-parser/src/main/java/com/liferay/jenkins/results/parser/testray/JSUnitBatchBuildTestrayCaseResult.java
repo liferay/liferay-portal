@@ -243,15 +243,7 @@ public class JSUnitBatchBuildTestrayCaseResult
 			return _testClassReport;
 		}
 
-		for (TestClassReport testClassResult :
-				downstreamBuildReport.getTestClassReports()) {
-
-			if (Objects.equals(testClassResult.getTestClassName(), getName())) {
-				_testClassReport = testClassResult;
-
-				return _testClassReport;
-			}
-		}
+		_testClassReport = downstreamBuildReport.getTestClassReport(getName());
 
 		return _testClassReport;
 	}

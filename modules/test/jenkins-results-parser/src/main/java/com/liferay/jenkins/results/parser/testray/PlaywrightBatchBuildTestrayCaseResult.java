@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -220,22 +219,11 @@ public class PlaywrightBatchBuildTestrayCaseResult
 			return null;
 		}
 
-		TestClassReport playwrightTestClassReport = null;
-
 		PlaywrightJUnitTestClass playwrightJUnitTestClass = getTestClass();
 
-		for (TestClassReport testClassReport :
-				downstreamBuildReport.getTestClassReports()) {
-
-			if (!Objects.equals(
-					playwrightJUnitTestClass.getSpecFilePath(),
-					testClassReport.getTestClassName())) {
-
-				continue;
-			}
-
-			playwrightTestClassReport = testClassReport;
-		}
+		TestClassReport playwrightTestClassReport =
+			downstreamBuildReport.getTestClassReport(
+				playwrightJUnitTestClass.getSpecFilePath());
 
 		if (playwrightTestClassReport == null) {
 			return null;

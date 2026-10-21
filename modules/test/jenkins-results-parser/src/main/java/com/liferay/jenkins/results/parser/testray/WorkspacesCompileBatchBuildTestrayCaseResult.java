@@ -18,7 +18,6 @@ import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Michael Hashimoto
@@ -99,18 +98,15 @@ public class WorkspacesCompileBatchBuildTestrayCaseResult
 
 		testClassName = testClassName.replaceAll("/", ".");
 
-		for (TestClassReport testClassReport :
-				downstreamBuildReport.getTestClassReports()) {
+		TestClassReport testClassReport =
+			downstreamBuildReport.getTestClassReport(testClassName);
 
-			if (!Objects.equals(
-					testClassName, testClassReport.getTestClassName())) {
+		if (testClassReport == null) {
+			return null;
+		}
 
-				continue;
-			}
-
-			for (TestReport testReport : testClassReport.getTestReports()) {
-				return testReport;
-			}
+		for (TestReport testReport : testClassReport.getTestReports()) {
+			return testReport;
 		}
 
 		return null;
