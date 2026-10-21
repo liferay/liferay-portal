@@ -11,6 +11,8 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.ParallelExecutor;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +50,7 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 		}
 
 		Map<String, String> exceptionMessages = new ConcurrentHashMap<>();
-		int longRunningBuildsCount = 0;
+		List<JenkinsMaster.RunningBuild> longRunningBuilds = new ArrayList<>();
 		List<String> messages = new ArrayList<>();
 		int runningBuildsCount = 0;
 		List<MonitorResult.Status> statuses = new ArrayList<>();
@@ -66,7 +68,7 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 				messages.add(
 					JenkinsResultsParserUtil.combine(
 						"Unable to read running builds on ",
-						jenkinsMaster.getName(), ": ",
+						jenkinsMaster.getRemoteURL(), ": ",
 						exceptionMessages.get(jenkinsMaster.getName())));
 
 				statuses.add(MonitorResult.Status.UNKNOWN);
@@ -87,37 +89,22 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 					continue;
 				}
 
-				longRunningBuildsCount++;
-
-				messages.add(
-					JenkinsResultsParserUtil.combine(
-						jenkinsMaster.getName(), " ",
-						runningBuild.getFullDisplayName(),
-						" has been running for ",
-						JenkinsResultsParserUtil.toDurationString(duration),
-						" at ", runningBuild.getURL()));
+				longRunningBuilds.add(runningBuild);
 
 				statuses.add(MonitorResult.Status.CRITICAL);
 			}
 		}
 
-		if (longRunningBuildsCount > 0) {
+		if (!longRunningBuilds.isEmpty()) {
 			messages.add(
-				0,
-				JenkinsResultsParserUtil.combine(
-					String.valueOf(longRunningBuildsCount), " ",
-					JenkinsResultsParserUtil.getNounForm(
-						longRunningBuildsCount, "builds", "build"),
-					" in cohort ", _cohortName, " over the ceiling of ",
-					JenkinsResultsParserUtil.toDurationString(
-						_buildDurationMaximumSeconds * 1000)));
+				0, _getLongRunningBuildsMessage(longRunningBuilds.size()));
 		}
 
 		Map<String, String> metrics = new LinkedHashMap<>();
 
 		metrics.put(
 			"long.running.builds.count",
-			String.valueOf(longRunningBuildsCount));
+			String.valueOf(longRunningBuilds.size()));
 		metrics.put("running.builds.count", String.valueOf(runningBuildsCount));
 
 		if (statuses.isEmpty()) {
@@ -130,6 +117,7 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 		}
 
 		return new MonitorResult(
+			_getLinkURLs(currentTimeMillis, longRunningBuilds),
 			JenkinsResultsParserUtil.join(". ", messages), metrics,
 			MonitorResult.Status.getMostSevere(statuses), currentTimeMillis);
 	}
@@ -155,6 +143,65 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 		}
 
 		return new ArrayList<>(jenkinsMastersMap.values());
+	}
+
+	private List<String> _getLinkURLs(
+		long currentTimeMillis,
+		List<JenkinsMaster.RunningBuild> longRunningBuilds) {
+
+		if (longRunningBuilds.isEmpty()) {
+			return null;
+		}
+
+		Collections.sort(
+			longRunningBuilds,
+			new Comparator<JenkinsMaster.RunningBuild>() {
+
+				@Override
+				public int compare(
+					JenkinsMaster.RunningBuild runningBuild1,
+					JenkinsMaster.RunningBuild runningBuild2) {
+
+					return Long.compare(
+						runningBuild2.getDuration(currentTimeMillis),
+						runningBuild1.getDuration(currentTimeMillis));
+				}
+
+			});
+
+		List<String> linkURLs = new ArrayList<>(getConfiguredLinkURLs());
+
+		for (JenkinsMaster.RunningBuild runningBuild :
+				longRunningBuilds.subList(
+					0,
+					Math.min(longRunningBuilds.size(), _LINK_URLS_SIZE_MAX))) {
+
+			linkURLs.add(
+				JenkinsResultsParserUtil.getRemoteURL(runningBuild.getURL()));
+		}
+
+		return linkURLs;
+	}
+
+	private String _getLongRunningBuildsMessage(int longRunningBuildsCount) {
+		String message = JenkinsResultsParserUtil.combine(
+			String.valueOf(longRunningBuildsCount), " ",
+			JenkinsResultsParserUtil.getNounForm(
+				longRunningBuildsCount, "builds", "build"),
+			" in cohort ", _cohortName, " ",
+			JenkinsResultsParserUtil.getNounForm(
+				longRunningBuildsCount, "have", "has"),
+			" been running for more than ",
+			JenkinsResultsParserUtil.toDurationString(
+				_buildDurationMaximumSeconds * 1000));
+
+		if (longRunningBuildsCount <= _LINK_URLS_SIZE_MAX) {
+			return message;
+		}
+
+		return JenkinsResultsParserUtil.combine(
+			message, " (the ", String.valueOf(_LINK_URLS_SIZE_MAX),
+			" longest are linked)");
 	}
 
 	private List<List<JenkinsMaster.RunningBuild>> _readRunningBuilds(
@@ -201,6 +248,8 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 			throw new RuntimeException(timeoutException);
 		}
 	}
+
+	private static final int _LINK_URLS_SIZE_MAX = 10;
 
 	private static final int _RETRIES_SIZE_MAX = 1;
 
