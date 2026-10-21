@@ -21,11 +21,13 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Resource;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -75,6 +77,7 @@ import ${configYAML.javaEEPackage}.servlet.ServletContext;
 import ${configYAML.javaEEPackage}.servlet.http.HttpServletRequest;
 import ${configYAML.javaEEPackage}.servlet.http.HttpServletResponse;
 
+import ${configYAML.javaEEPackage}.ws.rs.NotFoundException;
 import ${configYAML.javaEEPackage}.ws.rs.NotSupportedException;
 import ${configYAML.javaEEPackage}.ws.rs.core.MultivaluedHashMap;
 import ${configYAML.javaEEPackage}.ws.rs.core.MultivaluedMap;
@@ -651,6 +654,8 @@ public abstract class Base${schemaName}ResourceImpl
 							<#assign parentParameterNames = parentParameterNames + [postParentBatchJavaMethodSignature.javaMethodParameters[0].parameterName] />
 
 							if (parameters.containsKey("${postParentBatchJavaMethodSignature.javaMethodParameters[0].parameterName}")) {
+								<@checkFeatureFlag javaMethodSignature = postParentBatchJavaMethodSignature />
+
 								${schemaVarName}UnsafeFunction = ${schemaVarName} ->
 
 								<#if !stringUtil.equals(javaDataType, postParentBatchJavaMethodSignature.returnType)>
@@ -687,6 +692,8 @@ public abstract class Base${schemaName}ResourceImpl
 							</#if>
 
 							if (parameters.containsKey("${postParentByExternalReferenceCodeBatchJavaMethodSignature.javaMethodParameters[0].parameterName}")) {
+								<@checkFeatureFlag javaMethodSignature = postParentByExternalReferenceCodeBatchJavaMethodSignature />
+
 								${schemaVarName}UnsafeFunction = ${schemaVarName} ->
 
 								<#if !stringUtil.equals(javaDataType, postParentByExternalReferenceCodeBatchJavaMethodSignature.returnType)>
@@ -718,6 +725,8 @@ public abstract class Base${schemaName}ResourceImpl
 						<#if postParentBatchJavaMethodSignatures?has_content || postParentByExternalReferenceCodeBatchJavaMethodSignatures?has_content>
 							else {
 						</#if>
+
+						<@checkFeatureFlag javaMethodSignature = postBatchJavaMethodSignature />
 
 						${schemaVarName}UnsafeFunction = ${schemaVarName} ->
 
@@ -769,6 +778,8 @@ public abstract class Base${schemaName}ResourceImpl
 										<#assign parentParameterNames = parentParameterNames + [getParentByExternalReferenceCodeBatchJavaMethodSignature.javaMethodParameters[0].parameterName] />
 
 										if (parameters.containsKey("${getParentByExternalReferenceCodeBatchJavaMethodSignature.javaMethodParameters[0].parameterName}")) {
+											<@checkFeatureFlag javaMethodSignature = getParentByExternalReferenceCodeBatchJavaMethodSignature />
+
 											get${schemaName} = ${getParentByExternalReferenceCodeBatchJavaMethodSignature.methodName}(
 
 											<@getCreateBatchJavaMethodParameters
@@ -789,6 +800,8 @@ public abstract class Base${schemaName}ResourceImpl
 											else {
 										</#if>
 
+										<@checkFeatureFlag javaMethodSignature = getByExternalReferenceCodeBatchJavaMethodSignature />
+
 										get${schemaName} = ${getByExternalReferenceCodeBatchJavaMethodSignature.methodName}(
 
 										<@getCreateBatchJavaMethodParameters
@@ -808,6 +821,8 @@ public abstract class Base${schemaName}ResourceImpl
 											throw new NotSupportedException("One of the following parameters must be specified: [${parentParameterNames?join(", ")}]");
 										}
 									</#if>
+
+									<@checkFeatureFlag javaMethodSignature = patchBatchJavaMethodSignature />
 
 									<#if stringUtil.equals(javaDataType, patchBatchJavaMethodSignature.returnType)>
 										persisted${schemaName} = patch${schemaName}(
@@ -838,6 +853,8 @@ public abstract class Base${schemaName}ResourceImpl
 											<#assign parentParameterNames = parentParameterNames + [postParentBatchJavaMethodSignature.javaMethodParameters[0].parameterName] />
 
 											if (parameters.containsKey("${postParentBatchJavaMethodSignature.javaMethodParameters[0].parameterName}")) {
+												<@checkFeatureFlag javaMethodSignature = postParentBatchJavaMethodSignature />
+
 												<#if stringUtil.equals(javaDataType, postParentBatchJavaMethodSignature.returnType)>
 													persisted${schemaName} =
 												</#if>
@@ -867,6 +884,8 @@ public abstract class Base${schemaName}ResourceImpl
 											</#if>
 
 											if (parameters.containsKey("${postParentByExternalReferenceCodeBatchJavaMethodSignature.javaMethodParameters[0].parameterName}")) {
+												<@checkFeatureFlag javaMethodSignature = postParentByExternalReferenceCodeBatchJavaMethodSignature />
+
 												<#if stringUtil.equals(javaDataType, postParentByExternalReferenceCodeBatchJavaMethodSignature.returnType)>
 													persisted${schemaName} =
 												</#if>
@@ -891,6 +910,8 @@ public abstract class Base${schemaName}ResourceImpl
 										<#if postParentBatchJavaMethodSignatures?has_content || postParentByExternalReferenceCodeBatchJavaMethodSignatures?has_content>
 											else {
 										</#if>
+
+										<@checkFeatureFlag javaMethodSignature = postBatchJavaMethodSignature />
 
 										<#if stringUtil.equals(javaDataType, postBatchJavaMethodSignature.returnType)>
 											persisted${schemaName} =
@@ -934,6 +955,8 @@ public abstract class Base${schemaName}ResourceImpl
 										<#assign parentParameterNames = parentParameterNames + [putParentByExternalReferenceCodeBatchJavaMethodSignature.javaMethodParameters[0].parameterName] />
 
 										if (parameters.containsKey("${putParentByExternalReferenceCodeBatchJavaMethodSignature.javaMethodParameters[0].parameterName}")) {
+											<@checkFeatureFlag javaMethodSignature = putParentByExternalReferenceCodeBatchJavaMethodSignature />
+
 											<#if stringUtil.equals(javaDataType, putParentByExternalReferenceCodeBatchJavaMethodSignature.returnType)>
 												persisted${schemaName} =
 											</#if>
@@ -958,6 +981,8 @@ public abstract class Base${schemaName}ResourceImpl
 									<#if putParentByExternalReferenceCodeBatchJavaMethodSignatures?has_content>
 										else
 									</#if>
+
+									<@checkFeatureFlag javaMethodSignature = putByExternalReferenceCodeBatchJavaMethodSignature />
 
 									<#if stringUtil.equals(javaDataType, putByExternalReferenceCodeBatchJavaMethodSignature.returnType)>
 										persisted${schemaName} =
@@ -1023,7 +1048,11 @@ public abstract class Base${schemaName}ResourceImpl
 
 						<#if useDeleteAssetLibrary || useDeleteByExternalReferenceCode || useDeleteSite>
 							if (${schemaVarName}.${getterMethodName}() != null) {
+								<@checkFeatureFlag javaMethodSignature = deleteByIdBatchJavaMethodSignature />
+
 								try {
+						<#else>
+							<@checkFeatureFlag javaMethodSignature = deleteByIdBatchJavaMethodSignature />
 						</#if>
 
 						${deleteByIdBatchJavaMethodSignature.methodName}(${schemaVarName}.${getterMethodName}()
@@ -1048,6 +1077,8 @@ public abstract class Base${schemaName}ResourceImpl
 							catch (Exception exception) {
 								if (${schemaVarName}.getExternalReferenceCode() != null) {
 									<#if useDeleteByExternalReferenceCode>
+												<@checkFeatureFlag javaMethodSignature = deleteByExternalReferenceCodeBatchJavaMethodSignature />
+
 												${deleteByExternalReferenceCodeBatchJavaMethodSignature.methodName}(${schemaVarName}.getExternalReferenceCode());
 
 												return ${schemaVarName};
@@ -1059,6 +1090,8 @@ public abstract class Base${schemaName}ResourceImpl
 											<#assign assetLibraryParameter = freeMarkerTool.isExternalReferenceCodeExclusiveMethod("delete", deleteAssetLibraryBatchJavaMethodSignature)?then("assetLibraryExternalReferenceCode", "assetLibraryId") />
 
 											if (parameters.containsKey("${assetLibraryParameter}")) {
+												<@checkFeatureFlag javaMethodSignature = deleteAssetLibraryBatchJavaMethodSignature />
+
 												${deleteAssetLibraryBatchJavaMethodSignature.methodName}(
 													<@getDeleteBatchJavaMethodParameters javaMethodParameters = deleteAssetLibraryBatchJavaMethodSignature.javaMethodParameters />
 												);
@@ -1071,6 +1104,8 @@ public abstract class Base${schemaName}ResourceImpl
 											<#assign siteParameter = freeMarkerTool.isExternalReferenceCodeExclusiveMethod("delete", deleteSiteBatchJavaMethodSignature)?then("siteExternalReferenceCode", "siteId") />
 
 											if (parameters.containsKey("${siteParameter}")) {
+												<@checkFeatureFlag javaMethodSignature = deleteSiteBatchJavaMethodSignature />
+
 												${deleteSiteBatchJavaMethodSignature.methodName}(
 													<@getDeleteBatchJavaMethodParameters javaMethodParameters = deleteSiteBatchJavaMethodSignature.javaMethodParameters />
 												);
@@ -1092,6 +1127,8 @@ public abstract class Base${schemaName}ResourceImpl
 						<#if useDeleteById>else</#if>
 
 						if (parameters.containsKey("${assetLibraryParameter}")) {
+							<@checkFeatureFlag javaMethodSignature = deleteAssetLibraryBatchJavaMethodSignature />
+
 							${deleteAssetLibraryBatchJavaMethodSignature.methodName}(
 								<@getDeleteBatchJavaMethodParameters javaMethodParameters = deleteAssetLibraryBatchJavaMethodSignature.javaMethodParameters />
 							);
@@ -1104,6 +1141,8 @@ public abstract class Base${schemaName}ResourceImpl
 						<#if useDeleteAssetLibrary || useDeleteById>else</#if>
 
 						if (${schemaVarName}.getExternalReferenceCode() != null) {
+							<@checkFeatureFlag javaMethodSignature = deleteByExternalReferenceCodeBatchJavaMethodSignature />
+
 							${deleteByExternalReferenceCodeBatchJavaMethodSignature.methodName}(${schemaVarName}.getExternalReferenceCode());
 
 							return ${schemaVarName};
@@ -1116,6 +1155,8 @@ public abstract class Base${schemaName}ResourceImpl
 						<#assign siteParameter = freeMarkerTool.isExternalReferenceCodeExclusiveMethod("delete", deleteSiteBatchJavaMethodSignature)?then("siteExternalReferenceCode", "siteId") />
 
 						if (parameters.containsKey("${siteParameter}")) {
+							<@checkFeatureFlag javaMethodSignature = deleteSiteBatchJavaMethodSignature />
+
 							${deleteSiteBatchJavaMethodSignature.methodName}(
 								<@getDeleteBatchJavaMethodParameters javaMethodParameters = deleteSiteBatchJavaMethodSignature.javaMethodParameters />
 							);
@@ -1183,6 +1224,8 @@ public abstract class Base${schemaName}ResourceImpl
 					<#assign parentParameterNames = parentParameterNames + [getParentBatchJavaMethodSignature.javaMethodParameters[0].parameterName] />
 
 					if (parameters.containsKey("${getParentBatchJavaMethodSignature.javaMethodParameters[0].parameterName}")) {
+						<@checkFeatureFlag javaMethodSignature = getParentBatchJavaMethodSignature />
+
 						return ${getParentBatchJavaMethodSignature.methodName}(
 							<@getReadBatchJavaMethodParameters javaMethodParameters = getParentBatchJavaMethodSignature.javaMethodParameters />
 						);
@@ -1194,6 +1237,8 @@ public abstract class Base${schemaName}ResourceImpl
 					<#if getParentBatchJavaMethodSignatures?has_content>
 						{
 					</#if>
+
+					<@checkFeatureFlag javaMethodSignature = getBatchJavaMethodSignature />
 
 					return ${getBatchJavaMethodSignature.methodName}(
 						<@getReadBatchJavaMethodParameters javaMethodParameters = getBatchJavaMethodSignature.javaMethodParameters />
@@ -1255,6 +1300,8 @@ public abstract class Base${schemaName}ResourceImpl
 
 			<#if updateStrategies?seq_contains("PARTIAL_UPDATE")>
 				if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+					<@checkFeatureFlag javaMethodSignature = patchBatchJavaMethodSignature />
+
 					<#if stringUtil.equals(javaDataType, patchBatchJavaMethodSignature.returnType)>
 						${schemaVarName}UnsafeFunction = ${schemaVarName} -> patch${schemaName}(
 					<#else>
@@ -1289,6 +1336,8 @@ public abstract class Base${schemaName}ResourceImpl
 
 			<#if updateStrategies?seq_contains("UPDATE")>
 				if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+					<@checkFeatureFlag javaMethodSignature = putBatchJavaMethodSignature />
+
 					<#if stringUtil.equals(javaDataType, putBatchJavaMethodSignature.returnType)>
 						${schemaVarName}UnsafeFunction = ${schemaVarName} -> put${schemaName}(
 					<#else>
@@ -1376,6 +1425,8 @@ public abstract class Base${schemaName}ResourceImpl
 	<#if generateCRUD>
 		@Override
 		public ${schemaName} getItem(Long id) throws Exception {
+			<@checkFeatureFlag javaMethodSignature = getByIdJavaMethodSignature />
+
 			return ${getByIdJavaMethodSignature.methodName}(
 			<#list getByIdJavaMethodSignature.javaMethodParameters as javaMethodParameter>
 				<#if freeMarkerTool.isIdParameter(javaMethodParameter, schemaName)>
@@ -2011,6 +2062,19 @@ public abstract class Base${schemaName}ResourceImpl
 		<#if !type?contains("java.lang.String")>
 			)
 		</#if>
+	</#if>
+</#macro>
+
+<#macro checkFeatureFlag
+	javaMethodSignature
+>
+	<#local featureFlag = freeMarkerTool.getFeatureFlag(javaMethodSignature, openAPIYAML)!"" />
+
+	<#if featureFlag?has_content>
+		if (!FeatureFlagManagerUtil.isEnabled(CompanyThreadLocal.getCompanyId(), "${featureFlag}")) {
+			throw new NotFoundException();
+		}
+
 	</#if>
 </#macro>
 
