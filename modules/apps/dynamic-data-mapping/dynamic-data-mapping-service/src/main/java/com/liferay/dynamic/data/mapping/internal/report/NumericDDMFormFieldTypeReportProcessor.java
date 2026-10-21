@@ -6,10 +6,13 @@
 package com.liferay.dynamic.data.mapping.internal.report;
 
 import com.liferay.dynamic.data.mapping.constants.DDMFormInstanceReportConstants;
+import com.liferay.dynamic.data.mapping.exception.NoSuchFormInstanceRecordVersionException;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.report.DDMFormFieldTypeReportProcessor;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -47,14 +51,27 @@ import org.osgi.service.component.annotations.Component;
 public class NumericDDMFormFieldTypeReportProcessor
 	extends TextDDMFormFieldTypeReportProcessor {
 
-	public static List<DDMFormValues> getDDMFormValues(
+	public static List<DDMFormValues> getApprovedDDMFormValues(
 		List<DDMFormInstanceRecord> ddmFormInstanceRecords) {
 
 		return TransformUtil.transform(
 			ddmFormInstanceRecords,
 			ddmFormInstanceRecord -> {
 				try {
-					return ddmFormInstanceRecord.getDDMFormValues();
+					DDMFormInstanceRecordVersion ddmFormInstanceRecordVersion =
+						DDMFormInstanceRecordVersionLocalServiceUtil.
+							getLatestFormInstanceRecordVersion(
+								ddmFormInstanceRecord.getFormInstanceRecordId(),
+								WorkflowConstants.STATUS_APPROVED);
+
+					return ddmFormInstanceRecordVersion.getDDMFormValues();
+				}
+				catch (NoSuchFormInstanceRecordVersionException
+							noSuchFormInstanceRecordVersionException) {
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(noSuchFormInstanceRecordVersionException);
+					}
 				}
 				catch (PortalException portalException) {
 					if (_log.isWarnEnabled()) {
@@ -208,7 +225,7 @@ public class NumericDDMFormFieldTypeReportProcessor
 
 				updateMaxAndMin(
 					ddmFormFieldValue.getName(),
-					getDDMFormValues(
+					getApprovedDDMFormValues(
 						TransformUtil.transform(
 							ddmFormInstance.getFormInstanceRecords(),
 							currentDDMFormInstanceRecord -> {
