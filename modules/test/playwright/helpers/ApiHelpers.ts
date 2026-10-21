@@ -76,6 +76,7 @@ import {JSONWebServicesFragmentCollectionApiHelper} from './json-web-services/JS
 import {JSONWebServicesFragmentEntryApiHelper} from './json-web-services/JSONWebServicesFragmentEntryApiHelper';
 import {JSONWebServicesGroupApiHelper} from './json-web-services/JSONWebServicesGroupApiHelper';
 import {JSONWebServicesJournalApiHelper} from './json-web-services/JSONWebServicesJournalApiHelper';
+import {JSONWebServicesKnowledgeBaseApiHelper} from './json-web-services/JSONWebServicesKnowledgeBaseApiHelper';
 import {JSONWebServicesLayoutApiHelper} from './json-web-services/JSONWebServicesLayoutApiHelper';
 import {JSONWebServicesLayoutPageTemplateCollectionApiHelper} from './json-web-services/JSONWebServicesLayoutPageTemplateCollection';
 import {JSONWebServicesLayoutPageTemplateEntryApiHelper} from './json-web-services/JSONWebServicesLayoutPageTemplateEntry';
@@ -164,6 +165,7 @@ export class ApiHelpers {
 	readonly jsonWebServicesFragmentCollection: JSONWebServicesFragmentCollectionApiHelper;
 	readonly jsonWebServicesGroup: JSONWebServicesGroupApiHelper;
 	readonly jsonWebServicesJournal: JSONWebServicesJournalApiHelper;
+	readonly jsonWebServicesKnowledgeBase: JSONWebServicesKnowledgeBaseApiHelper;
 	readonly jsonWebServicesLayout: JSONWebServicesLayoutApiHelper;
 	readonly jsonWebServicesLayoutPageTemplateEntry: JSONWebServicesLayoutPageTemplateEntryApiHelper;
 	readonly jsonWebServicesLayoutPageTemplateCollection: JSONWebServicesLayoutPageTemplateCollectionApiHelper;
@@ -278,6 +280,8 @@ export class ApiHelpers {
 			new JSONWebServicesFragmentCollectionApiHelper(this);
 		this.jsonWebServicesGroup = new JSONWebServicesGroupApiHelper(this);
 		this.jsonWebServicesJournal = new JSONWebServicesJournalApiHelper(this);
+		this.jsonWebServicesKnowledgeBase =
+			new JSONWebServicesKnowledgeBaseApiHelper(this);
 		this.jsonWebServicesLayout = new JSONWebServicesLayoutApiHelper(this);
 		this.jsonWebServicesLayoutPageTemplateEntry =
 			new JSONWebServicesLayoutPageTemplateEntryApiHelper(this);

@@ -28,11 +28,13 @@ type TDLFileVersion = {
 
 export class JSONWebServicesDocumentLibraryApiHelper {
 	readonly apiHelpers: ApiHelpers;
+	readonly baseAppPath: string;
 	readonly baseFileEntryPath: string;
 	readonly baseFileVersionPath: string;
 
 	constructor(apiHelpers: ApiHelpers) {
 		this.apiHelpers = apiHelpers;
+		this.baseAppPath = '/api/jsonws/dlapp';
 		this.baseFileEntryPath = '/api/jsonws/dlfileentry';
 		this.baseFileVersionPath = '/api/jsonws/dlfileversion';
 	}
@@ -44,6 +46,26 @@ export class JSONWebServicesDocumentLibraryApiHelper {
 
 		return this.apiHelpers.post(
 			`${liferayConfig.environment.baseUrl}${this.baseFileVersionPath}/get-latest-file-version`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
+	async moveFileEntry(
+		fileEntryId: number | string,
+		newFolderId: number | string
+	): Promise<TDLFileEntry> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('fileEntryId', String(fileEntryId));
+		urlSearchParams.append('newFolderId', String(newFolderId));
+		urlSearchParams.append('serviceContext', '{}');
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.baseAppPath}/move-file-entry`,
 			{
 				data: urlSearchParams.toString(),
 				failOnStatusCode: true,

@@ -8,3 +8,8 @@ type KnowledgeBaseArticle = {
 	id: string;
 	title: string;
 };
+
+type KnowledgeBaseFolder = {
+	id: string;
+	name: string;
+};

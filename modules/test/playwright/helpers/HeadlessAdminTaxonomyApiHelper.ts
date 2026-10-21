@@ -362,6 +362,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 	}: postTaxonomyVocabularyTaxonomyCategoryProps): Promise<{
 		externalReferenceCode: string;
 		id: number;
+		name: string;
 	}> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/taxonomy-vocabularies/${vocabularyId}/taxonomy-categories`,
