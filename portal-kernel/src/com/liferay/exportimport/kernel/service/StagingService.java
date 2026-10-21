@@ -91,4 +91,4 @@ public interface StagingService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1134240061
+// LIFERAY-SERVICE-BUILDER-HASH:-1912302362
