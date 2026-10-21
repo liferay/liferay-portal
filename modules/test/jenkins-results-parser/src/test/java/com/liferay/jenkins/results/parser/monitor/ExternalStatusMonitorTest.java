@@ -297,7 +297,7 @@ public class ExternalStatusMonitorTest
 			_newMonitorProperties());
 
 		testEquals(
-			Collections.singletonList(_URL),
+			Collections.singletonList(_STATUS_PAGE_URL),
 			externalStatusMonitor.getLinkURLs());
 	}
 
