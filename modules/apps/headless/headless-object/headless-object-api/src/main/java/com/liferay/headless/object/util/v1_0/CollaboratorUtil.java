@@ -85,6 +85,12 @@ public class CollaboratorUtil {
 				uriInfo, user, userGroupLocalService, userLocalService);
 		}
 
+		if (StringUtil.equals("User", type) &&
+			!_hasViewPermission(userLocalService.getUser(collaboratorId))) {
+
+			throw new NoSuchModelException();
+		}
+
 		return toCollaborator(
 			acceptLanguage, dtoConverter, dtoConverterRegistry,
 			_addOrUpdateSharingEntry(
@@ -233,9 +239,17 @@ public class CollaboratorUtil {
 				}
 			}
 			else {
+				long collaboratorId = GetterUtil.getLong(collaborator.getId());
+
+				if (StringUtil.equals("User", collaborator.getType()) &&
+					!_hasViewPermission(
+						userLocalService.getUser(collaboratorId))) {
+
+					throw new NoSuchModelException();
+				}
+
 				sharingEntry = _addOrUpdateSharingEntry(
-					classNameId, classPK, collaborator,
-					GetterUtil.getLong(collaborator.getId()), groupId,
+					classNameId, classPK, collaborator, collaboratorId, groupId,
 					httpServletRequest, sharingEntryService,
 					collaborator.getType(), userGroupLocalService,
 					userLocalService);
