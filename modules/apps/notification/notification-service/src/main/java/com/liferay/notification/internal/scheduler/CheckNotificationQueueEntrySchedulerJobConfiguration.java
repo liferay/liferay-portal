@@ -12,15 +12,18 @@ import com.liferay.notification.service.NotificationQueueEntryLocalService;
 import com.liferay.notification.type.NotificationType;
 import com.liferay.notification.type.NotificationTypeServiceTracker;
 import com.liferay.petra.function.UnsafeRunnable;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
 import com.liferay.portal.kernel.util.Time;
 
 import java.util.Date;
+import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -49,12 +52,8 @@ public class CheckNotificationQueueEntrySchedulerJobConfiguration
 					NotificationConstants.TYPE_EMAIL);
 			}
 
-			NotificationQueueConfiguration notificationQueueConfiguration =
-				_configurationProvider.getSystemConfiguration(
-					NotificationQueueConfiguration.class);
-
 			long deleteInterval =
-				notificationQueueConfiguration.deleteInterval() * Time.MINUTE;
+				_notificationQueueConfiguration.deleteInterval() * Time.MINUTE;
 
 			_notificationQueueEntryLocalService.deleteNotificationQueueEntries(
 				new Date(System.currentTimeMillis() - deleteInterval));
@@ -67,8 +66,15 @@ public class CheckNotificationQueueEntrySchedulerJobConfiguration
 			15, TimeUnit.MINUTE);
 	}
 
-	@Reference
-	private ConfigurationProvider _configurationProvider;
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_notificationQueueConfiguration = ConfigurableUtil.createConfigurable(
+			NotificationQueueConfiguration.class, properties);
+	}
+
+	private volatile NotificationQueueConfiguration
+		_notificationQueueConfiguration;
 
 	@Reference
 	private NotificationQueueEntryLocalService
