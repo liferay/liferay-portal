@@ -176,7 +176,8 @@ public class HTTPEndpointMonitorTest
 			_newMonitorProperties());
 
 		testEquals(
-			Collections.singletonList(_URL), httpEndpointMonitor.getLinkURLs());
+			Collections.singletonList(_REMOTE_URL),
+			httpEndpointMonitor.getLinkURLs());
 	}
 
 	@Test
