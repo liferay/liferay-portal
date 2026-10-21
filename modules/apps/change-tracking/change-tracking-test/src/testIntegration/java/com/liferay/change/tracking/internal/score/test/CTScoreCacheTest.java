@@ -57,9 +57,11 @@ public class CTScoreCacheTest {
 		_ctCollection2 = _addCTCollectionWithDLFileEntries(5, group);
 
 		int score1 = _ctCollection1.getScore();
-		int score2 = _ctCollection2.getScore();
 
 		Assert.assertTrue(score1 > 0);
+
+		int score2 = _ctCollection2.getScore();
+
 		Assert.assertTrue(score2 > score1);
 
 		GroupTestUtil.deleteGroup(group);
