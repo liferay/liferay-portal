@@ -20,6 +20,7 @@ import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
+import com.liferay.fragment.cache.FragmentEntryLinkCache;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
@@ -490,6 +491,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePage(true, serviceContext, SitePage.Type.WIDGET_PAGE);
 
 		_testPutSiteSitePageWithBasicFragmentPageElementsAddedByAnotherUser();
+		_testPutSiteSitePageWithCachedFragmentEntryLink();
 		_testPutSiteSitePageWithContentPageSpecification();
 		_testPutSiteSitePageWithDefaultAssetPublisher();
 		_testPutSiteSitePageWithEmptyLayout(serviceContext);
@@ -4238,6 +4240,57 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_layoutLockManager.unlock(draftLayout, user.getUserId());
 	}
 
+	private void _testPutSiteSitePageWithCachedFragmentEntryLink()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+		Locale locale = LocaleUtil.getDefault();
+
+		_addFragmentEntryLinksAndPublishLayout(
+			JSONUtil.put(
+				"BASIC_COMPONENT-heading",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"text",
+						JSONUtil.put(
+							LocaleUtil.toLanguageId(locale),
+							RandomTestUtil.randomString())))),
+			layout);
+
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+				testGroup.getGroupId(), layout.getPlid());
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
+
+		FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(0);
+
+		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
+			RandomTestUtil.randomString(), fragmentEntryLink, locale);
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode());
+
+		sitePageResource.putSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			sitePage.getExternalReferenceCode(), false, sitePage);
+
+		Assert.assertEquals(
+			fragmentEntryLink,
+			_fragmentEntryLinkLocalService.
+				getFragmentEntryLinkByExternalReferenceCode(
+					fragmentEntryLink.getExternalReferenceCode(),
+					testGroup.getGroupId()));
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale));
+	}
+
 	private void _testPutSiteSitePageWithContentPageSpecification()
 		throws Exception {
 
@@ -5724,6 +5777,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	@Inject
 	private FragmentEntryInputTemplateNodeContextHelper
 		_fragmentEntryInputTemplateNodeContextHelper;
+
+	@Inject
+	private FragmentEntryLinkCache _fragmentEntryLinkCache;
 
 	@Inject
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
