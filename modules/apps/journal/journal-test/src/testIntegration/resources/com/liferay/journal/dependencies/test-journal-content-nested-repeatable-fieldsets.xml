@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US" version="1.0">
+	<dynamic-element field-reference="Group" index-type="" instance-id="inst0001" name="Group" type="fieldset">
+		<dynamic-element field-reference="GroupName" index-type="keyword" instance-id="inst0002" name="GroupName" type="text">
+			<dynamic-content language-id="en_US"><![CDATA[Group 1]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element field-reference="Link" index-type="" instance-id="inst0003" name="Link" type="fieldset">
+			<dynamic-element field-reference="LinkName" index-type="keyword" instance-id="inst0004" name="LinkName" type="text">
+				<dynamic-content language-id="en_US"><![CDATA[Link 1.1]]></dynamic-content>
+			</dynamic-element>
+			<dynamic-element field-reference="Sublink" index-type="" instance-id="inst0005" name="Sublink" type="fieldset">
+				<dynamic-element field-reference="SublinkName" index-type="keyword" instance-id="inst0006" name="SublinkName" type="text">
+					<dynamic-content language-id="en_US"><![CDATA[Sublink 1.1.1]]></dynamic-content>
+				</dynamic-element>
+			</dynamic-element>
+			<dynamic-element field-reference="Sublink" index-type="" instance-id="inst0007" name="Sublink" type="fieldset">
+				<dynamic-element field-reference="SublinkName" index-type="keyword" instance-id="inst0008" name="SublinkName" type="text">
+					<dynamic-content language-id="en_US"><![CDATA[Sublink 1.1.2]]></dynamic-content>
+				</dynamic-element>
+			</dynamic-element>
+		</dynamic-element>
+		<dynamic-element field-reference="Link" index-type="" instance-id="inst0009" name="Link" type="fieldset">
+			<dynamic-element field-reference="LinkName" index-type="keyword" instance-id="inst0010" name="LinkName" type="text">
+				<dynamic-content language-id="en_US"><![CDATA[Link 1.2]]></dynamic-content>
+			</dynamic-element>
+			<dynamic-element field-reference="Sublink" index-type="" instance-id="inst0011" name="Sublink" type="fieldset">
+				<dynamic-element field-reference="SublinkName" index-type="keyword" instance-id="inst0012" name="SublinkName" type="text">
+					<dynamic-content language-id="en_US"><![CDATA[Sublink 1.2.1]]></dynamic-content>
+				</dynamic-element>
+			</dynamic-element>
+		</dynamic-element>
+	</dynamic-element>
+	<dynamic-element field-reference="Group" index-type="" instance-id="inst0013" name="Group" type="fieldset">
+		<dynamic-element field-reference="GroupName" index-type="keyword" instance-id="inst0014" name="GroupName" type="text">
+			<dynamic-content language-id="en_US"><![CDATA[Group 2]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element field-reference="Link" index-type="" instance-id="inst0015" name="Link" type="fieldset">
+			<dynamic-element field-reference="LinkName" index-type="keyword" instance-id="inst0016" name="LinkName" type="text">
+				<dynamic-content language-id="en_US"><![CDATA[Link 2.1]]></dynamic-content>
+			</dynamic-element>
+			<dynamic-element field-reference="Sublink" index-type="" instance-id="inst0017" name="Sublink" type="fieldset">
+				<dynamic-element field-reference="SublinkName" index-type="keyword" instance-id="inst0018" name="SublinkName" type="text">
+					<dynamic-content language-id="en_US"><![CDATA[Sublink 2.1.1]]></dynamic-content>
+				</dynamic-element>
+			</dynamic-element>
+			<dynamic-element field-reference="Sublink" index-type="" instance-id="inst0019" name="Sublink" type="fieldset">
+				<dynamic-element field-reference="SublinkName" index-type="keyword" instance-id="inst0020" name="SublinkName" type="text">
+					<dynamic-content language-id="en_US"><![CDATA[Sublink 2.1.2]]></dynamic-content>
+				</dynamic-element>
+			</dynamic-element>
+			<dynamic-element field-reference="Sublink" index-type="" instance-id="inst0021" name="Sublink" type="fieldset">
+				<dynamic-element field-reference="SublinkName" index-type="keyword" instance-id="inst0022" name="SublinkName" type="text">
+					<dynamic-content language-id="en_US"><![CDATA[Sublink 2.1.3]]></dynamic-content>
+				</dynamic-element>
+			</dynamic-element>
+		</dynamic-element>
+	</dynamic-element>
+</root>

@@ -1,0 +1,242 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"defaultLanguageId": "en_US",
+	"definitionSchemaVersion": "2.0",
+	"fields": [
+		{
+			"collapsible": false,
+			"ddmStructureId": "",
+			"ddmStructureKey": "",
+			"ddmStructureLayoutId": "",
+			"fieldReference": "Group",
+			"label": {
+				"en_US": "Group"
+			},
+			"labelAtStructureLevel": true,
+			"localizable": false,
+			"name": "Group",
+			"nestedFields": [
+				{
+					"autocomplete": false,
+					"dataSourceType": "",
+					"dataType": "string",
+					"ddmDataProviderInstanceId": [
+					],
+					"ddmDataProviderInstanceOutput": [
+					],
+					"displayStyle": "singleline",
+					"fieldNamespace": "",
+					"fieldReference": "GroupName",
+					"indexType": "keyword",
+					"label": {
+						"en_US": "GroupName"
+					},
+					"localizable": true,
+					"name": "GroupName",
+					"placeholder": {
+						"en_US": ""
+					},
+					"predefinedValue": {
+						"en_US": ""
+					},
+					"readOnly": false,
+					"repeatable": false,
+					"required": false,
+					"showLabel": true,
+					"tip": {
+						"en_US": ""
+					},
+					"tooltip": {
+						"en_US": ""
+					},
+					"type": "text",
+					"visibilityExpression": ""
+				},
+				{
+					"collapsible": false,
+					"ddmStructureId": "",
+					"ddmStructureKey": "",
+					"ddmStructureLayoutId": "",
+					"fieldReference": "Link",
+					"label": {
+						"en_US": "Link"
+					},
+					"labelAtStructureLevel": true,
+					"localizable": false,
+					"name": "Link",
+					"nestedFields": [
+						{
+							"autocomplete": false,
+							"dataSourceType": "",
+							"dataType": "string",
+							"ddmDataProviderInstanceId": [
+							],
+							"ddmDataProviderInstanceOutput": [
+							],
+							"displayStyle": "singleline",
+							"fieldNamespace": "",
+							"fieldReference": "LinkName",
+							"indexType": "keyword",
+							"label": {
+								"en_US": "LinkName"
+							},
+							"localizable": true,
+							"name": "LinkName",
+							"placeholder": {
+								"en_US": ""
+							},
+							"predefinedValue": {
+								"en_US": ""
+							},
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": true,
+							"tip": {
+								"en_US": ""
+							},
+							"tooltip": {
+								"en_US": ""
+							},
+							"type": "text",
+							"visibilityExpression": ""
+						},
+						{
+							"collapsible": false,
+							"ddmStructureId": "",
+							"ddmStructureKey": "",
+							"ddmStructureLayoutId": "",
+							"fieldReference": "Sublink",
+							"label": {
+								"en_US": "Sublink"
+							},
+							"labelAtStructureLevel": true,
+							"localizable": false,
+							"name": "Sublink",
+							"nestedFields": [
+								{
+									"autocomplete": false,
+									"dataSourceType": "",
+									"dataType": "string",
+									"ddmDataProviderInstanceId": [
+									],
+									"ddmDataProviderInstanceOutput": [
+									],
+									"displayStyle": "singleline",
+									"fieldNamespace": "",
+									"fieldReference": "SublinkName",
+									"indexType": "keyword",
+									"label": {
+										"en_US": "SublinkName"
+									},
+									"localizable": true,
+									"name": "SublinkName",
+									"placeholder": {
+										"en_US": ""
+									},
+									"predefinedValue": {
+										"en_US": ""
+									},
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"en_US": ""
+									},
+									"tooltip": {
+										"en_US": ""
+									},
+									"type": "text",
+									"visibilityExpression": ""
+								}
+							],
+							"readOnly": false,
+							"repeatable": true,
+							"required": false,
+							"rows": [
+								{
+									"columns": [
+										{
+											"fields": [
+												"SublinkName"
+											],
+											"size": 12
+										}
+									]
+								}
+							],
+							"showLabel": true,
+							"tip": {
+								"en_US": ""
+							},
+							"type": "fieldset"
+						}
+					],
+					"readOnly": false,
+					"repeatable": true,
+					"required": false,
+					"rows": [
+						{
+							"columns": [
+								{
+									"fields": [
+										"LinkName"
+									],
+									"size": 12
+								}
+							]
+						},
+						{
+							"columns": [
+								{
+									"fields": [
+										"Sublink"
+									],
+									"size": 12
+								}
+							]
+						}
+					],
+					"showLabel": true,
+					"tip": {
+						"en_US": ""
+					},
+					"type": "fieldset"
+				}
+			],
+			"readOnly": false,
+			"repeatable": true,
+			"required": false,
+			"rows": [
+				{
+					"columns": [
+						{
+							"fields": [
+								"GroupName"
+							],
+							"size": 12
+						}
+					]
+				},
+				{
+					"columns": [
+						{
+							"fields": [
+								"Link"
+							],
+							"size": 12
+						}
+					]
+				}
+			],
+			"showLabel": true,
+			"tip": {
+				"en_US": ""
+			},
+			"type": "fieldset"
+		}
+	]
+}

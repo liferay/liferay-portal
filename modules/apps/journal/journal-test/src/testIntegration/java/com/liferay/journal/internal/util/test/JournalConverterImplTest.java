@@ -152,6 +152,32 @@ public class JournalConverterImplTest {
 	}
 
 	@Test
+	public void testGetContentFromNestedRepeatableFieldSets() throws Exception {
+		DDMStructure ddmStructure = _ddmStructureTestHelper.addStructure(
+			PortalUtil.getClassNameId(JournalArticle.class), null,
+			"Test Structure",
+			jsonDeserialize(
+				read("test-ddm-structure-nested-repeatable-fieldsets.json")),
+			StorageType.DEFAULT.getValue(), DDMStructureConstants.TYPE_DEFAULT);
+
+		String expectedContent = read(
+			"test-journal-content-nested-repeatable-fieldsets.xml");
+
+		Fields fields = _journalConverter.getDDMFields(
+			ddmStructure, expectedContent);
+
+		Field fieldsDisplayField = fields.get(DDM.FIELDS_DISPLAY_NAME);
+
+		fieldsDisplayField.setValue(
+			"RemovedField_INSTANCE_removed," + fieldsDisplayField.getValue());
+
+		Assert.assertEquals(
+			expectedContent,
+			_journalConverter.getContent(
+				ddmStructure, fields, ddmStructure.getGroupId()));
+	}
+
+	@Test
 	public void testGetContentFromTextAreaField() throws Exception {
 		Fields fields = new Fields();
 
