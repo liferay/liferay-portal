@@ -9,7 +9,6 @@ import com.liferay.oauth.client.persistence.service.OAuthClientPRLocalMetadataSe
 import com.liferay.oauth.client.rest.dto.v1_0.OAuthClientPRLocalMetadata;
 import com.liferay.oauth.client.rest.internal.dto.v1_0.util.OAuthClientPRLocalMetadataUtil;
 import com.liferay.oauth.client.rest.resource.v1_0.OAuthClientPRLocalMetadataResource;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -39,12 +38,6 @@ public class OAuthClientPRLocalMetadataResourceImpl
 			String oAuthClientPRLocalMetadataExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-63415")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		com.liferay.oauth.client.persistence.model.OAuthClientPRLocalMetadata
 			oAuthClientPRLocalMetadata =
 				_oAuthClientPRLocalMetadataService.
@@ -61,12 +54,6 @@ public class OAuthClientPRLocalMetadataResourceImpl
 			getOAuthClientPRLocalMetadataByExternalReferenceCode(
 				String oAuthClientPRLocalMetadataExternalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-63415")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		com.liferay.oauth.client.persistence.model.OAuthClientPRLocalMetadata
 			serviceBuilderOAuthClientPRLocalMetadata =
@@ -85,12 +72,6 @@ public class OAuthClientPRLocalMetadataResourceImpl
 	public Page<OAuthClientPRLocalMetadata> getOAuthClientPRLocalMetadatasPage()
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-63415")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return Page.of(
 			transform(
 				_oAuthClientPRLocalMetadataService.
@@ -108,12 +89,6 @@ public class OAuthClientPRLocalMetadataResourceImpl
 	public OAuthClientPRLocalMetadata postOAuthClientPRLocalMetadata(
 			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-63415")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		String metadataJSON = oAuthClientPRLocalMetadata.getMetadataJSON();
 
@@ -156,12 +131,6 @@ public class OAuthClientPRLocalMetadataResourceImpl
 				String oAuthClientPRLocalMetadataExternalReferenceCode,
 				OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-63415")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		oAuthClientPRLocalMetadata.setExternalReferenceCode(
 			() -> oAuthClientPRLocalMetadataExternalReferenceCode);

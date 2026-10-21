@@ -11,7 +11,6 @@ import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersionPageExperience;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecificationVersionUtil;
-import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionPageExperienceResource;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionPreviewLocalService;
@@ -55,8 +54,6 @@ public class PageSpecificationVersionPageExperienceResourceImpl
 				@NestedFieldId(value = "externalReferenceCode") String
 					pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = PageSpecificationVersionUtil.getLayout(
 			contextCompany.getCompanyId(), siteExternalReferenceCode,

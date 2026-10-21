@@ -44,12 +44,6 @@ public class OAuthClientASLocalMetadataResourceImpl
 			String oAuthClientASLocalMetadataExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 			oAuthClientASLocalMetadata =
 				_oAuthClientASLocalMetadataService.
@@ -128,12 +122,6 @@ public class OAuthClientASLocalMetadataResourceImpl
 				String oAuthClientASLocalMetadataExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 			serviceBuilderOAuthClientASLocalMetadata =
 				_oAuthClientASLocalMetadataService.
@@ -150,12 +138,6 @@ public class OAuthClientASLocalMetadataResourceImpl
 	@Override
 	public Page<OAuthClientASLocalMetadata> getOAuthClientASLocalMetadatasPage()
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		return Page.of(
 			transform(
@@ -175,12 +157,6 @@ public class OAuthClientASLocalMetadataResourceImpl
 			OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 			serviceBuilderOAuthClientASLocalMetadata =
 				OAuthClientASLocalMetadataUtil.addOAuthClientASLocalMetadata(
@@ -199,12 +175,6 @@ public class OAuthClientASLocalMetadataResourceImpl
 				String oAuthClientASLocalMetadataExternalReferenceCode,
 				OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		oAuthClientASLocalMetadata.setExternalReferenceCode(
 			() -> oAuthClientASLocalMetadataExternalReferenceCode);

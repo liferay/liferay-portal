@@ -16,7 +16,6 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -69,8 +68,6 @@ public class SiteConfigurationResourceImpl
 			String siteConfigurationExternalReferenceCode)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		Group group = _groupLocalService.getGroupByExternalReferenceCode(
 			siteExternalReferenceCode, contextCompany.getCompanyId());
 
@@ -93,8 +90,6 @@ public class SiteConfigurationResourceImpl
 	public Page<SiteConfiguration> getSiteSiteConfigurationsPage(
 			String siteExternalReferenceCode, Pagination pagination)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		Group group = _groupLocalService.getGroupByExternalReferenceCode(
 			siteExternalReferenceCode, contextCompany.getCompanyId());
@@ -139,8 +134,6 @@ public class SiteConfigurationResourceImpl
 			String siteConfigurationExternalReferenceCode,
 			SiteConfiguration siteConfiguration)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		Group group = _groupLocalService.getGroupByExternalReferenceCode(
 			siteExternalReferenceCode, contextCompany.getCompanyId());
@@ -232,14 +225,6 @@ public class SiteConfigurationResourceImpl
 			}
 
 			siteConfigurations.add(siteConfiguration);
-		}
-	}
-
-	private void _checkFeatureFlag() {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-65399")) {
-
-			throw new UnsupportedOperationException();
 		}
 	}
 

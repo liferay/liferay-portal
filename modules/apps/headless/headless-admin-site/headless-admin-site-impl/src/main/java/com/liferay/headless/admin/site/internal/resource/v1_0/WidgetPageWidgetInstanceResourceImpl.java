@@ -12,7 +12,6 @@ import com.liferay.headless.admin.site.resource.v1_0.WidgetPageWidgetInstanceRes
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -55,12 +54,6 @@ public class WidgetPageWidgetInstanceResourceImpl
 			String widgetInstanceExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		Layout layout = _getTypePortletLayout(
 			siteExternalReferenceCode, sitePageExternalReferenceCode);
 
@@ -92,12 +85,6 @@ public class WidgetPageWidgetInstanceResourceImpl
 			String widgetInstanceExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		Layout layout = _getTypePortletLayout(
 			siteExternalReferenceCode, sitePageExternalReferenceCode);
 
@@ -123,12 +110,6 @@ public class WidgetPageWidgetInstanceResourceImpl
 			String siteExternalReferenceCode,
 			String sitePageExternalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		Layout layout = _getTypePortletLayout(
 			siteExternalReferenceCode, sitePageExternalReferenceCode);
@@ -156,12 +137,6 @@ public class WidgetPageWidgetInstanceResourceImpl
 			WidgetPageWidgetInstance widgetPageWidgetInstance)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		Layout layout = _getTypePortletLayout(
 			siteExternalReferenceCode, sitePageExternalReferenceCode);
 
@@ -184,12 +159,6 @@ public class WidgetPageWidgetInstanceResourceImpl
 			String widgetInstanceExternalReferenceCode,
 			WidgetPageWidgetInstance widgetPageWidgetInstance)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		Layout layout = _getTypePortletLayout(
 			siteExternalReferenceCode, sitePageExternalReferenceCode);

@@ -8,7 +8,6 @@ package com.liferay.mcp.server.rest.internal.resource.v1_0;
 import com.liferay.mcp.server.rest.dto.v1_0.ToolSet;
 import com.liferay.mcp.server.rest.internal.util.ToolSetUtil;
 import com.liferay.mcp.server.rest.resource.v1_0.ToolSetResource;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.vulcan.pagination.Page;
 
 import org.osgi.service.component.annotations.Component;
@@ -25,9 +24,6 @@ public class ToolSetResourceImpl extends BaseToolSetResourceImpl {
 
 	@Override
 	public Page<ToolSet> getToolSetsPage() {
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-63311");
-
 		return ToolSetUtil.getToolSetsPage(contextCompany.getCompanyId());
 	}
 

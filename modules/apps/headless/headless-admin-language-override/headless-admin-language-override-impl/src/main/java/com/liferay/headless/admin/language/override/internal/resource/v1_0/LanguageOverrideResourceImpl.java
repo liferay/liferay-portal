@@ -52,8 +52,6 @@ public class LanguageOverrideResourceImpl
 			String externalReferenceCode)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		_ploEntryService.deletePLOEntryByExternalReferenceCode(
 			externalReferenceCode);
 	}
@@ -116,8 +114,6 @@ public class LanguageOverrideResourceImpl
 			String externalReferenceCode)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		return _toLanguageOverride(
 			_ploEntryService.getPLOEntryByExternalReferenceCode(
 				externalReferenceCode));
@@ -127,8 +123,6 @@ public class LanguageOverrideResourceImpl
 	public Page<LanguageOverride> getLanguageOverridesPage(
 			String search, Pagination pagination, Sort[] sorts)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		return Page.of(
 			transform(
@@ -144,8 +138,6 @@ public class LanguageOverrideResourceImpl
 			LanguageOverride languageOverride)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		return _toLanguageOverride(
 			_ploEntryService.addOrUpdatePLOEntry(
 				languageOverride.getExternalReferenceCode(),
@@ -158,20 +150,10 @@ public class LanguageOverrideResourceImpl
 			String externalReferenceCode, LanguageOverride languageOverride)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		return _toLanguageOverride(
 			_ploEntryService.addOrUpdatePLOEntry(
 				externalReferenceCode, languageOverride.getKey(),
 				languageOverride.getLanguageId(), languageOverride.getValue()));
-	}
-
-	private void _checkFeatureFlag() {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49852")) {
-
-			throw new UnsupportedOperationException();
-		}
 	}
 
 	private LanguageOverride _toLanguageOverride(PLOEntry ploEntry)

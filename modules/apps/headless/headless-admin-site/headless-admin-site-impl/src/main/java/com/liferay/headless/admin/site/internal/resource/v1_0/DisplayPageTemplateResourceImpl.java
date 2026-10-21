@@ -120,8 +120,6 @@ public class DisplayPageTemplateResourceImpl
 			String displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
-
 		_layoutPageTemplateEntryService.deleteLayoutPageTemplateEntry(
 			_getLayoutPageTemplateEntry(
 				displayPageTemplateExternalReferenceCode,
@@ -147,8 +145,6 @@ public class DisplayPageTemplateResourceImpl
 			String displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
-
 		return _toDesignLibraryDisplayPageTemplate(
 			designLibraryExternalReferenceCode,
 			_getLayoutPageTemplateEntry(
@@ -161,8 +157,6 @@ public class DisplayPageTemplateResourceImpl
 			String designLibraryExternalReferenceCode,
 			String displayPageTemplateExternalReferenceCode, String roleNames)
 		throws Exception {
-
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
 
 		long groupId = _getDesignLibraryGroupId(
 			designLibraryExternalReferenceCode);
@@ -185,8 +179,6 @@ public class DisplayPageTemplateResourceImpl
 			Aggregation aggregation, Filter filter, Pagination pagination,
 			Sort[] sorts)
 		throws Exception {
-
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
 
 		long groupId = _getDesignLibraryGroupId(
 			designLibraryExternalReferenceCode);
@@ -353,8 +345,6 @@ public class DisplayPageTemplateResourceImpl
 				String displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_getLayoutPageTemplateEntry(
 				displayPageTemplateExternalReferenceCode,
@@ -386,8 +376,6 @@ public class DisplayPageTemplateResourceImpl
 				String designLibraryExternalReferenceCode,
 				String displayPageTemplateExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_getLayoutPageTemplateEntry(
@@ -483,8 +471,6 @@ public class DisplayPageTemplateResourceImpl
 			String displayPageTemplateExternalReferenceCode,
 			Permission[] permissions)
 		throws Exception {
-
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
 
 		super.putSiteDisplayPageTemplatePermissionsPage(
 			designLibraryExternalReferenceCode,
@@ -815,8 +801,6 @@ public class DisplayPageTemplateResourceImpl
 			boolean copyPermissions, String designLibraryExternalReferenceCode,
 			String displayPageTemplateExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
 
 		long groupId = _getDesignLibraryGroupId(
 			designLibraryExternalReferenceCode);

@@ -44,12 +44,6 @@ public class OAuthClientEntryResourceImpl
 			String oauthClientEntryExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		com.liferay.oauth.client.persistence.model.OAuthClientEntry
 			oAuthClientEntry =
 				_oAuthClientEntryService.
@@ -119,12 +113,6 @@ public class OAuthClientEntryResourceImpl
 
 	@Override
 	public Page<OAuthClientEntry> getOAuthClientEntriesPage() throws Exception {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return Page.of(
 			transform(
 				_oAuthClientEntryService.getCompanyOAuthClientEntries(
@@ -137,12 +125,6 @@ public class OAuthClientEntryResourceImpl
 			String oauthClientEntryExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return _toOAuthClientEntry(
 			_oAuthClientEntryService.getOAuthClientEntryByExternalReferenceCode(
 				oauthClientEntryExternalReferenceCode,
@@ -153,12 +135,6 @@ public class OAuthClientEntryResourceImpl
 	public OAuthClientEntry postOAuthClientEntry(
 			OAuthClientEntry oAuthClientEntry)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		String authServerWellKnownURI =
 			oAuthClientEntry.getAuthServerWellKnownURI();
@@ -205,12 +181,6 @@ public class OAuthClientEntryResourceImpl
 			String oauthClientEntryExternalReferenceCode,
 			OAuthClientEntry oAuthClientEntry)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49855")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		oAuthClientEntry.setExternalReferenceCode(
 			() -> oauthClientEntryExternalReferenceCode);

@@ -15,7 +15,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -60,12 +59,6 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 			String scopeKey, String className, String externalReferenceCode,
 			String search, Pagination pagination)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-96666")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		List<PIMLinkRelatedEntry> pimLinkRelatedEntries =
 			_pimLinkEngine.getPIMLinkRelatedEntries(

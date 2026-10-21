@@ -15,7 +15,6 @@ import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 
@@ -35,12 +34,6 @@ public class AuthorizationTokenResourceImpl
 
 	@Override
 	public AuthorizationToken postAuthorizationToken() throws Exception {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-62272")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		if (contextUser.isGuestUser()) {
 			throw new PrincipalException.MustBeAuthenticated(
 				contextUser.getUserId());

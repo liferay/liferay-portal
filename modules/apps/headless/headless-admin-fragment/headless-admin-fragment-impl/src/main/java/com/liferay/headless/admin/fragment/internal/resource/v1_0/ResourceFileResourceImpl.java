@@ -23,7 +23,6 @@ import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.ResourceFi
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ResourceFolderUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ServiceContextUtil;
-import com.liferay.headless.admin.fragment.internal.util.EnabledUtil;
 import com.liferay.headless.admin.fragment.resource.v1_0.ResourceFileResource;
 import com.liferay.headless.admin.site.dto.v1_0.util.URLUtil;
 import com.liferay.headless.common.spi.util.GroupUtil;
@@ -79,8 +78,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			String resourceFileExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		FileEntry fileEntry =
 			_dlAppLocalService.getFileEntryByExternalReferenceCode(
 				resourceFileExternalReferenceCode,
@@ -103,8 +100,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			String siteExternalReferenceCode,
 			String fragmentSetExternalReferenceCode, Pagination pagination)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
@@ -134,8 +129,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			String resourceFileExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		FileEntry fileEntry =
 			_dlAppLocalService.getFileEntryByExternalReferenceCode(
 				resourceFileExternalReferenceCode,
@@ -153,8 +146,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			String siteExternalReferenceCode, Filter filter,
 			Pagination pagination)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
@@ -193,8 +184,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			String resourceFolderExternalReferenceCode, Pagination pagination)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
@@ -214,8 +203,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			String fragmentSetExternalReferenceCode, ResourceFile resourceFile)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
 
@@ -230,8 +217,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 	public ResourceFile postSiteResourceFile(
 			String siteExternalReferenceCode, ResourceFile resourceFile)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -248,8 +233,6 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			String siteExternalReferenceCode,
 			String resourceFileExternalReferenceCode, ResourceFile resourceFile)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);

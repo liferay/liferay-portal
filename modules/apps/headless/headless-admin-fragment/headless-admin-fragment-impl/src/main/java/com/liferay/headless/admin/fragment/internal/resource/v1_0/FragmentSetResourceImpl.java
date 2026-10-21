@@ -67,8 +67,6 @@ public class FragmentSetResourceImpl
 			String fragmentSetExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
-
 		_fragmentCollectionService.deleteFragmentCollection(
 			fragmentSetExternalReferenceCode,
 			GroupUtil.getDepotGroupId(
@@ -83,8 +81,6 @@ public class FragmentSetResourceImpl
 			String fragmentSetExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		_fragmentCollectionService.deleteFragmentCollection(
 			fragmentSetExternalReferenceCode,
 			GroupUtil.getStagingAwareGroupId(
@@ -97,8 +93,6 @@ public class FragmentSetResourceImpl
 			String designLibraryExternalReferenceCode,
 			String fragmentSetExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
 
 		long groupId = GroupUtil.getDepotGroupId(
 			contextCompany.getCompanyId(), designLibraryExternalReferenceCode,
@@ -115,8 +109,6 @@ public class FragmentSetResourceImpl
 			String designLibraryExternalReferenceCode, Filter filter,
 			Pagination pagination)
 		throws Exception {
-
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
 
 		long groupId = GroupUtil.getDepotGroupId(
 			contextCompany.getCompanyId(), designLibraryExternalReferenceCode,
@@ -168,8 +160,6 @@ public class FragmentSetResourceImpl
 			String fragmentSetExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
@@ -184,8 +174,6 @@ public class FragmentSetResourceImpl
 			String siteExternalReferenceCode, Filter filter,
 			Pagination pagination)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
@@ -204,8 +192,6 @@ public class FragmentSetResourceImpl
 	public FragmentSet postSiteFragmentSet(
 			String siteExternalReferenceCode, FragmentSet fragmentSet)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -228,8 +214,6 @@ public class FragmentSetResourceImpl
 			String siteExternalReferenceCode,
 			String fragmentSetExternalReferenceCode, FragmentSet fragmentSet)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);

@@ -13,7 +13,6 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
 
@@ -36,12 +35,6 @@ public class LinkResourceImpl extends BaseLinkResourceImpl {
 			String type)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-96666")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		_pimLinkEngine.deletePIMLink(
 			_getObjectEntry(
 				className, externalReferenceCode, _getGroupId(scopeKey)),
@@ -51,12 +44,6 @@ public class LinkResourceImpl extends BaseLinkResourceImpl {
 	@Override
 	public void postScopeScopeKeyLink(String scopeKey, Link link)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-96666")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		long groupId = _getGroupId(scopeKey);
 

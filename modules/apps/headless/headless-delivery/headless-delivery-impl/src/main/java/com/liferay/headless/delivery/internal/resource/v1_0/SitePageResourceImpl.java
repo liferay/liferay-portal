@@ -41,7 +41,6 @@ import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -261,10 +260,6 @@ public class SitePageResourceImpl
 	@Override
 	public SitePage postSiteSitePage(Long siteId, SitePage sitePage)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-178052")) {
-			throw new UnsupportedOperationException();
-		}
 
 		Map<Locale, String> titleMap = LocalizedMapUtil.getLocalizedMap(
 			contextAcceptLanguage.getPreferredLocale(), sitePage.getTitle(),

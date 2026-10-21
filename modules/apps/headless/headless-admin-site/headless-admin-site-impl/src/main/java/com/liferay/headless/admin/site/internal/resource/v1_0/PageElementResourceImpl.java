@@ -23,7 +23,6 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItemUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -67,12 +66,6 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 			String pageElementExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
@@ -114,12 +107,6 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 			String pageExperienceExternalReferenceCode,
 			String pageElementExternalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -170,12 +157,6 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				String pageElementExternalReferenceCode, Boolean flatten)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
@@ -218,12 +199,6 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				String pageExperienceExternalReferenceCode, Boolean flatten)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
@@ -261,12 +236,6 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 			String pageSpecificationExternalReferenceCode,
 			String pageExperienceExternalReferenceCode, PageElement pageElement)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -318,12 +287,6 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 			String pageExperienceExternalReferenceCode,
 			String pageElementExternalReferenceCode, PageElement pageElement)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-74328")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);

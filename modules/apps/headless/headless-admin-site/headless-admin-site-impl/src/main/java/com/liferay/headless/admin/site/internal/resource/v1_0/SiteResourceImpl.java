@@ -210,12 +210,6 @@ public class SiteResourceImpl
 	public Response getSiteSiteInitializer(String externalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-19870")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		Group group = _groupService.getGroupByExternalReferenceCode(
 			externalReferenceCode, contextCompany.getCompanyId());
 

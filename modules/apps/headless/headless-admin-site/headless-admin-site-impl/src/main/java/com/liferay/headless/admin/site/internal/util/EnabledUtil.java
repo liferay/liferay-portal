@@ -33,11 +33,6 @@ public class EnabledUtil {
 			company.getCompanyId(), "LPD-57283");
 	}
 
-	public static void checkPageSpecificationVersionEnabled(Company company) {
-		FeatureFlagManagerUtil.checkEnabled(
-			company.getCompanyId(), "LPD-10622");
-	}
-
 	public static void checkPrivateLayoutEnabled(Company company) {
 		if (LazyReferencingThreadLocal.isEnabled() ||
 			ExportImportThreadLocal.isExportInProcess() ||

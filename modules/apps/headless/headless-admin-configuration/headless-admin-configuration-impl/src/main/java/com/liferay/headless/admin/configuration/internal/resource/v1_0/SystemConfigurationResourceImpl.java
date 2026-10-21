@@ -16,7 +16,6 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -65,8 +64,6 @@ public class SystemConfigurationResourceImpl
 			String systemConfigurationExternalReferenceCode)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		_checkPermission();
 
 		_validateDefaultCompany();
@@ -87,8 +84,6 @@ public class SystemConfigurationResourceImpl
 	public Page<SystemConfiguration> getSystemConfigurationsPage(
 			Pagination pagination)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		_checkPermission();
 
@@ -122,8 +117,6 @@ public class SystemConfigurationResourceImpl
 			String systemConfigurationExternalReferenceCode,
 			SystemConfiguration systemConfiguration)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		_checkPermission();
 
@@ -208,14 +201,6 @@ public class SystemConfigurationResourceImpl
 			}
 
 			systemConfigurations.add(systemConfiguration);
-		}
-	}
-
-	private void _checkFeatureFlag() {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-65399")) {
-
-			throw new UnsupportedOperationException();
 		}
 	}
 

@@ -10,7 +10,6 @@ import com.liferay.exportimport.rest.dto.v1_0.PreviewSite;
 import com.liferay.exportimport.rest.internal.odata.entity.v1_0.PreviewSiteEntityModel;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.resource.v1_0.PreviewSiteResource;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -51,9 +50,6 @@ public class PreviewSiteResourceImpl extends BasePreviewSiteResourceImpl {
 	public Page<PreviewSite> getExportPreviewPreviewSitesPage(
 			String search, Pagination pagination, Sort[] sorts)
 		throws Exception {
-
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-85946");
 
 		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
 			contextCompany.getCompanyId());

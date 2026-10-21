@@ -18,7 +18,6 @@ import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.ResourceFo
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ResourceFolderUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ServiceContextUtil;
-import com.liferay.headless.admin.fragment.internal.util.EnabledUtil;
 import com.liferay.headless.admin.fragment.resource.v1_0.ResourceFolderResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.petra.function.UnsafeConsumer;
@@ -64,8 +63,6 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			String resourceFolderExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		Folder folder = _dlAppLocalService.getFolderByExternalReferenceCode(
 			resourceFolderExternalReferenceCode,
 			GroupUtil.getStagingAwareGroupId(
@@ -88,8 +85,6 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			String siteExternalReferenceCode,
 			String fragmentSetExternalReferenceCode, Pagination pagination)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
@@ -119,8 +114,6 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			String resourceFolderExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		Folder folder = _dlAppLocalService.getFolderByExternalReferenceCode(
 			resourceFolderExternalReferenceCode,
 			GroupUtil.getGroupId(
@@ -141,8 +134,6 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			String resourceFolderExternalReferenceCode, Pagination pagination)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
 			siteExternalReferenceCode);
@@ -162,8 +153,6 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			String siteExternalReferenceCode, Filter filter,
 			Pagination pagination)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getGroupId(
 			true, true, contextCompany.getCompanyId(),
@@ -197,8 +186,6 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			ResourceFolder resourceFolder)
 		throws Exception {
 
-		EnabledUtil.checkEnabled(contextCompany);
-
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
 
@@ -214,8 +201,6 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 	public ResourceFolder postSiteResourceFolder(
 			String siteExternalReferenceCode, ResourceFolder resourceFolder)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -234,8 +219,6 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 			String resourceFolderExternalReferenceCode,
 			ResourceFolder resourceFolder)
 		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);

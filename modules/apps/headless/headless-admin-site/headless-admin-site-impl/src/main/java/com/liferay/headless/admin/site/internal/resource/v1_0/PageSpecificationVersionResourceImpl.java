@@ -15,7 +15,6 @@ import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContex
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecificationVersionUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
-import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
@@ -60,8 +59,6 @@ public class PageSpecificationVersionResourceImpl
 			String pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
 
-		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
-
 		Layout layout = PageSpecificationVersionUtil.getLayout(
 			contextCompany.getCompanyId(), siteExternalReferenceCode,
 			sitePageExternalReferenceCode);
@@ -83,8 +80,6 @@ public class PageSpecificationVersionResourceImpl
 			String sitePageExternalReferenceCode,
 			String pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = PageSpecificationVersionUtil.getLayout(
 			contextCompany.getCompanyId(), siteExternalReferenceCode,
@@ -112,8 +107,6 @@ public class PageSpecificationVersionResourceImpl
 				@NestedFieldId(value = "externalReferenceCode") String
 					sitePageExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = SitePageUtil.getSitePageLayout(
 			GroupUtil.getGroupId(
@@ -146,8 +139,6 @@ public class PageSpecificationVersionResourceImpl
 			String sitePageExternalReferenceCode,
 			String pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
-
-		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = PageSpecificationVersionUtil.getLayout(
 			contextCompany.getCompanyId(), siteExternalReferenceCode,
