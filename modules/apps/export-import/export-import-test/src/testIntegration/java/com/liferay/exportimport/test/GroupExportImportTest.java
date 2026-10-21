@@ -340,41 +340,10 @@ public class GroupExportImportTest {
 
 	@Test
 	public void testImportGroupsWithReferencesToOtherGroup() throws Exception {
-		Group group2 = GroupTestUtil.addGroup();
-
-		FileEntry fileEntry = _addFileEntry(group2);
-
-		Layout layout1 = LayoutTestUtil.addTypeContentLayout(_group);
-		Layout layout2 = LayoutTestUtil.addTypeContentLayout(group2);
-
-		_addItemToLayout(layout1, fileEntry, layout2);
-
-		File file = _exportLayouts(_group, group2);
-
-		_deleteLayout(layout1);
-		_deleteLayout(layout2);
-
-		_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
-
-		List<ExportImportReportEntry> exportImportReportEntries =
-			_importLayoutsWithMissingReferences(file, _group, group2);
-
-		_assertMissingReference(
-			FileEntry.class.getName(), fileEntry.getExternalReferenceCode(),
-			group2.getGroupId(), exportImportReportEntries);
-		_assertMissingReference(
-			Layout.class.getName(), layout2.getExternalReferenceCode(),
-			group2.getGroupId(), exportImportReportEntries);
-
-		Assert.assertNotNull(
-			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-				group2.getGroupId(), fileEntry.getExternalReferenceCode()));
-		Assert.assertNotNull(
-			_layoutLocalService.fetchLayoutByExternalReferenceCode(
-				layout1.getExternalReferenceCode(), _group.getGroupId()));
-		Assert.assertNotNull(
-			_layoutLocalService.fetchLayoutByExternalReferenceCode(
-				layout2.getExternalReferenceCode(), group2.getGroupId()));
+		_testImportGroupsWithReferencesToOtherGroup(
+			GroupTestUtil.addGroup(), _group);
+		_testImportGroupsWithReferencesToOtherGroup(
+			_group, GroupTestUtil.addGroup());
 	}
 
 	@Test
@@ -697,6 +666,45 @@ public class GroupExportImportTest {
 							TYPE_MISSING_REFERENCE));
 
 		return addedExportImportReportEntries;
+	}
+
+	private void _testImportGroupsWithReferencesToOtherGroup(
+			Group group1, Group group2)
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry(group2);
+
+		Layout layout1 = LayoutTestUtil.addTypeContentLayout(group1);
+		Layout layout2 = LayoutTestUtil.addTypeContentLayout(group2);
+
+		_addItemToLayout(layout1, fileEntry, layout2);
+
+		File file = _exportLayouts(group1, group2);
+
+		_deleteLayout(layout1);
+		_deleteLayout(layout2);
+
+		_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_importLayoutsWithMissingReferences(file, group1, group2);
+
+		_assertMissingReference(
+			FileEntry.class.getName(), fileEntry.getExternalReferenceCode(),
+			group2.getGroupId(), exportImportReportEntries);
+		_assertMissingReference(
+			Layout.class.getName(), layout2.getExternalReferenceCode(),
+			group2.getGroupId(), exportImportReportEntries);
+
+		Assert.assertNotNull(
+			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
+				group2.getGroupId(), fileEntry.getExternalReferenceCode()));
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				layout1.getExternalReferenceCode(), group1.getGroupId()));
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				layout2.getExternalReferenceCode(), group2.getGroupId()));
 	}
 
 	private void _updateParentGroupId(Group group, long parentGroupId)
