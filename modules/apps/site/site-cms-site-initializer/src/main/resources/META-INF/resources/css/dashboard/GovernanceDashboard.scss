@@ -17,6 +17,12 @@
 	}
 }
 
-.cms-content-age-distribution .charts-legend__label {
-	white-space: nowrap;
+.cms-content-age-distribution {
+	.charts-legend {
+		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+	}
+
+	.charts-legend__label {
+		white-space: nowrap;
+	}
 }
