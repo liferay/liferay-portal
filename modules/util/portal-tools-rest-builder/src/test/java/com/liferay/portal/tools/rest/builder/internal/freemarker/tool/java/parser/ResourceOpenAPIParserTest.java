@@ -43,17 +43,18 @@ public class ResourceOpenAPIParserTest {
 	private String _getFeatureFlag(
 		String infoFeatureFlag, String operationFeatureFlag) {
 
+		Operation operation = new Get();
+
+		OpenAPIYAML openAPIYAML = new OpenAPIYAML();
+
 		Info info = new Info();
 
 		info.setFeatureFlag(infoFeatureFlag);
 
-		OpenAPIYAML openAPIYAML = new OpenAPIYAML();
-
 		openAPIYAML.setInfo(info);
 
-		Operation operation = new Get();
-
 		operation.setFeatureFlag(operationFeatureFlag);
+
 		operation.setOperationId("getTestEntity");
 
 		return ResourceOpenAPIParser.getFeatureFlag(

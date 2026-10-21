@@ -151,8 +151,8 @@ public class ${schemaName}ResourceFactoryImpl implements ${schemaName}Resource.F
 			if (!_featureFlagChecker.isEnabled(user.getCompanyId(), Base${schemaName}ResourceImpl.class.getMethod(method.getName(), method.getParameterTypes()))) {
 				throw new NotFoundException();
 			}
-
 		</#if>
+
 		String name = PrincipalThreadLocal.getName();
 
 		PrincipalThreadLocal.setName(user.getUserId());
