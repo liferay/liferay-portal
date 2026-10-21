@@ -77,13 +77,15 @@ public class FilterableFieldsOpenAPIContributor implements OpenAPIContributor {
 		Map<String, Map<String, Object>> schemaNameFilterableFields =
 			new HashMap<>();
 
-		for (Schema schema : schemas.values()) {
+		for (Map.Entry<String, Schema> entry : schemas.entrySet()) {
+			Schema schema = entry.getValue();
+
 			Map<String, Object> filterableFields = _getFilterableFields(
 				openAPIContext, schema);
 
 			schema.addExtension("x-filterable", filterableFields);
 
-			schemaNameFilterableFields.put(schema.getName(), filterableFields);
+			schemaNameFilterableFields.put(entry.getKey(), filterableFields);
 		}
 
 		Paths paths = openAPI.getPaths();
