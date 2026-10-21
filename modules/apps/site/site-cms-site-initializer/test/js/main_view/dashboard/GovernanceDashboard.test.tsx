@@ -44,12 +44,16 @@ const STATISTICS = {
 	expiredCount: 6,
 	expiringSoonCount: 2,
 	inDraftCount: 3,
+	longStandingDraftsCount: 2,
 	missingRequiredFieldsCount: 4,
+	overdueWorkflowTasksCount: 2,
 	pendingCount: 4,
 	reviewDateOverdueCount: 3,
 	scheduledCount: 0,
+	slaBreachedWorkflowTasksCount: 1,
 	totalCount: 100,
 	upcomingReviewCount: 0,
+	workflowTasksCount: 20,
 };
 
 const ADDITIONAL_PROPS = {
@@ -139,22 +143,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		);
 	});
 
-	it('shows the four sub-scores next to the global score', async () => {
+	it('shows the three sub-scores next to the global score', async () => {
 		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
 
 		const banner = await screen.findByRole('region', {
 			name: 'governance-health',
 		});
 
-		const flow = await within(banner).findByText('flow');
-
-		expect(flow.previousSibling).toHaveTextContent('88');
-
-		expect(
-			within(banner).getByText('originality').previousSibling
-		).toHaveTextContent('—');
-
-		const quality = within(banner).getByText('quality');
+		const quality = await within(banner).findByText('quality');
 
 		expect(quality.previousSibling).toHaveTextContent('80');
 		expect(quality.nextSibling).toHaveTextContent('x-active-issues');
@@ -166,7 +162,12 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 			'x-active-issues · x-warnings'
 		);
 
-		expect(within(banner).getByText('83')).toBeInTheDocument();
+		const operations = within(banner).getByText('operations');
+
+		expect(operations.previousSibling).toHaveTextContent('67');
+		expect(operations.nextSibling).toHaveTextContent('x-active-issues');
+
+		expect(within(banner).getByText('77')).toBeInTheDocument();
 	});
 
 	it('explains what the score measures in a popover', async () => {
@@ -188,7 +189,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 
 		expect(screen.getByText('quality-help')).toBeInTheDocument();
 
-		expect(screen.getByText('flow-help')).toBeInTheDocument();
+		expect(screen.getByText('operations-help')).toBeInTheDocument();
 	});
 
 	it('closes the popover with the escape key', async () => {

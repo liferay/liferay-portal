@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {isNullOrUndefined} from '@liferay/layout-js-components-web';
-
 import {AssetStatistics} from './GovernanceService';
 
 export type GovernanceDimension = {
@@ -14,42 +12,31 @@ export type GovernanceDimension = {
 };
 
 export type GovernanceHealth = {
-	flow: number;
 	freshness: GovernanceDimension;
-	originality?: number;
+	operations: GovernanceDimension;
 	quality: GovernanceDimension;
 	score: number;
 };
 
 type Signal = {
 	count: number;
+	scope: number;
 	severity: number;
 	warning?: boolean;
 };
 
-type WeightedSubScore = {
-	value: number;
-	weight: number;
-};
-
-const FLOW_PENALTY = 4;
-
-const FLOW_WEIGHT = 25;
-
 const FRESHNESS_WEIGHT = 30;
 
-const ORIGINALITY_PENALTY = 2;
-
-const ORIGINALITY_WEIGHT = 15;
+const OPERATIONS_WEIGHT = 30;
 
 const QUALITY_WEIGHT = 40;
 
-function getDimension(signals: Signal[], scope: number): GovernanceDimension {
+function getDimension(signals: Signal[]): GovernanceDimension {
 	let issues = 0;
 	let penalty = 0;
 	let warnings = 0;
 
-	for (const {count, severity, warning} of signals) {
+	for (const {count, scope, severity, warning} of signals) {
 		if (warning) {
 			warnings += count;
 		}
@@ -57,85 +44,81 @@ function getDimension(signals: Signal[], scope: number): GovernanceDimension {
 			issues += count;
 		}
 
-		penalty += count * severity;
-	}
-
-	if (!scope) {
-		return {issues, score: 100, warnings};
+		if (scope) {
+			penalty += (count * severity * 100) / scope;
+		}
 	}
 
 	return {
 		issues,
-		score: Math.round(Math.max(0, 100 - (penalty * 100) / scope)),
+		score: Math.round(Math.max(0, 100 - penalty)),
 		warnings,
 	};
-}
-
-function getScore(subScores: WeightedSubScore[]) {
-	const weight = subScores.reduce((total, subScore) => {
-		return total + subScore.weight;
-	}, 0);
-
-	const weighted = subScores.reduce((total, subScore) => {
-		return total + subScore.value * subScore.weight;
-	}, 0);
-
-	return Math.round(weighted / weight);
-}
-
-function getSubScore(total: number, penalty: number) {
-	return Math.max(0, 100 - total * penalty);
 }
 
 export default function getGovernanceHealth(
 	statistics: AssetStatistics
 ): GovernanceHealth {
-	const flow = getSubScore(statistics.inDraftCount, FLOW_PENALTY);
+	const assets = statistics.totalCount;
+	const tasks = statistics.workflowTasksCount;
 
-	const freshness = getDimension(
-		[
-			{count: statistics.expiredCount, severity: 1.75},
-			{count: statistics.reviewDateOverdueCount, severity: 1.5},
-			{count: statistics.expiringSoonCount, severity: 0.5, warning: true},
-			{
-				count: statistics.upcomingReviewCount,
-				severity: 0.5,
-				warning: true,
-			},
-		],
-		statistics.totalCount
-	);
+	const freshness = getDimension([
+		{count: statistics.expiredCount, scope: assets, severity: 1.75},
+		{
+			count: statistics.reviewDateOverdueCount,
+			scope: assets,
+			severity: 1.5,
+		},
+		{
+			count: statistics.expiringSoonCount,
+			scope: assets,
+			severity: 0.5,
+			warning: true,
+		},
+		{
+			count: statistics.upcomingReviewCount,
+			scope: assets,
+			severity: 0.5,
+			warning: true,
+		},
+	]);
 
-	const quality = getDimension(
-		[
-			{count: statistics.brokenLinksCount, severity: 2},
-			{count: statistics.missingRequiredFieldsCount, severity: 1.5},
-		],
-		statistics.totalCount
-	);
+	const operations = getDimension([
+		{
+			count: statistics.overdueWorkflowTasksCount,
+			scope: tasks,
+			severity: 2,
+		},
+		{
+			count: statistics.longStandingDraftsCount,
+			scope: assets,
+			severity: 1.5,
+		},
+		{
+			count: statistics.slaBreachedWorkflowTasksCount,
+			scope: tasks,
+			severity: 2,
+		},
+	]);
 
-	const subScores: WeightedSubScore[] = [
-		{value: flow, weight: FLOW_WEIGHT},
-		{value: freshness.score, weight: FRESHNESS_WEIGHT},
-		{value: quality.score, weight: QUALITY_WEIGHT},
-	];
-
-	if (isNullOrUndefined(statistics.duplicatedCount)) {
-		return {flow, freshness, quality, score: getScore(subScores)};
-	}
-
-	const originality = getSubScore(
-		statistics.duplicatedCount,
-		ORIGINALITY_PENALTY
-	);
-
-	subScores.push({value: originality, weight: ORIGINALITY_WEIGHT});
+	const quality = getDimension([
+		{count: statistics.brokenLinksCount, scope: assets, severity: 2},
+		{
+			count: statistics.missingRequiredFieldsCount,
+			scope: assets,
+			severity: 1.5,
+		},
+	]);
 
 	return {
-		flow,
 		freshness,
-		originality,
+		operations,
 		quality,
-		score: getScore(subScores),
+		score: Math.round(
+			(freshness.score * FRESHNESS_WEIGHT +
+				operations.score * OPERATIONS_WEIGHT +
+				quality.score * QUALITY_WEIGHT) /
+				100
+		),
 	};
 }

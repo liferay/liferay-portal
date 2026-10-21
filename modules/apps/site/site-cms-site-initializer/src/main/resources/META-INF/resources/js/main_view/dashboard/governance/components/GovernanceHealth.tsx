@@ -7,25 +7,21 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import {Text} from '@clayui/core';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayPopover from '@clayui/popover';
-import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useContext, useState} from 'react';
 
 import {getImage} from '../../../../common/utils/getImage';
 import {GovernanceContext} from '../GovernanceContext';
-import getGovernanceHealth from '../getGovernanceHealth';
+import getGovernanceHealth, {GovernanceDimension} from '../getGovernanceHealth';
 
 import './GovernanceHealth.scss';
 
 const MAX_SCORE = 100;
 
-const NO_SCORE = '—';
-
 const METRICS = [
 	Liferay.Language.get('quality-help'),
 	Liferay.Language.get('freshness-help'),
-	Liferay.Language.get('flow-help'),
-	Liferay.Language.get('originality-help'),
+	Liferay.Language.get('operations-help'),
 ];
 
 function ScoreHelp({title}: {title: string}) {
@@ -63,45 +59,37 @@ function ScoreHelp({title}: {title: string}) {
 }
 
 function SubScore({
-	issues,
+	dimension: {issues, score, warnings},
 	label,
-	value,
-	warnings = 0,
 }: {
-	issues?: number;
+	dimension: GovernanceDimension;
 	label: string;
-	value?: number;
-	warnings?: number;
 }) {
 	return (
 		<div className="cms-governance-health__sub-score">
-			<span className="d-block font-weight-bold text-7">
-				{isNullOrUndefined(value) ? NO_SCORE : value}
-			</span>
+			<span className="d-block font-weight-bold text-7">{score}</span>
 
 			<span className="d-block font-weight-semi-bold text-3 text-secondary">
 				{label}
 			</span>
 
-			{isNullOrUndefined(issues) ? null : (
-				<span className="d-block text-2 text-secondary">
-					{sub(
-						issues === 1
-							? Liferay.Language.get('x-active-issue')
-							: Liferay.Language.get('x-active-issues'),
-						issues
-					)}
+			<span className="d-block text-2 text-secondary">
+				{sub(
+					issues === 1
+						? Liferay.Language.get('x-active-issue')
+						: Liferay.Language.get('x-active-issues'),
+					issues
+				)}
 
-					{warnings
-						? ` · ${sub(
-								warnings === 1
-									? Liferay.Language.get('x-warning')
-									: Liferay.Language.get('x-warnings'),
-								warnings
-							)}`
-						: null}
-				</span>
-			)}
+				{warnings
+					? ` · ${sub(
+							warnings === 1
+								? Liferay.Language.get('x-warning')
+								: Liferay.Language.get('x-warnings'),
+							warnings
+						)}`
+					: null}
+			</span>
 		</div>
 	);
 }
@@ -148,26 +136,18 @@ export function GovernanceHealth() {
 			{health ? (
 				<div className="c-gap-4 c-gap-md-5 d-flex flex-wrap mr-md-3 mt-3 mt-md-4">
 					<SubScore
-						issues={health.quality.issues}
+						dimension={health.quality}
 						label={Liferay.Language.get('quality')}
-						value={health.quality.score}
 					/>
 
 					<SubScore
-						issues={health.freshness.issues}
+						dimension={health.freshness}
 						label={Liferay.Language.get('freshness')}
-						value={health.freshness.score}
-						warnings={health.freshness.warnings}
 					/>
 
 					<SubScore
-						label={Liferay.Language.get('flow')}
-						value={health.flow}
-					/>
-
-					<SubScore
-						label={Liferay.Language.get('originality')}
-						value={health.originality}
+						dimension={health.operations}
+						label={Liferay.Language.get('operations')}
 					/>
 				</div>
 			) : null}

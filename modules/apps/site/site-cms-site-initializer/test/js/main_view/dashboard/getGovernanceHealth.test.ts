@@ -21,15 +21,18 @@ const NO_ISSUES: AssetStatistics = {
 	slaBreachedWorkflowTasksCount: 0,
 	totalCount: 100,
 	upcomingReviewCount: 0,
-	workflowTasksCount: 0,
+	workflowTasksCount: 20,
 };
 
 describe('getGovernanceHealth', () => {
-	it('scores every metric it has data for at a hundred when nothing needs attention', () => {
-		const {freshness, quality} = getGovernanceHealth(NO_ISSUES);
+	it('scores every dimension at a hundred when nothing needs attention', () => {
+		const {freshness, operations, quality, score} =
+			getGovernanceHealth(NO_ISSUES);
 
 		expect(quality).toEqual({issues: 0, score: 100, warnings: 0});
 		expect(freshness).toEqual({issues: 0, score: 100, warnings: 0});
+		expect(operations).toEqual({issues: 0, score: 100, warnings: 0});
+		expect(score).toBe(100);
 	});
 
 	it('penalises broken links by their share of the scope with severity two', () => {
@@ -87,27 +90,33 @@ describe('getGovernanceHealth', () => {
 		expect(freshness).toEqual({issues: 0, score: 95, warnings: 10});
 	});
 
-	it('leaves originality out of the score until its count arrives', () => {
-		const {originality, score} = getGovernanceHealth(NO_ISSUES);
-
-		expect(originality).toBeUndefined();
-		expect(score).toBe(100);
-	});
-
-	it('scores originality as soon as its count arrives', () => {
-		const {originality, score} = getGovernanceHealth({
+	it('penalises overdue tasks and SLA breaches by their share of the workflow tasks', () => {
+		const {operations} = getGovernanceHealth({
 			...NO_ISSUES,
-			duplicatedCount: 10,
+			overdueWorkflowTasksCount: 2,
+			slaBreachedWorkflowTasksCount: 1,
 		});
 
-		expect(originality).toBe(80);
-		expect(score).toBe(97);
+		expect(operations).toEqual({issues: 3, score: 70, warnings: 0});
 	});
 
-	it('penalises each draft four points', () => {
-		const {flow} = getGovernanceHealth({...NO_ISSUES, inDraftCount: 3});
+	it('penalises long-standing drafts by their share of the assets', () => {
+		const {operations} = getGovernanceHealth({
+			...NO_ISSUES,
+			longStandingDraftsCount: 4,
+		});
 
-		expect(flow).toBe(88);
+		expect(operations).toEqual({issues: 4, score: 94, warnings: 0});
+	});
+
+	it('does not penalise task signals when the scope has no workflow tasks', () => {
+		const {operations} = getGovernanceHealth({
+			...NO_ISSUES,
+			overdueWorkflowTasksCount: 3,
+			workflowTasksCount: 0,
+		});
+
+		expect(operations).toEqual({issues: 3, score: 100, warnings: 0});
 	});
 
 	it('weighs quality more than freshness', () => {
@@ -127,7 +136,7 @@ describe('getGovernanceHealth', () => {
 		expect(brokenLinksOnly.quality.score).toBe(70);
 		expect(expiredOnly.freshness.score).toBe(70);
 
-		expect(baseline.score - brokenLinksOnly.score).toBe(13);
+		expect(baseline.score - brokenLinksOnly.score).toBe(12);
 		expect(baseline.score - expiredOnly.score).toBe(9);
 	});
 
@@ -138,6 +147,6 @@ describe('getGovernanceHealth', () => {
 		});
 
 		expect(quality.score).toBe(0);
-		expect(score).toBe(58);
+		expect(score).toBe(60);
 	});
 });
