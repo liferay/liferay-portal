@@ -342,8 +342,9 @@ public class VirtualLayout extends LayoutWrapper {
 		Layout masterLayout =
 			LayoutPageTemplateEntryLayoutProviderUtil.
 				getLayoutPageTemplateEntryLayout(
-					getSourceGroupId(), getMasterLayoutPageTemplateEntryERC(),
-					getPlid());
+					getCompanyId(), getMasterLayoutPageTemplateEntryERC(),
+					getSourceGroupId(),
+					getMasterLayoutPageTemplateEntryScopeERC(), getPlid());
 
 		if (masterLayout != null) {
 			typeSettingsUnicodeProperties =
