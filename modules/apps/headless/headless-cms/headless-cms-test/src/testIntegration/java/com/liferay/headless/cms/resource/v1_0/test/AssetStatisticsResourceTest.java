@@ -957,7 +957,7 @@ public class AssetStatisticsResourceTest
 			true, new Date(date.getTime() - Time.DAY), objectDefinition,
 			_addObjectEntry(depotEntry1, objectDefinition));
 
-		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 0, 1);
+		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 0, 0);
 
 		// Add object entry with overdue workflow task
 
@@ -965,7 +965,7 @@ public class AssetStatisticsResourceTest
 			false, new Date(date.getTime() - Time.DAY), objectDefinition,
 			_addObjectEntry(depotEntry1, objectDefinition));
 
-		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 2);
+		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 1);
 
 		// Add object entry with overdue workflow task on another space
 
@@ -973,8 +973,8 @@ public class AssetStatisticsResourceTest
 			false, new Date(date.getTime() - Time.DAY), objectDefinition,
 			_addObjectEntry(depotEntry2, objectDefinition));
 
-		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 2);
-		_assertWorkflowTasksCounts(depotEntry1.getDepotEntryId(), 1, 2);
+		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 1);
+		_assertWorkflowTasksCounts(depotEntry1.getDepotEntryId(), 1, 1);
 
 		_assertWorkflowTasksCounts(depotEntry2.getGroupId(), 1, 1);
 		_assertWorkflowTasksCounts(depotEntry2.getDepotEntryId(), 1, 1);
@@ -985,13 +985,13 @@ public class AssetStatisticsResourceTest
 			false, new Date(date.getTime() + Time.DAY), objectDefinition,
 			_addObjectEntry(depotEntry1, objectDefinition));
 
-		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 3);
+		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 2);
 
 		// Add object entry with workflow task without due date
 
 		_addObjectEntry(depotEntry1, objectDefinition);
 
-		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 4);
+		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 3);
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry1.getDepotEntryId());
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());

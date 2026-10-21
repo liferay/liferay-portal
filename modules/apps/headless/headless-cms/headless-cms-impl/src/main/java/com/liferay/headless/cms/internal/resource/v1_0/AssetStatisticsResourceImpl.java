@@ -202,7 +202,9 @@ public class AssetStatisticsResourceImpl
 						)));
 				setWorkflowTasksCount(
 					() -> _getWorkflowTasksCount(
-						classNames, selectedSpaceGroupIds, null));
+						classNames, selectedSpaceGroupIds,
+						KaleoTaskInstanceTokenTable.INSTANCE.completed.eq(
+							false)));
 			}
 		};
 	}
