@@ -1096,7 +1096,9 @@ test(
 			).toBeVisible();
 
 			await test.step('Verify search input contains the search value', async () => {
-				const searchInput = page.getByPlaceholder('Search');
+				const searchInput = page.getByRole('searchbox', {
+					name: 'Search',
+				});
 
 				await expect(searchInput).toHaveValue('title');
 			});

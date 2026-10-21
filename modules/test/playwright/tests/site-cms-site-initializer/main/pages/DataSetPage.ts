@@ -38,7 +38,7 @@ export class DataSetPage {
 		};
 		this.loading = page.locator('.data-set .loading-animation');
 		this.page = page;
-		this.searchInput = this.page.getByPlaceholder('Search');
+		this.searchInput = this.page.getByRole('searchbox', {name: 'Search'});
 		this.selectAllLink = page.getByRole('button', {
 			exact: true,
 			name: 'Select All',

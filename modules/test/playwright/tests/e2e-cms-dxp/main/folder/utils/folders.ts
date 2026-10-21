@@ -102,9 +102,9 @@ export async function renameFolder(
 
 export async function searchContentList(page: Page, title: string) {
 	await expect(async () => {
-		await page.getByPlaceholder('Search').fill(title);
+		await page.getByRole('searchbox', {name: 'Search'}).fill(title);
 
-		await page.getByPlaceholder('Search').press('Enter');
+		await page.getByRole('searchbox', {name: 'Search'}).press('Enter');
 
 		await expect(
 			page.getByRole('link', {exact: true, name: title})

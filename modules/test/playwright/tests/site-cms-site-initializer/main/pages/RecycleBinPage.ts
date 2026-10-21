@@ -68,7 +68,9 @@ export class RecycleBinPage {
 			.getByRole('link')
 			.click();
 
-		await this.page.getByPlaceholder('Search').waitFor({state: 'visible'});
+		await this.page
+			.getByRole('searchbox', {name: 'Search'})
+			.waitFor({state: 'visible'});
 	}
 
 	async selectItems(titles: string[]) {

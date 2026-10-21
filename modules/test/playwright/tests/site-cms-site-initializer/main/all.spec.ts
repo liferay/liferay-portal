@@ -995,6 +995,15 @@ test(
 			outsider.externalReferenceCode
 		);
 
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: getRandomString(),
+			},
+			'cms/basic-web-contents',
+			space1.name
+		);
+
 		await performUserSwitchViaApi(page, viewer.alternateName);
 
 		await assetsPage.gotoAll();
