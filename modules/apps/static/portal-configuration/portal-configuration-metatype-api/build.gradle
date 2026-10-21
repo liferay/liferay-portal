@@ -5,7 +5,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.metatype", version: "1.3.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.ow2.asm", name: "asm", version: "9.7"
+	compileOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":core:petra:petra-reflect")

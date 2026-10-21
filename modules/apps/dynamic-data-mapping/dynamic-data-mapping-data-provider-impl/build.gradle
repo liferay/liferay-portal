@@ -15,7 +15,7 @@ dependencies {
 	compileOnly group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.servlet", version: "2.0.0"
-	compileOnly group: "org.ow2.asm", name: "asm", version: "9.7"
+	compileOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
 	compileOnly group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:portal-security:portal-security-key-api")

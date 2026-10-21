@@ -2,5 +2,5 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 dependencies {
-	api group: "org.ow2.asm", name: "asm", version: "9.7"
+	api group: "org.ow2.asm", name: "asm", version: "9.11.1"
 }

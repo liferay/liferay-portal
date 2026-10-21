@@ -22,7 +22,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.ow2.asm", name: "asm", version: "9.7"
+	compileOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
 	compileOnly project(":apps:oauth-client:oauth-client-persistence-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal:portal-aop-api")
