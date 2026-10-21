@@ -25,16 +25,12 @@ import org.dom4j.Element;
 public class SourceFormatterReleaseUtil {
 
 	public static String getIvyVersion(File portalDirectory) {
-		File ivyXMLFile = new File(
-			portalDirectory,
-			JenkinsResultsParserUtil.combine(
-				"tools/sdk/dependencies/", _PACKAGE_NAME, "/ivy.xml"));
-
-		if (!ivyXMLFile.exists()) {
-			return null;
-		}
-
 		try {
+			File ivyXMLFile = new File(
+				portalDirectory,
+				JenkinsResultsParserUtil.combine(
+					"tools/sdk/dependencies/", _PACKAGE_NAME, "/ivy.xml"));
+
 			Document document = Dom4JUtil.parse(
 				JenkinsResultsParserUtil.read(ivyXMLFile));
 
@@ -82,10 +78,14 @@ public class SourceFormatterReleaseUtil {
 				artifactProperties.getProperty("artifact.url", ""));
 
 			if (JenkinsResultsParserUtil.isNullOrEmpty(artifactGitId) ||
-				!matcher.find() ||
-				!Objects.equals(
-					matcher.group("version"), getIvyVersion(portalDirectory))) {
+				!matcher.find()) {
 
+				return false;
+			}
+
+			String version = matcher.group("version");
+
+			if (!Objects.equals(version, getIvyVersion(portalDirectory))) {
 				return false;
 			}
 
@@ -94,29 +94,42 @@ public class SourceFormatterReleaseUtil {
 					GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
 					GitUtil.MILLIS_TIMEOUT,
 					JenkinsResultsParserUtil.combine(
-						"git diff --no-color --unified=0 ", artifactGitId, " ",
-						ref, " -- ", _SOURCE_FORMATTER_PATH));
+						"git diff --dst-prefix=b/ --no-color --src-prefix=a/ ",
+						"--unified=0 ", artifactGitId, " ", ref, " -- ",
+						_SOURCE_FORMATTER_PATH));
 
 			if (executionResult.getExitValue() != 0) {
 				return false;
 			}
 
-			return _isVersionOnlyDiff(executionResult.getStandardOut());
+			return _isVersionOnlyDiff(
+				executionResult.getStandardOut(), version);
 		}
 		catch (Exception exception) {
 			return false;
 		}
 	}
 
-	private static boolean _isVersionOnlyDiff(String gitDiff) {
+	private static boolean _isVersionOnlyDiff(String gitDiff, String version) {
+		int index = version.lastIndexOf(".");
+
+		if (index == -1) {
+			return false;
+		}
+
 		List<String> addedLines = new ArrayList<>();
 		List<String> removedLines = new ArrayList<>();
 
 		boolean hunk = false;
 
+		Pattern versionPattern = Pattern.compile(
+			JenkinsResultsParserUtil.combine(
+				"(?<![\\d.])", Pattern.quote(version.substring(0, index + 1)),
+				"\\d+(?![\\d.])"));
+
 		for (String line : gitDiff.split("\n")) {
 			if (line.startsWith("diff --git ")) {
-				int index = line.indexOf(" b/");
+				index = line.indexOf(" b/");
 
 				if (!_versionFilePaths.contains(line.substring(index + 3))) {
 					return false;
@@ -137,7 +150,7 @@ public class SourceFormatterReleaseUtil {
 				continue;
 			}
 
-			Matcher matcher = _versionPattern.matcher(line.substring(1));
+			Matcher matcher = versionPattern.matcher(line.substring(1));
 
 			if (line.startsWith("+")) {
 				addedLines.add(matcher.replaceAll(""));
@@ -169,7 +182,5 @@ public class SourceFormatterReleaseUtil {
 		JenkinsResultsParserUtil.combine(
 			_SOURCE_FORMATTER_PATH, "/src/main/resources/META-INF/maven/",
 			"plugin.xml"));
-	private static final Pattern _versionPattern = Pattern.compile(
-		"\\d+(\\.\\d+)+");
 
 }
