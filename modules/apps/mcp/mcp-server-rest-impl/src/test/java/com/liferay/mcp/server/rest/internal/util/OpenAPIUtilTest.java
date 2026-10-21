@@ -865,6 +865,60 @@ public class OpenAPIUtilTest {
 				JSONUtil.put("$ref", "#/components/schemas/Item")));
 	}
 
+	@Test
+	public void testIsNestedSchema() {
+		Assert.assertFalse(OpenAPIUtil.isNestedSchema(null));
+		Assert.assertTrue(
+			OpenAPIUtil.isNestedSchema(
+				JSONUtil.put("$ref", "#/components/schemas/Item")));
+		Assert.assertTrue(
+			OpenAPIUtil.isNestedSchema(
+				JSONUtil.put(
+					"additionalProperties",
+					JSONUtil.put("$ref", "#/components/schemas/Item")
+				).put(
+					"type", "object"
+				)));
+		Assert.assertFalse(
+			OpenAPIUtil.isNestedSchema(
+				JSONUtil.put(
+					"additionalProperties", JSONUtil.put("type", "string")
+				).put(
+					"type", "object"
+				)));
+		Assert.assertFalse(
+			OpenAPIUtil.isNestedSchema(
+				JSONUtil.put(
+					"additionalProperties", true
+				).put(
+					"type", "object"
+				)));
+		Assert.assertTrue(
+			OpenAPIUtil.isNestedSchema(
+				JSONUtil.put(
+					"items", JSONUtil.put("$ref", "#/components/schemas/Item")
+				).put(
+					"type", "array"
+				)));
+		Assert.assertFalse(
+			OpenAPIUtil.isNestedSchema(
+				JSONUtil.put(
+					"items", JSONUtil.put("type", "string")
+				).put(
+					"type", "array"
+				)));
+		Assert.assertFalse(
+			OpenAPIUtil.isNestedSchema(JSONUtil.put("type", "string")));
+	}
+
+	@Test
+	public void testIsPathParameter() {
+		Assert.assertFalse(OpenAPIUtil.isPathParameter("sites"));
+		Assert.assertTrue(OpenAPIUtil.isPathParameter("{siteId}"));
+		Assert.assertFalse(OpenAPIUtil.isPathParameter("{}"));
+		Assert.assertFalse(OpenAPIUtil.isPathParameter(null));
+	}
+
 	private void _assertMultipartContentType(
 		VulcanRequestForwarder.Request request) {
 
