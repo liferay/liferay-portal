@@ -28,13 +28,15 @@ spec:
                                             function main {
                                                 _wait_for_server
 
+                                                local liferay_password=$(printf '%s' "${LIFERAY_PASSWORD}" | sed -e 's/\\/\\\\/g' -e "s/'/''/g")
+
                                                 MYSQL_PWD="${ADMIN_PASSWORD}" mysql \
                                                     --host "${MYSQL_HOST}" \
                                                     --ssl-mode REQUIRED \
                                                     --user "{{ $databaseAdminLogin }}" <<EOF
-                                            CREATE USER IF NOT EXISTS '{{ $databaseAppUser }}'@'%' IDENTIFIED BY '${LIFERAY_PASSWORD}';
+                                            CREATE USER IF NOT EXISTS '{{ $databaseAppUser }}'@'%' IDENTIFIED BY '${liferay_password}';
 
-                                            ALTER USER '{{ $databaseAppUser }}'@'%' IDENTIFIED BY '${LIFERAY_PASSWORD}';
+                                            ALTER USER '{{ $databaseAppUser }}'@'%' IDENTIFIED BY '${liferay_password}';
 
                                             GRANT ALL PRIVILEGES ON {{ $databaseName }}.* TO '{{ $databaseAppUser }}'@'%';
                                             EOF
