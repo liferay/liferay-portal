@@ -224,6 +224,18 @@ public class ViewLaunchDisplayContext {
 		return instant.toString();
 	}
 
+	public String getUnscheduleLaunchURL() {
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/launch/unschedule_launch"
+		).setRedirect(
+			PortalUtil.getCurrentCompleteURL(_httpServletRequest)
+		).setParameter(
+			"launchSetId", getLaunchSetId()
+		).buildString();
+	}
+
 	public boolean isPublished() {
 		if (_published == null) {
 			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(

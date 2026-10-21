@@ -8,9 +8,11 @@ import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayModal, {useModal} from '@clayui/modal';
-import {openToast} from 'frontend-js-components-web';
-import {escapeHTML, fetch} from 'frontend-js-web';
+import {navigate} from 'frontend-js-web';
 import React, {useState} from 'react';
+
+import LaunchService from '../services/LaunchService';
+import {openErrorToast} from '../util/toasts';
 
 interface Props {
 	portletNamespace: string;
@@ -40,30 +42,26 @@ export default function LaunchScheduleButton({
 			String(new Date(publishDate).getTime())
 		);
 
-		try {
-			const response = await fetch(scheduleLaunchURL, {
-				body,
-				method: 'POST',
-			});
+		const {data, error} = await LaunchService.scheduleLaunch(
+			scheduleLaunchURL,
+			body
+		);
 
-			const {error, redirect, validationError} = await response.json();
+		if (error) {
+			openErrorToast(error);
 
-			if (error || validationError) {
-				openToast({
-					message: escapeHTML(error || validationError),
-					type: 'danger',
-				});
-
-				return;
-			}
-
-			window.location.href = redirect;
+			return;
 		}
-		catch (exception) {
-			openToast({
-				message: escapeHTML((exception as Error).message),
-				type: 'danger',
-			});
+
+		if (!data) {
+			return;
+		}
+
+		if (data.redirect) {
+			navigate(data.redirect);
+		}
+		else {
+			window.location.reload();
 		}
 	}
 

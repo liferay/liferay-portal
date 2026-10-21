@@ -9,5 +9,6 @@ export {default as LaunchPreviewButton} from './components/LaunchPreviewButton';
 export {default as LaunchPreviewTopbar} from './components/LaunchPreviewTopbar';
 export {default as LaunchPublishButton} from './components/LaunchPublishButton';
 export {default as LaunchScheduleButton} from './components/LaunchScheduleButton';
+export {default as LaunchUnscheduleButton} from './components/LaunchUnscheduleButton';
 export {default as LaunchEntriesFDSPropsTransformer} from './props_transformer/LaunchEntriesFDSPropsTransformer';
 export {default as LaunchesFDSPropsTransformer} from './props_transformer/LaunchesFDSPropsTransformer';

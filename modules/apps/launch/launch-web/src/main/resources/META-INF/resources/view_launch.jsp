@@ -61,6 +61,19 @@ String scheduledDate = viewLaunchDisplayContext.getScheduledDate();
 
 		<div>
 			<react:component
+				module="{LaunchUnscheduleButton} from launch-web"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"scheduled", scheduledDate != null
+					).put(
+						"unscheduleLaunchURL", viewLaunchDisplayContext.getUnscheduleLaunchURL()
+					).build()
+				%>'
+			/>
+		</div>
+
+		<div>
+			<react:component
 				module="{LaunchPublishButton} from launch-web"
 				props='<%=
 					HashMapBuilder.<String, Object>put(
