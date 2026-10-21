@@ -6,11 +6,19 @@
 import {Locator, Page} from '@playwright/test';
 
 export class EditTaskPage {
+	readonly descriptionInput: Locator;
+	readonly descriptionToolbar: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 	readonly titleInput: Locator;
 
 	constructor(page: Page) {
+		this.descriptionInput = page.getByRole('textbox', {
+			name: /^Description/,
+		});
+		this.descriptionToolbar = page.getByRole('toolbar', {
+			name: 'Editor toolbar',
+		});
 		this.page = page;
 		this.saveButton = page.getByRole('button', {
 			name: 'Save',
