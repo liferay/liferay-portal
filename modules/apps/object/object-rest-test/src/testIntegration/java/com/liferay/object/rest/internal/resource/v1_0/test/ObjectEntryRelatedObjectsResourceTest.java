@@ -1495,6 +1495,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 
 		_objectDefinitions.add(objectDefinition);
 
+		// Many to many relationship
+
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			objectDefinition,
 			HashMapBuilder.<String, Serializable>put(
