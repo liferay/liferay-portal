@@ -425,6 +425,39 @@ public class CookiesManagerImplTest {
 	}
 
 	@Test
+	public void testAddCookieWithoutHttpServletRequest() throws Exception {
+		ConfigurationTestUtil.saveConfiguration(
+			CookiesPreferenceHandlingConfiguration.class.getName(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", true
+			).put(
+				"explicitConsentMode", true
+			).build());
+
+		Cookie cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_PERFORMANCE, cookie, null,
+			_mockHttpServletResponse, false);
+
+		Assert.assertNull(_mockHttpServletResponse.getCookie(cookie.getName()));
+
+		ConfigurationTestUtil.saveConfiguration(
+			CookiesPreferenceHandlingConfiguration.class.getName(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", false
+			).build());
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_PERFORMANCE, cookie, null,
+			_mockHttpServletResponse, false);
+
+		Assert.assertNotNull(
+			_mockHttpServletResponse.getCookie(cookie.getName()));
+	}
+
+	@Test
 	public void testDeleteCookiesWithHttpsRequest() {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
