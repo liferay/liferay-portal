@@ -66,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -98,73 +99,21 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 		Class<P> serviceClass, String itemClassName,
 		InfoItemServiceFilter infoItemServiceFilter) {
 
-		ServiceTrackerMap
-			<String, ? extends List<CompanyIdServiceReferenceServiceTuple<P>>>
-				infoItemServiceTrackerMap =
-					(ServiceTrackerMap)
-						_getItemClassNameInfoItemServiceTrackerMap(
-							serviceClass);
-
 		List<CompanyIdServiceReferenceServiceTuple<P>>
-			serviceReferenceServiceTuples =
-				infoItemServiceTrackerMap.getService(itemClassName);
+			serviceReferenceServiceTuples = _getServiceReferenceServiceTuples(
+				serviceClass, itemClassName);
 
-		if (serviceReferenceServiceTuples != null) {
-			PropertyInfoItemServiceFilter
-				companyIdPropertyInfoItemServiceFilter =
-					new OptionalPropertyInfoItemServiceFilter(
-						"company.id",
-						String.valueOf(CompanyThreadLocal.getCompanyId()));
-
-			if (infoItemServiceFilter != null) {
-				if (infoItemServiceFilter instanceof
-						PropertyInfoItemServiceFilter) {
-
-					PropertyInfoItemServiceFilter
-						propertyInfoItemServiceFilter =
-							(PropertyInfoItemServiceFilter)
-								infoItemServiceFilter;
-
-					serviceReferenceServiceTuples = ListUtil.filter(
-						serviceReferenceServiceTuples,
-						serviceReferenceServiceTuple -> {
-							if (companyIdPropertyInfoItemServiceFilter.
-									matchPropertyValue(
-										serviceReferenceServiceTuple.
-											getCompanyIdPropertyValue()) &&
-								propertyInfoItemServiceFilter.match(
-									serviceReferenceServiceTuple.
-										getServiceReference())) {
-
-								return true;
-							}
-
-							return false;
-						});
-
-					return ListUtil.toList(
-						serviceReferenceServiceTuples,
-						ServiceReferenceServiceTuple::getService);
-				}
-
-				serviceReferenceServiceTuples =
-					_filterServiceReferenceServiceTuples(
-						infoItemServiceFilter, serviceReferenceServiceTuples);
-			}
-
-			serviceReferenceServiceTuples = ListUtil.filter(
-				serviceReferenceServiceTuples,
-				serviceReferenceServiceTuple ->
-					companyIdPropertyInfoItemServiceFilter.matchPropertyValue(
-						serviceReferenceServiceTuple.
-							getCompanyIdPropertyValue()));
-
-			return ListUtil.toList(
-				serviceReferenceServiceTuples,
-				ServiceReferenceServiceTuple::getService);
+		if (serviceReferenceServiceTuples == null) {
+			return Collections.emptyList();
 		}
 
-		return Collections.emptyList();
+		serviceReferenceServiceTuples = ListUtil.filter(
+			serviceReferenceServiceTuples,
+			_getPredicate(infoItemServiceFilter));
+
+		return ListUtil.toList(
+			serviceReferenceServiceTuples,
+			ServiceReferenceServiceTuple::getService);
 	}
 
 	@Override
@@ -172,14 +121,26 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 		Class<P> serviceClass, String itemClassName,
 		InfoItemServiceFilter infoItemServiceFilter) {
 
-		List<?> infoItemServices = getAllInfoItemServices(
-			serviceClass, itemClassName, infoItemServiceFilter);
+		List<CompanyIdServiceReferenceServiceTuple<P>>
+			serviceReferenceServiceTuples = _getServiceReferenceServiceTuples(
+				serviceClass, itemClassName);
 
-		if (ListUtil.isEmpty(infoItemServices)) {
+		if (serviceReferenceServiceTuples == null) {
 			return null;
 		}
 
-		return (P)infoItemServices.get(0);
+		Predicate<CompanyIdServiceReferenceServiceTuple<P>> predicate =
+			_getPredicate(infoItemServiceFilter);
+
+		for (CompanyIdServiceReferenceServiceTuple<P>
+				serviceReferenceServiceTuple : serviceReferenceServiceTuples) {
+
+			if (predicate.test(serviceReferenceServiceTuple)) {
+				return serviceReferenceServiceTuple.getService();
+			}
+		}
+
+		return null;
 	}
 
 	@Override
@@ -346,27 +307,6 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 		}
 	}
 
-	private <P> List<CompanyIdServiceReferenceServiceTuple<P>>
-		_filterServiceReferenceServiceTuples(
-			InfoItemServiceFilter infoItemServiceFilter,
-			List<CompanyIdServiceReferenceServiceTuple<P>>
-				serviceReferenceServiceTuples) {
-
-		try {
-			Filter filter = FrameworkUtil.createFilter(
-				infoItemServiceFilter.getFilterString());
-
-			return ListUtil.filter(
-				serviceReferenceServiceTuples,
-				serviceReferenceServiceTuple -> filter.match(
-					serviceReferenceServiceTuple.getServiceReference()));
-		}
-		catch (InvalidSyntaxException invalidSyntaxException) {
-			throw new RuntimeException(
-				"Invalid filter string", invalidSyntaxException);
-		}
-	}
-
 	private ServiceTrackerMap<String, InfoItemCapability>
 		_getInfoItemCapabilityServiceTrackerMap() {
 
@@ -436,6 +376,60 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 						emitter.emit(key);
 					}),
 				new PropertyServiceReferenceComparator<>("service.ranking")));
+	}
+
+	private <P> Predicate<CompanyIdServiceReferenceServiceTuple<P>>
+		_getPredicate(InfoItemServiceFilter infoItemServiceFilter) {
+
+		PropertyInfoItemServiceFilter companyIdPropertyInfoItemServiceFilter =
+			new OptionalPropertyInfoItemServiceFilter(
+				"company.id",
+				String.valueOf(CompanyThreadLocal.getCompanyId()));
+
+		if (infoItemServiceFilter == null) {
+			return serviceReferenceServiceTuple ->
+				companyIdPropertyInfoItemServiceFilter.matchPropertyValue(
+					serviceReferenceServiceTuple.getCompanyIdPropertyValue());
+		}
+
+		if (infoItemServiceFilter instanceof
+				PropertyInfoItemServiceFilter propertyInfoItemServiceFilter) {
+
+			return serviceReferenceServiceTuple ->
+				companyIdPropertyInfoItemServiceFilter.matchPropertyValue(
+					serviceReferenceServiceTuple.getCompanyIdPropertyValue()) &&
+				propertyInfoItemServiceFilter.match(
+					serviceReferenceServiceTuple.getServiceReference());
+		}
+
+		try {
+			Filter filter = FrameworkUtil.createFilter(
+				infoItemServiceFilter.getFilterString());
+
+			return serviceReferenceServiceTuple ->
+				filter.match(
+					serviceReferenceServiceTuple.getServiceReference()) &&
+				companyIdPropertyInfoItemServiceFilter.matchPropertyValue(
+					serviceReferenceServiceTuple.getCompanyIdPropertyValue());
+		}
+		catch (InvalidSyntaxException invalidSyntaxException) {
+			throw new RuntimeException(
+				"Invalid filter string", invalidSyntaxException);
+		}
+	}
+
+	private <P> List<CompanyIdServiceReferenceServiceTuple<P>>
+		_getServiceReferenceServiceTuples(
+			Class<P> serviceClass, String itemClassName) {
+
+		ServiceTrackerMap
+			<String, ? extends List<CompanyIdServiceReferenceServiceTuple<P>>>
+				infoItemServiceTrackerMap =
+					(ServiceTrackerMap)
+						_getItemClassNameInfoItemServiceTrackerMap(
+							serviceClass);
+
+		return infoItemServiceTrackerMap.getService(itemClassName);
 	}
 
 	private static final Set<Class<?>> _validInfoClasses = new HashSet<>(
