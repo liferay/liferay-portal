@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuilder;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -52,6 +53,22 @@ public class MFAFIDO2AuditMessageBuilder {
 		_setVerificationResult(auditMessage, "not_verified");
 
 		return auditMessage;
+	}
+
+	public AuditMessage buildSetupAddedAuditMessage(
+		long userId, String checkerClassName) {
+
+		return AuditMessageBuilder.buildAuditMessage(
+			checkerClassName, userId, MFAFIDO2EventTypes.MFA_FIDO2_SETUP_ADDED,
+			null);
+	}
+
+	public AuditMessage buildSetupRemovedAuditMessage(
+		long userId, String checkerClassName) {
+
+		return AuditMessageBuilder.buildAuditMessage(
+			checkerClassName, userId,
+			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, null);
 	}
 
 	public AuditMessage buildUnconfiguredUserVerificationFailureAuditMessage(

@@ -184,6 +184,17 @@ public class FIDO2BrowserSetupMFAChecker
 
 			_mfaFIDO2CredentialEntryLocalService.deleteMFAFIDO2CredentialEntry(
 				mfaFIDO2CredentialEntry);
+
+			MFAFIDO2AuditMessageBuilder mfaFIDO2AuditMessageBuilder =
+				_mfaFIDO2AuditMessageBuilderSnapshot.get();
+
+			if (mfaFIDO2AuditMessageBuilder == null) {
+				continue;
+			}
+
+			mfaFIDO2AuditMessageBuilder.routeAuditMessage(
+				mfaFIDO2AuditMessageBuilder.buildSetupRemovedAuditMessage(
+					userId, _getClassName()));
 		}
 	}
 
@@ -205,6 +216,15 @@ public class FIDO2BrowserSetupMFAChecker
 			_mfaFIDO2CredentialEntryLocalService.addMFAFIDO2CredentialEntry(
 				userId, credentialIdByteArray.getBase64(), 0,
 				publicKeyCOSEByteArray.getBase64());
+
+			MFAFIDO2AuditMessageBuilder mfaFIDO2AuditMessageBuilder =
+				_mfaFIDO2AuditMessageBuilderSnapshot.get();
+
+			if (mfaFIDO2AuditMessageBuilder != null) {
+				mfaFIDO2AuditMessageBuilder.routeAuditMessage(
+					mfaFIDO2AuditMessageBuilder.buildSetupAddedAuditMessage(
+						userId, _getClassName()));
+			}
 
 			return true;
 		}

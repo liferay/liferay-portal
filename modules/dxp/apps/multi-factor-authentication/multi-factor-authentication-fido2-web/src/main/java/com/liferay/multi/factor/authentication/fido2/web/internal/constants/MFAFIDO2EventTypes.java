@@ -13,6 +13,11 @@ public class MFAFIDO2EventTypes {
 	public static final String MFA_FIDO2_NOT_VERIFIED =
 		"MFA_FIDO2_NOT_VERIFIED";
 
+	public static final String MFA_FIDO2_SETUP_ADDED = "MFA_FIDO2_SETUP_ADDED";
+
+	public static final String MFA_FIDO2_SETUP_REMOVED =
+		"MFA_FIDO2_SETUP_REMOVED";
+
 	public static final String MFA_FIDO2_VERIFICATION_FAILURE =
 		"MFA_FIDO2_VERIFICATION_FAILURE";
 
