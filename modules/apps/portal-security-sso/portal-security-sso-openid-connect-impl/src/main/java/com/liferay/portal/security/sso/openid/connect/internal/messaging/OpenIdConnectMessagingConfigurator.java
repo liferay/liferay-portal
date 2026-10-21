@@ -31,7 +31,7 @@ public class OpenIdConnectMessagingConfigurator {
 		DestinationConfiguration destinationConfiguration =
 			DestinationConfiguration.createSerialDestinationConfiguration(
 				OpenIdConnectDestinationNames.
-					OPENID_CONNECT_TOKEN_REFRESH_SCHEDULER);
+					OPENID_CONNECT_TOKEN_REFRESH_BATCH);
 
 		destinationConfiguration.setMaximumQueueSize(1);
 		destinationConfiguration.setRejectedExecutionHandler(

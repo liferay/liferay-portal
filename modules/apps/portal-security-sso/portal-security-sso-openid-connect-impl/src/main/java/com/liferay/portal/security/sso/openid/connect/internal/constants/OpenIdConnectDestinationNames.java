@@ -13,7 +13,7 @@ public class OpenIdConnectDestinationNames {
 	public static final String OPENID_CONNECT_TOKEN_REFRESH =
 		"liferay/openid_connect_token_refresh";
 
-	public static final String OPENID_CONNECT_TOKEN_REFRESH_SCHEDULER =
-		"liferay/openid_connect_token_refresh_scheduler";
+	public static final String OPENID_CONNECT_TOKEN_REFRESH_BATCH =
+		"liferay/openid_connect_token_refresh_batch";
 
 }

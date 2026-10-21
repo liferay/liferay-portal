@@ -476,7 +476,7 @@ public class OfflineOpenIdConnectSessionManager {
 		@Override
 		public String getDestinationName() {
 			return OpenIdConnectDestinationNames.
-				OPENID_CONNECT_TOKEN_REFRESH_SCHEDULER;
+				OPENID_CONNECT_TOKEN_REFRESH_BATCH;
 		}
 
 		@Override

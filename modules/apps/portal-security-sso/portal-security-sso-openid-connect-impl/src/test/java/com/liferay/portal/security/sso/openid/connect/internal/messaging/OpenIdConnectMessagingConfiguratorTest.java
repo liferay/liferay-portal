@@ -85,8 +85,7 @@ public class OpenIdConnectMessagingConfiguratorTest {
 			DestinationConfiguration.DESTINATION_TYPE_SERIAL,
 			destinationConfiguration.getDestinationType());
 		Assert.assertEquals(
-			OpenIdConnectDestinationNames.
-				OPENID_CONNECT_TOKEN_REFRESH_SCHEDULER,
+			OpenIdConnectDestinationNames.OPENID_CONNECT_TOKEN_REFRESH_BATCH,
 			destinationConfiguration.getDestinationName());
 		Assert.assertTrue(
 			destinationConfiguration.getRejectedExecutionHandler() instanceof

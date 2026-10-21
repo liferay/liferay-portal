@@ -143,8 +143,7 @@ public class OfflineOpenIdConnectSessionManagerTest {
 				new OfflineOpenIdConnectSessionManager());
 
 		Assert.assertEquals(
-			OpenIdConnectDestinationNames.
-				OPENID_CONNECT_TOKEN_REFRESH_SCHEDULER,
+			OpenIdConnectDestinationNames.OPENID_CONNECT_TOKEN_REFRESH_BATCH,
 			schedulerJobConfiguration.getDestinationName());
 	}
 
