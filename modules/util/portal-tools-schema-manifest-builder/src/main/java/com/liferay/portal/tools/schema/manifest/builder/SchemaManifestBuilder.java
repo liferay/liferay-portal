@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import java.util.Map;
@@ -132,8 +131,7 @@ public class SchemaManifestBuilder {
 
 		manifestJSONObject.put(
 			"timestamp",
-			DateTimeFormatter.ISO_INSTANT.format(
-				instant.truncatedTo(ChronoUnit.SECONDS)));
+			String.valueOf(instant.truncatedTo(ChronoUnit.SECONDS)));
 
 		Files.createDirectories(manifestPath.getParent());
 
