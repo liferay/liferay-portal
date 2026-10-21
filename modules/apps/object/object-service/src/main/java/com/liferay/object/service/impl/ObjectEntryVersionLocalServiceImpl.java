@@ -331,24 +331,20 @@ public class ObjectEntryVersionLocalServiceImpl
 			return exceedsMaximumVersions;
 		}
 
+		ObjectEntryVersionConfiguration objectEntryVersionConfiguration;
+
 		try {
-			_objectEntryVersionConfiguration =
+			objectEntryVersionConfiguration =
 				_configurationProvider.getCompanyConfiguration(
 					ObjectEntryVersionConfiguration.class,
 					CompanyThreadLocal.getCompanyId());
-
-			if (_objectEntryVersionConfiguration == null) {
-				_objectEntryVersionConfiguration =
-					_configurationProvider.getSystemConfiguration(
-						ObjectEntryVersionConfiguration.class);
-			}
 		}
 		catch (ConfigurationException configurationException) {
 			throw new RuntimeException(configurationException);
 		}
 
 		int maximumVersionsPerEntry =
-			_objectEntryVersionConfiguration.maximumVersionsPerEntry();
+			objectEntryVersionConfiguration.maximumVersionsPerEntry();
 
 		if ((maximumVersionsPerEntry > 0) &&
 			(count > maximumVersionsPerEntry)) {
@@ -458,9 +454,6 @@ public class ObjectEntryVersionLocalServiceImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	private volatile ObjectEntryVersionConfiguration
-		_objectEntryVersionConfiguration;
 
 	@Reference
 	private UserLocalService _userLocalService;

@@ -32,7 +32,6 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -84,9 +83,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -94,7 +91,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Brian Wing Shun Chan
  */
 @Component(
-	configurationPid = "com.liferay.object.configuration.ObjectConfiguration",
 	property = {
 		"json.web.service.context.name=object",
 		"json.web.service.context.path=ObjectEntry"
@@ -674,13 +670,6 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			serviceContext, getUserId());
 	}
 
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
-		_objectConfiguration = ConfigurableUtil.createConfigurable(
-			ObjectConfiguration.class, properties);
-	}
-
 	private void _checkAddObjectEntryPortletResourcePermission(
 			long groupId, long objectDefinitionId, long objectEntryFolderId,
 			Map<String, Serializable> values)
@@ -866,13 +855,13 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			parentObjectEntry.getRootObjectEntryId());
 	}
 
-	private Date _getStartDate() {
+	private Date _getStartDate(ObjectConfiguration objectConfiguration) {
 		return Date.from(
 			LocalDate.now(
 			).minusDays(
-				Objects.equals(_objectConfiguration.timeScale(), "days") ?
-					_objectConfiguration.duration() - 1 :
-						(_objectConfiguration.duration() * 7) - 1
+				Objects.equals(objectConfiguration.timeScale(), "days") ?
+					objectConfiguration.duration() - 1 :
+						(objectConfiguration.duration() * 7) - 1
 			).atStartOfDay(
 				ZoneId.systemDefault()
 			).toInstant());
@@ -976,27 +965,23 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
 
+		ObjectConfiguration objectConfiguration;
+
 		try {
-			_objectConfiguration =
+			objectConfiguration =
 				_configurationProvider.getCompanyConfiguration(
 					ObjectConfiguration.class, objectDefinition.getCompanyId());
-
-			if (_objectConfiguration == null) {
-				_objectConfiguration =
-					_configurationProvider.getSystemConfiguration(
-						ObjectConfiguration.class);
-			}
 		}
 		catch (ConfigurationException configurationException) {
 			throw new RuntimeException(configurationException);
 		}
 
 		long count = objectEntryPersistence.countByU_GtCD_ODI(
-			user.getUserId(), _getStartDate(),
+			user.getUserId(), _getStartDate(objectConfiguration),
 			objectDefinition.getObjectDefinitionId());
 
 		long maximumNumberOfGuestUserObjectEntriesPerObjectDefinition =
-			_objectConfiguration.
+			objectConfiguration.
 				maximumNumberOfGuestUserObjectEntriesPerObjectDefinition();
 
 		if (count >= maximumNumberOfGuestUserObjectEntriesPerObjectDefinition) {
@@ -1036,8 +1021,6 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	private volatile ObjectConfiguration _objectConfiguration;
 
 	@Reference
 	private ObjectDefinitionPersistence _objectDefinitionPersistence;
