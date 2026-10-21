@@ -82,6 +82,7 @@ public abstract class BaseExportImportBackgroundTaskExecutor
 			"phasesTotal",
 			GroupExportImportParameterUtil.getPhasesCount(
 				exportImportConfiguration.getCompanyId(),
+				exportImportConfiguration.getGroupId(),
 				(Map<String, String[]>)settingsMap.get("parameterMap")));
 	}
 

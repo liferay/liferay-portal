@@ -70,7 +70,8 @@ public class GroupImporter {
 
 		if (ExportImportThreadLocal.isStagingInProcess() ||
 			!GroupExportImportParameterUtil.isGroupExportImportEnabled(
-				portletDataContext.getCompanyId()) ||
+				portletDataContext.getCompanyId(),
+				portletDataContext.getGroupId()) ||
 			GroupExportImportParameterUtil.isGroupScoped(portletDataContext)) {
 
 			return;

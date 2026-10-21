@@ -11,6 +11,8 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 import java.util.Map;
 
@@ -61,9 +63,10 @@ public class GroupExportImportParameterUtil {
 	}
 
 	public static int getPhasesCount(
-		long companyId, Map<String, String[]> parameterMap) {
+		long companyId, long groupId, Map<String, String[]> parameterMap) {
 
-		if ((parameterMap == null) || !isGroupExportImportEnabled(companyId) ||
+		if ((parameterMap == null) ||
+			!isGroupExportImportEnabled(companyId, groupId) ||
 			isGroupScoped(parameterMap)) {
 
 			return 1;
@@ -88,8 +91,17 @@ public class GroupExportImportParameterUtil {
 		return groupExternalReferenceCodes;
 	}
 
-	public static boolean isGroupExportImportEnabled(long companyId) {
-		return FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946");
+	public static boolean isGroupExportImportEnabled(
+		long companyId, long groupId) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")) {
+			return false;
+		}
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		return stagingGroupHelper.isCompanyGroup(companyId, groupId);
 	}
 
 	public static boolean isGroupScoped(Map<String, String[]> parameterMap) {
