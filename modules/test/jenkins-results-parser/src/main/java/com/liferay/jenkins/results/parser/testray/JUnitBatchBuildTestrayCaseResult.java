@@ -219,12 +219,24 @@ public class JUnitBatchBuildTestrayCaseResult
 	}
 
 	public String getMethodStatus(String testName) {
-		List<TestReport> testReportList = getTestReports();
+		List<TestClassReport> testClassReports = getTestClassReports();
 
-		for (TestReport testReport : testReportList) {
-			String testReportName = testReport.getTestName();
+		if (testClassReports == null) {
+			return null;
+		}
 
-			if (testReportName.equals(testName)) {
+		for (TestClassReport testClassReport : testClassReports) {
+			String testClassName = testClassReport.getTestClassName();
+
+			if (testClassName.equals("junit.framework.TestSuite") &&
+				!testName.equals(getName())) {
+
+				continue;
+			}
+
+			TestReport testReport = testClassReport.getTestReport(testName);
+
+			if (testReport != null) {
 				return testReport.getStatus();
 			}
 		}

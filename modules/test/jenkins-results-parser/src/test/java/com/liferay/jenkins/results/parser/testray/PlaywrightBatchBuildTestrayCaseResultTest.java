@@ -17,7 +17,6 @@ import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightSegmentTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.SegmentTestClassGroup;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
@@ -49,24 +48,18 @@ public class PlaywrightBatchBuildTestrayCaseResultTest
 
 		String testName = RandomTestUtil.randomString();
 
-		TestReport testReport = _mockTestReport(specFilePath, testName);
-
-		Mockito.doReturn(
-			Arrays.asList(
-				_mockTestReport(specFilePath, RandomTestUtil.randomString()),
-				testReport)
-		).when(
-			testClassReport
-		).getTestReports();
+		TestReport testReport = _mockTestReport(testClassReport, testName);
 
 		DownstreamBuildReport downstreamBuildReport = Mockito.mock(
 			DownstreamBuildReport.class);
 
 		Mockito.doReturn(
-			Collections.singletonList(testClassReport)
+			testClassReport
 		).when(
 			downstreamBuildReport
-		).getTestClassReports();
+		).getTestClassReport(
+			specFilePath
+		);
 
 		PlaywrightBatchBuildTestrayCaseResult
 			playwrightBatchBuildTestrayCaseResult =
@@ -274,20 +267,18 @@ public class PlaywrightBatchBuildTestrayCaseResultTest
 		return playwrightSegmentTestClassGroup;
 	}
 
-	private TestReport _mockTestReport(String testClassName, String testName) {
+	private TestReport _mockTestReport(
+		TestClassReport testClassReport, String testName) {
+
 		TestReport testReport = Mockito.mock(TestReport.class);
 
 		Mockito.doReturn(
-			testClassName
-		).when(
 			testReport
-		).getTestClassName();
-
-		Mockito.doReturn(
+		).when(
+			testClassReport
+		).getTestReport(
 			testName
-		).when(
-			testReport
-		).getTestName();
+		);
 
 		return testReport;
 	}

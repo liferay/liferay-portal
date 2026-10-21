@@ -229,13 +229,15 @@ public class PlaywrightBatchBuildTestrayCaseResult
 			return null;
 		}
 
-		for (TestReport testReport :
-				playwrightTestClassReport.getTestReports()) {
+		String testName = playwrightTestClassMethod.getName();
+		String testNamePrefix =
+			playwrightTestClassReport.getTestClassName() + " > ";
 
-			String fullTestName = JenkinsResultsParserUtil.combine(
-				testReport.getTestClassName(), " > ", testReport.getTestName());
+		if (testName.startsWith(testNamePrefix)) {
+			TestReport testReport = playwrightTestClassReport.getTestReport(
+				testName.substring(testNamePrefix.length()));
 
-			if (fullTestName.equals(playwrightTestClassMethod.getName())) {
+			if (testReport != null) {
 				return testReport;
 			}
 		}

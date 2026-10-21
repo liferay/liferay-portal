@@ -6,7 +6,9 @@
 package com.liferay.jenkins.results.parser;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -16,7 +18,12 @@ public abstract class BaseTestClassReport implements TestClassReport {
 
 	@Override
 	public void addTestReport(TestReport testReport) {
-		_testReports.add(testReport);
+		synchronized (_testReportsMap) {
+			List<TestReport> testReports = _testReportsMap.computeIfAbsent(
+				testReport.getTestName(), testName -> new ArrayList<>());
+
+			testReports.add(testReport);
+		}
 	}
 
 	@Override
@@ -112,23 +119,56 @@ public abstract class BaseTestClassReport implements TestClassReport {
 	}
 
 	@Override
+	public TestReport getTestReport(String testName) {
+		synchronized (_testReportsMap) {
+			List<TestReport> testReports = _testReportsMap.get(testName);
+
+			if (testReports == null) {
+				return null;
+			}
+
+			return testReports.get(0);
+		}
+	}
+
+	@Override
 	public List<TestReport> getTestReports() {
-		return _testReports;
+		List<TestReport> testReports = new ArrayList<>();
+
+		synchronized (_testReportsMap) {
+			for (Map.Entry<String, List<TestReport>> testReportsEntry :
+					_testReportsMap.entrySet()) {
+
+				testReports.addAll(testReportsEntry.getValue());
+			}
+		}
+
+		return testReports;
 	}
 
 	@Override
 	public String getTestTaskName() {
-		if (_testReports.isEmpty()) {
-			return null;
+		synchronized (_testReportsMap) {
+			if ((_testTaskName != null) || _testReportsMap.isEmpty()) {
+				return null;
+			}
+
+			List<TestReport> testReports = _testReportsMap.get(0);
+
+			if (testReports.isEmpty()) {
+				return null;
+			}
+
+			TestReport testReport = testReports.get(0);
+
+			if (testReport == null) {
+				return null;
+			}
+
+			_testTaskName = testReport.getTestTaskName();
+
+			return _testTaskName;
 		}
-
-		TestReport testReport = _testReports.get(0);
-
-		if (testReport == null) {
-			return null;
-		}
-
-		return testReport.getTestTaskName();
 	}
 
 	@Override
@@ -159,6 +199,8 @@ public abstract class BaseTestClassReport implements TestClassReport {
 
 	private final DownstreamBuildReport _downstreamBuildReport;
 	private final String _testClassName;
-	private final List<TestReport> _testReports = new ArrayList<>();
+	private final Map<String, List<TestReport>> _testReportsMap =
+		new LinkedHashMap<>();
+	private String _testTaskName;
 
 }

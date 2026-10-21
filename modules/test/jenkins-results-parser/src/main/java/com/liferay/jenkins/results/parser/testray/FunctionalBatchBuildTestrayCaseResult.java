@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.TestClassReport;
 import com.liferay.jenkins.results.parser.TestReport;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.FunctionalTestClass;
@@ -17,7 +18,6 @@ import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Michael Hashimoto
@@ -140,8 +140,12 @@ public class FunctionalBatchBuildTestrayCaseResult
 			return null;
 		}
 
-		for (TestReport testReport : downstreamBuildReport.getTestReports()) {
-			if (Objects.equals(testReport.getTestName(), getName())) {
+		for (TestClassReport testClassReport :
+				downstreamBuildReport.getTestClassReports()) {
+
+			TestReport testReport = testClassReport.getTestReport(getName());
+
+			if (testReport != null) {
 				return testReport;
 			}
 		}

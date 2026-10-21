@@ -42,21 +42,26 @@ public class PlaywrightTestClassMethod extends TestClassMethod {
 			return null;
 		}
 
-		for (TestReport testReport : testClassReport.getTestReports()) {
-			String fullTestName = JenkinsResultsParserUtil.combine(
-				testReport.getTestClassName(), " > ", testReport.getTestName());
+		String testName = getName();
+		String testNamePrefix = testClassReport.getTestClassName() + " > ";
 
-			if (fullTestName.equals(getName())) {
-				_cachedDownstreamBuildReport =
-					testClassReport.getDownstreamBuildReport();
-				_cachedTestReport = testReport;
-				_cachedTestReportSearched = true;
-
-				return _cachedTestReport;
-			}
+		if (!testName.startsWith(testNamePrefix)) {
+			return null;
 		}
 
-		return null;
+		TestReport testReport = testClassReport.getTestReport(
+			testName.substring(testNamePrefix.length()));
+
+		if (testReport == null) {
+			return null;
+		}
+
+		_cachedDownstreamBuildReport =
+			testClassReport.getDownstreamBuildReport();
+		_cachedTestReport = testReport;
+		_cachedTestReportSearched = true;
+
+		return _cachedTestReport;
 	}
 
 	@Override
