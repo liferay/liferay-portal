@@ -119,6 +119,40 @@ public class ObjectEntryTrashHandlerTest extends BaseTrashHandlerTestCase {
 		_testCheckEntriesWithPermissions();
 	}
 
+	@Test
+	public void testGetTrashedModel() throws Exception {
+		baseModel = addBaseModel(
+			group,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		long primaryKey = (Long)baseModel.getPrimaryKeyObj();
+
+		moveBaseModelToTrash(primaryKey);
+
+		TrashHandler trashHandler = getTrashHandler(getBaseModelClassName());
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(
+					UserLocalServiceUtil.getGuestUser(
+						TestPropsValues.getCompanyId())));
+
+			TrashedModel trashedModel = trashHandler.getTrashedModel(
+				primaryKey);
+
+			Assert.assertTrue(trashedModel.isInTrash());
+
+			Assert.assertTrue(trashHandler.isInTrash(primaryKey));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
+	}
+
 	@Override
 	@Test
 	public void testMoveBaseModelToTrash() throws Exception {
