@@ -74,10 +74,11 @@ definition {
 		AssertElementPresent(locator1 = "Button#SELECT_FILES");
 
 		var key_attachmentFileName = ${mbThreadAttachment};
+		var dependencyFilePath = TestCase.getDependenciesDirPath(fileName = ${mbThreadAttachment});
 
-		UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
+		UploadFile(
 			locator1 = "TextInput#FILE",
-			value1 = ${mbThreadAttachment});
+			value1 = ${dependencyFilePath});
 
 		if (${invalidSize} == "true") {
 			AssertTextEquals.assertPartialText(
