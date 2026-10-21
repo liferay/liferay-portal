@@ -6,19 +6,6 @@ templates:
     -   templates/workloads.yaml
 tests:
     -   asserts:
-            -   equal:
-                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
-                    value: jdbc:postgresql://db.example.com:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
-        documentSelector:
-            path: kind
-            value: StatefulSet
-        it: Accepts a database engine that matches the engine of the deployment
-        set:
-            database.engine: postgresql
-            database.host: db.example.com
-            global.database.engine: postgresql
-        template: templates/workloads.yaml
-    -   asserts:
             -   contains:
                     any: true
                     content:
@@ -32,6 +19,19 @@ tests:
         set:
             database.engine: mysql
             database.host: db.example.com
+        template: templates/workloads.yaml
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    value: jdbc:postgresql://db.example.com:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
+        documentSelector:
+            path: kind
+            value: StatefulSet
+        it: Configures the JDBC URL with chart values
+        set:
+            database.engine: postgresql
+            database.host: db.example.com
+            global.database.engine: postgresql
         template: templates/workloads.yaml
     -   asserts:
             -   equal:
