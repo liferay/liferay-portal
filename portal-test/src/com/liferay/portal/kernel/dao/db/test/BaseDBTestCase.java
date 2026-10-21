@@ -37,6 +37,22 @@ public abstract class BaseDBTestCase {
 	}
 
 	@Test
+	public void testRewordAlterColumnNameWithType() throws Exception {
+		try {
+			buildSQL(
+				"alter_column_name DLFolder userName userNameTest " +
+					"VARCHAR(75) not null;");
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				"Invalid alter column name statement",
+				illegalArgumentException.getMessage());
+		}
+	}
+
+	@Test
 	public void testRewordAlterColumnTypeWithDefaultNull() throws Exception {
 		try {
 			buildSQL(

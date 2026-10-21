@@ -85,6 +85,13 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	}
 
 	@Test
+	public void testUpgradeServiceComponentTableColumnType() throws Exception {
+		_testUpgradeWithServiceComponentTable(
+			"VARCHAR(75)", "testCOLUMN", "testTABLE", "testColumn",
+			"TestTable");
+	}
+
+	@Test
 	public void testUpgradeWithLongServiceComponentTableName()
 		throws Exception {
 
@@ -100,7 +107,8 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			"TestTable", databaseMetaData.getMaxTableNameLength());
 
 		_testUpgradeWithServiceComponentTable(
-			invalidColumnName, invalidTableName, testColumnName, testTableName);
+			"LONG", invalidColumnName, invalidTableName, testColumnName,
+			testTableName);
 	}
 
 	@Test
@@ -182,7 +190,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	@Test
 	public void testUpgradeWithServiceComponentTable() throws Exception {
 		_testUpgradeWithServiceComponentTable(
-			"testCOLUMN", "testTABLE", "testColumn", "TestTable");
+			"LONG", "testCOLUMN", "testTABLE", "testColumn", "TestTable");
 	}
 
 	@Test
@@ -254,7 +262,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 					getName(),
 				LoggerTestUtil.INFO)) {
 
-			_createTestTable(columnName, tableName);
+			_createTestTable(columnName, "LONG", tableName);
 
 			// When mysql is configured with lower_case_table_names = 1
 			// DatabaseMetaData.storesLowerCaseIdentifiers returns true
@@ -301,7 +309,8 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 		}
 	}
 
-	private void _createTestTable(String columnName, String tableName)
+	private void _createTestTable(
+			String columnName, String columnType, String tableName)
 		throws Exception {
 
 		DBType dbType = DBManagerUtil.getDBType();
@@ -310,15 +319,15 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			DBPartitionUtil.forEachCompanyId(
 				companyId -> _db.runSQL(
 					StringBundler.concat(
-						"create table [", tableName, "] ([", columnName,
-						"] LONG)")));
+						"create table [", tableName, "] ([", columnName, "] ",
+						columnType, ")")));
 		}
 		else {
 			DBPartitionUtil.forEachCompanyId(
 				companyId -> _db.runSQL(
 					StringBundler.concat(
-						"create table `", tableName, "` (`", columnName,
-						"` LONG)")));
+						"create table `", tableName, "` (`", columnName, "` ",
+						columnType, ")")));
 		}
 	}
 
@@ -347,8 +356,9 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	}
 
 	private void _testUpgradeWithServiceComponentTable(
-			String invalidColumnName, String invalidTableName,
-			String testColumnName, String testTableName)
+			String columnType, String invalidColumnName,
+			String invalidTableName, String testColumnName,
+			String testTableName)
 		throws Exception {
 
 		ServiceComponent serviceComponent =
@@ -371,7 +381,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 					getName(),
 				LoggerTestUtil.INFO)) {
 
-			_createTestTable(invalidColumnName, invalidTableName);
+			_createTestTable(invalidColumnName, columnType, invalidTableName);
 
 			upgrade();
 
@@ -416,6 +426,10 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 					Assert.assertEquals(columnName, testColumnName, columnName);
 				}
 			}
+
+			Assert.assertTrue(
+				dbInspector.hasColumnType(
+					testTableName, testColumnName, columnType));
 		}
 		finally {
 			_serviceComponentLocalService.deleteServiceComponent(

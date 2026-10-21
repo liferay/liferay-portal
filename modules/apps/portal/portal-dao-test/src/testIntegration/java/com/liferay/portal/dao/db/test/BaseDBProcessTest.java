@@ -154,6 +154,20 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	}
 
 	@Test
+	public void testAlterColumnName() throws Exception {
+		alterColumnName(
+			_TABLE_NAME, "typeVarcharDefault", "typeVarcharDefaultTest");
+
+		Assert.assertFalse(
+			_dbInspector.hasColumn(_TABLE_NAME, "typeVarcharDefault"));
+
+		Assert.assertTrue(
+			_dbInspector.hasColumnType(
+				_TABLE_NAME, "typeVarcharDefaultTest",
+				"VARCHAR(10) default 'testValue' not null"));
+	}
+
+	@Test
 	public void testAlterColumnNameNoNeeded() throws Exception {
 		alterColumnName(_TABLE_NAME, "deletedColumn", "typeBoolean");
 
@@ -224,6 +238,44 @@ public class BaseDBProcessTest extends BaseDBProcess {
 		else {
 			Assert.assertTrue(
 				_dbInspector.hasColumn(_TABLE_NAME, "TypeInteger"));
+		}
+	}
+
+	@Test
+	public void testAlterColumnNameTwice() throws Exception {
+		alterColumnName(_TABLE_NAME, "typeInteger", "typeIntegerTest");
+		alterColumnName(_TABLE_NAME, "typeInteger", "typeIntegerTest");
+
+		Assert.assertFalse(_dbInspector.hasColumn(_TABLE_NAME, "typeInteger"));
+
+		Assert.assertTrue(
+			_dbInspector.hasColumnType(
+				_TABLE_NAME, "typeIntegerTest", "INTEGER"));
+	}
+
+	@Test
+	public void testAlterColumnNameWithType() throws Exception {
+		_addIndex(new String[] {"typeVarchar", "typeBoolean"});
+
+		try {
+			alterColumnName(
+				_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertTrue(
+				_dbInspector.hasColumnType(
+					_TABLE_NAME, "typeVarchar", "VARCHAR(75) null"));
+
+			Assert.assertFalse(
+				_dbInspector.hasColumn(_TABLE_NAME, "typeVarcharTest"));
+
+			_validateIndex(
+				new String[] {
+					_dbInspector.normalizeName("typeVarchar"),
+					_dbInspector.normalizeName("typeBoolean")
+				});
 		}
 	}
 
