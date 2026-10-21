@@ -9,6 +9,7 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
@@ -30,7 +31,12 @@ public class FeatureFlagTestUtil {
 				ServiceTrackerListFactory.open(
 					SystemBundleUtil.getBundleContext(),
 					FeatureFlagListener.class,
-					StringBundler.concat("(feature.flag.key=", key, ")"))) {
+					StringBundler.concat(
+						"(|(feature.flag.key=",
+						SystemBundleUtil.escapeFilterValue(key),
+						")(feature.flag.key=",
+						SystemBundleUtil.escapeFilterValue(StringPool.STAR),
+						"))"))) {
 
 			for (FeatureFlagListener featureFlagListener :
 					featureFlagListeners) {
