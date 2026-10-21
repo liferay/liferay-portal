@@ -4,7 +4,6 @@
  */
 
 import {screen} from '@testing-library/react';
-import {escapeHTML} from 'frontend-js-web';
 
 import '@testing-library/jest-dom';
 
@@ -14,14 +13,6 @@ import {
 } from '../../src/main/resources/META-INF/resources/js/utils/toasts';
 
 describe('toasts', () => {
-	beforeAll(() => {
-		Liferay.Util.escapeHTML = escapeHTML;
-	});
-
-	afterAll(() => {
-		delete (Liferay.Util as Partial<typeof Liferay.Util>).escapeHTML;
-	});
-
 	afterEach(() => {
 		document.body.innerHTML = '';
 	});

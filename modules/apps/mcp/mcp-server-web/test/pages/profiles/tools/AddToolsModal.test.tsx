@@ -124,10 +124,6 @@ function toolSummaryURLs() {
 }
 
 describe('AddToolsModal', () => {
-	beforeAll(() => {
-		Liferay.Util.escapeHTML = jest.fn((value: string) => value);
-	});
-
 	beforeEach(() => {
 		jest.clearAllMocks();
 	});

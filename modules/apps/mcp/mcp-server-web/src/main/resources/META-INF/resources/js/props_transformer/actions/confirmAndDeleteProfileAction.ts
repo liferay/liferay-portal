@@ -4,6 +4,7 @@
  */
 
 import {openModal} from 'frontend-js-components-web';
+import {escapeHTML} from 'frontend-js-web';
 
 import {deleteProfile} from '../../services/deleteProfile';
 import {ProfileActionContext} from '../../types';
@@ -26,7 +27,7 @@ export default function confirmAndDeleteProfileAction({
 					Liferay.Language.get(
 						'this-will-permanently-delete-x-profile-from-your-mcp-server-configuration'
 					),
-					`<strong>${Liferay.Util.escapeHTML(name)}</strong>`
+					`<strong>${escapeHTML(name)}</strong>`
 				)}
 				${Liferay.Language.get('anyone-using-this-profile-will-lose-access-immediately')}
 			</p>

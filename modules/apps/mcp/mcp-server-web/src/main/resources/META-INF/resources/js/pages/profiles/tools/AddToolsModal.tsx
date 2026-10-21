@@ -8,6 +8,7 @@ import {TreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
+import {escapeHTML} from 'frontend-js-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import SelectedItemsBar from '../../../components/SelectedItemsBar';
@@ -295,9 +296,7 @@ export default function AddToolsModal({
 
 			openErrorToast(
 				errorMessages
-					.map((errorMessage) =>
-						Liferay.Util.escapeHTML(errorMessage)
-					)
+					.map((errorMessage) => escapeHTML(errorMessage))
 					.join('<br>'),
 				{dangerouslySetMessageHTML: true}
 			);

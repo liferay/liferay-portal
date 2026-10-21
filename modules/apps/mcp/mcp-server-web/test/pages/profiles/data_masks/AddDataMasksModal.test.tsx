@@ -72,8 +72,6 @@ function search(value: string) {
 
 describe('AddDataMasksModal', () => {
 	beforeAll(() => {
-		Liferay.Util.escapeHTML = jest.fn((value: string) => value);
-
 		const style = document.createElement('style');
 
 		style.textContent = '.d-none { display: none !important; }';

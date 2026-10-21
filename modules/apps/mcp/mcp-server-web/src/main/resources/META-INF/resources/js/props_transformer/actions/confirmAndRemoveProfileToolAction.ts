@@ -4,6 +4,7 @@
  */
 
 import {openModal} from 'frontend-js-components-web';
+import {escapeHTML} from 'frontend-js-web';
 
 import {deleteProfileTool} from '../../services/deleteProfileTool';
 import {ProfileToolActionContext} from '../../types';
@@ -22,7 +23,7 @@ export default function confirmAndRemoveProfileToolAction({
 					Liferay.Language.get(
 						'this-will-remove-x-from-this-profile'
 					),
-					`<strong>${Liferay.Util.escapeHTML(toolName)}</strong>`
+					`<strong>${escapeHTML(toolName)}</strong>`
 				)}
 			</p>
 			<p>${Liferay.Language.get('do-you-want-to-proceed')}</p>

@@ -8,6 +8,7 @@ import {TreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
 import ClayManagementToolbar from '@clayui/management-toolbar';
 import ClayModal from '@clayui/modal';
+import {escapeHTML} from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
 
 import AutoSearch from '../../../components/AutoSearch';
@@ -89,9 +90,7 @@ export default function AddDataMasksModal({
 
 			openErrorToast(
 				errorMessages
-					.map((errorMessage) =>
-						Liferay.Util.escapeHTML(errorMessage)
-					)
+					.map((errorMessage) => escapeHTML(errorMessage))
 					.join('<br>'),
 				{dangerouslySetMessageHTML: true}
 			);

@@ -4,6 +4,7 @@
  */
 
 import {openToast} from 'frontend-js-components-web';
+import {escapeHTML} from 'frontend-js-web';
 
 type ToastMessageOptions = {
 	dangerouslySetMessageHTML?: boolean;
@@ -37,5 +38,5 @@ function toToastMessage(
 		return message;
 	}
 
-	return Liferay.Util.escapeHTML(message);
+	return escapeHTML(message);
 }
