@@ -7,7 +7,7 @@ name: manage-object-logic
 
 # Manage Object Logic
 
-Attach triggers, conditions, and actions to object definitions. The three extension points are object actions (immediate), Kaleo workflows (approval, see "Approval Workflow"), and notification templates (user facing messages).
+Attach triggers, conditions, and actions to object definitions. The three extension points are object actions (immediate), Kaleo workflows (approval; see "Approval Workflow"), and notification templates (user facing messages).
 
 ## When to Invoke
 
@@ -480,18 +480,18 @@ Confirm by posting an entry: the response `status.label` is `pending`.
 
 #### In a Site Initializer
 
-`site-initializer/workflow-definitions/<name>/` holds `workflow-definition.json` (the DTO without `content`) and `workflow-definition.xml`, and deploying the definition from the tree works. **Linking it from the tree does not.** A `workflow-definition.properties.json` naming the object creates a link whose `className` is `ObjectDefinition#<numeric id>`, while the object's real class name is a generated code such as `ObjectDefinition#A1J1` (`_getUniqueClassName` in `ObjectDefinitionLocalServiceImpl`). The link exists, matches nothing, and entries never enter the workflow. Seen on 2026.Q2: the same object carried a `#34825` link from the tree and the working `#A1J1` link from REST.
+`site-initializer/workflow-definitions/<name>/` holds `workflow-definition.json` (the DTO without `content`) and `workflow-definition.xml`, and deploying the definition from the tree works. **Linking it from the tree does not.** A `workflow-definition.properties.json` naming the object creates a link whose `className` is `ObjectDefinition#<numeric id>`, while the object's real class name is a generated code such as `ObjectDefinition#A1J1` (`_getUniqueClassName` in `ObjectDefinitionLocalServiceImpl`). The link exists, matches nothing, and entries never enter the workflow. On 2026.Q2, the same object carried a `#34825` link from the tree and the working `#A1J1` link from REST.
 
 So always link over REST after every provision, with the object's actual `className`, as in "Deploy and Link Over REST" above. Do not take an existing link as proof: compare its `className` with the object definition's `className`.
 
 #### Approve or Reject as the Administrator
 
 ```bash
-WF="http://localhost:${PORT}/o/headless-admin-workflow/v1.0"
+WORKFLOW="http://localhost:${PORT}/o/headless-admin-workflow/v1.0"
 
-TASK=$(curl \
+TASK_ID=$(curl \
 	--silent \
-	--url "${WF}/workflow-tasks/assigned-to-my-roles?pageSize=200" \
+	--url "${WORKFLOW}/workflow-tasks/assigned-to-my-roles?pageSize=200" \
 	--user "test@liferay.com:test" \
 	| jq --argjson id <entry-id> '.items[] | select(.objectReviewed.id == $id) | .id')
 
@@ -500,7 +500,7 @@ curl \
 	--header "Content-Type: application/json" \
 	--request POST \
 	--silent \
-	--url "${WF}/workflow-tasks/${TASK}/assign-to-me" \
+	--url "${WORKFLOW}/workflow-tasks/${TASK_ID}/assign-to-me" \
 	--user "test@liferay.com:test"
 
 curl \
@@ -508,12 +508,12 @@ curl \
 	--header "Content-Type: application/json" \
 	--request POST \
 	--silent \
-	--url "${WF}/workflow-tasks/${TASK}/change-transition" \
+	--url "${WORKFLOW}/workflow-tasks/${TASK_ID}/change-transition" \
 	--user "test@liferay.com:test"
 ```
 
 - Find the task in `assigned-to-my-roles`, not through `/workflow-instances`. An instance started by a Guest submission is missing from `GET /workflow-instances`, even though its task is in the Administrator queue.
-- `assign-to-me` needs the JSON `{}` body. Without it the call returns `415`, and transitioning an unclaimed task returns `403`.
+- `assign-to-me` needs the JSON `{}` body. The call returns `415` without it, and transitioning an unclaimed task returns `403`.
 - The body field is `transitionName`. `{"name": ...}` returns `400`.
 - Use `"reject"` for the other outcome. The entry's status changes within a second.
 

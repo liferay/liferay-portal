@@ -62,7 +62,7 @@ curl \
 
 Save the returned `id` as `<definition-id>`.
 
-**Set `panelCategoryKey`, or administrators cannot find the object.** Without it the object is published and its REST endpoint works, but it has no entry in the admin menus, so nobody can browse its entries in the UI. `control_panel.object` lists it under Control Panel → Object. For an object that already exists, `PATCH /o/object-admin/v1.0/object-definitions/<definition-id>` with `{"panelCategoryKey": "control_panel.object"}` adds it without republishing.
+**Set `panelCategoryKey`, or administrators cannot find the object.** The object still publishes and its REST endpoint works, but it has no entry in the admin menus, so nobody can browse its entries in the UI. `control_panel.object` lists it under Control Panel → Object. For an object that already exists, `PATCH /o/object-admin/v1.0/object-definitions/<definition-id>` with `{"panelCategoryKey": "control_panel.object"}` adds it without republishing.
 
 #### Prefer Creating Fields Inline
 
@@ -150,13 +150,13 @@ Save the returned `id` as `<list-type-id>`. Then add a `Picklist` field referenc
 
 Writing a picklist value accepts **either** the object form `{"key": "vegan"}` or the bare string `"vegan"`. Both persist identically and both read back as `{key, name}`. An unknown key is rejected with `400 Object field name "<field>" is not mapped to a valid list type entry`.
 
-#### A List Type Entry `key` Must Be Alphanumeric — Underscore and Hyphen 500
+#### A List Type Entry `key` With an Underscore or a Hyphen Returns 500
 
-`POST .../list-type-definitions/{id}/list-type-entries` (and an entry inside the inline `listTypeEntries` array on create) fails with a bare `500 Internal Server Error` when `key` contains an underscore or a hyphen — `gluten_free`, `dairy_free`, and `test-hyphen` all failed this way, while `glutenfree` and `testCamel` succeeded. Verified on a self hosted 2026.Q1 bundle.
+`POST .../list-type-definitions/{id}/list-type-entries` fails with a bare `500 Internal Server Error` when `key` contains an underscore or a hyphen, and so does an entry in the inline `listTypeEntries` array of the definition create call. `gluten_free`, `dairy_free`, and `test-hyphen` all failed this way, while `glutenfree` and `testCamel` succeeded. Verified on a self hosted 2026.Q1 bundle.
 
-There is no validation message and no hint in the response — it reads exactly like a transient server fault, not a rejected key. Worse, the **inline** `listTypeEntries` array on the definition create call fails atomically per bad entry but the request still returns `200` with the *good* entries silently dropped along with the bad one in some orderings — always read back `listTypeEntries.length` against what you sent rather than trusting the `200`.
+The response carries no validation message, so it reads like a transient server fault rather than a rejected key. The **inline** array is worse: in some orderings the create call returns `200` and silently drops the *good* entries along with the bad one. Compare the length of the `listTypeEntries` you read back with what you sent rather than trusting the `200`.
 
-Use camelCase for every list type entry `key` (`glutenFree`, not `gluten_free` or `gluten-free`). This is a stricter rule than object field names, which do permit digits after the first letter but were not tested here for underscore/hyphen — treat list type entry keys as alphanumeric-only until proven otherwise.
+Use camelCase for every list type entry `key`: `glutenFree`, not `gluten_free` or `gluten-free`. Object field names permit digits after the first letter, but they were not tested with an underscore or a hyphen, so do not assume either limit carries over.
 
 #### A `state` Picklist Requires `defaultValue` and `defaultValueType`
 

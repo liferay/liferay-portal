@@ -245,7 +245,7 @@ A raw `ObjectDefinition`. Reference a picklist by **ERC**, via `listTypeDefiniti
 }
 ```
 
-Keep `panelCategoryKey`: without it the object has no admin menu entry. See `skills/manage-objects/SKILL.md`.
+Keep `panelCategoryKey` because the object has no admin menu entry without it. See `skills/manage-objects/SKILL.md`.
 
 Custom field names are validated against a reserved list. `name`, `email`, `location`, and `company` are fine; `status`, `id`, `creator`, `keywords`, and `userId` are rejected. A collision throws `ObjectFieldNameException$MustNotBeReserved`, which **aborts initialization and rolls back the entire site creation transaction**, leaving no site, no objects, and no picklists. See `skills/manage-objects/SKILL.md` for the full list.
 
@@ -627,9 +627,9 @@ Use the `settings` block to switch off the stock theme chrome when a master page
 >
 > Attaching it over REST does not work either: the write persists, but the rendering does not change. See `skills/theme-and-design/SKILL.md` → "Apply to Site".
 >
-> None of that is a reason to skip the client extension. Still build and deploy it — a `themeFavicon` is the only way to deliver a browser tab icon at all — and treat **selecting** it as a manual step that must be redone after a reprovision.
+> None of that is a reason to skip the client extension. Build and deploy it anyway — a `themeFavicon` is the only way to deliver a browser tab icon at all — and treat **selecting** it as a manual step that must be redone after a reprovision.
 >
-> What the tree *can* carry unaided, and what therefore needs no reattachment: a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings. A browser tab icon is not among them — no handler writes the site record's favicon column either, so a custom favicon means a `themeFavicon` CET plus the attach call.
+> The tree *can* carry a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings unaided, and none of them needs reattaching. A browser tab icon is not among them. No handler writes the site record's favicon column either, so a custom favicon needs a `themeFavicon` CET and the manual selection.
 
 ## `client-extension.yaml` for the Initializer
 

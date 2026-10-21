@@ -29,25 +29,11 @@ A `themeCSS` CET injects custom CSS that overrides Clay Design System variables.
 >
 > 1. **It needs its own project.** `themeCSS` is classified `frontend`; a `siteInitializer` is `batch`, and the workspace plugin forbids that combination. The theme is always a sibling project — see `rules/client-extension-types.md` → "Which Types May Share a Project".
 >
-> 1. **Nothing attaches it automatically — selecting it is a manual step.** Liferay attaches
-> a themeCSS CET through a `ClientExtensionEntryRel` on the layout, master layout, or layout
-> set. `BundleSiteInitializer` never writes that row (the class does not mention
-> `ClientExtensionEntryRel` at all), and the REST route that should is verified unreliable on
-> this build — see "Apply to Site" below before spending any time on it. So a deployed CET is
-> available but inert until someone picks it in Site Administration → Design → Theme, and
-> that selection is lost on every reprovision.
+> 1. **Nothing attaches it automatically — selecting it is a manual step.** Liferay attaches a themeCSS CET through a `ClientExtensionEntryRel` on the layout, master layout, or layout set. `BundleSiteInitializer` never writes that row (the class does not mention `ClientExtensionEntryRel` at all), and attaching it over REST does not take effect on this build (see "Apply to Site" below). So a deployed CET is available but inert until someone picks it in Site Administration → Design → Theme, and that selection is lost on every reprovision.
 >
-> **Build it anyway.** That is a limit of the platform, not a reason to skip the project, and
-> two things follow from skipping it. A `themeFavicon` is the *only* way to deliver a browser
-> tab icon — there is no style book token for it and no initializer key that sets one, so no
-> favicon ships at all without this project. And Clay level overrides with no style book
-> token (Classic exposes no `headings*` tokens) have nowhere else to live except a master
-> page fragment rule.
+> **Build it anyway.** That is a limit of the platform, not a reason to skip the project, and skipping it loses two things. A `themeFavicon` is the *only* way to deliver a browser tab icon — there is no style book token for it and no initializer key that sets one, so no favicon ships at all without this project. And Clay level overrides with no style book token (Classic exposes no `headings*` tokens) can otherwise live only in a master page fragment rule.
 >
-> Deliver the project, deploy it, and say plainly in the handover that selecting it is manual
-> and has to be redone after a reprovision. An undelivered theme extension is a gap in the
-> work, not a simplification — put everything that *can* live in the style book, the master
-> page and fragment CSS there, and let this carry the rest.
+> Deliver the project, deploy it, and say plainly in the handover that selecting it is manual and has to be redone after a reprovision. An undelivered theme extension is a gap in the work, not a simplification. Put everything that *can* live in the style book, the master page, and fragment CSS there, and let this project carry the rest.
 
 #### Scaffold
 
@@ -125,7 +111,7 @@ Build the SCSS to CSS: `blade gw buildClientExtension` or configure the Sass bui
 
 After deployment, go to Site Administration → Design → Theme → Configure and select the deployed theme CSS client extension. The selection is lost on every reprovision, so redo it after each one.
 
-Do not try to attach it over REST. A page specification's `settings` accept `themeCSSClientExtension` and `favIcon` and the write persists, but the rendered pages never pick them up. Put colors and tokens in the style book and heading rules in a master page fragment (see "Site Wide CSS With No Token" under Layer 2), and tell the user that selecting the theme extension, and the favicon it carries, is manual.
+Do not try to attach it over REST. A page specification's `settings` accept `themeCSSClientExtension` and `favIcon`, and the write persists, but the rendered pages never pick them up. Put colors and tokens in the style book and heading rules in a master page fragment (see "Site Wide CSS With No Token" under Layer 2), and tell the user that selecting the theme extension, and the favicon it carries, is manual.
 
 ### Layer 2: Style Book
 
@@ -336,9 +322,9 @@ The `DropZone` element must carry a `definition.fragmentSettings` block — a **
 
 #### Mark It as the Site Default
 
-`settings.masterPage.key` in each `page-definition.json` applies the master to the pages in the tree. Pages created later, in the UI or over REST, get the site's **default** master instead, so mark yours as the default or new pages render without the header and footer.
+`settings.masterPage.key` in each `page-definition.json` applies the master to the pages in the tree. Pages created later, in the UI or over REST, get the site's **default** master instead, so mark yours as the default, or new pages render without the header and footer.
 
-The tree cannot do this. `master-page.json` accepts only `key` and `name`, and an extra key such as `"defaultTemplate": true` makes the importer drop the master page: the site provisions with no master and every page loses its header and footer. Mark it over REST after each provision, by sending the master page back with `markedAsDefault` set:
+The tree cannot do this. `master-page.json` accepts only `key` and `name`, and an extra key such as `"defaultTemplate": true` makes the importer drop the master page: the site provisions with no master and every page loses its header and footer. Mark it over REST after each provision by sending the master page back with `markedAsDefault` set:
 
 ```bash
 SITE="http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>"
@@ -390,13 +376,9 @@ To replace the Liferay favicon or icon spritemap, use the companion CET types:
   type: themeSpritemap
 ```
 
-Ship these in the same `frontend` project as the `themeCSS` CET, with the icon files actually
-present — a `url` pointing at nothing deploys cleanly and delivers no icon.
+Ship these in the same `frontend` project as the `themeCSS` CET, with the icon files actually present. A `url` that points at nothing deploys cleanly and delivers no icon.
 
-`themeFavicon` is the only route to a browser tab icon. There is no style book token for a
-favicon, and no initializer handler writes the site record's own favicon column either, so a
-site with no favicon project keeps the product default no matter how thoroughly it is
-otherwise rebranded. Selecting it is the same manual step as the theme — see "Apply to Site".
+`themeFavicon` is the only route to a browser tab icon. There is no style book token for a favicon, and no initializer handler writes the site record's own favicon column either, so a site with no favicon project keeps the product default no matter how thoroughly it is otherwise rebranded. Selecting it is the same manual step as selecting the theme (see "Apply to Site").
 
 ## globalCSS Versus themeCSS
 
