@@ -52,8 +52,8 @@ definition {
 			locator1 = "Translation#DROPDOWN_MENU_ITEM");
 
 		AssertElementPresent(
-			key_locale = ${newTargetLocale},
-			locator1 = "Translation#CONTENT_TITLE");
+			key_currentLocale = StringUtil.lowerCase(${newTargetLocale}),
+			locator1 = "Button#TRANSLATIONS_LOCALIZATION");
 	}
 
 	@summary = "Default summary"
@@ -442,14 +442,14 @@ definition {
 			CKEditor.typeContentInEitherEditor(
 				content = ${webContentContent},
 				fieldLabel = "Content",
-				iframeLocator = "CKEditor#BODY_FIELD_IFRAME_2");
+				iframeIndex = 2);
 		}
 
 		if (isSet(webContentDescription)) {
 			CKEditor.typeContentInEitherEditor(
 				content = ${webContentDescription},
 				fieldLabel = "Description",
-				iframeLocator = "CKEditor#BODY_FIELD_IFRAME");
+				iframeIndex = 1);
 		}
 
 		if (isSet(webContentSourceHtml)) {
@@ -782,21 +782,21 @@ definition {
 			CKEditor.assertContentInEitherEditor(
 				content = ${webContentContent},
 				fieldLabel = "Content",
-				iframeLocator = "CKEditor#BODY_FIELD_IFRAME_2");
+				iframeIndex = 2);
 		}
 
 		if (isSet(webContentDescription)) {
 			CKEditor.assertContentInEitherEditor(
 				content = ${webContentDescription},
 				fieldLabel = "Description",
-				iframeLocator = "CKEditor#BODY_FIELD_IFRAME");
+				iframeIndex = 1);
 		}
 
 		if (isSet(webContentHtml)) {
 			CKEditor.assertContentInEitherEditor(
 				content = ${webContentHtml},
 				fieldLabel = "Rich Text",
-				iframeLocator = "CKEditor#BODY_FIELD_IFRAME_2");
+				iframeIndex = 2);
 		}
 
 		if (isSet(webContentText)) {

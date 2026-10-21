@@ -71,6 +71,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>BODY_FIELD_IFRAME_INDEX</td>
+	<td>xpath=(//*[contains(@id,'cke')]/iframe)[${key_index}]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE</td>
 	<td>//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//div[contains(@id,'cke')]/iframe</td>
 	<td></td>

@@ -238,11 +238,13 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertContentInEitherEditor(content = null, fieldLabel = null, iframeLocator = null) {
+	macro assertContentInEitherEditor(content = null, fieldLabel = null, iframeIndex = null) {
 		WaitForVisible(locator1 = "CKEditor#BODY_FIELD_EITHER_EDITOR");
 
-		if (IsElementPresent(locator1 = ${iframeLocator})) {
-			SelectFrame.selectFrameNoLoading(locator1 = ${iframeLocator});
+		if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+			SelectFrame.selectFrameNoLoading(
+				key_index = ${iframeIndex},
+				locator1 = "CKEditor#BODY_FIELD_IFRAME_INDEX");
 
 			AssertTextEquals(
 				locator1 = "CKEditor#BODY",
@@ -301,11 +303,13 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro typeContentInEitherEditor(content = null, fieldLabel = null, iframeLocator = null) {
+	macro typeContentInEitherEditor(content = null, fieldLabel = null, iframeIndex = null) {
 		WaitForVisible(locator1 = "CKEditor#BODY_FIELD_EITHER_EDITOR");
 
-		if (IsElementPresent(locator1 = ${iframeLocator})) {
-			SelectFrame.selectFrameNoLoading(locator1 = ${iframeLocator});
+		if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+			SelectFrame.selectFrameNoLoading(
+				key_index = ${iframeIndex},
+				locator1 = "CKEditor#BODY_FIELD_IFRAME_INDEX");
 
 			Type(
 				locator1 = "CKEditor#BODY",
