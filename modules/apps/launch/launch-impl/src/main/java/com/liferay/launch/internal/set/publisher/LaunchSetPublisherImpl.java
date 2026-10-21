@@ -156,28 +156,26 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 			return;
 		}
 
+		if (launchSetObjectEntry.getStatus() ==
+				WorkflowConstants.STATUS_SCHEDULED) {
+
+			long userId = PrincipalThreadLocal.getUserId();
+
+			ServiceContext serviceContext = _createServiceContext(
+				launchSetObjectEntry, userId);
+
+			_objectEntryLocalService.updateStatus(
+				userId, launchSetId, WorkflowConstants.STATUS_DRAFT,
+				serviceContext);
+
+			_updateScheduledDate(
+				null, launchSetObjectEntry, serviceContext, userId);
+		}
+
 		_schedulerEngineHelper.delete(
 			_getJobName(launchSetObjectEntry),
 			LaunchDestinationNames.LAUNCH_SET_SCHEDULED_PUBLISH,
 			StorageType.PERSISTED);
-
-		if (launchSetObjectEntry.getStatus() !=
-				WorkflowConstants.STATUS_SCHEDULED) {
-
-			return;
-		}
-
-		long userId = PrincipalThreadLocal.getUserId();
-
-		ServiceContext serviceContext = _createServiceContext(
-			launchSetObjectEntry, userId);
-
-		_objectEntryLocalService.updateStatus(
-			userId, launchSetId, WorkflowConstants.STATUS_DRAFT,
-			serviceContext);
-
-		_updateScheduledDate(
-			null, launchSetObjectEntry, serviceContext, userId);
 	}
 
 	private ServiceContext _createServiceContext(
