@@ -12,8 +12,12 @@ import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorCons
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.StyledLayoutStructureItem;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
@@ -94,6 +98,53 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcessTest {
 				layout.getPlid()));
 	}
 
+	private FragmentEntryLink _addParagraphFragmentEntryLink(
+			Layout layout, String mappedField, int position)
+		throws Exception {
+
+		return ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(
+					"element-text",
+					JSONUtil.put(
+						"config", JSONUtil.put("mapperType", "link")
+					).put(
+						"defaultValue", StringPool.BLANK
+					).put(
+						"mappedField", mappedField
+					))
+			).toString(),
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, layout,
+			"BASIC_COMPONENT-paragraph", FragmentConstants.TYPE_COMPONENT, null,
+			position,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				layout.getPlid()));
+	}
+
+	private String _getCustomCSS(
+		FragmentEntryLink fragmentEntryLink, Layout layout) {
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					layout.getGroupId(), layout.getPlid());
+
+		LayoutStructure layoutStructure = LayoutStructure.of(
+			layoutPageTemplateStructure.getData(
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(layout.getPlid())));
+
+		StyledLayoutStructureItem styledLayoutStructureItem =
+			(StyledLayoutStructureItem)
+				layoutStructure.getLayoutStructureItemByFragmentEntryLinkId(
+					fragmentEntryLink.getFragmentEntryLinkId());
+
+		return styledLayoutStructureItem.getCustomCSS();
+	}
+
 	private String _getEditableValues(String inputFieldId) {
 		JSONObject jsonObject = JSONUtil.put(
 			FragmentEntryProcessorConstants.
@@ -118,6 +169,10 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcessTest {
 			"ObjectField_description", layout, 0);
 		FragmentEntryLink fragmentEntryLink2 = _addFragmentEntryLink(
 			"ObjectField_title", layout, 1);
+		FragmentEntryLink fragmentEntryLink3 = _addParagraphFragmentEntryLink(
+			layout, "ObjectField_description", 2);
+		FragmentEntryLink fragmentEntryLink4 = _addParagraphFragmentEntryLink(
+			layout, "ObjectField_title", 3);
 
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
@@ -153,6 +208,11 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcessTest {
 		Assert.assertEquals(
 			_getEditableValues("ObjectField_title"),
 			fragmentEntryLink2.getEditableValues());
+
+		Assert.assertEquals(
+			".[$FRAGMENT_CLASS$] figure.media {\ndisplay: block;\n}",
+			_getCustomCSS(fragmentEntryLink3, layout));
+		Assert.assertNull(_getCustomCSS(fragmentEntryLink4, layout));
 	}
 
 	@Inject
@@ -163,6 +223,10 @@ public class CMPDescriptionDisplayPageTemplateUpgradeProcessTest {
 
 	@DeleteAfterTestRun
 	private LayoutPageTemplateEntry _layoutPageTemplateEntry;
+
+	@Inject
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
