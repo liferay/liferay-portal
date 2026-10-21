@@ -19,7 +19,7 @@ import SelectedItemsBar from '../../../components/SelectedItemsBar';
 import {getTool} from '../../../services/getTool';
 import {patchProfileTool} from '../../../services/patchProfileTool';
 import {ProfileTool} from '../../../types';
-import {openErrorToast, openSuccessToast} from '../../../utils';
+import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 import {
 	FieldTreeItem,
 	buildFieldTree,

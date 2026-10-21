@@ -12,7 +12,7 @@ import React, {useState} from 'react';
 import {deleteProfileDataMask} from '../../../services/deleteProfileDataMask';
 import {patchProfileDataMask} from '../../../services/patchProfileDataMask';
 import {ProfileDataMaskRow} from '../../../types';
-import {openErrorToast, openSuccessToast} from '../../../utils';
+import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 
 interface RemoveDataMaskModalProps {
 	onClose: () => void;

@@ -5,8 +5,8 @@
 
 import {Key} from 'react';
 
-import {JSONSchema, TreeFilter} from '../../../types';
-import {filterTree} from '../../../utils';
+import {JSONSchema} from '../../../types';
+import filterTree, {TreeFilter} from '../../../utils/filterTree';
 
 export type FieldTreeItem = {
 	children?: FieldTreeItem[];

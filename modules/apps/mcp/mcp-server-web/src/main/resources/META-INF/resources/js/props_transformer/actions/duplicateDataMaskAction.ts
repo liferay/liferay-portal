@@ -5,7 +5,7 @@
 
 import {postDataMask} from '../../services/postDataMask';
 import {ActionContext} from '../../types';
-import {openErrorToast, openSuccessToast} from '../../utils';
+import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 export default async function duplicateDataMaskAction({
 	itemData,

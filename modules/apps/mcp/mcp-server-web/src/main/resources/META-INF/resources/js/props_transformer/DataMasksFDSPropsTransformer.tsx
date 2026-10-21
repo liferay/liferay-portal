@@ -4,7 +4,7 @@
  */
 
 import {DataMask} from '../types';
-import {isSystemMask} from '../utils';
+import isSystemMask from '../utils/isSystemMask';
 import confirmAndDeleteDataMaskAction from './actions/confirmAndDeleteDataMaskAction';
 import duplicateDataMaskAction from './actions/duplicateDataMaskAction';
 

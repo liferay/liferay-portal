@@ -17,7 +17,7 @@ import {getToolSetTools} from '../../../services/getToolSetTools';
 import {getToolSets} from '../../../services/getToolSets';
 import {postProfileTool} from '../../../services/postProfileTool';
 import {ProfileTool, ToolSet, ToolSummary} from '../../../types';
-import {openErrorToast, openSuccessToast} from '../../../utils';
+import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 import {
 	ToolTreeItem,
 	buildToolChildren,

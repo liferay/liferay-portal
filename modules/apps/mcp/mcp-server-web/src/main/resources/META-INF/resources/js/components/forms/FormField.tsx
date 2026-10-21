@@ -8,7 +8,7 @@ import {FieldValidator, useField} from 'formik';
 import {FieldBase} from 'frontend-js-components-web';
 import React from 'react';
 
-import {required} from '../../utils';
+import required from '../../utils/required';
 
 interface FormFieldProps {
 	component?: 'input' | 'textarea';

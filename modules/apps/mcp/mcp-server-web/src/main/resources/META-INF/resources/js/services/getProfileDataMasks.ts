@@ -6,7 +6,7 @@
 import {addParams} from 'frontend-js-web';
 
 import {ProfileDataMask} from '../types';
-import {toODataStringLiteral} from '../utils';
+import toODataStringLiteral from '../utils/toODataStringLiteral';
 import ApiHelper, {RequestResult} from './ApiHelper';
 import {PROFILE_DATA_MASKS_URL} from './constants';
 import {fetchAllItems} from './fetchAllItems';

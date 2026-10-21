@@ -12,7 +12,7 @@ import {getDataMasks} from '../../../services/getDataMasks';
 import {getProfileDataMasks} from '../../../services/getProfileDataMasks';
 import {patchProfileDataMask} from '../../../services/patchProfileDataMask';
 import {DataMask, ProfileDataMaskRow} from '../../../types';
-import {openErrorToast} from '../../../utils';
+import {openErrorToast} from '../../../utils/toasts';
 import AddDataMasksModal from './AddDataMasksModal';
 import RemoveDataMaskModal from './RemoveDataMaskModal';
 

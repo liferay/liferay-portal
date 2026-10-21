@@ -17,12 +17,9 @@ import {getPrompt} from '../../services/getPrompt';
 import {patchPrompt} from '../../services/patchPrompt';
 import {postPrompt} from '../../services/postPrompt';
 import {Prompt, PromptFormValues, PromptPayload} from '../../types';
-import {
-	openErrorToast,
-	openSuccessToast,
-	required,
-	toIdentifier,
-} from '../../utils';
+import required from '../../utils/required';
+import toIdentifier from '../../utils/toIdentifier';
+import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 interface EditPromptProps {
 	backURL: string;

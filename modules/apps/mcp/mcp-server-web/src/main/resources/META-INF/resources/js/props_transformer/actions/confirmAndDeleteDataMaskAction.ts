@@ -8,7 +8,7 @@ import {openModal} from 'frontend-js-components-web';
 import {deleteDataMask} from '../../services/deleteDataMask';
 import {getProfileDataMasks} from '../../services/getProfileDataMasks';
 import {ActionContext} from '../../types';
-import {openErrorToast, openSuccessToast} from '../../utils';
+import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 async function getAssociatedProfilesCount(
 	dataMaskExternalReferenceCode?: string

@@ -18,7 +18,7 @@ import {getProfile} from '../../../services/getProfile';
 import {patchProfile} from '../../../services/patchProfile';
 import {postProfile} from '../../../services/postProfile';
 import {Profile, ProfileFormValues, ProfilePayload} from '../../../types';
-import {openErrorToast, openSuccessToast} from '../../../utils';
+import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 
 interface EditProfileViewProps {
 	backURL: string;

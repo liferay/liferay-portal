@@ -5,7 +5,7 @@
 
 import {postPrompt} from '../../services/postPrompt';
 import {PromptActionContext} from '../../types';
-import {openErrorToast, openSuccessToast} from '../../utils';
+import {openErrorToast, openSuccessToast} from '../../utils/toasts';
 
 export default async function duplicatePromptAction({
 	itemData,

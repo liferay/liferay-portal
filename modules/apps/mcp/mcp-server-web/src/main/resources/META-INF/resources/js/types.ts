@@ -31,18 +31,6 @@ export type DataMaskPayload = {
 	replacementValue: string;
 };
 
-export type TreeFilter = {
-	expandedKeys: Set<string>;
-	matchCount: number;
-	visibleKeys: Set<string>;
-};
-
-export type TreeItem<T> = {
-	children?: T[];
-	id: string;
-	name: string;
-};
-
 export type DataMaskFormValues = {
 	description: string;
 	detectionRegex: string;

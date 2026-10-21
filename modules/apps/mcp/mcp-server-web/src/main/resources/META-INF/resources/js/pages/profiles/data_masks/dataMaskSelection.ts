@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DataMask, DataMaskTypeKey, TreeFilter} from '../../../types';
-import {filterTree} from '../../../utils';
+import {DataMask, DataMaskTypeKey} from '../../../types';
+import filterTree, {TreeFilter} from '../../../utils/filterTree';
 
 export type DataMaskTreeItem = {
 	children?: DataMaskTreeItem[];

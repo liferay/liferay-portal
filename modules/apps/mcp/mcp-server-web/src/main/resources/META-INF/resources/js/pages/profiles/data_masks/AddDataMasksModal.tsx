@@ -17,7 +17,7 @@ import Highlight from '../../../components/Highlight';
 import SelectedItemsBar from '../../../components/SelectedItemsBar';
 import {postProfileDataMask} from '../../../services/postProfileDataMask';
 import {DataMask} from '../../../types';
-import {openErrorToast, openSuccessToast} from '../../../utils';
+import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 import {
 	DataMaskTreeItem,
 	buildDataMaskTree,
