@@ -4610,7 +4610,9 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		Layout layoutPageTemplateEntryLayout =
 			LayoutPageTemplateEntryLayoutProviderUtil.
 				getLayoutPageTemplateEntryLayout(
-					layout.getGroupId(), masterLayoutPageTemplateEntryERC,
+					layout.getCompanyId(), masterLayoutPageTemplateEntryERC,
+					layout.getGroupId(),
+					layout.getMasterLayoutPageTemplateEntryScopeERC(),
 					layout.getPlid());
 
 		if (layoutPageTemplateEntryLayout == null) {
