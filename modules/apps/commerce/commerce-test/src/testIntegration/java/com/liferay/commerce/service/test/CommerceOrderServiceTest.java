@@ -265,6 +265,12 @@ public class CommerceOrderServiceTest {
 			_commerceOrder.getCommerceOrderId());
 	}
 
+	@Test
+	public void testUpdateCommerceOrder() throws Exception {
+		_testUpdateCommerceOrderWithAccountBuyerRole();
+		_testUpdateCommerceOrderWithRegularRole();
+	}
+
 	private CommerceOrder _addOrUpdateCommerceOrder(
 			CommerceOrder commerceOrder, String externalReferenceCode,
 			User user)
@@ -346,6 +352,50 @@ public class CommerceOrderServiceTest {
 				StringBundler.concat(
 					"User ", userId, " must have ", actionId,
 					" permission for")));
+	}
+
+	private void _assertUpdateCommerceOrderNotAllowed(
+			String actionId, CommerceOrder commerceOrder, BigDecimal subtotal,
+			BigDecimal total, User user)
+		throws Exception {
+
+		try {
+			_updateCommerceOrder(commerceOrder, subtotal, total, user);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(actionId, exception.getMessage(), user.getUserId());
+		}
+	}
+
+	private void _assertUpdateCommerceOrderNotAllowed(
+			String actionId, CommerceOrder commerceOrder, User user)
+		throws Exception {
+
+		try {
+			_updateCommerceOrder(commerceOrder, user);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(actionId, exception.getMessage(), user.getUserId());
+		}
+	}
+
+	private void _assertUpdateCommerceOrderWithPricesNotAllowed(
+			String actionId, CommerceOrder commerceOrder, BigDecimal total,
+			User user)
+		throws Exception {
+
+		try {
+			_updateCommerceOrderWithPrices(commerceOrder, total, user);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(actionId, exception.getMessage(), user.getUserId());
+		}
 	}
 
 	private void _testAddOrUpdateCommerceOrderWithAccountRole(String roleName)
@@ -510,6 +560,234 @@ public class CommerceOrderServiceTest {
 
 		_assertAddOrUpdateCommerceOrder(
 			commerceOrder, commerceOrder.getExternalReferenceCode(), user);
+	}
+
+	private void _testUpdateCommerceOrderWithAccountBuyerRole()
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				null, StringPool.BLANK, new long[] {user.getUserId()}, null,
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId()));
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			AccountRoleConstants.ROLE_NAME_ACCOUNT_BUYER);
+
+		_userGroupRoleLocalService.addUserGroupRole(
+			user.getUserId(), accountEntry.getAccountEntryGroupId(),
+			role.getRoleId());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				user.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		commerceOrder.setPaymentStatus(
+			CommerceOrderPaymentConstants.STATUS_COMPLETED);
+
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES,
+			commerceOrder, user);
+
+		long commerceOrderId = commerceOrder.getCommerceOrderId();
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		commerceOrder.setTotal(
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES, commerceOrder,
+			user);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES, commerceOrder,
+			commerceOrder.getSubtotal(),
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()), user);
+		_assertUpdateCommerceOrderWithPricesNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES, commerceOrder,
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()), user);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		commerceOrder.setOrderStatus(
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		commerceOrder = _updateCommerceOrder(commerceOrder, user);
+
+		Assert.assertEquals(
+			CommerceOrderConstants.ORDER_STATUS_PENDING,
+			commerceOrder.getOrderStatus());
+	}
+
+	private void _testUpdateCommerceOrderWithRegularRole() throws Exception {
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user.getUserId(), role);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				null,
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId()));
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				user.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_updateCommerceOrder(
+			commerceOrder, commerceOrder.getSubtotal(),
+			commerceOrder.getTotal(), user);
+		_updateCommerceOrderWithPrices(
+			commerceOrder, commerceOrder.getTotal(), user);
+
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES, commerceOrder,
+			commerceOrder.getSubtotal(),
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()), user);
+		_assertUpdateCommerceOrderWithPricesNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES, commerceOrder,
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()), user);
+
+		long commerceOrderId = commerceOrder.getCommerceOrderId();
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		commerceOrder.setPaymentStatus(
+			CommerceOrderPaymentConstants.STATUS_COMPLETED);
+
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES,
+			commerceOrder, user);
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		commerceOrder.setPaymentStatus(
+			CommerceOrderPaymentConstants.STATUS_COMPLETED);
+
+		commerceOrder = _updateCommerceOrder(commerceOrder, user);
+
+		Assert.assertEquals(
+			CommerceOrderPaymentConstants.STATUS_COMPLETED,
+			commerceOrder.getPaymentStatus());
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES, commerceOrder,
+			commerceOrder.getSubtotal(),
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()), user);
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		_updateCommerceOrder(
+			commerceOrder, commerceOrder.getSubtotal(),
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()), user);
+		_updateCommerceOrderWithPrices(
+			commerceOrder, BigDecimal.valueOf(RandomTestUtil.randomDouble()),
+			user);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrderId);
+
+		commerceOrder.setTotal(BigDecimal.valueOf(5));
+
+		commerceOrder = _updateCommerceOrder(commerceOrder, user);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(BigDecimal.valueOf(5), commerceOrder.getTotal()));
+	}
+
+	private CommerceOrder _updateCommerceOrder(
+			CommerceOrder commerceOrder, BigDecimal subtotal, BigDecimal total,
+			User user)
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			return _commerceOrderService.updateCommerceOrder(
+				commerceOrder.getExternalReferenceCode(),
+				commerceOrder.getCommerceOrderId(),
+				commerceOrder.getBillingAddressId(),
+				commerceOrder.getCommerceShippingMethodId(),
+				commerceOrder.getShippingAddressId(),
+				commerceOrder.getAdvanceStatus(),
+				commerceOrder.getCommercePaymentMethodKey(),
+				commerceOrder.getName(), commerceOrder.getPurchaseOrderNumber(),
+				commerceOrder.getShippingAmount(),
+				commerceOrder.getShippingOptionName(), subtotal, total);
+		}
+	}
+
+	private CommerceOrder _updateCommerceOrder(
+			CommerceOrder commerceOrder, User user)
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			return _commerceOrderService.updateCommerceOrder(commerceOrder);
+		}
+	}
+
+	private CommerceOrder _updateCommerceOrderWithPrices(
+			CommerceOrder commerceOrder, BigDecimal total, User user)
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			return _commerceOrderService.updateCommerceOrder(
+				commerceOrder.getExternalReferenceCode(),
+				commerceOrder.getCommerceOrderId(),
+				commerceOrder.getBillingAddressId(),
+				commerceOrder.getCommerceShippingMethodId(),
+				commerceOrder.getShippingAddressId(),
+				commerceOrder.getAdvanceStatus(),
+				commerceOrder.getCommercePaymentMethodKey(),
+				commerceOrder.getName(), commerceOrder.getPurchaseOrderNumber(),
+				commerceOrder.getShippingAmount(),
+				commerceOrder.getShippingOptionName(),
+				commerceOrder.getShippingWithTaxAmount(),
+				commerceOrder.getSubtotal(),
+				commerceOrder.getSubtotalWithTaxAmount(),
+				commerceOrder.getTaxAmount(), total,
+				commerceOrder.getTotalDiscountAmount(),
+				commerceOrder.getTotalWithTaxAmount());
+		}
 	}
 
 	private static CommerceChannel _commerceChannel;
