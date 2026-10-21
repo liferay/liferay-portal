@@ -7,5 +7,4 @@ Import-Package:\
 	*
 -includeresource:\
 	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
-	com.liferay.headless.object.client.jar=com.liferay.headless.object.client-*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar
+	com.liferay.headless.object.client.jar=com.liferay.headless.object.client-*.jar;lib:=true

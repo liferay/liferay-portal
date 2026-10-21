@@ -3,5 +3,4 @@ Bundle-SymbolicName: com.liferay.portal.tools.rest.builder.test.test
 Bundle-Version: 1.0.0
 -includeresource:\
 	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
-	com.liferay.portal.tools.rest.builder.test.client.jar=com.liferay.portal.tools.rest.builder.test.client-*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar
+	com.liferay.portal.tools.rest.builder.test.client.jar=com.liferay.portal.tools.rest.builder.test.client-*.jar;lib:=true
