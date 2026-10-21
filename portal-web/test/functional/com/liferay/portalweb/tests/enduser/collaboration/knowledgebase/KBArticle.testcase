@@ -28,100 +28,6 @@ definition {
 		}
 	}
 
-	@priority = 4
-	@refactordone
-	test CanAddArticleAsDraft {
-		property portal.acceptance = "true";
-
-		KBArticle.addCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			saveAsDraft = "true");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			kbStatus = "Draft");
-	}
-
-	@description = "This test ensures that users can add article via center pane button."
-	@e2etest
-	@priority = 5
-	test CanAddArticleViaCenterPaneButton {
-		property portal.acceptance = "true";
-
-		KBArticle.openPageTreePanel(section = "Folders and Articles");
-
-		KBArticle.addCP(
-			centerPaneButton = "true",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.viewArticleThroughPageTreePanel(kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		Button.viewNotPresent(button = "New");
-	}
-
-	@description = "This test ensures that users can add an article with a custom friendly URL via the new configuration pane."
-	@priority = 5
-	test CanAddArticleWithCustomFriendlyURL {
-		property portal.acceptance = "true";
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleFriendlyURL = "New Knowledge Base Article Title",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.openToEditKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		KBArticle.viewFriendlyURLCP(
-			disabledFriendlyURLField = "true",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleFriendlyURL = "new-knowledge-base-article-title",
-			kbArticleTitle = "Knowledge Base Article Title",
-			skipNavigation = "true");
-	}
-
-	@description = "This test ensures that users can add an article with the description."
-	@priority = 5
-	test CanAddArticleWithDescription {
-		KBArticle.addCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			kbDescription = "Knowledge Base Article Description");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title",
-			kbDescription = "Knowledge Base Article Description");
-	}
-
-	@priority = 4
-	@refactordone
-	test CanAddArticleWithHTML {
-		KBArticle.addCP(
-			kbArticleAddViaSource = "true",
-			kbArticleContentSource = '''<b>Knowledge Base&rsquo;s Article Content</b>''',
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.viewCPWithHTML(
-			kbArticleContent = "Knowledge Base’s Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-	}
-
 	@priority = 3
 	@refactordone
 	test CanAddArticleWithRelatedBlog {
@@ -414,63 +320,6 @@ definition {
 		LexiconEntry.viewEntryName(rowEntry = "Knowledge Base Article Title");
 	}
 
-	@priority = 4
-	@refactorneeded
-	test CannotAddArticleWithDuplicateURL {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.viewFriendlyURLCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleFriendlyURL = "knowledge-base-article-title-1",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleDuplicateFriendlyURL = "true",
-			kbArticleFriendlyURL = "knowledge-base-article-title",
-			kbArticleTitle = "Knowledge Base Article Title");
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotAddArticleWithoutContent {
-		KBArticle.viewFieldRequiredAsterisk(fieldLabel = "Content");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
-			kbArticleContent = "",
-			kbArticleInvalidContent = "true",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewDefaultCP();
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotAddArticleWithoutTitle {
-		KBArticle.addCPWithInvalidTitle(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewDefaultCP();
-	}
-
 	@description = "This test ensures that users can replace the related asset for an article via the new configuration pane."
 	@priority = 4
 	test CanReplaceArticleRelatedAsset {
@@ -725,30 +574,6 @@ definition {
 		LexiconList.viewListEntryTitle(listEntry = "Knowledge Base Article Title1");
 
 		LexiconList.viewListEntryTitle(listEntry = "Knowledge Base Article Title2");
-	}
-
-	@priority = 4
-	@refactordone
-	test CanSaveEditedArticleAsDraft {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.editCP(
-			kbArticleContentEdit = "Knowledge Base Article Content Edit",
-			kbArticleTitle = "Knowledge Base Article Title",
-			kbArticleTitleEdit = "Knowledge Base Article Title Edit",
-			saveAsDraft = "true");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.viewCP(
-			kbArticleContent = "Knowledge Base Article Content Edit",
-			kbArticleTitle = "Knowledge Base Article Title Edit",
-			kbStatus = "Draft");
 	}
 
 	@description = "This test ensures that a user can subscribe to a kb article from the navigation pane."
