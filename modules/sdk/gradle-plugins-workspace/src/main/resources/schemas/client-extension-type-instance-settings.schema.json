@@ -2128,6 +2128,12 @@
 					"title": "Caching Strategy",
 					"type": "string"
 				},
+				"compressionStrategy": {
+					"default": "use-system-defaults",
+					"description": "Set the compression level of the frontend resources sent to browsers. Higher levels produce smaller responses but take more CPU time the first time each resource is compressed. Select \"Use System Defaults\" to use the compression level configured by the system administrator.",
+					"title": "Compression Strategy",
+					"type": "string"
+				},
 				"cssStyleSheetsMaxAge": {
 					"default": 86400,
 					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for mutable CSS style sheets.",
