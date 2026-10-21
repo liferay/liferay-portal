@@ -69,7 +69,9 @@ definition {
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WebContentTitle");
 
-		PortletEntry.changeLocale(locale = "ja-JP");
+		PortletEntry.changeLocale(
+			locale = "ja-JP",
+			translated = "true");
 
 		WebContent.viewCP(
 			upgradedFieldLabel = "true",
