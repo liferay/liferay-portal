@@ -298,6 +298,7 @@ public class MonitorMetricsWriter {
 			}
 
 			gaugeDataPointSnapshotBuilder.labels(labels);
+
 			gaugeDataPointSnapshotBuilder.value(1);
 
 			gaugeSnapshotBuilder.dataPoint(
