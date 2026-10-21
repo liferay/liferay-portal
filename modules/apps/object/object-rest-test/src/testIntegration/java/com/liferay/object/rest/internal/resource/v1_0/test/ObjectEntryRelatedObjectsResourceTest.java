@@ -1468,6 +1468,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 	public void testPatchCustomObjectEntryWithNestedCustomObjectEntryValues()
 		throws Exception {
 
+		// Many to many relationship
+
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				List.of(
@@ -1494,8 +1496,6 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				false);
 
 		_objectDefinitions.add(objectDefinition);
-
-		// Many to many relationship
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			objectDefinition,
