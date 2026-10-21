@@ -258,8 +258,11 @@ public class BatchEngineExportTaskExecutorImpl
 
 		try (BatchEngineTaskItemDelegateSafeCloseable
 				batchEngineTaskItemDelegateSafeCloseable =
-					_getBatchEngineTaskItemDelegateSafeCloseable(
-						batchEngineExportTask);
+					_batchEngineTaskItemDelegateRegistry.
+						getBatchEngineTaskItemDelegateWithSafeCloseable(
+							batchEngineExportTask.getCompanyId(),
+							batchEngineExportTask.getClassName(),
+							batchEngineExportTask.getTaskItemDelegateName());
 
 			BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
 				_getBatchEngineExportTaskItemWriter(
@@ -441,31 +444,6 @@ public class BatchEngineExportTaskExecutorImpl
 			).userId(
 				batchEngineExportTask.getUserId()
 			).build();
-	}
-
-	private BatchEngineTaskItemDelegateSafeCloseable
-		_getBatchEngineTaskItemDelegateSafeCloseable(
-			BatchEngineExportTask batchEngineExportTask) {
-
-		BatchEngineTaskItemDelegateSafeCloseable
-			batchEngineTaskItemDelegateSafeCloseable =
-				_batchEngineTaskItemDelegateRegistry.
-					getBatchEngineTaskItemDelegateWithSafeCloseable(
-						batchEngineExportTask.getCompanyId(),
-						batchEngineExportTask.getClassName(),
-						batchEngineExportTask.getTaskItemDelegateName());
-
-		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-			batchEngineTaskItemDelegateSafeCloseable.
-				getBatchEngineTaskItemDelegate();
-
-		if (batchEngineTaskItemDelegate == null) {
-			throw new IllegalStateException(
-				"No batch engine delegate available for class name " +
-					batchEngineExportTask.getClassName());
-		}
-
-		return batchEngineTaskItemDelegateSafeCloseable;
 	}
 
 	private String _getCSVFileColumnDelimiter(long companyId) throws Exception {

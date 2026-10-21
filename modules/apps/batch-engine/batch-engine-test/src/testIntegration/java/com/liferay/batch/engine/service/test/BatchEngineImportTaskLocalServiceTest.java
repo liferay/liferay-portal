@@ -17,6 +17,7 @@ import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -55,6 +56,24 @@ public class BatchEngineImportTaskLocalServiceTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testAddBatchEngineImportTask() throws Exception {
+		String className = RandomTestUtil.randomString();
+
+		AssertUtils.assertFailure(
+			IllegalStateException.class,
+			StringBundler.concat(
+				"No batch engine task item delegate is available for class ",
+				"name ", className, " and task item delegate name null"),
+			() -> _batchEngineImportTaskLocalService.addBatchEngineImportTask(
+				null, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), 10, null, className,
+				_getContent("[]"), "JSON",
+				BatchEngineTaskExecuteStatus.INITIAL.name(), null,
+				BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
+				BatchEngineTaskOperation.CREATE.name(), new HashMap<>(), null));
+	}
 
 	@Test
 	public void testUpdateBatchEngineImportTask() throws Exception {

@@ -44,20 +44,11 @@ public class BatchEngineTaskItemDelegateRegistryImpl
 			companyId, itemClassName, taskItemDelegateName);
 
 		if (serviceObjects == null) {
-			return new BatchEngineTaskItemDelegateSafeCloseable() {
-
-				@Override
-				public void close() {
-				}
-
-				@Override
-				public BatchEngineTaskItemDelegate<?>
-					getBatchEngineTaskItemDelegate() {
-
-					return null;
-				}
-
-			};
+			throw new IllegalStateException(
+				StringBundler.concat(
+					"No batch engine task item delegate is available for ",
+					"class name ", itemClassName,
+					" and task item delegate name ", taskItemDelegateName));
 		}
 
 		Object service = serviceObjects.getService();
