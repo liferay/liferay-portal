@@ -12,7 +12,7 @@ import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.service.CommerceAddressService;
+import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalServiceUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.shipment.client.dto.v1_0.Shipment;
@@ -342,7 +342,7 @@ public class ShipmentResourceTest extends BaseShipmentResourceTestCase {
 			postShipment.getShippingMethodId());
 
 		ShippingAddress getShippingAddress = _toShippingAddress(
-			_commerceAddressService.getCommerceAddress(
+			_commerceAddressLocalService.getCommerceAddress(
 				postShipment.getShippingAddressId()));
 
 		Assert.assertEquals(
@@ -402,7 +402,7 @@ public class ShipmentResourceTest extends BaseShipmentResourceTestCase {
 	}
 
 	@Inject
-	private CommerceAddressService _commerceAddressService;
+	private CommerceAddressLocalService _commerceAddressLocalService;
 
 	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
