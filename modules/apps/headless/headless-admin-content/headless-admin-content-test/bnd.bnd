@@ -3,5 +3,4 @@ Bundle-SymbolicName: com.liferay.headless.admin.content.test
 Bundle-Version: 1.0.0
 -includeresource:\
 	com.liferay.headless.admin.content.client.jar=com.liferay.headless.admin.content.client-*.jar;lib:=true,\
-	com.liferay.headless.delivery.client.jar=com.liferay.headless.delivery.client-*.jar;lib:=true,\
-	@jsonassert-[0-9.]*.jar
+	com.liferay.headless.delivery.client.jar=com.liferay.headless.delivery.client-*.jar;lib:=true
