@@ -296,16 +296,19 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 		_kbArticleLocalService.expireKBArticle(
 			user.getUserId(), kbArticle.getResourcePrimKey(), serviceContext);
 
+		Date expirationDate = new Date(
+			System.currentTimeMillis() + (Time.MINUTE * 5));
+
 		_kbArticleLocalService.updateKBArticle(
 			user.getUserId(), kbArticle.getResourcePrimKey(),
 			kbArticle.getTitle(), kbArticle.getContent(),
-			kbArticle.getDescription(), null, null, new Date(),
-			new Date(System.currentTimeMillis() + (Time.MINUTE * 5)), null,
-			null, null, serviceContext);
+			kbArticle.getDescription(), null, null, new Date(), expirationDate,
+			null, null, null, serviceContext);
 
 		kbArticle = _kbArticleLocalService.getLatestKBArticle(
 			kbArticle.getResourcePrimKey(), WorkflowConstants.STATUS_ANY);
 
+		Assert.assertEquals(expirationDate, kbArticle.getExpirationDate());
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, kbArticle.getStatus());
 
@@ -367,6 +370,8 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 
 		_kbArticleLocalService.checkKBArticles(_group.getCompanyId());
 
+		Thread.sleep(1);
+
 		kbArticle.setReviewDate(new Date());
 
 		kbArticle = _kbArticleLocalService.updateKBArticle(kbArticle);
@@ -387,17 +392,23 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 			null, new Date(System.currentTimeMillis() + (Time.MINUTE * 10)),
 			serviceContext);
 
+		Date reviewDate = new Date(
+			System.currentTimeMillis() + (Time.MINUTE * 2));
+
 		_kbArticleLocalService.updateKBArticle(
 			user.getUserId(), kbArticle.getResourcePrimKey(),
 			RandomTestUtil.randomString(), kbArticle.getContent(),
 			kbArticle.getDescription(), null, null, kbArticle.getDisplayDate(),
-			null, new Date(System.currentTimeMillis() + (Time.MINUTE * 2)),
-			null, null, serviceContext);
+			null, reviewDate, null, null, serviceContext);
 
 		_kbArticleLocalService.checkKBArticles(_group.getCompanyId());
 
 		kbArticle = _kbArticleLocalService.getLatestKBArticle(
 			kbArticle.getResourcePrimKey(), WorkflowConstants.STATUS_ANY);
+
+		Assert.assertEquals(reviewDate, kbArticle.getReviewDate());
+
+		Thread.sleep(1);
 
 		kbArticle.setReviewDate(new Date());
 
