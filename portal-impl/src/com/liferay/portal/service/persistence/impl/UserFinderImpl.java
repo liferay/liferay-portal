@@ -63,29 +63,11 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 	public static final String COUNT_BY_USER =
 		UserFinder.class.getName() + ".countByUser";
 
-	public static final String FIND_BY_NO_ANNOUNCEMENTS_DELIVERIES =
-		UserFinder.class.getName() + ".findByNoAnnouncementsDeliveries";
-
-	public static final String FIND_BY_NO_GROUPS =
-		UserFinder.class.getName() + ".findByNoGroups";
-
 	public static final String FIND_BY_SOCIAL_USERS =
 		UserFinder.class.getName() + ".findBySocialUsers";
 
-	public static final String FIND_BY_USERS_GROUPS =
-		UserFinder.class.getName() + ".findByUsersGroups";
-
-	public static final String FIND_BY_USERS_ORGS =
-		UserFinder.class.getName() + ".findByUsersOrgs";
-
-	public static final String FIND_BY_USERS_ORGS_GROUP =
-		UserFinder.class.getName() + ".findByUsersOrgsGroup";
-
 	public static final String FIND_BY_USERS_ORGS_GT_USER_ID =
 		UserFinder.class.getName() + ".findByUsersOrgsGtUserId";
-
-	public static final String FIND_BY_USERS_USER_GROUPS =
-		UserFinder.class.getName() + ".findByUsersUserGroups";
 
 	public static final String FIND_BY_USERS_USER_GROUPS_GT_USER_ID =
 		UserFinder.class.getName() + ".findByUsersUserGroupsGtUserId";
@@ -488,56 +470,6 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 			companyId, firstNames, middleNames, lastNames, screenNames,
 			emailAddresses, status, params, andOperator, start, end,
 			orderByComparator);
-	}
-
-	@Override
-	public List<User> findByNoAnnouncementsDeliveries(String type) {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_BY_NO_ANNOUNCEMENTS_DELIVERIES);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity("User_", UserImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(type);
-
-			return sqlQuery.list(true);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public List<User> findByNoGroups() {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_BY_NO_GROUPS);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity("User_", UserImpl.class);
-
-			return sqlQuery.list(true);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
 	}
 
 	@Override

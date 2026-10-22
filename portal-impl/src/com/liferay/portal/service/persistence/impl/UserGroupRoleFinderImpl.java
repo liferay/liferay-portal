@@ -26,9 +26,6 @@ public class UserGroupRoleFinderImpl
 	public static final String FIND_BY_GROUP_ROLE_TYPE =
 		UserGroupRoleFinder.class.getName() + ".findByGroupRoleType";
 
-	public static final String FIND_BY_USER_USER_GROUP_GROUP_ROLE =
-		UserGroupRoleFinder.class.getName() + ".findByUserUserGroupGroupRole";
-
 	@Override
 	public List<UserGroupRole> findByGroupRoleType(long groupId, int roleType) {
 		Session session = null;
@@ -46,36 +43,6 @@ public class UserGroupRoleFinderImpl
 
 			queryPos.add(groupId);
 			queryPos.add(roleType);
-
-			return sqlQuery.list(true);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public List<UserGroupRole> findByUserUserGroupGroupRole(
-		long userId, long groupId) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_BY_USER_USER_GROUP_GROUP_ROLE);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity("UserGroupRole", UserGroupRoleImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(userId);
-			queryPos.add(groupId);
 
 			return sqlQuery.list(true);
 		}
