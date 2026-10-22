@@ -377,6 +377,7 @@ public interface DepotEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public DepotEntry updateDepotEntry(DepotEntry depotEntry);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public DepotEntry updateDepotEntry(
 			long depotEntryId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap,
@@ -401,4 +402,4 @@ public interface DepotEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1578473779
+// LIFERAY-SERVICE-BUILDER-HASH:-1272295389
