@@ -12,6 +12,8 @@ import com.liferay.bulk.selection.BulkSelectionRunner;
 import com.liferay.bulk.selection.internal.constants.BulkSelectionBackgroundTaskConstants;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
+import com.liferay.portal.kernel.audit.AuditRequestContext;
+import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskContextMapConstants;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -76,6 +78,10 @@ public class BulkSelectionSelectionRunnerImpl implements BulkSelectionRunner {
 				new HashMap<>(inputMap)
 			).put(
 				BulkSelectionBackgroundTaskConstants.
+					BULK_SELECTION_AUDIT_REQUEST_CONTEXT_MAP,
+				_getAuditRequestContextMap()
+			).put(
+				BulkSelectionBackgroundTaskConstants.
 					BULK_SELECTION_FACTORY_CLASS_NAME,
 				() -> {
 					Class<? extends BulkSelectionFactory>
@@ -90,6 +96,34 @@ public class BulkSelectionSelectionRunnerImpl implements BulkSelectionRunner {
 				new HashMap<>(bulkSelection.getParameterMap())
 			).build(),
 			new ServiceContext());
+	}
+
+	private HashMap<String, Serializable> _getAuditRequestContextMap() {
+		AuditRequestContext auditRequestContext =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		return HashMapBuilder.<String, Serializable>put(
+			"clientHost", auditRequestContext.getClientHost()
+		).put(
+			"clientIP", auditRequestContext.getClientIP()
+		).put(
+			"correlationId", auditRequestContext.getCorrelationId()
+		).put(
+			"realUserEmailAddress",
+			auditRequestContext.getRealUserEmailAddress()
+		).put(
+			"realUserId", auditRequestContext.getRealUserId()
+		).put(
+			"requestId", auditRequestContext.getRequestId()
+		).put(
+			"requestIdGenerated", auditRequestContext.isRequestIdGenerated()
+		).put(
+			"serverName", auditRequestContext.getServerName()
+		).put(
+			"serverPort", auditRequestContext.getServerPort()
+		).put(
+			"sessionID", auditRequestContext.getSessionID()
+		).build();
 	}
 
 	@Reference

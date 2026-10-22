@@ -10,6 +10,9 @@ import com.liferay.bulk.selection.BulkSelectionAction;
 import com.liferay.bulk.selection.BulkSelectionFactory;
 import com.liferay.bulk.selection.BulkSelectionInputParameters;
 import com.liferay.bulk.selection.internal.constants.BulkSelectionBackgroundTaskConstants;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.audit.AuditRequestContext;
+import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
@@ -19,6 +22,7 @@ import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.io.Serializable;
 
@@ -104,9 +108,18 @@ public class BulkSelectionBackgroundTaskExecutor
 				bulkSelection = bulkSelection.toAssetEntryBulkSelection();
 			}
 
-			bulkSelectionAction.execute(
-				_userLocalService.getUser(backgroundTask.getUserId()),
-				(BulkSelection<Object>)bulkSelection, inputMap);
+			try (SafeCloseable safeCloseable =
+					AuditRequestContextThreadLocal.
+						setAuditRequestContextWithSafeCloseable(
+							_getAuditRequestContext(
+								(Map<String, Serializable>)taskContextMap.get(
+									BulkSelectionBackgroundTaskConstants.
+										BULK_SELECTION_AUDIT_REQUEST_CONTEXT_MAP)))) {
+
+				bulkSelectionAction.execute(
+					_userLocalService.getUser(backgroundTask.getUserId()),
+					(BulkSelection<Object>)bulkSelection, inputMap);
+			}
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -125,6 +138,40 @@ public class BulkSelectionBackgroundTaskExecutor
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
+	}
+
+	private AuditRequestContext _getAuditRequestContext(
+		Map<String, Serializable> auditRequestContextMap) {
+
+		AuditRequestContext auditRequestContext = new AuditRequestContext();
+
+		if (auditRequestContextMap == null) {
+			return auditRequestContext;
+		}
+
+		auditRequestContext.setClientHost(
+			(String)auditRequestContextMap.get("clientHost"));
+		auditRequestContext.setClientIP(
+			(String)auditRequestContextMap.get("clientIP"));
+		auditRequestContext.setCorrelationId(
+			(String)auditRequestContextMap.get("correlationId"));
+		auditRequestContext.setRealUserEmailAddress(
+			(String)auditRequestContextMap.get("realUserEmailAddress"));
+		auditRequestContext.setRealUserId(
+			GetterUtil.getLong(auditRequestContextMap.get("realUserId")));
+		auditRequestContext.setRequestId(
+			(String)auditRequestContextMap.get("requestId"));
+		auditRequestContext.setRequestIdGenerated(
+			GetterUtil.getBoolean(
+				auditRequestContextMap.get("requestIdGenerated")));
+		auditRequestContext.setServerName(
+			(String)auditRequestContextMap.get("serverName"));
+		auditRequestContext.setServerPort(
+			GetterUtil.getInteger(auditRequestContextMap.get("serverPort")));
+		auditRequestContext.setSessionID(
+			(String)auditRequestContextMap.get("sessionID"));
+
+		return auditRequestContext;
 	}
 
 	private <T> T _getService(Class<T> clazz, String concreteClassName) {

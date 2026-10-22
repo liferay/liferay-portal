@@ -5,4 +5,5 @@ dependencies {
 	compileOnly project(":apps:bulk:bulk-selection-api")
 	compileOnly project(":apps:portal-background-task:portal-background-task-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
+	compileOnly project(":core:petra:petra-lang")
 }

@@ -16,6 +16,9 @@ public class BulkSelectionBackgroundTaskConstants {
 	public static final String BULK_SELECTION_ACTION_INPUT_MAP =
 		"bulkSelectionActionInputMap";
 
+	public static final String BULK_SELECTION_AUDIT_REQUEST_CONTEXT_MAP =
+		"bulkSelectionAuditRequestContextMap";
+
 	public static final String BULK_SELECTION_FACTORY_CLASS_NAME =
 		"bulkSelectionFactoryClassName";
 
