@@ -10,8 +10,11 @@ import {
 	LifecycleStages,
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
-import {Routes} from 'shared/util/router';
+import {omit, pickBy} from 'lodash';
+import {RangeKeyTimeRanges} from 'shared/util/constants';
+import {Routes, setUriQueryValues} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
+import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
 interface ITouchedAccountsCardProps {
 	campaignId: string;
@@ -80,6 +83,16 @@ const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
 }) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 
+	const rangeQueryValues = pickBy(useQueryRangeSelectors());
+
+	// `CUSTOM` is a client side sentinel the API answers with a 500, so a
+	// custom range travels as its bounds alone.
+
+	const apiRangeQueryValues =
+		rangeQueryValues.rangeKey === RangeKeyTimeRanges.CustomRange
+			? omit(rangeQueryValues, 'rangeKey')
+			: rangeQueryValues;
+
 	return (
 		<Card minHeight={300}>
 			<Card.Header>
@@ -98,7 +111,10 @@ const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
 
 			{TABS[activeIndex].tabId === 'accounts-touched' && (
 				<FrontendDataSet
-					apiURL={`/o/faro/contacts/${groupId}/campaigns/${campaignId}/accounts?channelId=${channelId}`}
+					apiURL={setUriQueryValues(
+						{channelId, ...apiRangeQueryValues},
+						`/o/faro/contacts/${groupId}/campaigns/${campaignId}/accounts`
+					)}
 					customDataRenderers={{
 						accountNameRenderer: ({
 							itemData,

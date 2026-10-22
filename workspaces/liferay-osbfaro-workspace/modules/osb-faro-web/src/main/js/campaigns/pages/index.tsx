@@ -7,15 +7,22 @@ import Loading from 'shared/components/Loading';
 import OverviewSection from '../components/OverviewSection';
 import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
+import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
+import {omit, pickBy} from 'lodash';
+import {RangeKeyTimeRanges} from 'shared/util/constants';
+import {RangeSelectors} from 'shared/types';
+import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
-import {Text} from '@clayui/core';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
+import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const Campaigns: React.FC = () => {
 	const currentUser = useCurrentUser();
+	const history = useHistoryAdapter();
 	const {selectedChannel} = useContext(ChannelContext);
 
 	const {channelId, groupId} = useParams();
@@ -23,11 +30,46 @@ const Campaigns: React.FC = () => {
 	const {empty: noDataSources, loading: dataSourcesLoading} =
 		useDataSources();
 
+	const rangeSelectors = useQueryRangeSelectors();
+
+	const rangeQueryValues = pickBy(rangeSelectors);
+
+	// `CUSTOM` is a client side sentinel the API answers with a 500, so a
+	// custom range travels as its bounds alone.
+
 	const {data: metrics, loading} = useRequest({
 		dataSourceFn: API.campaigns.fetchCampaignMetrics,
 		skipRequest: noDataSources,
-		variables: {channelId: channelId!, groupId: groupId!},
+		variables: {
+			channelId: channelId!,
+			groupId: groupId!,
+			rangeQueryValues:
+				rangeQueryValues.rangeKey === RangeKeyTimeRanges.CustomRange
+					? omit(rangeQueryValues, 'rangeKey')
+					: rangeQueryValues,
+		},
 	});
+
+	const handleRangeSelectorChange = ({
+		rangeEnd,
+		rangeKey,
+		rangeStart,
+	}: RangeSelectors) => {
+
+		// The bounds belong to a custom range only, so drop the previous ones
+		// before writing rather than leaving them behind to narrow a preset.
+
+		history.push(
+			setUriQueryValues(
+				pickBy({rangeEnd, rangeKey, rangeStart}),
+				removeUriQueryParam(
+					window.location.href,
+					'rangeEnd',
+					'rangeStart'
+				)
+			)
+		);
+	};
 
 	const authorized = currentUser.isAdmin();
 
@@ -61,22 +103,7 @@ const Campaigns: React.FC = () => {
 			<>
 				<OverviewSection loading={loading} metrics={metrics} />
 
-				<SectionHeader
-					icon="megaphone"
-					rightContent={
-
-						// Matches `TrailingNinetyDayRange`, which the section
-						// above renders in the same slot. The design gives both
-						// the same 16px secondary text.
-
-						<span className="mr-2">
-							<Text color="secondary" size={4}>
-								{Liferay.Language.get('all-time')}
-							</Text>
-						</span>
-					}
-					title={title}
-				/>
+				<SectionHeader icon="megaphone" title={title} />
 
 				<CampaignsDataSet channelId={channelId!} groupId={groupId!} />
 			</>
@@ -99,6 +126,19 @@ const Campaigns: React.FC = () => {
 					<BasePage.Header.TitleSection title={title} />
 				</BasePage.Row>
 			</BasePage.Header>
+
+			{!dataSourcesLoading && !noDataSources && (
+				<BasePage.SubHeader>
+					<div className="d-flex justify-content-end w-100">
+						<DropdownRangeKey
+							bordered
+							legacy={false}
+							onRangeSelectorChange={handleRangeSelectorChange}
+							rangeSelectors={rangeSelectors}
+						/>
+					</div>
+				</BasePage.SubHeader>
+			)}
 
 			<BasePage.Body>{renderBody()}</BasePage.Body>
 		</BasePage>

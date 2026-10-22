@@ -1,7 +1,6 @@
 import ClayLayout from '@clayui/layout';
 import MetricCard from 'shared/components/MetricCard';
 import React from 'react';
-import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
 import {CampaignMetricType, ICampaignMetric} from 'shared/api/campaigns';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {sub} from 'shared/util/lang';
@@ -53,7 +52,6 @@ const OverviewSection: React.FC<IOverviewSectionProps> = ({
 	<>
 		<SectionHeader
 			icon="box-container"
-			rightContent={<TrailingNinetyDayRange />}
 			title={Liferay.Language.get('overview')}
 		/>
 

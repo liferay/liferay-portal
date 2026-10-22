@@ -50,19 +50,21 @@ export async function fetchCampaign({
 interface IFetchCampaignMetrics {
 	channelId: string;
 	groupId: string;
+	rangeQueryValues?: {[key: string]: any};
 }
 
 /**
  * A plain list rather than a page: these are cards, not a table. Every value
- * is computed over a fixed 90 day window and compared against the window
- * before it, which is where each card's trend comes from.
+ * is computed over the selected range and compared against the window of the
+ * same length before it, which is where each card's trend comes from.
  */
 export async function fetchCampaignMetrics({
 	channelId,
 	groupId,
+	rangeQueryValues,
 }: IFetchCampaignMetrics): Promise<ICampaignMetric[]> {
 	return sendRequest({
-		data: {channelId},
+		data: {channelId, ...rangeQueryValues},
 		method: 'GET',
 		path: `contacts/${groupId}/campaigns/metrics`,
 	});
