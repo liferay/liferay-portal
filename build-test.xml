@@ -16767,6 +16767,8 @@ sendBlacklist=[]
 			</then>
 		</if>
 
+		<antcall target="deploy-osgi-modules" />
+
 		<get-testcase-property property.name="legacy.database.file" />
 		<get-testcase-property property.name="portal.version" />
 		<get-testcase-property property.name="rebuild.staging.database" />
@@ -17022,8 +17024,6 @@ sendBlacklist=[]
 		<antcall if:set="osgi.app.includes" target="deploy-osgi-apps" />
 
 		<antcall target="hot-deploy-osgi-apps" />
-
-		<antcall target="deploy-osgi-modules" />
 
 		<antcall target="deploy-specific-plugins">
 			<param name="test.class" value="${test.class}" />
