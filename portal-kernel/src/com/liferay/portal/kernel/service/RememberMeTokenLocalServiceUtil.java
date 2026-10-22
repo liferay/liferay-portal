@@ -88,10 +88,6 @@ public class RememberMeTokenLocalServiceUtil {
 		getService().deleteExpiredRememberMeTokens(expirationDate);
 	}
 
-	public static void deleteExpiredRememberMeTokens(long userId) {
-		getService().deleteExpiredRememberMeTokens(userId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -328,4 +324,4 @@ public class RememberMeTokenLocalServiceUtil {
 	private static volatile RememberMeTokenLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1478070534
+// LIFERAY-SERVICE-BUILDER-HASH:-1685794925

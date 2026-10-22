@@ -306,13 +306,6 @@ public class UserTrackerLocalServiceWrapper
 		return _userTrackerLocalService.getUserTrackers(start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.portal.kernel.model.UserTracker>
-		getUserTrackers(long companyId, int start, int end) {
-
-		return _userTrackerLocalService.getUserTrackers(companyId, start, end);
-	}
-
 	/**
 	 * Returns the number of user trackers.
 	 *
@@ -360,4 +353,4 @@ public class UserTrackerLocalServiceWrapper
 	private UserTrackerLocalService _userTrackerLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1135089435
+// LIFERAY-SERVICE-BUILDER-HASH:2111857098

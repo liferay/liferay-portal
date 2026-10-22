@@ -769,28 +769,6 @@ public class RoleLocalServiceWrapper
 	}
 
 	/**
-	 * Returns all the roles of the subtype.
-	 *
-	 * @param subtype the role's subtype (optionally <code>null</code>)
-	 * @return the roles of the subtype
-	 */
-	@Override
-	public java.util.List<Role> getSubtypeRoles(String subtype) {
-		return _roleLocalService.getSubtypeRoles(subtype);
-	}
-
-	/**
-	 * Returns the number of roles of the subtype.
-	 *
-	 * @param subtype the role's subtype (optionally <code>null</code>)
-	 * @return the number of roles of the subtype
-	 */
-	@Override
-	public int getSubtypeRolesCount(String subtype) {
-		return _roleLocalService.getSubtypeRolesCount(subtype);
-	}
-
-	/**
 	 * Returns the team role in the company.
 	 *
 	 * @param companyId the primary key of the company
@@ -1448,4 +1426,4 @@ public class RoleLocalServiceWrapper
 	private RoleLocalService _roleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1432670102
+// LIFERAY-SERVICE-BUILDER-HASH:-115585899

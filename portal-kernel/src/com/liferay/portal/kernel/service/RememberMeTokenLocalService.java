@@ -94,8 +94,6 @@ public interface RememberMeTokenLocalService
 
 	public void deleteExpiredRememberMeTokens(Date expirationDate);
 
-	public void deleteExpiredRememberMeTokens(long userId);
-
 	/**
 	 * @throws PortalException
 	 */
@@ -281,4 +279,4 @@ public interface RememberMeTokenLocalService
 		RememberMeToken rememberMeToken);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1935000557
+// LIFERAY-SERVICE-BUILDER-HASH:1963334370

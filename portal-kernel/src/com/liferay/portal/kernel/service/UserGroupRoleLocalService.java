@@ -295,10 +295,6 @@ public interface UserGroupRoleLocalService
 	public List<UserGroupRole> getUserGroupRolesByGroupAndRole(
 		long groupId, long roleId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserGroupRole> getUserGroupRolesByUserUserGroupAndGroup(
-		long userId, long groupId);
-
 	/**
 	 * Returns the number of user group roles.
 	 *
@@ -355,4 +351,4 @@ public interface UserGroupRoleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-935323456
+// LIFERAY-SERVICE-BUILDER-HASH:35246021

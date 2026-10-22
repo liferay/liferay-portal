@@ -406,14 +406,6 @@ public class UserGroupRoleLocalServiceWrapper
 			groupId, roleId);
 	}
 
-	@Override
-	public java.util.List<UserGroupRole>
-		getUserGroupRolesByUserUserGroupAndGroup(long userId, long groupId) {
-
-		return _userGroupRoleLocalService.
-			getUserGroupRolesByUserUserGroupAndGroup(userId, groupId);
-	}
-
 	/**
 	 * Returns the number of user group roles.
 	 *
@@ -516,4 +508,4 @@ public class UserGroupRoleLocalServiceWrapper
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-814689226
+// LIFERAY-SERVICE-BUILDER-HASH:230443407

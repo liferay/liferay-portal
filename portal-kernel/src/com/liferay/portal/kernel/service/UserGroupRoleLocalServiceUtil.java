@@ -352,13 +352,6 @@ public class UserGroupRoleLocalServiceUtil {
 		return getService().getUserGroupRolesByGroupAndRole(groupId, roleId);
 	}
 
-	public static List<UserGroupRole> getUserGroupRolesByUserUserGroupAndGroup(
-		long userId, long groupId) {
-
-		return getService().getUserGroupRolesByUserUserGroupAndGroup(
-			userId, groupId);
-	}
-
 	/**
 	 * Returns the number of user group roles.
 	 *
@@ -426,4 +419,4 @@ public class UserGroupRoleLocalServiceUtil {
 	private static volatile UserGroupRoleLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1624109142
+// LIFERAY-SERVICE-BUILDER-HASH:758510539

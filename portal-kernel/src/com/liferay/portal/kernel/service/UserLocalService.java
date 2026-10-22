@@ -1015,25 +1015,6 @@ public interface UserLocalService
 		throws PortalException;
 
 	/**
-	 * Returns all the users who have not had any announcements of the type
-	 * delivered, excluding the default user.
-	 *
-	 * @param type the type of announcement
-	 * @return the users who have not had any annoucements of the type delivered
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<User> getNoAnnouncementsDeliveries(String type);
-
-	/**
-	 * Returns all the users who do not belong to any groups, excluding the
-	 * default user.
-	 *
-	 * @return the users who do not belong to any groups
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<User> getNoGroups();
-
-	/**
 	 * Returns the organizationIds of the organizations associated with the user.
 	 *
 	 * @param userId the userId of the user
@@ -2492,4 +2473,4 @@ public interface UserLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1521364222
+// LIFERAY-SERVICE-BUILDER-HASH:131305222

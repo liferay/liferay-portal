@@ -260,32 +260,6 @@ public interface UserNotificationEventLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, boolean actionRequired, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, boolean actionRequired, boolean archived, int start,
-		int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, boolean archived, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, int deliveryType, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, int deliveryType, boolean actionRequired,
-		boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
 		long userId, int deliveryType, boolean delivered,
 		boolean actionRequired, boolean archived, int start, int end);
 
@@ -296,38 +270,6 @@ public interface UserNotificationEventLocalService
 		OrderByComparator<UserNotificationEvent> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, int deliveryType, boolean actionRequired, boolean archived,
-		int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, int deliveryType, boolean actionRequired, boolean archived,
-		int start, int end,
-		OrderByComparator<UserNotificationEvent> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, int deliveryType, boolean archived, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getArchivedUserNotificationEventsCount(
-		long userId, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getArchivedUserNotificationEventsCount(
-		long userId, boolean actionRequired, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getArchivedUserNotificationEventsCount(
-		long userId, int deliveryType, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getArchivedUserNotificationEventsCount(
-		long userId, int deliveryType, boolean actionRequired,
-		boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getArchivedUserNotificationEventsCount(
 		long userId, int deliveryType, boolean delivered,
 		boolean actionRequired, boolean archived);
@@ -335,27 +277,6 @@ public interface UserNotificationEventLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getDeliveredArchivedUserNotificationEventsCount(
 		long userId, int deliveryType, boolean delivered, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
-		long userId, boolean delivered);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
-		long userId, boolean delivered, boolean actionRequired);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
-		long userId, boolean delivered, boolean actionRequired, int start,
-		int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
-		long userId, boolean delivered, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
-		long userId, int deliveryType, boolean delivered);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
@@ -372,22 +293,6 @@ public interface UserNotificationEventLocalService
 		long userId, int deliveryType, boolean delivered,
 		boolean actionRequired, int start, int end,
 		OrderByComparator<UserNotificationEvent> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
-		long userId, int deliveryType, boolean delivered, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDeliveredUserNotificationEventsCount(
-		long userId, boolean delivered);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDeliveredUserNotificationEventsCount(
-		long userId, boolean delivered, boolean actionRequired);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDeliveredUserNotificationEventsCount(
-		long userId, int deliveryType, boolean delivered);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getDeliveredUserNotificationEventsCount(
@@ -460,15 +365,7 @@ public interface UserNotificationEventLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserNotificationEvent> getUserNotificationEvents(
-		long userId, int deliveryType);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getUserNotificationEvents(
 		long userId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getUserNotificationEvents(
-		long userId, int deliveryType, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserNotificationEvent> getUserNotificationEvents(
@@ -491,15 +388,8 @@ public interface UserNotificationEventLocalService
 	public int getUserNotificationEventsCount(long userId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserNotificationEventsCount(long userId, int deliveryType);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserNotificationEventsCount(
 		long userId, int deliveryType, boolean delivered, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserNotificationEventsCount(
-		long userId, String type, int deliveryType, boolean delivered);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserNotificationEventsCount(
@@ -547,4 +437,4 @@ public interface UserNotificationEventLocalService
 		Collection<String> uuids, long companyId, boolean archive);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1346917629
+// LIFERAY-SERVICE-BUILDER-HASH:933702910

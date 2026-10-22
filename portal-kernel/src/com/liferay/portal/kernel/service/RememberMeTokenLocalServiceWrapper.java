@@ -86,11 +86,6 @@ public class RememberMeTokenLocalServiceWrapper
 			expirationDate);
 	}
 
-	@Override
-	public void deleteExpiredRememberMeTokens(long userId) {
-		_rememberMeTokenLocalService.deleteExpiredRememberMeTokens(userId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -381,4 +376,4 @@ public class RememberMeTokenLocalServiceWrapper
 	private RememberMeTokenLocalService _rememberMeTokenLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1288977252
+// LIFERAY-SERVICE-BUILDER-HASH:168792569

@@ -1391,29 +1391,6 @@ public class UserLocalServiceWrapper
 	}
 
 	/**
-	 * Returns all the users who have not had any announcements of the type
-	 * delivered, excluding the default user.
-	 *
-	 * @param type the type of announcement
-	 * @return the users who have not had any annoucements of the type delivered
-	 */
-	@Override
-	public java.util.List<User> getNoAnnouncementsDeliveries(String type) {
-		return _userLocalService.getNoAnnouncementsDeliveries(type);
-	}
-
-	/**
-	 * Returns all the users who do not belong to any groups, excluding the
-	 * default user.
-	 *
-	 * @return the users who do not belong to any groups
-	 */
-	@Override
-	public java.util.List<User> getNoGroups() {
-		return _userLocalService.getNoGroups();
-	}
-
-	/**
 	 * Returns the organizationIds of the organizations associated with the user.
 	 *
 	 * @param userId the userId of the user
@@ -3421,4 +3398,4 @@ public class UserLocalServiceWrapper
 	private UserLocalService _userLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:566100435
+// LIFERAY-SERVICE-BUILDER-HASH:-1730365100

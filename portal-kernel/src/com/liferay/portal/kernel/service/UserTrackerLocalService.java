@@ -245,10 +245,6 @@ public interface UserTrackerLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserTracker> getUserTrackers(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserTracker> getUserTrackers(
-		long companyId, int start, int end);
-
 	/**
 	 * Returns the number of user trackers.
 	 *
@@ -271,4 +267,4 @@ public interface UserTrackerLocalService
 	public UserTracker updateUserTracker(UserTracker userTracker);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:758296497
+// LIFERAY-SERVICE-BUILDER-HASH:-2005964310

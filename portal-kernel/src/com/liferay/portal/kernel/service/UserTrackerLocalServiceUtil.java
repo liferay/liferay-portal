@@ -270,12 +270,6 @@ public class UserTrackerLocalServiceUtil {
 		return getService().getUserTrackers(start, end);
 	}
 
-	public static List<UserTracker> getUserTrackers(
-		long companyId, int start, int end) {
-
-		return getService().getUserTrackers(companyId, start, end);
-	}
-
 	/**
 	 * Returns the number of user trackers.
 	 *
@@ -310,4 +304,4 @@ public class UserTrackerLocalServiceUtil {
 	private static volatile UserTrackerLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:409810277
+// LIFERAY-SERVICE-BUILDER-HASH:931125853

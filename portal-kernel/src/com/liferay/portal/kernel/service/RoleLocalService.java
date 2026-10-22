@@ -563,24 +563,6 @@ public interface RoleLocalService
 	public int getRolesCount();
 
 	/**
-	 * Returns all the roles of the subtype.
-	 *
-	 * @param subtype the role's subtype (optionally <code>null</code>)
-	 * @return the roles of the subtype
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Role> getSubtypeRoles(String subtype);
-
-	/**
-	 * Returns the number of roles of the subtype.
-	 *
-	 * @param subtype the role's subtype (optionally <code>null</code>)
-	 * @return the number of roles of the subtype
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSubtypeRolesCount(String subtype);
-
-	/**
 	 * Returns the team role in the company.
 	 *
 	 * @param companyId the primary key of the company
@@ -1068,4 +1050,4 @@ public interface RoleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-281097804
+// LIFERAY-SERVICE-BUILDER-HASH:523811624
