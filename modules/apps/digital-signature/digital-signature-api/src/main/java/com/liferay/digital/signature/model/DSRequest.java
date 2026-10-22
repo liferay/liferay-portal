@@ -46,6 +46,20 @@ public class DSRequest {
 		_statusDate = _toDate(values.get("requestStatusDate"));
 	}
 
+	public DSRequestRecipient fetchSentDSRequestRecipient(long userId) {
+		for (DSRequestRecipient dsRequestRecipient : getDSRequestRecipients()) {
+			if ((dsRequestRecipient.getUserId() == userId) &&
+				Objects.equals(
+					DSRequestConstants.STATUS_SENT,
+					dsRequestRecipient.getStatus())) {
+
+				return dsRequestRecipient;
+			}
+		}
+
+		return null;
+	}
+
 	public long getCompanyId() {
 		return _companyId;
 	}
@@ -149,7 +163,7 @@ public class DSRequest {
 
 	public boolean isSignatureRequired(long userId) {
 		if (isTerminal() || (userId <= 0) ||
-			(_fetchSentDSRequestRecipient(userId) == null)) {
+			(fetchSentDSRequestRecipient(userId) == null)) {
 
 			return false;
 		}
@@ -165,20 +179,6 @@ public class DSRequest {
 	public boolean isTerminal() {
 		return ArrayUtil.contains(
 			DSRequestConstants.STATUSES_REQUEST_TERMINAL, getStatus());
-	}
-
-	private DSRequestRecipient _fetchSentDSRequestRecipient(long userId) {
-		for (DSRequestRecipient dsRequestRecipient : getDSRequestRecipients()) {
-			if ((dsRequestRecipient.getUserId() == userId) &&
-				Objects.equals(
-					DSRequestConstants.STATUS_SENT,
-					dsRequestRecipient.getStatus())) {
-
-				return dsRequestRecipient;
-			}
-		}
-
-		return null;
 	}
 
 	private Date _toDate(Serializable value) {

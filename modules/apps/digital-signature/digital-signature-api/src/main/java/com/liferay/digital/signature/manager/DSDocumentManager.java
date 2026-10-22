@@ -13,6 +13,9 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface DSDocumentManager {
 
+	public byte[] getDSDocumentAsBytes(
+		long companyId, String dsDocumentId, String dsEnvelopeId, long groupId);
+
 	public byte[] getDSDocumentsAsBytes(
 		long companyId, long groupId, String dsEnvelopeId);
 

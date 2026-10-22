@@ -15,6 +15,10 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface DSRequestURLProvider {
 
+	public String getSignModalURL(
+			String backURL, long companyId, long dsRequestId, long groupId)
+		throws PortalException;
+
 	public String getSignURL(long companyId, long dsRequestId, long groupId)
 		throws PortalException;
 

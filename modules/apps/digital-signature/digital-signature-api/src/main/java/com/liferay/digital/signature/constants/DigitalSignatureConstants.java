@@ -5,6 +5,8 @@
 
 package com.liferay.digital.signature.constants;
 
+import java.util.Objects;
+
 /**
  * @author Keven Leone
  */
@@ -22,5 +24,29 @@ public class DigitalSignatureConstants {
 	public static final String[] SITE_SETTINGS_STRATEGIES = {
 		"always-inherit", "always-override", "inherit-or-override"
 	};
+
+	public static String getAccountURL(String environment) {
+		if (Objects.equals(environment, "production")) {
+			return "https://account.docusign.com";
+		}
+
+		return "https://account-d.docusign.com";
+	}
+
+	public static String getAppOriginURL(String environment) {
+		if (Objects.equals(environment, "production")) {
+			return "https://apps.docusign.com";
+		}
+
+		return "https://apps-d.docusign.com";
+	}
+
+	public static String getJSURL(String environment) {
+		if (Objects.equals(environment, "production")) {
+			return "https://js.docusign.com/bundle.js";
+		}
+
+		return "https://js-d.docusign.com/bundle.js";
+	}
 
 }

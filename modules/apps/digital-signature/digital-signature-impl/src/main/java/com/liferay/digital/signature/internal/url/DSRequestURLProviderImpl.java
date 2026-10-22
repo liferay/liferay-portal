@@ -5,12 +5,14 @@
 
 package com.liferay.digital.signature.internal.url;
 
+import com.liferay.digital.signature.constants.DigitalSignaturePortletKeys;
 import com.liferay.digital.signature.url.DSRequestURLProvider;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -24,6 +26,22 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = DSRequestURLProvider.class)
 public class DSRequestURLProviderImpl implements DSRequestURLProvider {
+
+	@Override
+	public String getSignModalURL(
+			String backURL, long companyId, long dsRequestId, long groupId)
+		throws PortalException {
+
+		String signModalURL = HttpComponentsUtil.setParameter(
+			getSignURL(companyId, dsRequestId, groupId), "p_p_state",
+			LiferayWindowState.POP_UP.toString());
+
+		String portletNamespace = _portal.getPortletNamespace(
+			DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);
+
+		return HttpComponentsUtil.setParameter(
+			signModalURL, portletNamespace + "backURL", backURL);
+	}
 
 	@Override
 	public String getSignURL(long companyId, long dsRequestId, long groupId)

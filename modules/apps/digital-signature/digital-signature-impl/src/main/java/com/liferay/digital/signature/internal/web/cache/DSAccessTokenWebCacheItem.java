@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -36,34 +37,28 @@ import net.oauth.signature.pem.PKCS1EncodedKeySpec;
 public class DSAccessTokenWebCacheItem implements WebCacheItem {
 
 	public static JSONObject get(
-		String apiUsername, long companyId, String environment,
-		String integrationKey, String rsaPrivateKey) {
+		String accountURL, String apiUsername, long companyId,
+		String environment, String integrationKey, String rsaPrivateKey) {
 
 		return (JSONObject)WebCachePoolUtil.get(
 			StringBundler.concat(
 				DSAccessTokenWebCacheItem.class.getName(), StringPool.POUND,
-				companyId, StringPool.POUND, apiUsername, StringPool.POUND,
-				environment, StringPool.POUND, integrationKey, StringPool.POUND,
-				rsaPrivateKey),
+				companyId, StringPool.POUND, accountURL, StringPool.POUND,
+				apiUsername, StringPool.POUND, environment, StringPool.POUND,
+				integrationKey, StringPool.POUND, rsaPrivateKey),
 			new DSAccessTokenWebCacheItem(
-				apiUsername, companyId, environment, integrationKey,
+				accountURL, apiUsername, companyId, environment, integrationKey,
 				rsaPrivateKey));
 	}
 
 	public DSAccessTokenWebCacheItem(
-		String apiUsername, long companyId, String environment,
-		String integrationKey, String rsaPrivateKey) {
+		String accountURL, String apiUsername, long companyId,
+		String environment, String integrationKey, String rsaPrivateKey) {
 
+		_accountURL = accountURL;
 		_apiUsername = apiUsername;
 		_environment = environment;
 		_integrationKey = SecretResolverUtil.resolve(companyId, integrationKey);
-
-		if (environment.equals("production")) {
-			_environmentBaseURI = "account.docusign.com";
-		}
-		else {
-			_environmentBaseURI = "account-d.docusign.com";
-		}
 
 		if (rsaPrivateKey == null) {
 			_rsaPrivateKeyBytes = new byte[0];
@@ -93,8 +88,7 @@ public class DSAccessTokenWebCacheItem implements WebCacheItem {
 				).put(
 					"grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer"
 				).build());
-			options.setLocation(
-				"https://" + _environmentBaseURI + "/oauth/token");
+			options.setLocation(_accountURL + "/oauth/token");
 			options.setPost(true);
 
 			return JSONFactoryUtil.createJSONObject(
@@ -134,7 +128,7 @@ public class DSAccessTokenWebCacheItem implements WebCacheItem {
 		).toString();
 
 		String bodyJSON = JSONUtil.put(
-			"aud", _environmentBaseURI
+			"aud", HttpComponentsUtil.getDomain(_accountURL)
 		).put(
 			"exp", _getUnixTime(3600)
 		).put(
@@ -214,9 +208,9 @@ public class DSAccessTokenWebCacheItem implements WebCacheItem {
 	private static final Log _log = LogFactoryUtil.getLog(
 		DSAccessTokenWebCacheItem.class);
 
+	private final String _accountURL;
 	private final String _apiUsername;
 	private final String _environment;
-	private final String _environmentBaseURI;
 	private final String _integrationKey;
 	private final byte[] _rsaPrivateKeyBytes;
 

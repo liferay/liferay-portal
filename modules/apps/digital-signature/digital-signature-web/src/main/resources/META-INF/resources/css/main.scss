@@ -213,6 +213,23 @@
 	}
 }
 
+.digital-signature-sign-container {
+	height: 80vh;
+
+	iframe {
+		height: 100%;
+		width: 100%;
+	}
+
+	&.digital-signature-sign-container-pop-up {
+		background-color: var(--white);
+		height: auto;
+		inset: 0;
+		position: fixed;
+		z-index: 1;
+	}
+}
+
 .preview-file-image {
 	bottom: 0;
 	left: 0;

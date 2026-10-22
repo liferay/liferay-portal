@@ -7,6 +7,7 @@ package com.liferay.digital.signature.model;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 
 /**
  * @author José Abelenda
@@ -23,6 +24,14 @@ public class DSRecipientViewDefinition {
 
 	public String getEmailAddress() {
 		return emailAddress;
+	}
+
+	public String[] getFrameAncestors() {
+		return frameAncestors;
+	}
+
+	public String[] getMessageOrigins() {
+		return messageOrigins;
 	}
 
 	public String getReturnURL() {
@@ -45,6 +54,14 @@ public class DSRecipientViewDefinition {
 		this.emailAddress = emailAddress;
 	}
 
+	public void setFrameAncestors(String[] frameAncestors) {
+		this.frameAncestors = frameAncestors;
+	}
+
+	public void setMessageOrigins(String[] messageOrigins) {
+		this.messageOrigins = messageOrigins;
+	}
+
 	public void setReturnURL(String returnURL) {
 		this.returnURL = returnURL;
 	}
@@ -61,6 +78,24 @@ public class DSRecipientViewDefinition {
 		).put(
 			"email", getEmailAddress()
 		).put(
+			"frameAncestors",
+			() -> {
+				if (ArrayUtil.isEmpty(frameAncestors)) {
+					return null;
+				}
+
+				return JSONUtil.putAll(frameAncestors);
+			}
+		).put(
+			"messageOrigins",
+			() -> {
+				if (ArrayUtil.isEmpty(messageOrigins)) {
+					return null;
+				}
+
+				return JSONUtil.putAll(messageOrigins);
+			}
+		).put(
 			"returnUrl", getReturnURL()
 		).put(
 			"userName", getUserName()
@@ -75,6 +110,8 @@ public class DSRecipientViewDefinition {
 	protected String authenticationMethod;
 	protected String dsClientUserId;
 	protected String emailAddress;
+	protected String[] frameAncestors;
+	protected String[] messageOrigins;
 	protected String returnURL;
 	protected String userName;
 

@@ -19,6 +19,17 @@ import org.osgi.service.component.annotations.Reference;
 public class DSDocumentManagerImpl implements DSDocumentManager {
 
 	@Override
+	public byte[] getDSDocumentAsBytes(
+		long companyId, String dsDocumentId, String dsEnvelopeId,
+		long groupId) {
+
+		return _dsHttp.getAsBytes(
+			companyId, groupId,
+			StringBundler.concat(
+				"envelopes/", dsEnvelopeId, "/documents/", dsDocumentId));
+	}
+
+	@Override
 	public byte[] getDSDocumentsAsBytes(
 		long companyId, long groupId, String dsEnvelopeId) {
 

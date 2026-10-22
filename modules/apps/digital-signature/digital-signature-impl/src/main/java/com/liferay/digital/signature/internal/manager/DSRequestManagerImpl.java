@@ -10,6 +10,7 @@ import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration
 import com.liferay.digital.signature.constants.DSObjectDefinitionConstants;
 import com.liferay.digital.signature.constants.DSRequestConstants;
 import com.liferay.digital.signature.exception.DSRequestException;
+import com.liferay.digital.signature.manager.DSDocumentManager;
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.manager.DSRequestManager;
 import com.liferay.digital.signature.model.DSDocument;
@@ -18,7 +19,11 @@ import com.liferay.digital.signature.model.DSRecipient;
 import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.digital.signature.model.DSRequestRecipient;
 import com.liferay.digital.signature.url.DSRequestURLProvider;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.notification.context.NotificationContextBuilder;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.NotificationTemplateLocalService;
@@ -47,6 +52,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -59,6 +65,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -69,6 +76,8 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 
 import java.io.Serializable;
 
@@ -383,6 +392,17 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				companyId, groupId, objectEntry.getExternalReferenceCode());
 
 			String dsRequestStatus = _getDSRequestStatus(dsEnvelope);
+
+			if (Objects.equals(
+					dsRequestStatus, DSRequestConstants.STATUS_COMPLETED) &&
+				!Objects.equals(
+					MapUtil.getString(objectEntry.getValues(), "requestStatus"),
+					DSRequestConstants.STATUS_COMPLETED)) {
+
+				_updateFileEntries(
+					companyId, dsEnvelope, dsRequestId, groupId,
+					objectEntry.getUserId());
+			}
 
 			_updateDSRequestRecipientStatuses(
 				companyId, dsEnvelope, dsRequestId, dsRequestStatus, groupId);
@@ -858,6 +878,28 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		return serviceContext;
 	}
 
+	private String _getSignedFileName(FileEntry fileEntry) {
+		if (StringUtil.equalsIgnoreCase(fileEntry.getExtension(), "pdf")) {
+			return fileEntry.getFileName();
+		}
+
+		String signedFileName =
+			FileUtil.stripExtension(fileEntry.getFileName()) + ".pdf";
+
+		DLFileEntry dlFileEntry =
+			_dlFileEntryLocalService.fetchFileEntryByFileName(
+				fileEntry.getGroupId(), fileEntry.getFolderId(),
+				signedFileName);
+
+		if (dlFileEntry == null) {
+			return signedFileName;
+		}
+
+		return DLUtil.getUniqueFileName(
+			fileEntry.getGroupId(), fileEntry.getFolderId(),
+			FileUtil.appendParentheticalSuffix(signedFileName, "signed"), true);
+	}
+
 	private long _getSiteGroupId(long groupId) {
 		Group group = _groupLocalService.fetchGroup(groupId);
 
@@ -1139,6 +1181,94 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		}
 	}
 
+	private void _updateFileEntries(
+			long companyId, DSEnvelope dsEnvelope, long dsRequestId,
+			long groupId, long userId)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					DSObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_REQUEST_DOCUMENT,
+					companyId);
+
+		List<Long> fileEntryIds = TransformUtil.transform(
+			_getValuesList(
+				companyId,
+				"(r_dsRequestToDSRequestDocuments_l_dsRequestId eq '" +
+					dsRequestId + "')",
+				objectDefinition, null),
+			values -> MapUtil.getLong(values, "fileEntryId"));
+
+		String changeLog =
+			"Digital signature envelope " + dsEnvelope.getDSEnvelopeId();
+
+		for (long fileEntryId : fileEntryIds) {
+			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+
+			FileVersion latestFileVersion = fileEntry.getLatestFileVersion(
+				true);
+
+			if (Objects.equals(latestFileVersion.getChangeLog(), changeLog)) {
+				continue;
+			}
+
+			byte[] bytes = _dsDocumentManager.getDSDocumentAsBytes(
+				companyId, String.valueOf(fileEntryId),
+				dsEnvelope.getDSEnvelopeId(), groupId);
+
+			if ((bytes == null) || (bytes.length < 5) ||
+				!Objects.equals(new String(bytes, 0, 5), "%PDF-")) {
+
+				throw new PortalException(
+					StringBundler.concat(
+						"DocuSign did not return a signed PDF for file entry ",
+						fileEntryId, " of digital signature envelope ",
+						dsEnvelope.getDSEnvelopeId()));
+			}
+
+			String signedFileName = _getSignedFileName(fileEntry);
+
+			String title = fileEntry.getTitle();
+
+			if (Objects.equals(title, fileEntry.getFileName())) {
+				title = signedFileName;
+			}
+
+			ServiceContext serviceContext = _getServiceContext(
+				companyId, fileEntry.getGroupId(), userId);
+
+			boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
+
+			try {
+				WorkflowThreadLocal.setEnabled(false);
+
+				fileEntry = _dlAppLocalService.updateFileEntry(
+					userId, fileEntryId, signedFileName,
+					ContentTypes.APPLICATION_PDF, title, null,
+					fileEntry.getDescription(), changeLog,
+					DLVersionNumberIncrease.MAJOR, bytes,
+					fileEntry.getDisplayDate(), fileEntry.getExpirationDate(),
+					fileEntry.getReviewDate(), serviceContext);
+
+				FileVersion fileVersion = fileEntry.getLatestFileVersion(true);
+
+				if (fileVersion.getStatus() !=
+						WorkflowConstants.STATUS_APPROVED) {
+
+					_dlFileEntryLocalService.updateStatus(
+						userId, fileVersion.getFileVersionId(),
+						WorkflowConstants.STATUS_APPROVED, serviceContext,
+						new HashMap<>());
+				}
+			}
+			finally {
+				WorkflowThreadLocal.setEnabled(workflowEnabled);
+			}
+		}
+	}
+
 	private static final int _IN_FILTER_MAX_SIZE = 1000;
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -1146,6 +1276,12 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private DSDocumentManager _dsDocumentManager;
 
 	@Reference
 	private DSEnvelopeManager _dsEnvelopeManager;
