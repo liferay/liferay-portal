@@ -44,7 +44,7 @@ const AIAssistantHost: React.FC = () => {
 	);
 
 	// Drives Clay's SidePanel open prop. It starts false so the panel mounts
-	// closed and then opens on the next frame, letting Clay play its own
+	// closed and then opens once mounted, letting Clay play its own
 	// slide-in instead of appearing already open.
 
 	const [sidebarMounted, setSidebarMounted] = useState<boolean>(false);
@@ -111,14 +111,8 @@ const AIAssistantHost: React.FC = () => {
 	}, [showSidebar]);
 
 	useEffect(() => {
-		if (showSidebar) {
-			const frame = requestAnimationFrame(() => setSidebarOpen(true));
-
-			return () => cancelAnimationFrame(frame);
-		}
-
-		setSidebarOpen(false);
-	}, [showSidebar]);
+		setSidebarOpen(showSidebar && sidebarMounted);
+	}, [showSidebar, sidebarMounted]);
 
 	const handleClose = () => {
 		setOpenedByEvent(false);
