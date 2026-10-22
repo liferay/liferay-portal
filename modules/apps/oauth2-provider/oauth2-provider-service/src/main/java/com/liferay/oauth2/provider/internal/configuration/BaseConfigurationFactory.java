@@ -51,19 +51,12 @@ public abstract class BaseConfigurationFactory {
 			log.debug("Activate " + properties);
 		}
 
+		_properties = properties;
+
 		DependencyManagerSyncUtil.registerSyncCallable(
 			new CompanyInheritableThreadLocalCallable<>(
 				() -> {
-					ConfigurationFactoryUtil.executeAsCompany(
-						companyLocalService, properties,
-						companyId -> {
-							String externalReferenceCode =
-								ConfigurationFactoryUtil.
-									getExternalReferenceCode(properties);
-
-							doActivate(
-								properties, companyId, externalReferenceCode);
-						});
+					_apply();
 
 					return null;
 				}));
@@ -283,6 +276,18 @@ public abstract class BaseConfigurationFactory {
 	@Reference
 	protected UserLocalService userLocalService;
 
+	private void _apply() throws Exception {
+		ConfigurationFactoryUtil.executeAsCompany(
+			companyLocalService, _properties,
+			companyId -> {
+				String externalReferenceCode =
+					ConfigurationFactoryUtil.getExternalReferenceCode(
+						_properties);
+
+				doActivate(_properties, companyId, externalReferenceCode);
+			});
+	}
+
 	private boolean _hasUpToDateScopeAliases(
 		OAuth2Application oAuth2Application, List<String> scopeAliasesList) {
 
@@ -319,6 +324,7 @@ public abstract class BaseConfigurationFactory {
 	private volatile String _configMapName;
 	private volatile Map<String, String> _extensionProperties;
 	private volatile String _projectName;
+	private Map<String, Object> _properties;
 	private volatile String _virtualInstanceId;
 
 }
