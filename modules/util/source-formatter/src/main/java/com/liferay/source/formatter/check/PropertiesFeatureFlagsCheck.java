@@ -95,7 +95,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
 			_allFileNames,
 			new String[] {
-				"**/portal-tools-rest-builder-test-impl/**", "**/test/**"
+				"**/*-test-*/**", "**/test/**"
 			},
 			new String[] {
 				"**/bnd.bnd", "**/rest-openapi*.yaml", "**/*.java", "**/*.js",
