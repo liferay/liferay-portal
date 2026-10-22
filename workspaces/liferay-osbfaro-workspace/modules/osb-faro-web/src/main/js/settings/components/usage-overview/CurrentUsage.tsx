@@ -3,6 +3,7 @@ import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {toLocale, toRounded} from 'shared/util/numbers';
 import {UsageMetricBarChart} from './UsageMetricBarChart';
+import {formatLimit, isUnlimitedLimit} from 'shared/util/subscriptions';
 
 interface ICurrentUsageProps {
 	count: number;
@@ -21,6 +22,8 @@ export const CurrentUsage = ({
 	limit,
 	percentageText,
 }: ICurrentUsageProps) => {
+	const unlimited = isUnlimitedLimit(limit);
+
 	const percentage =
 		limit > 0 ? (count / limit >= 1 ? 100 : (count / limit) * 100) : 0;
 
@@ -32,20 +35,27 @@ export const CurrentUsage = ({
 				</Text>
 
 				<Text color="secondary" size={3}>
-					{`${sub(Liferay.Language.get('x-of-x'), [
-						toLocale(count),
-						toLocale(limit),
-					])} - ${sub(percentageText(percentage), [
-						toRounded(percentage),
-					])}`}
+					{unlimited
+						? sub(Liferay.Language.get('x-of-x'), [
+								toLocale(count),
+								formatLimit(limit),
+							])
+						: `${sub(Liferay.Language.get('x-of-x'), [
+								toLocale(count),
+								toLocale(limit),
+							])} - ${sub(percentageText(percentage), [
+								toRounded(percentage),
+							])}`}
 				</Text>
 			</div>
 
-			<UsageMetricBarChart
-				items={items}
-				showLegend={false}
-				total={limit}
-			/>
+			{!unlimited && (
+				<UsageMetricBarChart
+					items={items}
+					showLegend={false}
+					total={limit}
+				/>
+			)}
 
 			<Text color="secondary" size={3}>
 				{legendText}

@@ -3,7 +3,11 @@ import React from 'react';
 import {Colors} from 'shared/util/charts';
 import {CurrentUsage} from './CurrentUsage';
 import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
-import {STATUS_DISPLAY_MAP} from 'shared/util/subscriptions';
+import {
+	formatLimit,
+	isUnlimitedLimit,
+	STATUS_DISPLAY_MAP,
+} from 'shared/util/subscriptions';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {toLocale, toRounded, toThousands} from 'shared/util/numbers';
@@ -64,7 +68,11 @@ export const KnownIndividualsSession = ({
 							: Liferay.Language.get(
 									'x-known-individuals-are-available'
 								),
-						[toLocale(available > 0 ? available : 0)]
+						[
+							isUnlimitedLimit(limit)
+								? formatLimit(limit)
+								: toLocale(Math.max(available, 0)),
+						]
 					)}
 					limit={limit}
 					percentageText={(percentage: number) =>

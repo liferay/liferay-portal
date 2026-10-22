@@ -2,6 +2,7 @@ import Card from 'shared/components/Card';
 import getCN from 'classnames';
 import React from 'react';
 import {
+	formatLimit,
 	getPlanAddOns,
 	getPropLabel,
 	INDIVIDUALS,
@@ -9,7 +10,6 @@ import {
 	PLANS,
 } from 'shared/util/subscriptions';
 import {Text} from '@clayui/core';
-import {toLocale} from 'shared/util/numbers';
 
 interface IItemRendererProps {
 	name: React.ReactNode;
@@ -66,7 +66,7 @@ export const SubscriptionDetails = ({
 
 				<ItemRenderer
 					name={Liferay.Language.get('individuals')}
-					value={toLocale(
+					value={formatLimit(
 						(PLANS as {[key: string]: any})[planType].limits[
 							INDIVIDUALS
 						]
@@ -75,7 +75,7 @@ export const SubscriptionDetails = ({
 
 				<ItemRenderer
 					name={Liferay.Language.get('page-views')}
-					value={toLocale(
+					value={formatLimit(
 						(PLANS as {[key: string]: any})[planType].limits[
 							PAGEVIEWS
 						]

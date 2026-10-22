@@ -400,6 +400,12 @@ export function getPropLabel(name) {
 	}
 }
 
+export function formatLimit(limit) {
+	return isUnlimitedLimit(limit)
+		? Liferay.Language.get('unlimited')
+		: formatDataValue(limit, 'number');
+}
+
 export function formatPlanData(subscriptionIMap) {
 	if (isNil(subscriptionIMap)) {
 		subscriptionIMap = new Map();
@@ -463,4 +469,8 @@ export function isBasicPlan(currentPlan) {
 
 export function isLDPPlan(subscriptionName) {
 	return subscriptionName?.includes('Data Platform') ?? false;
+}
+
+export function isUnlimitedLimit(limit) {
+	return limit < 0;
 }

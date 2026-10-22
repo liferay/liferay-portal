@@ -3,7 +3,11 @@ import React from 'react';
 import {Colors} from 'shared/util/charts';
 import {CurrentUsage} from './CurrentUsage';
 import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
-import {STATUS_DISPLAY_MAP} from 'shared/util/subscriptions';
+import {
+	formatLimit,
+	isUnlimitedLimit,
+	STATUS_DISPLAY_MAP,
+} from 'shared/util/subscriptions';
 import {sub} from 'shared/util/lang';
 import {toLocale} from 'shared/util/numbers';
 import {UsageMetric} from './UsageMetric';
@@ -51,7 +55,11 @@ export const PageViewsSession = ({currentPlan}: IPageViewsSessionProps) => {
 				}}
 				legendText={sub(
 					Liferay.Language.get('x-page-views-are-available'),
-					[toLocale(available > 0 ? available : 0)]
+					[
+						isUnlimitedLimit(limit)
+							? formatLimit(limit)
+							: toLocale(Math.max(available, 0)),
+					]
 				)}
 				limit={limit}
 				percentageText={(percentage: number) =>
