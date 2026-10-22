@@ -274,6 +274,7 @@ public class ToolSetUtil {
 	}
 
 	public static Response invokeTool(
+			Set<String> allowedToolKeys,
 			List<String> dataMaskExternalReferenceCodes,
 			HttpServletRequest httpServletRequest, Object inputObject,
 			Map<String, String> restrictFieldsMap, String toolName,
@@ -294,6 +295,18 @@ public class ToolSetUtil {
 		}
 
 		if (Objects.equals(toolSetName, TOOL_SET_NAME)) {
+			if (Objects.equals(
+					toolName, "getToolSearchToolSearchResultsPage")) {
+
+				return _getResponse(
+					getToolSearchResultsPage(
+						allowedToolKeys, httpServletRequest,
+						inputJSONObject.getBoolean(
+							"includeRequiredInputSchema"),
+						restrictFieldsMap,
+						inputJSONObject.getString("search")));
+			}
+
 			if (Objects.equals(toolName, "getToolSetToolSetNameTool")) {
 				return _getResponse(
 					getTool(
@@ -321,9 +334,9 @@ public class ToolSetUtil {
 
 			if (Objects.equals(toolName, "postToolSetToolSetNameToolInvoke")) {
 				return invokeTool(
-					dataMaskExternalReferenceCodes, httpServletRequest,
-					inputJSONObject.opt("body"), restrictFieldsMap,
-					inputJSONObject.getString("toolName"),
+					allowedToolKeys, dataMaskExternalReferenceCodes,
+					httpServletRequest, inputJSONObject.opt("body"),
+					restrictFieldsMap, inputJSONObject.getString("toolName"),
 					inputJSONObject.getString("toolSetName"));
 			}
 		}
