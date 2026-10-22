@@ -665,7 +665,7 @@ test(
 				.getByRole('button', {exact: true, name: 'Save as Draft'})
 				.click();
 
-			await expect(page.getByText(/1\.1 Draft/)).toBeVisible();
+			await expect(page.getByText('1.1 Draft')).toBeVisible();
 
 			await contentDashboardPage.goto(undefined, {scopeId: site.id});
 
