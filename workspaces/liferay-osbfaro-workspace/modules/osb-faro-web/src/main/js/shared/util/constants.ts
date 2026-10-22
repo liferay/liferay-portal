@@ -459,6 +459,8 @@ export const MAX_LABEL_LENGTH = 35;
 
 export const MAX_PAGE_WIDTH = 1280;
 
+export const NO_DATA_VALUE = '–';
+
 export const ONE_DAY = '86400000';
 
 export const ONE_MONTH = '2592000000';

@@ -14,10 +14,10 @@ import {
 
 /**
  * Check if the value is blank.
- * @param {string|number} value
+ * @param {unknown} value
  * @returns {boolean}
  */
-export const isBlank = (value: string | number): boolean =>
+export const isBlank = (value: unknown): value is null | undefined | '' =>
 	isNil(value) || (isString(value) && !value.length);
 
 /**
