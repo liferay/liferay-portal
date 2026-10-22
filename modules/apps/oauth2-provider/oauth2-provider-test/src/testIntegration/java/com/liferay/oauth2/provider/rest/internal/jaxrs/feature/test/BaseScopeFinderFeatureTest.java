@@ -83,13 +83,13 @@ public class BaseScopeFinderFeatureTest {
 		@GET
 		@RequiresScope("everything.read")
 		public String get() {
-			return "get";
+			return RandomTestUtil.randomString();
 		}
 
 		@POST
 		@RequiresScope("everything.write")
 		public String post() {
-			return "post";
+			return RandomTestUtil.randomString();
 		}
 
 	}
@@ -100,7 +100,7 @@ public class BaseScopeFinderFeatureTest {
 		@PUT
 		@RequiresScope("everything.update")
 		public String put() {
-			return "put";
+			return RandomTestUtil.randomString();
 		}
 
 	}
