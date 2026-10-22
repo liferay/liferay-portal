@@ -17,6 +17,7 @@ function main {
 		gcp/gitops/platform
 		gcp/gitops/resources
 		gcp/gke
+		gcp/platform
 		modules/argocd
 	)
 

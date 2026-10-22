@@ -59,6 +59,7 @@ jobs:
                     -   gcp/gitops/platform
                     -   gcp/gitops/resources
                     -   gcp/gke
+                    -   gcp/platform
                     -   modules/argocd
 on:
     workflow_call:
