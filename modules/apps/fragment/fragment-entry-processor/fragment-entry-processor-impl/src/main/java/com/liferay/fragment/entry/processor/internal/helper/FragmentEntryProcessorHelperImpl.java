@@ -56,6 +56,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
@@ -590,19 +591,27 @@ public class FragmentEntryProcessorHelperImpl
 		if (value instanceof Date) {
 			Date date = (Date)value;
 
-			HttpServletRequest httpServletRequest =
-				fragmentEntryProcessorContext.getHttpServletRequest();
+			TimeZone timeZone = null;
 
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
+			if (!GetterUtil.getBoolean(
+					infoField.getAttribute(
+						DateInfoFieldType.TIME_ZONE_INDEPENDENT))) {
+
+				HttpServletRequest httpServletRequest =
+					fragmentEntryProcessorContext.getHttpServletRequest();
+
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)httpServletRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
+				timeZone = themeDisplay.getTimeZone();
+			}
 
 			return _getDateValue(
 				editableValueJSONObject, date,
 				_getShortTimeStylePattern(
 					fragmentEntryProcessorContext.getLocale()),
-				fragmentEntryProcessorContext.getLocale(),
-				themeDisplay.getTimeZone());
+				fragmentEntryProcessorContext.getLocale(), timeZone);
 		}
 		else if (value instanceof KeyLocalizedLabelPair) {
 			KeyLocalizedLabelPair keyLocalizedLabelPair =
