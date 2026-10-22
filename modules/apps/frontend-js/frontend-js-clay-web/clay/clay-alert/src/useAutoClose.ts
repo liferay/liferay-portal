@@ -7,6 +7,8 @@ import {useCallback, useEffect, useRef} from 'react';
 
 import {usePrefersPersistentAlerts} from './usePrefersPersistentAlerts';
 
+type PauseSource = 'focus' | 'hover';
+
 interface IProps {
 	autoClose?: boolean | number;
 	onClose?: () => void;
@@ -18,7 +20,7 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 	const elapsedRef = useRef(0);
 	const expiredRef = useRef(false);
 	const onCloseRef = useRef(onClose);
-	const pauseRequestedRef = useRef(false);
+	const pauseSourcesRef = useRef(new Set<PauseSource>());
 	const startedAtRef = useRef<number>(0);
 	const timerRef = useRef<number | null>(null);
 
@@ -40,7 +42,7 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 			!autoClose ||
 			prefersPersistentAlerts ||
 			expiredRef.current ||
-			pauseRequestedRef.current ||
+			pauseSourcesRef.current.size ||
 			timerRef.current
 		) {
 			return;
@@ -72,13 +74,13 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 	}, [pauseTimer, startTimer]);
 
 	return {
-		pauseAutoCloseTimer: () => {
-			pauseRequestedRef.current = true;
+		pauseAutoCloseTimer: (source: PauseSource) => {
+			pauseSourcesRef.current.add(source);
 
 			pauseTimer();
 		},
-		startAutoCloseTimer: () => {
-			pauseRequestedRef.current = false;
+		startAutoCloseTimer: (source: PauseSource) => {
+			pauseSourcesRef.current.delete(source);
 
 			startTimer();
 		},

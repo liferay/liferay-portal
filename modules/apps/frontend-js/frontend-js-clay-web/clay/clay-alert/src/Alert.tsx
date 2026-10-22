@@ -144,23 +144,23 @@ function ClayAlert({
 					document.hasFocus() &&
 					!event.currentTarget.contains(event.relatedTarget)
 				) {
-					startAutoCloseTimer();
+					startAutoCloseTimer('focus');
 				}
 			}}
 			onFocus={(event) => {
 				onFocus?.(event);
 
-				pauseAutoCloseTimer();
+				pauseAutoCloseTimer('focus');
 			}}
 			onMouseOut={(event) => {
 				onMouseOut?.(event);
 
-				startAutoCloseTimer();
+				startAutoCloseTimer('hover');
 			}}
 			onMouseOver={(event) => {
 				onMouseOver?.(event);
 
-				pauseAutoCloseTimer();
+				pauseAutoCloseTimer('hover');
 			}}
 		>
 			<ConditionalContainer
