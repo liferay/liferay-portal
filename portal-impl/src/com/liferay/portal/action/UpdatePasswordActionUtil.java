@@ -200,6 +200,8 @@ public class UpdatePasswordActionUtil {
 		if (GetterUtil.getBoolean(
 				httpSession.getAttribute(WebKeys.MFA_ENABLED))) {
 
+			redirectUnsafeConsumer.accept(themeDisplay.getURLSignIn());
+
 			return;
 		}
 
