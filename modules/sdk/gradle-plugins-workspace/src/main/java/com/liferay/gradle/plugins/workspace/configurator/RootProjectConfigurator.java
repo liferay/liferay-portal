@@ -23,6 +23,7 @@ import com.liferay.gradle.plugins.LiferayBasePlugin;
 import com.liferay.gradle.plugins.node.NodeExtension;
 import com.liferay.gradle.plugins.node.task.NpmInstallTask;
 import com.liferay.gradle.plugins.source.formatter.SourceFormatterPlugin;
+import com.liferay.gradle.plugins.util.PortalTools;
 import com.liferay.gradle.plugins.workspace.LiferayWorkspaceYarnPlugin;
 import com.liferay.gradle.plugins.workspace.WorkspaceExtension;
 import com.liferay.gradle.plugins.workspace.WorkspacePlugin;
@@ -232,6 +233,8 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		GradleUtil.applyPlugin(project, LifecycleBasePlugin.class);
 		GradleUtil.applyPlugin(project, SourceFormatterPlugin.class);
 
+		_addDependenciesSourceFormatter(project);
+
 		String nodePackageManager = workspaceExtension.getNodePackageManager();
 
 		if (nodePackageManager.equals("yarn")) {
@@ -343,6 +346,12 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		GradleUtil.addDependency(
 			project, BUNDLE_SUPPORT_CONFIGURATION_NAME, "com.liferay",
 			"com.liferay.portal.tools.bundle.support", "latest.release");
+	}
+
+	private void _addDependenciesSourceFormatter(Project project) {
+		PortalTools.addPortalToolDependencies(
+			project, SourceFormatterPlugin.CONFIGURATION_NAME,
+			PortalTools.GROUP, "com.liferay.source.formatter");
 	}
 
 	private void _addDockerTasks(
