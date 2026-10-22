@@ -321,7 +321,9 @@ public class MCPServerServlet extends HttpServlet {
 				StringBundler.concat(
 					"Status code: ", responseCode, ", Content:\n", content));
 		}
-		catch (InvalidFilterException | InvalidSortException exception) {
+		catch (IllegalArgumentException | InvalidFilterException |
+			   InvalidSortException exception) {
+
 			if (_log.isDebugEnabled()) {
 				_log.debug(exception);
 			}
