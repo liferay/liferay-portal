@@ -62,8 +62,7 @@ export class NodePropertiesSidebarPage {
 		this.roleNameInput = page.getByLabel('Role Name').first();
 		this.sidebarBackButton = page
 			.locator('div.sidebar-header')
-			.getByRole('button')
-			.first();
+			.getByRole('button', {name: 'Back'});
 		this.sideBarNodes = page.locator('div.sidebar-body div.base-node');
 		this.timerPage = new TimerPage(page);
 		this.actionPage = new ActionPage(page);
