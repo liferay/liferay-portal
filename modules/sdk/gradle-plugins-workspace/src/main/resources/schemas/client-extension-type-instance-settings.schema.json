@@ -1469,6 +1469,10 @@
 				"apiUsername": {
 					"type": "string"
 				},
+				"embeddedViewEnabled": {
+					"default": false,
+					"type": "boolean"
+				},
 				"enabled": {
 					"type": "boolean"
 				},

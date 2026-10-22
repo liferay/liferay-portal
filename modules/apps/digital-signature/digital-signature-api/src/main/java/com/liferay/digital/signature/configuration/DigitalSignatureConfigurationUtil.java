@@ -7,6 +7,7 @@ package com.liferay.digital.signature.configuration;
 
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -72,6 +73,17 @@ public class DigitalSignatureConfigurationUtil {
 		catch (ConfigurationException configurationException) {
 			return ReflectionUtil.throwException(configurationException);
 		}
+	}
+
+	public static boolean isEmbeddedViewEnabled(long companyId, long groupId) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-69290")) {
+			return false;
+		}
+
+		DigitalSignatureConfiguration digitalSignatureConfiguration =
+			getDigitalSignatureConfiguration(companyId, groupId);
+
+		return digitalSignatureConfiguration.embeddedViewEnabled();
 	}
 
 }

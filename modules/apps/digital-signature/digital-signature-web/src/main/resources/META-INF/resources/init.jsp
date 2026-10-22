@@ -20,6 +20,7 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ page import="com.liferay.digital.signature.configuration.DigitalSignatureConfiguration" %><%@
 page import="com.liferay.digital.signature.constants.DigitalSignatureConstants" %><%@
 page import="com.liferay.digital.signature.web.internal.constants.DigitalSignatureWebKeys" %><%@
+page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@

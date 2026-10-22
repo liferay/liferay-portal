@@ -33,8 +33,12 @@ const defaultRecipient = {
 };
 
 const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
-	const {allowedFileExtensions, baseResourceURL, portletNamespace} =
-		useContext(AppContext);
+	const {
+		allowedFileExtensions,
+		baseResourceURL,
+		embeddedViewEnabled,
+		portletNamespace,
+	} = useContext(AppContext);
 	const urlParams = new URLSearchParams(window.location.href);
 	const backURL = urlParams.get(`${portletNamespace}backURL`);
 
@@ -56,7 +60,6 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 			[`${portletNamespace}emailSubject`]: values.emailSubject,
 			[`${portletNamespace}envelopeName`]: values.envelopeName,
 			[`${portletNamespace}expireAfter`]: values.expireAfter,
-			[`${portletNamespace}expireWarn`]: values.expireWarn,
 			[`${portletNamespace}fileEntryIds`]: fileEntryIds,
 			[`${portletNamespace}recipients`]: JSON.stringify(
 				values.recipients
@@ -125,12 +128,6 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 			),
 		};
 
-		if (values.expireAfter > 0 && values.expireWarn >= values.expireAfter) {
-			errorList.expireWarn = Liferay.Language.get(
-				'days-to-warn-recipients-must-be-fewer-than-days-until-expiration'
-			);
-		}
-
 		const recipientErrors = values.recipients.map((recipient) =>
 			validate(
 				{
@@ -167,7 +164,6 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 			emailSubject: '',
 			envelopeName: '',
 			expireAfter: 120,
-			expireWarn: 3,
 			fileEntries,
 			recipients: [defaultRecipient],
 		},
@@ -190,6 +186,7 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 					<ClayForm onSubmit={handleSubmit}>
 						<DigitalSignatureFormBase
 							defaultRecipient={defaultRecipient}
+							embeddedViewEnabled={embeddedViewEnabled}
 							errors={errors}
 							handleChange={handleChange}
 							setFieldValue={setFieldValue}

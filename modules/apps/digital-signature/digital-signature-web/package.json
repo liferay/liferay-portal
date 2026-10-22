@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@clayui/autocomplete": "^3.166.0",
 		"@clayui/badge": "^3.166.0",
 		"@clayui/button": "^3.166.0",
 		"@clayui/card": "^3.166.0",

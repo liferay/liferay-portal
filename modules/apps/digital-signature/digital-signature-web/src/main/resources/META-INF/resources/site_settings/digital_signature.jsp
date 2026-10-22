@@ -41,6 +41,15 @@ DigitalSignatureConfiguration digitalSignatureConfiguration = (DigitalSignatureC
 		%>
 
 		<aui:input checked="<%= digitalSignatureEnabled %>" disabled="<%= disabled %>" inlineLabel="right" label='<%= LanguageUtil.get(resourceBundle, "enabled") %>' labelCssClass="simple-toggle-switch" name="enabled" type="toggle-switch" value="<%= digitalSignatureEnabled %>" />
+
+		<c:if test='<%= FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-69290") %>'>
+
+			<%
+			boolean digitalSignatureEmbeddedViewEnabled = GetterUtil.getBoolean(request.getAttribute(DigitalSignatureWebKeys.DIGITAL_SIGNATURE_EMBEDDED_VIEW_ENABLED));
+			%>
+
+			<aui:input checked="<%= digitalSignatureEmbeddedViewEnabled %>" disabled="<%= disabled %>" inlineLabel="right" label='<%= LanguageUtil.get(resourceBundle, "enable-embedded-view") %>' labelCssClass="simple-toggle-switch" name="embeddedViewEnabled" type="toggle-switch" value="<%= digitalSignatureEmbeddedViewEnabled %>" />
+		</c:if>
 	</div>
 </div>
 

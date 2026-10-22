@@ -52,10 +52,6 @@ public class DSEnvelope {
 		return expireAfter;
 	}
 
-	public int getExpireWarn() {
-		return expireWarn;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -106,10 +102,6 @@ public class DSEnvelope {
 		this.expireAfter = expireAfter;
 	}
 
-	public void setExpireWarn(int expireWarn) {
-		this.expireWarn = expireWarn;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -154,8 +146,6 @@ public class DSEnvelope {
 						"expireAfter", String.valueOf(getExpireAfter())
 					).put(
 						"expireEnabled", "true"
-					).put(
-						"expireWarn", String.valueOf(getExpireWarn())
 					)
 				).put(
 					"useAccountDefaults", "false"
@@ -188,7 +178,6 @@ public class DSEnvelope {
 	protected String emailSubject;
 	protected LocalDateTime expirationLocalDateTime;
 	protected int expireAfter;
-	protected int expireWarn;
 	protected String name;
 	protected String senderEmailAddress;
 	protected String status;

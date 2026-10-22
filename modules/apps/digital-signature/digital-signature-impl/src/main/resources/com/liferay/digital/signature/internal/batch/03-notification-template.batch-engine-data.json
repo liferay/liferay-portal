@@ -1,0 +1,43 @@
+{
+	"configuration": {
+		"className": "com.liferay.notification.rest.dto.v1_0.NotificationTemplate",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-69290",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"body": {
+				"en_US": "<p>[%DS_REQUEST_EMAIL_MESSAGE%]</p><p><a href=\"[%DS_REQUEST_SIGN_URL%]\">[%DS_REQUEST_SIGN_LABEL%]</a></p>"
+			},
+			"editorType": "richText",
+			"externalReferenceCode": "L_DS_REQUEST_SIGN_NOTIFICATION_TEMPLATE",
+			"name": "DS Request Sign Notification",
+			"recipientType": "email",
+			"recipients": [
+				{
+					"from": "[%DS_REQUEST_FROM_ADDRESS%]",
+					"fromName": {
+						"en_US": "[%DS_REQUEST_FROM_NAME%]"
+					},
+					"singleRecipient": true,
+					"to": {
+						"en_US": "[%TO%]"
+					}
+				}
+			],
+			"subject": {
+				"en_US": "[%DS_REQUEST_EMAIL_SUBJECT%]"
+			},
+			"system": true,
+			"type": "email",
+			"typeLabel": "Email"
+		}
+	]
+}
