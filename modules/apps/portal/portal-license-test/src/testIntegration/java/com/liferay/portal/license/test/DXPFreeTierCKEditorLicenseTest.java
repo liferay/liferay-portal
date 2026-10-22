@@ -71,11 +71,12 @@ public class DXPFreeTierCKEditorLicenseTest extends BaseLicenseTestCase {
 	public void tearDown() throws Exception {
 		_safeCloseable.close();
 
-		ConfigurationTestUtil.deleteConfiguration(_CKEDITOR_CONFIG_ID);
-
 		if (_CKEDITOR_CONFIG_FILE.exists()) {
-			_CKEDITOR_CONFIG_FILE.delete();
+			ConfigurationTestUtil.updateConfiguration(
+				_CKEDITOR_CONFIG_ID, _CKEDITOR_CONFIG_FILE::delete);
 		}
+
+		ConfigurationTestUtil.deleteConfiguration(_CKEDITOR_CONFIG_ID);
 	}
 
 	@Test
