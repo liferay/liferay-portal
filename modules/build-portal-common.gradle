@@ -1,0 +1,42 @@
+import com.liferay.gradle.plugins.defaults.internal.FindSecurityBugsPlugin
+
+buildscript {
+	apply from: file("../modules/build-buildscript.gradle"), to: buildscript
+}
+
+apply plugin: "java"
+
+FindSecurityBugsPlugin.INSTANCE.apply(project)
+
+classes {
+	dependsOn = []
+}
+
+compileJava {
+	enabled = false
+}
+
+dependencies {
+	compileOnly fileTree(dir: "../lib", include: ["development/*.jar", "portal/*.jar"])
+	compileOnly fileTree(dir: "../tmp/lib-pre", include: "*.jar")
+	compileOnly files(["portal-impl", "portal-kernel", "portal-test", "support-tomcat", "util-bridges", "util-java", "util-slf4j", "util-taglib"].minus(name).collect { "../${it}/classes" })
+}
+
+repositories {
+	maven {
+		url System.properties["repository.url"] ?: "https://repository-cdn.liferay.com/nexus/content/groups/public"
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			destinationDirectory = file("classes")
+			srcDirs = ["src"]
+		}
+
+		resources {
+			srcDirs = ["src"]
+		}
+	}
+}

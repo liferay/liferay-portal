@@ -1,6 +1,5 @@
 import com.liferay.gradle.plugins.baseline.BaselinePlugin
 import com.liferay.gradle.plugins.baseline.BaselineTask
-import com.liferay.gradle.plugins.defaults.internal.FindSecurityBugsPlugin
 
 import org.gradle.util.GUtil
 
@@ -10,7 +9,7 @@ buildscript {
 
 apply plugin: BaselinePlugin
 
-FindSecurityBugsPlugin.INSTANCE.apply(project)
+apply from: "../modules/build-portal-common.gradle"
 
 Properties bndProperties = GUtil.loadProperties(file("bnd.bnd"))
 
@@ -18,43 +17,10 @@ archivesBaseName = "com.liferay." + name.replace('-' as char, '.' as char)
 group = "com.liferay.portal"
 version = bndProperties.getProperty("Bundle-Version")
 
-classes {
-	dependsOn = []
-}
-
-compileJava {
-	enabled = false
-}
-
-dependencies {
-	compileOnly fileTree(dir: "../lib", include: ["development/*.jar", "portal/*.jar"])
-	compileOnly fileTree(dir: "../tmp/lib-pre", include: "*.jar")
-	compileOnly files(["portal-impl", "portal-kernel", "portal-test", "support-tomcat", "util-bridges", "util-java", "util-slf4j", "util-taglib"].minus(name).collect { "../${it}/classes" })
-}
-
 jar {
 	archiveFileName = "${project.name}.jar"
 	destinationDirectory = projectDir
 	enabled = false
-}
-
-repositories {
-	maven {
-		url System.properties["repository.url"] ?: "https://repository-cdn.liferay.com/nexus/content/groups/public"
-	}
-}
-
-sourceSets {
-	main {
-		java {
-			destinationDirectory = file("classes")
-			srcDirs = ["src"]
-		}
-
-		resources {
-			srcDirs = ["src"]
-		}
-	}
 }
 
 tasks.withType(BaselineTask) {
