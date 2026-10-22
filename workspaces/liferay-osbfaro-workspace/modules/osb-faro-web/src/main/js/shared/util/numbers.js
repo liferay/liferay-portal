@@ -1,9 +1,17 @@
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 import {getLocale} from 'shared/util/locale';
-import {isNumber} from 'lodash';
+import {isNil, isNumber} from 'lodash';
+import {NO_DATA_VALUE} from 'shared/util/constants';
 
 momentDurationFormatSetup(moment);
+
+/**
+ * Is Missing Number
+ * @param {number} number
+ */
+const isMissingNumber = (number) =>
+	isNil(number) || number === '' || !Number.isFinite(Number(number));
 
 /**
  * Remove Zero Precision
@@ -26,6 +34,10 @@ const removeZeroPrecision = (str, locale) => {
  * @param {number} number
  */
 export const toRounded = (number, precision = 1, locale = getLocale()) => {
+	if (isMissingNumber(number)) {
+		return NO_DATA_VALUE;
+	}
+
 	const formatted = new Intl.NumberFormat(locale, {
 		maximumFractionDigits: precision,
 		minimumFractionDigits: precision,
@@ -44,11 +56,16 @@ export const toLocale = (
 	number,
 	locale = getLocale(),
 	maximumFractionDigits = 6
-) =>
-	new Intl.NumberFormat(locale, {
+) => {
+	if (isMissingNumber(number)) {
+		return NO_DATA_VALUE;
+	}
+
+	return new Intl.NumberFormat(locale, {
 		maximumFractionDigits,
 		useGrouping: 'always',
 	}).format(number);
+};
 
 const WESTERN_TIERS = [
 	{suffix: 'T', threshold: 1e12},
@@ -180,12 +197,17 @@ export const formatPercentFromRatio = (
 	ratio,
 	precision = 1,
 	locale = getLocale()
-) =>
-	new Intl.NumberFormat(locale, {
+) => {
+	if (isMissingNumber(ratio)) {
+		return NO_DATA_VALUE;
+	}
+
+	return new Intl.NumberFormat(locale, {
 		maximumFractionDigits: precision,
 		style: 'percent',
 		useGrouping: 'always',
 	}).format(ratio);
+};
 
 /**
  * Formats a 0-100 value as a locale-aware percentage string, e.g.
@@ -193,8 +215,13 @@ export const formatPercentFromRatio = (
  * @param {number} value
  * @param {number} precision
  */
-export const formatPercent = (value, precision = 1, locale = getLocale()) =>
-	formatPercentFromRatio(value / 100, precision, locale);
+export const formatPercent = (value, precision = 1, locale = getLocale()) => {
+	if (isMissingNumber(value)) {
+		return NO_DATA_VALUE;
+	}
+
+	return formatPercentFromRatio(value / 100, precision, locale);
+};
 
 /**
  * Formats a number as a locale-aware currency string. Falls back to a
