@@ -23,8 +23,10 @@ import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
@@ -55,6 +57,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.staging.StagingGroupHelper;
+import com.liferay.style.book.model.StyleBookEntry;
+import com.liferay.style.book.service.StyleBookEntryLocalService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -259,6 +263,57 @@ public class GroupExportImportTest {
 	}
 
 	@Test
+	public void testImportGroupLayoutsIntoOtherGroupWithReferences()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry(_group);
+
+		Layout layout1 = LayoutTestUtil.addTypeContentLayout(_group);
+		Layout layout2 = LayoutTestUtil.addTypeContentLayout(_group);
+
+		_addItemToLayout(layout1, fileEntry, layout2);
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+				null, null, RandomTestUtil.randomString(), StringPool.BLANK,
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+		layout1 = _layoutLocalService.getLayout(layout1.getPlid());
+
+		layout1.setStyleBookEntryERC(styleBookEntry.getExternalReferenceCode());
+
+		_layoutLocalService.updateLayout(layout1);
+
+		File file = _exportGroupLayouts(_group);
+
+		Group group = GroupTestUtil.addGroup();
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_importLayoutsWithMissingReferences(
+				() -> _importGroupLayouts(file, group));
+
+		_assertMissingReference(
+			FileEntry.class.getName(), fileEntry.getExternalReferenceCode(),
+			group.getGroupId(), exportImportReportEntries);
+		_assertMissingReference(
+			StyleBookEntry.class.getName(),
+			styleBookEntry.getExternalReferenceCode(), group.getGroupId(),
+			exportImportReportEntries);
+
+		Assert.assertNotNull(
+			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
+				group.getGroupId(), fileEntry.getExternalReferenceCode()));
+		Assert.assertNotNull(
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					styleBookEntry.getExternalReferenceCode(),
+					group.getGroupId()));
+	}
+
+	@Test
 	public void testImportGroups() throws Exception {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
 
@@ -456,6 +511,23 @@ public class GroupExportImportTest {
 				layout.getGroupId(), TestPropsValues.getUserId()));
 	}
 
+	private File _exportGroupLayouts(Group group) throws Exception {
+		_file = _exportImportLocalService.exportLayoutsAsFile(
+			_exportImportConfigurationLocalService.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildExportLayoutSettingsMap(
+							TestPropsValues.getUser(), group.getGroupId(),
+							false,
+							_exportImportHelper.getAllLayoutIds(
+								group.getGroupId(), false),
+							_getGroupParameterMap())));
+
+		return _file;
+	}
+
 	private File _exportLayouts(Group... groups) throws Exception {
 		return _exportLayouts(_companyGroup.getGroupId(), groups);
 	}
@@ -526,6 +598,28 @@ public class GroupExportImportTest {
 			"/group/", group.getGroupId(), "/manifest.xml");
 	}
 
+	private Map<String, String[]> _getGroupParameterMap() {
+		return HashMapBuilder.put(
+			PortletDataHandlerKeys.PORTLET_CONFIGURATION,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_CONFIGURATION_ALL,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_DATA,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_DATA_ALL,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_DATA_CONTROL_DEFAULT,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_SETUP_ALL,
+			new String[] {Boolean.TRUE.toString()}
+		).build();
+	}
+
 	private String _getManifest(ZipReader zipReader) throws Exception {
 		return _getManifest(zipReader, "/manifest.xml");
 	}
@@ -565,6 +659,26 @@ public class GroupExportImportTest {
 		return parameterMap;
 	}
 
+	private ExportImportConfiguration _importGroupLayouts(
+			File file, Group group)
+		throws Exception {
+
+		ExportImportConfiguration exportImportConfiguration =
+			_exportImportConfigurationLocalService.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildImportLayoutSettingsMap(
+							TestPropsValues.getUser(), group.getGroupId(),
+							false, null, _getGroupParameterMap()));
+
+		_exportImportLocalService.importLayouts(
+			exportImportConfiguration, file);
+
+		return exportImportConfiguration;
+	}
+
 	private ExportImportConfiguration _importLayouts(
 			File file, String... groupExternalReferenceCodes)
 		throws Exception {
@@ -587,7 +701,7 @@ public class GroupExportImportTest {
 	}
 
 	private List<ExportImportReportEntry> _importLayoutsWithMissingReferences(
-			File file, Group... groups)
+			UnsafeSupplier<ExportImportConfiguration, Exception> unsafeSupplier)
 		throws Exception {
 
 		List<ExportImportReportEntry> addedExportImportReportEntries =
@@ -636,8 +750,7 @@ public class GroupExportImportTest {
 		ExportImportConfiguration exportImportConfiguration = null;
 
 		try {
-			exportImportConfiguration = _importLayouts(
-				file, _getExternalReferenceCodes(groups));
+			exportImportConfiguration = unsafeSupplier.get();
 		}
 		finally {
 			serviceRegistration.unregister();
@@ -687,7 +800,9 @@ public class GroupExportImportTest {
 		_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
 
 		List<ExportImportReportEntry> exportImportReportEntries =
-			_importLayoutsWithMissingReferences(file, group1, group2);
+			_importLayoutsWithMissingReferences(
+				() -> _importLayouts(
+					file, _getExternalReferenceCodes(group1, group2)));
 
 		_assertMissingReference(
 			FileEntry.class.getName(), fileEntry.getExternalReferenceCode(),
@@ -760,6 +875,9 @@ public class GroupExportImportTest {
 
 	@Inject
 	private StagingGroupHelper _stagingGroupHelper;
+
+	@Inject
+	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 	@Inject
 	private ZipReaderFactory _zipReaderFactory;
