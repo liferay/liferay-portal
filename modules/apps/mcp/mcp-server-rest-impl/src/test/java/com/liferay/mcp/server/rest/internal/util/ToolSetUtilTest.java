@@ -5,11 +5,19 @@
 
 package com.liferay.mcp.server.rest.internal.util;
 
+import com.liferay.mcp.server.rest.internal.search.exception.ToolSearchUnavailableException;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.search.capabilities.SearchCapabilities;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.application.HeadlessApplicationProvider;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +30,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -36,6 +45,10 @@ public class ToolSetUtilTest {
 
 	@Before
 	public void setUp() {
+		PortalUtil portalUtil = new PortalUtil();
+
+		portalUtil.setPortal(Mockito.mock(Portal.class));
+
 		Snapshot<HeadlessApplicationProvider>
 			headlessApplicationProviderSnapshot = Mockito.mock(Snapshot.class);
 
@@ -78,6 +91,38 @@ public class ToolSetUtilTest {
 				"headless-admin-user-v1.0", "headless-admin-user-workflow-v1.0",
 				"headless-commerce-admin-pricing-v10.0"),
 			new ArrayList<>(openAPIDocuments.keySet()));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetToolSearchResultsPageWhenSearchIsBlank() {
+		_mockSearchCapabilities(true);
+
+		try (MockedStatic<FeatureFlagManagerUtil> mockedStatic =
+				Mockito.mockStatic(FeatureFlagManagerUtil.class)) {
+
+			ToolSetUtil.getToolSearchResultsPage(
+				null, _httpServletRequest, false, null, StringPool.BLANK);
+		}
+	}
+
+	@Test
+	public void testGetToolSearchResultsPageWhenToolSearchIsUnsupported() {
+		_mockSearchCapabilities(false);
+
+		try (MockedStatic<FeatureFlagManagerUtil> mockedStatic =
+				Mockito.mockStatic(FeatureFlagManagerUtil.class)) {
+
+			ToolSetUtil.getToolSearchResultsPage(
+				null, _httpServletRequest, false, null,
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (ToolSearchUnavailableException toolSearchUnavailableException) {
+			String message = toolSearchUnavailableException.getMessage();
+
+			Assert.assertTrue(message.contains("Elasticsearch or OpenSearch"));
+		}
 	}
 
 	@Test
@@ -141,6 +186,33 @@ public class ToolSetUtilTest {
 		return application;
 	}
 
+	private void _mockSearchCapabilities(boolean mcpToolSearchSupported) {
+		Snapshot<SearchCapabilities> searchCapabilitiesSnapshot = Mockito.mock(
+			Snapshot.class);
+
+		SearchCapabilities searchCapabilities = Mockito.mock(
+			SearchCapabilities.class);
+
+		Mockito.when(
+			searchCapabilities.isMCPToolSearchSupported()
+		).thenReturn(
+			mcpToolSearchSupported
+		);
+
+		Mockito.when(
+			searchCapabilitiesSnapshot.get()
+		).thenReturn(
+			searchCapabilities
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			ToolSetUtil.class, "_searchCapabilitiesSnapshot",
+			searchCapabilitiesSnapshot);
+	}
+
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
+
+	private final HttpServletRequest _httpServletRequest = Mockito.mock(
+		HttpServletRequest.class);
 
 }
