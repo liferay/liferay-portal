@@ -123,8 +123,6 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -2176,9 +2174,7 @@ public class DefaultObjectEntryManagerImpl
 		if (objectEntry.getPermissions() != null) {
 			modelPermissions = ModelPermissionsUtil.toModelPermissions(
 				objectDefinition.getCompanyId(), objectEntry.getPermissions(),
-				GetterUtil.getLong(objectEntry.getId()),
-				objectDefinition.getClassName(), _resourceActionLocalService,
-				_resourcePermissionLocalService, _roleLocalService);
+				objectDefinition.getClassName(), _roleLocalService);
 		}
 
 		List<ObjectEntryComment> objectEntryComments = null;
@@ -4578,12 +4574,6 @@ public class DefaultObjectEntryManagerImpl
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private ResourceActionLocalService _resourceActionLocalService;
-
-	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Reference
 	private RoleLocalService _roleLocalService;
