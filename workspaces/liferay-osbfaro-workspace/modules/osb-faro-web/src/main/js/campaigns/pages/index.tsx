@@ -101,7 +101,11 @@ const Campaigns: React.FC = () => {
 
 		return (
 			<>
-				<OverviewSection loading={loading} metrics={metrics} />
+				<OverviewSection
+					loading={loading}
+					metrics={metrics}
+					rangeSelectors={rangeSelectors}
+				/>
 
 				<SectionHeader icon="megaphone" title={title} />
 
