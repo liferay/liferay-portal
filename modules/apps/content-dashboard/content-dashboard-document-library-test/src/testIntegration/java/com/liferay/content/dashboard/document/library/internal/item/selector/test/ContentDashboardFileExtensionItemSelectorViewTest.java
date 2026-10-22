@@ -182,11 +182,11 @@ public class ContentDashboardFileExtensionItemSelectorViewTest {
 			Assert.assertEquals(4, fileExtensionGroupsJSONArray.length());
 
 			_assertExtensionGroupJSONObject(
-				"mp3", "document-multimedia", "Audio",
-				fileExtensionGroupsJSONArray.getJSONObject(0));
-			_assertExtensionGroupJSONObject(
 				"html", "document-code", "Code",
 				fileExtensionGroupsJSONArray.getJSONObject(1));
+			_assertExtensionGroupJSONObject(
+				"mp3", "document-multimedia", "Audio",
+				fileExtensionGroupsJSONArray.getJSONObject(0));
 			_assertExtensionGroupJSONObject(
 				"ppt", "document-presentation", "Presentation",
 				fileExtensionGroupsJSONArray.getJSONObject(2));

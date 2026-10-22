@@ -282,7 +282,6 @@ public class
 
 			for (String name : new String[] {"audience", "stage", "topic"}) {
 				Assert.assertTrue(
-					name,
 					assetVocabularies.contains(
 						_assetVocabularyLocalService.fetchGroupVocabulary(
 							company.getGroupId(), name)));

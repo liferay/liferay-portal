@@ -25,6 +25,7 @@ import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -253,28 +254,28 @@ public class ContentDashboardAdminPortletTest {
 				serviceContext.getScopeGroupId(), "audience");
 
 		AssetCategory audienceAssetCategory1 = _addAssetCategory(
-			audienceAssetVocabulary, "C_" + RandomTestUtil.randomString(),
-			serviceContext);
+			audienceAssetVocabulary, serviceContext,
+			"C_" + RandomTestUtil.randomString());
 		AssetCategory audienceAssetCategory2 = _addAssetCategory(
-			audienceAssetVocabulary, "B_" + RandomTestUtil.randomString(),
-			serviceContext);
+			audienceAssetVocabulary, serviceContext,
+			"B_" + RandomTestUtil.randomString());
 		AssetCategory audienceAssetCategory3 = _addAssetCategory(
-			audienceAssetVocabulary, "A_" + RandomTestUtil.randomString(),
-			serviceContext);
+			audienceAssetVocabulary, serviceContext,
+			"A_" + RandomTestUtil.randomString());
 
 		AssetVocabulary stageAssetVocabulary =
 			_assetVocabularyLocalService.fetchGroupVocabulary(
 				serviceContext.getScopeGroupId(), "stage");
 
 		AssetCategory stageAssetCategory1 = _addAssetCategory(
-			stageAssetVocabulary, RandomTestUtil.randomString(),
-			serviceContext);
+			stageAssetVocabulary, serviceContext,
+			RandomTestUtil.randomString());
 		AssetCategory stageAssetCategory2 = _addAssetCategory(
-			stageAssetVocabulary, RandomTestUtil.randomString(),
-			serviceContext);
+			stageAssetVocabulary, serviceContext,
+			RandomTestUtil.randomString());
 		AssetCategory stageAssetCategory3 = _addAssetCategory(
-			stageAssetVocabulary, RandomTestUtil.randomString(),
-			serviceContext);
+			stageAssetVocabulary, serviceContext,
+			RandomTestUtil.randomString());
 
 		List<AssetCategory> assetCategories = new ArrayList<>(
 			Arrays.asList(
@@ -326,8 +327,8 @@ public class ContentDashboardAdminPortletTest {
 			}
 
 			AssetCategory stageAssetCategory4 = _addAssetCategory(
-				stageAssetVocabulary, RandomTestUtil.randomString(),
-				serviceContext);
+				stageAssetVocabulary, serviceContext,
+				RandomTestUtil.randomString());
 
 			assetCategories.add(stageAssetCategory4);
 
@@ -375,16 +376,16 @@ public class ContentDashboardAdminPortletTest {
 				serviceContext.getScopeGroupId(), "audience");
 
 		AssetCategory audienceAssetCategory = _addAssetCategory(
-			audienceAssetVocabulary, RandomTestUtil.randomString(),
-			serviceContext);
+			audienceAssetVocabulary, serviceContext,
+			RandomTestUtil.randomString());
 
 		AssetVocabulary stageAssetVocabulary =
 			_assetVocabularyLocalService.fetchGroupVocabulary(
 				serviceContext.getScopeGroupId(), "stage");
 
 		AssetCategory stageAssetCategory = _addAssetCategory(
-			stageAssetVocabulary, RandomTestUtil.randomString(),
-			serviceContext);
+			stageAssetVocabulary, serviceContext,
+			RandomTestUtil.randomString());
 
 		try {
 			JournalTestUtil.addArticle(
@@ -437,14 +438,14 @@ public class ContentDashboardAdminPortletTest {
 				serviceContext.getScopeGroupId(), "stage");
 
 		AssetCategory stageAssetCategory1 = _addAssetCategory(
-			stageAssetVocabulary, RandomTestUtil.randomString(),
-			serviceContext);
+			stageAssetVocabulary, serviceContext,
+			RandomTestUtil.randomString());
 		AssetCategory stageAssetCategory2 = _addAssetCategory(
-			stageAssetVocabulary, RandomTestUtil.randomString(),
-			serviceContext);
+			stageAssetVocabulary, serviceContext,
+			RandomTestUtil.randomString());
 		AssetCategory stageAssetCategory3 = _addAssetCategory(
-			stageAssetVocabulary, RandomTestUtil.randomString(),
-			serviceContext);
+			stageAssetVocabulary, serviceContext,
+			RandomTestUtil.randomString());
 
 		try {
 			for (int i = 0; i < 3; i++) {
@@ -1764,8 +1765,8 @@ public class ContentDashboardAdminPortletTest {
 	}
 
 	private AssetCategory _addAssetCategory(
-			AssetVocabulary assetVocabulary, String title,
-			ServiceContext serviceContext)
+			AssetVocabulary assetVocabulary, ServiceContext serviceContext,
+			String title)
 		throws Exception {
 
 		return _assetCategoryLocalService.addCategory(
@@ -1837,25 +1838,13 @@ public class ContentDashboardAdminPortletTest {
 	}
 
 	private List<String> _getKeys(AssetCategory... assetCategories) {
-		List<String> keys = new ArrayList<>();
-
-		for (AssetCategory assetCategory : assetCategories) {
-			keys.add(String.valueOf(assetCategory.getCategoryId()));
-		}
-
-		return keys;
+		return TransformUtil.transformToList(
+			assetCategories,
+			assetCategory -> String.valueOf(assetCategory.getCategoryId()));
 	}
 
 	private List<String> _getKeys(JSONArray jsonArray) {
-		List<String> keys = new ArrayList<>();
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-			keys.add(jsonObject.getString("key"));
-		}
-
-		return keys;
+		return JSONUtil.toStringList(jsonArray, "key");
 	}
 
 	private MockLiferayPortletRenderRequest
