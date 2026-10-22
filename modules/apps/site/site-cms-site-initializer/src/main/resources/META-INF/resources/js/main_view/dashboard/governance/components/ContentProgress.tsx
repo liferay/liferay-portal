@@ -164,7 +164,7 @@ export function ContentProgress({
 					)}
 				</Picker>
 			}
-			className="cms-content-progress custom-empty-state"
+			className="cms-content-progress custom-empty-state h-100"
 			description={Liferay.Language.get(
 				'this-is-the-progress-of-content-creation-and-completion-across-the-selected-spaces'
 			)}
