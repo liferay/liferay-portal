@@ -163,23 +163,25 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 			}
 		}
 
-		if (!_allowAllClasses && _isRestricted(clazz)) {
-			return _RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
-		}
-
 		String className = clazz.getName();
 
-		if (_restrictedMethodNames.containsKey(className)) {
-			LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
-				(LiferayFreeMarkerStringModel)
-					_RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
+		if (!_allowAllClasses && !_allowedClassNames.contains(className)) {
+			if (_isRestricted(clazz)) {
+				return _RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
+			}
 
-			liferayFreeMarkerStringModel.setDeniedAccessToString(
-				_deniedAccessToStringClasses.contains(className));
-			liferayFreeMarkerStringModel.setRestrictedMethodNames(
-				_restrictedMethodNames.get(className));
+			if (_restrictedMethodNames.containsKey(className)) {
+				LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
+					(LiferayFreeMarkerStringModel)
+						_RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
 
-			return liferayFreeMarkerStringModel;
+				liferayFreeMarkerStringModel.setDeniedAccessToString(
+					_deniedAccessToStringClasses.contains(className));
+				liferayFreeMarkerStringModel.setRestrictedMethodNames(
+					_restrictedMethodNames.get(className));
+
+				return liferayFreeMarkerStringModel;
+			}
 		}
 
 		if (_serviceProxyClassNames.contains(className)) {
@@ -246,13 +248,8 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 			return restricted;
 		}
 
-		if (_allowedClassNames.contains(className)) {
-			restricted = false;
-		}
-		else {
-			restricted = _isMatch(
-				_restrictedClasses, clazz, _restrictedPackageNames);
-		}
+		restricted = _isMatch(
+			_restrictedClasses, clazz, _restrictedPackageNames);
 
 		_restrictedClassMap.putIfAbsent(className, restricted);
 
