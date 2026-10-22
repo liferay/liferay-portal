@@ -2,6 +2,7 @@ import AccountName from 'shared/components/table/cell-components/AccountName';
 import Checkbox from 'shared/components/Checkbox';
 import ClayIcon from 'shared/components/Icon';
 import ClayLabel from '@clayui/label';
+import DataValue from 'shared/components/DataValue';
 import getCN from 'classnames';
 import IndividualType from 'shared/components/table/cell-components/IndividualTypes';
 import InfoPopover from 'shared/components/InfoPopover';
@@ -29,7 +30,6 @@ import {
 	formatDate,
 	formatDateToTimeZone,
 	formatRelativeTime,
-	formatUTCDate,
 	getCustomDateFormat,
 } from './date';
 import {Colors} from './colors-size';
@@ -250,7 +250,7 @@ export const membershipChangesColumns = {
 		}) => (
 			<td className={getCN('name-cell-root', className)}>
 				<div className="text-truncate">
-					{formatUTCDate(firstSeenTime) || '-'}
+					<DataValue type="date" value={firstSeenTime} />
 				</div>
 			</td>
 		),
@@ -277,7 +277,7 @@ export const membershipChangesColumns = {
 		}) => (
 			<td className={getCN('name-cell-root', className)}>
 				<div className="text-truncate">
-					{formatUTCDate(lastActivityTime) || '-'}
+					<DataValue type="date" value={lastActivityTime} />
 				</div>
 			</td>
 		),
@@ -309,7 +309,9 @@ export const IndividualsListCDPColumns = {
 			data: {accountName: string};
 		}) => (
 			<td className={getCN('name-cell-root', className)}>
-				<div className="text-truncate">{accountName || null}</div>
+				<div className="text-truncate">
+					<DataValue value={accountName} />
+				</div>
 			</td>
 		),
 		label: Liferay.Language.get('account-name'),
@@ -326,7 +328,7 @@ export const IndividualsListCDPColumns = {
 		}) => (
 			<td className={getCN('name-cell-root', className)}>
 				<div className="text-truncate">
-					{properties.country || null}
+					<DataValue value={properties.country} />
 				</div>
 			</td>
 		),
@@ -344,7 +346,7 @@ export const IndividualsListCDPColumns = {
 		}) => (
 			<td className={getCN('name-cell-root', className)}>
 				<div className="text-truncate">
-					{formatUTCDate(firstActivityDate) || '-'}
+					<DataValue type="date" value={firstActivityDate} />
 				</div>
 			</td>
 		),
@@ -375,7 +377,7 @@ export const IndividualsListCDPColumns = {
 		}) => (
 			<td className={getCN('name-cell-root', className)}>
 				<div className="text-truncate">
-					{lastActivityDate ? formatUTCDate(lastActivityDate) : null}
+					<DataValue type="date" value={lastActivityDate} />
 				</div>
 			</td>
 		),
@@ -601,7 +603,7 @@ export const eventListColumns = {
 			data: {description: string; hidden: boolean};
 		}) => (
 			<td className={getCN(className, {'table-cell-secondary': hidden})}>
-				{description}
+				<DataValue value={description} />
 			</td>
 		),
 		className: 'table-cell-expand text-truncate',
@@ -689,7 +691,7 @@ export const eventListColumns = {
 			data: {hidden: boolean; lastSeenURL: string};
 		}) => (
 			<td className={getCN(className, {'table-cell-secondary': hidden})}>
-				{lastSeenURL}
+				<DataValue value={lastSeenURL} />
 			</td>
 		),
 		className: 'table-cell-expand text-truncate',
@@ -1035,22 +1037,19 @@ export const metricsListColumns = {
 				modifiedByUserName: string;
 				modifiedDate: string | number | null | undefined;
 			};
-		}) => {
-			const date =
-				!isNil(modifiedDate) &&
-				formatDate(moment(modifiedDate), getCustomDateFormat());
-
-			return (
-				<td>
-					{date
-						? sub(Liferay.Language.get('x-last-modified-by-x'), [
-								date,
-								modifiedByUserName,
-							])
-						: '-'}
-				</td>
-			);
-		},
+		}) => (
+			<td>
+				<DataValue
+					format={(date) =>
+						sub(Liferay.Language.get('x-last-modified-by-x'), [
+							formatDate(moment(date), getCustomDateFormat()),
+							modifiedByUserName,
+						])
+					}
+					value={modifiedDate}
+				/>
+			</td>
+		),
 		label: Liferay.Language.get('last-modified'),
 	},
 	ratingsMetric: {

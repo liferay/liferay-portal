@@ -1,3 +1,4 @@
+import DataValue from 'shared/components/DataValue';
 import moment from 'moment';
 import React from 'react';
 import {get} from 'lodash';
@@ -21,8 +22,10 @@ export default class DateRenderer extends React.Component {
 
 		const date = get(data, datePath);
 
-		const formattedDate = date ? dateFormatter(date) : '-';
-
-		return <td className={className}>{formattedDate}</td>;
+		return (
+			<td className={className}>
+				<DataValue format={dateFormatter} value={date} />
+			</td>
+		);
 	}
 }

@@ -1,3 +1,4 @@
+import DataValue from 'shared/components/DataValue';
 import Loading from 'shared/components/Loading';
 import React from 'react';
 import {
@@ -119,12 +120,18 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 						</div>
 					);
 				},
-				lifecycleStageRenderer: ({value}: {value: LifecycleStages}) =>
-					value &&
-					columns.cmsLabelRenderer({
-						displayType: lifecycleStagesLabelMap[value].displayType,
-						label: lifecycleStagesLabelMap[value].label,
-					}),
+				lifecycleStageRenderer: ({value}: {value: LifecycleStages}) => (
+					<DataValue
+						format={(stage: LifecycleStages) =>
+							columns.cmsLabelRenderer({
+								displayType:
+									lifecycleStagesLabelMap[stage].displayType,
+								label: lifecycleStagesLabelMap[stage].label,
+							})
+						}
+						value={value}
+					/>
+				),
 			}}
 			id="campaign-accounts-dataset"
 			pagination={pagination}

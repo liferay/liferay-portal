@@ -1,6 +1,6 @@
+import DataValue from 'shared/components/DataValue';
 import getCN from 'classnames';
 import React from 'react';
-import {getSafeDisplayValue} from 'shared/util/util';
 import {isNil} from 'lodash';
 import {Link} from 'react-router-dom';
 import {PropTypes} from 'prop-types';
@@ -22,8 +22,6 @@ export default class SourceCell extends React.Component {
 			groupId
 		} = this.props;
 
-		const label = getSafeDisplayValue(dataSourceName);
-
 		return (
 			<td className={getCN('table-cell-expand', className)}>
 				{!isNil(dataSourceId) ? (
@@ -34,10 +32,10 @@ export default class SourceCell extends React.Component {
 							id: dataSourceId
 						})}
 					>
-						{label}
+						<DataValue value={dataSourceName} />
 					</Link>
 				) : (
-					label
+					<DataValue value={dataSourceName} />
 				)}
 			</td>
 		);

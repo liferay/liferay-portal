@@ -1,6 +1,7 @@
 import AssetAppearsOnQuery from 'shared/queries/AssetAppearsOnQuery';
 import BaseCard from 'shared/components/base-card';
 import ClayLink from '@clayui/link';
+import DataValue from 'shared/components/DataValue';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import FaroConstants from 'shared/util/constants';
 import React, {useMemo, useState} from 'react';
@@ -259,7 +260,12 @@ const getTableColumns = ({
 							className="font-weight-semibold text-truncate-inline text-dark"
 							href={url}
 						>
-							<TextTruncate title={data.title} />
+							<DataValue
+								format={(title: string) => (
+									<TextTruncate title={title} />
+								)}
+								value={data.title}
+							/>
 						</ClayLink>
 					</td>
 				);
@@ -281,7 +287,12 @@ const getTableColumns = ({
 						href={data.touchpoint}
 						target="_blank"
 					>
-						<TextTruncate title={data.touchpoint} />
+						<DataValue
+							format={(touchpoint: string) => (
+								<TextTruncate title={touchpoint} />
+							)}
+							value={data.touchpoint}
+						/>
 					</ClayLink>
 				</td>
 			),

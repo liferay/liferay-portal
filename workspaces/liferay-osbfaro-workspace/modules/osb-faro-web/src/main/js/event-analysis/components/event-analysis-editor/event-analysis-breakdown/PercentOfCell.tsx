@@ -1,8 +1,8 @@
+import DataValue from 'shared/components/DataValue';
 import React from 'react';
 import {BreakdownDataItem} from 'event-analysis/utils/types';
-import {formatPercent} from 'shared/util/numbers';
 import {get} from 'lodash';
-import {getPercentage} from 'shared/util/util';
+import {getFinitePercent} from 'shared/util/numbers';
 
 interface IPercentOfCellProps extends React.HTMLAttributes<HTMLElement> {
 	compareToPrevious?: boolean;
@@ -27,7 +27,10 @@ const PercentOfCell: React.FC<IPercentOfCellProps> = ({
 			<ul className="percentage-column">
 				{data.map(({value}, i) => (
 					<li key={i}>
-						{formatPercent(getPercentage(value, totalValue))}
+						<DataValue
+							type="percent"
+							value={getFinitePercent(value, totalValue)}
+						/>
 					</li>
 				))}
 			</ul>
@@ -39,7 +42,10 @@ const PercentOfCell: React.FC<IPercentOfCellProps> = ({
 						compareToPrevious
 					).map(({value}, i) => (
 						<li key={i}>
-							{formatPercent(getPercentage(value, totalValue))}
+							<DataValue
+								type="percent"
+								value={getFinitePercent(value, totalValue)}
+							/>
 						</li>
 					))}
 				</ul>

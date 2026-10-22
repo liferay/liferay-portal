@@ -2,6 +2,7 @@
 
 import * as API from 'shared/api';
 import Card from 'shared/components/Card';
+import DataValue from 'shared/components/DataValue';
 import ChartTooltip, {
 	Alignments,
 	Weights,
@@ -125,6 +126,7 @@ interface ISegmentGrowthChartProps {
 	height?: number;
 	includeAnonymousUsers?: boolean;
 	individualCounts?: {anonymousCount: number; knownCount: number};
+	membershipProcessing?: boolean;
 	selectedPoint?: number;
 	onSelectedPointChange?: (selectedPoint: number) => void;
 }
@@ -143,6 +145,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 		anonymousCount: 0,
 		knownCount: 0,
 	},
+	membershipProcessing = false,
 	onSelectedPointChange,
 	selectedPoint,
 }) => {
@@ -444,7 +447,13 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 							<span className="legend-text-color">
 								{`${value}:`}
 
-								<b className="ml-1">{toLocale(count)}</b>
+								<b className="ml-1">
+									<DataValue
+										processing={membershipProcessing}
+										type="number"
+										value={count}
+									/>
+								</b>
 							</span>
 						)}
 						iconSize={8}
@@ -609,6 +618,7 @@ interface ISegmentGrowthWithList {
 	id: string;
 	includeAnonymousUsers?: boolean;
 	individualCounts?: {anonymousCount: number; knownCount: number};
+	membershipProcessing?: boolean;
 	selectedPoint: number;
 	timeZoneId: string;
 }
@@ -622,6 +632,7 @@ const SegmentGrowthWithList: React.FC<ISegmentGrowthWithList> = ({
 	id,
 	includeAnonymousUsers,
 	individualCounts,
+	membershipProcessing = false,
 	selectedPoint,
 	timeZoneId,
 }) => {
@@ -694,6 +705,7 @@ const SegmentGrowthWithList: React.FC<ISegmentGrowthWithList> = ({
 					height={360}
 					includeAnonymousUsers={includeAnonymousUsers}
 					individualCounts={individualCounts}
+					membershipProcessing={membershipProcessing}
 					selectedPoint={selectedPoint}
 				/>
 			</div>

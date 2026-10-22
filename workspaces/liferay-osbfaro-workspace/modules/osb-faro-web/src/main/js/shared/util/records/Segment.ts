@@ -18,6 +18,7 @@ interface ISegment {
 	individualCount: number;
 	knownIndividualCount: number;
 	lastActivityDate: number;
+	lastMembershipUpdateDate: number | null;
 	name: string;
 	properties: Map<string, any>;
 	referencedObjects?: Map<string, any>;
@@ -47,6 +48,7 @@ export default class Segment
 		individualCount: 0,
 		knownIndividualCount: 0,
 		lastActivityDate: null,
+		lastMembershipUpdateDate: null,
 		name: '',
 		properties: Map(),
 		referencedObjects: Map({
@@ -80,6 +82,7 @@ export default class Segment
 	declare individualCount: number;
 	declare knownIndividualCount: number;
 	declare lastActivityDate: number;
+	declare lastMembershipUpdateDate: number | null;
 	declare name: string;
 	declare properties: Map<string, any>;
 	declare referencedObjects?: Map<string, any>;

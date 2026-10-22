@@ -1,6 +1,7 @@
 import * as API from 'shared/api';
 import Card from 'shared/components/Card';
 import React from 'react';
+import {isNil} from 'lodash';
 import SegmentGrowthWithList from 'segment/components/Growth';
 import {connect} from 'react-redux';
 import {mapGrowthHistory} from 'shared/hoc/mappers/segment';
@@ -29,6 +30,7 @@ export const MembershipChart = withRequest(
 				anonymousCount: PropTypes.number,
 				knownCount: PropTypes.number
 			}),
+			membershipProcessing: PropTypes.bool,
 			segmentType: PropTypes.oneOf(Object.values(SegmentTypes)),
 			timeZoneId: PropTypes.string
 		};
@@ -41,6 +43,7 @@ export const MembershipChart = withRequest(
 				id,
 				includeAnonymousUsers,
 				individualCounts,
+				membershipProcessing,
 				segmentType,
 				timeZoneId
 			} = this.props;
@@ -53,6 +56,7 @@ export const MembershipChart = withRequest(
 					id={id}
 					includeAnonymousUsers={includeAnonymousUsers}
 					individualCounts={individualCounts}
+					membershipProcessing={membershipProcessing}
 					shouldShowMembershipList={
 						segmentType !== SegmentTypes.RealTime
 					}
@@ -88,6 +92,7 @@ export default class Membership extends React.Component {
 				id,
 				includeAnonymousUsers,
 				knownIndividualCount,
+				lastMembershipUpdateDate,
 				segmentType
 			},
 			timeZoneId
@@ -117,6 +122,7 @@ export default class Membership extends React.Component {
 						anonymousCount: anonymousIndividualCount,
 						knownCount: knownIndividualCount
 					}}
+					membershipProcessing={isNil(lastMembershipUpdateDate)}
 					segmentType={segmentType}
 					timeZoneId={timeZoneId}
 				/>

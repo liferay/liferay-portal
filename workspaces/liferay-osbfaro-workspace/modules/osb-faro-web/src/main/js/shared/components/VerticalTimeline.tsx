@@ -5,6 +5,7 @@ import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
 import CopyButton from 'shared/components/CopyButton';
+import DataValue from 'shared/components/DataValue';
 import EventCountPill from 'shared/components/EventCountPill';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
@@ -216,7 +217,7 @@ const PayloadTable: FC<{table: IPayloadTable}> = ({table: {rows, title}}) => (
 									{value}
 								</ClayLink>
 							) : (
-								value
+								<DataValue value={value} />
 							)}
 						</ClayTable.Cell>
 					</ClayTable.Row>
@@ -354,13 +355,13 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 							href={individualUrl}
 						>
 							<Text size={3} weight="semi-bold">
-								{title}
+								<DataValue value={title} />
 							</Text>
 						</ClayLink>
 					) : (
 						<span className="individual-title">
 							<Text size={3} weight="semi-bold">
-								{title}
+								<DataValue value={title} />
 							</Text>
 						</span>
 					)}

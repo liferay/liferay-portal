@@ -1,4 +1,5 @@
 import ClayLabel from '@clayui/label';
+import DataValue from 'shared/components/DataValue';
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import React from 'react';
@@ -30,7 +31,7 @@ const ExperimentListTitle = ({id, title, touchpoint}) => {
 		<td className="table-cell-expand">
 			<Link className="table-title" to={url}>
 				<TextTruncate title={title || touchpoint}>
-					{title || '-'}
+					<DataValue value={title} />
 				</TextTruncate>
 			</Link>
 		</td>

@@ -1,12 +1,12 @@
 import * as d3Selection from 'd3-selection';
 import * as d3Shape from 'd3-shape';
+import DataValue from 'shared/components/DataValue';
 import getCN from 'classnames';
 import React from 'react';
 import TextTruncate from './TextTruncate';
 import {CHART_COLORS} from 'shared/util/charts';
-import {formatPercent, getFinitePercent, toThousands} from 'shared/util/numbers';
+import {formatPercent, getFinitePercent} from 'shared/util/numbers';
 import {get, isNull} from 'lodash';
-import {getSafeDisplayValue} from 'shared/util/util';
 import {PropTypes} from 'prop-types';
 
 /**
@@ -48,7 +48,7 @@ function getDisplayValue(value, total) {
 
 export class CompositionLegend extends React.Component {
 	render() {
-		const {items, total} = this.props;
+		const {items, processing, total} = this.props;
 
 		return (
 			<ul className='legend-template composition-legend-root'>
@@ -73,12 +73,19 @@ export class CompositionLegend extends React.Component {
 								className='legend-template-column justify-content-end'
 								data-testid='active-count'
 							>
-								{getSafeDisplayValue(toThousands(value))}
+								<DataValue
+									processing={processing}
+									type='count'
+									value={value}
+								/>
 							</div>
 
 							<div className='legend-template-column justify-content-end'>
 								<b data-testid='active-porcentage'>
-									{isNull(displayValue) ? '-' : displayValue}
+									<DataValue
+										processing={processing}
+										value={displayValue}
+									/>
 								</b>
 							</div>
 						</li>
@@ -94,6 +101,7 @@ export default class CompositionChart extends React.Component {
 		arcGap: 3,
 		arcWidth: 13,
 		height: DEFAULT_CHART_SIZE,
+		processing: false,
 		total: 0,
 		width: DEFAULT_CHART_SIZE
 	};
@@ -104,6 +112,7 @@ export default class CompositionChart extends React.Component {
 		height: PropTypes.number,
 		innerData: DATA_SHAPE,
 		outerData: DATA_SHAPE,
+		processing: PropTypes.bool,
 		total: PropTypes.number,
 		width: PropTypes.number
 	};
@@ -182,7 +191,8 @@ export default class CompositionChart extends React.Component {
 	}
 
 	render() {
-		const {className, innerData, outerData, total} = this.props;
+		const {className, innerData, outerData, processing, total} =
+			this.props;
 
 		return (
 			<div
@@ -203,6 +213,7 @@ export default class CompositionChart extends React.Component {
 							color: get(innerData, 'color', CHART_COLORS[0])
 						}
 					]}
+					processing={processing}
 					total={total}
 				/>
 			</div>

@@ -17,6 +17,7 @@ const DEFAULT_VIEW_FIELDS: IViewField[] = [
 		truncate: true,
 	},
 	{
+		contentRenderer: 'textRenderer',
 		fieldName: 'industry',
 		label: Liferay.Language.get('industry'),
 		sortable: true,
@@ -34,6 +35,7 @@ const DEFAULT_VIEW_FIELDS: IViewField[] = [
 		sortable: true,
 	},
 	{
+		contentRenderer: 'textRenderer',
 		fieldName: 'country',
 		label: Liferay.Language.get('country'),
 		sortable: true,
@@ -78,7 +80,8 @@ const DATA_CATEGORY_RENDERERS: {[dataCategory: string]: string} = {
 
 const buildViewField = (field: ICatalogField): IViewField => ({
 	contentRenderer:
-		DATA_CATEGORY_RENDERERS[(field.dataCategory ?? '').toLowerCase()],
+		DATA_CATEGORY_RENDERERS[(field.dataCategory ?? '').toLowerCase()] ??
+		'textRenderer',
 	fieldName: field.name,
 	label: getCatalogFieldLabel(field),
 	sortable: false,

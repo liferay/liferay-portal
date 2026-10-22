@@ -6,7 +6,7 @@ import InterestsCard from 'contacts/hoc/segment/InterestsCard';
 import React, {useCallback, useEffect, useRef} from 'react';
 import SegmentActivationCard from 'segment/components/SegmentActivationCard';
 import SegmentProfileCard from 'segment/components/ProfileCard';
-import {debounce} from 'lodash';
+import {debounce, isNil} from 'lodash';
 import {ReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 import {Segment} from 'shared/util/records';
 import {SegmentTypes} from 'shared/util/constants';
@@ -29,6 +29,7 @@ const Overview: React.FC<IOverviewProps> = ({channelId, groupId, segment}) => {
 		includeAnonymousUsers,
 		individualCount,
 		knownIndividualCount,
+		lastMembershipUpdateDate,
 		sequential,
 	} = segment;
 	const {timeZoneId} = useTimeZone();
@@ -97,6 +98,7 @@ const Overview: React.FC<IOverviewProps> = ({channelId, groupId, segment}) => {
 					activeIndividualCount={activeIndividualCount}
 					individualCount={individualCount}
 					knownIndividualCount={knownIndividualCount}
+					membershipProcessing={isNil(lastMembershipUpdateDate)}
 				/>
 			</div>
 		</div>

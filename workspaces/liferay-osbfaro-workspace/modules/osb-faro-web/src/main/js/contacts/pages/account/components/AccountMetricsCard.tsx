@@ -1,11 +1,11 @@
 import Card from 'shared/components/Card';
 import classNames from 'classnames';
+import DataValue from 'shared/components/DataValue';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import Loading from 'shared/components/Loading';
 import React from 'react';
 import {getPluralMessage} from 'shared/util/lang';
 import {Text} from '@clayui/core';
-import {toThousands} from 'shared/util/numbers';
 
 interface IAccountMetricsCardItem {
 	label: string;
@@ -54,7 +54,7 @@ const AccountMetricsCard: React.FC<IAccountMetricsCardProps> = ({
 										size={6}
 										weight="semi-bold"
 									>
-										{toThousands(value ?? 0)}
+										<DataValue type="count" value={value} />
 									</Text>,
 								]
 							)}

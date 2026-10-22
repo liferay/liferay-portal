@@ -1,3 +1,4 @@
+import DataValue from 'shared/components/DataValue';
 import getCN from 'classnames';
 import React from 'react';
 
@@ -13,7 +14,9 @@ const AccountNames: React.FC<IAccountNamesProps> = ({
 	data: {accountName},
 }) => (
 	<td className={getCN('name-cell-root', className)}>
-		<div className="text-truncate">{accountName || '-'}</div>
+		<div className="text-truncate">
+			<DataValue value={accountName} />
+		</div>
 	</td>
 );
 

@@ -2,6 +2,7 @@ import Card from './Card';
 import classNames from 'classnames';
 import ClayLink from '@clayui/link';
 import Icon from 'shared/components/Icon';
+import DataValue from 'shared/components/DataValue';
 import Loading from './Loading';
 import React from 'react';
 import Sticker from '@clayui/sticker';
@@ -28,7 +29,7 @@ const InfoItem = ({
 	href?: string;
 	icon?: string;
 	label: string;
-	value: string;
+	value: React.ReactNode;
 }) => (
 	<div className={classNames(className, 'align-items-start d-flex mb-2')}>
 		<Sticker
@@ -67,7 +68,7 @@ const InfoItem = ({
 interface IGeneralInfoSectionProps {
 	config: DataDrivenConfig;
 	getHref?: (key: string) => string | undefined;
-	getValue: (key: string) => string | undefined;
+	getValue: (key: string) => string | number | undefined;
 	languageMap: Record<string, string>;
 	loading?: boolean;
 }
@@ -95,8 +96,6 @@ export const GeneralInfoSection: React.FC<IGeneralInfoSectionProps> = ({
 									{section.items.map((item) => {
 										const rawValue = getValue(item.key);
 
-										const displayValue = rawValue || '-';
-
 										return (
 											<InfoItem
 												className={item.className}
@@ -108,7 +107,11 @@ export const GeneralInfoSection: React.FC<IGeneralInfoSectionProps> = ({
 												icon={item.icon}
 												key={item.key}
 												label={languageMap[item.key]}
-												value={displayValue}
+												value={
+													<DataValue
+														value={rawValue}
+													/>
+												}
 											/>
 										);
 									})}

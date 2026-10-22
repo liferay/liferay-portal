@@ -4,10 +4,11 @@ import Card from 'shared/components/Card';
 import classNames from 'classnames';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayLink from '@clayui/link';
+import DataValue from 'shared/components/DataValue';
 import React, {useState} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import {Text} from '@clayui/core';
-import {toThousands} from 'shared/util/numbers';
+import {DataValueType, isMissingDataValue} from 'shared/util/data-value';
 import {useParams} from 'react-router-dom';
 
 export interface IAccount {
@@ -34,29 +35,47 @@ interface IAccountInfoProps {
 	loading?: boolean;
 }
 
-const infoDataLabels = {
-	accountType: Liferay.Language.get('account-type'),
-	annualRevenue: Liferay.Language.get('annual-revenue'),
-	industry: Liferay.Language.get('industry'),
-	numberOfEmployees: Liferay.Language.get('company-size'),
-	website: Liferay.Language.get('website'),
+type InfoField =
+	| 'accountType'
+	| 'annualRevenue'
+	| 'industry'
+	| 'numberOfEmployees'
+	| 'website';
+
+const infoFields: Record<InfoField, {label: string; type: DataValueType}> = {
+	accountType: {label: Liferay.Language.get('account-type'), type: 'text'},
+	annualRevenue: {
+		label: Liferay.Language.get('annual-revenue'),
+		type: 'count',
+	},
+	industry: {label: Liferay.Language.get('industry'), type: 'text'},
+	numberOfEmployees: {
+		label: Liferay.Language.get('company-size'),
+		type: 'count',
+	},
+	website: {label: Liferay.Language.get('website'), type: 'text'},
 };
 
 const normalizeHref = (value: string) =>
 	/^https?:\/\//i.test(value) ? value : `https://${value}`;
 
-const infoItem = (label: string, value?: string, link?: boolean) => (
+const infoItem = (
+	label: string,
+	type: DataValueType,
+	value?: string | number,
+	link?: boolean
+) => (
 	<div className="d-flex justify-content-between mb-2">
 		<Text color="secondary" size={3}>
 			{label}
 		</Text>
-		{link && value ? (
+		{link && typeof value === 'string' && value ? (
 			<ClayLink href={normalizeHref(value)} target="_blank">
 				<Text size={3}>{value}</Text>
 			</ClayLink>
 		) : (
 			<Text color="secondary" size={3}>
-				{value}
+				<DataValue type={type} value={value} />
 			</Text>
 		)}
 	</div>
@@ -70,27 +89,14 @@ const AccountInfo: React.FC<IAccountInfoProps> = ({
 	const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 	const {id: accountId} = useParams<{id: string}>();
 
-	const getValue = (key: keyof typeof infoDataLabels): string | undefined => {
-		if (!account) {
-			return undefined;
-		}
-		if (key === 'annualRevenue') {
-			return account.annualRevenue
-				? toThousands(account.annualRevenue)
-				: undefined;
-		}
-		if (key === 'numberOfEmployees') {
-			return account.numberOfEmployees !== undefined
-				? toThousands(account.numberOfEmployees)
-				: undefined;
-		}
-		return account[key];
-	};
+	const getValue = (key: keyof typeof infoFields) => account?.[key];
 
-	const infoKeys = Object.keys(infoDataLabels) as Array<
-		keyof typeof infoDataLabels
-	>;
-	const isEmpty = !loading && infoKeys.every((key) => !getValue(key));
+	const infoKeys = Object.keys(infoFields) as Array<keyof typeof infoFields>;
+	const isEmpty =
+		!loading &&
+		infoKeys.every((key) =>
+			isMissingDataValue(getValue(key), infoFields[key].type)
+		);
 
 	return (
 		<>
@@ -128,7 +134,8 @@ const AccountInfo: React.FC<IAccountInfoProps> = ({
 							{infoKeys.map((key) => (
 								<React.Fragment key={key}>
 									{infoItem(
-										infoDataLabels[key],
+										infoFields[key].label,
+										infoFields[key].type,
 										getValue(key),
 										key === 'website'
 									)}

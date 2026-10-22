@@ -8,12 +8,17 @@ export default class CompositionCard extends React.Component {
 	static propTypes = {
 		activeIndividualCount: PropTypes.number,
 		individualCount: PropTypes.number,
-		knownIndividualCount: PropTypes.number
+		knownIndividualCount: PropTypes.number,
+		membershipProcessing: PropTypes.bool
 	};
 
 	render() {
-		const {activeIndividualCount, individualCount, knownIndividualCount} =
-			this.props;
+		const {
+			activeIndividualCount,
+			individualCount,
+			knownIndividualCount,
+			membershipProcessing
+		} = this.props;
 
 		return (
 			<Card
@@ -36,6 +41,7 @@ export default class CompositionCard extends React.Component {
 							label: Liferay.Language.get('active-last-30-days'),
 							value: activeIndividualCount
 						}}
+						processing={membershipProcessing}
 						total={individualCount}
 					/>
 				</Card.Body>

@@ -7,6 +7,7 @@ import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
+import DataValue from 'shared/components/DataValue';
 import LinkCell from 'shared/components/table/cell-components/LinkCell';
 import getCN from 'classnames';
 import Nav from 'shared/components/Nav';
@@ -115,16 +116,25 @@ const SEGMENT_TYPES_LABEL_MAP = {
 const isMembershipProcessing = (lastMembershipUpdateDate: number | null) =>
 	isNil(lastMembershipUpdateDate);
 
-const getMembershipLabel = (count: number, accountSegment: boolean) => {
-	if (!count) {
-		return '-';
-	}
-
+const getMembershipLabel = (
+	count: number,
+	accountSegment: boolean,
+	processing: boolean
+) => {
 	const membershipLabel = accountSegment
 		? Liferay.Language.get('x-accounts')
 		: Liferay.Language.get('x-individuals');
 
-	return sub(membershipLabel.toLowerCase(), [toThousands(count)]);
+	return (
+		<DataValue
+			format={(value) =>
+				sub(membershipLabel.toLowerCase(), [toThousands(value)])
+			}
+			processing={processing}
+			type="count"
+			value={count}
+		/>
+	);
 };
 
 const FILTER_BY_OPTIONS = [
@@ -693,18 +703,15 @@ export const List: React.FC<IListProps> = ({channelId, groupId, history}) => {
 										return (
 											<td className="table-cell-expand">
 												<div className="text-truncate text-right">
-													{isMembershipProcessing(
-														lastMembershipUpdateDate
-													)
-														? Liferay.Language.get(
-																'processing'
-															)
-														: getMembershipLabel(
-																accountSegment
-																	? accountsCount
-																	: individualCount,
-																accountSegment
-															)}
+													{getMembershipLabel(
+														accountSegment
+															? accountsCount
+															: individualCount,
+														accountSegment,
+														isMembershipProcessing(
+															lastMembershipUpdateDate
+														)
+													)}
 												</div>
 											</td>
 										);
@@ -720,19 +727,10 @@ export const List: React.FC<IListProps> = ({channelId, groupId, history}) => {
 												| number
 												| null;
 										};
-									}) =>
-										isMembershipProcessing(
-											item.data.lastMembershipUpdateDate
-										) ? (
-											<td className={item.className}>
-												{Liferay.Language.get(
-													'processing'
-												)}
-											</td>
-										) : (
-											<DateCell
-												{...item}
-												dateFormatter={(
+									}) => (
+										<td className={item.className}>
+											<DataValue
+												format={(
 													date: string | number
 												) =>
 													formatDateToTimeZone(
@@ -740,9 +738,17 @@ export const List: React.FC<IListProps> = ({channelId, groupId, history}) => {
 														getCustomDateTimeFormat()
 													)
 												}
-												datePath="lastMembershipUpdateDate"
+												processing={isMembershipProcessing(
+													item.data
+														.lastMembershipUpdateDate
+												)}
+												value={
+													item.data
+														.lastMembershipUpdateDate
+												}
 											/>
-										),
+										</td>
+									),
 									className: 'table-column-text-start',
 									label: Liferay.Language.get(
 										'last-membership-update'

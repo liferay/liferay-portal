@@ -1,4 +1,5 @@
 import Cell from 'shared/components/table/Cell';
+import DataValue from 'shared/components/DataValue';
 import ImprovementCell from './ImprovementCell';
 import React from 'react';
 import UniqueVisitorCell from './UniqueVisitorsCell';
@@ -41,7 +42,12 @@ export default ({
 			accessor: 'median',
 			cellRenderer: ({data: {median}}) => (
 				<Cell className="text-right" title={false}>
-					{`${getFormattedMedian(median, metric)}${metricUnit}`}
+					<DataValue
+						format={(median) =>
+							`${getFormattedMedian(median, metric)}${metricUnit}`
+						}
+						value={median}
+					/>
 				</Cell>
 			),
 			className: 'text-right',
@@ -52,13 +58,17 @@ export default ({
 			accessor: 'confidenceInterval',
 			cellRenderer: ({data: {confidenceInterval}}) => (
 				<Cell className="text-right" title={false}>
-					{`${getFormattedMedian(
-						confidenceInterval[0],
-						metric
-					)}${metricUnit} - ${getFormattedMedian(
-						confidenceInterval[1],
-						metric
-					)}${metricUnit}`}
+					{confidenceInterval?.length === 2 ? (
+						`${getFormattedMedian(
+							confidenceInterval[0],
+							metric
+						)}${metricUnit} - ${getFormattedMedian(
+							confidenceInterval[1],
+							metric
+						)}${metricUnit}`
+					) : (
+						<DataValue value={null} />
+					)}
 				</Cell>
 			),
 			className: 'text-right',
@@ -85,7 +95,10 @@ export default ({
 				accessor: 'probabilityToWin',
 				cellRenderer: ({data: {probabilityToWin}}) => (
 					<Cell className="text-right" title={false}>
-						{getFormattedProbabilityToWin(probabilityToWin)}
+						<DataValue
+							format={getFormattedProbabilityToWin}
+							value={probabilityToWin}
+						/>
 					</Cell>
 				),
 				className: 'text-right',

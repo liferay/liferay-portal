@@ -1,14 +1,13 @@
+import DataValue from 'shared/components/DataValue';
 import React from 'react';
 import {
 	columns,
 	FrontendDataSet,
 	pagination,
 } from 'shared/components/FrontendDataSet';
-import {formatTime} from 'shared/util/time';
 import {omit, pickBy} from 'lodash';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, setUriQueryValues} from 'shared/util/router';
-import {toThousands} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
@@ -105,8 +104,9 @@ const IndividualsDataSet: React.FC<IIndividualsDataSetProps> = ({
 				`/o/faro/contacts/${groupId}/account/${id}/individuals`
 			)}
 			customDataRenderers={{
-				avgSessionDurationRenderer: ({value}: {value?: number}) =>
-					value ? formatTime(value) : '',
+				avgSessionDurationRenderer: ({value}: {value?: number}) => (
+					<DataValue type="duration" value={value} />
+				),
 				individualNameRenderer: ({
 					itemData,
 					value,
@@ -126,15 +126,26 @@ const IndividualsDataSet: React.FC<IIndividualsDataSetProps> = ({
 					itemData,
 				}: {
 					itemData: IIndividualItemData;
-				}) => itemData.properties?.jobTitle ?? '',
+				}) =>
+					columns.textRenderer({
+						itemData: {},
+						value: itemData.properties?.jobTitle,
+					}),
 				lastActiveRenderer: ({value}: {value: string}) =>
 					columns.dateRenderer({itemData: {}, value}),
-				totalEventsRenderer: ({value}: {value?: number}) =>
-					typeof value === 'number' ? toThousands(value) : '',
-				visitorTypeRenderer: ({value}: {value?: number}) =>
-					typeof value === 'number'
-						? columns.cmsLabelRenderer(getVisitorType(value))
-						: '',
+				totalEventsRenderer: ({value}: {value?: number}) => (
+					<DataValue type="count" value={value} />
+				),
+				visitorTypeRenderer: ({value}: {value?: number}) => (
+					<DataValue
+						format={(visitorType: number) =>
+							columns.cmsLabelRenderer(
+								getVisitorType(visitorType)
+							)
+						}
+						value={value}
+					/>
+				),
 			}}
 			emptyState={{
 				description: Liferay.Language.get(

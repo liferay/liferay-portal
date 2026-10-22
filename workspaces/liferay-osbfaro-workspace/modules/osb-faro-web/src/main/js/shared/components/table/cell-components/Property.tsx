@@ -1,6 +1,6 @@
+import DataValue from 'shared/components/DataValue';
 import getCN from 'classnames';
 import React from 'react';
-import {getSafeDisplayValue} from 'shared/util/util';
 
 interface IPropertyCellProps {
 	className?: string;
@@ -17,7 +17,9 @@ const PropertyCell: React.FC<IPropertyCellProps> = ({
 	<td className={getCN('property-cell', className)}>
 		<div className="name">{name}</div>
 
-		<div className="table-title">{getSafeDisplayValue(value)}</div>
+		<div className="table-title">
+			<DataValue value={value} />
+		</div>
 	</td>
 );
 

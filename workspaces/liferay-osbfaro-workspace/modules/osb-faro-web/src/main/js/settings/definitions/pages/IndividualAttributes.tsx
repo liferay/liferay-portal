@@ -3,6 +3,7 @@ import BasePage from 'settings/components/base-page/BasePage';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
+import DataValue from 'shared/components/DataValue';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import IndividualAttributesModal from 'shared/components/modals/IndividualAttributesModal';
 import React, {useState} from 'react';
@@ -103,11 +104,15 @@ const IndividualAttributes: React.FC<IIndividualAttributesProps> = ({
 							accessor: 'dataSources',
 							className: 'pr-6',
 							dataFormatter: (dataSources: any[]) =>
-								dataSources.length > 1
-									? sub(Liferay.Language.get('x-sources'), [
-											dataSources.length,
-										])
-									: dataSources[0]?.dataSourceName,
+								dataSources.length > 1 ? (
+									sub(Liferay.Language.get('x-sources'), [
+										dataSources.length,
+									])
+								) : (
+									<DataValue
+										value={dataSources[0]?.dataSourceName}
+									/>
+								),
 							label: Liferay.Language.get('sources'),
 						},
 						{

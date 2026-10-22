@@ -2,7 +2,8 @@ import Cell from './Cell';
 import Checkbox from 'shared/components/Checkbox';
 import getCN from 'classnames';
 import React, {useState} from 'react';
-import {get, isNil, noop} from 'lodash';
+import {get, noop} from 'lodash';
+import DataValue from 'shared/components/DataValue';
 import {StopClickPropagation} from './cell-components';
 
 export type Column = {
@@ -179,9 +180,10 @@ const Row: React.FC<IRowProps> = ({
 
 					return (
 						<Cell className={className} key={i} title={title}>
-							{!isNil(dataValue)
-								? dataFormatter(dataValue, data)
-								: '-'}
+							<DataValue
+								format={(value) => dataFormatter(value, data)}
+								value={dataValue}
+							/>
 						</Cell>
 					);
 				}

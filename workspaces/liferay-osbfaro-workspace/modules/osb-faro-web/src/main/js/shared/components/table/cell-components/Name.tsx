@@ -1,3 +1,4 @@
+import DataValue from 'shared/components/DataValue';
 import getCN from 'classnames';
 import React from 'react';
 import TextTruncate from 'shared/components/TextTruncate';
@@ -31,21 +32,32 @@ const Name: React.FC<INameProps> = ({
 	routeFn = noop,
 	tooltip = false,
 }) => {
-	const getSecondaryInfo = () =>
-		!!renderSecondaryInfo && (
+	const getSecondaryInfo = () => {
+		if (!renderSecondaryInfo) {
+			return null;
+		}
+
+		return (
 			<div className="secondary-info text-truncate">
-				{renderSecondaryInfo(data) || '-'}
+				<DataValue
+					format={(secondaryInfo) => secondaryInfo}
+					value={renderSecondaryInfo(data)}
+				/>
 			</div>
 		);
+	};
 
-	const displayName = data[nameKey] || '-';
+	const name = data[nameKey];
 
 	const url = routeFn({data});
 
-	const titleContent = tooltip ? (
-		<TextTruncate title={displayName} />
-	) : (
-		displayName
+	const titleContent = (
+		<DataValue
+			format={(value) =>
+				tooltip ? <TextTruncate title={value} /> : value
+			}
+			value={name}
+		/>
 	);
 
 	return (
