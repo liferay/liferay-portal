@@ -546,6 +546,7 @@ public class DSRequestManagerTest {
 		_testUpdateDSRequestWithDifferentDSRecipientStatuses();
 		_testUpdateDSRequestWithDSRequestDocumentObjectEntry();
 		_testUpdateDSRequestWithInvalidSignedDocument();
+		_testUpdateDSRequestWithSentDSRecipient();
 		_testUpdateDSRequestWithWorkflowFolder();
 	}
 
@@ -2002,6 +2003,61 @@ public class DSRequestManagerTest {
 
 		Assert.assertEquals(fileName, fileEntry2.getFileName());
 		Assert.assertEquals("2.0", fileEntry2.getVersion());
+	}
+
+	private void _testUpdateDSRequestWithSentDSRecipient() throws Exception {
+		DSRecipient dsRecipient1 = _createDSRecipient(UserTestUtil.addUser());
+
+		dsRecipient1.setStatus(DSRequestConstants.STATUS_SENT);
+
+		User user = UserTestUtil.addUser();
+
+		DSRecipient dsRecipient2 = _createDSRecipient(user);
+
+		dsRecipient2.setStatus(DSRequestConstants.STATUS_CREATED);
+
+		DSEnvelope dsEnvelope = _createDSEnvelope(dsRecipient1, dsRecipient2);
+
+		DSRequest dsRequest = _addDSRequestWithoutValidation(
+			dsEnvelope, TestPropsValues.getUserId(),
+			RandomTestUtil.randomInt());
+
+		dsRecipient1.setStatus(DSRequestConstants.STATUS_COMPLETED);
+		dsRecipient2.setStatus(DSRequestConstants.STATUS_SENT);
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> dsEnvelope));
+
+		try {
+			_dsRequestManager.updateDSRequest(dsRequest.getDSRequestId());
+			_dsRequestManager.updateDSRequest(dsRequest.getDSRequestId());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager", dsEnvelopeManager);
+		}
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			_getNotificationQueueEntries(dsRequest);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 1,
+			notificationQueueEntries.size());
+
+		Map<String, Object> notificationRecipientSettingsMap =
+			NotificationRecipientSettingUtil.
+				getNotificationRecipientSettingsMap(
+					notificationQueueEntries.get(0));
+
+		Assert.assertEquals(
+			user.getEmailAddress(),
+			notificationRecipientSettingsMap.get(
+				NotificationRecipientSettingConstants.NAME_TO));
 	}
 
 	private void _testUpdateDSRequestWithWorkflowFolder() throws Exception {
