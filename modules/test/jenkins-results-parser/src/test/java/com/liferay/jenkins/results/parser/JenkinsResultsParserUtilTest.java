@@ -91,6 +91,10 @@ public class JenkinsResultsParserUtilTest
 	@Test
 	public void testEncodeLegacyURLPart() {
 		testEquals(
+			"!master", JenkinsResultsParserUtil.encodeLegacyURLPart("!master"));
+		testEquals(
+			"0%201%202", JenkinsResultsParserUtil.encodeLegacyURLPart("0 1 2"));
+		testEquals(
 			"ABC%28123",
 			JenkinsResultsParserUtil.encodeLegacyURLPart("ABC(123"));
 		testEquals(
@@ -102,10 +106,6 @@ public class JenkinsResultsParserUtilTest
 		testEquals(
 			"ABC%5D123",
 			JenkinsResultsParserUtil.encodeLegacyURLPart("ABC]123"));
-		testEquals(
-			"!master", JenkinsResultsParserUtil.encodeLegacyURLPart("!master"));
-		testEquals(
-			"0%201%202", JenkinsResultsParserUtil.encodeLegacyURLPart("0 1 2"));
 
 		testEquals(
 			"100%%20pass",
@@ -528,9 +528,9 @@ public class JenkinsResultsParserUtilTest
 			JenkinsResultsParserUtil.getQueryParameters(
 				"AXIS_VARIABLE=&pretty");
 
-		testEquals(2, parameters.size());
 		testEquals("", parameters.get("AXIS_VARIABLE"));
 		testEquals(null, parameters.get("pretty"));
+		testEquals(2, parameters.size());
 	}
 
 	@Test
@@ -539,8 +539,8 @@ public class JenkinsResultsParserUtilTest
 			JenkinsResultsParserUtil.getQueryParameters(
 				"PORTAL_BUILD_NOTES=100% pass");
 
-		testEquals(1, parameters.size());
 		testEquals("100% pass", parameters.get("PORTAL_BUILD_NOTES"));
+		testEquals(1, parameters.size());
 	}
 
 	@Test
@@ -551,23 +551,23 @@ public class JenkinsResultsParserUtilTest
 					"JOB_VARIANT=functional&PARENT_BUILD_URL=",
 					"http%3A%2F%2Ftest-1-1%2Fjob%2Fy%2F1%2F"));
 
-		testEquals(2, parameters.size());
 		testEquals("functional", parameters.get("JOB_VARIANT"));
 		testEquals(
 			"http://test-1-1/job/y/1/", parameters.get("PARENT_BUILD_URL"));
+		testEquals(2, parameters.size());
 	}
 
 	@Test
 	public void testGetQueryParametersWithoutQueryString() {
-		Map<String, String> nullParameters =
-			JenkinsResultsParserUtil.getQueryParameters(null);
-
-		testEquals(0, nullParameters.size());
-
 		Map<String, String> emptyParameters =
 			JenkinsResultsParserUtil.getQueryParameters("");
 
 		testEquals(0, emptyParameters.size());
+
+		Map<String, String> nullParameters =
+			JenkinsResultsParserUtil.getQueryParameters(null);
+
+		testEquals(0, nullParameters.size());
 	}
 
 	@Test
@@ -575,8 +575,8 @@ public class JenkinsResultsParserUtilTest
 		Map<String, String> parameters =
 			JenkinsResultsParserUtil.getQueryParameters("V=1&V=2");
 
-		testEquals(1, parameters.size());
 		testEquals("1", parameters.get("V"));
+		testEquals(1, parameters.size());
 	}
 
 	@Test
@@ -587,13 +587,13 @@ public class JenkinsResultsParserUtilTest
 					"A=PortalSmoke%23Smoke&B=AWS%20%26%20CI&C=a%3Db&D=a%2Bb&",
 					"E=a+b&F=100%25%20pass"));
 
-		testEquals(6, parameters.size());
 		testEquals("PortalSmoke#Smoke", parameters.get("A"));
 		testEquals("AWS & CI", parameters.get("B"));
 		testEquals("a=b", parameters.get("C"));
 		testEquals("a+b", parameters.get("D"));
 		testEquals("a b", parameters.get("E"));
 		testEquals("100% pass", parameters.get("F"));
+		testEquals(6, parameters.size());
 	}
 
 	@Test
@@ -1235,16 +1235,16 @@ public class JenkinsResultsParserUtilTest
 	@Test
 	public void testNewURIBuilderWithReservedCharacters() {
 		testEquals(
-			"http://test-1-1/job/x?V=PortalSmoke%23Smoke",
-			_newParameterURL("PortalSmoke#Smoke"));
+			"http://test-1-1/job/x?V=100%25+pass",
+			_newParameterURL("100% pass"));
 		testEquals(
 			"http://test-1-1/job/x?V=AWS+%26+CI", _newParameterURL("AWS & CI"));
 		testEquals(
-			"http://test-1-1/job/x?V=100%25+pass",
-			_newParameterURL("100% pass"));
-		testEquals("http://test-1-1/job/x?V=a%3Db", _newParameterURL("a=b"));
-		testEquals("http://test-1-1/job/x?V=a%2Bb", _newParameterURL("a+b"));
+			"http://test-1-1/job/x?V=PortalSmoke%23Smoke",
+			_newParameterURL("PortalSmoke#Smoke"));
 		testEquals("http://test-1-1/job/x?V=a+b", _newParameterURL("a b"));
+		testEquals("http://test-1-1/job/x?V=a%2Bb", _newParameterURL("a+b"));
+		testEquals("http://test-1-1/job/x?V=a%3Db", _newParameterURL("a=b"));
 	}
 
 	@Test
