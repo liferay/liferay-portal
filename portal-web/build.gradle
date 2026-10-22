@@ -1,0 +1,5 @@
+apply from: "../modules/build-portal-common.gradle"
+
+writeFindBugsProject {
+	srcDirs(file("classes/tomcat"))
+}
