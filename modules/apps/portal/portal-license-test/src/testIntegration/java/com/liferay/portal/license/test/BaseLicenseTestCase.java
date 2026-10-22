@@ -82,16 +82,6 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		new AggregateTestRule(
 			new AssumeTestRule("assume"), new LiferayIntegrationTestRule());
 
-	@BeforeClass
-	public static void setUpTestCaseClass() throws Exception {
-		_safeCloseable = resetLicenseDataWithSafeCloseble();
-	}
-
-	@AfterClass
-	public static void tearDownTestCaseClass() throws Exception {
-		_safeCloseable.close();
-	}
-
 	public static File deployEnterprisePortalLicense(long validityPeriod)
 		throws Exception {
 
@@ -216,125 +206,9 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		return false;
 	}
 
-	public static SafeCloseable setReturnValueWithSafeCloseable(
-		Method method, Object result) {
-
-		ResettableClassFileTransformer resettableClassFileTransformer =
-			_transformMethod(method, result);
-
-		return () -> resettableClassFileTransformer.reset(
-			ReflectionsHolder._instrumentation,
-			AgentBuilder.RedefinitionStrategy.RETRANSFORMATION);
-	}
-
-	public static SafeCloseable setVersionWithSafeCloseable(String version) {
-		return setReturnValueWithSafeCloseable(
-			ReflectionsHolder._versionMethod, version);
-	}
-
-	public void assertBundlesExisted(String... bundleNames) {
-		Set<String> bundleSymbolicNames = _getBundleSymbolicNames();
-
-		Assert.assertTrue(
-			bundleSymbolicNames.containsAll(SetUtil.fromArray(bundleNames)));
-	}
-
-	public void assertBundlesNotExisted(String... bundleNames) {
-		Set<String> bundleSymbolicNames = _getBundleSymbolicNames();
-
-		Assert.assertFalse(
-			bundleSymbolicNames.containsAll(SetUtil.fromArray(bundleNames)));
-	}
-
-	public void assertLicensePropertiesExisted(String productId) {
-		Map<String, String> licenseProperties =
-			LicenseManagerUtil.getLicenseProperties(productId);
-
-		Assert.assertFalse(
-			licenseProperties.toString(), licenseProperties.isEmpty());
-	}
-
-	public void assertLicensePropertiesNotExisted(String productId) {
-		Map<String, String> licenseProperties =
-			LicenseManagerUtil.getLicenseProperties(productId);
-
-		Assert.assertTrue(
-			licenseProperties.toString(), licenseProperties.isEmpty());
-	}
-
-	public void assertPortalLicenseExpired() throws Exception {
-		String response = hitHomePage("localhost", getLocalPort());
-
-		Assert.assertTrue(response.contains(_EXPIRED_LICENSE_KEY));
-	}
-
-	public void assertPortalLicenseInvalid(String failMessage)
+	public static SafeCloseable resetLicenseDataWithSafeCloseble()
 		throws Exception {
 
-		try {
-			hitHomePage("localhost", getLocalPort());
-
-			Assert.fail("Unable to see LogEntriesException");
-		}
-		catch (LogEntriesException logEntriesException) {
-			List<LogEntry> logEntries = logEntriesException.getLogEntries();
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Throwable throwable = logEntry.getThrowable();
-
-			Assert.assertEquals(failMessage, throwable.getMessage());
-
-			String payload = logEntriesException.getPayload();
-
-			Assert.assertTrue(payload.contains(_INVALID_LICENSE_KEY));
-		}
-	}
-
-	public void assertPortalLicenseNotRegistered() throws Exception {
-		String response = hitHomePage("localhost", getLocalPort());
-
-		Assert.assertTrue(response.contains(_NOT_REGISTERED_LICENSE_KEY));
-	}
-
-	public void assertPortalLicenseRegistered() throws Exception {
-		String response = hitHomePage("localhost", getLocalPort());
-
-		Assert.assertFalse(response.contains(_LICENSE_PAGE_KEY));
-	}
-
-	public File deployAppLicense(App app, long validityPeriod)
-		throws Exception {
-
-		return deployAppLicense(
-			app, System.currentTimeMillis(), validityPeriod);
-	}
-
-	public File deployAppLicense(App app, long startTime, long validityPeriod)
-		throws Exception {
-
-		_registerLicense(_buildAppLicenseXML(app, startTime, validityPeriod));
-
-		return _buildBinaryFile(
-			StringPool.BLANK, _APP_LICENSE_TYPE, getProductId(app),
-			app.toString());
-	}
-
-	public void resetCheckInterval() throws Exception {
-		for (Field field : _lifecycleActionClass.getDeclaredFields()) {
-			field.setAccessible(true);
-
-			if (Modifier.isFinal(field.getModifiers()) ||
-				!Objects.equals(field.getType(), long.class)) {
-
-				continue;
-			}
-
-			field.set(_lifecycleAction, 0L);
-		}
-	}
-
-	public static SafeCloseable resetLicenseDataWithSafeCloseble() throws Exception {
 		File dir = new File(LicenseUtil.LICENSE_REPOSITORY_DIR);
 
 		File tmpDir = FileUtil.createTempFolder();
@@ -465,6 +339,144 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		}
 	}
 
+	public static SafeCloseable setReturnValueWithSafeCloseable(
+		Method method, Object result) {
+
+		ResettableClassFileTransformer resettableClassFileTransformer =
+			_transformMethod(method, result);
+
+		return () -> resettableClassFileTransformer.reset(
+			ReflectionsHolder._instrumentation,
+			AgentBuilder.RedefinitionStrategy.RETRANSFORMATION);
+	}
+
+	@BeforeClass
+	public static void setUpTestCaseClass() throws Exception {
+		_safeCloseable = resetLicenseDataWithSafeCloseble();
+	}
+
+	public static SafeCloseable setVersionWithSafeCloseable(String version) {
+		return setReturnValueWithSafeCloseable(
+			ReflectionsHolder._versionMethod, version);
+	}
+
+	@AfterClass
+	public static void tearDownTestCaseClass() throws Exception {
+		_safeCloseable.close();
+	}
+
+	public void assertBundlesExisted(String... bundleNames) {
+		Set<String> bundleSymbolicNames = _getBundleSymbolicNames();
+
+		Assert.assertTrue(
+			bundleSymbolicNames.containsAll(SetUtil.fromArray(bundleNames)));
+	}
+
+	public void assertBundlesNotExisted(String... bundleNames) {
+		Set<String> bundleSymbolicNames = _getBundleSymbolicNames();
+
+		Assert.assertFalse(
+			bundleSymbolicNames.containsAll(SetUtil.fromArray(bundleNames)));
+	}
+
+	public void assertLicensePropertiesExisted(String productId) {
+		Map<String, String> licenseProperties =
+			LicenseManagerUtil.getLicenseProperties(productId);
+
+		Assert.assertFalse(
+			licenseProperties.toString(), licenseProperties.isEmpty());
+	}
+
+	public void assertLicensePropertiesNotExisted(String productId) {
+		Map<String, String> licenseProperties =
+			LicenseManagerUtil.getLicenseProperties(productId);
+
+		Assert.assertTrue(
+			licenseProperties.toString(), licenseProperties.isEmpty());
+	}
+
+	public void assertPortalLicenseExpired() throws Exception {
+		String response = hitHomePage("localhost", getLocalPort());
+
+		Assert.assertTrue(response.contains(_EXPIRED_LICENSE_KEY));
+	}
+
+	public void assertPortalLicenseInvalid(String failMessage)
+		throws Exception {
+
+		try {
+			hitHomePage("localhost", getLocalPort());
+
+			Assert.fail("Unable to see LogEntriesException");
+		}
+		catch (LogEntriesException logEntriesException) {
+			List<LogEntry> logEntries = logEntriesException.getLogEntries();
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(failMessage, throwable.getMessage());
+
+			String payload = logEntriesException.getPayload();
+
+			Assert.assertTrue(payload.contains(_INVALID_LICENSE_KEY));
+		}
+	}
+
+	public void assertPortalLicenseNotRegistered() throws Exception {
+		String response = hitHomePage("localhost", getLocalPort());
+
+		Assert.assertTrue(response.contains(_NOT_REGISTERED_LICENSE_KEY));
+	}
+
+	public void assertPortalLicenseRegistered() throws Exception {
+		String response = hitHomePage("localhost", getLocalPort());
+
+		Assert.assertFalse(response.contains(_LICENSE_PAGE_KEY));
+	}
+
+	public File deployAppLicense(App app, long validityPeriod)
+		throws Exception {
+
+		return deployAppLicense(
+			app, System.currentTimeMillis(), validityPeriod);
+	}
+
+	public File deployAppLicense(App app, long startTime, long validityPeriod)
+		throws Exception {
+
+		_registerLicense(_buildAppLicenseXML(app, startTime, validityPeriod));
+
+		return _buildBinaryFile(
+			StringPool.BLANK, _APP_LICENSE_TYPE, getProductId(app),
+			app.toString());
+	}
+
+	public void resetCheckInterval() throws Exception {
+		for (Field field : _lifecycleActionClass.getDeclaredFields()) {
+			field.setAccessible(true);
+
+			if (Modifier.isFinal(field.getModifiers()) ||
+				!Objects.equals(field.getType(), long.class)) {
+
+				continue;
+			}
+
+			field.set(_lifecycleAction, 0L);
+		}
+	}
+
+	protected static void checkLicense(String productId) throws Exception {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_licensePackageName, LoggerTestUtil.ALL)) {
+
+			LicenseManagerUtil.checkLicense(productId);
+
+			_throwLogEntriesException(logCapture, null, LoggerTestUtil.ERROR);
+		}
+	}
+
 	protected static Field findField(String propertyKey) throws Exception {
 		ClassLoader classLoader = PortalClassLoaderUtil.getClassLoader();
 
@@ -537,16 +549,6 @@ public abstract class BaseLicenseTestCase implements Serializable {
 
 	protected static Class<?> getValidateClass() {
 		return ReflectionsHolder._validateClass;
-	}
-
-	protected static void checkLicense(String productId) throws Exception {
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_licensePackageName, LoggerTestUtil.ALL)) {
-
-			LicenseManagerUtil.checkLicense(productId);
-
-			_throwLogEntriesException(logCapture, null, LoggerTestUtil.ERROR);
-		}
 	}
 
 	protected String getCurrentVersion() throws Exception {
