@@ -95,11 +95,49 @@ const getStageNames = (container: HTMLElement) =>
 describe('LifecycleChart', () => {
 	afterEach(cleanup);
 
+	it('should title the card with the lifecycle name and description', () => {
+		renderChart({
+			description: 'Lifecycle for marketing-qualified accounts',
+			name: 'Growth and Retention Hub',
+			stages: sampleStages,
+		});
+
+		expect(
+			screen.getByText('Growth and Retention Hub')
+		).toBeInTheDocument();
+		expect(
+			screen.getByText('Lifecycle for marketing-qualified accounts')
+		).toBeInTheDocument();
+	});
+
+	it('should show only the lifecycle name when it has no description', () => {
+		renderChart({
+			name: 'Growth and Retention Hub',
+			stages: sampleStages,
+		});
+
+		expect(
+			screen.getByText('Growth and Retention Hub')
+		).toBeInTheDocument();
+		expect(screen.queryByText(/the distribution of accounts/i)).toBeNull();
+	});
+
 	it('should render a loading spinner while the request is in flight', () => {
 		const {container, queryByText} = renderChart({loading: true});
 
 		expect(container.querySelector('.loading-root')).toBeInTheDocument();
+		expect(
+			container.querySelector('.loading-root')?.closest('.card')
+		).toHaveStyle({minHeight: '432px'});
 		expect(queryByText('Aware')).toBeNull();
+	});
+
+	it('should not reserve the loading height once the stages arrive', () => {
+		const {container} = renderChart({stages: sampleStages});
+
+		expect(
+			container.querySelector('.stage-metrics')?.closest('.card')
+		).not.toHaveStyle({minHeight: '432px'});
 	});
 
 	it('should render the empty state when the request errors', () => {
@@ -164,6 +202,11 @@ describe('LifecycleChart', () => {
 		expect(labels[1]).toMatch(/64%/);
 		expect(labels[2]).toMatch(/54%/);
 		expect(labels[0]).toMatch(/conversion to next stage/i);
+		expect(
+			container.querySelector(
+				'.stage-metrics__conversion .lexicon-icon-angle-double-right-small'
+			)
+		).toBeInTheDocument();
 	});
 
 	it('should render account counts abbreviated from a thousand upwards', () => {
@@ -197,27 +240,39 @@ describe('LifecycleChart', () => {
 		expect(queryByText(/83.62% of all accounts/i)).toBeNull();
 	});
 
-	it('should show "avg. day" for non-zero averages and "no activity" otherwise', () => {
+	it('should show "avg. days" for non-zero averages and "no activity" otherwise', () => {
 		const {getAllByText, getByText} = renderChart({stages: sampleStages});
 
-		expect(getAllByText(/avg. day/i)).toHaveLength(3);
+		expect(getAllByText(/avg\. days/i)).toHaveLength(3);
 		expect(getByText(/no activity/i)).toBeInTheDocument();
 	});
 
-	it('should render avg. day values rounded to two decimals', () => {
+	it('should render avg. days values rounded to one decimal', () => {
 		const {getByText, queryByText} = renderChart({
 			stages: [
 				buildStage({averageStageDuration: 9.8333333}),
 				buildStage({averageStageDuration: 4.6789}),
-				buildStage({averageStageDuration: 4.5}),
+				buildStage({averageStageDuration: 13}),
 			],
 		});
 
-		expect(getByText('9.83')).toBeInTheDocument();
-		expect(getByText('4.68')).toBeInTheDocument();
-		expect(getByText('4.50')).toBeInTheDocument();
+		expect(getByText(/^9\.8 avg\. days$/i)).toBeInTheDocument();
+		expect(getByText(/^4\.7 avg\. days$/i)).toBeInTheDocument();
+		expect(getByText(/^13 avg\. days$/i)).toBeInTheDocument();
 
-		expect(queryByText('9.8333333')).toBeNull();
+		expect(queryByText(/9\.83/)).toBeNull();
+	});
+
+	it('should use the singular for an average of one day', () => {
+		const {getAllByText, queryByText} = renderChart({
+			stages: [
+				buildStage({averageStageDuration: 1}),
+				buildStage({averageStageDuration: 1.04}),
+			],
+		});
+
+		expect(getAllByText(/^1 avg\. day$/i)).toHaveLength(2);
+		expect(queryByText(/avg\. days/i)).toBeNull();
 	});
 
 	it('should show the stage description in a popover instead of inline text', () => {
@@ -243,6 +298,14 @@ describe('LifecycleChart', () => {
 		expect(
 			screen.getByText(/cold accounts showing early intent/i)
 		).toBeInTheDocument();
+	});
+
+	it('should show the help icon as a filled question mark', () => {
+		const {container} = renderChart({stages: sampleStages});
+
+		expect(
+			container.querySelectorAll('.lexicon-icon-question-circle-full')
+		).toHaveLength(3);
 	});
 
 	it('should show no help icon for a stage without a description', () => {
@@ -280,6 +343,14 @@ describe('LifecycleChart', () => {
 		fireEvent.click(filterButton);
 
 		expect(getByTestId('lifecycle-filter').textContent).toBe('4101');
+	});
+
+	it('should show no pagination while every stage fits', () => {
+		renderChart({stages: sampleStages});
+
+		expect(screen.queryByText(/scroll to view all stages/i)).toBeNull();
+		expect(screen.queryByRole('button', {name: /previous/i})).toBeNull();
+		expect(screen.queryByRole('button', {name: /next/i})).toBeNull();
 	});
 
 	describe('when the stages do not fit', () => {
@@ -331,12 +402,20 @@ describe('LifecycleChart', () => {
 			scrollBy.mockClear();
 		});
 
-		it('should scroll to the next card with the next arrow', () => {
+		it('should show the pagination with the previous arrow disabled at the start', () => {
 			renderChart({stages: sampleStages});
 
 			expect(
-				screen.queryByRole('button', {name: /previous/i})
-			).toBeNull();
+				screen.getByText(/scroll to view all stages/i)
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole('button', {name: /previous/i})
+			).toBeDisabled();
+			expect(screen.getByRole('button', {name: /next/i})).toBeEnabled();
+		});
+
+		it('should scroll to the next card with the next arrow', () => {
+			renderChart({stages: sampleStages});
 
 			fireEvent.click(screen.getByRole('button', {name: /next/i}));
 

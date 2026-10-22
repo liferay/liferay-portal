@@ -12,6 +12,7 @@ import {sub} from 'shared/util/lang';
 import {formatPercent, toRounded, toThousands} from 'shared/util/numbers';
 import {useLifecycle} from 'lifecycle/context/LifecycleContext';
 
+const LOADING_CARD_MIN_HEIGHT = 432;
 const REFERENCE_BAR_HEIGHT = 136;
 const MIN_BAR_HEIGHT = 4;
 
@@ -21,6 +22,17 @@ const getBarHeight = (percentage: number, referencePercentage: number) => {
 		(percentage / referencePercentage) * REFERENCE_BAR_HEIGHT ||
 		MIN_BAR_HEIGHT
 	);
+};
+
+const getAverageDaysLabel = (averageStageDuration: number) => {
+	const label =
+		Math.round(averageStageDuration * 10) === 10
+			? Liferay.Language.get('1-avg.-day')
+			: (sub(Liferay.Language.get('x-avg.-days'), [
+					toRounded(averageStageDuration),
+				]) as string);
+
+	return label.toLowerCase();
 };
 
 const useCardScroll = (itemCount: number) => {
@@ -59,9 +71,11 @@ const useCardScroll = (itemCount: number) => {
 			return;
 		}
 
+		const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+
 		track.scrollBy({
 			behavior: 'smooth',
-			left: direction * card.offsetWidth,
+			left: direction * (card.offsetWidth + gap),
 		});
 	};
 
@@ -99,7 +113,7 @@ const StageDescription = ({description, name}: IStageDescriptionProps) => {
 					onMouseEnter={() => setShow(true)}
 					onMouseLeave={() => setShow(false)}
 					size="xs"
-					symbol="question-circle"
+					symbol="question-circle-full"
 				/>
 			}
 		>
@@ -135,7 +149,7 @@ const StageMetrics = ({
 	const titleId = `stage-metrics-title-${id}`;
 
 	return (
-		<div className="d-flex flex-column px-3 py-4 stage-metrics">
+		<div className="border d-flex flex-column p-3 rounded-lg stage-metrics">
 			<div className="align-items-center d-flex mb-3">
 				<Text id={titleId} size={4} weight="semi-bold">
 					{name}
@@ -178,26 +192,22 @@ const StageMetrics = ({
 				</Text>
 			</div>
 
-			<div className="mt-3 text-secondary">
-				{averageStageDuration != 0 ? (
-					<>
-						<span className="mr-4">
-							{toRounded(averageStageDuration, 2)}
-						</span>
+			<div className="mt-1">
+				<Text color="secondary" size={4}>
+					{averageStageDuration != 0 ? (
+						getAverageDaysLabel(averageStageDuration)
+					) : (
+						<>
+							<span className="mr-4">{'—'}</span>
 
-						<span>
-							{Liferay.Language.get('avg.-day').toLowerCase()}
-						</span>
-					</>
-				) : (
-					<>
-						<span className="mr-4">{'—'}</span>
-
-						<span>
-							{Liferay.Language.get('no-activity').toLowerCase()}
-						</span>
-					</>
-				)}
+							<span>
+								{Liferay.Language.get(
+									'no-activity'
+								).toLowerCase()}
+							</span>
+						</>
+					)}
+				</Text>
 			</div>
 
 			<div
@@ -224,7 +234,7 @@ const StageMetrics = ({
 								)}
 							</span>
 
-							<Icon symbol="angle-right-small" />
+							<Icon symbol="angle-double-right-small" />
 						</span>
 					</Label>
 				)}
@@ -234,12 +244,20 @@ const StageMetrics = ({
 };
 
 interface ILifecycleChartProps {
+	description?: string;
 	error?: boolean;
 	loading?: boolean;
+	name?: string;
 	stages?: ILifecycleStage[];
 }
 
-const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
+const LifecycleChart = ({
+	description,
+	error,
+	loading,
+	name,
+	stages,
+}: ILifecycleChartProps) => {
 	const {selectStage} = useLifecycle();
 
 	const sortedStages = error
@@ -262,7 +280,7 @@ const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
 
 	const renderStages = () => {
 		if (loading) {
-			return <Loading className="mt-4" />;
+			return <Loading />;
 		}
 
 		if (!sortedStages.length) {
@@ -279,7 +297,7 @@ const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
 		}
 
 		return (
-			<div className="mt-4 position-relative">
+			<div className="mt-4">
 				<div
 					className="d-flex overflow-auto stage-metrics-track"
 					onScroll={updateArrows}
@@ -295,26 +313,32 @@ const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
 					))}
 				</div>
 
-				{canScrollPrevious && (
-					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('previous')}
-						className="stage-metrics-scroll stage-metrics-scroll--previous"
-						displayType="secondary"
-						onClick={scrollPrevious}
-						size="sm"
-						symbol="angle-left"
-					/>
-				)}
+				{(canScrollPrevious || canScrollNext) && (
+					<div className="align-items-center c-gap-3 d-flex justify-content-center mt-3">
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get('previous')}
+							borderless
+							disabled={!canScrollPrevious}
+							displayType="secondary"
+							onClick={scrollPrevious}
+							size="sm"
+							symbol="angle-left"
+						/>
 
-				{canScrollNext && (
-					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('next')}
-						className="stage-metrics-scroll stage-metrics-scroll--next"
-						displayType="secondary"
-						onClick={scrollNext}
-						size="sm"
-						symbol="angle-right"
-					/>
+						<Text color="secondary" size={3}>
+							{Liferay.Language.get('scroll-to-view-all-stages')}
+						</Text>
+
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get('next')}
+							borderless
+							disabled={!canScrollNext}
+							displayType="secondary"
+							onClick={scrollNext}
+							size="sm"
+							symbol="angle-right"
+						/>
+					</div>
 				)}
 			</div>
 		);
@@ -326,17 +350,20 @@ const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
 				icon="polls"
 				title={Liferay.Language.get('lifecycle-stages')}
 			/>
-			<Card className="p-3">
+			<Card
+				className="p-3"
+				minHeight={loading ? LOADING_CARD_MIN_HEIGHT : undefined}
+			>
 				<Card.Title>
-					{Liferay.Language.get('accounts-by-stage')}
+					{name || Liferay.Language.get('accounts-by-stage')}
 				</Card.Title>
 				<Card.Body noPadding>
 					<div className="mt-1">
-						<Text color="secondary" size={3}>
-							{Liferay.Language.get(
-								'the-distribution-of-accounts-across-the-lifecycle-stages-within-the-timeframe'
-							)}
-						</Text>
+						{description && (
+							<Text color="secondary" size={3}>
+								{description}
+							</Text>
+						)}
 
 						{renderStages()}
 					</div>

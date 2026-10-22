@@ -1,18 +1,22 @@
+$stage-metrics-gap: 1rem;
+
 .stage-metrics-track {
+	gap: $stage-metrics-gap;
 	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 .stage-metrics {
-	flex: 1 1 0;
+	flex: 1 0 calc((100% - #{$stage-metrics-gap * 4}) / 5);
 	min-width: 11.5rem;
 	scroll-snap-align: start;
 
-	& + & {
-		border-left: 1px dashed $cadmin-secondary-l2;
-	}
-
 	&__bar {
-		background-color: $cadmin-indigo-l2;
+		background-color: $cadmin-indigo;
 		border-radius: 8px;
 		max-height: 136px;
 
@@ -25,20 +29,5 @@
 		bottom: 0.5rem;
 		position: absolute;
 		right: 0.5rem;
-	}
-}
-
-.stage-metrics-scroll {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 1;
-
-	&--next {
-		right: 0;
-	}
-
-	&--previous {
-		left: 0;
 	}
 }
