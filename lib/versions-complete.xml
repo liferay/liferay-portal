@@ -5680,7 +5680,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.apache.commons.jar!org.apache.commons.fileupload.jar</file-name>
-				<version>1.5.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>1.6.0.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache Commons FileUpload Jakarta</project-name>
 				<project-url>https://commons.apache.org/proper/commons-fileupload/</project-url>
 				<licenses>
