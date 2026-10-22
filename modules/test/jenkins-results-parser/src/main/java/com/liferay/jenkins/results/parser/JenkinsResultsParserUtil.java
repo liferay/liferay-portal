@@ -3282,6 +3282,8 @@ public class JenkinsResultsParserUtil {
 			return parameters;
 		}
 
+		queryString = queryString.replace("#", "%23");
+
 		URIBuilder uriBuilder = newURIBuilder("?" + queryString);
 
 		for (NameValuePair nameValuePair : uriBuilder.getQueryParams()) {
