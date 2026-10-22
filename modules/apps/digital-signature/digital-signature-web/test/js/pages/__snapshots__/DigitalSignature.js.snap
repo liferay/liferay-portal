@@ -24,7 +24,6 @@ exports[`DigitalSignature renders 1`] = `
                 class="dropdown"
               >
                 <button
-                  aria-controls="clay-dropdown-menu-1"
                   aria-expanded="false"
                   aria-haspopup="true"
                   class="dropdown-toggle nav-link btn btn-unstyled"
