@@ -116,8 +116,7 @@ public class BaseScopeFinderFeatureTest {
 		BundleContext bundleContext = bundle.getBundleContext();
 
 		String name = RandomTestUtil.randomString();
-
-		List<String> events = new CopyOnWriteArrayList<>();
+		List<String> scopesStrings = new CopyOnWriteArrayList<>();
 
 		ServiceTracker<ScopeFinder, ScopeFinder> serviceTracker =
 			new ServiceTracker<>(
@@ -138,7 +137,7 @@ public class BaseScopeFinderFeatureTest {
 						Set<String> scopes = new TreeSet<>(
 							scopeFinder.findScopes());
 
-						events.add(scopes.toString());
+						scopesStrings.add(scopes.toString());
 
 						return scopeFinder;
 					}
@@ -154,7 +153,7 @@ public class BaseScopeFinderFeatureTest {
 						ServiceReference<ScopeFinder> serviceReference,
 						ScopeFinder scopeFinder) {
 
-						events.add("removed");
+						scopesStrings.add("removed");
 
 						bundleContext.ungetService(serviceReference);
 					}
@@ -175,7 +174,7 @@ public class BaseScopeFinderFeatureTest {
 			applicationServiceRegistration = bundleContext.registerService(
 				Application.class, new TestApplication(), properties);
 
-			Assert.assertEquals(Arrays.asList(scopes1), events);
+			Assert.assertEquals(Arrays.asList(scopes1), scopesStrings);
 
 			resourceServiceRegistration = bundleContext.registerService(
 				Object.class, new TestPutResource(),
@@ -187,14 +186,15 @@ public class BaseScopeFinderFeatureTest {
 				).build());
 
 			Assert.assertEquals(
-				Arrays.asList(scopes1, "removed", scopes2), events);
+				Arrays.asList(scopes1, "removed", scopes2), scopesStrings);
 
 			applicationServiceRegistration.unregister();
 
 			applicationServiceRegistration = null;
 
 			Assert.assertEquals(
-				Arrays.asList(scopes1, "removed", scopes2, "removed"), events);
+				Arrays.asList(scopes1, "removed", scopes2, "removed"),
+				scopesStrings);
 		}
 		finally {
 			if (applicationServiceRegistration != null) {

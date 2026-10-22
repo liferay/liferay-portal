@@ -25,10 +25,10 @@ public class ScopeFinderFeatureRegistrator {
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 
-		// These features are plain objects, not DS components, because the
-		// JAX-RS whiteboard releases and refetches every extension on each
-		// application rewire, and that refresh storm would deactivate and
-		// reactivate their components
+		// The JAX-RS whiteboard releases and refetches every extension each
+		// time it rewires an application. Register these features as plain
+		// objects rather than DS components so that each refresh does not
+		// deactivate and reactivate them.
 
 		_annotationScopeFinderFeatureServiceRegistration =
 			bundleContext.registerService(
@@ -47,7 +47,6 @@ public class ScopeFinderFeatureRegistrator {
 				).put(
 					"osgi.jaxrs.name", "Liferay.OAuth2.annotations.scope.finder"
 				).build());
-
 		_httpMethodScopeFinderFeatureServiceRegistration =
 			bundleContext.registerService(
 				Feature.class, new HttpMethodScopeFinderFeature(bundleContext),

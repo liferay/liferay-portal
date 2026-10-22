@@ -38,14 +38,14 @@ public class HttpMethodScopeFinderFeature extends BaseScopeFinderFeature {
 				Class<? extends Annotation> annotationType =
 					annotation.annotationType();
 
-				HttpMethod[] annotationsByType =
-					annotationType.getAnnotationsByType(HttpMethod.class);
+				HttpMethod[] httpMethods = annotationType.getAnnotationsByType(
+					HttpMethod.class);
 
-				if (annotationsByType == null) {
+				if (httpMethods == null) {
 					continue;
 				}
 
-				for (HttpMethod httpMethod : annotationsByType) {
+				for (HttpMethod httpMethod : httpMethods) {
 					scopes.add(httpMethod.value());
 				}
 			}
