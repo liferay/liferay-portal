@@ -8,6 +8,7 @@ package com.liferay.object.info.field.converter;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.field.InfoField;
+import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.EmailInfoFieldType;
 import com.liferay.info.field.type.FileInfoFieldType;
 import com.liferay.info.field.type.LongTextInfoFieldType;
@@ -185,6 +186,12 @@ public class ObjectFieldInfoFieldConverter {
 				FileInfoFieldType.MAX_FILE_SIZE,
 				_getMaximumFileSize(objectField)
 			);
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_DATE)) {
+
+			finalStep.attribute(DateInfoFieldType.TIME_ZONE_INDEPENDENT, true);
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
