@@ -6,7 +6,7 @@
 import ClayAlert from '..';
 import ClayButton from '@clayui/button';
 import {Provider} from '@clayui/provider';
-import {act, cleanup, render} from '@testing-library/react';
+import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -165,6 +165,7 @@ describe('IncrementalInteractions', () => {
 
 	afterEach(() => {
 		cleanup();
+		jest.restoreAllMocks();
 		document.body.classList.remove('c-prefers-persistent-alerts');
 		jest.useRealTimers();
 	});
@@ -583,5 +584,182 @@ describe('IncrementalInteractions', () => {
 		});
 
 		expect(onClose).toHaveBeenCalledTimes(1);
+	});
+
+	it('calls onClose after focus leaves the alert', () => {
+		const onClose = jest.fn();
+
+		jest.spyOn(document, 'hasFocus').mockReturnValue(true);
+
+		const {getByText} = render(
+			<>
+				<ClayAlert
+					autoClose={5000}
+					onClose={onClose}
+					spritemap="/foo/bar"
+					title="Hello!"
+				/>
+
+				<button>Outside</button>
+			</>
+		);
+
+		userEvent.tab();
+
+		act(() => {
+			jest.advanceTimersByTime(20000);
+		});
+
+		expect(onClose).not.toHaveBeenCalled();
+
+		userEvent.tab();
+
+		expect(document.activeElement).toBe(getByText('Outside'));
+
+		act(() => {
+			jest.advanceTimersByTime(5000);
+		});
+
+		expect(onClose).toHaveBeenCalledTimes(1);
+	});
+
+	it('does not call onClose while focus moves between controls inside the alert', () => {
+		const onClose = jest.fn();
+
+		jest.spyOn(document, 'hasFocus').mockReturnValue(true);
+
+		const {getByLabelText, getByText} = render(
+			<ClayAlert
+				actions={<ClayButton>Action</ClayButton>}
+				autoClose={5000}
+				onClose={onClose}
+				spritemap="/foo/bar"
+				title="Hello!"
+			/>
+		);
+
+		userEvent.tab();
+
+		expect(document.activeElement).toBe(getByText('Action'));
+
+		fireEvent.blur(getByText('Action'), {
+			relatedTarget: getByLabelText('Close'),
+		});
+
+		act(() => {
+			jest.advanceTimersByTime(20000);
+		});
+
+		expect(onClose).not.toHaveBeenCalled();
+	});
+
+	it('does not call onClose when focus is inside the alert as it mounts', () => {
+		const onClose = jest.fn();
+
+		const {getByText} = render(
+			<ClayAlert
+				actions={<ClayButton autoFocus>Action</ClayButton>}
+				autoClose={5000}
+				onClose={onClose}
+				spritemap="/foo/bar"
+				title="Hello!"
+			/>
+		);
+
+		expect(document.activeElement).toBe(getByText('Action'));
+
+		act(() => {
+			jest.advanceTimersByTime(20000);
+		});
+
+		expect(onClose).not.toHaveBeenCalled();
+	});
+
+	it('does not call onClose when the mouse leaves while focus is inside', () => {
+		const onClose = jest.fn();
+
+		const {container} = render(
+			<ClayAlert
+				autoClose={5000}
+				onClose={onClose}
+				spritemap="/foo/bar"
+				title="Hello!"
+			/>
+		);
+
+		const alertElement = container.querySelector('.alert') as HTMLElement;
+
+		userEvent.tab();
+		userEvent.hover(alertElement);
+		userEvent.unhover(alertElement);
+
+		act(() => {
+			jest.advanceTimersByTime(20000);
+		});
+
+		expect(onClose).not.toHaveBeenCalled();
+	});
+
+	it('does not call onClose when the window loses focus while focus is inside', () => {
+		const onClose = jest.fn();
+
+		jest.spyOn(document, 'hasFocus').mockReturnValue(false);
+
+		const {getByLabelText} = render(
+			<ClayAlert
+				autoClose={5000}
+				onClose={onClose}
+				spritemap="/foo/bar"
+				title="Hello!"
+			/>
+		);
+
+		userEvent.tab();
+
+		fireEvent.blur(getByLabelText('Close'), {relatedTarget: null});
+
+		act(() => {
+			jest.advanceTimersByTime(20000);
+		});
+
+		expect(onClose).not.toHaveBeenCalled();
+	});
+
+	it('calls consumer onBlur, onFocus, onMouseOut and onMouseOver handlers', () => {
+		const onBlur = jest.fn();
+		const onFocus = jest.fn();
+		const onMouseOut = jest.fn();
+		const onMouseOver = jest.fn();
+
+		const {container} = render(
+			<ClayAlert
+				autoClose={5000}
+				onBlur={onBlur}
+				onClose={jest.fn()}
+				onFocus={onFocus}
+				onMouseOut={onMouseOut}
+				onMouseOver={onMouseOver}
+				spritemap="/foo/bar"
+				title="Hello!"
+			/>
+		);
+
+		const alertElement = container.querySelector('.alert') as HTMLElement;
+
+		userEvent.hover(alertElement);
+
+		expect(onMouseOver).toHaveBeenCalledTimes(1);
+
+		userEvent.unhover(alertElement);
+
+		expect(onMouseOut).toHaveBeenCalledTimes(1);
+
+		fireEvent.focus(alertElement);
+
+		expect(onFocus).toHaveBeenCalledTimes(1);
+
+		fireEvent.blur(alertElement);
+
+		expect(onBlur).toHaveBeenCalledTimes(1);
 	});
 });
