@@ -291,10 +291,21 @@ const RichText = ({
 				setCurrentInternalValue(data ?? '');
 			}
 			else {
-				editorRef.current.editor.setData(data);
+				const editor = editorRef.current.editor;
+
+				editor.setData(data ?? '', {
+					callback: () => editor.resetUndo(),
+					noSnapshot: true,
+				});
+
+				const newCurrentValue = {...currentValue};
+
+				delete newCurrentValue[currentEditingLocale.localeId];
+
+				setCurrentValue(newCurrentValue);
 			}
 		},
-		[currentValue, editorRef]
+		[currentEditingLocale, currentValue, editorRef]
 	);
 
 	useEffect(() => {
