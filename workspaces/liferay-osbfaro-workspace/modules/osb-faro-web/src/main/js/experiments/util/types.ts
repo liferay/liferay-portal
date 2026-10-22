@@ -37,9 +37,9 @@ type MergedVariant = {
 	control: boolean;
 	dxpVariantId: string;
 	dxpVariantName: string;
-	improvement: number;
-	median: number;
-	probabilityToWin: number;
+	improvement?: number;
+	median?: number;
+	probabilityToWin?: number;
 	trafficSplit: number;
 	uniqueVisitors: number;
 };
