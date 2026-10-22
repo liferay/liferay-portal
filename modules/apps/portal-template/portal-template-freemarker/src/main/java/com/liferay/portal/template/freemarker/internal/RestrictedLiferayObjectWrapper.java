@@ -212,7 +212,12 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 			return restricted;
 		}
 
-		restricted = _isRestricted(clazz, className);
+		if (_allowedClassNames.contains(className)) {
+			restricted = false;
+		}
+		else {
+			restricted = _isRestricted(clazz, className);
+		}
 
 		_restrictedClassMap.putIfAbsent(className, restricted);
 
@@ -220,10 +225,6 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 	}
 
 	private boolean _isRestricted(Class<?> clazz, String className) {
-		if (_allowedClassNames.contains(className)) {
-			return false;
-		}
-
 		for (Class<?> restrictedClass : _restrictedClasses) {
 			if (!restrictedClass.isAssignableFrom(clazz)) {
 				continue;
