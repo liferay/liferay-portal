@@ -36,6 +36,7 @@ const COL_TYPES_FIELD = [
 ];
 
 const DEFAULT_LANGUAGE = 'groovy';
+const DEFAULT_ROLE_TYPE = 'regular';
 const STR_BLANK = '';
 const STR_CDATA_CLOSE = ']]>';
 const STR_CDATA_OPEN = '<![CDATA[';
@@ -60,6 +61,7 @@ export {
 	COL_TYPES_ASSIGNMENT,
 	COL_TYPES_FIELD,
 	DEFAULT_LANGUAGE,
+	DEFAULT_ROLE_TYPE,
 	STR_BLANK,
 	STR_CDATA_CLOSE,
 	STR_CDATA_OPEN,

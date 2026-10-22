@@ -211,10 +211,16 @@ function appendXMLAssignments(
 				buffer.push(createTagWithEscapedContent('roleType', roleType));
 			}
 
-			buffer.push(
-				createTagWithEscapedContent('roleId', dataAssignments.roleId),
-				xmlRole.close
-			);
+			if (dataAssignments.roleId) {
+				buffer.push(
+					createTagWithEscapedContent(
+						'roleId',
+						dataAssignments.roleId
+					)
+				);
+			}
+
+			buffer.push(xmlRole.close);
 
 			buffer.push(xmlRoles.close);
 		}
@@ -352,7 +358,7 @@ function appendXMLAssignments(
 						);
 					}
 
-					if (item !== '') {
+					if (item) {
 						buffer.push(
 							createTagWithEscapedContent('userId', item)
 						);
