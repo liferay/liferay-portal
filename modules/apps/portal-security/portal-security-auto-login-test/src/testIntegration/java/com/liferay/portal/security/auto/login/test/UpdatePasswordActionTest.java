@@ -161,13 +161,15 @@ public class UpdatePasswordActionTest {
 		action.execute(null, mockHttpServletRequest, mockHttpServletResponse);
 
 		HttpSession httpSession = mockHttpServletRequest.getSession();
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)mockHttpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
 
 		Assert.assertEquals(
 			String.valueOf(user.getUserId()),
 			httpSession.getAttribute("j_remoteuser"));
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)mockHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
 		Assert.assertEquals(
 			themeDisplay.getPathMain(),
 			mockHttpServletResponse.getRedirectedUrl());
@@ -206,11 +208,12 @@ public class UpdatePasswordActionTest {
 
 		action.execute(null, mockHttpServletRequest, mockHttpServletResponse);
 
+		Assert.assertNull(httpSession.getAttribute("j_remoteuser"));
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)mockHttpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		Assert.assertNull(httpSession.getAttribute("j_remoteuser"));
 		Assert.assertEquals(
 			themeDisplay.getURLSignIn(),
 			mockHttpServletResponse.getRedirectedUrl());
