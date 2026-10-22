@@ -6,13 +6,17 @@
 package com.liferay.document.library.web.internal.portlet.action;
 
 import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.document.library.web.internal.display.context.DLAdminDisplayContext;
+import com.liferay.document.library.web.internal.display.context.DLAdminDisplayContextProvider;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Iván Zaera
@@ -34,9 +38,21 @@ public class UploadMultipleFileEntriesMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
+		resourceRequest.setAttribute(
+			DLAdminDisplayContext.class.getName(),
+			_dlAdminDisplayContextProvider.getDLAdminDisplayContext(
+				_portal.getHttpServletRequest(resourceRequest),
+				_portal.getHttpServletResponse(resourceResponse)));
+
 		include(
 			resourceRequest, resourceResponse,
 			"/document_library/upload_multiple_file_entries_resources.jsp");
 	}
+
+	@Reference
+	private DLAdminDisplayContextProvider _dlAdminDisplayContextProvider;
+
+	@Reference
+	private Portal _portal;
 
 }
