@@ -4,7 +4,6 @@ definition {
 	property browser.chrome.version = "139.0";
 	property custom.properties = "feature.flag.LPD-35013=false";
 	property database.types = "db2,mariadb,mysql,oracle,postgresql,sqlserver";
-	property osgi.modules.includes = "wiki";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property test.assert.warning.exceptions = "true";
