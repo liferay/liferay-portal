@@ -1,6 +1,6 @@
 # Startup Sync Usage
 
-Flags changes to deferred startup work in hand written Java: an added or removed `DependencyManagerSyncUtil` or `InitialRequestSyncUtil` usage, a change inside the body of a callable or task registered with either of them, and a change to the `@Deactivate` method of a class that registers one. Registered work runs after the component that registered it has returned from activation, when `DependencyManagerSyncUtil.sync()` finishes startup or on the first request, so a mistake in it breaks the startup order or hides a component restarting during startup. A change that repeats a known mistake fails for everyone, and Shuyang Zhou and the Core Infrastructure team must approve every other change.
+Flags changes to deferred startup work in hand written Java: an added or removed `DependencyManagerSyncUtil`, `InitialRequestSyncUtil`, or `InitialRequestPortalInstanceLifecycleListener` usage, a change inside the body of a callable or task registered with either of them, and a change to the `@Deactivate` method of a class that registers one. Registered work runs after the component that registered it has returned from activation, when `DependencyManagerSyncUtil.sync()` finishes startup or on the first request, so a mistake in it breaks the startup order or hides a component restarting during startup. A change that repeats a known mistake fails for everyone, and Shuyang Zhou and the Core Infrastructure team must approve every other change.
 
 ## Match
 
@@ -10,7 +10,7 @@ Flags changes to deferred startup work in hand written Java: an added or removed
 
 This check is static and needs no build. It walks each changed Java file, skips generated files, and reports three kinds of findings in the rest. It uses `command grep` so the diff is filtered by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
 
-- An added or removed line that names `DependencyManagerSyncUtil` or `InitialRequestSyncUtil`. This covers a new, moved, or removed usage, along with its imports and test references. Each prints as `<path>:<diff line>`, with the leading `+` or `-` of the diff line.
+- An added or removed line that names `DependencyManagerSyncUtil`, `InitialRequestSyncUtil`, or `InitialRequestPortalInstanceLifecycleListener`, whose subclasses run their work for each company through `InitialRequestSyncUtil`. This covers a new, moved, or removed usage, along with its imports and test references. Each prints as `<path>:<diff line>`, with the leading `+` or `-` of the diff line.
 - A changed line inside the body of a registered callable or task. The scan finds each `registerSyncCallable(` and `registerSyncFutureTask(` call of either utility in the file before and after the branch, and follows its parentheses to the end of the call, so the whole of an inline lambda, an anonymous class, or a wrapping `FutureTask` or `CompanyInheritableThreadLocalCallable` counts as the body. Each hunk that adds a line inside a body prints as `<path>:<line>: changes the body registered at line <line>`.
 - A changed line inside a `@Deactivate` method of a file that registers a callable or task, which the scan follows by its braces. Each hunk that adds a line inside one prints as `<path>:<line>: changes the deactivate method at line <line>`.
 
@@ -190,7 +190,7 @@ FINDINGS=$(
 			| command grep \
 				--extended-regexp \
 				--label="${FILE}" \
-				--regexp='(DependencyManagerSyncUtil|InitialRequestSyncUtil)' \
+				--regexp='(DependencyManagerSyncUtil|InitialRequestPortalInstanceLifecycleListener|InitialRequestSyncUtil)' \
 				--with-filename
 
 		BASE_RANGES=$(git show "${MERGE_BASE}:${FILE}" 2> /dev/null | awk "${RANGES}" | paste -d ';' -s -)
