@@ -4,5 +4,7 @@ Bundle-Version: 5.1.0
 Export-Package:\
 	com.liferay.digital.signature.configuration,\
 	com.liferay.digital.signature.constants,\
+	com.liferay.digital.signature.exception,\
 	com.liferay.digital.signature.manager,\
-	com.liferay.digital.signature.model
+	com.liferay.digital.signature.model,\
+	com.liferay.digital.signature.url
