@@ -99,10 +99,9 @@ public abstract class BaseSamlTestCase {
 		_setUpConfiguration();
 		_setUpIdentifiers();
 		_setUpParserPool();
+		_setUpSecretResolver();
 
 		_setUpPortal();
-
-		_setUpSecretResolver();
 
 		_setUpMetadata();
 

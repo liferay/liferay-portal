@@ -44,6 +44,7 @@ public class EditCommerceAvalaraConnectorMVCActionCommandTest {
 	@Test
 	public void testDoProcessAction() throws Exception {
 		ActionRequest actionRequest = Mockito.mock(ActionRequest.class);
+
 		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 		long companyId = RandomTestUtil.randomLong();
@@ -69,6 +70,7 @@ public class EditCommerceAvalaraConnectorMVCActionCommandTest {
 		);
 
 		Settings settings = Mockito.mock(Settings.class);
+
 		ModifiableSettings modifiableSettings = Mockito.mock(
 			ModifiableSettings.class);
 
@@ -81,6 +83,7 @@ public class EditCommerceAvalaraConnectorMVCActionCommandTest {
 		EditCommerceAvalaraConnectorMVCActionCommand
 			editCommerceAvalaraConnectorMVCActionCommand =
 				new EditCommerceAvalaraConnectorMVCActionCommand();
+
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
 
 		String identifier = StringBundler.concat(

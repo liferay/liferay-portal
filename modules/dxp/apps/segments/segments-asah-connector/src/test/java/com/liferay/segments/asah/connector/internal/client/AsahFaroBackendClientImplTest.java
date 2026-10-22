@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -82,13 +81,6 @@ public class AsahFaroBackendClientImplTest {
 
 		_setUpPortalUtil();
 		_setUpSecretResolverUtil();
-	}
-
-	@After
-	public void tearDown() {
-		ReflectionTestUtil.setFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			_secretResolverSnapshot);
 	}
 
 	@Test
@@ -670,7 +662,9 @@ public class AsahFaroBackendClientImplTest {
 	}
 
 	private void _setUpSecretResolverUtil() {
-		_secretResolverSnapshot = ReflectionTestUtil.getAndSetFieldValue(
+		_secretResolver = Mockito.mock(SecretResolver.class);
+
+		ReflectionTestUtil.setFieldValue(
 			SecretResolverUtil.class, "_secretResolverSnapshot",
 			new Snapshot<SecretResolver>(
 				SecretResolverUtil.class, SecretResolver.class) {
@@ -685,8 +679,6 @@ public class AsahFaroBackendClientImplTest {
 
 	private AnalyticsConfiguration _analyticsConfiguration;
 	private AnalyticsSettingsManager _analyticsSettingsManager;
-	private final SecretResolver _secretResolver = Mockito.mock(
-		SecretResolver.class);
-	private Snapshot<SecretResolver> _secretResolverSnapshot;
+	private SecretResolver _secretResolver;
 
 }

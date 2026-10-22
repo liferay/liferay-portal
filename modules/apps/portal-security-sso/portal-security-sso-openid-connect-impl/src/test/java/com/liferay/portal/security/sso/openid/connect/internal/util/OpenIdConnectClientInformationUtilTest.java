@@ -45,15 +45,7 @@ public class OpenIdConnectClientInformationUtilTest {
 
 	@Test
 	public void testGetOIDCClientInformation() throws Exception {
-		String clientSecret = RandomTestUtil.randomString();
 		long companyId = RandomTestUtil.randomLong();
-
-		Mockito.when(
-			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
-		).thenReturn(
-			clientSecret
-		);
-
 		long guestUserId = RandomTestUtil.randomLong();
 
 		Mockito.when(
@@ -100,20 +92,28 @@ public class OpenIdConnectClientInformationUtilTest {
 			configurations
 		);
 
+		String clientSecret = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_secretResolver.resolve(Mockito.eq(companyId), Mockito.anyString())
+		).thenReturn(
+			clientSecret
+		);
+
 		long oAuthClientEntryId = RandomTestUtil.randomLong();
 
 		_testGetOIDCClientInformation(
 			keyReferenceString, companyId, clientSecret, oAuthClientEntryId,
 			guestUserId);
 		_testGetOIDCClientInformation(
+			keyReferenceString, companyId, keyReferenceString,
+			oAuthClientEntryId, guestUserId + 1);
+		_testGetOIDCClientInformation(
 			otherKeyReferenceString, companyId, otherKeyReferenceString,
 			oAuthClientEntryId, guestUserId);
 		_testGetOIDCClientInformation(
 			systemKeyReferenceString, companyId, clientSecret,
 			oAuthClientEntryId, guestUserId);
-		_testGetOIDCClientInformation(
-			keyReferenceString, companyId, keyReferenceString,
-			oAuthClientEntryId, guestUserId + 1);
 
 		_testGetOIDCClientInformation(
 			_getKeyReferenceString(
