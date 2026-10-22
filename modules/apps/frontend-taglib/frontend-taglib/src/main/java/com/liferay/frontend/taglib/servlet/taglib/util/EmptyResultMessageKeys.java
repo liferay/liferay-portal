@@ -13,14 +13,18 @@ import com.liferay.petra.string.StringPool;
 public class EmptyResultMessageKeys {
 
 	public static String getAnimationTypeCssClass(AnimationType animationType) {
+		return StringPool.BLANK;
+	}
+
+	public static String getAnimationTypeSymbol(AnimationType animationType) {
 		if (animationType == AnimationType.EMPTY) {
-			return "taglib-empty-state";
+			return "empty-state";
 		}
 		else if (animationType == AnimationType.SUCCESS) {
-			return "taglib-success-state";
+			return "success-state";
 		}
 		else if (animationType == AnimationType.SEARCH) {
-			return "taglib-search-state";
+			return "search-state";
 		}
 
 		return StringPool.BLANK;
