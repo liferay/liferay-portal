@@ -10,6 +10,8 @@ import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayouts
 export class ProductComparisonPage {
 	readonly compareBar: Locator;
 	readonly compareBarItemThumbnail: (imageId: string) => Locator;
+	readonly compareBarLink: Locator;
+	readonly comparisonTableProductLink: (productName: string) => Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
 	readonly page: Page;
 
@@ -21,6 +23,15 @@ export class ProductComparisonPage {
 			this.compareBar.locator(
 				`.mini-compare-item.active .mini-compare-thumbnail[style*="images/${imageId}"]`
 			);
+		this.compareBarLink = this.compareBar.getByRole('link', {
+			exact: true,
+			name: 'Compare',
+		});
+		this.comparisonTableProductLink = (productName: string) =>
+			page.getByRole('table').getByRole('link', {
+				exact: true,
+				name: productName,
+			});
 		this.layoutsPage = new CommerceLayoutsPage(page);
 		this.page = page;
 	}
