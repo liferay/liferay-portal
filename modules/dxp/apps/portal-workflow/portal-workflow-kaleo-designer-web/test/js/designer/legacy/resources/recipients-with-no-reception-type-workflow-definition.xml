@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.1.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_1_0.xsd"
 >
-	<name>Recipients with No Reception Type</name>
+	<name>Recipients With No Reception Type</name>
 	<version>1</version>
 	<task>
 		<name>Task 1</name>
