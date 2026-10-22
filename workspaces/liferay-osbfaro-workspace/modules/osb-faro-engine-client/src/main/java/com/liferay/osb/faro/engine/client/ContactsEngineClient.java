@@ -375,6 +375,11 @@ public interface ContactsEngineClient {
 			String id, String query, String sortString, int cur, int delta)
 		throws FaroEngineClientException;
 
+	public Results<Individual> getCampaignIndividuals(
+			FaroProject faroProject, long channelId, String id, String query,
+			String sortString, int cur, int delta)
+		throws FaroEngineClientException;
+
 	public List<CampaignMetric> getCampaignMetrics(
 			FaroProject faroProject, long channelId)
 		throws FaroEngineClientException;

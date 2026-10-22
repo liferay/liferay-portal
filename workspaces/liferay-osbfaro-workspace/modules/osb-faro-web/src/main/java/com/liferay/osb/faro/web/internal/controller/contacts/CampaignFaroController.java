@@ -8,10 +8,12 @@ package com.liferay.osb.faro.web.internal.controller.contacts;
 import com.liferay.osb.faro.engine.client.model.Account;
 import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.CampaignMetric;
+import com.liferay.osb.faro.engine.client.model.Individual;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.AccountDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.CampaignDisplay;
+import com.liferay.osb.faro.web.internal.model.display.contacts.IndividualDisplay;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.RoleConstants;
 
@@ -104,6 +106,27 @@ public class CampaignFaroController extends BaseFaroController {
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
 				channelId, filterString, search, sortString, page, pageSize),
 			CampaignDisplay::new, page, pageSize);
+	}
+
+	@GET
+	@Path("/{id}/individuals")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public FaroFDSResultsDisplay<Individual>
+			getIndividualsFaroFDSResultsDisplay(
+				@PathParam("groupId") long groupId, @PathParam("id") String id,
+				@QueryParam("channelId") long channelId,
+				@QueryParam("page") int page,
+				@DefaultValue("20") @QueryParam("pageSize") int pageSize,
+				@QueryParam("search") String search,
+				@DefaultValue(StringPool.BLANK) @QueryParam("sort") String
+					sortString)
+		throws Exception {
+
+		return new FaroFDSResultsDisplay<>(
+			contactsEngineClient.getCampaignIndividuals(
+				faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				channelId, id, search, sortString, page, pageSize),
+			IndividualDisplay::new, page, pageSize);
 	}
 
 }
