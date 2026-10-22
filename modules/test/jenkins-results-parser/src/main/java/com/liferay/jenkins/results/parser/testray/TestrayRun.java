@@ -441,6 +441,15 @@ public class TestrayRun {
 				TestrayFactory.newTestrayFactorOption(
 					optionName, _testrayBuild.getTestrayServer());
 
+			if (testrayFactorOption.getCategory() == null) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"WARNING: Unable to find Testray factor option ",
+						optionName));
+
+				continue;
+			}
+
 			testrayFactors.add(
 				TestrayFactory.newRunTestrayFactor(testrayFactorOption, this));
 		}
