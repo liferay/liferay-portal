@@ -1484,6 +1484,33 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		return fetchLayout(browsableChildLayout.getPlid());
 	}
 
+	@Override
+	public long[] getClassPKsByLaunchSetId(long groupId, long launchSetId) {
+		if (launchSetId <= 0) {
+			return new long[0];
+		}
+
+		List<Long> classPKs = dslQuery(
+			DSLQueryFactoryUtil.select(
+				LayoutTable.INSTANCE.classPK
+			).from(
+				LayoutTable.INSTANCE
+			).where(
+				LayoutTable.INSTANCE.groupId.eq(
+					groupId
+				).and(
+					LayoutTable.INSTANCE.classNameId.eq(
+						_classNameLocalService.getClassNameId(Layout.class))
+				).and(
+					LayoutTable.INSTANCE.classPK.gt(0L)
+				).and(
+					LayoutTable.INSTANCE.launchSetId.eq(launchSetId)
+				)
+			));
+
+		return ArrayUtil.toLongArray(classPKs);
+	}
+
 	/**
 	 * Returns the primary key of the default layout for the group.
 	 *
