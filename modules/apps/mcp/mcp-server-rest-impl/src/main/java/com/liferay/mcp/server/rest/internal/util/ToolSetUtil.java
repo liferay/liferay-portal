@@ -51,6 +51,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ToolSetUtil {
 
+	public static final String TOOL_SET_NAME = "mcp-server-v1.0";
+
 	public static void clearOpenAPIJSONObjectCache(long companyId) {
 		if (companyId == CompanyConstants.SYSTEM) {
 			_openAPIJSONObjects.clear();
@@ -63,14 +65,49 @@ public class ToolSetUtil {
 		keys.removeIf(key -> key.startsWith(companyId + StringPool.POUND));
 	}
 
+	public static JSONObject getOpenAPIJSONObject(
+		HttpServletRequest httpServletRequest,
+		HeadlessApplicationProvider.OpenAPIDocument openAPIDocument,
+		String toolSetName) {
+
+		return _openAPIJSONObjects.computeIfAbsent(
+			StringBundler.concat(
+				PortalUtil.getCompanyId(httpServletRequest), StringPool.POUND,
+				openAPIDocument.getPath(
+					HeadlessApplicationProvider.OpenAPIDocument.Type.JSON)),
+			key -> {
+				String content = openAPIDocument.getContentString(
+					PortalUtil.getPortalURL(httpServletRequest) +
+						PortalUtil.getPathContext() + Portal.PATH_MODULE,
+					HeadlessApplicationProvider.OpenAPIDocument.Type.JSON);
+
+				if (Validator.isNull(content)) {
+					throw new IllegalStateException(
+						"Unable to read the OpenAPI document of the \"" +
+							toolSetName + "\" tool set");
+				}
+
+				try {
+					return JSONFactoryUtil.createJSONObject(content);
+				}
+				catch (JSONException jsonException) {
+					throw new IllegalStateException(
+						StringBundler.concat(
+							"Unable to parse the OpenAPI document of the \"",
+							toolSetName, "\" tool set"),
+						jsonException);
+				}
+			});
+	}
+
 	public static Tool getTool(
 		HttpServletRequest httpServletRequest, boolean requiredInputSchemaOnly,
 		Map<String, String> restrictFieldsMap, String toolName,
 		String toolSetName) {
 
 		return OpenAPIUtil.getTool(
-			!Objects.equals(toolSetName, _TOOL_SET_NAME),
-			_getOpenAPIJSONObject(
+			!Objects.equals(toolSetName, TOOL_SET_NAME),
+			getOpenAPIJSONObject(
 				httpServletRequest,
 				_getOpenAPIDocument(
 					PortalUtil.getCompanyId(httpServletRequest), toolSetName),
@@ -89,7 +126,7 @@ public class ToolSetUtil {
 		String toolSetName) {
 
 		return OpenAPIUtil.getOutputSchema(
-			_getOpenAPIJSONObject(
+			getOpenAPIJSONObject(
 				httpServletRequest,
 				_getOpenAPIDocument(
 					PortalUtil.getCompanyId(httpServletRequest), toolSetName),
@@ -124,7 +161,7 @@ public class ToolSetUtil {
 
 		return Page.of(
 			OpenAPIUtil.getToolSummaries(
-				_getOpenAPIJSONObject(
+				getOpenAPIJSONObject(
 					httpServletRequest,
 					_getOpenAPIDocument(
 						PortalUtil.getCompanyId(httpServletRequest),
@@ -152,7 +189,7 @@ public class ToolSetUtil {
 			inputJSONObject = JSONFactoryUtil.createJSONObject();
 		}
 
-		if (Objects.equals(toolSetName, _TOOL_SET_NAME)) {
+		if (Objects.equals(toolSetName, TOOL_SET_NAME)) {
 			if (Objects.equals(toolName, "getToolSetToolSetNameTool")) {
 				return _getResponse(
 					getTool(
@@ -208,7 +245,7 @@ public class ToolSetUtil {
 							dataMaskExternalReferenceCodes, StringPool.COMMA)
 					).build(),
 					inputJSONObject,
-					_getOpenAPIJSONObject(
+					getOpenAPIJSONObject(
 						httpServletRequest, openAPIDocument, toolSetName),
 					_getRestrictFields(
 						restrictFieldsMap, toolName, toolSetName),
@@ -312,41 +349,6 @@ public class ToolSetUtil {
 		return openAPIDocuments;
 	}
 
-	private static JSONObject _getOpenAPIJSONObject(
-		HttpServletRequest httpServletRequest,
-		HeadlessApplicationProvider.OpenAPIDocument openAPIDocument,
-		String toolSetName) {
-
-		return _openAPIJSONObjects.computeIfAbsent(
-			StringBundler.concat(
-				PortalUtil.getCompanyId(httpServletRequest), StringPool.POUND,
-				openAPIDocument.getPath(
-					HeadlessApplicationProvider.OpenAPIDocument.Type.JSON)),
-			key -> {
-				String content = openAPIDocument.getContentString(
-					PortalUtil.getPortalURL(httpServletRequest) +
-						PortalUtil.getPathContext() + Portal.PATH_MODULE,
-					HeadlessApplicationProvider.OpenAPIDocument.Type.JSON);
-
-				if (Validator.isNull(content)) {
-					throw new IllegalStateException(
-						"Unable to read the OpenAPI document of the \"" +
-							toolSetName + "\" tool set");
-				}
-
-				try {
-					return JSONFactoryUtil.createJSONObject(content);
-				}
-				catch (JSONException jsonException) {
-					throw new IllegalStateException(
-						StringBundler.concat(
-							"Unable to parse the OpenAPI document of the \"",
-							toolSetName, "\" tool set"),
-						jsonException);
-				}
-			});
-	}
-
 	private static Response _getResponse(Object value) throws Exception {
 		ObjectMapper objectMapper = ObjectMapperProviderUtil.getObjectMapper();
 
@@ -365,8 +367,6 @@ public class ToolSetUtil {
 
 		return restrictFieldsMap.get(getToolKey(toolName, toolSetName));
 	}
-
-	private static final String _TOOL_SET_NAME = "mcp-server-v1.0";
 
 	private static final Log _log = LogFactoryUtil.getLog(ToolSetUtil.class);
 
