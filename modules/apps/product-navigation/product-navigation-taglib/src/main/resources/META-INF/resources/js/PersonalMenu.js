@@ -30,11 +30,7 @@ function mapItemsOnClick(items) {
 
 		if (onClickESModule) {
 			newVal.onClick = async () => {
-				const onClickFn = await new Promise((resolve, reject) => {
-					loadModule(onClickESModule)
-						.then((component) => resolve(component))
-						.catch((error) => reject(error));
-				});
+				const onClickFn = await loadModule(onClickESModule);
 
 				onClickFn(jsOnClickConfig);
 			};
