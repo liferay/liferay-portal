@@ -13,4 +13,11 @@ FragmentRendererController fragmentRendererController = (FragmentRendererControl
 RenderFragmentEntryDisplayContext renderFragmentEntryDisplayContext = new RenderFragmentEntryDisplayContext(request, liferayPortletRequest);
 %>
 
-<%= fragmentRendererController.render(renderFragmentEntryDisplayContext.getDefaultFragmentRendererContext(), request, response) %>
+<c:choose>
+	<c:when test="<%= renderFragmentEntryDisplayContext.hasPermission() %>">
+		<%= fragmentRendererController.render(renderFragmentEntryDisplayContext.getDefaultFragmentRendererContext(), request, response) %>
+	</c:when>
+	<c:otherwise>
+		<liferay-util:include page="/html/portal/portlet_access_denied.jsp" />
+	</c:otherwise>
+</c:choose>
