@@ -14212,12 +14212,12 @@ enterprise.product.enterprise.search.enabled=false</echo>
 		</antcall>
 
 		<prepare-selenium-login-config />
+		<prepare-selenium-required-properties />
 
 		<prepare-selenium-analytics-cloud-properties />
 		<prepare-selenium-app-server-properties />
 		<prepare-selenium-aws-translation-properties />
 		<prepare-selenium-azure-translation-properties />
-		<prepare-selenium-required-properties />
 		<prepare-selenium-browser />
 		<prepare-selenium-database-properties />
 		<prepare-selenium-digital-signature-properties />
