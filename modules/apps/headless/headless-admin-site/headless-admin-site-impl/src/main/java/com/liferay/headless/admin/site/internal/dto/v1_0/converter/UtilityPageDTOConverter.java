@@ -10,17 +10,14 @@ import com.liferay.headless.admin.site.dto.v1_0.UtilityPageSEOSettings;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
-import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
+import com.liferay.layout.utility.page.converter.LayoutUtilityPageEntryTypeConverter;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
-
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -101,8 +98,8 @@ public class UtilityPageDTOConverter
 	}
 
 	private UtilityPage.Type _getType(String type) {
-		UtilityPage.Type utilityPageType = _internalToExternalValuesMap.get(
-			type);
+		UtilityPage.Type utilityPageType = UtilityPage.Type.create(
+			LayoutUtilityPageEntryTypeConverter.convertToExternalValue(type));
 
 		if (utilityPageType != null) {
 			return utilityPageType;
@@ -110,34 +107,6 @@ public class UtilityPageDTOConverter
 
 		throw new UnsupportedOperationException();
 	}
-
-	private static final Map<String, UtilityPage.Type>
-		_internalToExternalValuesMap = HashMapBuilder.put(
-			LayoutUtilityPageEntryConstants.TYPE_COOKIE_POLICY,
-			UtilityPage.Type.COOKIE_POLICY
-		).put(
-			LayoutUtilityPageEntryConstants.TYPE_CREATE_ACCOUNT,
-			UtilityPage.Type.CREATE_ACCOUNT
-		).put(
-			LayoutUtilityPageEntryConstants.TYPE_FORGOT_PASSWORD,
-			UtilityPage.Type.FORGOT_PASSWORD
-		).put(
-			LayoutUtilityPageEntryConstants.TYPE_LOGIN, UtilityPage.Type.LOGIN
-		).put(
-			LayoutUtilityPageEntryConstants.TYPE_SC_INTERNAL_SERVER_ERROR,
-			UtilityPage.Type.ERROR_CODE500
-		).put(
-			LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND,
-			UtilityPage.Type.ERROR_CODE404
-		).put(
-			LayoutUtilityPageEntryConstants.TYPE_SC_SERVICE_UNAVAILABLE,
-			UtilityPage.Type.ERROR_CODE503
-		).put(
-			LayoutUtilityPageEntryConstants.TYPE_STATUS, UtilityPage.Type.ERROR
-		).put(
-			LayoutUtilityPageEntryConstants.TYPE_TERMS_OF_USE,
-			UtilityPage.Type.TERMS_OF_USE
-		).build();
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
