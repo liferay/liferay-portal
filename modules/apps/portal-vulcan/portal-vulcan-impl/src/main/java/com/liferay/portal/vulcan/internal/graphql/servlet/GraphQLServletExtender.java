@@ -245,22 +245,6 @@ public class GraphQLServletExtender {
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
-		_featureFlagListenerServiceRegistration = bundleContext.registerService(
-			FeatureFlagListener.class,
-			(companyId, featureFlagKey, enabled) -> {
-				synchronized (_servletDataServiceTrackerList) {
-					if (companyId == CompanyConstants.SYSTEM) {
-						_servlets.clear();
-					}
-					else {
-						_servlets.remove(companyId);
-					}
-				}
-			},
-			HashMapDictionaryBuilder.<String, Object>put(
-				"feature.flag.key", "*"
-			).build());
-
 		_liferayGraphQLFieldRetriever = new LiferayGraphQLFieldRetriever();
 
 		GraphQLInterfaceRetriever graphQLInterfaceRetriever =
@@ -746,6 +730,22 @@ public class GraphQLServletExtender {
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME, "GraphQL"
 			).put(
 				HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN, "/*"
+			).build());
+
+		_featureFlagListenerServiceRegistration = bundleContext.registerService(
+			FeatureFlagListener.class,
+			(companyId, featureFlagKey, enabled) -> {
+				synchronized (_servletDataServiceTrackerList) {
+					if (companyId == CompanyConstants.SYSTEM) {
+						_servlets.clear();
+					}
+					else {
+						_servlets.remove(companyId);
+					}
+				}
+			},
+			HashMapDictionaryBuilder.<String, Object>put(
+				"feature.flag.key", "*"
 			).build());
 	}
 
