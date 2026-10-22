@@ -76,7 +76,7 @@ public abstract class BasePortalInstanceCopyResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-portal-instances/v1.0/portal-instances/copy' -d $'{"destinationCompanyId": ___, "name": ___, "sourcePortalInstanceId": ___, "virtualHost": ___, "webId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Copies the portal instance. Through POST /portal-instances/copy/batch the same operation runs asynchronously; poll the returned import task."
+		description = "Copies the portal instance. Through POST /portal-instances/copy/batch the same operation runs asynchronously; poll the returned import task. Document Library files are not included and must be transferred separately."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -833,4 +833,4 @@ public abstract class BasePortalInstanceCopyResourceImpl
 		LogFactoryUtil.getLog(BasePortalInstanceCopyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:839917641
+// LIFERAY-REST-BUILDER-HASH:-127244762

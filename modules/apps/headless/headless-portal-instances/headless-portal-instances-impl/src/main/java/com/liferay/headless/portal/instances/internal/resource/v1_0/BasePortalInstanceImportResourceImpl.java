@@ -76,7 +76,7 @@ public abstract class BasePortalInstanceImportResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-portal-instances/v1.0/portal-instances/import' -d $'{"name": ___, "schemaName": ___, "virtualHost": ___, "webId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Imports a DB partition portal instance"
+		description = "Imports a DB partition portal instance. Document Library files are not included and must be transferred separately."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -841,4 +841,4 @@ public abstract class BasePortalInstanceImportResourceImpl
 		LogFactoryUtil.getLog(BasePortalInstanceImportResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:337978713
+// LIFERAY-REST-BUILDER-HASH:-172032796
