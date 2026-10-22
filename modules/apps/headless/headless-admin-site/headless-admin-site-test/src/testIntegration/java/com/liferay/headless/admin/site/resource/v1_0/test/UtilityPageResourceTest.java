@@ -335,61 +335,6 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 				RandomTestUtil.randomString(), randomUtilityPage()));
 	}
 
-	@Test
-	@TestInfo("LPD-95021")
-	public void testPostImportTaskSiteUtilityPage() throws Exception {
-		UtilityPage utilityPage1 = randomUtilityPage();
-
-		UtilityPage utilityPage2 = randomUtilityPage();
-
-		utilityPage2.setType((UtilityPage.Type)null);
-
-		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
-
-		ImportTaskResource importTaskResource = ImportTaskResource.builder(
-		).authentication(
-			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).parameters(
-			"siteExternalReferenceCode", testGroup.getExternalReferenceCode()
-		).build();
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal." +
-					"BatchEngineImportTaskExecutorImpl",
-				LoggerTestUtil.ERROR)) {
-
-			ImportTask importTask = importTaskResource.postImportTask(
-				"com.liferay.headless.admin.site.dto.v1_0.UtilityPage", null,
-				null, null, "INSERT", null, null, "ON_ERROR_CONTINUE", null,
-				JSONUtil.putAll(
-					_jsonFactory.createJSONObject(utilityPage1.toString()),
-					_jsonFactory.createJSONObject(utilityPage2.toString())));
-
-			waitForFinish("COMPLETED", JSONUtil.put("id", importTask.getId()));
-
-			ImportTask completedImportTask = importTaskResource.getImportTask(
-				importTask.getId());
-
-			FailedItem[] failedItems = completedImportTask.getFailedItems();
-
-			Assert.assertEquals(
-				Arrays.toString(failedItems), 1, failedItems.length);
-
-			FailedItem failedItem = failedItems[0];
-
-			Assert.assertEquals(
-				"A utility page type is required", failedItem.getMessage());
-		}
-
-		Assert.assertNotNull(
-			utilityPageResource.getSiteUtilityPage(
-				testGroup.getExternalReferenceCode(),
-				utilityPage1.getExternalReferenceCode()));
-	}
-
 	@Override
 	@Test
 	@TestInfo(
@@ -399,6 +344,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 		_testPostSiteUtilityPageWithDuplicateExternalReferenceCode();
 		_testPostSiteUtilityPageWithDuplicateName();
+		_testPostSiteUtilityPageWithImportTask();
 		_testPostSiteUtilityPageWithInvalidName();
 		_testPostSiteUtilityPageWithInvalidPageSpecifications();
 		_testPostSiteUtilityPageWithMissingType();
@@ -1192,6 +1138,59 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			utilityPage2);
 	}
 
+	private void _testPostSiteUtilityPageWithImportTask() throws Exception {
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).parameters(
+			"siteExternalReferenceCode", testGroup.getExternalReferenceCode()
+		).build();
+
+		UtilityPage utilityPage1 = randomUtilityPage();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			UtilityPage utilityPage2 = randomUtilityPage();
+
+			utilityPage2.setType((UtilityPage.Type)null);
+
+			ImportTask importTask = importTaskResource.postImportTask(
+				"com.liferay.headless.admin.site.dto.v1_0.UtilityPage", null,
+				null, null, "INSERT", null, null, "ON_ERROR_CONTINUE", null,
+				JSONUtil.putAll(
+					_jsonFactory.createJSONObject(utilityPage1.toString()),
+					_jsonFactory.createJSONObject(utilityPage2.toString())));
+
+			waitForFinish("COMPLETED", JSONUtil.put("id", importTask.getId()));
+
+			ImportTask completedImportTask = importTaskResource.getImportTask(
+				importTask.getId());
+
+			FailedItem[] failedItems = completedImportTask.getFailedItems();
+
+			Assert.assertEquals(
+				Arrays.toString(failedItems), 1, failedItems.length);
+
+			FailedItem failedItem = failedItems[0];
+
+			Assert.assertEquals(
+				"A utility page type is required", failedItem.getMessage());
+		}
+
+		Assert.assertNotNull(
+			utilityPageResource.getSiteUtilityPage(
+				testGroup.getExternalReferenceCode(),
+				utilityPage1.getExternalReferenceCode()));
+	}
+
 	private void _testPostSiteUtilityPageWithInvalidName() throws Exception {
 		UtilityPage utilityPage1 = randomUtilityPage();
 
@@ -1233,12 +1232,12 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 	private void _testPostSiteUtilityPageWithInvalidPageSpecifications()
 		throws Exception {
 
+		UtilityPage utilityPage = randomUtilityPage();
+
 		ContentPageSpecification contentPageSpecification =
 			PageSpecificationsTestUtil.getContentPageSpecification(
 				null, testGroup.getGroupId(),
 				PageSpecification.Status.APPROVED);
-
-		UtilityPage utilityPage = randomUtilityPage();
 
 		utilityPage.setPageSpecifications(
 			() -> new PageSpecification[] {
