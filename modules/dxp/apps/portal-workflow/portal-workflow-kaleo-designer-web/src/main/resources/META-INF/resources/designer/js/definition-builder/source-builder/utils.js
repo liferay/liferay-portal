@@ -350,10 +350,18 @@ export function parseNotifications(node) {
 		}
 		else if (item['recipients'] && item['recipients'][0]?.['user']) {
 			const emailAddress = [];
+			const userExternalReferenceCode = [];
+			const userId = [];
 
 			item['recipients'].forEach((item) => {
 				if (item['user']?.['email-address']) {
 					emailAddress.push(item['user']['email-address']);
+				}
+				else if (item['user']?.['user-id']) {
+					userExternalReferenceCode.push(
+						item['user']['user-external-reference-code']
+					);
+					userId.push(item['user']['user-id']);
 				}
 			});
 
@@ -369,6 +377,24 @@ export function parseNotifications(node) {
 					notifications.recipients[index].push({
 						assignmentType: ['user'],
 						emailAddress,
+					});
+				}
+			}
+
+			if (userId.length) {
+				if (receptionType) {
+					notifications.recipients[index].push({
+						assignmentType: ['user'],
+						receptionType: [receptionType],
+						userExternalReferenceCode,
+						userId,
+					});
+				}
+				else {
+					notifications.recipients[index].push({
+						assignmentType: ['user'],
+						userExternalReferenceCode,
+						userId,
 					});
 				}
 			}
