@@ -10286,7 +10286,7 @@ public class ObjectEntryResourceTest {
 					"JSONObject/" +
 						_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE));
 
-		Company company = _getOrAddCompany();
+		Company company = _getCompanyByWebId();
 
 		User adminUser = UserTestUtil.getAdminUser(company.getCompanyId());
 
@@ -12071,7 +12071,7 @@ public class ObjectEntryResourceTest {
 				objectRelationship1.getObjectDefinitionId1()),
 			_OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString());
 
-		Company company = _getOrAddCompany();
+		Company company = _getCompanyByWebId();
 
 		ObjectRelationship objectRelationship2 = _addObjectRelationship(
 			company.getCompanyId());
@@ -17637,7 +17637,7 @@ public class ObjectEntryResourceTest {
 		return objectRelationshipNames;
 	}
 
-	private Company _getOrAddCompany() throws Exception {
+	private Company _getCompanyByWebId() throws Exception {
 		try {
 			return _companyLocalService.getCompanyByWebId("www.able.com");
 		}
