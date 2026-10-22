@@ -53,7 +53,7 @@
 		"frontend-editor-ckeditor-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
-		"moment": "2.29.4",
+		"moment": "2.31.0",
 		"ratings-taglib": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",

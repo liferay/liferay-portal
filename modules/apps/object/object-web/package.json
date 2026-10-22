@@ -30,7 +30,7 @@
 		"fetch-mock": "12.6.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
-		"moment": "2.29.4",
+		"moment": "2.31.0",
 		"prop-types": "15.7.2",
 		"react": "18.2.0",
 		"react-flow-renderer": "9.7.0",

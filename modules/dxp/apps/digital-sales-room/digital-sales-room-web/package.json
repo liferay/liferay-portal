@@ -44,7 +44,7 @@
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"hash.js": "1.1.7",
-		"moment": "2.29.4",
+		"moment": "2.31.0",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-dropzone": "11.4.2",

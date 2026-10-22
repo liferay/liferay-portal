@@ -1,7 +1,7 @@
 {
 	"author": "",
 	"dependencies": {
-		"moment": "2.29.4",
+		"moment": "2.31.0",
 		"yauzl": "3.2.1"
 	},
 	"description": "",

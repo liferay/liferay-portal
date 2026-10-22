@@ -28,7 +28,7 @@
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"libphonenumber-js": "1.12.42",
-		"moment": "2.29.4",
+		"moment": "2.31.0",
 		"react": "18.2.0",
 		"react-dnd": "11.1.1",
 		"react-dnd-html5-backend": "11.1.1",

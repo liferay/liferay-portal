@@ -12,7 +12,7 @@
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
-		"moment": "2.29.4",
+		"moment": "2.31.0",
 		"prop-types": "15.7.2",
 		"react": "18.2.0"
 	},

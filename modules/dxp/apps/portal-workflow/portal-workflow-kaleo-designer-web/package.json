@@ -19,7 +19,7 @@
 		"dagre": "0.8.2",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
-		"moment": "2.29.4",
+		"moment": "2.31.0",
 		"prop-types": "15.7.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
