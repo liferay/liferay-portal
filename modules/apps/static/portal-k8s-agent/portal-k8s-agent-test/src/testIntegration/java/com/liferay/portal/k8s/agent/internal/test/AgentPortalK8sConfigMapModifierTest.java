@@ -8,15 +8,15 @@ package com.liferay.portal.k8s.agent.internal.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.osgi.util.StringPlus;
 import com.liferay.osgi.util.configuration.ConfigurationFactoryUtil;
-import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.k8s.agent.PortalK8sConfigMapModifier;
 import com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.k8s.agent.internal.test.util.KubernetesMockServerTestUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -32,37 +32,18 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
-import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
-import io.fabric8.kubernetes.api.model.ObjectMeta;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.NamespacedKubernetesClient;
-import io.fabric8.kubernetes.client.server.mock.KubernetesMixedDispatcher;
-import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
-import io.fabric8.mockwebserver.Context;
-import io.fabric8.mockwebserver.ServerRequest;
-import io.fabric8.mockwebserver.ServerResponse;
-
-import java.net.InetAddress;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Queue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import javax.sql.DataSource;
-
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -100,38 +81,7 @@ public class AgentPortalK8sConfigMapModifierTest {
 
 		_bundleContext = _bundle.getBundleContext();
 
-		Map<ServerRequest, Queue<ServerResponse>> serverResponses =
-			new HashMap<>();
-
-		_kubernetesMockServer = new KubernetesMockServer(
-			new Context(), new MockWebServer(), serverResponses,
-			new KubernetesMixedDispatcher(
-				serverResponses, Collections.emptyList()) {
-
-				@Override
-				public MockResponse dispatch(RecordedRequest request)
-					throws InterruptedException {
-
-					try (SafeCloseable safeCloseable =
-							ThreadContextClassLoaderUtil.swap(
-								DefaultKubernetesClient.class.
-									getClassLoader())) {
-
-						return super.dispatch(request);
-					}
-					catch (Exception exception) {
-						_log.error(exception);
-					}
-
-					return null;
-				}
-
-			},
-			false);
-
-		_kubernetesMockServer.init(InetAddress.getLoopbackAddress(), 0);
-
-		_kubernetesMockClient = _kubernetesMockServer.createClient();
+		KubernetesMockServerTestUtil.start();
 
 		_agentConfiguration = _configurationAdmin.getConfiguration(
 			PortalK8sAgentConfiguration.class.getName(), StringPool.QUESTION);
@@ -144,9 +94,9 @@ public class AgentPortalK8sConfigMapModifierTest {
 		ConfigurationTestUtil.saveConfiguration(
 			_agentConfiguration,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"apiServerHost", _kubernetesMockServer.getHostName()
+				"apiServerHost", KubernetesMockServerTestUtil.getHostName()
 			).put(
-				"apiServerPort", _kubernetesMockServer.getPort()
+				"apiServerPort", KubernetesMockServerTestUtil.getPort()
 			).put(
 				"apiServerSSL", Boolean.FALSE
 			).put(
@@ -176,9 +126,7 @@ public class AgentPortalK8sConfigMapModifierTest {
 	public static void tearDownClass() throws Exception {
 		ConfigurationTestUtil.deleteConfiguration(_agentConfiguration);
 
-		_kubernetesMockClient.close();
-
-		_kubernetesMockServer.destroy();
+		KubernetesMockServerTestUtil.stop();
 
 		_serviceTracker.close();
 	}
@@ -191,30 +139,25 @@ public class AgentPortalK8sConfigMapModifierTest {
 			null, webId, webId, webId, 0, true, true, null, null, null, null,
 			null, null);
 
-		ConfigMap configMap = _kubernetesMockClient.configMaps(
-		).withName(
-			webId.concat("-lxc-dxp-metadata")
-		).waitUntilCondition(
-			curConfigMap ->
-				(curConfigMap != null) &&
-				Objects.equals(
-					webId,
-					curConfigMap.getData(
-					).get(
-						"com.liferay.lxc.dxp.domains"
-					)),
-			3, TimeUnit.MINUTES
-		);
+		JSONObject configMapJSONObject = _waitForConfigMap(
+			webId.concat("-lxc-dxp-metadata"),
+			data ->
+				(data != null) &&
+				Objects.equals(webId, data.get("com.liferay.lxc.dxp.domains")),
+			3, TimeUnit.MINUTES);
 
-		Assert.assertNotNull(configMap);
+		JSONObject metadataJSONObject = configMapJSONObject.getJSONObject(
+			"metadata");
 
-		ObjectMeta objectMeta = configMap.getMetadata();
-
-		Map<String, String> labels = objectMeta.getLabels();
+		JSONObject labelsJSONObject = metadataJSONObject.getJSONObject(
+			"labels");
 
 		Assert.assertEquals(
-			webId, labels.get("dxp.lxc.liferay.com/virtualInstanceId"));
-		Assert.assertEquals("dxp", labels.get("lxc.liferay.com/metadataType"));
+			webId,
+			labelsJSONObject.getString(
+				"dxp.lxc.liferay.com/virtualInstanceId"));
+		Assert.assertEquals(
+			"dxp", labelsJSONObject.getString("lxc.liferay.com/metadataType"));
 
 		try {
 			UserTestUtil.setUser(TestPropsValues.getUser());
@@ -226,14 +169,10 @@ public class AgentPortalK8sConfigMapModifierTest {
 			PermissionThreadLocal.setPermissionChecker(null);
 		}
 
-		configMap = _kubernetesMockClient.configMaps(
-		).withName(
-			webId.concat("-lxc-dxp-metadata")
-		).waitUntilCondition(
-			curConfigMap -> curConfigMap == null, 20, TimeUnit.SECONDS
-		);
-
-		Assert.assertNull(configMap);
+		Assert.assertNull(
+			_waitForConfigMap(
+				webId.concat("-lxc-dxp-metadata"), Objects::isNull, 20,
+				TimeUnit.SECONDS));
 	}
 
 	@Test
@@ -268,35 +207,34 @@ public class AgentPortalK8sConfigMapModifierTest {
 			},
 			configMapName);
 
-		ConfigMap configMap = _kubernetesMockClient.configMaps(
-		).withName(
-			configMapName
-		).waitUntilCondition(
-			curConfigMap -> curConfigMap != null, 20, TimeUnit.SECONDS
-		);
+		JSONObject configMapJSONObject = _waitForConfigMap(
+			configMapName, Objects::nonNull, 20, TimeUnit.SECONDS);
 
-		Assert.assertNotNull(configMap);
-
-		Map<String, String> data = configMap.getData();
+		JSONObject dataJSONObject = configMapJSONObject.getJSONObject("data");
 
 		Assert.assertEquals(
 			TestPropsValues.COMPANY_WEB_ID,
-			data.get("com.liferay.lxc.dxp.domains"));
+			dataJSONObject.getString("com.liferay.lxc.dxp.domains"));
 		Assert.assertEquals(
 			TestPropsValues.COMPANY_WEB_ID,
-			data.get("com.liferay.lxc.dxp.main.domain"));
+			dataJSONObject.getString("com.liferay.lxc.dxp.main.domain"));
 
-		ObjectMeta objectMeta = configMap.getMetadata();
+		JSONObject metadataJSONObject = configMapJSONObject.getJSONObject(
+			"metadata");
 
-		Map<String, String> labels = objectMeta.getLabels();
+		JSONObject labelsJSONObject = metadataJSONObject.getJSONObject(
+			"labels");
 
 		Assert.assertEquals(
 			TestPropsValues.COMPANY_WEB_ID,
-			labels.get("dxp.lxc.liferay.com/virtualInstanceId"));
+			labelsJSONObject.getString(
+				"dxp.lxc.liferay.com/virtualInstanceId"));
 		Assert.assertEquals(
-			serviceId, labels.get("ext.lxc.liferay.com/serviceId"));
+			serviceId,
+			labelsJSONObject.getString("ext.lxc.liferay.com/serviceId"));
 		Assert.assertEquals(
-			"ext-init", labels.get("lxc.liferay.com/metadataType"));
+			"ext-init",
+			labelsJSONObject.getString("lxc.liferay.com/metadataType"));
 	}
 
 	@Test
@@ -360,24 +298,19 @@ public class AgentPortalK8sConfigMapModifierTest {
 
 		Assert.assertEquals(PortalK8sConfigMapModifier.Result.BUFFERED, result);
 
-		ConfigMap configMap = _kubernetesMockClient.configMaps(
-		).withName(
-			configMapName
-		).waitUntilCondition(
-			curConfigMap -> curConfigMap != null, 20, TimeUnit.SECONDS
-		);
+		JSONObject configMapJSONObject = _waitForConfigMap(
+			configMapName, Objects::nonNull, 20, TimeUnit.SECONDS);
 
-		Assert.assertNotNull(configMap);
-
-		Map<String, String> data = configMap.getData();
+		JSONObject dataJSONObject = configMapJSONObject.getJSONObject("data");
 
 		Assert.assertEquals(
 			TestPropsValues.COMPANY_WEB_ID,
-			data.get("com.liferay.lxc.dxp.main.domain"));
+			dataJSONObject.getString("com.liferay.lxc.dxp.main.domain"));
 
-		ObjectMeta objectMeta = configMap.getMetadata();
+		JSONObject metadataJSONObject = configMapJSONObject.getJSONObject(
+			"metadata");
 
-		Assert.assertEquals(Long.valueOf(1), objectMeta.getGeneration());
+		Assert.assertEquals(1, metadataJSONObject.getLong("generation"));
 	}
 
 	@Test
@@ -407,23 +340,19 @@ public class AgentPortalK8sConfigMapModifierTest {
 			},
 			configMapName);
 
-		ConfigMap configMap = _kubernetesMockClient.configMaps(
-		).withName(
-			configMapName
-		).waitUntilCondition(
-			curConfigMap -> curConfigMap != null, 20, TimeUnit.SECONDS
-		);
+		JSONObject configMapJSONObject = _waitForConfigMap(
+			configMapName, Objects::nonNull, 20, TimeUnit.SECONDS);
 
-		Assert.assertNotNull(configMap);
-
-		Map<String, String> configMapData = configMap.getData();
+		JSONObject dataJSONObject = configMapJSONObject.getJSONObject("data");
 
 		Assert.assertEquals(
-			randomString, configMapData.get("com.liferay.lxc.dxp.main.domain"));
+			randomString,
+			dataJSONObject.getString("com.liferay.lxc.dxp.main.domain"));
 
-		ObjectMeta objectMeta = configMap.getMetadata();
+		JSONObject metadataJSONObject = configMapJSONObject.getJSONObject(
+			"metadata");
 
-		Assert.assertEquals(Long.valueOf(1), objectMeta.getGeneration());
+		Assert.assertEquals(1, metadataJSONObject.getLong("generation"));
 
 		_portalK8sConfigMapModifier.modifyConfigMap(
 			configMapModel -> {
@@ -449,26 +378,18 @@ public class AgentPortalK8sConfigMapModifierTest {
 			},
 			configMapName);
 
-		configMap = _kubernetesMockClient.configMaps(
-		).withName(
-			configMapName
-		).waitUntilCondition(
-			curConfigMap ->
-				(curConfigMap != null) &&
+		configMapJSONObject = _waitForConfigMap(
+			configMapName,
+			data ->
+				(data != null) &&
 				Objects.equals(
 					TestPropsValues.COMPANY_WEB_ID,
-					curConfigMap.getData(
-					).get(
-						"com.liferay.lxc.dxp.main.domain"
-					)),
-			20, TimeUnit.SECONDS
-		);
+					data.get("com.liferay.lxc.dxp.main.domain")),
+			20, TimeUnit.SECONDS);
 
-		Assert.assertNotNull(configMap);
+		metadataJSONObject = configMapJSONObject.getJSONObject("metadata");
 
-		objectMeta = configMap.getMetadata();
-
-		Assert.assertEquals(Long.valueOf(2), objectMeta.getGeneration());
+		Assert.assertEquals(2, metadataJSONObject.getLong("generation"));
 	}
 
 	@Test
@@ -477,40 +398,44 @@ public class AgentPortalK8sConfigMapModifierTest {
 
 		String mainDomain = serviceId.concat("-extproject.lfr.sh");
 
-		Configuration configuration = ConfigurationTestUtil.updateConfiguration(
-			"test.pid",
-			() -> {
-				ConfigMapBuilder configMapBuilder = new ConfigMapBuilder();
+		JSONObject configMapJSONObject = JSONUtil.put(
+			"data",
+			JSONUtil.put(
+				"foo.client-extension-config.json",
+				"{\"test.pid\": {\"test.key\": \"test.value\"}}")
+		).put(
+			"metadata",
+			JSONUtil.put(
+				"annotations",
+				JSONUtil.put(
+					"ext.lxc.liferay.com/domains",
+					serviceId.concat("-extproject.lfr.sh")
+				).put(
+					"ext.lxc.liferay.com/mainDomain", mainDomain
+				)
+			).put(
+				"labels",
+				JSONUtil.put(
+					"dxp.lxc.liferay.com/virtualInstanceId",
+					TestPropsValues.COMPANY_WEB_ID
+				).put(
+					"ext.lxc.liferay.com/projectName",
+					RandomTestUtil.randomString()
+				).put(
+					"ext.lxc.liferay.com/serviceId", serviceId
+				).put(
+					"lxc.liferay.com/metadataType", "ext-provision"
+				)
+			).put(
+				"name",
+				StringBundler.concat(
+					serviceId, "-", TestPropsValues.COMPANY_WEB_ID,
+					"-lxc-ext-provision-metadata")
+			)
+		);
 
-				_kubernetesMockClient.configMaps(
-				).createOrReplace(
-					configMapBuilder.withNewMetadata(
-					).withName(
-						StringBundler.concat(
-							serviceId, "-", TestPropsValues.COMPANY_WEB_ID,
-							"-lxc-ext-provision-metadata")
-					).addToLabels(
-						"dxp.lxc.liferay.com/virtualInstanceId",
-						TestPropsValues.COMPANY_WEB_ID
-					).addToAnnotations(
-						"ext.lxc.liferay.com/domains",
-						serviceId.concat("-extproject.lfr.sh")
-					).addToAnnotations(
-						"ext.lxc.liferay.com/mainDomain", mainDomain
-					).addToLabels(
-						"ext.lxc.liferay.com/projectName",
-						RandomTestUtil.randomString()
-					).addToLabels(
-						"ext.lxc.liferay.com/serviceId", serviceId
-					).addToLabels(
-						"lxc.liferay.com/metadataType", "ext-provision"
-					).endMetadata(
-					).addToData(
-						"foo.client-extension-config.json",
-						"{\"test.pid\": {\"test.key\": \"test.value\"}}"
-					).build()
-				);
-			});
+		Configuration configuration = ConfigurationTestUtil.updateConfiguration(
+			"test.pid", () -> _createOrReplaceConfigMap(configMapJSONObject));
 
 		Assert.assertNotNull(configuration);
 
@@ -541,41 +466,46 @@ public class AgentPortalK8sConfigMapModifierTest {
 
 		String mainDomain = serviceId.concat("-extproject.lfr.sh");
 
+		JSONObject configMapJSONObject = JSONUtil.put(
+			"data",
+			JSONUtil.put(
+				"foo.client-extension-config.json",
+				"{\"test.pid~foo\": {\"test.key\": \"test.value\"}}")
+		).put(
+			"metadata",
+			JSONUtil.put(
+				"annotations",
+				JSONUtil.put(
+					"ext.lxc.liferay.com/domains",
+					serviceId.concat("-extproject.lfr.sh")
+				).put(
+					"ext.lxc.liferay.com/mainDomain", mainDomain
+				)
+			).put(
+				"labels",
+				JSONUtil.put(
+					"dxp.lxc.liferay.com/virtualInstanceId",
+					TestPropsValues.COMPANY_WEB_ID
+				).put(
+					"ext.lxc.liferay.com/projectName",
+					RandomTestUtil.randomString()
+				).put(
+					"ext.lxc.liferay.com/serviceId", serviceId
+				).put(
+					"lxc.liferay.com/metadataType", "ext-provision"
+				)
+			).put(
+				"name",
+				StringBundler.concat(
+					serviceId, "-", TestPropsValues.COMPANY_WEB_ID,
+					"-lxc-ext-provision-metadata")
+			)
+		);
+
 		Configuration configuration =
 			ConfigurationTestUtil.updateFactoryConfiguration(
 				"test.pid~foo/" + TestPropsValues.COMPANY_WEB_ID,
-				() -> {
-					ConfigMapBuilder configMapBuilder = new ConfigMapBuilder();
-
-					_kubernetesMockClient.configMaps(
-					).createOrReplace(
-						configMapBuilder.withNewMetadata(
-						).withName(
-							StringBundler.concat(
-								serviceId, "-", TestPropsValues.COMPANY_WEB_ID,
-								"-lxc-ext-provision-metadata")
-						).addToLabels(
-							"dxp.lxc.liferay.com/virtualInstanceId",
-							TestPropsValues.COMPANY_WEB_ID
-						).addToAnnotations(
-							"ext.lxc.liferay.com/domains",
-							serviceId.concat("-extproject.lfr.sh")
-						).addToAnnotations(
-							"ext.lxc.liferay.com/mainDomain", mainDomain
-						).addToLabels(
-							"ext.lxc.liferay.com/projectName",
-							RandomTestUtil.randomString()
-						).addToLabels(
-							"ext.lxc.liferay.com/serviceId", serviceId
-						).addToLabels(
-							"lxc.liferay.com/metadataType", "ext-provision"
-						).endMetadata(
-						).addToData(
-							"foo.client-extension-config.json",
-							"{\"test.pid~foo\": {\"test.key\": \"test.value\"}}"
-						).build()
-					);
-				});
+				() -> _createOrReplaceConfigMap(configMapJSONObject));
 
 		Assert.assertNotNull(configuration);
 
@@ -659,8 +589,25 @@ public class AgentPortalK8sConfigMapModifierTest {
 		}
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		AgentPortalK8sConfigMapModifierTest.class);
+	private void _createOrReplaceConfigMap(JSONObject configMapJSONObject) {
+		KubernetesMockServerTestUtil.createOrReplaceConfigMap(
+			configMapJSONObject.toString());
+	}
+
+	private JSONObject _waitForConfigMap(
+			String name, Predicate<Map<String, String>> dataPredicate,
+			long amount, TimeUnit timeUnit)
+		throws Exception {
+
+		String json = KubernetesMockServerTestUtil.waitForConfigMap(
+			name, dataPredicate, amount, timeUnit);
+
+		if (json == null) {
+			return null;
+		}
+
+		return JSONFactoryUtil.createJSONObject(json);
+	}
 
 	private static Configuration _agentConfiguration;
 	private static Bundle _bundle;
@@ -669,8 +616,6 @@ public class AgentPortalK8sConfigMapModifierTest {
 	@Inject
 	private static ConfigurationAdmin _configurationAdmin;
 
-	private static NamespacedKubernetesClient _kubernetesMockClient;
-	private static KubernetesMockServer _kubernetesMockServer;
 	private static PortalK8sConfigMapModifier _portalK8sConfigMapModifier;
 	private static ServiceTracker
 		<PortalK8sConfigMapModifier, PortalK8sConfigMapModifier>
