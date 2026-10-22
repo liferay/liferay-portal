@@ -273,10 +273,8 @@ public class SignDSRequestMVCRenderCommandTest {
 			HttpComponentsUtil.getParameter(
 				redirectedURL, "dsRequestId", false));
 		Assert.assertFalse(
-			redirectedURL,
 			redirectedURL.contains("/-/digital_signature/sign/"));
-		Assert.assertTrue(
-			redirectedURL, redirectedURL.contains(layout.getFriendlyURL()));
+		Assert.assertTrue(redirectedURL.contains(layout.getFriendlyURL()));
 	}
 
 	private void _testRenderWithNonrecipientUser() throws Exception {
@@ -297,18 +295,6 @@ public class SignDSRequestMVCRenderCommandTest {
 	}
 
 	private void _testRenderWithPopUpState() throws Exception {
-		FileEntry fileEntry = _addFileEntry(_portletLayout.getPlid());
-
-		ObjectEntry objectEntry = _addDSRequest(fileEntry.getFileEntryId());
-
-		ThemeDisplay themeDisplay = _getThemeDisplay();
-
-		themeDisplay.setStatePopUp(true);
-
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest(
-				objectEntry.getObjectEntryId(), themeDisplay);
-
 		List<Object[]> argumentsList = new ArrayList<>();
 		List<String> methodNames = new ArrayList<>();
 
@@ -325,6 +311,18 @@ public class SignDSRequestMVCRenderCommandTest {
 
 							return RandomTestUtil.randomString();
 						}));
+
+		FileEntry fileEntry = _addFileEntry(_portletLayout.getPlid());
+
+		ObjectEntry objectEntry = _addDSRequest(fileEntry.getFileEntryId());
+
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
+		themeDisplay.setStatePopUp(true);
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				objectEntry.getObjectEntryId(), themeDisplay);
 
 		try {
 			Assert.assertEquals(

@@ -215,7 +215,6 @@ public class OpenDSRequestStrutsActionTest {
 			WindowState.MAXIMIZED.toString(),
 			HttpComponentsUtil.getParameter(redirectedURL, "p_p_state", false));
 		Assert.assertTrue(
-			redirectedURL,
 			redirectedURL.contains(
 				layout.getFriendlyURL() + "/-/digital_signature/sign/" +
 					dsRequestId));
@@ -309,8 +308,7 @@ public class OpenDSRequestStrutsActionTest {
 
 			String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
 
-			Assert.assertFalse(
-				redirectedURL, redirectedURL.contains("example.com"));
+			Assert.assertFalse(redirectedURL.contains("example.com"));
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -333,10 +331,8 @@ public class OpenDSRequestStrutsActionTest {
 
 		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
 
+		Assert.assertTrue(redirectedURL.contains("/portal/login"));
 		Assert.assertTrue(
-			redirectedURL, redirectedURL.contains("/portal/login"));
-		Assert.assertTrue(
-			redirectedURL,
 			redirectedURL.contains(
 				URLCodec.encodeURL("dsRequestId=" + dsRequestId)));
 	}
@@ -407,15 +403,14 @@ public class OpenDSRequestStrutsActionTest {
 		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
 
 		Assert.assertEquals(
-			LiferayWindowState.POP_UP.toString(),
-			HttpComponentsUtil.getParameter(redirectedURL, "p_p_state", false));
-		Assert.assertEquals(
 			backURL,
 			URLCodec.decodeURL(
 				HttpComponentsUtil.getParameter(
 					redirectedURL, portletNamespace + "backURL", false)));
+		Assert.assertEquals(
+			LiferayWindowState.POP_UP.toString(),
+			HttpComponentsUtil.getParameter(redirectedURL, "p_p_state", false));
 		Assert.assertTrue(
-			redirectedURL,
 			redirectedURL.contains(
 				layout.getFriendlyURL() + "/-/digital_signature/sign/" +
 					dsRequestId));

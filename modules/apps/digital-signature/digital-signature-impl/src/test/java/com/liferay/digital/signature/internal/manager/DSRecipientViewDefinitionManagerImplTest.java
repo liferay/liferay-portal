@@ -27,7 +27,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.Serializable;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -48,13 +48,11 @@ public class DSRecipientViewDefinitionManagerImplTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@AfterClass
-	public static void tearDownClass() {
-		_digitalSignatureConfigurationUtilMockedStatic.close();
-	}
-
 	@Before
 	public void setUp() {
+		_digitalSignatureConfigurationUtilMockedStatic = Mockito.mockStatic(
+			DigitalSignatureConfigurationUtil.class);
+
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
@@ -69,6 +67,11 @@ public class DSRecipientViewDefinitionManagerImplTest {
 		);
 
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+	}
+
+	@After
+	public void tearDown() {
+		_digitalSignatureConfigurationUtilMockedStatic.close();
 	}
 
 	@Test
@@ -250,10 +253,8 @@ public class DSRecipientViewDefinitionManagerImplTest {
 		return dsHttp;
 	}
 
-	private static final MockedStatic<DigitalSignatureConfigurationUtil>
-		_digitalSignatureConfigurationUtilMockedStatic = Mockito.mockStatic(
-			DigitalSignatureConfigurationUtil.class);
-
+	private MockedStatic<DigitalSignatureConfigurationUtil>
+		_digitalSignatureConfigurationUtilMockedStatic;
 	private final DSRecipientViewDefinitionManagerImpl
 		_dsRecipientViewDefinitionManagerImpl =
 			new DSRecipientViewDefinitionManagerImpl();

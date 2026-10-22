@@ -56,10 +56,10 @@ public class DSRecipientViewDefinitionManagerImpl
 			DSRequestRecipient dsRequestRecipient, String portalURL)
 		throws Exception {
 
-		long userId = dsRequestRecipient.getUserId();
-
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+
+		long userId = dsRequestRecipient.getUserId();
 
 		if ((permissionChecker == null) ||
 			((permissionChecker.getUserId() != userId) &&

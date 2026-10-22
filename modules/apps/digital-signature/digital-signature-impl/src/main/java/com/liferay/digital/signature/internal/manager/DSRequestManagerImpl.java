@@ -1237,13 +1237,13 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				title = signedFileName;
 			}
 
-			ServiceContext serviceContext = _getServiceContext(
-				companyId, fileEntry.getGroupId(), userId);
-
 			boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
 
 			try {
 				WorkflowThreadLocal.setEnabled(false);
+
+				ServiceContext serviceContext = _getServiceContext(
+					companyId, fileEntry.getGroupId(), userId);
 
 				fileEntry = _dlAppLocalService.updateFileEntry(
 					userId, fileEntryId, signedFileName,

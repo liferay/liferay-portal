@@ -101,7 +101,7 @@ public class OpenDSRequestStrutsAction implements StrutsAction {
 			_portal.getLayoutFullURL(layout, themeDisplay),
 			"/-/digital_signature/sign/", dsRequest.getDSRequestId());
 
-		String windowState = WindowState.MAXIMIZED.toString();
+		String windowStateString = WindowState.MAXIMIZED.toString();
 
 		if (LiferayWindowState.isPopUp(httpServletRequest)) {
 			String portletNamespace = _portal.getPortletNamespace(
@@ -116,11 +116,12 @@ public class OpenDSRequestStrutsAction implements StrutsAction {
 					signURL, portletNamespace + "backURL", backURL);
 			}
 
-			windowState = LiferayWindowState.POP_UP.toString();
+			windowStateString = LiferayWindowState.POP_UP.toString();
 		}
 
 		httpServletResponse.sendRedirect(
-			HttpComponentsUtil.setParameter(signURL, "p_p_state", windowState));
+			HttpComponentsUtil.setParameter(
+				signURL, "p_p_state", windowStateString));
 
 		return null;
 	}

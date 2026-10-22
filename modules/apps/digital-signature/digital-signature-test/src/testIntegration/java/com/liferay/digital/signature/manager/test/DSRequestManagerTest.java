@@ -714,16 +714,14 @@ public class DSRequestManagerTest {
 					new Class<?>[] {DSEnvelopeManager.class},
 					(proxy, method, arguments) -> dsEnvelope1));
 
-		byte[] bytes = FileUtil.getBytes(
-			getClass(), "dependencies/SignedDocument.pdf");
-
 		DSDocumentManager dsDocumentManager =
 			(DSDocumentManager)ReflectionTestUtil.getAndSetFieldValue(
 				_dsRequestManager, "_dsDocumentManager",
 				ProxyUtil.newProxyInstance(
 					DSDocumentManager.class.getClassLoader(),
 					new Class<?>[] {DSDocumentManager.class},
-					(proxy, method, arguments) -> bytes));
+					(proxy, method, arguments) -> FileUtil.getBytes(
+						getClass(), "dependencies/SignedDocument.pdf")));
 
 		try {
 			DSEnvelope dsEnvelope2 = _createDSEnvelope(
@@ -1593,7 +1591,7 @@ public class DSRequestManagerTest {
 
 			_dsRequestManager.updateDSRequest(dsRequest.getDSRequestId());
 
-			Assert.assertTrue(methodNames.toString(), methodNames.isEmpty());
+			Assert.assertTrue(methodNames.isEmpty());
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(
@@ -1773,7 +1771,7 @@ public class DSRequestManagerTest {
 					(proxy, method, arguments) -> {
 						if (Objects.equals(dsDocumentId, arguments[2])) {
 							String json = JSONUtil.put(
-								"errorCode", "NOT_FOUND"
+								"errorCode", RandomTestUtil.randomString()
 							).toString();
 
 							return json.getBytes();

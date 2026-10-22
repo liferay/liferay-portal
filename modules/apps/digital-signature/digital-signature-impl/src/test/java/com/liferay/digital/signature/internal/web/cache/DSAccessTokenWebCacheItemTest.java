@@ -7,6 +7,7 @@ package com.liferay.digital.signature.internal.web.cache;
 
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -64,7 +65,7 @@ public class DSAccessTokenWebCacheItemTest {
 	private String _getPEM(String rsaPrivateKey) {
 		DSAccessTokenWebCacheItem dsAccessTokenWebCacheItem =
 			new DSAccessTokenWebCacheItem(
-				"https://account-d.docusign.com", "api-username",
+				"https://" + RandomTestUtil.randomString(), "api-username",
 				CompanyConstants.SYSTEM, "sandbox", "integration-key",
 				rsaPrivateKey);
 

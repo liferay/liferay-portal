@@ -196,6 +196,8 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 
 		DSEnvelope dsEnvelope = new DSEnvelope();
 
+		dsEnvelope.setDSEnvelopeId(dsEnvelopeId);
+
 		DSRecipient dsRecipient = new DSRecipient();
 
 		User user = TestPropsValues.getUser();
@@ -205,8 +207,8 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 
 		dsRecipient.setStatus(dsRecipientStatus);
 
-		dsEnvelope.setDSEnvelopeId(dsEnvelopeId);
 		dsEnvelope.setDSRecipients(ListUtil.fromArray(dsRecipient));
+
 		dsEnvelope.setStatus(DSRequestConstants.STATUS_SENT);
 
 		return dsEnvelope;
@@ -342,8 +344,6 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 	private void _testProcessActionWithDeclinedDSRecipient() throws Exception {
 		String dsEnvelopeId = RandomTestUtil.randomString();
 
-		ObjectEntry objectEntry = _addDSRequest(dsEnvelopeId);
-
 		DSEnvelope dsEnvelope = _createDSEnvelope(
 			dsEnvelopeId, DSRequestConstants.STATUS_DECLINED);
 
@@ -360,6 +360,8 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 
 						return dsEnvelope;
 					}));
+
+		ObjectEntry objectEntry = _addDSRequest(dsEnvelopeId);
 
 		try {
 			HttpServletRequest httpServletRequest = _processAction(
