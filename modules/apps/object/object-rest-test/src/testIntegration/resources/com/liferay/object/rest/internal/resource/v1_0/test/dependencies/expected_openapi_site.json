@@ -1219,7 +1219,53 @@
 						"in": "query",
 						"name": "filter",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"x-filterable": {
+								"creator": {
+									"type": "string"
+								},
+								"creatorId": {
+									"type": "integer"
+								},
+								"dateCreated": {
+									"type": "date_time"
+								},
+								"dateModified": {
+									"type": "date_time"
+								},
+								"externalReferenceCode": {
+									"type": "string"
+								},
+								"field": {
+									"type": "string"
+								},
+								"folderId": {
+									"type": "integer"
+								},
+								"id": {
+									"type": "id"
+								},
+								"keywords": {
+									"items": "string",
+									"type": "array"
+								},
+								"status": {
+									"type": "integer"
+								},
+								"taxonomyCategoryIds": {
+									"items": "integer",
+									"type": "array"
+								},
+								"title": {
+									"type": "string"
+								},
+								"userId": {
+									"type": "integer"
+								},
+								"version": {
+									"type": "integer"
+								}
+							}
 						}
 					},
 					{
@@ -1364,7 +1410,53 @@
 						"in": "query",
 						"name": "filter",
 						"schema": {
-							"type": "string"
+							"type": "string",
+							"x-filterable": {
+								"creator": {
+									"type": "string"
+								},
+								"creatorId": {
+									"type": "integer"
+								},
+								"dateCreated": {
+									"type": "date_time"
+								},
+								"dateModified": {
+									"type": "date_time"
+								},
+								"externalReferenceCode": {
+									"type": "string"
+								},
+								"field": {
+									"type": "string"
+								},
+								"folderId": {
+									"type": "integer"
+								},
+								"id": {
+									"type": "id"
+								},
+								"keywords": {
+									"items": "string",
+									"type": "array"
+								},
+								"status": {
+									"type": "integer"
+								},
+								"taxonomyCategoryIds": {
+									"items": "integer",
+									"type": "array"
+								},
+								"title": {
+									"type": "string"
+								},
+								"userId": {
+									"type": "integer"
+								},
+								"version": {
+									"type": "integer"
+								}
+							}
 						}
 					},
 					{
