@@ -71,9 +71,6 @@ public class CPConstants {
 	public static final String SERVICE_NAME_CP_FRIENDLY_URL =
 		"com.liferay.commerce.product.friendly.url";
 
-	public static final String SERVICE_NAME_CP_OPTION =
-		"com.liferay.commerce.product.option";
-
 	public static final String SERVICE_NAME_CP_VERSIONING =
 		"com.liferay.commerce.product.versioning";
 

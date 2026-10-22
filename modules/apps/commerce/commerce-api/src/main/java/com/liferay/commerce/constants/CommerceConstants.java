@@ -52,9 +52,6 @@ public class CommerceConstants {
 		SERVICE_NAME_COMMERCE_ORDER_IMPORTER_DATE_FORMAT =
 			"com.liferay.commerce.order.importer.date.format";
 
-	public static final String SERVICE_NAME_COMMERCE_PRICE =
-		"com.liferay.commerce.price";
-
 	public static final String SERVICE_NAME_COMMERCE_SHIPPING =
 		"com.liferay.commerce.shipping";
 

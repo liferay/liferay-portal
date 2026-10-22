@@ -19,9 +19,6 @@ public class CommercePricingConstants {
 
 	public static final String ORDER_BY_LOWEST_ENTRY = "lowest";
 
-	public static final String SERVICE_NAME =
-		"com.liferay.commerce.pricing.service.name";
-
 	/**
 	 * @deprecated As of Athanasius (7.3.x)
 	 */
