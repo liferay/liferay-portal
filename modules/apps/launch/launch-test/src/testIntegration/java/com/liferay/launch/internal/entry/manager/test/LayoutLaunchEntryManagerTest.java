@@ -12,6 +12,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -50,6 +51,14 @@ public class LayoutLaunchEntryManagerTest
 		super.testFetchDraft();
 
 		_testFetchDraftLayoutByLaunchSetId();
+	}
+
+	@Override
+	@Test
+	public void testGetPreviewBaseModel() throws Exception {
+		super.testGetPreviewBaseModel();
+
+		_testGetPreviewBaseModelPreservesPublishedFriendlyURL();
 	}
 
 	@Override
@@ -239,6 +248,29 @@ public class LayoutLaunchEntryManagerTest
 
 		Assert.assertEquals(
 			mainDraftLayout, _layoutLocalService.fetchDraftLayout(classPK, 0));
+	}
+
+	private void _testGetPreviewBaseModelPreservesPublishedFriendlyURL()
+		throws Exception {
+
+		long classPK = addEntry();
+
+		Layout publishedLayout = _layoutLocalService.getLayout(classPK);
+
+		LaunchEntryManager.Draft draft = addDraft(classPK);
+
+		Layout previewBaseModel = (Layout)draft.getPreviewBaseModel();
+
+		Assert.assertEquals(draft.getDraftId(), previewBaseModel.getPlid());
+		Assert.assertEquals(
+			publishedLayout.getFriendlyURL(),
+			previewBaseModel.getFriendlyURL());
+		Assert.assertEquals(
+			publishedLayout.getFriendlyURL(LocaleUtil.getSiteDefault()),
+			previewBaseModel.getFriendlyURL(LocaleUtil.getSiteDefault()));
+		Assert.assertEquals(
+			publishedLayout.getFriendlyURLMap(),
+			previewBaseModel.getFriendlyURLMap());
 	}
 
 	private void _updateLayout(long plid, Values value) throws Exception {
