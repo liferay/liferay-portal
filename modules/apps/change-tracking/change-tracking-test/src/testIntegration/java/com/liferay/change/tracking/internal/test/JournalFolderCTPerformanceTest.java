@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.IndexStatusManagerThreadLocal;
 import com.liferay.portal.kernel.test.performance.PerformanceTimer;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
@@ -40,8 +41,10 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,12 +64,8 @@ public class JournalFolderCTPerformanceTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Before
-	public void setUp() throws Exception {
-		_ctCollection = _ctCollectionLocalService.addCTCollection(
-			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			0, RandomTestUtil.randomString(), null);
-
+	@BeforeClass
+	public static void setUpClass() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
 		_journalFolder = JournalTestUtil.addFolder(
@@ -79,22 +78,45 @@ public class JournalFolderCTPerformanceTest {
 			_group.getGroupId(), _ddmStructure.getStructureId(),
 			_portal.getClassNameId(JournalArticle.class));
 
-		for (int i = 0; i < _BATCH_SIZE; i++) {
-			JournalTestUtil.addArticleWithXMLContent(
-				_group.getGroupId(), _journalFolder.getFolderId(),
-				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
-				DDMStructureTestUtil.getSampleStructuredContent(),
-				_ddmStructure.getStructureKey(), _ddmTemplate.getTemplateKey());
-		}
+		boolean indexReadOnly = IndexStatusManagerThreadLocal.isIndexReadOnly();
 
-		for (int i = 0; i < _BATCH_SIZE; i++) {
-			JournalTestUtil.addArticleWithXMLContent(
-				_group.getGroupId(),
-				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
-				DDMStructureTestUtil.getSampleStructuredContent(),
-				_ddmStructure.getStructureKey(), _ddmTemplate.getTemplateKey());
+		IndexStatusManagerThreadLocal.setIndexReadOnly(true);
+
+		try {
+			for (int i = 0; i < _BATCH_SIZE; i++) {
+				JournalTestUtil.addArticleWithXMLContent(
+					_group.getGroupId(), _journalFolder.getFolderId(),
+					JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+					DDMStructureTestUtil.getSampleStructuredContent(),
+					_ddmStructure.getStructureKey(),
+					_ddmTemplate.getTemplateKey());
+			}
+
+			for (int i = 0; i < _BATCH_SIZE; i++) {
+				JournalTestUtil.addArticleWithXMLContent(
+					_group.getGroupId(),
+					JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+					JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+					DDMStructureTestUtil.getSampleStructuredContent(),
+					_ddmStructure.getStructureKey(),
+					_ddmTemplate.getTemplateKey());
+			}
 		}
+		finally {
+			IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
+		}
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		GroupTestUtil.deleteGroup(_group);
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		_ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), null);
 
 		_user = UserTestUtil.addUser(_group.getGroupId());
 
@@ -104,8 +126,6 @@ public class JournalFolderCTPerformanceTest {
 	@After
 	public void tearDown() throws Exception {
 		_ctCollectionLocalService.deleteCTCollection(_ctCollection);
-
-		GroupTestUtil.deleteGroup(_group);
 	}
 
 	@Test
@@ -193,21 +213,21 @@ public class JournalFolderCTPerformanceTest {
 
 	private static final int _BATCH_SIZE = 500;
 
+	private static DDMStructure _ddmStructure;
+	private static DDMTemplate _ddmTemplate;
+	private static Group _group;
+	private static JournalFolder _journalFolder;
+
+	@Inject
+	private static Portal _portal;
+
 	private CTCollection _ctCollection;
 
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
 
-	private DDMStructure _ddmStructure;
-	private DDMTemplate _ddmTemplate;
-	private Group _group;
-	private JournalFolder _journalFolder;
-
 	@Inject
 	private JournalFolderService _journalFolderService;
-
-	@Inject
-	private Portal _portal;
 
 	@DeleteAfterTestRun
 	private User _user;
