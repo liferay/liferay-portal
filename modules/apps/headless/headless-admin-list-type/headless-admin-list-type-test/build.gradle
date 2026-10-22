@@ -5,6 +5,9 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+	testIntegrationImplementation project(":apps:export-import:export-import-api")
+	testIntegrationImplementation project(":apps:export-import:export-import-report-api")
+	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:headless:headless-admin-list-type:headless-admin-list-type-api")
 	testIntegrationImplementation project(":apps:headless:headless-admin-list-type:headless-admin-list-type-client")
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
