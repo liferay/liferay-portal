@@ -442,6 +442,7 @@ public class JUnitBatchBuildTestrayCaseResult
 	private List<TestClassReport> _getTestClassReports(
 		DownstreamBuildReport downstreamBuildReport) {
 
+		String name = getName();
 		List<TestClassReport> testClassReports = new ArrayList<>();
 
 		for (TestClassReport testClassReport :
@@ -449,8 +450,8 @@ public class JUnitBatchBuildTestrayCaseResult
 
 			String testClassName = testClassReport.getTestClassName();
 
-			if (testClassName.equals(getName()) ||
-				testClassName.startsWith(getName() + "$")) {
+			if (testClassName.equals(name) ||
+				testClassName.startsWith(name + "$")) {
 
 				testClassReports.add(testClassReport);
 
@@ -464,7 +465,7 @@ public class JUnitBatchBuildTestrayCaseResult
 			for (TestReport testReport : testClassReport.getTestReports()) {
 				String testName = testReport.getTestName();
 
-				if (testName.equals(getName())) {
+				if (testName.equals(name)) {
 					testClassReports.add(testClassReport);
 
 					break;
