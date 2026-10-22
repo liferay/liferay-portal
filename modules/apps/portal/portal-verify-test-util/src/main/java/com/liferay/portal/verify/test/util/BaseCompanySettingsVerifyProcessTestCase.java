@@ -65,7 +65,9 @@ public abstract class BaseCompanySettingsVerifyProcessTestCase
 				ModifiableSettings modifiableSettings =
 					settings.getModifiableSettings();
 
-				modifiableSettings.reset();
+				for (String key : modifiableSettings.getModifiedKeys()) {
+					modifiableSettings.reset(key);
+				}
 
 				modifiableSettings.store();
 			});
