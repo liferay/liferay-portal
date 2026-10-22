@@ -6,15 +6,18 @@
 package com.liferay.change.tracking.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
 import com.liferay.change.tracking.constants.CTActionKeys;
 import com.liferay.change.tracking.constants.CTPortletKeys;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -31,11 +34,12 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -44,12 +48,18 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import jakarta.portlet.PortletException;
 
+import java.util.Dictionary;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Gislayne Vitorino
@@ -66,14 +76,36 @@ public class UpdatePermissionsMVCActionCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_company = CompanyTestUtil.addCompany();
+		Configuration configuration = _getConfiguration();
+
+		if (configuration != null) {
+			_originalProperties = configuration.getProperties();
+		}
 
 		_ctCollection = _ctCollectionLocalService.addCTCollection(
-			null, _company.getCompanyId(), TestPropsValues.getUserId(), 0,
-			RandomTestUtil.randomString(), null);
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), null);
 
 		_ownerRole = _roleLocalService.getRole(
-			_company.getCompanyId(), RoleConstants.OWNER);
+			TestPropsValues.getCompanyId(), RoleConstants.OWNER);
+
+		_role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			CTCollection.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		Configuration configuration = _getConfiguration();
+
+		if (_originalProperties != null) {
+			ConfigurationTestUtil.saveConfiguration(
+				configuration, _originalProperties);
+		}
+		else if (configuration != null) {
+			ConfigurationTestUtil.deleteConfiguration(configuration);
+		}
 	}
 
 	@Test
@@ -84,27 +116,25 @@ public class UpdatePermissionsMVCActionCommandTest {
 
 			Assert.assertTrue(
 				_resourcePermissionLocalService.hasResourcePermission(
-					_company.getCompanyId(), CTCollection.class.getName(),
+					TestPropsValues.getCompanyId(),
+					CTCollection.class.getName(),
 					ResourceConstants.SCOPE_INDIVIDUAL,
 					String.valueOf(_ctCollection.getCtCollectionId()),
 					_ownerRole.getRoleId(), modelResourceOwnerDefaultAction));
 		}
 
-		Role viewerRole = _roleLocalService.getRole(
-			_company.getCompanyId(), RoleConstants.PUBLICATIONS_VIEWER);
-
 		Assert.assertFalse(
 			_resourcePermissionLocalService.hasResourcePermission(
-				_company.getCompanyId(), CTCollection.class.getName(),
+				TestPropsValues.getCompanyId(), CTCollection.class.getName(),
 				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(_company.getCompanyId()), viewerRole.getRoleId(),
-				ActionKeys.UPDATE));
+				String.valueOf(TestPropsValues.getCompanyId()),
+				_role.getRoleId(), ActionKeys.UPDATE));
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				_company.getCompanyId(), CTCollection.class.getName(),
+				TestPropsValues.getCompanyId(), CTCollection.class.getName(),
 				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(_company.getCompanyId()), viewerRole.getRoleId(),
-				ActionKeys.VIEW));
+				String.valueOf(TestPropsValues.getCompanyId()),
+				_role.getRoleId(), ActionKeys.VIEW));
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			_getMockLiferayPortletActionRequest(TestPropsValues.getUser());
@@ -119,7 +149,7 @@ public class UpdatePermissionsMVCActionCommandTest {
 			JSONUtil.put(
 				String.valueOf(_ownerRole.getRoleId()), ownerRoleActionIds
 			).put(
-				String.valueOf(viewerRole.getRoleId()),
+				String.valueOf(_role.getRoleId()),
 				new String[] {ActionKeys.UPDATE}
 			).toString());
 
@@ -129,25 +159,25 @@ public class UpdatePermissionsMVCActionCommandTest {
 
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				_company.getCompanyId(), CTCollection.class.getName(),
+				TestPropsValues.getCompanyId(), CTCollection.class.getName(),
 				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(_company.getCompanyId()), viewerRole.getRoleId(),
-				ActionKeys.UPDATE));
+				String.valueOf(TestPropsValues.getCompanyId()),
+				_role.getRoleId(), ActionKeys.UPDATE));
 		Assert.assertFalse(
 			_resourcePermissionLocalService.hasResourcePermission(
-				_company.getCompanyId(), CTCollection.class.getName(),
+				TestPropsValues.getCompanyId(), CTCollection.class.getName(),
 				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(_company.getCompanyId()), viewerRole.getRoleId(),
-				ActionKeys.VIEW));
+				String.valueOf(TestPropsValues.getCompanyId()),
+				_role.getRoleId(), ActionKeys.VIEW));
 		Assert.assertFalse(
 			_resourcePermissionLocalService.hasResourcePermission(
-				_company.getCompanyId(), CTCollection.class.getName(),
+				TestPropsValues.getCompanyId(), CTCollection.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(_ctCollection.getCtCollectionId()),
 				_ownerRole.getRoleId(), CTActionKeys.INVITE_USERS));
 		Assert.assertFalse(
 			_resourcePermissionLocalService.hasResourcePermission(
-				_company.getCompanyId(), CTCollection.class.getName(),
+				TestPropsValues.getCompanyId(), CTCollection.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(_ctCollection.getCtCollectionId()),
 				_ownerRole.getRoleId(), CTActionKeys.PUBLISH));
@@ -155,7 +185,8 @@ public class UpdatePermissionsMVCActionCommandTest {
 		for (String actionId : ownerRoleActionIds) {
 			Assert.assertTrue(
 				_resourcePermissionLocalService.hasResourcePermission(
-					_company.getCompanyId(), CTCollection.class.getName(),
+					TestPropsValues.getCompanyId(),
+					CTCollection.class.getName(),
 					ResourceConstants.SCOPE_INDIVIDUAL,
 					String.valueOf(_ctCollection.getCtCollectionId()),
 					_ownerRole.getRoleId(), actionId));
@@ -202,15 +233,16 @@ public class UpdatePermissionsMVCActionCommandTest {
 	public void testProcessActionWithoutConfigurationPermission()
 		throws Exception {
 
-		User user = UserTestUtil.addUser(_company);
+		_user = UserTestUtil.addUser();
 
-		Role viewerRole = _roleLocalService.getRole(
-			_company.getCompanyId(), RoleConstants.PUBLICATIONS_VIEWER);
+		Role publicationsViewerRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.PUBLICATIONS_VIEWER);
 
-		_roleLocalService.addUserRole(user.getUserId(), viewerRole.getRoleId());
+		_roleLocalService.addUserRole(
+			_user.getUserId(), publicationsViewerRole.getRoleId());
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			_getMockLiferayPortletActionRequest(user);
+			_getMockLiferayPortletActionRequest(_user);
 
 		mockLiferayPortletActionRequest.setParameter(
 			"permissions",
@@ -218,7 +250,7 @@ public class UpdatePermissionsMVCActionCommandTest {
 				String.valueOf(_ownerRole.getRoleId()),
 				new String[] {ActionKeys.VIEW}
 			).put(
-				String.valueOf(viewerRole.getRoleId()),
+				String.valueOf(_role.getRoleId()),
 				new String[] {ActionKeys.UPDATE}
 			).toString());
 
@@ -238,16 +270,16 @@ public class UpdatePermissionsMVCActionCommandTest {
 
 		Assert.assertFalse(
 			_resourcePermissionLocalService.hasResourcePermission(
-				_company.getCompanyId(), CTCollection.class.getName(),
+				TestPropsValues.getCompanyId(), CTCollection.class.getName(),
 				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(_company.getCompanyId()), viewerRole.getRoleId(),
-				ActionKeys.UPDATE));
+				String.valueOf(TestPropsValues.getCompanyId()),
+				_role.getRoleId(), ActionKeys.UPDATE));
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				_company.getCompanyId(), CTCollection.class.getName(),
+				TestPropsValues.getCompanyId(), CTCollection.class.getName(),
 				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(_company.getCompanyId()), viewerRole.getRoleId(),
-				ActionKeys.VIEW));
+				String.valueOf(TestPropsValues.getCompanyId()),
+				_role.getRoleId(), ActionKeys.VIEW));
 
 		for (String modelResourceOwnerDefaultAction :
 				ResourceActionsUtil.getModelResourceOwnerDefaultActions(
@@ -255,11 +287,26 @@ public class UpdatePermissionsMVCActionCommandTest {
 
 			Assert.assertTrue(
 				_resourcePermissionLocalService.hasResourcePermission(
-					_company.getCompanyId(), CTCollection.class.getName(),
+					TestPropsValues.getCompanyId(),
+					CTCollection.class.getName(),
 					ResourceConstants.SCOPE_INDIVIDUAL,
 					String.valueOf(_ctCollection.getCtCollectionId()),
 					_ownerRole.getRoleId(), modelResourceOwnerDefaultAction));
 		}
+	}
+
+	private Configuration _getConfiguration() throws Exception {
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			StringBundler.concat(
+				"(&(", ConfigurationAdmin.SERVICE_FACTORYPID, StringPool.EQUAL,
+				CTSettingsConfiguration.class.getName(), ".scoped)(companyId=",
+				TestPropsValues.getCompanyId(), "))"));
+
+		if (ArrayUtil.isEmpty(configurations)) {
+			return null;
+		}
+
+		return configurations[0];
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
@@ -283,19 +330,21 @@ public class UpdatePermissionsMVCActionCommandTest {
 	private ThemeDisplay _getThemeDisplay(User user) throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		themeDisplay.setCompany(_company);
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
 
 		return themeDisplay;
 	}
 
-	@DeleteAfterTestRun
-	private Company _company;
-
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
+	@Inject
+	private ConfigurationAdmin _configurationAdmin;
+
+	@DeleteAfterTestRun
 	private CTCollection _ctCollection;
 
 	@Inject
@@ -307,12 +356,19 @@ public class UpdatePermissionsMVCActionCommandTest {
 	@Inject(filter = "mvc.command.name=/change_tracking/update_permissions")
 	private MVCActionCommand _mvcActionCommand;
 
+	private Dictionary<String, Object> _originalProperties;
 	private Role _ownerRole;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
+	@DeleteAfterTestRun
+	private Role _role;
+
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }

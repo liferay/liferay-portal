@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -62,7 +61,6 @@ public class DeleteCTCommentMVCResourceCommandTest {
 
 	@Test
 	public void testServeResource() throws Exception {
-		Company company = CompanyTestUtil.addCompany();
 		CTComment ctComment = _ctCommentLocalService.addCTComment(
 			TestPropsValues.getUserId(), _ctCollection.getCtCollectionId(), 0,
 			RandomTestUtil.randomString());
@@ -71,7 +69,8 @@ public class DeleteCTCommentMVCResourceCommandTest {
 
 		_mvcResourceCommand.serveResource(
 			_getMockLiferayResourceRequest(
-				company.getCompanyId(), ctComment.getCtCommentId()),
+				_companyLocalService.createCompany(RandomTestUtil.randomLong()),
+				ctComment.getCtCommentId()),
 			mockLiferayResourceResponse);
 
 		ByteArrayOutputStream byteArrayOutputStream =
@@ -92,7 +91,8 @@ public class DeleteCTCommentMVCResourceCommandTest {
 
 		_mvcResourceCommand.serveResource(
 			_getMockLiferayResourceRequest(
-				TestPropsValues.getCompanyId(), ctComment.getCtCommentId()),
+				_companyLocalService.getCompany(TestPropsValues.getCompanyId()),
+				ctComment.getCtCommentId()),
 			new MockLiferayResourceResponse());
 
 		Assert.assertNull(
@@ -100,7 +100,7 @@ public class DeleteCTCommentMVCResourceCommandTest {
 	}
 
 	private MockLiferayResourceRequest _getMockLiferayResourceRequest(
-			long companyId, long ctCommentId)
+			Company company, long ctCommentId)
 		throws Exception {
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
@@ -108,8 +108,7 @@ public class DeleteCTCommentMVCResourceCommandTest {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		themeDisplay.setCompany(_companyLocalService.getCompany(companyId));
-
+		themeDisplay.setCompany(company);
 		themeDisplay.setLocale(LocaleUtil.US);
 		themeDisplay.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));

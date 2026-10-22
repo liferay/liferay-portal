@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -184,16 +184,15 @@ public class InviteUsersMVCResourceCommandTest {
 
 	@Test
 	public void testGetInviteUsersWithInvalidUser() throws Exception {
-		Company company = CompanyTestUtil.addCompany();
-
-		User user = UserTestUtil.addUser(company);
+		_user = UserTestUtil.addUser();
 
 		MockLiferayResourceResponse mockLiferayResourceResponse =
 			new MockLiferayResourceResponse();
 
 		_mvcResourceCommand.serveResource(
 			_getMockLiferayResourceRequest(
-				_ctCollection.getCtCollectionId(), user.getUserId()),
+				_companyLocalService.createCompany(RandomTestUtil.randomLong()),
+				_ctCollection.getCtCollectionId(), _user.getUserId()),
 			mockLiferayResourceResponse);
 
 		ByteArrayOutputStream byteArrayOutputStream =
@@ -209,7 +208,7 @@ public class InviteUsersMVCResourceCommandTest {
 	}
 
 	private MockLiferayResourceRequest _getMockLiferayResourceRequest(
-			long ctCollectionId, long userId)
+			Company company, long ctCollectionId, long userId)
 		throws Exception {
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
@@ -218,7 +217,7 @@ public class InviteUsersMVCResourceCommandTest {
 		mockLiferayResourceRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_CONFIG, null);
 		mockLiferayResourceRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _getThemeDisplay());
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(company));
 		mockLiferayResourceRequest.setParameter(
 			"ctCollectionId", String.valueOf(ctCollectionId));
 		mockLiferayResourceRequest.setParameter(
@@ -229,11 +228,10 @@ public class InviteUsersMVCResourceCommandTest {
 		return mockLiferayResourceRequest;
 	}
 
-	private ThemeDisplay _getThemeDisplay() throws Exception {
+	private ThemeDisplay _getThemeDisplay(Company company) throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		themeDisplay.setCompany(
-			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setCompany(company);
 		themeDisplay.setLocale(LocaleUtil.US);
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());
@@ -253,6 +251,8 @@ public class InviteUsersMVCResourceCommandTest {
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
 			_getMockLiferayResourceRequest(
+				_companyLocalService.fetchCompany(
+					TestPropsValues.getCompanyId()),
 				ctCollection.getCtCollectionId(), user.getUserId());
 
 		_serviceContext.setRequest(
@@ -288,5 +288,8 @@ public class InviteUsersMVCResourceCommandTest {
 
 	private SafeCloseable _safeCloseable;
 	private ServiceContext _serviceContext;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }

@@ -8,19 +8,17 @@ package com.liferay.change.tracking.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.model.CTCollectionTemplate;
 import com.liferay.change.tracking.service.CTCollectionTemplateLocalService;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -52,13 +50,9 @@ public class EditCTCollectionTemplateMVCRenderCommandTest {
 
 	@Test
 	public void testRender() throws Exception {
-		Company company = CompanyTestUtil.addCompany();
-
-		User user = company.getGuestUser();
-
-		CTCollectionTemplate ctCollectionTemplate =
+		_ctCollectionTemplate =
 			_ctCollectionTemplateLocalService.addCTCollectionTemplate(
-				user.getUserId(), RandomTestUtil.randomString(),
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(),
 				JSONUtil.put(
 					"description", RandomTestUtil.randomString()
@@ -72,37 +66,36 @@ public class EditCTCollectionTemplateMVCRenderCommandTest {
 					"userIds", new long[] {RandomTestUtil.randomLong()}
 				).toString());
 
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					TestPropsValues.getCompanyId())) {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
 
-			MockHttpServletRequest mockHttpServletRequest =
-				new MockHttpServletRequest();
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				new MockLiferayPortletRenderRequest(mockHttpServletRequest);
+		mockLiferayPortletRenderRequest.addParameter(
+			"ctCollectionTemplateId",
+			String.valueOf(_ctCollectionTemplate.getCtCollectionTemplateId()));
 
-			mockLiferayPortletRenderRequest.addParameter(
-				"ctCollectionTemplateId",
-				String.valueOf(
-					ctCollectionTemplate.getCtCollectionTemplateId()));
+		_user = UserTestUtil.addUser();
 
-			ThemeDisplay themeDisplay = new ThemeDisplay();
+		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-			themeDisplay.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
-			themeDisplay.setRequest(mockHttpServletRequest);
+		themeDisplay.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+		themeDisplay.setRequest(mockHttpServletRequest);
 
-			mockHttpServletRequest.setAttribute(
-				WebKeys.THEME_DISPLAY, themeDisplay);
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
 
-			Assert.assertEquals(
-				"/publications/error.jsp",
-				_mvcRenderCommand.render(
-					mockLiferayPortletRenderRequest,
-					new MockLiferayPortletRenderResponse()));
-		}
+		Assert.assertEquals(
+			"/publications/error.jsp",
+			_mvcRenderCommand.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse()));
 	}
+
+	@DeleteAfterTestRun
+	private CTCollectionTemplate _ctCollectionTemplate;
 
 	@Inject
 	private CTCollectionTemplateLocalService _ctCollectionTemplateLocalService;
@@ -112,5 +105,8 @@ public class EditCTCollectionTemplateMVCRenderCommandTest {
 		type = MVCRenderCommand.class
 	)
 	private MVCRenderCommand _mvcRenderCommand;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
