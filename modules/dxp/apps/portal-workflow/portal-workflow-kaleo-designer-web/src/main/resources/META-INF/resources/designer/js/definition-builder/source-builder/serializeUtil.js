@@ -337,8 +337,20 @@ function appendXMLAssignments(
 			) {
 				const xmlUser = XMLUtil.createObj('user');
 
-				dataAssignments.userId.forEach((item) => {
+				dataAssignments.userId.forEach((item, index) => {
 					buffer.push(xmlUser.open);
+
+					const userExternalReferenceCode =
+						dataAssignments.userExternalReferenceCode?.[index];
+
+					if (userExternalReferenceCode) {
+						buffer.push(
+							createTagWithEscapedContent(
+								'userExternalReferenceCode',
+								userExternalReferenceCode
+							)
+						);
+					}
 
 					if (item !== '') {
 						buffer.push(
