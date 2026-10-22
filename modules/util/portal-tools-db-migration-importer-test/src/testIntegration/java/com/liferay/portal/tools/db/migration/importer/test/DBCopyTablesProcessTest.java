@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -148,15 +149,10 @@ public class DBCopyTablesProcessTest {
 	@Test
 	@TestInfo("LPD-110096")
 	public void testCopyTableWithTargetOnlyColumn() throws Exception {
-		_sourceDB.runSQL(
-			"create table TestTable (id INTEGER, testColumn VARCHAR(75))");
-
-		try (Connection connection = _targetDataSource.getConnection()) {
-			_targetDB.runSQL(
-				connection,
-				"create table TestTable (id INTEGER, aColumn VARCHAR(75), " +
-					"testColumn VARCHAR(75))");
-		}
+		_createTable(
+			"create table TestTable (id INTEGER, testColumn VARCHAR(75))",
+			"create table TestTable (id INTEGER, aColumn VARCHAR(75), " +
+				"testColumn VARCHAR(75))");
 
 		String[] values = RandomTestUtil.randomStrings(_TABLE_SIZE);
 
@@ -205,6 +201,59 @@ public class DBCopyTablesProcessTest {
 			object -> StringUtil.removeSubstring(
 				(String)object, StringPool.NULL_CHAR),
 			Function.identity(), "VARCHAR(20)", () -> "Test\\u0000Test");
+	}
+
+	@Test
+	@TestInfo("LPD-110097")
+	public void testRunWithIncludeCustomSchema() throws Exception {
+		_createTable(
+			"create table TestTable (id INTEGER, charColumn CHAR(10), " +
+				"longColumn LONG, testColumn VARCHAR(75))",
+			"create table TestTable (id INTEGER, testColumn VARCHAR(75))");
+
+		_insertValues(RandomTestUtil.randomStrings(_TABLE_SIZE));
+
+		String charColumnValue = RandomTestUtil.randomString(10);
+		long longColumnValue = RandomTestUtil.randomLong();
+
+		_sourceDB.runSQL(
+			StringBundler.concat(
+				"update TestTable set charColumn = '", charColumnValue,
+				"', longColumn = ", longColumnValue));
+
+		new DBCopyTablesProcess(
+			true, InfrastructureUtil.getDataSource(), _targetDataSource
+		).run();
+
+		_assertValues(
+			"charColumn", value -> charColumnValue, new Object[_TABLE_SIZE],
+			Function.identity());
+		_assertValues(
+			"longColumn", value -> longColumnValue, new Object[_TABLE_SIZE],
+			GetterUtil::getLong);
+	}
+
+	@Test
+	@TestInfo("LPD-110097")
+	public void testRunWithIncludeCustomSchemaFailsWhenTargetColumnIsNotText()
+		throws Exception {
+
+		_createTable(
+			"create table TestTable (id INTEGER, testColumn CHAR(10))",
+			"create table TestTable (id INTEGER, testColumn INTEGER)");
+
+		_insertValues(RandomTestUtil.randomStrings(_TABLE_SIZE));
+
+		try {
+			new DBCopyTablesProcess(
+				true, InfrastructureUtil.getDataSource(), _targetDataSource
+			).run();
+
+			Assert.fail();
+		}
+		catch (PortalException portalException) {
+			Assert.assertEquals("Invalid type 1", portalException.getMessage());
+		}
 	}
 
 	@Test
@@ -290,7 +339,7 @@ public class DBCopyTablesProcessTest {
 
 	private void _copyTable() {
 		DBCopyTablesProcess dbCopyTablesProcess = new DBCopyTablesProcess(
-			InfrastructureUtil.getDataSource(), _targetDataSource);
+			false, InfrastructureUtil.getDataSource(), _targetDataSource);
 
 		ReflectionTestUtil.invoke(
 			dbCopyTablesProcess, "_loadColumnsMetadata", new Class<?>[0]);
@@ -306,10 +355,17 @@ public class DBCopyTablesProcessTest {
 			"create table TestTable (id INTEGER, testColumn " + columnType +
 				")";
 
-		_sourceDB.runSQL(createTableSQL);
+		_createTable(createTableSQL, createTableSQL);
+	}
+
+	private void _createTable(
+			String sourceCreateTableSQL, String targetCreateTableSQL)
+		throws Exception {
+
+		_sourceDB.runSQL(sourceCreateTableSQL);
 
 		try (Connection connection = _targetDataSource.getConnection()) {
-			_targetDB.runSQL(connection, createTableSQL);
+			_targetDB.runSQL(connection, targetCreateTableSQL);
 		}
 	}
 
