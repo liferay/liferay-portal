@@ -11,8 +11,9 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {knowledgeBasePages} from '../../../fixtures/knowledgeBasePagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
-import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
+import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -25,6 +26,7 @@ const assetPublisherTest = mergeTests(
 	test,
 	featureFlagsTest({
 		'LPD-39304': {enabled: true},
+		'LPS-178052': {enabled: true},
 	})
 );
 
@@ -41,24 +43,30 @@ assetPublisherTest(
 			title,
 		});
 
-		const widgetPageURLs = [];
-
-		for (const portletId of [
-			`com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet_INSTANCE_${getRandomInt()}`,
-			'com_liferay_knowledge_base_web_portlet_DisplayPortlet',
-		]) {
-			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-				groupId: site.id,
+		const assetPublisherLayout =
+			await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetConfig: {selectionStyle: 'dynamic'},
+						widgetName:
+							'com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet',
+					}),
+				]),
+				siteId: site.id,
 				title: getRandomString(),
-				typeSettings: `layout-template-id=1_column\ncolumn-1=${portletId}\n`,
 			});
 
-			widgetPageURLs.push(
-				`/web${site.friendlyUrlPath}${layout.friendlyURL}`
-			);
-		}
+		const assetPublisherURL = `/web${site.friendlyUrlPath}${assetPublisherLayout.friendlyUrlPath}`;
 
-		const [assetPublisherURL, displayURL] = widgetPageURLs;
+		const displayLayout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+			typeSettings:
+				'layout-template-id=1_column\ncolumn-1=com_liferay_knowledge_base_web_portlet_DisplayPortlet\n',
+		});
+
+		const displayURL = `/web${site.friendlyUrlPath}${displayLayout.friendlyURL}`;
 
 		await test.step('CanExpireAnArticle', async () => {
 			await page.goto(displayURL);
