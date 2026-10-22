@@ -13,7 +13,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.k8s.agent.PortalK8sConfigMapModifier;
 import com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration;
-import com.liferay.portal.k8s.agent.internal.test.util.KubernetesMockServerTestUtil;
+import com.liferay.portal.k8s.agent.internal.test.util.KubernetesMockServerTestUtilProxy;
+import com.liferay.portal.k8s.agent.mutator.PortalK8sConfigurationPropertiesMutator;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -81,7 +82,11 @@ public class AgentPortalK8sConfigMapModifierTest {
 
 		_bundleContext = _bundle.getBundleContext();
 
-		KubernetesMockServerTestUtil.start();
+		_kubernetesMockServerTestUtilProxy =
+			new KubernetesMockServerTestUtilProxy(
+				_portalK8sConfigurationPropertiesMutator.getClass());
+
+		_kubernetesMockServerTestUtilProxy.start();
 
 		_agentConfiguration = _configurationAdmin.getConfiguration(
 			PortalK8sAgentConfiguration.class.getName(), StringPool.QUESTION);
@@ -94,9 +99,10 @@ public class AgentPortalK8sConfigMapModifierTest {
 		ConfigurationTestUtil.saveConfiguration(
 			_agentConfiguration,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"apiServerHost", KubernetesMockServerTestUtil.getHostName()
+				"apiServerHost",
+				_kubernetesMockServerTestUtilProxy.getHostName()
 			).put(
-				"apiServerPort", KubernetesMockServerTestUtil.getPort()
+				"apiServerPort", _kubernetesMockServerTestUtilProxy.getPort()
 			).put(
 				"apiServerSSL", Boolean.FALSE
 			).put(
@@ -126,7 +132,7 @@ public class AgentPortalK8sConfigMapModifierTest {
 	public static void tearDownClass() throws Exception {
 		ConfigurationTestUtil.deleteConfiguration(_agentConfiguration);
 
-		KubernetesMockServerTestUtil.stop();
+		_kubernetesMockServerTestUtilProxy.stop();
 
 		_serviceTracker.close();
 	}
@@ -590,7 +596,7 @@ public class AgentPortalK8sConfigMapModifierTest {
 	}
 
 	private void _createOrReplaceConfigMap(JSONObject configMapJSONObject) {
-		KubernetesMockServerTestUtil.createOrReplaceConfigMap(
+		_kubernetesMockServerTestUtilProxy.createOrReplaceConfigMap(
 			configMapJSONObject.toString());
 	}
 
@@ -599,7 +605,7 @@ public class AgentPortalK8sConfigMapModifierTest {
 			long amount, TimeUnit timeUnit)
 		throws Exception {
 
-		String json = KubernetesMockServerTestUtil.waitForConfigMap(
+		String json = _kubernetesMockServerTestUtilProxy.waitForConfigMap(
 			name, dataPredicate, amount, timeUnit);
 
 		if (json == null) {
@@ -616,7 +622,14 @@ public class AgentPortalK8sConfigMapModifierTest {
 	@Inject
 	private static ConfigurationAdmin _configurationAdmin;
 
+	private static KubernetesMockServerTestUtilProxy
+		_kubernetesMockServerTestUtilProxy;
 	private static PortalK8sConfigMapModifier _portalK8sConfigMapModifier;
+
+	@Inject
+	private static PortalK8sConfigurationPropertiesMutator
+		_portalK8sConfigurationPropertiesMutator;
+
 	private static ServiceTracker
 		<PortalK8sConfigMapModifier, PortalK8sConfigMapModifier>
 			_serviceTracker;

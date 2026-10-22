@@ -2,26 +2,17 @@ Bundle-Name: Liferay Portal K8s Agent Test
 Bundle-SymbolicName: com.liferay.portal.k8s.agent.test
 Bundle-Version: 1.0.0
 Import-Package:\
-	!io.fabric8.kubernetes.client.server.mock,\
-	!io.fabric8.mockwebserver.*,\
+	!io.fabric8.*,\
 	\
 	!javax.annotation.meta,\
 	\
-	!okhttp3.mockwebserver,\
+	!kotlin.*,\
+	\
+	!okhttp3.*,\
+	\
+	!okio.*,\
 	\
 	!org.junit.jupiter.api.extension,\
-	\
-	io.fabric8.kubernetes.api.model;usage=test,\
-	io.fabric8.kubernetes.client;usage=test,\
-	io.fabric8.kubernetes.client.dsl;usage=test,\
-	io.fabric8.kubernetes.internal;mandatory:=usage;usage=test,\
-	io.fabric8.kubernetes.*;mandatory:=usage;usage=test,\
-	\
-	kotlin.*;mandatory:=usage;usage=test,\
-	\
-	okhttp3.*;mandatory:=usage;usage=test,\
-	\
-	okio;mandatory:=usage;usage=test,\
 	\
 	org.junit.*,\
 	\
@@ -30,5 +21,4 @@ Import-Package:\
 	org.xml.sax
 -includeresource:\
 	@kubernetes-server-mock-[0-9.]*.jar,\
-	@mockwebserver-[0-9.]*.jar,\
-	@zjsonpatch-[0-9.]*.jar
+	@mockwebserver-[0-9.]*.jar
