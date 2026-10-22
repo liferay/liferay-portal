@@ -295,18 +295,18 @@ public class PostUpgradeVerifyDatabaseStateTest
 			DBResourceUtil.getPortalTablesIndexMetadatas();
 
 		IndexMetadata indexMetadata = _getIndexMetadata(
-			portalTablesIndexMetadatas.get("UserTracker"), "sessionId");
+			portalTablesIndexMetadatas.get("UserNotificationEvent"), "type_");
 
 		try {
 			updateIndex(
-				indexMetadata.getIndexName(), "UserTracker", false,
-				"left(sessionId, 50)");
+				indexMetadata.getIndexName(), "UserNotificationEvent", false,
+				"left(type_, 50)");
 
 			_testVerifyMessages();
 		}
 		finally {
 			updateIndex(
-				indexMetadata.getIndexName(), "UserTracker", false,
+				indexMetadata.getIndexName(), "UserNotificationEvent", false,
 				indexMetadata.getColumnNames());
 		}
 	}
