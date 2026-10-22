@@ -12,11 +12,11 @@ exports[`DropdownRangeKey should render 1`] = `
       type="button"
     >
       <svg
-        class="lexicon-icon lexicon-icon-filter icon-root mr-2"
+        class="lexicon-icon lexicon-icon-calendar icon-root mr-2"
         role="presentation"
       >
         <use
-          href="#filter"
+          href="#calendar"
         />
       </svg>
       Select Date Range

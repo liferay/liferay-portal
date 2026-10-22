@@ -61,7 +61,7 @@ describe('DropdownRangeKey', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('should render a filter icon in the trigger button', async () => {
+	it('should render a calendar icon in the trigger button', async () => {
 		const {container} = render(
 			<WrapperComponent>
 				<DropdownRangeKey />
@@ -71,8 +71,9 @@ describe('DropdownRangeKey', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(
-			container.querySelector('.lexicon-icon-filter')
+			container.querySelector('.lexicon-icon-calendar')
 		).toBeInTheDocument();
+		expect(container.querySelector('.lexicon-icon-filter')).toBeNull();
 	});
 
 	it('should render the trigger button borderless by default', async () => {

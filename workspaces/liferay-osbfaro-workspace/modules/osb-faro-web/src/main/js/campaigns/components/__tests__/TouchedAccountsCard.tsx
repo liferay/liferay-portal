@@ -1,6 +1,7 @@
 import React from 'react';
 import TouchedAccountsCard from '../TouchedAccountsCard';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {MemoryRouter} from 'react-router-dom';
 import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 jest.unmock('react-dom');
@@ -18,8 +19,12 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 
 beforeAll(warmFrontendDataSet);
 
-const renderCard = () =>
-	render(<TouchedAccountsCard campaignId="7" channelId="123" groupId="23" />);
+const renderCard = (initialEntry = '/') =>
+	render(
+		<MemoryRouter initialEntries={[initialEntry]}>
+			<TouchedAccountsCard campaignId="7" channelId="123" groupId="23" />
+		</MemoryRouter>
+	);
 
 const getFields = () => lastFDSProps.views[0].schema.fields;
 
@@ -74,7 +79,7 @@ describe('TouchedAccountsCard', () => {
 
 		expect(screen.getByTestId('fds-component')).toBeInTheDocument();
 		expect(lastFDSProps.apiURL).toBe(
-			'/o/faro/contacts/23/campaigns/7/accounts?channelId=123'
+			'/o/faro/contacts/23/campaigns/7/accounts?channelId=123&rangeKey=30'
 		);
 	});
 
@@ -109,11 +114,21 @@ describe('TouchedAccountsCard', () => {
 		renderCard();
 
 		expect(lastFDSProps.apiURL).toBe(
-			'/o/faro/contacts/23/campaigns/7/accounts?channelId=123'
+			'/o/faro/contacts/23/campaigns/7/accounts?channelId=123&rangeKey=30'
 		);
 		expect(screen.getByTestId('fds-component')).toHaveAttribute(
 			'id',
 			'campaign-accounts-dataset'
+		);
+	});
+
+	it('should ask the endpoint for a custom range by its bounds alone', () => {
+		renderCard(
+			'/?rangeEnd=2026-10-20&rangeKey=CUSTOM&rangeStart=2026-10-01'
+		);
+
+		expect(lastFDSProps.apiURL).toBe(
+			'/o/faro/contacts/23/campaigns/7/accounts?channelId=123&rangeEnd=2026-10-20&rangeStart=2026-10-01'
 		);
 	});
 
