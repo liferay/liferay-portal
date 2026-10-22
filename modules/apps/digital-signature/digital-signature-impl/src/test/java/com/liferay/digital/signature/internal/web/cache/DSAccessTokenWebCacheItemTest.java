@@ -64,8 +64,9 @@ public class DSAccessTokenWebCacheItemTest {
 	private String _getPEM(String rsaPrivateKey) {
 		DSAccessTokenWebCacheItem dsAccessTokenWebCacheItem =
 			new DSAccessTokenWebCacheItem(
-				"api-username", CompanyConstants.SYSTEM, "sandbox",
-				"integration-key", rsaPrivateKey);
+				"https://account-d.docusign.com", "api-username",
+				CompanyConstants.SYSTEM, "sandbox", "integration-key",
+				rsaPrivateKey);
 
 		byte[] rsaPrivateKeyBytes = ReflectionTestUtil.getFieldValue(
 			dsAccessTokenWebCacheItem, "_rsaPrivateKeyBytes");
