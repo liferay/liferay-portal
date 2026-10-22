@@ -978,7 +978,8 @@ public class UserManagerImpl implements UserManager {
 			Expression<String> expression =
 				(Expression<String>)baseTable.getColumn(entry.getValue());
 
-			predicate = predicate.and(expression.eq(expressionNode.getValue()));
+			predicate = predicate.and(
+				expression.eq(StringUtil.unquote(expressionNode.getValue())));
 		}
 
 		return predicate;
