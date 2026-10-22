@@ -112,10 +112,6 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 				String.valueOf(_journalArticle.getVersion())),
 			title);
 
-		// Missing launch set, for example deleted after it was scheduled
-
-		_receive(RandomTestUtil.randomLong());
-
 		// Launch set that is not scheduled
 
 		_receive(_launchSetObjectEntry.getObjectEntryId());
@@ -125,6 +121,10 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 		Assert.assertEquals(
 			_getBackgroundTasks().toString(), 0, _getBackgroundTasks().size());
 		Assert.assertNotEquals(title, _getPublishedTitle());
+
+		// Missing launch set, for example deleted after it was scheduled
+
+		_receive(RandomTestUtil.randomLong());
 
 		// Scheduled launch set
 
