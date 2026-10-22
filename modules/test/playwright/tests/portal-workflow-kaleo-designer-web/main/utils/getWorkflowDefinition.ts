@@ -9,6 +9,7 @@ import * as path from 'path';
 type fileNames =
 	| 'basic'
 	| 'bcc-reception-type'
+	| 'role-external-reference-code-without-id'
 	| 'same-source-transitions'
 	| 'sample-client-extension'
 	| 'sample-start-end'

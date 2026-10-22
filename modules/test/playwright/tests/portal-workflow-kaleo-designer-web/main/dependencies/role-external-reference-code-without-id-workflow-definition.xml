@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<state>
+		<name>Start</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						100
+					]
+				}
+			]]>
+		</metadata>
+		<initial>true</initial>
+		<transitions>
+			<transition>
+				<name>Review</name>
+				<target>Review</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<task>
+		<name>Review</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						260
+					]
+				}
+			]]>
+		</metadata>
+		<assignments>
+			<roles>
+				<role>
+					<role-external-reference-code>[$ROLE_EXTERNAL_REFERENCE_CODE$]</role-external-reference-code>
+					<role-type>regular</role-type>
+				</role>
+			</roles>
+		</assignments>
+		<transitions>
+			<transition>
+				<name>End</name>
+				<target>End</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</task>
+	<state>
+		<name>End</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						300,
+						420
+					]
+				}
+			]]>
+		</metadata>
+	</state>
+</workflow-definition>
