@@ -418,7 +418,6 @@ public class OAuth2ApplicationLocalServiceImpl
 
 		allowedGrantTypesList.remove(GrantType.CLIENT_CREDENTIALS);
 
-		oAuth2Application.setModifiedDate(new Date());
 		oAuth2Application.setAllowedGrantTypesList(allowedGrantTypesList);
 
 		oAuth2Application = oAuth2ApplicationPersistence.update(
@@ -505,7 +504,6 @@ public class OAuth2ApplicationLocalServiceImpl
 		OAuth2Application oAuth2Application =
 			oAuth2ApplicationPersistence.findByPrimaryKey(oAuth2ApplicationId);
 
-		oAuth2Application.setModifiedDate(new Date());
 		oAuth2Application.setOAuth2ApplicationScopeAliasesId(0);
 
 		oAuth2Application = oAuth2ApplicationPersistence.update(
