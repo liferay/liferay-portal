@@ -2,6 +2,7 @@ import React from 'react';
 import {align} from './align';
 import {
 	ALIGNMENTS_MAP,
+	NO_DATA_VALUE,
 	POSITIONS,
 	RangeKeyTimeRanges,
 } from 'shared/util/constants';
@@ -103,7 +104,7 @@ export const normalizeRangeSelectors = (
  */
 export const getSafeDisplayValue = (
 	value: string | number,
-	defaultValue: string | number = '-'
+	defaultValue: string | number = NO_DATA_VALUE
 ): string | number => (isBlank(value) ? defaultValue : value);
 
 export const getSafeTouchpoint = (touchpoint: string) => {

@@ -1,9 +1,11 @@
+import {NO_DATA_VALUE} from 'shared/util/constants';
+
 /**
  * The value a row shows when the payload carried the property but no value for
  * it. Rendering the property with a dash keeps a parameter the tenant did send
  * — empty — tellable apart from one it never sent at all, which produces no row.
  */
-const EMPTY_VALUE = '-';
+const EMPTY_VALUE = NO_DATA_VALUE;
 
 /**
  * The payload key a caller uses to title the table instead of leaving the
