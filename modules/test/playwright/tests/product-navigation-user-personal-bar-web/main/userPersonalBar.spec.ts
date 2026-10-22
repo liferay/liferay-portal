@@ -6,11 +6,18 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {userPersonalBarPagesTest} from '../../../fixtures/userPersonalBarPagesTest';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
+	loginTest(),
+	userPersonalBarPagesTest
+);
+
+const featureFlagTest = mergeTests(
+	featureFlagsTest({'LPD-57922': {enabled: true}}),
 	loginTest(),
 	userPersonalBarPagesTest
 );
@@ -51,6 +58,20 @@ test(
 		await expect(userPersonalBarPage.notificationBadge).toBeVisible();
 
 		await userPersonalBarPage.disableSingleApproverWorkflowProduct();
+	}
+);
+
+featureFlagTest(
+	'Color scheme button is present in the personal menu when the feature flag is enabled and user is Site Admin',
+	{tag: ['@LPD-57922']},
+	async ({page, userPersonalBarPage}) => {
+		await page.goto('/');
+
+		await userPersonalBarPage.userMenuButton.click();
+
+		await expect(
+			page.getByRole('button', {name: 'Switch to Dark Mode'})
+		).toBeVisible();
 	}
 );
 
