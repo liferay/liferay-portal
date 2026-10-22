@@ -291,17 +291,17 @@ public class AuthVerifierPipelineTest {
 		_user.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
-		_assertAuthVerifierResultForUser(
 			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
 
 		_user.setPasswordReset(true);
 		_user.setEmailAddressVerified(true);
 
 		_assertAuthVerifierResultForUser(
-			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
-		_assertAuthVerifierResultForUser(
 			AuthVerifierResult.State.SUCCESS, _DO_AS_USER_ID, true);
+		_assertAuthVerifierResultForUser(
+			AuthVerifierResult.State.UNSUCCESSFUL, _GUEST_USER_ID, false);
 	}
 
 	private void _testVerifyRequestWithNonmatchingRequestURI()
