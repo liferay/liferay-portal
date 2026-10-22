@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.model.PublicRenderParameter;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -39,8 +40,10 @@ import com.liferay.portal.kernel.security.permission.propagator.PermissionPropag
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PermissionService;
+import com.liferay.portal.kernel.service.PortletItemLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -49,13 +52,10 @@ import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
-import com.liferay.portal.kernel.settings.ArchivedSettings;
-import com.liferay.portal.kernel.settings.ArchivedSettingsFactory;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
-import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.PortletInstanceSettingsLocator;
+import com.liferay.portal.kernel.settings.PortletPreferencesSettings;
 import com.liferay.portal.kernel.settings.Settings;
-import com.liferay.portal.kernel.settings.SettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -66,6 +66,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Tuple;
@@ -91,6 +92,7 @@ import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletPreferences;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
+import jakarta.portlet.ReadOnlyException;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 import jakarta.portlet.ResourceRequest;
@@ -164,12 +166,14 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		}
 
 		for (String curName : names) {
-			ArchivedSettings archivedSettings =
-				_archivedSettingsFactory.getPortletInstanceArchivedSettings(
-					themeDisplay.getSiteGroupId(), portlet.getRootPortletId(),
-					curName);
+			PortletItem portletItem = _portletItemLocalService.getPortletItem(
+				themeDisplay.getSiteGroupId(), curName,
+				portlet.getRootPortletId(),
+				com.liferay.portal.kernel.model.PortletPreferences.class.
+					getName());
 
-			archivedSettings.delete();
+			_portletPreferencesService.deleteArchivedPreferences(
+				portletItem.getPortletItemId());
 		}
 	}
 
@@ -437,25 +441,18 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		Settings portletInstanceSettings = FallbackKeysSettingsUtil.getSettings(
-			new PortletInstanceSettingsLocator(
+		_portletPreferencesService.restoreArchivedPreferences(
+			themeDisplay.getScopeGroupId(),
+			PortletConfigurationLayoutUtil.getLayout(themeDisplay),
+			portlet.getPortletId(),
+			_portletItemLocalService.getPortletItem(
+				themeDisplay.getSiteGroupId(),
+				ParamUtil.getString(actionRequest, "name"),
+				portlet.getRootPortletId(),
+				com.liferay.portal.kernel.model.PortletPreferences.class.
+					getName()),
+			_getPortletInstancePortletPreferences(
 				themeDisplay.getLayout(), portlet.getPortletId()));
-
-		ModifiableSettings portletInstanceModifiableSettings =
-			portletInstanceSettings.getModifiableSettings();
-
-		String name = ParamUtil.getString(actionRequest, "name");
-
-		ArchivedSettings archivedSettings =
-			_archivedSettingsFactory.getPortletInstanceArchivedSettings(
-				themeDisplay.getSiteGroupId(), portlet.getRootPortletId(),
-				name);
-
-		portletInstanceModifiableSettings.reset();
-
-		portletInstanceModifiableSettings.setValues(archivedSettings);
-
-		portletInstanceModifiableSettings.store();
 
 		String portletResource = ParamUtil.getString(
 			actionRequest, "portletResource");
@@ -515,25 +512,37 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		String name = ParamUtil.getString(actionRequest, "name");
+		PortletItem portletItem = _portletItemLocalService.updatePortletItem(
+			themeDisplay.getUserId(), themeDisplay.getSiteGroupId(),
+			ParamUtil.getString(actionRequest, "name"),
+			portlet.getRootPortletId(),
+			com.liferay.portal.kernel.model.PortletPreferences.class.getName());
 
-		ArchivedSettings archivedSettings =
-			_archivedSettingsFactory.getPortletInstanceArchivedSettings(
-				themeDisplay.getSiteGroupId(), portlet.getRootPortletId(),
-				name);
+		PortletPreferences archivedPortletPreferences =
+			_portletPreferencesLocalService.getPreferences(
+				portletItem.getCompanyId(), portletItem.getPortletItemId(),
+				PortletKeys.PREFS_OWNER_TYPE_ARCHIVED, 0,
+				portlet.getRootPortletId());
 
-		SettingsLocator settingsLocator = new PortletInstanceSettingsLocator(
-			themeDisplay.getLayout(), portlet.getPortletId());
+		PortletPreferences portletPreferences =
+			_getPortletInstancePortletPreferences(
+				themeDisplay.getLayout(), portlet.getPortletId());
 
-		Settings portletInstanceSettings = FallbackKeysSettingsUtil.getSettings(
-			settingsLocator);
+		Map<String, String[]> preferenceMap = portletPreferences.getMap();
 
-		ModifiableSettings portletInstanceModifiableSettings =
-			portletInstanceSettings.getModifiableSettings();
+		for (Map.Entry<String, String[]> entry : preferenceMap.entrySet()) {
+			try {
+				archivedPortletPreferences.setValues(
+					entry.getKey(), entry.getValue());
+			}
+			catch (ReadOnlyException readOnlyException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(readOnlyException);
+				}
+			}
+		}
 
-		archivedSettings.setValues(portletInstanceModifiableSettings);
-
-		archivedSettings.store();
+		archivedPortletPreferences.store();
 	}
 
 	public void updateRolePermissions(
@@ -963,6 +972,19 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		return scopeName;
 	}
 
+	private PortletPreferences _getPortletInstancePortletPreferences(
+			Layout layout, String portletId)
+		throws Exception {
+
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new PortletInstanceSettingsLocator(layout, portletId));
+
+		PortletPreferencesSettings portletPreferencesSettings =
+			(PortletPreferencesSettings)settings.getModifiableSettings();
+
+		return portletPreferencesSettings.getPortletPreferences();
+	}
+
 	private PortletPreferences _getPortletPreferences(
 			ThemeDisplay themeDisplay, String portletId)
 		throws PortalException {
@@ -1180,9 +1202,6 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		PortletConfigurationPortlet.class);
 
 	@Reference
-	private ArchivedSettingsFactory _archivedSettingsFactory;
-
-	@Reference
 	private GroupLocalService _groupLocalService;
 
 	@Reference
@@ -1201,10 +1220,16 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 	private Portal _portal;
 
 	@Reference
+	private PortletItemLocalService _portletItemLocalService;
+
+	@Reference
 	private PortletLocalService _portletLocalService;
 
 	@Reference
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@Reference
+	private PortletPreferencesService _portletPreferencesService;
 
 	private final ThreadLocal<PortletRequest> _portletRequestThreadLocal =
 		new CentralizedThreadLocal<>("_portletRequestThreadLocal");
