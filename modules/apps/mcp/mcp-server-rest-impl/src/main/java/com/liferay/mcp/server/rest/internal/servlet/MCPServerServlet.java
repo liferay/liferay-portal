@@ -242,7 +242,7 @@ public class MCPServerServlet extends HttpServlet {
 		).immediateExecution(
 			true
 		).instructions(
-			(String)values.get("instructions")
+			MapUtil.getString(values, "instructions", null)
 		).prompts(
 			_getSyncPromptSpecifications(companyId)
 		).tools(
