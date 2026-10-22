@@ -27,7 +27,6 @@ function renderPersonalMenu({showColorSchemeButton = true} = {}) {
 
 	render(
 		<PersonalMenu
-			colorSchemeSessionKey="colorSchemeSessionKey"
 			itemsURL="http://localhost/personal-menu-items"
 			showColorSchemeButton={showColorSchemeButton}
 			userName="Test Test"
@@ -47,14 +46,10 @@ describe('PersonalMenu', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 
-		Liferay.FeatureFlags['LPD-57922'] = true;
-
 		document.documentElement.dataset.colorScheme = 'light';
 	});
 
 	afterEach(() => {
-		Liferay.FeatureFlags['LPD-57922'] = false;
-
 		delete document.documentElement.dataset.colorScheme;
 	});
 
@@ -63,9 +58,8 @@ describe('PersonalMenu', () => {
 
 		await userEvent.click(screen.getByTitle('user-profile-menu'));
 
-		expect(await screen.findByText('Test Test')).toBeInTheDocument();
 		expect(
-			screen.getByRole('button', {name: 'switch-to-dark-mode'})
+			await screen.findByRole('button', {name: 'switch-to-dark-mode'})
 		).toHaveAttribute('aria-pressed', 'false');
 		expect(
 			screen.getByRole('menuitem', {name: 'My Profile'})
@@ -112,10 +106,6 @@ describe('PersonalMenu', () => {
 		expect(
 			screen.getByRole('button', {name: 'switch-to-light-mode'})
 		).toHaveAttribute('aria-pressed', 'true');
-		expect(Liferay.Util.Session.set).toHaveBeenCalledWith(
-			'colorSchemeSessionKey',
-			'dark'
-		);
 	});
 
 	it('does not render the switch for users without administration access', async () => {
@@ -123,20 +113,8 @@ describe('PersonalMenu', () => {
 
 		await userEvent.click(screen.getByTitle('user-profile-menu'));
 
-		expect(await screen.findByText('Test Test')).toBeInTheDocument();
-		expect(
-			screen.queryByRole('button', {name: 'switch-to-dark-mode'})
-		).not.toBeInTheDocument();
-	});
+		await screen.findByRole('menuitem', {name: 'My Profile'});
 
-	it('does not render the switch when the feature flag is disabled', async () => {
-		Liferay.FeatureFlags['LPD-57922'] = false;
-
-		renderPersonalMenu();
-
-		await userEvent.click(screen.getByTitle('user-profile-menu'));
-
-		expect(await screen.findByText('Test Test')).toBeInTheDocument();
 		expect(
 			screen.queryByRole('button', {name: 'switch-to-dark-mode'})
 		).not.toBeInTheDocument();
