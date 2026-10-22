@@ -51,11 +51,12 @@ import javax.sql.DataSource;
 public class DBMigrationImportProcess {
 
 	public DBMigrationImportProcess(
-			String path, String sourceJDBCURL, String sourcePassword,
-			String sourceUser, String targetJDBCURL, String targetPassword,
-			String targetUser)
+			boolean includeCustomSchema, String path, String sourceJDBCURL,
+			String sourcePassword, String sourceUser, String targetJDBCURL,
+			String targetPassword, String targetUser)
 		throws Exception {
 
+		_includeCustomSchema = includeCustomSchema;
 		_path = path;
 		_sourceJDBCURL = sourceJDBCURL;
 		_sourcePassword = sourcePassword;
@@ -143,7 +144,8 @@ public class DBMigrationImportProcess {
 				() -> {
 					try {
 						new DBCopyTablesProcess(
-							_sourceDataSource, _targetDataSource
+							_includeCustomSchema, _sourceDataSource,
+							_targetDataSource
 						).run();
 
 						_dataSourceInfos.add(
@@ -173,8 +175,8 @@ public class DBMigrationImportProcess {
 									_targetUser, partitionName);
 
 							new DBCopyTablesProcess(
-								partitionName, sourceDataSource,
-								targetDataSource
+								_includeCustomSchema, partitionName,
+								sourceDataSource, targetDataSource
 							).run();
 
 							_dataSourceInfos.add(
@@ -462,6 +464,7 @@ public class DBMigrationImportProcess {
 		new ArrayList<>());
 	private final ExecutorService _executorService =
 		Executors.newFixedThreadPool(5);
+	private final boolean _includeCustomSchema;
 	private final List<String> _partitionNames = new ArrayList<>();
 	private final String _path;
 	private final DataSource _sourceDataSource;
