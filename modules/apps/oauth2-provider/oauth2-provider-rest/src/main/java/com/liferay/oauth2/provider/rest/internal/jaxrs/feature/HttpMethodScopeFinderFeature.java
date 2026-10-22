@@ -5,8 +5,7 @@
 
 package com.liferay.oauth2.provider.rest.internal.jaxrs.feature;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 
 import jakarta.ws.rs.HttpMethod;
 
@@ -64,20 +63,8 @@ public class HttpMethodScopeFinderFeature extends BaseScopeFinderFeature {
 			return null;
 		}
 
-		try {
-			return clazz.getDeclaredMethod(
-				method.getName(), method.getParameterTypes());
-		}
-		catch (NoSuchMethodException noSuchMethodException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchMethodException);
-			}
-
-			return null;
-		}
+		return ReflectionUtil.fetchDeclaredMethod(
+			false, clazz, method.getName(), method.getParameterTypes());
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		HttpMethodScopeFinderFeature.class);
 
 }
