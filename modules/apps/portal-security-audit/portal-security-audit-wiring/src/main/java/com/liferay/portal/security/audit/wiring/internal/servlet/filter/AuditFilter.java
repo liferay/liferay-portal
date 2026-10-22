@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.security.audit.wiring.internal.configuration.AuditLogContextConfiguration;
 
 import jakarta.servlet.Filter;
@@ -127,13 +126,13 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 			HttpHeaders.X_REQUEST_ID);
 
 		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
-			if (!_isValidXRequestId(xRequestId)) {
-				xRequestId = PortalUUIDUtil.generate();
-
-				auditRequestContext.setRequestIdGenerated(true);
+			if (_isValidXRequestId(xRequestId)) {
+				auditRequestContext.setRequestId(xRequestId);
+				auditRequestContext.setRequestIdGenerated(false);
 			}
-
-			auditRequestContext.setRequestId(xRequestId);
+			else {
+				xRequestId = auditRequestContext.getRequestId();
+			}
 		}
 
 		if (!_auditLogContextConfiguration.enabled()) {
@@ -144,7 +143,7 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 			(!_auditLogContextConfiguration.useIncomingXRequestId() ||
 			 !_isValidXRequestId(xRequestId))) {
 
-			xRequestId = PortalUUIDUtil.generate();
+			xRequestId = auditRequestContext.getRequestId();
 		}
 
 		httpServletResponse.setHeader(HttpHeaders.X_REQUEST_ID, xRequestId);
