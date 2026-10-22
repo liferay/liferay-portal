@@ -7,6 +7,7 @@ package com.liferay.portal.search.internal.background.task;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -32,6 +33,7 @@ import com.liferay.portal.search.index.SyncReindexManager;
 import com.liferay.portal.search.internal.SearchEngineInitializer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -219,13 +221,31 @@ public class ReindexPortalBackgroundTaskExecutor
 			executorService.invokeAll(callables), Future::get);
 	}
 
+	private Void _reindex(
+			long backgroundTaskId,
+			List<UnsafeRunnable<Exception>> unsafeRunnables)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				BackgroundTaskThreadLocal.setBackgroundTaskIdWithSafeCloseable(
+					backgroundTaskId)) {
+
+			for (UnsafeRunnable<Exception> unsafeRunnable : unsafeRunnables) {
+				unsafeRunnable.run();
+			}
+		}
+
+		return null;
+	}
+
 	private List<Callable<Void>> _sortReindexCallables(
 		long backgroundTaskId,
 		List<SearchEngineInitializer> searchEngineInitializers) {
 
 		List<Callable<Void>> callables = new ArrayList<>();
 		Map<Callable<Void>, Long> callableCounts = new HashMap<>();
-		List<Callable<Void>> smallCallables = new ArrayList<>();
+		List<UnsafeRunnable<Exception>> smallUnsafeRunnables =
+			new ArrayList<>();
 
 		for (SearchEngineInitializer searchEngineInitializer :
 				searchEngineInitializers) {
@@ -239,26 +259,16 @@ public class ReindexPortalBackgroundTaskExecutor
 				Indexer<?> indexer = entry.getKey();
 				long count = entry.getValue();
 
-				if (count <= _SMALL_INDEXER_THRESHOLD) {
-					smallCallables.add(
-						() -> {
-							searchEngineInitializer.reindexIndexer(indexer);
+				UnsafeRunnable<Exception> unsafeRunnable =
+					() -> searchEngineInitializer.reindexIndexer(indexer);
 
-							return null;
-						});
+				if (count <= _SMALL_INDEXER_THRESHOLD) {
+					smallUnsafeRunnables.add(unsafeRunnable);
 				}
 				else {
-					Callable<Void> callable = () -> {
-						try (SafeCloseable safeCloseable =
-								BackgroundTaskThreadLocal.
-									setBackgroundTaskIdWithSafeCloseable(
-										backgroundTaskId)) {
-
-							searchEngineInitializer.reindexIndexer(indexer);
-						}
-
-						return null;
-					};
+					Callable<Void> callable = () -> _reindex(
+						backgroundTaskId,
+						Collections.singletonList(unsafeRunnable));
 
 					callables.add(callable);
 					callableCounts.put(callable, count);
@@ -270,21 +280,9 @@ public class ReindexPortalBackgroundTaskExecutor
 			(callable1, callable2) -> Long.compare(
 				callableCounts.get(callable2), callableCounts.get(callable1)));
 
-		if (!smallCallables.isEmpty()) {
+		if (!smallUnsafeRunnables.isEmpty()) {
 			callables.add(
-				() -> {
-					try (SafeCloseable safeCloseable =
-							BackgroundTaskThreadLocal.
-								setBackgroundTaskIdWithSafeCloseable(
-									backgroundTaskId)) {
-
-						for (Callable<Void> callable : smallCallables) {
-							callable.call();
-						}
-					}
-
-					return null;
-				});
+				() -> _reindex(backgroundTaskId, smallUnsafeRunnables));
 		}
 
 		return callables;
