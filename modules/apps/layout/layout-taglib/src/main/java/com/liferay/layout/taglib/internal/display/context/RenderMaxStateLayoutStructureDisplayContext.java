@@ -27,9 +27,8 @@ public class RenderMaxStateLayoutStructureDisplayContext {
 
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			LayoutPageTemplateEntryLocalServiceUtil.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					layout.getMasterLayoutPageTemplateEntryERC(),
-					layout.getGroupId());
+				fetchLayoutPageTemplateEntryByPlid(
+					layout.getMasterLayoutPlid());
 
 		if (masterLayoutPageTemplateEntry == null) {
 			_layoutStructure = _getDefaultMasterLayoutStructure();
