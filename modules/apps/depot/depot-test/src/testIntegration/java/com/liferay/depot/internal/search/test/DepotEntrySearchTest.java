@@ -14,6 +14,8 @@ import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -33,6 +35,8 @@ import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -176,6 +180,43 @@ public class DepotEntrySearchTest {
 			});
 	}
 
+	@Test
+	public void testSearchUpdatedDepotEntry() throws Exception {
+		String originalName = RandomTestUtil.randomString();
+
+		DepotEntry depotEntry = _addDepotEntry(
+			TestPropsValues.getUser(), originalName);
+
+		String newName = RandomTestUtil.randomString();
+
+		_depotEntryService.updateDepotEntry(
+			depotEntry.getDepotEntryId(),
+			Collections.singletonMap(LocaleUtil.getDefault(), newName),
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			Collections.emptyMap(), null,
+			UnicodePropertiesBuilder.put(
+				PropsKeys.LOCALES,
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault())
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		Hits hits = _search(newName);
+
+		Assert.assertEquals(hits.toString(), 1, hits.getLength());
+
+		Document document = hits.doc(0);
+
+		Assert.assertEquals(
+			String.valueOf(depotEntry.getDepotEntryId()),
+			document.get(Field.ENTRY_CLASS_PK));
+
+		hits = _search(originalName);
+
+		Assert.assertEquals(hits.toString(), 0, hits.getLength());
+	}
+
 	@Ignore
 	@Test
 	public void testSearchWithDepotEntryMembershipAndOrganizationMembership()
@@ -238,6 +279,19 @@ public class DepotEntrySearchTest {
 		_depotEntries.add(depotEntry);
 
 		return depotEntry;
+	}
+
+	private Hits _search(String keywords) throws Exception {
+		Indexer<DepotEntry> indexer = IndexerRegistryUtil.getIndexer(
+			DepotEntry.class);
+
+		SearchContext searchContext = SearchContextTestUtil.getSearchContext(
+			TestPropsValues.getGroupId());
+
+		searchContext.setGroupIds(null);
+		searchContext.setKeywords(keywords);
+
+		return indexer.search(searchContext);
 	}
 
 	@DeleteAfterTestRun
