@@ -19,7 +19,11 @@
 
 .cms-content-age-distribution {
 	.charts-legend {
-		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+	}
+
+	.charts-legend__item {
+		max-width: 15rem;
 	}
 
 	.charts-legend__label {
