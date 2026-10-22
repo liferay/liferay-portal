@@ -25,18 +25,25 @@ public class AuditRequestContextThreadLocalTest {
 
 	@Test
 	public void testGetAuditRequestContext() {
-		AuditRequestContext auditRequestContext =
+		AuditRequestContext auditRequestContext1 =
 			AuditRequestContextThreadLocal.getAuditRequestContext();
 
+		Assert.assertNotNull(auditRequestContext1.getRequestId());
+		Assert.assertTrue(auditRequestContext1.isRequestIdGenerated());
+
 		Assert.assertSame(
-			auditRequestContext,
+			auditRequestContext1,
 			AuditRequestContextThreadLocal.getAuditRequestContext());
 
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
 
-		Assert.assertNotSame(
-			auditRequestContext,
-			AuditRequestContextThreadLocal.getAuditRequestContext());
+		AuditRequestContext auditRequestContext2 =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		Assert.assertNotSame(auditRequestContext1, auditRequestContext2);
+		Assert.assertNotEquals(
+			auditRequestContext1.getRequestId(),
+			auditRequestContext2.getRequestId());
 
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
 	}
