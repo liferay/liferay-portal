@@ -507,7 +507,6 @@ com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil=
 com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionHelper=com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil
 com.liferay.portal.kernel.service.permission.GroupPermission=com.liferay.portal.kernel.service.permission.GroupPermissionUtil
 com.liferay.portal.kernel.servlet.BrowserSnifferUtil=com.liferay.portal.servlet.BrowserSnifferUtil
-com.liferay.portal.kernel.settings.SettingsFactory=com.liferay.portal.kernel.settings.ArchivedSettingsFactory
 com.liferay.portal.kernel.settings.SettingsFactoryUtil=com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil
 com.liferay.portal.kernel.test.AssertUtils=com.liferay.portal.search.test.util.AssertUtils
 com.liferay.portal.kernel.test.util.ServiceTestConstants=com.liferay.portal.kernel.test.constants.ServiceTestConstants
