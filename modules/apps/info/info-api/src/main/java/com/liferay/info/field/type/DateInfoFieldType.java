@@ -12,6 +12,9 @@ public class DateInfoFieldType implements InfoFieldType {
 
 	public static final DateInfoFieldType INSTANCE = new DateInfoFieldType();
 
+	public static final Attribute<DateInfoFieldType, Boolean>
+		TIME_ZONE_INDEPENDENT = new Attribute<>();
+
 	@Override
 	public String getName() {
 		return "date";
