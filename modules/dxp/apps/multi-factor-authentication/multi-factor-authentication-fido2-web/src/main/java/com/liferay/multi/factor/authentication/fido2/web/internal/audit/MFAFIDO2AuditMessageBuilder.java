@@ -9,9 +9,12 @@ import com.liferay.multi.factor.authentication.fido2.web.internal.constants.MFAF
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
 
 import org.osgi.service.component.annotations.Component;
@@ -26,49 +29,70 @@ public class MFAFIDO2AuditMessageBuilder {
 	public AuditMessage buildNonexistentUserVerificationFailureAuditMessage(
 		long companyId, long userId, String checkerClassName) {
 
-		return new AuditMessage(
-			companyId, userId, "Nonexistent",
+		AuditMessage auditMessage = new AuditMessage(
+			companyId, userId, "Nonexistent", "verify_failure",
 			JSONUtil.put("reason", "Nonexistent User"), checkerClassName,
 			String.valueOf(userId),
-			MFAFIDO2EventTypes.MFA_FIDO2_VERIFICATION_FAILURE, null);
+			MFAFIDO2EventTypes.MFA_FIDO2_VERIFICATION_FAILURE, null, "mfa");
+
+		_setVerificationResult(auditMessage, "verification_failure");
+
+		return auditMessage;
 	}
 
 	public AuditMessage buildNotVerifiedAuditMessage(
 		User user, String checkerClassName, String reason) {
 
-		return new AuditMessage(
+		AuditMessage auditMessage = new AuditMessage(
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
-			JSONUtil.put("reason", reason), checkerClassName,
+			"verify_failure", JSONUtil.put("reason", reason), checkerClassName,
 			String.valueOf(user.getPrimaryKey()),
-			MFAFIDO2EventTypes.MFA_FIDO2_NOT_VERIFIED, null);
+			MFAFIDO2EventTypes.MFA_FIDO2_NOT_VERIFIED, null, "mfa");
+
+		_setVerificationResult(auditMessage, "not_verified");
+
+		return auditMessage;
 	}
 
 	public AuditMessage buildUnconfiguredUserVerificationFailureAuditMessage(
 		long companyId, User user, String checkerClassName) {
 
-		return new AuditMessage(
-			companyId, user.getUserId(), "Unconfigured",
+		AuditMessage auditMessage = new AuditMessage(
+			companyId, user.getUserId(), "Unconfigured", "verify_failure",
 			JSONUtil.put("reason", "Unconfigured for User"), checkerClassName,
-			null, MFAFIDO2EventTypes.MFA_FIDO2_VERIFICATION_FAILURE, null);
+			null, MFAFIDO2EventTypes.MFA_FIDO2_VERIFICATION_FAILURE, null,
+			"mfa");
+
+		_setVerificationResult(auditMessage, "verification_failure");
+
+		return auditMessage;
 	}
 
 	public AuditMessage buildVerificationFailureAuditMessage(
 		User user, String checkerClassName, String reason) {
 
-		return new AuditMessage(
+		AuditMessage auditMessage = new AuditMessage(
 			user.getCompanyId(), user.getUserId(), user.getFullName(),
-			JSONUtil.put("reason", reason), checkerClassName,
+			"verify_failure", JSONUtil.put("reason", reason), checkerClassName,
 			String.valueOf(user.getPrimaryKey()),
-			MFAFIDO2EventTypes.MFA_FIDO2_VERIFICATION_FAILURE, null);
+			MFAFIDO2EventTypes.MFA_FIDO2_VERIFICATION_FAILURE, null, "mfa");
+
+		_setVerificationResult(auditMessage, "verification_failure");
+
+		return auditMessage;
 	}
 
 	public AuditMessage buildVerifiedAuditMessage(
 		User user, String checkerClassName) {
 
-		return new AuditMessage(
-			user.getCompanyId(), user.getUserId(), user.getFullName(), null,
-			checkerClassName, String.valueOf(user.getPrimaryKey()),
-			MFAFIDO2EventTypes.MFA_FIDO2_VERIFIED, null);
+		AuditMessage auditMessage = new AuditMessage(
+			user.getCompanyId(), user.getUserId(), user.getFullName(), "verify",
+			null, checkerClassName, String.valueOf(user.getPrimaryKey()),
+			MFAFIDO2EventTypes.MFA_FIDO2_VERIFIED, null, "mfa");
+
+		_setVerificationResult(auditMessage, "verified");
+
+		return auditMessage;
 	}
 
 	public void routeAuditMessage(AuditMessage auditMessage) {
@@ -85,6 +109,26 @@ public class MFAFIDO2AuditMessageBuilder {
 				_log.debug(exception);
 			}
 		}
+	}
+
+	private void _setVerificationResult(
+		AuditMessage auditMessage, String outcome) {
+
+		long companyId = auditMessage.getCompanyId();
+
+		if ((companyId == CompanyConstants.SYSTEM) ||
+			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+
+			return;
+		}
+
+		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
+
+		additionalInfoJSONObject.put(
+			"factor", "fido2"
+		).put(
+			"outcome", outcome
+		);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

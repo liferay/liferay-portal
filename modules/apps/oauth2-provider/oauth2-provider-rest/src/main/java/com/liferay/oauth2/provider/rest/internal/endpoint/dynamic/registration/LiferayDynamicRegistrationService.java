@@ -469,13 +469,15 @@ public class LiferayDynamicRegistrationService
 		);
 
 		return new AuditMessage(
-			0, _getCompanyId(), 0, StringPool.BLANK, null,
+			_getCompanyId(), 0, StringPool.BLANK,
+			OAuth2ProviderRESTEndpointConstants.
+				ACTION_DYNAMIC_REGISTRATION_REGISTER,
 			additionalInfoJSONObject, OAuth2Application.class.getName(),
 			GetterUtil.getString(
 				liferayClientRegistrationResponse.getClientId()),
 			OAuth2ProviderRESTEndpointConstants.
 				EVENT_TYPE_DYNAMIC_REGISTRATION_ADD,
-			StringPool.BLANK);
+			StringPool.BLANK, null);
 	}
 
 	private String _getApplicationType(ClientRegistration clientRegistration) {
@@ -599,12 +601,14 @@ public class LiferayDynamicRegistrationService
 		);
 
 		return new AuditMessage(
-			0, _getCompanyId(), 0, StringPool.BLANK, null,
+			_getCompanyId(), 0, StringPool.BLANK,
+			OAuth2ProviderRESTEndpointConstants.
+				ACTION_DYNAMIC_REGISTRATION_REGISTER_REJECT,
 			additionalInfoJSONObject, OAuth2Application.class.getName(),
 			StringPool.BLANK,
 			OAuth2ProviderRESTEndpointConstants.
 				EVENT_TYPE_DYNAMIC_REGISTRATION_REJECT,
-			StringPool.BLANK);
+			StringPool.BLANK, null);
 	}
 
 	private boolean _isOpenRegistration(Client client) {

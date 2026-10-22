@@ -10,6 +10,12 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.constants;
  */
 public class OAuth2ProviderRESTEndpointConstants {
 
+	public static final String ACTION_DYNAMIC_REGISTRATION_REGISTER =
+		"register";
+
+	public static final String ACTION_DYNAMIC_REGISTRATION_REGISTER_REJECT =
+		"register_reject";
+
 	/**
 	 * Embraces CXF OAuthConstants naming + RFC grant_type value formats.
 	 */

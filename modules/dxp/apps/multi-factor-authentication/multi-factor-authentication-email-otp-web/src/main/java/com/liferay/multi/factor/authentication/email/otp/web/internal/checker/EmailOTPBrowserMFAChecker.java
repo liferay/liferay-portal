@@ -16,9 +16,12 @@ import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -411,49 +414,74 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 		public AuditMessage buildNonexistentUserVerificationFailureAuditMessage(
 			long companyId, long userId, String checkerClassName) {
 
-			return new AuditMessage(
-				companyId, userId, "Nonexistent",
+			AuditMessage auditMessage = new AuditMessage(
+				companyId, userId, "Nonexistent", "verify_failure",
 				JSONUtil.put("reason", "Nonexistent User"), checkerClassName,
 				String.valueOf(userId),
-				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_VERIFICATION_FAILURE, null);
+				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_VERIFICATION_FAILURE, null,
+				"mfa");
+
+			_setVerificationResult(auditMessage, "verification_failure");
+
+			return auditMessage;
 		}
 
 		public AuditMessage buildNotVerifiedAuditMessage(
 			User user, String checkerClassName, String reason) {
 
-			return new AuditMessage(
+			AuditMessage auditMessage = new AuditMessage(
 				user.getCompanyId(), user.getUserId(), user.getFullName(),
-				JSONUtil.put("reason", reason), checkerClassName,
-				String.valueOf(user.getPrimaryKey()),
-				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_NOT_VERIFIED, null);
+				"verify_failure", JSONUtil.put("reason", reason),
+				checkerClassName, String.valueOf(user.getPrimaryKey()),
+				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_NOT_VERIFIED, null, "mfa");
+
+			_setVerificationResult(auditMessage, "not_verified");
+
+			return auditMessage;
 		}
 
 		public AuditMessage buildVerificationFailureAuditMessage(
 			User user, String checkerClassName, String reason) {
 
-			return new AuditMessage(
+			AuditMessage auditMessage = new AuditMessage(
 				user.getCompanyId(), user.getUserId(), user.getFullName(),
-				JSONUtil.put("reason", reason), checkerClassName,
-				String.valueOf(user.getPrimaryKey()),
-				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_VERIFICATION_FAILURE, null);
+				"verify_failure", JSONUtil.put("reason", reason),
+				checkerClassName, String.valueOf(user.getPrimaryKey()),
+				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_VERIFICATION_FAILURE, null,
+				"mfa");
+
+			_setVerificationResult(auditMessage, "verification_failure");
+
+			return auditMessage;
 		}
 
 		public AuditMessage buildVerificationSuccessAuditMessage(
 			User user, String checkerClassName) {
 
-			return new AuditMessage(
-				user.getCompanyId(), user.getUserId(), user.getFullName(), null,
-				checkerClassName, String.valueOf(user.getPrimaryKey()),
-				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_VERIFICATION_SUCCESS, null);
+			AuditMessage auditMessage = new AuditMessage(
+				user.getCompanyId(), user.getUserId(), user.getFullName(),
+				"verify", null, checkerClassName,
+				String.valueOf(user.getPrimaryKey()),
+				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_VERIFICATION_SUCCESS, null,
+				"mfa");
+
+			_setVerificationResult(auditMessage, "verification_success");
+
+			return auditMessage;
 		}
 
 		public AuditMessage buildVerifiedAuditMessage(
 			User user, String checkerClassName) {
 
-			return new AuditMessage(
-				user.getCompanyId(), user.getUserId(), user.getFullName(), null,
-				checkerClassName, String.valueOf(user.getPrimaryKey()),
-				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_VERIFIED, null);
+			AuditMessage auditMessage = new AuditMessage(
+				user.getCompanyId(), user.getUserId(), user.getFullName(),
+				"verify", null, checkerClassName,
+				String.valueOf(user.getPrimaryKey()),
+				MFAEmailOTPEventTypes.MFA_EMAIL_OTP_VERIFIED, null, "mfa");
+
+			_setVerificationResult(auditMessage, "verified");
+
+			return auditMessage;
 		}
 
 		public void routeAuditMessage(AuditMessage auditMessage) {
@@ -470,6 +498,27 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 					_log.debug(exception);
 				}
 			}
+		}
+
+		private void _setVerificationResult(
+			AuditMessage auditMessage, String outcome) {
+
+			long companyId = auditMessage.getCompanyId();
+
+			if ((companyId == CompanyConstants.SYSTEM) ||
+				!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+
+				return;
+			}
+
+			JSONObject additionalInfoJSONObject =
+				auditMessage.getAdditionalInfo();
+
+			additionalInfoJSONObject.put(
+				"factor", "email_otp"
+			).put(
+				"outcome", outcome
+			);
 		}
 
 		private final Log _log = LogFactoryUtil.getLog(

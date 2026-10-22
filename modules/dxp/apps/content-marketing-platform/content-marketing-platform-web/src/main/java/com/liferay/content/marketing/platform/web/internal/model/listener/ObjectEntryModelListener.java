@@ -492,8 +492,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		_auditRouter.route(
 			AuditMessageBuilder.buildAuditMessage(
-				cmpTaskObjectEntry.getModelClassName(),
-				cmpTaskObjectEntry.getObjectEntryId(), eventType,
+				null, cmpTaskObjectEntry.getModelClassName(),
+				cmpTaskObjectEntry.getObjectEntryId(), eventType, "objectentry",
 				Collections.singletonList(new Attribute(title))));
 	}
 

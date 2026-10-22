@@ -122,8 +122,8 @@ public class RoleModelListener extends BaseModelListener<Role> {
 
 		try {
 			AuditMessage auditMessage = AuditMessageBuilder.buildAuditMessage(
-				associationClassName, (Long)associationClassPK, eventType,
-				null);
+				null, associationClassName, (Long)associationClassPK, eventType,
+				"role", null);
 
 			JSONObject additionalInfoJSONObject =
 				auditMessage.getAdditionalInfo();

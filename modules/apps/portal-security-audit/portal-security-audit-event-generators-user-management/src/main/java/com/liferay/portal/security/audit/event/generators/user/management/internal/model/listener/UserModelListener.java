@@ -142,8 +142,8 @@ public class UserModelListener extends BaseModelListener<User> {
 
 		try {
 			AuditMessage auditMessage = AuditMessageBuilder.buildAuditMessage(
-				User.class.getName(), user.getUserId(),
-				EventTypes.AGREED_TO_TERMS_OF_USE, null);
+				"agree_to_terms_of_use", User.class.getName(), user.getUserId(),
+				EventTypes.AGREED_TO_TERMS_OF_USE, null, null);
 
 			auditMessage.setCompanyId(user.getCompanyId());
 

@@ -68,8 +68,9 @@ public abstract class BaseModelListener<T extends BaseModel<T>>
 
 		auditRouter.route(
 			AuditMessageBuilder.buildAuditMessage(
-				objectEntry.getModelClassName(), objectEntry.getObjectEntryId(),
-				eventType, Collections.singletonList(attribute)));
+				null, objectEntry.getModelClassName(),
+				objectEntry.getObjectEntryId(), eventType, "objectentry",
+				Collections.singletonList(attribute)));
 	}
 
 	@Reference
