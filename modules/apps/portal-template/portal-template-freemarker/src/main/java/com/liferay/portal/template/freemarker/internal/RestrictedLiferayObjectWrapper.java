@@ -118,49 +118,9 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 			_restrictedClasses = new ArrayList<>(restrictedClassNames.length);
 			_restrictedPackageNames = new ArrayList<>();
 
-			AggregateClassLoader aggregateClassLoader =
-				new AggregateClassLoader(
-					LiferayObjectWrapper.class.getClassLoader());
-
-			aggregateClassLoader.addClassLoader(
-				PortalImpl.class.getClassLoader());
-
-			Thread thread = Thread.currentThread();
-
-			if (thread.getContextClassLoader() != null) {
-				aggregateClassLoader.addClassLoader(
-					thread.getContextClassLoader());
-			}
-
-			for (String restrictedClassName : restrictedClassNames) {
-				restrictedClassName = StringUtil.trim(restrictedClassName);
-
-				if (Validator.isBlank(restrictedClassName)) {
-					continue;
-				}
-
-				try {
-					_restrictedClasses.add(
-						aggregateClassLoader.loadClass(restrictedClassName));
-				}
-				catch (ClassNotFoundException classNotFoundException) {
-					if (_log.isInfoEnabled()) {
-						_log.info(
-							StringBundler.concat(
-								"Unable to find restricted class ",
-								restrictedClassName,
-								". Registering as a package."),
-							classNotFoundException);
-					}
-
-					if (restrictedClassName.endsWith(StringPool.STAR)) {
-						restrictedClassName = restrictedClassName.substring(
-							0, restrictedClassName.length() - 1);
-					}
-
-					_restrictedPackageNames.add(restrictedClassName);
-				}
-			}
+			_populateClassesAndPackageNames(
+				_restrictedClasses, restrictedClassNames,
+				_restrictedPackageNames);
 		}
 	}
 
@@ -291,6 +251,49 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 		}
 
 		return false;
+	}
+
+	private void _populateClassesAndPackageNames(
+		List<Class<?>> classes, String[] classNames,
+		List<String> packageNames) {
+
+		AggregateClassLoader aggregateClassLoader = new AggregateClassLoader(
+			LiferayObjectWrapper.class.getClassLoader());
+
+		aggregateClassLoader.addClassLoader(PortalImpl.class.getClassLoader());
+
+		Thread thread = Thread.currentThread();
+
+		if (thread.getContextClassLoader() != null) {
+			aggregateClassLoader.addClassLoader(thread.getContextClassLoader());
+		}
+
+		for (String className : classNames) {
+			className = StringUtil.trim(className);
+
+			if (Validator.isBlank(className)) {
+				continue;
+			}
+
+			try {
+				classes.add(aggregateClassLoader.loadClass(className));
+			}
+			catch (ClassNotFoundException classNotFoundException) {
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"Unable to find class ", className,
+							". Registering as a package."),
+						classNotFoundException);
+				}
+
+				if (className.endsWith(StringPool.STAR)) {
+					className = className.substring(0, className.length() - 1);
+				}
+
+				packageNames.add(className);
+			}
+		}
 	}
 
 	private static final ModelFactory _RESTRICTED_STRING_MODEL_FACTORY =
