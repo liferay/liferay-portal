@@ -95,12 +95,15 @@ public class AuthVerifierPipelineTest {
 	}
 
 	private void _assertAuthVerifierResult(
-			String contextPath, String includeURLs, String requestURI,
+			String contextPath, String requestURI,
 			AuthVerifierResult.State expectedState)
 		throws PortalException {
 
 		AuthVerifierResult authVerifierResult = _verifyRequest(
-			contextPath, false, includeURLs, requestURI);
+			contextPath, false,
+			StringBundler.concat(
+				_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*"),
+			requestURI);
 
 		Assert.assertSame(expectedState, authVerifierResult.getState());
 	}
@@ -226,50 +229,33 @@ public class AuthVerifierPipelineTest {
 	}
 
 	private void _testVerifyRequest() throws PortalException {
-		String includeURLs = StringBundler.concat(
-			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
-
-		String legacyRequestURI = StringBundler.concat(
-			_BASE_URL, "/legacy/", RandomTestUtil.randomString());
-		String regularRequestURI = StringBundler.concat(
-			_BASE_URL, "/regular/", RandomTestUtil.randomString());
-
-		AuthVerifierResult.State expectedState =
-			AuthVerifierResult.State.SUCCESS;
-
 		_assertAuthVerifierResult(
-			StringPool.BLANK, includeURLs, legacyRequestURI, expectedState);
+			StringPool.BLANK,
+			StringBundler.concat(
+				_BASE_URL, "/legacy/", RandomTestUtil.randomString()),
+			AuthVerifierResult.State.SUCCESS);
 		_assertAuthVerifierResult(
-			StringPool.BLANK, includeURLs, regularRequestURI, expectedState);
+			StringPool.BLANK,
+			StringBundler.concat(
+				_BASE_URL, "/regular/", RandomTestUtil.randomString()),
+			AuthVerifierResult.State.SUCCESS);
 	}
 
 	private void _testVerifyRequestWithContextPath() throws PortalException {
 		String contextPath = "/" + RandomTestUtil.randomString();
-		String includeURLs = StringBundler.concat(
-			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
-
-		String requestURI = StringBundler.concat(
-			contextPath, _BASE_URL, "/regular/", RandomTestUtil.randomString());
-
-		AuthVerifierResult.State expectedState =
-			AuthVerifierResult.State.SUCCESS;
 
 		_assertAuthVerifierResult(
-			contextPath, includeURLs, requestURI, expectedState);
+			contextPath,
+			StringBundler.concat(
+				contextPath, _BASE_URL, "/regular/",
+				RandomTestUtil.randomString()),
+			AuthVerifierResult.State.SUCCESS);
 	}
 
 	private void _testVerifyRequestWithContextPathNotAffectedByPortalProxyPath()
 		throws PortalException {
 
 		String contextPath = "/" + RandomTestUtil.randomString();
-		String includeURLs = StringBundler.concat(
-			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
-
-		String requestURI = StringBundler.concat(
-			contextPath, _BASE_URL, "/regular/", RandomTestUtil.randomString());
-
-		AuthVerifierResult.State expectedState =
-			AuthVerifierResult.State.SUCCESS;
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -278,7 +264,11 @@ public class AuthVerifierPipelineTest {
 			_setUpPortalUtil();
 
 			_assertAuthVerifierResult(
-				contextPath, includeURLs, requestURI, expectedState);
+				contextPath,
+				StringBundler.concat(
+					contextPath, _BASE_URL, "/regular/",
+					RandomTestUtil.randomString()),
+				AuthVerifierResult.State.SUCCESS);
 		}
 	}
 
@@ -317,17 +307,10 @@ public class AuthVerifierPipelineTest {
 	private void _testVerifyRequestWithNonmatchingRequestURI()
 		throws PortalException {
 
-		String includeURLs = StringBundler.concat(
-			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
-
-		String requestURI = StringBundler.concat(
-			_BASE_URL, "/", RandomTestUtil.randomString());
-
-		AuthVerifierResult.State expectedState =
-			AuthVerifierResult.State.UNSUCCESSFUL;
-
 		_assertAuthVerifierResult(
-			StringPool.BLANK, includeURLs, requestURI, expectedState);
+			StringPool.BLANK,
+			StringBundler.concat(_BASE_URL, "/", RandomTestUtil.randomString()),
+			AuthVerifierResult.State.UNSUCCESSFUL);
 	}
 
 	private AuthVerifierResult _verifyRequest(
