@@ -5,6 +5,8 @@
 
 package com.liferay.portal.kernel.frontend.hashed.files;
 
+import java.util.Objects;
+
 /**
  * @author Iván Zaera Avellón
  */
@@ -22,6 +24,18 @@ public enum CachingStrategy {
 		}
 
 		throw new IllegalArgumentException(value);
+	}
+
+	public static CachingStrategy fromValue(
+		String value, CachingStrategy defaultCachingStrategy) {
+
+		for (CachingStrategy cachingStrategy : values()) {
+			if (Objects.equals(cachingStrategy.getValue(), value)) {
+				return cachingStrategy;
+			}
+		}
+
+		return defaultCachingStrategy;
 	}
 
 	public String getValue() {

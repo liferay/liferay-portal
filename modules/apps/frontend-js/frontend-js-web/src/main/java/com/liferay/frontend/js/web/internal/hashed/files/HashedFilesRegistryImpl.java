@@ -82,7 +82,8 @@ public class HashedFilesRegistryImpl implements HashedFilesRegistry {
 				_configurationProvider);
 
 		return CachingStrategy.fromValue(
-			frontendCachingConfiguration.cachingStrategy());
+			frontendCachingConfiguration.cachingStrategy(),
+			CachingStrategy.DO_NOT_USE_HASHES);
 	}
 
 	public String getHashedFileURI(String unhashedFileURI) {

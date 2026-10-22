@@ -5,6 +5,8 @@
 
 package com.liferay.frontend.js.web.internal.configuration;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -29,7 +31,23 @@ public class CompressionStrategyTest {
 
 			Assert.assertEquals(
 				compressionStrategy,
-				CompressionStrategy.fromValue(compressionStrategy.getValue()));
+				CompressionStrategy.fromValue(
+					compressionStrategy.getValue(),
+					CompressionStrategy.DO_NOT_COMPRESS));
+		}
+	}
+
+	@Test
+	public void testFromValueWhenValueIsInvalid() {
+		for (String value :
+				new String[] {
+					null, StringPool.BLANK, RandomTestUtil.randomString()
+				}) {
+
+			Assert.assertEquals(
+				CompressionStrategy.USE_SYSTEM_DEFAULTS,
+				CompressionStrategy.fromValue(
+					value, CompressionStrategy.USE_SYSTEM_DEFAULTS));
 		}
 	}
 

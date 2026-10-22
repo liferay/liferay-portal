@@ -10,6 +10,7 @@ import com.liferay.frontend.js.web.internal.configuration.FrontendCachingConfigu
 import com.liferay.frontend.js.web.internal.resource.FrontendResource;
 import com.liferay.frontend.js.web.test.util.FrontendJSWebTestUtil;
 import com.liferay.petra.io.StreamUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
@@ -308,6 +309,30 @@ public class FrontendResourceFilterTest {
 	}
 
 	@Test
+	public void testGZipWhenCompressionStrategyIsInvalid() throws Exception {
+		for (String compressionStrategy :
+				new String[] {
+					StringPool.BLANK, RandomTestUtil.randomString()
+				}) {
+
+			FrontendResourceFilter frontendResourceFilter =
+				_createFrontendResourceFilter(compressionStrategy);
+
+			ReflectionTestUtil.setFieldValue(
+				frontendResourceFilter, "_systemCompressionLevel",
+				Deflater.BEST_SPEED);
+
+			Assert.assertEquals(
+				_CONTENT,
+				_getGZipContent(
+					_mockFrontendResource(
+						FrontendJSWebTestUtil.randomHashedFileHash(), true,
+						RandomTestUtil.randomLong(), false, true),
+					frontendResourceFilter));
+		}
+	}
+
+	@Test
 	public void testGZipWhenCompressionStrategyIsUseSystemDefaults()
 		throws Exception {
 
@@ -428,6 +453,13 @@ public class FrontendResourceFilterTest {
 			CompressionStrategy compressionStrategy)
 		throws Exception {
 
+		return _createFrontendResourceFilter(compressionStrategy.getValue());
+	}
+
+	private FrontendResourceFilter _createFrontendResourceFilter(
+			String compressionStrategy)
+		throws Exception {
+
 		FrontendResourceFilter frontendResourceFilter =
 			new FrontendResourceFilter();
 
@@ -437,7 +469,7 @@ public class FrontendResourceFilterTest {
 		Mockito.when(
 			frontendCachingConfiguration.compressionStrategy()
 		).thenReturn(
-			compressionStrategy.getValue()
+			compressionStrategy
 		);
 
 		ConfigurationProvider configurationProvider = Mockito.mock(

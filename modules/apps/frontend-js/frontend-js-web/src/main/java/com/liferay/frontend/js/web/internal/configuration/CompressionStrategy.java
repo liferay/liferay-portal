@@ -5,6 +5,8 @@
 
 package com.liferay.frontend.js.web.internal.configuration;
 
+import java.util.Objects;
+
 /**
  * @author Iván Zaera Avellón
  */
@@ -16,14 +18,16 @@ public enum CompressionStrategy {
 	USE_MAXIMUM_COMPRESSION("use-maximum-compression"),
 	USE_SYSTEM_DEFAULTS("use-system-defaults");
 
-	public static CompressionStrategy fromValue(String value) {
+	public static CompressionStrategy fromValue(
+		String value, CompressionStrategy defaultCompressionStrategy) {
+
 		for (CompressionStrategy compressionStrategy : values()) {
-			if (value.equals(compressionStrategy.getValue())) {
+			if (Objects.equals(compressionStrategy.getValue(), value)) {
 				return compressionStrategy;
 			}
 		}
 
-		throw new IllegalArgumentException(value);
+		return defaultCompressionStrategy;
 	}
 
 	public String getValue() {

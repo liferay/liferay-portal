@@ -276,7 +276,8 @@ public class FrontendResourceFilter extends BasePortalFilter {
 				CompanyThreadLocal.getCompanyId(), _configurationProvider);
 
 		CompressionStrategy compressionStrategy = CompressionStrategy.fromValue(
-			frontendCachingConfiguration.compressionStrategy());
+			frontendCachingConfiguration.compressionStrategy(),
+			CompressionStrategy.USE_SYSTEM_DEFAULTS);
 
 		if (compressionStrategy == CompressionStrategy.DO_NOT_COMPRESS) {
 			return Deflater.NO_COMPRESSION;
