@@ -60,7 +60,6 @@ const defaultItems = [
 
 function PersonalMenu({
 	color,
-	colorSchemeSessionKey,
 	isImpersonated,
 	itemsURL,
 	label,
@@ -131,11 +130,7 @@ function PersonalMenu({
 	let headerContent;
 	let menuItems = items;
 
-	if (
-		showColorSchemeButton &&
-		Liferay.FeatureFlags['LPD-57922'] &&
-		items[0]?.type === 'group'
-	) {
+	if (showColorSchemeButton && items[0]?.type === 'group') {
 		const [{label: userLabel, ...firstGroup}, ...otherItems] = items;
 
 		headerContent = (
@@ -147,7 +142,6 @@ function PersonalMenu({
 
 				<SideNavigationColorSchemeButton
 					className="c-ml-2 c-mr-n1"
-					colorSchemeSessionKey={colorSchemeSessionKey}
 					size="xs"
 				/>
 			</div>
@@ -222,7 +216,6 @@ function PersonalMenu({
 }
 
 PersonalMenu.propTypes = {
-	colorSchemeSessionKey: PropTypes.string,
 	itemsURL: PropTypes.string,
 	showColorSchemeButton: PropTypes.bool,
 };

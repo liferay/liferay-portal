@@ -7,17 +7,20 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import classNames from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';
 
+const COLOR_SCHEME_SESSION_KEY =
+	'com_liferay_application_list_taglib_SideNavigationColorScheme';
+
 const REDUCED_MOTION_CLASS_NAME = 'c-prefers-reduced-motion';
 
 function SideNavigationColorSchemeButton({
 	className,
 	colorScheme: initialColorScheme = 'light',
-	colorSchemeSessionKey,
+	colorSchemeSessionKey = COLOR_SCHEME_SESSION_KEY,
 	size = 'sm',
 }: {
 	className?: string;
 	colorScheme?: 'dark' | 'light';
-	colorSchemeSessionKey: string;
+	colorSchemeSessionKey?: string;
 	size?: 'sm' | 'xs';
 }) {
 	const [colorScheme, setColorScheme] = useState<'dark' | 'light'>(() => {

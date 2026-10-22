@@ -63,12 +63,8 @@ if (size != null) {
 	</c:choose>
 
 	<%
-	boolean showColorSchemeButton = themeDisplay.isShowControlPanelIcon() || GroupPermissionUtil.contains(themeDisplay.getPermissionChecker(), themeDisplay.getScopeGroup(), ActionKeys.VIEW_SITE_ADMINISTRATION);
-
 	Map<String, Object> props = HashMapBuilder.<String, Object>put(
 		"color", color
-	).put(
-		"colorSchemeSessionKey", "com_liferay_application_list_taglib_SideNavigationColorScheme"
 	).put(
 		"isImpersonated", themeDisplay.isImpersonated()
 	).put(
@@ -87,7 +83,7 @@ if (size != null) {
 	).put(
 		"label", label
 	).put(
-		"showColorSchemeButton", showColorSchemeButton
+		"showColorSchemeButton", FeatureFlagManagerUtil.isEnabled("LPD-57922") && (themeDisplay.isShowControlPanelIcon() || GroupPermissionUtil.contains(themeDisplay.getPermissionChecker(), themeDisplay.getScopeGroup(), ActionKeys.VIEW_SITE_ADMINISTRATION))
 	).put(
 		"size", size
 	).put(
