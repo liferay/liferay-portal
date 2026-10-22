@@ -368,7 +368,6 @@ const RequestList: React.FC<IRequestListProps> = ({
 						}) => (
 							<td>
 								<ClayLabel
-									className="status"
 									displayType={
 										REQUEST_STATUS_DISPLAY_MAP[
 											status

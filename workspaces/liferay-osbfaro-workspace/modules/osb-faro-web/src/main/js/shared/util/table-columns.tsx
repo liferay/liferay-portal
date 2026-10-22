@@ -184,7 +184,7 @@ export const attributeListColumns = {
 		accessor: 'dataType',
 		cellRenderer: ({data: {dataType}}: {data: {dataType: string}}) => (
 			<td>
-				<ClayLabel displayType="info" inverse size="lg">
+				<ClayLabel displayType="info" inverse size="sm">
 					{capitalize(dataType)}
 				</ClayLabel>
 			</td>
