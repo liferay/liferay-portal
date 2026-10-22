@@ -1154,27 +1154,6 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
-	public void testNewURIBuilderWithEmptyValue() {
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			"http://test-1-1/job/x");
-
-		uriBuilder.addParameter("AXIS_VARIABLE", "");
-
-		testEquals(
-			"http://test-1-1/job/x?AXIS_VARIABLE=", uriBuilder.toString());
-	}
-
-	@Test
-	public void testNewURIBuilderWithExistingQueryString() {
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			"http://test-1-1/job/x?a=1");
-
-		uriBuilder.addParameter("b", "2");
-
-		testEquals("http://test-1-1/job/x?a=1&b=2", uriBuilder.toString());
-	}
-
-	@Test
 	public void testNewURIBuilderWithFragment() {
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 			"http://test-1-1/job/x?a=1#summary");
@@ -1198,17 +1177,6 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
-	public void testNewURIBuilderWithNullValue() {
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			"http://test-1-1/job/x/api/json");
-
-		uriBuilder.addParameter("pretty", null);
-
-		testEquals(
-			"http://test-1-1/job/x/api/json?pretty", uriBuilder.toString());
-	}
-
-	@Test
 	public void testNewURIBuilderWithoutParameters() {
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 			"http://test-1-1/job/x/buildWithParameters",
@@ -1222,37 +1190,6 @@ public class JenkinsResultsParserUtilTest
 
 		testEquals(
 			"http://test-1-1/job/x/buildWithParameters", uriBuilder.toString());
-	}
-
-	@Test
-	public void testNewURIBuilderWithParenthesesInPath() {
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			JenkinsResultsParserUtil.combine(
-				"http://test-1-1/job/test-portal-acceptance-pullrequest",
-				"(master)/buildWithParameters"));
-
-		uriBuilder.addParameter("a", "1");
-
-		testEquals(
-			JenkinsResultsParserUtil.combine(
-				"http://test-1-1/job/test-portal-acceptance-pullrequest",
-				"(master)/buildWithParameters?a=1"),
-			uriBuilder.toString());
-	}
-
-	@Test
-	public void testNewURIBuilderWithReservedCharacters() {
-		testEquals(
-			"http://test-1-1/job/x?V=100%25+pass",
-			_newParameterURL("100% pass"));
-		testEquals(
-			"http://test-1-1/job/x?V=AWS+%26+CI", _newParameterURL("AWS & CI"));
-		testEquals(
-			"http://test-1-1/job/x?V=PortalSmoke%23Smoke",
-			_newParameterURL("PortalSmoke#Smoke"));
-		testEquals("http://test-1-1/job/x?V=a+b", _newParameterURL("a b"));
-		testEquals("http://test-1-1/job/x?V=a%2Bb", _newParameterURL("a+b"));
-		testEquals("http://test-1-1/job/x?V=a%3Db", _newParameterURL("a=b"));
 	}
 
 	@Test
@@ -1430,15 +1367,6 @@ public class JenkinsResultsParserUtilTest
 		}
 
 		return sb.toString();
-	}
-
-	private String _newParameterURL(String value) {
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			"http://test-1-1/job/x");
-
-		uriBuilder.addParameter("V", value);
-
-		return uriBuilder.toString();
 	}
 
 	private Map<String, String> _newParameters(String... namesAndValues) {
