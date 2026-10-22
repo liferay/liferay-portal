@@ -19,12 +19,6 @@ public class UserGroupRoleFinderUtil {
 		return getFinder().findByGroupRoleType(groupId, roleType);
 	}
 
-	public static java.util.List<com.liferay.portal.kernel.model.UserGroupRole>
-		findByUserUserGroupGroupRole(long userId, long groupId) {
-
-		return getFinder().findByUserUserGroupGroupRole(userId, groupId);
-	}
-
 	public static UserGroupRoleFinder getFinder() {
 		if (_finder == null) {
 			_finder = (UserGroupRoleFinder)PortalBeanLocatorUtil.locate(
@@ -41,4 +35,4 @@ public class UserGroupRoleFinderUtil {
 	private static UserGroupRoleFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-824245440
+// LIFERAY-SERVICE-BUILDER-HASH:-42836068

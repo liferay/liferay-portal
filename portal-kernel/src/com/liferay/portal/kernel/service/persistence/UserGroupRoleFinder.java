@@ -17,8 +17,5 @@ public interface UserGroupRoleFinder {
 	public java.util.List<com.liferay.portal.kernel.model.UserGroupRole>
 		findByGroupRoleType(long groupId, int roleType);
 
-	public java.util.List<com.liferay.portal.kernel.model.UserGroupRole>
-		findByUserUserGroupGroupRole(long userId, long groupId);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-344165969
+// LIFERAY-SERVICE-BUILDER-HASH:1433632602

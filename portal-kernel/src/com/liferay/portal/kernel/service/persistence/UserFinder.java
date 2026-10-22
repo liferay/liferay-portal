@@ -46,12 +46,6 @@ public interface UserFinder {
 			<com.liferay.portal.kernel.model.User> orderByComparator);
 
 	public java.util.List<com.liferay.portal.kernel.model.User>
-		findByNoAnnouncementsDeliveries(String type);
-
-	public java.util.List<com.liferay.portal.kernel.model.User>
-		findByNoGroups();
-
-	public java.util.List<com.liferay.portal.kernel.model.User>
 		findBySocialUsers(
 			long companyId, long userId, int socialRelationType,
 			String socialRelationTypeComparator, int status, int start, int end,
@@ -85,4 +79,4 @@ public interface UserFinder {
 				<com.liferay.portal.kernel.model.User> orderByComparator);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1982442561
+// LIFERAY-SERVICE-BUILDER-HASH:1288985768

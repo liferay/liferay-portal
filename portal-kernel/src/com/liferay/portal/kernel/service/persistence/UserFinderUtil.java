@@ -75,18 +75,6 @@ public class UserFinderUtil {
 	}
 
 	public static java.util.List<com.liferay.portal.kernel.model.User>
-		findByNoAnnouncementsDeliveries(String type) {
-
-		return getFinder().findByNoAnnouncementsDeliveries(type);
-	}
-
-	public static java.util.List<com.liferay.portal.kernel.model.User>
-		findByNoGroups() {
-
-		return getFinder().findByNoGroups();
-	}
-
-	public static java.util.List<com.liferay.portal.kernel.model.User>
 		findBySocialUsers(
 			long companyId, long userId, int socialRelationType,
 			String socialRelationTypeComparator, int status, int start, int end,
@@ -160,4 +148,4 @@ public class UserFinderUtil {
 	private static UserFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:219689774
+// LIFERAY-SERVICE-BUILDER-HASH:1290115900
