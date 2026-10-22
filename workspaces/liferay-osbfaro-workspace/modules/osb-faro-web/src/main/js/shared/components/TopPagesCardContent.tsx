@@ -3,6 +3,7 @@ import Card from 'shared/components/Card';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayLink from '@clayui/link';
 import ClayTabs from '@clayui/tabs';
+import DataValue from 'shared/components/DataValue';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import React, {useContext} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
@@ -10,7 +11,7 @@ import Table from 'shared/components/table';
 import URLConstants from 'shared/util/url-constants';
 import {ApolloError} from '@apollo/client';
 import {ENTRANCES_METRIC, EXIT_RATE_METRIC} from 'shared/util/pagination';
-import {formatPercentFromRatio, toThousands} from 'shared/util/numbers';
+import {toThousands} from 'shared/util/numbers';
 import {metricsListColumns} from 'shared/util/table-columns';
 import {NameCell} from 'shared/components/table/cell-components';
 import {OrderByDirections} from 'shared/util/constants';
@@ -87,8 +88,9 @@ export const TOP_PAGES_TABS = [
 	{
 		metricColumn: {
 			...metricsListColumns.exitRateMetric,
-			dataFormatter: (data: number) =>
-				isFinite(data) ? formatPercentFromRatio(data) : '-',
+			dataFormatter: (data: number) => (
+				<DataValue type="ratio" value={data} />
+			),
 		},
 		rowIdentifier: ROW_IDENTIFIER,
 		tabId: EXIT_RATE_METRIC,
