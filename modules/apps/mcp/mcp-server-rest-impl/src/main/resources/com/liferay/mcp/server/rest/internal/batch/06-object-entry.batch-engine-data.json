@@ -35,6 +35,36 @@
 			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_DEFAULT_PROFILE",
 			"toolName": "postToolSetToolSetNameToolInvoke",
 			"toolSetName": "mcp-server-v1.0"
+		},
+		{
+			"externalReferenceCode": "L_MCP_SERVER_TOOL_SEARCH_PROFILE_TOOL_GET_TOOL_SEARCH_RESULTS_PAGE",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_TOOL_SEARCH_PROFILE",
+			"toolName": "getToolSearchToolSearchResultsPage",
+			"toolSetName": "mcp-server-v1.0"
+		},
+		{
+			"externalReferenceCode": "L_MCP_SERVER_TOOL_SEARCH_PROFILE_TOOL_GET_TOOL",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_TOOL_SEARCH_PROFILE",
+			"toolName": "getToolSetToolSetNameTool",
+			"toolSetName": "mcp-server-v1.0"
+		},
+		{
+			"externalReferenceCode": "L_MCP_SERVER_TOOL_SEARCH_PROFILE_TOOL_INVOKE",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_TOOL_SEARCH_PROFILE",
+			"toolName": "postToolSetToolSetNameToolInvoke",
+			"toolSetName": "mcp-server-v1.0"
+		},
+		{
+			"externalReferenceCode": "L_MCP_SERVER_TOOL_SEARCH_PROFILE_TOOL_GET_TOOL_SETS_PAGE",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_TOOL_SEARCH_PROFILE",
+			"toolName": "getToolSetsPage",
+			"toolSetName": "mcp-server-v1.0"
+		},
+		{
+			"externalReferenceCode": "L_MCP_SERVER_TOOL_SEARCH_PROFILE_TOOL_GET_TOOL_SUMMARIES_PAGE",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_TOOL_SEARCH_PROFILE",
+			"toolName": "getToolSetToolSetNameToolSummariesPage",
+			"toolSetName": "mcp-server-v1.0"
 		}
 	]
 }

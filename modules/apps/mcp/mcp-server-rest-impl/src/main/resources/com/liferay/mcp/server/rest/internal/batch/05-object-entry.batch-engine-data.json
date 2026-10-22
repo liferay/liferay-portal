@@ -17,6 +17,13 @@
 			"externalReferenceCode": "L_MCP_SERVER_DEFAULT_PROFILE",
 			"name": "default",
 			"profileStatus": "active"
+		},
+		{
+			"description": "Tool search MCP profile: the default tools plus getToolSearchToolSearchResultsPage, which finds the tools for an action instead of reading the catalogue. Requires Elasticsearch or OpenSearch.",
+			"externalReferenceCode": "L_MCP_SERVER_TOOL_SEARCH_PROFILE",
+			"instructions": "Start with getToolSearchToolSearchResultsPage, not the catalogue. Set includeRequiredInputSchema: the top result then carries the arguments it needs and its prerequisites, each naming the operation that resolves one of its parameters or noting what the parameter accepts. Resolve those first, then run the result with postToolSetToolSetNameToolInvoke, passing its toolSetName and toolName; a result is not a tool of this server and cannot be called by name. Fetch the input schema of any other result with getToolSetToolSetNameTool. Search in the user's words, not Liferay's: a published object definition exposes its entries as a tool set under its own name, so search \"create a pet store\", not \"create an object entry\". When no tool creates what the user asks for, such as a ticket or a webinar, Liferay does not model it yet: an object definition for it would add the missing tools. When one operation would run ten or more times, say so, as in \"add twenty books at once\", and prefer the batch operation that comes back; it answers 202 with an import task, which getImportTask in headless-batch-engine-v1.0 confirms. Use getToolSetsPage and getToolSetToolSetNameToolSummariesPage only when search returns nothing relevant.",
+			"name": "tool-search",
+			"profileStatus": "active"
 		}
 	]
 }
