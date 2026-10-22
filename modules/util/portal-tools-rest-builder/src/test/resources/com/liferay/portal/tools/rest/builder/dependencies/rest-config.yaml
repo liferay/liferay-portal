@@ -1,0 +1,11 @@
+apiDir: ../test-api/src/main/java
+apiPackagePath: com.liferay.test
+application:
+    baseURI: /test
+    className: TestApplication
+    name: Liferay.Test.REST
+author: Test Author
+clientDir: ../test-client/src/main/java
+compatibilityVersion: 16
+generateClientJS: true
+javaEEPackage: jakarta

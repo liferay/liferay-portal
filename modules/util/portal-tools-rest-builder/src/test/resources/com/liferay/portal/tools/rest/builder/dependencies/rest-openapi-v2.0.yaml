@@ -1,0 +1,34 @@
+components:
+    schemas:
+        Bar:
+            description:
+                A test entity.
+            properties:
+                id:
+                    format: int64
+                    type: integer
+            type: object
+info:
+    description:
+        Test API.
+    title: Test
+    version: v2.0
+openapi: 3.0.1
+paths:
+    "/bars/{barId}":
+        get:
+            operationId: getBar
+            parameters:
+                -   in: path
+                    name: barId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Bar"
+            tags: ["Bar"]
