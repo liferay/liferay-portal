@@ -9,6 +9,7 @@ import com.liferay.dispatch.constants.DispatchConstants;
 import com.liferay.dispatch.constants.DispatchPortletKeys;
 import com.liferay.dispatch.constants.DispatchScreenNavigationConstants;
 import com.liferay.dispatch.model.DispatchTrigger;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -31,9 +32,12 @@ import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorDispatchTriggerUtil;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServlet;
@@ -94,11 +98,11 @@ public class PIMConnectorServlet extends HttpServlet {
 				PermissionCheckerFactoryUtil.create(user));
 			PrincipalThreadLocal.setName(user.getUserId());
 
+			ObjectEntry objectEntry = _objectEntryService.getObjectEntry(
+				ParamUtil.getLong(httpServletRequest, "objectEntryId"));
+
 			DispatchTrigger dispatchTrigger =
-				PIMConnectorDispatchTriggerUtil.getDispatchTrigger(
-					_objectEntryService.getObjectEntry(
-						ParamUtil.getLong(
-							httpServletRequest, "objectEntryId")));
+				PIMConnectorDispatchTriggerUtil.getDispatchTrigger(objectEntry);
 
 			String method = httpServletRequest.getMethod();
 			String pathInfo = httpServletRequest.getPathInfo();
@@ -108,6 +112,22 @@ public class PIMConnectorServlet extends HttpServlet {
 
 				AuthTokenUtil.checkCSRFToken(
 					httpServletRequest, PIMConnectorServlet.class.getName());
+
+				if (!PIMConnectorFieldMappingsUtil.isMappingComplete(
+						objectEntry,
+						_pimConnectorRegistry.getPIMConnector(
+							MapUtil.getString(
+								objectEntry.getValues(), "key")))) {
+
+					_sendError(
+						_language.get(
+							httpServletRequest,
+							"a-required-channel-field-is-not-mapped"),
+						httpServletResponse,
+						HttpServletResponse.SC_BAD_REQUEST);
+
+					return;
+				}
 
 				Message message = new Message();
 
@@ -227,6 +247,9 @@ public class PIMConnectorServlet extends HttpServlet {
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	@Reference
+	private PIMConnectorRegistry _pimConnectorRegistry;
 
 	@Reference
 	private Portal _portal;

@@ -6,6 +6,7 @@
 package com.liferay.site.pim.site.initializer.internal.frontend.data.set.view.table;
 
 import com.liferay.frontend.data.set.view.FDSView;
+import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
@@ -42,7 +43,29 @@ public class PIMConnectorTableFDSView extends BasePIMTableFDSView {
 			"active", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"statusTableCellRenderer")
+		).add(
+			"mappingComplete", "mapping-status",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"mappingStatusTableCellRenderer")
+		).add(
+			"lastExecution", "last-execution-status",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"lastExecutionTableCellRenderer")
+		).add(
+			_getLastExecutionDateFDSTableSchemaField()
 		).build();
+	}
+
+	private DateTimeFDSTableSchemaField
+		_getLastExecutionDateFDSTableSchemaField() {
+
+		DateTimeFDSTableSchemaField dateTimeFDSTableSchemaField =
+			getDateFDSTableSchemaField(
+				"lastExecutionDate", "last-execution-date");
+
+		dateTimeFDSTableSchemaField.setSortable(false);
+
+		return dateTimeFDSTableSchemaField;
 	}
 
 	@Reference

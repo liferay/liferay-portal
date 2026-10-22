@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -31,7 +30,6 @@ import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.search.sort.SortOrder;
 import com.liferay.portal.search.sort.Sorts;
 import com.liferay.site.pim.site.initializer.connector.PIMConnector;
-import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
 import com.liferay.site.pim.site.initializer.internal.link.VariantPIMLinkType;
@@ -40,7 +38,6 @@ import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMapp
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,20 +60,26 @@ public abstract class BasePIMConnector implements PIMConnector {
 			ObjectEntry pimConnectorObjectEntry)
 		throws Exception {
 
+		List<ObjectEntry> pimFieldMappingObjectEntries =
+			PIMConnectorFieldMappingsUtil.getObjectEntries(
+				pimConnectorObjectEntry);
+
+		if (!PIMConnectorFieldMappingsUtil.isMappingComplete(
+				pimFieldMappingObjectEntries, this)) {
+
+			throw new PIMConnectorException(
+				"a-required-channel-field-is-not-mapped");
+		}
+
 		Map<String, List<ObjectEntry>> objectEntriesMap = new HashMap<>();
 
-		for (ObjectEntry objectEntry :
-				PIMConnectorFieldMappingsUtil.getObjectEntries(
-					pimConnectorObjectEntry)) {
-
+		for (ObjectEntry objectEntry : pimFieldMappingObjectEntries) {
 			List<ObjectEntry> objectEntries = objectEntriesMap.computeIfAbsent(
 				MapUtil.getString(objectEntry.getValues(), "channelFieldName"),
 				key -> new ArrayList<>());
 
 			objectEntries.add(objectEntry);
 		}
-
-		_validate(objectEntriesMap);
 
 		return objectEntriesMap;
 	}
@@ -257,36 +260,6 @@ public abstract class BasePIMConnector implements PIMConnector {
 			).build());
 
 		return searchResponse.getDocuments();
-	}
-
-	private void _validate(Map<String, List<ObjectEntry>> objectEntriesMap)
-		throws Exception {
-
-		for (PIMConnectorChannelField pimConnectorChannelField :
-				getPIMConnectorChannelFields()) {
-
-			if (!pimConnectorChannelField.isRequired()) {
-				continue;
-			}
-
-			List<ObjectEntry> objectEntries = ListUtil.filter(
-				objectEntriesMap.getOrDefault(
-					pimConnectorChannelField.getName(),
-					Collections.emptyList()),
-				objectEntry -> {
-					Map<String, Serializable> values = objectEntry.getValues();
-
-					return Validator.isNotNull(
-						MapUtil.getString(values, "sourceFieldName")) ||
-						   Validator.isNotNull(
-							   MapUtil.getString(values, "value"));
-				});
-
-			if (objectEntries.isEmpty()) {
-				throw new PIMConnectorException(
-					"a-required-channel-field-is-not-mapped");
-			}
-		}
 	}
 
 	private static final int _SEARCH_SIZE = 1000;

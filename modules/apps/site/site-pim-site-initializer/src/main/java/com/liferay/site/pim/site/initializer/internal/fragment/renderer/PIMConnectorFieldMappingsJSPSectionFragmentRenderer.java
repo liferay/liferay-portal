@@ -10,6 +10,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.internal.display.context.PIMConnectorFieldMappingsDisplayContext;
 
@@ -47,7 +48,7 @@ public class PIMConnectorFieldMappingsJSPSectionFragmentRenderer
 					PIMObjectDefinitionConstants.
 						EXTERNAL_REFERENCE_CODE_CONNECTOR,
 					themeDisplay.getCompanyId()),
-			_objectEntryLocalService);
+			_objectEntryLocalService, _pimConnectorRegistry);
 	}
 
 	@Reference
@@ -55,5 +56,8 @@ public class PIMConnectorFieldMappingsJSPSectionFragmentRenderer
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private PIMConnectorRegistry _pimConnectorRegistry;
 
 }

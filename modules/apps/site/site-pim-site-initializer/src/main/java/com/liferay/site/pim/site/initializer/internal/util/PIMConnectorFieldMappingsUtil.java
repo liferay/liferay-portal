@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 
@@ -36,9 +37,11 @@ import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Stefano Motta
@@ -214,6 +217,66 @@ public class PIMConnectorFieldMappingsUtil {
 		return Objects.equals(
 			MapUtil.getString(objectEntry.getValues(), "type"),
 			TYPE_FIXED_VALUE);
+	}
+
+	public static boolean isMapped(ObjectEntry objectEntry) {
+		if (isFixedValue(objectEntry)) {
+			return Validator.isNotNull(
+				MapUtil.getString(objectEntry.getValues(), "value"));
+		}
+
+		return Validator.isNotNull(
+			MapUtil.getString(objectEntry.getValues(), "sourceFieldName"));
+	}
+
+	public static boolean isMappingComplete(
+		List<ObjectEntry> objectEntries, PIMConnector pimConnector) {
+
+		if (pimConnector == null) {
+			return false;
+		}
+
+		Set<String> mappedChannelFieldNames = new HashSet<>();
+
+		for (ObjectEntry objectEntry : objectEntries) {
+			if (!isMapped(objectEntry)) {
+				continue;
+			}
+
+			mappedChannelFieldNames.add(
+				MapUtil.getString(objectEntry.getValues(), "channelFieldName"));
+		}
+
+		for (PIMConnectorChannelField pimConnectorChannelField :
+				pimConnector.getPIMConnectorChannelFields()) {
+
+			if (pimConnectorChannelField.isRequired() &&
+				!mappedChannelFieldNames.contains(
+					pimConnectorChannelField.getName())) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean isMappingComplete(
+			ObjectEntry objectEntry, PIMConnector pimConnector)
+		throws PortalException {
+
+		if (pimConnector == null) {
+			return false;
+		}
+
+		if (!ListUtil.exists(
+				pimConnector.getPIMConnectorChannelFields(),
+				PIMConnectorChannelField::isRequired)) {
+
+			return true;
+		}
+
+		return isMappingComplete(getObjectEntries(objectEntry), pimConnector);
 	}
 
 	private static Object _toObject(

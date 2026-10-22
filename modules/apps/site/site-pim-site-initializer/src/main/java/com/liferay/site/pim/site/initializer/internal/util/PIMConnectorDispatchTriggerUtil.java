@@ -6,7 +6,10 @@
 package com.liferay.site.pim.site.initializer.internal.util;
 
 import com.liferay.dispatch.executor.DispatchTaskClusterMode;
+import com.liferay.dispatch.executor.DispatchTaskStatus;
+import com.liferay.dispatch.model.DispatchLog;
 import com.liferay.dispatch.model.DispatchTrigger;
+import com.liferay.dispatch.service.DispatchLogLocalServiceUtil;
 import com.liferay.dispatch.service.DispatchTriggerLocalServiceUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.string.StringBundler;
@@ -33,8 +36,9 @@ public class PIMConnectorDispatchTriggerUtil {
 
 		DispatchTrigger dispatchTrigger =
 			DispatchTriggerLocalServiceUtil.addDispatchTrigger(
-				_getExternalReferenceCode(objectEntry), objectEntry.getUserId(),
-				PIMConnectorDispatchTaskExecutor.KEY,
+				_getExternalReferenceCode(
+					objectEntry.getExternalReferenceCode()),
+				objectEntry.getUserId(), PIMConnectorDispatchTaskExecutor.KEY,
 				UnicodePropertiesBuilder.put(
 					"pimConnectorObjectEntryId", objectEntry.getObjectEntryId()
 				).build(),
@@ -63,7 +67,8 @@ public class PIMConnectorDispatchTriggerUtil {
 		DispatchTrigger dispatchTrigger =
 			DispatchTriggerLocalServiceUtil.
 				fetchDispatchTriggerByExternalReferenceCode(
-					_getExternalReferenceCode(objectEntry),
+					_getExternalReferenceCode(
+						objectEntry.getExternalReferenceCode()),
 					objectEntry.getCompanyId());
 
 		if (dispatchTrigger != null) {
@@ -72,12 +77,58 @@ public class PIMConnectorDispatchTriggerUtil {
 		}
 	}
 
+	public static DispatchTrigger fetchDispatchTrigger(
+		long companyId, String objectEntryExternalReferenceCode) {
+
+		return DispatchTriggerLocalServiceUtil.
+			fetchDispatchTriggerByExternalReferenceCode(
+				_getExternalReferenceCode(objectEntryExternalReferenceCode),
+				companyId);
+	}
+
+	public static DispatchLog fetchLatestFinishedDispatchLog(
+		long companyId, String objectEntryExternalReferenceCode) {
+
+		DispatchTrigger dispatchTrigger = fetchDispatchTrigger(
+			companyId, objectEntryExternalReferenceCode);
+
+		if (dispatchTrigger == null) {
+			return null;
+		}
+
+		DispatchLog failedDispatchLog =
+			DispatchLogLocalServiceUtil.fetchLatestDispatchLog(
+				dispatchTrigger.getDispatchTriggerId(),
+				DispatchTaskStatus.FAILED);
+		DispatchLog successfulDispatchLog =
+			DispatchLogLocalServiceUtil.fetchLatestDispatchLog(
+				dispatchTrigger.getDispatchTriggerId(),
+				DispatchTaskStatus.SUCCESSFUL);
+
+		if (failedDispatchLog == null) {
+			return successfulDispatchLog;
+		}
+
+		if (successfulDispatchLog == null) {
+			return failedDispatchLog;
+		}
+
+		Date startDate = failedDispatchLog.getStartDate();
+
+		if (startDate.after(successfulDispatchLog.getStartDate())) {
+			return failedDispatchLog;
+		}
+
+		return successfulDispatchLog;
+	}
+
 	public static DispatchTrigger getDispatchTrigger(ObjectEntry objectEntry)
 		throws PortalException {
 
 		return DispatchTriggerLocalServiceUtil.
 			getDispatchTriggerByExternalReferenceCode(
-				_getExternalReferenceCode(objectEntry),
+				_getExternalReferenceCode(
+					objectEntry.getExternalReferenceCode()),
 				objectEntry.getCompanyId());
 	}
 
@@ -137,8 +188,10 @@ public class PIMConnectorDispatchTriggerUtil {
 		return calendar;
 	}
 
-	private static String _getExternalReferenceCode(ObjectEntry objectEntry) {
-		return "L_PIM_CONNECTOR_" + objectEntry.getExternalReferenceCode();
+	private static String _getExternalReferenceCode(
+		String objectEntryExternalReferenceCode) {
+
+		return "L_PIM_CONNECTOR_" + objectEntryExternalReferenceCode;
 	}
 
 	private static String _getName(ObjectEntry objectEntry) {
