@@ -9,11 +9,11 @@ import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.CompanyConstants;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration;
 
 import com.nimbusds.oauth2.sdk.util.JSONObjectUtils;
@@ -34,7 +34,8 @@ public class OpenIdConnectClientInformationUtil {
 
 	public static OIDCClientInformation getOIDCClientInformation(
 			ConfigurationAdmin configurationAdmin,
-			OAuthClientEntry oAuthClientEntry)
+			OAuthClientEntry oAuthClientEntry, SecretResolver secretResolver,
+			UserLocalService userLocalService)
 		throws Exception {
 
 		JSONObject jsonObject = JSONObjectUtils.parse(
@@ -43,10 +44,13 @@ public class OpenIdConnectClientInformationUtil {
 		String clientSecret = GetterUtil.getString(
 			jsonObject.get("client_secret"));
 
-		if (_isResolvable(clientSecret, configurationAdmin, oAuthClientEntry)) {
+		if (_isResolvable(
+				clientSecret, configurationAdmin, oAuthClientEntry,
+				userLocalService)) {
+
 			jsonObject.put(
 				"client_secret",
-				SecretResolverUtil.resolve(
+				secretResolver.resolve(
 					oAuthClientEntry.getCompanyId(), clientSecret));
 		}
 
@@ -92,7 +96,8 @@ public class OpenIdConnectClientInformationUtil {
 
 	private static boolean _isResolvable(
 			String clientSecret, ConfigurationAdmin configurationAdmin,
-			OAuthClientEntry oAuthClientEntry)
+			OAuthClientEntry oAuthClientEntry,
+			UserLocalService userLocalService)
 		throws Exception {
 
 		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
@@ -102,7 +107,7 @@ public class OpenIdConnectClientInformationUtil {
 			return false;
 		}
 
-		if (oAuthClientEntry.getUserId() == UserLocalServiceUtil.getGuestUserId(
+		if (oAuthClientEntry.getUserId() == userLocalService.getGuestUserId(
 				oAuthClientEntry.getCompanyId())) {
 
 			return _isOpenIdConnectProviderClientSecret(

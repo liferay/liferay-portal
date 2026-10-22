@@ -9,16 +9,12 @@ import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.SecretResolver;
-import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -28,7 +24,6 @@ import com.nimbusds.openid.connect.sdk.rp.OIDCClientInformation;
 import java.util.Dictionary;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,23 +42,6 @@ public class OpenIdConnectClientInformationUtilTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
-
-	@Before
-	public void setUp() {
-		ReflectionTestUtil.setFieldValue(
-			SecretResolverUtil.class, "_secretResolverSnapshot",
-			new Snapshot<SecretResolver>(
-				SecretResolverUtil.class, SecretResolver.class) {
-
-				@Override
-				public SecretResolver get() {
-					return _secretResolver;
-				}
-
-			});
-		ReflectionTestUtil.setFieldValue(
-			UserLocalServiceUtil.class, "_service", _userLocalService);
-	}
 
 	@Test
 	public void testGetOIDCClientInformation() throws Exception {
@@ -217,7 +195,8 @@ public class OpenIdConnectClientInformationUtilTest {
 
 		OIDCClientInformation oidcClientInformation =
 			OpenIdConnectClientInformationUtil.getOIDCClientInformation(
-				_configurationAdmin, oAuthClientEntry);
+				_configurationAdmin, oAuthClientEntry, _secretResolver,
+				_userLocalService);
 
 		Secret secret = oidcClientInformation.getSecret();
 

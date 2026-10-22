@@ -25,10 +25,12 @@ import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.sso.openid.connect.configuration.OpenIdConnectConfiguration;
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
 import com.liferay.portal.security.sso.openid.connect.internal.AuthorizationServerMetadataResolver;
@@ -242,7 +244,8 @@ public class OfflineOpenIdConnectSessionManager {
 
 			OIDCTokens oidcTokens = OpenIdConnectTokenRequestUtil.request(
 				OpenIdConnectClientInformationUtil.getOIDCClientInformation(
-					_configurationAdmin, oAuthClientEntry),
+					_configurationAdmin, oAuthClientEntry, _secretResolver,
+					_userLocalService),
 				oidcProviderMetadata, refreshToken,
 				oAuthClientEntry.getTokenConnectionTimeout(),
 				oAuthClientEntry.getTokenRequestParametersJSON());
@@ -437,7 +440,14 @@ public class OfflineOpenIdConnectSessionManager {
 
 	private ServiceRegistration<SchedulerJobConfiguration>
 		_schedulerJobConfigurationServiceRegistration;
+
+	@Reference
+	private SecretResolver _secretResolver;
+
 	private long _tokenRefreshOffsetMillis = 60 * Time.SECOND;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 	private class TokenRefreshMessageListener extends BaseMessageListener {
 
