@@ -191,7 +191,7 @@ exports[`GlobalAttributeList should render 1`] = `
             </td>
             <td>
               <span
-                class="label label-lg label-inverse-info"
+                class="label label-sm label-inverse-info"
               >
                 <span
                   class="label-item label-item-expand"

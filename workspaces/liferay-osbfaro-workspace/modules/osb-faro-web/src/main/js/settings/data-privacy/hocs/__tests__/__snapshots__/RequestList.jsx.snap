@@ -369,7 +369,7 @@ exports[`RequestList should render 1`] = `
               </td>
               <td>
                 <span
-                  class="label status label-lg label-inverse-info"
+                  class="label label-lg label-inverse-info"
                 >
                   <span
                     class="label-item label-item-expand"
@@ -424,7 +424,7 @@ exports[`RequestList should render 1`] = `
               </td>
               <td>
                 <span
-                  class="label status label-lg label-inverse-info"
+                  class="label label-lg label-inverse-info"
                 >
                   <span
                     class="label-item label-item-expand"
@@ -479,7 +479,7 @@ exports[`RequestList should render 1`] = `
               </td>
               <td>
                 <span
-                  class="label status label-lg label-inverse-success"
+                  class="label label-lg label-inverse-success"
                 >
                   <span
                     class="label-item label-item-expand"
@@ -537,7 +537,7 @@ exports[`RequestList should render 1`] = `
               </td>
               <td>
                 <span
-                  class="label status label-lg label-inverse-success"
+                  class="label label-lg label-inverse-success"
                 >
                   <span
                     class="label-item label-item-expand"
@@ -601,7 +601,7 @@ exports[`RequestList should render 1`] = `
               </td>
               <td>
                 <span
-                  class="label status label-lg label-inverse-danger"
+                  class="label label-lg label-inverse-danger"
                 >
                   <span
                     class="label-item label-item-expand"
@@ -656,7 +656,7 @@ exports[`RequestList should render 1`] = `
               </td>
               <td>
                 <span
-                  class="label status label-lg label-inverse-secondary"
+                  class="label label-lg label-inverse-secondary"
                 >
                   <span
                     class="label-item label-item-expand"
@@ -710,7 +710,7 @@ exports[`RequestList should render 1`] = `
               </td>
               <td>
                 <span
-                  class="label status label-lg label-inverse-success"
+                  class="label label-lg label-inverse-success"
                 >
                   <span
                     class="label-item label-item-expand"
