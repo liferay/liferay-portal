@@ -217,7 +217,7 @@ paths:
     /portal-instances/copy:
         post:
             description:
-                Copies the portal instance. Through POST /portal-instances/copy/batch the same operation runs asynchronously; poll the returned import task.
+                Copies the portal instance. Through POST /portal-instances/copy/batch the same operation runs asynchronously; poll the returned import task. Document Library files are not included and must be transferred separately.
             operationId: postPortalInstanceCopy
             requestBody:
                 content:
@@ -242,7 +242,7 @@ paths:
     /portal-instances/export:
         post:
             description:
-                Exports the portal instance. Through POST /portal-instances/export/batch the same operation runs asynchronously; poll the returned import task.
+                Exports the portal instance. Through POST /portal-instances/export/batch the same operation runs asynchronously; poll the returned import task. Document Library files are not included and must be transferred separately.
             operationId: postPortalInstanceExport
             requestBody:
                 content:
@@ -267,7 +267,7 @@ paths:
     /portal-instances/import:
         post:
             description:
-                Imports a DB partition portal instance
+                Imports a DB partition portal instance. Document Library files are not included and must be transferred separately.
             operationId: postPortalInstanceImport
             requestBody:
                 content:
