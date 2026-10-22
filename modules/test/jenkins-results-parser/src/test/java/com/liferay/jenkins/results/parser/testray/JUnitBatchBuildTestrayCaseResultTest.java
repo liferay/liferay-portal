@@ -88,6 +88,12 @@ public class JUnitBatchBuildTestrayCaseResultTest
 		DownstreamBuildReport downstreamBuildReport = Mockito.mock(
 			DownstreamBuildReport.class);
 
+		Mockito.doReturn(
+			axisName
+		).when(
+			downstreamBuildReport
+		).getAxisName();
+
 		TestClassReport testClassReport = Mockito.mock(TestClassReport.class);
 
 		Mockito.doReturn(
@@ -95,12 +101,6 @@ public class JUnitBatchBuildTestrayCaseResultTest
 		).when(
 			testClassReport
 		).getTestClassName();
-
-		Mockito.doReturn(
-			axisName
-		).when(
-			downstreamBuildReport
-		).getAxisName();
 
 		Mockito.doReturn(
 			Collections.singletonList(testClassReport)
