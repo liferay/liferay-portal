@@ -3631,8 +3631,8 @@ public class BatchEnginePortletDataHandlerTest {
 			exportImportReportEntries.size());
 
 		_assertExportImportReportEntry(
-			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0L,
-			workflowDefinition.getExternalReferenceCode(), 0L,
+			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0,
+			workflowDefinition.getExternalReferenceCode(), 0,
 			"workflow-definitions",
 			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
 			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
@@ -3686,8 +3686,8 @@ public class BatchEnginePortletDataHandlerTest {
 			exportImportReportEntries.size());
 
 		_assertExportImportReportEntry(
-			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0L,
-			workflowDefinition.getExternalReferenceCode(), 0L,
+			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0,
+			workflowDefinition.getExternalReferenceCode(), 0,
 			"workflow-definitions",
 			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
 			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
@@ -3695,7 +3695,7 @@ public class BatchEnginePortletDataHandlerTest {
 		_assertExportImportReportEntry(
 			_classNameLocalService.getClassNameId(KaleoDefinition.class),
 			workflowDefinition.getWorkflowDefinitionId(),
-			workflowDefinition.getExternalReferenceCode(), 0L,
+			workflowDefinition.getExternalReferenceCode(), 0,
 			"workflow-definitions",
 			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
 			ExportImportReportEntryConstants.TYPE_ERROR,
@@ -3896,8 +3896,8 @@ public class BatchEnginePortletDataHandlerTest {
 			exportImportReportEntries.size());
 
 		_assertExportImportReportEntry(
-			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0L,
-			workflowDefinition.getExternalReferenceCode(), 0L,
+			_classNameLocalService.getClassNameId(KaleoDefinition.class), 0,
+			workflowDefinition.getExternalReferenceCode(), 0,
 			"workflow-definitions",
 			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
 			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,

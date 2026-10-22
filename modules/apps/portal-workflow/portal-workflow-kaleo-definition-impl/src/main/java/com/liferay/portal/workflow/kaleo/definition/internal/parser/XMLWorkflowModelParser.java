@@ -167,7 +167,6 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 				_addTextElement(
 					element, "user-external-reference-code",
 					user.getExternalReferenceCode());
-
 				_addTextElement(element, "user-id", String.valueOf(userId));
 			}
 
@@ -552,14 +551,15 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			"user");
 
 		for (Element userAssignmentElement : userAssignmentElements) {
-			assignments.add(
-				new UserAssignment(
-					userAssignmentElement.elementTextTrim(
-						"user-external-reference-code"),
-					GetterUtil.getLong(
-						userAssignmentElement.elementTextTrim("user-id")),
-					userAssignmentElement.elementTextTrim("screen-name"),
-					userAssignmentElement.elementTextTrim("email-address")));
+			UserAssignment userAssignment = new UserAssignment(
+				userAssignmentElement.elementTextTrim(
+					"user-external-reference-code"),
+				GetterUtil.getLong(
+					userAssignmentElement.elementTextTrim("user-id")),
+				userAssignmentElement.elementTextTrim("screen-name"),
+				userAssignmentElement.elementTextTrim("email-address"));
+
+			assignments.add(userAssignment);
 		}
 
 		return assignments;

@@ -132,9 +132,9 @@ public class WorkflowDefinitionImportTaskPreAction
 	private void _removeMissingUser(
 		long companyId, Element element, Set<String> missingUserIdentifiers) {
 
+		String emailAddress = element.elementTextTrim("email-address");
 		String externalReferenceCode = element.elementTextTrim(
 			"user-external-reference-code");
-		String emailAddress = element.elementTextTrim("email-address");
 		String screenName = element.elementTextTrim("screen-name");
 
 		if (Validator.isNotNull(externalReferenceCode)) {
