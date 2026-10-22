@@ -116,7 +116,7 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 							"embeddedViewEnabled", true
 						).build())) {
 
-			Queue<Object[]> argumentsList = new LinkedList<>();
+			Queue<Object[]> argumentsQueue = new LinkedList<>();
 			String dsEnvelopeId = RandomTestUtil.randomString();
 			long dsRequestId = RandomTestUtil.randomLong();
 
@@ -147,7 +147,7 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 									method.getName(),
 									"sendDSRequestNotifications")) {
 
-								argumentsList.add(arguments);
+								argumentsQueue.add(arguments);
 							}
 
 							return null;
@@ -176,9 +176,9 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 				dsEnvelopeId, jsonObject.getString("dsEnvelopeId"));
 
 			Assert.assertEquals(
-				argumentsList.toString(), 1, argumentsList.size());
+				argumentsQueue.toString(), 1, argumentsQueue.size());
 
-			Object[] arguments = argumentsList.poll();
+			Object[] arguments = argumentsQueue.poll();
 
 			Assert.assertEquals(dsRequestId, arguments[0]);
 		}

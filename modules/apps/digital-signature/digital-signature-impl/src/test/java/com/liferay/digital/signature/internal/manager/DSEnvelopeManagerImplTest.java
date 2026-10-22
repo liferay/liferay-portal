@@ -23,7 +23,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import java.util.Arrays;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,8 +41,8 @@ public class DSEnvelopeManagerImplTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@BeforeClass
-	public static void setUpClass() {
+	@Before
+	public void setUp() {
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
@@ -63,7 +63,7 @@ public class DSEnvelopeManagerImplTest {
 			JSONUtil.put(
 				"errorCode", "ENVELOPE_DOES_NOT_EXIST"
 			).put(
-				"message", "The envelope could not be read."
+				"message", RandomTestUtil.randomString()
 			)
 		);
 
@@ -105,7 +105,7 @@ public class DSEnvelopeManagerImplTest {
 			JSONUtil.put(
 				"errorCode", "ENVELOPE_CANNOT_VOID_INVALID_STATE"
 			).put(
-				"message", "Only envelopes in the sent state may be voided."
+				"message", RandomTestUtil.randomString()
 			)
 		);
 

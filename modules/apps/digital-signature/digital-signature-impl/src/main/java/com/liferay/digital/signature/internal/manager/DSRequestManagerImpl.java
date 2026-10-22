@@ -973,8 +973,8 @@ public class DSRequestManagerImpl implements DSRequestManager {
 							"Unable to send notification for digital ",
 							"signature request ", dsRequest.getDSRequestId(),
 							" because notification template ",
-							"L_DS_REQUEST_SIGN_NOTIFICATION_TEMPLATE does not ",
-							"exist"));
+							"\"L_DS_REQUEST_SIGN_NOTIFICATION_TEMPLATE\" does ",
+							"not exist"));
 				}
 
 				return;

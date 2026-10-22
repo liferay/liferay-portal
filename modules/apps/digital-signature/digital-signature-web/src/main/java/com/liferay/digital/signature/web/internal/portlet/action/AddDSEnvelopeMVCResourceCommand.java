@@ -63,12 +63,12 @@ public class AddDSEnvelopeMVCResourceCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		long[] fileEntryIds = ParamUtil.getLongValues(
+			resourceRequest, "fileEntryIds");
+
 		boolean embeddedViewEnabled =
 			DigitalSignatureConfigurationUtil.isEmbeddedViewEnabled(
 				themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId());
-
-		long[] fileEntryIds = ParamUtil.getLongValues(
-			resourceRequest, "fileEntryIds");
 
 		for (long fileEntryId : fileEntryIds) {
 			_fileEntryModelResourcePermission.check(

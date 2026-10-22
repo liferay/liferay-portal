@@ -423,9 +423,8 @@ public class DSRequestManagerTest {
 
 		String body = notificationQueueEntry.getBody();
 
-		Assert.assertTrue(body, body.contains(emailMessage));
+		Assert.assertTrue(body.contains(emailMessage));
 		Assert.assertTrue(
-			body,
 			body.contains(
 				_dsRequestURLProvider.getSignURL(
 					TestPropsValues.getCompanyId(), dsRequest.getDSRequestId(),
@@ -450,6 +449,10 @@ public class DSRequestManagerTest {
 			System.currentTimeMillis() / 1000, 0, ZoneOffset.UTC);
 
 		_testUpdateDSRequest(
+			"delivered", "delivered", DSRequestConstants.STATUS_SENT,
+			DSRequestConstants.STATUS_SENT, localDateTime.plusDays(1),
+			localDateTime);
+		_testUpdateDSRequest(
 			DSRequestConstants.STATUS_COMPLETED,
 			DSRequestConstants.STATUS_COMPLETED,
 			DSRequestConstants.STATUS_COMPLETED,
@@ -460,10 +463,6 @@ public class DSRequestManagerTest {
 			DSRequestConstants.STATUS_DECLINED,
 			DSRequestConstants.STATUS_DECLINED,
 			DSRequestConstants.STATUS_DECLINED, localDateTime.plusDays(1),
-			localDateTime);
-		_testUpdateDSRequest(
-			"delivered", "delivered", DSRequestConstants.STATUS_SENT,
-			DSRequestConstants.STATUS_SENT, localDateTime.plusDays(1),
 			localDateTime);
 		_testUpdateDSRequest(
 			DSRequestConstants.STATUS_SIGNED, DSRequestConstants.STATUS_SIGNED,
@@ -942,7 +941,7 @@ public class DSRequestManagerTest {
 
 		DSEnvelope dsEnvelope = _createDSEnvelope(dsRecipient);
 
-		Queue<Object[]> argumentsList = new LinkedList<>();
+		Queue<Object[]> argumentsQueue = new LinkedList<>();
 
 		DSEnvelopeManager dsEnvelopeManager =
 			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
@@ -954,7 +953,7 @@ public class DSRequestManagerTest {
 						if (Objects.equals(
 								method.getName(), "voidDSEnvelope")) {
 
-							argumentsList.add(arguments);
+							argumentsQueue.add(arguments);
 
 							return null;
 						}
@@ -984,9 +983,10 @@ public class DSRequestManagerTest {
 				_dsRequestManager, "_dsEnvelopeManager", dsEnvelopeManager);
 		}
 
-		Assert.assertEquals(argumentsList.toString(), 1, argumentsList.size());
+		Assert.assertEquals(
+			argumentsQueue.toString(), 1, argumentsQueue.size());
 
-		Object[] arguments = argumentsList.poll();
+		Object[] arguments = argumentsQueue.poll();
 
 		Assert.assertEquals(dsEnvelope.getDSEnvelopeId(), arguments[1]);
 

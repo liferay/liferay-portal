@@ -73,26 +73,23 @@ public class DSRequestURLProviderTest {
 			company.getCompanyId(), dsRequestId, _group.getGroupId());
 
 		Assert.assertTrue(
-			signURL,
 			signURL.endsWith(
 				"/c/digital_signature/open_ds_request?dsRequestId=" +
 					dsRequestId));
 		Assert.assertTrue(
-			signURL,
 			signURL.startsWith(
 				_portal.getPortalURL(
 					virtualHostname, _portal.getPortalServerPort(false),
 					false)));
 
-		Group guestGroup = _groupLocalService.getGroup(
-			company.getCompanyId(), GroupConstants.GUEST);
-
 		signURL = _dsRequestURLProvider.getSignURL(
 			company.getCompanyId(), RandomTestUtil.randomLong(),
 			RandomTestUtil.randomLong());
 
+		Group guestGroup = _groupLocalService.getGroup(
+			company.getCompanyId(), GroupConstants.GUEST);
+
 		Assert.assertTrue(
-			signURL,
 			signURL.startsWith(company.getPortalURL(guestGroup.getGroupId())));
 	}
 
