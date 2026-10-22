@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.URLCodec;
@@ -67,6 +68,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -181,6 +183,10 @@ public class MCPServerServletTest {
 				_testServiceWithNoContentResponse(authorization);
 				_testServiceWithProfile(authorization);
 				_testServiceWithRestrictFields(authorization);
+				_testServiceWithToolSearch(authorization);
+				_testServiceWithToolSearchAndToolInvoke(authorization);
+				_testServiceWithToolSearchAndToolsRestrictedToProfile(
+					authorization);
 				_testServiceWithUnknownMethod(authorization);
 				_testServiceWithoutAuthTokenCheck(authorization);
 				_testServiceWithoutProfile(authorization);
@@ -223,6 +229,21 @@ public class MCPServerServletTest {
 			0);
 
 		Assert.assertFalse(textContent.text(), callToolResult.isError());
+	}
+
+	private void _assertAllowedTools(
+		Set<String> allowedToolKeys, JSONArray itemsJSONArray) {
+
+		Assert.assertTrue(itemsJSONArray.length() > 0);
+
+		for (int i = 0; i < itemsJSONArray.length(); i++) {
+			JSONObject itemJSONObject = itemsJSONArray.getJSONObject(i);
+
+			Assert.assertTrue(
+				allowedToolKeys.contains(
+					itemJSONObject.getString("toolSetName") + "#" +
+						itemJSONObject.getString("toolName")));
+		}
 	}
 
 	private void _assertInvalidTokenChallenge(
@@ -726,6 +747,32 @@ public class MCPServerServletTest {
 		return response.getResponseCode();
 	}
 
+	private JSONArray _getToolSearchResultItemsJSONArray(
+			McpSyncClient mcpSyncClient, String search)
+		throws Exception {
+
+		McpSchema.CallToolResult callToolResult = mcpSyncClient.callTool(
+			new McpSchema.CallToolRequest(
+				"getToolSearchToolSearchResultsPage",
+				HashMapBuilder.<String, Object>put(
+					"includeRequiredInputSchema", true
+				).put(
+					"search", search
+				).build()));
+
+		List<McpSchema.Content> contents = callToolResult.content();
+
+		McpSchema.TextContent textContent = (McpSchema.TextContent)contents.get(
+			0);
+
+		Assert.assertFalse(callToolResult.isError());
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			textContent.text());
+
+		return jsonObject.getJSONArray("items");
+	}
+
 	private void _testServiceWithDataMasks(String authorization)
 		throws Exception {
 
@@ -1181,6 +1228,105 @@ public class MCPServerServletTest {
 		fieldsEnumValues = _getFieldsEnumValues(mcpSyncClient);
 
 		Assert.assertTrue(fieldsEnumValues.contains("description"));
+
+		mcpSyncClient.closeGracefully();
+	}
+
+	private void _testServiceWithToolSearch(String authorization)
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+
+		_addObjectEntry(
+			name, "mcp-server-v1.0 getToolSearchToolSearchResultsPage");
+
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+
+		mcpSyncClient.initialize();
+
+		JSONArray itemsJSONArray = _getToolSearchResultItemsJSONArray(
+			mcpSyncClient, "upload a document to a site");
+
+		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			itemsJSONArray.toString(), "postSiteDocument",
+			itemJSONObject.getString("toolName"));
+
+		mcpSyncClient.closeGracefully();
+	}
+
+	private void _testServiceWithToolSearchAndToolInvoke(String authorization)
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+
+		_addObjectEntry(
+			name, "headless-delivery-v1.0 postSiteBlogPosting",
+			"mcp-server-v1.0 getToolSearchToolSearchResultsPage",
+			"mcp-server-v1.0 postToolSetToolSetNameToolInvoke");
+
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+
+		mcpSyncClient.initialize();
+
+		JSONArray itemsJSONArray = _getToolSearchResultItemsJSONArray(
+			mcpSyncClient, "upload a document to a site");
+
+		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			itemsJSONArray.toString(), "postSiteDocument",
+			itemJSONObject.getString("toolName"));
+
+		mcpSyncClient.closeGracefully();
+	}
+
+	private void _testServiceWithToolSearchAndToolsRestrictedToProfile(
+			String authorization)
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+
+		_addObjectEntry(
+			name, "headless-delivery-v1.0 getSiteBlogPostingsPage",
+			"headless-delivery-v1.0 postSiteBlogPosting",
+			"mcp-server-v1.0 getToolSearchToolSearchResultsPage");
+
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+
+		mcpSyncClient.initialize();
+
+		JSONArray itemsJSONArray = _getToolSearchResultItemsJSONArray(
+			mcpSyncClient, "create a blog posting in a site");
+
+		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			itemsJSONArray.toString(), "postSiteBlogPosting",
+			itemJSONObject.getString("toolName"));
+
+		JSONArray prerequisitesJSONArray = itemJSONObject.getJSONArray(
+			"prerequisites");
+
+		Assert.assertTrue(prerequisitesJSONArray.length() > 0);
+
+		for (int i = 0; i < prerequisitesJSONArray.length(); i++) {
+			JSONObject prerequisiteJSONObject =
+				prerequisitesJSONArray.getJSONObject(i);
+
+			Assert.assertFalse(prerequisiteJSONObject.has("toolName"));
+		}
+
+		Set<String> allowedToolKeys = SetUtil.fromArray(
+			"headless-delivery-v1.0#getSiteBlogPostingsPage",
+			"headless-delivery-v1.0#postSiteBlogPosting");
+
+		_assertAllowedTools(
+			allowedToolKeys,
+			_getToolSearchResultItemsJSONArray(
+				mcpSyncClient, "upload a document to a site"));
+		_assertAllowedTools(allowedToolKeys, itemsJSONArray);
 
 		mcpSyncClient.closeGracefully();
 	}

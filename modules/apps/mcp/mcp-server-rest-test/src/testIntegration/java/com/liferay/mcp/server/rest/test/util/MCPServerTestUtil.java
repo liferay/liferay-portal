@@ -14,11 +14,13 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
@@ -375,6 +377,37 @@ public class MCPServerTestUtil {
 		}
 
 		return mcpServerProfileDataMaskObjectEntries;
+	}
+
+	public static List<String> getMCPServerProfileToolNames(
+			ObjectEntry mcpServerProfileObjectEntry)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_MCP_SERVER_PROFILE_TOOL",
+					TestPropsValues.getCompanyId());
+
+		return TransformUtil.transform(
+			ObjectEntryLocalServiceUtil.getObjectEntries(
+				0, objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS),
+			objectEntry -> {
+				Map<String, Serializable> values = objectEntry.getValues();
+
+				long mcpServerProfileId = GetterUtil.getLong(
+					values.get(
+						"r_mcpServerProfileToTools_l_mcpServerProfileId"));
+
+				if (mcpServerProfileId !=
+						mcpServerProfileObjectEntry.getObjectEntryId()) {
+
+					return null;
+				}
+
+				return MapUtil.getString(values, "toolName");
+			});
 	}
 
 	public static List<ObjectEntry> getMCPServerProfileToolObjectEntries(
