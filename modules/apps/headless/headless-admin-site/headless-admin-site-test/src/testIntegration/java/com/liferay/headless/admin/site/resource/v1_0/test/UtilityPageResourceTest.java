@@ -338,7 +338,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 	@Override
 	@Test
 	@TestInfo(
-		{"LPD-48984", "LPD-92443", "LPD-95021", "LPD-107149", "LPD-109892"})
+		{"LPD-48984", "LPD-92443", "LPD-95021", "LPD-107149", "LPD-109892"}
+	)
 	public void testPostSiteUtilityPage() throws Exception {
 		super.testPostSiteUtilityPage();
 
