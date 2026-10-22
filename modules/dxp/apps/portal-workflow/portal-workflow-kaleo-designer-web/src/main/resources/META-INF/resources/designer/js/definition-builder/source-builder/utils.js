@@ -30,8 +30,11 @@ export function parseAssignments(node) {
 	const autoCreateValues = [];
 	const roleNames = [];
 	const roleTypes = [];
+	const typeUser = Object.keys(node.assignments[0]).find(
+		(key) => key !== 'user-external-reference-code'
+	);
+	const userExternalReferenceCodes = [];
 	const users = [];
-	const typeUser = Object.keys(node.assignments[0])[0];
 
 	node.assignments.forEach((item) => {
 		const itemKeys = Object.keys(item);
@@ -67,6 +70,9 @@ export function parseAssignments(node) {
 		}
 		else if (itemKeys.includes('user-id')) {
 			assignments.assignmentType = ['user'];
+			userExternalReferenceCodes.push(
+				item['user-external-reference-code']
+			);
 			users.push(item['user-id']);
 		}
 		else if (itemKeys.includes('screen-name')) {
@@ -80,6 +86,7 @@ export function parseAssignments(node) {
 			assignments.emailAddress = users;
 		}
 		if (typeUser === 'user-id') {
+			assignments.userExternalReferenceCode = userExternalReferenceCodes;
 			assignments.userId = users;
 		}
 		if (typeUser === 'screen-name') {
@@ -149,6 +156,7 @@ export function parseReassignments(node) {
 
 			const emailAddress = [];
 			const screenName = [];
+			const userExternalReferenceCode = [];
 			const userId = [];
 
 			for (let i = 0; i < usersLength; i++) {
@@ -158,8 +166,11 @@ export function parseReassignments(node) {
 				else if (item['user'][0]?.['screen-name']) {
 					screenName.push(item['user'][i]?.['screen-name']);
 				}
-				else if (item['user'][0]?.['user-id']) {
-					userId.push(item['user'][i]?.['user-id']);
+				else if (item['user'][i]?.['user-id']) {
+					userExternalReferenceCode.push(
+						item['user'][i - 1]?.['user-external-reference-code']
+					);
+					userId.push(item['user'][i]['user-id']);
 				}
 			}
 
@@ -172,6 +183,8 @@ export function parseReassignments(node) {
 			}
 
 			if (userId.length) {
+				assignments.userExternalReferenceCode =
+					userExternalReferenceCode;
 				assignments.userId = userId;
 			}
 		}
@@ -286,9 +299,13 @@ export function parseNotifications(node) {
 			}
 
 			if (item['user'].some((item) => item['user-id'])) {
+				const userExternalReferenceCode = [];
 				const userId = [];
 
 				item['user'].forEach((item) => {
+					userExternalReferenceCode.push(
+						item['user-external-reference-code']
+					);
 					userId.push(item['user-id']);
 				});
 
@@ -296,12 +313,14 @@ export function parseNotifications(node) {
 					notifications.recipients[index].push({
 						assignmentType: ['user'],
 						receptionType: [receptionType],
+						userExternalReferenceCode,
 						userId,
 					});
 				}
 				else {
 					notifications.recipients[index].push({
 						assignmentType: ['user'],
+						userExternalReferenceCode,
 						userId,
 					});
 				}
