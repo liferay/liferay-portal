@@ -37,6 +37,8 @@ public class IntentUtilTest {
 			SetUtil.fromArray("delete"), IntentUtil.getIntents("get rid of"));
 		Assert.assertTrue(SetUtil.isEmpty(IntentUtil.getIntents("hello")));
 		Assert.assertEquals(
+			SetUtil.fromArray("create"), IntentUtil.getIntents("import"));
+		Assert.assertEquals(
 			SetUtil.fromArray(IntentUtil.INTENT_LIST, IntentUtil.INTENT_READ),
 			IntentUtil.getIntents("show"));
 	}

@@ -239,6 +239,8 @@ public class IntentUtil {
 		).put(
 			"get rid of", Arrays.asList(INTENT_DELETE)
 		).put(
+			"import", Arrays.asList(INTENT_CREATE)
+		).put(
 			"link", Arrays.asList(INTENT_CREATE)
 		).put(
 			"list", Arrays.asList(INTENT_LIST, INTENT_READ)
