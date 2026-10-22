@@ -331,7 +331,7 @@ export function SidePanel({
 						'c-slideout-transition-out'
 					);
 				}}
-				timeout={prefersReducedMotion ? 0 : open ? 200 : 300}
+				timeout={prefersReducedMotion ? 0 : open ? 300 : 200}
 			>
 				<As
 					{...otherProps}
