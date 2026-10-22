@@ -10,5 +10,9 @@
 		"prettier": "3.2.5",
 		"typescript": "4.4.2"
 	},
-	"private": true
+	"private": true,
+	"resolutions": {
+		"flatted": "^3.4.2",
+		"minimatch": "^9.0.7"
+	}
 }
