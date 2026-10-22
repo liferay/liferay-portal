@@ -131,18 +131,18 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 	@Test
 	public void testProcessAction() throws Exception {
 		_testProcessAction();
-		_testProcessActionWhenBackURLIsBlank();
-		_testProcessActionWhenBackURLIsExternal();
-		_testProcessActionWhenBackURLIsRelative();
-		_testProcessActionWhenDSRecipientIsDeclined();
+		_testProcessActionWithBlankBackURL();
+		_testProcessActionWithDeclinedDSRecipient();
+		_testProcessActionWithExternalBackURL();
+		_testProcessActionWithRelativeBackURL();
 	}
 
-	private long _addDSRequest(String dsEnvelopeId) throws Exception {
+	private ObjectEntry _addDSRequest(String dsEnvelopeId) throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
 
-		ObjectEntry dsRequestObjectEntry = _addObjectEntry(
+		ObjectEntry objectEntry = _addObjectEntry(
 			_dsRequestObjectDefinition, serviceContext,
 			HashMapBuilder.<String, Serializable>put(
 				"emailSubject", RandomTestUtil.randomString()
@@ -167,7 +167,7 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 				"name", RandomTestUtil.randomString()
 			).put(
 				"r_dsRequestToDSRequestRecipients_l_dsRequestId",
-				dsRequestObjectEntry.getObjectEntryId()
+				objectEntry.getObjectEntryId()
 			).put(
 				"r_userToDSRequestRecipients_userId",
 				TestPropsValues.getUserId()
@@ -175,7 +175,7 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 				"requestRecipientStatus", DSRequestConstants.STATUS_SENT
 			).build());
 
-		return dsRequestObjectEntry.getObjectEntryId();
+		return objectEntry;
 	}
 
 	private ObjectEntry _addObjectEntry(
@@ -268,8 +268,6 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 	private void _testProcessAction() throws Exception {
 		String dsEnvelopeId = RandomTestUtil.randomString();
 
-		long dsRequestId = _addDSRequest(dsEnvelopeId);
-
 		DSEnvelope dsEnvelope = _createDSEnvelope(
 			dsEnvelopeId, DSRequestConstants.STATUS_COMPLETED);
 
@@ -298,15 +296,18 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 				SessionMessages.contains(
 					httpServletRequest, "requestProcessed"));
 
+			ObjectEntry objectEntry = _addDSRequest(dsEnvelopeId);
+
 			httpServletRequest = _processAction(
-				dsRequestId, UserTestUtil.addUser());
+				objectEntry.getObjectEntryId(), UserTestUtil.addUser());
 
 			Assert.assertEquals(Collections.emptyList(), methodNames);
 			Assert.assertFalse(
 				SessionMessages.contains(
 					httpServletRequest, "requestProcessed"));
 
-			httpServletRequest = _processAction(dsRequestId, user);
+			httpServletRequest = _processAction(
+				objectEntry.getObjectEntryId(), user);
 
 			Assert.assertEquals(List.of("getDSEnvelope"), methodNames);
 			Assert.assertTrue(
@@ -319,7 +320,7 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 		}
 	}
 
-	private void _testProcessActionWhenBackURLIsBlank() throws Exception {
+	private void _testProcessActionWithBlankBackURL() throws Exception {
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			_getMockLiferayPortletActionRequest(
 				StringPool.BLANK, RandomTestUtil.randomLong(),
@@ -338,7 +339,55 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 			customMockLiferayPortletActionResponse.getRedirectLocation());
 	}
 
-	private void _testProcessActionWhenBackURLIsExternal() throws Exception {
+	private void _testProcessActionWithDeclinedDSRecipient() throws Exception {
+		String dsEnvelopeId = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = _addDSRequest(dsEnvelopeId);
+
+		DSEnvelope dsEnvelope = _createDSEnvelope(
+			dsEnvelopeId, DSRequestConstants.STATUS_DECLINED);
+
+		List<String> methodNames = new ArrayList<>();
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> {
+						methodNames.add(method.getName());
+
+						return dsEnvelope;
+					}));
+
+		try {
+			HttpServletRequest httpServletRequest = _processAction(
+				objectEntry.getObjectEntryId(), TestPropsValues.getUser());
+
+			Assert.assertEquals(List.of("getDSEnvelope"), methodNames);
+			Assert.assertFalse(
+				SessionMessages.contains(
+					httpServletRequest, "requestProcessed"));
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager", dsEnvelopeManager);
+		}
+
+		DSRequest dsRequest = _dsRequestManager.fetchDSRequest(
+			TestPropsValues.getCompanyId(), objectEntry.getObjectEntryId());
+
+		List<DSRequestRecipient> dsRequestRecipients =
+			dsRequest.getDSRequestRecipients();
+
+		DSRequestRecipient dsRequestRecipient = dsRequestRecipients.get(0);
+
+		Assert.assertEquals(
+			DSRequestConstants.STATUS_DECLINED, dsRequestRecipient.getStatus());
+	}
+
+	private void _testProcessActionWithExternalBackURL() throws Exception {
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			_getMockLiferayPortletActionRequest(
 				"https://example.com", RandomTestUtil.randomLong(),
@@ -380,7 +429,7 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 		}
 	}
 
-	private void _testProcessActionWhenBackURLIsRelative() throws Exception {
+	private void _testProcessActionWithRelativeBackURL() throws Exception {
 		String backURL = "/" + RandomTestUtil.randomString();
 
 		CustomMockLiferayPortletActionResponse
@@ -392,56 +441,6 @@ public class CompleteDSRecipientViewMVCActionCommandTest {
 		Assert.assertEquals(
 			backURL,
 			customMockLiferayPortletActionResponse.getRedirectLocation());
-	}
-
-	private void _testProcessActionWhenDSRecipientIsDeclined()
-		throws Exception {
-
-		String dsEnvelopeId = RandomTestUtil.randomString();
-
-		long dsRequestId = _addDSRequest(dsEnvelopeId);
-
-		DSEnvelope dsEnvelope = _createDSEnvelope(
-			dsEnvelopeId, DSRequestConstants.STATUS_DECLINED);
-
-		List<String> methodNames = new ArrayList<>();
-
-		DSEnvelopeManager dsEnvelopeManager =
-			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
-				_dsRequestManager, "_dsEnvelopeManager",
-				ProxyUtil.newProxyInstance(
-					DSEnvelopeManager.class.getClassLoader(),
-					new Class<?>[] {DSEnvelopeManager.class},
-					(proxy, method, arguments) -> {
-						methodNames.add(method.getName());
-
-						return dsEnvelope;
-					}));
-
-		try {
-			HttpServletRequest httpServletRequest = _processAction(
-				dsRequestId, TestPropsValues.getUser());
-
-			Assert.assertEquals(List.of("getDSEnvelope"), methodNames);
-			Assert.assertFalse(
-				SessionMessages.contains(
-					httpServletRequest, "requestProcessed"));
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_dsRequestManager, "_dsEnvelopeManager", dsEnvelopeManager);
-		}
-
-		DSRequest dsRequest = _dsRequestManager.fetchDSRequest(
-			TestPropsValues.getCompanyId(), dsRequestId);
-
-		List<DSRequestRecipient> dsRequestRecipients =
-			dsRequest.getDSRequestRecipients();
-
-		DSRequestRecipient dsRequestRecipient = dsRequestRecipients.get(0);
-
-		Assert.assertEquals(
-			DSRequestConstants.STATUS_DECLINED, dsRequestRecipient.getStatus());
 	}
 
 	private CompanyConfigurationTemporarySwapper

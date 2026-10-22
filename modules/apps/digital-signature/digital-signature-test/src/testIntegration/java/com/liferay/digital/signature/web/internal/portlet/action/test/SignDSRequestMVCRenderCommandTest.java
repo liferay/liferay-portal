@@ -140,26 +140,30 @@ public class SignDSRequestMVCRenderCommandTest {
 
 	@Test
 	public void testRender() throws Exception {
-		Layout fileEntryLayout = LayoutTestUtil.addTypePortletLayout(_group);
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
 
-		FileEntry fileEntry = _addFileEntry(fileEntryLayout.getPlid());
+		FileEntry fileEntry = _addFileEntry(layout.getPlid());
 
-		_testRender(_addDSRequest(fileEntry.getFileEntryId()), fileEntryLayout);
+		ObjectEntry objectEntry = _addDSRequest(fileEntry.getFileEntryId());
+
+		_testRender(objectEntry.getObjectEntryId(), layout);
 
 		fileEntry = _addFileEntry(RandomTestUtil.randomLong());
 
-		_testRender(_addDSRequest(fileEntry.getFileEntryId()), _portletLayout);
+		objectEntry = _addDSRequest(fileEntry.getFileEntryId());
 
-		_testRenderWhenStateIsPopUp();
-		_testRenderWhenUserIsNotDSRequestRecipient();
+		_testRender(objectEntry.getObjectEntryId(), _portletLayout);
+
+		_testRenderWithNonrecipientUser();
+		_testRenderWithPopUpState();
 	}
 
-	private long _addDSRequest(long fileEntryId) throws Exception {
+	private ObjectEntry _addDSRequest(long fileEntryId) throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
 
-		ObjectEntry dsRequestObjectEntry = _addObjectEntry(
+		ObjectEntry objectEntry = _addObjectEntry(
 			_dsRequestObjectDefinition, serviceContext,
 			HashMapBuilder.<String, Serializable>put(
 				"emailSubject", RandomTestUtil.randomString()
@@ -177,7 +181,7 @@ public class SignDSRequestMVCRenderCommandTest {
 				"fileEntryId", fileEntryId
 			).put(
 				"r_dsRequestToDSRequestDocuments_l_dsRequestId",
-				dsRequestObjectEntry.getObjectEntryId()
+				objectEntry.getObjectEntryId()
 			).build());
 
 		_addObjectEntry(
@@ -193,7 +197,7 @@ public class SignDSRequestMVCRenderCommandTest {
 				"name", RandomTestUtil.randomString()
 			).put(
 				"r_dsRequestToDSRequestRecipients_l_dsRequestId",
-				dsRequestObjectEntry.getObjectEntryId()
+				objectEntry.getObjectEntryId()
 			).put(
 				"r_userToDSRequestRecipients_userId",
 				TestPropsValues.getUserId()
@@ -201,7 +205,7 @@ public class SignDSRequestMVCRenderCommandTest {
 				"requestRecipientStatus", DSRequestConstants.STATUS_SENT
 			).build());
 
-		return dsRequestObjectEntry.getObjectEntryId();
+		return objectEntry;
 	}
 
 	private FileEntry _addFileEntry(long plid) throws Exception {
@@ -275,17 +279,35 @@ public class SignDSRequestMVCRenderCommandTest {
 			redirectedURL, redirectedURL.contains(layout.getFriendlyURL()));
 	}
 
-	private void _testRenderWhenStateIsPopUp() throws Exception {
+	private void _testRenderWithNonrecipientUser() throws Exception {
 		FileEntry fileEntry = _addFileEntry(_portletLayout.getPlid());
+
+		ObjectEntry objectEntry = _addDSRequest(fileEntry.getFileEntryId());
+
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
+		themeDisplay.setUser(UserTestUtil.addUser());
+
+		Assert.assertEquals(
+			"/sign_digital_signature/view.jsp",
+			_mvcRenderCommand.render(
+				_getMockLiferayPortletRenderRequest(
+					objectEntry.getObjectEntryId(), themeDisplay),
+				new MockLiferayPortletRenderResponse()));
+	}
+
+	private void _testRenderWithPopUpState() throws Exception {
+		FileEntry fileEntry = _addFileEntry(_portletLayout.getPlid());
+
+		ObjectEntry objectEntry = _addDSRequest(fileEntry.getFileEntryId());
 
 		ThemeDisplay themeDisplay = _getThemeDisplay();
 
 		themeDisplay.setStatePopUp(true);
 
-		long dsRequestId = _addDSRequest(fileEntry.getFileEntryId());
-
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest(dsRequestId, themeDisplay);
+			_getMockLiferayPortletRenderRequest(
+				objectEntry.getObjectEntryId(), themeDisplay);
 
 		List<Object[]> argumentsList = new ArrayList<>();
 		List<String> methodNames = new ArrayList<>();
@@ -322,7 +344,7 @@ public class SignDSRequestMVCRenderCommandTest {
 			methodNames);
 
 		DSRequest dsRequest = _dsRequestManager.fetchDSRequest(
-			TestPropsValues.getCompanyId(), dsRequestId);
+			TestPropsValues.getCompanyId(), objectEntry.getObjectEntryId());
 
 		List<DSRequestRecipient> dsRequestRecipients =
 			dsRequest.getDSRequestRecipients();
@@ -333,7 +355,7 @@ public class SignDSRequestMVCRenderCommandTest {
 		Object[] arguments = argumentsList.get(0);
 
 		DSRequestRecipient dsRequestRecipient =
-			(DSRequestRecipient)arguments[2];
+			(DSRequestRecipient)arguments[3];
 
 		Assert.assertEquals(
 			expectedDSRequestRecipient.getEmailAddress(),
@@ -344,21 +366,6 @@ public class SignDSRequestMVCRenderCommandTest {
 		Assert.assertNotNull(
 			mockLiferayPortletRenderRequest.getAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT));
-	}
-
-	private void _testRenderWhenUserIsNotDSRequestRecipient() throws Exception {
-		FileEntry fileEntry = _addFileEntry(_portletLayout.getPlid());
-
-		ThemeDisplay themeDisplay = _getThemeDisplay();
-
-		themeDisplay.setUser(UserTestUtil.addUser());
-
-		Assert.assertEquals(
-			"/sign_digital_signature/view.jsp",
-			_mvcRenderCommand.render(
-				_getMockLiferayPortletRenderRequest(
-					_addDSRequest(fileEntry.getFileEntryId()), themeDisplay),
-				new MockLiferayPortletRenderResponse()));
 	}
 
 	private CompanyConfigurationTemporarySwapper

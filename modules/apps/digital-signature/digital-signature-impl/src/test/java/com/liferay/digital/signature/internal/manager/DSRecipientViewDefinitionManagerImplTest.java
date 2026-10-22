@@ -27,7 +27,6 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.Serializable;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,9 +59,6 @@ public class DSRecipientViewDefinitionManagerImplTest {
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
 
-		_originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
 		PermissionChecker permissionChecker = Mockito.mock(
 			PermissionChecker.class);
 
@@ -73,11 +69,6 @@ public class DSRecipientViewDefinitionManagerImplTest {
 		);
 
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
-	}
-
-	@After
-	public void tearDown() {
-		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
 	}
 
 	@Test
@@ -165,7 +156,7 @@ public class DSRecipientViewDefinitionManagerImplTest {
 		Assert.assertEquals(
 			url,
 			_dsRecipientViewDefinitionManagerImpl.addDSRecipientViewDefinition(
-				companyId, dsEnvelopeId, dsRequestRecipient, groupId,
+				companyId, groupId, dsEnvelopeId, dsRequestRecipient,
 				portalURL));
 
 		ArgumentCaptor<JSONObject> argumentCaptor = ArgumentCaptor.forClass(
@@ -211,7 +202,7 @@ public class DSRecipientViewDefinitionManagerImplTest {
 			() ->
 				_dsRecipientViewDefinitionManagerImpl.
 					addDSRecipientViewDefinition(
-						companyId, dsEnvelopeId, dsRequestRecipient, groupId,
+						companyId, groupId, dsEnvelopeId, dsRequestRecipient,
 						portalURL));
 
 		Mockito.when(
@@ -225,7 +216,7 @@ public class DSRecipientViewDefinitionManagerImplTest {
 		Assert.assertEquals(
 			url,
 			_dsRecipientViewDefinitionManagerImpl.addDSRecipientViewDefinition(
-				companyId, dsEnvelopeId, dsRequestRecipient, groupId,
+				companyId, groupId, dsEnvelopeId, dsRequestRecipient,
 				portalURL));
 
 		Mockito.verify(
@@ -266,6 +257,5 @@ public class DSRecipientViewDefinitionManagerImplTest {
 	private final DSRecipientViewDefinitionManagerImpl
 		_dsRecipientViewDefinitionManagerImpl =
 			new DSRecipientViewDefinitionManagerImpl();
-	private PermissionChecker _originalPermissionChecker;
 
 }

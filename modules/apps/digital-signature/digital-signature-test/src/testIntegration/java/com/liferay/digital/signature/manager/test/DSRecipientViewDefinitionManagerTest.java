@@ -9,15 +9,19 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.digital.signature.manager.DSRecipientViewDefinitionManager;
 import com.liferay.digital.signature.model.DSRecipientViewDefinition;
 import com.liferay.digital.signature.model.DSRequestRecipient;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -45,32 +49,74 @@ public class DSRecipientViewDefinitionManagerTest {
 
 	@Test
 	public void testAddDSRecipientViewDefinition() throws Exception {
-		User user = UserTestUtil.addUser();
+		Object dsHttp = ReflectionTestUtil.getFieldValue(
+			_dsRecipientViewDefinitionManager, "_dsHttp");
 
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(user));
+		String url = "https://" + RandomTestUtil.randomString();
 
-		Assert.assertThrows(
-			PrincipalException.MustBeCompanyAdmin.class,
-			() ->
+		Http http = (Http)ReflectionTestUtil.getAndSetFieldValue(
+			dsHttp, "_http",
+			ProxyUtil.newProxyInstance(
+				Http.class.getClassLoader(), new Class<?>[] {Http.class},
+				(proxy, method, arguments) -> {
+					String json = JSONUtil.put(
+						"url", url
+					).toString();
+
+					return json.getBytes();
+				}));
+
+		try {
+			Assert.assertEquals(
+				url,
 				_dsRecipientViewDefinitionManager.addDSRecipientViewDefinition(
 					TestPropsValues.getCompanyId(),
 					TestPropsValues.getGroupId(), RandomTestUtil.randomString(),
 					new DSRecipientViewDefinition()));
 
-		Assert.assertThrows(
-			PrincipalException.MustHavePermission.class,
-			() ->
+			User user = UserTestUtil.addUser();
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(user));
+
+			Assert.assertThrows(
+				PrincipalException.MustBeCompanyAdmin.class,
+				() ->
+					_dsRecipientViewDefinitionManager.
+						addDSRecipientViewDefinition(
+							TestPropsValues.getCompanyId(),
+							TestPropsValues.getGroupId(),
+							RandomTestUtil.randomString(),
+							new DSRecipientViewDefinition()));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() ->
+					_dsRecipientViewDefinitionManager.
+						addDSRecipientViewDefinition(
+							TestPropsValues.getCompanyId(),
+							TestPropsValues.getGroupId(),
+							RandomTestUtil.randomString(),
+							new DSRequestRecipient(
+								HashMapBuilder.<String, Serializable>put(
+									"r_userToDSRequestRecipients_userId",
+									TestPropsValues.getUserId()
+								).build()),
+							"http://" + RandomTestUtil.randomString()));
+			Assert.assertEquals(
+				url,
 				_dsRecipientViewDefinitionManager.addDSRecipientViewDefinition(
 					TestPropsValues.getCompanyId(),
-					RandomTestUtil.randomString(),
+					TestPropsValues.getGroupId(), RandomTestUtil.randomString(),
 					new DSRequestRecipient(
 						HashMapBuilder.<String, Serializable>put(
 							"r_userToDSRequestRecipients_userId",
-							TestPropsValues.getUserId()
+							user.getUserId()
 						).build()),
-					TestPropsValues.getGroupId(),
 					"http://" + RandomTestUtil.randomString()));
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(dsHttp, "_http", http);
+		}
 	}
 
 	@Inject

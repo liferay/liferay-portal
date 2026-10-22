@@ -143,15 +143,15 @@ public class OpenDSRequestStrutsActionTest {
 
 	@Test
 	public void testExecute() throws Exception {
-		_testExecuteWhenBackURLIsExternal();
-		_testExecuteWhenUserIsGuest();
-		_testExecuteWhenLayoutIsHidden();
-		_testExecuteWhenStateIsPopUp();
-		_testExecuteWhenLayoutHasSignDigitalSignaturePortlet();
-		_testExecuteWhenDSRequestDoesNotExist();
-		_testExecuteWhenUserIsNotDSRequestRecipient();
-		_testExecuteWhenUserHasNoLayoutViewPermission();
-		_testExecuteWhenSiteDoesNotExist();
+		_testExecuteWithExternalBackURL();
+		_testExecuteWithGuestUser();
+		_testExecuteWithHiddenLayout();
+		_testExecuteWithNonrecipientUser();
+		_testExecuteWithPopUpState();
+		_testExecuteWithSignDigitalSignaturePortlet();
+		_testExecuteWithoutDSRequest();
+		_testExecuteWithoutLayoutViewPermission();
+		_testExecuteWithoutSite();
 	}
 
 	private long _addDSRequest(long siteGroupId) throws Exception {
@@ -285,7 +285,7 @@ public class OpenDSRequestStrutsActionTest {
 		}
 	}
 
-	private void _testExecuteWhenBackURLIsExternal() throws Exception {
+	private void _testExecuteWithExternalBackURL() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		LayoutTestUtil.addTypePortletLayout(group);
@@ -324,35 +324,24 @@ public class OpenDSRequestStrutsActionTest {
 		}
 	}
 
-	private void _testExecuteWhenDSRequestDoesNotExist() throws Exception {
+	private void _testExecuteWithGuestUser() throws Exception {
+		long dsRequestId = _addDSRequest(_group.getGroupId());
+
 		MockHttpServletResponse mockHttpServletResponse = _execute(
-			RandomTestUtil.randomLong(), Collections.emptyMap(), _user);
+			dsRequestId, Collections.emptyMap(),
+			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
 
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
+		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
+
+		Assert.assertTrue(
+			redirectedURL, redirectedURL.contains("/portal/login"));
+		Assert.assertTrue(
+			redirectedURL,
+			redirectedURL.contains(
+				URLCodec.encodeURL("dsRequestId=" + dsRequestId)));
 	}
 
-	private void _testExecuteWhenLayoutHasSignDigitalSignaturePortlet()
-		throws Exception {
-
-		Group group = GroupTestUtil.addGroup();
-
-		LayoutTestUtil.addTypePortletLayout(group);
-
-		Layout portletLayout = LayoutTestUtil.addTypePortletLayout(group);
-
-		LayoutTestUtil.addPortletToLayout(
-			portletLayout, DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);
-
-		long dsRequestId = _addDSRequest(group.getGroupId());
-
-		_assertRedirectedToLayout(
-			dsRequestId, portletLayout,
-			_execute(dsRequestId, Collections.emptyMap(), _user));
-	}
-
-	private void _testExecuteWhenLayoutIsHidden() throws Exception {
+	private void _testExecuteWithHiddenLayout() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(group);
@@ -373,20 +362,25 @@ public class OpenDSRequestStrutsActionTest {
 			_execute(dsRequestId, Collections.emptyMap(), _user));
 	}
 
-	private void _testExecuteWhenSiteDoesNotExist() throws Exception {
-		long dsRequestId = _addDSRequest(RandomTestUtil.randomInt());
-		Group guestGroup = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
+	private void _testExecuteWithNonrecipientUser() throws Exception {
+		long dsRequestId = _addDSRequest(_group.getGroupId());
 
-		_assertRedirectedToLayout(
-			dsRequestId,
-			_layoutLocalService.fetchFirstLayout(
-				guestGroup.getGroupId(), false,
-				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false),
-			_execute(dsRequestId, Collections.emptyMap(), _user));
+		MockHttpServletResponse mockHttpServletResponse = _execute(
+			dsRequestId, Collections.emptyMap(), UserTestUtil.addUser());
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_NOT_FOUND,
+			mockHttpServletResponse.getStatus());
+
+		mockHttpServletResponse = _execute(
+			dsRequestId, Collections.emptyMap(), TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_NOT_FOUND,
+			mockHttpServletResponse.getStatus());
 	}
 
-	private void _testExecuteWhenStateIsPopUp() throws Exception {
+	private void _testExecuteWithPopUpState() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(group);
@@ -427,9 +421,35 @@ public class OpenDSRequestStrutsActionTest {
 					dsRequestId));
 	}
 
-	private void _testExecuteWhenUserHasNoLayoutViewPermission()
+	private void _testExecuteWithSignDigitalSignaturePortlet()
 		throws Exception {
 
+		Group group = GroupTestUtil.addGroup();
+
+		LayoutTestUtil.addTypePortletLayout(group);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(group);
+
+		LayoutTestUtil.addPortletToLayout(
+			layout, DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);
+
+		long dsRequestId = _addDSRequest(group.getGroupId());
+
+		_assertRedirectedToLayout(
+			dsRequestId, layout,
+			_execute(dsRequestId, Collections.emptyMap(), _user));
+	}
+
+	private void _testExecuteWithoutDSRequest() throws Exception {
+		MockHttpServletResponse mockHttpServletResponse = _execute(
+			RandomTestUtil.randomLong(), Collections.emptyMap(), _user);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_NOT_FOUND,
+			mockHttpServletResponse.getStatus());
+	}
+
+	private void _testExecuteWithoutLayoutViewPermission() throws Exception {
 		Layout layout1 = LayoutTestUtil.addTypePortletLayout(_group);
 
 		Role role = _roleLocalService.getRole(
@@ -450,41 +470,17 @@ public class OpenDSRequestStrutsActionTest {
 			_execute(dsRequestId, Collections.emptyMap(), _user));
 	}
 
-	private void _testExecuteWhenUserIsGuest() throws Exception {
-		long dsRequestId = _addDSRequest(_group.getGroupId());
+	private void _testExecuteWithoutSite() throws Exception {
+		long dsRequestId = _addDSRequest(RandomTestUtil.randomInt());
+		Group guestGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
 
-		MockHttpServletResponse mockHttpServletResponse = _execute(
-			dsRequestId, Collections.emptyMap(),
-			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
-
-		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
-
-		Assert.assertTrue(
-			redirectedURL, redirectedURL.contains("/portal/login"));
-		Assert.assertTrue(
-			redirectedURL,
-			redirectedURL.contains(
-				URLCodec.encodeURL("dsRequestId=" + dsRequestId)));
-	}
-
-	private void _testExecuteWhenUserIsNotDSRequestRecipient()
-		throws Exception {
-
-		long dsRequestId = _addDSRequest(_group.getGroupId());
-
-		MockHttpServletResponse mockHttpServletResponse = _execute(
-			dsRequestId, Collections.emptyMap(), UserTestUtil.addUser());
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
-
-		mockHttpServletResponse = _execute(
-			dsRequestId, Collections.emptyMap(), TestPropsValues.getUser());
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
+		_assertRedirectedToLayout(
+			dsRequestId,
+			_layoutLocalService.fetchFirstLayout(
+				guestGroup.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false),
+			_execute(dsRequestId, Collections.emptyMap(), _user));
 	}
 
 	private CompanyConfigurationTemporarySwapper
