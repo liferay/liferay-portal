@@ -109,14 +109,14 @@ public class DSRequestTest {
 		long userId = RandomTestUtil.randomLong();
 
 		DSRequest dsRequest = _createDSRequest(
-			null, DSRequestConstants.STATUS_SENT,
-			DSRequestConstants.STATUS_COMPLETED, userId);
+			null, DSRequestConstants.STATUS_CREATED,
+			DSRequestConstants.STATUS_SENT, userId);
 
 		Assert.assertFalse(dsRequest.isSignatureRequired(userId));
 
 		dsRequest = _createDSRequest(
-			null, DSRequestConstants.STATUS_CREATED,
-			DSRequestConstants.STATUS_SENT, userId);
+			null, DSRequestConstants.STATUS_SENT,
+			DSRequestConstants.STATUS_COMPLETED, userId);
 
 		Assert.assertFalse(dsRequest.isSignatureRequired(userId));
 
@@ -158,6 +158,7 @@ public class DSRequestTest {
 			DSRequestConstants.STATUS_VOIDED, RandomTestUtil.randomLong());
 
 		Assert.assertFalse(dsRequest.isSyncable());
+		Assert.assertTrue(dsRequest.isTerminal());
 	}
 
 	private DSRequest _createDSRequest(

@@ -183,8 +183,8 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 			Assert.assertEquals(dsRequestId, arguments[0]);
 		}
 
-		_testDoTransactionalCommandWhenFeatureFlagIsDisabled();
-		_testDoTransactionalCommandWhenUserHasNoFileEntryPermission();
+		_testDoTransactionalCommandWithFeatureFlagDisabled();
+		_testDoTransactionalCommandWithoutFileEntryPermission();
 	}
 
 	private void _invokeTransactionalCommand(
@@ -198,7 +198,7 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 			mockLiferayResourceRequest, mockLiferayResourceResponse);
 	}
 
-	private void _testDoTransactionalCommandWhenFeatureFlagIsDisabled()
+	private void _testDoTransactionalCommandWithFeatureFlagDisabled()
 		throws Exception {
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
@@ -268,7 +268,7 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 		Assert.assertEquals(dsEnvelopeId, jsonObject.getString("dsEnvelopeId"));
 	}
 
-	private void _testDoTransactionalCommandWhenUserHasNoFileEntryPermission()
+	private void _testDoTransactionalCommandWithoutFileEntryPermission()
 		throws Exception {
 
 		_group = GroupTestUtil.addGroup();

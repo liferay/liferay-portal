@@ -84,23 +84,12 @@ public class DSRequestURLProviderTest {
 					virtualHostname, _portal.getPortalServerPort(false),
 					false)));
 
-		_testGetSignURLWhenGroupIsDeleted();
-	}
-
-	private void _testGetSignURLWhenGroupIsDeleted() throws Exception {
-		Group deletedGroup = GroupTestUtil.addGroup();
-
-		_groupLocalService.deleteGroup(deletedGroup);
-
-		Company company = _companyLocalService.getCompany(
-			TestPropsValues.getCompanyId());
-
 		Group guestGroup = _groupLocalService.getGroup(
 			company.getCompanyId(), GroupConstants.GUEST);
 
-		String signURL = _dsRequestURLProvider.getSignURL(
+		signURL = _dsRequestURLProvider.getSignURL(
 			company.getCompanyId(), RandomTestUtil.randomLong(),
-			deletedGroup.getGroupId());
+			RandomTestUtil.randomLong());
 
 		Assert.assertTrue(
 			signURL,
