@@ -203,28 +203,6 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 		return super.wrap(object);
 	}
 
-	private boolean _isRestricted(Class<?> clazz) {
-		String className = clazz.getName();
-
-		Boolean restricted = _restrictedClassMap.get(className);
-
-		if (restricted != null) {
-			return restricted;
-		}
-
-		if (_allowedClassNames.contains(className)) {
-			restricted = false;
-		}
-		else {
-			restricted = _isMatch(
-				_restrictedClasses, clazz, _restrictedPackageNames);
-		}
-
-		_restrictedClassMap.putIfAbsent(className, restricted);
-
-		return restricted;
-	}
-
 	private boolean _isMatch(
 		List<Class<?>> classes, Class<?> clazz, List<String> packageNames) {
 
@@ -257,6 +235,28 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 		}
 
 		return false;
+	}
+
+	private boolean _isRestricted(Class<?> clazz) {
+		String className = clazz.getName();
+
+		Boolean restricted = _restrictedClassMap.get(className);
+
+		if (restricted != null) {
+			return restricted;
+		}
+
+		if (_allowedClassNames.contains(className)) {
+			restricted = false;
+		}
+		else {
+			restricted = _isMatch(
+				_restrictedClasses, clazz, _restrictedPackageNames);
+		}
+
+		_restrictedClassMap.putIfAbsent(className, restricted);
+
+		return restricted;
 	}
 
 	private void _populateClassesAndPackageNames(
