@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HtmlParser;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -90,7 +91,8 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 			"com.liferay.site.cms.site.initializer-allRelatedAssetsSection"
 		).put(
 			"cmpProjectObjectEntryDescription",
-			MapUtil.getString(objectEntry.getValues(), "description")
+			_htmlParser.extractText(
+				MapUtil.getString(objectEntry.getValues(), "description"))
 		).put(
 			"cmpProjectObjectEntryId", objectEntry.getObjectEntryId()
 		).put(
@@ -171,6 +173,9 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private HtmlParser _htmlParser;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
