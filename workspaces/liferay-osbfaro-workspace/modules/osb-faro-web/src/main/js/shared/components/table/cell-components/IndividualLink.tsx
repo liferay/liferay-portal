@@ -26,7 +26,7 @@ const IndividualLinkCell: React.FC<IIndividualLinksProps> = ({
 }) => {
 	const id = data.individualId || data.ownerId || data.id;
 
-	const name = data.name || data.individualName || '-';
+	const name = data.name || data.individualName;
 
 	return (
 		<NameCell
