@@ -216,7 +216,8 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 			restricted = false;
 		}
 		else {
-			restricted = _isRestricted(clazz, className);
+			restricted = _isMatch(
+				_restrictedClasses, clazz, _restrictedPackageNames);
 		}
 
 		_restrictedClassMap.putIfAbsent(className, restricted);
@@ -224,9 +225,13 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 		return restricted;
 	}
 
-	private boolean _isRestricted(Class<?> clazz, String className) {
-		for (Class<?> restrictedClass : _restrictedClasses) {
-			if (!restrictedClass.isAssignableFrom(clazz)) {
+	private boolean _isMatch(
+		List<Class<?>> classes, Class<?> clazz, List<String> packageNames) {
+
+		String className = clazz.getName();
+
+		for (Class<?> curClass : classes) {
+			if (!curClass.isAssignableFrom(clazz)) {
 				continue;
 			}
 
@@ -243,8 +248,8 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 
 		packageName = packageName.concat(StringPool.PERIOD);
 
-		for (String restrictedPackageName : _restrictedPackageNames) {
-			if (!packageName.startsWith(restrictedPackageName)) {
+		for (String curPackageName : packageNames) {
+			if (!packageName.startsWith(curPackageName)) {
 				continue;
 			}
 
