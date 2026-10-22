@@ -32,15 +32,14 @@ public class DSRequestURLProviderImpl implements DSRequestURLProvider {
 			String backURL, long companyId, long dsRequestId, long groupId)
 		throws PortalException {
 
-		String signModalURL = HttpComponentsUtil.setParameter(
-			getSignURL(companyId, dsRequestId, groupId), "p_p_state",
-			LiferayWindowState.POP_UP.toString());
-
 		String portletNamespace = _portal.getPortletNamespace(
 			DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);
 
 		return HttpComponentsUtil.setParameter(
-			signModalURL, portletNamespace + "backURL", backURL);
+			HttpComponentsUtil.setParameter(
+				getSignURL(companyId, dsRequestId, groupId), "p_p_state",
+				LiferayWindowState.POP_UP.toString()),
+			portletNamespace + "backURL", backURL);
 	}
 
 	@Override

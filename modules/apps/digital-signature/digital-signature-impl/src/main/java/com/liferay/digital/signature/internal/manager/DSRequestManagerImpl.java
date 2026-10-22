@@ -394,10 +394,11 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			String dsRequestStatus = _getDSRequestStatus(dsEnvelope);
 
 			if (Objects.equals(
-					dsRequestStatus, DSRequestConstants.STATUS_COMPLETED) &&
+					DSRequestConstants.STATUS_COMPLETED, dsRequestStatus) &&
 				!Objects.equals(
-					MapUtil.getString(objectEntry.getValues(), "requestStatus"),
-					DSRequestConstants.STATUS_COMPLETED)) {
+					DSRequestConstants.STATUS_COMPLETED,
+					MapUtil.getString(
+						objectEntry.getValues(), "requestStatus"))) {
 
 				_updateFileEntries(
 					companyId, dsEnvelope, dsRequestId, groupId,
@@ -1193,18 +1194,18 @@ public class DSRequestManagerImpl implements DSRequestManager {
 						EXTERNAL_REFERENCE_CODE_REQUEST_DOCUMENT,
 					companyId);
 
-		List<Long> fileEntryIds = TransformUtil.transform(
-			_getValuesList(
-				companyId,
-				"(r_dsRequestToDSRequestDocuments_l_dsRequestId eq '" +
-					dsRequestId + "')",
-				objectDefinition, null),
-			values -> MapUtil.getLong(values, "fileEntryId"));
-
 		String changeLog =
 			"Digital signature envelope " + dsEnvelope.getDSEnvelopeId();
 
-		for (long fileEntryId : fileEntryIds) {
+		for (Map<String, Serializable> values :
+				_getValuesList(
+					companyId,
+					"(r_dsRequestToDSRequestDocuments_l_dsRequestId eq '" +
+						dsRequestId + "')",
+					objectDefinition, null)) {
+
+			long fileEntryId = MapUtil.getLong(values, "fileEntryId");
+
 			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
 
 			FileVersion latestFileVersion = fileEntry.getLatestFileVersion(
@@ -1215,8 +1216,8 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			}
 
 			byte[] bytes = _dsDocumentManager.getDSDocumentAsBytes(
-				companyId, String.valueOf(fileEntryId),
-				dsEnvelope.getDSEnvelopeId(), groupId);
+				companyId, groupId, String.valueOf(fileEntryId),
+				dsEnvelope.getDSEnvelopeId());
 
 			if ((bytes == null) || (bytes.length < 5) ||
 				!Objects.equals(new String(bytes, 0, 5), "%PDF-")) {

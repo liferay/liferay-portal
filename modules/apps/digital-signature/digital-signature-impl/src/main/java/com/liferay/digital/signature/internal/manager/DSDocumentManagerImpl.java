@@ -20,8 +20,8 @@ public class DSDocumentManagerImpl implements DSDocumentManager {
 
 	@Override
 	public byte[] getDSDocumentAsBytes(
-		long companyId, String dsDocumentId, String dsEnvelopeId,
-		long groupId) {
+		long companyId, long groupId, String dsDocumentId,
+		String dsEnvelopeId) {
 
 		return _dsHttp.getAsBytes(
 			companyId, groupId,

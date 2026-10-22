@@ -47,14 +47,13 @@ public class DSRecipientViewDefinitionManagerImpl
 		}
 
 		return _addDSRecipientViewDefinition(
-			companyId, dsEnvelopeId, dsRecipientViewDefinition, groupId);
+			companyId, groupId, dsEnvelopeId, dsRecipientViewDefinition);
 	}
 
 	@Override
 	public String addDSRecipientViewDefinition(
-			long companyId, String dsEnvelopeId,
-			DSRequestRecipient dsRequestRecipient, long groupId,
-			String portalURL)
+			long companyId, long groupId, String dsEnvelopeId,
+			DSRequestRecipient dsRequestRecipient, String portalURL)
 		throws Exception {
 
 		long userId = dsRequestRecipient.getUserId();
@@ -95,12 +94,12 @@ public class DSRecipientViewDefinitionManagerImpl
 		dsRecipientViewDefinition.setUserName(dsRequestRecipient.getName());
 
 		return _addDSRecipientViewDefinition(
-			companyId, dsEnvelopeId, dsRecipientViewDefinition, groupId);
+			companyId, groupId, dsEnvelopeId, dsRecipientViewDefinition);
 	}
 
 	private String _addDSRecipientViewDefinition(
-			long companyId, String dsEnvelopeId,
-			DSRecipientViewDefinition dsRecipientViewDefinition, long groupId)
+			long companyId, long groupId, String dsEnvelopeId,
+			DSRecipientViewDefinition dsRecipientViewDefinition)
 		throws Exception {
 
 		JSONObject jsonObject = _dsHttp.post(
