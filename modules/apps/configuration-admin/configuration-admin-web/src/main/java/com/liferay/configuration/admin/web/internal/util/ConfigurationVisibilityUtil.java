@@ -6,6 +6,7 @@
 package com.liferay.configuration.admin.web.internal.util;
 
 import com.liferay.configuration.admin.display.ConfigurationVisibilityController;
+import com.liferay.configuration.admin.util.ConfigurationPidUtil;
 import com.liferay.configuration.admin.web.internal.model.ConfigurationModel;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapper;
@@ -18,6 +19,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
+import com.liferay.portal.kernel.settings.SettingsLocatorHelperUtil;
+import com.liferay.portal.kernel.settings.definition.ConfigurationPidMapping;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
@@ -57,12 +61,14 @@ public class ConfigurationVisibilityUtil {
 		String pid, ExtendedObjectClassDefinition.Scope scope,
 		Serializable scopePK) {
 
-		Class<?> clazz = _getClass(pid);
+		String rawPid = ConfigurationPidUtil.getRawPid(pid);
+
+		Class<?> clazz = _getClass(rawPid);
 
 		if (!isVisibleByFeatureFlagKey(
 				_getFeatureFlagKey(clazz), scope, scopePK) ||
 			!isVisibleByVisibilityControllerKey(
-				_getVisibilityControllerKey(clazz, pid), scope, scopePK)) {
+				_getVisibilityControllerKey(clazz, rawPid), scope, scopePK)) {
 
 			return false;
 		}
@@ -113,45 +119,22 @@ public class ConfigurationVisibilityUtil {
 		return configurationVisibilityController.isVisible(scope, scopePK);
 	}
 
-	private static Class<?> _getClass(Bundle bundle, String pid) {
-		try {
-			return bundle.loadClass(pid);
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(classNotFoundException);
-			}
-		}
-
-		return null;
-	}
-
 	private static Class<?> _getClass(String pid) {
-		Class<?> clazz = null;
+		SettingsLocatorHelper settingsLocatorHelper =
+			SettingsLocatorHelperUtil.getSettingsLocatorHelper();
 
-		for (Bundle bundle : _bundleContext.getBundles()) {
-			if (pid.startsWith(bundle.getSymbolicName())) {
-				clazz = _getClass(bundle, pid);
+		ConfigurationPidMapping configurationPidMapping =
+			settingsLocatorHelper.getConfigurationPidMapping(pid);
+
+		if (configurationPidMapping == null) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("No class was found for PID " + pid);
 			}
 
-			if (clazz != null) {
-				return clazz;
-			}
+			return null;
 		}
 
-		for (Bundle bundle : _bundleContext.getBundles()) {
-			clazz = _getClass(bundle, pid);
-
-			if (clazz != null) {
-				return clazz;
-			}
-		}
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("No class found for PID " + pid);
-		}
-
-		return null;
+		return configurationPidMapping.getConfigurationBeanClass();
 	}
 
 	private static String _getFeatureFlagKey(Class<?> clazz) {
@@ -225,7 +208,6 @@ public class ConfigurationVisibilityUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ConfigurationVisibilityUtil.class);
 
-	private static final BundleContext _bundleContext;
 	private static final ServiceTrackerMap
 		<String, ConfigurationVisibilityController> _serviceTrackerMap;
 
@@ -234,8 +216,6 @@ public class ConfigurationVisibilityUtil {
 			ConfigurationVisibilityController.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
-
-		_bundleContext = bundleContext;
 
 		ServiceReferenceMapper<String, ConfigurationVisibilityController>
 			configurationPidPropertyMapper =
