@@ -93,10 +93,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		List<String> featureFlagKeys = new ArrayList<>();
 
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
-			_allFileNames,
-			new String[] {
-				"**/*-test-*/**", "**/test/**"
-			},
+			_allFileNames, new String[] {"**/*-test-*/**", "**/test/**"},
 			new String[] {
 				"**/bnd.bnd", "**/rest-openapi*.yaml", "**/*.java", "**/*.js",
 				"**/*.json", "**/*.jsp", "**/*.jspf", "**/*.jsx", "**/*.ts",
