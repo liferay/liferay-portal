@@ -38,8 +38,8 @@ public class DBCopyTablesProcessTest {
 			Assert.assertTrue(exception instanceof IllegalArgumentException);
 
 			Assert.assertEquals(
-				"Source table User_ has 3 columns, but target table User_ " +
-					"has only 2 in the default schema\n",
+				"Column email of source table User_ does not exist in target " +
+					"table User_ in the default schema\n",
 				exception.getMessage());
 		}
 	}
