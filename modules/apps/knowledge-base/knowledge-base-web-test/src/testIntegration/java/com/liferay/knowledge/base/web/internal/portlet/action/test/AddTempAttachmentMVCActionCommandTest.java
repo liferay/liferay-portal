@@ -85,11 +85,11 @@ public class AddTempAttachmentMVCActionCommandTest {
 				102400,
 				_dlValidator.getMaxAllowableSize(_group.getGroupId(), null));
 
-			Portal portal = ReflectionTestUtil.getFieldValue(
-				_mvcActionCommand, "_portal");
-
 			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 				_getMockLiferayPortletActionRequest(new byte[163328]);
+
+			Portal portal = ReflectionTestUtil.getFieldValue(
+				_mvcActionCommand, "_portal");
 
 			ReflectionTestUtil.setFieldValue(
 				_mvcActionCommand, "_portal",
@@ -127,7 +127,6 @@ public class AddTempAttachmentMVCActionCommandTest {
 				Throwable throwable = portletException.getCause();
 
 				Assert.assertTrue(
-					throwable.toString(),
 					throwable instanceof UploadRequestSizeException);
 			}
 			finally {
@@ -157,18 +156,18 @@ public class AddTempAttachmentMVCActionCommandTest {
 
 		String boundary = "WebKitFormBoundary" + StringUtil.randomString();
 
+		String footerString = StringBundler.concat(
+			"\r\n--", boundary, StringPool.DOUBLE_DASH);
+		String headerString = StringBundler.concat(
+			StringPool.DOUBLE_DASH, boundary,
+			"\r\nContent-Disposition: form-data; name=\"file\"; ",
+			"filename=\"", StringUtil.randomString(),
+			".txt\"\r\nContent-Type: text/plain\r\n\r\n");
+
 		mockMultipartHttpServletRequest.setContent(
 			ArrayUtil.append(
-				StringBundler.concat(
-					StringPool.DOUBLE_DASH, boundary,
-					"\r\nContent-Disposition: form-data; name=\"file\"; ",
-					"filename=\"", StringUtil.randomString(),
-					".txt\"\r\nContent-Type: text/plain\r\n\r\n"
-				).getBytes(),
-				bytes,
-				StringBundler.concat(
-					"\r\n--", boundary, StringPool.DOUBLE_DASH
-				).getBytes()));
+				headerString.getBytes(), bytes, footerString.getBytes()));
+
 		mockMultipartHttpServletRequest.setContentType(
 			StringBundler.concat(
 				MediaType.MULTIPART_FORM_DATA_VALUE, "; boundary=", boundary));

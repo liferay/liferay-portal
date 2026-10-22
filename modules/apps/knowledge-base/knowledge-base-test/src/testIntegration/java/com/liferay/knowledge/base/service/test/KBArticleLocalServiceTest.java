@@ -1643,7 +1643,9 @@ public class KBArticleLocalServiceTest {
 	}
 
 	@Test
-	public void testRestoreExpiredKBArticleFromTrash() throws Exception {
+	public void testRestoreKBArticleFromTrashWhenKBArticleIsExpired()
+		throws Exception {
+
 		KBArticle kbArticle = _addKbArticle();
 
 		_kbArticleLocalService.expireKBArticle(
