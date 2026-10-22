@@ -603,9 +603,6 @@ public interface MBMessageLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPositionInThread(long messageId) throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MBMessage> getRootDiscussionMessages(
 			String className, long classPK, int status)
 		throws PortalException;
@@ -645,24 +642,12 @@ public interface MBMessageLocalService
 		Comparator<MBMessage> comparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getThreadMessagesCount(long threadId, boolean answer);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getThreadMessagesCount(long threadId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBMessage> getThreadRepliesMessages(
-		long threadId, int status, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MBMessage> getUserDiscussionMessages(
 		long userId, long classNameId, long classPK, int status, int start,
 		int end, OrderByComparator<MBMessage> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBMessage> getUserDiscussionMessages(
-		long userId, long[] classNameIds, int status, int start, int end,
-		OrderByComparator<MBMessage> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MBMessage> getUserDiscussionMessages(
@@ -672,10 +657,6 @@ public interface MBMessageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserDiscussionMessagesCount(
 		long userId, long classNameId, long classPK, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserDiscussionMessagesCount(
-		long userId, long[] classNameIds, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserDiscussionMessagesCount(
@@ -763,4 +744,4 @@ public interface MBMessageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1482512857
+// LIFERAY-SERVICE-BUILDER-HASH:-228462142

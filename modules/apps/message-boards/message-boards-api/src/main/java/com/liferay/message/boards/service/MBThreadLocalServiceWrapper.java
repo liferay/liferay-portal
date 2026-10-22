@@ -303,85 +303,6 @@ public class MBThreadLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<MBThread> getGroupThreads(
-		long groupId, long userId, boolean subscribed, boolean includeAnonymous,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<MBThread>
-			queryDefinition) {
-
-		return _mbThreadLocalService.getGroupThreads(
-			groupId, userId, subscribed, includeAnonymous, queryDefinition);
-	}
-
-	@Override
-	public java.util.List<MBThread> getGroupThreads(
-		long groupId, long userId, boolean subscribed,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<MBThread>
-			queryDefinition) {
-
-		return _mbThreadLocalService.getGroupThreads(
-			groupId, userId, subscribed, queryDefinition);
-	}
-
-	@Override
-	public java.util.List<MBThread> getGroupThreads(
-		long groupId, long userId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<MBThread>
-			queryDefinition) {
-
-		return _mbThreadLocalService.getGroupThreads(
-			groupId, userId, queryDefinition);
-	}
-
-	@Override
-	public java.util.List<MBThread> getGroupThreads(
-		long groupId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<MBThread>
-			queryDefinition) {
-
-		return _mbThreadLocalService.getGroupThreads(groupId, queryDefinition);
-	}
-
-	@Override
-	public int getGroupThreadsCount(
-		long groupId, long userId, boolean subscribed, boolean includeAnonymous,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<MBThread>
-			queryDefinition) {
-
-		return _mbThreadLocalService.getGroupThreadsCount(
-			groupId, userId, subscribed, includeAnonymous, queryDefinition);
-	}
-
-	@Override
-	public int getGroupThreadsCount(
-		long groupId, long userId, boolean subscribed,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<MBThread>
-			queryDefinition) {
-
-		return _mbThreadLocalService.getGroupThreadsCount(
-			groupId, userId, subscribed, queryDefinition);
-	}
-
-	@Override
-	public int getGroupThreadsCount(
-		long groupId, long userId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<MBThread>
-			queryDefinition) {
-
-		return _mbThreadLocalService.getGroupThreadsCount(
-			groupId, userId, queryDefinition);
-	}
-
-	@Override
-	public int getGroupThreadsCount(
-		long groupId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<MBThread>
-			queryDefinition) {
-
-		return _mbThreadLocalService.getGroupThreadsCount(
-			groupId, queryDefinition);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -505,23 +426,6 @@ public class MBThreadLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<MBThread> getPriorityThreads(
-			long categoryId, double priority)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbThreadLocalService.getPriorityThreads(categoryId, priority);
-	}
-
-	@Override
-	public java.util.List<MBThread> getPriorityThreads(
-			long categoryId, double priority, boolean inherit)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbThreadLocalService.getPriorityThreads(
-			categoryId, priority, inherit);
-	}
-
-	@Override
 	public MBThread getThread(long threadId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -540,11 +444,6 @@ public class MBThreadLocalServiceWrapper
 	public int getThreadsCount(long groupId, long categoryId, int status) {
 		return _mbThreadLocalService.getThreadsCount(
 			groupId, categoryId, status);
-	}
-
-	@Override
-	public boolean hasAnswerMessage(long threadId) {
-		return _mbThreadLocalService.hasAnswerMessage(threadId);
 	}
 
 	@Override
@@ -714,4 +613,4 @@ public class MBThreadLocalServiceWrapper
 	private MBThreadLocalService _mbThreadLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1163723353
+// LIFERAY-SERVICE-BUILDER-HASH:-942045002

@@ -319,9 +319,6 @@ public interface MBCategoryLocalService
 		long groupId, long categoryId, int status, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCategoriesAndThreadsCount(long groupId, long categoryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCategoriesAndThreadsCount(
 		long groupId, long categoryId, int status);
 
@@ -357,13 +354,6 @@ public interface MBCategoryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public MBCategory getCategory(long categoryId) throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBCategory> getCompanyCategories(
-		long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyCategoriesCount(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -470,13 +460,6 @@ public interface MBCategoryLocalService
 	public List<Long> getSubcategoryIds(
 		List<Long> categoryIds, long groupId, long categoryId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBCategory> getSubscribedCategories(
-		long groupId, long userId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSubscribedCategoriesCount(long groupId, long userId);
-
 	public void moveCategoriesToTrash(long groupId, long userId)
 		throws PortalException;
 
@@ -545,4 +528,4 @@ public interface MBCategoryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1858969218
+// LIFERAY-SERVICE-BUILDER-HASH:-1444454554

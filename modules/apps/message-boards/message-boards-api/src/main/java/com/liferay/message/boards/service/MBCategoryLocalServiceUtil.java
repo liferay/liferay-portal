@@ -401,12 +401,6 @@ public class MBCategoryLocalServiceUtil {
 	}
 
 	public static int getCategoriesAndThreadsCount(
-		long groupId, long categoryId) {
-
-		return getService().getCategoriesAndThreadsCount(groupId, categoryId);
-	}
-
-	public static int getCategoriesAndThreadsCount(
 		long groupId, long categoryId, int status) {
 
 		return getService().getCategoriesAndThreadsCount(
@@ -465,16 +459,6 @@ public class MBCategoryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getCategory(categoryId);
-	}
-
-	public static List<MBCategory> getCompanyCategories(
-		long companyId, int start, int end) {
-
-		return getService().getCompanyCategories(companyId, start, end);
-	}
-
-	public static int getCompanyCategoriesCount(long companyId) {
-		return getService().getCompanyCategoriesCount(companyId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -613,17 +597,6 @@ public class MBCategoryLocalServiceUtil {
 		return getService().getSubcategoryIds(categoryIds, groupId, categoryId);
 	}
 
-	public static List<MBCategory> getSubscribedCategories(
-		long groupId, long userId, int start, int end) {
-
-		return getService().getSubscribedCategories(
-			groupId, userId, start, end);
-	}
-
-	public static int getSubscribedCategoriesCount(long groupId, long userId) {
-		return getService().getSubscribedCategoriesCount(groupId, userId);
-	}
-
 	public static void moveCategoriesToTrash(long groupId, long userId)
 		throws PortalException {
 
@@ -724,4 +697,4 @@ public class MBCategoryLocalServiceUtil {
 			MBCategoryLocalServiceUtil.class, MBCategoryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1122513937
+// LIFERAY-SERVICE-BUILDER-HASH:-1781819664

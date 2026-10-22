@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
-import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.increment.BufferedIncrement;
@@ -253,42 +252,6 @@ public interface MBThreadLocalService
 		PortletDataContext portletDataContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBThread> getGroupThreads(
-		long groupId, long userId, boolean subscribed, boolean includeAnonymous,
-		QueryDefinition<MBThread> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBThread> getGroupThreads(
-		long groupId, long userId, boolean subscribed,
-		QueryDefinition<MBThread> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBThread> getGroupThreads(
-		long groupId, long userId, QueryDefinition<MBThread> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBThread> getGroupThreads(
-		long groupId, QueryDefinition<MBThread> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupThreadsCount(
-		long groupId, long userId, boolean subscribed, boolean includeAnonymous,
-		QueryDefinition<MBThread> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupThreadsCount(
-		long groupId, long userId, boolean subscribed,
-		QueryDefinition<MBThread> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupThreadsCount(
-		long groupId, long userId, QueryDefinition<MBThread> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupThreadsCount(
-		long groupId, QueryDefinition<MBThread> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -380,15 +343,6 @@ public interface MBThreadLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBThread> getPriorityThreads(long categoryId, double priority)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBThread> getPriorityThreads(
-			long categoryId, double priority, boolean inherit)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public MBThread getThread(long threadId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -397,9 +351,6 @@ public interface MBThreadLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getThreadsCount(long groupId, long categoryId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean hasAnswerMessage(long threadId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public void incrementViewCounter(long threadId, int increment);
@@ -495,4 +446,4 @@ public interface MBThreadLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2100271073
+// LIFERAY-SERVICE-BUILDER-HASH:-1324055725

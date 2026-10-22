@@ -454,12 +454,6 @@ public class MBCategoryLocalServiceWrapper
 	}
 
 	@Override
-	public int getCategoriesAndThreadsCount(long groupId, long categoryId) {
-		return _mbCategoryLocalService.getCategoriesAndThreadsCount(
-			groupId, categoryId);
-	}
-
-	@Override
 	public int getCategoriesAndThreadsCount(
 		long groupId, long categoryId, int status) {
 
@@ -528,19 +522,6 @@ public class MBCategoryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _mbCategoryLocalService.getCategory(categoryId);
-	}
-
-	@Override
-	public java.util.List<MBCategory> getCompanyCategories(
-		long companyId, int start, int end) {
-
-		return _mbCategoryLocalService.getCompanyCategories(
-			companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyCategoriesCount(long companyId) {
-		return _mbCategoryLocalService.getCompanyCategoriesCount(companyId);
 	}
 
 	@Override
@@ -697,20 +678,6 @@ public class MBCategoryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<MBCategory> getSubscribedCategories(
-		long groupId, long userId, int start, int end) {
-
-		return _mbCategoryLocalService.getSubscribedCategories(
-			groupId, userId, start, end);
-	}
-
-	@Override
-	public int getSubscribedCategoriesCount(long groupId, long userId) {
-		return _mbCategoryLocalService.getSubscribedCategoriesCount(
-			groupId, userId);
-	}
-
-	@Override
 	public void moveCategoriesToTrash(long groupId, long userId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -849,4 +816,4 @@ public class MBCategoryLocalServiceWrapper
 	private MBCategoryLocalService _mbCategoryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1292290282
+// LIFERAY-SERVICE-BUILDER-HASH:-1855561538
