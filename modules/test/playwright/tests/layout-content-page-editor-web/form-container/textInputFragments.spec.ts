@@ -6,7 +6,7 @@
 import {
 	ObjectDefinitionAPI,
 	ObjectValidationRuleAPI,
-} from '@liferay/object-admin-rest-client-js';
+} from '@liferay/object-admin-rest-client-js/v1_0';
 import {Locator, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';

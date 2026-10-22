@@ -8,7 +8,7 @@ import {
 	ObjectDefinitionAPI,
 	ObjectFolderAPI,
 	ObjectRelationshipAPI,
-} from '@liferay/object-admin-rest-client-js';
+} from '@liferay/object-admin-rest-client-js/v1_0';
 import {Page} from '@playwright/test';
 
 import {

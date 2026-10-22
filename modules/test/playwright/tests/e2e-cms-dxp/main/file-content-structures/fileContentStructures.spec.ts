@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ObjectField} from '@liferay/object-admin-rest-client-js';
+import {ObjectField} from '@liferay/object-admin-rest-client-js/v1_0';
 import {Page, expect, mergeTests} from '@playwright/test';
 import {readFileSync} from 'fs';
 import path from 'path';

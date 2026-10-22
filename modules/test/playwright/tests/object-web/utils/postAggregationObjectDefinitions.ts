@@ -6,7 +6,7 @@
 import {
 	ObjectField,
 	ObjectRelationshipAPI,
-} from '@liferay/object-admin-rest-client-js';
+} from '@liferay/object-admin-rest-client-js/v1_0';
 
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {generateObjectFields} from './generateObjectFields';

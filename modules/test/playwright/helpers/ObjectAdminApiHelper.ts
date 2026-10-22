@@ -12,7 +12,7 @@ import {
 	ObjectFolderAPI,
 	ObjectRelationship,
 	ObjectRelationshipAPI,
-} from '@liferay/object-admin-rest-client-js';
+} from '@liferay/object-admin-rest-client-js/v1_0';
 import {expect} from '@playwright/test';
 
 import {getRandomInt} from '../utils/getRandomInt';

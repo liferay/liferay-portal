@@ -6,7 +6,7 @@
 import {
 	ObjectActionAPI,
 	ObjectDefinitionAPI,
-} from '@liferay/object-admin-rest-client-js';
+} from '@liferay/object-admin-rest-client-js/v1_0';
 import {Page, expect, mergeTests} from '@playwright/test';
 
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';

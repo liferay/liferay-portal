@@ -6,7 +6,7 @@
 import {
 	ObjectDefinitionAPI,
 	ObjectField,
-} from '@liferay/object-admin-rest-client-js';
+} from '@liferay/object-admin-rest-client-js/v1_0';
 import {Locator, expect, mergeTests} from '@playwright/test';
 import path from 'path';
 

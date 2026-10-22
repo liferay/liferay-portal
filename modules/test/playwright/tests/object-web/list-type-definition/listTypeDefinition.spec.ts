@@ -6,7 +6,7 @@
 import {
 	ObjectDefinition,
 	ObjectDefinitionAPI,
-} from '@liferay/object-admin-rest-client-js';
+} from '@liferay/object-admin-rest-client-js/v1_0';
 import {Page, expect, mergeTests} from '@playwright/test';
 import {mkdir, readFile, writeFile} from 'fs/promises';
 import path from 'path';

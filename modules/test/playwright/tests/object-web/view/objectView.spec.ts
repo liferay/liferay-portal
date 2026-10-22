@@ -7,7 +7,7 @@ import {
 	ObjectDefinitionAPI,
 	ObjectRelationshipAPI,
 	ObjectViewAPI,
-} from '@liferay/object-admin-rest-client-js';
+} from '@liferay/object-admin-rest-client-js/v1_0';
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';

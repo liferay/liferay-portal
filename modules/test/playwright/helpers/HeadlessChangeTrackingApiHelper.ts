@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {CTCollectionAPI} from '@liferay/change-tracking-rest-client-js';
+import {CTCollectionAPI} from '@liferay/change-tracking-rest-client-js/v1_0';
 
 import getRandomString from '../utils/getRandomString';
 import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
