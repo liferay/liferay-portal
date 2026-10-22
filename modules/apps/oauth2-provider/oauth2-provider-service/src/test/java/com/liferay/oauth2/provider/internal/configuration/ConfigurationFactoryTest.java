@@ -390,14 +390,17 @@ public class ConfigurationFactoryTest {
 			_oAuth2ApplicationScopeAliasesLocalService;
 		configurationFactory.scopeLocator = _scopeLocator;
 
+		String scopeAlias1 = RandomTestUtil.randomString();
+		String scopeAlias2 = RandomTestUtil.randomString();
+
 		Mockito.when(
 			_oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
 				Mockito.anyLong())
 		).thenReturn(
-			Arrays.asList("scope1")
+			Arrays.asList(scopeAlias1)
 		);
 
-		List<String> scopeAliasesList = Arrays.asList("scope1", "scope2");
+		List<String> scopeAliasesList = Arrays.asList(scopeAlias1, scopeAlias2);
 
 		configurationFactory.updateScopes(_oAuth2Application, scopeAliasesList);
 
@@ -409,7 +412,7 @@ public class ConfigurationFactoryTest {
 		);
 
 		Mockito.when(
-			_scopeLocator.getLiferayOAuth2Scopes(_companyId, "scope2")
+			_scopeLocator.getLiferayOAuth2Scopes(_companyId, scopeAlias2)
 		).thenReturn(
 			Collections.singletonList(Mockito.mock(LiferayOAuth2Scope.class))
 		);
