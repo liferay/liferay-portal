@@ -12,9 +12,13 @@ import {globalMenuPagesTest} from '../../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
-import performLogin, {performLogout} from '../../../../utils/performLogin';
+import performLogin, {
+	performLogout,
+	performUserSwitchViaApi,
+} from '../../../../utils/performLogin';
 import {
 	activateChannelPaymentMethod,
+	createAccountWithBuyerUser,
 	enableGuestPageView,
 	miniumSetUp,
 } from '../../utils/commerce';
@@ -174,55 +178,97 @@ test('LPD-30370 Search for all orders by typing user email in global search', as
 	).toBeVisible();
 });
 
-test('LPD-3185 Search a catalog entry using global search, click on a suggested entry and get redirected to that product details page', async ({
-	apiHelpers,
-	commerceThemeMiniumCatalogPage,
-	globalMenuPage,
-	productDetailsPage,
-}) => {
-	const {site} = await miniumSetUp(apiHelpers);
+test(
+	'LPD-3185 Search a catalog entry using global search, click on a suggested entry and get redirected to that product details page',
+	{tag: ['@LPD-108862', '@LPD-3185']},
+	async ({
+		apiHelpers,
+		commerceThemeMiniumCatalogPage,
+		globalMenuPage,
+		page,
+		productDetailsPage,
+	}) => {
+		const {catalog, site} = await miniumSetUp(apiHelpers);
 
-	await globalMenuPage.goToSite(site.name);
+		await globalMenuPage.goToSite(site.name);
 
-	await commerceThemeMiniumCatalogPage.focusGlobalSearchBarInput();
-	await commerceThemeMiniumCatalogPage.search('A');
+		await commerceThemeMiniumCatalogPage.focusGlobalSearchBarInput();
+		await commerceThemeMiniumCatalogPage.search('A');
 
-	await expect(
-		commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
-			'A Product designed'
-		)
-	).toHaveCount(0);
+		await expect(
+			commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
+				'A Product designed'
+			)
+		).toHaveCount(0);
 
-	await commerceThemeMiniumCatalogPage.search('ABS Sensor');
+		await commerceThemeMiniumCatalogPage.search('ABS Sensor');
 
-	await expect(
-		commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
-			'ABS Sensor Product designed'
-		)
-	).toBeVisible();
-	await expect(
-		commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
-			'Wear Sensors Product designed'
-		)
-	).toBeVisible();
+		await expect(
+			commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
+				'ABS Sensor Product designed'
+			)
+		).toBeVisible();
+		await expect(
+			commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
+				'Wear Sensors Product designed'
+			)
+		).toBeVisible();
 
-	await commerceThemeMiniumCatalogPage.clearSearchButton.click();
-	await commerceThemeMiniumCatalogPage.search(`"ABS Sensor"`);
+		await commerceThemeMiniumCatalogPage.clearSearchButton.click();
+		await commerceThemeMiniumCatalogPage.search(`"ABS Sensor"`);
 
-	await expect(
-		commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
-			'ABS Sensor Product designed'
-		)
-	).toHaveCount(1);
+		await expect(
+			commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
+				'ABS Sensor Product designed'
+			)
+		).toHaveCount(1);
 
-	await commerceThemeMiniumCatalogPage
-		.globalSearchBarCommerceItemLink('ABS Sensor Product designed')
-		.click();
+		await commerceThemeMiniumCatalogPage
+			.globalSearchBarCommerceItemLink('ABS Sensor Product designed')
+			.click();
 
-	await expect(
-		await productDetailsPage.productNameHeading('ABS Sensor')
-	).toBeVisible();
-});
+		await expect(
+			await productDetailsPage.productNameHeading('ABS Sensor')
+		).toBeVisible();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'ABS Sensor',
+				{catalogId: catalog.id}
+			);
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+			product.productId,
+			{
+				name: {en_US: 'ABS Sensor', pt_BR: 'Sensor ABS'},
+				shortDescription: {
+					pt_BR: 'Produto projetado e fabricado para acomodar aplicações OEM',
+				},
+			}
+		);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id,
+			{
+				languageId: 'pt_BR',
+			}
+		);
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+		await page.goto(`/web${site.friendlyUrlPath}/catalog`);
+
+		await commerceThemeMiniumCatalogPage.focusGlobalSearchBarInput();
+		await commerceThemeMiniumCatalogPage.search('Sensor ABS');
+
+		await expect(
+			commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
+				'Sensor ABS Produto projetado'
+			)
+		).toBeVisible();
+	}
+);
 
 test('COMMERCE-6322 As a buyer, I want to be able to search an entry in Catalog using Global Search and I want the results to be visible in Search Results widget', async ({
 	apiHelpers,
@@ -284,74 +330,80 @@ test('COMMERCE-6322 As a buyer, I want to be able to search an entry in Catalog 
 	).toBeVisible();
 });
 
-test('COMMERCE-6326 As a buyer, I want to be able to search an entry in All Content using Global Search and the results should be visible on Search page', async ({
-	apiHelpers,
-	commerceThemeMiniumCatalogPage,
-	page,
-}) => {
-	const {site} = await miniumSetUp(apiHelpers);
+test(
+	'COMMERCE-6326 As a buyer, I want to be able to search an entry in All Content using Global Search and the results should be visible on Search page',
+	{tag: ['@COMMERCE-6326', '@LPD-108862']},
+	async ({apiHelpers, commerceThemeMiniumCatalogPage, page}) => {
+		const {site} = await miniumSetUp(apiHelpers);
 
-	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: getRandomString(),
-		type: 'business',
-	});
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
 
-	const user =
-		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-			'demo.unprivileged@liferay.com'
+		const user =
+			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+				'demo.unprivileged@liferay.com'
+			);
+		const rolesResponse =
+			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
+
+		const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+			return role.name === 'Buyer';
+		});
+
+		await apiHelpers.headlessAdminUser.assignAccountRoles(
+			account.externalReferenceCode,
+			accountRoleBuyer[0].id,
+			user.emailAddress
 		);
-	const rolesResponse = await apiHelpers.headlessAdminUser.getAccountRoles(
-		account.id
-	);
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['demo.unprivileged@liferay.com']
+		);
 
-	const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
-		return role.name === 'Buyer';
-	});
+		const siteRole =
+			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
 
-	await apiHelpers.headlessAdminUser.assignAccountRoles(
-		account.externalReferenceCode,
-		accountRoleBuyer[0].id,
-		user.emailAddress
-	);
-	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-		account.id,
-		['demo.unprivileged@liferay.com']
-	);
+		await apiHelpers.headlessAdminUser.assignUserToSite(
+			siteRole.id,
+			site.id,
+			user.id
+		);
 
-	const siteRole =
-		await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+		await performLogout(page);
+		await performLogin(page, 'demo.unprivileged');
 
-	await apiHelpers.headlessAdminUser.assignUserToSite(
-		siteRole.id,
-		site.id,
-		user.id
-	);
+		await page.goto(`/web/${site.name}`);
 
-	await performLogout(page);
-	await performLogin(page, 'demo.unprivileged');
+		await commerceThemeMiniumCatalogPage.focusGlobalSearchBarInput();
+		await commerceThemeMiniumCatalogPage.search('U-Joint');
 
-	await page.goto(`/web/${site.name}`);
+		for (const categoryName of [
+			'Accounts',
+			'All Content',
+			'Catalog',
+			'Orders',
+		]) {
+			await expect(
+				commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
+					`Search U-Joint in ${categoryName}`
+				)
+			).toBeVisible();
+		}
 
-	await commerceThemeMiniumCatalogPage.focusGlobalSearchBarInput();
-	await commerceThemeMiniumCatalogPage.search('U-Joint');
+		await commerceThemeMiniumCatalogPage
+			.globalSearchBarCommerceItemLink('Search U-Joint in All Content')
+			.click();
 
-	await expect(
-		commerceThemeMiniumCatalogPage.globalSearchBarCommerceItemLink(
-			'Search U-Joint in All Content'
-		)
-	).toBeVisible();
-
-	await commerceThemeMiniumCatalogPage
-		.globalSearchBarCommerceItemLink('Search U-Joint in All Content')
-		.click();
-
-	await expect(
-		commerceThemeMiniumCatalogPage.productLink('U-Joint')
-	).toBeVisible();
-	await expect(
-		commerceThemeMiniumCatalogPage.productLink('Ball Joints')
-	).toBeVisible();
-});
+		await expect(
+			commerceThemeMiniumCatalogPage.productLink('U-Joint')
+		).toBeVisible();
+		await expect(
+			commerceThemeMiniumCatalogPage.productLink('Ball Joints')
+		).toBeVisible();
+	}
+);
 
 test('COMMERCE-6321 As a buyer, I want to be able to search an Orders entry using Global Search and I want to be able to click on a suggested entry and get redirected to that order details page', async ({
 	apiHelpers,
