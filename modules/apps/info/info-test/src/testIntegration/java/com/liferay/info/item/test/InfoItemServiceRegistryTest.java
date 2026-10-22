@@ -82,7 +82,6 @@ public class InfoItemServiceRegistryTest {
 
 		String itemClassName = RandomTestUtil.randomString();
 		String propertyValue1 = RandomTestUtil.randomString();
-		String propertyValue2 = RandomTestUtil.randomString();
 
 		ServiceRegistration<?> serviceRegistration1 =
 			_registerInfoItemFieldValuesProvider(
@@ -99,6 +98,7 @@ public class InfoItemServiceRegistryTest {
 
 		InfoItemFieldValuesProvider<?> infoItemFieldValuesProvider2 =
 			object -> null;
+		String propertyValue2 = RandomTestUtil.randomString();
 
 		ServiceRegistration<?> serviceRegistration2 =
 			_registerInfoItemFieldValuesProvider(
