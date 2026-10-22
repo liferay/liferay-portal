@@ -74,7 +74,7 @@ describe('ContentProgress', () => {
 		jest.clearAllMocks();
 	});
 
-	it('renders one segment per status in the design order', async () => {
+	it('renders one segment per status from the largest to the smallest', async () => {
 		mockContentProgress(BUCKETS);
 
 		renderContentProgress();
@@ -84,10 +84,10 @@ describe('ContentProgress', () => {
 		expect(
 			segments.map((segment) => segment.getAttribute('aria-label'))
 		).toEqual([
-			'draft: 3',
-			'pending: 2',
 			'approved: 5',
 			'scheduled: 4',
+			'draft: 3',
+			'pending: 2',
 			'others: 1',
 		]);
 	});
@@ -104,7 +104,7 @@ describe('ContentProgress', () => {
 
 		expect(
 			segments.map((segment) => segment.getAttribute('aria-label'))
-		).toEqual(['draft: 3', 'approved: 5']);
+		).toEqual(['approved: 5', 'draft: 3']);
 	});
 
 	it('shows the share of each status in the legend', async () => {
@@ -193,10 +193,10 @@ describe('ContentProgress', () => {
 		expect(
 			segments.map((segment) => segment.getAttribute('aria-label'))
 		).toEqual([
-			'draft: 3',
-			'pending: 2',
 			'approved: 5',
 			'scheduled: 4',
+			'draft: 3',
+			'pending: 2',
 			'others: 1',
 		]);
 

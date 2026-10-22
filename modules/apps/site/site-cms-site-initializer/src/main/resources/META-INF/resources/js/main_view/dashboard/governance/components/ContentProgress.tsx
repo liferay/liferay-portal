@@ -84,7 +84,9 @@ function getSegments(
 		});
 	}
 
-	return segments.filter(({value}) => value > 0);
+	return segments
+		.filter(({value}) => value > 0)
+		.sort((segment1, segment2) => segment2.value - segment1.value);
 }
 
 export function ContentProgress({
