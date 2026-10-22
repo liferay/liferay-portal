@@ -2,7 +2,7 @@ import {getPluralMessage} from 'shared/util/lang';
 
 export const getStageCountLabel = (count: number) =>
 	getPluralMessage(
-		Liferay.Language.get('x-stage'),
+		Liferay.Language.get('1-stage'),
 		Liferay.Language.get('x-stages'),
 		count,
 		true
@@ -14,7 +14,7 @@ export const getMaxTimeInStageLabel = (maxDuration: number | null) => {
 	}
 
 	return getPluralMessage(
-		Liferay.Language.get('enabled-x-day'),
+		Liferay.Language.get('enabled-1-day'),
 		Liferay.Language.get('enabled-x-days'),
 		maxDuration,
 		true
