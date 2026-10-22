@@ -18,7 +18,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
@@ -45,6 +44,8 @@ public class ObjectEntrySXPBlueprintInfoCollectionProvider
 		SXPBlueprint sxpBlueprint) {
 
 		super(assetHelper, searcher, searchRequestBuilderFactory, sxpBlueprint);
+
+		_className = className;
 
 		_objectDefinition =
 			objectDefinitionLocalService.fetchObjectDefinitionByClassName(
@@ -77,14 +78,12 @@ public class ObjectEntrySXPBlueprintInfoCollectionProvider
 
 	@Override
 	public String getCollectionItemClassName() {
-		return _objectDefinition.getClassName();
+		return _className;
 	}
 
 	@Override
 	public boolean isAvailable() {
-		if (_objectDefinition.getCompanyId() !=
-				CompanyThreadLocal.getCompanyId()) {
-
+		if (_objectDefinition == null) {
 			return false;
 		}
 
@@ -105,6 +104,7 @@ public class ObjectEntrySXPBlueprintInfoCollectionProvider
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntrySXPBlueprintInfoCollectionProvider.class);
 
+	private final String _className;
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 
