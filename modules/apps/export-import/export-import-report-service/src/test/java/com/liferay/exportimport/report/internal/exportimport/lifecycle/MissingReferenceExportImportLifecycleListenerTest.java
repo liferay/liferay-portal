@@ -10,6 +10,9 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleEvent;
 import com.liferay.exportimport.kernel.lifecycle.constants.ExportImportLifecycleConstants;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupedModel;
+import com.liferay.portal.kernel.model.StagedAuditedModel;
 import com.liferay.portal.kernel.model.StagedGroupedModel;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -22,6 +25,8 @@ import com.liferay.staging.StagingGroupHelper;
 import java.io.Serializable;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -159,6 +164,92 @@ public class MissingReferenceExportImportLifecycleListenerTest {
 	}
 
 	@Test
+	public void testOnExportImportLifecycleEventWithImportedGroup()
+		throws Exception {
+
+		long groupId = RandomTestUtil.randomLong();
+
+		_groupIds.put(_GROUP_ID, groupId);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		StagedModel stagedModel = _getStagedModel(externalReferenceCode);
+
+		String modelClassName = RandomTestUtil.randomString();
+
+		Mockito.when(
+			stagedModel.getModelClassName()
+		).thenReturn(
+			modelClassName
+		);
+
+		_missingReferenceExportImportLifecycleListener.
+			onExportImportLifecycleEvent(
+				_getExportImportLifecycleEvent(
+					ExportImportLifecycleConstants.
+						EVENT_STAGED_MODEL_IMPORT_SUCCEEDED,
+					stagedModel));
+
+		Mockito.verify(
+			_emptyModelManager
+		).resolveMissingReference(
+			modelClassName, _COMPANY_ID, externalReferenceCode, groupId
+		);
+	}
+
+	@Test
+	public void testOnExportImportLifecycleEventWithStagedAuditedModel()
+		throws Exception {
+
+		StagedAuditedModel stagedAuditedModel = Mockito.mock(
+			StagedAuditedModel.class,
+			Mockito.withSettings(
+			).extraInterfaces(
+				ExternalReferenceCodeModel.class, GroupedModel.class
+			));
+
+		ExternalReferenceCodeModel externalReferenceCodeModel =
+			(ExternalReferenceCodeModel)stagedAuditedModel;
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		Mockito.when(
+			externalReferenceCodeModel.getExternalReferenceCode()
+		).thenReturn(
+			externalReferenceCode
+		);
+
+		GroupedModel groupedModel = (GroupedModel)stagedAuditedModel;
+
+		Mockito.when(
+			groupedModel.getGroupId()
+		).thenReturn(
+			_GROUP_ID
+		);
+
+		String modelClassName = RandomTestUtil.randomString();
+
+		Mockito.when(
+			stagedAuditedModel.getModelClassName()
+		).thenReturn(
+			modelClassName
+		);
+
+		_missingReferenceExportImportLifecycleListener.
+			onExportImportLifecycleEvent(
+				_getExportImportLifecycleEvent(
+					ExportImportLifecycleConstants.
+						EVENT_STAGED_MODEL_IMPORT_SUCCEEDED,
+					stagedAuditedModel));
+
+		Mockito.verify(
+			_emptyModelManager
+		).resolveMissingReference(
+			modelClassName, _COMPANY_ID, externalReferenceCode, _GROUP_ID
+		);
+	}
+
+	@Test
 	public void testOnExportImportLifecycleEventWithStagedModel()
 		throws Exception {
 
@@ -231,12 +322,28 @@ public class MissingReferenceExportImportLifecycleListenerTest {
 			code
 		);
 
+		PortletDataContext portletDataContext = Mockito.mock(
+			PortletDataContext.class);
+
+		Mockito.when(
+			portletDataContext.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		Mockito.doReturn(
+			_groupIds
+		).when(
+			portletDataContext
+		).getNewPrimaryKeysMap(
+			Group.class
+		);
+
 		Mockito.when(
 			exportImportLifecycleEvent.getAttributes()
 		).thenReturn(
 			Arrays.<Serializable>asList(
-				Mockito.mock(PortletDataContext.class),
-				new TransientValue<>(stagedModel))
+				portletDataContext, new TransientValue<>(stagedModel))
 		);
 
 		return exportImportLifecycleEvent;
@@ -280,6 +387,7 @@ public class MissingReferenceExportImportLifecycleListenerTest {
 
 	private final EmptyModelManager _emptyModelManager = Mockito.mock(
 		EmptyModelManager.class);
+	private final Map<Long, Long> _groupIds = new HashMap<>();
 	private final MissingReferenceExportImportLifecycleListener
 		_missingReferenceExportImportLifecycleListener =
 			new MissingReferenceExportImportLifecycleListener();

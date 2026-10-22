@@ -6,17 +6,23 @@
 package com.liferay.exportimport.report.internal.exportimport.lifecycle;
 
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleEvent;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleListener;
 import com.liferay.exportimport.kernel.lifecycle.constants.ExportImportLifecycleConstants;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
-import com.liferay.portal.kernel.model.StagedGroupedModel;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.TransientValue;
 import com.liferay.staging.StagingGroupHelper;
 
 import java.io.Serializable;
+
+import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -45,9 +51,17 @@ public class MissingReferenceExportImportLifecycleListener
 			return;
 		}
 
-		for (Serializable attribute :
-				exportImportLifecycleEvent.getAttributes()) {
+		List<Serializable> attributes =
+			exportImportLifecycleEvent.getAttributes();
 
+		PortletDataContext portletDataContext = _getPortletDataContext(
+			attributes);
+
+		if (portletDataContext == null) {
+			return;
+		}
+
+		for (Serializable attribute : attributes) {
 			if (!(attribute instanceof TransientValue)) {
 				continue;
 			}
@@ -57,27 +71,33 @@ public class MissingReferenceExportImportLifecycleListener
 			Object value = transientValue.getValue();
 
 			if (!(value instanceof ExternalReferenceCodeModel) ||
-				!(value instanceof StagedGroupedModel)) {
+				!(value instanceof GroupedModel) ||
+				!(value instanceof StagedModel)) {
 
 				continue;
+			}
+
+			GroupedModel groupedModel = (GroupedModel)value;
+
+			Map<Long, Long> groupIds =
+				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+					Group.class);
+
+			long groupId = MapUtil.getLong(
+				groupIds, groupedModel.getGroupId(), groupedModel.getGroupId());
+
+			if (_stagingGroupHelper.isCompanyGroup(
+					portletDataContext.getCompanyId(), groupId)) {
+
+				groupId = 0;
 			}
 
 			ExternalReferenceCodeModel externalReferenceCodeModel =
 				(ExternalReferenceCodeModel)value;
 
-			StagedGroupedModel stagedGroupedModel = (StagedGroupedModel)value;
-
-			long groupId = stagedGroupedModel.getGroupId();
-
-			if (_stagingGroupHelper.isCompanyGroup(
-					stagedGroupedModel.getCompanyId(), groupId)) {
-
-				groupId = 0;
-			}
-
 			_emptyModelManager.resolveMissingReference(
-				_getClassName(stagedGroupedModel),
-				stagedGroupedModel.getCompanyId(),
+				_getClassName((StagedModel)value),
+				portletDataContext.getCompanyId(),
 				externalReferenceCodeModel.getExternalReferenceCode(), groupId);
 		}
 	}
@@ -88,6 +108,18 @@ public class MissingReferenceExportImportLifecycleListener
 		}
 
 		return stagedModel.getModelClassName();
+	}
+
+	private PortletDataContext _getPortletDataContext(
+		List<Serializable> attributes) {
+
+		for (Serializable attribute : attributes) {
+			if (attribute instanceof PortletDataContext) {
+				return (PortletDataContext)attribute;
+			}
+		}
+
+		return null;
 	}
 
 	@Reference
