@@ -61,7 +61,9 @@ import net.bytebuddy.agent.builder.ResettableClassFileTransformer;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.matcher.ElementMatchers;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 
@@ -79,6 +81,16 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			new AssumeTestRule("assume"), new LiferayIntegrationTestRule());
+
+	@BeforeClass
+	public static void setUpTestCaseClass() throws Exception {
+		_safeCloseable = resetLicenseDataWithSafeCloseble();
+	}
+
+	@AfterClass
+	public static void tearDownTestCaseClass() throws Exception {
+		_safeCloseable.close();
+	}
 
 	public static File deployEnterprisePortalLicense(long validityPeriod)
 		throws Exception {
@@ -322,7 +334,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		}
 	}
 
-	public SafeCloseable resetLicenseDataWithSafeCloseble() throws Exception {
+	public static SafeCloseable resetLicenseDataWithSafeCloseble() throws Exception {
 		File dir = new File(LicenseUtil.LICENSE_REPOSITORY_DIR);
 
 		File tmpDir = FileUtil.createTempFolder();
@@ -372,7 +384,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		};
 	}
 
-	public void resetLifecycleAction() throws Exception {
+	public static void resetLifecycleAction() throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_BUNDLE_START_STOP_LOGGER, LoggerTestUtil.ALL)) {
 
@@ -527,7 +539,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 		return ReflectionsHolder._validateClass;
 	}
 
-	protected void checkLicense(String productId) throws Exception {
+	protected static void checkLicense(String productId) throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_licensePackageName, LoggerTestUtil.ALL)) {
 
@@ -824,6 +836,7 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	private static Properties _licenseTestProperties;
 	private static Object _lifecycleAction;
 	private static Class<?> _lifecycleActionClass;
+	private static SafeCloseable _safeCloseable;
 
 	private static class ReflectionsHolder {
 
