@@ -395,22 +395,6 @@ public class ExportImportConfigurationLocalServiceWrapper
 				orderByComparator);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.exportimport.kernel.model.ExportImportConfiguration>
-			getExportImportConfigurations(
-				long companyId, long groupId, String name, String description,
-				int type, boolean andSearch, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.exportimport.kernel.model.
-						ExportImportConfiguration> orderByComparator) {
-
-		return _exportImportConfigurationLocalService.
-			getExportImportConfigurations(
-				companyId, groupId, name, description, type, andSearch, start,
-				end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of export import configurations.
 	 *
@@ -420,12 +404,6 @@ public class ExportImportConfigurationLocalServiceWrapper
 	public int getExportImportConfigurationsCount() {
 		return _exportImportConfigurationLocalService.
 			getExportImportConfigurationsCount();
-	}
-
-	@Override
-	public int getExportImportConfigurationsCount(long groupId) {
-		return _exportImportConfigurationLocalService.
-			getExportImportConfigurationsCount(groupId);
 	}
 
 	@Override
@@ -441,16 +419,6 @@ public class ExportImportConfigurationLocalServiceWrapper
 		return _exportImportConfigurationLocalService.
 			getExportImportConfigurationsCount(
 				companyId, groupId, keywords, type);
-	}
-
-	@Override
-	public int getExportImportConfigurationsCount(
-		long companyId, long groupId, String name, String description, int type,
-		boolean andSearch) {
-
-		return _exportImportConfigurationLocalService.
-			getExportImportConfigurationsCount(
-				companyId, groupId, name, description, type, andSearch);
 	}
 
 	@Override
@@ -603,4 +571,4 @@ public class ExportImportConfigurationLocalServiceWrapper
 		_exportImportConfigurationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-766216843
+// LIFERAY-SERVICE-BUILDER-HASH:-1081219159

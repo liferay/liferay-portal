@@ -325,16 +325,6 @@ public class ExportImportConfigurationLocalServiceUtil {
 			companyId, groupId, keywords, type, start, end, orderByComparator);
 	}
 
-	public static List<ExportImportConfiguration> getExportImportConfigurations(
-		long companyId, long groupId, String name, String description, int type,
-		boolean andSearch, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
-		return getService().getExportImportConfigurations(
-			companyId, groupId, name, description, type, andSearch, start, end,
-			orderByComparator);
-	}
-
 	/**
 	 * Returns the number of export import configurations.
 	 *
@@ -342,10 +332,6 @@ public class ExportImportConfigurationLocalServiceUtil {
 	 */
 	public static int getExportImportConfigurationsCount() {
 		return getService().getExportImportConfigurationsCount();
-	}
-
-	public static int getExportImportConfigurationsCount(long groupId) {
-		return getService().getExportImportConfigurationsCount(groupId);
 	}
 
 	public static int getExportImportConfigurationsCount(
@@ -359,14 +345,6 @@ public class ExportImportConfigurationLocalServiceUtil {
 
 		return getService().getExportImportConfigurationsCount(
 			companyId, groupId, keywords, type);
-	}
-
-	public static int getExportImportConfigurationsCount(
-		long companyId, long groupId, String name, String description, int type,
-		boolean andSearch) {
-
-		return getService().getExportImportConfigurationsCount(
-			companyId, groupId, name, description, type, andSearch);
 	}
 
 	public static
@@ -483,4 +461,4 @@ public class ExportImportConfigurationLocalServiceUtil {
 	private static volatile ExportImportConfigurationLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1656986476
+// LIFERAY-SERVICE-BUILDER-HASH:-1919963081

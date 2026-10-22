@@ -291,12 +291,6 @@ public interface ExportImportConfigurationLocalService
 		int end,
 		OrderByComparator<ExportImportConfiguration> orderByComparator);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExportImportConfiguration> getExportImportConfigurations(
-		long companyId, long groupId, String name, String description, int type,
-		boolean andSearch, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator);
-
 	/**
 	 * Returns the number of export import configurations.
 	 *
@@ -306,19 +300,11 @@ public interface ExportImportConfigurationLocalService
 	public int getExportImportConfigurationsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getExportImportConfigurationsCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getExportImportConfigurationsCount(long groupId, int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getExportImportConfigurationsCount(
 		long companyId, long groupId, String keywords, int type);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getExportImportConfigurationsCount(
-		long companyId, long groupId, String name, String description, int type,
-		boolean andSearch);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -390,4 +376,4 @@ public interface ExportImportConfigurationLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2072059091
+// LIFERAY-SERVICE-BUILDER-HASH:-876203891
