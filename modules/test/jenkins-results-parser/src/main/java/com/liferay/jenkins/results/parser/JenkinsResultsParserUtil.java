@@ -4712,16 +4712,16 @@ public class JenkinsResultsParserUtil {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(_escape(remainder, _LEGAL_PATH_CHARACTERS));
+		sb.append(_escape(_LEGAL_PATH_CHARACTERS, remainder));
 
 		if (queryString != null) {
 			sb.append("?");
-			sb.append(_escape(queryString, _LEGAL_QUERY_CHARACTERS));
+			sb.append(_escape(_LEGAL_QUERY_CHARACTERS, queryString));
 		}
 
 		if (fragment != null) {
 			sb.append("#");
-			sb.append(_escape(fragment, _LEGAL_QUERY_CHARACTERS));
+			sb.append(_escape(_LEGAL_QUERY_CHARACTERS, fragment));
 		}
 
 		String normalizedURL = sb.toString();
@@ -6376,7 +6376,7 @@ public class JenkinsResultsParserUtil {
 		return join(" ", args);
 	}
 
-	private static String _escape(String value, String legalCharacters) {
+	private static String _escape(String legalCharacters, String value) {
 		StringBuilder sb = new StringBuilder(value.length());
 
 		int i = 0;
@@ -6384,7 +6384,7 @@ public class JenkinsResultsParserUtil {
 		while (i < value.length()) {
 			char c = value.charAt(i);
 
-			if ((c == '%') && _isEscapeSequence(value, i)) {
+			if ((c == '%') && _isEscapeSequence(i, value)) {
 				sb.append(value, i, i + 3);
 
 				i = i + 3;
@@ -6397,7 +6397,7 @@ public class JenkinsResultsParserUtil {
 			else {
 				int codePoint = value.codePointAt(i);
 
-				_escapeCodePoint(sb, codePoint);
+				_escapeCodePoint(codePoint, sb);
 
 				i = i + Character.charCount(codePoint);
 			}
@@ -6406,7 +6406,7 @@ public class JenkinsResultsParserUtil {
 		return sb.toString();
 	}
 
-	private static void _escapeCodePoint(StringBuilder sb, int codePoint) {
+	private static void _escapeCodePoint(int codePoint, StringBuilder sb) {
 		String codePointString = new String(Character.toChars(codePoint));
 
 		byte[] bytes = codePointString.getBytes(StandardCharsets.UTF_8);
@@ -7194,7 +7194,7 @@ public class JenkinsResultsParserUtil {
 		}
 	}
 
-	private static boolean _isEscapeSequence(String value, int index) {
+	private static boolean _isEscapeSequence(int index, String value) {
 		if ((index + 2) >= value.length()) {
 			return false;
 		}
