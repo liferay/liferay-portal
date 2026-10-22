@@ -11,8 +11,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.ConfigMapList;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.NamespacedKubernetesClient;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 import io.fabric8.kubernetes.client.server.mock.KubernetesMixedDispatcher;
 import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
 import io.fabric8.kubernetes.client.utils.Serialization;
@@ -39,10 +42,11 @@ import okhttp3.mockwebserver.RecordedRequest;
 public class KubernetesMockServerTestUtil {
 
 	public static void createOrReplaceConfigMap(String json) {
-		_kubernetesMockClient.configMaps(
-		).createOrReplace(
-			Serialization.unmarshal(json, ConfigMap.class)
-		);
+		MixedOperation<ConfigMap, ConfigMapList, Resource<ConfigMap>>
+			mixedOperation = _kubernetesMockClient.configMaps();
+
+		mixedOperation.createOrReplace(
+			Serialization.unmarshal(json, ConfigMap.class));
 	}
 
 	public static String getHostName() {
@@ -98,10 +102,12 @@ public class KubernetesMockServerTestUtil {
 		String name, Predicate<Map<String, String>> dataPredicate, long amount,
 		TimeUnit timeUnit) {
 
-		ConfigMap configMap = _kubernetesMockClient.configMaps(
-		).withName(
-			name
-		).waitUntilCondition(
+		MixedOperation<ConfigMap, ConfigMapList, Resource<ConfigMap>>
+			mixedOperation = _kubernetesMockClient.configMaps();
+
+		Resource<ConfigMap> resource = mixedOperation.withName(name);
+
+		ConfigMap configMap = resource.waitUntilCondition(
 			curConfigMap -> {
 				if (curConfigMap == null) {
 					return dataPredicate.test(null);
@@ -109,8 +115,7 @@ public class KubernetesMockServerTestUtil {
 
 				return dataPredicate.test(curConfigMap.getData());
 			},
-			amount, timeUnit
-		);
+			amount, timeUnit);
 
 		if (configMap == null) {
 			return null;
