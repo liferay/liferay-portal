@@ -249,11 +249,13 @@ export default function App() {
 }
 ```
 
-### Disable Auto Close
+### Auto Close
 
-When a `Provider` sets `persistentAlerts`, it overrides `autoClose` (`true` or a duration in ms) and alerts stay until they are dismissed. Use it to give users who need more time to read a way to keep alerts open, which helps meet WCAG 2.2.1 (Timing Adjustable). An alert shows a close button only when it has `onClose` and does not set `hideCloseIcon`. If an alert has no close button, such as one with `hideCloseIcon` or one without `onClose`, give users another way to dismiss it when `persistentAlerts` is on.
+Set `autoClose` to make an alert call `onClose` on its own. Pass `true` to close it after 10 seconds, or a number to set the duration in milliseconds.
 
-Alerts also stay open while `document.body` has the `c-prefers-persistent-alerts` class, even when a `Provider` sets `persistentAlerts={false}`. The class can be added or removed at any time, so a page can opt in without wiring a `Provider`.
+The countdown waits while the pointer is over the alert or focus is inside it, so users have time to read the alert and use its controls, such as the close button or an action link. Once both the pointer and focus have left, the countdown continues with the remaining time. Moving focus between controls inside the alert, or switching to another window, keeps it waiting.
+
+Alerts stay until they are dismissed when a `Provider` sets `persistentAlerts` or `document.body` has the `c-prefers-persistent-alerts` class. Either one overrides `autoClose`. The class applies even when a `Provider` sets `persistentAlerts={false}`, and it can be added or removed at any time, so a page can opt in without wiring a `Provider`. Use them to give users who need more time to read a way to keep alerts open, which helps meet WCAG 2.2.1 (Timing Adjustable). If an alert has no close button (it has no `onClose`, or it sets `hideCloseIcon`), give users another way to dismiss it while alerts stay open.
 
 ```jsx
 <Provider persistentAlerts spritemap="/public/icons.svg">
