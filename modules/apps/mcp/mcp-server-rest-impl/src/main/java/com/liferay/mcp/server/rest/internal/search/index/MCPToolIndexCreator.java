@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 public class MCPToolIndexCreator {
 
 	public void createIfNotExists(long companyId) {
-		if (indexExists(companyId)) {
+		if (hasIndex(companyId)) {
 			return;
 		}
 
@@ -40,13 +40,13 @@ public class MCPToolIndexCreator {
 			getIndexName(companyId));
 
 		createIndexRequest.setMappings(_read(_FILE_NAME_MAPPINGS));
-		createIndexRequest.setSettings(_getSettingsJSONString());
+		createIndexRequest.setSettings(_getSettingsJSON());
 
 		try {
 			_searchEngineAdapter.execute(createIndexRequest);
 		}
 		catch (RuntimeException runtimeException) {
-			if (!indexExists(companyId)) {
+			if (!hasIndex(companyId)) {
 				throw runtimeException;
 			}
 
@@ -57,7 +57,7 @@ public class MCPToolIndexCreator {
 	}
 
 	public void deleteIfExists(long companyId) {
-		if (!indexExists(companyId)) {
+		if (!hasIndex(companyId)) {
 			return;
 		}
 
@@ -66,7 +66,7 @@ public class MCPToolIndexCreator {
 				new DeleteIndexRequest(getIndexName(companyId)));
 		}
 		catch (RuntimeException runtimeException) {
-			if (indexExists(companyId)) {
+			if (hasIndex(companyId)) {
 				throw runtimeException;
 			}
 
@@ -80,7 +80,7 @@ public class MCPToolIndexCreator {
 		return _indexNameBuilder.getIndexName(companyId) + "-mcp-tools";
 	}
 
-	public boolean indexExists(long companyId) {
+	public boolean hasIndex(long companyId) {
 		IndicesExistsIndexRequest indicesExistsIndexRequest =
 			new IndicesExistsIndexRequest(getIndexName(companyId));
 
@@ -90,7 +90,7 @@ public class MCPToolIndexCreator {
 		return indicesExistsIndexResponse.isExists();
 	}
 
-	private String _getSettingsJSONString() {
+	private String _getSettingsJSON() {
 		try {
 			JSONObject settingsJSONObject = _jsonFactory.createJSONObject(
 				_read(_FILE_NAME_SETTINGS));
