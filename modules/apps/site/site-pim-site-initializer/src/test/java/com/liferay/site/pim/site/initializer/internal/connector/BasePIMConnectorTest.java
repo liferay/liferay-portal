@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.filter.ComplexQueryPart;
@@ -44,6 +45,7 @@ import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
 import com.liferay.site.pim.site.initializer.internal.link.VariantPIMLinkType;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 
 import java.io.Serializable;
 
@@ -249,6 +251,15 @@ public class BasePIMConnectorTest {
 				"priority", priority
 			).put(
 				"sourceFieldName", sourceFieldName
+			).put(
+				"type",
+				() -> {
+					if (Validator.isNull(value)) {
+						return null;
+					}
+
+					return PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE;
+				}
 			).put(
 				"value", value
 			).build()

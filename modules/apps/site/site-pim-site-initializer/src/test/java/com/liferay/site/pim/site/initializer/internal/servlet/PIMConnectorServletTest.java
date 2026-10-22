@@ -11,6 +11,7 @@ import com.liferay.dispatch.constants.DispatchScreenNavigationConstants;
 import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -29,13 +30,20 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.site.pim.site.initializer.connector.PIMConnector;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorDispatchTriggerUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serializable;
+
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.After;
@@ -92,6 +100,14 @@ public class PIMConnectorServletTest {
 		);
 
 		Mockito.when(
+			_objectEntry.getValues()
+		).thenReturn(
+			HashMapBuilder.<String, Serializable>put(
+				"key", _KEY
+			).build()
+		);
+
+		Mockito.when(
 			_objectEntryService.getObjectEntry(_OBJECT_ENTRY_ID)
 		).thenReturn(
 			_objectEntry
@@ -101,6 +117,12 @@ public class PIMConnectorServletTest {
 			() -> PermissionCheckerFactoryUtil.create(_user)
 		).thenReturn(
 			Mockito.mock(PermissionChecker.class)
+		);
+
+		Mockito.when(
+			_pimConnectorRegistry.getPIMConnector(_KEY)
+		).thenReturn(
+			Mockito.mock(PIMConnector.class)
 		);
 
 		_pimConnectorDispatchTriggerUtilMockedStatic.when(
@@ -118,6 +140,9 @@ public class PIMConnectorServletTest {
 			_pimConnectorServlet, "_messageBus", _messageBus);
 		ReflectionTestUtil.setFieldValue(
 			_pimConnectorServlet, "_objectEntryService", _objectEntryService);
+		ReflectionTestUtil.setFieldValue(
+			_pimConnectorServlet, "_pimConnectorRegistry",
+			_pimConnectorRegistry);
 		ReflectionTestUtil.setFieldValue(
 			_pimConnectorServlet, "_portal", _portal);
 
@@ -159,6 +184,7 @@ public class PIMConnectorServletTest {
 	public void testService() throws Exception {
 		_testServiceWithExecutePath();
 		_testServiceWithGuestUser();
+		_testServiceWithIncompleteMapping();
 		_testServiceWithInvalidCSRFToken();
 		_testServiceWithInvalidPath();
 		_testServiceWithSchedulePath();
@@ -249,6 +275,44 @@ public class PIMConnectorServletTest {
 			_user.isGuestUser()
 		).thenReturn(
 			false
+		);
+	}
+
+	private void _testServiceWithIncompleteMapping() throws Exception {
+		Mockito.clearInvocations(_messageBus);
+
+		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
+
+		Mockito.when(
+			pimConnector.getPIMConnectorChannelFields()
+		).thenReturn(
+			Collections.singletonList(
+				new PIMConnectorChannelField("sku", false, "sku", true, "Text"))
+		);
+
+		Mockito.when(
+			_pimConnectorRegistry.getPIMConnector(_KEY)
+		).thenReturn(
+			pimConnector
+		);
+
+		try (MockedStatic<ObjectRelationshipLocalServiceUtil>
+				objectRelationshipLocalServiceUtilMockedStatic =
+					Mockito.mockStatic(
+						ObjectRelationshipLocalServiceUtil.class)) {
+
+			_assertError(
+				"a-required-channel-field-is-not-mapped",
+				_service(HttpMethods.POST, "/execute"),
+				HttpServletResponse.SC_BAD_REQUEST);
+		}
+
+		Mockito.verifyNoInteractions(_messageBus);
+
+		Mockito.when(
+			_pimConnectorRegistry.getPIMConnector(_KEY)
+		).thenReturn(
+			Mockito.mock(PIMConnector.class)
 		);
 	}
 
@@ -354,6 +418,8 @@ public class PIMConnectorServletTest {
 	private static final long _DISPATCH_TRIGGER_ID =
 		RandomTestUtil.randomLong();
 
+	private static final String _KEY = RandomTestUtil.randomString();
+
 	private static final long _OBJECT_ENTRY_ID = RandomTestUtil.randomLong();
 
 	private static final String _PORTAL_URL = "http://www.liferay.com";
@@ -376,6 +442,8 @@ public class PIMConnectorServletTest {
 	private final MockedStatic<PIMConnectorDispatchTriggerUtil>
 		_pimConnectorDispatchTriggerUtilMockedStatic = Mockito.mockStatic(
 			PIMConnectorDispatchTriggerUtil.class);
+	private final PIMConnectorRegistry _pimConnectorRegistry = Mockito.mock(
+		PIMConnectorRegistry.class);
 	private final PIMConnectorServlet _pimConnectorServlet =
 		new PIMConnectorServlet();
 	private final Portal _portal = Mockito.mock(Portal.class);

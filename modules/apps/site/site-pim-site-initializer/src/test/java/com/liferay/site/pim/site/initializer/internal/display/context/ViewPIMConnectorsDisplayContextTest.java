@@ -273,6 +273,8 @@ public class ViewPIMConnectorsDisplayContextTest {
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
 				"active", Boolean.TRUE
+			).put(
+				"mappingComplete", Boolean.TRUE
 			).build(),
 			data.get("visibilityFilters"));
 
