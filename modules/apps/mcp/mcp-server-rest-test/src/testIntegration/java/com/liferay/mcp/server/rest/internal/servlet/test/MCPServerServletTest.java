@@ -990,7 +990,10 @@ public class MCPServerServletTest {
 
 		callToolResult = mcpSyncClient.callTool(
 			new McpSchema.CallToolRequest(
-				"getMCPServerProfilesPage", Collections.emptyMap()));
+				"getMCPServerProfilesPage",
+				HashMapBuilder.<String, Object>put(
+					"pageSize", "100"
+				).build()));
 
 		contents = callToolResult.content();
 
