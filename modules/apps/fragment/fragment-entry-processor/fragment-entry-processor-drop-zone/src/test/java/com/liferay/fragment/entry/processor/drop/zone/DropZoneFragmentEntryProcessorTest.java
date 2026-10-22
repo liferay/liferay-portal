@@ -9,6 +9,7 @@ import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
+import com.liferay.fragment.processor.DocumentFragmentEntryProcessor;
 import com.liferay.fragment.renderer.FragmentDropZoneRenderer;
 import com.liferay.layout.constants.LayoutWebKeys;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
@@ -32,6 +33,7 @@ import com.liferay.portal.util.PortalImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
@@ -588,18 +590,33 @@ public class DropZoneFragmentEntryProcessorTest {
 
 		Document document = _getDocument(html);
 
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					fragmentEntryLink.getCompanyId(),
+					_getMockHttpServletRequest(layoutStructure),
+					Mockito.mock(HttpServletResponse.class),
+					LocaleUtil.getMostRelevantLocale(), mode,
+					fragmentEntryLink.getGroupId());
+
+		HashMap<String, String> htmls = new HashMap<>();
+
+		defaultFragmentEntryProcessorContext.setAttribute(
+			DocumentFragmentEntryProcessor.class.getName(), htmls);
+
 		_dropZoneDocumentFragmentEntryProcessor.processFragmentEntryLinkHTML(
-			document, fragmentEntryLink,
-			new DefaultFragmentEntryProcessorContext(
-				fragmentEntryLink.getCompanyId(),
-				_getMockHttpServletRequest(layoutStructure),
-				Mockito.mock(HttpServletResponse.class),
-				LocaleUtil.getMostRelevantLocale(), mode,
-				fragmentEntryLink.getGroupId()));
+			document, fragmentEntryLink, defaultFragmentEntryProcessorContext);
 
 		Element bodyElement = document.body();
 
-		return bodyElement.html();
+		String processedHTML = bodyElement.html();
+
+		for (Map.Entry<String, String> entry : htmls.entrySet()) {
+			processedHTML = StringUtil.replace(
+				processedHTML, entry.getKey(), entry.getValue());
+		}
+
+		return processedHTML;
 	}
 
 	private static DropZoneDocumentFragmentEntryProcessor

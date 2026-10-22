@@ -11,6 +11,7 @@ import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.fragment.renderer.FragmentPortletRenderer;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -28,8 +29,12 @@ import com.liferay.portlet.exportimport.staging.StagingAdvicesThreadLocal;
 
 import jakarta.portlet.PortletPreferences;
 
+import java.io.Serializable;
+
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -145,9 +150,17 @@ public class PortletDocumentFragmentEntryProcessor
 
 			portletElement.attr("class", "portlet");
 
-			portletElement.html(portletHTML);
+			String marker = StringBundler.concat(
+				_MARKER_PREFIX, _counter.incrementAndGet(), StringPool.POUND);
+
+			portletElement.appendText(marker);
 
 			element.replaceWith(portletElement);
+
+			Map<String, String> htmls = _getHTMLs(
+				fragmentEntryProcessorContext);
+
+			htmls.put(marker, portletHTML);
 		}
 	}
 
@@ -176,6 +189,17 @@ public class PortletDocumentFragmentEntryProcessor
 		}
 
 		return true;
+	}
+
+	private Map<String, String> _getHTMLs(
+		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
+
+		Map<String, Serializable> attributes =
+			fragmentEntryProcessorContext.getAttributes();
+
+		return (Map<String, String>)attributes.computeIfAbsent(
+			DocumentFragmentEntryProcessor.class.getName(),
+			key -> new HashMap<String, String>());
 	}
 
 	private String _getInstanceId(String namespace, String id) {
@@ -280,6 +304,10 @@ public class PortletDocumentFragmentEntryProcessor
 			portletPreferences.getPlid(), portletPreferences.getPortletId(),
 			jxPortletPreferences);
 	}
+
+	private static final String _MARKER_PREFIX = StringUtil.randomString(16);
+
+	private static final AtomicLong _counter = new AtomicLong();
 
 	@Reference
 	private FragmentPortletRenderer _fragmentPortletRenderer;

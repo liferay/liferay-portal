@@ -31,12 +31,18 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.Serializable;
+
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -231,6 +237,9 @@ public class DropZoneDocumentFragmentEntryProcessor
 		}
 
 		try {
+			Map<String, String> htmls = _getHTMLs(
+				fragmentEntryProcessorContext);
+
 			for (int i = 0; i < elements.size(); i++) {
 				Element element = elements.get(i);
 
@@ -246,22 +255,36 @@ public class DropZoneDocumentFragmentEntryProcessor
 						fragmentEntryProcessorContext.getMode(), true);
 				}
 
-				Element dropZoneElement = new Element("div");
+				Attributes attributes = element.attributes();
 
-				for (Attribute attribute : element.attributes()) {
-					if (StringUtil.startsWith(
-							attribute.getKey(), "data-lfr-")) {
+				Iterator<Attribute> iterator = attributes.iterator();
+
+				while (iterator.hasNext()) {
+					Attribute attribute = iterator.next();
+
+					String key = attribute.getKey();
+
+					if (!StringUtil.startsWith(key, "data-lfr-") ||
+						key.equals("data-lfr-background-image-id") ||
+						key.equals("data-lfr-styles")) {
 
 						continue;
 					}
 
-					dropZoneElement.attr(
-						attribute.getKey(), attribute.getValue());
+					iterator.remove();
 				}
 
-				dropZoneElement.html(dropZoneHTML);
+				element.empty();
 
-				element.replaceWith(dropZoneElement);
+				String marker = StringBundler.concat(
+					_MARKER_PREFIX, _counter.incrementAndGet(),
+					StringPool.POUND);
+
+				element.appendText(marker);
+
+				element.tagName("div");
+
+				htmls.put(marker, dropZoneHTML);
 			}
 		}
 		finally {
@@ -272,8 +295,23 @@ public class DropZoneDocumentFragmentEntryProcessor
 		}
 	}
 
+	private Map<String, String> _getHTMLs(
+		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
+
+		Map<String, Serializable> attributes =
+			fragmentEntryProcessorContext.getAttributes();
+
+		return (Map<String, String>)attributes.computeIfAbsent(
+			DocumentFragmentEntryProcessor.class.getName(),
+			key -> new HashMap<String, String>());
+	}
+
+	private static final String _MARKER_PREFIX = StringUtil.randomString(16);
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DropZoneDocumentFragmentEntryProcessor.class);
+
+	private static final AtomicLong _counter = new AtomicLong();
 
 	@Reference
 	private FragmentDropZoneRenderer _fragmentDropZoneRenderer;

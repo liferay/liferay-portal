@@ -46,6 +46,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.Serializable;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -339,17 +341,38 @@ public class FragmentEntryProcessorRegistryImpl
 						document));
 		}
 
-		for (DocumentFragmentEntryProcessor documentFragmentEntryProcessor :
-				_documentFragmentEntryProcessors) {
+		Map<String, String> htmls;
 
-			documentFragmentEntryProcessor.processFragmentEntryLinkHTML(
-				document, editableValuesJSONObject, fragmentEntryLink,
-				fragmentEntryProcessorContext);
+		try {
+			for (DocumentFragmentEntryProcessor documentFragmentEntryProcessor :
+					_documentFragmentEntryProcessors) {
+
+				documentFragmentEntryProcessor.processFragmentEntryLinkHTML(
+					document, editableValuesJSONObject, fragmentEntryLink,
+					fragmentEntryProcessorContext);
+			}
+		}
+		finally {
+			Map<String, Serializable> attributes =
+				fragmentEntryProcessorContext.getAttributes();
+
+			htmls = (Map<String, String>)attributes.remove(
+				DocumentFragmentEntryProcessor.class.getName());
 		}
 
 		Element bodyElement = document.body();
 
-		return bodyElement.html();
+		html = bodyElement.html();
+
+		if (htmls == null) {
+			return html;
+		}
+
+		for (Map.Entry<String, String> entry : htmls.entrySet()) {
+			html = StringUtil.replace(html, entry.getKey(), entry.getValue());
+		}
+
+		return html;
 	}
 
 	@Override
