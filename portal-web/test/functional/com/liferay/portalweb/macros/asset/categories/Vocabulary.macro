@@ -264,7 +264,7 @@ definition {
 
 	@summary = "Default summary"
 	macro gotoAddVocabulary() {
-		if (IsElementPresent(locator1 = "//*[contains(@class,'taglib-empty-result-message-title')][normalize-space(text())='No Vocabularies yet.']")) {
+		if (IsElementPresent(locator1 = "//div[contains(@class,'taglib-empty-result-message')]//div[contains(@class,'c-empty-state-title')][normalize-space(text())='No Vocabularies yet.']")) {
 			Button.click(button = "Add Vocabulary");
 		}
 		else {

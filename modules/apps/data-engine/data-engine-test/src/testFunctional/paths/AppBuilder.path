@@ -88,12 +88,12 @@
 </tr>
 <tr>
 	<td>MESSAGE_TITLE_EMPTY_LIST</td>
-	<td>//h1[contains(@class,'taglib-empty-result-message-title') and contains(text(),'${value1}')]</td>
+	<td>//div[contains(@class,'taglib-empty-result-message')]//div[contains(@class,'c-empty-state-title') and contains(text(),'${value1}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>MESSAGE_DESCRIPTION_EMPTY_LIST</td>
-	<td>//p[contains(@class,'taglib-empty-result-message-description') and contains (text(),'${value1}')]</td>
+	<td>//div[contains(@class,'taglib-empty-result-message')]//div[contains(@class,'c-empty-state-text') and contains (text(),'${value1}')]</td>
 	<td></td>
 </tr>
 
@@ -261,7 +261,7 @@
 </tr>
 <tr>
 	<td>VALIDATE_IF_ITEM_IS_NOT_FOUND</td>
-	<td>//h1[contains(@class,'taglib-empty-result-message-title')]</td>
+	<td>//div[contains(@class,'taglib-empty-result-message')]//div[contains(@class,'c-empty-state-title')]</td>
 	<td></td>
 </tr>
 <tr>

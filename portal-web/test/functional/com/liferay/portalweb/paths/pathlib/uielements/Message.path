@@ -97,12 +97,12 @@
 </tr>
 <tr>
 	<td>EMPTY_INFO_TAGLIB_TITLE</td>
-	<td>//div/h1[contains(@class,'taglib-empty-result-message-title')]</td>
+	<td>//div[contains(@class,'taglib-empty-result-message')]//div[contains(@class,'c-empty-state-title')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>EMPTY_INFO_TAGLIB_DESCRIPTION</td>
-	<td>//div/p[contains(@class,'taglib-empty-result-message-description')]</td>
+	<td>//div[contains(@class,'taglib-empty-result-message')]//div[contains(@class,'c-empty-state-text')]</td>
 	<td></td>
 </tr>
 <tr>
