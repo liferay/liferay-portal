@@ -720,10 +720,6 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 
 					renderRequest.setAttribute(
 						PortletConfigurationWebKeys.MODULE_NAME, moduleName);
-
-					renderRequest.setAttribute(
-						PortletConfigurationWebKeys.SETTINGS_FACTORY,
-						_archivedSettingsFactory);
 				}
 			}
 

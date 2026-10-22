@@ -9,8 +9,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.settings.ArchivedSettings;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -29,10 +29,10 @@ import java.util.List;
 public class ArchivedSettingsActionDropdownItemsProvider {
 
 	public ArchivedSettingsActionDropdownItemsProvider(
-		ArchivedSettings archivedSettings, RenderRequest renderRequest,
+		PortletItem portletItem, RenderRequest renderRequest,
 		RenderResponse renderResponse) {
 
-		_archivedSettings = archivedSettings;
+		_portletItem = portletItem;
 		_renderResponse = renderResponse;
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
@@ -67,7 +67,7 @@ public class ArchivedSettingsActionDropdownItemsProvider {
 				).setPortletResource(
 					_getPortletResource()
 				).setParameter(
-					"name", _archivedSettings.getName()
+					"name", _portletItem.getName()
 				).setParameter(
 					"portletConfiguration", true
 				).buildString());
@@ -105,7 +105,7 @@ public class ArchivedSettingsActionDropdownItemsProvider {
 				).setPortletResource(
 					_getPortletResource()
 				).setParameter(
-					"name", _archivedSettings.getName()
+					"name", _portletItem.getName()
 				).setParameter(
 					"portletConfiguration", true
 				).buildString());
@@ -114,8 +114,8 @@ public class ArchivedSettingsActionDropdownItemsProvider {
 		};
 	}
 
-	private final ArchivedSettings _archivedSettings;
 	private final HttpServletRequest _httpServletRequest;
+	private final PortletItem _portletItem;
 	private String _portletResource;
 	private final RenderResponse _renderResponse;
 	private final ThemeDisplay _themeDisplay;

@@ -9,12 +9,13 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletItem;
+import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.portlet.SearchDisplayStyleUtil;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.PortletItemLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
-import com.liferay.portal.kernel.settings.ArchivedSettings;
-import com.liferay.portal.kernel.settings.ArchivedSettingsFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -51,78 +52,16 @@ public class PortletConfigurationTemplatesDisplayContext {
 
 		_moduleName = (String)renderRequest.getAttribute(
 			PortletConfigurationWebKeys.MODULE_NAME);
-		_archivedSettingsFactory =
-			(ArchivedSettingsFactory)renderRequest.getAttribute(
-				PortletConfigurationWebKeys.SETTINGS_FACTORY);
 	}
 
-	public List<DropdownItem> getActionDropdownItems(
-		ArchivedSettings archivedSettings) {
-
+	public List<DropdownItem> getActionDropdownItems(PortletItem portletItem) {
 		ArchivedSettingsActionDropdownItemsProvider
 			archivedSettingsActionDropdownItemsProvider =
 				new ArchivedSettingsActionDropdownItemsProvider(
-					archivedSettings, _renderRequest, _renderResponse);
+					portletItem, _renderRequest, _renderResponse);
 
 		return archivedSettingsActionDropdownItemsProvider.
 			getActionDropdownItems();
-	}
-
-	public SearchContainer<ArchivedSettings>
-		getArchivedSettingsSearchContainer() {
-
-		if (_archivedSettingsSearchContainer != null) {
-			return _archivedSettingsSearchContainer;
-		}
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		SearchContainer<ArchivedSettings> archivedSettingsSearchContainer =
-			new SearchContainer<>(
-				_renderRequest, null, null, SearchContainer.DEFAULT_CUR_PARAM,
-				SearchContainer.DEFAULT_DELTA, getPortletURL(), null,
-				"there-are-no-configuration-templates");
-
-		archivedSettingsSearchContainer.setOrderByCol(getOrderByCol());
-
-		boolean orderByAsc = false;
-
-		if (Objects.equals(getOrderByType(), "asc")) {
-			orderByAsc = true;
-		}
-
-		OrderByComparator<ArchivedSettings> orderByComparator = null;
-
-		if (Objects.equals(getOrderByCol(), "modified-date")) {
-			orderByComparator =
-				ArchivedSettingsModifiedDateComparator.getInstance(orderByAsc);
-		}
-		else {
-			orderByComparator = ArchivedSettingsNameComparator.getInstance(
-				orderByAsc);
-		}
-
-		archivedSettingsSearchContainer.setOrderByComparator(orderByComparator);
-		archivedSettingsSearchContainer.setOrderByType(getOrderByType());
-
-		Portlet selPortlet = PortletLocalServiceUtil.getPortletById(
-			themeDisplay.getCompanyId(), getPortletResource());
-
-		archivedSettingsSearchContainer.setResultsAndTotal(
-			ListUtil.sort(
-				_archivedSettingsFactory.getPortletInstanceArchivedSettingsList(
-					themeDisplay.getScopeGroupId(),
-					selPortlet.getRootPortletId()),
-				archivedSettingsSearchContainer.getOrderByComparator()));
-
-		archivedSettingsSearchContainer.setRowChecker(
-			new EmptyOnClickRowChecker(_renderResponse));
-
-		_archivedSettingsSearchContainer = archivedSettingsSearchContainer;
-
-		return _archivedSettingsSearchContainer;
 	}
 
 	public String getDisplayStyle() {
@@ -163,6 +102,62 @@ public class PortletConfigurationTemplatesDisplayContext {
 			PortletConfigurationPortletKeys.PORTLET_CONFIGURATION, "asc");
 
 		return _orderByType;
+	}
+
+	public SearchContainer<PortletItem> getPortletItemSearchContainer() {
+		if (_portletItemSearchContainer != null) {
+			return _portletItemSearchContainer;
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		SearchContainer<PortletItem> portletItemSearchContainer =
+			new SearchContainer<>(
+				_renderRequest, null, null, SearchContainer.DEFAULT_CUR_PARAM,
+				SearchContainer.DEFAULT_DELTA, getPortletURL(), null,
+				"there-are-no-configuration-templates");
+
+		portletItemSearchContainer.setOrderByCol(getOrderByCol());
+
+		boolean orderByAsc = false;
+
+		if (Objects.equals(getOrderByType(), "asc")) {
+			orderByAsc = true;
+		}
+
+		OrderByComparator<PortletItem> orderByComparator = null;
+
+		if (Objects.equals(getOrderByCol(), "modified-date")) {
+			orderByComparator =
+				ArchivedSettingsModifiedDateComparator.getInstance(orderByAsc);
+		}
+		else {
+			orderByComparator = ArchivedSettingsNameComparator.getInstance(
+				orderByAsc);
+		}
+
+		portletItemSearchContainer.setOrderByComparator(orderByComparator);
+		portletItemSearchContainer.setOrderByType(getOrderByType());
+
+		Portlet selPortlet = PortletLocalServiceUtil.getPortletById(
+			themeDisplay.getCompanyId(), getPortletResource());
+
+		portletItemSearchContainer.setResultsAndTotal(
+			ListUtil.sort(
+				PortletItemLocalServiceUtil.getPortletItems(
+					themeDisplay.getScopeGroupId(),
+					selPortlet.getRootPortletId(),
+					PortletPreferences.class.getName()),
+				portletItemSearchContainer.getOrderByComparator()));
+
+		portletItemSearchContainer.setRowChecker(
+			new EmptyOnClickRowChecker(_renderResponse));
+
+		_portletItemSearchContainer = portletItemSearchContainer;
+
+		return _portletItemSearchContainer;
 	}
 
 	public String getPortletResource() {
@@ -244,13 +239,12 @@ public class PortletConfigurationTemplatesDisplayContext {
 		return _returnToFullPageURL;
 	}
 
-	private final ArchivedSettingsFactory _archivedSettingsFactory;
-	private SearchContainer<ArchivedSettings> _archivedSettingsSearchContainer;
 	private String _displayStyle;
 	private final HttpServletRequest _httpServletRequest;
 	private final String _moduleName;
 	private String _orderByCol;
 	private String _orderByType;
+	private SearchContainer<PortletItem> _portletItemSearchContainer;
 	private String _portletResource;
 	private String _redirect;
 	private final RenderRequest _renderRequest;

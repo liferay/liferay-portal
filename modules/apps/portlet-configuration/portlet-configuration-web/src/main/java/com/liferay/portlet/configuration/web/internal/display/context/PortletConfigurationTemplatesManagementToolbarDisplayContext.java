@@ -32,7 +32,7 @@ public class PortletConfigurationTemplatesManagementToolbarDisplayContext
 		super(
 			httpServletRequest, liferayPortletRequest, liferayPortletResponse,
 			portletConfigurationTemplatesDisplayContext.
-				getArchivedSettingsSearchContainer());
+				getPortletItemSearchContainer());
 
 		_portletConfigurationTemplatesDisplayContext =
 			portletConfigurationTemplatesDisplayContext;

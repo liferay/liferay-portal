@@ -5,7 +5,7 @@
 
 package com.liferay.portlet.configuration.web.internal.util.comparator;
 
-import com.liferay.portal.kernel.settings.ArchivedSettings;
+import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
  * @author Eudaldo Alonso
  */
 public class ArchivedSettingsModifiedDateComparator
-	extends OrderByComparator<ArchivedSettings> {
+	extends OrderByComparator<PortletItem> {
 
 	public static ArchivedSettingsModifiedDateComparator getInstance(
 		boolean ascending) {
@@ -26,13 +26,9 @@ public class ArchivedSettingsModifiedDateComparator
 	}
 
 	@Override
-	public int compare(
-		ArchivedSettings archivedSettings1,
-		ArchivedSettings archivedSettings2) {
-
+	public int compare(PortletItem portletItem1, PortletItem portletItem2) {
 		int value = DateUtil.compareTo(
-			archivedSettings1.getModifiedDate(),
-			archivedSettings2.getModifiedDate());
+			portletItem1.getModifiedDate(), portletItem2.getModifiedDate());
 
 		if (_ascending) {
 			return value;

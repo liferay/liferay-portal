@@ -48,12 +48,12 @@ PortletConfigurationTemplatesDisplayContext portletConfigurationTemplatesDisplay
 
 				<liferay-ui:search-container
 					id="archivedSettings"
-					searchContainer="<%= portletConfigurationTemplatesDisplayContext.getArchivedSettingsSearchContainer() %>"
+					searchContainer="<%= portletConfigurationTemplatesDisplayContext.getPortletItemSearchContainer() %>"
 				>
 					<liferay-ui:search-container-row
-						className="com.liferay.portal.kernel.settings.ArchivedSettings"
+						className="com.liferay.portal.kernel.model.PortletItem"
 						keyProperty="name"
-						modelVar="archivedSettings"
+						modelVar="portletItem"
 					>
 						<c:choose>
 							<c:when test='<%= Objects.equals(portletConfigurationTemplatesDisplayContext.getDisplayStyle(), "descriptive") %>'>
@@ -65,18 +65,18 @@ PortletConfigurationTemplatesDisplayContext portletConfigurationTemplatesDisplay
 									colspan="<%= 2 %>"
 								>
 									<div class="h6 text-default">
-										<liferay-ui:message arguments="<%= new String[] {LanguageUtil.getTimeDescription(locale, System.currentTimeMillis() - archivedSettings.getModifiedDate().getTime(), true), HtmlUtil.escape(archivedSettings.getUserName())} %>" key="x-ago-by-x" translateArguments="<%= false %>" />
+										<liferay-ui:message arguments="<%= new String[] {LanguageUtil.getTimeDescription(locale, System.currentTimeMillis() - portletItem.getModifiedDate().getTime(), true), HtmlUtil.escape(portletItem.getUserName())} %>" key="x-ago-by-x" translateArguments="<%= false %>" />
 									</div>
 
 									<div class="h5">
-										<%= HtmlUtil.escape(archivedSettings.getName()) %>
+										<%= HtmlUtil.escape(portletItem.getName()) %>
 									</div>
 								</liferay-ui:search-container-column-text>
 
 								<liferay-ui:search-container-column-text>
 									<clay:dropdown-actions
 										aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
-										dropdownItems="<%= portletConfigurationTemplatesDisplayContext.getActionDropdownItems(archivedSettings) %>"
+										dropdownItems="<%= portletConfigurationTemplatesDisplayContext.getActionDropdownItems(portletItem) %>"
 										propsTransformer="{ArchivedSetuptsDropdownDefaultPropsTransformer} from portlet-configuration-web"
 									/>
 								</liferay-ui:search-container-column-text>
@@ -84,7 +84,7 @@ PortletConfigurationTemplatesDisplayContext portletConfigurationTemplatesDisplay
 							<c:when test='<%= Objects.equals(portletConfigurationTemplatesDisplayContext.getDisplayStyle(), "icon") %>'>
 								<liferay-ui:search-container-column-text>
 									<clay:vertical-card
-										verticalCard="<%= new ArchivedSettingsVerticalCard(archivedSettings, renderRequest, renderResponse) %>"
+										verticalCard="<%= new ArchivedSettingsVerticalCard(portletItem, renderRequest, renderResponse) %>"
 									/>
 								</liferay-ui:search-container-column-text>
 							</c:when>
@@ -93,14 +93,14 @@ PortletConfigurationTemplatesDisplayContext portletConfigurationTemplatesDisplay
 									name="name"
 									truncate="<%= true %>"
 								>
-									<%= HtmlUtil.escape(archivedSettings.getName()) %>
+									<%= HtmlUtil.escape(portletItem.getName()) %>
 								</liferay-ui:search-container-column-text>
 
 								<liferay-ui:search-container-column-text
 									name="user-name"
 									truncate="<%= true %>"
 								>
-									<%= HtmlUtil.escape(archivedSettings.getUserName()) %>
+									<%= HtmlUtil.escape(portletItem.getUserName()) %>
 								</liferay-ui:search-container-column-text>
 
 								<liferay-ui:search-container-column-date
@@ -111,7 +111,7 @@ PortletConfigurationTemplatesDisplayContext portletConfigurationTemplatesDisplay
 								<liferay-ui:search-container-column-text>
 									<clay:dropdown-actions
 										aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
-										dropdownItems="<%= portletConfigurationTemplatesDisplayContext.getActionDropdownItems(archivedSettings) %>"
+										dropdownItems="<%= portletConfigurationTemplatesDisplayContext.getActionDropdownItems(portletItem) %>"
 										propsTransformer="{ArchivedSetuptsDropdownDefaultPropsTransformer} from portlet-configuration-web"
 									/>
 								</liferay-ui:search-container-column-text>

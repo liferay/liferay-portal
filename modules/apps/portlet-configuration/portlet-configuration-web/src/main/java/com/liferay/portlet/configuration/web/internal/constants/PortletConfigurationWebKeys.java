@@ -15,6 +15,4 @@ public class PortletConfigurationWebKeys {
 
 	public static final String MODULE_NAME = "MODULE_NAME";
 
-	public static final String SETTINGS_FACTORY = "SETTINGS_FACTORY";
-
 }

@@ -8,7 +8,7 @@ package com.liferay.portlet.configuration.web.internal.frontend.taglib.clay.serv
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.settings.ArchivedSettings;
+import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -30,10 +30,10 @@ import java.util.List;
 public class ArchivedSettingsVerticalCard implements VerticalCard {
 
 	public ArchivedSettingsVerticalCard(
-		ArchivedSettings archivedSettings, RenderRequest renderRequest,
+		PortletItem portletItem, RenderRequest renderRequest,
 		RenderResponse renderResponse) {
 
-		_archivedSettings = archivedSettings;
+		_portletItem = portletItem;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 
@@ -47,7 +47,7 @@ public class ArchivedSettingsVerticalCard implements VerticalCard {
 		ArchivedSettingsActionDropdownItemsProvider
 			archivedSettingsActionDropdownItemsProvider =
 				new ArchivedSettingsActionDropdownItemsProvider(
-					_archivedSettings, _renderRequest, _renderResponse);
+					_portletItem, _renderRequest, _renderResponse);
 
 		return archivedSettingsActionDropdownItemsProvider.
 			getActionDropdownItems();
@@ -66,7 +66,7 @@ public class ArchivedSettingsVerticalCard implements VerticalCard {
 
 	@Override
 	public String getSubtitle() {
-		Date modifiedDate = _archivedSettings.getModifiedDate();
+		Date modifiedDate = _portletItem.getModifiedDate();
 
 		String modifiedDateDescription = LanguageUtil.getTimeDescription(
 			_themeDisplay.getLocale(),
@@ -76,17 +76,17 @@ public class ArchivedSettingsVerticalCard implements VerticalCard {
 			_httpServletRequest, "x-ago-by-x",
 			new String[] {
 				modifiedDateDescription,
-				HtmlUtil.escape(_archivedSettings.getUserName())
+				HtmlUtil.escape(_portletItem.getUserName())
 			});
 	}
 
 	@Override
 	public String getTitle() {
-		return _archivedSettings.getName();
+		return _portletItem.getName();
 	}
 
-	private final ArchivedSettings _archivedSettings;
 	private final HttpServletRequest _httpServletRequest;
+	private final PortletItem _portletItem;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private final ThemeDisplay _themeDisplay;
