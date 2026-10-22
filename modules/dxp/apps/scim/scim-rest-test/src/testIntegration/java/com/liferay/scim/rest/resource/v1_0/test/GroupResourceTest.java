@@ -228,80 +228,9 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 	@Override
 	@Test
 	public void testGetV2Groups() throws Exception {
-		_userGroupLocalService.addUserGroup(
-			StringPool.BLANK, TestPropsValues.getUserId(),
-			TestPropsValues.getCompanyId(), RandomTestUtil.randomString(), null,
-			new ServiceContext());
-
-		_assertListResponse(groupResource.getV2Groups(5, null, 0, null), 0, 0);
-
-		Group group1 = testDeleteV2Group_addGroup();
-		Group group2 = testDeleteV2Group_addGroup();
-
-		_assertListResponse(
-			groupResource.getV2Groups(5, null, 0, null), 2, 2, group1, group2);
-
-		_assertListResponse(groupResource.getV2Groups(-1, null, 1, null), 2, 0);
-		_assertListResponse(
-			groupResource.getV2Groups(1, null, 2, null), 2, 1, group2);
-		_assertListResponse(
-			groupResource.getV2Groups(1, null, null, null), 2, 1, group1);
-
-		Group group3 = testDeleteV2Group_addGroup();
-
-		_assertListResponse(
-			groupResource.getV2Groups(5, null, 3, null), 3, 1, group3);
-
-		_assertListResponse(
-			groupResource.getV2Groups(10000, null, null, null), 3, 3, group1,
-			group2, group3);
-
-		_assertListResponse(
-			groupResource.getV2Groups(null, null, 10000, null), 3, 0);
-		_assertListResponse(
-			groupResource.getV2Groups(null, null, 2, null), 3, 2, group2,
-			group3);
-
-		_assertListResponse(
-			groupResource.getV2Groups(
-				5, null, 0,
-				"displayName eq \"" + RandomTestUtil.randomString() + "\""),
-			0, 0);
-		_assertListResponse(
-			groupResource.getV2Groups(
-				5, null, 0, "displayName eq \"" + _PREFIX + "\""),
-			0, 0);
-		_assertListResponse(
-			groupResource.getV2Groups(
-				5, null, 0,
-				"displayName eq \"" + group1.getDisplayName() + "\""),
-			1, 1, group1);
-
-		assertHttpResponseStatusCode(
-			400,
-			groupResource.getV2GroupsHttpResponse(
-				5, null, 0,
-				RandomTestUtil.randomString() + " eq +\"" +
-					RandomTestUtil.randomString() + "\""));
-
-		Group group4 = _addGroupWithMember();
-
-		Group getGroup = _getGroupByListResponse(
-			groupResource.getV2Groups(
-				5, null, 0,
-				"displayName eq \"" + group4.getDisplayName() + "\""));
-
-		assertValid(getGroup);
-		Assert.assertEquals(1, ArrayUtil.getLength(getGroup.getMembers()));
-
-		getGroup = _getGroupByListResponse(
-			String.valueOf(
-				groupResource.getV2Groups(
-					5, "members", 0,
-					"displayName eq \"" + group4.getDisplayName() + "\"")));
-
-		assertValid(getGroup);
-		Assert.assertNull(getGroup.getMembers());
+		_testGetV2GroupsWithDisplayNameFilter();
+		_testGetV2GroupsWithMembers();
+		_testGetV2GroupsWithPagination();
 
 		ConfigurationTestUtil.deleteConfiguration(_pid);
 
@@ -825,6 +754,95 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 		assertHttpResponseStatusCode(204, httpResponse);
 
 		return _getGroup(userGroupId);
+	}
+
+	private void _testGetV2GroupsWithDisplayNameFilter() throws Exception {
+		Group group = testDeleteV2Group_addGroup();
+
+		_assertListResponse(
+			groupResource.getV2Groups(
+				5, null, 0,
+				"displayName eq \"" + RandomTestUtil.randomString() + "\""),
+			0, 0);
+		_assertListResponse(
+			groupResource.getV2Groups(
+				5, null, 0, "displayName eq \"" + _PREFIX + "\""),
+			0, 0);
+		_assertListResponse(
+			groupResource.getV2Groups(
+				5, null, 0,
+				"displayName eq \"" + group.getDisplayName() + "\""),
+			1, 1, group);
+
+		assertHttpResponseStatusCode(
+			400,
+			groupResource.getV2GroupsHttpResponse(
+				5, null, 0,
+				RandomTestUtil.randomString() + " eq +\"" +
+					RandomTestUtil.randomString() + "\""));
+
+		assertHttpResponseStatusCode(
+			204, groupResource.deleteV2GroupHttpResponse(group.getId()));
+	}
+
+	private void _testGetV2GroupsWithMembers() throws Exception {
+		Group group = _addGroupWithMember();
+
+		Group getGroup = _getGroupByListResponse(
+			groupResource.getV2Groups(
+				5, null, 0,
+				"displayName eq \"" + group.getDisplayName() + "\""));
+
+		assertValid(getGroup);
+		Assert.assertEquals(1, ArrayUtil.getLength(getGroup.getMembers()));
+
+		getGroup = _getGroupByListResponse(
+			String.valueOf(
+				groupResource.getV2Groups(
+					5, "members", 0,
+					"displayName eq \"" + group.getDisplayName() + "\"")));
+
+		assertValid(getGroup);
+		Assert.assertNull(getGroup.getMembers());
+
+		assertHttpResponseStatusCode(
+			204, groupResource.deleteV2GroupHttpResponse(group.getId()));
+	}
+
+	private void _testGetV2GroupsWithPagination() throws Exception {
+		_userGroupLocalService.addUserGroup(
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			TestPropsValues.getCompanyId(), RandomTestUtil.randomString(), null,
+			new ServiceContext());
+
+		_assertListResponse(groupResource.getV2Groups(5, null, 0, null), 0, 0);
+
+		Group group1 = testDeleteV2Group_addGroup();
+		Group group2 = testDeleteV2Group_addGroup();
+
+		_assertListResponse(
+			groupResource.getV2Groups(5, null, 0, null), 2, 2, group1, group2);
+
+		_assertListResponse(groupResource.getV2Groups(-1, null, 1, null), 2, 0);
+		_assertListResponse(
+			groupResource.getV2Groups(1, null, 2, null), 2, 1, group2);
+		_assertListResponse(
+			groupResource.getV2Groups(1, null, null, null), 2, 1, group1);
+
+		Group group3 = testDeleteV2Group_addGroup();
+
+		_assertListResponse(
+			groupResource.getV2Groups(5, null, 3, null), 3, 1, group3);
+
+		_assertListResponse(
+			groupResource.getV2Groups(10000, null, null, null), 3, 3, group1,
+			group2, group3);
+
+		_assertListResponse(
+			groupResource.getV2Groups(null, null, 10000, null), 3, 0);
+		_assertListResponse(
+			groupResource.getV2Groups(null, null, 2, null), 3, 2, group2,
+			group3);
 	}
 
 	private static final String _PREFIX = StringUtil.toLowerCase(
