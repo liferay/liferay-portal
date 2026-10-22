@@ -16,6 +16,20 @@ public class JSUnitTestReportTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testGetTestClassName() {
+		testEquals(
+			":apps:frontend-js:frontend-js-web:packageRunTest",
+			_getTestClassName(
+				"liferay-portal.modules.apps.frontend-js.frontend-js-web.src." +
+					"__tests__.index"));
+		testEquals(
+			"com.liferay.portal.log.assertor.PortalLogAssertorTest",
+			_getTestClassName(
+				"com.liferay.portal.log.assertor.PortalLogAssertorTest." +
+					"testScanXMLLog"));
+	}
+
+	@Test
 	public void testGetTestTaskName() {
 		testEquals(
 			":apps:frontend-js:frontend-js-clay-web:packageRunTest",
@@ -34,13 +48,23 @@ public class JSUnitTestReportTest
 					"web.test.js.index"));
 	}
 
-	private String _getTestTaskName(String testName) {
-		JSUnitTestReport jsUnitTestReport = new JSUnitTestReport(
+	private JSUnitTestReport _getJSUnitTestReport(String testName) {
+		return new JSUnitTestReport(
 			null,
 			new JSONObject(
 			).put(
 				"name", testName
 			));
+	}
+
+	private String _getTestClassName(String testName) {
+		JSUnitTestReport jsUnitTestReport = _getJSUnitTestReport(testName);
+
+		return jsUnitTestReport.getTestClassName();
+	}
+
+	private String _getTestTaskName(String testName) {
+		JSUnitTestReport jsUnitTestReport = _getJSUnitTestReport(testName);
 
 		return jsUnitTestReport.getTestTaskName();
 	}
