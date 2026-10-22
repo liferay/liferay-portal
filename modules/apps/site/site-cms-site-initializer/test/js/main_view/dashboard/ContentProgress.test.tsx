@@ -16,8 +16,11 @@ import {
 	FDS_FILTER_ID,
 	WORKFLOW_STATUS,
 } from '../../../../src/main/resources/META-INF/resources/js/common/utils/constants';
+import toDatePart from '../../../../src/main/resources/META-INF/resources/js/common/utils/toDatePart';
 import {GovernanceContext} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceContext';
-import GovernanceService from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService';
+import GovernanceService, {
+	MILLISECONDS_PER_DAY,
+} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService';
 import {ContentProgress} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/components/ContentProgress';
 
 jest.mock('frontend-js-web', () => ({
@@ -34,10 +37,15 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService',
 	() => ({
+		...(jest.requireActual(
+			'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService'
+		) as object),
 		__esModule: true,
 		default: {getContentProgress: jest.fn()},
 	})
 );
+
+const NOW = Date.UTC(2026, 9, 21, 12);
 
 const ADDITIONAL_PROPS = {
 	allSectionFDSName: 'allSection',
@@ -53,6 +61,17 @@ const BUCKETS = [
 	{displayName: '3', frequency: 1, term: '3'},
 	{displayName: '7', frequency: 4, term: '7'},
 ];
+
+function getCreatedInLastDaysFilter(days: number) {
+	return {
+		id: FDS_FILTER_ID.DATE_CREATED,
+		selectedData: {
+			exclude: false,
+			from: toDatePart(new Date(NOW - days * MILLISECONDS_PER_DAY)),
+			to: null,
+		},
+	};
+}
 
 function mockContentProgress(buckets: object[]) {
 	(GovernanceService.getContentProgress as jest.Mock).mockResolvedValue({
@@ -70,8 +89,14 @@ function renderContentProgress(space: object = {value: 'all'}) {
 }
 
 describe('ContentProgress', () => {
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
+
 	beforeEach(() => {
 		jest.clearAllMocks();
+
+		jest.spyOn(Date, 'now').mockReturnValue(NOW);
 	});
 
 	it('renders one segment per status from the largest to the smallest', async () => {
@@ -148,6 +173,7 @@ describe('ContentProgress', () => {
 						],
 					},
 				},
+				getCreatedInLastDaysFilter(7),
 			],
 		});
 	});
@@ -176,6 +202,7 @@ describe('ContentProgress', () => {
 						],
 					},
 				},
+				getCreatedInLastDaysFilter(7),
 			],
 		});
 	});
@@ -215,6 +242,7 @@ describe('ContentProgress', () => {
 						],
 					},
 				},
+				getCreatedInLastDaysFilter(7),
 			],
 		});
 	});
@@ -241,6 +269,7 @@ describe('ContentProgress', () => {
 						],
 					},
 				},
+				getCreatedInLastDaysFilter(7),
 				{
 					id: FDS_FILTER_ID.SCOPE_GROUP_ID,
 					selectedData: {
@@ -285,6 +314,51 @@ describe('ContentProgress', () => {
 			undefined,
 			90
 		);
+	});
+
+	it('filters the segment links by the selected time range', async () => {
+		mockContentProgress(BUCKETS);
+
+		renderContentProgress();
+
+		await screen.findAllByRole('link');
+
+		(serializeFDSConfig as jest.Mock).mockClear();
+
+		await userEvent.click(
+			screen.getByRole('combobox', {name: 'time-range'})
+		);
+		await userEvent.click(
+			screen.getByRole('option', {name: 'last-x-days 90'})
+		);
+
+		await screen.findAllByRole('link');
+
+		const configs = (serializeFDSConfig as jest.Mock).mock.calls.map(
+			([config]) => config
+		);
+
+		expect(configs).not.toContainEqual(
+			expect.objectContaining({
+				filters: expect.arrayContaining([
+					getCreatedInLastDaysFilter(7),
+				]),
+			})
+		);
+		expect(configs).toContainEqual({
+			filters: [
+				{
+					id: FDS_FILTER_ID.STATUS,
+					selectedData: {
+						exclude: false,
+						selectedItems: [
+							{label: 'draft', value: WORKFLOW_STATUS.DRAFT},
+						],
+					},
+				},
+				getCreatedInLastDaysFilter(90),
+			],
+		});
 	});
 
 	it('shows the empty state when the scope has no content', async () => {
