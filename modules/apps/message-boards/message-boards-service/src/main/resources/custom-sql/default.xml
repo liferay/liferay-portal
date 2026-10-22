@@ -127,17 +127,6 @@
 				([$STATUS$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$OWNER_USER_ID$])
 		]]>
 	</sql>
-	<sql id="com.liferay.message.boards.service.persistence.MBMessageFinder.countByC_T">
-		<![CDATA[
-			SELECT
-				COUNT(*) AS COUNT_VALUE
-			FROM
-				MBMessage
-			WHERE
-				(createDate <= ?) AND
-				(threadId = ?)
-		]]>
-	</sql>
 	<sql id="com.liferay.message.boards.service.persistence.MBMessageFinder.countByG_U_C_S">
 		<![CDATA[
 			SELECT
@@ -289,21 +278,6 @@
 				([$STATUS$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$OWNER_USER_ID$])
 		]]>
 	</sql>
-	<sql id="com.liferay.message.boards.service.persistence.MBThreadFinder.countByG_U_C">
-		<![CDATA[
-			SELECT
-				COUNT(DISTINCT MBThread.threadId) AS COUNT_VALUE
-			FROM
-				MBThread
-			INNER JOIN
-				MBMessage ON
-					MBThread.threadId = MBMessage.threadId
-			WHERE
-				(MBThread.groupId = ?) AND
-				(MBThread.categoryId = ?) AND
-				(MBMessage.userId = ?)
-		]]>
-	</sql>
 	<sql id="com.liferay.message.boards.service.persistence.MBThreadFinder.countByG_U_LPD">
 		<![CDATA[
 			SELECT
@@ -352,22 +326,6 @@
 				(Subscription.userId = ?)
 		]]>
 	</sql>
-	<sql id="com.liferay.message.boards.service.persistence.MBThreadFinder.countByG_U_C_A">
-		<![CDATA[
-			SELECT
-				COUNT(DISTINCT MBThread.threadId) AS COUNT_VALUE
-			FROM
-				MBThread
-			INNER JOIN
-				MBMessage ON
-					MBThread.threadId = MBMessage.threadId
-			WHERE
-				(MBThread.groupId = ?) AND
-				(MBThread.categoryId = ?) AND
-				(MBMessage.userId = ?) AND
-				(MBMessage.anonymous = ?)
-		]]>
-	</sql>
 	<sql id="com.liferay.message.boards.service.persistence.MBThreadFinder.countByS_G_U_C">
 		<![CDATA[
 			SELECT
@@ -413,24 +371,6 @@
 				(MBThread.groupId = ?) AND
 				(MBThread.categoryId = ?) AND
 				([$STATUS$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$OWNER_USER_ID$])
-			ORDER BY
-				MBThread.priority DESC,
-				MBThread.lastPostDate DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.message.boards.service.persistence.MBThreadFinder.findByG_U_C">
-		<![CDATA[
-			SELECT
-				DISTINCT {MBThread.*}
-			FROM
-				MBThread
-			INNER JOIN
-				MBMessage ON
-					MBThread.threadId = MBMessage.threadId
-			WHERE
-				(MBThread.groupId = ?) AND
-				(MBThread.categoryId = ?) AND
-				(MBMessage.userId = ?)
 			ORDER BY
 				MBThread.priority DESC,
 				MBThread.lastPostDate DESC
@@ -487,25 +427,6 @@
 			WHERE
 				(MBThread.groupId = ?) AND
 				(Subscription.userId = ?)
-			ORDER BY
-				MBThread.priority DESC,
-				MBThread.lastPostDate DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.message.boards.service.persistence.MBThreadFinder.findByG_U_C_A">
-		<![CDATA[
-			SELECT
-				DISTINCT {MBThread.*}
-			FROM
-				MBThread
-			INNER JOIN
-				MBMessage ON
-					MBThread.threadId = MBMessage.threadId
-			WHERE
-				(MBThread.groupId = ?) AND
-				(MBThread.categoryId = ?) AND
-				(MBMessage.userId = ?) AND
-				(MBMessage.anonymous = ?)
 			ORDER BY
 				MBThread.priority DESC,
 				MBThread.lastPostDate DESC

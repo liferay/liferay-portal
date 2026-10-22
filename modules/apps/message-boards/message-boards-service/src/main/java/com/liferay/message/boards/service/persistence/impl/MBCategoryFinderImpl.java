@@ -69,28 +69,10 @@ public class MBCategoryFinderImpl
 		MBCategoryFinder.class.getName() + ".findT_ByG_C";
 
 	@Override
-	public int countC_ByG_P(
-		long groupId, long parentCategoryId,
-		QueryDefinition<?> queryDefinition) {
-
-		return doCountC_ByG_P(
-			groupId, parentCategoryId, queryDefinition, false);
-	}
-
-	@Override
-	public int countC_ByS_G_U_P(
-		long groupId, long userId, long[] parentCategoryIds,
-		QueryDefinition<MBCategory> queryDefinition) {
-
-		return doCountC_ByS_G_U_P(
-			groupId, userId, parentCategoryIds, queryDefinition, false);
-	}
-
-	@Override
 	public int countC_T_ByG_C(
 		long groupId, long categoryId, QueryDefinition<?> queryDefinition) {
 
-		return doCountC_T_ByG_C(groupId, categoryId, queryDefinition, false);
+		return _countC_T_ByG_C(groupId, categoryId, queryDefinition, false);
 	}
 
 	@Override
@@ -98,7 +80,7 @@ public class MBCategoryFinderImpl
 		long groupId, long parentCategoryId,
 		QueryDefinition<?> queryDefinition) {
 
-		return doCountC_ByG_P(groupId, parentCategoryId, queryDefinition, true);
+		return _countC_ByG_P(groupId, parentCategoryId, queryDefinition);
 	}
 
 	@Override
@@ -106,15 +88,15 @@ public class MBCategoryFinderImpl
 		long groupId, long userId, long[] parentCategoryIds,
 		QueryDefinition<MBCategory> queryDefinition) {
 
-		return doCountC_ByS_G_U_P(
-			groupId, userId, parentCategoryIds, queryDefinition, true);
+		return _countC_ByS_G_U_P(
+			groupId, userId, parentCategoryIds, queryDefinition);
 	}
 
 	@Override
 	public int filterCountC_T_ByG_C(
 		long groupId, long categoryId, QueryDefinition<?> queryDefinition) {
 
-		return doCountC_T_ByG_C(groupId, categoryId, queryDefinition, true);
+		return _countC_T_ByG_C(groupId, categoryId, queryDefinition, true);
 	}
 
 	@Override
@@ -122,7 +104,7 @@ public class MBCategoryFinderImpl
 		long groupId, long parentCategoryId,
 		QueryDefinition<MBCategory> queryDefinition) {
 
-		return doFindC_ByG_P(groupId, parentCategoryId, queryDefinition, true);
+		return _findC_ByG_P(groupId, parentCategoryId, queryDefinition);
 	}
 
 	@Override
@@ -130,46 +112,29 @@ public class MBCategoryFinderImpl
 		long groupId, long userId, long[] parentCategoryIds,
 		QueryDefinition<MBCategory> queryDefinition) {
 
-		return doFindC_ByS_G_U_P(
-			groupId, userId, parentCategoryIds, queryDefinition, true);
+		return _findC_ByS_G_U_P(
+			groupId, userId, parentCategoryIds, queryDefinition);
 	}
 
 	@Override
 	public List<Object> filterFindC_T_ByG_C(
 		long groupId, long categoryId, QueryDefinition<?> queryDefinition) {
 
-		return doFindC_T_ByG_C(groupId, categoryId, queryDefinition, true);
-	}
-
-	@Override
-	public List<MBCategory> findC_ByG_P(
-		long groupId, long parentCategoryId,
-		QueryDefinition<MBCategory> queryDefinition) {
-
-		return doFindC_ByG_P(groupId, parentCategoryId, queryDefinition, false);
-	}
-
-	@Override
-	public List<MBCategory> findC_ByS_G_U_P(
-		long groupId, long userId, long[] parentCategoryIds,
-		QueryDefinition<MBCategory> queryDefinition) {
-
-		return doFindC_ByS_G_U_P(
-			groupId, userId, parentCategoryIds, queryDefinition, false);
+		return _findC_T_ByG_C(groupId, categoryId, queryDefinition, true);
 	}
 
 	@Override
 	public List<Object> findC_T_ByG_C(
 		long groupId, long categoryId, QueryDefinition<?> queryDefinition) {
 
-		return doFindC_T_ByG_C(groupId, categoryId, queryDefinition, false);
+		return _findC_T_ByG_C(groupId, categoryId, queryDefinition, false);
 	}
 
-	protected int doCountC_ByG_P(
-		long groupId, long parentCategoryId, QueryDefinition<?> queryDefinition,
-		boolean inlineSQLHelper) {
+	private int _countC_ByG_P(
+		long groupId, long parentCategoryId,
+		QueryDefinition<?> queryDefinition) {
 
-		if (!inlineSQLHelper || !InlineSQLHelperUtil.isEnabled(groupId)) {
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			if (queryDefinition.isExcludeStatus()) {
 				return MBCategoryUtil.countByG_P_NotS(
 					groupId, parentCategoryId, queryDefinition.getStatus());
@@ -234,9 +199,9 @@ public class MBCategoryFinderImpl
 		}
 	}
 
-	protected int doCountC_ByS_G_U_P(
+	private int _countC_ByS_G_U_P(
 		long groupId, long userId, long[] parentCategoryIds,
-		QueryDefinition<MBCategory> queryDefinition, boolean inlineSQLHelper) {
+		QueryDefinition<MBCategory> queryDefinition) {
 
 		Session session = null;
 
@@ -258,13 +223,11 @@ public class MBCategoryFinderImpl
 					"MBCategory.parentCategoryId = " + mergedParentCategoryIds);
 			}
 
-			sql = updateSQL(sql, queryDefinition);
+			sql = _updateSQL(sql, queryDefinition);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, MBCategory.class.getName(), "MBCategory.categoryId",
-					groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, MBCategory.class.getName(), "MBCategory.categoryId",
+				groupId);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -313,7 +276,7 @@ public class MBCategoryFinderImpl
 		}
 	}
 
-	protected int doCountC_T_ByG_C(
+	private int _countC_T_ByG_C(
 		long groupId, long categoryId, QueryDefinition<?> queryDefinition,
 		boolean inlineSQLHelper) {
 
@@ -408,11 +371,11 @@ public class MBCategoryFinderImpl
 		}
 	}
 
-	protected List<MBCategory> doFindC_ByG_P(
+	private List<MBCategory> _findC_ByG_P(
 		long groupId, long parentCategoryId,
-		QueryDefinition<MBCategory> queryDefinition, boolean inlineSQLHelper) {
+		QueryDefinition<MBCategory> queryDefinition) {
 
-		if (!inlineSQLHelper || !InlineSQLHelperUtil.isEnabled(groupId)) {
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			if (queryDefinition.isExcludeStatus()) {
 				return MBCategoryUtil.findByG_P_NotS(
 					groupId, parentCategoryId, queryDefinition.getStatus(),
@@ -494,9 +457,9 @@ public class MBCategoryFinderImpl
 		}
 	}
 
-	protected List<MBCategory> doFindC_ByS_G_U_P(
+	private List<MBCategory> _findC_ByS_G_U_P(
 		long groupId, long userId, long[] parentCategoryIds,
-		QueryDefinition<MBCategory> queryDefinition, boolean inlineSQLHelper) {
+		QueryDefinition<MBCategory> queryDefinition) {
 
 		Session session = null;
 
@@ -518,13 +481,11 @@ public class MBCategoryFinderImpl
 					"MBCategory.parentCategoryId = " + mergedParentCategoryIds);
 			}
 
-			sql = updateSQL(sql, queryDefinition);
+			sql = _updateSQL(sql, queryDefinition);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, MBCategory.class.getName(), "MBCategory.categoryId",
-					groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, MBCategory.class.getName(), "MBCategory.categoryId",
+				groupId);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -576,7 +537,7 @@ public class MBCategoryFinderImpl
 		}
 	}
 
-	protected List<Object> doFindC_T_ByG_C(
+	private List<Object> _findC_T_ByG_C(
 		long groupId, long categoryId, QueryDefinition<?> queryDefinition,
 		boolean inlineSQLHelper) {
 
@@ -686,7 +647,7 @@ public class MBCategoryFinderImpl
 		}
 	}
 
-	protected String updateSQL(
+	private String _updateSQL(
 		String sql, QueryDefinition<MBCategory> queryDefinition) {
 
 		if (queryDefinition.getStatus() == WorkflowConstants.STATUS_ANY) {

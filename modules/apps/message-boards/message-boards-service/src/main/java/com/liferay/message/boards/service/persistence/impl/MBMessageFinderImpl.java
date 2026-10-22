@@ -18,11 +18,8 @@ import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.CalendarUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-
-import java.sql.Timestamp;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -40,9 +37,6 @@ public class MBMessageFinderImpl
 
 	public static final String COUNT_BY_PARENT_MESSAGE_ID =
 		MBMessageFinder.class.getName() + ".countByParentMessageId";
-
-	public static final String COUNT_BY_C_T =
-		MBMessageFinder.class.getName() + ".countByC_T";
 
 	public static final String COUNT_BY_G_U_C_S =
 		MBMessageFinder.class.getName() + ".countByG_U_C_S";
@@ -120,66 +114,10 @@ public class MBMessageFinderImpl
 	}
 
 	@Override
-	public int countByC_T(Date createDate, long threadId) {
-		Timestamp createDate_TS = CalendarUtil.getTimestamp(createDate);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = _customSQL.get(getClass(), COUNT_BY_C_T);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(createDate_TS);
-			queryPos.add(threadId);
-
-			Iterator<Long> iterator = sqlQuery.iterate();
-
-			if (iterator.hasNext()) {
-				Long count = iterator.next();
-
-				if (count != null) {
-					return count.intValue();
-				}
-			}
-
-			return 0;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public int countByG_U_C_S(
-		long groupId, long userId, long[] categoryIds, int status) {
-
-		return doCountByG_U_C_S(groupId, userId, categoryIds, status, false);
-	}
-
-	@Override
-	public int countByG_U_C_A_S(
-		long groupId, long userId, long[] categoryIds, boolean anonymous,
-		int status) {
-
-		return doCountByG_U_C_A_S(
-			groupId, userId, categoryIds, anonymous, status, false);
-	}
-
-	@Override
 	public int filterCountByG_U_C_S(
 		long groupId, long userId, long[] categoryIds, int status) {
 
-		return doCountByG_U_C_S(groupId, userId, categoryIds, status, true);
+		return _countByG_U_C_S(groupId, userId, categoryIds, status);
 	}
 
 	@Override
@@ -187,8 +125,8 @@ public class MBMessageFinderImpl
 		long groupId, long userId, long[] categoryIds, boolean anonymous,
 		int status) {
 
-		return doCountByG_U_C_A_S(
-			groupId, userId, categoryIds, anonymous, status, true);
+		return _countByG_U_C_A_S(
+			groupId, userId, categoryIds, anonymous, status);
 	}
 
 	@Override
@@ -196,8 +134,8 @@ public class MBMessageFinderImpl
 		long groupId, long userId, Date modifiedDate, long[] categoryIds,
 		int status) {
 
-		return doCountByG_U_MD_C_S(
-			groupId, userId, modifiedDate, categoryIds, status, true);
+		return _countByG_U_MD_C_A_S(
+			groupId, userId, modifiedDate, categoryIds, true, status);
 	}
 
 	@Override
@@ -205,9 +143,8 @@ public class MBMessageFinderImpl
 		long groupId, long userId, Date modifiedDate, long[] categoryIds,
 		boolean anonymous, int status) {
 
-		return doCountByG_U_MD_C_A_S(
-			groupId, userId, modifiedDate, categoryIds, anonymous, status,
-			true);
+		return _countByG_U_MD_C_A_S(
+			groupId, userId, modifiedDate, categoryIds, anonymous, status);
 	}
 
 	@Override
@@ -215,8 +152,7 @@ public class MBMessageFinderImpl
 		long groupId, long userId, long[] categoryIds, int status, int start,
 		int end) {
 
-		return doFindByG_U_C_S(
-			groupId, userId, categoryIds, status, start, end, true);
+		return _findByG_U_C_S(groupId, userId, categoryIds, status, start, end);
 	}
 
 	@Override
@@ -224,8 +160,8 @@ public class MBMessageFinderImpl
 		long groupId, long userId, long[] categoryIds, boolean anonymous,
 		int status, int start, int end) {
 
-		return doFindByG_U_C_A_S(
-			groupId, userId, categoryIds, anonymous, status, start, end, true);
+		return _findByG_U_C_A_S(
+			groupId, userId, categoryIds, anonymous, status, start, end);
 	}
 
 	@Override
@@ -233,9 +169,9 @@ public class MBMessageFinderImpl
 		long groupId, long userId, Date modifiedDate, long[] categoryIds,
 		int status, int start, int end) {
 
-		return doFindByG_U_MD_C_S(
-			groupId, userId, modifiedDate, categoryIds, status, start, end,
-			true);
+		return _findByG_U_MD_C_A_S(
+			groupId, userId, modifiedDate, categoryIds, true, status, start,
+			end);
 	}
 
 	@Override
@@ -243,9 +179,9 @@ public class MBMessageFinderImpl
 		long groupId, long userId, Date modifiedDate, long[] categoryIds,
 		boolean anonymous, int status, int start, int end) {
 
-		return doFindByG_U_MD_C_A_S(
+		return _findByG_U_MD_C_A_S(
 			groupId, userId, modifiedDate, categoryIds, anonymous, status,
-			start, end, true);
+			start, end);
 	}
 
 	@Override
@@ -333,27 +269,8 @@ public class MBMessageFinderImpl
 		}
 	}
 
-	@Override
-	public List<Long> findByG_U_C_S(
-		long groupId, long userId, long[] categoryIds, int status, int start,
-		int end) {
-
-		return doFindByG_U_C_S(
-			groupId, userId, categoryIds, status, start, end, false);
-	}
-
-	@Override
-	public List<Long> findByG_U_C_A_S(
-		long groupId, long userId, long[] categoryIds, boolean anonymous,
-		int status, int start, int end) {
-
-		return doFindByG_U_C_A_S(
-			groupId, userId, categoryIds, anonymous, status, start, end, false);
-	}
-
-	protected int doCountByG_U_C_S(
-		long groupId, long userId, long[] categoryIds, int status,
-		boolean inlineSQLHelper) {
+	private int _countByG_U_C_S(
+		long groupId, long userId, long[] categoryIds, int status) {
 
 		Session session = null;
 
@@ -384,11 +301,9 @@ public class MBMessageFinderImpl
 					sql, "AND (currentMessage.status = ?)");
 			}
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, MBMessage.class.getName(),
-					"currentMessage.rootMessageId", groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, MBMessage.class.getName(), "currentMessage.rootMessageId",
+				groupId);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -426,9 +341,9 @@ public class MBMessageFinderImpl
 		}
 	}
 
-	protected int doCountByG_U_C_A_S(
+	private int _countByG_U_C_A_S(
 		long groupId, long userId, long[] categoryIds, boolean anonymous,
-		int status, boolean inlineSQLHelper) {
+		int status) {
 
 		Session session = null;
 
@@ -455,11 +370,9 @@ public class MBMessageFinderImpl
 					sql, "AND (currentMessage.status = ?)");
 			}
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, MBMessage.class.getName(),
-					"currentMessage.rootMessageId", groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, MBMessage.class.getName(), "currentMessage.rootMessageId",
+				groupId);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -495,18 +408,9 @@ public class MBMessageFinderImpl
 		}
 	}
 
-	protected int doCountByG_U_MD_C_S(
+	private int _countByG_U_MD_C_A_S(
 		long groupId, long userId, Date modifiedDate, long[] categoryIds,
-		int status, boolean inlineSQLHelper) {
-
-		return doCountByG_U_MD_C_A_S(
-			groupId, userId, modifiedDate, categoryIds, true, status,
-			inlineSQLHelper);
-	}
-
-	protected int doCountByG_U_MD_C_A_S(
-		long groupId, long userId, Date modifiedDate, long[] categoryIds,
-		boolean anonymous, int status, boolean inlineSQLHelper) {
+		boolean anonymous, int status) {
 
 		Session session = null;
 
@@ -542,11 +446,9 @@ public class MBMessageFinderImpl
 					sql, "AND (currentMessage.anonymous = [$FALSE$])");
 			}
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, MBMessage.class.getName(),
-					"currentMessage.rootMessageId", groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, MBMessage.class.getName(), "currentMessage.rootMessageId",
+				groupId);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -586,9 +488,9 @@ public class MBMessageFinderImpl
 		}
 	}
 
-	protected List<Long> doFindByG_U_C_S(
+	private List<Long> _findByG_U_C_S(
 		long groupId, long userId, long[] categoryIds, int status, int start,
-		int end, boolean inlineSQLHelper) {
+		int end) {
 
 		Session session = null;
 
@@ -619,11 +521,9 @@ public class MBMessageFinderImpl
 					sql, "AND (currentMessage.status = ?)");
 			}
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, MBMessage.class.getName(),
-					"currentMessage.rootMessageId", groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, MBMessage.class.getName(), "currentMessage.rootMessageId",
+				groupId);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -652,9 +552,9 @@ public class MBMessageFinderImpl
 		}
 	}
 
-	protected List<Long> doFindByG_U_C_A_S(
+	private List<Long> _findByG_U_C_A_S(
 		long groupId, long userId, long[] categoryIds, boolean anonymous,
-		int status, int start, int end, boolean inlineSQLHelper) {
+		int status, int start, int end) {
 
 		Session session = null;
 
@@ -681,11 +581,9 @@ public class MBMessageFinderImpl
 					sql, "AND (currentMessage.status = ?)");
 			}
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, MBMessage.class.getName(),
-					"currentMessage.rootMessageId", groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, MBMessage.class.getName(), "currentMessage.rootMessageId",
+				groupId);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -712,19 +610,9 @@ public class MBMessageFinderImpl
 		}
 	}
 
-	protected List<Long> doFindByG_U_MD_C_S(
+	private List<Long> _findByG_U_MD_C_A_S(
 		long groupId, long userId, Date modifiedDate, long[] categoryIds,
-		int status, int start, int end, boolean inlineSQLHelper) {
-
-		return doFindByG_U_MD_C_A_S(
-			groupId, userId, modifiedDate, categoryIds, true, status, start,
-			end, inlineSQLHelper);
-	}
-
-	protected List<Long> doFindByG_U_MD_C_A_S(
-		long groupId, long userId, Date modifiedDate, long[] categoryIds,
-		boolean anonymous, int status, int start, int end,
-		boolean inlineSQLHelper) {
+		boolean anonymous, int status, int start, int end) {
 
 		Session session = null;
 
@@ -760,11 +648,9 @@ public class MBMessageFinderImpl
 					sql, "AND (currentMessage.anonymous = [$FALSE$])");
 			}
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, MBMessage.class.getName(),
-					"currentMessage.rootMessageId", groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, MBMessage.class.getName(), "currentMessage.rootMessageId",
+				groupId);
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
