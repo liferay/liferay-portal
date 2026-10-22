@@ -1981,8 +1981,6 @@ public class DLFileEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		User user = _userPersistence.findByPrimaryKey(userId);
-
 		DLFileEntry dlFileEntry = dlFileEntryPersistence.findByPrimaryKey(
 			fileEntryId);
 
@@ -1994,8 +1992,13 @@ public class DLFileEntryLocalServiceImpl
 			_dlFileVersionLocalService.getLatestFileVersion(
 				fileEntryId, !dlFileEntry.isCheckedOut());
 
-		dlFileVersion.setUserId(user.getUserId());
-		dlFileVersion.setUserName(user.getFullName());
+		if (!dlFileEntry.isCheckedOut()) {
+			User user = _userPersistence.findByPrimaryKey(userId);
+
+			dlFileVersion.setUserId(user.getUserId());
+			dlFileVersion.setUserName(user.getFullName());
+		}
+
 		dlFileVersion.setFileEntryTypeId(fileEntryTypeId);
 
 		_dlFileVersionLocalService.updateDLFileVersion(dlFileVersion);
