@@ -166,7 +166,10 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 		String className = clazz.getName();
 
 		if (!_allowAllClasses && !_allowedClassNames.contains(className)) {
-			if (_isRestricted(clazz)) {
+			if (_isMatch(
+					_restrictedClasses, clazz, _restrictedMatchResults,
+					_restrictedPackageNames)) {
+
 				return _RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
 			}
 
@@ -206,14 +209,23 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 	}
 
 	private boolean _isMatch(
-		List<Class<?>> classes, Class<?> clazz, List<String> packageNames) {
+		List<Class<?>> classes, Class<?> clazz,
+		Map<String, Boolean> matchResults, List<String> packageNames) {
 
 		String className = clazz.getName();
+
+		Boolean matched = matchResults.get(className);
+
+		if (matched != null) {
+			return matched;
+		}
 
 		for (Class<?> curClass : classes) {
 			if (!curClass.isAssignableFrom(clazz)) {
 				continue;
 			}
+
+			matchResults.putIfAbsent(className, true);
 
 			return true;
 		}
@@ -221,6 +233,8 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 		int index = className.lastIndexOf(StringPool.PERIOD);
 
 		if (index == -1) {
+			matchResults.putIfAbsent(className, false);
+
 			return false;
 		}
 
@@ -233,27 +247,14 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 				continue;
 			}
 
+			matchResults.putIfAbsent(className, true);
+
 			return true;
 		}
 
+		matchResults.putIfAbsent(className, false);
+
 		return false;
-	}
-
-	private boolean _isRestricted(Class<?> clazz) {
-		String className = clazz.getName();
-
-		Boolean restricted = _restrictedClassMap.get(className);
-
-		if (restricted != null) {
-			return restricted;
-		}
-
-		restricted = _isMatch(
-			_restrictedClasses, clazz, _restrictedPackageNames);
-
-		_restrictedClassMap.putIfAbsent(className, restricted);
-
-		return restricted;
 	}
 
 	private void _populateClassesAndPackageNames(
@@ -351,9 +352,9 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 	private final boolean _allowAllClasses;
 	private final List<String> _allowedClassNames;
 	private final Set<String> _deniedAccessToStringClasses;
-	private final Map<String, Boolean> _restrictedClassMap =
-		new ConcurrentHashMap<>();
 	private final List<Class<?>> _restrictedClasses;
+	private final Map<String, Boolean> _restrictedMatchResults =
+		new ConcurrentHashMap<>();
 	private final Map<String, Set<String>> _restrictedMethodNames;
 	private final List<String> _restrictedPackageNames;
 	private final Set<String> _serviceProxyClassNames =
