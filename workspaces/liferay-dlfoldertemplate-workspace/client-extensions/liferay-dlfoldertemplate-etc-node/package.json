@@ -1,11 +1,11 @@
 {
 	"dependencies": {
 		"@rotty3000/config-node": "^0.3.5",
-		"axios": "^1.5.0",
+		"axios": "^1.18.0",
 		"body-parser": "^1.20.2",
 		"cors": "^2.8.5",
 		"express": "^4.18.2",
-		"form-data": "^4.0.0",
+		"form-data": "^4.0.6",
 		"http": "^0.0.1-security",
 		"jsonwebtoken": "9.0.0",
 		"jwk-to-pem": "2.0.5",
@@ -14,13 +14,13 @@
 		"moment": "^2.29.4",
 		"multer": "^1.4.5-lts.1",
 		"node-fetch": "2.6.9",
-		"npm": "^9.6.6",
+		"npm": "^11.5.3",
 		"papaparse": "^5.4.1",
-		"socket.io": "^4.6.1",
-		"socket.io-client": "^4.6.1",
+		"socket.io": "^4.8.4",
+		"socket.io-client": "^4.8.4",
 		"uuid": "^11.1.1",
 		"winston": "3.8.2",
-		"ws": "^8.13.0"
+		"ws": "^8.21.0"
 	},
 	"license": "LGPL",
 	"main": "app.js",

@@ -12,7 +12,18 @@
 	},
 	"private": true,
 	"resolutions": {
-		"uuid": "^11.1.1"
+		"@babel/plugin-transform-modules-systemjs": "^7.29.4",
+		"brace-expansion": "^2.1.4",
+		"flatted": "^3.4.2",
+		"form-data": "^4.0.6",
+		"ip-address": "^10.3.1",
+		"minimatch": "^9.0.7",
+		"nth-check": "^2.0.1",
+		"shell-quote": "^1.9.0",
+		"sigstore": "^4.1.1",
+		"socket.io-parser": "^4.2.7",
+		"uuid": "^11.1.1",
+		"ws": "^8.21.0"
 	},
 	"workspaces": {
 		"packages": [
