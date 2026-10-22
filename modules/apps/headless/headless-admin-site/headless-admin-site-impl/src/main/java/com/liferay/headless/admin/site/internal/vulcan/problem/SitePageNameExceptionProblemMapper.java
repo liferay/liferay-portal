@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.vulcan.problem;
 
-import com.liferay.layout.utility.page.exception.LayoutUtilityPageEntryNameException;
+import com.liferay.portal.kernel.exception.LayoutNameException;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
@@ -15,19 +15,19 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class DuplicateLayoutUtilityPageEntryNameExceptionProblemMapper
-	implements ProblemMapper
-		<LayoutUtilityPageEntryNameException.MustNotBeDuplicate> {
+public class SitePageNameExceptionProblemMapper
+	implements ProblemMapper<LayoutNameException> {
 
 	@Override
-	public Problem getProblem(
-		LayoutUtilityPageEntryNameException.MustNotBeDuplicate
-			mustNotBeDuplicate) {
+	public Problem getProblem(LayoutNameException layoutNameException) {
+		String message = "A name is required";
+
+		if (layoutNameException.getType() == LayoutNameException.TOO_LONG) {
+			message = "The name is too long";
+		}
 
 		return ProblemUtil.getProblem(
-			"A utility page of the same type with the name \"" +
-				mustNotBeDuplicate.name + "\" already exists",
-			Problem.Status.CONFLICT, mustNotBeDuplicate);
+			message, Problem.Status.BAD_REQUEST, layoutNameException);
 	}
 
 }
