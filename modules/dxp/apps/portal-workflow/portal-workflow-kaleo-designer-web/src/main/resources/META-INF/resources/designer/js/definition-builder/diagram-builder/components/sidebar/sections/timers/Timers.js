@@ -107,6 +107,26 @@ const Timers = ({setContentName, setErrors}) => {
 							reassignments.assignmentType[0] === 'user' &&
 							Object.keys(filteredTimerActions[0]).includes(
 								'sectionData'
+							) &&
+							filteredTimerActions[0].sectionData.every(
+								({userExternalReferenceCode}) =>
+									userExternalReferenceCode
+							)
+						) {
+							reassignments.userExternalReferenceCode =
+								filteredTimerActions[0].sectionData.map(
+									({userExternalReferenceCode}) =>
+										userExternalReferenceCode
+								);
+							reassignments.userId =
+								filteredTimerActions[0].sectionData.map(
+									({userId}) => userId
+								);
+						}
+						else if (
+							reassignments.assignmentType[0] === 'user' &&
+							Object.keys(filteredTimerActions[0]).includes(
+								'sectionData'
 							)
 						) {
 							reassignments.emailAddress =
@@ -277,6 +297,23 @@ const Timers = ({setContentName, setErrors}) => {
 						.map((email, index) => ({
 							emailAddress: email,
 							identifier: `${Date.now()}-${index}`,
+						}));
+				}
+				else if (
+					section.assignmentType === 'user' &&
+					data.some((entry) => entry[0] === 'userId')
+				) {
+					const userExternalReferenceCodes = data.find(
+						(entry) => entry[0] === 'userExternalReferenceCode'
+					)?.[1];
+
+					section.sectionData = data
+						.find((entry) => entry[0] === 'userId')[1]
+						.map((userId, index) => ({
+							identifier: `${Date.now()}-${index}`,
+							userExternalReferenceCode:
+								userExternalReferenceCodes?.[index],
+							userId,
 						}));
 				}
 				else if (

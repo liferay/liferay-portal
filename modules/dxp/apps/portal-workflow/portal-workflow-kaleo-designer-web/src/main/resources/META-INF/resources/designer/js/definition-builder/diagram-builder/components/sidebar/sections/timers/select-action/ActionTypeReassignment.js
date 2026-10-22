@@ -5,7 +5,7 @@
 
 import React, {useEffect, useState} from 'react';
 
-import {retrieveUsersBy} from '../../../../../../util/fetchUtil';
+import {retrieveUser, retrieveUsersBy} from '../../../../../../util/fetchUtil';
 import AssetCreator from '../select-reassignment/AssetCreator';
 import ResourceActions from '../select-reassignment/ResourceActions';
 import Role from '../select-reassignment/Role';
@@ -82,6 +82,34 @@ const ActionTypeReassignment = ({
 				.then(() => {
 					setSubSections(retrievedUsers);
 				});
+		}
+		else if (
+			reassignmentType === 'user' &&
+			actionData?.sectionData?.length &&
+			actionData.sectionData.some(({userId}) => userId)
+		) {
+			Promise.all(
+				actionData.sectionData.map(
+					({userExternalReferenceCode, userId}) =>
+						retrieveUser(userExternalReferenceCode, userId).then(
+							(response) => response.json()
+						)
+				)
+			).then((users) => {
+				setSubSections(
+					users
+						.filter((user) => user.id)
+						.map((user, index) => ({
+							emailAddress: user.emailAddress,
+							identifier: `${Date.now()}-${index}`,
+							name: user.name,
+							screenName: user.alternateName,
+							userExternalReferenceCode:
+								user.externalReferenceCode,
+							userId: user.id,
+						}))
+				);
+			});
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
