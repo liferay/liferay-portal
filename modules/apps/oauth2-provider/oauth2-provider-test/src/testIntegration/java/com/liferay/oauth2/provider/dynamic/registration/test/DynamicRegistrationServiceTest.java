@@ -944,13 +944,13 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				TestPropsValues.getCompanyId(), "oauthDeleteMeApplication");
 
 		_testUpdateClientRegistrationWithUnauthorizedToken(
-			oAuth2Application, dynamicRegistratorTokenString);
-		_testUpdateClientRegistrationWithUnauthorizedToken(
 			oAuth2Application,
 			_getToken(
 				_oAuth2ApplicationLocalService.fetchOAuth2Application(
 					TestPropsValues.getCompanyId(),
 					"oauthDynamicRegisterTestApplication")));
+		_testUpdateClientRegistrationWithUnauthorizedToken(
+			oAuth2Application, dynamicRegistratorTokenString);
 	}
 
 	protected static WebTarget getRegisterWebTarget() {
