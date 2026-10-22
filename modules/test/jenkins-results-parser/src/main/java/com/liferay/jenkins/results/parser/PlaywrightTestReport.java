@@ -19,9 +19,9 @@ public class PlaywrightTestReport extends BaseTestReport {
 	public String getTestClassName() {
 		String testName = super.getTestName();
 
-		Matcher matcher = _playwrightTestNamePattern.matcher(testName);
+		Matcher matcher = _getTestNameMatcher(testName);
 
-		if (!matcher.find()) {
+		if (matcher == null) {
 			return testName;
 		}
 
@@ -32,9 +32,9 @@ public class PlaywrightTestReport extends BaseTestReport {
 	public String getTestName() {
 		String testName = super.getTestName();
 
-		Matcher matcher = _playwrightTestNamePattern.matcher(testName);
+		Matcher matcher = _getTestNameMatcher(testName);
 
-		if (!matcher.find()) {
+		if (matcher == null) {
 			return testName;
 		}
 
@@ -47,6 +47,24 @@ public class PlaywrightTestReport extends BaseTestReport {
 		super(downstreamBuildReport, jsonObject);
 	}
 
+	private Matcher _getTestNameMatcher(String testName) {
+		Matcher matcher = _playwrightTestNamePattern.matcher(testName);
+
+		if (matcher.find()) {
+			return matcher;
+		}
+
+		matcher = _jUnitTestNamePattern.matcher(testName);
+
+		if (matcher.find()) {
+			return matcher;
+		}
+
+		return null;
+	}
+
+	private static final Pattern _jUnitTestNamePattern = Pattern.compile(
+		"(?<testClassName>.*Test)\\.(?<testName>[^\\.]+)");
 	private static final Pattern _playwrightTestNamePattern = Pattern.compile(
 		"(?<testClassName>[^\\s]+\\.ts)\\.(?<testName>.+)");
 
