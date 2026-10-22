@@ -126,6 +126,40 @@ public class DBTest {
 	}
 
 	@Test
+	public void testAlterColumnNameWithType() throws Exception {
+		addIndex(new String[] {"typeVarchar", "typeBoolean"});
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.dao.db.BaseDB", LoggerTestUtil.WARN)) {
+
+			db.alterColumnName(
+				connection, TABLE_NAME_1, "typeVarchar",
+				"typeVarcharTest VARCHAR(75) null");
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 1, messages.size());
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Ignoring column definition \"typeVarcharTest VARCHAR(75) ",
+					"null\" passed as the new name of ", TABLE_NAME_1,
+					".typeVarchar"),
+				messages.get(0));
+		}
+
+		Assert.assertTrue(
+			dbInspector.hasColumnType(
+				TABLE_NAME_1, "typeVarcharTest", "VARCHAR(75) null"));
+
+		_validateIndex(
+			new String[] {
+				dbInspector.normalizeName("typeVarcharTest"),
+				dbInspector.normalizeName("typeBoolean")
+			});
+	}
+
+	@Test
 	public void testAlterColumnTypeAlterSize() throws Exception {
 		db.alterColumnType(
 			connection, TABLE_NAME_1, "notNilColumn", "VARCHAR(200) not null");

@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.sql.Connection;
@@ -257,8 +259,23 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	public void testAlterColumnNameWithType() throws Exception {
 		_addIndex(new String[] {"typeVarchar", "typeBoolean"});
 
-		alterColumnName(
-			_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BaseDBProcess.class.getName(), LoggerTestUtil.WARN)) {
+
+			alterColumnName(
+				_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 1, messages.size());
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Ignoring column definition \"typeVarcharTest VARCHAR(75) ",
+					"null\" passed as the new name of ", _TABLE_NAME,
+					".typeVarchar"),
+				messages.get(0));
+		}
 
 		alterColumnName(
 			_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");

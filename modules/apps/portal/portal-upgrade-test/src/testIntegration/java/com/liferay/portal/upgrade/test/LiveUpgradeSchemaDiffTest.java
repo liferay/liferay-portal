@@ -103,6 +103,22 @@ public class LiveUpgradeSchemaDiffTest {
 	}
 
 	@Test
+	public void testRecordAlterColumnNameTypedDefinition() throws Exception {
+		_liveUpgradeSchemaDiff.recordAlterColumnName(
+			"name", "title VARCHAR(128) not null");
+
+		_checkSchemaDiff(
+			HashMapBuilder.put(
+				"description", "description"
+			).put(
+				"id", "id"
+			).put(
+				"name", "title"
+			).build(),
+			new HashMap<>());
+	}
+
+	@Test
 	public void testRecordAlterColumnType() throws Exception {
 		_liveUpgradeSchemaDiff.recordAlterColumnType(
 			"name", "VARCHAR(255) null");
