@@ -22,11 +22,13 @@ function getUserAccount(id) {
 }
 
 const userAccountByExternalReferenceCode = getUserAccount(1);
+const userAccountByExternalReferenceCodeOnly = getUserAccount(5);
 const userAccountById = getUserAccount(10);
 
 export const foundUserAccounts = [
 	userAccountByExternalReferenceCode,
 	userAccountById,
+	userAccountByExternalReferenceCodeOnly,
 ];
 
 export function getSectionData({alternateName, emailAddress, id, name}) {
@@ -39,6 +41,7 @@ export function getUserReferencesDefinition() {
 			{externalReferenceCode: 'USER_EXTERNAL_REFERENCE_CODE_1', id: 1},
 			{id: 10},
 			{id: 99},
+			{externalReferenceCode: 'USER_EXTERNAL_REFERENCE_CODE_5'},
 		])
 	);
 }
@@ -48,6 +51,8 @@ export function mockUserAccountsFetch() {
 		'10': userAccountById,
 		'by-external-reference-code/USER_EXTERNAL_REFERENCE_CODE_1':
 			userAccountByExternalReferenceCode,
+		'by-external-reference-code/USER_EXTERNAL_REFERENCE_CODE_5':
+			userAccountByExternalReferenceCodeOnly,
 	};
 
 	return jest

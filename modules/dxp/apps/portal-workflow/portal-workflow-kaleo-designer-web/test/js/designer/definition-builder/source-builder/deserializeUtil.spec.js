@@ -137,6 +137,57 @@ describe('Deserializing roles that carry an external reference code', () => {
 	});
 });
 
+describe('Deserializing roles that carry an external reference code without an ID', () => {
+	it('Reads every role by its external reference code, with or without a name', () => {
+		const roleReferences = getExpectedReferences({
+			assignmentType: ['roleId'],
+			roleExternalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE',
+			roleType: 'site',
+		});
+
+		const getRolesByExternalReferenceCode = (name) =>
+			getReviewTaskDefinitionWithReference(
+				getRolesXML([
+					{
+						externalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE',
+						name,
+						type: 'site',
+					},
+				])
+			);
+
+		expect(getReferences(getRolesByExternalReferenceCode())).toEqual(
+			roleReferences
+		);
+		expect(
+			getReferences(
+				getRolesByExternalReferenceCode('Portal Content Reviewer')
+			)
+		).toEqual(roleReferences);
+	});
+});
+
+describe('Deserializing roles written by name without a type', () => {
+	it('Reads every role as a regular role by name', () => {
+		const roleReference = {
+			assignmentType: ['roleType'],
+			roleName: ['Portal Content Reviewer'],
+			roleType: ['regular'],
+		};
+
+		expect(
+			getReferences(
+				getReviewTaskDefinitionWithReference(
+					getRolesXML([{name: 'Portal Content Reviewer'}])
+				)
+			)
+		).toEqual({
+			...getExpectedReferences(roleReference),
+			reassignment: {...roleReference, autoCreate: [undefined]},
+		});
+	});
+});
+
 describe('Deserializing transitions that share a name', () => {
 	it('Renames a transition only when its source node already uses the name', () => {
 		const elements = getElements(
@@ -222,3 +273,29 @@ describe('Deserializing users that carry an external reference code and users th
 	});
 });
 
+describe('Deserializing users that carry an external reference code without an ID', () => {
+	it('Reads every user by its external reference code, with or without an email address', () => {
+		const userReferences = getExpectedReferences({
+			assignmentType: ['user'],
+			userExternalReferenceCode: ['USER_EXTERNAL_REFERENCE_CODE'],
+			userId: [undefined],
+		});
+
+		const getUsersByExternalReferenceCode = (emailAddress) =>
+			getReviewTaskDefinitionWithReference(
+				getUsersXML([
+					{
+						emailAddress,
+						externalReferenceCode: 'USER_EXTERNAL_REFERENCE_CODE',
+					},
+				])
+			);
+
+		expect(getReferences(getUsersByExternalReferenceCode())).toEqual(
+			userReferences
+		);
+		expect(
+			getReferences(getUsersByExternalReferenceCode('user@liferay.com'))
+		).toEqual(userReferences);
+	});
+});

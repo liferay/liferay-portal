@@ -30,7 +30,7 @@ const serializeElements = (xmlDefinition) => {
 };
 
 describe('Serializing roles and users that carry an external reference code', () => {
-	it('Writes every reference back with its external reference code', () => {
+	it('Writes every reference back with its external reference code and without the fields the code replaces', () => {
 		const xmlDefinition = serializeElements(
 			getReviewTaskDefinition({
 				assignment: getUsersXML([
@@ -39,18 +39,16 @@ describe('Serializing roles and users that carry an external reference code', ()
 						id: 1,
 					},
 					{id: 10},
-				]),
-				reassignment: getRolesXML([
 					{
-						externalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_3',
-						id: 3,
-						type: 'organization',
+						emailAddress: 'user@liferay.com',
+						externalReferenceCode: 'USER_EXTERNAL_REFERENCE_CODE_2',
 					},
 				]),
+				reassignment: getRolesXML([{name: 'Portal Content Reviewer'}]),
 				recipient: getRolesXML([
 					{
 						externalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_1',
-						id: 1,
+						name: 'Portal Content Publisher',
 						type: 'site',
 					},
 				]),
@@ -65,13 +63,13 @@ describe('Serializing roles and users that carry an external reference code', ()
 		);
 
 		expect(xmlDefinition).toContain(
-			'<assignments><user><user-external-reference-code>USER_EXTERNAL_REFERENCE_CODE_1</user-external-reference-code><user-id>1</user-id></user><user><user-id>10</user-id></user></assignments>'
+			'<assignments><user><user-external-reference-code>USER_EXTERNAL_REFERENCE_CODE_1</user-external-reference-code><user-id>1</user-id></user><user><user-id>10</user-id></user><user><user-external-reference-code>USER_EXTERNAL_REFERENCE_CODE_2</user-external-reference-code></user></assignments>'
 		);
 		expect(xmlDefinition).toContain(
-			'<reassignments><roles><role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_3</role-external-reference-code><role-type>organization</role-type><role-id>3</role-id></role></roles></reassignments>'
+			'<reassignments><roles><role><role-type>regular</role-type><name>PortalContentReviewer</name></role></roles></reassignments>'
 		);
 		expect(xmlDefinition).toContain(
-			'<recipients><roles><role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_1</role-external-reference-code><role-type>site</role-type><role-id>1</role-id></role></roles></recipients><execution-type>'
+			'<recipients><roles><role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_1</role-external-reference-code><role-type>site</role-type></role></roles></recipients><execution-type>'
 		);
 		expect(xmlDefinition).toContain(
 			'<recipients><roles><role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_2</role-external-reference-code><role-type>depot</role-type><role-id>2</role-id></role></roles></recipients></timer-notification>'
