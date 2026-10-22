@@ -76,11 +76,11 @@ public class FragmentEntryConfigurationParserTest {
 
 	@Test
 	public void testGetConfigurationJSONObject() throws Exception {
-		JSONObject configurationJSONObject = _readJSONObject(
-			"configuration.json");
-
 		JSONObject expectedConfigurationJSONObject = _readJSONObject(
 			"expected-configuration-default-values.json");
+
+		JSONObject configurationJSONObject = _readJSONObject(
+			"configuration.json");
 
 		JSONObject configurationValuesJSONObject =
 			_fragmentEntryConfigurationParser.getConfigurationJSONObject(
