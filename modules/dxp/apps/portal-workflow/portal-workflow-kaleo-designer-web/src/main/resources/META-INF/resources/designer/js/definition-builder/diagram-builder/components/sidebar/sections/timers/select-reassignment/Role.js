@@ -26,7 +26,10 @@ const Role = ({actionData, actionSectionsIndex, setActionSections}) => {
 	};
 
 	useEffect(() => {
-		if (actionData.roleId && !actionData.name) {
+		if (
+			(actionData.roleId || actionData.roleExternalReferenceCode) &&
+			!actionData.name
+		) {
 			retrieveRole(
 				actionData.roleExternalReferenceCode,
 				actionData.roleId
