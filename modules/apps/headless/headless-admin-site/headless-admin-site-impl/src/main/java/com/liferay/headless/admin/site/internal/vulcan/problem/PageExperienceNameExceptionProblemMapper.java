@@ -7,24 +7,25 @@ package com.liferay.headless.admin.site.internal.vulcan.problem;
 
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
-import com.liferay.segments.exception.SegmentsExperiencePriorityException;
+import com.liferay.segments.exception.SegmentsExperienceNameException;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Alberto Chaparro
+ * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class SegmentsExperiencePriorityExceptionProblemMapper
-	implements ProblemMapper<SegmentsExperiencePriorityException> {
+public class PageExperienceNameExceptionProblemMapper
+	implements ProblemMapper<SegmentsExperienceNameException> {
 
 	@Override
 	public Problem getProblem(
-		SegmentsExperiencePriorityException
-			segmentsExperiencePriorityException) {
+		SegmentsExperienceNameException segmentsExperienceNameException) {
 
 		return ProblemUtil.getProblem(
-			Problem.Status.CONFLICT, segmentsExperiencePriorityException);
+			"A name in the site's default language is required for each page " +
+				"experience",
+			Problem.Status.BAD_REQUEST, segmentsExperienceNameException);
 	}
 
 }

@@ -7,7 +7,7 @@ package com.liferay.headless.admin.site.internal.vulcan.problem;
 
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
-import com.liferay.segments.exception.SegmentsExperienceNameException;
+import com.liferay.segments.exception.DefaultSegmentsExperienceException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -15,17 +15,16 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class SegmentsExperienceNameExceptionProblemMapper
-	implements ProblemMapper<SegmentsExperienceNameException> {
+public class DefaultPageExperienceExceptionProblemMapper
+	implements ProblemMapper<DefaultSegmentsExperienceException> {
 
 	@Override
 	public Problem getProblem(
-		SegmentsExperienceNameException segmentsExperienceNameException) {
+		DefaultSegmentsExperienceException defaultSegmentsExperienceException) {
 
 		return ProblemUtil.getProblem(
-			"A name in the site's default language is required for each page " +
-				"experience",
-			Problem.Status.BAD_REQUEST, segmentsExperienceNameException);
+			"The default page experience cannot reference a segment",
+			Problem.Status.BAD_REQUEST, defaultSegmentsExperienceException);
 	}
 
 }

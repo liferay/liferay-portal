@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class DuplicateSegmentsExperienceKeyExceptionProblemMapper
+public class DuplicatePageExperienceKeyExceptionProblemMapper
 	implements ProblemMapper<DuplicateSegmentsExperienceKeyException> {
 
 	@Override
