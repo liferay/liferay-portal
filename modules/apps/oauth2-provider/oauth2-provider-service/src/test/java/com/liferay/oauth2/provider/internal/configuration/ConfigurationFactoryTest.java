@@ -391,7 +391,6 @@ public class ConfigurationFactoryTest {
 		configurationFactory.scopeLocator = _scopeLocator;
 
 		String scopeAlias1 = RandomTestUtil.randomString();
-		String scopeAlias2 = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
@@ -399,6 +398,8 @@ public class ConfigurationFactoryTest {
 		).thenReturn(
 			Arrays.asList(scopeAlias1)
 		);
+
+		String scopeAlias2 = RandomTestUtil.randomString();
 
 		List<String> scopeAliasesList = Arrays.asList(scopeAlias1, scopeAlias2);
 
