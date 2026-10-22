@@ -42,7 +42,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Lourdes Fernández Besada
  */
 @Component(
-	property = "fragment.entry.processor.priority:Integer=3",
+	property = {
+		"fragment.entry.processor.marker=<lfr-widget-",
+		"fragment.entry.processor.priority:Integer=3"
+	},
 	service = DocumentFragmentEntryProcessor.class
 )
 public class PortletDocumentFragmentEntryProcessor

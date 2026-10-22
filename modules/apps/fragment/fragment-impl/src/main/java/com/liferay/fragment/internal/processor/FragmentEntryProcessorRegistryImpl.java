@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,16 +49,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Pavel Savinov
@@ -299,24 +304,39 @@ public class FragmentEntryProcessorRegistryImpl
 				fragmentEntryProcessorContext, html);
 		}
 
-		Document document = _getDocument(html);
+		DefaultEditableValuesFragmentEntryProcessor
+			defaultEditableValuesFragmentEntryProcessor = null;
 
 		if (editableValuesJSONObject.length() == 0) {
-			DefaultEditableValuesFragmentEntryProcessor
-				defaultEditableValuesFragmentEntryProcessor =
-					_serviceTrackerMap.getService(
-						FragmentEntryProcessorConstants.
-							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+			defaultEditableValuesFragmentEntryProcessor =
+				_serviceTrackerMap.getService(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+		}
+
+		if (!_isDocumentRequired(
+				html, defaultEditableValuesFragmentEntryProcessor)) {
 
 			if (defaultEditableValuesFragmentEntryProcessor != null) {
 				editableValuesJSONObject.put(
 					FragmentEntryProcessorConstants.
 						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-					defaultEditableValuesFragmentEntryProcessor.
-						getDefaultEditableValuesJSONObject(
-							fragmentEntryLink.getConfigurationJSONObject(),
-							document));
+					_jsonFactory.createJSONObject());
 			}
+
+			return html;
+		}
+
+		Document document = _getDocument(html);
+
+		if (defaultEditableValuesFragmentEntryProcessor != null) {
+			editableValuesJSONObject.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				defaultEditableValuesFragmentEntryProcessor.
+					getDefaultEditableValuesJSONObject(
+						fragmentEntryLink.getConfigurationJSONObject(),
+						document));
 		}
 
 		for (DocumentFragmentEntryProcessor documentFragmentEntryProcessor :
@@ -375,9 +395,11 @@ public class FragmentEntryProcessorRegistryImpl
 					"fragment.entry.processor.priority")));
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, DefaultEditableValuesFragmentEntryProcessor.class,
-			"fragment.entry.processor.key");
+			"fragment.entry.processor.key",
+			_getServiceTrackerCustomizer(bundleContext));
 		_documentFragmentEntryProcessors = ServiceTrackerListFactory.open(
-			bundleContext, DocumentFragmentEntryProcessor.class,
+			bundleContext, DocumentFragmentEntryProcessor.class, null,
+			_getServiceTrackerCustomizer(bundleContext),
 			Collections.reverseOrder(
 				new PropertyServiceReferenceComparator<>(
 					"fragment.entry.processor.priority")));
@@ -428,6 +450,110 @@ public class FragmentEntryProcessorRegistryImpl
 		}
 
 		return document.clone();
+	}
+
+	private String[] _getMarkers(ServiceReference<?> serviceReference) {
+		Object value = serviceReference.getProperty(
+			"fragment.entry.processor.marker");
+
+		if (value instanceof String marker) {
+			return new String[] {marker};
+		}
+
+		if (value instanceof String[] markers) {
+			return markers;
+		}
+
+		return null;
+	}
+
+	private <S> ServiceTrackerCustomizer<S, S> _getServiceTrackerCustomizer(
+		BundleContext bundleContext) {
+
+		return new ServiceTrackerCustomizer<S, S>() {
+
+			@Override
+			public S addingService(ServiceReference<S> serviceReference) {
+				S service = bundleContext.getService(serviceReference);
+
+				if (service == null) {
+					return null;
+				}
+
+				String[] markers = _getMarkers(serviceReference);
+
+				if (markers != null) {
+					_markers.put(service, markers);
+				}
+
+				return service;
+			}
+
+			@Override
+			public void modifiedService(
+				ServiceReference<S> serviceReference, S service) {
+
+				String[] markers = _getMarkers(serviceReference);
+
+				if (markers == null) {
+					_markers.remove(service);
+				}
+				else {
+					_markers.put(service, markers);
+				}
+			}
+
+			@Override
+			public void removedService(
+				ServiceReference<S> serviceReference, S service) {
+
+				_markers.remove(service);
+
+				bundleContext.ungetService(serviceReference);
+			}
+
+		};
+	}
+
+	private boolean _hasMarker(String lowerCaseHTML, Object processor) {
+		String[] markers = _markers.get(processor);
+
+		if (markers == null) {
+			return true;
+		}
+
+		for (String marker : markers) {
+			if (lowerCaseHTML.contains(marker)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _isDocumentRequired(
+		String html,
+		DefaultEditableValuesFragmentEntryProcessor
+			defaultEditableValuesFragmentEntryProcessor) {
+
+		String lowerCaseHTML = StringUtil.toLowerCase(html, LocaleUtil.ROOT);
+
+		if ((defaultEditableValuesFragmentEntryProcessor != null) &&
+			_hasMarker(
+				lowerCaseHTML, defaultEditableValuesFragmentEntryProcessor)) {
+
+			return true;
+		}
+
+		for (DocumentFragmentEntryProcessor documentFragmentEntryProcessor :
+				_documentFragmentEntryProcessors) {
+
+			if (_hasMarker(lowerCaseHTML, documentFragmentEntryProcessor)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private String _renderWidgetHTML(
@@ -502,6 +628,7 @@ public class FragmentEntryProcessorRegistryImpl
 	@Reference
 	private JSONFactory _jsonFactory;
 
+	private final Map<Object, String[]> _markers = new ConcurrentHashMap<>();
 	private ServiceTrackerMap
 		<String, DefaultEditableValuesFragmentEntryProcessor>
 			_serviceTrackerMap;

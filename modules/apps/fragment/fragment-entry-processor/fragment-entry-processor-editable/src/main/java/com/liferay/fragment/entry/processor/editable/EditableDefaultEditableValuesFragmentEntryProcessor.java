@@ -28,7 +28,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pavel Savinov
  */
 @Component(
-	property = "fragment.entry.processor.key=" + FragmentEntryProcessorConstants.KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+	property = {
+		"fragment.entry.processor.key=" + FragmentEntryProcessorConstants.KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+		"fragment.entry.processor.marker=<lfr-editable",
+		"fragment.entry.processor.marker=data-lfr-editable-"
+	},
 	service = DefaultEditableValuesFragmentEntryProcessor.class
 )
 public class EditableDefaultEditableValuesFragmentEntryProcessor

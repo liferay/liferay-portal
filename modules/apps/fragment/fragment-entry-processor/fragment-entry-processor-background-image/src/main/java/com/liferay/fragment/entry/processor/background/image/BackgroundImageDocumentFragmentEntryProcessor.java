@@ -46,7 +46,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "fragment.entry.processor.priority:Integer=5",
+	property = {
+		"fragment.entry.processor.marker=data-lfr-background-image-id",
+		"fragment.entry.processor.priority:Integer=5"
+	},
 	service = DocumentFragmentEntryProcessor.class
 )
 public class BackgroundImageDocumentFragmentEntryProcessor

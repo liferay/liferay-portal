@@ -30,7 +30,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Víctor Galán
  */
 @Component(
-	property = "fragment.entry.processor.priority:Integer=7",
+	property = {
+		"fragment.entry.processor.marker=data-lfr-styles",
+		"fragment.entry.processor.priority:Integer=7"
+	},
 	service = DocumentFragmentEntryProcessor.class
 )
 public class StylesDocumentFragmentEntryProcessor

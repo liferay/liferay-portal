@@ -428,7 +428,7 @@ public class RenderLayoutStructureTagTest {
 			}
 
 			String expectedContent =
-				"name=\"ObjectField_text\" placeholder=\"\" type=\"text\" " +
+				"name=\"ObjectField_text\" placeholder=\"\"   type=\"text\" " +
 					"value=\"";
 
 			JSONObject editableValueJSONObject =
@@ -451,7 +451,7 @@ public class RenderLayoutStructureTagTest {
 
 				expectedContent =
 					"name=\"ObjectEntry_externalReferenceCode\" " +
-						"placeholder=\"\" type=\"text\" value=\"";
+						"placeholder=\"\"   type=\"text\" value=\"";
 
 				expectedList.add(
 					expectedContent + externalReferenceCode + StringPool.QUOTE);
@@ -462,7 +462,7 @@ public class RenderLayoutStructureTagTest {
 						"ObjectEntry_objectEntryFriendlyURL")) {
 
 				expectedContent =
-					"name=\"ObjectEntry_objectEntryFriendlyURL\" " +
+					"name=\"ObjectEntry_objectEntryFriendlyURL\"  " +
 						"type=\"text\" value=\"";
 
 				expectedList.add(
@@ -478,7 +478,7 @@ public class RenderLayoutStructureTagTest {
 
 				expectedContent = StringBundler.concat(
 					"name=\"", objectRelationship.getName(),
-					"_objectEntryFriendlyURL\" type=\"text\" value=\"");
+					"_objectEntryFriendlyURL\"  type=\"text\" value=\"");
 
 				expectedList.add(
 					expectedContent + relationshipFriendlyURLValue +

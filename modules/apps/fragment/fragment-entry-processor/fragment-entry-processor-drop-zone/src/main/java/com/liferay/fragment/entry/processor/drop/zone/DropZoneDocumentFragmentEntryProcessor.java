@@ -48,7 +48,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "fragment.entry.processor.priority:Integer=6",
+	property = {
+		"fragment.entry.processor.marker=<lfr-drop-zone",
+		"fragment.entry.processor.priority:Integer=6"
+	},
 	service = DocumentFragmentEntryProcessor.class
 )
 public class DropZoneDocumentFragmentEntryProcessor

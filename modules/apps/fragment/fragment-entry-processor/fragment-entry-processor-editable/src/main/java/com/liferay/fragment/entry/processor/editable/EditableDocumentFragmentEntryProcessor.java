@@ -51,7 +51,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Lourdes Fernández Besada
  */
 @Component(
-	property = "fragment.entry.processor.priority:Integer=2",
+	property = {
+		"fragment.entry.processor.marker=<lfr-editable",
+		"fragment.entry.processor.marker=data-lfr-editable-",
+		"fragment.entry.processor.priority:Integer=2"
+	},
 	service = DocumentFragmentEntryProcessor.class
 )
 public class EditableDocumentFragmentEntryProcessor
