@@ -11,7 +11,9 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.aop.AopMethodInvocation;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.increment.Increment;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 
 import java.util.Arrays;
 
@@ -47,6 +49,12 @@ public class BufferedIncreasableEntry<K, T>
 	}
 
 	public void proceed() throws Throwable {
+		if ((_companyId != CompanyConstants.SYSTEM) &&
+			(CompanyLocalServiceUtil.fetchCompany(_companyId) == null)) {
+
+			return;
+		}
+
 		_arguments[_arguments.length - 1] = getValue().getValue();
 
 		try (SafeCloseable safeCloseable =
