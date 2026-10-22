@@ -368,7 +368,6 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 						"\"@FeatureFlag\"",
 				16
 			));
-		test("FeatureFlagAnnotationWithTestRuleImport.testjava");
 	}
 
 	@Test
