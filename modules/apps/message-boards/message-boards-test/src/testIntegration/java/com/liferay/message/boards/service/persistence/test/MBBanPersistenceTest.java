@@ -200,13 +200,6 @@ public class MBBanPersistenceTest {
 	}
 
 	@Test
-	public void testCountByUserId() throws Exception {
-		_persistence.countByUserId(RandomTestUtil.nextLong());
-
-		_persistence.countByUserId(0L);
-	}
-
-	@Test
 	public void testCountByBanUserId() throws Exception {
 		_persistence.countByBanUserId(RandomTestUtil.nextLong());
 
@@ -557,4 +550,4 @@ public class MBBanPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1815716769
+// LIFERAY-SERVICE-BUILDER-HASH:-873951607

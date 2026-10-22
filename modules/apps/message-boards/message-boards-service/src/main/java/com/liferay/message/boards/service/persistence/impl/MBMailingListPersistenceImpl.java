@@ -323,90 +323,6 @@ public class MBMailingListPersistenceImpl
 			finderCache, new Object[] {uuid, companyId});
 	}
 
-	private CollectionPersistenceFinder
-		<MBMailingList, NoSuchMailingListException>
-			_collectionPersistenceFinderByActive;
-
-	/**
-	 * Returns an ordered range of all the message boards mailing lists where active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>MBMailingListModelImpl</code>.
-	 * </p>
-	 *
-	 * @param active the active
-	 * @param start the lower bound of the range of message boards mailing lists
-	 * @param end the upper bound of the range of message boards mailing lists (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching message boards mailing lists
-	 */
-	@Override
-	public List<MBMailingList> findByActive(
-		boolean active, int start, int end,
-		OrderByComparator<MBMailingList> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByActive.find(
-			finderCache, new Object[] {active}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first message boards mailing list in the ordered set where active = &#63;.
-	 *
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching message boards mailing list
-	 * @throws NoSuchMailingListException if a matching message boards mailing list could not be found
-	 */
-	@Override
-	public MBMailingList findByActive_First(
-			boolean active, OrderByComparator<MBMailingList> orderByComparator)
-		throws NoSuchMailingListException {
-
-		return _collectionPersistenceFinderByActive.findFirst(
-			finderCache, new Object[] {active}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first message boards mailing list in the ordered set where active = &#63;.
-	 *
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching message boards mailing list, or <code>null</code> if a matching message boards mailing list could not be found
-	 */
-	@Override
-	public MBMailingList fetchByActive_First(
-		boolean active, OrderByComparator<MBMailingList> orderByComparator) {
-
-		return _collectionPersistenceFinderByActive.fetchFirst(
-			finderCache, new Object[] {active}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the message boards mailing lists where active = &#63; from the database.
-	 *
-	 * @param active the active
-	 */
-	@Override
-	public void removeByActive(boolean active) {
-		_collectionPersistenceFinderByActive.remove(
-			finderCache, new Object[] {active});
-	}
-
-	/**
-	 * Returns the number of message boards mailing lists where active = &#63;.
-	 *
-	 * @param active the active
-	 * @return the number of matching message boards mailing lists
-	 */
-	@Override
-	public int countByActive(boolean active) {
-		return _collectionPersistenceFinderByActive.count(
-			finderCache, new Object[] {active});
-	}
-
 	private UniquePersistenceFinder<MBMailingList, NoSuchMailingListException>
 		_uniquePersistenceFinderByG_C;
 
@@ -854,33 +770,6 @@ public class MBMailingListPersistenceImpl
 					"mbMailingList.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, MBMailingList::getCompanyId));
 
-		_collectionPersistenceFinderByActive =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByActive",
-					new String[] {
-						Boolean.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByActive",
-					new String[] {Boolean.class.getName()},
-					new String[] {"active_"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByActive",
-					new String[] {Boolean.class.getName()},
-					new String[] {"active_"}, false),
-				_SQL_SELECT_MBMAILINGLIST_WHERE, _SQL_COUNT_MBMAILINGLIST_WHERE,
-				MBMailingListModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
-				new FinderColumn<>(
-					"mbMailingList.", "active", "active_",
-					FinderColumn.Type.BOOLEAN, "=", true, true,
-					MBMailingList::isActive));
-
 		_uniquePersistenceFinderByG_C = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -962,4 +851,4 @@ public class MBMailingListPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:532097951
+// LIFERAY-SERVICE-BUILDER-HASH:2120406734

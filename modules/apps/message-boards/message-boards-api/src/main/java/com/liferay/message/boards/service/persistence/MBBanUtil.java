@@ -390,75 +390,6 @@ public class MBBanUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the message boards bans where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.message.boards.model.impl.MBBanModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of message boards bans
-	 * @param end the upper bound of the range of message boards bans (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching message boards bans
-	 */
-	public static List<MBBan> findByUserId(
-		long userId, int start, int end,
-		OrderByComparator<MBBan> orderByComparator, boolean useFinderCache) {
-
-		return getPersistence().findByUserId(
-			userId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first message boards ban in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching message boards ban
-	 * @throws NoSuchBanException if a matching message boards ban could not be found
-	 */
-	public static MBBan findByUserId_First(
-			long userId, OrderByComparator<MBBan> orderByComparator)
-		throws com.liferay.message.boards.exception.NoSuchBanException {
-
-		return getPersistence().findByUserId_First(userId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first message boards ban in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching message boards ban, or <code>null</code> if a matching message boards ban could not be found
-	 */
-	public static MBBan fetchByUserId_First(
-		long userId, OrderByComparator<MBBan> orderByComparator) {
-
-		return getPersistence().fetchByUserId_First(userId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the message boards bans where userId = &#63; from the database.
-	 *
-	 * @param userId the user ID
-	 */
-	public static void removeByUserId(long userId) {
-		getPersistence().removeByUserId(userId);
-	}
-
-	/**
-	 * Returns the number of message boards bans where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @return the number of matching message boards bans
-	 */
-	public static int countByUserId(long userId) {
-		return getPersistence().countByUserId(userId);
-	}
-
-	/**
 	 * Returns an ordered range of all the message boards bans where banUserId = &#63;.
 	 *
 	 * <p>
@@ -799,53 +730,6 @@ public class MBBanUtil {
 	}
 
 	/**
-	 * Returns all the message boards bans where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @return the matching message boards bans
-	 */
-	public static List<MBBan> findByUserId(long userId) {
-		return getPersistence().findByUserId(userId);
-	}
-
-	/**
-	 * Returns a range of all the message boards bans where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.message.boards.model.impl.MBBanModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of message boards bans
-	 * @param end the upper bound of the range of message boards bans (not inclusive)
-	 * @return the range of matching message boards bans
-	 */
-	public static List<MBBan> findByUserId(long userId, int start, int end) {
-		return getPersistence().findByUserId(userId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the message boards bans where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.message.boards.model.impl.MBBanModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of message boards bans
-	 * @param end the upper bound of the range of message boards bans (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching message boards bans
-	 */
-	public static List<MBBan> findByUserId(
-		long userId, int start, int end,
-		OrderByComparator<MBBan> orderByComparator) {
-
-		return getPersistence().findByUserId(
-			userId, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the message boards bans where banUserId = &#63;.
 	 *
 	 * @param banUserId the ban user ID
@@ -905,4 +789,4 @@ public class MBBanUtil {
 	private static volatile MBBanPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1258215966
+// LIFERAY-SERVICE-BUILDER-HASH:-790780207

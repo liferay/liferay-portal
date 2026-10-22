@@ -1,9 +1,7 @@
 create index IX_69951A25 on MBBan (banUserId);
 create unique index IX_80F14E99 on MBBan (groupId, banUserId, ctCollectionId);
-create index IX_48814BBA on MBBan (userId);
 create unique index IX_6F119354 on MBBan (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create index IX_BC735DCF on MBCategory (companyId);
 create unique index IX_9E671C6A on MBCategory (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create unique index IX_1C6A43E1 on MBCategory (groupId, friendlyURL[$COLUMN_LENGTH:255$], ctCollectionId);
 create index IX_72DC3FF5 on MBCategory (groupId, parentCategoryId, categoryId);
@@ -17,7 +15,6 @@ create unique index IX_F4BC4496 on MBDiscussion (classNameId, classPK, ctCollect
 create unique index IX_393E413A on MBDiscussion (threadId, ctCollectionId);
 create unique index IX_3A2D4BF7 on MBDiscussion (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create index IX_BFEB984F on MBMailingList (active_);
 create unique index IX_D626193B on MBMailingList (groupId, categoryId, ctCollectionId);
 create unique index IX_212E7CE on MBMailingList (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
@@ -38,7 +35,6 @@ create index IX_E4D73A8A on MBMessage (status, companyId);
 create index IX_D6CD720A on MBMessage (status, parentMessageId);
 create index IX_6F212FD7 on MBMessage (status, threadId);
 create index IX_2E9F9D6D on MBMessage (status, userId, classNameId, classPK);
-create index IX_9D7C3B23 on MBMessage (threadId, answer);
 create index IX_A7038CD7 on MBMessage (threadId, parentMessageId);
 create index IX_ABEB6D07 on MBMessage (userId, classNameId, classPK);
 create index IX_C57B16BC on MBMessage (uuid_[$COLUMN_LENGTH:75$]);
@@ -49,7 +45,6 @@ create index IX_39C9A751 on MBSuspiciousActivity (userId, messageId);
 create index IX_939A75FA on MBSuspiciousActivity (userId, threadId);
 create unique index IX_A3E15B5B on MBSuspiciousActivity (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create index IX_41F6DC8A on MBThread (categoryId, priority);
 create index IX_50F1904A on MBThread (groupId, categoryId, lastPostDate);
 create index IX_485F7E98 on MBThread (groupId, categoryId, status);
 create index IX_E1E7142B on MBThread (groupId, status);

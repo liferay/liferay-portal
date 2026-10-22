@@ -206,9 +206,6 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 		_whereColumnBitmasks.put("ThreadIdReplies", whereColumnBitmask);
 
 		_whereBiPredicates.put("ThreadIdReplies", whereBiPredicate);
-		_whereColumnBitmasks.put("TR_S", whereColumnBitmask);
-
-		_whereBiPredicates.put("TR_S", whereBiPredicate);
 		whereColumnBitmask =
 			MBMessageModelImpl.getColumnBitmask("categoryId") |
 			MBMessageModelImpl.getColumnBitmask("anonymous");
@@ -229,4 +226,4 @@ public class MBMessageModelArgumentsResolver implements ArgumentsResolver {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1208382721
+// LIFERAY-SERVICE-BUILDER-HASH:-171780292
