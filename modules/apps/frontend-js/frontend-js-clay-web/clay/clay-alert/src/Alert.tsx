@@ -32,7 +32,9 @@ export interface IClayAlertProps
 	/**
 	 * Flag to indicate alert should automatically call `onClose`. It also
 	 * accepts a duration (in ms) which indicates how long to wait. If `true`
-	 * is passed in, the timeout will be 10000ms.
+	 * is passed in, the timeout will be 10000ms. The countdown waits while the
+	 * pointer is over the alert or focus is inside it, then continues with the
+	 * remaining time.
 	 */
 	autoClose?: boolean | number;
 
@@ -107,7 +109,9 @@ function ClayAlert({
 	containerClassName,
 	displayType = 'info',
 	hideCloseIcon = false,
+	onBlur,
 	onClose,
+	onFocus,
 	onMouseOut,
 	onMouseOver,
 	role = 'alert',
@@ -133,6 +137,21 @@ function ClayAlert({
 				'alert-inline': variant === 'inline',
 				[`alert-${displayType}`]: displayType,
 			})}
+			onBlur={(event) => {
+				onBlur?.(event);
+
+				if (
+					document.hasFocus() &&
+					!event.currentTarget.contains(event.relatedTarget)
+				) {
+					startAutoCloseTimer();
+				}
+			}}
+			onFocus={(event) => {
+				onFocus?.(event);
+
+				pauseAutoCloseTimer();
+			}}
 			onMouseOut={(event) => {
 				onMouseOut?.(event);
 
