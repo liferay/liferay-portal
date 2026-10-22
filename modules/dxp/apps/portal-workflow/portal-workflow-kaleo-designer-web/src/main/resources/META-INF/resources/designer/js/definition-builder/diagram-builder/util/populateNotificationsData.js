@@ -9,6 +9,7 @@ import {
 	retrieveAccountRoles,
 	retrieveRole,
 	retrieveRoles,
+	retrieveUser,
 	retrieveUsersBy,
 } from '../../util/fetchUtil';
 
@@ -103,9 +104,36 @@ const populateNotificationsData = (
 					}
 					else if (
 						recipient?.assignmentType?.[0] === 'user' &&
-						(recipient.emailAddress ||
-							recipient.screenName ||
-							recipient.userId)
+						recipient.userId
+					) {
+						Promise.all(
+							recipient.userId.map((userId, index) =>
+								retrieveUser(
+									recipient.userExternalReferenceCode?.[
+										index
+									],
+									userId
+								).then((response) => response.json())
+							)
+						).then((users) => {
+							initialElements[i].data.notifications.recipients[
+								index
+							][0].sectionsData = users
+								.filter((user) => user.id)
+								.map((user, index) => ({
+									emailAddress: user.emailAddress,
+									identifier: `${Date.now()}-${index}`,
+									name: user.name,
+									screenName: user.alternateName,
+									userId: user.id,
+								}));
+
+							setElements([...initialElements]);
+						});
+					}
+					else if (
+						recipient?.assignmentType?.[0] === 'user' &&
+						(recipient.emailAddress || recipient.screenName)
 					) {
 						const sectionsData = [];
 
@@ -116,12 +144,6 @@ const populateNotificationsData = (
 
 						if (filterTypeRetrieveUsersBy === 'screenName') {
 							filterTypeRetrieveUsersBy = 'alternateName';
-						}
-						else if (filterTypeRetrieveUsersBy === 'userId') {
-							filterTypeRetrieveUsersBy =
-								filterTypeRetrieveUsersBy
-									.toLocaleLowerCase()
-									.replace('user', '');
 						}
 
 						retrieveUsersBy(

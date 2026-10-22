@@ -99,6 +99,29 @@ export function retrieveRoles() {
 	);
 }
 
+export function retrieveUser(
+	userExternalReferenceCode: string,
+	userId: number
+) {
+	if (userExternalReferenceCode) {
+		return fetch(
+			`${window.location.origin}${contextUrl}${userBaseURL}/user-accounts/by-external-reference-code/${encodeURIComponent(userExternalReferenceCode)}`,
+			{
+				headers: HEADERS,
+				method: 'GET',
+			}
+		);
+	}
+
+	return fetch(
+		`${window.location.origin}${contextUrl}${userBaseURL}/user-accounts/${userId}`,
+		{
+			headers: HEADERS,
+			method: 'GET',
+		}
+	);
+}
+
 export function retrieveUsersBy(filterType: string, keywords: string[]) {
 	let filterParameter = String();
 	for (const keyword of keywords) {
