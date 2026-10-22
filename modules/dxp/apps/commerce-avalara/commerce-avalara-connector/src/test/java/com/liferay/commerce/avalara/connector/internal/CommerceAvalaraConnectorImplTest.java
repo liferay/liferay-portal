@@ -77,13 +77,11 @@ public class CommerceAvalaraConnectorImplTest {
 			List<AvaTaxClient> avaTaxClients =
 				avaTaxClientMockedConstruction.constructed();
 
-			AvaTaxClient avaTaxClient = avaTaxClients.get(0);
-
 			String securityHeader = StringBundler.concat(
 				accountNumber, StringPool.COLON, licenseKey);
 
 			Mockito.verify(
-				avaTaxClient
+				avaTaxClients.get(0)
 			).withSecurity(
 				Base64.encode(securityHeader.getBytes())
 			);
