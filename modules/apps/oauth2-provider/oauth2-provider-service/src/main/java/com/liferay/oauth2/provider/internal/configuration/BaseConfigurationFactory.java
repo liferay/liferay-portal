@@ -6,7 +6,7 @@
 package com.liferay.oauth2.provider.internal.configuration;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
-import com.liferay.oauth2.provider.model.OAuth2ApplicationScopeAliases;
+import com.liferay.oauth2.provider.scope.liferay.LiferayOAuth2Scope;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -252,38 +253,17 @@ public abstract class BaseConfigurationFactory {
 			OAuth2Application oAuth2Application, List<String> scopeAliasesList)
 		throws Exception {
 
-		boolean update = true;
-
-		OAuth2ApplicationScopeAliases oAuth2ApplicationScopeAliases =
-			oAuth2ApplicationScopeAliasesLocalService.
-				fetchOAuth2ApplicationScopeAliases(
-					oAuth2Application.getOAuth2ApplicationId(),
-					scopeAliasesList);
-
-		if (oAuth2ApplicationScopeAliases != null) {
-			List<String> currentScopeAliasesList =
-				oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
-					oAuth2ApplicationScopeAliases.
-						getOAuth2ApplicationScopeAliasesId());
-
-			if (currentScopeAliasesList.containsAll(scopeAliasesList) &&
-				(currentScopeAliasesList.size() == scopeAliasesList.size())) {
-
-				update = false;
-			}
+		if (_hasUpToDateScopeAliases(oAuth2Application, scopeAliasesList)) {
+			return;
 		}
 
-		if (update) {
+		// Make sure all scopes are registered
 
-			// Make sure all scopes are registered
+		scopeLocator.getLiferayOAuth2Scopes(oAuth2Application.getCompanyId());
 
-			scopeLocator.getLiferayOAuth2Scopes(
-				oAuth2Application.getCompanyId());
-
-			oAuth2ApplicationLocalService.updateScopeAliases(
-				oAuth2Application.getUserId(), oAuth2Application.getUserName(),
-				oAuth2Application.getOAuth2ApplicationId(), scopeAliasesList);
-		}
+		oAuth2ApplicationLocalService.updateScopeAliases(
+			oAuth2Application.getUserId(), oAuth2Application.getUserName(),
+			oAuth2Application.getOAuth2ApplicationId(), scopeAliasesList);
 	}
 
 	@Reference
@@ -306,6 +286,34 @@ public abstract class BaseConfigurationFactory {
 
 	@Reference
 	protected UserLocalService userLocalService;
+
+	private boolean _hasUpToDateScopeAliases(
+		OAuth2Application oAuth2Application, List<String> scopeAliasesList) {
+
+		List<String> currentScopeAliasesList =
+			oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
+				oAuth2Application.getOAuth2ApplicationScopeAliasesId());
+
+		if (!scopeAliasesList.containsAll(currentScopeAliasesList)) {
+			return false;
+		}
+
+		for (String scopeAlias : scopeAliasesList) {
+			if (currentScopeAliasesList.contains(scopeAlias)) {
+				continue;
+			}
+
+			Collection<LiferayOAuth2Scope> liferayOAuth2Scopes =
+				scopeLocator.getLiferayOAuth2Scopes(
+					oAuth2Application.getCompanyId(), scopeAlias);
+
+			if (!liferayOAuth2Scopes.isEmpty()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	private static final Snapshot<PortalK8sConfigMapModifier>
 		_portalK8sConfigMapModifierSnapshot = new Snapshot<>(

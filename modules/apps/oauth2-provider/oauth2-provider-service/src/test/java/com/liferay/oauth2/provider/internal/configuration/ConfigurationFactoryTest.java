@@ -157,14 +157,6 @@ public class ConfigurationFactoryTest {
 		_oAuth2ApplicationScopeAliasesLocalService = Mockito.mock(
 			OAuth2ApplicationScopeAliasesLocalService.class);
 
-		Mockito.when(
-			_oAuth2ApplicationScopeAliasesLocalService.
-				fetchOAuth2ApplicationScopeAliases(
-					Mockito.anyLong(), Mockito.anyList())
-		).thenReturn(
-			null
-		);
-
 		PortalK8sConfigMapModifier portalK8sConfigMapModifier = Mockito.mock(
 			PortalK8sConfigMapModifier.class);
 
