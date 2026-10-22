@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -88,8 +89,14 @@ public class AuditMessage implements Serializable {
 		_clientHost = auditRequestContext.getClientHost();
 		_clientIP = auditRequestContext.getClientIP();
 		_correlationId = auditRequestContext.getCorrelationId();
-		_requestId = auditRequestContext.getRequestId();
-		_requestIdGenerated = auditRequestContext.isRequestIdGenerated();
+
+		if ((companyId > CompanyConstants.SYSTEM) &&
+			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+
+			_requestId = auditRequestContext.getRequestId();
+			_requestIdGenerated = auditRequestContext.isRequestIdGenerated();
+		}
+
 		_serverName = auditRequestContext.getServerName();
 		_serverPort = auditRequestContext.getServerPort();
 		_sessionID = auditRequestContext.getSessionID();

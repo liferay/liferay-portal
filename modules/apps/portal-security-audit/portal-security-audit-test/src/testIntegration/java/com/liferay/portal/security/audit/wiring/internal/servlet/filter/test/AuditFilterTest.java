@@ -87,14 +87,15 @@ public class AuditFilterTest {
 
 	@FeatureFlag(enable = false, value = "LPD-6417")
 	@Test
-	public void testDoFilterDoesNotResolveRequestIdWhenFeatureFlagIsDisabled()
+	public void testDoFilterIgnoresXRequestIdWhenFeatureFlagIsDisabled()
 		throws Exception {
 
-		AuditRequestContext auditRequestContext = _testDoFilter(
-			PortalUUIDUtil.generate());
+		String xRequestId = PortalUUIDUtil.generate();
 
-		Assert.assertNull(auditRequestContext.getRequestId());
-		Assert.assertFalse(auditRequestContext.isRequestIdGenerated());
+		AuditRequestContext auditRequestContext = _testDoFilter(xRequestId);
+
+		Assert.assertNotEquals(xRequestId, auditRequestContext.getRequestId());
+		Assert.assertTrue(auditRequestContext.isRequestIdGenerated());
 	}
 
 	@FeatureFlag("LPD-6417")
