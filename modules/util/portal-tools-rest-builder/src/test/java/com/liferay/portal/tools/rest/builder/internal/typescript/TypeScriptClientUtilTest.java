@@ -15,6 +15,7 @@ import java.io.File;
 
 import java.net.URL;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,10 +113,10 @@ public class TypeScriptClientUtilTest {
 
 		TypeScriptClientUtil.generateTypeScriptClient(
 			testConfigDir, configYAML, new File(testConfigDir, "copyright.txt"),
-			_read("test-rest-openapi.yaml"));
+			Collections.singletonList(_read("test-rest-openapi.yaml")));
 
 		File modelsDir = new File(
-			testConfigDir.getParentFile(), "test-client-js/src/models");
+			testConfigDir.getParentFile(), "test-client-js/src/v1_0/models");
 
 		for (File file : modelsDir.listFiles()) {
 			models.put(file.getName(), FileUtil.read(file));

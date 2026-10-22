@@ -270,6 +270,7 @@ public class RESTBuilder {
 		boolean createClientScopeFiles = true;
 		boolean createLiberalPermissionCheckerFile = true;
 		List<String> validationErrorMessages = new ArrayList<>();
+		List<String> yamlStrings = new ArrayList<>();
 
 		for (File openAPIYAMLFile :
 				FileUtil.getFiles(_configDir, "rest-openapi", ".yaml")) {
@@ -473,14 +474,7 @@ public class RESTBuilder {
 					});
 			}
 
-			if (!_configYAML.isGenerateClientJS() ||
-				Validator.isNull(_configYAML.getClientDir())) {
-
-				continue;
-			}
-
-			TypeScriptClientUtil.generateTypeScriptClient(
-				_configDir, _configYAML, _copyrightFile, yamlString);
+			yamlStrings.add(yamlString);
 		}
 
 		if (!validationErrorMessages.isEmpty()) {
@@ -489,6 +483,13 @@ public class RESTBuilder {
 
 			throw new RuntimeException(
 				"OpenAPI validation errors:\n" + validationErrorMessagesString);
+		}
+
+		if (_configYAML.isGenerateClientJS() &&
+			Validator.isNotNull(_configYAML.getClientDir())) {
+
+			TypeScriptClientUtil.generateTypeScriptClient(
+				_configDir, _configYAML, _copyrightFile, yamlStrings);
 		}
 
 		return () -> {
