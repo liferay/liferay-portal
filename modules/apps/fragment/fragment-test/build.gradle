@@ -54,6 +54,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:site-navigation:site-navigation-api")
 	testIntegrationImplementation project(":apps:site-navigation:site-navigation-menu-item-api")
 	testIntegrationImplementation project(":apps:static:portal-file-install:portal-file-install-api")
+	testIntegrationImplementation project(":apps:static:portal-osgi-web:portal-osgi-web-portlet-container-test-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:template:template-api")
 	testIntegrationImplementation project(":apps:template:template-test-util")
