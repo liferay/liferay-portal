@@ -43,6 +43,17 @@ describe('ConnectorsFDSPropsTransformer', () => {
 		expect(result.itemsActions[1].className).toBe('text-danger');
 	});
 
+	it('registers the connector cell renderers', () => {
+		const result = propsTransformer({});
+
+		expect(result.customRenderers.tableCell.map(({name}) => name)).toEqual([
+			'nameTableCellRenderer',
+			'statusTableCellRenderer',
+			'mappingStatusTableCellRenderer',
+			'lastExecutionTableCellRenderer',
+		]);
+	});
+
 	it('confirms a delete through the modal rather than the browser dialog', () => {
 		const event = {preventDefault: jest.fn()};
 		const loadData = jest.fn();

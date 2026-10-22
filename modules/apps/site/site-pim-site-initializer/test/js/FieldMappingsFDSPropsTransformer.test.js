@@ -31,6 +31,8 @@ describe('FieldMappingsFDSPropsTransformer', () => {
 		jest.clearAllMocks();
 
 		mockFetch.mockResolvedValue({ok: true});
+
+		Liferay.fire = jest.fn();
 	});
 
 	it('registers the cell renderers under the names the table view declares', () => {
@@ -62,6 +64,23 @@ describe('FieldMappingsFDSPropsTransformer', () => {
 		expect(result.id).toBe('field-mappings');
 	});
 
+	it('announces an incomplete mapping when a required channel field is cleared', async () => {
+		const loadData = jest.fn();
+
+		propsTransformer({}).onActionDropdownItemClick({
+			action: CLEAR_ACTION,
+			itemData: {...ITEM_DATA, required: true},
+			loadData,
+		});
+
+		await waitFor(() => expect(loadData).toHaveBeenCalled());
+
+		expect(Liferay.fire).toHaveBeenCalledWith(
+			'pimConnectorFieldMappings:change',
+			{mappingComplete: false}
+		);
+	});
+
 	it('deletes every field mapping the cleared channel field has', async () => {
 		const loadData = jest.fn();
 
@@ -85,6 +104,7 @@ describe('FieldMappingsFDSPropsTransformer', () => {
 		expect(mockOpenToast).toHaveBeenCalledWith(
 			expect.objectContaining({type: 'success'})
 		);
+		expect(Liferay.fire).not.toHaveBeenCalled();
 	});
 
 	it('does nothing when the channel field has no mapping to clear', () => {
