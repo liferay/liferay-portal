@@ -7,24 +7,43 @@ import fs from 'fs';
 import path from 'path';
 
 import DeserializeUtil from '../../../../../src/main/resources/META-INF/resources/designer/js/definition-builder/source-builder/deserializeUtil';
+import {
+	getReviewTaskDefinition,
+	getRolesXML,
+} from '../../../../utils/workflowDefinition';
 
-const getElements = (fileName) => {
-	const xmlFilePath = path.join(
-		__dirname,
-		`../../../../dependencies/${fileName}`
-	);
-
-	const xmlFileContent = fs.readFileSync(xmlFilePath, 'utf8');
-
-	const deserializeUtil = new DeserializeUtil(xmlFileContent);
+const getElements = (xmlDefinition) => {
+	const deserializeUtil = new DeserializeUtil(xmlDefinition);
 
 	return deserializeUtil.getElements();
 };
 
+const getReferences = (xmlDefinition) => {
+	const task = getElements(xmlDefinition).find(
+		(element) => element.id === 'Review'
+	);
+
+	return {
+		assignment: task.data.assignments,
+		reassignment: task.data.taskTimers.reassignments[0],
+		recipients: task.data.notifications.recipients[0],
+		timerRecipients:
+			task.data.taskTimers.timerNotifications[0].recipients[0],
+	};
+};
+
+const readFixture = (fileName) =>
+	fs.readFileSync(
+		path.join(__dirname, `../../../../dependencies/${fileName}`),
+		'utf8'
+	);
+
 describe('Deserializing a notification whose recipient roles omit auto-create', () => {
 	it('Reads every role and leaves auto-create unset', () => {
 		const elements = getElements(
-			'recipients-with-no-auto-create-roles-workflow-definition.xml'
+			readFixture(
+				'recipients-with-no-auto-create-roles-workflow-definition.xml'
+			)
 		);
 
 		const task = elements.find((element) => element.id === 'Review');
@@ -39,37 +58,72 @@ describe('Deserializing a notification whose recipient roles omit auto-create', 
 
 describe('Deserializing roles that carry an external reference code', () => {
 	it('Reads the external reference code, type, and ID of every role', () => {
-		const elements = getElements(
-			'roles-with-external-reference-codes-workflow-definition.xml'
-		);
-
-		const task = elements.find((element) => element.id === 'Review');
-
-		expect(task.data.assignments).toEqual({
-			assignmentType: ['roleId'],
-			roleExternalReferenceCode: 'ROLE1_ERC',
-			roleId: 1,
-			roleType: 'regular',
-		});
-		expect(task.data.notifications.recipients[0][0]).toEqual({
-			assignmentType: ['roleId'],
-			roleExternalReferenceCode: 'ROLE2_ERC',
-			roleId: '2',
-			roleType: 'site',
-		});
-		expect(task.data.taskTimers.reassignments[0]).toEqual({
-			assignmentType: ['roleId'],
-			roleExternalReferenceCode: 'ROLE3_ERC',
-			roleId: 3,
-			roleType: 'organization',
-		});
 		expect(
-			task.data.taskTimers.timerNotifications[0].recipients[0][0]
+			getReferences(
+				getReviewTaskDefinition({
+					assignment: getRolesXML([
+						{
+							externalReferenceCode:
+								'ROLE_EXTERNAL_REFERENCE_CODE_1',
+							id: 1,
+							type: 'regular',
+						},
+					]),
+					reassignment: getRolesXML([
+						{
+							externalReferenceCode:
+								'ROLE_EXTERNAL_REFERENCE_CODE_3',
+							id: 3,
+							type: 'organization',
+						},
+					]),
+					recipient: getRolesXML([
+						{
+							externalReferenceCode:
+								'ROLE_EXTERNAL_REFERENCE_CODE_2',
+							id: 2,
+							type: 'site',
+						},
+					]),
+					timerRecipient: getRolesXML([
+						{
+							externalReferenceCode:
+								'ROLE_EXTERNAL_REFERENCE_CODE_4',
+							id: 4,
+							type: 'depot',
+						},
+					]),
+				})
+			)
 		).toEqual({
-			assignmentType: ['roleId'],
-			roleExternalReferenceCode: 'ROLE4_ERC',
-			roleId: ['4'],
-			roleType: 'depot',
+			assignment: {
+				assignmentType: ['roleId'],
+				roleExternalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_1',
+				roleId: 1,
+				roleType: 'regular',
+			},
+			reassignment: {
+				assignmentType: ['roleId'],
+				roleExternalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_3',
+				roleId: 3,
+				roleType: 'organization',
+			},
+			recipients: [
+				{
+					assignmentType: ['roleId'],
+					roleExternalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_2',
+					roleId: '2',
+					roleType: 'site',
+				},
+			],
+			timerRecipients: [
+				{
+					assignmentType: ['roleId'],
+					roleExternalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_4',
+					roleId: ['4'],
+					roleType: 'depot',
+				},
+			],
 		});
 	});
 });
@@ -77,7 +131,7 @@ describe('Deserializing roles that carry an external reference code', () => {
 describe('Deserializing transitions that share a name', () => {
 	it('Renames a transition only when its source node already uses the name', () => {
 		const elements = getElements(
-			'same-name-transitions-workflow-definition.xml'
+			readFixture('same-name-transitions-workflow-definition.xml')
 		);
 
 		const TransitionFromStartToParentTask = elements.find(

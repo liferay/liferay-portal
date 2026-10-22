@@ -34,7 +34,8 @@
 		],
 		"testPathIgnorePatterns": [
 			"<rootDir>/test/setup.js",
-			"<rootDir>/test/mock"
+			"<rootDir>/test/mock",
+			"<rootDir>/test/utils"
 		]
 	},
 	"main": "designer/js/index.js",

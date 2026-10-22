@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<name>Review Task</name>
+	<task>
+		<name>Review</name>
+		<actions>
+			<notification>
+				<name>Review Notification</name>
+				<template>A new submission is waiting for your review.</template>
+				<template-language>text</template-language>
+				<notification-type>email</notification-type>
+				<recipients>
+					[$RECIPIENT$]
+				</recipients>
+				<execution-type>onEntry</execution-type>
+			</notification>
+		</actions>
+		<assignments>
+			[$ASSIGNMENT$]
+		</assignments>
+		<task-timers>
+			<task-timer>
+				<name>Timer</name>
+				<delay>
+					<duration>1</duration>
+					<scale>day</scale>
+				</delay>
+				<blocking>true</blocking>
+				<timer-actions>
+					<timer-notification>
+						<name>Timer Notification</name>
+						<template>The submission is still waiting for your review.</template>
+						<template-language>text</template-language>
+						<notification-type>email</notification-type>
+						<recipients>
+							[$TIMER_RECIPIENT$]
+						</recipients>
+					</timer-notification>
+					<reassignments>
+						[$REASSIGNMENT$]
+					</reassignments>
+				</timer-actions>
+			</task-timer>
+		</task-timers>
+	</task>
+</workflow-definition>
