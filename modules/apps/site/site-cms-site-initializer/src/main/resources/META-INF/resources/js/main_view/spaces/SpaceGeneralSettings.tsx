@@ -472,7 +472,7 @@ export default function SpaceGeneralSettings({
 									feedbackId={`feedback-${id}googleMapsAPIKey`}
 									fieldId={`${id}googleMapsAPIKey`}
 									helpMessage={Liferay.Language.get(
-										'enable-the-maps-javascript-api-places-api-and-geocoding-api-for-this-key-in-google-cloud'
+										'enable-the-geocoding-api-maps-javascript-api-and-places-api-for-this-key-in-google-cloud'
 									)}
 									label={Liferay.Language.get('api-key')}
 									required
