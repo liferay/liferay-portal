@@ -98,7 +98,9 @@ public class PortalInstancesUserNotificationHandler
 		}
 
 		if (operationType.equals(
-				PortalInstancesNotificationConstants.OPERATION_TYPE_COPY)) {
+				PortalInstancesNotificationConstants.OPERATION_TYPE_COPY) ||
+			operationType.equals(
+				PortalInstancesNotificationConstants.OPERATION_TYPE_IMPORT)) {
 
 			if (status.equals(
 					PortalInstancesNotificationConstants.STATUS_SUCCESS)) {
@@ -139,20 +141,6 @@ public class PortalInstancesUserNotificationHandler
 
 			return _getErrorMessage(
 				jsonObject, serviceContext, jsonObject.getString("schemaName"));
-		}
-
-		if (operationType.equals(
-				PortalInstancesNotificationConstants.OPERATION_TYPE_IMPORT)) {
-
-			if (status.equals(
-					PortalInstancesNotificationConstants.STATUS_SUCCESS)) {
-
-				return _getSuccessMessage(
-					jsonObject.getString("portalInstanceId"),
-					"the-instance-x-is-ready-to-use", serviceContext);
-			}
-
-			return _getErrorMessage(jsonObject, serviceContext);
 		}
 
 		throw new IllegalArgumentException(
