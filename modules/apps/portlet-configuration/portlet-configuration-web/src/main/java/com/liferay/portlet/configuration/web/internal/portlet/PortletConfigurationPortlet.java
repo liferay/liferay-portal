@@ -524,6 +524,20 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 				PortletKeys.PREFS_OWNER_TYPE_ARCHIVED, 0,
 				portlet.getRootPortletId());
 
+		Map<String, String[]> archivedPreferenceMap =
+			archivedPortletPreferences.getMap();
+
+		for (String key : archivedPreferenceMap.keySet()) {
+			try {
+				archivedPortletPreferences.reset(key);
+			}
+			catch (ReadOnlyException readOnlyException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(readOnlyException);
+				}
+			}
+		}
+
 		PortletPreferences portletPreferences =
 			_getPortletInstancePortletPreferences(
 				themeDisplay.getLayout(), portlet.getPortletId());
