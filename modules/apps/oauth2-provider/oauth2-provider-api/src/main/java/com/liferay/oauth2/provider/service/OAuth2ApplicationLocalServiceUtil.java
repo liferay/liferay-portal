@@ -149,6 +149,12 @@ public class OAuth2ApplicationLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static void checkDynamicRegistratorOAuth2Application(long companyId)
+		throws PortalException {
+
+		getService().checkDynamicRegistratorOAuth2Application(companyId);
+	}
+
 	/**
 	 * Creates a new o auth2 application with the primary key. Does not add the o auth2 application to the database.
 	 *
@@ -169,13 +175,6 @@ public class OAuth2ApplicationLocalServiceUtil {
 		throws PortalException {
 
 		return getService().createPersistedModel(primaryKeyObj);
-	}
-
-	public static OAuth2Application deleteClientCredentialsGrant(
-			long oAuth2ApplicationId)
-		throws PortalException {
-
-		return getService().deleteClientCredentialsGrant(oAuth2ApplicationId);
 	}
 
 	/**
@@ -228,12 +227,6 @@ public class OAuth2ApplicationLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deletePersistedModel(persistedModel);
-	}
-
-	public static OAuth2Application deleteScopeAliases(long oAuth2ApplicationId)
-		throws PortalException {
-
-		return getService().deleteScopeAliases(oAuth2ApplicationId);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -564,4 +557,4 @@ public class OAuth2ApplicationLocalServiceUtil {
 			OAuth2ApplicationLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-802733689
+// LIFERAY-SERVICE-BUILDER-HASH:1502733190

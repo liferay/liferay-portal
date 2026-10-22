@@ -157,6 +157,14 @@ public class OAuth2ApplicationLocalServiceWrapper
 			serviceContext);
 	}
 
+	@Override
+	public void checkDynamicRegistratorOAuth2Application(long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_oAuth2ApplicationLocalService.checkDynamicRegistratorOAuth2Application(
+			companyId);
+	}
+
 	/**
 	 * Creates a new o auth2 application with the primary key. Does not add the o auth2 application to the database.
 	 *
@@ -181,15 +189,6 @@ public class OAuth2ApplicationLocalServiceWrapper
 
 		return _oAuth2ApplicationLocalService.createPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public com.liferay.oauth2.provider.model.OAuth2Application
-			deleteClientCredentialsGrant(long oAuth2ApplicationId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _oAuth2ApplicationLocalService.deleteClientCredentialsGrant(
-			oAuth2ApplicationId);
 	}
 
 	/**
@@ -251,15 +250,6 @@ public class OAuth2ApplicationLocalServiceWrapper
 
 		return _oAuth2ApplicationLocalService.deletePersistedModel(
 			persistedModel);
-	}
-
-	@Override
-	public com.liferay.oauth2.provider.model.OAuth2Application
-			deleteScopeAliases(long oAuth2ApplicationId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _oAuth2ApplicationLocalService.deleteScopeAliases(
-			oAuth2ApplicationId);
 	}
 
 	@Override
@@ -665,4 +655,4 @@ public class OAuth2ApplicationLocalServiceWrapper
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-849897758
+// LIFERAY-SERVICE-BUILDER-HASH:445038092
