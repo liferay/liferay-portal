@@ -93,6 +93,7 @@ $c-empty-state-sm: map-deep-merge(
 			max-width: 120px,
 
 			'.c-empty-state-illustration': (
+				display: flex,
 				margin-bottom: -0.5rem,
 			),
 		),
