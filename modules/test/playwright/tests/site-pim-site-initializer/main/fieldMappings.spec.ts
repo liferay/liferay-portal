@@ -273,3 +273,57 @@ test(
 		});
 	}
 );
+
+test(
+	'Clearing a required channel field mapping hides execute',
+	{tag: ['@LPD-109731']},
+	async ({connectorsPage, fieldMappingsPage, page}) => {
+		const connectorName = getRandomString();
+
+		await test.step('Create an active connector with a complete mapping', async () => {
+			await connectorsPage.createConnector({
+				active: true,
+				connector: 'Liferay Commerce',
+				name: connectorName,
+			});
+
+			await connectorsPage.getConnector(connectorName).click();
+
+			await fieldMappingsPage.mapRequiredChannelFields();
+
+			await fieldMappingsPage.expectMoreActionsMenuItems({
+				visible: ['Execute', 'Schedule'],
+			});
+		});
+
+		await test.step('Clear a required mapping without reloading the page', async () => {
+			let loads = 0;
+
+			page.on('load', () => loads++);
+
+			await fieldMappingsPage.clearMapping('SKU');
+
+			await expect(fieldMappingsPage.status('SKU')).toHaveText(
+				'Required - Not Mapped'
+			);
+
+			await fieldMappingsPage.expectMoreActionsMenuItems({
+				hidden: ['Execute'],
+				visible: ['Schedule'],
+			});
+
+			expect(loads).toBe(0);
+		});
+
+		await test.step('The connector stays active with an incomplete mapping', async () => {
+			await connectorsPage.goto();
+
+			await expect(
+				connectorsPage.getConnectorStatus(connectorName)
+			).toHaveText('Active');
+			await expect(
+				connectorsPage.getConnectorMappingStatus(connectorName)
+			).toHaveText('Incomplete');
+		});
+	}
+);
