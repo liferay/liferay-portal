@@ -19,6 +19,7 @@ import com.liferay.dynamic.data.mapping.form.evaluator.internal.expression.DDMFo
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.expression.DDMFormEvaluatorExpressionFieldAccessor;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.expression.DDMFormEvaluatorExpressionObserver;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.expression.DDMFormEvaluatorExpressionParameterAccessor;
+import com.liferay.dynamic.data.mapping.form.evaluator.internal.function.CalculateFunction;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesRegistry;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueAccessor;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueEditingAware;
@@ -135,6 +136,8 @@ public class DDMFormEvaluatorHelper {
 			ddmFormRules = _ddmForm.getDDMFormRules();
 		}
 
+		_evaluateCalculateActions(ddmFormRules);
+
 		_evaluateDDMFormRules(ddmFormRules, false);
 
 		_evaluateDDMFormRules(ddmFormRules, true);
@@ -245,6 +248,28 @@ public class DDMFormEvaluatorHelper {
 			).withDDMExpressionParameterAccessor(
 				ddmFormEvaluatorExpressionParameterAccessor
 			).build());
+	}
+
+	private void _evaluateCalculateActions(List<DDMFormRule> ddmFormRules) {
+		for (DDMFormRule ddmFormRule : ddmFormRules) {
+			List<String> calculateActions = ListUtil.filter(
+				ddmFormRule.getActions(),
+				action -> action.startsWith(CalculateFunction.NAME + "("));
+
+			if (!ddmFormRule.isEnabled() || calculateActions.isEmpty() ||
+				Validator.isNull(ddmFormRule.getCondition()) ||
+				!Objects.equals(
+					Boolean.TRUE,
+					_evaluateDDMFormRuleCondition(
+						ddmFormRule.getCondition()))) {
+
+				continue;
+			}
+
+			for (String calculateAction : calculateActions) {
+				_evaluateDDMFormRuleAction(calculateAction);
+			}
+		}
 	}
 
 	private void _evaluateDDMFormPageChange() {
