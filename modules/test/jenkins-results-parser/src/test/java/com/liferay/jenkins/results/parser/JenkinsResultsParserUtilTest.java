@@ -573,6 +573,17 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
+	public void testGetQueryParametersWithRawNumberSign() {
+		Map<String, String> parameters =
+			JenkinsResultsParserUtil.getQueryParameters(
+				"A=PortalSmoke#Smoke&B=1");
+
+		testEquals("PortalSmoke#Smoke", parameters.get("A"));
+		testEquals("1", parameters.get("B"));
+		testEquals(2, parameters.size());
+	}
+
+	@Test
 	public void testGetQueryParametersWithRepeatedName() {
 		Map<String, String> parameters =
 			JenkinsResultsParserUtil.getQueryParameters("V=1&V=2");
