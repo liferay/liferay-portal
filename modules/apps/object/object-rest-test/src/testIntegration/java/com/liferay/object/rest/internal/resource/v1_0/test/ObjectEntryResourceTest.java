@@ -17125,6 +17125,15 @@ public class ObjectEntryResourceTest {
 		return systemPropertiesJSONObject.getJSONArray("comments");
 	}
 
+	private Company _getCompanyByWebId() throws Exception {
+		try {
+			return _companyLocalService.getCompanyByWebId("www.able.com");
+		}
+		catch (NoSuchCompanyException noSuchCompanyException) {
+			return CompanyTestUtil.addCompanyWithWebId("www.able.com");
+		}
+	}
+
 	private DLFolder _getDLFolder(
 			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
@@ -17635,15 +17644,6 @@ public class ObjectEntryResourceTest {
 		}
 
 		return objectRelationshipNames;
-	}
-
-	private Company _getCompanyByWebId() throws Exception {
-		try {
-			return _companyLocalService.getCompanyByWebId("www.able.com");
-		}
-		catch (NoSuchCompanyException noSuchCompanyException) {
-			return CompanyTestUtil.addCompanyWithWebId("www.able.com");
-		}
 	}
 
 	private JSONObject _getOwnerPermissionsJSONObject(
