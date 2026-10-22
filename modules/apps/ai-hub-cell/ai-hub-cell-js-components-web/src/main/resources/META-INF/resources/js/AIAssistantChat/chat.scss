@@ -95,7 +95,7 @@ html#{$cadmin-selector} .cadmin {
 		max-width: 100vw;
 
 		&:focus {
-			box-shadow: none;
+			box-shadow: map-get($cadmin-sidebar-light, box-shadow);
 			outline: none;
 		}
 	}
