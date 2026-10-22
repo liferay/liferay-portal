@@ -37,7 +37,8 @@ public class OSBAccountEntryTest {
 			_getAccount(
 				_getExternalLink(
 					KoroneikiConstants.DOMAIN_SALESFORCE,
-					RandomTestUtil.randomString(), "opportunity")));
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString())));
 
 		Assert.assertNull(osbAccountEntry.getSalesforceAccountId());
 	}
