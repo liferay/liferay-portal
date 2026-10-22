@@ -20,6 +20,9 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.remote.jaxrs.whiteboard.lifecycle.JAXRSLifecycle;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
@@ -28,7 +31,10 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hamcrest.CoreMatchers;
 
@@ -371,6 +377,12 @@ public class ScopeLocatorImplTest {
 		Assert.assertTrue(matchedScopes.contains("everything"));
 	}
 
+	@Test
+	public void testWaitForScopeAliases() throws Exception {
+		_testWaitForScopeAliasesWithFailingScopeFinder();
+		_testWaitForScopeAliasesWithNotificationDuringLookup();
+	}
+
 	protected final Set<String> scopedSet2 = new HashSet<>(
 		Arrays.asList("GET", "POST"));
 	protected final Set<String> scopesSet1 = new HashSet<>(
@@ -386,6 +398,108 @@ public class ScopeLocatorImplTest {
 		}
 
 		return scopes;
+	}
+
+	private void _testWaitForScopeAliasesWithFailingScopeFinder()
+		throws Exception {
+
+		AtomicBoolean atomicBoolean = new AtomicBoolean();
+		Set<String> scopes = new HashSet<>();
+
+		Builder builder = new Builder();
+
+		ScopeLocatorImpl scopeLocatorImpl = builder.withScopeFinders(
+			registrator -> registrator.register(
+				_COMPANY_ID, _APPLICATION_NAME,
+				() -> {
+					if (atomicBoolean.get()) {
+						throw new IllegalStateException();
+					}
+
+					return scopes;
+				})
+		).build();
+
+		ServiceTrackerMap<String, ServiceReferenceServiceTuple<?, ScopeFinder>>
+			scopeFinderByNameServiceTrackerMap =
+				ReflectionTestUtil.getFieldValue(
+					scopeLocatorImpl, "_scopeFinderByNameServiceTrackerMap");
+
+		Mockito.when(
+			scopeFinderByNameServiceTrackerMap.keySet()
+		).thenReturn(
+			Collections.singleton(_APPLICATION_NAME)
+		);
+
+		AtomicInteger atomicInteger = new AtomicInteger();
+
+		Assert.assertEquals(
+			Collections.emptySet(),
+			scopeLocatorImpl.waitForScopeAliases(
+				_COMPANY_ID, Collections.singleton("everything"),
+				atomicInteger::incrementAndGet));
+
+		atomicBoolean.set(true);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				ScopeLocatorImpl.class.getName(), LoggerTestUtil.ERROR)) {
+
+			ReflectionTestUtil.invoke(
+				scopeLocatorImpl, "_notify", new Class<?>[0]);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+		}
+
+		atomicBoolean.set(false);
+
+		scopes.add("everything");
+
+		ReflectionTestUtil.invoke(scopeLocatorImpl, "_notify", new Class<?>[0]);
+		ReflectionTestUtil.invoke(scopeLocatorImpl, "_notify", new Class<?>[0]);
+
+		Assert.assertEquals(1, atomicInteger.get());
+	}
+
+	private void _testWaitForScopeAliasesWithNotificationDuringLookup()
+		throws Exception {
+
+		Builder builder = new Builder();
+
+		ScopeLocatorImpl scopeLocatorImpl = builder.withScopeFinders(
+			registrator -> registrator.register(
+				_COMPANY_ID, _APPLICATION_NAME, () -> scopesSet1)
+		).build();
+
+		ServiceTrackerMap<String, ServiceReferenceServiceTuple<?, ScopeFinder>>
+			scopeFinderByNameServiceTrackerMap =
+				ReflectionTestUtil.getFieldValue(
+					scopeLocatorImpl, "_scopeFinderByNameServiceTrackerMap");
+
+		AtomicBoolean atomicBoolean = new AtomicBoolean();
+
+		Mockito.when(
+			scopeFinderByNameServiceTrackerMap.keySet()
+		).thenAnswer(
+			invocation -> {
+				if (atomicBoolean.compareAndSet(false, true)) {
+					ReflectionTestUtil.invoke(
+						scopeLocatorImpl, "_notify", new Class<?>[0]);
+				}
+
+				return Collections.singleton(_APPLICATION_NAME);
+			}
+		);
+
+		AtomicInteger atomicInteger = new AtomicInteger();
+
+		Assert.assertEquals(
+			Collections.singleton("everything"),
+			scopeLocatorImpl.waitForScopeAliases(
+				_COMPANY_ID, Collections.singleton("everything"),
+				atomicInteger::incrementAndGet));
+		Assert.assertEquals(0, atomicInteger.get());
 	}
 
 	private static final String _APPLICATION_NAME = "com.liferay.test1";
