@@ -700,125 +700,6 @@ public class RolePersistenceImpl
 			FinderCacheUtil.getFinderCache(), new Object[] {type});
 	}
 
-	private FilterCollectionPersistenceFinder<Role, NoSuchRoleException>
-		_collectionPersistenceFinderBySubtype;
-
-	/**
-	 * Returns an ordered range of all the roles where subtype = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>RoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param subtype the subtype
-	 * @param start the lower bound of the range of roles
-	 * @param end the upper bound of the range of roles (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching roles
-	 */
-	@Override
-	public List<Role> findBySubtype(
-		String subtype, int start, int end,
-		OrderByComparator<Role> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderBySubtype.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {subtype}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first role in the ordered set where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching role
-	 * @throws NoSuchRoleException if a matching role could not be found
-	 */
-	@Override
-	public Role findBySubtype_First(
-			String subtype, OrderByComparator<Role> orderByComparator)
-		throws NoSuchRoleException {
-
-		return _collectionPersistenceFinderBySubtype.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {subtype},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first role in the ordered set where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching role, or <code>null</code> if a matching role could not be found
-	 */
-	@Override
-	public Role fetchBySubtype_First(
-		String subtype, OrderByComparator<Role> orderByComparator) {
-
-		return _collectionPersistenceFinderBySubtype.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {subtype},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the roles that the user has permissions to view where subtype = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>RoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param subtype the subtype
-	 * @param start the lower bound of the range of roles
-	 * @param end the upper bound of the range of roles (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching roles that the user has permission to view
-	 */
-	@Override
-	public List<Role> filterFindBySubtype(
-		String subtype, int start, int end,
-		OrderByComparator<Role> orderByComparator) {
-
-		return _collectionPersistenceFinderBySubtype.filterFind(
-			FinderCacheUtil.getFinderCache(), new Object[] {subtype}, start,
-			end, orderByComparator);
-	}
-
-	/**
-	 * Removes all the roles where subtype = &#63; from the database.
-	 *
-	 * @param subtype the subtype
-	 */
-	@Override
-	public void removeBySubtype(String subtype) {
-		_collectionPersistenceFinderBySubtype.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {subtype});
-	}
-
-	/**
-	 * Returns the number of roles where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @return the number of matching roles
-	 */
-	@Override
-	public int countBySubtype(String subtype) {
-		return _collectionPersistenceFinderBySubtype.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {subtype});
-	}
-
-	/**
-	 * Returns the number of roles that the user has permission to view where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @return the number of matching roles that the user has permission to view
-	 */
-	@Override
-	public int filterCountBySubtype(String subtype) {
-		return _collectionPersistenceFinderBySubtype.filterCount(
-			FinderCacheUtil.getFinderCache(), new Object[] {subtype});
-	}
-
 	private UniquePersistenceFinder<Role, NoSuchRoleException>
 		_uniquePersistenceFinderByC_N;
 
@@ -2774,32 +2655,6 @@ public class RolePersistenceImpl
 					"role_.", "type", "type_", FinderColumn.Type.INTEGER, "=",
 					true, true, Role::getType));
 
-		_collectionPersistenceFinderBySubtype =
-			new FilterCollectionPersistenceFinder<>(
-				this, Role::getRoleId,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBySubtype",
-					new String[] {String.class.getName()},
-					new String[] {"subtype"}, 0, 1, false, null),
-				"", RoleModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBySubtype",
-					new String[] {
-						String.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"subtype"}, true),
-				_SQL_COUNT_ROLE__WHERE, _SQL_SELECT_ROLE__WHERE, null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBySubtype",
-					new String[] {String.class.getName()},
-					new String[] {"subtype"}, 0, 1, true, null),
-				"",
-				new FinderColumn<>(
-					"role_.", "subtype", FinderColumn.Type.STRING, "=", true,
-					true, Role::getSubtype));
-
 		_uniquePersistenceFinderByC_N = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -3082,4 +2937,4 @@ public class RolePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:878478572
+// LIFERAY-SERVICE-BUILDER-HASH:-1240861081

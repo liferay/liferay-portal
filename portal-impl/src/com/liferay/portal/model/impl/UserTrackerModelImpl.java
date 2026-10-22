@@ -123,26 +123,14 @@ public class UserTrackerModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long SESSIONID_COLUMN_BITMASK = 2L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 4L;
+	public static final long USERID_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long USERTRACKERID_COLUMN_BITMASK = 8L;
+	public static final long USERTRACKERID_COLUMN_BITMASK = 2L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.kernel.util.PropsUtil.get(
@@ -352,16 +340,6 @@ public class UserTrackerModelImpl
 		_companyId = companyId;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalCompanyId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("companyId"));
-	}
-
 	@Override
 	public long getUserId() {
 		return _userId;
@@ -438,15 +416,6 @@ public class UserTrackerModelImpl
 		}
 
 		_sessionId = sessionId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalSessionId() {
-		return getColumnOriginalValue("sessionId");
 	}
 
 	@Override
@@ -872,4 +841,4 @@ public class UserTrackerModelImpl
 	private UserTracker _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2097050732
+// LIFERAY-SERVICE-BUILDER-HASH:1500905436

@@ -66,92 +66,6 @@ public class RememberMeTokenPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<RememberMeToken, NoSuchRememberMeTokenException>
-			_collectionPersistenceFinderByUserId;
-
-	/**
-	 * Returns an ordered range of all the remember me tokens where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>RememberMeTokenModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of remember me tokens
-	 * @param end the upper bound of the range of remember me tokens (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching remember me tokens
-	 */
-	@Override
-	public List<RememberMeToken> findByUserId(
-		long userId, int start, int end,
-		OrderByComparator<RememberMeToken> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByUserId.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first remember me token in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching remember me token
-	 * @throws NoSuchRememberMeTokenException if a matching remember me token could not be found
-	 */
-	@Override
-	public RememberMeToken findByUserId_First(
-			long userId, OrderByComparator<RememberMeToken> orderByComparator)
-		throws NoSuchRememberMeTokenException {
-
-		return _collectionPersistenceFinderByUserId.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first remember me token in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching remember me token, or <code>null</code> if a matching remember me token could not be found
-	 */
-	@Override
-	public RememberMeToken fetchByUserId_First(
-		long userId, OrderByComparator<RememberMeToken> orderByComparator) {
-
-		return _collectionPersistenceFinderByUserId.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the remember me tokens where userId = &#63; from the database.
-	 *
-	 * @param userId the user ID
-	 */
-	@Override
-	public void removeByUserId(long userId) {
-		_collectionPersistenceFinderByUserId.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId});
-	}
-
-	/**
-	 * Returns the number of remember me tokens where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @return the number of matching remember me tokens
-	 */
-	@Override
-	public int countByUserId(long userId) {
-		return _collectionPersistenceFinderByUserId.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId});
-	}
-
-	private CollectionPersistenceFinder
-		<RememberMeToken, NoSuchRememberMeTokenException>
 			_collectionPersistenceFinderByLteExpirationDate;
 
 	/**
@@ -482,33 +396,6 @@ public class RememberMeTokenPersistenceImpl
 	 * Initializes the remember me token persistence.
 	 */
 	public void afterPropertiesSet() {
-		_collectionPersistenceFinderByUserId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUserId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"userId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUserId",
-					new String[] {Long.class.getName()},
-					new String[] {"userId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUserId",
-					new String[] {Long.class.getName()},
-					new String[] {"userId"}, false),
-				_SQL_SELECT_REMEMBERMETOKEN_WHERE,
-				_SQL_COUNT_REMEMBERMETOKEN_WHERE,
-				RememberMeTokenModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
-				new FinderColumn<>(
-					"rememberMeToken.", "userId", FinderColumn.Type.LONG, "=",
-					true, true, RememberMeToken::getUserId));
-
 		_collectionPersistenceFinderByLteExpirationDate =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -563,4 +450,4 @@ public class RememberMeTokenPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2062598323
+// LIFERAY-SERVICE-BUILDER-HASH:-2076810841

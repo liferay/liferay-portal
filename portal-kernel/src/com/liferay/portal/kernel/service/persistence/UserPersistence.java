@@ -257,67 +257,6 @@ public interface UserPersistence
 	public int countByContactId(long contactId);
 
 	/**
-	 * Returns an ordered range of all the users where emailAddress = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param emailAddress the email address
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching users
-	 */
-	public java.util.List<User> findByEmailAddress(
-		String emailAddress, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first user in the ordered set where emailAddress = &#63;.
-	 *
-	 * @param emailAddress the email address
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user
-	 * @throws NoSuchUserException if a matching user could not be found
-	 */
-	public User findByEmailAddress_First(
-			String emailAddress,
-			com.liferay.portal.kernel.util.OrderByComparator<User>
-				orderByComparator)
-		throws NoSuchUserException;
-
-	/**
-	 * Returns the first user in the ordered set where emailAddress = &#63;.
-	 *
-	 * @param emailAddress the email address
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user, or <code>null</code> if a matching user could not be found
-	 */
-	public User fetchByEmailAddress_First(
-		String emailAddress,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator);
-
-	/**
-	 * Removes all the users where emailAddress = &#63; from the database.
-	 *
-	 * @param emailAddress the email address
-	 */
-	public void removeByEmailAddress(String emailAddress);
-
-	/**
-	 * Returns the number of users where emailAddress = &#63;.
-	 *
-	 * @param emailAddress the email address
-	 * @return the number of matching users
-	 */
-	public int countByEmailAddress(String emailAddress);
-
-	/**
 	 * Returns an ordered range of all the users where portraitId = &#63;.
 	 *
 	 * <p>
@@ -527,72 +466,6 @@ public interface UserPersistence
 	 * @return the number of matching users
 	 */
 	public int countByC_U(long companyId, long userId);
-
-	/**
-	 * Returns an ordered range of all the users where companyId = &#63; and createDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching users
-	 */
-	public java.util.List<User> findByC_CD(
-		long companyId, Date createDate, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first user in the ordered set where companyId = &#63; and createDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user
-	 * @throws NoSuchUserException if a matching user could not be found
-	 */
-	public User findByC_CD_First(
-			long companyId, Date createDate,
-			com.liferay.portal.kernel.util.OrderByComparator<User>
-				orderByComparator)
-		throws NoSuchUserException;
-
-	/**
-	 * Returns the first user in the ordered set where companyId = &#63; and createDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user, or <code>null</code> if a matching user could not be found
-	 */
-	public User fetchByC_CD_First(
-		long companyId, Date createDate,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator);
-
-	/**
-	 * Removes all the users where companyId = &#63; and createDate = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 */
-	public void removeByC_CD(long companyId, Date createDate);
-
-	/**
-	 * Returns the number of users where companyId = &#63; and createDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @return the number of matching users
-	 */
-	public int countByC_CD(long companyId, Date createDate);
 
 	/**
 	 * Returns an ordered range of all the users where companyId = &#63; and modifiedDate = &#63;.
@@ -939,79 +812,6 @@ public interface UserPersistence
 	 * @return the number of matching users
 	 */
 	public int countByC_S(long companyId, int status);
-
-	/**
-	 * Returns an ordered range of all the users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching users
-	 */
-	public java.util.List<User> findByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first user in the ordered set where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user
-	 * @throws NoSuchUserException if a matching user could not be found
-	 */
-	public User findByC_CD_MD_First(
-			long companyId, Date createDate, Date modifiedDate,
-			com.liferay.portal.kernel.util.OrderByComparator<User>
-				orderByComparator)
-		throws NoSuchUserException;
-
-	/**
-	 * Returns the first user in the ordered set where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user, or <code>null</code> if a matching user could not be found
-	 */
-	public User fetchByC_CD_MD_First(
-		long companyId, Date createDate, Date modifiedDate,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator);
-
-	/**
-	 * Removes all the users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 */
-	public void removeByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate);
-
-	/**
-	 * Returns the number of users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @return the number of matching users
-	 */
-	public int countByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate);
 
 	/**
 	 * Returns an ordered range of all the users where companyId = &#63; and type = &#63; and status = &#63;.
@@ -2241,60 +2041,6 @@ public interface UserPersistence
 	}
 
 	/**
-	 * Returns all the users where emailAddress = &#63;.
-	 *
-	 * @param emailAddress the email address
-	 * @return the matching users
-	 */
-	public default java.util.List<User> findByEmailAddress(
-		String emailAddress) {
-
-		return findByEmailAddress(
-			emailAddress, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the users where emailAddress = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param emailAddress the email address
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @return the range of matching users
-	 */
-	public default java.util.List<User> findByEmailAddress(
-		String emailAddress, int start, int end) {
-
-		return findByEmailAddress(emailAddress, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the users where emailAddress = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param emailAddress the email address
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching users
-	 */
-	public default java.util.List<User> findByEmailAddress(
-		String emailAddress, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator) {
-
-		return findByEmailAddress(
-			emailAddress, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the users where portraitId = &#63;.
 	 *
 	 * @param portraitId the portrait ID
@@ -2344,64 +2090,6 @@ public interface UserPersistence
 
 		return findByPortraitId(
 			portraitId, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns all the users where companyId = &#63; and createDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @return the matching users
-	 */
-	public default java.util.List<User> findByC_CD(
-		long companyId, Date createDate) {
-
-		return findByC_CD(
-			companyId, createDate,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the users where companyId = &#63; and createDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @return the range of matching users
-	 */
-	public default java.util.List<User> findByC_CD(
-		long companyId, Date createDate, int start, int end) {
-
-		return findByC_CD(companyId, createDate, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the users where companyId = &#63; and createDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching users
-	 */
-	public default java.util.List<User> findByC_CD(
-		long companyId, Date createDate, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator) {
-
-		return findByC_CD(
-			companyId, createDate, start, end, orderByComparator, true);
 	}
 
 	/**
@@ -2632,70 +2320,6 @@ public interface UserPersistence
 	}
 
 	/**
-	 * Returns all the users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @return the matching users
-	 */
-	public default java.util.List<User> findByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate) {
-
-		return findByC_CD_MD(
-			companyId, createDate, modifiedDate,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @return the range of matching users
-	 */
-	public default java.util.List<User> findByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate, int start,
-		int end) {
-
-		return findByC_CD_MD(
-			companyId, createDate, modifiedDate, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching users
-	 */
-	public default java.util.List<User> findByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<User>
-			orderByComparator) {
-
-		return findByC_CD_MD(
-			companyId, createDate, modifiedDate, start, end, orderByComparator,
-			true);
-	}
-
-	/**
 	 * Returns all the users where companyId = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param companyId the company ID
@@ -2757,4 +2381,4 @@ public interface UserPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-239348651
+// LIFERAY-SERVICE-BUILDER-HASH:-1926659696

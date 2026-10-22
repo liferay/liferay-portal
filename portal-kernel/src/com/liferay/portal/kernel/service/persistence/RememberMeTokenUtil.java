@@ -126,77 +126,6 @@ public class RememberMeTokenUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the remember me tokens where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.RememberMeTokenModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of remember me tokens
-	 * @param end the upper bound of the range of remember me tokens (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching remember me tokens
-	 */
-	public static List<RememberMeToken> findByUserId(
-		long userId, int start, int end,
-		OrderByComparator<RememberMeToken> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByUserId(
-			userId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first remember me token in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching remember me token
-	 * @throws NoSuchRememberMeTokenException if a matching remember me token could not be found
-	 */
-	public static RememberMeToken findByUserId_First(
-			long userId, OrderByComparator<RememberMeToken> orderByComparator)
-		throws com.liferay.portal.kernel.exception.
-			NoSuchRememberMeTokenException {
-
-		return getPersistence().findByUserId_First(userId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first remember me token in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching remember me token, or <code>null</code> if a matching remember me token could not be found
-	 */
-	public static RememberMeToken fetchByUserId_First(
-		long userId, OrderByComparator<RememberMeToken> orderByComparator) {
-
-		return getPersistence().fetchByUserId_First(userId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the remember me tokens where userId = &#63; from the database.
-	 *
-	 * @param userId the user ID
-	 */
-	public static void removeByUserId(long userId) {
-		getPersistence().removeByUserId(userId);
-	}
-
-	/**
-	 * Returns the number of remember me tokens where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @return the number of matching remember me tokens
-	 */
-	public static int countByUserId(long userId) {
-		return getPersistence().countByUserId(userId);
-	}
-
-	/**
 	 * Returns all the remember me tokens where expirationDate &le; &#63;.
 	 *
 	 * @param expirationDate the expiration date
@@ -375,55 +304,6 @@ public class RememberMeTokenUtil {
 		return getPersistence().fetchByPrimaryKey(rememberMeTokenId);
 	}
 
-	/**
-	 * Returns all the remember me tokens where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @return the matching remember me tokens
-	 */
-	public static List<RememberMeToken> findByUserId(long userId) {
-		return getPersistence().findByUserId(userId);
-	}
-
-	/**
-	 * Returns a range of all the remember me tokens where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.RememberMeTokenModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of remember me tokens
-	 * @param end the upper bound of the range of remember me tokens (not inclusive)
-	 * @return the range of matching remember me tokens
-	 */
-	public static List<RememberMeToken> findByUserId(
-		long userId, int start, int end) {
-
-		return getPersistence().findByUserId(userId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the remember me tokens where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.RememberMeTokenModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of remember me tokens
-	 * @param end the upper bound of the range of remember me tokens (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching remember me tokens
-	 */
-	public static List<RememberMeToken> findByUserId(
-		long userId, int start, int end,
-		OrderByComparator<RememberMeToken> orderByComparator) {
-
-		return getPersistence().findByUserId(
-			userId, start, end, orderByComparator);
-	}
-
 	public static RememberMeTokenPersistence getPersistence() {
 		return _persistence;
 	}
@@ -435,4 +315,4 @@ public class RememberMeTokenUtil {
 	private static volatile RememberMeTokenPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2133147552
+// LIFERAY-SERVICE-BUILDER-HASH:956173609

@@ -64,91 +64,6 @@ public class UserTrackerPersistenceImpl
 		FINDER_CLASS_NAME_ENTITY + ".List2";
 
 	private CollectionPersistenceFinder<UserTracker, NoSuchUserTrackerException>
-		_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the user trackers where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>UserTrackerModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of user trackers
-	 * @param end the upper bound of the range of user trackers (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching user trackers
-	 */
-	@Override
-	public List<UserTracker> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<UserTracker> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first user tracker in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user tracker
-	 * @throws NoSuchUserTrackerException if a matching user tracker could not be found
-	 */
-	@Override
-	public UserTracker findByCompanyId_First(
-			long companyId, OrderByComparator<UserTracker> orderByComparator)
-		throws NoSuchUserTrackerException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first user tracker in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user tracker, or <code>null</code> if a matching user tracker could not be found
-	 */
-	@Override
-	public UserTracker fetchByCompanyId_First(
-		long companyId, OrderByComparator<UserTracker> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the user trackers where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of user trackers where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching user trackers
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	private CollectionPersistenceFinder<UserTracker, NoSuchUserTrackerException>
 		_collectionPersistenceFinderByUserId;
 
 	/**
@@ -231,91 +146,6 @@ public class UserTrackerPersistenceImpl
 	public int countByUserId(long userId) {
 		return _collectionPersistenceFinderByUserId.count(
 			FinderCacheUtil.getFinderCache(), new Object[] {userId});
-	}
-
-	private CollectionPersistenceFinder<UserTracker, NoSuchUserTrackerException>
-		_collectionPersistenceFinderBySessionId;
-
-	/**
-	 * Returns an ordered range of all the user trackers where sessionId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>UserTrackerModelImpl</code>.
-	 * </p>
-	 *
-	 * @param sessionId the session ID
-	 * @param start the lower bound of the range of user trackers
-	 * @param end the upper bound of the range of user trackers (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching user trackers
-	 */
-	@Override
-	public List<UserTracker> findBySessionId(
-		String sessionId, int start, int end,
-		OrderByComparator<UserTracker> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderBySessionId.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {sessionId}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first user tracker in the ordered set where sessionId = &#63;.
-	 *
-	 * @param sessionId the session ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user tracker
-	 * @throws NoSuchUserTrackerException if a matching user tracker could not be found
-	 */
-	@Override
-	public UserTracker findBySessionId_First(
-			String sessionId, OrderByComparator<UserTracker> orderByComparator)
-		throws NoSuchUserTrackerException {
-
-		return _collectionPersistenceFinderBySessionId.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {sessionId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first user tracker in the ordered set where sessionId = &#63;.
-	 *
-	 * @param sessionId the session ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user tracker, or <code>null</code> if a matching user tracker could not be found
-	 */
-	@Override
-	public UserTracker fetchBySessionId_First(
-		String sessionId, OrderByComparator<UserTracker> orderByComparator) {
-
-		return _collectionPersistenceFinderBySessionId.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {sessionId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the user trackers where sessionId = &#63; from the database.
-	 *
-	 * @param sessionId the session ID
-	 */
-	@Override
-	public void removeBySessionId(String sessionId) {
-		_collectionPersistenceFinderBySessionId.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {sessionId});
-	}
-
-	/**
-	 * Returns the number of user trackers where sessionId = &#63;.
-	 *
-	 * @param sessionId the session ID
-	 * @return the number of matching user trackers
-	 */
-	@Override
-	public int countBySessionId(String sessionId) {
-		return _collectionPersistenceFinderBySessionId.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {sessionId});
 	}
 
 	public UserTrackerPersistenceImpl() {
@@ -506,32 +336,6 @@ public class UserTrackerPersistenceImpl
 	 * Initializes the user tracker persistence.
 	 */
 	public void afterPropertiesSet() {
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_USERTRACKER_WHERE, _SQL_COUNT_USERTRACKER_WHERE,
-				UserTrackerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
-				new FinderColumn<>(
-					"userTracker.", "companyId", FinderColumn.Type.LONG, "=",
-					true, true, UserTracker::getCompanyId));
-
 		_collectionPersistenceFinderByUserId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -557,32 +361,6 @@ public class UserTrackerPersistenceImpl
 				new FinderColumn<>(
 					"userTracker.", "userId", FinderColumn.Type.LONG, "=", true,
 					true, UserTracker::getUserId));
-
-		_collectionPersistenceFinderBySessionId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBySessionId",
-					new String[] {
-						String.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"sessionId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findBySessionId", new String[] {String.class.getName()},
-					new String[] {"sessionId"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countBySessionId", new String[] {String.class.getName()},
-					new String[] {"sessionId"}, 0, 1, false, null),
-				_SQL_SELECT_USERTRACKER_WHERE, _SQL_COUNT_USERTRACKER_WHERE,
-				UserTrackerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
-				new FinderColumn<>(
-					"userTracker.", "sessionId", FinderColumn.Type.STRING, "=",
-					true, true, UserTracker::getSessionId));
 
 		UserTrackerUtil.setPersistence(this);
 	}
@@ -611,4 +389,4 @@ public class UserTrackerPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:173805257
+// LIFERAY-SERVICE-BUILDER-HASH:872649605

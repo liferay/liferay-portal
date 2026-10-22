@@ -411,90 +411,6 @@ public class UserPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<User, NoSuchUserException>
-		_collectionPersistenceFinderByEmailAddress;
-
-	/**
-	 * Returns an ordered range of all the users where emailAddress = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param emailAddress the email address
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching users
-	 */
-	@Override
-	public List<User> findByEmailAddress(
-		String emailAddress, int start, int end,
-		OrderByComparator<User> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByEmailAddress.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {emailAddress},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first user in the ordered set where emailAddress = &#63;.
-	 *
-	 * @param emailAddress the email address
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user
-	 * @throws NoSuchUserException if a matching user could not be found
-	 */
-	@Override
-	public User findByEmailAddress_First(
-			String emailAddress, OrderByComparator<User> orderByComparator)
-		throws NoSuchUserException {
-
-		return _collectionPersistenceFinderByEmailAddress.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {emailAddress},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first user in the ordered set where emailAddress = &#63;.
-	 *
-	 * @param emailAddress the email address
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user, or <code>null</code> if a matching user could not be found
-	 */
-	@Override
-	public User fetchByEmailAddress_First(
-		String emailAddress, OrderByComparator<User> orderByComparator) {
-
-		return _collectionPersistenceFinderByEmailAddress.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {emailAddress},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the users where emailAddress = &#63; from the database.
-	 *
-	 * @param emailAddress the email address
-	 */
-	@Override
-	public void removeByEmailAddress(String emailAddress) {
-		_collectionPersistenceFinderByEmailAddress.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {emailAddress});
-	}
-
-	/**
-	 * Returns the number of users where emailAddress = &#63;.
-	 *
-	 * @param emailAddress the email address
-	 * @return the number of matching users
-	 */
-	@Override
-	public int countByEmailAddress(String emailAddress) {
-		return _collectionPersistenceFinderByEmailAddress.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {emailAddress});
-	}
-
-	private CollectionPersistenceFinder<User, NoSuchUserException>
 		_collectionPersistenceFinderByPortraitId;
 
 	/**
@@ -788,100 +704,6 @@ public class UserPersistenceImpl
 	public int countByC_U(long companyId, long userId) {
 		return _uniquePersistenceFinderByC_U.count(
 			FinderCacheUtil.getFinderCache(), new Object[] {companyId, userId});
-	}
-
-	private CollectionPersistenceFinder<User, NoSuchUserException>
-		_collectionPersistenceFinderByC_CD;
-
-	/**
-	 * Returns an ordered range of all the users where companyId = &#63; and createDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching users
-	 */
-	@Override
-	public List<User> findByC_CD(
-		long companyId, Date createDate, int start, int end,
-		OrderByComparator<User> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_CD.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first user in the ordered set where companyId = &#63; and createDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user
-	 * @throws NoSuchUserException if a matching user could not be found
-	 */
-	@Override
-	public User findByC_CD_First(
-			long companyId, Date createDate,
-			OrderByComparator<User> orderByComparator)
-		throws NoSuchUserException {
-
-		return _collectionPersistenceFinderByC_CD.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first user in the ordered set where companyId = &#63; and createDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user, or <code>null</code> if a matching user could not be found
-	 */
-	@Override
-	public User fetchByC_CD_First(
-		long companyId, Date createDate,
-		OrderByComparator<User> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_CD.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the users where companyId = &#63; and createDate = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 */
-	@Override
-	public void removeByC_CD(long companyId, Date createDate) {
-		_collectionPersistenceFinderByC_CD.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate});
-	}
-
-	/**
-	 * Returns the number of users where companyId = &#63; and createDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @return the number of matching users
-	 */
-	@Override
-	public int countByC_CD(long companyId, Date createDate) {
-		return _collectionPersistenceFinderByC_CD.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate});
 	}
 
 	private CollectionPersistenceFinder<User, NoSuchUserException>
@@ -1383,111 +1205,6 @@ public class UserPersistenceImpl
 	public int countByC_S(long companyId, int status) {
 		return _collectionPersistenceFinderByC_S.count(
 			FinderCacheUtil.getFinderCache(), new Object[] {companyId, status});
-	}
-
-	private CollectionPersistenceFinder<User, NoSuchUserException>
-		_collectionPersistenceFinderByC_CD_MD;
-
-	/**
-	 * Returns an ordered range of all the users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>UserModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching users
-	 */
-	@Override
-	public List<User> findByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate, int start, int end,
-		OrderByComparator<User> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_CD_MD.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate, modifiedDate}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first user in the ordered set where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user
-	 * @throws NoSuchUserException if a matching user could not be found
-	 */
-	@Override
-	public User findByC_CD_MD_First(
-			long companyId, Date createDate, Date modifiedDate,
-			OrderByComparator<User> orderByComparator)
-		throws NoSuchUserException {
-
-		return _collectionPersistenceFinderByC_CD_MD.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate, modifiedDate},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first user in the ordered set where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching user, or <code>null</code> if a matching user could not be found
-	 */
-	@Override
-	public User fetchByC_CD_MD_First(
-		long companyId, Date createDate, Date modifiedDate,
-		OrderByComparator<User> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_CD_MD.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate, modifiedDate},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 */
-	@Override
-	public void removeByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate) {
-
-		_collectionPersistenceFinderByC_CD_MD.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate, modifiedDate});
-	}
-
-	/**
-	 * Returns the number of users where companyId = &#63; and createDate = &#63; and modifiedDate = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param createDate the create date
-	 * @param modifiedDate the modified date
-	 * @return the number of matching users
-	 */
-	@Override
-	public int countByC_CD_MD(
-		long companyId, Date createDate, Date modifiedDate) {
-
-		return _collectionPersistenceFinderByC_CD_MD.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {companyId, createDate, modifiedDate});
 	}
 
 	private CollectionPersistenceFinder<User, NoSuchUserException>
@@ -3801,33 +3518,6 @@ public class UserPersistenceImpl
 				"user.", "contactId", FinderColumn.Type.LONG, "=", true, true,
 				User::getContactId));
 
-		_collectionPersistenceFinderByEmailAddress =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByEmailAddress",
-					new String[] {
-						String.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"emailAddress"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByEmailAddress", new String[] {String.class.getName()},
-					new String[] {"emailAddress"}, 0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByEmailAddress",
-					new String[] {String.class.getName()},
-					new String[] {"emailAddress"}, 0, 1, false, null),
-				_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-				UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"user.", "emailAddress", FinderColumn.Type.STRING, "=",
-					true, true, User::getEmailAddress));
-
 		_collectionPersistenceFinderByPortraitId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -3892,34 +3582,6 @@ public class UserPersistenceImpl
 			new FinderColumn<>(
 				"user.", "userId", FinderColumn.Type.LONG, "=", true, true,
 				User::getUserId));
-
-		_collectionPersistenceFinderByC_CD = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_CD",
-				new String[] {
-					Long.class.getName(), Date.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "createDate"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_CD",
-				new String[] {Long.class.getName(), Date.class.getName()},
-				new String[] {"companyId", "createDate"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_CD",
-				new String[] {Long.class.getName(), Date.class.getName()},
-				new String[] {"companyId", "createDate"}, false),
-			_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-			UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "user.type = 1",
-			"user.type_ = 1", null,
-			new FinderColumn<>(
-				"user.", "companyId", FinderColumn.Type.LONG, "=", true, true,
-				User::getCompanyId),
-			new FinderColumn<>(
-				"user.", "createDate", FinderColumn.Type.DATE, "=", true, true,
-				User::getCreateDate));
 
 		_collectionPersistenceFinderByC_MD = new CollectionPersistenceFinder<>(
 			this,
@@ -4061,48 +3723,6 @@ public class UserPersistenceImpl
 				"user.", "status", FinderColumn.Type.INTEGER, "=", true, true,
 				User::getStatus));
 
-		_collectionPersistenceFinderByC_CD_MD =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_CD_MD",
-					new String[] {
-						Long.class.getName(), Date.class.getName(),
-						Date.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId", "createDate", "modifiedDate"},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_CD_MD",
-					new String[] {
-						Long.class.getName(), Date.class.getName(),
-						Date.class.getName()
-					},
-					new String[] {"companyId", "createDate", "modifiedDate"},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_CD_MD",
-					new String[] {
-						Long.class.getName(), Date.class.getName(),
-						Date.class.getName()
-					},
-					new String[] {"companyId", "createDate", "modifiedDate"},
-					false),
-				_SQL_SELECT_USER_WHERE, _SQL_COUNT_USER_WHERE,
-				UserModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"user.type = 1", "user.type_ = 1", null,
-				new FinderColumn<>(
-					"user.", "companyId", FinderColumn.Type.LONG, "=", true,
-					true, User::getCompanyId),
-				new FinderColumn<>(
-					"user.", "createDate", FinderColumn.Type.DATE, "=", true,
-					true, User::getCreateDate),
-				new FinderColumn<>(
-					"user.", "modifiedDate", FinderColumn.Type.DATE, "=", true,
-					true, User::getModifiedDate));
-
 		_collectionPersistenceFinderByC_T_S = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -4220,4 +3840,4 @@ public class UserPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:839936190
+// LIFERAY-SERVICE-BUILDER-HASH:1006702065

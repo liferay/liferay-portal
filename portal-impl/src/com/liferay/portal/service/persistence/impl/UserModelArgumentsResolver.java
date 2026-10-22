@@ -160,19 +160,13 @@ public class UserModelArgumentsResolver implements ArgumentsResolver {
 		_whereColumnBitmasks.put("GtU_C", whereColumnBitmask);
 
 		_whereBiPredicates.put("GtU_C", whereBiPredicate);
-		_whereColumnBitmasks.put("C_CD", whereColumnBitmask);
-
-		_whereBiPredicates.put("C_CD", whereBiPredicate);
 		_whereColumnBitmasks.put("C_MD", whereColumnBitmask);
 
 		_whereBiPredicates.put("C_MD", whereBiPredicate);
 		_whereColumnBitmasks.put("C_S", whereColumnBitmask);
 
 		_whereBiPredicates.put("C_S", whereBiPredicate);
-		_whereColumnBitmasks.put("C_CD_MD", whereColumnBitmask);
-
-		_whereBiPredicates.put("C_CD_MD", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1433278618
+// LIFERAY-SERVICE-BUILDER-HASH:-1652213176

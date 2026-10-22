@@ -475,93 +475,6 @@ public interface RolePersistence
 	public int filterCountByType(int type);
 
 	/**
-	 * Returns an ordered range of all the roles where subtype = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.RoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param subtype the subtype
-	 * @param start the lower bound of the range of roles
-	 * @param end the upper bound of the range of roles (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching roles
-	 */
-	public java.util.List<Role> findBySubtype(
-		String subtype, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Role>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first role in the ordered set where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching role
-	 * @throws NoSuchRoleException if a matching role could not be found
-	 */
-	public Role findBySubtype_First(
-			String subtype,
-			com.liferay.portal.kernel.util.OrderByComparator<Role>
-				orderByComparator)
-		throws NoSuchRoleException;
-
-	/**
-	 * Returns the first role in the ordered set where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching role, or <code>null</code> if a matching role could not be found
-	 */
-	public Role fetchBySubtype_First(
-		String subtype,
-		com.liferay.portal.kernel.util.OrderByComparator<Role>
-			orderByComparator);
-
-	/**
-	 * Returns an ordered range of all the roles that the user has permissions to view where subtype = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.RoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param subtype the subtype
-	 * @param start the lower bound of the range of roles
-	 * @param end the upper bound of the range of roles (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching roles that the user has permission to view
-	 */
-	public java.util.List<Role> filterFindBySubtype(
-		String subtype, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Role>
-			orderByComparator);
-
-	/**
-	 * Removes all the roles where subtype = &#63; from the database.
-	 *
-	 * @param subtype the subtype
-	 */
-	public void removeBySubtype(String subtype);
-
-	/**
-	 * Returns the number of roles where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @return the number of matching roles
-	 */
-	public int countBySubtype(String subtype);
-
-	/**
-	 * Returns the number of roles that the user has permission to view where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @return the number of matching roles that the user has permission to view
-	 */
-	public int filterCountBySubtype(String subtype);
-
-	/**
 	 * Returns the role where companyId = &#63; and name = &#63; or throws a <code>NoSuchRoleException</code> if it could not be found.
 	 *
 	 * @param companyId the company ID
@@ -1947,87 +1860,6 @@ public interface RolePersistence
 	}
 
 	/**
-	 * Returns all the roles where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @return the matching roles
-	 */
-	public default java.util.List<Role> findBySubtype(String subtype) {
-		return findBySubtype(
-			subtype, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the roles where subtype = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.RoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param subtype the subtype
-	 * @param start the lower bound of the range of roles
-	 * @param end the upper bound of the range of roles (not inclusive)
-	 * @return the range of matching roles
-	 */
-	public default java.util.List<Role> findBySubtype(
-		String subtype, int start, int end) {
-
-		return findBySubtype(subtype, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the roles where subtype = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.RoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param subtype the subtype
-	 * @param start the lower bound of the range of roles
-	 * @param end the upper bound of the range of roles (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching roles
-	 */
-	public default java.util.List<Role> findBySubtype(
-		String subtype, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Role>
-			orderByComparator) {
-
-		return findBySubtype(subtype, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns all the roles that the user has permission to view where subtype = &#63;.
-	 *
-	 * @param subtype the subtype
-	 * @return the matching roles that the user has permission to view
-	 */
-	public default java.util.List<Role> filterFindBySubtype(String subtype) {
-		return filterFindBySubtype(
-			subtype, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the roles that the user has permission to view where subtype = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.RoleModelImpl</code>.
-	 * </p>
-	 *
-	 * @param subtype the subtype
-	 * @param start the lower bound of the range of roles
-	 * @param end the upper bound of the range of roles (not inclusive)
-	 * @return the range of matching roles that the user has permission to view
-	 */
-	public default java.util.List<Role> filterFindBySubtype(
-		String subtype, int start, int end) {
-
-		return filterFindBySubtype(subtype, start, end, null);
-	}
-
-	/**
 	 * Returns all the roles where companyId = &#63; and type = &#63;.
 	 *
 	 * @param companyId the company ID
@@ -2427,4 +2259,4 @@ public interface RolePersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:772744088
+// LIFERAY-SERVICE-BUILDER-HASH:-611745180

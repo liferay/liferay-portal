@@ -244,15 +244,6 @@ public class RolePersistenceTest {
 	}
 
 	@Test
-	public void testCountBySubtype() throws Exception {
-		_persistence.countBySubtype("");
-
-		_persistence.countBySubtype("null");
-
-		_persistence.countBySubtype((String)null);
-	}
-
-	@Test
 	public void testCountByC_N() throws Exception {
 		_persistence.countByC_N(RandomTestUtil.nextLong(), "");
 
@@ -712,4 +703,4 @@ public class RolePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1682720524
+// LIFERAY-SERVICE-BUILDER-HASH:-1022849776

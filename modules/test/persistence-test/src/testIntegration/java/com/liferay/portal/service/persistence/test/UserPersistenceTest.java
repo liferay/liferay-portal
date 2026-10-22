@@ -346,15 +346,6 @@ public class UserPersistenceTest {
 	}
 
 	@Test
-	public void testCountByEmailAddress() throws Exception {
-		_persistence.countByEmailAddress("");
-
-		_persistence.countByEmailAddress("null");
-
-		_persistence.countByEmailAddress((String)null);
-	}
-
-	@Test
 	public void testCountByPortraitId() throws Exception {
 		_persistence.countByPortraitId(RandomTestUtil.nextLong());
 
@@ -375,14 +366,6 @@ public class UserPersistenceTest {
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
 
 		_persistence.countByC_U(0L, 0L);
-	}
-
-	@Test
-	public void testCountByC_CD() throws Exception {
-		_persistence.countByC_CD(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextDate());
-
-		_persistence.countByC_CD(0L, RandomTestUtil.nextDate());
 	}
 
 	@Test
@@ -433,16 +416,6 @@ public class UserPersistenceTest {
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
 
 		_persistence.countByC_S(0L, 0);
-	}
-
-	@Test
-	public void testCountByC_CD_MD() throws Exception {
-		_persistence.countByC_CD_MD(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextDate(),
-			RandomTestUtil.nextDate());
-
-		_persistence.countByC_CD_MD(
-			0L, RandomTestUtil.nextDate(), RandomTestUtil.nextDate());
 	}
 
 	@Test
@@ -903,4 +876,4 @@ public class UserPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1492236072
+// LIFERAY-SERVICE-BUILDER-HASH:1575383592

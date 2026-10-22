@@ -150,13 +150,6 @@ public class RememberMeTokenPersistenceTest {
 	}
 
 	@Test
-	public void testCountByUserId() throws Exception {
-		_persistence.countByUserId(RandomTestUtil.nextLong());
-
-		_persistence.countByUserId(0L);
-	}
-
-	@Test
 	public void testCountByLteExpirationDate() throws Exception {
 		_persistence.countByLteExpirationDate(RandomTestUtil.nextDate());
 
@@ -434,4 +427,4 @@ public class RememberMeTokenPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:827317060
+// LIFERAY-SERVICE-BUILDER-HASH:-1745935450
