@@ -40,6 +40,7 @@ import freemarker.template.TemplateModelException;
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -117,65 +118,62 @@ public class RestrictedLiferayObjectWrapperTest
 	}
 
 	@Test
-	public void testIsRestricted() {
+	public void testIsMatch() {
 		Assert.assertFalse(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(null, null, null),
-				TestLiferayObject.class));
+			_isMatch(
+				Collections.emptyList(), TestLiferayObject.class,
+				new HashMap<>(), Collections.emptyList()));
 
 		Assert.assertFalse(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(
-					null, new String[] {"java.lang.String"}, null),
-				TestLiferayObject.class));
+			_isMatch(
+				Collections.singletonList(String.class),
+				TestLiferayObject.class, new HashMap<>(),
+				Collections.emptyList()));
 
 		Assert.assertFalse(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(
-					null, new String[] {"com.liferay.portal.cache"}, null),
-				TestLiferayObject.class));
+			_isMatch(
+				Collections.emptyList(), TestLiferayObject.class,
+				new HashMap<>(),
+				Collections.singletonList("com.liferay.portal.cache")));
 
 		Assert.assertTrue(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(
-					null, new String[] {TestLiferayObject.class.getName()},
-					null),
-				TestLiferayObject.class));
+			_isMatch(
+				Collections.singletonList(TestLiferayObject.class),
+				TestLiferayObject.class, new HashMap<>(),
+				Collections.emptyList()));
 
 		Assert.assertTrue(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(
-					null,
-					new String[] {"com.liferay.portal.template.freemarker"},
-					null),
-				TestLiferayObject.class));
+			_isMatch(
+				Collections.emptyList(), TestLiferayObject.class,
+				new HashMap<>(),
+				Collections.singletonList(
+					"com.liferay.portal.template.freemarker")));
 
 		Assert.assertTrue(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(
-					null, new String[] {"com.liferay.portal.*"}, null),
-				TestLiferayObject.class));
+			_isMatch(
+				Collections.emptyList(), TestLiferayObject.class,
+				new HashMap<>(),
+				Collections.singletonList("com.liferay.portal.")));
 
 		Assert.assertFalse(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(
-					null,
-					new String[] {"com.liferay.portal.template.freemarker"},
-					null),
-				byte.class));
+			_isMatch(
+				Collections.emptyList(), byte.class, new HashMap<>(),
+				Collections.singletonList(
+					"com.liferay.portal.template.freemarker")));
 	}
 
 	@Test
-	public void testIsRestrictedWithNoContextClassloader() {
+	public void testConstructorWithNoContextClassloader() {
 		try (SafeCloseable safeCloseable = ThreadContextClassLoaderUtil.swap(
 				null)) {
 
-			Assert.assertFalse(
-				_isRestricted(
+			Assert.assertEquals(
+				Collections.singletonList(TestLiferayObject.class),
+				ReflectionTestUtil.getFieldValue(
 					new RestrictedLiferayObjectWrapper(
-						new String[] {TestLiferayObject.class.getName()},
-						new String[] {TestLiferayObject.class.getName()}, null),
-					TestLiferayObject.class));
+						null, new String[] {TestLiferayObject.class.getName()},
+						null),
+					"_restrictedClasses"));
 		}
 	}
 
@@ -485,13 +483,14 @@ public class RestrictedLiferayObjectWrapperTest
 			AopCacheManager.create(target, null));
 	}
 
-	private boolean _isRestricted(
-		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper,
-		Class<?> targetClass) {
+	private boolean _isMatch(
+		List<Class<?>> classes, Class<?> clazz,
+		Map<String, Boolean> matchResults, List<String> packageNames) {
 
 		return ReflectionTestUtil.invoke(
-			restrictedLiferayObjectWrapper, "_isRestricted",
-			new Class<?>[] {Class.class}, targetClass);
+			new RestrictedLiferayObjectWrapper(null, null, null), "_isMatch",
+			new Class<?>[] {List.class, Class.class, Map.class, List.class},
+			classes, clazz, matchResults, packageNames);
 	}
 
 	private void _testRestrictedMethodNames(
