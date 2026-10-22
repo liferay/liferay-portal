@@ -15,7 +15,7 @@ import org.junit.Test;
 /**
  * @author Qi Zhang
  */
-public class FeatureFlagsAnnotationTest {
+public class FeatureFlagsAnnotationInTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {

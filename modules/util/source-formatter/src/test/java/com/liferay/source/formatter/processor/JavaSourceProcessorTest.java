@@ -371,10 +371,10 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testFeatureFlagsAnnotationTest() throws Exception {
+	public void testFeatureFlagsAnnotationInTest() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(
-				"FeatureFlagsAnnotationTest.testjava"
+				"FeatureFlagsAnnotationInTest.testjava"
 			).addExpectedMessage(
 				"Use annotation \"@FeatureFlags\" instead of \"PropsUtil." +
 					"addProperties\" for feature flag",
