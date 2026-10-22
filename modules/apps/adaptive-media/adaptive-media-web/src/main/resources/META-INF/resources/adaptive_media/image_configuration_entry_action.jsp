@@ -99,13 +99,12 @@ String entryUuid = String.valueOf(amImageConfigurationEntry.getUUID());
 	</portlet:actionURL>
 
 	<%
-	String onClick = liferayPortletResponse.getNamespace() + "adaptRemaining('" + entryUuid + "', '" + optimizeImagesURL.toString() + "');";
-
+	boolean adaptationDelegated = AMImageAdaptationUtil.isAdaptationDelegated(amImageConfigurationEntry, themeDisplay.getCompanyId());
 	int percentage = AMImageEntryLocalServiceUtil.getPercentage(themeDisplay.getCompanyId(), entryUuid, GetterUtil.getInteger(request.getAttribute(AMWebKeys.TOTAL_IMAGES)));
 
-	boolean adaptationDelegated = AMImageAdaptationUtil.isAdaptationDelegated(amImageConfigurationEntry, themeDisplay.getCompanyId());
-
 	boolean adaptRemainingDisabled = adaptationDelegated || !amImageConfigurationEntry.isEnabled() || (percentage == 100) || !optimizeImagesEnabled;
+
+	String onClick = liferayPortletResponse.getNamespace() + "adaptRemaining('" + entryUuid + "', '" + optimizeImagesURL.toString() + "');";
 	%>
 
 	<liferay-ui:icon
