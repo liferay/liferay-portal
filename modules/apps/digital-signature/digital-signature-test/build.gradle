@@ -1,6 +1,8 @@
 dependencies {
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-test-util")
 	testIntegrationImplementation project(":apps:digital-signature:digital-signature-api")
+	testIntegrationImplementation project(":apps:layout:layout-test-util")
+	testIntegrationImplementation project(":apps:notification:notification-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-rest-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
