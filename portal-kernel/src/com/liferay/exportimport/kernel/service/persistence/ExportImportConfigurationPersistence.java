@@ -221,72 +221,6 @@ public interface ExportImportConfigurationPersistence
 	public int countByG_T(long groupId, int type);
 
 	/**
-	 * Returns an ordered range of all the export import configurations where groupId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.exportimport.model.impl.ExportImportConfigurationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param status the status
-	 * @param start the lower bound of the range of export import configurations
-	 * @param end the upper bound of the range of export import configurations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching export import configurations
-	 */
-	public java.util.List<ExportImportConfiguration> findByG_S(
-		long groupId, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<ExportImportConfiguration> orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first export import configuration in the ordered set where groupId = &#63; and status = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching export import configuration
-	 * @throws NoSuchConfigurationException if a matching export import configuration could not be found
-	 */
-	public ExportImportConfiguration findByG_S_First(
-			long groupId, int status,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<ExportImportConfiguration> orderByComparator)
-		throws NoSuchConfigurationException;
-
-	/**
-	 * Returns the first export import configuration in the ordered set where groupId = &#63; and status = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching export import configuration, or <code>null</code> if a matching export import configuration could not be found
-	 */
-	public ExportImportConfiguration fetchByG_S_First(
-		long groupId, int status,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<ExportImportConfiguration> orderByComparator);
-
-	/**
-	 * Removes all the export import configurations where groupId = &#63; and status = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param status the status
-	 */
-	public void removeByG_S(long groupId, int status);
-
-	/**
-	 * Returns the number of export import configurations where groupId = &#63; and status = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param status the status
-	 * @return the number of matching export import configurations
-	 */
-	public int countByG_S(long groupId, int status);
-
-	/**
 	 * Returns an ordered range of all the export import configurations where groupId = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
@@ -561,63 +495,6 @@ public interface ExportImportConfigurationPersistence
 	}
 
 	/**
-	 * Returns all the export import configurations where groupId = &#63; and status = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param status the status
-	 * @return the matching export import configurations
-	 */
-	public default java.util.List<ExportImportConfiguration> findByG_S(
-		long groupId, int status) {
-
-		return findByG_S(
-			groupId, status,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the export import configurations where groupId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.exportimport.model.impl.ExportImportConfigurationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param status the status
-	 * @param start the lower bound of the range of export import configurations
-	 * @param end the upper bound of the range of export import configurations (not inclusive)
-	 * @return the range of matching export import configurations
-	 */
-	public default java.util.List<ExportImportConfiguration> findByG_S(
-		long groupId, int status, int start, int end) {
-
-		return findByG_S(groupId, status, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the export import configurations where groupId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.exportimport.model.impl.ExportImportConfigurationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param status the status
-	 * @param start the lower bound of the range of export import configurations
-	 * @param end the upper bound of the range of export import configurations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching export import configurations
-	 */
-	public default java.util.List<ExportImportConfiguration> findByG_S(
-		long groupId, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<ExportImportConfiguration> orderByComparator) {
-
-		return findByG_S(groupId, status, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the export import configurations where groupId = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -679,4 +556,4 @@ public interface ExportImportConfigurationPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1851591574
+// LIFERAY-SERVICE-BUILDER-HASH:-665300031

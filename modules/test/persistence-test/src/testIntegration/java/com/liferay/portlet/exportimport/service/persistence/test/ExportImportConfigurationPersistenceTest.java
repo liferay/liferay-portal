@@ -234,14 +234,6 @@ public class ExportImportConfigurationPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_S() throws Exception {
-		_persistence.countByG_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByG_S(0L, 0);
-	}
-
-	@Test
 	public void testCountByG_T_S() throws Exception {
 		_persistence.countByG_T_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt(),
@@ -581,4 +573,4 @@ public class ExportImportConfigurationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:484570563
+// LIFERAY-SERVICE-BUILDER-HASH:1877181026
