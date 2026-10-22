@@ -131,15 +131,12 @@ function PersonalMenu({
 
 		headerContent = (
 			<div
-				className="align-items-center d-flex dropdown-subheader justify-content-between"
+				className="align-items-center d-flex dropdown-subheader justify-content-between p-0"
 				onFocus={onHeaderFocus}
 			>
 				{userLabel}
 
-				<SideNavigationColorSchemeButton
-					className="c-ml-2 c-mr-n1"
-					size="xs"
-				/>
+				<SideNavigationColorSchemeButton className="c-ml-2 c-mr-n1" />
 			</div>
 		);
 

@@ -16,12 +16,10 @@ function SideNavigationColorSchemeButton({
 	className,
 	colorScheme: initialColorScheme = 'light',
 	colorSchemeSessionKey = COLOR_SCHEME_SESSION_KEY,
-	size = 'sm',
 }: {
 	className?: string;
 	colorScheme?: 'dark' | 'light';
 	colorSchemeSessionKey?: string;
-	size?: 'sm' | 'xs';
 }) {
 	const [colorScheme, setColorScheme] = useState<'dark' | 'light'>(() => {
 		const current = document.documentElement.dataset.colorScheme;
@@ -106,7 +104,7 @@ function SideNavigationColorSchemeButton({
 			displayType="secondary"
 			monospaced
 			onClick={toggle}
-			size={size}
+			size="sm"
 			symbol={colorScheme === 'dark' ? 'sun' : 'moon'}
 		/>
 	);
