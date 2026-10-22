@@ -46,11 +46,11 @@ public class AMImageURLFactoryImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_mockPreviewURL(_ORIGINAL_URL);
-
 		_setUpFileVersion();
 
 		_setUpPortalUtil();
+
+		_setUpPreviewURL(_ORIGINAL_URL);
 
 		Mockito.when(
 			_amURIResolver.resolveURI(Mockito.any(URI.class))
@@ -68,9 +68,6 @@ public class AMImageURLFactoryImplTest {
 
 	@Test
 	public void testCreateFileEntryURLAdaptationURLParameters() {
-
-		// Adaptation is delegated
-
 		Assert.assertEquals(
 			_appendQueryString(_QUERY_STRINGS[0], _ORIGINAL_URL),
 			String.valueOf(
@@ -78,8 +75,6 @@ public class AMImageURLFactoryImplTest {
 					_fileVersion,
 					_createAMImageConfigurationEntry(
 						_QUERY_STRINGS[0], "true"))));
-
-		// Adaptation is not delegated
 
 		Assert.assertEquals(
 			_URI_PREFIX + _getFileEntryRelativeURL(),
@@ -92,9 +87,6 @@ public class AMImageURLFactoryImplTest {
 
 	@Test
 	public void testCreateFileEntryURLCompanyCDNHost() throws Exception {
-
-		// Adaptation is delegated
-
 		Mockito.when(
 			_portal.getCDNHostHttp(_COMPANY_ID)
 		).thenReturn(
@@ -109,16 +101,12 @@ public class AMImageURLFactoryImplTest {
 					_createAMImageConfigurationEntry(
 						_QUERY_STRINGS[1], "true"))));
 
-		// Adaptation is not delegated
-
 		Assert.assertEquals(
 			_URI_PREFIX + _getFileEntryRelativeURL(),
 			String.valueOf(
 				_amImageURLFactoryImpl.createFileEntryURL(
 					_fileVersion,
 					_createAMImageConfigurationEntry(null, "false"))));
-
-		// The CDN host ends with a slash
 
 		Mockito.when(
 			_portal.getCDNHostHttps(_COMPANY_ID)
@@ -134,8 +122,6 @@ public class AMImageURLFactoryImplTest {
 			String.valueOf(
 				_amImageURLFactoryImpl.createFileEntryURL(
 					_fileVersion, amImageConfigurationEntry)));
-
-		// The URL names a host of its own
 
 		String[] urls = {
 			_addPreviewURLParameters(
@@ -153,7 +139,7 @@ public class AMImageURLFactoryImplTest {
 		};
 
 		for (String url : urls) {
-			_mockPreviewURL(url);
+			_setUpPreviewURL(url);
 
 			Assert.assertEquals(
 				_appendQueryString(_QUERY_STRINGS[0], url),
@@ -177,9 +163,6 @@ public class AMImageURLFactoryImplTest {
 
 	@Test
 	public void testCreateFileVersionURL() throws Exception {
-
-		// Adaptation is delegated
-
 		Assert.assertEquals(
 			_appendQueryString(_QUERY_STRINGS[0], _ORIGINAL_URL),
 			String.valueOf(
@@ -194,8 +177,6 @@ public class AMImageURLFactoryImplTest {
 			Mockito.eq(_fileEntry), Mockito.eq(_fileVersion), Mockito.isNull(),
 			Mockito.anyString(), Mockito.eq(true), Mockito.anyBoolean()
 		);
-
-		// Adaptation is not delegated
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -233,17 +214,6 @@ public class AMImageURLFactoryImplTest {
 		return StringBundler.concat(
 			"image/", _FILE_ENTRY_ID, "/", _UUID, "/", _FILE_NAME, "?t=",
 			_modifiedDate.getTime());
-	}
-
-	private void _mockPreviewURL(String url) throws Exception {
-		Mockito.when(
-			_dlURLHelper.getPreviewURL(
-				Mockito.eq(_fileEntry), Mockito.eq(_fileVersion),
-				Mockito.isNull(), Mockito.anyString(), Mockito.anyBoolean(),
-				Mockito.anyBoolean())
-		).thenReturn(
-			url
-		);
 	}
 
 	private void _setUpFileVersion() throws Exception {
@@ -296,6 +266,17 @@ public class AMImageURLFactoryImplTest {
 		PortalUtil portalUtil = new PortalUtil();
 
 		portalUtil.setPortal(_portal);
+	}
+
+	private void _setUpPreviewURL(String url) throws Exception {
+		Mockito.when(
+			_dlURLHelper.getPreviewURL(
+				Mockito.eq(_fileEntry), Mockito.eq(_fileVersion),
+				Mockito.isNull(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.anyBoolean())
+		).thenReturn(
+			url
+		);
 	}
 
 	private static final String _CDN_HOST =

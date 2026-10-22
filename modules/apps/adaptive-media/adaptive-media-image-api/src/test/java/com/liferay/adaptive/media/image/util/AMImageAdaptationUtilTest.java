@@ -31,29 +31,17 @@ public class AMImageAdaptationUtilTest {
 
 	@Test
 	public void testIsAdaptationDelegated() {
-
-		// Adaptation is delegated
-
-		Assert.assertTrue(
-			AMImageAdaptationUtil.isAdaptationDelegated(
-				_mockAMImageConfigurationEntry("true"), _COMPANY_ID));
-
-		// Adaptation is not delegated
-
 		Assert.assertFalse(
 			AMImageAdaptationUtil.isAdaptationDelegated(
 				_mockAMImageConfigurationEntry("false"), _COMPANY_ID));
-
-		// The property is not set
-
 		Assert.assertFalse(
 			AMImageAdaptationUtil.isAdaptationDelegated(
 				_mockAMImageConfigurationEntry(null), _COMPANY_ID));
-
-		// There is no AMImageConfigurationEntry
-
 		Assert.assertFalse(
 			AMImageAdaptationUtil.isAdaptationDelegated(null, _COMPANY_ID));
+		Assert.assertTrue(
+			AMImageAdaptationUtil.isAdaptationDelegated(
+				_mockAMImageConfigurationEntry("true"), _COMPANY_ID));
 	}
 
 	@FeatureFlag(enable = false, value = "LPD-94784")

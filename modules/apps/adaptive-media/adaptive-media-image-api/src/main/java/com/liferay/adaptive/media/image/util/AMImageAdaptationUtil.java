@@ -16,11 +16,6 @@ import java.util.Map;
  */
 public class AMImageAdaptationUtil {
 
-	/**
-	 * Returns whether the image adaptations for the given
-	 * amImageConfigurationEntry and companyId should be produced by the
-	 * configured CDN.
-	 */
 	public static boolean isAdaptationDelegated(
 		AMImageConfigurationEntry amImageConfigurationEntry, long companyId) {
 

@@ -84,24 +84,6 @@ public class AMImageURLFactoryImpl implements AMImageURLFactory {
 		return _amURIResolver.resolveURI(URI.create(relativeURI));
 	}
 
-	/**
-	 * Returns the URL that asks for the image's adaptation. There is no
-	 * rendition to serve, so the URL names the original image and carries the
-	 * parameters saying which adaptations are required.
-	 *
-	 * <p>
-	 * A path is delivered by the company's CDN host when it has one, on the
-	 * understanding that whatever fronts the portal is what the image's
-	 * parameters are addressed to. A URL that names a host of its own is left
-	 * to it.
-	 * </p>
-	 *
-	 * <p>
-	 * The parameters are passed along unread, so an image can address an image
-	 * optimization service of any make. Each replaces the one of the same name
-	 * the URL already carries.
-	 * </p>
-	 */
 	private URI _createDelegatedAdaptationURL(
 		AMImageConfigurationEntry amImageConfigurationEntry,
 		FileVersion fileVersion) {

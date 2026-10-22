@@ -179,9 +179,17 @@ public class AMImageConfigurationEntryParserUtilTest {
 
 	@Test
 	public void testGetConfigurationStringWithProperties() {
-
-		// A property value is encoded
-
+		Assert.assertEquals(
+			"test:desc:12345:adaptation-url-parameters=" +
+				"bg-color%3D255%3A0%3A0%3Bquality%3D80:enabled=true",
+			AMImageConfigurationEntryParserUtil.getConfigurationString(
+				new AMImageConfigurationEntryImpl(
+					"test", "desc", "12345",
+					HashMapBuilder.put(
+						"adaptation-url-parameters",
+						"bg-color=255:0:0;quality=80"
+					).build(),
+					true)));
 		Assert.assertEquals(
 			"test:desc:12345:adaptation-url-parameters=" +
 				"format%3Dwebp%26quality%3D80:enabled=true",
@@ -192,9 +200,6 @@ public class AMImageConfigurationEntryParserUtilTest {
 						"adaptation-url-parameters", "format=webp&quality=80"
 					).build(),
 					true)));
-
-		// A property with no value is left out
-
 		Assert.assertEquals(
 			"test:desc:12345:max-width=200:enabled=true",
 			AMImageConfigurationEntryParserUtil.getConfigurationString(
@@ -204,20 +209,6 @@ public class AMImageConfigurationEntryParserUtilTest {
 						"adaptation-url-parameters", StringPool.BLANK
 					).put(
 						"max-width", "200"
-					).build(),
-					true)));
-
-		// The separators are encoded
-
-		Assert.assertEquals(
-			"test:desc:12345:adaptation-url-parameters=" +
-				"bg-color%3D255%3A0%3A0%3Bquality%3D80:enabled=true",
-			AMImageConfigurationEntryParserUtil.getConfigurationString(
-				new AMImageConfigurationEntryImpl(
-					"test", "desc", "12345",
-					HashMapBuilder.put(
-						"adaptation-url-parameters",
-						"bg-color=255:0:0;quality=80"
 					).build(),
 					true)));
 	}
