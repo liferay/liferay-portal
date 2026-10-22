@@ -5,9 +5,24 @@
 		"@types/node": "^12",
 		"typescript": "^4.0 || ^5.0"
 	},
+	"exports": {
+		".": "./src/index.ts",
+		"./v1_0": "./src/v1_0/index.ts",
+		"./v2_0": "./src/v2_0/index.ts"
+	},
 	"main": "src/index.ts",
 	"name": "@liferay/portal-tools-rest-builder-test-client-js",
 	"private": true,
 	"type": "commonjs",
+	"typesVersions": {
+		"*": {
+			"v1_0": [
+				"src/v1_0/index.ts"
+			],
+			"v2_0": [
+				"src/v2_0/index.ts"
+			]
+		}
+	},
 	"version": "1.0.0"
 }

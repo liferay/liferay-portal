@@ -8,19 +8,4 @@
  * @generated
  */
 
-	export {CTCollectionAPI} from './apis/CTCollectionAPI';
-	export {CTEntryAPI} from './apis/CTEntryAPI';
-	export {CTProcessAPI} from './apis/CTProcessAPI';
-	export {CTRemoteAPI} from './apis/CTRemoteAPI';
-
-	export {CTCollection} from './models/CTCollection';
-	export {CTEntry} from './models/CTEntry';
-	export {CTProcess} from './models/CTProcess';
-	export {CTRemote} from './models/CTRemote';
-	export {Facet} from './models/Facet';
-	export {FacetValue} from './models/FacetValue';
-	export {PageCTCollection} from './models/PageCTCollection';
-	export {PageCTEntry} from './models/PageCTEntry';
-	export {PageCTProcess} from './models/PageCTProcess';
-	export {PageCTRemote} from './models/PageCTRemote';
-	export {Status} from './models/Status';
+	export * as v1_0 from './v1_0';

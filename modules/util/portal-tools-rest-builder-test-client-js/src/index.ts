@@ -8,9 +8,5 @@
  * @generated
  */
 
-	export {FeatureFlagApplicationTestEntityAPI} from './apis/FeatureFlagApplicationTestEntityAPI';
-
-	export {Facet} from './models/Facet';
-	export {FacetValue} from './models/FacetValue';
-	export {FeatureFlagApplicationTestEntity} from './models/FeatureFlagApplicationTestEntity';
-	export {PageFeatureFlagApplicationTestEntity} from './models/PageFeatureFlagApplicationTestEntity';
+	export * as v1_0 from './v1_0';
+	export * as v2_0 from './v2_0';
