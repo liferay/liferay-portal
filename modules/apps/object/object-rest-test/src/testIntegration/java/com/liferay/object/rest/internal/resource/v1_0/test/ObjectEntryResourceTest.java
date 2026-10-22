@@ -131,6 +131,7 @@ import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.WorkflowableComment;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.NoSuchCompanyException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -181,6 +182,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
@@ -10284,10 +10286,9 @@ public class ObjectEntryResourceTest {
 					"JSONObject/" +
 						_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE));
 
-		JSONObject portalInstanceJSONObject = _addPortalInstanceJSONObject();
+		Company company = _getOrAddCompany();
 
-		User adminUser = UserTestUtil.getAdminUser(
-			portalInstanceJSONObject.getLong("companyId"));
+		User adminUser = UserTestUtil.getAdminUser(company.getCompanyId());
 
 		String objectDefinitionName = ObjectDefinitionTestUtil.getRandomName();
 
@@ -10396,7 +10397,7 @@ public class ObjectEntryResourceTest {
 			).withBaseURL(
 				"http://www.able.com:" + PortalUtil.getPortalServerPort(false)
 			).withCredentials(
-				"test@able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+				"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 			).apply(
 				() -> {
 					JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -10417,7 +10418,7 @@ public class ObjectEntryResourceTest {
 			).withBaseURL(
 				"http://www.able.com:" + PortalUtil.getPortalServerPort(false)
 			).withCredentials(
-				"test@able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+				"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 			).apply(
 				() -> {
 					JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -10437,7 +10438,7 @@ public class ObjectEntryResourceTest {
 			).withBaseURL(
 				"http://www.able.com:" + PortalUtil.getPortalServerPort(false)
 			).withCredentials(
-				"test@able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+				"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 			).apply(
 				() -> {
 					JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -12070,16 +12071,16 @@ public class ObjectEntryResourceTest {
 				objectRelationship1.getObjectDefinitionId1()),
 			_OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString());
 
-		JSONObject portalInstanceJSONObject = _addPortalInstanceJSONObject();
+		Company company = _getOrAddCompany();
 
 		ObjectRelationship objectRelationship2 = _addObjectRelationship(
-			portalInstanceJSONObject.getLong("companyId"));
+			company.getCompanyId());
 
 		HTTPTestUtil.customize(
 		).withBaseURL(
 			"http://www.able.com:" + PortalUtil.getPortalServerPort(false)
 		).withCredentials(
-			"test@able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+			"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 		).apply(
 			() -> {
 				ObjectDefinition objectDefinition =
@@ -16482,27 +16483,6 @@ public class ObjectEntryResourceTest {
 		return objectRelationship;
 	}
 
-	private JSONObject _addPortalInstanceJSONObject() throws Exception {
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, "headless-portal-instances/v1.0/portal-instances/able.com",
-			Http.Method.GET);
-
-		if (Objects.equals(jsonObject.getString("status"), "NOT_FOUND")) {
-			jsonObject = HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					"domain", "able.com"
-				).put(
-					"portalInstanceId", "able.com"
-				).put(
-					"virtualHost", "www.able.com"
-				).toString(),
-				"headless-portal-instances/v1.0/portal-instances",
-				Http.Method.POST);
-		}
-
-		return jsonObject;
-	}
-
 	private void _addResourcePermission(String actionId, String name, Role role)
 		throws Exception {
 
@@ -17655,6 +17635,15 @@ public class ObjectEntryResourceTest {
 		}
 
 		return objectRelationshipNames;
+	}
+
+	private Company _getOrAddCompany() throws Exception {
+		try {
+			return _companyLocalService.getCompanyByWebId("www.able.com");
+		}
+		catch (NoSuchCompanyException noSuchCompanyException) {
+			return CompanyTestUtil.addCompanyWithWebId("www.able.com");
+		}
 	}
 
 	private JSONObject _getOwnerPermissionsJSONObject(

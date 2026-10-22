@@ -37,11 +37,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -315,29 +317,19 @@ public class OpenAPIResourceTest {
 
 	@Test
 	public void testGetOpenAPIInDifferentCompany() throws Exception {
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				"domain", "able.com"
-			).put(
-				"portalInstanceId", "able.com"
-			).put(
-				"virtualHost", "www.able.com"
-			).toString(),
-			"headless-portal-instances/v1.0/portal-instances",
-			Http.Method.POST);
+		Company company = CompanyTestUtil.addCompanyWithWebId("www.able.com");
 
-		long companyId = jsonObject.getLong("companyId");
+		long companyId = company.getCompanyId();
 
 		try {
 			HTTPTestUtil.customize(
 			).withBaseURL(
 				"http://www.able.com:" + PortalUtil.getPortalServerPort(false)
 			).withCredentials(
-				"test@able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+				"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 			).apply(
 				() -> {
-					User user = UserTestUtil.addUser(
-						_companyLocalService.getCompany(companyId));
+					User user = UserTestUtil.addUser(company);
 
 					ObjectDefinition companyObjectDefinition =
 						ObjectDefinitionTestUtil.publishObjectDefinition(

@@ -65,6 +65,7 @@ import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -256,22 +257,13 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 				_API_APPLICATION_ERC_1,
 			Http.Method.GET);
 
-		HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				"domain", "able.com"
-			).put(
-				"portalInstanceId", "able.com"
-			).put(
-				"virtualHost", "www.able.com"
-			).toString(),
-			"headless-portal-instances/v1.0/portal-instances",
-			Http.Method.POST);
+		CompanyTestUtil.addCompanyWithWebId("www.able.com");
 
 		HTTPTestUtil.customize(
 		).withBaseURL(
 			"http://www.able.com:" + PortalUtil.getPortalServerPort(false)
 		).withCredentials(
-			"test@able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+			"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 		).apply(
 			() -> {
 				_assertEndpoint(

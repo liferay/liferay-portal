@@ -30,7 +30,6 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -40,17 +39,15 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
-import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -1268,24 +1265,14 @@ public class DataDefinitionResourceTest
 
 			queue.clear();
 
-			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					"domain", "able.com"
-				).put(
-					"portalInstanceId", "able.com"
-				).put(
-					"virtualHost", "www.able.com"
-				).toString(),
-				"headless-portal-instances/v1.0/portal-instances",
-				Http.Method.POST);
+			Company company = CompanyTestUtil.addCompanyWithWebId(
+				"www.able.com");
 
-			long companyId = jsonObject.getLong("companyId");
+			long companyId = company.getCompanyId();
 
 			try (SafeCloseable safeCloseable =
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						companyId)) {
-
-				Company company = CompanyLocalServiceUtil.getCompany(companyId);
 
 				User user = UserTestUtil.getAdminUser(companyId);
 
