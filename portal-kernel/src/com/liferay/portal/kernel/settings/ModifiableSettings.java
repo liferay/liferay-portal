@@ -18,13 +18,9 @@ public interface ModifiableSettings extends Settings {
 
 	public Collection<String> getModifiedKeys();
 
-	public void reset();
-
 	public void reset(String key);
 
 	public ModifiableSettings setValue(String key, String value);
-
-	public ModifiableSettings setValues(ModifiableSettings modifiableSettings);
 
 	public ModifiableSettings setValues(String key, String[] values);
 
