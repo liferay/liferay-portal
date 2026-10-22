@@ -229,6 +229,7 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 	@Test
 	public void testGetV2Groups() throws Exception {
 		_testGetV2GroupsWithDisplayNameFilter();
+		_testGetV2GroupsWithDisplayNameWithSpaces();
 		_testGetV2GroupsWithMembers();
 		_testGetV2GroupsWithPagination();
 
@@ -780,6 +781,33 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 				5, null, 0,
 				RandomTestUtil.randomString() + " eq +\"" +
 					RandomTestUtil.randomString() + "\""));
+
+		assertHttpResponseStatusCode(
+			204, groupResource.deleteV2GroupHttpResponse(group.getId()));
+	}
+
+	private void _testGetV2GroupsWithDisplayNameWithSpaces() throws Exception {
+		Group group = randomGroup();
+
+		group.setDisplayName(
+			RandomTestUtil.randomString() + StringPool.SPACE +
+				RandomTestUtil.randomString());
+
+		HttpInvoker.HttpResponse httpResponse =
+			groupResource.postV2GroupHttpResponse(group);
+
+		Assert.assertEquals(2, httpResponse.getStatusCode() / 100);
+
+		JSONObject groupJSONObject = _jsonFactory.createJSONObject(
+			httpResponse.getContent());
+
+		group.setId(groupJSONObject.getString("id"));
+
+		_assertListResponse(
+			groupResource.getV2Groups(
+				5, null, 0,
+				"displayName eq \"" + group.getDisplayName() + "\""),
+			1, 1, group);
 
 		assertHttpResponseStatusCode(
 			204, groupResource.deleteV2GroupHttpResponse(group.getId()));
