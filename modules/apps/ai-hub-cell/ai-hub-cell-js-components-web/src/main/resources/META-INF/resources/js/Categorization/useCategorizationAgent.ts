@@ -339,15 +339,21 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 					excludedSuggestions.map((suggestion) => suggestion.id)
 				);
 
-				run({
-					...context,
-					candidateCategories: (
-						context.candidateCategories ?? []
-					).filter(
-						(candidateCategory) =>
-							!excludedCategoryIds.has(candidateCategory.id)
-					),
-				});
+				const candidateCategories = (
+					context.candidateCategories ?? []
+				).filter(
+					(candidateCategory) =>
+						!excludedCategoryIds.has(candidateCategory.id)
+				);
+
+				if (!candidateCategories.length) {
+					setSuggestions([]);
+					setStatus('empty');
+
+					return;
+				}
+
+				run({...context, candidateCategories});
 			}
 			else {
 				run({

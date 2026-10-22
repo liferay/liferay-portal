@@ -25,7 +25,10 @@ const mockPostAgentInstance =
 		typeof postCategorizationAgentInstance
 	>;
 
-const CANDIDATES = [{id: 39001, name: 'International', vocabulary: 'Travel'}];
+const CANDIDATES = [
+	{id: 39001, name: 'International', vocabulary: 'Travel'},
+	{id: 39002, name: 'Roadtrip', vocabulary: 'Travel'},
+];
 
 function createFakeEventSource() {
 	const listeners: Record<string, (event: {data: string}) => void> = {};
@@ -362,9 +365,36 @@ describe('useCategorizationAgent', () => {
 		expect(mockPostAgentInstance).toHaveBeenCalledWith(
 			expect.objectContaining({
 				context: expect.objectContaining({
-					candidateCategories: JSON.stringify([]),
+					candidateCategories: JSON.stringify([CANDIDATES[1]]),
 				}),
 			})
+		);
+	});
+
+	it('reports an empty status without invoking the agent when no candidates are left', async () => {
+		const {result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		act(() => {
+			(
+				result as {current: {resolveTargets: Function}}
+			).current.resolveTargets(
+				{candidateCategories: CANDIDATES, content: 'x'},
+				['International', 'Roadtrip']
+			);
+		});
+
+		await act(async () => {
+			(result as {current: {regenerate: Function}}).current.regenerate([
+				{id: 39001, name: 'International'},
+				{id: 39002, name: 'Roadtrip'},
+			]);
+		});
+
+		expect(mockPostAgentInstance).not.toHaveBeenCalled();
+		expect((result as {current: {status: string}}).current.status).toBe(
+			'empty'
 		);
 	});
 
