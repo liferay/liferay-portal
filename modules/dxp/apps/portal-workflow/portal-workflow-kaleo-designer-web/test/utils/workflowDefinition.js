@@ -31,6 +31,15 @@ export function getReviewTaskDefinition({
 		.replace('[$TIMER_RECIPIENT$]', timerRecipient);
 }
 
+export function getReviewTaskDefinitionWithReference(reference) {
+	return getReviewTaskDefinition({
+		assignment: reference,
+		reassignment: reference,
+		recipient: reference,
+		timerRecipient: reference,
+	});
+}
+
 export function getRolesXML(roles) {
 	const rolesXML = roles.map(({externalReferenceCode, id, name, type}) =>
 		[

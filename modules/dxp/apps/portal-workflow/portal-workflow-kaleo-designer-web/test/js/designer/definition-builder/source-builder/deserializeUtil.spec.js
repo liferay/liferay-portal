@@ -9,7 +9,9 @@ import path from 'path';
 import DeserializeUtil from '../../../../../src/main/resources/META-INF/resources/designer/js/definition-builder/source-builder/deserializeUtil';
 import {
 	getReviewTaskDefinition,
+	getReviewTaskDefinitionWithReference,
 	getRolesXML,
+	getUsersXML,
 } from '../../../../utils/workflowDefinition';
 
 const getElements = (xmlDefinition) => {
@@ -17,6 +19,13 @@ const getElements = (xmlDefinition) => {
 
 	return deserializeUtil.getElements();
 };
+
+const getExpectedReferences = (reference) => ({
+	assignment: reference,
+	reassignment: reference,
+	recipients: [reference],
+	timerRecipients: [reference],
+});
 
 const getReferences = (xmlDefinition) => {
 	const task = getElements(xmlDefinition).find(
@@ -184,3 +193,32 @@ describe('Deserializing transitions that share a name', () => {
 		expect(TransitionFromChildTask2ToEnd.data.name).toBe('transitionName');
 	});
 });
+
+describe('Deserializing users that carry an external reference code and users that do not', () => {
+	it('Keeps the external reference codes paired with their user IDs', () => {
+		expect(
+			getReferences(
+				getReviewTaskDefinitionWithReference(
+					getUsersXML([
+						{
+							externalReferenceCode:
+								'USER_EXTERNAL_REFERENCE_CODE',
+							id: 1,
+						},
+						{id: 10},
+					])
+				)
+			)
+		).toEqual(
+			getExpectedReferences({
+				assignmentType: ['user'],
+				userExternalReferenceCode: [
+					'USER_EXTERNAL_REFERENCE_CODE',
+					undefined,
+				],
+				userId: ['1', '10'],
+			})
+		);
+	});
+});
+

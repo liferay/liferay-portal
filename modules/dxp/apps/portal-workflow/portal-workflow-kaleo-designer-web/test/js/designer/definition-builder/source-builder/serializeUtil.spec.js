@@ -10,6 +10,7 @@ import {serializeDefinition} from '../../../../../src/main/resources/META-INF/re
 import {
 	getReviewTaskDefinition,
 	getRolesXML,
+	getUsersXML,
 } from '../../../../utils/workflowDefinition';
 
 const serializeElements = (xmlDefinition) => {
@@ -28,16 +29,16 @@ const serializeElements = (xmlDefinition) => {
 	).replace(/\s/g, '');
 };
 
-describe('Serializing roles that carry an external reference code', () => {
-	it('Writes the external reference code, type, and ID of every role', () => {
+describe('Serializing roles and users that carry an external reference code', () => {
+	it('Writes every reference back with its external reference code', () => {
 		const xmlDefinition = serializeElements(
 			getReviewTaskDefinition({
-				assignment: getRolesXML([
+				assignment: getUsersXML([
 					{
-						externalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_1',
+						externalReferenceCode: 'USER_EXTERNAL_REFERENCE_CODE_1',
 						id: 1,
-						type: 'regular',
 					},
+					{id: 10},
 				]),
 				reassignment: getRolesXML([
 					{
@@ -48,15 +49,15 @@ describe('Serializing roles that carry an external reference code', () => {
 				]),
 				recipient: getRolesXML([
 					{
-						externalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_2',
-						id: 2,
+						externalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_1',
+						id: 1,
 						type: 'site',
 					},
 				]),
 				timerRecipient: getRolesXML([
 					{
-						externalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_4',
-						id: 4,
+						externalReferenceCode: 'ROLE_EXTERNAL_REFERENCE_CODE_2',
+						id: 2,
 						type: 'depot',
 					},
 				]),
@@ -64,16 +65,16 @@ describe('Serializing roles that carry an external reference code', () => {
 		);
 
 		expect(xmlDefinition).toContain(
-			'<role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_1</role-external-reference-code><role-type>regular</role-type><role-id>1</role-id></role>'
+			'<assignments><user><user-external-reference-code>USER_EXTERNAL_REFERENCE_CODE_1</user-external-reference-code><user-id>1</user-id></user><user><user-id>10</user-id></user></assignments>'
 		);
 		expect(xmlDefinition).toContain(
-			'<role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_2</role-external-reference-code><role-type>site</role-type><role-id>2</role-id></role>'
+			'<reassignments><roles><role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_3</role-external-reference-code><role-type>organization</role-type><role-id>3</role-id></role></roles></reassignments>'
 		);
 		expect(xmlDefinition).toContain(
-			'<role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_3</role-external-reference-code><role-type>organization</role-type><role-id>3</role-id></role>'
+			'<recipients><roles><role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_1</role-external-reference-code><role-type>site</role-type><role-id>1</role-id></role></roles></recipients><execution-type>'
 		);
 		expect(xmlDefinition).toContain(
-			'<role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_4</role-external-reference-code><role-type>depot</role-type><role-id>4</role-id></role>'
+			'<recipients><roles><role><role-external-reference-code>ROLE_EXTERNAL_REFERENCE_CODE_2</role-external-reference-code><role-type>depot</role-type><role-id>2</role-id></role></roles></recipients></timer-notification>'
 		);
 	});
 });
