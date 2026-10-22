@@ -21,6 +21,9 @@ public class LayoutConstants {
 
 	public static final String EXTERNAL_REFERENCE_CODE_SUFFIX_DRAFT = "-draft";
 
+	public static final String EXTERNAL_REFERENCE_CODE_SUFFIX_PRIVATE =
+		"-private";
+
 	public static final String EXTERNAL_REFERENCE_CODE_SUFFIX_PUBLISHED =
 		"-published";
 
