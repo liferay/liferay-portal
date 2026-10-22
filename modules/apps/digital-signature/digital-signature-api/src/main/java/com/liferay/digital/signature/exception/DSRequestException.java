@@ -13,12 +13,12 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class DSRequestException extends PortalException {
 
-	public static class MustBeEnabled extends DSRequestException {
+	public static class MustHaveEmbeddedViewEnabled extends DSRequestException {
 
-		public MustBeEnabled(long groupId) {
+		public MustHaveEmbeddedViewEnabled(long groupId) {
 			super(
-				"Digital signature embedded view is not enabled for group " +
-					groupId);
+				"Digital signature with embedded view is not enabled for " +
+					"group " + groupId);
 		}
 
 	}

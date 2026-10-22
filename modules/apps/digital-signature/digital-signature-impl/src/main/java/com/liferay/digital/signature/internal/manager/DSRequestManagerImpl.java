@@ -109,7 +109,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		}
 
 		if (!_isEnabled(companyId, groupId)) {
-			throw new DSRequestException.MustBeEnabled(groupId);
+			throw new DSRequestException.MustHaveEmbeddedViewEnabled(groupId);
 		}
 
 		if (ArrayUtil.isEmpty(fileEntryIds)) {
@@ -120,12 +120,10 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			throw new DSRequestException.MustNotHaveNegativeExpireAfter();
 		}
 
-		Map<Long, DSRequest> latestFileEntryDSRequests =
-			_getLatestFileEntryDSRequests(companyId, fileEntryIds);
+		Map<Long, DSRequest> dsRequests = _getLatestFileEntryDSRequests(
+			companyId, fileEntryIds);
 
-		for (Map.Entry<Long, DSRequest> entry :
-				latestFileEntryDSRequests.entrySet()) {
-
+		for (Map.Entry<Long, DSRequest> entry : dsRequests.entrySet()) {
 			DSRequest dsRequest = entry.getValue();
 
 			if (dsRequest.isSyncable()) {
@@ -344,7 +342,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 		DSRequest dsRequest = dsRequests.get(dsRequestId);
 
-		if (dsRequest.isTerminal()) {
+		if ((dsRequest == null) || dsRequest.isTerminal()) {
 			return;
 		}
 
@@ -489,18 +487,16 @@ public class DSRequestManagerImpl implements DSRequestManager {
 						EXTERNAL_REFERENCE_CODE_REQUEST_RECIPIENT,
 					companyId);
 
-		List<DSRequestRecipient> dsRequestRecipients =
+		return new DSRequest(
+			dsRequestObjectEntry.getCompanyId(),
+			dsRequestObjectEntry.getCreateDate(),
+			dsRequestObjectEntry.getObjectEntryId(),
 			TransformUtil.unsafeTransform(
 				dsEnvelope.getDSRecipients(),
 				dsRecipient -> _addDSRequestRecipient(
 					dsRecipient, dsRequestObjectEntry,
 					dsRequestRecipientObjectDefinition, dsRequestStatus,
-					serviceContext));
-
-		return new DSRequest(
-			dsRequestObjectEntry.getCompanyId(),
-			dsRequestObjectEntry.getCreateDate(),
-			dsRequestObjectEntry.getObjectEntryId(), dsRequestRecipients,
+					serviceContext)),
 			dsRequestObjectEntry.getExternalReferenceCode(),
 			ListUtil.fromArray(fileEntryIds), dsRequestObjectEntry.getUserId(),
 			dsRequestObjectEntry.getUserName(),
@@ -798,28 +794,26 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			long companyId, long[] fileEntryIds)
 		throws PortalException {
 
-		Map<Long, DSRequest> latestFileEntryDSRequests = new HashMap<>();
+		Map<Long, DSRequest> fileEntryDSRequests = new HashMap<>();
 
 		if (ArrayUtil.isEmpty(fileEntryIds) ||
 			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-69290")) {
 
-			return latestFileEntryDSRequests;
+			return fileEntryDSRequests;
 		}
 
 		try {
-			Map<Long, Long> latestFileEntryDSRequestIds =
-				_getLatestFileEntryDSRequestIds(companyId, fileEntryIds);
+			Map<Long, Long> dsRequestIds = _getLatestFileEntryDSRequestIds(
+				companyId, fileEntryIds);
 
-			if (latestFileEntryDSRequestIds.isEmpty()) {
-				return latestFileEntryDSRequests;
+			if (dsRequestIds.isEmpty()) {
+				return fileEntryDSRequests;
 			}
 
 			Map<Long, DSRequest> dsRequests = _getDSRequests(
-				companyId, new HashSet<>(latestFileEntryDSRequestIds.values()));
+				companyId, new HashSet<>(dsRequestIds.values()));
 
-			for (Map.Entry<Long, Long> entry :
-					latestFileEntryDSRequestIds.entrySet()) {
-
+			for (Map.Entry<Long, Long> entry : dsRequestIds.entrySet()) {
 				DSRequest dsRequest = dsRequests.get(entry.getValue());
 
 				if ((dsRequest == null) ||
@@ -828,7 +822,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 					continue;
 				}
 
-				latestFileEntryDSRequests.put(entry.getKey(), dsRequest);
+				fileEntryDSRequests.put(entry.getKey(), dsRequest);
 			}
 		}
 		catch (Exception exception) {
@@ -839,7 +833,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				exception);
 		}
 
-		return latestFileEntryDSRequests;
+		return fileEntryDSRequests;
 	}
 
 	private Locale _getLocale(long siteGroupId, long userId) throws Exception {
@@ -1090,10 +1084,14 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
+				fetchObjectDefinitionByExternalReferenceCode(
 					DSObjectDefinitionConstants.
 						EXTERNAL_REFERENCE_CODE_REQUEST_RECIPIENT,
 					companyId);
+
+		if (objectDefinition == null) {
+			return;
+		}
 
 		for (Map<String, Serializable> values :
 				_getValuesList(
