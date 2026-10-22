@@ -7,7 +7,6 @@ package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
-import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
@@ -151,13 +150,7 @@ public class ServiceContextUtil {
 		if (Validator.isNull(
 				siteTemplatePageSpecificationExternalReferenceCode)) {
 
-			if (MergeLayoutPrototypesThreadLocal.isInProgress()) {
-				siteTemplatePageSpecificationExternalReferenceCode =
-					pageSpecification.getExternalReferenceCode();
-			}
-			else {
-				return;
-			}
+			return;
 		}
 
 		boolean draftLayout = Boolean.FALSE;

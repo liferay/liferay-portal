@@ -9,6 +9,7 @@ import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
 import com.liferay.exportimport.attachment.ExportImportAttachmentManager;
+import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.headless.admin.site.dto.v1_0.ClientExtension;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.EmbeddedPageSpecification;
@@ -387,11 +388,15 @@ public class PageSpecificationDTOConverter
 	private String _getSiteTemplatePageSpecificationERC(Layout layout) {
 		Layout layoutSetPrototypeLayout = layout.getLayoutSetPrototypeLayout();
 
-		if (layoutSetPrototypeLayout == null) {
-			return null;
+		if (layoutSetPrototypeLayout != null) {
+			return layoutSetPrototypeLayout.getExternalReferenceCode();
 		}
 
-		return layoutSetPrototypeLayout.getExternalReferenceCode();
+		if (MergeLayoutPrototypesThreadLocal.isInProgress()) {
+			return layout.getExternalReferenceCode();
+		}
+
+		return null;
 	}
 
 	private WidgetPageSection[] _getWidgetPageSections(

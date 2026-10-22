@@ -95,6 +95,8 @@ public class LayoutSetPrototypeMergeBackgroundTaskExecutor
 
 			_mergeLayoutPrototypeLayouts(layoutSetPrototype);
 
+			MergeLayoutPrototypesThreadLocal.setInProgress(true);
+
 			File larFile = null;
 
 			String sessionId = MapUtil.getString(
@@ -165,8 +167,6 @@ public class LayoutSetPrototypeMergeBackgroundTaskExecutor
 						ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
 						importLayoutSettingsMap, WorkflowConstants.STATUS_DRAFT,
 						new ServiceContext());
-
-			MergeLayoutPrototypesThreadLocal.setInProgress(true);
 
 			_exportImportLocalService.importLayouts(
 				importExportImportConfiguration, larFile);
