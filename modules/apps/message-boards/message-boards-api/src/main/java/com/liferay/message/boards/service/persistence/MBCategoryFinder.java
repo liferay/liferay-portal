@@ -14,15 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface MBCategoryFinder {
 
-	public int countC_ByG_P(
-		long groupId, long parentCategoryId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
-
-	public int countC_ByS_G_U_P(
-		long groupId, long userId, long[] parentCategoryIds,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.message.boards.model.MBCategory> queryDefinition);
-
 	public int countC_T_ByG_C(
 		long groupId, long categoryId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
@@ -56,21 +47,9 @@ public interface MBCategoryFinder {
 		long groupId, long categoryId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
 
-	public java.util.List<com.liferay.message.boards.model.MBCategory>
-		findC_ByG_P(
-			long groupId, long parentCategoryId,
-			com.liferay.portal.kernel.dao.orm.QueryDefinition
-				<com.liferay.message.boards.model.MBCategory> queryDefinition);
-
-	public java.util.List<com.liferay.message.boards.model.MBCategory>
-		findC_ByS_G_U_P(
-			long groupId, long userId, long[] parentCategoryIds,
-			com.liferay.portal.kernel.dao.orm.QueryDefinition
-				<com.liferay.message.boards.model.MBCategory> queryDefinition);
-
 	public java.util.List<Object> findC_T_ByG_C(
 		long groupId, long categoryId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1262457645
+// LIFERAY-SERVICE-BUILDER-HASH:1702963473

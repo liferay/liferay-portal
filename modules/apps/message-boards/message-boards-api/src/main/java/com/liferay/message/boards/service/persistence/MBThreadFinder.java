@@ -19,16 +19,6 @@ public interface MBThreadFinder {
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
 			<com.liferay.message.boards.model.MBThread> queryDefinition);
 
-	public int countByG_C(
-		long groupId, long categoryId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.message.boards.model.MBThread> queryDefinition);
-
-	public int countByG_U_C(
-		long groupId, long userId, long[] categoryIds,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.message.boards.model.MBThread> queryDefinition);
-
 	public int countByG_U_LPD(
 		long groupId, long userId, java.util.Date lastPostDate,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
@@ -44,19 +34,9 @@ public interface MBThreadFinder {
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
 			<com.liferay.message.boards.model.MBThread> queryDefinition);
 
-	public int countByG_U_C_A(
-		long groupId, long userId, long[] categoryIds, boolean anonymous,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.message.boards.model.MBThread> queryDefinition);
-
 	public int countByG_U_LPD_A(
 		long groupId, long userId, java.util.Date lastPostDate,
 		boolean includeAnonymous,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.message.boards.model.MBThread> queryDefinition);
-
-	public int countByS_G_U_C(
-		long groupId, long userId, long[] categoryIds,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
 			<com.liferay.message.boards.model.MBThread> queryDefinition);
 
@@ -71,9 +51,6 @@ public interface MBThreadFinder {
 		long groupId, long userId, long[] categoryIds,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
 			<com.liferay.message.boards.model.MBThread> queryDefinition);
-
-	public java.util.List<com.liferay.message.boards.model.MBThread>
-		filterFindByG_C(long groupId, long categoryId, int start, int end);
 
 	public java.util.List<com.liferay.message.boards.model.MBThread>
 		filterFindByG_C(
@@ -91,17 +68,6 @@ public interface MBThreadFinder {
 		long groupId, long userId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
 			<com.liferay.message.boards.model.MBThread> queryDefinition);
-
-	public java.util.List<com.liferay.message.boards.model.MBThread> findByG_C(
-		long groupId, long categoryId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.message.boards.model.MBThread> queryDefinition);
-
-	public java.util.List<com.liferay.message.boards.model.MBThread>
-		findByG_U_C(
-			long groupId, long userId, long[] categoryIds,
-			com.liferay.portal.kernel.dao.orm.QueryDefinition
-				<com.liferay.message.boards.model.MBThread> queryDefinition);
 
 	public java.util.List<com.liferay.message.boards.model.MBThread>
 		findByG_U_LPD(
@@ -122,23 +88,11 @@ public interface MBThreadFinder {
 				<com.liferay.message.boards.model.MBThread> queryDefinition);
 
 	public java.util.List<com.liferay.message.boards.model.MBThread>
-		findByG_U_C_A(
-			long groupId, long userId, long[] categoryIds, boolean anonymous,
-			com.liferay.portal.kernel.dao.orm.QueryDefinition
-				<com.liferay.message.boards.model.MBThread> queryDefinition);
-
-	public java.util.List<com.liferay.message.boards.model.MBThread>
 		findByG_U_LPD_A(
 			long groupId, long userId, java.util.Date lastPostDate,
 			boolean includeAnonymous,
 			com.liferay.portal.kernel.dao.orm.QueryDefinition
 				<com.liferay.message.boards.model.MBThread> queryDefinition);
 
-	public java.util.List<com.liferay.message.boards.model.MBThread>
-		findByS_G_U_C(
-			long groupId, long userId, long[] categoryIds,
-			com.liferay.portal.kernel.dao.orm.QueryDefinition
-				<com.liferay.message.boards.model.MBThread> queryDefinition);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:326088742
+// LIFERAY-SERVICE-BUILDER-HASH:-34698296
