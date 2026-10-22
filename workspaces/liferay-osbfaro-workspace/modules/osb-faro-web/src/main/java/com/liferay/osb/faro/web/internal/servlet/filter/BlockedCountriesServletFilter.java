@@ -66,7 +66,7 @@ public class BlockedCountriesServletFilter extends BaseFilter {
 		BlockedCountriesServletFilter.class);
 
 	private static final List<String> _blockedCountryCodes = Arrays.asList(
-		"CU", "IR", "KP", "SY");
+		"CU", "IR", "KP");
 
 	@Reference
 	private IPGeocoder _ipGeocoder;
