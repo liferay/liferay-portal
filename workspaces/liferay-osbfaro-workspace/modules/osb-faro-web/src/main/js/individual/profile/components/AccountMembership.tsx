@@ -8,11 +8,11 @@ import {
 	DataDrivenConfig,
 	GeneralInfoSection,
 } from 'shared/components/GeneralInfoSection';
+import {formatDataValue} from 'shared/util/data-value';
 import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {Map} from 'immutable';
 import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
-import {toCurrency} from 'shared/util/numbers';
 import {useLocale} from 'shared/hooks/useLocale';
 
 const accountMembershipConfig: DataDrivenConfig = [
@@ -91,20 +91,19 @@ const AccountMembership: React.FC<IAccountMembershipProps> = ({
 	const getValue = (key: string): string | undefined => {
 		const data = accountData?.get(key);
 
+		if (key === 'annualRevenue') {
+			return formatDataValue(data, 'currency', {
+				currencyCode: accountData?.get('currencyCode'),
+				locale,
+			});
+		}
+
 		if (!data) {
 			return undefined;
 		}
 
 		if (dateKeys.includes(key)) {
 			return formatUTCDate(data, getCustomDateFormat());
-		}
-
-		if (key === 'annualRevenue') {
-			return toCurrency(
-				parseFloat(data),
-				accountData?.get('currencyCode'),
-				locale
-			);
 		}
 
 		return data;

@@ -3,6 +3,7 @@ import ClayIcon from 'shared/components/Icon';
 import Label from '@clayui/label';
 import React from 'react';
 import {getAccountInfoDisplayValues} from 'contacts/pages/account/utils/accountInfo';
+import {isMissingDataValue} from 'shared/util/data-value';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 
@@ -53,7 +54,7 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 				<div className="align-items-center d-flex flex-wrap">
 					{country && infoItem('globe', country)}
 
-					{revenue &&
+					{!isMissingDataValue(revenue) &&
 						infoItem(
 							'dollar-symbol',
 							sub(Liferay.Language.get('x-revenue'), [

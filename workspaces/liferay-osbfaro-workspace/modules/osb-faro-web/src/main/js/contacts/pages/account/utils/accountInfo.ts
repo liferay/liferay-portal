@@ -3,12 +3,12 @@ import {
 	LifecycleStages,
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
-import {toThousands} from 'shared/util/numbers';
+import {formatDataValue} from 'shared/util/data-value';
 
 /**
  * Maps an account's raw firmographics onto the values the Account Info card
- * displays. A value the account does not carry maps to blank, never to a
- * placeholder, and an unmapped lifecycle stage keeps its raw name.
+ * displays. A value the account does not carry maps to no data, which the
+ * bar hides, and an unmapped lifecycle stage keeps its raw name.
  */
 
 interface IAccountInfoFirmographics {
@@ -41,6 +41,6 @@ export const getAccountInfoDisplayValues = ({
 					label: lifecycleStageEntry?.label ?? lifecycleStage,
 				}
 			: undefined,
-		revenue: annualRevenue ? toThousands(annualRevenue) : '',
+		revenue: formatDataValue(annualRevenue, 'count'),
 	};
 };
