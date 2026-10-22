@@ -108,6 +108,8 @@ function ClayAlert({
 	displayType = 'info',
 	hideCloseIcon = false,
 	onClose,
+	onMouseOut,
+	onMouseOver,
 	role = 'alert',
 	spritemap,
 	symbol,
@@ -131,8 +133,16 @@ function ClayAlert({
 				'alert-inline': variant === 'inline',
 				[`alert-${displayType}`]: displayType,
 			})}
-			onMouseOut={startAutoCloseTimer}
-			onMouseOver={pauseAutoCloseTimer}
+			onMouseOut={(event) => {
+				onMouseOut?.(event);
+
+				startAutoCloseTimer();
+			}}
+			onMouseOver={(event) => {
+				onMouseOver?.(event);
+
+				pauseAutoCloseTimer();
+			}}
 		>
 			<ConditionalContainer
 				className={containerClassName}
