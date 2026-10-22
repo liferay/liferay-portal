@@ -15,11 +15,15 @@ import {
 	WorkflowStatus,
 } from '../../../../common/utils/constants';
 import {getImage} from '../../../../common/utils/getImage';
+import toDatePart from '../../../../common/utils/toDatePart';
 import {getStatusSelectedData} from '../../../quick_filters/quickFilterUpdates';
 import {BaseCard} from '../../common/BaseCard';
 import PickerTrigger from '../../common/PickerTrigger';
 import {GovernanceContext} from '../GovernanceContext';
-import GovernanceService, {FacetBucket} from '../GovernanceService';
+import GovernanceService, {
+	FacetBucket,
+	MILLISECONDS_PER_DAY,
+} from '../GovernanceService';
 import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
 import {GovernanceAdditionalProps} from '../types';
 
@@ -128,6 +132,9 @@ export function ContentProgress({
 	}, [additionalProps.contentProgressFilter, space.siteId, timeRangeDays]);
 
 	const segments = useMemo(() => {
+		const createdSince = toDatePart(
+			new Date(Date.now() - timeRangeDays * MILLISECONDS_PER_DAY)
+		);
 		const spaceFilters = getSpaceFilters(space);
 
 		return getSegments(buckets ?? [], (statuses) =>
@@ -142,11 +149,19 @@ export function ContentProgress({
 							}))
 						),
 					},
+					{
+						id: FDS_FILTER_ID.DATE_CREATED,
+						selectedData: {
+							exclude: false,
+							from: createdSince,
+							to: null,
+						},
+					},
 					...spaceFilters,
 				],
 			})
 		);
-	}, [additionalProps.allSectionFDSName, buckets, space]);
+	}, [additionalProps.allSectionFDSName, buckets, space, timeRangeDays]);
 
 	return (
 		<BaseCard
