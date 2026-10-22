@@ -14,6 +14,7 @@ import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {
 	getSafeDecodedURIComponent,
 	getSafeRangeSelectors,
+	isBlank,
 } from 'shared/util/util';
 import {getUrl} from 'shared/util/urls';
 import {metricsListColumns} from 'shared/util/table-columns';
@@ -252,7 +253,9 @@ const getTableColumns = ({
 		{
 			accessor: 'title',
 			cellRenderer: ({data}: any) => {
-				const url = generateURL(data);
+				const url = isBlank(data.touchpoint)
+					? undefined
+					: generateURL(data);
 
 				return (
 					<td className="table-cell-expand">
