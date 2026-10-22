@@ -16,6 +16,7 @@
 			"dateModified"?: Date;
 			"description"?: string;
 			"documentId"?: number;
+			"externalReferenceCode"?: string;
 			"id"?: number;
 			"jsonProperty"?: string;
 			"name"?: string;
@@ -52,6 +53,11 @@
 			baseName: "documentId",
 			name: "documentId",
 			type: "number",
+		},
+		{
+			baseName: "externalReferenceCode",
+			name: "externalReferenceCode",
+			type: "string",
 		},
 		{
 			baseName: "id",

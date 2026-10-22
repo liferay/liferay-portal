@@ -110,6 +110,20 @@ public class ChildTestEntity3SerDes {
 			sb.append(childTestEntity3.getDocumentId());
 		}
 
+		if (childTestEntity3.getExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(childTestEntity3.getExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (childTestEntity3.getId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -289,6 +303,15 @@ public class ChildTestEntity3SerDes {
 				"documentId", String.valueOf(childTestEntity3.getDocumentId()));
 		}
 
+		if (childTestEntity3.getExternalReferenceCode() == null) {
+			map.put("externalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"externalReferenceCode",
+				String.valueOf(childTestEntity3.getExternalReferenceCode()));
+		}
+
 		if (childTestEntity3.getId() == null) {
 			map.put("id", null);
 		}
@@ -392,6 +415,11 @@ public class ChildTestEntity3SerDes {
 			else if (Objects.equals(jsonParserFieldName, "documentId")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
@@ -452,6 +480,14 @@ public class ChildTestEntity3SerDes {
 				if (jsonParserFieldValue != null) {
 					childTestEntity3.setDocumentId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					childTestEntity3.setExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -608,4 +644,4 @@ public class ChildTestEntity3SerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1537032566
+// LIFERAY-REST-BUILDER-HASH:-501780768

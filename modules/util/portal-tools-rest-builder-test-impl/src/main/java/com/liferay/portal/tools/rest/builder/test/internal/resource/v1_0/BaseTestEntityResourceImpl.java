@@ -260,7 +260,7 @@ public abstract class BaseTestEntityResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/test-entities/{testEntityId}' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/test-entities/{testEntityId}' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "externalReferenceCode": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -309,6 +309,11 @@ public abstract class BaseTestEntityResourceImpl
 
 		if (testEntity.getDocumentId() != null) {
 			existingTestEntity.setDocumentId(testEntity.getDocumentId());
+		}
+
+		if (testEntity.getExternalReferenceCode() != null) {
+			existingTestEntity.setExternalReferenceCode(
+				testEntity.getExternalReferenceCode());
 		}
 
 		if (testEntity.getJsonProperty() != null) {
@@ -421,7 +426,7 @@ public abstract class BaseTestEntityResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/test-entities' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/test-entities' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "externalReferenceCode": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "TestEntity")}
@@ -528,7 +533,7 @@ public abstract class BaseTestEntityResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/test-entities/{testEntityId}' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/test-entities/{testEntityId}' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "externalReferenceCode": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -618,7 +623,7 @@ public abstract class BaseTestEntityResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/test-entities/{testEntityId}/status' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/test-entities/{testEntityId}/status' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "externalReferenceCode": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1431,4 +1436,4 @@ public abstract class BaseTestEntityResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1800756915
+// LIFERAY-REST-BUILDER-HASH:-1804072969
