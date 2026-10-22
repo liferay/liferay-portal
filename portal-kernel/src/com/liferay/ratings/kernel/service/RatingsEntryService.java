@@ -56,4 +56,4 @@ public interface RatingsEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:291126837
+// LIFERAY-SERVICE-BUILDER-HASH:-322821252
