@@ -56,13 +56,12 @@ public class GroupSelectorBreadcrumbUtil {
 		Group group, HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse, PortletURL portletURL) {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		GroupItemSelectorProvider groupItemSelectorProvider =
 			GroupItemSelectorProviderRegistryUtil.getGroupItemSelectorProvider(
 				group);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		return BreadcrumbEntryListBuilder.add(
 			breadcrumbEntry -> {
