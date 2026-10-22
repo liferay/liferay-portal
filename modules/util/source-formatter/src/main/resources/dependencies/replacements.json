@@ -6398,6 +6398,38 @@
 	},
 	{
 		"classNames": [
+			"BaseCTDisplayRenderer"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-101820",
+		"methodsToFormat": [
+			{
+				"from": "regex:@Override\\s+public String getContent\\(\\s*HttpServletRequest (?<httpServletRequest>\\w+),\\s*HttpServletResponse (?<httpServletResponse>\\w+),\\s*Locale (?<locale>\\w+),\\s*(?<modelClassName>\\w+) (?<model>\\w+)\\)\\s*throws Exception \\{\\n",
+				"to": "@Override\n\tpublic String renderPreview(DisplayContext<${modelClassName}> displayContext)\n\t\tthrows Exception {\n\n\t\t${modelClassName} ${model} = displayContext.getModel();\n\n\t\tHttpServletRequest ${httpServletRequest} =\n\t\t\tdisplayContext.getHttpServletRequest();\n\n\t\tHttpServletResponse ${httpServletResponse} =\n\t\t\tdisplayContext.getHttpServletResponse();\n\n\t\tLocale ${locale} = displayContext.getLocale();\n"
+			},
+			{
+				"from": "regex:\\n\\t\\t\\w+ (?<name>\\w+) = displayContext\\.getModel\\(\\);\\n(?!(?:(?!\\n\\t\\})[\\s\\S])*\\b\\k<name>\\b)",
+				"to": ""
+			},
+			{
+				"from": "regex:\\n\\t\\tHttpServletRequest (?<name>\\w+) =\\n\\t\\t\\tdisplayContext\\.getHttpServletRequest\\(\\);\\n(?!(?:(?!\\n\\t\\})[\\s\\S])*\\b\\k<name>\\b)",
+				"to": ""
+			},
+			{
+				"from": "regex:\\n\\t\\tHttpServletResponse (?<name>\\w+) =\\n\\t\\t\\tdisplayContext\\.getHttpServletResponse\\(\\);\\n(?!(?:(?!\\n\\t\\})[\\s\\S])*\\b\\k<name>\\b)",
+				"to": ""
+			},
+			{
+				"from": "regex:\\n\\t\\tLocale (?<name>\\w+) = displayContext\\.getLocale\\(\\);\\n(?!(?:(?!\\n\\t\\})[\\s\\S])*\\b\\k<name>\\b)",
+				"to": ""
+			}
+		],
+		"newImports": [
+			"com.liferay.change.tracking.spi.display.context.DisplayContext"
+		]
+	},
+	{
+		"classNames": [
 			"CommerceOrderHttpHelper"
 		],
 		"from": "getCommerceCartPortletURL(HttpServletRequest paramName)",
