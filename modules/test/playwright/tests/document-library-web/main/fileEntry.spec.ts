@@ -21,6 +21,8 @@ import {DLFILE_STATUS} from '../../../helpers/json-web-services/JSONWebServicesD
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {expandSection} from '../../../utils/expandSection';
+import getGlobalSiteId from '../../../utils/getGlobalSiteId';
 import getRandomString from '../../../utils/getRandomString';
 import {performLogout} from '../../../utils/performLogin';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
@@ -459,6 +461,54 @@ test(
 		await expect(
 			page.getByRole('link', {exact: true, name: firstFileName})
 		).toBeVisible();
+	}
+);
+
+test(
+	'Internal and global vocabularies are available in the multiple files upload',
+	{
+		tag: '@LPD-111333',
+	},
+	async ({apiHelpers, documentLibraryEditFilePage, page, site}) => {
+		const globalVocabularyName = getRandomString();
+		const internalVocabularyName = getRandomString();
+
+		await createCategories({
+			apiHelpers,
+			categoryNames: [{name: getRandomString()}],
+			siteId: site.id,
+			vocabularyName: internalVocabularyName,
+			vocabularyVisibility: true,
+		});
+		await createCategories({
+			apiHelpers,
+			categoryNames: [{name: getRandomString()}],
+			siteId: String(await getGlobalSiteId(apiHelpers)),
+			vocabularyName: globalVocabularyName,
+		});
+
+		await documentLibraryEditFilePage.goToNewFileDifferentType(
+			'Multiple Files Upload',
+			site.friendlyUrlPath
+		);
+
+		const fileName = getRandomString();
+
+		await page.getByRole('button', {name: 'Select Files'}).waitFor();
+		await page.locator('input[type="file"]').setInputFiles({
+			buffer: Buffer.from(fileName),
+			mimeType: 'text/plain',
+			name: `${fileName}.txt`,
+		});
+
+		await expect(
+			page.getByRole('checkbox', {name: `${fileName}.txt`})
+		).toBeEnabled();
+
+		await expandSection(page.getByRole('button', {name: 'Categorization'}));
+
+		await expect(page.getByText(internalVocabularyName)).toBeVisible();
+		await expect(page.getByText(globalVocabularyName)).toBeVisible();
 	}
 );
 
