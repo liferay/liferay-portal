@@ -121,6 +121,16 @@ describe('VerticalTimeline', () => {
 			expect(screen.queryByText('ind-1')).toBeNull();
 		});
 
+		it('shows no data for a known individual without name or id', () => {
+			const {container} = renderTimeline({
+				items: [{...INDIVIDUAL_ITEM, individualName: ''}]
+			});
+
+			expect(
+				container.querySelector('.individual-title .text-secondary')
+			).toHaveTextContent('–');
+		});
+
 		it('is not expandable', () => {
 			const {container} = renderTimeline({items: [INDIVIDUAL_ITEM]});
 
@@ -171,6 +181,44 @@ describe('VerticalTimeline', () => {
 				expect.stringContaining('event-count-pill')
 			]);
 			expect(details[2]).toHaveTextContent('2');
+		});
+
+		it('shows 0 in the event count of a session without events', () => {
+			const {container} = renderTimeline({
+				items: [{...SESSION_ITEM, totalEvents: 0}]
+			});
+
+			expect(
+				container.querySelector('.session-row .event-count-pill')
+			).toHaveTextContent('0');
+		});
+
+		it('shows missing payload values as no data and zero values as 0', () => {
+			const {container} = renderTimeline({
+				items: [
+					{
+						...SESSION_ITEM,
+						attributes: {
+							...SESSION_ITEM.attributes,
+							languageId: null,
+							screenWidth: 0
+						}
+					}
+				]
+			});
+
+			fireEvent.click(
+				container.querySelector('.session-row .payload-button')
+			);
+
+			const languageIdRow = screen.getByText('languageId').closest('tr');
+			const screenWidthRow = screen.getByText('screenWidth').closest('tr');
+
+			expect(
+				languageIdRow.querySelector('.text-secondary')
+			).toHaveTextContent('–');
+			expect(screenWidthRow).toHaveTextContent('0');
+			expect(screenWidthRow.querySelector('.text-secondary')).toBeNull();
 		});
 
 		it('shows "in progress" when the session has no end time', () => {

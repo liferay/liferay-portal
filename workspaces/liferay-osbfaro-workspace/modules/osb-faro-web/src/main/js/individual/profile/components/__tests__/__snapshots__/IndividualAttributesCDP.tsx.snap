@@ -397,7 +397,11 @@ exports[`IndividualAttributesCDP should render 1`] = `
                     class="font-weight-semi-bold text-break text-dark"
                     style="word-break: break-all;"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </span>
                 </div>
               </div>

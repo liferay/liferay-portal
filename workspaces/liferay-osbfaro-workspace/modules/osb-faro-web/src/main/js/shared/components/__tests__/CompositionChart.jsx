@@ -1,6 +1,6 @@
 import CompositionChart, {CompositionLegend} from '../CompositionChart';
 import React from 'react';
-import {cleanup, render} from '@testing-library/react';
+import {cleanup, render, screen} from '@testing-library/react';
 
 jest.unmock('react-dom');
 
@@ -61,5 +61,49 @@ describe('CompositionLegend', () => {
 		container
 			.querySelectorAll('b')
 			.forEach(element => expect(element).toHaveTextContent('0%'));
+	});
+
+	it('should render a zero count as 0', () => {
+		render(
+			<CompositionLegend
+				items={[{color: 'blue', label: 'foo', value: 0}]}
+				total={1000}
+			/>
+		);
+
+		expect(screen.getByTestId('active-count')).toHaveTextContent('0');
+	});
+
+	it('should render the percentage as no data when there is no total', () => {
+		render(
+			<CompositionLegend
+				items={[{color: 'blue', label: 'foo', value: 0}]}
+				total={0}
+			/>
+		);
+
+		expect(
+			screen.getByTestId('active-porcentage').querySelector('span')
+		).toHaveClass('text-secondary');
+		expect(screen.getByTestId('active-porcentage')).toHaveTextContent(
+			'–'
+		);
+	});
+
+	it('should render the count and percentage as processing', () => {
+		render(
+			<CompositionLegend
+				items={[{color: 'blue', label: 'foo', value: 0}]}
+				processing
+				total={0}
+			/>
+		);
+
+		expect(screen.getByTestId('active-count')).toHaveTextContent(
+			'Processing'
+		);
+		expect(screen.getByTestId('active-porcentage')).toHaveTextContent(
+			'Processing'
+		);
 	});
 });

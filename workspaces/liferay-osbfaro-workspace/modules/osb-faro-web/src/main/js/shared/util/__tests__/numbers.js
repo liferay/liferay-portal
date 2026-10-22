@@ -19,6 +19,21 @@ describe('toLocale', () => {
 		expect(toLocale(0.123456)).toEqual('0.123456');
 		expect(toLocale(123456.123456789)).toEqual('123,456.123457');
 	});
+
+	it.each`
+		value
+		${null}
+		${undefined}
+		${''}
+		${NaN}
+		${Infinity}
+	`('should return the no data value for $value', ({value}) => {
+		expect(toLocale(value)).toEqual('–');
+	});
+
+	it('should return 0 for a real zero', () => {
+		expect(toLocale(0)).toEqual('0');
+	});
 });
 
 describe('toThousands', () => {
@@ -119,6 +134,21 @@ describe('toFixedPoint', () => {
 });
 
 describe('toRounded', () => {
+	it.each`
+		value
+		${null}
+		${undefined}
+		${''}
+		${NaN}
+		${Infinity}
+	`('should return the no data value for $value', ({value}) => {
+		expect(toRounded(value)).toEqual('–');
+	});
+
+	it('should return 0 for a real zero', () => {
+		expect(toRounded(0)).toEqual('0');
+	});
+
 	it('should return the rounded without decimal', () => {
 		expect(toRounded(20.567, 0)).toEqual('21');
 		expect(toRounded(1.123, 0)).toEqual('1');
@@ -191,6 +221,21 @@ describe('formatPercentFromRatio', () => {
 		expect(formatPercentFromRatio(0.073)).toEqual('7.3%');
 		expect(formatPercentFromRatio(1)).toEqual('100%');
 	});
+
+	it.each`
+		value
+		${null}
+		${undefined}
+		${''}
+		${NaN}
+		${Infinity}
+	`('should return the no data value for $value', ({value}) => {
+		expect(formatPercentFromRatio(value)).toEqual('–');
+	});
+
+	it('should return 0% for a real zero', () => {
+		expect(formatPercentFromRatio(0)).toEqual('0%');
+	});
 });
 
 describe('formatPercent', () => {
@@ -198,6 +243,21 @@ describe('formatPercent', () => {
 		expect(formatPercent(10)).toEqual('10%');
 		expect(formatPercent(7.3)).toEqual('7.3%');
 		expect(formatPercent(100)).toEqual('100%');
+	});
+
+	it.each`
+		value
+		${null}
+		${undefined}
+		${''}
+		${NaN}
+		${Infinity}
+	`('should return the no data value for $value', ({value}) => {
+		expect(formatPercent(value)).toEqual('–');
+	});
+
+	it('should return 0% for a real zero', () => {
+		expect(formatPercent(0)).toEqual('0%');
 	});
 });
 

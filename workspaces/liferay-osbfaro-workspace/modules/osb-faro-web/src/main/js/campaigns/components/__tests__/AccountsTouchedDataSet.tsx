@@ -179,6 +179,22 @@ describe('AccountsTouchedDataSet', () => {
 		expect(container.querySelector('.label-inverse-danger')).toBeTruthy();
 	});
 
+	it.each([
+		['missing', undefined],
+		['empty', ''],
+	])(
+		'should render the no data value when the lifecycle stage is %s',
+		(_, value) => {
+			renderDataSet();
+
+			render(
+				lastFDSProps.customDataRenderers.lifecycleStageRenderer({value})
+			);
+
+			expect(screen.getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
 	it('should abbreviate the amounts', () => {
 		renderDataSet();
 

@@ -54,22 +54,59 @@ describe('GeneralInfoSection', () => {
 		expect(mockGetValue).toHaveBeenCalledWith('userEmail');
 	});
 
-	it('should display a dash "-" when getValue returns a falsy value', () => {
-		const mockGetValue = jest.fn((key) => {
-			if (key === 'userName') return 'John Doe';
-			return undefined;
-		});
+	it.each([null, undefined, ''])(
+		'should display no data when getValue returns %p',
+		(value) => {
+			const mockGetValue = jest.fn((key) => {
+				if (key === 'userName') return 'John Doe';
+				return value as string | undefined;
+			});
 
-		const {getByText} = render(
+			const {getByText} = render(
+				<GeneralInfoSection
+					config={mockConfig}
+					getValue={mockGetValue}
+					languageMap={mockLanguageMap}
+				/>
+			);
+
+			expect(getByText('John Doe')).toBeTruthy();
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it.each([0, '0'])(
+		'should display a zero when getValue returns %p',
+		(value) => {
+			const mockGetValue = jest.fn((key) => {
+				if (key === 'userName') return 'John Doe';
+				return value;
+			});
+
+			const {getByText, queryByText} = render(
+				<GeneralInfoSection
+					config={mockConfig}
+					getValue={mockGetValue}
+					languageMap={mockLanguageMap}
+				/>
+			);
+
+			expect(getByText('0')).toBeTruthy();
+			expect(queryByText('–')).toBeNull();
+		}
+	);
+
+	it('should not link a missing value', () => {
+		const {container} = render(
 			<GeneralInfoSection
 				config={mockConfig}
-				getValue={mockGetValue}
+				getHref={() => '/foo'}
+				getValue={() => undefined}
 				languageMap={mockLanguageMap}
 			/>
 		);
 
-		expect(getByText('John Doe')).toBeTruthy();
-		expect(getByText('-')).toBeTruthy();
+		expect(container.querySelector('a')).toBeNull();
 	});
 
 	it('should render the correct section title', () => {

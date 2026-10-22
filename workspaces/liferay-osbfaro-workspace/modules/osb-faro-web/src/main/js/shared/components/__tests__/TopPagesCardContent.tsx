@@ -146,13 +146,29 @@ describe('TopPagesCardContent', () => {
 		expect(screen.getByText('24%')).toBeInTheDocument();
 	});
 
-	it('should render a dash when the exit rate is not a finite number', () => {
+	it('should render the no data value when the exit rate is missing', () => {
 		renderContent(
 			[item({exitRateMetric: {value: undefined as unknown as number}})],
 			EXIT_RATE_METRIC
 		);
 
-		expect(screen.getByText('-')).toBeInTheDocument();
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render the no data value when the exit rate is not finite', () => {
+		const {container} = renderContent(
+			[item({exitRateMetric: {value: Infinity}})],
+			EXIT_RATE_METRIC
+		);
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(container).not.toHaveTextContent('∞');
+	});
+
+	it('should render a zero exit rate', () => {
+		renderContent([item({exitRateMetric: {value: 0}})], EXIT_RATE_METRIC);
+
+		expect(screen.getByText('0%')).toBeInTheDocument();
 	});
 
 	it('should carry the selected range and the active tab into the footer action', () => {

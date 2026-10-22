@@ -93,13 +93,12 @@ describe('AccountInfoBar', () => {
 			expect(screen.getByText('Type: Prospect')).toBeInTheDocument();
 		});
 
-		it('should render a zeroed annual revenue blank', () => {
+		it('should render a zero annual revenue', () => {
 			render(
 				<AccountInfoBar accountName="Hydrofield" annualRevenue={0} />
 			);
 
-			expect(screen.queryByText(/Revenue/)).not.toBeInTheDocument();
-			expect(screen.queryByText('0')).not.toBeInTheDocument();
+			expect(screen.getByText(/Revenue/)).toHaveTextContent('0');
 		});
 
 		it('should render nothing for an empty account', () => {

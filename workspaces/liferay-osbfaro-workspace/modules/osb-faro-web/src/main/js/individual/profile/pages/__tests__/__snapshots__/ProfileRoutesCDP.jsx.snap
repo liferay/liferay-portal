@@ -439,7 +439,11 @@ exports[`IndividualProfileRoutes should render 1`] = `
                       </td>
                       <td />
                       <td>
-                        -
+                        <span
+                          class="text-secondary"
+                        >
+                          –
+                        </span>
                       </td>
                       <td>
                         Jul 9, 2018

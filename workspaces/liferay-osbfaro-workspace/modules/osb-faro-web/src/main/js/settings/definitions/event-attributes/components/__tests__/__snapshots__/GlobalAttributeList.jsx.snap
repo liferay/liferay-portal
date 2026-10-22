@@ -182,7 +182,11 @@ exports[`GlobalAttributeList should render 1`] = `
             <td
               class="table-cell-expand text-truncate"
             >
-              -
+              <span
+                class="text-secondary"
+              >
+                –
+              </span>
             </td>
             <td
               class="table-cell-expand-smaller text-truncate"

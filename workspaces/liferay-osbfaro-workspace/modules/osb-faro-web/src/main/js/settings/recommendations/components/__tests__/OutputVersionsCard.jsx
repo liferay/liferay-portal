@@ -71,4 +71,70 @@ describe('OutputVersionsCard', () => {
 
 		expect(queryByText(/Next/)).toBeNull();
 	});
+
+	it('should render a zero count and no data for a missing count', async () => {
+		const {container} = render(
+			<MockedProvider
+				mocks={[
+					mockRecommendationJobRunsReq([
+						data.mockRecommendationJobRun(0, {
+							context: [
+								{key: 'userItemInteractionsDatasetCount', value: 0}
+							]
+						})
+					])
+				]}
+			>
+				<OutputVersionsCard
+					jobId='321'
+					runFrequency={JobRunFrequencies.Every14Days}
+				/>
+			</MockedProvider>
+		);
+
+		await waitForLoading(container);
+
+		jest.runAllTimers();
+
+		const cells = container.querySelectorAll('tbody tr td');
+
+		expect(cells[1].textContent).toBe('0');
+		expect(cells[2].querySelector('.text-secondary').textContent).toBe(
+			'–'
+		);
+	});
+
+	it('should render no data for a count without value', async () => {
+		const {container} = render(
+			<MockedProvider
+				mocks={[
+					mockRecommendationJobRunsReq([
+						data.mockRecommendationJobRun(0, {
+							context: [
+								{
+									key: 'userItemInteractionsDatasetCount',
+									value: null
+								},
+								{key: 'itemsDatasetCount', value: ''}
+							]
+						})
+					])
+				]}
+			>
+				<OutputVersionsCard
+					jobId='321'
+					runFrequency={JobRunFrequencies.Every14Days}
+				/>
+			</MockedProvider>
+		);
+
+		await waitForLoading(container);
+
+		jest.runAllTimers();
+
+		const cells = container.querySelectorAll('tbody tr td');
+
+		expect(cells[1].textContent).toBe('–');
+		expect(cells[2].textContent).toBe('–');
+	});
 });

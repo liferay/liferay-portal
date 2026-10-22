@@ -49,12 +49,14 @@ describe('ContextualInformation', () => {
 		expect(getByText('1234-abcde-67890')).toBeTruthy();
 	});
 
-	it('should display the fallback dash for missing context values', () => {
+	it('should display no data for missing context values', () => {
 		const {getAllByText} = render(
 			<ContextualInformation contextData={fromJS({})} />
 		);
 
-		const dashes = getAllByText('-');
-		expect(dashes.length).toBeGreaterThan(0);
+		const noDataValues = getAllByText('–');
+
+		expect(noDataValues.length).toBeGreaterThan(0);
+		expect(noDataValues[0]).toHaveClass('text-secondary');
 	});
 });

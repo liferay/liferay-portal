@@ -57,12 +57,13 @@ describe('AccountMetricsCard', () => {
 			expect(container).toHaveTextContent('434 Anonymous');
 		});
 
-		it('should render zero when the metric has no value', () => {
+		it('should render no data when the metric has no value', () => {
 			renderAccountMetricsCard({
 				metrics: [{label: '{0} Individuals'}],
 			});
 
-			expect(screen.getByText('0')).toBeInTheDocument();
+			expect(screen.getByText('–')).toHaveClass('text-secondary');
+			expect(screen.queryByText('0')).not.toBeInTheDocument();
 		});
 
 		it('should render zero rather than an empty card when the value is zero', () => {
@@ -126,7 +127,7 @@ describe('AccountMetricsCard', () => {
 				],
 			});
 
-			expect(container).toHaveTextContent('0 Individuals');
+			expect(container).toHaveTextContent('– Individuals');
 		});
 
 		it('should fall back to the label when there is no singular form', () => {

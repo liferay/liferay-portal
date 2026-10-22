@@ -62,12 +62,14 @@ describe('IndividualAttributesCDP', () => {
 		expect(getByText('Mar 4, 2026')).toBeTruthy();
 	});
 
-	it('should display the fallback dash for missing values', () => {
+	it('should display no data for missing values', () => {
 		const {getAllByText} = render(
 			<IndividualAttributesCDP propertiesData={fromJS({})} />
 		);
 
-		const dashes = getAllByText('-');
-		expect(dashes.length).toBeGreaterThan(0);
+		const noDataValues = getAllByText('–');
+
+		expect(noDataValues.length).toBeGreaterThan(0);
+		expect(noDataValues[0]).toHaveClass('text-secondary');
 	});
 });

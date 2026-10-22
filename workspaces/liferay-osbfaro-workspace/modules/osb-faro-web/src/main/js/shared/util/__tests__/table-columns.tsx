@@ -1,14 +1,18 @@
 import React from 'react';
+import Row from 'shared/components/table/Row';
 import {
 	accountsListColumns,
 	changesListColumns,
+	eventListColumns,
 	individualsListColumns,
 	IndividualsListCDPColumns,
 	membershipChangesColumns,
 	metricsListColumns,
+	pagesListColumns,
 	segmentsListColumns,
 	usersListColumns,
 } from '../table-columns';
+import {MemoryRouter} from 'react-router';
 import {render} from '@testing-library/react';
 
 jest.unmock('react-dom');
@@ -35,6 +39,35 @@ describe('metricsListColumns', () => {
 		expect(metricsListColumns.ratingsMetric.dataFormatter(0.753)).toBe(
 			'7.53/10'
 		);
+	});
+});
+
+describe('pagesListColumns', () => {
+	const renderInactiveViewCount = (viewCount?: number | null) =>
+		render(
+			<table>
+				<tbody>
+					<Row
+						columns={[pagesListColumns.inactiveViewCount]}
+						data={{viewCount}}
+						onRowDelete={jest.fn()}
+						onRowSave={jest.fn()}
+						rowIndex={0}
+					/>
+				</tbody>
+			</table>
+		);
+
+	it('inactiveViewCount should render the view count', () => {
+		const {getByText} = renderInactiveViewCount(12);
+
+		expect(getByText('12')).toBeInTheDocument();
+	});
+
+	it('inactiveViewCount should render a zero view count', () => {
+		const {getByText} = renderInactiveViewCount(0);
+
+		expect(getByText('0')).toBeInTheDocument();
 	});
 });
 
@@ -78,6 +111,32 @@ describe('membershipChangesColumns', () => {
 	});
 });
 
+describe('membershipChangesColumns no data', () => {
+	it.each([null, undefined, ''])(
+		'renders a %p first seen date as no data',
+		(firstSeenTime) => {
+			const {getByText} = renderCell(
+				membershipChangesColumns.firstSeen.cellRenderer,
+				{data: {firstSeenTime}}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it.each([null, undefined, ''])(
+		'renders a %p last active date as no data',
+		(lastActivityTime) => {
+			const {getByText} = renderCell(
+				membershipChangesColumns.lastActive.cellRenderer,
+				{data: {lastActivityTime}}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+});
+
 describe('IndividualsListCDPColumns', () => {
 	it('renders the first seen date as a long UTC date', () => {
 		const {getByText} = renderCell(
@@ -96,6 +155,54 @@ describe('IndividualsListCDPColumns', () => {
 
 		expect(getByText('June 10, 2026')).toBeInTheDocument();
 	});
+
+	it.each([null, undefined, ''])(
+		'renders a %p account name as no data',
+		(accountName) => {
+			const {getByText} = renderCell(
+				IndividualsListCDPColumns.accountNames.cellRenderer,
+				{data: {accountName}}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it.each([null, undefined, ''])(
+		'renders a %p country as no data',
+		(country) => {
+			const {getByText} = renderCell(
+				IndividualsListCDPColumns.country.cellRenderer,
+				{data: {properties: {country}}}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it.each([null, undefined, ''])(
+		'renders a %p first seen date as no data',
+		(firstActivityDate) => {
+			const {getByText} = renderCell(
+				IndividualsListCDPColumns.firstSeen.cellRenderer,
+				{data: {firstActivityDate}}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it.each([null, undefined, ''])(
+		'renders a %p last active date as no data',
+		(lastActivityDate) => {
+			const {getByText} = renderCell(
+				IndividualsListCDPColumns.lastActive.cellRenderer,
+				{data: {lastActivityDate}}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
 });
 
 describe('changesListColumns', () => {
@@ -129,6 +236,59 @@ describe('changesListColumns', () => {
 			);
 
 			expect(getByText(expected)).toBeInTheDocument();
+		}
+	);
+});
+
+describe('changesListColumns no data', () => {
+	const renderRow = (column: any, data: {[key: string]: any}) =>
+		render(
+			<table>
+				<tbody>
+					<Row
+						columns={[column]}
+						data={data}
+						onRowDelete={jest.fn()}
+						onRowSave={jest.fn()}
+						rowIndex={0}
+					/>
+				</tbody>
+			</table>
+		);
+
+	it.each([null, undefined, ''])(
+		'renders a %p first seen date as no data',
+		(dateFirst) => {
+			const {getByText} = renderRow(
+				changesListColumns.getDateFirst('UTC'),
+				{dateFirst, id: '1'}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it.each([null, undefined, ''])(
+		'renders a %p email as no data',
+		(individualEmail) => {
+			const {getByText} = renderRow(changesListColumns.individualEmail, {
+				id: '1',
+				individualEmail,
+			});
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it.each([null, undefined, ''])(
+		'renders a %p membership change date as no data',
+		(dateChanged) => {
+			const {getByText} = renderRow(
+				changesListColumns.getOperation('UTC'),
+				{dateChanged, id: '1', operation: 'ADDED'}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
 		}
 	);
 });
@@ -178,6 +338,15 @@ describe('metricsListColumns dates', () => {
 			getByText('Jun 10, 2026 Last Modified by Test Test')
 		).toBeInTheDocument();
 	});
+
+	it('renders a missing modified date as no data', () => {
+		const {getByText} = renderCell(
+			metricsListColumns.modifiedDate.cellRenderer,
+			{data: {modifiedByUserName: 'Test Test', modifiedDate: null}}
+		);
+
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
 });
 
 describe('segmentsListColumns', () => {
@@ -202,6 +371,76 @@ describe('segmentsListColumns', () => {
 			);
 
 			expect(getByText(expected)).toBeInTheDocument();
+		}
+	);
+});
+
+describe('individualsListColumns no data', () => {
+	const renderRow = (column: any, data: {[key: string]: any}) =>
+		render(
+			<table>
+				<tbody>
+					<Row
+						columns={[column]}
+						data={data}
+						onRowDelete={jest.fn()}
+						onRowSave={jest.fn()}
+						rowIndex={0}
+					/>
+				</tbody>
+			</table>
+		);
+
+	it.each([null, undefined, ''])('renders a %p email as no data', (email) => {
+		const {getByText} = renderRow(individualsListColumns.email, {
+			id: '1',
+			properties: {email},
+		});
+
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it.each([null, undefined, ''])(
+		'renders a %p last activity date as no data',
+		(lastActivityDate) => {
+			const {getByText} = renderRow(
+				individualsListColumns.getLastActivityDate('UTC'),
+				{id: '1', lastActivityDate}
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it.each([null, undefined, ''])(
+		'renders a %p job title as no data',
+		(jobTitle) => {
+			const {cellRenderer: NameJobTitleCell, cellRendererProps} =
+				individualsListColumns.getNameJobTitle({
+					channelId: '1',
+					groupId: '2',
+				});
+
+			const {getByText} = render(
+				<MemoryRouter>
+					<table>
+						<tbody>
+							<tr>
+								<NameJobTitleCell
+									{...cellRendererProps}
+									data={{
+										id: '3',
+										name: 'foo',
+										properties: {jobTitle},
+									}}
+								/>
+							</tr>
+						</tbody>
+					</table>
+				</MemoryRouter>
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
 		}
 	);
 });
@@ -231,4 +470,31 @@ describe('usersListColumns', () => {
 			expect(getByText(expected)).toBeInTheDocument();
 		}
 	);
+});
+
+describe('eventListColumns', () => {
+	it.each(['description', 'lastSeenURL'] as const)(
+		'%s should render the value',
+		(field) => {
+			const {getByText} = renderCell(
+				eventListColumns[field].cellRenderer,
+				{data: {[field]: 'Test value', hidden: false}}
+			);
+
+			expect(getByText('Test value')).toBeInTheDocument();
+		}
+	);
+
+	it.each([
+		['description', null],
+		['description', ''],
+		['lastSeenURL', null],
+		['lastSeenURL', ''],
+	] as const)('%s should render %p as no data', (field, value) => {
+		const {getByText} = renderCell(eventListColumns[field].cellRenderer, {
+			data: {[field]: value, hidden: false},
+		});
+
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
 });

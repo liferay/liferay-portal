@@ -187,14 +187,14 @@ describe('CampaignsDataSet', () => {
 		expect(container).toHaveTextContent('15.2K');
 	});
 
-	it('should render a missing count as zero', () => {
+	it('should render a missing count as the no data value', () => {
 		renderDataSet();
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.countRenderer({})
 		);
 
-		expect(container).toHaveTextContent('0');
+		expect(container).toHaveTextContent('–');
 	});
 
 	it('should tell the marketer that no campaigns were synced', () => {

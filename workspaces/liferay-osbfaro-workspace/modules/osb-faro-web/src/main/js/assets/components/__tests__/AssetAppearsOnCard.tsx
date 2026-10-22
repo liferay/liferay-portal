@@ -34,12 +34,14 @@ jest.mock('react-router-dom', () => ({
 
 const WrappedComponent = ({
 	accessors,
+	assetAppearsOnMock,
 	assetType,
 	empty = false,
 	emptyStateLink,
 	emptyStateText,
 }: {
 	accessors: Accessor[];
+	assetAppearsOnMock?: ReturnType<typeof mockAssetAppearsOnReq>;
 	assetType: AssetTypes;
 	empty?: boolean;
 	emptyStateLink: EmptyStateLink;
@@ -52,13 +54,14 @@ const WrappedComponent = ({
 					mocks={[
 						mockTimeRangeReq(),
 						mockPreferenceReq(),
-						mockAssetAppearsOnReq(
-							{
-								assetType: assetType.toUpperCase(),
-								selectedMetrics: accessors,
-							},
-							empty
-						),
+						assetAppearsOnMock ??
+							mockAssetAppearsOnReq(
+								{
+									assetType: assetType.toUpperCase(),
+									selectedMetrics: accessors,
+								},
+								empty
+							),
 					]}
 				>
 					<AssetAppearsOnCard
@@ -75,6 +78,72 @@ const WrappedComponent = ({
 
 describe('AssetAppearsOnCard', () => {
 	afterEach(cleanup);
+
+	it('should render a missing page name and canonical URL as no data', async () => {
+		const assetAppearsOnMock = mockAssetAppearsOnReq({
+			assetType: AssetTypes.Blog.toUpperCase(),
+			selectedMetrics: [Accessor.ViewsMetric],
+		});
+
+		assetAppearsOnMock.result.data.assetPages.assetMetrics = [
+			{
+				__typename: 'BlogMetric',
+				assetId: null,
+				assetTitle: null,
+				selectedMetrics: [
+					{
+						__typename: 'AssetMetric',
+						name: 'viewsMetric',
+						value: 0,
+					},
+				],
+			},
+		] as any;
+
+		const {container, getAllByText} = render(
+			<WrappedComponent
+				accessors={[Accessor.ViewsMetric]}
+				assetAppearsOnMock={assetAppearsOnMock}
+				assetType={AssetTypes.Blog}
+				emptyStateLink={EmptyStateLink.Blog}
+				emptyStateText={EmptyStateText.Blog}
+			/>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		const noDataValues = getAllByText('–');
+
+		expect(noDataValues).toHaveLength(2);
+
+		noDataValues.forEach((noDataValue) =>
+			expect(noDataValue).toHaveClass('text-secondary')
+		);
+
+		expect(container.querySelector('tbody')).toHaveTextContent('0');
+	});
+
+	it('should render the page name and canonical URL', async () => {
+		const {container, getByText} = render(
+			<WrappedComponent
+				accessors={[Accessor.ViewsMetric]}
+				assetType={AssetTypes.Blog}
+				emptyStateLink={EmptyStateLink.Blog}
+				emptyStateText={EmptyStateText.Blog}
+			/>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(
+			getByText('a42d8ae1-d145-40da-8150-3fe28deb04ad')
+		).toBeInTheDocument();
+		expect(
+			getByText(
+				'http://liferay.com/web/test/abc/123/a42d8ae1-d145-40da-8150-3fe28deb04ad'
+			)
+		).toBeInTheDocument();
+	});
 
 	it('should render', async () => {
 		const {getByText} = render(

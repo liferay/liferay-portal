@@ -41,7 +41,7 @@ describe('Row', () => {
 			<Row columns={COLUMNS} data={INDIVIDUAL_NO_SALARY} />
 		);
 
-		expect(getByText('-')).toBeTruthy();
+		expect(getByText('–')).toHaveClass('text-secondary');
 	});
 
 	it('should render with empty data if the accessor does not exist at all on the object', () => {
@@ -54,6 +54,25 @@ describe('Row', () => {
 			/>
 		);
 
-		expect(getByText('-')).toBeTruthy();
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render with empty data if the column accessor value is an empty string', () => {
+		const {getByText} = render(
+			<Row
+				columns={COLUMNS}
+				data={mockIndividual(1, {salary: ''})}
+			/>
+		);
+
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render a real zero', () => {
+		const {getByText} = render(
+			<Row columns={COLUMNS} data={mockIndividual(1, {salary: 0})} />
+		);
+
+		expect(getByText('0')).toBeTruthy();
 	});
 });

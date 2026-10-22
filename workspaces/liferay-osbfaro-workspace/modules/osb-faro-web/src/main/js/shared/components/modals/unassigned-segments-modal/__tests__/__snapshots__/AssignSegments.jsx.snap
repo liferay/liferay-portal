@@ -124,7 +124,11 @@ exports[`AssignSegments should render 1`] = `
                     aria-hidden="true"
                     data-aria-hidden="true"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                   <td>
                     <button
@@ -154,7 +158,11 @@ exports[`AssignSegments should render 1`] = `
                     Seattle2
                   </td>
                   <td>
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                   <td>
                     <button

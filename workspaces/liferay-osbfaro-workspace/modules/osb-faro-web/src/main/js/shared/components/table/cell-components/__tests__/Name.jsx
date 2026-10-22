@@ -95,4 +95,46 @@ describe('Name', () => {
 
 		expect(getByText('Name in text-truncate')).toHaveClass('text-truncate');
 	});
+
+	it.each([null, undefined, ''])(
+		'should render a %p name as no data',
+		name => {
+			const {getByText} = render(<Name data={{id: 'test', name}} />);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it('should render a missing name as no data if the tooltip prop is true', () => {
+		const {getByText} = render(
+			<Name data={{id: 'test', name: null}} tooltip />
+		);
+
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it.each([null, undefined, ''])(
+		'should render a %p secondary info as no data',
+		secondaryInfo => {
+			const {getByText} = render(
+				<Name
+					data={{id: 'test', name: 'foo'}}
+					renderSecondaryInfo={() => secondaryInfo}
+				/>
+			);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
+
+	it('should render a zero secondary info', () => {
+		const {getByText} = render(
+			<Name
+				data={{id: 'test', name: 'foo'}}
+				renderSecondaryInfo={() => 0}
+			/>
+		);
+
+		expect(getByText('0')).toBeTruthy();
+	});
 });

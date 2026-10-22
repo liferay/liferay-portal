@@ -302,7 +302,7 @@ describe('Overview', () => {
 			);
 		});
 
-		it('should render zero for a metric missing from the response', () => {
+		it('should render no data for a metric missing from the response', () => {
 			mockUseRequest({
 				data: [
 					{
@@ -319,17 +319,17 @@ describe('Overview', () => {
 				'1.2K Individuals'
 			);
 			expect(getMetricsCard('IDENTITY BREAKDOWN')).toHaveTextContent(
-				'0 Known'
+				'– Known'
 			);
 		});
 
-		it('should render zero when the metrics have not been fetched yet', () => {
+		it('should render no data when the metrics have not been fetched yet', () => {
 			mockUseRequest({data: null, loading: false});
 
 			renderOverview({account: mockAccount});
 
 			expect(getMetricsCard('TOTAL INDIVIDUALS')).toHaveTextContent(
-				'0 Individuals'
+				'– Individuals'
 			);
 		});
 

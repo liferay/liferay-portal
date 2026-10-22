@@ -115,6 +115,7 @@ Immutable.Map {
         "individualCount": 0,
         "knownIndividualCount": 0,
         "lastActivityDate": null,
+        "lastMembershipUpdateDate": null,
         "name": "",
         "properties": Immutable.Map {},
         "referencedObjects": Immutable.Map {

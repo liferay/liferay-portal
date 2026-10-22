@@ -265,7 +265,7 @@ describe('List', () => {
 		expect(within(row).getByText('2.3K individuals')).toBeInTheDocument();
 	});
 
-	it('shows a dash as the membership of a segment without members', async () => {
+	it('shows zero as the membership of a segment without members', async () => {
 		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
 		API.individualSegment.search.mockReturnValue(
 			Promise.resolve(
@@ -284,11 +284,10 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getByText('-')).toBeInTheDocument();
-		expect(within(row).queryByText('0 individuals')).toBeNull();
+		expect(within(row).getByText('0 individuals')).toBeInTheDocument();
 	});
 
-	it('shows a dash as the membership of an account segment without accounts', async () => {
+	it('shows zero as the membership of an account segment without accounts', async () => {
 		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
 		API.individualSegment.search.mockReturnValue(
 			Promise.resolve(
@@ -307,8 +306,7 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getByText('-')).toBeInTheDocument();
-		expect(within(row).queryByText('0 accounts')).toBeNull();
+		expect(within(row).getByText('0 accounts')).toBeInTheDocument();
 	});
 
 	it('shows both columns as processing when the segment has never been counted', async () => {
@@ -331,7 +329,7 @@ describe('List', () => {
 		const row = screen.getByText('Seattle0').closest('tr');
 
 		expect(within(row).getAllByText('Processing')).toHaveLength(2);
-		expect(within(row).queryByText('-')).toBeNull();
+		expect(within(row).queryByText('0 individuals')).toBeNull();
 	});
 
 	it('hides a stale count behind processing when the segment has never been counted', async () => {

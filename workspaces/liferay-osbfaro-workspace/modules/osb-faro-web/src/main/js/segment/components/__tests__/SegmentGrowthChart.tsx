@@ -321,4 +321,55 @@ describe('SegmentGrowthChart', () => {
 			fireEvent(container.querySelector('.recharts-wrapper')!, event)
 		).not.toThrow();
 	});
+
+	it('shows the member counts as processing while membership is calculated', () => {
+		const {container} = render(
+			<SegmentGrowthChart
+				data={chartData}
+				hasSelectedPoint={false}
+				individualCounts={{anonymousCount: 3, knownCount: 5}}
+				membershipProcessing
+			/>
+		);
+
+		const counts = container.querySelectorAll('.legend-text-color b');
+
+		expect(counts).toHaveLength(3);
+
+		counts.forEach((count) =>
+			expect(count).toHaveTextContent('Processing')
+		);
+	});
+
+	it('shows zero member counts once membership is calculated', () => {
+		const {container} = render(
+			<SegmentGrowthChart
+				data={chartData}
+				hasSelectedPoint={false}
+				individualCounts={{anonymousCount: 0, knownCount: 0}}
+			/>
+		);
+
+		const counts = container.querySelectorAll('.legend-text-color b');
+
+		expect(counts).toHaveLength(3);
+
+		counts.forEach((count) => expect(count).toHaveTextContent('0'));
+	});
+
+	it('shows the member counts once membership is calculated', () => {
+		const {container} = render(
+			<SegmentGrowthChart
+				data={chartData}
+				hasSelectedPoint={false}
+				individualCounts={{anonymousCount: 3, knownCount: 1500}}
+			/>
+		);
+
+		const counts = container.querySelectorAll('.legend-text-color b');
+
+		expect(counts[0]).toHaveTextContent('1,500');
+		expect(counts[1]).toHaveTextContent('3');
+		expect(counts[2]).toHaveTextContent('1,503');
+	});
 });

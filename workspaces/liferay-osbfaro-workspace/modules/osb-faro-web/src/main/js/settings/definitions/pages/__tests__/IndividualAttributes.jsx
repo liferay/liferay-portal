@@ -1,3 +1,5 @@
+import * as API from 'shared/api';
+import * as data from 'test/data';
 import IndividualAttributes from '../IndividualAttributes';
 import mockStore from 'test/mock-store';
 import React from 'react';
@@ -65,5 +67,41 @@ describe('IndividualAttributes', () => {
 		expect(
 			await screen.findByRole('heading', {name: 'testFildName0'})
 		).toBeInTheDocument();
+	});
+
+	it('should render the source name of an attribute with one source', async () => {
+		const {container, getByText} = render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(
+			getByText('LIFERAY-DATASOURCE-FARO-EXAMPLE-0')
+		).toBeInTheDocument();
+	});
+
+	it('should render an attribute without sources or last synced date as no data', async () => {
+		API.definitions.searchIndividualAttributes.mockReturnValueOnce(
+			Promise.resolve({
+				items: [
+					data.mockIndividualAttributes(0, {
+						dataSources: [],
+						dateModified: null
+					})
+				],
+				total: 1
+			})
+		);
+
+		const {container, getAllByText} = render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(container);
+
+		const noDataValues = getAllByText('–');
+
+		expect(noDataValues).toHaveLength(2);
+
+		noDataValues.forEach(noDataValue =>
+			expect(noDataValue).toHaveClass('text-secondary')
+		);
 	});
 });

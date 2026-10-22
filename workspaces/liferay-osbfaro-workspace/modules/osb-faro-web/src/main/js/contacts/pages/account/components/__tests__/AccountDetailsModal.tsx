@@ -3,25 +3,30 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {act, cleanup, render, screen} from '@testing-library/react';
 import {useRequest} from 'shared/hooks/useRequest';
+import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 jest.unmock('react-dom');
 
+let lastCustomDataRenderers: any;
 let lastOnItemsPropSearch: ((item: any, query: string) => boolean) | undefined;
 let lastViews: any[] | undefined;
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
 	FrontendDataSet: ({
+		customDataRenderers,
 		id,
 		items,
 		onItemsPropSearch,
 		views,
 	}: {
+		customDataRenderers: any;
 		id: string;
 		items: any[];
 		onItemsPropSearch?: (item: any, query: string) => boolean;
 		views?: any[];
 	}) => {
+		lastCustomDataRenderers = customDataRenderers;
 		lastOnItemsPropSearch = onItemsPropSearch;
 		lastViews = views;
 
@@ -47,6 +52,8 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const mockedUseRequest = useRequest as jest.Mock;
+
+beforeAll(warmFrontendDataSet);
 
 const mockFields = [
 	{
@@ -157,6 +164,30 @@ describe('AccountDetailsModal', () => {
 		const fields = lastViews![0].schema.fields;
 
 		expect(fields.every((field: any) => !field.sortable)).toBe(true);
+	});
+
+	it('should render a missing attribute value as no data', () => {
+		renderModal();
+
+		render(
+			lastCustomDataRenderers.attributeNameAndValueRenderer({
+				itemData: {},
+				value: 'fax',
+			})
+		);
+
+		expect(screen.getByText('fax')).toBeInTheDocument();
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render a missing last modified date as no data', () => {
+		renderModal();
+
+		render(
+			lastCustomDataRenderers.lastModifiedRenderer({value: undefined})
+		);
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
 	});
 
 	it('should match items by name when the data set search has a query', () => {

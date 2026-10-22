@@ -97,6 +97,6 @@ describe('AttributeView', () => {
 			jest.runOnlyPendingTimers();
 		});
 
-		expect(getByText('-')).toBeTruthy();
+		expect(getByText('–')).toBeTruthy();
 	});
 });

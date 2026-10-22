@@ -207,8 +207,49 @@ describe('IndividualsDataSet', () => {
 
 		const renderer = lastFDSProps.customDataRenderers.totalEventsRenderer;
 
-		expect(renderer({value: 6700})).toBe('6.7K');
-		expect(renderer({})).toBe('');
+		const {container} = render(<div>{renderer({value: 6700})}</div>);
+
+		expect(container.textContent).toBe('6.7K');
+	});
+
+	it('should render zero total events as zero', () => {
+		render(<IndividualsDataSet />);
+
+		const renderer = lastFDSProps.customDataRenderers.totalEventsRenderer;
+
+		const {container} = render(<div>{renderer({value: 0})}</div>);
+
+		expect(container.textContent).toBe('0');
+	});
+
+	it('should render missing total events as no data', () => {
+		render(<IndividualsDataSet />);
+
+		const renderer = lastFDSProps.customDataRenderers.totalEventsRenderer;
+
+		render(<div>{renderer({})}</div>);
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render no sessions as no activities in the visitor type', () => {
+		render(<IndividualsDataSet />);
+
+		const renderer = lastFDSProps.customDataRenderers.visitorTypeRenderer;
+
+		render(<div>{renderer({value: 0})}</div>);
+
+		expect(screen.getByText('No Activities')).toBeInTheDocument();
+	});
+
+	it('should render a missing visitor type as no data', () => {
+		render(<IndividualsDataSet />);
+
+		const renderer = lastFDSProps.customDataRenderers.visitorTypeRenderer;
+
+		render(<div>{renderer({})}</div>);
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
 	});
 
 	it('should format the average session duration', () => {
@@ -217,8 +258,31 @@ describe('IndividualsDataSet', () => {
 		const renderer =
 			lastFDSProps.customDataRenderers.avgSessionDurationRenderer;
 
-		expect(renderer({value: 675000})).toBe('00:11:15');
-		expect(renderer({})).toBe('');
+		const {container} = render(<div>{renderer({value: 675000})}</div>);
+
+		expect(container.textContent).toBe('00:11:15');
+	});
+
+	it('should format a zero average session duration', () => {
+		render(<IndividualsDataSet />);
+
+		const renderer =
+			lastFDSProps.customDataRenderers.avgSessionDurationRenderer;
+
+		const {container} = render(<div>{renderer({value: 0})}</div>);
+
+		expect(container.textContent).toBe('00:00:00');
+	});
+
+	it('should render a missing average session duration as no data', () => {
+		render(<IndividualsDataSet />);
+
+		const renderer =
+			lastFDSProps.customDataRenderers.avgSessionDurationRenderer;
+
+		render(<div>{renderer({})}</div>);
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
 	});
 
 	it('should read the job title from the individual properties', () => {
@@ -226,10 +290,23 @@ describe('IndividualsDataSet', () => {
 
 		const renderer = lastFDSProps.customDataRenderers.jobTitleRenderer;
 
-		expect(
-			renderer({itemData: {properties: {jobTitle: 'Estimator'}}})
-		).toBe('Estimator');
-		expect(renderer({itemData: {}})).toBe('');
+		render(
+			<div>
+				{renderer({itemData: {properties: {jobTitle: 'Estimator'}}})}
+			</div>
+		);
+
+		expect(screen.getByText('Estimator')).toBeInTheDocument();
+	});
+
+	it('should render a missing job title as no data', () => {
+		render(<IndividualsDataSet />);
+
+		const renderer = lastFDSProps.customDataRenderers.jobTitleRenderer;
+
+		render(<div>{renderer({itemData: {}})}</div>);
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
 	});
 
 	it('should wire the individual name renderer to the contacts individual route', () => {

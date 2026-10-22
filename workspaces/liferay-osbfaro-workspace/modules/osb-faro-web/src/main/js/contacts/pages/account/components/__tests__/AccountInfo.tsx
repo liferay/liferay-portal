@@ -61,12 +61,36 @@ describe('AccountInfo', () => {
 			expect(screen.getByText('https://acme.com')).toBeInTheDocument();
 		});
 
-		it('should not render the annual revenue when the account annual revenue is 0', () => {
+		it('should render a zero annual revenue', () => {
 			render(
 				<AccountInfo account={{...mockAccount, annualRevenue: 0}} />
 			);
 
-			expect(screen.queryByText('0')).not.toBeInTheDocument();
+			expect(screen.getByText('0')).toBeInTheDocument();
+		});
+
+		it('should render a zero company size', () => {
+			render(
+				<AccountInfo account={{...mockAccount, numberOfEmployees: 0}} />
+			);
+
+			expect(screen.getByText('0')).toBeInTheDocument();
+		});
+
+		it.each([
+			['accountType', undefined],
+			['accountType', ''],
+			['annualRevenue', null],
+			['annualRevenue', undefined],
+			['industry', undefined],
+			['numberOfEmployees', null],
+			['numberOfEmployees', undefined],
+			['website', undefined],
+			['website', ''],
+		])('should render a %s of %p as no data', (key, value) => {
+			render(<AccountInfo account={{...mockAccount, [key]: value}} />);
+
+			expect(screen.getByText('–')).toHaveClass('text-secondary');
 		});
 
 		it('should render the website value as an external link', () => {
@@ -133,6 +157,34 @@ describe('AccountInfo', () => {
 			expect(
 				screen.getByText('No Account Attributes Available')
 			).toBeInTheDocument();
+		});
+
+		it('should render the empty state when every attribute is null or empty', () => {
+			render(
+				<AccountInfo
+					account={{
+						accountType: '',
+						annualRevenue: null as unknown as number,
+						industry: '',
+						numberOfEmployees: null as unknown as number,
+						website: '',
+					}}
+				/>
+			);
+
+			expect(
+				screen.getByText('No Account Attributes Available')
+			).toBeInTheDocument();
+			expect(screen.queryByText('–')).not.toBeInTheDocument();
+		});
+
+		it('should not render the empty state when the only attribute is a zero', () => {
+			render(<AccountInfo account={{annualRevenue: 0}} />);
+
+			expect(
+				screen.queryByText('No Account Attributes Available')
+			).not.toBeInTheDocument();
+			expect(screen.getByText('0')).toBeInTheDocument();
 		});
 	});
 

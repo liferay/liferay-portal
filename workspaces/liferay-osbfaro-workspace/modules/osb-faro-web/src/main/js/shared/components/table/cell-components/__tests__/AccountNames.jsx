@@ -30,6 +30,19 @@ describe('AccountNames', () => {
 			{container: document.body.appendChild(tableRow)}
 		);
 
-		expect(getByText('-')).toBeTruthy();
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render an empty account name as no data', () => {
+		const {getByText} = render(
+			<AccountNames
+				data={{
+					accountName: ''
+				}}
+			/>,
+			{container: document.body.appendChild(tableRow)}
+		);
+
+		expect(getByText('–')).toHaveClass('text-secondary');
 	});
 });

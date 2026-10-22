@@ -213,7 +213,13 @@ exports[`EventList should render 1`] = `
             </td>
             <td
               class="table-cell-expand text-truncate"
-            />
+            >
+              <span
+                class="text-secondary"
+              >
+                –
+              </span>
+            </td>
             <td
               class="text-right"
             />

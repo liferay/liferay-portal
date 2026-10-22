@@ -131,7 +131,7 @@ describe('formatPayloadTables', () => {
 			eventId: 'pageViewed',
 		});
 
-		expect(rows).toEqual([{property: 'campaignName', value: '-'}]);
+		expect(rows).toEqual([{property: 'campaignName', value: '–'}]);
 	});
 
 	it('lists a url outside the campaign table as an attribute', () => {
@@ -169,9 +169,9 @@ describe('formatPayloadTables', () => {
 		});
 
 		expect(rows).toEqual([
-			{property: 'eventDate', value: '-'},
-			{property: 'eventId', value: '-'},
-			{property: 'pageTitle', value: '-'},
+			{property: 'eventDate', value: '–'},
+			{property: 'eventId', value: '–'},
+			{property: 'pageTitle', value: '–'},
 		]);
 	});
 

@@ -42,7 +42,99 @@ afterEach(() => {
 
 beforeAll(warmFrontendDataSet);
 
+describe('columns.countRenderer', () => {
+	it('should render a real zero as 0', () => {
+		render(columns.countRenderer({itemData: {}, value: 0}));
+
+		expect(screen.getByText('0')).toBeInTheDocument();
+	});
+
+	it('should render a missing count as the no data value', () => {
+		render(columns.countRenderer({itemData: {}, value: undefined}));
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render a numeric string count as a number', () => {
+		const {container} = render(
+			columns.countRenderer({
+				itemData: {},
+				value: '5' as unknown as number,
+			})
+		);
+
+		expect(container.textContent).toBe('5');
+	});
+
+	it('should render an empty string count as the no data value', () => {
+		render(
+			columns.countRenderer({
+				itemData: {},
+				value: '' as unknown as number,
+			})
+		);
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+});
+
+describe('columns.attributeNameAndValue', () => {
+	it('should render a real zero value as 0', () => {
+		render(
+			columns.attributeNameAndValue({attributeName: 'Count', value: 0})
+		);
+
+		expect(screen.getByText('0')).toBeInTheDocument();
+	});
+
+	it('should render a missing value as the no data value', () => {
+		render(
+			columns.attributeNameAndValue({attributeName: 'Count', value: ''})
+		);
+
+		expect(screen.getByText('Count')).toBeInTheDocument();
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+});
+
+describe('columns.textRenderer', () => {
+	it('should render the value', () => {
+		render(columns.textRenderer({itemData: {}, value: 'Software'}));
+
+		expect(screen.getByText('Software')).toBeInTheDocument();
+	});
+
+	it('should render a real zero as 0', () => {
+		render(columns.textRenderer({itemData: {}, value: 0}));
+
+		expect(screen.getByText('0')).toBeInTheDocument();
+	});
+
+	it('should render an empty value as the no data value', () => {
+		render(columns.textRenderer({itemData: {}, value: ''}));
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render a missing value as the no data value', () => {
+		render(
+			columns.textRenderer({
+				itemData: {},
+				value: undefined as unknown as string,
+			})
+		);
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+});
+
 describe('columns.dateRenderer', () => {
+	it('should render a missing date as the no data value', () => {
+		render(columns.dateRenderer({itemData: {}, value: ''}));
+
+		expect(screen.getByText('–')).toHaveClass('text-secondary');
+	});
+
 	it('should render an ISO date in the custom date format, in UTC', () => {
 		render(
 			columns.dateRenderer({

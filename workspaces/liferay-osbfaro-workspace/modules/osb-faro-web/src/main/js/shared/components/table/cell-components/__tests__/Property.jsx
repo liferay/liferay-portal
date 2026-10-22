@@ -18,7 +18,7 @@ describe('PropertyCell', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('should render - when has no value', () => {
+	it('should render the no data value when has no value', () => {
 		const {getByText} = render(
 			<PropertyCell
 				data={{
@@ -28,6 +28,32 @@ describe('PropertyCell', () => {
 			/>
 		);
 
-		expect(getByText('-')).toBeTruthy();
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render the no data value when the value is null', () => {
+		const {getByText} = render(
+			<PropertyCell
+				data={{
+					name: 'email',
+					value: null
+				}}
+			/>
+		);
+
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
+
+	it('should render a zero value', () => {
+		const {getByText} = render(
+			<PropertyCell
+				data={{
+					name: 'count',
+					value: 0
+				}}
+			/>
+		);
+
+		expect(getByText('0')).toBeTruthy();
 	});
 });

@@ -1,4 +1,5 @@
 import * as data from 'test/data';
+import * as Growth from 'segment/components/Growth';
 import Membership, {MembershipChart} from '../Membership';
 import mockStore from 'test/mock-store';
 import React from 'react';
@@ -41,6 +42,38 @@ describe('Membership', () => {
 			screen.getByText('Segment Membership Trend')
 		).toBeInTheDocument();
 	});
+
+	it.each([
+		[true, null],
+		[false, 1700000000000]
+	])(
+		'should pass membershipProcessing=%p to the growth chart when the last membership update date is %p',
+		async (membershipProcessing, lastMembershipUpdateDate) => {
+			const growthSpy = jest.spyOn(Growth, 'default');
+
+			const {container} = render(
+				<WrappedComponent
+					segment={data.getImmutableMock(
+						Segment,
+						data.mockSegment,
+						0,
+						{lastMembershipUpdateDate}
+					)}
+				/>
+			);
+
+			jest.runAllTimers();
+
+			await waitForLoadingToBeRemoved(container);
+
+			expect(growthSpy).toHaveBeenLastCalledWith(
+				expect.objectContaining({membershipProcessing}),
+				expect.anything()
+			);
+
+			growthSpy.mockRestore();
+		}
+	);
 });
 
 describe('MembershipChart', () => {

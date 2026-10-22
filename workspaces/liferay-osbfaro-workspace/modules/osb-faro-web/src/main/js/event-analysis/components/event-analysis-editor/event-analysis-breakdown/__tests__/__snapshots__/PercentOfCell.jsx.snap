@@ -6,7 +6,11 @@ exports[`PercentOfCell render 1`] = `
     class="percentage-column"
   >
     <li>
-      0%
+      <span
+        class="text-secondary"
+      >
+        –
+      </span>
     </li>
   </ul>
 </div>

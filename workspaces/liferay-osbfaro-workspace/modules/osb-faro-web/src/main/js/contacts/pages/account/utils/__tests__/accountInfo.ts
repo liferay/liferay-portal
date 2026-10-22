@@ -15,14 +15,14 @@ describe('getAccountInfoDisplayValues', () => {
 			).toBe('11.3B');
 		});
 
-		it('should render a missing revenue blank', () => {
-			expect(getAccountInfoDisplayValues({}).revenue).toBe('');
+		it('should render a missing revenue as no data', () => {
+			expect(getAccountInfoDisplayValues({}).revenue).toBe('–');
 		});
 
-		it('should render a zeroed revenue blank', () => {
+		it('should render a zero revenue', () => {
 			expect(
 				getAccountInfoDisplayValues({annualRevenue: 0}).revenue
-			).toBe('');
+			).toBe('0');
 		});
 	});
 

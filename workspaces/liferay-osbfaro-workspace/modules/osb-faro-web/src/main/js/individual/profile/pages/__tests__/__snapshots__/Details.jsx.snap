@@ -285,7 +285,11 @@ exports[`IndividualDetails should render 1`] = `
                   <td
                     class="table-cell-expand-small"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                   <td
                     class="table-cell-expand"
@@ -295,13 +299,21 @@ exports[`IndividualDetails should render 1`] = `
                       data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
-                      -
+                      <span
+                        class="text-secondary"
+                      >
+                        –
+                      </span>
                     </a>
                   </td>
                   <td
                     class="text-nowrap"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                 </tr>
                 <tr
@@ -334,13 +346,21 @@ exports[`IndividualDetails should render 1`] = `
                       data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
-                      -
+                      <span
+                        class="text-secondary"
+                      >
+                        –
+                      </span>
                     </a>
                   </td>
                   <td
                     class="text-nowrap"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                 </tr>
                 <tr
@@ -373,13 +393,21 @@ exports[`IndividualDetails should render 1`] = `
                       data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
-                      -
+                      <span
+                        class="text-secondary"
+                      >
+                        –
+                      </span>
                     </a>
                   </td>
                   <td
                     class="text-nowrap"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                 </tr>
                 <tr
@@ -402,7 +430,11 @@ exports[`IndividualDetails should render 1`] = `
                   <td
                     class="table-cell-expand-small"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                   <td
                     class="table-cell-expand"
@@ -412,13 +444,21 @@ exports[`IndividualDetails should render 1`] = `
                       data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
-                      -
+                      <span
+                        class="text-secondary"
+                      >
+                        –
+                      </span>
                     </a>
                   </td>
                   <td
                     class="text-nowrap"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                 </tr>
                 <tr
@@ -441,7 +481,11 @@ exports[`IndividualDetails should render 1`] = `
                   <td
                     class="table-cell-expand-small"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                   <td
                     class="table-cell-expand"
@@ -451,13 +495,21 @@ exports[`IndividualDetails should render 1`] = `
                       data-discover="true"
                       href="/workspace/23/settings/data-source/123"
                     >
-                      -
+                      <span
+                        class="text-secondary"
+                      >
+                        –
+                      </span>
                     </a>
                   </td>
                   <td
                     class="text-nowrap"
                   >
-                    -
+                    <span
+                      class="text-secondary"
+                    >
+                      –
+                    </span>
                   </td>
                 </tr>
               </tbody>

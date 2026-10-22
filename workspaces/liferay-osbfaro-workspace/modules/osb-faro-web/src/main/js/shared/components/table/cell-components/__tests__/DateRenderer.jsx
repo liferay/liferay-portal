@@ -61,4 +61,13 @@ describe('DateRenderer', () => {
 
 		expect(container).toMatchSnapshot();
 	});
+
+	it.each([null, undefined, ''])(
+		'should render a %p date as no data',
+		dateCreated => {
+			const {getByText} = render(<DateRenderer data={{dateCreated}} />);
+
+			expect(getByText('–')).toHaveClass('text-secondary');
+		}
+	);
 });

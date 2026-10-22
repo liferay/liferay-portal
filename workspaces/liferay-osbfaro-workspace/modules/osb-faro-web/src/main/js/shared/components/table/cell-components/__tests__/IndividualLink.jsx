@@ -97,4 +97,17 @@ describe('IndividualLinkCell', () => {
 			individualId
 		);
 	});
+
+	it('should render a missing name as no data', () => {
+		const {getByText} = render(
+			<DefaultComponent
+				data={{
+					id: 'id123',
+					individualDeleted: false
+				}}
+			/>
+		);
+
+		expect(getByText('–')).toHaveClass('text-secondary');
+	});
 });

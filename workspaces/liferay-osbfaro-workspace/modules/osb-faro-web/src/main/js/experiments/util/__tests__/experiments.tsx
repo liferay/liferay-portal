@@ -1,5 +1,6 @@
 import {
 	formatYAxis,
+	getBestVariant,
 	getFormattedMedian,
 	getFormattedMedianLabel,
 	getFormattedProbabilityToWin,
@@ -9,6 +10,7 @@ import {
 	getStatusName,
 	getTicks,
 	getVariantLabels,
+	mergedVariants,
 	toThousandsABTesting,
 } from '../experiments';
 import {DEFAULT_LOCALE, setLocale} from 'shared/util/locale';
@@ -139,8 +141,67 @@ describe('getFormattedProbabilityToWin', () => {
 		expect(getFormattedProbabilityToWin(0.05)).toEqual('< 0.1%');
 	});
 
+	it('should return zero percent when the probability to win is zero', () => {
+		expect(getFormattedProbabilityToWin(0)).toEqual('0%');
+	});
+
 	it('should return formatted probability to win when value is greater than 99.9', () => {
 		expect(getFormattedProbabilityToWin(100)).toEqual('> 99.9%');
+	});
+});
+
+describe('mergedVariants', () => {
+	it('should merge the metrics of each variant', () => {
+		expect(
+			mergedVariants(
+				[mockBestVariant],
+				[
+					{
+						confidenceInterval: [1, 2],
+						dxpVariantId: 'DEFAULT',
+						improvement: 3,
+						median: 0,
+						probabilityToWin: 0,
+					},
+				]
+			)
+		).toEqual([
+			{
+				...mockBestVariant,
+				confidenceInterval: [1, 2],
+				improvement: 3,
+				median: 0,
+				probabilityToWin: 0,
+			},
+		]);
+	});
+
+	it('should leave the improvement, the median and the probability to win missing when the variant has no metrics', () => {
+		const [variant] = mergedVariants([mockBestVariant], []);
+
+		expect(variant.improvement).toBeUndefined();
+		expect(variant.median).toBeUndefined();
+		expect(variant.probabilityToWin).toBeUndefined();
+	});
+});
+
+describe('getBestVariant', () => {
+	it('should rank a variant without median as a zero median', () => {
+		const bestVariant = getBestVariant({
+			dxpVariants: [
+				mockBestVariant,
+				{...mockBestVariant, dxpVariantId: 'VARIANT'},
+			],
+			goal: {metric: 'CLICK_RATE'},
+			metrics: {
+				variantMetrics: [
+					{dxpVariantId: 'DEFAULT', median: 5},
+					{dxpVariantId: 'VARIANT'},
+				],
+			},
+		});
+
+		expect(bestVariant?.dxpVariantId).toEqual('DEFAULT');
 	});
 });
 

@@ -15,6 +15,7 @@ jest.unmock('react-dom');
 const segment = new Segment(
 	data.mockSegment(0, {
 		criteriaString: "(demographics/middleName/value eq 'additionalName')",
+		lastMembershipUpdateDate: 1700000000000,
 		referencedObjects: {
 			fieldMappings: {
 				individual: {
@@ -58,5 +59,29 @@ describe('SegmentOverview', () => {
 		await waitForLoadingToBeRemoved(container).then(() => {
 			expect(container).toMatchSnapshot();
 		});
+	});
+
+	it('should render the composition counts as processing while the membership is processing', async () => {
+		const {container} = render(
+			<Provider store={mockStore()}>
+				<ApolloProvider client={client}>
+					<MemoryRouter>
+						<Overview
+							groupId='23'
+							segment={segment.set('lastMembershipUpdateDate', null)}
+						/>
+					</MemoryRouter>
+				</ApolloProvider>
+			</Provider>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		const compositionCard = container.querySelector(
+			'.composition-card-root'
+		);
+
+		expect(compositionCard).toHaveTextContent('Processing');
+		expect(compositionCard).not.toHaveTextContent('0%');
 	});
 });

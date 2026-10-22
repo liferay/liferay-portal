@@ -54,13 +54,42 @@ describe('Account Membership', () => {
 		expect(getByText('Jan 1, 2020')).toBeTruthy();
 	});
 
-	it('should display the fallback dash for missing account values', () => {
+	it('should display no data for missing account values', () => {
 		const {getAllByText} = renderWithStore(
 			<AccountMembership accountData={fromJS({})} />
 		);
 
-		const dashes = getAllByText('-');
-		expect(dashes.length).toBeGreaterThan(0);
+		const noDataValues = getAllByText('–');
+
+		expect(noDataValues.length).toBeGreaterThan(0);
+		expect(noDataValues[0]).toHaveClass('text-secondary');
+	});
+
+	it('should display a missing annual revenue as no data', () => {
+		const {getByText} = renderWithStore(
+			<AccountMembership
+				accountData={fromJS({...mockData, annualRevenue: null})}
+			/>
+		);
+
+		expect(
+			getByText('Annual Revenue').nextElementSibling
+		).toHaveTextContent('–');
+	});
+
+	it('should display a zero annual revenue', () => {
+		const {getByText} = renderWithStore(
+			<AccountMembership
+				accountData={fromJS({...mockData, annualRevenue: 0})}
+			/>
+		);
+
+		expect(
+			getByText('Annual Revenue').nextElementSibling
+		).not.toHaveTextContent('–');
+		expect(
+			getByText('Annual Revenue').nextElementSibling
+		).toHaveTextContent('0');
 	});
 
 	it('should render annualRevenue without throwing when currencyCode is null', () => {

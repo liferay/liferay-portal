@@ -121,6 +121,10 @@ describe('util', () => {
 				expect(getSafeDisplayValue(value, '-')).toBe(expected);
 			}
 		);
+
+		it('should return the no data value by default if the value is blank', () => {
+			expect(getSafeDisplayValue(null)).toBe('–');
+		});
 	});
 
 	describe('getSafeTouchpoint', () => {
