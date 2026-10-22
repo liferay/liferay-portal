@@ -172,6 +172,9 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 			expectedAuditRequestContext.getRealUserId(),
 			auditRequestContext.getRealUserId());
 		Assert.assertEquals(
+			expectedAuditRequestContext.getRequestId(),
+			auditRequestContext.getRequestId());
+		Assert.assertEquals(
 			expectedAuditRequestContext.getServerName(),
 			auditRequestContext.getServerName());
 		Assert.assertEquals(
@@ -214,6 +217,10 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 			expectedAuditRequestContext.getClientIP(),
 			auditMessage.getClientIP());
 		Assert.assertEquals(
+			expectedAuditRequestContext.getRequestId(),
+			auditMessage.getRequestId());
+		Assert.assertFalse(auditMessage.isRequestIdGenerated());
+		Assert.assertEquals(
 			expectedAuditRequestContext.getServerName(),
 			auditMessage.getServerName());
 		Assert.assertEquals(
@@ -237,6 +244,7 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 		auditRequestContext.setClientHost(RandomTestUtil.randomString());
 		auditRequestContext.setClientIP(RandomTestUtil.randomString());
 		auditRequestContext.setRealUserId(TestPropsValues.getUserId());
+		auditRequestContext.setRequestId(RandomTestUtil.randomString());
 		auditRequestContext.setServerName(RandomTestUtil.randomString());
 		auditRequestContext.setServerPort(RandomTestUtil.randomInt());
 		auditRequestContext.setSessionID(RandomTestUtil.randomString());

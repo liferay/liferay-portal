@@ -6,16 +6,24 @@
 package com.liferay.portal.scheduler.internal.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.audit.AuditRequestContext;
+import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationConfiguration;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.messaging.DestinationNames;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.scheduler.SchedulerEngine;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
+import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerState;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -28,11 +36,13 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -54,6 +64,123 @@ public class SchedulerEngineHelperImplTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@After
+	public void tearDown() {
+		AuditRequestContextThreadLocal.removeAuditRequestContext();
+	}
+
+	@Test
+	public void testSchedulerJobGetsItsOwnAuditRequestContext()
+		throws Exception {
+
+		AuditRequestContext currentAuditRequestContext =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		String sessionID = RandomTestUtil.randomString();
+
+		currentAuditRequestContext.setSessionID(sessionID);
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			SchedulerEngineHelperImplTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		String destinationName = RandomTestUtil.randomString();
+
+		ServiceRegistration<Destination> serviceRegistration1 =
+			bundleContext.registerService(
+				Destination.class,
+				_destinationFactory.createDestination(
+					DestinationConfiguration.
+						createSerialDestinationConfiguration(destinationName)),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"destination.name", destinationName
+				).build());
+
+		List<AuditRequestContext> auditRequestContexts = new ArrayList<>();
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		String name = RandomTestUtil.randomString();
+
+		ServiceRegistration<SchedulerJobConfiguration> serviceRegistration2 =
+			bundleContext.registerService(
+				SchedulerJobConfiguration.class,
+				new SchedulerJobConfiguration() {
+
+					@Override
+					public String getDestinationName() {
+						return destinationName;
+					}
+
+					@Override
+					public UnsafeConsumer<Message, Exception>
+						getJobExecutorUnsafeConsumer() {
+
+						return message -> {
+							auditRequestContexts.add(
+								AuditRequestContextThreadLocal.
+									getAuditRequestContext());
+
+							countDownLatch.countDown();
+						};
+					}
+
+					@Override
+					public UnsafeRunnable<Exception>
+						getJobExecutorUnsafeRunnable() {
+
+						return null;
+					}
+
+					@Override
+					public String getName() {
+						return name;
+					}
+
+					@Override
+					public TriggerConfiguration getTriggerConfiguration() {
+						return TriggerConfiguration.createTriggerConfiguration(
+							1, TimeUnit.YEAR);
+					}
+
+				},
+				null);
+
+		try {
+			Message message = new Message();
+
+			message.put(SchedulerEngine.GROUP_NAME, name);
+			message.put(SchedulerEngine.JOB_NAME, name);
+
+			_messageBus.sendMessage(destinationName, message);
+
+			Assert.assertTrue(
+				countDownLatch.await(
+					10, java.util.concurrent.TimeUnit.SECONDS));
+		}
+		finally {
+			serviceRegistration1.unregister();
+			serviceRegistration2.unregister();
+		}
+
+		Assert.assertEquals(
+			auditRequestContexts.toString(), 1, auditRequestContexts.size());
+
+		AuditRequestContext auditRequestContext = auditRequestContexts.get(0);
+
+		Assert.assertNotSame(currentAuditRequestContext, auditRequestContext);
+		Assert.assertNotNull(auditRequestContext.getRequestId());
+		Assert.assertNotEquals(
+			currentAuditRequestContext.getRequestId(),
+			auditRequestContext.getRequestId());
+		Assert.assertNull(auditRequestContext.getSessionID());
+
+		Assert.assertSame(
+			currentAuditRequestContext,
+			AuditRequestContextThreadLocal.getAuditRequestContext());
+		Assert.assertEquals(
+			sessionID, currentAuditRequestContext.getSessionID());
+	}
 
 	@Test
 	public void testScriptingJob() throws Exception {
@@ -136,6 +263,9 @@ public class SchedulerEngineHelperImplTest {
 
 	@Inject
 	private DestinationFactory _destinationFactory;
+
+	@Inject
+	private MessageBus _messageBus;
 
 	@Inject
 	private SchedulerEngineHelper _schedulerEngineHelper;

@@ -13,7 +13,14 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRequestContext;
 import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.messaging.Destination;
+import com.liferay.portal.kernel.messaging.DestinationConfiguration;
+import com.liferay.portal.kernel.messaging.DestinationFactory;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBus;
+import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.ChecksumUtil;
@@ -33,6 +40,7 @@ import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
@@ -44,6 +52,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.After;
@@ -54,12 +66,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
+
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Christian Moura
+ * @author Álvaro Saugar
  */
 @FeatureFlag("LPD-6417")
 @RunWith(Arquillian.class)
@@ -100,6 +118,86 @@ public class AuditMessageTest {
 		_testConstructorWithHeadlessRequest();
 		_testConstructorWithHeadlessRequestWithoutCSRFToken();
 		_testConstructorWithPortalRequest();
+	}
+
+	@Test
+	public void testConstructorOnMessageBusThread() throws Exception {
+		Bundle bundle = FrameworkUtil.getBundle(AuditMessageTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		String destinationName = RandomTestUtil.randomString();
+
+		ServiceRegistration<Destination> serviceRegistration1 =
+			bundleContext.registerService(
+				Destination.class,
+				_destinationFactory.createDestination(
+					DestinationConfiguration.
+						createSerialDestinationConfiguration(destinationName)),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"destination.name", destinationName
+				).build());
+
+		List<AuditMessage> auditMessages = new ArrayList<>();
+		long companyId = TestPropsValues.getCompanyId();
+		CountDownLatch countDownLatch = new CountDownLatch(2);
+		String sessionID = RandomTestUtil.randomString();
+		long userId = TestPropsValues.getUserId();
+
+		ServiceRegistration<MessageListener> serviceRegistration2 =
+			bundleContext.registerService(
+				MessageListener.class,
+				message -> {
+					if (auditMessages.isEmpty()) {
+						AuditRequestContext auditRequestContext =
+							AuditRequestContextThreadLocal.
+								getAuditRequestContext();
+
+						auditRequestContext.setSessionID(sessionID);
+					}
+
+					auditMessages.add(
+						new AuditMessage(
+							RandomTestUtil.randomLong(), companyId, userId,
+							RandomTestUtil.randomString(),
+							RandomTestUtil.nextDate(),
+							JSONFactoryUtil.createJSONObject(),
+							RandomTestUtil.randomString(),
+							RandomTestUtil.randomString(),
+							RandomTestUtil.randomString(),
+							RandomTestUtil.randomString()));
+
+					countDownLatch.countDown();
+				},
+				HashMapDictionaryBuilder.<String, Object>put(
+					"destination.name", destinationName
+				).build());
+
+		try {
+			_messageBus.sendMessage(destinationName, new Message());
+			_messageBus.sendMessage(destinationName, new Message());
+
+			Assert.assertTrue(countDownLatch.await(10, TimeUnit.SECONDS));
+		}
+		finally {
+			serviceRegistration1.unregister();
+			serviceRegistration2.unregister();
+		}
+
+		AuditMessage auditMessage1 = auditMessages.get(0);
+
+		Assert.assertNotNull(auditMessage1.getRequestId());
+		Assert.assertTrue(auditMessage1.isRequestIdGenerated());
+		Assert.assertEquals(sessionID, auditMessage1.getSessionID());
+
+		AuditMessage auditMessage2 = auditMessages.get(1);
+
+		Assert.assertNotNull(auditMessage2.getRequestId());
+		Assert.assertTrue(auditMessage2.isRequestIdGenerated());
+		Assert.assertNull(auditMessage2.getSessionID());
+
+		Assert.assertNotEquals(
+			auditMessage1.getRequestId(), auditMessage2.getRequestId());
 	}
 
 	private void _assertImpersonatedUser(AuditMessage auditMessage) {
@@ -295,8 +393,14 @@ public class AuditMessageTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
+	@Inject
+	private DestinationFactory _destinationFactory;
+
 	@DeleteAfterTestRun
 	private User _impersonatedUser;
+
+	@Inject
+	private MessageBus _messageBus;
 
 	private User _user;
 
