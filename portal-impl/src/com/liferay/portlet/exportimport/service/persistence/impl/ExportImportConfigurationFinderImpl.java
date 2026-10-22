@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -57,121 +56,9 @@ public class ExportImportConfigurationFinderImpl
 		QueryDefinition<ExportImportConfiguration> queryDefinition =
 			new QueryDefinition<>(status);
 
-		return doCountByC_G_N_D_T(
+		return _countByC_G_N_D_T(
 			companyId, groupId, names, descriptions, type, andOperator,
-			queryDefinition, false);
-	}
-
-	@Override
-	public int countByC_G_N_D_T(
-		long companyId, long groupId, String name, String description, int type,
-		int status, boolean andOperator) {
-
-		String[] names = CustomSQLUtil.keywords(name);
-		String[] descriptions = CustomSQLUtil.keywords(description, false);
-
-		QueryDefinition<ExportImportConfiguration> queryDefinition =
-			new QueryDefinition<>(status);
-
-		return doCountByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, andOperator,
-			queryDefinition, false);
-	}
-
-	@Override
-	public int filterCountByKeywords(
-		long companyId, long groupId, String keywords, int type, int status) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = CustomSQLUtil.keywords(keywords);
-			descriptions = CustomSQLUtil.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return filterCountByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, status, andOperator);
-	}
-
-	@Override
-	public int filterCountByC_G_N_D_T(
-		long companyId, long groupId, String name, String description, int type,
-		int status, boolean andOperator) {
-
-		String[] names = CustomSQLUtil.keywords(name);
-		String[] descriptions = CustomSQLUtil.keywords(description, false);
-
-		return filterCountByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, status, andOperator);
-	}
-
-	@Override
-	public int filterCountByC_G_N_D_T(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		int type, int status, boolean andOperator) {
-
-		QueryDefinition<ExportImportConfiguration> queryDefinition =
-			new QueryDefinition<>(status);
-
-		return doCountByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, andOperator,
-			queryDefinition, true);
-	}
-
-	@Override
-	public List<ExportImportConfiguration> filterFindByKeywords(
-		long companyId, long groupId, String keywords, int type, int status,
-		int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = CustomSQLUtil.keywords(keywords);
-			descriptions = CustomSQLUtil.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return filterFindByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<ExportImportConfiguration> filterFindByC_G_N_D_T(
-		long companyId, long groupId, String name, String description, int type,
-		int status, boolean andOperator, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
-		String[] names = CustomSQLUtil.keywords(name);
-		String[] descriptions = CustomSQLUtil.keywords(description, false);
-
-		return filterFindByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<ExportImportConfiguration> filterFindByC_G_N_D_T(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		int type, int status, boolean andOperator, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
-		QueryDefinition<ExportImportConfiguration> queryDefinition =
-			new QueryDefinition<>(status, false, start, end, orderByComparator);
-
-		return doFindByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, andOperator,
-			queryDefinition, true);
+			queryDefinition);
 	}
 
 	@Override
@@ -192,44 +79,18 @@ public class ExportImportConfigurationFinderImpl
 			andOperator = true;
 		}
 
-		return findByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<ExportImportConfiguration> findByC_G_N_D_T(
-		long companyId, long groupId, String name, String description, int type,
-		int status, boolean andOperator, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
-		String[] names = CustomSQLUtil.keywords(name);
-		String[] descriptions = CustomSQLUtil.keywords(description, false);
-
-		return findByC_G_N_D_T(
-			companyId, groupId, names, descriptions, type, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<ExportImportConfiguration> findByC_G_N_D_T(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		int type, int status, boolean andOperator, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
 		QueryDefinition<ExportImportConfiguration> queryDefinition =
 			new QueryDefinition<>(status, false, start, end, orderByComparator);
 
-		return doFindByC_G_N_D_T(
+		return _findByC_G_N_D_T(
 			companyId, groupId, names, descriptions, type, andOperator,
-			queryDefinition, false);
+			queryDefinition);
 	}
 
-	protected int doCountByC_G_N_D_T(
+	private int _countByC_G_N_D_T(
 		long companyId, long groupId, String[] names, String[] descriptions,
 		int type, boolean andOperator,
-		QueryDefinition<ExportImportConfiguration> queryDefinition,
-		boolean inlineSQLHelper) {
+		QueryDefinition<ExportImportConfiguration> queryDefinition) {
 
 		names = CustomSQLUtil.keywords(names);
 		descriptions = CustomSQLUtil.keywords(descriptions, false);
@@ -241,14 +102,7 @@ public class ExportImportConfigurationFinderImpl
 
 			String sql = CustomSQLUtil.get(COUNT_BY_C_G_N_D_T);
 
-			sql = updateSQL(sql, queryDefinition);
-
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, ExportImportConfiguration.class.getName(),
-					"ExportImportConfiguration.exportImportConfigurationId",
-					groupId);
-			}
+			sql = _updateSQL(sql, queryDefinition);
 
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "LOWER(name)", StringPool.LIKE, false, names);
@@ -293,11 +147,10 @@ public class ExportImportConfigurationFinderImpl
 		}
 	}
 
-	protected List<ExportImportConfiguration> doFindByC_G_N_D_T(
+	private List<ExportImportConfiguration> _findByC_G_N_D_T(
 		long companyId, long groupId, String[] names, String[] descriptions,
 		int type, boolean andOperator,
-		QueryDefinition<ExportImportConfiguration> queryDefinition,
-		boolean inlineSQLHelper) {
+		QueryDefinition<ExportImportConfiguration> queryDefinition) {
 
 		names = CustomSQLUtil.keywords(names);
 		descriptions = CustomSQLUtil.keywords(descriptions, false);
@@ -309,17 +162,10 @@ public class ExportImportConfigurationFinderImpl
 
 			String sql = CustomSQLUtil.get(FIND_BY_C_G_N_D_T);
 
-			sql = updateSQL(sql, queryDefinition);
+			sql = _updateSQL(sql, queryDefinition);
 
 			sql = CustomSQLUtil.replaceOrderBy(
 				sql, queryDefinition.getOrderByComparator());
-
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, ExportImportConfiguration.class.getName(),
-					"ExportImportConfiguration.exportImportConfigurationId",
-					groupId);
-			}
 
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "LOWER(name)", StringPool.LIKE, false, names);
@@ -358,7 +204,7 @@ public class ExportImportConfigurationFinderImpl
 		}
 	}
 
-	protected String updateSQL(
+	private String _updateSQL(
 		String sql,
 		QueryDefinition<ExportImportConfiguration> queryDefinition) {
 
