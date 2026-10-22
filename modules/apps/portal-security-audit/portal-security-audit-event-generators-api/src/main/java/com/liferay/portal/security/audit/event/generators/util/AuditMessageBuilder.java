@@ -59,6 +59,16 @@ public class AuditMessageBuilder {
 		long groupId, long accountEntryId, String className, String classPK,
 		String contextName, String eventType, List<Attribute> attributes) {
 
+		return buildAuditMessage(
+			groupId, accountEntryId, null, className, classPK, contextName,
+			eventType, null, attributes);
+	}
+
+	public static AuditMessage buildAuditMessage(
+		long groupId, long accountEntryId, String action, String className,
+		String classPK, String contextName, String eventType,
+		String resourceType, List<Attribute> attributes) {
+
 		long companyId = CompanyThreadLocal.getCompanyId();
 
 		long userId = 0;
@@ -95,8 +105,8 @@ public class AuditMessageBuilder {
 
 		return new AuditMessage(
 			groupId, companyId, realUserId, realUserName, null, accountEntryId,
-			additionalInfoJSONObject, className, classPK, contextName,
-			eventType, null);
+			action, additionalInfoJSONObject, className, classPK, contextName,
+			eventType, null, resourceType);
 	}
 
 	public static AuditMessage buildAuditMessage(
@@ -114,6 +124,15 @@ public class AuditMessageBuilder {
 
 		return buildAuditMessage(
 			0, 0, className, classPK, null, eventType, attributes);
+	}
+
+	public static AuditMessage buildAuditMessage(
+		String action, String className, long classPK, String eventType,
+		String resourceType, List<Attribute> attributes) {
+
+		return buildAuditMessage(
+			0, 0, action, className, String.valueOf(classPK), null, eventType,
+			resourceType, attributes);
 	}
 
 	private static JSONArray _getAttributesJSONArray(
