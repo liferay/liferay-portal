@@ -255,13 +255,13 @@ public class AuthVerifierPipelineTest {
 	private void _testVerifyRequestWithContextPathNotAffectedByPortalProxyPath()
 		throws PortalException {
 
-		String contextPath = "/" + RandomTestUtil.randomString();
-
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"PORTAL_PROXY_PATH", "/" + RandomTestUtil.randomString())) {
 
 			_setUpPortalUtil();
+
+			String contextPath = "/" + RandomTestUtil.randomString();
 
 			_assertAuthVerifierResult(
 				contextPath,
