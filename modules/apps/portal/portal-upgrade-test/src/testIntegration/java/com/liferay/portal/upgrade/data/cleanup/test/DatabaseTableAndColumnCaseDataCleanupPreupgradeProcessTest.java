@@ -39,6 +39,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -293,8 +294,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 
 			this.connection = proxyConnection;
 
-			_testValidateColumnNamesCasing(
-				columnName, columnName, "LONG", tableName);
+			_testValidateColumnNamesCasing(columnName, columnName, tableName);
 
 			this.connection = null;
 
@@ -481,7 +481,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			alterTableAddColumn(tableName, invalidColumnName, columnType);
 
 			_testValidateColumnNamesCasing(
-				invalidColumnName, columnName, columnType, tableName);
+				invalidColumnName, columnName, tableName);
 
 			List<String> messages = logCapture.getMessages();
 
@@ -499,30 +499,25 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 
 	private void _testValidateColumnNamesCasing(
 			String existingColumnName, String expectedColumnName,
-			String expectedColumnType, String tableName)
+			String tableName)
 		throws Exception {
 
 		DatabaseMetaData databaseMetaData = connection.getMetaData();
 
-		Map<String, String> existingColumnNames =
+		ReflectionTestUtil.invoke(
+			this, "_validateColumnNamesCasing",
+			new Class<?>[] {
+				Map.class, DBInspector.class, Collection.class, int.class,
+				String.class
+			},
 			TreeMapBuilder.<String, String>create(
 				String.CASE_INSENSITIVE_ORDER
 			).put(
 				existingColumnName, existingColumnName
-			).build();
-
-		List<String> expectedColumnDefinitions = Collections.singletonList(
-			expectedColumnName + StringPool.SPACE + expectedColumnType);
-
-		ReflectionTestUtil.invoke(
-			this, "_validateColumnNamesCasing",
-			new Class<?>[] {
-				DBInspector.class, List.class, Map.class, int.class,
-				String.class
-			},
-			new DBInspector(connection), expectedColumnDefinitions,
-			existingColumnNames, databaseMetaData.getMaxColumnNameLength(),
-			tableName);
+			).build(),
+			new DBInspector(connection),
+			Collections.singletonList(expectedColumnName),
+			databaseMetaData.getMaxColumnNameLength(), tableName);
 	}
 
 	private static final String _TEMP_SUFFIX = "_temp";
