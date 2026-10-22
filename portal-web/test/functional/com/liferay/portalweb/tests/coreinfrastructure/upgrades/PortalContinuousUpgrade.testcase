@@ -70,6 +70,7 @@ definition {
 
 		PortalInstances.addCP(
 			mailDomain = "www.able.com",
+			synchronousCreation = "true",
 			virtualHost = "www.able.com",
 			webId = "www.able.com");
 
