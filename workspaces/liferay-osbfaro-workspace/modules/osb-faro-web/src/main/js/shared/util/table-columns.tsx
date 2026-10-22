@@ -1206,7 +1206,6 @@ export const pagesListColumns = {
 	inactiveViewCount: {
 		accessor: 'viewCount',
 		className: 'view-count table-column-text-end',
-		dataFormatter: () => '-',
 		label: Liferay.Language.get('views'),
 		sortable: false,
 	},
