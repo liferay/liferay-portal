@@ -373,7 +373,10 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			return _getLatestFileEntryDSRequests(companyId, fileEntryIds);
 		}
 		catch (PortalException portalException) {
-			_log.error(portalException);
+			_log.error(
+				"Unable to get latest digital signature requests for file " +
+					"entries",
+				portalException);
 
 			return new HashMap<>();
 		}
@@ -519,7 +522,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				objectEntry.getValues(), "requestStatus");
 
 			if (Objects.equals(
-					dsRequestStatus, DSRequestConstants.STATUS_VOIDED)) {
+					DSRequestConstants.STATUS_VOIDED, dsRequestStatus)) {
 
 				return;
 			}

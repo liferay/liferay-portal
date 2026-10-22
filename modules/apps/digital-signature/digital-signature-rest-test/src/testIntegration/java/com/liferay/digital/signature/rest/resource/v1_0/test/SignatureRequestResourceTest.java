@@ -315,8 +315,8 @@ public class SignatureRequestResourceTest
 	public void testGetSiteSignatureRequestsPage() throws Exception {
 		super.testGetSiteSignatureRequestsPage();
 
-		_testGetSiteSignatureRequestsPageWhenSearchIsSet();
-		_testGetSiteSignatureRequestsPageWhenUserHasNoViewPermission();
+		_testGetSiteSignatureRequestsPageWithSearch();
+		_testGetSiteSignatureRequestsPageWithoutViewPermission();
 	}
 
 	@Ignore
@@ -362,9 +362,9 @@ public class SignatureRequestResourceTest
 		super.testPostSignatureRequestNotification();
 
 		_testPostSignatureRequestNotification();
-		_testPostSignatureRequestNotificationWhenSignatureRequestIsTerminal();
-		_testPostSignatureRequestNotificationWhenUserHasNoUpdatePermission();
-		_testPostSignatureRequestNotificationWhenUserHasNoViewPermission();
+		_testPostSignatureRequestNotificationWithTerminalSignatureRequest();
+		_testPostSignatureRequestNotificationWithoutUpdatePermission();
+		_testPostSignatureRequestNotificationWithoutViewPermission();
 	}
 
 	@Override
@@ -373,11 +373,11 @@ public class SignatureRequestResourceTest
 		super.testPostSignatureRequestVoid();
 
 		_testPostSignatureRequestVoid();
-		_testPostSignatureRequestVoidWhenDSEnvelopeIsNotVoidable();
-		_testPostSignatureRequestVoidWhenSignatureRequestIsTerminal();
-		_testPostSignatureRequestVoidWhenUserHasNoUpdatePermission();
-		_testPostSignatureRequestVoidWhenUserHasNoViewPermission();
-		_testPostSignatureRequestVoidWhenVoidedReasonIsBlank();
+		_testPostSignatureRequestVoidWithBlankVoidedReason();
+		_testPostSignatureRequestVoidWithNonvoidableDSEnvelope();
+		_testPostSignatureRequestVoidWithTerminalSignatureRequest();
+		_testPostSignatureRequestVoidWithoutUpdatePermission();
+		_testPostSignatureRequestVoidWithoutViewPermission();
 	}
 
 	@Override
@@ -386,19 +386,19 @@ public class SignatureRequestResourceTest
 		super.testPostSiteSignatureRequest();
 
 		_testPostSiteSignatureRequest();
-		_testPostSiteSignatureRequestWhenExpireAfterIsNegative();
-		_testPostSiteSignatureRequestWhenFileEntryHasDSRequest();
-		_testPostSiteSignatureRequestWhenFileEntryIdsContainNull();
-		_testPostSiteSignatureRequestWhenFileEntryIdsIsNull();
-		_testPostSiteSignatureRequestWhenRecipientIsDuplicated();
-		_testPostSiteSignatureRequestWhenRecipientUserIdIsNull();
-		_testPostSiteSignatureRequestWhenRecipientsAreEmpty();
-		_testPostSiteSignatureRequestWhenSendNotificationsIsFalse();
-		_testPostSiteSignatureRequestWhenSendNotificationsIsNull();
-		_testPostSiteSignatureRequestWhenUserHasNoAddPermission();
-		_testPostSiteSignatureRequestWhenUserHasNoFileEntryUpdatePermission();
-		_testPostSiteSignatureRequestWhenUserHasNoRecipientUserViewPermission();
-		_testPostSiteSignatureRequestWhenUserHasNoSiteViewPermission();
+		_testPostSiteSignatureRequestWithDuplicateRecipient();
+		_testPostSiteSignatureRequestWithFileEntryDSRequest();
+		_testPostSiteSignatureRequestWithNegativeExpireAfter();
+		_testPostSiteSignatureRequestWithNullFileEntryId();
+		_testPostSiteSignatureRequestWithSendNotificationsFalse();
+		_testPostSiteSignatureRequestWithoutAddPermission();
+		_testPostSiteSignatureRequestWithoutFileEntryIds();
+		_testPostSiteSignatureRequestWithoutFileEntryUpdatePermission();
+		_testPostSiteSignatureRequestWithoutRecipientUserId();
+		_testPostSiteSignatureRequestWithoutRecipientUserViewPermission();
+		_testPostSiteSignatureRequestWithoutRecipients();
+		_testPostSiteSignatureRequestWithoutSendNotifications();
+		_testPostSiteSignatureRequestWithoutSiteViewPermission();
 	}
 
 	@Ignore
@@ -632,7 +632,7 @@ public class SignatureRequestResourceTest
 		).build();
 	}
 
-	private void _testGetSiteSignatureRequestsPageWhenSearchIsSet()
+	private void _testGetSiteSignatureRequestsPageWithSearch()
 		throws Exception {
 
 		String search = RandomTestUtil.randomString();
@@ -649,27 +649,28 @@ public class SignatureRequestResourceTest
 		signatureRequestResource.postSiteSignatureRequest(
 			testGroup.getGroupId(), _createSignatureRequest());
 
-		Page<SignatureRequest> page =
+		Page<SignatureRequest> signatureRequestsPage =
 			signatureRequestResource.getSiteSignatureRequestsPage(
 				testGroup.getGroupId(), search, Pagination.of(1, 10));
 
-		Assert.assertEquals(1, page.getTotalCount());
+		Assert.assertEquals(1, signatureRequestsPage.getTotalCount());
 
 		List<SignatureRequest> signatureRequests =
-			(List<SignatureRequest>)page.getItems();
+			(List<SignatureRequest>)signatureRequestsPage.getItems();
 
 		SignatureRequest pageSignatureRequest = signatureRequests.get(0);
 
 		Assert.assertEquals(
 			postSignatureRequest.getId(), pageSignatureRequest.getId());
 
-		page = signatureRequestResource.getSiteSignatureRequestsPage(
-			irrelevantGroup.getGroupId(), search, Pagination.of(1, 10));
+		signatureRequestsPage =
+			signatureRequestResource.getSiteSignatureRequestsPage(
+				irrelevantGroup.getGroupId(), search, Pagination.of(1, 10));
 
-		Assert.assertEquals(0, page.getTotalCount());
+		Assert.assertEquals(0, signatureRequestsPage.getTotalCount());
 	}
 
-	private void _testGetSiteSignatureRequestsPageWhenUserHasNoViewPermission()
+	private void _testGetSiteSignatureRequestsPageWithoutViewPermission()
 		throws Exception {
 
 		User user = UserTestUtil.addUser();
@@ -677,11 +678,11 @@ public class SignatureRequestResourceTest
 		SignatureRequestResource userSignatureRequestResource =
 			_getSignatureRequestResource(user);
 
-		Page<SignatureRequest> page =
+		Page<SignatureRequest> signatureRequestsPage =
 			userSignatureRequestResource.getSiteSignatureRequestsPage(
 				testGroup.getGroupId(), null, Pagination.of(1, 10));
 
-		Assert.assertEquals(0, page.getTotalCount());
+		Assert.assertEquals(0, signatureRequestsPage.getTotalCount());
 	}
 
 	private void _testPostSignatureRequestNotification() throws Exception {
@@ -702,7 +703,7 @@ public class SignatureRequestResourceTest
 			notificationQueueEntries.size());
 	}
 
-	private void _testPostSignatureRequestNotificationWhenSignatureRequestIsTerminal()
+	private void _testPostSignatureRequestNotificationWithTerminalSignatureRequest()
 		throws Exception {
 
 		ObjectEntry dsRequestObjectEntry = _addDSRequestObjectEntry(
@@ -715,7 +716,7 @@ public class SignatureRequestResourceTest
 				dsRequestObjectEntry.getObjectEntryId()));
 	}
 
-	private void _testPostSignatureRequestNotificationWhenUserHasNoUpdatePermission()
+	private void _testPostSignatureRequestNotificationWithoutUpdatePermission()
 		throws Exception {
 
 		User user = UserTestUtil.addUser();
@@ -731,7 +732,7 @@ public class SignatureRequestResourceTest
 				dsRequestObjectEntry.getObjectEntryId()));
 	}
 
-	private void _testPostSignatureRequestNotificationWhenUserHasNoViewPermission()
+	private void _testPostSignatureRequestNotificationWithoutViewPermission()
 		throws Exception {
 
 		ObjectEntry dsRequestObjectEntry = _addDSRequestObjectEntry(
@@ -801,7 +802,20 @@ public class SignatureRequestResourceTest
 		}
 	}
 
-	private void _testPostSignatureRequestVoidWhenDSEnvelopeIsNotVoidable()
+	private void _testPostSignatureRequestVoidWithBlankVoidedReason()
+		throws Exception {
+
+		ObjectEntry dsRequestObjectEntry = _addDSRequestObjectEntry(
+			RandomTestUtil.randomString() + "@liferay.com",
+			DSRequestConstants.STATUS_SENT);
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			() -> signatureRequestResource.postSignatureRequestVoid(
+				dsRequestObjectEntry.getObjectEntryId(), StringPool.BLANK));
+	}
+
+	private void _testPostSignatureRequestVoidWithNonvoidableDSEnvelope()
 		throws Exception {
 
 		DSEnvelope dsEnvelope = new DSEnvelope();
@@ -843,7 +857,7 @@ public class SignatureRequestResourceTest
 		}
 	}
 
-	private void _testPostSignatureRequestVoidWhenSignatureRequestIsTerminal()
+	private void _testPostSignatureRequestVoidWithTerminalSignatureRequest()
 		throws Exception {
 
 		ObjectEntry dsRequestObjectEntry = _addDSRequestObjectEntry(
@@ -857,7 +871,7 @@ public class SignatureRequestResourceTest
 				RandomTestUtil.randomString()));
 	}
 
-	private void _testPostSignatureRequestVoidWhenUserHasNoUpdatePermission()
+	private void _testPostSignatureRequestVoidWithoutUpdatePermission()
 		throws Exception {
 
 		User user = UserTestUtil.addUser();
@@ -874,7 +888,7 @@ public class SignatureRequestResourceTest
 				RandomTestUtil.randomString()));
 	}
 
-	private void _testPostSignatureRequestVoidWhenUserHasNoViewPermission()
+	private void _testPostSignatureRequestVoidWithoutViewPermission()
 		throws Exception {
 
 		ObjectEntry dsRequestObjectEntry = _addDSRequestObjectEntry(
@@ -893,19 +907,6 @@ public class SignatureRequestResourceTest
 				RandomTestUtil.randomString()));
 	}
 
-	private void _testPostSignatureRequestVoidWhenVoidedReasonIsBlank()
-		throws Exception {
-
-		ObjectEntry dsRequestObjectEntry = _addDSRequestObjectEntry(
-			RandomTestUtil.randomString() + "@liferay.com",
-			DSRequestConstants.STATUS_SENT);
-
-		_assertProblemException(
-			"BAD_REQUEST",
-			() -> signatureRequestResource.postSignatureRequestVoid(
-				dsRequestObjectEntry.getObjectEntryId(), StringPool.BLANK));
-	}
-
 	private void _testPostSiteSignatureRequest() throws Exception {
 		SignatureRequest signatureRequest = _createSignatureRequest();
 
@@ -915,11 +916,11 @@ public class SignatureRequestResourceTest
 
 		Long[] fileEntryIds = signatureRequest.getFileEntryIds();
 
-		Map<Long, DSRequest> latestFileEntryDSRequests =
+		Map<Long, DSRequest> dsRequests =
 			_dsRequestManager.getLatestFileEntryDSRequests(
 				testCompany.getCompanyId(), new long[] {fileEntryIds[0]});
 
-		DSRequest dsRequest = latestFileEntryDSRequests.get(fileEntryIds[0]);
+		DSRequest dsRequest = dsRequests.get(fileEntryIds[0]);
 
 		Assert.assertEquals(
 			Long.valueOf(dsRequest.getDSRequestId()),
@@ -997,60 +998,7 @@ public class SignatureRequestResourceTest
 			user.getFullName(), postSignatureRequestRecipient.getName());
 	}
 
-	private void _testPostSiteSignatureRequestWhenExpireAfterIsNegative()
-		throws Exception {
-
-		SignatureRequest signatureRequest = _createSignatureRequest();
-
-		signatureRequest.setExpireAfter(-1);
-
-		_assertProblemException(
-			"BAD_REQUEST",
-			() -> signatureRequestResource.postSiteSignatureRequest(
-				testGroup.getGroupId(), signatureRequest));
-	}
-
-	private void _testPostSiteSignatureRequestWhenFileEntryHasDSRequest()
-		throws Exception {
-
-		SignatureRequest signatureRequest = _createSignatureRequest();
-
-		signatureRequestResource.postSiteSignatureRequest(
-			testGroup.getGroupId(), signatureRequest);
-
-		_assertProblemException(
-			"BAD_REQUEST",
-			() -> signatureRequestResource.postSiteSignatureRequest(
-				testGroup.getGroupId(), signatureRequest));
-	}
-
-	private void _testPostSiteSignatureRequestWhenFileEntryIdsContainNull()
-		throws Exception {
-
-		SignatureRequest signatureRequest = _createSignatureRequest();
-
-		signatureRequest.setFileEntryIds(new Long[] {null});
-
-		_assertProblemException(
-			"BAD_REQUEST",
-			() -> signatureRequestResource.postSiteSignatureRequest(
-				testGroup.getGroupId(), signatureRequest));
-	}
-
-	private void _testPostSiteSignatureRequestWhenFileEntryIdsIsNull()
-		throws Exception {
-
-		SignatureRequest signatureRequest = _createSignatureRequest();
-
-		signatureRequest.setFileEntryIds((Long[])null);
-
-		_assertProblemException(
-			"BAD_REQUEST",
-			() -> signatureRequestResource.postSiteSignatureRequest(
-				testGroup.getGroupId(), signatureRequest));
-	}
-
-	private void _testPostSiteSignatureRequestWhenRecipientIsDuplicated()
+	private void _testPostSiteSignatureRequestWithDuplicateRecipient()
 		throws Exception {
 
 		SignatureRequest signatureRequest = _createSignatureRequest();
@@ -1069,13 +1017,13 @@ public class SignatureRequestResourceTest
 				testGroup.getGroupId(), signatureRequest));
 	}
 
-	private void _testPostSiteSignatureRequestWhenRecipientUserIdIsNull()
+	private void _testPostSiteSignatureRequestWithFileEntryDSRequest()
 		throws Exception {
 
 		SignatureRequest signatureRequest = _createSignatureRequest();
 
-		signatureRequest.setSignatureRequestRecipients(
-			new SignatureRequestRecipient[] {new SignatureRequestRecipient()});
+		signatureRequestResource.postSiteSignatureRequest(
+			testGroup.getGroupId(), signatureRequest);
 
 		_assertProblemException(
 			"BAD_REQUEST",
@@ -1083,13 +1031,12 @@ public class SignatureRequestResourceTest
 				testGroup.getGroupId(), signatureRequest));
 	}
 
-	private void _testPostSiteSignatureRequestWhenRecipientsAreEmpty()
+	private void _testPostSiteSignatureRequestWithNegativeExpireAfter()
 		throws Exception {
 
 		SignatureRequest signatureRequest = _createSignatureRequest();
 
-		signatureRequest.setSignatureRequestRecipients(
-			new SignatureRequestRecipient[0]);
+		signatureRequest.setExpireAfter(-1);
 
 		_assertProblemException(
 			"BAD_REQUEST",
@@ -1097,7 +1044,20 @@ public class SignatureRequestResourceTest
 				testGroup.getGroupId(), signatureRequest));
 	}
 
-	private void _testPostSiteSignatureRequestWhenSendNotificationsIsFalse()
+	private void _testPostSiteSignatureRequestWithNullFileEntryId()
+		throws Exception {
+
+		SignatureRequest signatureRequest = _createSignatureRequest();
+
+		signatureRequest.setFileEntryIds(new Long[] {null});
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			() -> signatureRequestResource.postSiteSignatureRequest(
+				testGroup.getGroupId(), signatureRequest));
+	}
+
+	private void _testPostSiteSignatureRequestWithSendNotificationsFalse()
 		throws Exception {
 
 		SignatureRequest signatureRequest = _createSignatureRequest();
@@ -1116,26 +1076,7 @@ public class SignatureRequestResourceTest
 			notificationQueueEntries.size());
 	}
 
-	private void _testPostSiteSignatureRequestWhenSendNotificationsIsNull()
-		throws Exception {
-
-		SignatureRequest signatureRequest = _createSignatureRequest();
-
-		signatureRequest.setSendNotifications((Boolean)null);
-
-		SignatureRequest postSignatureRequest =
-			signatureRequestResource.postSiteSignatureRequest(
-				testGroup.getGroupId(), signatureRequest);
-
-		List<NotificationQueueEntry> notificationQueueEntries =
-			_getNotificationQueueEntries(postSignatureRequest.getId());
-
-		Assert.assertEquals(
-			notificationQueueEntries.toString(), 1,
-			notificationQueueEntries.size());
-	}
-
-	private void _testPostSiteSignatureRequestWhenUserHasNoAddPermission()
+	private void _testPostSiteSignatureRequestWithoutAddPermission()
 		throws Exception {
 
 		User user = UserTestUtil.addUser(testGroup.getGroupId());
@@ -1149,7 +1090,20 @@ public class SignatureRequestResourceTest
 				testGroup.getGroupId(), randomSignatureRequest()));
 	}
 
-	private void _testPostSiteSignatureRequestWhenUserHasNoFileEntryUpdatePermission()
+	private void _testPostSiteSignatureRequestWithoutFileEntryIds()
+		throws Exception {
+
+		SignatureRequest signatureRequest = _createSignatureRequest();
+
+		signatureRequest.setFileEntryIds((Long[])null);
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			() -> signatureRequestResource.postSiteSignatureRequest(
+				testGroup.getGroupId(), signatureRequest));
+	}
+
+	private void _testPostSiteSignatureRequestWithoutFileEntryUpdatePermission()
 		throws Exception {
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
@@ -1187,7 +1141,21 @@ public class SignatureRequestResourceTest
 				testGroup.getGroupId(), signatureRequest));
 	}
 
-	private void _testPostSiteSignatureRequestWhenUserHasNoRecipientUserViewPermission()
+	private void _testPostSiteSignatureRequestWithoutRecipientUserId()
+		throws Exception {
+
+		SignatureRequest signatureRequest = _createSignatureRequest();
+
+		signatureRequest.setSignatureRequestRecipients(
+			new SignatureRequestRecipient[] {new SignatureRequestRecipient()});
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			() -> signatureRequestResource.postSiteSignatureRequest(
+				testGroup.getGroupId(), signatureRequest));
+	}
+
+	private void _testPostSiteSignatureRequestWithoutRecipientUserViewPermission()
 		throws Exception {
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
@@ -1216,7 +1184,40 @@ public class SignatureRequestResourceTest
 				testGroup.getGroupId(), signatureRequest));
 	}
 
-	private void _testPostSiteSignatureRequestWhenUserHasNoSiteViewPermission()
+	private void _testPostSiteSignatureRequestWithoutRecipients()
+		throws Exception {
+
+		SignatureRequest signatureRequest = _createSignatureRequest();
+
+		signatureRequest.setSignatureRequestRecipients(
+			new SignatureRequestRecipient[0]);
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			() -> signatureRequestResource.postSiteSignatureRequest(
+				testGroup.getGroupId(), signatureRequest));
+	}
+
+	private void _testPostSiteSignatureRequestWithoutSendNotifications()
+		throws Exception {
+
+		SignatureRequest signatureRequest = _createSignatureRequest();
+
+		signatureRequest.setSendNotifications((Boolean)null);
+
+		SignatureRequest postSignatureRequest =
+			signatureRequestResource.postSiteSignatureRequest(
+				testGroup.getGroupId(), signatureRequest);
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			_getNotificationQueueEntries(postSignatureRequest.getId());
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 1,
+			notificationQueueEntries.size());
+	}
+
+	private void _testPostSiteSignatureRequestWithoutSiteViewPermission()
 		throws Exception {
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
