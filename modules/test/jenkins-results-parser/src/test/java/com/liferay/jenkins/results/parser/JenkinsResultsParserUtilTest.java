@@ -18,6 +18,7 @@ import java.net.URL;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -45,7 +46,7 @@ public class JenkinsResultsParserUtilTest
 		testEquals(
 			"client_id=a%26b&grant_type=client_credentials",
 			JenkinsResultsParserUtil.buildFormContent(
-				newParameters(
+				_newParameters(
 					"grant_type", "client_credentials", "client_id", "a&b")));
 	}
 
@@ -54,6 +55,7 @@ public class JenkinsResultsParserUtilTest
 		testEquals(
 			"",
 			JenkinsResultsParserUtil.buildFormContent(Collections.emptyMap()));
+		testEquals("", JenkinsResultsParserUtil.buildFormContent(null));
 	}
 
 	@Test
@@ -61,7 +63,7 @@ public class JenkinsResultsParserUtilTest
 		testEquals(
 			"A=a%23b&B=a%26b&C=100%25+pass&D=a%3Db&E=a%2Bb&F=a+b",
 			JenkinsResultsParserUtil.buildFormContent(
-				newParameters(
+				_newParameters(
 					"A", "a#b", "B", "a&b", "C", "100% pass", "D", "a=b", "E",
 					"a+b", "F", "a b")));
 	}
@@ -508,7 +510,7 @@ public class JenkinsResultsParserUtilTest
 
 	@Test
 	public void testGetQueryParametersWithBuiltURL() throws Exception {
-		Map<String, String> parameters = newParameters(
+		Map<String, String> parameters = _newParameters(
 			"A", "a#b", "B", "a&b", "C", "100% pass", "D", "a=b", "E", "a+b",
 			"F", "a b", "G a", "name with a space");
 
@@ -1139,7 +1141,7 @@ public class JenkinsResultsParserUtilTest
 	public void testNewURIBuilder() {
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 			"http://test-1-1/job/x/buildWithParameters",
-			newParameters(
+			_newParameters(
 				"PARENT_BUILD_URL", "http://test-1-1/job/y/1/", "JOB_VARIANT",
 				"functional"));
 
@@ -1214,6 +1216,12 @@ public class JenkinsResultsParserUtilTest
 
 		testEquals(
 			"http://test-1-1/job/x/buildWithParameters", uriBuilder.toString());
+
+		uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			"http://test-1-1/job/x/buildWithParameters", null);
+
+		testEquals(
+			"http://test-1-1/job/x/buildWithParameters", uriBuilder.toString());
 	}
 
 	@Test
@@ -1251,7 +1259,7 @@ public class JenkinsResultsParserUtilTest
 	public void testNewURIBuilderWithUnsortedParameters() {
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 			"http://test-1-1/job/x",
-			newParameters("gamma", "3", "beta", "2", "alpha", "1"));
+			_newParameters("gamma", "3", "beta", "2", "alpha", "1"));
 
 		testEquals(
 			"http://test-1-1/job/x?alpha=1&beta=2&gamma=3",
@@ -1261,9 +1269,9 @@ public class JenkinsResultsParserUtilTest
 	@Test
 	public void testNormalizeURLWithBarePercent() {
 		testEquals(
-			"http://test-1-1/job/x?V=100%25%20pass",
+			"http://test-1-1/job/x?V=100%25%20pass&W=a%2Bb",
 			JenkinsResultsParserUtil.normalizeURL(
-				"http://test-1-1/job/x?V=100% pass"));
+				"http://test-1-1/job/x?V=100% pass&W=a%2Bb"));
 	}
 
 	@Test
@@ -1278,9 +1286,9 @@ public class JenkinsResultsParserUtilTest
 	@Test
 	public void testNormalizeURLWithFragment() {
 		testEquals(
-			"http://test-1-1/job/x?a=1#summary",
+			"http://test-1-1/job/x?a=1%202#summary",
 			JenkinsResultsParserUtil.normalizeURL(
-				"http://test-1-1/job/x?a=1#summary"));
+				"http://test-1-1/job/x?a=1 2#summary"));
 	}
 
 	@Test
@@ -1431,6 +1439,16 @@ public class JenkinsResultsParserUtilTest
 		uriBuilder.addParameter("V", value);
 
 		return uriBuilder.toString();
+	}
+
+	private Map<String, String> _newParameters(String... namesAndValues) {
+		Map<String, String> parameters = new LinkedHashMap<>();
+
+		for (int i = 0; i < namesAndValues.length; i = i + 2) {
+			parameters.put(namesAndValues[i], namesAndValues[i + 1]);
+		}
+
+		return parameters;
 	}
 
 	private void _testFetchBuildURL(

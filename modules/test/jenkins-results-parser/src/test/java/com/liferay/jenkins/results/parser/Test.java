@@ -24,7 +24,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -284,16 +283,6 @@ public class Test {
 				Mockito.anyLong()
 			);
 		}
-	}
-
-	protected Map<String, String> newParameters(String... namesAndValues) {
-		Map<String, String> parameters = new LinkedHashMap<>();
-
-		for (int i = 0; i < namesAndValues.length; i = i + 2) {
-			parameters.put(namesAndValues[i], namesAndValues[i + 1]);
-		}
-
-		return parameters;
 	}
 
 	protected String read(File file) throws IOException {
