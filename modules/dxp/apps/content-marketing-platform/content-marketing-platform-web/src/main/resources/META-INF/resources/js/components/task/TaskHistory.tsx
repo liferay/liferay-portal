@@ -31,7 +31,7 @@ const FIELDS = {
 	},
 	description: {
 		label: Liferay.Language.get('description'),
-		type: 'text',
+		type: 'richText',
 	},
 	dueDate: {
 		label: Liferay.Language.get('due-date'),

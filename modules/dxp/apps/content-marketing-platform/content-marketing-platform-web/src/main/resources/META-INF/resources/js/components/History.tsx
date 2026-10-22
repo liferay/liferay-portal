@@ -57,6 +57,7 @@ type FieldType =
 	| 'date'
 	| 'picklist'
 	| 'relationship'
+	| 'richText'
 	| 'text'
 	| 'user';
 
@@ -64,6 +65,54 @@ export type Fields = Record<string, {label: string; type: FieldType}>;
 
 export interface HistoryHandle {
 	refresh: () => void;
+}
+
+function getMediaName(element: Element) {
+	const alt = element.getAttribute('alt');
+
+	if (alt) {
+		return alt;
+	}
+
+	const url =
+		element.getAttribute('src') ||
+		element.querySelector('video')?.getAttribute('src') ||
+		element
+			.querySelector('[data-oembed-url]')
+			?.getAttribute('data-oembed-url') ||
+		'';
+
+	try {
+		const pathSegments = new URL(
+			url,
+			window.location.origin
+		).pathname.split('/');
+
+		if (pathSegments[1] === 'documents' && pathSegments[4]) {
+			return decodeURIComponent(pathSegments[4].replace(/\+/g, ' '));
+		}
+	}
+	catch (error) {
+		if (process.env.NODE_ENV === 'development') {
+			console.error(error);
+		}
+	}
+
+	return url;
+}
+
+function getPlainText(html: string) {
+	const body = new DOMParser().parseFromString(html, 'text/html').body;
+
+	body.querySelectorAll('figure.media, img').forEach((element) =>
+		element.replaceWith(` ${getMediaName(element)} `)
+	);
+
+	body.querySelectorAll('br, h1, h2, h3, h4, h5, h6, li, p, tr').forEach(
+		(element) => element.after(' ')
+	);
+
+	return body.textContent?.replace(/\s+/g, ' ').trim();
 }
 
 function UserValueLabel({userId}: {userId: number}) {
@@ -143,6 +192,9 @@ function HistoryItemDetails({
 		}
 		else if (type === 'relationship' && value?.titleValue) {
 			return value?.titleValue;
+		}
+		else if (type === 'richText' && value) {
+			return getPlainText(value) || Liferay.Language.get('none');
 		}
 		else if (type === 'text' && value) {
 			return value;
