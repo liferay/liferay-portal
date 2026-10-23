@@ -9,14 +9,11 @@ Import-Package:\
 	\
 	!org.apache.abdera.*,\
 	!org.apache.avalon.*,\
-	!org.apache.cxf.aegis.*,\
 	!org.apache.html.dom.*,\
 	!org.apache.log.*,\
 	!org.apache.xmlbeans.*,\
 	\
 	!org.bouncycastle.*,\
-	\
-	!org.codehaus.jettison.*,\
 	\
 	!org.cryptomator.siv.*,\
 	\
@@ -29,7 +26,6 @@ Import-Package:\
 	*
 -dsannotations-options: inherit
 -includeresource:\
-	@org.apache.cxf.rt.rs.extension.providers*.jar,\
 	@org.apache.cxf.rt.rs.json.basic*.jar,\
 	@org.apache.cxf.rt.rs.security.jose*.jar,\
 	@org.apache.cxf.rt.rs.security.jose.jaxrs*.jar,\

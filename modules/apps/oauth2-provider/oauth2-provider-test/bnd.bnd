@@ -5,18 +5,14 @@ Import-Package:\
 	!javax.cache.*,\
 	\
 	!org.apache.abdera.*,\
-	!org.apache.cxf.aegis.*,\
 	\
 	!org.bouncycastle.*,\
-	\
-	!org.codehaus.jettison.*,\
 	\
 	!sun.net.www.protocol.http.*,\
 	\
 	*
 Private-Package: com.liferay.oauth2.provider.internal.test.*
 -includeresource:\
-	@org.apache.cxf.rt.rs.extension.providers*.jar,\
 	@org.apache.cxf.rt.rs.json.basic*.jar,\
 	@org.apache.cxf.rt.rs.security.jose*.jar,\
 	@org.apache.cxf.rt.rs.security.jose.jaxrs*.jar,\
