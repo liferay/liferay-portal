@@ -6,4 +6,3 @@ Import-Package:\
 	\
 	*
 Web-ContextPath: /saml-web
--dsannotations-options: inherit

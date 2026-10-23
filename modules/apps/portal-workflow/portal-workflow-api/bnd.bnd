@@ -13,4 +13,3 @@ Export-Package:\
 	com.liferay.portal.workflow.portlet.tab,\
 	com.liferay.portal.workflow.security.permission,\
 	com.liferay.portal.workflow.util
--dsannotations-options: inherit

@@ -4,4 +4,3 @@ Bundle-Version: 1.1.2
 Export-Package:\
 	com.liferay.portal.search.elasticsearch8.configuration,\
 	com.liferay.portal.search.elasticsearch8.constants
--dsannotations-options: inherit

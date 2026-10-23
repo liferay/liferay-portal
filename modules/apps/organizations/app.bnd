@@ -13,4 +13,3 @@ Liferay-Releng-Restart-Required: true
 Liferay-Releng-Suite: foundation
 Liferay-Releng-Support-Url: http://www.liferay.com
 Liferay-Releng-Supported: ${liferay.releng.supported}
--dsannotations-options: inherit

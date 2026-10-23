@@ -15,5 +15,4 @@ Import-Package:\
 	com.liferay.portal.kernel.util;version="[7.38.0,9999.0.0)",\
 	\
 	*
--dsannotations-options: inherit
 -fixupmessages "Classes found in the wrong directory"; restrict:=error; is:=ignore

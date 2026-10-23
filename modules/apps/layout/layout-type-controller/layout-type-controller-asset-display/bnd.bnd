@@ -6,4 +6,3 @@ Import-Package:\
 	\
 	*
 Web-ContextPath: /layout-type-controller-asset-display
--dsannotations-options: inherit

@@ -6,4 +6,3 @@ Import-Package:\
 	\
 	*
 Web-ContextPath: /message-boards-web
--dsannotations-options: inherit

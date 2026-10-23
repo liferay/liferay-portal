@@ -6,4 +6,3 @@ Import-Package:\
 	com.liferay.portal.kernel.exception;version="[0.0.0,9999.0.0)",\
 	\
 	*
--dsannotations-options: inherit

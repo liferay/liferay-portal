@@ -72,4 +72,3 @@ Export-Package:\
 	com.liferay.portal.search.summary,\
 	com.liferay.portal.search.synonym,\
 	com.liferay.portal.search.util
--dsannotations-options: inherit

@@ -2,4 +2,3 @@ Bundle-Name: Liferay Layout Content Web
 Bundle-SymbolicName: com.liferay.layout.content.web
 Bundle-Version: 1.0.5
 Web-ContextPath: /layout-content-web
--dsannotations-options: inherit
