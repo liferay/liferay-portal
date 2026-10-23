@@ -54,6 +54,28 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return archiveFile;
 	}
 
+	public File createBasePortalCache(String fileName) {
+		GitUtil.ExecutionResult executionResult = executeBashCommands(
+			3, GitUtil.MILLIS_RETRY_DELAY, 1000 * 60 * 30,
+			JenkinsResultsParserUtil.combine(
+				"zip -q -r -y ", fileName,
+				" $(git ls-files --directory --no-empty-directory --others ",
+				"--exclude-standard)",
+				" $(git ls-files --directory --no-empty-directory --others ",
+				"--exclude-standard --ignored)",
+				" -x 'working.dir.*.properties'"));
+
+		if (executionResult.getExitValue() != 0) {
+			throw new GitWorkingDirectoryRuntimeException(
+				this,
+				JenkinsResultsParserUtil.combine(
+					"Unable to create the base portal cache ", fileName, "\n",
+					executionResult.getStandardError()));
+		}
+
+		return new File(getWorkingDirectory(), fileName);
+	}
+
 	public File createYarnCache(String fileName) {
 		setUpYarn();
 
