@@ -76,13 +76,15 @@ public class AssetStatisticsResourceImpl
 
 		LicenseManagerUtil.checkFreeTier();
 
-		Long[] spaceGroupIds = CMSGroupUtil.getSpaceGroupIds(
-			contextCompany.getCompanyId(), _depotEntryService,
-			contextUser.getUserId());
+		Long[] administeredSpaceGroupIds =
+			CMSGroupUtil.getAdministeredSpaceGroupIds(
+				contextCompany.getCompanyId(), _depotEntryService,
+				contextUser.getUserId());
 
 		Long[] selectedSpaceGroupIds = CMSGroupUtil.getSelectedSpaceGroupIds(
 			assetLibraryId, contextCompany.getCompanyId(),
-			_depotEntryLocalService, groupLocalService, spaceGroupIds);
+			_depotEntryLocalService, groupLocalService,
+			administeredSpaceGroupIds);
 
 		if (ArrayUtil.isEmpty(selectedSpaceGroupIds)) {
 			return _toAssetStatistics();
@@ -118,8 +120,8 @@ public class AssetStatisticsResourceImpl
 							WorkflowConstants.STATUS_APPROVED)));
 				setBrokenLinksCount(
 					() -> _getBrokenLinksCount(
-						objectDefinitionIds, selectedSpaceGroupIds,
-						spaceGroupIds));
+						administeredSpaceGroupIds, objectDefinitionIds,
+						selectedSpaceGroupIds));
 				setExpiredCount(
 					() -> _getCount(
 						selectedSpaceGroupIds, objectDefinitionIds,
@@ -217,8 +219,8 @@ public class AssetStatisticsResourceImpl
 	}
 
 	private long _getBrokenLinksCount(
-		Long[] objectDefinitionIds, Long[] selectedSpaceGroupIds,
-		Long[] spaceGroupIds) {
+		Long[] administeredSpaceGroupIds, Long[] objectDefinitionIds,
+		Long[] selectedSpaceGroupIds) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-82226")) {
@@ -235,7 +237,7 @@ public class AssetStatisticsResourceImpl
 			Map<String, BrokenLinkTarget> brokenLinkTargetsMap =
 				brokenLinkAssetSearcher.getBrokenLinkTargetsMap(
 					contextCompany.getCompanyId(), objectDefinitionIds,
-					selectedSpaceGroupIds, spaceGroupIds);
+					selectedSpaceGroupIds, administeredSpaceGroupIds);
 
 			if (brokenLinkTargetsMap.isEmpty()) {
 				return 0;

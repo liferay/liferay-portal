@@ -7,6 +7,7 @@ package com.liferay.headless.cms.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.cms.client.dto.v1_0.AssetStatistics;
@@ -35,6 +36,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -280,6 +282,7 @@ public class AssetStatisticsResourceTest
 
 		_testGetAssetStatisticsBrokenLinksCount();
 		_testGetAssetStatisticsByAssetLibrary();
+		_testGetAssetStatisticsBySpaceAdministrator();
 		_testGetAssetStatisticsMissingRequiredFieldsCount();
 		_testGetAssetStatisticsSLABreachedWorkflowTasksCount();
 		_testGetAssetStatisticsUnlinkedCount();
@@ -290,6 +293,18 @@ public class AssetStatisticsResourceTest
 	@Override
 	@Test
 	public void testGraphQLGetAssetStatistics() throws Exception {
+	}
+
+	private void _addGroupUserWithRole(long groupId, String roleName, User user)
+		throws Exception {
+
+		_userLocalService.addGroupUser(groupId, user.getUserId());
+
+		Role role = _roleLocalService.getRole(
+			testCompany.getCompanyId(), roleName);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			user.getUserId(), groupId, new long[] {role.getRoleId()});
 	}
 
 	private ObjectEntry _addObjectEntry(
@@ -472,6 +487,20 @@ public class AssetStatisticsResourceTest
 				GetterUtil.getLong(
 					assetStatistics.getSlaBreachedWorkflowTasksCount()));
 		}
+	}
+
+	private void _assertTotalCount(
+			Long assetLibraryId,
+			AssetStatisticsResource assetStatisticsResource,
+			long expectedTotalCount)
+		throws Exception {
+
+		AssetStatistics assetStatistics =
+			assetStatisticsResource.getAssetStatistics(assetLibraryId);
+
+		Assert.assertEquals(
+			expectedTotalCount,
+			GetterUtil.getLong(assetStatistics.getTotalCount()));
 	}
 
 	private void _assertUnlinkedCount(
@@ -731,6 +760,48 @@ public class AssetStatisticsResourceTest
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry1.getDepotEntryId());
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
+	}
+
+	private void _testGetAssetStatisticsBySpaceAdministrator()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry administeredDepotEntry = _addSpaceDepotEntry(serviceContext);
+		DepotEntry reviewedDepotEntry = _addSpaceDepotEntry(serviceContext);
+
+		User user = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
+		_addGroupUserWithRole(
+			administeredDepotEntry.getGroupId(),
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR, user);
+		_addGroupUserWithRole(
+			reviewedDepotEntry.getGroupId(),
+			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER, user);
+
+		ObjectDefinition objectDefinition =
+			_getCMSBasicWebContentObjectDefinition();
+
+		_addObjectEntry(administeredDepotEntry, objectDefinition);
+		_addObjectEntry(reviewedDepotEntry, objectDefinition);
+		_addObjectEntry(reviewedDepotEntry, objectDefinition);
+
+		AssetStatisticsResource assetStatisticsResource =
+			_buildAssetStatisticsResource(user);
+
+		_assertTotalCount(
+			administeredDepotEntry.getDepotEntryId(), assetStatisticsResource,
+			1);
+		_assertTotalCount(null, assetStatisticsResource, 1);
+		_assertTotalCount(
+			reviewedDepotEntry.getDepotEntryId(), assetStatisticsResource, 0);
+
+		_depotEntryLocalService.deleteDepotEntry(
+			administeredDepotEntry.getDepotEntryId());
+		_depotEntryLocalService.deleteDepotEntry(
+			reviewedDepotEntry.getDepotEntryId());
 	}
 
 	private void _testGetAssetStatisticsMissingRequiredFieldsCount()
@@ -1104,6 +1175,9 @@ public class AssetStatisticsResourceTest
 	private SearchEngineAdapter _searchEngineAdapter;
 
 	private final List<String> _slaTaskResultUids = new ArrayList<>();
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

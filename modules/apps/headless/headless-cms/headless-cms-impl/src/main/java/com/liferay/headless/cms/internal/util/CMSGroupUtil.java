@@ -8,7 +8,13 @@ package com.liferay.headless.cms.internal.util;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.vulcan.util.GroupUtil;
 
@@ -18,6 +24,30 @@ import java.util.List;
  * @author Jürgen Kappler
  */
 public class CMSGroupUtil {
+
+	public static Long[] getAdministeredSpaceGroupIds(
+			long companyId, DepotEntryService depotEntryService, long userId)
+		throws PortalException {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		List<Long> administeredSpaceGroupIds = TransformUtil.unsafeTransform(
+			depotEntryService.getDepotEntryGroupIds(
+				companyId, userId, DepotConstants.TYPE_SPACE),
+			groupId -> {
+				if (!GroupPermissionUtil.contains(
+						permissionChecker, groupId,
+						ActionKeys.VIEW_SITE_ADMINISTRATION)) {
+
+					return null;
+				}
+
+				return groupId;
+			});
+
+		return administeredSpaceGroupIds.toArray(new Long[0]);
+	}
 
 	public static Long[] getSelectedSpaceGroupIds(
 		Long assetLibraryId, long companyId,
