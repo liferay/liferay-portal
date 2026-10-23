@@ -6,6 +6,8 @@
 package com.liferay.osgi.service.tracker.collections.map;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.osgi.framework.BundleContext;
@@ -29,11 +31,21 @@ public class ScopedServiceTrackerMapFactory<T> {
 	public static <T> ScopedServiceTrackerMap<T> create(
 		BundleContext bundleContext, Class<T> clazz, String property,
 		String filterString, Supplier<T> defaultServiceSupplier,
-		Runnable onChangeRunnable) {
+		Consumer<String> onChangeConsumer) {
 
 		return new ScopedServiceTrackerMapImpl<>(
 			bundleContext, clazz, property, filterString,
-			defaultServiceSupplier, onChangeRunnable);
+			defaultServiceSupplier, onChangeConsumer);
+	}
+
+	public static <T> ScopedServiceTrackerMap<T> create(
+		BundleContext bundleContext, Class<T> clazz, String property,
+		String filterString, Supplier<T> defaultServiceSupplier,
+		Runnable onChangeRunnable) {
+
+		return create(
+			bundleContext, clazz, property, filterString,
+			defaultServiceSupplier, key -> onChangeRunnable.run());
 	}
 
 	public static <T> ScopedServiceTrackerMap<T> create(
@@ -85,16 +97,16 @@ public class ScopedServiceTrackerMapFactory<T> {
 		private ScopedServiceTrackerMapImpl(
 			BundleContext bundleContext, Class<T> clazz, String property,
 			String filterString, Supplier<T> defaultServiceSupplier,
-			Runnable onChangeRunnable) {
+			Consumer<String> onChangeConsumer) {
 
 			_defaultServiceSupplier = defaultServiceSupplier;
-			_onChangeRunnable = onChangeRunnable;
+			_onChangeConsumer = onChangeConsumer;
 
 			_servicesByCompany = ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, clazz,
 				"(&(companyId=*)(!(" + property + "=*))" + filterString + ")",
 				new PropertyServiceReferenceMapper<>("companyId"),
-				new ServiceTrackerMapListenerImpl());
+				new ServiceTrackerMapListenerImpl(key -> null));
 			_servicesByCompanyAndKey =
 				ServiceTrackerMapFactory.openMultiValueMap(
 					bundleContext, clazz,
@@ -111,17 +123,18 @@ public class ScopedServiceTrackerMapFactory<T> {
 								serviceReference,
 								key2 -> emitter.emit(key1 + "-" + key2)));
 					},
-					new ServiceTrackerMapListenerImpl());
+					new ServiceTrackerMapListenerImpl(
+						key -> key.substring(key.indexOf('-') + 1)));
 			_servicesByKey = ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, clazz,
 				"(&(" + property + "=*)(|(!(companyId=*))(companyId=0))" +
 					filterString + ")",
 				new PropertyServiceReferenceMapper<>(property),
-				new ServiceTrackerMapListenerImpl());
+				new ServiceTrackerMapListenerImpl(key -> key));
 		}
 
 		private final Supplier<T> _defaultServiceSupplier;
-		private final Runnable _onChangeRunnable;
+		private final Consumer<String> _onChangeConsumer;
 		private final ServiceTrackerMap<String, List<T>> _servicesByCompany;
 		private final ServiceTrackerMap<String, List<T>>
 			_servicesByCompanyAndKey;
@@ -135,7 +148,7 @@ public class ScopedServiceTrackerMapFactory<T> {
 				ServiceTrackerMap<String, List<T>> serviceTrackerMap,
 				String key, T service, List<T> content) {
 
-				_onChangeRunnable.run();
+				_onChangeConsumer.accept(_keyFunction.apply(key));
 			}
 
 			@Override
@@ -143,8 +156,16 @@ public class ScopedServiceTrackerMapFactory<T> {
 				ServiceTrackerMap<String, List<T>> serviceTrackerMap,
 				String key, T service, List<T> content) {
 
-				_onChangeRunnable.run();
+				_onChangeConsumer.accept(_keyFunction.apply(key));
 			}
+
+			private ServiceTrackerMapListenerImpl(
+				Function<String, String> keyFunction) {
+
+				_keyFunction = keyFunction;
+			}
+
+			private final Function<String, String> _keyFunction;
 
 		}
 
