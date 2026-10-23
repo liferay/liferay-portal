@@ -77,12 +77,6 @@ const Geolocation = ({
 								id={`map_${instanceId}`}
 								style={{height: '280px'}}
 							/>
-
-							<input
-								id={`input_value_${instanceId}`}
-								name={name}
-								type="hidden"
-							/>
 						</dd>
 					</dl>
 				</div>
@@ -95,6 +89,8 @@ const Geolocation = ({
 					title={geolocateTitle}
 				/>
 			)}
+
+			<input id={`input_value_${instanceId}`} name={name} type="hidden" />
 		</div>
 	);
 };

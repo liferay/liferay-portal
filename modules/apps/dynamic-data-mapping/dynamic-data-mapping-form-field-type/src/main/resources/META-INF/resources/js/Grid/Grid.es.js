@@ -77,21 +77,20 @@ const Grid = ({
 	...otherProps
 }) => (
 	<div className="table-responsive" {...otherProps}>
-		{!disabled &&
-			rows.map((row, rowIndex) => {
-				const inputValue = value[row.value]
-					? `${row.value};${value[row.value]}`
-					: '';
+		{rows.map((row, rowIndex) => {
+			const inputValue = value[row.value]
+				? `${row.value};${value[row.value]}`
+				: '';
 
-				return (
-					<input
-						key={`row-${row.value}-${rowIndex}`}
-						name={name}
-						type="hidden"
-						value={inputValue}
-					/>
-				);
-			})}
+			return (
+				<input
+					key={`row-${row.value}-${rowIndex}`}
+					name={name}
+					type="hidden"
+					value={inputValue}
+				/>
+			);
+		})}
 
 		<ClayTable {...accessibleProps} striped>
 			<TableHead columns={columns} />
