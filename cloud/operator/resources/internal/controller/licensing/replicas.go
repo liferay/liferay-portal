@@ -135,7 +135,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	replicaCeiling int32,
-) (time.Duration, error) {
+) (stepOutcome, error) {
 	logger := logf.FromContext(context)
 
 	ceilingChanged := liferayEnvironment.Status.ReplicaCeiling == nil ||
@@ -166,11 +166,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 			"WorkloadNotFound", metav1.ConditionUnknown,
 		)
 
-		return 0, nil
+		return proceed(), nil
 	}
 
 	if getError != nil {
-		return 0, getError
+		return stepOutcome{}, getError
 	}
 
 	liveReplicas := getReplicas(workload)
@@ -194,7 +194,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 
 	if ceilingChanged || replicasChanged {
 		if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
-			return 0, error
+			return stepOutcome{}, error
 		}
 	}
 
@@ -233,11 +233,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 				"WorkloadUpdateRejected", metav1.ConditionFalse,
 			)
 
-			if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
-				return 0, error
-			}
-
-			return liferayEnvironmentReconciler.RetryInitialDelay, nil
+			return stopAfter(liferayEnvironmentReconciler.RetryInitialDelay), nil
 		}
 
 		logger.Info(
@@ -269,11 +265,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 			"AutoscalerUpdateRejected", metav1.ConditionFalse,
 		)
 
-		if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
-			return 0, error
-		}
-
-		return liferayEnvironmentReconciler.RetryInitialDelay, nil
+		return stopAfter(liferayEnvironmentReconciler.RetryInitialDelay), nil
 	}
 
 	requestedReplicas := desiredReplicas
@@ -292,7 +284,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 			"ExceedsLicensedMaximum", metav1.ConditionFalse,
 		)
 
-		return 0, nil
+		return proceed(), nil
 	}
 
 	setCondition(
@@ -300,7 +292,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 		metav1.ConditionTrue,
 	)
 
-	return 0, nil
+	return proceed(), nil
 }
 
 func resolveDesiredReplicas(

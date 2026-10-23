@@ -15,7 +15,6 @@ import (
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	controllerruntime "sigs.k8s.io/controller-runtime"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
@@ -25,7 +24,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) awaitOfflineAc
 	context context.Context,
 	environmentID string,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-) (controllerruntime.Result, error) {
+) (stepOutcome, error) {
 	logf.FromContext(context).V(1).Info(
 		"Awaiting offline activation bundle", "environmentID", environmentID,
 	)
@@ -43,7 +42,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) deferOfflineAc
 	message string,
 	phase string,
 	reason string,
-) (controllerruntime.Result, error) {
+) (stepOutcome, error) {
 	setCondition(conditionActivated, liferayEnvironment, message, reason, metav1.ConditionFalse)
 
 	liferayEnvironment.Status.Phase = phase
@@ -51,12 +50,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) deferOfflineAc
 	if error := liferayEnvironmentReconciler.enforceLastKnownLicense(
 		context, liferayEnvironment,
 	); error != nil {
-		return controllerruntime.Result{}, error
+		return stepOutcome{}, error
 	}
 
-	return liferayEnvironmentReconciler.finishAfter(
-		context, liferayEnvironment, activationPollInterval,
-	)
+	return stopAfter(activationPollInterval), nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) extractOfflineAddOns(
@@ -109,21 +106,21 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 	environmentID string,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	privateKey *rsa.PrivateKey,
-) (*provisioning.Entitlements, controllerruntime.Result, error) {
+) (*provisioning.Entitlements, stepOutcome, error) {
 	logger := logf.FromContext(context)
 
 	if error := liferayEnvironmentReconciler.publishOfflineRequest(
 		context, environmentID, liferayEnvironment, privateKey,
 	); error != nil {
-		return nil, controllerruntime.Result{}, error
+		return nil, stepOutcome{}, error
 	}
 
 	if liferayEnvironment.Spec.OfflineActivationBundle == "" {
-		result, error := liferayEnvironmentReconciler.awaitOfflineActivationBundle(
+		stepOutcome, error := liferayEnvironmentReconciler.awaitOfflineActivationBundle(
 			context, environmentID, liferayEnvironment,
 		)
 
-		return nil, result, error
+		return nil, stepOutcome, error
 	}
 
 	offlineActivationBundlePath := liferayEnvironmentReconciler.offlineActivationBundlePath(
@@ -133,11 +130,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 	entitlements, error := readOfflineActivationBundle(offlineActivationBundlePath)
 
 	if isOfflineActivationBundleNotFound(error) {
-		result, error := liferayEnvironmentReconciler.awaitOfflineActivationBundle(
+		stepOutcome, error := liferayEnvironmentReconciler.awaitOfflineActivationBundle(
 			context, environmentID, liferayEnvironment,
 		)
 
-		return nil, result, error
+		return nil, stepOutcome, error
 	}
 
 	if error != nil {
@@ -146,12 +143,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 			"offlineActivationBundlePath", offlineActivationBundlePath, "environmentID", environmentID,
 		)
 
-		result, error := liferayEnvironmentReconciler.deferOfflineActivation(
+		stepOutcome, error := liferayEnvironmentReconciler.deferOfflineActivation(
 			context, liferayEnvironment, error.Error(), phaseDegraded,
 			"OfflineActivationBundleInvalid",
 		)
 
-		return nil, result, error
+		return nil, stepOutcome, error
 	}
 
 	logger.Info(
@@ -161,10 +158,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 	markActivated(liferayEnvironment)
 
 	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(context, entitlements, liferayEnvironment); error != nil {
-		return nil, controllerruntime.Result{}, error
+		return nil, stepOutcome{}, error
 	}
 
-	return entitlements, controllerruntime.Result{}, nil
+	return entitlements, proceed(), nil
 }
 
 func isOfflineActivationBundleNotFound(error error) bool {

@@ -93,31 +93,43 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	}
 
 	var entitlements *provisioning.Entitlements
-	var result controllerruntime.Result
+	var stepOutcome stepOutcome
 
 	if liferayEnvironment.Spec.Offline {
-		entitlements, result, error = liferayEnvironmentReconciler.handleOfflineActivation(
+		entitlements, stepOutcome, error = liferayEnvironmentReconciler.handleOfflineActivation(
 			context, environmentID, liferayEnvironment, privateKey,
 		)
 	} else {
-		entitlements, result, error = liferayEnvironmentReconciler.handleOnlineActivation(
+		entitlements, stepOutcome, error = liferayEnvironmentReconciler.handleOnlineActivation(
 			context, environmentID, liferayEnvironment, privateKey,
 		)
 	}
 
-	if error != nil || !result.IsZero() {
-		return result, error
+	if error != nil {
+		return controllerruntime.Result{}, error
 	}
 
-	result, error = liferayEnvironmentReconciler.enforceLicense(
+	if stepOutcome.stop {
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, stepOutcome.requeueAfter,
+		)
+	}
+
+	stepOutcome, error = liferayEnvironmentReconciler.enforceLicense(
 		context,
 		entitlements,
 		environmentID,
 		liferayEnvironment,
 	)
 
-	if error != nil || !result.IsZero() {
-		return result, error
+	if error != nil {
+		return controllerruntime.Result{}, error
+	}
+
+	if stepOutcome.stop {
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, stepOutcome.requeueAfter,
+		)
 	}
 
 	cache := addon.NewFilesystemCache(
@@ -265,6 +277,16 @@ func addOnsReadyCondition(summary addon.Summary) metav1.Condition {
 	}
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) backoffDelay(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) time.Duration {
+	return backoff.Duration(
+		liferayEnvironment.Status.ConsecutiveFailures,
+		liferayEnvironmentReconciler.RetryInitialDelay,
+		liferayEnvironmentReconciler.RetryMaxDelay,
+	)
+}
+
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureEnvironmentNamespace(
 	context context.Context,
 	namespaceName string,
@@ -361,19 +383,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
 	return controllerruntime.Result{RequeueAfter: requeueAfter}, nil
 }
 
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishWithBackoff(
-	context context.Context,
-	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-) (controllerruntime.Result, error) {
-	return liferayEnvironmentReconciler.finishAfter(
-		context, liferayEnvironment, backoff.Duration(
-			liferayEnvironment.Status.ConsecutiveFailures,
-			liferayEnvironmentReconciler.RetryInitialDelay,
-			liferayEnvironmentReconciler.RetryMaxDelay,
-		),
-	)
-}
-
 func markActivated(liferayEnvironment *licensingv1alpha1.LiferayEnvironment) {
 	if liferayEnvironment.Status.ActivatedAt == nil {
 		now := metav1.Now()
@@ -382,6 +391,10 @@ func markActivated(liferayEnvironment *licensingv1alpha1.LiferayEnvironment) {
 	}
 
 	setCondition(conditionActivated, liferayEnvironment, "", "Activated", metav1.ConditionTrue)
+}
+
+func proceed() stepOutcome {
+	return stepOutcome{}
 }
 
 func resolveEnvironmentName(
@@ -412,6 +425,13 @@ func setCondition(
 	)
 }
 
+func stopAfter(requeueAfter time.Duration) stepOutcome {
+	return stepOutcome{
+		requeueAfter: requeueAfter,
+		stop:         true,
+	}
+}
+
 type LiferayEnvironmentReconciler struct {
 	client.Client
 
@@ -426,6 +446,11 @@ type LiferayEnvironmentReconciler struct {
 	Syncer                  *addon.Syncer
 
 	scaledObjectWatch *scaledObjectWatch
+}
+
+type stepOutcome struct {
+	requeueAfter time.Duration
+	stop         bool
 }
 
 var customResourceDefinitionGroupVersionKind = schema.GroupVersionKind{

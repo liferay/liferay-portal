@@ -12,6 +12,133 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+func TestEvaluateLicense(t *testing.T) {
+	testCases := map[string]struct {
+		expectedMaxClusterNodes *int32
+		expectedReason          string
+		expectedReplicaCeiling  int32
+		expectedStatus          metav1.ConditionStatus
+		expectedValidUntil      bool
+		licenseXML              string
+		now                     time.Time
+	}{
+		"expired past the grace period": {
+			expectedMaxClusterNodes: pointerInt32(3),
+			expectedReason:          "Expired",
+			expectedReplicaCeiling:  0,
+			expectedStatus:          metav1.ConditionFalse,
+			expectedValidUntil:      true,
+			licenseXML: virtualClusterLicenseXML(
+				"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+			),
+			now: time.Date(2029, time.March, 4, 0, 0, 0, 0, time.UTC),
+		},
+		"expired within the grace period": {
+			expectedMaxClusterNodes: pointerInt32(3),
+			expectedReason:          "Expired",
+			expectedReplicaCeiling:  1,
+			expectedStatus:          metav1.ConditionFalse,
+			expectedValidUntil:      true,
+			licenseXML: virtualClusterLicenseXML(
+				"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+			),
+			now: time.Date(2029, time.March, 2, 12, 0, 0, 0, time.UTC),
+		},
+		"owner mismatch": {
+			expectedMaxClusterNodes: pointerInt32(0),
+			expectedReason:          "EnvironmentMismatch",
+			expectedReplicaCeiling:  0,
+			expectedStatus:          metav1.ConditionFalse,
+			expectedValidUntil:      false,
+			licenseXML: virtualClusterLicenseXML(
+				"Friday, March 2, 2029 12:00:00 AM GMT", 3, "other-namespace-uid",
+			),
+			now: time.Date(2029, time.March, 1, 0, 0, 0, 0, time.UTC),
+		},
+		"unparsable expiration date": {
+			expectedMaxClusterNodes: pointerInt32(3),
+			expectedReason:          "Invalid",
+			expectedReplicaCeiling:  0,
+			expectedStatus:          metav1.ConditionFalse,
+			expectedValidUntil:      false,
+			licenseXML:              virtualClusterLicenseXML("not a date", 3, "dev-namespace-uid"),
+			now:                     time.Date(2029, time.March, 1, 0, 0, 0, 0, time.UTC),
+		},
+		"unparsable owner": {
+			expectedMaxClusterNodes: nil,
+			expectedReason:          "Invalid",
+			expectedReplicaCeiling:  0,
+			expectedStatus:          metav1.ConditionFalse,
+			expectedValidUntil:      false,
+			licenseXML:              "not a license",
+			now:                     time.Date(2029, time.March, 1, 0, 0, 0, 0, time.UTC),
+		},
+		"valid license": {
+			expectedMaxClusterNodes: pointerInt32(3),
+			expectedReason:          "Valid",
+			expectedReplicaCeiling:  3,
+			expectedStatus:          metav1.ConditionTrue,
+			expectedValidUntil:      true,
+			licenseXML: virtualClusterLicenseXML(
+				"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+			),
+			now: time.Date(2029, time.March, 1, 0, 0, 0, 0, time.UTC),
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			licenseEvaluation := evaluateLicense(
+				&provisioning.Entitlements{
+					LicenseXML:      []byte(testCase.licenseXML),
+					MaxClusterNodes: 3,
+				},
+				"dev-namespace-uid", 24*time.Hour, testCase.now,
+			)
+
+			if licenseEvaluation.condition.Type != conditionLicenseValid {
+				t.Errorf(
+					"condition.Type = %q, want %q",
+					licenseEvaluation.condition.Type, conditionLicenseValid,
+				)
+			}
+
+			if licenseEvaluation.condition.Reason != testCase.expectedReason {
+				t.Errorf(
+					"condition.Reason = %q, want %q",
+					licenseEvaluation.condition.Reason, testCase.expectedReason,
+				)
+			}
+
+			if licenseEvaluation.condition.Status != testCase.expectedStatus {
+				t.Errorf(
+					"condition.Status = %q, want %q",
+					licenseEvaluation.condition.Status, testCase.expectedStatus,
+				)
+			}
+
+			assertReplicasEqual(
+				licenseEvaluation.maxClusterNodes, testCase.expectedMaxClusterNodes,
+				"maxClusterNodes", t,
+			)
+
+			if licenseEvaluation.replicaCeiling != testCase.expectedReplicaCeiling {
+				t.Errorf(
+					"replicaCeiling = %d, want %d",
+					licenseEvaluation.replicaCeiling, testCase.expectedReplicaCeiling,
+				)
+			}
+
+			if (licenseEvaluation.validUntil != nil) != testCase.expectedValidUntil {
+				t.Errorf(
+					"validUntil = %v, want present %t",
+					licenseEvaluation.validUntil, testCase.expectedValidUntil,
+				)
+			}
+		})
+	}
+}
+
 func TestExpirationReplicaCeiling(t *testing.T) {
 	expirationDate := time.Date(2026, time.January, 1, 0, 0, 0, 0, time.UTC)
 

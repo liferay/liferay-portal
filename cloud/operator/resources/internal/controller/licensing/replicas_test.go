@@ -510,7 +510,7 @@ func TestEnforceReplicaCeilingPersistsRaisedCeilingBeforeRaisingAutoscaler(t *te
 	assertReplicasEqual(observedCeiling, pointerInt32(3), "persisted status.replicaCeiling", t)
 }
 
-func TestEnforceReplicaCeilingPersistsRefusalWhenAutoscalerUpdateRejected(t *testing.T) {
+func TestEnforceReplicaCeilingRecordsRefusalWhenAutoscalerUpdateRejected(t *testing.T) {
 	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "dev",
@@ -572,7 +572,7 @@ func TestEnforceReplicaCeilingPersistsRefusalWhenAutoscalerUpdateRejected(t *tes
 		RetryInitialDelay: 30 * time.Second,
 	}
 
-	requeueAfter, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+	stepOutcome, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context.Background(), liferayEnvironment, 3,
 	)
 
@@ -580,8 +580,10 @@ func TestEnforceReplicaCeilingPersistsRefusalWhenAutoscalerUpdateRejected(t *tes
 		t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
 	}
 
-	if requeueAfter != 30*time.Second {
-		t.Errorf("requeueAfter = %v, want %v", requeueAfter, 30*time.Second)
+	if stepOutcome != stopAfter(30*time.Second) {
+		t.Errorf(
+			"enforceReplicaCeiling = %+v, want %+v", stepOutcome, stopAfter(30*time.Second),
+		)
 	}
 
 	assertReplicasEqual(
@@ -592,23 +594,22 @@ func TestEnforceReplicaCeilingPersistsRefusalWhenAutoscalerUpdateRejected(t *tes
 	)
 
 	condition := meta.FindStatusCondition(
-		getEnvironment(liferayEnvironmentReconciler, t).Status.Conditions,
-		conditionReplicasCountValid,
+		liferayEnvironment.Status.Conditions, conditionReplicasCountValid,
 	)
 
 	if condition == nil {
-		t.Fatal("Expected a persisted ReplicasCountValid condition, got none")
+		t.Fatal("Expected a ReplicasCountValid condition, got none")
 	}
 
 	if condition.Reason != "AutoscalerUpdateRejected" {
 		t.Errorf(
-			"Persisted reason = %q, want %q",
+			"condition.Reason = %q, want %q",
 			condition.Reason, "AutoscalerUpdateRejected",
 		)
 	}
 }
 
-func TestEnforceReplicaCeilingPersistsRefusalWhenWorkloadUpdateRejected(t *testing.T) {
+func TestEnforceReplicaCeilingRecordsRefusalWhenWorkloadUpdateRejected(t *testing.T) {
 	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "dev",
@@ -664,7 +665,7 @@ func TestEnforceReplicaCeilingPersistsRefusalWhenWorkloadUpdateRejected(t *testi
 		RetryInitialDelay: 30 * time.Second,
 	}
 
-	requeueAfter, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+	stepOutcome, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context.Background(), liferayEnvironment, 3,
 	)
 
@@ -672,32 +673,23 @@ func TestEnforceReplicaCeilingPersistsRefusalWhenWorkloadUpdateRejected(t *testi
 		t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
 	}
 
-	if requeueAfter != 30*time.Second {
-		t.Errorf("requeueAfter = %v, want %v", requeueAfter, 30*time.Second)
-	}
-
-	stored := &licensingv1alpha1.LiferayEnvironment{}
-
-	if error := fakeClient.Get(
-		context.Background(), types.NamespacedName{
-			Name:      "dev",
-			Namespace: "liferay-dev",
-		}, stored,
-	); error != nil {
-		t.Fatalf("Unable to read back the environment: %v", error)
+	if stepOutcome != stopAfter(30*time.Second) {
+		t.Errorf(
+			"enforceReplicaCeiling = %+v, want %+v", stepOutcome, stopAfter(30*time.Second),
+		)
 	}
 
 	condition := meta.FindStatusCondition(
-		stored.Status.Conditions, conditionReplicasCountValid,
+		liferayEnvironment.Status.Conditions, conditionReplicasCountValid,
 	)
 
 	if condition == nil {
-		t.Fatal("Expected a persisted ReplicasCountValid condition, got none")
+		t.Fatal("Expected a ReplicasCountValid condition, got none")
 	}
 
 	if condition.Reason != "WorkloadUpdateRejected" {
 		t.Errorf(
-			"Persisted reason = %q, want %q",
+			"condition.Reason = %q, want %q",
 			condition.Reason, "WorkloadUpdateRejected",
 		)
 	}
@@ -1100,6 +1092,102 @@ func TestReconcilePersistsProvisioningGracePeriodWhenWorkloadUpdateRejected(t *t
 		t.Errorf(
 			"ReplicasCountValid condition = %v, want reason WorkloadUpdateRejected",
 			condition,
+		)
+	}
+}
+
+func TestReconcilePersistsRefusalWhenAutoscalerUpdateRejected(t *testing.T) {
+	environment := activatedEnvironment()
+	environment.Spec.Autoscaling = &licensingv1alpha1.Autoscaling{MaxReplicas: 10, MinReplicas: 1}
+
+	provisioningClient := &stubProvisioning{
+		entitlements: &provisioning.Entitlements{
+			LicenseXML: []byte(virtualClusterLicenseXML(
+				"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+			)),
+			MaxClusterNodes: 3,
+		},
+	}
+
+	fakeClient := fake.NewClientBuilder().WithInterceptorFuncs(
+		interceptor.Funcs{
+			Patch: func(
+				context context.Context,
+				writer client.WithWatch,
+				object client.Object,
+				patch client.Patch,
+				options ...client.PatchOption,
+			) error {
+				if _, ok := object.(*autoscalingv2.HorizontalPodAutoscaler); ok {
+					return errors.NewForbidden(
+						schema.GroupResource{
+							Group:    "autoscaling",
+							Resource: "horizontalpodautoscalers",
+						},
+						"dev-liferay",
+						fmt.Errorf("denied by RBAC"),
+					)
+				}
+
+				return writer.Patch(context, object, patch, options...)
+			},
+		},
+	).WithObjects(
+		&corev1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "liferay-dev",
+				UID:  "dev-namespace-uid",
+			},
+		},
+		&appsv1.StatefulSet{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "dev-liferay",
+				Namespace: "liferay-dev",
+			},
+			Spec: appsv1.StatefulSetSpec{
+				Replicas: pointerInt32(1),
+			},
+		},
+		environment,
+		newHorizontalPodAutoscaler(10, 1, "dev-liferay"),
+	).WithScheme(
+		newScheme(t),
+	).WithStatusSubresource(
+		&licensingv1alpha1.LiferayEnvironment{},
+	).Build()
+
+	liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+		Client:               fakeClient,
+		HeartbeatInterval:    10 * time.Minute,
+		MarketplaceMountPath: t.TempDir(),
+		Provisioning:         provisioningClient,
+		Recorder:             record.NewFakeRecorder(10),
+		RetryInitialDelay:    30 * time.Second,
+		Syncer: addon.NewSyncer(
+			provisioningClient, 15*time.Second, 30*time.Second, 30*time.Minute,
+			inlineRunner{},
+		),
+	}
+
+	result := reconcile(liferayEnvironmentReconciler, t)
+
+	if result.RequeueAfter != 30*time.Second {
+		t.Errorf("result.RequeueAfter = %v, want %v", result.RequeueAfter, 30*time.Second)
+	}
+
+	condition := meta.FindStatusCondition(
+		getEnvironment(liferayEnvironmentReconciler, t).Status.Conditions,
+		conditionReplicasCountValid,
+	)
+
+	if condition == nil {
+		t.Fatal("Expected a persisted ReplicasCountValid condition, got none")
+	}
+
+	if condition.Reason != "AutoscalerUpdateRejected" {
+		t.Errorf(
+			"Persisted reason = %q, want %q",
+			condition.Reason, "AutoscalerUpdateRejected",
 		)
 	}
 }

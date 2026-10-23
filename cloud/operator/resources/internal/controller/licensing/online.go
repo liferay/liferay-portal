@@ -13,7 +13,6 @@ import (
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
-	controllerruntime "sigs.k8s.io/controller-runtime"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
@@ -50,14 +49,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	environmentID string,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	privateKey *rsa.PrivateKey,
-) (*provisioning.Entitlements, controllerruntime.Result, error) {
+) (*provisioning.Entitlements, stepOutcome, error) {
 	logger := logf.FromContext(context)
 
 	if liferayEnvironment.Status.ActivatedAt == nil {
 		publicKey, error := publicKeyBase64(privateKey)
 
 		if error != nil {
-			return nil, controllerruntime.Result{}, error
+			return nil, stepOutcome{}, error
 		}
 
 		activationCode, error := liferayEnvironmentReconciler.readActivationCode(context, liferayEnvironment)
@@ -73,15 +72,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 
 			liferayEnvironment.Status.Phase = phasePending
 
-			result, error := liferayEnvironmentReconciler.finishAfter(
-				context, liferayEnvironment, activationPollInterval,
-			)
-
-			return nil, result, error
+			return nil, stopAfter(activationPollInterval), nil
 		}
 
 		if error != nil {
-			return nil, controllerruntime.Result{}, error
+			return nil, stepOutcome{}, error
 		}
 
 		logger.Info(
@@ -107,11 +102,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 			liferayEnvironment.Status.ConsecutiveFailures++
 			liferayEnvironment.Status.Phase = phaseDegraded
 
-			result, error := liferayEnvironmentReconciler.finishWithBackoff(
-				context, liferayEnvironment,
-			)
-
-			return nil, result, error
+			return nil, stopAfter(liferayEnvironmentReconciler.backoffDelay(liferayEnvironment)), nil
 		}
 
 		logger.Info("Environment activated", "environmentID", environmentID)
@@ -149,14 +140,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 		if error := liferayEnvironmentReconciler.enforceProvisioningGracePeriod(
 			context, liferayEnvironment,
 		); error != nil {
-			return nil, controllerruntime.Result{}, error
+			return nil, stepOutcome{}, error
 		}
 
-		result, error := liferayEnvironmentReconciler.finishWithBackoff(
-			context, liferayEnvironment,
-		)
-
-		return nil, result, error
+		return nil, stopAfter(liferayEnvironmentReconciler.backoffDelay(liferayEnvironment)), nil
 	}
 
 	logger.Info(
@@ -176,10 +163,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 
 	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(
 		context, entitlements, liferayEnvironment); error != nil {
-		return nil, controllerruntime.Result{}, error
+		return nil, stepOutcome{}, error
 	}
 
-	return entitlements, controllerruntime.Result{}, nil
+	return entitlements, proceed(), nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readActivationCode(
