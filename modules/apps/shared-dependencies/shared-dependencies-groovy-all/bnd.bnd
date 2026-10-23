@@ -26,8 +26,6 @@ Import-Package:\
 -exportcontents:\
 	groovy.beans,\
 	\
-	groovy.cli.*,\
-	\
 	groovy.grape,\
 	\
 	groovy.inspect.*,\
@@ -37,8 +35,6 @@ Import-Package:\
 	groovy.jmx.builder,\
 	\
 	groovy.json,\
-	\
-	groovy.junit5.plugin,\
 	\
 	groovy.lang,\
 	\
