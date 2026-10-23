@@ -16,12 +16,14 @@ import com.liferay.batch.engine.BatchEngineTaskContentType;
 import com.liferay.batch.engine.configuration.BatchEngineTaskCompanyConfiguration;
 import com.liferay.batch.engine.internal.util.PasswordFieldUtil;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.io.unsync.UnsyncBufferedReader;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.jackson.databind.ObjectMapperProviderUtil;
 
@@ -67,7 +69,9 @@ public class BatchEngineTaskContentSanitizer {
 	public BatchEngineTaskContentSanitizer(
 		BatchEngineImportTask batchEngineImportTask,
 		ConfigurationProvider configurationProvider,
-		Set<String> passwordFieldNames) {
+		Set<String> passwordFieldNames,
+		UnsafeFunction<String, String, Exception>
+			passwordFieldValueUnsafeFunction) {
 
 		_batchEngineImportTask = batchEngineImportTask;
 		_configurationProvider = configurationProvider;
@@ -78,6 +82,7 @@ public class BatchEngineTaskContentSanitizer {
 			batchEngineImportTask.getParameters(), HashMap::new);
 
 		_passwordFieldNames = passwordFieldNames;
+		_passwordFieldValueUnsafeFunction = passwordFieldValueUnsafeFunction;
 	}
 
 	public void sanitize(InputStream inputStream, OutputStream outputStream)
@@ -146,6 +151,20 @@ public class BatchEngineTaskContentSanitizer {
 		return batchEngineTaskCompanyConfiguration.csvFileColumnDelimiter();
 	}
 
+	private String _getCellValue(Cell cell) {
+		CellType cellType = cell.getCellType();
+
+		if (cellType == CellType.BOOLEAN) {
+			return String.valueOf(cell.getBooleanCellValue());
+		}
+
+		if (cellType == CellType.NUMERIC) {
+			return String.valueOf(cell.getNumericCellValue());
+		}
+
+		return cell.getStringCellValue();
+	}
+
 	private String _getFieldName(String name) {
 		Map<String, Serializable> fieldNameMapping =
 			_batchEngineImportTask.getFieldNameMapping();
@@ -191,6 +210,11 @@ public class BatchEngineTaskContentSanitizer {
 		}
 
 		return nestedPasswordFieldNames;
+	}
+
+	private String _getPasswordFieldValue(String value) throws Exception {
+		return GetterUtil.getString(
+			_passwordFieldValueUnsafeFunction.apply(StringUtil.trim(value)));
 	}
 
 	private void _sanitize(InputStream inputStream, OutputStream outputStream)
@@ -312,7 +336,8 @@ public class BatchEngineTaskContentSanitizer {
 						continue;
 					}
 
-					values.set(index, StringPool.BLANK);
+					values.set(
+						index, _getPasswordFieldValue(values.get(index)));
 				}
 
 				csvPrinter.printRecord(values);
@@ -367,7 +392,7 @@ public class BatchEngineTaskContentSanitizer {
 		}
 	}
 
-	private JsonNode _sanitizeJsonNode(JsonNode jsonNode) {
+	private JsonNode _sanitizeJsonNode(JsonNode jsonNode) throws Exception {
 		if (!jsonNode.isObject()) {
 			return jsonNode;
 		}
@@ -384,7 +409,8 @@ public class BatchEngineTaskContentSanitizer {
 			String fieldName = _getFieldName(name);
 
 			if (_passwordFieldNames.contains(fieldName)) {
-				objectNode.remove(name);
+				PasswordFieldUtil.replacePasswordField(
+					objectNode, name, _passwordFieldValueUnsafeFunction);
 
 				continue;
 			}
@@ -396,8 +422,9 @@ public class BatchEngineTaskContentSanitizer {
 				continue;
 			}
 
-			PasswordFieldUtil.removePasswordFields(
-				objectNode.get(name), nestedPasswordFieldNames);
+			PasswordFieldUtil.replacePasswordFields(
+				objectNode.get(name), nestedPasswordFieldNames,
+				_passwordFieldValueUnsafeFunction);
 		}
 
 		return jsonNode;
@@ -436,6 +463,13 @@ public class BatchEngineTaskContentSanitizer {
 						}
 					}
 					else if (indexes.contains(index)) {
+						String value = _getPasswordFieldValue(
+							_getCellValue(cell));
+
+						if (!value.isEmpty()) {
+							sanitizedCell.setCellValue(value);
+						}
+
 						index++;
 
 						continue;
@@ -457,5 +491,7 @@ public class BatchEngineTaskContentSanitizer {
 	private final ObjectMapper _objectMapper;
 	private final Map<String, Serializable> _parameters;
 	private final Set<String> _passwordFieldNames;
+	private final UnsafeFunction<String, String, Exception>
+		_passwordFieldValueUnsafeFunction;
 
 }
