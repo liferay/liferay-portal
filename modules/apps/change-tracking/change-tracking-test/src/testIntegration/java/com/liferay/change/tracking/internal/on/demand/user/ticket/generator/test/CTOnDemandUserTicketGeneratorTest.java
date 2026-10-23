@@ -107,11 +107,11 @@ public class CTOnDemandUserTicketGeneratorTest {
 				_ctOnDemandUserTicketGenerator, "_auditRouter", auditRouter);
 		}
 
-		Assert.assertEquals(auditMessages.toString(), 1, auditMessages.size());
-
 		AuditMessage auditMessage = auditMessages.get(0);
 
 		Assert.assertEquals("grant_on_demand_access", auditMessage.getAction());
+
+		Assert.assertEquals(auditMessages.toString(), 1, auditMessages.size());
 
 		Assert.assertEquals(
 			CTCollection.class.getName(), ticket.getClassName());
