@@ -2,43 +2,24 @@ Bundle-Name: Liferay Dynamic Data Lists Test
 Bundle-SymbolicName: com.liferay.dynamic.data.lists.test
 Bundle-Version: 1.0.0
 Import-Package:\
-	!com.github.javaparser.*,\
-	!com.github.luben.*,\
-	\
 	!com.graphbuilder.*,\
 	\
 	!com.microsoft.schemas.office.*,\
-	\
-	!com.sun.*,\
 	\
 	!com.zaxxer.sparsebits.*,\
 	\
 	!de.rototor.pdfbox.graphics2d,\
 	\
-	!net.sf.*,\
-	\
 	!org.apache.batik.*,\
-	!org.apache.commons.math3.*,\
-	!org.apache.commons.math3.util.*,\
 	!org.apache.jcp.*,\
-	!org.apache.maven.*,\
-	!org.apache.tools.ant.*,\
 	!org.apache.xml.*,\
 	\
 	!org.bouncycastle.*,\
-	\
-	!org.brotli.*,\
 	\
 	!org.etsi.*,\
 	\
 	!org.openxmlformats.*,\
 	\
-	!org.tukaani.*,\
-	\
 	!org.w3c.dom.svg,\
 	\
 	*
--includeresource:\
-	commons-compress-[0-9.]*.jar;lib:=true,\
-	commons-math3-[0-9.]*.jar;lib:=true,\
-	xmlbeans-[0-9.]*.jar;lib:=true
