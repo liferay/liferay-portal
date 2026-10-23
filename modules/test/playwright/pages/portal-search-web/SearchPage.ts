@@ -18,6 +18,7 @@ export class SearchPage {
 	readonly searchBarInputInNavBar: Locator;
 	readonly searchBarPortletInMainContent: Locator;
 	readonly searchBarPortletInNavBar: Locator;
+	readonly searchBarSuggestions: Locator;
 	readonly searchOptionsConfigurationLink: Locator;
 	readonly searchResults: Locator;
 	readonly searchResultsItems: Locator;
@@ -59,6 +60,9 @@ export class SearchPage {
 			this.searchBarPortletInMainContent.getByPlaceholder('Search...');
 		this.searchBarInputInNavBar =
 			this.searchBarPortletInNavBar.getByPlaceholder('Search...');
+		this.searchBarSuggestions = page.locator(
+			'.search-bar-suggestions-dropdown-menu'
+		);
 
 		// Search Results Elements
 

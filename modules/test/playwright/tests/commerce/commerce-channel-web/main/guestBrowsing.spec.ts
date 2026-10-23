@@ -11,6 +11,7 @@ import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTem
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
+import {searchPageTest} from '../../../../fixtures/searchPageTest';
 import {siteSettingsPagesTest} from '../../../../fixtures/siteSettingsPagesTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {
@@ -21,6 +22,7 @@ import {
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import getFragmentDefinition from '../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {deployProductFragmentsOnDefaultDPT} from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -33,12 +35,13 @@ export const test = mergeTests(
 	}),
 	loginTest(),
 	pageEditorPagesTest,
+	searchPageTest,
 	siteSettingsPagesTest
 );
 
 test(
 	'Guests are sent to sign in and see no products or mini cart while guest browsing is off',
-	{tag: ['@LPD-109588', '@LPD-110007']},
+	{tag: ['@LPD-109588', '@LPD-110007', '@LPD-111537']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,
@@ -47,11 +50,9 @@ test(
 		displayPageTemplatesPage,
 		page,
 		pageEditorPage,
+		searchPage,
 		siteSettingsPage,
 	}) => {
-
-		// Add a Classic site with a channel, a catalog and a product
-
 		const site = await apiHelpers.headlessAdminSite.postSite({
 			name: getRandomString(),
 		});
@@ -61,9 +62,11 @@ test(
 				name: getRandomString(),
 			});
 
+		const channelName = getRandomString();
+
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
+				name: channelName,
 				siteGroupId: site.id,
 			});
 
@@ -71,6 +74,15 @@ test(
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 				catalogId: catalog.id,
 				name: {en_US: getRandomString()},
+				productChannelFilter: true,
+				productChannels: [
+					{
+						channelId: channel.id,
+						currencyCode: 'USD',
+						name: channelName,
+						type: 'site',
+					},
+				],
 			});
 
 		await deployProductFragmentsOnDefaultDPT(apiHelpers, {
@@ -79,8 +91,6 @@ test(
 			pageEditorPage,
 			site,
 		});
-
-		// Add a page with the mini cart
 
 		const layout = await apiHelpers.headlessDelivery.createSitePage({
 			pageDefinition: getPageDefinition([
@@ -95,109 +105,221 @@ test(
 
 		const layoutURL = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
 
-		// Check that guests see the mini cart by default
+		const searchLayout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetConfig: {searchScope: 'everything'},
+					widgetName:
+						'com_liferay_portal_search_web_search_bar_portlet_SearchBarPortlet',
+				}),
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_portal_search_web_search_results_portlet_SearchResultsPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
 
-		await performLogout(page);
-
-		await page.goto(layoutURL);
-
-		await expect(commerceMiniCartPage.miniCartButton).toBeVisible();
-
-		await performLoginViaApi({page, screenName: 'test'});
-
-		// Turn guest browsing off in the channel
-
-		await commerceAdminChannelsPage.goto();
-
-		await (
-			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
-		).click();
-
-		await expect(
-			commerceAdminChannelDetailsPage.guestBrowsingToggle
-		).toBeChecked();
-
-		await commerceAdminChannelDetailsPage.guestBrowsingToggle.setChecked(
-			false
-		);
-
-		await expect(
-			commerceAdminChannelDetailsPage.guestCheckoutToggle
-		).toBeDisabled();
-		await expect(
-			commerceAdminChannelDetailsPage.guestCheckoutToggle
-		).not.toBeChecked();
-
-		await commerceAdminChannelDetailsPage.saveButton.click();
-
-		await waitForAlert(page, 'success');
-
-		await page.reload();
-
-		await expect(
-			commerceAdminChannelDetailsPage.guestBrowsingToggle
-		).not.toBeChecked();
-
-		// Prompt guests to sign in
-
-		await siteSettingsPage.goToSiteSetting(
-			'Login',
-			'Login',
-			site.friendlyUrlPath
-		);
-
-		await siteSettingsPage.page
-			.getByLabel('Prompt Enabled')
-			.setChecked(true);
-
-		await siteSettingsPage.saveButton.click();
-
-		await waitForAlert(page);
-
-		// Check that guests do not see the mini cart
-
-		await performLogout(page);
-
-		await page.goto(layoutURL);
-
-		await expect(commerceMiniCartPage.miniCartButton).toBeHidden();
-
-		// Open the product as a guest
+		const searchLayoutURL = `/web${site.friendlyUrlPath}${searchLayout.friendlyUrlPath}`;
 
 		const productURL = `/web${site.friendlyUrlPath}/p/${product.urls.en_US}`;
 
-		await page.goto(productURL);
+		await test.step('Guests see the mini cart by default', async () => {
+			await performLogout(page);
 
-		await expect(page.getByLabel('Email Address')).toBeVisible();
+			await page.goto(layoutURL);
 
-		// Check that the delivery API returns no products to guests
+			await expect(commerceMiniCartPage.miniCartButton).toBeVisible();
+		});
 
-		const productsResponse = await page.request.get(
-			`/o/headless-commerce-delivery-catalog/v1.0/channels/${channel.id}/products`
-		);
+		await test.step('Guests find the product by default', async () => {
+			await page.goto(searchLayoutURL);
 
-		expect(productsResponse.ok()).toBeTruthy();
+			await searchPage.searchBarInputInMainContent.fill(
+				product.name.en_US
+			);
 
-		const productsPage = await productsResponse.json();
+			await expect(
+				searchPage.searchBarSuggestions.getByText(product.name.en_US)
+			).toBeVisible();
 
-		expect(productsPage.totalCount).toBe(0);
+			await searchPage.searchBarInputInMainContent.press('Enter');
 
-		// Sign in and return to the product
+			await expect(
+				searchPage.searchResultsItems.getByText(product.name.en_US)
+			).toBeVisible();
 
-		await page.getByLabel('Email Address').fill('test@liferay.com');
-		await page.getByLabel('Password').fill(userData['test'].password);
+			await performLoginViaApi({page, screenName: 'test'});
+		});
 
-		await page.getByRole('button', {name: 'Sign In'}).click();
+		await test.step('Turn guest browsing off in the channel', async () => {
+			await commerceAdminChannelsPage.goto();
 
-		await expect(page).toHaveURL(new RegExp(`/p/${product.urls.en_US}`));
-		await expect(
-			page.getByText(product.name['en_US']).first()
-		).toBeVisible();
+			await (
+				await commerceAdminChannelsPage.channelsTableRowLink(
+					channel.name
+				)
+			).click();
 
-		// Check that signed in users still see the mini cart
+			await expect(
+				commerceAdminChannelDetailsPage.guestBrowsingToggle
+			).toBeChecked();
 
-		await page.goto(layoutURL);
+			await commerceAdminChannelDetailsPage.guestBrowsingToggle.setChecked(
+				false
+			);
 
-		await expect(commerceMiniCartPage.miniCartButton).toBeVisible();
+			await expect(
+				commerceAdminChannelDetailsPage.guestCheckoutToggle
+			).toBeDisabled();
+			await expect(
+				commerceAdminChannelDetailsPage.guestCheckoutToggle
+			).not.toBeChecked();
+
+			await commerceAdminChannelDetailsPage.saveButton.click();
+
+			await waitForAlert(page, 'success');
+
+			await page.reload();
+
+			await expect(
+				commerceAdminChannelDetailsPage.guestBrowsingToggle
+			).not.toBeChecked();
+		});
+
+		await test.step('Prompt guests to sign in', async () => {
+			await siteSettingsPage.goToSiteSetting(
+				'Login',
+				'Login',
+				site.friendlyUrlPath
+			);
+
+			await siteSettingsPage.page
+				.getByLabel('Prompt Enabled')
+				.setChecked(true);
+
+			await siteSettingsPage.saveButton.click();
+
+			await waitForAlert(page);
+		});
+
+		await test.step('Guests do not see the mini cart', async () => {
+			await performLogout(page);
+
+			await page.goto(layoutURL);
+
+			await expect(commerceMiniCartPage.miniCartButton).toBeHidden();
+		});
+
+		await test.step('Guests do not find the product', async () => {
+			await page.goto(searchLayoutURL);
+
+			const suggestionsResponsePromise = page.waitForResponse(
+				'**/v1.0/suggestions**'
+			);
+
+			await searchPage.searchBarInputInMainContent.fill(
+				product.name.en_US
+			);
+
+			const suggestionsResponse = await suggestionsResponsePromise;
+
+			expect(await suggestionsResponse.text()).not.toContain(
+				product.name.en_US
+			);
+
+			await expect(
+				searchPage.searchBarSuggestions.getByText(product.name.en_US)
+			).toBeHidden();
+
+			await searchPage.searchBarInputInMainContent.press('Enter');
+
+			await expect(
+				searchPage.searchResults.getByText('No results were found.')
+			).toBeVisible();
+		});
+
+		await test.step('Guests are sent to sign in from the product', async () => {
+			await page.goto(productURL);
+
+			await expect(page.getByLabel('Email Address')).toBeVisible();
+		});
+
+		await test.step('The delivery API returns no products to guests', async () => {
+			const productsResponse = await page.request.get(
+				`/o/headless-commerce-delivery-catalog/v1.0/channels/${channel.id}/products`
+			);
+
+			expect(productsResponse.ok()).toBeTruthy();
+
+			const productsPage = await productsResponse.json();
+
+			expect(productsPage.totalCount).toBe(0);
+		});
+
+		await test.step('Signed in users return to the product', async () => {
+			await page.getByLabel('Email Address').fill('test@liferay.com');
+			await page.getByLabel('Password').fill(userData['test'].password);
+
+			await page.getByRole('button', {name: 'Sign In'}).click();
+
+			await expect(page).toHaveURL(
+				new RegExp(`/p/${product.urls.en_US}`)
+			);
+			await expect(
+				page.getByText(product.name['en_US']).first()
+			).toBeVisible();
+		});
+
+		await test.step('Signed in users still see the mini cart', async () => {
+			await page.goto(layoutURL);
+
+			await expect(commerceMiniCartPage.miniCartButton).toBeVisible();
+		});
+
+		await test.step('Signed in users still find the product', async () => {
+			await page.goto(searchLayoutURL);
+
+			await searchPage.searchKeywordInMainContent(product.name.en_US);
+
+			await expect(
+				searchPage.searchResultsItems.getByText(product.name.en_US)
+			).toBeVisible();
+		});
+
+		await test.step('Turn guest browsing back on in the channel', async () => {
+			await commerceAdminChannelsPage.goto();
+
+			await (
+				await commerceAdminChannelsPage.channelsTableRowLink(
+					channel.name
+				)
+			).click();
+
+			await commerceAdminChannelDetailsPage.guestBrowsingToggle.setChecked(
+				true
+			);
+
+			await commerceAdminChannelDetailsPage.saveButton.click();
+
+			await waitForAlert(page, 'success');
+		});
+
+		await test.step('Guests find the product again', async () => {
+			await performLogout(page);
+
+			await page.goto(searchLayoutURL);
+
+			await searchPage.searchKeywordInMainContent(product.name.en_US);
+
+			await expect(
+				searchPage.searchResultsItems.getByText(product.name.en_US)
+			).toBeVisible();
+
+			await performLoginViaApi({page, screenName: 'test'});
+		});
 	}
 );
