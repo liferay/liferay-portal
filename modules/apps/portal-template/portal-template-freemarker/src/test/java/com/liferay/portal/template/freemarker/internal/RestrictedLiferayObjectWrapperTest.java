@@ -134,26 +134,9 @@ public class RestrictedLiferayObjectWrapperTest
 
 	@Test
 	public void testGetWithRestrictedClass() throws Exception {
-		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper =
-			new RestrictedLiferayObjectWrapper(
-				null, new String[] {TestLiferayMethodObject.class.getName()},
-				null);
-
-		TemplateModel templateModel = restrictedLiferayObjectWrapper.wrap(
-			new TestLiferayMethodObject("test"));
-
-		Assert.assertThat(
-			templateModel,
-			CoreMatchers.instanceOf(LiferayFreeMarkerStringModel.class));
-
-		LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
-			(LiferayFreeMarkerStringModel)templateModel;
-
-		_testGetWithRestricted("name", liferayFreeMarkerStringModel);
-		_testGetWithRestricted("Name", liferayFreeMarkerStringModel);
-		_testGetWithRestricted("getName", liferayFreeMarkerStringModel);
-		_testGetWithRestricted("getname", liferayFreeMarkerStringModel);
-		_testGetWithRestricted("generateName", liferayFreeMarkerStringModel);
+		_testGetWithRestrictedClass("com.liferay.portal.*");
+		_testGetWithRestrictedClass("com.liferay.portal.template.freemarker");
+		_testGetWithRestrictedClass(TestLiferayMethodObject.class.getName());
 	}
 
 	@Test
@@ -511,6 +494,30 @@ public class RestrictedLiferayObjectWrapperTest
 					TestLiferayMethodObject.class),
 				templateModelException.getMessage());
 		}
+	}
+
+	private void _testGetWithRestrictedClass(String restrictedClassName)
+		throws Exception {
+
+		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper =
+			new RestrictedLiferayObjectWrapper(
+				null, new String[] {restrictedClassName}, null);
+
+		TemplateModel templateModel = restrictedLiferayObjectWrapper.wrap(
+			new TestLiferayMethodObject("test"));
+
+		Assert.assertThat(
+			templateModel,
+			CoreMatchers.instanceOf(LiferayFreeMarkerStringModel.class));
+
+		LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
+			(LiferayFreeMarkerStringModel)templateModel;
+
+		_testGetWithRestricted("name", liferayFreeMarkerStringModel);
+		_testGetWithRestricted("Name", liferayFreeMarkerStringModel);
+		_testGetWithRestricted("getName", liferayFreeMarkerStringModel);
+		_testGetWithRestricted("getname", liferayFreeMarkerStringModel);
+		_testGetWithRestricted("generateName", liferayFreeMarkerStringModel);
 	}
 
 	private void _testWrap() throws Exception {
