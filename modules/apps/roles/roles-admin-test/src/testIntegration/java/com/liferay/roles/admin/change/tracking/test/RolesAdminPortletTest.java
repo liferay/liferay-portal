@@ -111,7 +111,6 @@ public class RolesAdminPortletTest {
 	@Test
 	public void testCopyRole() throws Exception {
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
 		User user = UserTestUtil.addUser();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
