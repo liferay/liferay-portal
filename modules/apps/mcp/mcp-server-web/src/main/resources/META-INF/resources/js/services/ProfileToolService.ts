@@ -6,6 +6,7 @@
 import {addParams} from 'frontend-js-web';
 
 import {ProfileTool, ProfileToolPayload} from '../types/ProfileTool';
+import toODataStringLiteral from '../utils/toODataStringLiteral';
 import ApiHelper from './ApiHelper';
 import {fetchAllItems} from './fetchAllItems';
 
@@ -20,7 +21,7 @@ function deleteProfileTool(externalReferenceCode: string) {
 }
 
 function getProfileTools(profileExternalReferenceCode: string) {
-	const filter = `r_mcpServerProfileToTools_l_mcpServerProfileERC eq '${profileExternalReferenceCode}'`;
+	const filter = `r_mcpServerProfileToTools_l_mcpServerProfileERC eq ${toODataStringLiteral(profileExternalReferenceCode)}`;
 
 	return fetchAllItems<
 		Pick<ProfileTool, 'externalReferenceCode' | 'toolName' | 'toolSetName'>

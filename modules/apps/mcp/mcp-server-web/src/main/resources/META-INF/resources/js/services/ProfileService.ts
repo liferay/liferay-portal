@@ -10,19 +10,19 @@ const PROFILES_URL = '/o/mcp/server-profiles';
 
 function deleteProfile(externalReferenceCode: string) {
 	return ApiHelper.del<void>(
-		`${PROFILES_URL}/by-external-reference-code/${externalReferenceCode}`
+		`${PROFILES_URL}/by-external-reference-code/${encodeURIComponent(externalReferenceCode)}`
 	);
 }
 
 function getProfile(externalReferenceCode: string) {
 	return ApiHelper.get<Profile>(
-		`${PROFILES_URL}/by-external-reference-code/${externalReferenceCode}`
+		`${PROFILES_URL}/by-external-reference-code/${encodeURIComponent(externalReferenceCode)}`
 	);
 }
 
 function patchProfile(externalReferenceCode: string, payload: ProfilePayload) {
 	return ApiHelper.patch<Profile>(
-		`${PROFILES_URL}/by-external-reference-code/${externalReferenceCode}`,
+		`${PROFILES_URL}/by-external-reference-code/${encodeURIComponent(externalReferenceCode)}`,
 		payload
 	);
 }
