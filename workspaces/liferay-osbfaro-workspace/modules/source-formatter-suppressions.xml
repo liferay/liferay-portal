@@ -6,8 +6,6 @@
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/BaseMock.*.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/rest/internal/dto/v1_0/converter/IndividualDTOConverter\.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/rest/internal/resource/v1_0/.*ResourceImpl\.java" />
-		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/web/internal/card/template/ContactsCardTemplateManagerHelper\.java" />
 		<suppress checks="JavaUpgradeCreateTableCheck" files=".*/com/liferay/osb/faro/internal/upgrade/registry/FaroServiceUpgradeStepRegistrator\.java" />
-		<suppress checks="JavaUpgradeMissingTestCheck" files="osb-faro-contacts-service/.*" />
 	</source-check>
 </suppressions>
