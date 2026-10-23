@@ -3,6 +3,5 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly group: "org.springframework", name: "spring-core", version: "6.2.11"
 	compileOnly project(":modules:osb-faro-api")
-	compileOnly project(":modules:osb-faro-contacts-api")
 	compileOnly project(":modules:osb-faro-engine-client")
 }

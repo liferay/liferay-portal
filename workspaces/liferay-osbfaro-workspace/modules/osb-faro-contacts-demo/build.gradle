@@ -12,7 +12,6 @@ dependencies {
 	compileInclude group: "user-agent-utils", name: "user-agent-utils", version: "1.2.3"
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly project(":modules:osb-faro-api")
-	compileOnly project(":modules:osb-faro-contacts-api")
 	compileOnly project(":modules:osb-faro-engine-client")
 	compileOnly project(":modules:osb-faro-provisioning-client")
 }
