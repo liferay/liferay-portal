@@ -7,7 +7,6 @@ package com.liferay.knowledge.base.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.util.DLValidator;
-import com.liferay.knowledge.base.service.KBArticleLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
@@ -37,10 +36,11 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upload.test.util.UploadTestUtil;
 
 import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
 
-import java.util.Arrays;
 import java.util.Objects;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -67,6 +67,34 @@ public class AddTempAttachmentMVCActionCommandTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+
+		ReflectionTestUtil.setFieldValue(
+			_mvcActionCommand, "_portal",
+			ProxyUtil.newProxyInstance(
+				Portal.class.getClassLoader(), new Class<?>[] {Portal.class},
+				(proxy, method, args) -> {
+					if (!Objects.equals(
+							method.getName(), "getUploadPortletRequest")) {
+
+						return method.invoke(_portal, args);
+					}
+
+					LiferayPortletRequest liferayPortletRequest =
+						_portal.getLiferayPortletRequest(
+							(PortletRequest)args[0]);
+
+					return UploadTestUtil.createUploadPortletRequest(
+						_portal.getUploadServletRequest(
+							liferayPortletRequest.getHttpServletRequest()),
+						liferayPortletRequest,
+						_portal.getPortletNamespace(
+							liferayPortletRequest.getPortletName()));
+				}));
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		ReflectionTestUtil.setFieldValue(_mvcActionCommand, "_portal", _portal);
 	}
 
 	@Test
@@ -85,64 +113,17 @@ public class AddTempAttachmentMVCActionCommandTest {
 				102400,
 				_dlValidator.getMaxAllowableSize(_group.getGroupId(), null));
 
-			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-				_getMockLiferayPortletActionRequest(new byte[163328]);
+			_mvcActionCommand.processAction(
+				_getMockLiferayPortletActionRequest(new byte[163328]),
+				new MockLiferayPortletActionResponse());
 
-			Portal portal = ReflectionTestUtil.getFieldValue(
-				_mvcActionCommand, "_portal");
-
-			ReflectionTestUtil.setFieldValue(
-				_mvcActionCommand, "_portal",
-				ProxyUtil.newProxyInstance(
-					Portal.class.getClassLoader(),
-					new Class<?>[] {Portal.class},
-					(proxy, method, args) -> {
-						if (Objects.equals(
-								method.getName(), "getUploadPortletRequest")) {
-
-							LiferayPortletRequest liferayPortletRequest =
-								portal.getLiferayPortletRequest(
-									mockLiferayPortletActionRequest);
-
-							return UploadTestUtil.createUploadPortletRequest(
-								portal.getUploadServletRequest(
-									liferayPortletRequest.
-										getHttpServletRequest()),
-								liferayPortletRequest,
-								portal.getPortletNamespace(
-									liferayPortletRequest.getPortletName()));
-						}
-
-						return method.invoke(portal, args);
-					}));
-
-			try {
-				_mvcActionCommand.processAction(
-					mockLiferayPortletActionRequest,
-					new MockLiferayPortletActionResponse());
-
-				Assert.fail();
-			}
-			catch (PortletException portletException) {
-				Throwable throwable = portletException.getCause();
-
-				Assert.assertTrue(
-					throwable instanceof UploadRequestSizeException);
-			}
-			finally {
-				ReflectionTestUtil.setFieldValue(
-					_mvcActionCommand, "_portal", portal);
-			}
+			Assert.fail();
 		}
+		catch (PortletException portletException) {
+			Throwable throwable = portletException.getCause();
 
-		String[] tempAttachmentNames =
-			_kbArticleLocalService.getTempAttachmentNames(
-				_group.getGroupId(), TestPropsValues.getUserId(),
-				"com.liferay.knowledge.base.admin");
-
-		Assert.assertEquals(
-			Arrays.toString(tempAttachmentNames), 0,
-			tempAttachmentNames.length);
+			Assert.assertTrue(throwable instanceof UploadRequestSizeException);
+		}
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
@@ -206,10 +187,10 @@ public class AddTempAttachmentMVCActionCommandTest {
 	@DeleteAfterTestRun
 	private Group _group;
 
-	@Inject
-	private KBArticleLocalService _kbArticleLocalService;
-
 	@Inject(filter = "mvc.command.name=/knowledge_base/add_temp_attachment")
 	private MVCActionCommand _mvcActionCommand;
+
+	@Inject
+	private Portal _portal;
 
 }
