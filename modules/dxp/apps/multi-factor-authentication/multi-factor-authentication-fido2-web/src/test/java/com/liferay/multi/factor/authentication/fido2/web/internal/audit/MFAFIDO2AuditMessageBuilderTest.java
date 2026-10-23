@@ -17,7 +17,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,8 +34,8 @@ public class MFAFIDO2AuditMessageBuilderTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@BeforeClass
-	public static void setUpClass() {
+	@Before
+	public void setUp() {
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
@@ -53,12 +53,12 @@ public class MFAFIDO2AuditMessageBuilderTest {
 					RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString());
 
+		Assert.assertEquals("mfa", auditMessage.getResourceType());
+
 		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
 		Assert.assertEquals(
 			"fido2", additionalInfoJSONObject.getString("factor"));
-
-		Assert.assertEquals("mfa", auditMessage.getResourceType());
 
 		_assertAuditMessage(
 			auditMessage, "verify_failure", "verification_failure");
@@ -90,12 +90,12 @@ public class MFAFIDO2AuditMessageBuilderTest {
 		AuditMessage auditMessage, String expectedAction,
 		String expectedOutcome) {
 
+		Assert.assertEquals(expectedAction, auditMessage.getAction());
+
 		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
 		Assert.assertEquals(
 			expectedOutcome, additionalInfoJSONObject.getString("outcome"));
-
-		Assert.assertEquals(expectedAction, auditMessage.getAction());
 	}
 
 	private User _getUser() {

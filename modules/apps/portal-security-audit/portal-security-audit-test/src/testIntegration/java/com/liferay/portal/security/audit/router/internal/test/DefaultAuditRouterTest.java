@@ -76,10 +76,10 @@ public class DefaultAuditRouterTest {
 			User.class.getName(), "AI_HUB", "ADD", "ai_hub.user.add", "user");
 		_testRoute(
 			User.class.getName(), null, "LOGIN", "instance.user.login", "user");
-		_testRoute(null, null, "ADD", "instance.unknown.add", "unknown");
 		_testRoute(
 			User.class.getName(), null, StringPool.BLANK,
 			"instance.user.unknown", "user");
+		_testRoute(null, null, "ADD", "instance.unknown.add", "unknown");
 
 		AuditMessage auditMessage = _getAuditMessage(
 			RandomTestUtil.randomString(), null, "ASSIGN");

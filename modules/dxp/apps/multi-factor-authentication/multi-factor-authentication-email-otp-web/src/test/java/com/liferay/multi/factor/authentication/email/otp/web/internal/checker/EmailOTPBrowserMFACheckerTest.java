@@ -70,15 +70,13 @@ public class EmailOTPBrowserMFACheckerTest {
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
 			RandomTestUtil.randomString());
 
+		Assert.assertEquals("mfa", auditMessage.getResourceType());
+
 		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
 		Assert.assertEquals(
 			"email_otp", additionalInfoJSONObject.getString("factor"));
 
-		Assert.assertEquals("mfa", auditMessage.getResourceType());
-
-		_assertAuditMessage(
-			auditMessage, "verify_failure", "verification_failure");
 		_assertAuditMessage(
 			_buildAuditMessage(
 				"buildNotVerifiedAuditMessage",
@@ -105,6 +103,8 @@ public class EmailOTPBrowserMFACheckerTest {
 				new Class<?>[] {User.class, String.class}, _getUser(),
 				RandomTestUtil.randomString()),
 			"verify", "verified");
+		_assertAuditMessage(
+			auditMessage, "verify_failure", "verification_failure");
 
 		_testBuildNotVerifiedAuditMessageWhenFeatureFlagIsDisabled();
 	}
@@ -138,12 +138,12 @@ public class EmailOTPBrowserMFACheckerTest {
 		AuditMessage auditMessage, String expectedAction,
 		String expectedOutcome) {
 
+		Assert.assertEquals(expectedAction, auditMessage.getAction());
+
 		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
 		Assert.assertEquals(
 			expectedOutcome, additionalInfoJSONObject.getString("outcome"));
-
-		Assert.assertEquals(expectedAction, auditMessage.getAction());
 	}
 
 	private AuditMessage _buildAuditMessage(
