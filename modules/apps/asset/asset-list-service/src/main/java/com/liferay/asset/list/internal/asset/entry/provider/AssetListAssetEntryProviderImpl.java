@@ -178,6 +178,32 @@ public class AssetListAssetEntryProviderImpl
 			_getFirstSegmentsEntryId(assetListEntry, segmentsEntryIds), userId);
 	}
 
+	@Override
+	public BooleanQuery getBooleanQuery(
+			AssetListEntry assetListEntry, long segmentsEntryId)
+		throws Exception {
+
+		if (Objects.equals(
+				assetListEntry.getType(),
+				AssetListEntryTypeConstants.TYPE_MANUAL)) {
+
+			return null;
+		}
+
+		AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
+			assetListEntry, segmentsEntryId, StringPool.BLANK);
+
+		if (!_hasClassNameIds(assetEntryQuery)) {
+			return null;
+		}
+
+		return _assetHelper.getBooleanQuery(
+			_getDynamicSearchContext(
+				null, assetEntryQuery, null, assetListEntry.getCompanyId(),
+				null),
+			assetEntryQuery);
+	}
+
 	@Activate
 	@Modified
 	protected void activate(
@@ -334,9 +360,7 @@ public class AssetListAssetEntryProviderImpl
 
 		try {
 			assetEntryQueries = ListUtil.filter(
-				assetEntryQueries,
-				assetEntryQuery -> ArrayUtil.isNotEmpty(
-					assetEntryQuery.getClassNameIds()));
+				assetEntryQueries, this::_hasClassNameIds);
 
 			if (ListUtil.isEmpty(assetEntryQueries)) {
 				return InfoPage.of(Collections.emptyList());
@@ -983,6 +1007,10 @@ public class AssetListAssetEntryProviderImpl
 		}
 
 		return groupIds;
+	}
+
+	private boolean _hasClassNameIds(AssetEntryQuery assetEntryQuery) {
+		return ArrayUtil.isNotEmpty(assetEntryQuery.getClassNameIds());
 	}
 
 	private void _setAssetEntryQueryFilters(

@@ -9,6 +9,7 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.info.pagination.InfoPage;
+import com.liferay.portal.kernel.search.BooleanQuery;
 
 /**
  * @author Sarai Díaz
@@ -27,5 +28,9 @@ public interface AssetListAssetEntryProvider {
 
 	public AssetEntryQuery getAssetEntryQuery(
 		AssetListEntry assetListEntry, long[] segmentsEntryIds, String userId);
+
+	public BooleanQuery getBooleanQuery(
+			AssetListEntry assetListEntry, long segmentsEntryId)
+		throws Exception;
 
 }
