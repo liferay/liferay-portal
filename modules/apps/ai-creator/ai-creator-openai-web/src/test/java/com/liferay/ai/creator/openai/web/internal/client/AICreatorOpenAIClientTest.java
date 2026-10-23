@@ -178,7 +178,7 @@ public class AICreatorOpenAIClientTest {
 				"data:image/png;base64," + b64JSON2
 			},
 			_aiCreatorOpenAIClient.getGenerations(
-				apiKey, model, prompt, size, 2));
+				apiKey, model, 2, prompt, size));
 
 		ArgumentCaptor<Http.Options> argumentCaptor = ArgumentCaptor.forClass(
 			Http.Options.class);
