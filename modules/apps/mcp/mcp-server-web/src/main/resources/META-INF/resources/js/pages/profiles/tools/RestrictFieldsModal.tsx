@@ -9,6 +9,7 @@ import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayManagementToolbar from '@clayui/management-toolbar';
 import ClayModal from '@clayui/modal';
+import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 import AutoSearch from '../../../components/AutoSearch';
@@ -150,7 +151,7 @@ export default function RestrictFieldsModal({
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{Liferay.Util.sub(
+				{sub(
 					Liferay.Language.get('x-colon-y'),
 					Liferay.Language.get('restrict-fields'),
 					toolName

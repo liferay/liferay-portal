@@ -4,6 +4,7 @@
  */
 
 import ClayBadge from '@clayui/badge';
+import {sub} from 'frontend-js-web';
 import React from 'react';
 
 interface CountBadgeProps {
@@ -26,7 +27,7 @@ export default function CountBadge({
 			/>
 
 			<span className="sr-only">
-				{Liferay.Util.sub(
+				{sub(
 					count === 1
 						? Liferay.Language.get('x-item')
 						: Liferay.Language.get('x-items'),

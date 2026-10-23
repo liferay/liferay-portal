@@ -7,6 +7,7 @@ import ClayButton from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayModal from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import ProfileDataMaskService from '../../../services/ProfileDataMaskService';
@@ -55,10 +56,7 @@ export default function RemoveDataMaskModal({
 		}
 
 		openSuccessToast(
-			Liferay.Util.sub(
-				Liferay.Language.get('x-was-removed-successfully'),
-				row.name
-			)
+			sub(Liferay.Language.get('x-was-removed-successfully'), row.name)
 		);
 
 		onRemoved();

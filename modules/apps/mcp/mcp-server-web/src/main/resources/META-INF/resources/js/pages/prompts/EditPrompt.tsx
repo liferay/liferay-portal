@@ -7,7 +7,7 @@ import ClayButton from '@clayui/button';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {Form, FormikProvider, useFormik} from 'formik';
-import {navigate} from 'frontend-js-web';
+import {navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import {FormField} from '../../components/forms/FormField';
@@ -102,7 +102,7 @@ function EditPromptView({backURL, prompt}: EditPromptViewProps) {
 
 			if (saved) {
 				openSuccessToast(
-					Liferay.Util.sub(
+					sub(
 						Liferay.Language.get('x-was-saved-successfully'),
 						saved.name
 					)

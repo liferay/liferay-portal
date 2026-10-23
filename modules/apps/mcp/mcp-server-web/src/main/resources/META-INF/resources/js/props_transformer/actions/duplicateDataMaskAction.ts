@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {sub} from 'frontend-js-web';
+
 import DataMaskService from '../../services/DataMaskService';
 import {DataMaskActionContext} from '../../types/DataMask';
 import {openErrorToast, openSuccessToast} from '../../utils/toasts';
@@ -15,10 +17,7 @@ export default async function duplicateDataMaskAction({
 		description: itemData.description ?? '',
 		detectionRegex: itemData.detectionRegex,
 		maskType: {key: 'custom'},
-		name: Liferay.Util.sub(
-			Liferay.Language.get('copy-of-x'),
-			itemData.name
-		),
+		name: sub(Liferay.Language.get('copy-of-x'), itemData.name),
 		replacementRegex: itemData.replacementRegex ?? '',
 		replacementValue: itemData.replacementValue,
 	});
@@ -33,10 +32,7 @@ export default async function duplicateDataMaskAction({
 
 	if (saved) {
 		openSuccessToast(
-			Liferay.Util.sub(
-				Liferay.Language.get('x-was-saved-successfully'),
-				saved.name
-			)
+			sub(Liferay.Language.get('x-was-saved-successfully'), saved.name)
 		);
 	}
 }

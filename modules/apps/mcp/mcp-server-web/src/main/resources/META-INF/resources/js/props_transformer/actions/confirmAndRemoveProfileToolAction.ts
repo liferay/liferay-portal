@@ -4,7 +4,7 @@
  */
 
 import {openModal} from 'frontend-js-components-web';
-import {escapeHTML} from 'frontend-js-web';
+import {escapeHTML, sub} from 'frontend-js-web';
 
 import ProfileToolService from '../../services/ProfileToolService';
 import {ProfileToolActionContext} from '../../types/ProfileTool';
@@ -19,7 +19,7 @@ export default function confirmAndRemoveProfileToolAction({
 	openModal({
 		bodyHTML: `
 			<p>
-				${Liferay.Util.sub(
+				${sub(
 					Liferay.Language.get(
 						'this-will-remove-x-from-this-profile'
 					),
@@ -54,7 +54,7 @@ export default function confirmAndRemoveProfileToolAction({
 					loadData();
 
 					openSuccessToast(
-						Liferay.Util.sub(
+						sub(
 							Liferay.Language.get('x-was-removed-successfully'),
 							toolName
 						)

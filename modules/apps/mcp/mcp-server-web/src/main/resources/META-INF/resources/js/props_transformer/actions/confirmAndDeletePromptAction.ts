@@ -4,7 +4,7 @@
  */
 
 import {openModal} from 'frontend-js-components-web';
-import {escapeHTML} from 'frontend-js-web';
+import {escapeHTML, sub} from 'frontend-js-web';
 
 import PromptService from '../../services/PromptService';
 import {PromptActionContext} from '../../types/Prompt';
@@ -23,7 +23,7 @@ export default function confirmAndDeletePromptAction({
 	openModal({
 		bodyHTML: `
 			<p>
-				${Liferay.Util.sub(
+				${sub(
 					Liferay.Language.get(
 						'this-will-permanently-delete-x-prompt-from-your-mcp-server-configuration'
 					),
@@ -57,7 +57,7 @@ export default function confirmAndDeletePromptAction({
 					loadData();
 
 					openSuccessToast(
-						Liferay.Util.sub(
+						sub(
 							Liferay.Language.get('x-was-deleted-successfully'),
 							name
 						)

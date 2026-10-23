@@ -4,6 +4,7 @@
  */
 
 import {openModal} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 
 import DataMaskService from '../../services/DataMaskService';
 import ProfileDataMaskService from '../../services/ProfileDataMaskService';
@@ -36,7 +37,7 @@ function deleteBody(associatedProfilesCount: number) {
 	}
 
 	return [
-		Liferay.Util.sub(
+		sub(
 			Liferay.Language.get(
 				'this-mask-is-currently-being-used-in-x-profile-s-deleting-it-will-remove-the-masking-rules-from-all-of-them-and-matching-values-will-no-longer-be-masked-in-incoming-data'
 			),
@@ -90,7 +91,7 @@ export default async function confirmAndDeleteDataMaskAction({
 					loadData();
 
 					openSuccessToast(
-						Liferay.Util.sub(
+						sub(
 							Liferay.Language.get('x-was-deleted-successfully'),
 							name
 						)

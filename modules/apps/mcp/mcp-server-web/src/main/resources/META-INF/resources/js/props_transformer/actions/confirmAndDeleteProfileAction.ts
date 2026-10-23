@@ -4,7 +4,7 @@
  */
 
 import {openModal} from 'frontend-js-components-web';
-import {escapeHTML} from 'frontend-js-web';
+import {escapeHTML, sub} from 'frontend-js-web';
 
 import ProfileService from '../../services/ProfileService';
 import {ProfileActionContext} from '../../types/Profile';
@@ -23,7 +23,7 @@ export default function confirmAndDeleteProfileAction({
 	openModal({
 		bodyHTML: `
 			<p>
-				${Liferay.Util.sub(
+				${sub(
 					Liferay.Language.get(
 						'this-will-permanently-delete-x-profile-from-your-mcp-server-configuration'
 					),
@@ -59,7 +59,7 @@ export default function confirmAndDeleteProfileAction({
 					loadData();
 
 					openSuccessToast(
-						Liferay.Util.sub(
+						sub(
 							Liferay.Language.get('x-was-deleted-successfully'),
 							name
 						)

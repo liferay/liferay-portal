@@ -11,6 +11,7 @@ import ClayLayout from '@clayui/layout';
 import ClayTable from '@clayui/table';
 import classNames from 'classnames';
 import {ManagementToolbar} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 import {DndProvider, useDrag, useDrop} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
@@ -197,7 +198,7 @@ const Row = ({
 				) : null}
 
 				<ClayButtonWithIcon
-					aria-label={Liferay.Util.sub(
+					aria-label={sub(
 						Liferay.Language.get('drag-x'),
 						item.label || Liferay.Language.get('item')
 					)}

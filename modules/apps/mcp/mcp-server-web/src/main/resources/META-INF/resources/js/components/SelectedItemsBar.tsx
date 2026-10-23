@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import {ClayResultsBar} from '@clayui/management-toolbar';
+import {sub} from 'frontend-js-web';
 import React, {useId} from 'react';
 
 interface SelectedItemsBarProps {
@@ -28,7 +29,7 @@ export default function SelectedItemsBar({
 				>
 					<span className="text-truncate">
 						{count
-							? Liferay.Util.sub(
+							? sub(
 									count === 1
 										? Liferay.Language.get(
 												'x-item-selected'
