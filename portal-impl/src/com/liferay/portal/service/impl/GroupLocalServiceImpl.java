@@ -3968,9 +3968,19 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			}
 		}
 
+		String originalFriendlyURL = friendlyURL;
+
 		friendlyURL = getFriendlyURL(
 			group.getCompanyId(), groupId, classNameId, classPK,
 			StringPool.BLANK, friendlyURL);
+
+		if (group.isOrganization() && !group.isSite() &&
+			Objects.equals(originalFriendlyURL, group.getFriendlyURL()) &&
+			StringUtil.endsWith(friendlyURL, CharPool.DASH)) {
+
+			friendlyURL = StringUtil.replaceLast(
+				friendlyURL, CharPool.DASH, StringPool.BLANK);
+		}
 
 		if ((classNameId <= 0) || (type == GroupConstants.TYPE_DEPOT) ||
 			className.equals(Group.class.getName())) {
