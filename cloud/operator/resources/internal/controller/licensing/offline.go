@@ -9,15 +9,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	addon "github.com/liferay/liferay-portal/cloud/operator/internal/addon"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	corev1 "k8s.io/api/core/v1"
-	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	types "k8s.io/apimachinery/pkg/types"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
@@ -33,17 +30,23 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) awaitOfflineAc
 		"Awaiting offline activation bundle", "environmentID", environmentID,
 	)
 
-	meta.SetStatusCondition(
-		&liferayEnvironment.Status.Conditions,
-		metav1.Condition{
-			Message: "Waiting for the offline activation bundle to be provided",
-			Reason:  "AwaitingOfflineActivationBundle",
-			Status:  metav1.ConditionFalse,
-			Type:    conditionActivated,
-		},
+	return liferayEnvironmentReconciler.deferOfflineActivation(
+		context, liferayEnvironment,
+		"Waiting for the offline activation bundle to be provided", phasePending,
+		"AwaitingOfflineActivationBundle",
 	)
+}
 
-	liferayEnvironment.Status.Phase = "Pending"
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) deferOfflineActivation(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	message string,
+	phase string,
+	reason string,
+) (controllerruntime.Result, error) {
+	setCondition(conditionActivated, liferayEnvironment, message, reason, metav1.ConditionFalse)
+
+	liferayEnvironment.Status.Phase = phase
 
 	if error := liferayEnvironmentReconciler.enforceLastKnownLicense(
 		context, liferayEnvironment,
@@ -52,7 +55,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) awaitOfflineAc
 	}
 
 	return liferayEnvironmentReconciler.finishAfter(
-		context, liferayEnvironment, 15*time.Second,
+		context, liferayEnvironment, activationPollInterval,
 	)
 }
 
@@ -143,49 +146,19 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 			"offlineActivationBundlePath", offlineActivationBundlePath, "environmentID", environmentID,
 		)
 
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: error.Error(),
-				Reason:  "OfflineActivationBundleInvalid",
-				Status:  metav1.ConditionFalse,
-				Type:    conditionActivated,
-			},
-		)
-
-		liferayEnvironment.Status.Phase = "Degraded"
-
-		if error := liferayEnvironmentReconciler.enforceLastKnownLicense(
-			context, liferayEnvironment,
-		); error != nil {
-			return nil, controllerruntime.Result{}, error
-		}
-
-		result, error := liferayEnvironmentReconciler.finishAfter(
-			context, liferayEnvironment, 15*time.Second,
+		result, error := liferayEnvironmentReconciler.deferOfflineActivation(
+			context, liferayEnvironment, error.Error(), phaseDegraded,
+			"OfflineActivationBundleInvalid",
 		)
 
 		return nil, result, error
-	}
-
-	if liferayEnvironment.Status.ActivatedAt == nil {
-		now := metav1.Now()
-
-		liferayEnvironment.Status.ActivatedAt = &now
 	}
 
 	logger.Info(
 		"Environment activated from offline activation bundle", "environmentID", environmentID,
 	)
 
-	meta.SetStatusCondition(
-		&liferayEnvironment.Status.Conditions,
-		metav1.Condition{
-			Reason: "Activated",
-			Status: metav1.ConditionTrue,
-			Type:   conditionActivated,
-		},
-	)
+	markActivated(liferayEnvironment)
 
 	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(context, entitlements, liferayEnvironment); error != nil {
 		return nil, controllerruntime.Result{}, error
@@ -212,15 +185,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistOffline
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	payload string,
 ) error {
-	identityName := liferayEnvironment.Name + identitySecretSuffix
-
 	secret := &corev1.Secret{}
 
 	if error := liferayEnvironmentReconciler.Get(
-		context, types.NamespacedName{
-			Name:      identityName,
-			Namespace: liferayEnvironment.Namespace,
-		}, secret); error != nil {
+		context, identitySecretKey(liferayEnvironment), secret,
+	); error != nil {
 		return error
 	}
 
@@ -241,7 +210,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistOffline
 	}
 
 	logf.FromContext(context).Info(
-		"Stored offline request in identity secret", "secret", identityName,
+		"Stored offline request in identity secret", "secret", secret.Name,
 	)
 
 	return nil

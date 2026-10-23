@@ -123,14 +123,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceProvisi
 		)
 	}
 
-	meta.SetStatusCondition(
-		&liferayEnvironment.Status.Conditions,
-		metav1.Condition{
-			Message: message,
-			Reason:  "ProvisioningUnreachable",
-			Status:  metav1.ConditionTrue,
-			Type:    conditionProvisioningGracePeriodExpired,
-		},
+	setCondition(
+		conditionProvisioningGracePeriodExpired, liferayEnvironment, message,
+		"ProvisioningUnreachable", metav1.ConditionTrue,
 	)
 
 	return nil
@@ -162,17 +157,13 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 
 		liferayEnvironment.Status.EffectiveReplicas = nil
 
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: fmt.Sprintf(
-					"Workload %s %q does not exist.",
-					workloadKind, liferayEnvironment.Spec.WorkloadRef.Name,
-				),
-				Reason: "WorkloadNotFound",
-				Status: metav1.ConditionUnknown,
-				Type:   conditionReplicasCountValid,
-			},
+		setCondition(
+			conditionReplicasCountValid, liferayEnvironment,
+			fmt.Sprintf(
+				"Workload %s %q does not exist.",
+				workloadKind, liferayEnvironment.Spec.WorkloadRef.Name,
+			),
+			"WorkloadNotFound", metav1.ConditionUnknown,
 		)
 
 		return 0, nil
@@ -233,17 +224,13 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 
 			liferayEnvironment.Status.EffectiveReplicas = liveReplicas
 
-			meta.SetStatusCondition(
-				&liferayEnvironment.Status.Conditions,
-				metav1.Condition{
-					Message: fmt.Sprintf(
-						"Unable to scale %s %q to %d replicas: %s.",
-						workloadKind, workload.GetName(), effectiveReplicas, error,
-					),
-					Reason: "WorkloadUpdateRejected",
-					Status: metav1.ConditionFalse,
-					Type:   conditionReplicasCountValid,
-				},
+			setCondition(
+				conditionReplicasCountValid, liferayEnvironment,
+				fmt.Sprintf(
+					"Unable to scale %s %q to %d replicas: %s.",
+					workloadKind, workload.GetName(), effectiveReplicas, error,
+				),
+				"WorkloadUpdateRejected", metav1.ConditionFalse,
 			)
 
 			if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
@@ -273,17 +260,13 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 			"workload", workload.GetName(),
 		)
 
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: fmt.Sprintf(
-					"Unable to cap the autoscaler of %s %q to %d replicas: %s.",
-					workloadKind, workload.GetName(), replicaCeiling, error,
-				),
-				Reason: "AutoscalerUpdateRejected",
-				Status: metav1.ConditionFalse,
-				Type:   conditionReplicasCountValid,
-			},
+		setCondition(
+			conditionReplicasCountValid, liferayEnvironment,
+			fmt.Sprintf(
+				"Unable to cap the autoscaler of %s %q to %d replicas: %s.",
+				workloadKind, workload.GetName(), replicaCeiling, error,
+			),
+			"AutoscalerUpdateRejected", metav1.ConditionFalse,
 		)
 
 		if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
@@ -300,29 +283,21 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 	}
 
 	if requestedReplicas > replicaCeiling {
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: fmt.Sprintf(
-					"Requested %d replicas exceeds the replica ceiling of %d; capping to %d.",
-					requestedReplicas, replicaCeiling, replicaCeiling,
-				),
-				Reason: "ExceedsLicensedMaximum",
-				Status: metav1.ConditionFalse,
-				Type:   conditionReplicasCountValid,
-			},
+		setCondition(
+			conditionReplicasCountValid, liferayEnvironment,
+			fmt.Sprintf(
+				"Requested %d replicas exceeds the replica ceiling of %d; capping to %d.",
+				requestedReplicas, replicaCeiling, replicaCeiling,
+			),
+			"ExceedsLicensedMaximum", metav1.ConditionFalse,
 		)
 
 		return 0, nil
 	}
 
-	meta.SetStatusCondition(
-		&liferayEnvironment.Status.Conditions,
-		metav1.Condition{
-			Reason: "WithinLicensedLimit",
-			Status: metav1.ConditionTrue,
-			Type:   conditionReplicasCountValid,
-		},
+	setCondition(
+		conditionReplicasCountValid, liferayEnvironment, "", "WithinLicensedLimit",
+		metav1.ConditionTrue,
 	)
 
 	return 0, nil

@@ -32,12 +32,15 @@ import (
 )
 
 const (
+	activationPollInterval                   = 15 * time.Second
 	conditionActivated                       = "Activated"
 	conditionAddOnsReady                     = "AddOnsReady"
 	conditionLegacyGracePeriodExpired        = "GracePeriodExpired"
 	environmentLabel                         = "licensing.liferay.com/environment"
 	fieldOwner                               = "liferay-dxp-operator"
-	identitySecretSuffix                     = "-identity"
+	phaseDegraded                            = "Degraded"
+	phasePending                             = "Pending"
+	phaseReady                               = "Ready"
 	scaledObjectCustomResourceDefinitionName = "scaledobjects.keda.sh"
 )
 
@@ -71,17 +74,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		&liferayEnvironment.Status.Conditions, conditionLegacyGracePeriodExpired,
 	)
 
-	environmentID, error := liferayEnvironmentReconciler.resolveEnvironmentID(
+	environmentID, error := liferayEnvironmentReconciler.ensureEnvironmentNamespace(
 		context, liferayEnvironment.Namespace,
 	)
 
 	if error != nil {
-		return controllerruntime.Result{}, error
-	}
-
-	if error := liferayEnvironmentReconciler.ensureNamespaceEnvironmentLabel(
-		context, liferayEnvironment.Namespace,
-	); error != nil {
 		return controllerruntime.Result{}, error
 	}
 
@@ -163,7 +160,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 	liferayEnvironment.Status.Apps = apps
 
-	liferayEnvironment.Status.Phase = "Ready"
+	liferayEnvironment.Status.Phase = phaseReady
 
 	if requeueAfter == 0 {
 		requeueAfter = liferayEnvironmentReconciler.HeartbeatInterval
@@ -268,20 +265,22 @@ func addOnsReadyCondition(summary addon.Summary) metav1.Condition {
 	}
 }
 
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureNamespaceEnvironmentLabel(
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureEnvironmentNamespace(
 	context context.Context,
 	namespaceName string,
-) error {
+) (string, error) {
 	namespace := &corev1.Namespace{}
 
 	if error := liferayEnvironmentReconciler.Get(
 		context, types.NamespacedName{Name: namespaceName}, namespace,
 	); error != nil {
-		return error
+		return "", error
 	}
 
+	environmentID := string(namespace.UID)
+
 	if namespace.Labels[environmentLabel] == "true" {
-		return nil
+		return environmentID, nil
 	}
 
 	if namespace.Labels == nil {
@@ -294,7 +293,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureNamespac
 		"Labeled namespace as a licensed environment", "namespace", namespaceName,
 	)
 
-	return liferayEnvironmentReconciler.Update(context, namespace)
+	if error := liferayEnvironmentReconciler.Update(context, namespace); error != nil {
+		return "", error
+	}
+
+	return environmentID, nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureOwnedSecret(
@@ -371,17 +374,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishWithBack
 	)
 }
 
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnvironmentID(
-	context context.Context,
-	namespaceName string,
-) (string, error) {
-	namespace := &corev1.Namespace{}
+func markActivated(liferayEnvironment *licensingv1alpha1.LiferayEnvironment) {
+	if liferayEnvironment.Status.ActivatedAt == nil {
+		now := metav1.Now()
 
-	if error := liferayEnvironmentReconciler.Get(context, types.NamespacedName{Name: namespaceName}, namespace); error != nil {
-		return "", error
+		liferayEnvironment.Status.ActivatedAt = &now
 	}
 
-	return string(namespace.UID), nil
+	setCondition(conditionActivated, liferayEnvironment, "", "Activated", metav1.ConditionTrue)
 }
 
 func resolveEnvironmentName(
@@ -392,6 +392,24 @@ func resolveEnvironmentName(
 	}
 
 	return liferayEnvironment.Namespace
+}
+
+func setCondition(
+	conditionType string,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	message string,
+	reason string,
+	status metav1.ConditionStatus,
+) {
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Message: message,
+			Reason:  reason,
+			Status:  status,
+			Type:    conditionType,
+		},
+	)
 }
 
 type LiferayEnvironmentReconciler struct {

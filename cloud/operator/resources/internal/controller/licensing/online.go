@@ -11,7 +11,6 @@ import (
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	corev1 "k8s.io/api/core/v1"
 	errors "k8s.io/apimachinery/pkg/api/errors"
-	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	controllerruntime "sigs.k8s.io/controller-runtime"
@@ -66,20 +65,16 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 		if errors.IsNotFound(error) {
 			logger.V(1).Info("Awaiting activation code", "environmentID", environmentID)
 
-			meta.SetStatusCondition(
-				&liferayEnvironment.Status.Conditions,
-				metav1.Condition{
-					Message: "Waiting for the activation code secret to be created",
-					Reason:  "AwaitingActivationCode",
-					Status:  metav1.ConditionFalse,
-					Type:    conditionActivated,
-				},
+			setCondition(
+				conditionActivated, liferayEnvironment,
+				"Waiting for the activation code secret to be created",
+				"AwaitingActivationCode", metav1.ConditionFalse,
 			)
 
-			liferayEnvironment.Status.Phase = "Pending"
+			liferayEnvironment.Status.Phase = phasePending
 
 			result, error := liferayEnvironmentReconciler.finishAfter(
-				context, liferayEnvironment, 15*time.Second,
+				context, liferayEnvironment, activationPollInterval,
 			)
 
 			return nil, result, error
@@ -104,18 +99,13 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 			}, context, privateKey); error != nil {
 			logger.Error(error, "Activation rejected", "environmentID", environmentID)
 
-			meta.SetStatusCondition(
-				&liferayEnvironment.Status.Conditions,
-				metav1.Condition{
-					Message: error.Error(),
-					Reason:  "ActivationRejected",
-					Status:  metav1.ConditionFalse,
-					Type:    conditionActivated,
-				},
+			setCondition(
+				conditionActivated, liferayEnvironment, error.Error(),
+				"ActivationRejected", metav1.ConditionFalse,
 			)
 
 			liferayEnvironment.Status.ConsecutiveFailures++
-			liferayEnvironment.Status.Phase = "Degraded"
+			liferayEnvironment.Status.Phase = phaseDegraded
 
 			result, error := liferayEnvironmentReconciler.finishWithBackoff(
 				context, liferayEnvironment,
@@ -124,20 +114,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 			return nil, result, error
 		}
 
-		now := metav1.Now()
-
-		liferayEnvironment.Status.ActivatedAt = &now
-
 		logger.Info("Environment activated", "environmentID", environmentID)
 
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Reason: "Activated",
-				Status: metav1.ConditionTrue,
-				Type:   conditionActivated,
-			},
-		)
+		markActivated(liferayEnvironment)
 	}
 
 	entitlements, error := liferayEnvironmentReconciler.Provisioning.Manifest(
@@ -152,14 +131,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	if error != nil {
 		logger.Error(error, "Entitlements fetch failed", "environmentID", environmentID)
 
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: error.Error(),
-				Reason:  "EntitlementsFetchFailed",
-				Status:  metav1.ConditionFalse,
-				Type:    conditionProvisioningReachable,
-			},
+		setCondition(
+			conditionProvisioningReachable, liferayEnvironment, error.Error(),
+			"EntitlementsFetchFailed", metav1.ConditionFalse,
 		)
 
 		liferayEnvironment.Status.ConsecutiveFailures++
@@ -170,7 +144,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 			liferayEnvironment.Status.UnreachableSince = &unreachableSince
 		}
 
-		liferayEnvironment.Status.Phase = "Degraded"
+		liferayEnvironment.Status.Phase = phaseDegraded
 
 		if error := liferayEnvironmentReconciler.enforceProvisioningGracePeriod(
 			context, liferayEnvironment,
@@ -191,13 +165,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 		"maxClusterNodes", entitlements.MaxClusterNodes,
 	)
 
-	meta.SetStatusCondition(
-		&liferayEnvironment.Status.Conditions,
-		metav1.Condition{
-			Reason: "Reachable",
-			Status: metav1.ConditionTrue,
-			Type:   conditionProvisioningReachable,
-		},
+	setCondition(
+		conditionProvisioningReachable, liferayEnvironment, "", "Reachable",
+		metav1.ConditionTrue,
 	)
 
 	liferayEnvironment.Status.ConsecutiveFailures = 0

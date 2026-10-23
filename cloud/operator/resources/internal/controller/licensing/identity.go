@@ -18,19 +18,17 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
+const identitySecretSuffix = "-identity"
+
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) (*rsa.PrivateKey, error) {
-	identityName := liferayEnvironment.Name + identitySecretSuffix
+	identitySecretKey := identitySecretKey(liferayEnvironment)
 
 	secret := &corev1.Secret{}
 
-	getError := liferayEnvironmentReconciler.Get(
-		context, types.NamespacedName{
-			Name:      identityName,
-			Namespace: liferayEnvironment.Namespace,
-		}, secret)
+	getError := liferayEnvironmentReconciler.Get(context, identitySecretKey, secret)
 
 	if getError == nil {
 		return parsePrivateKey(secret.Data["private.pem"])
@@ -70,8 +68,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Labels:    map[string]string{"controller-watched": "yes"},
-			Name:      identityName,
-			Namespace: liferayEnvironment.Namespace,
+			Name:      identitySecretKey.Name,
+			Namespace: identitySecretKey.Namespace,
 		},
 	}
 
@@ -83,9 +81,18 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 		return nil, error
 	}
 
-	logf.FromContext(context).Info("Generated identity keypair", "secret", identityName)
+	logf.FromContext(context).Info("Generated identity keypair", "secret", identitySecretKey.Name)
 
 	return privateKey, nil
+}
+
+func identitySecretKey(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) types.NamespacedName {
+	return types.NamespacedName{
+		Name:      liferayEnvironment.Name + identitySecretSuffix,
+		Namespace: liferayEnvironment.Namespace,
+	}
 }
 
 func parsePrivateKey(privatePEM []byte) (*rsa.PrivateKey, error) {

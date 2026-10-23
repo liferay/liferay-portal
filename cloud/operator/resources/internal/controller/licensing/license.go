@@ -31,7 +31,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) degradeLicense
 ) (controllerruntime.Result, error) {
 	meta.SetStatusCondition(&liferayEnvironment.Status.Conditions, condition)
 
-	liferayEnvironment.Status.Phase = "Degraded"
+	liferayEnvironment.Status.Phase = phaseDegraded
 
 	requeueAfter, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context, liferayEnvironment, replicaCeiling,
@@ -50,6 +50,29 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) degradeLicense
 	)
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) degradeInvalidLicense(
+	context context.Context,
+	environmentID string,
+	error error,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) (controllerruntime.Result, error) {
+	logf.FromContext(context).Error(
+		error, "License validation failed", "environmentID", environmentID,
+	)
+
+	liferayEnvironment.Status.License.ValidUntil = nil
+
+	return liferayEnvironmentReconciler.degradeLicense(
+		metav1.Condition{
+			Message: error.Error(),
+			Reason:  "Invalid",
+			Status:  metav1.ConditionFalse,
+			Type:    conditionLicenseValid,
+		},
+		context, liferayEnvironment, 0,
+	)
+}
+
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLastKnownLicense(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
@@ -63,7 +86,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLastKno
 
 	meta.SetStatusCondition(&liferayEnvironment.Status.Conditions, expiredCondition)
 
-	liferayEnvironment.Status.Phase = "Degraded"
+	liferayEnvironment.Status.Phase = phaseDegraded
 
 	replicaCeiling := expirationCeiling
 
@@ -94,19 +117,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 	owner, error := license.Owner(entitlements.LicenseXML)
 
 	if error != nil {
-		logger.Error(error, "License validation failed", "environmentID", environmentID)
-
 		liferayEnvironment.Status.License.MaxClusterNodes = nil
-		liferayEnvironment.Status.License.ValidUntil = nil
 
-		return liferayEnvironmentReconciler.degradeLicense(
-			metav1.Condition{
-				Message: error.Error(),
-				Reason:  "Invalid",
-				Status:  metav1.ConditionFalse,
-				Type:    conditionLicenseValid,
-			},
-			context, liferayEnvironment, 0,
+		return liferayEnvironmentReconciler.degradeInvalidLicense(
+			context, environmentID, error, liferayEnvironment,
 		)
 	}
 
@@ -142,18 +156,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 	expirationDate, error := license.ExpirationDate(entitlements.LicenseXML)
 
 	if error != nil {
-		logger.Error(error, "License validation failed", "environmentID", environmentID)
-
-		liferayEnvironment.Status.License.ValidUntil = nil
-
-		return liferayEnvironmentReconciler.degradeLicense(
-			metav1.Condition{
-				Message: error.Error(),
-				Reason:  "Invalid",
-				Status:  metav1.ConditionFalse,
-				Type:    conditionLicenseValid,
-			},
-			context, liferayEnvironment, 0,
+		return liferayEnvironmentReconciler.degradeInvalidLicense(
+			context, environmentID, error, liferayEnvironment,
 		)
 	}
 
@@ -183,14 +187,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 		)
 	}
 
-	meta.SetStatusCondition(
-		&liferayEnvironment.Status.Conditions,
-		metav1.Condition{
-			Reason: "Valid",
-			Status: metav1.ConditionTrue,
-			Type:   conditionLicenseValid,
-		},
-	)
+	setCondition(conditionLicenseValid, liferayEnvironment, "", "Valid", metav1.ConditionTrue)
 
 	requeueAfter, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context, liferayEnvironment, entitlements.MaxClusterNodes,
