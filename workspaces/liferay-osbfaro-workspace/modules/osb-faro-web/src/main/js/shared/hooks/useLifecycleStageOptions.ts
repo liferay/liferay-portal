@@ -1,6 +1,7 @@
 import * as API from 'shared/api';
 import {ILifecycleStage} from 'shared/api/lifecycle';
 import {useRequest} from 'shared/hooks/useRequest';
+import {sortBy} from 'lodash';
 
 export const useLifecycleStageOptions = ({
 	channelId,
@@ -29,12 +30,11 @@ export const useLifecycleStageOptions = ({
 	return {
 		loading:
 			lifecyclesLoading || (Boolean(lifecycle) && lifecycleDetailLoading),
-		options: stages
-			.slice()
-			.sort((a, b) => a.priority - b.priority)
-			.map(({externalReferenceCode, stageName}) => ({
+		options: sortBy(stages, 'priority').map(
+			({externalReferenceCode, stageName}) => ({
 				label: stageName,
 				value: externalReferenceCode,
-			})),
+			})
+		),
 	};
 };

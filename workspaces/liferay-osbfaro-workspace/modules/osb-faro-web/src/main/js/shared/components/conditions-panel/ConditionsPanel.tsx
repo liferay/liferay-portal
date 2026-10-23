@@ -6,8 +6,6 @@ import {HTML5Backend} from 'react-dnd-html5-backend';
 import {mergeRef} from 'shared/util/util';
 import {useDragLayer, useDrop} from 'react-dnd';
 
-const PANEL_CLASS_NAME = 'conditions-panel h-100';
-
 interface IConditionsDropAreaProps {
 	children: React.ReactNode;
 	dragTypes: string[];
@@ -49,7 +47,7 @@ const ConditionsDropArea: React.FC<IConditionsDropAreaProps> = ({
 	}, [dragging]);
 
 	return (
-		<div className={PANEL_CLASS_NAME} ref={mergeRef(drop, panelRef)}>
+		<div className="conditions-panel h-100" ref={mergeRef(drop, panelRef)}>
 			{children}
 		</div>
 	);
@@ -57,7 +55,7 @@ const ConditionsDropArea: React.FC<IConditionsDropAreaProps> = ({
 
 interface IConditionsPanelProps {
 	children: React.ReactNode;
-	dragTypes?: string[];
+	dragTypes: string[];
 	title: string;
 }
 
@@ -82,10 +80,6 @@ const ConditionsPanel: React.FC<IConditionsPanelProps> = ({
 			</div>
 		</div>
 	);
-
-	if (!dragTypes) {
-		return <div className={PANEL_CLASS_NAME}>{content}</div>;
-	}
 
 	return (
 		<DndProvider backend={HTML5Backend}>

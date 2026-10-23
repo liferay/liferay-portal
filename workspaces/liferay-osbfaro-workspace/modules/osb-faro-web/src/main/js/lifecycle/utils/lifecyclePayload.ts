@@ -12,6 +12,7 @@ import {
 	OperatorType,
 	resolveOperatorType,
 } from 'lifecycle/utils/lifecycleOperators';
+import {sortBy} from 'lodash';
 
 export interface IStageRulePayload {
 	filterMetadata: string;
@@ -278,7 +279,4 @@ const stageConfigFromStage = (stage: ILifecycleStage): IStageConfig => ({
 
 export const stageConfigsFromLifecycle = (
 	stages: ILifecycleStage[] = []
-): IStageConfig[] =>
-	[...stages]
-		.sort((a, b) => a.priority - b.priority)
-		.map(stageConfigFromStage);
+): IStageConfig[] => sortBy(stages, 'priority').map(stageConfigFromStage);

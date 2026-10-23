@@ -3,13 +3,13 @@ import LifecycleFieldRow from 'lifecycle/components/LifecycleFieldRow';
 import React from 'react';
 import {ClayInput} from '@clayui/form';
 import {formatDateToTimeZone} from 'shared/util/date';
-import {isAtCharacterLimit} from 'lifecycle/utils/lifecycleValidation';
+import {getFieldErrorMessage} from 'lifecycle/utils/lifecycleValidation';
+import {getStageCountLabel} from 'lifecycle/utils/lifecycleLabels';
 import {
 	LIFECYCLE_DESCRIPTION_MAX_LENGTH,
 	LIFECYCLE_NAME_MAX_LENGTH,
 } from 'lifecycle/utils/constants';
 import {noop} from 'lodash';
-import {sub} from 'shared/util/lang';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
 
 interface ILifecycleSummaryProps {
@@ -37,40 +37,27 @@ const LifecycleSummary: React.FC<ILifecycleSummaryProps> = ({
 }) => {
 	const {timeZoneId} = useTimeZone();
 
-	const characterLimitMessage = Liferay.Language.get(
-		'the-character-limit-has-been-reached.-you-cannot-continue-typing'
-	);
+	const descriptionErrorMessage = getFieldErrorMessage({
+		maxLength: LIFECYCLE_DESCRIPTION_MAX_LENGTH,
+		requiredMessage: Liferay.Language.get(
+			'the-description-field-is-required'
+		),
+		showErrors: isFieldErrorVisible('lifecycleDescription'),
+		value: description,
+	});
 
-	const getNameErrorMessage = () => {
-		if (isFieldErrorVisible('lifecycleName') && !name.trim()) {
-			return Liferay.Language.get('the-name-field-is-required');
-		}
-
-		if (isAtCharacterLimit(name, LIFECYCLE_NAME_MAX_LENGTH)) {
-			return characterLimitMessage;
-		}
-	};
-
-	const getDescriptionErrorMessage = () => {
-		if (
-			isFieldErrorVisible('lifecycleDescription') &&
-			!description.trim()
-		) {
-			return Liferay.Language.get('the-description-field-is-required');
-		}
-
-		if (isAtCharacterLimit(description, LIFECYCLE_DESCRIPTION_MAX_LENGTH)) {
-			return characterLimitMessage;
-		}
-	};
-
-	const descriptionErrorMessage = getDescriptionErrorMessage();
+	const nameErrorMessage = getFieldErrorMessage({
+		maxLength: LIFECYCLE_NAME_MAX_LENGTH,
+		requiredMessage: Liferay.Language.get('the-name-field-is-required'),
+		showErrors: isFieldErrorVisible('lifecycleName'),
+		value: name,
+	});
 
 	return (
 		<>
 			<div className="mb-5">
 				<BaseEditPage.Title
-					errorMessage={getNameErrorMessage()}
+					errorMessage={nameErrorMessage}
 					id="lifecycleName"
 					label={Liferay.Language.get('name')}
 					maxLength={LIFECYCLE_NAME_MAX_LENGTH}
@@ -116,13 +103,7 @@ const LifecycleSummary: React.FC<ILifecycleSummaryProps> = ({
 					className="bg-white"
 					id="lifecycleStages"
 					readOnly
-					value={
-						stageCount === 1
-							? Liferay.Language.get('1-stage')
-							: (sub(Liferay.Language.get('x-stages'), [
-									stageCount,
-								]) as string)
-					}
+					value={getStageCountLabel(stageCount)}
 				/>
 			</LifecycleFieldRow>
 

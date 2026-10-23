@@ -1,5 +1,7 @@
 import {ILifecycleDetail, ILifecycleStagePayload} from 'shared/api/lifecycle';
+import {buildStageRuleName} from 'lifecycle/utils/lifecyclePayload';
 import {ILifecycleStage as ILifecycleStageMetric} from 'lifecycle/utils/types';
+import {sortBy} from 'lodash';
 
 const LIFECYCLE_NAME = 'Growth and Retention Hub';
 
@@ -19,10 +21,10 @@ const buildRule = (
 		matchLogic: 'all',
 	}),
 	filterString,
-	name: `${LIFECYCLE_NAME} Stage ${stageName} Criteria`,
+	name: buildStageRuleName(LIFECYCLE_NAME, stageName),
 });
 
-export const MOCK_LIFECYCLE: ILifecycleDetail = {
+const MOCK_LIFECYCLE: ILifecycleDetail = {
 	authorName: 'Anneta Smith',
 	description: 'Lifecycle for marketing-qualified accounts',
 	id: '4100',
@@ -143,9 +145,7 @@ const MOCK_ACCOUNT_COUNTS = [120, 64, 41, 22, 9];
 const MOCK_AVERAGE_DURATIONS = [9.8, 4.6, 4.5, 12, 0];
 
 export const getMockLifecycleStages = (): Promise<ILifecycleStageMetric[]> => {
-	const stages = [...(mockLifecycle.stages ?? [])].sort(
-		(a, b) => a.priority - b.priority
-	);
+	const stages = sortBy(mockLifecycle.stages ?? [], 'priority');
 
 	const counts = stages.map(
 		(stage, index) => MOCK_ACCOUNT_COUNTS[index] ?? 5

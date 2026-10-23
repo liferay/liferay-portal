@@ -20,6 +20,7 @@ import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
+import {sortBy} from 'lodash';
 
 interface LifecycleStatusProps {
 	className?: string;
@@ -63,9 +64,10 @@ const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 		lifecyclesLoading || (Boolean(accountLifecycle?.id) && statusLoading);
 
 	const lifecycle: IAccountLifecycleStatus | undefined = statusData;
-	const stages = (lifecycle?.accountLifecycleStageStatuses ?? [])
-		.slice()
-		.sort((a, b) => a.priority - b.priority);
+	const stages = sortBy(
+		lifecycle?.accountLifecycleStageStatuses ?? [],
+		'priority'
+	);
 
 	const progressionStages = stages.filter(
 		(stage) => stage.stageType !== LifecycleStages.AT_RISK

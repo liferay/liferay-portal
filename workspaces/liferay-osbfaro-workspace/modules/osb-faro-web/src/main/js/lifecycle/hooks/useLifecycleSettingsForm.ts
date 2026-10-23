@@ -14,7 +14,8 @@ import {
 } from 'lifecycle/utils/lifecycleValidation';
 import {Routes, toRoute} from 'shared/util/router';
 import {useDispatch} from 'react-redux';
-import {useEffect, useRef, useState} from 'react';
+import {moveItem} from 'shared/util/array';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -166,26 +167,19 @@ export const useLifecycleSettingsForm = ({
 	};
 
 	const moveStage = ({from, to}: {from: number; to: number}) =>
-		setStageConfigs((previous) => {
-			const next = [...previous];
-
-			const [stage] = next.splice(from, 1);
-
-			next.splice(to, 0, stage);
-
-			return next;
-		});
+		setStageConfigs((previous) => moveItem(previous, from, to));
 
 	const selectedStage =
 		stageConfigs.find((stage) => stage.key === selectedKey) ?? null;
 
+	const duplicateStageKeys = getDuplicateStageKeys(stageConfigs);
+
 	const lifecycleErrorMessages = getLifecycleErrorMessages({
 		description: lifecycleDescription,
+		duplicateStageKeys,
 		name: lifecycleName,
 		stageConfigs,
 	});
-
-	const duplicateStageKeys = getDuplicateStageKeys(stageConfigs);
 
 	const selectedStageErrorMessages = selectedStage
 		? getStageErrorMessages(
@@ -202,12 +196,17 @@ export const useLifecycleSettingsForm = ({
 			: lifecycleErrorMessages;
 	}
 
-	const changed =
-		serializeLifecycle(
-			lifecycleName,
-			lifecycleDescription,
-			stageConfigs
-		) !== initialSnapshotRef.current;
+	const snapshot = useMemo(
+		() =>
+			serializeLifecycle(
+				lifecycleName,
+				lifecycleDescription,
+				stageConfigs
+			),
+		[lifecycleDescription, lifecycleName, stageConfigs]
+	);
+
+	const changed = snapshot !== initialSnapshotRef.current;
 
 	const blurField = (id: string) =>
 		setBlurredFields((previous) =>

@@ -5,7 +5,7 @@ import LifecycleSummary from 'lifecycle/components/LifecycleSummary';
 import NavigationWarning from 'shared/components/NavigationWarning';
 import React, {useEffect, useRef} from 'react';
 import StageConfigurationPanel from 'lifecycle/components/StageConfigurationPanel';
-import {sub} from 'shared/util/lang';
+import {getPluralMessage} from 'shared/util/lang';
 import {useLifecycleSettingsForm} from 'lifecycle/hooks/useLifecycleSettingsForm';
 
 interface ILifecycleSettingsFormProps {
@@ -96,16 +96,16 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 								displayType="danger"
 								onClose={dismissAlert}
 								title={
-									alertMessages.length === 1
-										? Liferay.Language.get(
-												'review-1-error-in-this-configuration'
-											)
-										: (sub(
-												Liferay.Language.get(
-													'review-x-errors-in-this-configuration'
-												),
-												[alertMessages.length]
-											) as string)
+									getPluralMessage(
+										Liferay.Language.get(
+											'review-1-error-in-this-configuration'
+										),
+										Liferay.Language.get(
+											'review-x-errors-in-this-configuration'
+										),
+										alertMessages.length,
+										true
+									) as string
 								}
 							>
 								<ul className="mb-0 mt-1">

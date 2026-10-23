@@ -8,9 +8,10 @@ import {ButtonWithIcon, Icon, Text} from '@clayui/core';
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ILifecycleStage} from 'lifecycle/utils/types';
 import {SectionHeader} from 'shared/components/SectionHeader';
-import {sub} from 'shared/util/lang';
+import {getPluralMessage, sub} from 'shared/util/lang';
 import {formatPercent, toRounded, toThousands} from 'shared/util/numbers';
 import {useLifecycle} from 'lifecycle/context/LifecycleContext';
+import {sortBy} from 'lodash';
 
 const LOADING_CARD_MIN_HEIGHT = 432;
 const REFERENCE_BAR_HEIGHT = 136;
@@ -24,16 +25,16 @@ const getBarHeight = (percentage: number, referencePercentage: number) => {
 	);
 };
 
-const getAverageDaysLabel = (averageStageDuration: number) => {
-	const label =
-		Math.round(averageStageDuration * 10) === 10
-			? Liferay.Language.get('1-avg.-day')
-			: (sub(Liferay.Language.get('x-avg.-days'), [
-					toRounded(averageStageDuration),
-				]) as string);
-
-	return label.toLowerCase();
-};
+const getAverageDaysLabel = (averageStageDuration: number) =>
+	(
+		getPluralMessage(
+			Liferay.Language.get('1-avg.-day'),
+			Liferay.Language.get('x-avg.-days'),
+			Math.round(averageStageDuration * 10) / 10,
+			true,
+			[toRounded(averageStageDuration)]
+		) as string
+	).toLowerCase();
 
 const useCardScroll = (itemCount: number) => {
 	const trackRef = useRef<HTMLDivElement>(null);
@@ -260,9 +261,7 @@ const LifecycleChart = ({
 }: ILifecycleChartProps) => {
 	const {selectStage} = useLifecycle();
 
-	const sortedStages = error
-		? []
-		: [...(stages ?? [])].sort((a, b) => a.priority - b.priority);
+	const sortedStages = error ? [] : sortBy(stages ?? [], 'priority');
 
 	const {
 		canScrollNext,

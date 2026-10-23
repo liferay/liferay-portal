@@ -15,7 +15,7 @@ import {
 } from 'lifecycle/utils/lifecycleOperators';
 import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
 import {noop} from 'lodash';
-import {sub} from 'shared/util/lang';
+import {getPluralMessage, sub} from 'shared/util/lang';
 import {useAnnounce} from 'shared/components/condition-chip/AnnounceContext';
 
 const STAGE_DRAG_TYPE = 'lifecycle-stage-chip';
@@ -42,11 +42,13 @@ const getStageOverline = (stage: IStageConfig, number: number) => {
 
 	const count = stage.conditions.filter(isConditionComplete).length;
 
-	if (count === 1) {
-		return sub(Liferay.Language.get('stage-x-1-condition'), [number]);
-	}
-
-	return sub(Liferay.Language.get('stage-x-x-conditions'), [number, count]);
+	return getPluralMessage(
+		Liferay.Language.get('stage-x-1-condition'),
+		Liferay.Language.get('stage-x-x-conditions'),
+		count,
+		undefined,
+		[number, count]
+	);
 };
 
 interface ILifecycleStructureProps {
@@ -110,7 +112,6 @@ const LifecycleStructure: React.FC<ILifecycleStructureProps> = ({
 					onClick={addStage}
 				/>
 			}
-			className="lifecycle-structure-section"
 			ref={sectionRef}
 			title={Liferay.Language.get('structure')}
 		>

@@ -24,7 +24,7 @@ import {
 	MATCH_LOGIC_OPTIONS,
 	isStageConfigured,
 } from 'lifecycle/utils/lifecycleOperators';
-import {isAtCharacterLimit} from 'lifecycle/utils/lifecycleValidation';
+import {getFieldErrorMessage} from 'lifecycle/utils/lifecycleValidation';
 import {
 	LIFECYCLE_STAGE_DESCRIPTION_MAX_LENGTH,
 	LIFECYCLE_STAGE_NAME_MAX_LENGTH,
@@ -93,40 +93,24 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 
 	const descriptionId = `stageDescription-${key}`;
 
-	const getDescriptionErrorMessage = () => {
-		if (isFieldErrorVisible(descriptionId) && !value.description.trim()) {
-			return Liferay.Language.get('the-description-field-is-required');
-		}
+	const descriptionErrorMessage = getFieldErrorMessage({
+		maxLength: LIFECYCLE_STAGE_DESCRIPTION_MAX_LENGTH,
+		requiredMessage: Liferay.Language.get(
+			'the-description-field-is-required'
+		),
+		showErrors: isFieldErrorVisible(descriptionId),
+		value: value.description,
+	});
 
-		if (
-			isAtCharacterLimit(
-				value.description,
-				LIFECYCLE_STAGE_DESCRIPTION_MAX_LENGTH
-			)
-		) {
-			return Liferay.Language.get(
-				'the-character-limit-has-been-reached.-you-cannot-continue-typing'
-			);
-		}
-	};
-
-	const descriptionErrorMessage = getDescriptionErrorMessage();
-
-	const getNameErrorMessage = () => {
-		if (isFieldErrorVisible(nameId) && !value.name.trim()) {
-			return Liferay.Language.get('the-name-field-is-required');
-		}
-
-		if (isFieldErrorVisible(nameId) && nameTaken) {
-			return Liferay.Language.get('enter-a-unique-name');
-		}
-
-		if (isAtCharacterLimit(value.name, LIFECYCLE_STAGE_NAME_MAX_LENGTH)) {
-			return Liferay.Language.get(
-				'the-character-limit-has-been-reached.-you-cannot-continue-typing'
-			);
-		}
-	};
+	const nameErrorMessage = getFieldErrorMessage({
+		maxLength: LIFECYCLE_STAGE_NAME_MAX_LENGTH,
+		requiredMessage: Liferay.Language.get('the-name-field-is-required'),
+		showErrors: isFieldErrorVisible(nameId),
+		takenMessage: nameTaken
+			? Liferay.Language.get('enter-a-unique-name')
+			: undefined,
+		value: value.name,
+	});
 
 	const updateCondition = (
 		conditionIndex: number,
@@ -171,7 +155,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 
 			<div className="mb-5">
 				<BaseEditPage.Title
-					errorMessage={getNameErrorMessage()}
+					errorMessage={nameErrorMessage}
 					id={nameId}
 					label={Liferay.Language.get('name')}
 					maxLength={LIFECYCLE_STAGE_NAME_MAX_LENGTH}

@@ -20,6 +20,7 @@ import {useLifecycleActions} from 'lifecycle/hooks/useLifecycleActions';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
+import {sortBy} from 'lodash';
 
 interface IField {
 	label: string;
@@ -107,11 +108,9 @@ const StageCard: React.FC<{stage: ILifecycleStage}> = ({stage}) => {
 
 const StagesTab: React.FC<{stages: ILifecycleStage[]}> = ({stages}) => (
 	<>
-		{[...stages]
-			.sort((a, b) => a.priority - b.priority)
-			.map((stage) => (
-				<StageCard key={stage.id} stage={stage} />
-			))}
+		{sortBy(stages, 'priority').map((stage) => (
+			<StageCard key={stage.id} stage={stage} />
+		))}
 	</>
 );
 

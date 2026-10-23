@@ -7,6 +7,34 @@ import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
 export const isAtCharacterLimit = (value: string, maxLength: number) =>
 	value.length >= maxLength;
 
+export const getFieldErrorMessage = ({
+	maxLength,
+	requiredMessage,
+	showErrors,
+	takenMessage,
+	value,
+}: {
+	maxLength: number;
+	requiredMessage: string;
+	showErrors: boolean;
+	takenMessage?: string;
+	value: string;
+}) => {
+	if (showErrors && !value.trim()) {
+		return requiredMessage;
+	}
+
+	if (showErrors && takenMessage) {
+		return takenMessage;
+	}
+
+	if (isAtCharacterLimit(value, maxLength)) {
+		return Liferay.Language.get(
+			'the-character-limit-has-been-reached.-you-cannot-continue-typing'
+		);
+	}
+};
+
 const normalizeStageName = (name: string) =>
 	name.trim().replace(/\s+/g, ' ').toLowerCase();
 
@@ -44,9 +72,6 @@ export const getStageErrors = (stage: IStageConfig): IStageErrors => ({
 	name: !stage.name.trim(),
 	trigger: !isStageConfigured(stage),
 });
-
-export const hasStageErrors = (stage: IStageConfig) =>
-	Object.values(getStageErrors(stage)).some(Boolean);
 
 export const hasStageChipError = (stage: IStageConfig) =>
 	getStageErrors(stage).name;
@@ -112,63 +137,70 @@ export const getStageErrorMessages = (
 
 export const getLifecycleErrorMessages = ({
 	description,
+	duplicateStageKeys,
 	name,
 	stageConfigs,
 }: {
 	description: string;
+	duplicateStageKeys?: string[];
 	name: string;
 	stageConfigs: IStageConfig[];
-}): string[] => [
-	...(name.trim()
-		? []
-		: [
-				Liferay.Language.get(
-					'the-lifecycle-name-field-is-required-and-must-be-filled-out'
-				),
-			]),
-	...(description.trim()
-		? []
-		: [
-				Liferay.Language.get(
-					'the-lifecycle-description-field-is-required-and-must-be-filled-out'
-				),
-			]),
-	...(stageConfigs.length
-		? []
-		: [Liferay.Language.get('add-at-least-one-stage')]),
-	...pickMessage(
-		countStages(stageConfigs, 'name'),
-		Liferay.Language.get(
-			'the-stage-name-field-is-required-and-must-be-filled-out'
+}): string[] => {
+	const duplicates =
+		duplicateStageKeys ?? getDuplicateStageKeys(stageConfigs);
+
+	return [
+		...(name.trim()
+			? []
+			: [
+					Liferay.Language.get(
+						'the-lifecycle-name-field-is-required-and-must-be-filled-out'
+					),
+				]),
+		...(description.trim()
+			? []
+			: [
+					Liferay.Language.get(
+						'the-lifecycle-description-field-is-required-and-must-be-filled-out'
+					),
+				]),
+		...(stageConfigs.length
+			? []
+			: [Liferay.Language.get('add-at-least-one-stage')]),
+		...pickMessage(
+			countStages(stageConfigs, 'name'),
+			Liferay.Language.get(
+				'the-stage-name-field-is-required-and-must-be-filled-out'
+			),
+			Liferay.Language.get(
+				'stage-name-fields-are-required-and-must-be-filled-out'
+			)
 		),
-		Liferay.Language.get(
-			'stage-name-fields-are-required-and-must-be-filled-out'
-		)
-	),
-	...getUniqueNameMessages(!!getDuplicateStageKeys(stageConfigs).length),
-	...pickMessage(
-		countStages(stageConfigs, 'description'),
-		Liferay.Language.get(
-			'the-stage-description-field-is-required-and-must-be-filled-out'
+		...getUniqueNameMessages(!!duplicates.length),
+		...pickMessage(
+			countStages(stageConfigs, 'description'),
+			Liferay.Language.get(
+				'the-stage-description-field-is-required-and-must-be-filled-out'
+			),
+			Liferay.Language.get(
+				'stage-description-fields-are-required-and-must-be-filled-out'
+			)
 		),
-		Liferay.Language.get(
-			'stage-description-fields-are-required-and-must-be-filled-out'
-		)
-	),
-	...pickMessage(
-		countStages(stageConfigs, 'trigger'),
-		Liferay.Language.get(
-			'the-stage-trigger-is-required-and-must-be-filled-out'
+		...pickMessage(
+			countStages(stageConfigs, 'trigger'),
+			Liferay.Language.get(
+				'the-stage-trigger-is-required-and-must-be-filled-out'
+			),
+			Liferay.Language.get(
+				'stage-triggers-are-required-and-must-be-filled-out'
+			)
 		),
-		Liferay.Language.get(
-			'stage-triggers-are-required-and-must-be-filled-out'
-		)
-	),
-	...(countStages(stageConfigs, 'incompleteTrigger')
-		? [
-				Liferay.Language.get(
-					'incomplete-stage-triggers-must-be-completed-or-removed'
-				),
-			]
-		: []),
-];
+		...(countStages(stageConfigs, 'incompleteTrigger')
+			? [
+					Liferay.Language.get(
+						'incomplete-stage-triggers-must-be-completed-or-removed'
+					),
+				]
+			: []),
+	];
+};
