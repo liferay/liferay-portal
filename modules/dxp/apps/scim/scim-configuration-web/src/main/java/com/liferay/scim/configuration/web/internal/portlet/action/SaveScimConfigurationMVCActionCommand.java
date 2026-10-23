@@ -113,14 +113,14 @@ public class SaveScimConfigurationMVCActionCommand
 
 			String accessToken = jsonObject.getString("access_token");
 
-			OAuth2Authorization generatedOAuth2Authorization =
-				_oAuth2AuthorizationLocalService.
-					fetchOAuth2AuthorizationByAccessTokenContent(accessToken);
-
 			List<OAuth2Authorization> oAuth2Authorizations =
 				_oAuth2AuthorizationLocalService.getOAuth2Authorizations(
 					oAuth2Application.getOAuth2ApplicationId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+			OAuth2Authorization generatedOAuth2Authorization =
+				_oAuth2AuthorizationLocalService.
+					fetchOAuth2AuthorizationByAccessTokenContent(accessToken);
 
 			for (OAuth2Authorization oAuth2Authorization :
 					oAuth2Authorizations) {

@@ -342,7 +342,7 @@ public class LiferayOAuthDataProvider
 		}
 
 		try {
-			return _populateAccessToken(accessToken, oAuth2Authorization);
+			return _populateAccessToken(oAuth2Authorization, accessToken);
 		}
 		catch (PortalException portalException) {
 			_log.error(
@@ -373,8 +373,8 @@ public class LiferayOAuthDataProvider
 			try {
 				serverAccessTokens.add(
 					_populateAccessToken(
-						oAuth2Authorization.getAccessTokenContent(),
-						oAuth2Authorization));
+						oAuth2Authorization,
+						oAuth2Authorization.getAccessTokenContent()));
 			}
 			catch (PortalException portalException) {
 				_log.error(
@@ -1564,7 +1564,7 @@ public class LiferayOAuthDataProvider
 	}
 
 	private ServerAccessToken _populateAccessToken(
-			String accessToken, OAuth2Authorization oAuth2Authorization)
+			OAuth2Authorization oAuth2Authorization, String tokenKey)
 		throws PortalException {
 
 		OAuth2Application oAuth2Application =
@@ -1581,7 +1581,7 @@ public class LiferayOAuthDataProvider
 		long lifetime = expires - issuedAt;
 
 		ServerAccessToken serverAccessToken = new BearerAccessToken(
-			client, accessToken, lifetime, issuedAt);
+			client, tokenKey, lifetime, issuedAt);
 
 		List<String> audiencesList = oAuth2Authorization.getAudiencesList();
 

@@ -155,7 +155,7 @@ public class LiferayOAuthDataProviderTest {
 			String refreshTokenKey = RandomTestUtil.randomString();
 
 			RefreshToken refreshToken = new RefreshToken(
-				new Client(), refreshTokenKey, 3600,
+				new Client(), refreshTokenKey, RandomTestUtil.randomInt(),
 				System.currentTimeMillis());
 
 			refreshToken.setAccessTokens(
