@@ -828,13 +828,6 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
@@ -936,13 +929,6 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
@@ -976,13 +962,6 @@ paths:
                     required: true
                     schema:
                         type: string
-                -   in: query
-                    description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
                 -   in: query
                     description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
@@ -1088,13 +1067,6 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
@@ -1144,13 +1116,6 @@ paths:
                     schema:
                         format: int32
                         minimum: 1
-                        type: integer
-                -   in: query
-                    description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
                         type: integer
                 -   in: query
                     description:
@@ -1280,13 +1245,6 @@ paths:
                 Starts an export of the instance, or of one of its portlets.
             operationId: postExportProcess
             parameters:
-                -   in: query
-                    description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
                 -   in: query
                     description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
@@ -1434,13 +1392,6 @@ paths:
             parameters:
                 -   in: query
                     description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
                     schema:
@@ -1532,13 +1483,6 @@ paths:
                 Imports the user's last uploaded file into the instance, or into one of its portlets. Returns a 404 when there is no uploaded file.
             operationId: postImportProcess
             parameters:
-                -   in: query
-                    description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
                 -   in: query
                     description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
@@ -1916,15 +1860,14 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The external reference code of the site page that holds the portlet. Without it, the portlet is handled as an application rather than a widget on a page.
+                    name: sitePageExternalReferenceCode
                     schema:
                         type: string
                 -   in: query
@@ -1991,6 +1934,12 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The external reference code of the site page that holds the portlet, to list only the processes of that widget.
+                    name: sitePageExternalReferenceCode
+                    schema:
+                        type: string
+                -   in: query
                     name: sort
                     schema:
                         type: string
@@ -2024,15 +1973,14 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The external reference code of the site page that holds the portlet. Without it, the portlet is handled as an application rather than a widget on a page.
+                    name: sitePageExternalReferenceCode
                     schema:
                         type: string
             requestBody:
@@ -2066,15 +2014,14 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The external reference code of the site page that holds the portlet. Without it, the portlet is handled as an application rather than a widget on a page.
+                    name: sitePageExternalReferenceCode
                     schema:
                         type: string
             requestBody:
@@ -2143,6 +2090,12 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The external reference code of the site page that holds the portlet, to list only the processes of that widget.
+                    name: sitePageExternalReferenceCode
+                    schema:
+                        type: string
+                -   in: query
                     name: sort
                     schema:
                         type: string
@@ -2176,15 +2129,14 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        The ID of the page that holds the portlet. Required with portletId.
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    description:
                         The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
                     name: portletId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The external reference code of the site page that holds the portlet. Without it, the portlet is handled as an application rather than a widget on a page.
+                    name: sitePageExternalReferenceCode
                     schema:
                         type: string
             requestBody:
