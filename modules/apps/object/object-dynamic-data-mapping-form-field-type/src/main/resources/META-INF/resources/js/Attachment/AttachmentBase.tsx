@@ -11,7 +11,7 @@ import {
 	useConfig,
 } from 'data-engine-js-components-web';
 import {openSelectionModal} from 'frontend-js-components-web';
-import {fetch, getFileAsBase64} from 'frontend-js-web';
+import {fetch, formatStorage, getFileAsBase64} from 'frontend-js-web';
 import React, {ChangeEventHandler, useEffect, useRef, useState} from 'react';
 
 import FileContainer from './FileContainer';
@@ -31,6 +31,7 @@ type Space = {
 export type AttachmentFile = {
 	contentURL: string;
 	fileEntryId: string;
+	size?: string;
 	source?: 'dm' | 'cms';
 	storageDepotGroup?: string;
 	title: string;
@@ -40,6 +41,7 @@ type DMUploadedFile = {
 	contentURL: string;
 	fileEntryId: string;
 	readOnly: boolean;
+	size?: string;
 	title: string;
 };
 
@@ -50,6 +52,7 @@ type CMSUploadResponse = {
 		link: {
 			href: string;
 		};
+		size?: string;
 	};
 	id: number;
 	title: string;
@@ -64,6 +67,25 @@ type FolderEntry = {
 type FolderRef =
 	| {objectEntryFolderExternalReferenceCode: string}
 	| {objectEntryFolderId: number};
+
+/**
+ * Formats a raw byte count (40255) the way the server formats attachment
+ * sizes (39 KB), with the user's decimal separator and translated suffixes.
+ */
+function formatFileSize(bytes: number) {
+	const decimalSeparator =
+		new Intl.NumberFormat(Liferay.ThemeDisplay.getBCP47LanguageId())
+			.formatToParts(1.5)
+			.find((part) => part.type === 'decimal')?.value ?? '.';
+
+	return formatStorage(bytes, {
+		addSpaceBeforeSuffix: true,
+		decimalSeparator,
+		suffixGB: Liferay.Language.get('storage.size.suffix.gb'),
+		suffixKB: Liferay.Language.get('storage.size.suffix.kb'),
+		suffixMB: Liferay.Language.get('storage.size.suffix.mb'),
+	});
+}
 
 export interface AttachmentBaseProps<TValue> {
 	acceptedFileExtensions: string;
@@ -141,6 +163,7 @@ export default function AttachmentBase({
 			{
 				contentURL: selectedItem.embedded.file.fileURL,
 				fileEntryId: String(selectedItem.embedded.id),
+				size: selectedItem.embedded.file.size,
 				title: selectedItem.title,
 			},
 			String(selectedItem.embedded.file.id)
@@ -173,6 +196,7 @@ export default function AttachmentBase({
 				{
 					contentURL: selectedItemValue.url,
 					fileEntryId: selectedItemValue.fileEntryId,
+					size: formatFileSize(Number(selectedItemValue.size)),
 					title: selectedItemValue.title,
 				},
 				selectedItemValue.fileEntryId
@@ -350,6 +374,7 @@ export default function AttachmentBase({
 			contentURL: previewUrl.toString(),
 			fileEntryId: String(response.id),
 			id: String(response.file?.id),
+			size: response.file?.size,
 			source: 'cms',
 			title: response.title,
 		};

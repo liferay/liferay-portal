@@ -39,7 +39,15 @@ export default function FileContainer({
 							}
 						}}
 					>
-						{attachment.title}
+						<span className="font-weight-semi-bold small">
+							{attachment.title}
+						</span>
+
+						{attachment.size && (
+							<span className="d-block small text-secondary">
+								{attachment.size}
+							</span>
+						)}
 					</ClayButton>
 
 					{Liferay.ThemeDisplay.isSignedIn() &&
