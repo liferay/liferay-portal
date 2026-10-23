@@ -6,8 +6,7 @@ import Form from 'shared/components/form';
 import getCN from 'classnames';
 import Loading, {Align} from 'shared/components/Loading';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {connect, ConnectedProps} from 'react-redux';
+import SearchableTableModal from 'shared/components/modals/SearchableTableModal';
 import {COUNT, createOrderIOMap} from 'shared/util/pagination';
 import {
 	activityAssetsListColumns,
@@ -17,6 +16,7 @@ import {getEventId} from '../../utils/activity-keys';
 import {Option, Picker} from '@clayui/core';
 import {OrderedMap} from 'immutable';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
+import {useModal} from '@clayui/modal';
 import {useRequest} from 'shared/hooks/useRequest';
 
 export type PageAssetItem = {id: string; name: string};
@@ -208,11 +208,7 @@ const AssetTypeTrigger = React.forwardRef<
 	</button>
 ));
 
-const connector = connect(null, {close, open});
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-interface ISelectPageAssetInputProps extends PropsFromRedux {
+interface ISelectPageAssetInputProps {
 	action?: string;
 	actionLabel?: string;
 
@@ -232,13 +228,13 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 	actionLabel,
 	applicationId,
 	channelId,
-	close,
 	groupId,
 	objectDefinitionName,
 	onSelectionsChange,
-	open,
 	selectedItems = [],
 }) => {
+	const assetsModal = useModal();
+
 	const isAssetOnly = !!action && ASSET_ONLY_ACTIONS.includes(action);
 
 	const [selectorType, setSelectorType] = useState<SelectorType>(
@@ -411,7 +407,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 		});
 	};
 
-	const handleOpenModal = () => {
+	const getModalProps = () => {
 
 		// Pages and assets both list from the activity/asset endpoint, keyed by
 		// the same id the activityKey stores. currentApplicationId drives both
@@ -469,13 +465,12 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 
 		const countColumn = getCountColumn(action, actionLabel);
 
-		open(modalTypes.SEARCHABLE_TABLE_MODAL, {
+		return {
 			columns: getColumns(groupId, countColumn),
 			dataSourceFn,
 			initialOrderIOMap: createOrderIOMap(COUNT),
 			initialSelectedItems: selectedItems,
 			noResultsIcon: 'web-content',
-			onClose: close,
 			onSubmit: (items: OrderedMap<string, PageAssetItem>) => {
 				emit(
 					items
@@ -485,7 +480,7 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 						.toArray()
 				);
 
-				close();
+				assetsModal.onOpenChange(false);
 			},
 			orderByOptions: [{label: countColumn.label, value: COUNT}],
 			rowIdentifier: 'id',
@@ -493,8 +488,10 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 			title: isPage
 				? Liferay.Language.get('select-page')
 				: Liferay.Language.get('select-asset'),
-		});
+		};
 	};
+
+	const handleOpenModal = () => assetsModal.onOpenChange(true);
 
 	const handleSelectorTypeChange = (value: SelectorType) => {
 		const nextIsPage = value === 'page';
@@ -645,8 +642,16 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 					</ClayButton>
 				</Form.GroupItem>
 			)}
+
+			{assetsModal.open && (
+				<SearchableTableModal
+					{...getModalProps()}
+					observer={assetsModal.observer}
+					onClose={() => assetsModal.onOpenChange(false)}
+				/>
+			)}
 		</>
 	);
 };
 
-export default connector(SelectPageAssetInput);
+export default SelectPageAssetInput;

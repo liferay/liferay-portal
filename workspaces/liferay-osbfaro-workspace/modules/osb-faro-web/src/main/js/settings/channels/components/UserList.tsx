@@ -1,18 +1,19 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import Loading from 'shared/components/Loading';
 import Nav from 'shared/components/Nav';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
-import React from 'react';
+import React, {useState} from 'react';
 import RowActions from 'shared/components/RowActions';
+import SearchableTableModal from 'shared/components/modals/SearchableTableModal';
 import Table from 'shared/components/table';
 import {ActionTypes} from 'shared/context/selection';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose, withPaginationBar, withToolbar} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {createOrderIOMap, NAME} from 'shared/util/pagination';
@@ -23,6 +24,7 @@ import {OrderedMap} from 'immutable';
 import {RootState} from 'shared/store';
 import {SelectionProvider} from 'shared/context/selection';
 import {Sizes} from 'shared/util/constants';
+import {useModal} from '@clayui/modal';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {User} from 'shared/util/records';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -80,7 +82,7 @@ const connector = connect(
 			'timeZoneId',
 		]),
 	}),
-	{addAlert, close, open}
+	{addAlert}
 );
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -95,10 +97,8 @@ interface IUserListProps extends PropsFromRedux, IPaginationUnsorted {
 const UserList: React.FC<IUserListProps> = ({
 	addAlert,
 	authorized,
-	close,
 	groupId,
 	id,
-	open,
 	propertyName,
 	timeZoneId,
 	...otherProps
@@ -119,6 +119,19 @@ const UserList: React.FC<IUserListProps> = ({
 		},
 	});
 
+	const addUsersModal = useModal();
+	const noUsersModal = useModal();
+	const removeUsersModal = useModal();
+
+	const [usersToRemove, setUsersToRemove] = useState<{
+		clearSelection?: (params: {type: string}) => void;
+		users: User[];
+	}>();
+
+	const clearSelection = usersToRemove?.clearSelection;
+	const removedUsers = usersToRemove?.users ?? [];
+	const removedUserIds = removedUsers.map(({userId}) => userId);
+
 	const getEmailOrCount = (users: User[]): number => {
 		const count = users.length;
 
@@ -128,206 +141,112 @@ const UserList: React.FC<IUserListProps> = ({
 	const getRemoveUserModalFn =
 		(clearAll?: (params: {type: string}) => void) =>
 		(selectedIOMap: any) => {
+			setUsersToRemove({
+				clearSelection: clearAll,
+				users: selectedIOMap.valueSeq().toArray(),
+			});
+
+			removeUsersModal.onOpenChange(true);
+		};
+
+	const getAddUserModalProps = () => ({
+		columns: [
+			usersListColumns.nameEmailAddress,
+			usersListColumns.getLastLoginDate(timeZoneId),
+		],
+		dataSourceFn: ({
+			delta,
+			orderIOMap,
+			page,
+			query,
+		}: {
+			[key: string]: any;
+		}) =>
+			API.channels.fetchUsers({
+				available: true,
+				channelId: id,
+				delta,
+				groupId,
+				orderIOMap,
+				page,
+				query,
+			}),
+		entityLabel: Liferay.Language.get('users'),
+		initialOrderIOMap: createOrderIOMap(NAME),
+		instruction: Liferay.Language.get(
+			'select-users-to-add-to-this-property.-users-must-be-previously-invited-to-workspace-to-add-to-a-property'
+		),
+		noResultsDescription: Liferay.Language.get(
+			'all-users-in-this-workspace-have-already-been-added-to-this-property'
+		),
+		noResultsIcon: null,
+		noResultsTitle: Liferay.Language.get('no-users-to-add'),
+		onClose: () => {
+			addUsersModal.onOpenChange(false);
+
+			if (!get(data, 'total')) {
+				handleNoUsersInPropertyModal();
+			}
+		},
+		onSubmit: (selectedIOMap: any) => {
 			const users = selectedIOMap.valueSeq().toArray();
 
 			const userIds = users.map(({userId}: {userId: string}) => userId);
 
-			open(modalTypes.CONFIRMATION_MODAL, {
-				closeAfterSubmit: false,
-				message: (
-					<div className="text-secondary">
-						{
-							getPluralMessage(
-								Liferay.Language.get(
-									'removing-x-from-this-property.-they-will-need-to-be-added-again-to-regain-access-to-this-property'
-								),
-								Liferay.Language.get(
-									'removing-x-users-from-this-property.-they-will-need-to-be-added-again-to-regain-access-to-this-property'
-								),
-								userIds.length,
-								true,
-								[getEmailOrCount(users), propertyName]
-							) as string
-						}
-					</div>
-				),
-				modalVariant: 'modal-warning',
-				onClose: close,
-				onSubmit: () => {
-					API.channels
-						.deleteUsers({
-							channelId: id,
-							groupId,
-							userIds,
-						})
-						.then(() => {
-							if (clearAll) {
-								clearAll({type: ActionTypes.ClearAll});
-							}
+			API.channels
+				.addUsers({
+					channelId: id,
+					groupId,
+					userIds,
+				})
+				.then(() => {
+					refetch();
 
-							refetch();
+					addAlert({
+						alertType: Alert.Types.Success,
+						message: getPluralMessage(
+							Liferay.Language.get(
+								'x-has-been-added-as-a-user-to-x'
+							),
+							Liferay.Language.get(
+								'x-users-have-been-added-to-x'
+							),
+							userIds.length,
+							true,
+							[getEmailOrCount(users), propertyName]
+						) as string,
+					});
 
-							addAlert({
-								alertType: Alert.Types.Success,
-								message: getPluralMessage(
-									Liferay.Language.get(
-										'x-has-been-removed-from-x'
-									),
-									Liferay.Language.get(
-										'x-users-have-been-removed-from-x'
-									),
-									userIds.length,
-									true,
-									[getEmailOrCount(users), propertyName]
-								) as string,
-							});
-
-							close();
-						})
-						.catch(() => {
-							addAlert({
-								alertType: Alert.Types.Error,
-								message: getPluralMessage(
-									Liferay.Language.get(
-										'there-was-an-error-removing-x-from-x'
-									),
-									Liferay.Language.get(
-										'there-was-an-error-removing-x-users-from-x'
-									),
-									userIds.length,
-									true,
-									[getEmailOrCount(users), propertyName]
-								) as string,
-								timeout: false,
-							});
-						});
-				},
-				showFilterAndOrder: false,
-				submitButtonDisplay: 'warning',
-				submitMessage: Liferay.Language.get('remove'),
-				title: Liferay.Language.get('remove-user'),
-				titleIcon: 'warning-full',
-			});
-		};
+					addUsersModal.onOpenChange(false);
+				})
+				.catch(() => {
+					addAlert({
+						alertType: Alert.Types.Error,
+						message: getPluralMessage(
+							Liferay.Language.get(
+								'there-was-an-error-adding-x-as-a-user-to-x'
+							),
+							Liferay.Language.get(
+								'there-was-an-error-adding-x-users-to-x'
+							),
+							userIds.length,
+							true,
+							[getEmailOrCount(users), propertyName]
+						) as string,
+						timeout: false,
+					});
+				});
+		},
+		requireSelection: true,
+		title: propertyName,
+	});
 
 	const handleAddUserModal = () => {
-		open(modalTypes.SEARCHABLE_TABLE_MODAL, {
-			columns: [
-				usersListColumns.nameEmailAddress,
-				usersListColumns.getLastLoginDate(timeZoneId),
-			],
-			dataSourceFn: ({
-				delta,
-				orderIOMap,
-				page,
-				query,
-			}: {
-				[key: string]: any;
-			}) =>
-				API.channels.fetchUsers({
-					available: true,
-					channelId: id,
-					delta,
-					groupId,
-					orderIOMap,
-					page,
-					query,
-				}),
-			entityLabel: Liferay.Language.get('users'),
-			initialOrderIOMap: createOrderIOMap(NAME),
-			instruction: Liferay.Language.get(
-				'select-users-to-add-to-this-property.-users-must-be-previously-invited-to-workspace-to-add-to-a-property'
-			),
-			noResultsDescription: Liferay.Language.get(
-				'all-users-in-this-workspace-have-already-been-added-to-this-property'
-			),
-			noResultsIcon: null,
-			noResultsTitle: Liferay.Language.get('no-users-to-add'),
-			onClose: () => {
-				close();
-
-				if (!get(data, 'total')) {
-					handleNoUsersInPropertyModal();
-				}
-			},
-			onSubmit: (selectedIOMap: any) => {
-				const users = selectedIOMap.valueSeq().toArray();
-
-				const userIds = users.map(
-					({userId}: {userId: string}) => userId
-				);
-
-				API.channels
-					.addUsers({
-						channelId: id,
-						groupId,
-						userIds,
-					})
-					.then(() => {
-						refetch();
-
-						addAlert({
-							alertType: Alert.Types.Success,
-							message: getPluralMessage(
-								Liferay.Language.get(
-									'x-has-been-added-as-a-user-to-x'
-								),
-								Liferay.Language.get(
-									'x-users-have-been-added-to-x'
-								),
-								userIds.length,
-								true,
-								[getEmailOrCount(users), propertyName]
-							) as string,
-						});
-
-						close();
-					})
-					.catch(() => {
-						addAlert({
-							alertType: Alert.Types.Error,
-							message: getPluralMessage(
-								Liferay.Language.get(
-									'there-was-an-error-adding-x-as-a-user-to-x'
-								),
-								Liferay.Language.get(
-									'there-was-an-error-adding-x-users-to-x'
-								),
-								userIds.length,
-								true,
-								[getEmailOrCount(users), propertyName]
-							) as string,
-							timeout: false,
-						});
-					});
-			},
-			requireSelection: true,
-			title: propertyName,
-		});
+		addUsersModal.onOpenChange(true);
 	};
 
 	const handleNoUsersInPropertyModal = () => {
-		open(modalTypes.CONFIRMATION_MODAL, {
-			closeAfterSubmit: false,
-			message: (
-				<div className="text-secondary">
-					{Liferay.Language.get(
-						'property-permissions-have-changed-without-any-users-selected.-do-you-want-to-close-the-modal-without-adding-users'
-					)}
-				</div>
-			),
-			modalVariant: 'modal-warning',
-			onClose: () => {
-				close();
-
-				handleAddUserModal();
-			},
-			onSubmit: close,
-			submitButtonDisplay: 'warning',
-			submitMessage: Liferay.Language.get('close'),
-			title: Liferay.Language.get('no-users-in-property'),
-			titleIcon: 'warning-full',
-		});
+		noUsersModal.onOpenChange(true);
 	};
 
 	const renderContent = () => {
@@ -432,7 +351,131 @@ const UserList: React.FC<IUserListProps> = ({
 		}
 	};
 
-	return renderContent();
+	return (
+		<>
+			{renderContent()}
+
+			{addUsersModal.open && (
+				<SearchableTableModal
+					{...getAddUserModalProps()}
+					observer={addUsersModal.observer}
+				/>
+			)}
+
+			{removeUsersModal.open && (
+				<ConfirmationModal
+					closeAfterSubmit={false}
+					message={
+						<div className="text-secondary">
+							{
+								getPluralMessage(
+									Liferay.Language.get(
+										'removing-x-from-this-property.-they-will-need-to-be-added-again-to-regain-access-to-this-property'
+									),
+									Liferay.Language.get(
+										'removing-x-users-from-this-property.-they-will-need-to-be-added-again-to-regain-access-to-this-property'
+									),
+									removedUserIds.length,
+									true,
+									[
+										getEmailOrCount(removedUsers),
+										propertyName,
+									]
+								) as string
+							}
+						</div>
+					}
+					observer={removeUsersModal.observer}
+					onClose={() => removeUsersModal.onOpenChange(false)}
+					onSubmit={() => {
+						API.channels
+							.deleteUsers({
+								channelId: id,
+								groupId,
+								userIds: removedUserIds,
+							})
+							.then(() => {
+								if (clearSelection) {
+									clearSelection({
+										type: ActionTypes.ClearAll,
+									});
+								}
+
+								refetch();
+
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: getPluralMessage(
+										Liferay.Language.get(
+											'x-has-been-removed-from-x'
+										),
+										Liferay.Language.get(
+											'x-users-have-been-removed-from-x'
+										),
+										removedUserIds.length,
+										true,
+										[
+											getEmailOrCount(removedUsers),
+											propertyName,
+										]
+									) as string,
+								});
+
+								removeUsersModal.onOpenChange(false);
+							})
+							.catch(() => {
+								addAlert({
+									alertType: Alert.Types.Error,
+									message: getPluralMessage(
+										Liferay.Language.get(
+											'there-was-an-error-removing-x-from-x'
+										),
+										Liferay.Language.get(
+											'there-was-an-error-removing-x-users-from-x'
+										),
+										removedUserIds.length,
+										true,
+										[
+											getEmailOrCount(removedUsers),
+											propertyName,
+										]
+									) as string,
+									timeout: false,
+								});
+							});
+					}}
+					submitButtonDisplay="warning"
+					submitMessage={Liferay.Language.get('remove')}
+					title={Liferay.Language.get('remove-user')}
+					type="warning"
+				/>
+			)}
+
+			{noUsersModal.open && (
+				<ConfirmationModal
+					closeAfterSubmit={false}
+					message={
+						<div className="text-secondary">
+							{Liferay.Language.get(
+								'property-permissions-have-changed-without-any-users-selected.-do-you-want-to-close-the-modal-without-adding-users'
+							)}
+						</div>
+					}
+					observer={noUsersModal.observer}
+					onClose={() => {
+						noUsersModal.onOpenChange(false);
+
+						handleAddUserModal();
+					}}
+					onSubmit={() => noUsersModal.onOpenChange(false)}
+					submitButtonDisplay="warning"
+					submitMessage={Liferay.Language.get('close')}
+					title={Liferay.Language.get('no-users-in-property')}
+					type="warning"
+				/>
+			)}
+		</>
+	);
 };
 
 export default connector(UserList);

@@ -1,13 +1,13 @@
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
-import Modal from 'shared/components/modal';
 import React, {useEffect} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {
 	ActionTypes,
 	useSelectionContext,
 	withSelectionProvider,
 } from 'shared/context/selection';
-import {Column} from 'shared/components/table';
 import {FilterByType} from 'shared/types';
 import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
@@ -15,29 +15,31 @@ import {useRequest} from 'shared/hooks/useRequest';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
 interface ISearchableTableModalProps {
-	checkDisabled: (item?: object) => boolean;
-	className: string;
-	columns: Column[];
+	[key: string]: any;
+	checkDisabled?: (item?: object) => boolean;
+	className?: string;
+	columns: any[];
 	dataSourceFn: (params: {[key: string]: any}) => Promise<any>;
-	dataSourceParams: {[key: string]: any};
-	entityLabel: string;
-	initialDelta: number;
-	initialFilterBy: FilterByType;
-	initialOrderIOMap: OrderedMap<string, OrderParams>;
-	initialPage: number;
-	initialQuery: string;
-	initialSelectedItems: {[key: string]: any}[];
-	instruction: string;
-	noResultsIcon: string;
+	dataSourceParams?: {[key: string]: any};
+	entityLabel?: string;
+	initialDelta?: number;
+	initialFilterBy?: FilterByType;
+	initialOrderIOMap?: OrderedMap<string, OrderParams>;
+	initialPage?: number;
+	initialQuery?: string;
+	initialSelectedItems?: {[key: string]: any}[];
+	instruction?: string;
+	noResultsIcon?: string | null;
+	observer: Observer;
 	onClose: () => void;
 	onSubmit: (
 		selectedItemsIOMap: OrderedMap<string, any>,
 		refetch: () => void
 	) => void;
-	orderByOptions: {label: string; value: string}[];
+	orderByOptions?: {label: string; value: string}[];
 	requireSelection?: boolean;
-	submitMessage: string;
-	title: string;
+	submitMessage?: string;
+	title?: string;
 }
 
 const SearchableTableModal: React.FC<ISearchableTableModalProps> = ({
@@ -55,6 +57,7 @@ const SearchableTableModal: React.FC<ISearchableTableModalProps> = ({
 	initialSelectedItems,
 	instruction,
 	noResultsIcon,
+	observer,
 	onClose,
 	onSubmit,
 	orderByOptions,
@@ -106,10 +109,10 @@ const SearchableTableModal: React.FC<ISearchableTableModalProps> = ({
 	});
 
 	return (
-		<Modal className={className} size="lg">
-			<Modal.Header onClose={onClose} title={title} />
+		<ClayModal className={className} observer={observer} size="lg">
+			<ClayModal.Header>{title}</ClayModal.Header>
 
-			<Modal.Body className="p-0">
+			<ClayModal.Body className="p-0">
 				<div className="text-secondary">{instruction}</div>
 
 				<CrossPageSelect
@@ -139,27 +142,31 @@ const SearchableTableModal: React.FC<ISearchableTableModalProps> = ({
 					showCheckbox
 					total={data?.total}
 				/>
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer>
-				<ClayButton
-					className="button-root"
-					displayType="secondary"
-					onClick={onClose}
-				>
-					{Liferay.Language.get('cancel')}
-				</ClayButton>
+			<ClayModal.Footer
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							className="button-root"
+							displayType="secondary"
+							onClick={onClose}
+						>
+							{Liferay.Language.get('cancel')}
+						</ClayButton>
 
-				<ClayButton
-					className="button-root"
-					disabled={requireSelection && !selectedItems.size}
-					displayType="primary"
-					onClick={() => onSubmit(selectedItems, refetch)}
-				>
-					{submitMessage}
-				</ClayButton>
-			</Modal.Footer>
-		</Modal>
+						<ClayButton
+							className="button-root"
+							disabled={requireSelection && !selectedItems.size}
+							displayType="primary"
+							onClick={() => onSubmit(selectedItems, refetch)}
+						>
+							{submitMessage}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
+		</ClayModal>
 	);
 };
 

@@ -27,8 +27,6 @@ import NewRuleModal from './modals/NewRuleModal';
 import OnboardingModal from './modals/onboarding-modal';
 import React from 'react';
 import SearchableEntitiesTableModal from './modals/SearchableEntitiesTableModal';
-import SearchableTableModal from './modals/SearchableTableModal';
-import SearchableTableModalGraphql from './modals/SearchableTableModalGraphql';
 import SelectChannelsModal from './modals/SelectChannelsModal';
 import SelectItemsModal from './modals/SelectItemsModal';
 import TestModal from './modals/TestModal';
@@ -72,8 +70,6 @@ const COMPONENT_MAP = {
 	[modalTypes.ONBOARDING_MODAL]: OnboardingModal,
 	[modalTypes.UNASSIGNED_SEGMENTS_MODAL]: UnassignedSegmentsModal,
 	[modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL]: SearchableEntitiesTableModal,
-	[modalTypes.SEARCHABLE_TABLE_MODAL]: SearchableTableModal,
-	[modalTypes.SEARCHABLE_TABLE_MODAL_GRAPHQL]: SearchableTableModalGraphql,
 	[modalTypes.SELECT_ITEMS_MODAL]: SelectItemsModal,
 	[modalTypes.SELECT_CHANNELS_MODAL]: SelectChannelsModal,
 	[modalTypes.TEST]: TestModal,

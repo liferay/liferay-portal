@@ -4,10 +4,10 @@ import ClayIcon from 'shared/components/Icon';
 import ClayLabel from '@clayui/label';
 import Form from 'shared/components/form';
 import React from 'react';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {connect, ConnectedProps} from 'react-redux';
+import SearchableTableModal from 'shared/components/modals/SearchableTableModal';
 import {createOrderIOMap, NAME} from 'shared/util/pagination';
 import {OrderedMap} from 'immutable';
+import {useModal} from '@clayui/modal';
 
 export type CategoryItem = {id: string; name: string};
 
@@ -20,11 +20,7 @@ const CATEGORY_COLUMNS = [
 	},
 ];
 
-const connector = connect(null, {close, open});
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-interface ISelectCategoryFromModalProps extends PropsFromRedux {
+interface ISelectCategoryFromModalProps {
 	channelId: string;
 	groupId: string;
 	onCategoriesChange: (categories: CategoryItem[]) => void;
@@ -34,13 +30,13 @@ interface ISelectCategoryFromModalProps extends PropsFromRedux {
 
 const SelectCategoryFromModal: React.FC<ISelectCategoryFromModalProps> = ({
 	channelId,
-	close,
 	groupId,
 	onCategoriesChange,
-	open,
 	selectedCategories,
 	vocabularyId,
 }) => {
+	const categoriesModal = useModal();
+
 	const categoriesDataFn = async ({
 		delta = 5,
 		page = 1,
@@ -65,32 +61,39 @@ const SelectCategoryFromModal: React.FC<ISelectCategoryFromModalProps> = ({
 		};
 	};
 
-	const handleOpenModal = () => {
-		open(modalTypes.SEARCHABLE_TABLE_MODAL, {
-			columns: CATEGORY_COLUMNS,
-			dataSourceFn: categoriesDataFn,
-			initialOrderIOMap: createOrderIOMap(NAME),
-			initialSelectedItems: selectedCategories,
-			onClose: close,
-			onSubmit: (items: OrderedMap<string, CategoryItem>) => {
-				onCategoriesChange(
-					items
-						.valueSeq()
-						.filter(Boolean)
-						.map((item) => ({
-							id: item!.id,
-							name: item!.name,
-						}))
-						.toArray()
-				);
+	const getModalProps = () => ({
+		columns: CATEGORY_COLUMNS,
+		dataSourceFn: categoriesDataFn,
+		initialOrderIOMap: createOrderIOMap(NAME),
+		initialSelectedItems: selectedCategories,
+		onSubmit: (items: OrderedMap<string, CategoryItem>) => {
+			onCategoriesChange(
+				items
+					.valueSeq()
+					.filter(Boolean)
+					.map((item) => ({
+						id: item!.id,
+						name: item!.name,
+					}))
+					.toArray()
+			);
 
-				close();
-			},
-			rowIdentifier: 'id',
-			submitMessage: Liferay.Language.get('select'),
-			title: Liferay.Language.get('select-category'),
-		});
-	};
+			categoriesModal.onOpenChange(false);
+		},
+		rowIdentifier: 'id',
+		submitMessage: Liferay.Language.get('select'),
+		title: Liferay.Language.get('select-category'),
+	});
+
+	const handleOpenModal = () => categoriesModal.onOpenChange(true);
+
+	const modal = categoriesModal.open && (
+		<SearchableTableModal
+			{...getModalProps()}
+			observer={categoriesModal.observer}
+			onClose={() => categoriesModal.onOpenChange(false)}
+		/>
+	);
 
 	const handleRemoveCategory = (id: string) => {
 		onCategoriesChange(selectedCategories.filter((c) => c.id !== id));
@@ -106,12 +109,16 @@ const SelectCategoryFromModal: React.FC<ISelectCategoryFromModalProps> = ({
 				>
 					{`+ ${Liferay.Language.get('add-category')}`}
 				</ClayButton>
+
+				{modal}
 			</Form.GroupItem>
 		);
 	}
 
 	return (
 		<>
+			{modal}
+
 			<Form.GroupItem shrink>
 				<div
 					className="input-group-item input-list-root"
@@ -164,4 +171,4 @@ const SelectCategoryFromModal: React.FC<ISelectCategoryFromModalProps> = ({
 	);
 };
 
-export default connector(SelectCategoryFromModal);
+export default SelectCategoryFromModal;

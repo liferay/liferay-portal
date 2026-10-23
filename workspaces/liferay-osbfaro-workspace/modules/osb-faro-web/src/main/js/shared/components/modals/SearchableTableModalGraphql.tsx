@@ -1,7 +1,8 @@
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
-import Modal from 'shared/components/modal';
 import React, {useEffect} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {
 	ACTION_TYPES,
 	useSelectionContext,
@@ -18,7 +19,8 @@ import {safeResultToProps} from 'shared/util/mappers';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
 interface ISearchableTableModalGraphQLProps extends IPagination {
-	className: string;
+	[key: string]: any;
+	className?: string;
 	columns: Columns;
 	graphqlQuery: DocumentNode;
 	initialDelta?: number;
@@ -29,6 +31,7 @@ interface ISearchableTableModalGraphQLProps extends IPagination {
 		items: any[];
 		total: number;
 	};
+	observer: Observer;
 	onClose?: () => void;
 	onSubmit: (selectedItems: OrderedMap<string, any>) => void;
 	requireSelection?: boolean;
@@ -48,6 +51,7 @@ const SearchableTableModalGraphql: React.FC<
 	instruction = '',
 	mapPropsToOptions,
 	mapResultToProps,
+	observer,
 	onClose = noop,
 	onSubmit,
 	requireSelection = true,
@@ -93,10 +97,10 @@ const SearchableTableModalGraphql: React.FC<
 	});
 
 	return (
-		<Modal className={className} size="lg">
-			<Modal.Header onClose={onClose} title={title} />
+		<ClayModal className={className} observer={observer} size="lg">
+			<ClayModal.Header>{title}</ClayModal.Header>
 
-			<Modal.Body className="p-0">
+			<ClayModal.Body className="p-0">
 				<div className="text-secondary">{instruction}</div>
 
 				<CrossPageSelect
@@ -117,27 +121,33 @@ const SearchableTableModalGraphql: React.FC<
 					query={query}
 					total={total}
 				/>
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer>
-				<ClayButton
-					className="button-root"
-					displayType="secondary"
-					onClick={onClose}
-				>
-					{Liferay.Language.get('cancel')}
-				</ClayButton>
+			<ClayModal.Footer
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							className="button-root"
+							displayType="secondary"
+							onClick={onClose}
+						>
+							{Liferay.Language.get('cancel')}
+						</ClayButton>
 
-				<ClayButton
-					className="button-root"
-					disabled={requireSelection && !contextSelectedItems.size}
-					displayType="primary"
-					onClick={handleSubmit}
-				>
-					{submitMessage}
-				</ClayButton>
-			</Modal.Footer>
-		</Modal>
+						<ClayButton
+							className="button-root"
+							disabled={
+								requireSelection && !contextSelectedItems.size
+							}
+							displayType="primary"
+							onClick={handleSubmit}
+						>
+							{submitMessage}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
+		</ClayModal>
 	);
 };
 
