@@ -81,9 +81,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "search-results"));
 				String category = null;
 
 				if (configurationCategory != null) {
-					ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay = configurationEntryRetriever.getConfigurationCategoryMenuDisplay(configurationCategory.getCategoryKey(), themeDisplay.getLanguageId(), configurationScopeDisplayContext.getScope(), configurationScopeDisplayContext.getScopePK());
-
-					ConfigurationCategoryDisplay configurationCategoryDisplay = configurationCategoryMenuDisplay.getConfigurationCategoryDisplay();
+					ConfigurationCategoryDisplay configurationCategoryDisplay = new ConfigurationCategoryDisplay(configurationCategory);
 
 					category = HtmlUtil.escape(configurationCategoryDisplay.getCategoryLabel(locale));
 

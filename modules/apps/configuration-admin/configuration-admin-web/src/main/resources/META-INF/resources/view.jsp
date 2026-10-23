@@ -61,6 +61,8 @@ ExtendedObjectClassDefinition.Scope scope = configurationScopeDisplayContext.get
 	<ul class="list-group <%= configurationCategorySectionDisplays.isEmpty() ? "hide" : StringPool.BLANK %>">
 
 		<%
+		Map<String, ConfigurationCategoryMenuDisplay> configurationCategoryMenuDisplays = configurationEntryRetriever.getConfigurationCategoryMenuDisplays(themeDisplay.getLanguageId(), scope, configurationScopeDisplayContext.getScopePK());
+
 		for (ConfigurationCategorySectionDisplay configurationCategorySectionDisplay : configurationCategorySectionDisplays) {
 		%>
 
@@ -74,7 +76,7 @@ ExtendedObjectClassDefinition.Scope scope = configurationScopeDisplayContext.get
 
 					<%
 					for (ConfigurationCategoryDisplay configurationCategoryDisplay : configurationCategorySectionDisplay.getConfigurationCategoryDisplays()) {
-						ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay = configurationEntryRetriever.getConfigurationCategoryMenuDisplay(configurationCategoryDisplay.getCategoryKey(), themeDisplay.getLanguageId(), configurationScopeDisplayContext.getScope(), configurationScopeDisplayContext.getScopePK());
+						ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay = configurationCategoryMenuDisplays.get(configurationCategoryDisplay.getCategoryKey());
 
 						if (configurationCategoryMenuDisplay.isEmpty()) {
 							continue;

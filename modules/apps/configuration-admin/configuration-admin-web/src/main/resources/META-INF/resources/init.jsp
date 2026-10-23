@@ -60,6 +60,7 @@ page import="com.liferay.taglib.servlet.PipingServletResponseFactory" %>
 <%@ page import="jakarta.portlet.PortletURL" %>
 
 <%@ page import="java.util.List" %><%@
+page import="java.util.Map" %><%@
 page import="java.util.ResourceBundle" %>
 
 <%@ page import="org.osgi.service.metatype.AttributeDefinition" %>
