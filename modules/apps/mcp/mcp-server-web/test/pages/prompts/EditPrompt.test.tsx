@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render, screen} from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {navigate} from 'frontend-js-web';
 import fetch from 'jest-fetch-mock';
@@ -56,6 +56,16 @@ describe('EditPrompt', () => {
 
 		expect(identifierInput).toHaveAccessibleDescription(
 			/please-enter-a-valid-identifier/
+		);
+	});
+
+	it('moves the focus to the first invalid field when saving', async () => {
+		render(<EditPrompt backURL={BACK_URL} promptId={0} />);
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		await waitFor(() =>
+			expect(screen.getByRole('textbox', {name: /^name/})).toHaveFocus()
 		);
 	});
 

@@ -8,11 +8,12 @@ import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {Form, FormikProvider, useFormik} from 'formik';
 import {navigate, sub} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {FormField} from '../../components/forms/FormField';
 import {FormSection} from '../../components/forms/FormSection';
 import {FormToggle} from '../../components/forms/FormToggle';
+import useFocusFirstInvalidField from '../../hooks/useFocusFirstInvalidField';
 import useRequest from '../../hooks/useRequest';
 import PromptService from '../../services/PromptService';
 import {Prompt, PromptFormValues, PromptPayload} from '../../types/Prompt';
@@ -73,6 +74,8 @@ function validateIdentifier(value: string): string | undefined {
 function EditPromptView({backURL, prompt}: EditPromptViewProps) {
 	const [identifierChanged, setIdentifierChanged] = useState(false);
 
+	const formRef = useRef<HTMLFormElement>(null);
+
 	const formik = useFormik<PromptFormValues>({
 		initialValues: {
 			active: prompt?.promptStatus?.key === 'active',
@@ -113,6 +116,8 @@ function EditPromptView({backURL, prompt}: EditPromptViewProps) {
 		},
 	});
 
+	useFocusFirstInvalidField(formRef, formik);
+
 	const {setFieldValue, values} = formik;
 
 	useEffect(() => {
@@ -123,7 +128,7 @@ function EditPromptView({backURL, prompt}: EditPromptViewProps) {
 
 	return (
 		<FormikProvider value={formik}>
-			<Form className="prompt-form" noValidate>
+			<Form className="prompt-form" noValidate ref={formRef}>
 				<FormSection title={Liferay.Language.get('prompt-status')}>
 					<div className="align-items-center d-flex justify-content-between">
 						<span className="text-secondary">

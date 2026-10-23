@@ -9,10 +9,11 @@ import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {Form, FormikProvider, useFormik, useFormikContext} from 'formik';
 import {navigate, sub} from 'frontend-js-web';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 
 import {FormField} from '../../components/forms/FormField';
 import {FormSection} from '../../components/forms/FormSection';
+import useFocusFirstInvalidField from '../../hooks/useFocusFirstInvalidField';
 import useRequest from '../../hooks/useRequest';
 import DataMaskService from '../../services/DataMaskService';
 import {
@@ -66,6 +67,8 @@ interface EditDataMaskViewProps {
 function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 	const readOnly = isSystemMask(dataMask);
 
+	const formRef = useRef<HTMLFormElement>(null);
+
 	const formik = useFormik<DataMaskFormValues>({
 		initialValues: {
 			description: dataMask?.description ?? '',
@@ -107,9 +110,11 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 		},
 	});
 
+	useFocusFirstInvalidField(formRef, formik);
+
 	return (
 		<FormikProvider value={formik}>
-			<Form className="data-mask-form" noValidate>
+			<Form className="data-mask-form" noValidate ref={formRef}>
 				{readOnly && (
 					<ClayAlert
 						displayType="info"
