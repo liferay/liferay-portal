@@ -100,7 +100,6 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 		throws PortalException {
 
 		PortalPermissionUtil.check(getPermissionChecker(), ActionKeys.ADD_ROLE);
-
 		RolePermissionUtil.check(
 			getPermissionChecker(), sourceRoleId, ActionKeys.VIEW);
 
