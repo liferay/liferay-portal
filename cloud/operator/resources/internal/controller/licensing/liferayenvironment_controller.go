@@ -74,7 +74,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		&liferayEnvironment.Status.Conditions, conditionLegacyGracePeriodExpired,
 	)
 
-	environmentID, error := liferayEnvironmentReconciler.ensureEnvironmentNamespace(
+	environmentID, error := liferayEnvironmentReconciler.labelNamespaceAndGetEnvironmentID(
 		context, liferayEnvironment.Namespace,
 	)
 
@@ -133,7 +133,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	}
 
 	cache := addon.NewFilesystemCache(
-		liferayEnvironmentReconciler.environmentDir(liferayEnvironment.Namespace),
+		liferayEnvironmentReconciler.getEnvironmentDir(liferayEnvironment.Namespace),
 	)
 
 	apps := []licensingv1alpha1.AppStatus{}
@@ -277,51 +277,6 @@ func addOnsReadyCondition(summary addon.Summary) metav1.Condition {
 	}
 }
 
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) backoffDelay(
-	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-) time.Duration {
-	return backoff.Duration(
-		liferayEnvironment.Status.ConsecutiveFailures,
-		liferayEnvironmentReconciler.RetryInitialDelay,
-		liferayEnvironmentReconciler.RetryMaxDelay,
-	)
-}
-
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureEnvironmentNamespace(
-	context context.Context,
-	namespaceName string,
-) (string, error) {
-	namespace := &corev1.Namespace{}
-
-	if error := liferayEnvironmentReconciler.Get(
-		context, types.NamespacedName{Name: namespaceName}, namespace,
-	); error != nil {
-		return "", error
-	}
-
-	environmentID := string(namespace.UID)
-
-	if namespace.Labels[environmentLabel] == "true" {
-		return environmentID, nil
-	}
-
-	if namespace.Labels == nil {
-		namespace.Labels = map[string]string{}
-	}
-
-	namespace.Labels[environmentLabel] = "true"
-
-	logf.FromContext(context).Info(
-		"Labeled namespace as a licensed environment", "namespace", namespaceName,
-	)
-
-	if error := liferayEnvironmentReconciler.Update(context, namespace); error != nil {
-		return "", error
-	}
-
-	return environmentID, nil
-}
-
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureOwnedSecret(
 	context context.Context,
 	data map[string][]byte,
@@ -355,16 +310,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureOwnedSec
 	}
 
 	if operationResult != controllerutil.OperationResultNone {
-		logf.FromContext(context).Info("Wrote owned secret", "operation", operationResult, "secret", name)
+		logf.FromContext(context).Info("Owned secret was written", "operation", operationResult, "secret", name)
 	}
 
 	return nil
-}
-
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) environmentDir(
-	namespace string,
-) string {
-	return filepath.Join(liferayEnvironmentReconciler.MarketplaceMountPath, namespace)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
@@ -381,6 +330,57 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
 	}
 
 	return controllerruntime.Result{RequeueAfter: requeueAfter}, nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) getBackoffDelay(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) time.Duration {
+	return backoff.Duration(
+		liferayEnvironment.Status.ConsecutiveFailures,
+		liferayEnvironmentReconciler.RetryInitialDelay,
+		liferayEnvironmentReconciler.RetryMaxDelay,
+	)
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) getEnvironmentDir(
+	namespace string,
+) string {
+	return filepath.Join(liferayEnvironmentReconciler.MarketplaceMountPath, namespace)
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) labelNamespaceAndGetEnvironmentID(
+	context context.Context,
+	namespaceName string,
+) (string, error) {
+	namespace := &corev1.Namespace{}
+
+	if error := liferayEnvironmentReconciler.Get(
+		context, types.NamespacedName{Name: namespaceName}, namespace,
+	); error != nil {
+		return "", error
+	}
+
+	environmentID := string(namespace.UID)
+
+	if namespace.Labels[environmentLabel] == "true" {
+		return environmentID, nil
+	}
+
+	if namespace.Labels == nil {
+		namespace.Labels = map[string]string{}
+	}
+
+	namespace.Labels[environmentLabel] = "true"
+
+	logf.FromContext(context).Info(
+		"Namespace was labeled as a licensed environment", "namespace", namespaceName,
+	)
+
+	if error := liferayEnvironmentReconciler.Update(context, namespace); error != nil {
+		return "", error
+	}
+
+	return environmentID, nil
 }
 
 func markActivated(liferayEnvironment *licensingv1alpha1.LiferayEnvironment) {

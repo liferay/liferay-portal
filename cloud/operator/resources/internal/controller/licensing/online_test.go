@@ -145,7 +145,7 @@ func TestReconcileBacksOffWhenActivationRejected(t *testing.T) {
 	}
 }
 
-func TestResolveDxpVersion(t *testing.T) {
+func TestResolveDXPVersion(t *testing.T) {
 	testCases := map[string]struct {
 		dxpVersion   string
 		expected     string
@@ -204,10 +204,10 @@ func TestResolveDxpVersion(t *testing.T) {
 				Client: newFakeClient(t, liferayEnvironment, workload),
 			}
 
-			if actual := liferayEnvironmentReconciler.resolveDxpVersion(
+			if actual := liferayEnvironmentReconciler.resolveDXPVersion(
 				context.Background(), liferayEnvironment,
 			); actual != testCase.expected {
-				t.Errorf("resolveDxpVersion = %q, want %q", actual, testCase.expected)
+				t.Errorf("resolveDXPVersion = %q, want %q", actual, testCase.expected)
 			}
 		})
 	}

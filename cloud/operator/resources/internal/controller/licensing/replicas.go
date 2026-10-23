@@ -151,7 +151,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 
 	if errors.IsNotFound(getError) {
 		logger.V(1).Info(
-			"Workload not found; skipping replica enforcement",
+			"Workload was not found; skipping replica enforcement",
 			"workload", liferayEnvironment.Spec.WorkloadRef.Name,
 		)
 
@@ -237,7 +237,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 		}
 
 		logger.Info(
-			"Enforced licensed replica ceiling",
+			"Licensed replica ceiling was enforced",
 			"desiredReplicas", desiredReplicas,
 			"effectiveReplicas", effectiveReplicas,
 			"replicaCeiling", replicaCeiling,

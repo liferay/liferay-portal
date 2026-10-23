@@ -74,14 +74,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 	environmentID string,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) (stepOutcome, error) {
-	logger := logf.FromContext(context)
-
 	now := metav1.Now()
 
 	licenseEvaluation := evaluateLicense(
 		entitlements, environmentID, liferayEnvironmentReconciler.ExpirationGracePeriod,
 		now.Time,
 	)
+
+	logger := logf.FromContext(context)
 
 	switch licenseEvaluation.condition.Reason {
 	case "EnvironmentMismatch":
@@ -153,7 +153,7 @@ func evaluateLicense(
 	owner, error := license.Owner(entitlements.LicenseXML)
 
 	if error != nil {
-		return invalidLicenseEvaluation(error, nil)
+		return newInvalidLicenseEvaluation(error, nil)
 	}
 
 	if owner != environmentID {
@@ -179,7 +179,7 @@ func evaluateLicense(
 	expirationDate, error := license.ExpirationDate(entitlements.LicenseXML)
 
 	if error != nil {
-		return invalidLicenseEvaluation(error, &maxClusterNodes)
+		return newInvalidLicenseEvaluation(error, &maxClusterNodes)
 	}
 
 	validUntil := metav1.NewTime(expirationDate)
@@ -260,7 +260,13 @@ func expiredLicenseCondition(
 	}
 }
 
-func invalidLicenseEvaluation(
+func licenseChecksum(licenseXML []byte) string {
+	sum := sha256.Sum256(licenseXML)
+
+	return hex.EncodeToString(sum[:])
+}
+
+func newInvalidLicenseEvaluation(
 	error error,
 	maxClusterNodes *int32,
 ) licenseEvaluation {
@@ -274,12 +280,6 @@ func invalidLicenseEvaluation(
 		error:           error,
 		maxClusterNodes: maxClusterNodes,
 	}
-}
-
-func licenseChecksum(licenseXML []byte) string {
-	sum := sha256.Sum256(licenseXML)
-
-	return hex.EncodeToString(sum[:])
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistEntitlementsSecret(

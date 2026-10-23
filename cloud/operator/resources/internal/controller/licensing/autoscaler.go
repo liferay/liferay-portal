@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"sync"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
@@ -91,7 +90,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceHorizon
 		horizontalPodAutoscaler := &horizontalPodAutoscalerList.Items[index]
 
 		if isOwnedByScaledObject(horizontalPodAutoscaler) ||
-			!scalesWorkload(
+			!isScalingWorkload(
 				horizontalPodAutoscaler.Spec.ScaleTargetRef.Kind,
 				liferayEnvironment,
 				horizontalPodAutoscaler.Spec.ScaleTargetRef.Name,
@@ -119,7 +118,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceHorizon
 		}
 
 		logf.FromContext(context).Info(
-			"Enforced licensed autoscaling ceiling",
+			"Licensed autoscaling ceiling was enforced",
 			"autoscaler", horizontalPodAutoscaler.Name,
 			"maxReplicas", replicaBounds.Maximum,
 			"minReplicas", replicaBounds.Minimum,
@@ -134,8 +133,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceScaledO
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	replicaBounds replicaBounds,
 ) error {
-	logger := logf.FromContext(context)
-
 	scaledObjectList := &unstructured.UnstructuredList{}
 
 	scaledObjectList.SetGroupVersionKind(
@@ -143,6 +140,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceScaledO
 			scaledObjectGroupVersionKind.Kind + "List",
 		),
 	)
+
+	logger := logf.FromContext(context)
 
 	if error := liferayEnvironmentReconciler.List(
 		context, scaledObjectList, client.InNamespace(liferayEnvironment.Namespace),
@@ -165,7 +164,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceScaledO
 			return error
 		}
 
-		if !scalesWorkload(
+		if !isScalingWorkload(
 			scaledObjectSpec.ScaleTargetRef.Kind,
 			liferayEnvironment,
 			scaledObjectSpec.ScaleTargetRef.Name,
@@ -223,7 +222,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceScaledO
 		}
 
 		logger.Info(
-			"Enforced licensed autoscaling ceiling",
+			"Licensed autoscaling ceiling was enforced",
 			"autoscaler", scaledObject.GetName(),
 			"maxReplicas", replicaBounds.Maximum,
 			"minReplicas", replicaBounds.Minimum,
@@ -279,7 +278,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enqueueScaleTa
 	for index := range liferayEnvironmentList.Items {
 		liferayEnvironment := &liferayEnvironmentList.Items[index]
 
-		if !scalesWorkload(kind, liferayEnvironment, name) {
+		if !isScalingWorkload(kind, liferayEnvironment, name) {
 			continue
 		}
 
@@ -349,16 +348,29 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureScaledOb
 
 func isOwnedByScaledObject(object client.Object) bool {
 	for _, ownerReference := range object.GetOwnerReferences() {
+		groupVersion, error := schema.ParseGroupVersion(ownerReference.APIVersion)
+
+		if error != nil {
+			continue
+		}
+
 		if ownerReference.Kind == scaledObjectGroupVersionKind.Kind &&
-			strings.HasPrefix(
-				ownerReference.APIVersion, scaledObjectGroupVersionKind.Group+"/",
-			) {
+			groupVersion.Group == scaledObjectGroupVersionKind.Group {
 
 			return true
 		}
 	}
 
 	return false
+}
+
+func isScalingWorkload(
+	kind string,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	name string,
+) bool {
+	return kind == string(liferayEnvironment.Spec.WorkloadRef.EffectiveKind()) &&
+		name == liferayEnvironment.Spec.WorkloadRef.Name
 }
 
 func readScaledObjectSpec(
@@ -385,15 +397,6 @@ func readScaledObjectSpec(
 	}
 
 	return scaledObjectSpec, nil
-}
-
-func scalesWorkload(
-	kind string,
-	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-	name string,
-) bool {
-	return kind == string(liferayEnvironment.Spec.WorkloadRef.EffectiveKind()) &&
-		name == liferayEnvironment.Spec.WorkloadRef.Name
 }
 
 type replicaBounds struct {

@@ -53,12 +53,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	logger := logf.FromContext(context)
 
 	if liferayEnvironment.Status.ActivatedAt == nil {
-		publicKey, error := publicKeyBase64(privateKey)
-
-		if error != nil {
-			return nil, stepOutcome{}, error
-		}
-
 		activationCode, error := liferayEnvironmentReconciler.readActivationCode(context, liferayEnvironment)
 
 		if errors.IsNotFound(error) {
@@ -85,6 +79,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 			"environmentName", resolveEnvironmentName(liferayEnvironment),
 		)
 
+		publicKey, error := publicKeyBase64(privateKey)
+
+		if error != nil {
+			return nil, stepOutcome{}, error
+		}
+
 		if error := liferayEnvironmentReconciler.Provisioning.Activate(
 			provisioning.ActivationRequest{
 				ActivationCode:  activationCode,
@@ -92,7 +92,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 				EnvironmentName: resolveEnvironmentName(liferayEnvironment),
 				PublicKey:       publicKey,
 			}, context, privateKey); error != nil {
-			logger.Error(error, "Activation rejected", "environmentID", environmentID)
+			logger.Error(error, "Activation was rejected", "environmentID", environmentID)
 
 			setCondition(
 				conditionActivated, liferayEnvironment, error.Error(),
@@ -102,10 +102,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 			liferayEnvironment.Status.ConsecutiveFailures++
 			liferayEnvironment.Status.Phase = phaseDegraded
 
-			return nil, stopAfter(liferayEnvironmentReconciler.backoffDelay(liferayEnvironment)), nil
+			return nil, stopAfter(liferayEnvironmentReconciler.getBackoffDelay(liferayEnvironment)), nil
 		}
 
-		logger.Info("Environment activated", "environmentID", environmentID)
+		logger.Info("Environment was activated", "environmentID", environmentID)
 
 		markActivated(liferayEnvironment)
 	}
@@ -113,7 +113,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	entitlements, error := liferayEnvironmentReconciler.Provisioning.Manifest(
 		context,
 		provisioning.ManifestRequest{
-			DxpVersion:    liferayEnvironmentReconciler.resolveDxpVersion(context, liferayEnvironment),
+			DxpVersion:    liferayEnvironmentReconciler.resolveDXPVersion(context, liferayEnvironment),
 			EnvironmentID: environmentID,
 		},
 		privateKey,
@@ -143,11 +143,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 			return nil, stepOutcome{}, error
 		}
 
-		return nil, stopAfter(liferayEnvironmentReconciler.backoffDelay(liferayEnvironment)), nil
+		return nil, stopAfter(liferayEnvironmentReconciler.getBackoffDelay(liferayEnvironment)), nil
 	}
 
 	logger.Info(
-		"Entitlements fetched",
+		"Entitlements were fetched",
 		"environmentID", environmentID,
 		"maxClusterNodes", entitlements.MaxClusterNodes,
 	)
@@ -190,14 +190,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readActivation
 
 	if !ok {
 		return "", fmt.Errorf(
-			"activation code secret %q missing key %q",
+			"activation code secret %q is missing key %q",
 			reference.Name, reference.Key)
 	}
 
 	return string(code), nil
 }
 
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveDxpVersion(
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveDXPVersion(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) string {
