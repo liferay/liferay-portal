@@ -14,15 +14,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CommerceDiscountAccountRelFinder {
 
-	public int countByCommerceDiscountId(long commerceDiscountId, String name);
-
 	public int countByCommerceDiscountId(
 		long commerceDiscountId, String name, boolean inlineSQLHelper);
-
-	public java.util.List
-		<com.liferay.commerce.discount.model.CommerceDiscountAccountRel>
-			findByCommerceDiscountId(
-				long commerceDiscountId, String name, int start, int end);
 
 	public java.util.List
 		<com.liferay.commerce.discount.model.CommerceDiscountAccountRel>
@@ -31,4 +24,4 @@ public interface CommerceDiscountAccountRelFinder {
 				boolean inlineSQLHelper);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1191181221
+// LIFERAY-SERVICE-BUILDER-HASH:733338383
