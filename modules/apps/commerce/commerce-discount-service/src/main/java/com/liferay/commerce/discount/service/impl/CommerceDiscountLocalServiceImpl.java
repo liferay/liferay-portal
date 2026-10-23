@@ -982,14 +982,6 @@ public class CommerceDiscountLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceDiscountsCountByPricingClassId(
-		long commercePricingClassId, String title) {
-
-		return commerceDiscountFinder.countByCommercePricingClassId(
-			commercePricingClassId, title);
-	}
-
-	@Override
 	public CommerceDiscount getOrAddEmptyCommerceDiscount(
 			String externalReferenceCode, long companyId, long userId)
 		throws PortalException {
@@ -1125,14 +1117,6 @@ public class CommerceDiscountLocalServiceImpl
 		commerceDiscount.setNumberOfUse(commerceDiscount.getNumberOfUse() + 1);
 
 		return commerceDiscountPersistence.update(commerceDiscount);
-	}
-
-	@Override
-	public List<CommerceDiscount> searchByCommercePricingClassId(
-		long commercePricingClassId, String title, int start, int end) {
-
-		return commerceDiscountFinder.findByCommercePricingClassId(
-			commercePricingClassId, title, start, end);
 	}
 
 	@Override

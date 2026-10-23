@@ -170,28 +170,11 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceDiscountCommerceAccountGroupRel>
-		getCommerceDiscountCommerceAccountGroupRels(
-			long commerceDiscountId, String name, int start, int end) {
-
-		return commerceDiscountCommerceAccountGroupRelFinder.
-			findByCommerceDiscountId(commerceDiscountId, name, start, end);
-	}
-
-	@Override
 	public int getCommerceDiscountCommerceAccountGroupRelsCount(
 		long commerceDiscountId) {
 
 		return commerceDiscountCommerceAccountGroupRelPersistence.
 			countByCommerceDiscountId(commerceDiscountId);
-	}
-
-	@Override
-	public int getCommerceDiscountCommerceAccountGroupRelsCount(
-		long commerceDiscountId, String name) {
-
-		return commerceDiscountCommerceAccountGroupRelFinder.
-			countByCommerceDiscountId(commerceDiscountId, name);
 	}
 
 	private void _reindexCommerceDiscount(long commerceDiscountId)
