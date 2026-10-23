@@ -1,6 +1,4 @@
 Bundle-Name: Liferay Portal Language REST Test
 Bundle-SymbolicName: com.liferay.portal.language.rest.test
 Bundle-Version: 1.0.0
--includeresource:\
-	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
-	com.liferay.portal.language.rest.client.jar=com.liferay.portal.language.rest.client-*.jar;lib:=true
+-includeresource: com.liferay.portal.language.rest.client.jar=com.liferay.portal.language.rest.client-*.jar;lib:=true
