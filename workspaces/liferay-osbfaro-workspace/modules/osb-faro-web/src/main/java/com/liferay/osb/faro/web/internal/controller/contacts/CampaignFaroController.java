@@ -48,6 +48,9 @@ public class CampaignFaroController extends BaseFaroController {
 			@QueryParam("filter") String filterString,
 			@QueryParam("page") int page,
 			@DefaultValue("20") @QueryParam("pageSize") int pageSize,
+			@QueryParam("rangeEnd") String rangeEnd,
+			@QueryParam("rangeKey") Integer rangeKey,
+			@QueryParam("rangeStart") String rangeStart,
 			@QueryParam("search") String search,
 			@DefaultValue(StringPool.BLANK) @QueryParam("sort") String
 				sortString)
@@ -56,8 +59,8 @@ public class CampaignFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getCampaignAccounts(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, filterString, id, search, sortString, page,
-				pageSize),
+				channelId, filterString, id, search, rangeEnd, rangeKey,
+				rangeStart, sortString, page, pageSize),
 			AccountDisplay::new, page, pageSize);
 	}
 
@@ -80,12 +83,15 @@ public class CampaignFaroController extends BaseFaroController {
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public List<CampaignMetric> getCampaignMetrics(
 			@PathParam("groupId") long groupId,
-			@QueryParam("channelId") long channelId)
+			@QueryParam("channelId") long channelId,
+			@QueryParam("rangeEnd") String rangeEnd,
+			@QueryParam("rangeKey") Integer rangeKey,
+			@QueryParam("rangeStart") String rangeStart)
 		throws Exception {
 
 		return contactsEngineClient.getCampaignMetrics(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId),
-			channelId);
+			faroProjectLocalService.getFaroProjectByGroupId(groupId), channelId,
+			rangeEnd, rangeKey, rangeStart);
 	}
 
 	@GET
@@ -96,6 +102,9 @@ public class CampaignFaroController extends BaseFaroController {
 			@QueryParam("filter") String filterString,
 			@QueryParam("page") int page,
 			@DefaultValue("20") @QueryParam("pageSize") int pageSize,
+			@QueryParam("rangeEnd") String rangeEnd,
+			@QueryParam("rangeKey") Integer rangeKey,
+			@QueryParam("rangeStart") String rangeStart,
 			@QueryParam("search") String search,
 			@DefaultValue(StringPool.BLANK) @QueryParam("sort") String
 				sortString)
@@ -104,7 +113,8 @@ public class CampaignFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getCampaigns(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, filterString, search, sortString, page, pageSize),
+				channelId, filterString, search, rangeEnd, rangeKey, rangeStart,
+				sortString, page, pageSize),
 			CampaignDisplay::new, page, pageSize);
 	}
 
@@ -117,6 +127,9 @@ public class CampaignFaroController extends BaseFaroController {
 				@QueryParam("channelId") long channelId,
 				@QueryParam("page") int page,
 				@DefaultValue("20") @QueryParam("pageSize") int pageSize,
+				@QueryParam("rangeEnd") String rangeEnd,
+				@QueryParam("rangeKey") Integer rangeKey,
+				@QueryParam("rangeStart") String rangeStart,
 				@QueryParam("search") String search,
 				@DefaultValue(StringPool.BLANK) @QueryParam("sort") String
 					sortString)
@@ -125,7 +138,8 @@ public class CampaignFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getCampaignIndividuals(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, id, search, sortString, page, pageSize),
+				channelId, id, search, rangeEnd, rangeKey, rangeStart,
+				sortString, page, pageSize),
 			IndividualDisplay::new, page, pageSize);
 	}
 
