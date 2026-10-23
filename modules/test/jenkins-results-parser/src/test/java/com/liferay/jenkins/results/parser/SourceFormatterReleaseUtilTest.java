@@ -322,26 +322,26 @@ public class SourceFormatterReleaseUtilTest
 			_isReleasedSourceMatch(
 				0,
 				_getGitDiff(
-					"<name>Liferay Source Formatter 1.0.1644</name>", _PATH_BND,
-					"<version>1.0.1643</version>")));
+					RandomTestUtil.randomString(), _PATH_BND,
+					RandomTestUtil.randomString())));
 		Assert.assertFalse(
 			_isReleasedSourceMatch(
 				0,
 				_getGitDiff(
-					"<name>Liferay Source Formatter 1.0.1644</name>",
-					_PATH_PLUGIN, "<version>1.0.1643</version>")));
+					RandomTestUtil.randomString(), _PATH_PLUGIN,
+					RandomTestUtil.randomString())));
 		Assert.assertFalse(
 			_isReleasedSourceMatch(
 				0,
 				_getGitDiff(
-					"<name>Liferay Source Formatter 1.0.1644</name>",
-					_PATH_PLUGIN_HELP, "<version>1.0.1643</version>")));
+					RandomTestUtil.randomString(), _PATH_PLUGIN_HELP,
+					RandomTestUtil.randomString())));
 		Assert.assertFalse(
 			_isReleasedSourceMatch(
 				0,
 				_getGitDiff(
-					"<name>Liferay Source Formatter 1.0.1644</name>", _PATH_POM,
-					"<version>1.0.1643</version>")));
+					RandomTestUtil.randomString(), _PATH_POM,
+					RandomTestUtil.randomString())));
 	}
 
 	@Test
