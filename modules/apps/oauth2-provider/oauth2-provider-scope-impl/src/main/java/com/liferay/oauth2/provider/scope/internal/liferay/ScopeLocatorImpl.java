@@ -390,11 +390,13 @@ public class ScopeLocatorImpl implements ScopeLocator {
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, ScopeFinder.class,
 				"(" + OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME + "=*)",
-				(serviceReference, emitter) -> {
-					serviceReferenceMapper.map(serviceReference, emitter);
+				(serviceReference, emitter) -> serviceReferenceMapper.map(
+					serviceReference,
+					key -> {
+						emitter.emit(key);
 
-					_notify();
-				},
+						_notify(key);
+					}),
 				new ScopeFinderServiceTupleServiceTrackerCustomizer(
 					bundleContext)));
 	}
@@ -502,10 +504,26 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		return unresolvedScopeAliases;
 	}
 
-	private boolean _hasResolvedAny(long companyId, Set<String> scopeAliases) {
+	private boolean _hasResolvedAny(
+		long companyId, Set<String> scopeAliases, String applicationName) {
+
+		if ((applicationName != null) &&
+			!_scopeFinderByNameServiceTrackerMap.containsKey(applicationName)) {
+
+			return false;
+		}
+
 		for (String scopeAlias : scopeAliases) {
-			Collection<LiferayOAuth2Scope> liferayOAuth2Scopes =
-				getLiferayOAuth2Scopes(companyId, scopeAlias);
+			Collection<LiferayOAuth2Scope> liferayOAuth2Scopes;
+
+			if (applicationName == null) {
+				liferayOAuth2Scopes = getLiferayOAuth2Scopes(
+					companyId, scopeAlias);
+			}
+			else {
+				liferayOAuth2Scopes = getLiferayOAuth2Scopes(
+					companyId, scopeAlias, applicationName);
+			}
 
 			if (!liferayOAuth2Scopes.isEmpty()) {
 				return true;
@@ -515,11 +533,13 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		return false;
 	}
 
-	private void _notify() {
+	private void _notify(String applicationName) {
 		_runnableScopeAliases.forEach(
 			(runnable, entry) -> {
 				try {
-					if (_hasResolvedAny(entry.getKey(), entry.getValue()) &&
+					if (_hasResolvedAny(
+							entry.getKey(), entry.getValue(),
+							applicationName) &&
 						_runnableScopeAliases.remove(runnable, entry)) {
 
 						runnable.run();

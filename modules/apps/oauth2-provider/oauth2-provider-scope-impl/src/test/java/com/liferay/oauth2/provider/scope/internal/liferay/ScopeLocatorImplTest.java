@@ -426,6 +426,12 @@ public class ScopeLocatorImplTest {
 					scopeLocatorImpl, "_scopeFinderByNameServiceTrackerMap");
 
 		Mockito.when(
+			scopeFinderByNameServiceTrackerMap.containsKey(_APPLICATION_NAME)
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
 			scopeFinderByNameServiceTrackerMap.keySet()
 		).thenReturn(
 			Collections.singleton(_APPLICATION_NAME)
@@ -445,7 +451,8 @@ public class ScopeLocatorImplTest {
 				ScopeLocatorImpl.class.getName(), LoggerTestUtil.ERROR)) {
 
 			ReflectionTestUtil.invoke(
-				scopeLocatorImpl, "_notify", new Class<?>[0]);
+				scopeLocatorImpl, "_notify", new Class<?>[] {String.class},
+				_APPLICATION_NAME);
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -456,8 +463,12 @@ public class ScopeLocatorImplTest {
 
 		scopes.add("everything");
 
-		ReflectionTestUtil.invoke(scopeLocatorImpl, "_notify", new Class<?>[0]);
-		ReflectionTestUtil.invoke(scopeLocatorImpl, "_notify", new Class<?>[0]);
+		ReflectionTestUtil.invoke(
+			scopeLocatorImpl, "_notify", new Class<?>[] {String.class},
+			_APPLICATION_NAME);
+		ReflectionTestUtil.invoke(
+			scopeLocatorImpl, "_notify", new Class<?>[] {String.class},
+			_APPLICATION_NAME);
 
 		Assert.assertEquals(1, atomicInteger.get());
 	}
@@ -477,6 +488,12 @@ public class ScopeLocatorImplTest {
 				ReflectionTestUtil.getFieldValue(
 					scopeLocatorImpl, "_scopeFinderByNameServiceTrackerMap");
 
+		Mockito.when(
+			scopeFinderByNameServiceTrackerMap.containsKey(_APPLICATION_NAME)
+		).thenReturn(
+			true
+		);
+
 		AtomicBoolean atomicBoolean = new AtomicBoolean();
 
 		Mockito.when(
@@ -485,7 +502,8 @@ public class ScopeLocatorImplTest {
 			invocation -> {
 				if (atomicBoolean.compareAndSet(false, true)) {
 					ReflectionTestUtil.invoke(
-						scopeLocatorImpl, "_notify", new Class<?>[0]);
+						scopeLocatorImpl, "_notify",
+						new Class<?>[] {String.class}, _APPLICATION_NAME);
 				}
 
 				return Collections.singleton(_APPLICATION_NAME);
