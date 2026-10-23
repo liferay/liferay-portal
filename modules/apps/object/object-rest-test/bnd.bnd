@@ -1,14 +1,6 @@
 Bundle-Name: Liferay Object REST Test
 Bundle-SymbolicName: com.liferay.object.rest.test
 Bundle-Version: 1.0.0
-Import-Package:\
-	!com.fasterxml.jackson.dataformat.yaml.*,\
-	\
-	!org.yaml.snakeyaml.*,\
-	\
-	*
 -includeresource:\
 	com.liferay.headless.admin.taxonomy.client.jar=com.liferay.headless.admin.taxonomy.client-*.jar;lib:=true,\
-	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
-	@jackson-dataformat-yaml-[0-9.]*.jar,\
-	@snakeyaml-[0-9.]*.jar
+	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true
