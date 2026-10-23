@@ -121,9 +121,6 @@ public class SourceFormatterReleaseUtil {
 			return false;
 		}
 
-		List<String> addedLines = new ArrayList<>();
-		List<String> removedLines = new ArrayList<>();
-
 		boolean documentation = false;
 		boolean hunk = false;
 
@@ -131,6 +128,9 @@ public class SourceFormatterReleaseUtil {
 			JenkinsResultsParserUtil.combine(
 				"(?<![\\d.])", Pattern.quote(version.substring(0, index + 1)),
 				"\\d+(?![\\d.])"));
+
+		List<String> addedLines = new ArrayList<>();
+		List<String> removedLines = new ArrayList<>();
 
 		for (String line : gitDiff.split("\n")) {
 			if (line.startsWith("diff --git ")) {
