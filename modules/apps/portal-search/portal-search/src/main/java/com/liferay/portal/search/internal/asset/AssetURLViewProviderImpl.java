@@ -88,7 +88,8 @@ public class AssetURLViewProviderImpl implements AssetURLViewProvider {
 			String viewURL = null;
 
 			if ((assetRenderer != null) &&
-				_isViewInContext(layout, searchResultsPortletId)) {
+				(_isViewInContext(layout, searchResultsPortletId) ||
+				 !assetEntry.isVisible())) {
 
 				viewURL = assetRenderer.getURLViewInContext(
 					liferayPortletRequest, liferayPortletResponse,
