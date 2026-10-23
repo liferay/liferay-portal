@@ -83,6 +83,8 @@ public class PIMConnectorFieldMappingsDisplayContext {
 						PIMURLUtil.getConnectorExecuteURL(
 							String.valueOf(_objectEntryId))
 					).put(
+						"id", "execute"
+					).put(
 						"label",
 						LanguageUtil.get(_httpServletRequest, "execute")
 					).put(
@@ -159,6 +161,8 @@ public class PIMConnectorFieldMappingsDisplayContext {
 				))
 		).put(
 			"hideSpace", true
+		).put(
+			"mappingComplete", mappingComplete
 		).put(
 			"size", "lg"
 		).build();

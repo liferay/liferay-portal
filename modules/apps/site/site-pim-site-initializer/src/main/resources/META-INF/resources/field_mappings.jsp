@@ -14,7 +14,7 @@ PIMConnectorFieldMappingsDisplayContext pimConnectorFieldMappingsDisplayContext 
 <div class="pim-field-mappings">
 	<div>
 		<react:component
-			module="{Breadcrumb} from site-cms-site-initializer"
+			module="{FieldMappingsBreadcrumb} from site-pim-site-initializer"
 			props="<%= pimConnectorFieldMappingsDisplayContext.getBreadcrumbProps() %>"
 		/>
 	</div>
