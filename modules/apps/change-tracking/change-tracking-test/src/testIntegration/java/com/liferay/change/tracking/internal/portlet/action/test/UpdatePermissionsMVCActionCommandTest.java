@@ -85,10 +85,8 @@ public class UpdatePermissionsMVCActionCommandTest {
 		_ctCollection = _ctCollectionLocalService.addCTCollection(
 			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 			0, RandomTestUtil.randomString(), null);
-
 		_ownerRole = _roleLocalService.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.OWNER);
-
 		_role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
 			CTCollection.class.getName(), ResourceConstants.SCOPE_COMPANY,
