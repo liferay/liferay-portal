@@ -374,21 +374,25 @@ public interface ContactsEngineClient {
 
 	public Results<Account> getCampaignAccounts(
 			FaroProject faroProject, long channelId, String filterString,
-			String id, String query, String sortString, int cur, int delta)
+			String id, String query, String rangeEnd, Integer rangeKey,
+			String rangeStart, String sortString, int cur, int delta)
 		throws FaroEngineClientException;
 
 	public Results<Individual> getCampaignIndividuals(
 			FaroProject faroProject, long channelId, String id, String query,
+			String rangeEnd, Integer rangeKey, String rangeStart,
 			String sortString, int cur, int delta)
 		throws FaroEngineClientException;
 
 	public List<CampaignMetric> getCampaignMetrics(
-			FaroProject faroProject, long channelId)
+			FaroProject faroProject, long channelId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws FaroEngineClientException;
 
 	public Results<Campaign> getCampaigns(
 		FaroProject faroProject, long channelId, String filterString,
-		String query, String sortString, int cur, int delta);
+		String query, String rangeEnd, Integer rangeKey, String rangeStart,
+		String sortString, int cur, int delta);
 
 	public Results<CatalogField> getCatalogFields(
 			FaroProject faroProject, String capability, String query,

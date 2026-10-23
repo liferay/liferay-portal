@@ -712,40 +712,46 @@ public abstract class BaseMockContactsEngineClientImpl
 	@Override
 	public Results<Account> getCampaignAccounts(
 			FaroProject faroProject, long channelId, String filterString,
-			String id, String query, String sortString, int cur, int delta)
+			String id, String query, String rangeEnd, Integer rangeKey,
+			String rangeStart, String sortString, int cur, int delta)
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getCampaignAccounts(
-			faroProject, channelId, filterString, id, query, sortString, cur,
-			delta);
+			faroProject, channelId, filterString, id, query, rangeEnd, rangeKey,
+			rangeStart, sortString, cur, delta);
 	}
 
 	@Override
 	public Results<Individual> getCampaignIndividuals(
 			FaroProject faroProject, long channelId, String id, String query,
+			String rangeEnd, Integer rangeKey, String rangeStart,
 			String sortString, int cur, int delta)
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getCampaignIndividuals(
-			faroProject, channelId, id, query, sortString, cur, delta);
+			faroProject, channelId, id, query, rangeEnd, rangeKey, rangeStart,
+			sortString, cur, delta);
 	}
 
 	@Override
 	public List<CampaignMetric> getCampaignMetrics(
-			FaroProject faroProject, long channelId)
+			FaroProject faroProject, long channelId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws FaroEngineClientException {
 
-		return contactsEngineClient.getCampaignMetrics(faroProject, channelId);
+		return contactsEngineClient.getCampaignMetrics(
+			faroProject, channelId, rangeEnd, rangeKey, rangeStart);
 	}
 
 	@Override
 	public Results<Campaign> getCampaigns(
 		FaroProject faroProject, long channelId, String filterString,
-		String query, String sortString, int cur, int delta) {
+		String query, String rangeEnd, Integer rangeKey, String rangeStart,
+		String sortString, int cur, int delta) {
 
 		return contactsEngineClient.getCampaigns(
-			faroProject, channelId, filterString, query, sortString, cur,
-			delta);
+			faroProject, channelId, filterString, query, rangeEnd, rangeKey,
+			rangeStart, sortString, cur, delta);
 	}
 
 	@Override

@@ -1898,7 +1898,8 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<Account> getCampaignAccounts(
 			FaroProject faroProject, long channelId, String filterString,
-			String id, String query, String sortString, int cur, int delta)
+			String id, String query, String rangeEnd, Integer rangeKey,
+			String rangeStart, String sortString, int cur, int delta)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(
@@ -1914,6 +1915,18 @@ public class ContactsEngineClientImpl
 
 		if (Validator.isNotNull(query)) {
 			uriVariables.put("query", query);
+		}
+
+		if (Validator.isNotNull(rangeEnd)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+		}
+
+		if (rangeKey != null) {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(rangeStart)) {
+			uriVariables.put("rangeStart", rangeStart);
 		}
 
 		if (Validator.isNotNull(sortString)) {
@@ -1936,6 +1949,7 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<Individual> getCampaignIndividuals(
 			FaroProject faroProject, long channelId, String id, String query,
+			String rangeEnd, Integer rangeKey, String rangeStart,
 			String sortString, int cur, int delta)
 		throws FaroEngineClientException {
 
@@ -1947,6 +1961,18 @@ public class ContactsEngineClientImpl
 
 		if (Validator.isNotNull(query)) {
 			uriVariables.put("query", query);
+		}
+
+		if (Validator.isNotNull(rangeEnd)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+		}
+
+		if (rangeKey != null) {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(rangeStart)) {
+			uriVariables.put("rangeStart", rangeStart);
 		}
 
 		if (Validator.isNotNull(sortString)) {
@@ -1969,12 +1995,25 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public List<CampaignMetric> getCampaignMetrics(
-			FaroProject faroProject, long channelId)
+			FaroProject faroProject, long channelId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(faroProject);
 
 		uriVariables.put("channelId", channelId);
+
+		if (Validator.isNotNull(rangeEnd)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+		}
+
+		if (rangeKey != null) {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(rangeStart)) {
+			uriVariables.put("rangeStart", rangeStart);
+		}
 
 		return get(
 			faroProject, Rels.CAMPAIGNS_METRICS,
@@ -1986,7 +2025,8 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<Campaign> getCampaigns(
 		FaroProject faroProject, long channelId, String filterString,
-		String query, String sortString, int cur, int delta) {
+		String query, String rangeEnd, Integer rangeKey, String rangeStart,
+		String sortString, int cur, int delta) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
@@ -1999,6 +2039,18 @@ public class ContactsEngineClientImpl
 
 		if (Validator.isNotNull(query)) {
 			uriVariables.put("query", query);
+		}
+
+		if (Validator.isNotNull(rangeEnd)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+		}
+
+		if (rangeKey != null) {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(rangeStart)) {
+			uriVariables.put("rangeStart", rangeStart);
 		}
 
 		if (Validator.isNotNull(sortString)) {
