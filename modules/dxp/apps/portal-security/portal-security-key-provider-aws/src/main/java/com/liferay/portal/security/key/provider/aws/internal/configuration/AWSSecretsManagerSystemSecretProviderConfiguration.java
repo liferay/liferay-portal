@@ -12,7 +12,9 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 /**
  * @author Christopher Kian
  */
-@ExtendedObjectClassDefinition(category = "key-manager")
+@ExtendedObjectClassDefinition(
+	category = "key-manager", featureFlagKey = "LPD-88411"
+)
 @Meta.OCD(
 	id = "com.liferay.portal.security.key.provider.aws.internal.configuration.AWSSecretsManagerSystemSecretProviderConfiguration",
 	localization = "content/Language",

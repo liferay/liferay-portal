@@ -13,7 +13,9 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Tomas Polesovsky
  * @author Christopher Kian
  */
-@ExtendedObjectClassDefinition(category = "key-manager")
+@ExtendedObjectClassDefinition(
+	category = "key-manager", featureFlagKey = "LPD-88411"
+)
 @Meta.OCD(
 	id = "com.liferay.portal.security.key.internal.profile.configuration.KeyManagerConfiguration",
 	localization = "content/Language", name = "key-manager-configuration-name"
