@@ -82,6 +82,7 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithSearchResultsPortlet();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithSearchResultsPortletWithViewInContext();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithSearchResultsPortletWithoutViewInContext();
+		_testPostSuggestionsPageWithBasicSuggestionsContributorWithSearchResultsPortletWithoutViewInContextWithLayout();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithThisSiteScope();
 		_testPostSuggestionsPageWithSXPBlueprintSuggestionsContributor();
 		_testPostSuggestionsPageWithSXPBlueprintSuggestionsContributorWithGroupERCScope();
@@ -456,6 +457,29 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 		Assert.assertFalse(assetURL.contains("find_file_entry"));
 		Assert.assertTrue(assetURL.contains(searchResultsPortletId));
 		Assert.assertTrue(assetURL.contains("view_content.jsp"));
+	}
+
+	private void _testPostSuggestionsPageWithBasicSuggestionsContributorWithSearchResultsPortletWithoutViewInContextWithLayout()
+		throws Exception {
+
+		Layout destinationLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup);
+
+		LayoutTestUtil.addPortletToLayout(
+			destinationLayout,
+			"com_liferay_portal_search_web_search_results_portlet_" +
+				"SearchResultsPortlet",
+			HashMapBuilder.put(
+				"viewInContext", new String[] {"false"}
+			).build());
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		String assetURL = _getAssetURL(
+			destinationLayout, layout.getName(_locale));
+
+		Assert.assertFalse(assetURL.contains("view_content.jsp"));
+		Assert.assertTrue(assetURL.contains(layout.getFriendlyURL(_locale)));
 	}
 
 	private void _testPostSuggestionsPageWithBasicSuggestionsContributorWithThisSiteScope()
