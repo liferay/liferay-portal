@@ -174,8 +174,7 @@ public class KBArticleServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			_testGetAllDescendantKBArticles(
-				WorkflowConstants.STATUS_APPROVED);
+			_testGetAllDescendantKBArticles(WorkflowConstants.STATUS_APPROVED);
 			_testGetAllDescendantKBArticles(WorkflowConstants.STATUS_DRAFT);
 		}
 	}
@@ -298,18 +297,6 @@ public class KBArticleServiceTest {
 			new Date(),
 			ServiceContextTestUtil.getServiceContext(
 				group, TestPropsValues.getUserId()));
-	}
-
-	private void _testGetAllDescendantKBArticles(
-			int status, KBArticle... expectedKBArticles)
-		throws Exception {
-
-		Assert.assertEquals(
-			Arrays.asList(expectedKBArticles),
-			_kbArticleService.getAllDescendantKBArticles(
-				_group1.getGroupId(),
-				KBFolderConstants.DEFAULT_PARENT_FOLDER_ID, status,
-				KBArticlePriorityComparator.getInstance(true)));
 	}
 
 	private void _assertNoSuchFileEntry(FileEntry fileEntry) {
@@ -451,6 +438,18 @@ public class KBArticleServiceTest {
 		Assert.assertNotNull(
 			_kbArticleLocalService.fetchLatestKBArticle(
 				kbArticle2.getResourcePrimKey(), WorkflowConstants.STATUS_ANY));
+	}
+
+	private void _testGetAllDescendantKBArticles(
+			int status, KBArticle... expectedKBArticles)
+		throws Exception {
+
+		Assert.assertEquals(
+			Arrays.asList(expectedKBArticles),
+			_kbArticleService.getAllDescendantKBArticles(
+				_group1.getGroupId(),
+				KBFolderConstants.DEFAULT_PARENT_FOLDER_ID, status,
+				KBArticlePriorityComparator.getInstance(true)));
 	}
 
 	private void _testGetKBArticleAttachment() throws Exception {
