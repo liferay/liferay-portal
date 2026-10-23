@@ -1,15 +1,15 @@
 definition {
 
 	@summary = "Default summary"
-	macro _getExportPreview(plid = null, portletId = null, siteExternalReferenceCode = null) {
-		Variables.assertDefined(parameterList = "${plid},${portletId},${siteExternalReferenceCode}");
+	macro _getExportPreview(portletId = null, siteExternalReferenceCode = null, sitePageExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${portletId},${siteExternalReferenceCode}");
 
 		var portalURL = JSONCompany.getPortalURL();
 		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
 		var userPassword = JSONUtil2.getDefaultUserPassword();
 
 		var curl = '''
-			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/export-preview?plid=${plid}\&portletId=${portletId} \
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/export-preview?portletId=${portletId}\&sitePageExternalReferenceCode=${sitePageExternalReferenceCode} \
 				-u ${userEmailAddress}:${userPassword} \
 				-H accept: application/json
 		''';
@@ -81,15 +81,15 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _postExportProcess(exportProcessName = null, plid = null, portletDataHandlers = null, portletId = null, siteExternalReferenceCode = null) {
-		Variables.assertDefined(parameterList = "${exportProcessName},${plid},${portletDataHandlers},${portletId},${siteExternalReferenceCode}");
+	macro _postExportProcess(exportProcessName = null, portletDataHandlers = null, portletId = null, siteExternalReferenceCode = null, sitePageExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${exportProcessName},${portletDataHandlers},${portletId},${siteExternalReferenceCode}");
 
 		var portalURL = JSONCompany.getPortalURL();
 		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
 		var userPassword = JSONUtil2.getDefaultUserPassword();
 
 		var curl = '''
-			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/export-processes?plid=${plid}\&portletId=${portletId} \
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/export-processes?portletId=${portletId}\&sitePageExternalReferenceCode=${sitePageExternalReferenceCode} \
 				-u ${userEmailAddress}:${userPassword} \
 				-H accept: application/json \
 				-H Content-Type: application/json \
@@ -127,15 +127,15 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _postImportPreview(filePath = null, plid = null, portletId = null, siteExternalReferenceCode = null) {
-		Variables.assertDefined(parameterList = "${filePath},${plid},${portletId},${siteExternalReferenceCode}");
+	macro _postImportPreview(filePath = null, portletId = null, siteExternalReferenceCode = null, sitePageExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${filePath},${portletId},${siteExternalReferenceCode}");
 
 		var portalURL = JSONCompany.getPortalURL();
 		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
 		var userPassword = JSONUtil2.getDefaultUserPassword();
 
 		var curl = '''
-			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/import-preview?plid=${plid}\&portletId=${portletId} \
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/import-preview?portletId=${portletId}\&sitePageExternalReferenceCode=${sitePageExternalReferenceCode} \
 				-u ${userEmailAddress}:${userPassword} \
 				-H accept: application/json \
 				-F file=@${filePath}
@@ -147,15 +147,15 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _postImportProcess(dataStrategy = null, importProcessName = null, plid = null, portletDataHandlers = null, portletId = null, siteExternalReferenceCode = null) {
-		Variables.assertDefined(parameterList = "${dataStrategy},${importProcessName},${plid},${portletDataHandlers},${portletId},${siteExternalReferenceCode}");
+	macro _postImportProcess(dataStrategy = null, importProcessName = null, portletDataHandlers = null, portletId = null, siteExternalReferenceCode = null, sitePageExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${dataStrategy},${importProcessName},${portletDataHandlers},${portletId},${siteExternalReferenceCode}");
 
 		var portalURL = JSONCompany.getPortalURL();
 		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
 		var userPassword = JSONUtil2.getDefaultUserPassword();
 
 		var curl = '''
-			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/import-processes?plid=${plid}\&portletId=${portletId} \
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/import-processes?portletId=${portletId}\&sitePageExternalReferenceCode=${sitePageExternalReferenceCode} \
 				-u ${userEmailAddress}:${userPassword} \
 				-H accept: application/json \
 				-H Content-Type: application/json \

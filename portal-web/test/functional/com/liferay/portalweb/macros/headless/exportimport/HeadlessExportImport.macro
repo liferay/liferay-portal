@@ -1,26 +1,17 @@
 definition {
 
 	@summary = "Default summary"
-	macro _getPlid(layoutName = null, siteName = null) {
-		Variables.assertDefined(parameterList = ${siteName});
+	macro _getSitePageExternalReferenceCode(layoutName = null, siteName = null) {
+		Variables.assertDefined(parameterList = "${layoutName},${siteName}");
 
-		if (isSet(layoutName)) {
-			var plid = JSONLayout.getPlid(
-				groupName = ${siteName},
-				layoutName = ${layoutName});
-		}
-		else {
-			var groupId = JSONGroupSetter.setGroupId(
-				groupName = "Control Panel",
-				site = "false");
+		var groupId = JSONLayoutSetter.setGroupId(groupName = ${siteName});
 
-			var plid = JSONLayoutAPI._getPlidByName(
-				groupId = ${groupId},
-				layoutName = "Control Panel",
-				privateLayout = "true");
-		}
+		var sitePageExternalReferenceCode = JSONSitenavigationAPI._getLayoutExternalReferenceCodeByName(
+			groupId = ${groupId},
+			layoutName = ${layoutName},
+			privateLayout = "false");
 
-		return ${plid};
+		return ${sitePageExternalReferenceCode};
 	}
 
 	@summary = "Default summary"
@@ -51,24 +42,28 @@ definition {
 	macro exportPortlet(larFileName = null, layoutName = null, portletId = null, siteName = null) {
 		Variables.assertDefined(parameterList = "${larFileName},${portletId},${siteName}");
 
-		var plid = HeadlessExportImport._getPlid(
-			layoutName = ${layoutName},
-			siteName = ${siteName});
 		var siteExternalReferenceCode = HeadlessSiteAPI._getSiteExternalReferenceCode(siteName = ${siteName});
+		var sitePageExternalReferenceCode = "";
+
+		if (isSet(layoutName)) {
+			var sitePageExternalReferenceCode = HeadlessExportImport._getSitePageExternalReferenceCode(
+				layoutName = ${layoutName},
+				siteName = ${siteName});
+		}
 
 		var exportPreview = HeadlessExportImportAPI._getExportPreview(
-			plid = ${plid},
 			portletId = ${portletId},
-			siteExternalReferenceCode = ${siteExternalReferenceCode});
+			siteExternalReferenceCode = ${siteExternalReferenceCode},
+			sitePageExternalReferenceCode = ${sitePageExternalReferenceCode});
 
 		var portletDataHandlers = JSONUtil.getWithJSONPath(${exportPreview}, "$.portletDataHandlers", "false");
 
 		var exportProcessId = HeadlessExportImportAPI._postExportProcess(
 			exportProcessName = ${larFileName},
-			plid = ${plid},
 			portletDataHandlers = ${portletDataHandlers},
 			portletId = ${portletId},
-			siteExternalReferenceCode = ${siteExternalReferenceCode});
+			siteExternalReferenceCode = ${siteExternalReferenceCode},
+			sitePageExternalReferenceCode = ${sitePageExternalReferenceCode});
 
 		HeadlessExportImport._waitForProcess(
 			processId = ${exportProcessId},
@@ -99,26 +94,30 @@ definition {
 			var dataStrategy = "MIRROR";
 		}
 
-		var plid = HeadlessExportImport._getPlid(
-			layoutName = ${layoutName},
-			siteName = ${siteName});
 		var siteExternalReferenceCode = HeadlessSiteAPI._getSiteExternalReferenceCode(siteName = ${siteName});
+		var sitePageExternalReferenceCode = "";
+
+		if (isSet(layoutName)) {
+			var sitePageExternalReferenceCode = HeadlessExportImport._getSitePageExternalReferenceCode(
+				layoutName = ${layoutName},
+				siteName = ${siteName});
+		}
 
 		var importPreview = HeadlessExportImportAPI._postImportPreview(
 			filePath = ${filePath},
-			plid = ${plid},
 			portletId = ${portletId},
-			siteExternalReferenceCode = ${siteExternalReferenceCode});
+			siteExternalReferenceCode = ${siteExternalReferenceCode},
+			sitePageExternalReferenceCode = ${sitePageExternalReferenceCode});
 
 		var portletDataHandlers = JSONUtil.getWithJSONPath(${importPreview}, "$.portletDataHandlers", "false");
 
 		var importProcessId = HeadlessExportImportAPI._postImportProcess(
 			dataStrategy = ${dataStrategy},
 			importProcessName = ${larFileName},
-			plid = ${plid},
 			portletDataHandlers = ${portletDataHandlers},
 			portletId = ${portletId},
-			siteExternalReferenceCode = ${siteExternalReferenceCode});
+			siteExternalReferenceCode = ${siteExternalReferenceCode},
+			sitePageExternalReferenceCode = ${sitePageExternalReferenceCode});
 
 		HeadlessExportImport._waitForProcess(
 			processId = ${importProcessId},
