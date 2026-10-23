@@ -155,7 +155,7 @@ function ProfileForm({
 	});
 
 	useEffect(() => {
-		if (!formik.submitCount) {
+		if (!formik.submitCount || formik.isSubmitting) {
 			return;
 		}
 
@@ -164,7 +164,7 @@ function ProfileForm({
 				'.profile-form .form-group.has-error input:not([type="hidden"]), .profile-form .form-group.has-error textarea'
 			)
 			?.focus();
-	}, [formik.submitCount]);
+	}, [formik.isSubmitting, formik.submitCount]);
 
 	return (
 		<FormikProvider value={formik}>
