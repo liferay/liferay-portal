@@ -1131,7 +1131,7 @@ public class ObjectEntryServiceTest {
 			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext());
 
-		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+		ObjectEntry objectEntry1 = _objectEntryLocalService.addObjectEntry(
 			_group.getGroupId(), TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -1148,7 +1148,7 @@ public class ObjectEntryServiceTest {
 		_resourcePermissionLocalService.addModelResourcePermissions(
 			TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
 			_user.getUserId(), _objectDefinition.getClassName(),
-			String.valueOf(objectEntry.getObjectEntryId()),
+			String.valueOf(objectEntry1.getObjectEntryId()),
 			ModelPermissionsFactory.create(
 				HashMapBuilder.put(
 					RoleConstants.USER,
@@ -1157,11 +1157,29 @@ public class ObjectEntryServiceTest {
 				_objectDefinition.getClassName()));
 
 		Assert.assertNotNull(
-			_objectEntryService.getObjectEntry(objectEntry.getObjectEntryId()));
+			_objectEntryService.getObjectEntry(
+				objectEntry1.getObjectEntryId()));
 
-		_objectEntryService.deleteObjectEntry(objectEntry.getObjectEntryId());
+		_objectEntryService.deleteObjectEntry(objectEntry1.getObjectEntryId());
 
 		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+
+		ObjectEntry objectEntry2 = _addObjectEntry(_adminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", _objectDefinition.getClassName(),
+				StringPool.SPACE, objectEntry2.getObjectEntryId()),
+			() -> _testGetObjectEntry(objectEntry2, _user));
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.DELETE,
+				" permission for ", _objectDefinition.getClassName(),
+				StringPool.SPACE, objectEntry2.getObjectEntryId()),
+			() -> _testDeleteObjectEntry(objectEntry2, _user));
 	}
 
 	@Test
