@@ -58,8 +58,8 @@ public class MockAICreatorOpenAIClient implements AICreatorOpenAIClient {
 
 	@Override
 	public String[] getGenerations(
-		String apiKey, String model, String prompt, String size,
-		int numberOfImages) {
+		String apiKey, String model, int numberOfImages, String prompt,
+		String size) {
 
 		if (Objects.equals(apiKey, "VALID_API_KEY") &&
 			Objects.equals(prompt, "USER_IMAGES")) {

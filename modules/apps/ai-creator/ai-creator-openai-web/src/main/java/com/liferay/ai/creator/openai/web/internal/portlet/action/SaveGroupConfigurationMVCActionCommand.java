@@ -56,7 +56,7 @@ public class SaveGroupConfigurationMVCActionCommand
 
 		aiCreatorOpenAIConfigurationManager.
 			saveAICreatorOpenAIGroupConfiguration(
-				themeDisplay.getScopeGroupId(), apiKey, enableChatGPT,
+				apiKey, themeDisplay.getScopeGroupId(), enableChatGPT,
 				enableOpenAIImageGeneration, imageModel, imageSizes);
 	}
 

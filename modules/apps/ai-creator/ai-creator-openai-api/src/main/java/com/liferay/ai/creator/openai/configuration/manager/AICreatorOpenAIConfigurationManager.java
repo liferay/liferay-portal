@@ -56,13 +56,13 @@ public interface AICreatorOpenAIConfigurationManager {
 		throws ConfigurationException;
 
 	public void saveAICreatorOpenAICompanyConfiguration(
-			long companyId, String apiKey, boolean enableChatGPT,
+			String apiKey, long companyId, boolean enableChatGPT,
 			boolean enableOpenAIImageGeneration, String imageModel,
 			String imageSizes)
 		throws ConfigurationException;
 
 	public void saveAICreatorOpenAIGroupConfiguration(
-			long groupId, String apiKey, boolean enableChatGPT,
+			String apiKey, long groupId, boolean enableChatGPT,
 			boolean enableOpenAIImageGeneration, String imageModel,
 			String imageSizes)
 		throws ConfigurationException;

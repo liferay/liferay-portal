@@ -95,8 +95,8 @@ public class AICreatorOpenAIClientImpl implements AICreatorOpenAIClient {
 
 	@Override
 	public String[] getGenerations(
-			String apiKey, String model, String prompt, String size,
-			int numberOfImages)
+			String apiKey, String model, int numberOfImages, String prompt,
+			String size)
 		throws Exception {
 
 		String[] generations = new String[0];

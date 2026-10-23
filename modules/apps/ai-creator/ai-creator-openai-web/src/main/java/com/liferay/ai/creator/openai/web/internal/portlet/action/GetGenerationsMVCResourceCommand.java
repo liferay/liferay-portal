@@ -81,8 +81,8 @@ public class GetGenerationsMVCResourceCommand extends BaseMVCResourceCommand {
 					getAICreatorOpenAIGroupImageModel(
 						themeDisplay.getCompanyId(),
 						themeDisplay.getScopeGroupId()),
-				prompt, ParamUtil.getString(resourceRequest, "size"),
-				ParamUtil.getInteger(resourceRequest, "numberOfImages", 1));
+				ParamUtil.getInteger(resourceRequest, "numberOfImages", 1),
+				prompt, ParamUtil.getString(resourceRequest, "size"));
 
 			long expirationTime = System.currentTimeMillis() + Time.HOUR;
 

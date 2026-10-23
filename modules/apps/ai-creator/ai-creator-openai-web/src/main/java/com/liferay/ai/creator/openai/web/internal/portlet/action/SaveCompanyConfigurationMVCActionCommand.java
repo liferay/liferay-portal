@@ -60,7 +60,7 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 		aiCreatorOpenAIConfigurationManager.
 			saveAICreatorOpenAICompanyConfiguration(
-				themeDisplay.getCompanyId(), apiKey, enableChatGPT,
+				apiKey, themeDisplay.getCompanyId(), enableChatGPT,
 				enableOpenAIImageGeneration, imageModel, imageSizes);
 	}
 
