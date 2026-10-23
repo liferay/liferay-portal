@@ -547,11 +547,8 @@ public class PortalWorkspace extends BaseWorkspace {
 			return;
 		}
 
-		Matcher matcher = Pattern.compile(
-			"(?<basePortalBranchName>.+)-private"
-		).matcher(
-			primaryWorkspaceGitRepository.getUpstreamBranchName()
-		);
+		Matcher matcher = _portalPrivateBranchNamePattern.matcher(
+			primaryWorkspaceGitRepository.getUpstreamBranchName());
 
 		if (!matcher.matches()) {
 			return;
@@ -619,6 +616,9 @@ public class PortalWorkspace extends BaseWorkspace {
 
 		return true;
 	}
+
+	private static final Pattern _portalPrivateBranchNamePattern =
+		Pattern.compile("(?<basePortalBranchName>.+)-private");
 
 	private boolean _commitOSBAsahModule;
 	private String _osbAsahGitHubURL;
