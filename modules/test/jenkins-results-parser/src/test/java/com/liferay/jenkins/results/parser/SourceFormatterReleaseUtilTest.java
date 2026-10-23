@@ -32,9 +32,9 @@ public class SourceFormatterReleaseUtilTest
 			temporaryFolder.getRoot(),
 			"tools/sdk/dependencies/com.liferay.source.formatter/ivy.xml");
 
-		_version = JenkinsResultsParserUtil.combine(
-			"1.0.",
-			String.valueOf(Math.abs(RandomTestUtil.randomLong() % 10000)));
+		_version =
+			"1.0." +
+				String.valueOf(Math.abs(RandomTestUtil.randomLong() % 10000));
 
 		JenkinsResultsParserUtil.write(
 			_artifactPropertiesFile,
@@ -237,9 +237,7 @@ public class SourceFormatterReleaseUtilTest
 		Assert.assertTrue(
 			_isReleasedSourceMatch(
 				0,
-				JenkinsResultsParserUtil.combine(
-					_getVersionBumpGitDiff(),
-					"\\ No newline at end of file\n")));
+				_getVersionBumpGitDiff() + "\\ No newline at end of file\n"));
 	}
 
 	@Test
@@ -456,9 +454,8 @@ public class SourceFormatterReleaseUtilTest
 			"/plugin.xml";
 
 	private static final String _PATH_PLUGIN_HELP =
-		JenkinsResultsParserUtil.combine(
-			"modules/util/source-formatter/src/main/resources/META-INF/maven",
-			"/com.liferay/com.liferay.source.formatter/plugin-help.xml");
+		"modules/util/source-formatter/src/main/resources/META-INF/maven" +
+			"/com.liferay/com.liferay.source.formatter/plugin-help.xml";
 
 	private static final String _PATH_POM =
 		"modules/util/source-formatter/samples/pom.xml";
