@@ -449,8 +449,8 @@ public class JournalArticleSitemapURLProviderTest {
 
 		String xml = rootElement.asXML();
 
-		Assert.assertTrue(xml, xml.contains(article1.getUrlTitle() + "</loc>"));
-		Assert.assertTrue(xml, xml.contains(article2.getUrlTitle() + "</loc>"));
+		Assert.assertTrue(xml.contains(article1.getUrlTitle() + "</loc>"));
+		Assert.assertTrue(xml.contains(article2.getUrlTitle() + "</loc>"));
 	}
 
 	@Test

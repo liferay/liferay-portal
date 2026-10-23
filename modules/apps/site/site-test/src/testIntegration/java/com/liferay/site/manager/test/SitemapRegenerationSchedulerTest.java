@@ -163,9 +163,7 @@ public class SitemapRegenerationSchedulerTest {
 			_siteSitemapRegenerationEntryLocalService.
 				getSiteSitemapRegenerationEntries(companyId);
 
-		Assert.assertTrue(
-			siteSitemapRegenerationEntries.toString(),
-			siteSitemapRegenerationEntries.isEmpty());
+		Assert.assertTrue(siteSitemapRegenerationEntries.isEmpty());
 
 		Assert.assertFalse(
 			_sitemapStorageHelper.hasSitemapFile(
@@ -175,7 +173,6 @@ public class SitemapRegenerationSchedulerTest {
 	@Test
 	public void testDrainRegeneratesPageLayoutEntries() throws Exception {
 		Group group = GroupTestUtil.addGroup();
-
 		long companyId = TestPropsValues.getCompanyId();
 
 		try {
@@ -266,9 +263,7 @@ public class SitemapRegenerationSchedulerTest {
 			_siteSitemapRegenerationEntryLocalService.
 				getSiteSitemapRegenerationEntries(companyId);
 
-		Assert.assertTrue(
-			siteSitemapRegenerationEntries.toString(),
-			siteSitemapRegenerationEntries.isEmpty());
+		Assert.assertTrue(siteSitemapRegenerationEntries.isEmpty());
 
 		Assert.assertTrue(
 			_sitemapStorageHelper.hasSitemapFile(
@@ -658,9 +653,7 @@ public class SitemapRegenerationSchedulerTest {
 							SitemapConstants.INDEX_MODE_PAGE_LAYOUT,
 							depotEntry.getGroupId());
 
-				Assert.assertTrue(
-					siteSitemapRegenerationEntries.toString(),
-					siteSitemapRegenerationEntries.isEmpty());
+				Assert.assertTrue(siteSitemapRegenerationEntries.isEmpty());
 			}
 		}
 		finally {
@@ -707,9 +700,7 @@ public class SitemapRegenerationSchedulerTest {
 				_getSiteSitemapRegenerationEntries(
 					SitemapConstants.ASSET_TYPE_KEY_PAGES, _group.getGroupId());
 
-			Assert.assertTrue(
-				siteSitemapRegenerationEntries.toString(),
-				siteSitemapRegenerationEntries.isEmpty());
+			Assert.assertTrue(siteSitemapRegenerationEntries.isEmpty());
 		}
 	}
 
@@ -744,9 +735,7 @@ public class SitemapRegenerationSchedulerTest {
 					getSiteSitemapRegenerationEntries(
 						TestPropsValues.getCompanyId());
 
-			Assert.assertTrue(
-				siteSitemapRegenerationEntries.toString(),
-				siteSitemapRegenerationEntries.isEmpty());
+			Assert.assertTrue(siteSitemapRegenerationEntries.isEmpty());
 
 			ObjectDefinition objectDefinition = _publishObjectDefinition(
 				ObjectDefinitionConstants.SCOPE_SITE);
@@ -1035,9 +1024,7 @@ public class SitemapRegenerationSchedulerTest {
 					SitemapConstants.INDEX_MODE_PAGE_LAYOUT,
 					_group.getGroupId());
 
-			Assert.assertTrue(
-				siteSitemapRegenerationEntries.toString(),
-				siteSitemapRegenerationEntries.isEmpty());
+			Assert.assertTrue(siteSitemapRegenerationEntries.isEmpty());
 
 			_layoutLocalService.updateParentLayoutId(
 				layout.getPlid(), parentLayout.getPlid());

@@ -1766,12 +1766,12 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		long companyId = themeDisplay.getCompanyId();
 
+		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
+			groupId, false);
+
 		Map<String, Integer> pageCountsByChildSitemapKey =
 			_sitemapStorageHelper.getPageCountsByChildSitemapKey(
 				companyId, groupId);
-
-		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
-			groupId, false);
 
 		Set<String> pageLayoutChildSitemapKeys = new HashSet<>();
 
@@ -1872,7 +1872,6 @@ public class SitemapManagerImpl implements SitemapManager {
 					childSitemapKey, SitemapConstants.INDEX_MODE_PAGE_LAYOUT)) {
 
 				_regenerateLayoutSitemaps(groupId, themeDisplay);
-
 				_regeneratePageLayoutIndexSitemaps(groupId, themeDisplay);
 			}
 			else {
@@ -2041,9 +2040,8 @@ public class SitemapManagerImpl implements SitemapManager {
 			ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		int[] pageCountArray = {0};
-
 		long companyId = themeDisplay.getCompanyId();
+		int[] pageCountArray = {0};
 		String pageLayoutChildSitemapKey = _getPageLayoutChildSitemapKey(
 			layout.getUuid());
 

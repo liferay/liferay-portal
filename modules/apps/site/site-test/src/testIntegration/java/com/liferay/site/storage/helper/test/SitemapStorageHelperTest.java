@@ -88,14 +88,14 @@ public class SitemapStorageHelperTest {
 			companyId, _group1.getGroupId(), _pageLayoutChildSitemapKey1);
 
 		for (int page = 1; page <= 2; page++) {
-			Assert.assertFalse(
-				_sitemapStorageHelper.hasSitemapFile(
-					companyId, _group1.getGroupId(),
-					_pageLayoutChildSitemapKey1, page));
 			Assert.assertTrue(
 				_sitemapStorageHelper.hasSitemapFile(
 					companyId, _group1.getGroupId(),
 					SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, page));
+			Assert.assertFalse(
+				_sitemapStorageHelper.hasSitemapFile(
+					companyId, _group1.getGroupId(),
+					_pageLayoutChildSitemapKey1, page));
 		}
 
 		Assert.assertTrue(
@@ -154,12 +154,12 @@ public class SitemapStorageHelperTest {
 			Assert.assertEquals(
 				expected,
 				_sitemapStorageHelper.hasSitemapFile(
-					companyId, groupId, _pageLayoutChildSitemapKey1, page));
+					companyId, groupId,
+					SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, page));
 			Assert.assertEquals(
 				expected,
 				_sitemapStorageHelper.hasSitemapFile(
-					companyId, groupId,
-					SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, page));
+					companyId, groupId, _pageLayoutChildSitemapKey1, page));
 		}
 	}
 
@@ -171,11 +171,11 @@ public class SitemapStorageHelperTest {
 
 		for (int page = 1; page <= 2; page++) {
 			_sitemapStorageHelper.storeSitemapFile(
-				companyId, groupId, _pageLayoutChildSitemapKey1, page,
-				RandomTestUtil.randomString());
-			_sitemapStorageHelper.storeSitemapFile(
 				companyId, groupId, SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT,
 				page, RandomTestUtil.randomString());
+			_sitemapStorageHelper.storeSitemapFile(
+				companyId, groupId, _pageLayoutChildSitemapKey1, page,
+				RandomTestUtil.randomString());
 		}
 
 		_assertHasSitemapFiles(true, companyId, groupId);

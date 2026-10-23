@@ -540,10 +540,10 @@ public class SitemapManagerTest {
 					TestPropsValues.getCompanyId(), _group.getGroupId(),
 					SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 1));
 
+			Assert.assertFalse(xml.contains("_childSitemapKey"));
 			Assert.assertFalse(xml.contains("_companyId"));
 			Assert.assertFalse(xml.contains("_groupId"));
 			Assert.assertFalse(xml.contains("_page"));
-			Assert.assertFalse(xml.contains("_childSitemapKey"));
 			Assert.assertFalse(xml.contains("entries="));
 		}
 	}
@@ -864,18 +864,18 @@ public class SitemapManagerTest {
 			String xml = RandomTestUtil.randomString();
 
 			_sitemapStorageHelper.storeSitemapFile(
-				companyId, groupId, pageLayoutChildSitemapKey, 1, xml);
-			_sitemapStorageHelper.storeSitemapFile(
 				companyId, groupId, _getPageLayoutChildSitemapKey(_layout), 1,
 				xml);
+			_sitemapStorageHelper.storeSitemapFile(
+				companyId, groupId, pageLayoutChildSitemapKey, 1, xml);
 
 			_sitemapManager.regenerateSitemap(
 				pageLayoutChildSitemapKey, companyId, groupId);
 
-			Assert.assertNotEquals(
-				xml, _getStoredSitemap(pageLayoutChildSitemapKey));
 			Assert.assertEquals(
 				xml, _getStoredSitemap(_getPageLayoutChildSitemapKey(_layout)));
+			Assert.assertNotEquals(
+				xml, _getStoredSitemap(pageLayoutChildSitemapKey));
 
 			Role role = _roleLocalService.getRole(
 				companyId, RoleConstants.GUEST);
