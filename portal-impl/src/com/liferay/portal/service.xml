@@ -287,9 +287,6 @@
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
-		<finder name="Active" return-type="Collection">
-			<finder-column name="active" />
-		</finder>
 		<finder name="C_A2" return-type="Country" unique="true">
 			<finder-column name="companyId" />
 			<finder-column name="a2" />
@@ -318,25 +315,6 @@
 		<finder name="C_A_S" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="active" />
-			<finder-column name="shippingAllowed" />
-		</finder>
-		<finder name="C_A_B_G" return-type="Collection">
-			<finder-column name="countryId" />
-			<finder-column name="active" />
-			<finder-column name="billingAllowed" />
-			<finder-column name="groupFilterEnabled" />
-		</finder>
-		<finder name="C_A_G_S" return-type="Collection">
-			<finder-column name="countryId" />
-			<finder-column name="active" />
-			<finder-column name="groupFilterEnabled" />
-			<finder-column name="shippingAllowed" />
-		</finder>
-		<finder name="C_A_B_G_S" return-type="Collection">
-			<finder-column name="countryId" />
-			<finder-column name="active" />
-			<finder-column name="billingAllowed" />
-			<finder-column name="groupFilterEnabled" />
 			<finder-column name="shippingAllowed" />
 		</finder>
 	</entity>
@@ -560,9 +538,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="LtSize" return-type="Collection">
-			<finder-column comparator="&lt;" name="size" />
-		</finder>
 	</entity>
 	<entity change-tracking-enabled="true" external-reference-code="group" local-service="true" name="Layout" remote-service="true" uad-application-name="Layout" uad-dir-path="../modules/apps/layout/layout-uad/src/main/java" uad-package-path="com.liferay.layout" uuid="true">
 
@@ -1218,9 +1193,6 @@
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
-		<finder db-index="false" name="CompanyIdLocations" return-type="Collection" where="parentOrganizationId != 0">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="LogoId" return-type="Collection">
 			<finder-column name="logoId" />
 		</finder>
@@ -1469,9 +1441,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="C_P_P" return-type="PluginSetting" unique="true">
 			<finder-column name="companyId" />
 			<finder-column name="pluginId" />
@@ -1549,12 +1518,6 @@
 			<finder-column name="index" />
 			<finder-column name="key" />
 			<finder-column name="namespace" />
-		</finder>
-		<finder name="P_K_N_SV" return-type="Collection">
-			<finder-column name="portalPreferencesId" />
-			<finder-column name="key" />
-			<finder-column name="namespace" />
-			<finder-column name="smallValue" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="Portlet" remote-service="true">
@@ -1718,10 +1681,6 @@
 
 		<finder name="PortletPreferencesId" return-type="Collection">
 			<finder-column name="portletPreferencesId" />
-		</finder>
-		<finder name="P_N" return-type="Collection">
-			<finder-column name="portletPreferencesId" />
-			<finder-column name="name" />
 		</finder>
 		<finder name="C_N_SV" return-type="Collection">
 			<finder-column name="companyId" />
@@ -2337,11 +2296,6 @@
 		<finder name="G_S" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="systemEventSetKey" />
-		</finder>
-		<finder name="G_C_C" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
 		</finder>
 		<finder name="G_C_C_T" return-type="Collection">
 			<finder-column name="groupId" />
