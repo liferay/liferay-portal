@@ -1,14 +1,23 @@
 [
 	{
 		"assetEntrySubtypeId": "[$DDM_STRUCTURE_ID:JOB$]",
-		"assetTagNames": [
-			"homepage"
-		],
 		"title": "Homepage",
 		"unicodeProperties": {
 			"anyClassType": "anyClassTypeJournalArticleAssetRendererFactory",
 			"classNameIds": "com.liferay.journal.model.JournalArticle",
 			"classTypeIds": "classTypeIdsJournalArticleAssetRendererFactory",
+			"filters": [
+				{
+					"operatorName": "contains",
+					"propertyName": "assetTags",
+					"quantifier": "all",
+					"value": [
+						{
+							"value": "homepage"
+						}
+					]
+				}
+			],
 			"orderBy": [
 				{
 					"key": "orderByColumn1",
@@ -25,20 +34,6 @@
 				{
 					"key": "orderByType2",
 					"value": "ASC"
-				}
-			],
-			"query": [
-				{
-					"key": "queryAndOperator",
-					"value": "true"
-				},
-				{
-					"key": "queryContains",
-					"value": "true"
-				},
-				{
-					"key": "queryName",
-					"value": "assetTags"
 				}
 			]
 		}
