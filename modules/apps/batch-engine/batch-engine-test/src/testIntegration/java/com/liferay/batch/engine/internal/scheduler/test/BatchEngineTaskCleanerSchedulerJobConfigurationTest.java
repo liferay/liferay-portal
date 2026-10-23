@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.constants.BatchEngineImportTaskConstants;
-import com.liferay.batch.engine.internal.test.BlogPosting;
 import com.liferay.batch.engine.model.BatchEngineExportTask;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.BatchEngineExportTaskLocalService;
@@ -135,8 +134,9 @@ public class BatchEngineTaskCleanerSchedulerJobConfigurationTest {
 
 		return _batchEngineExportTaskLocalService.addBatchEngineExportTask(
 			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			null, BlogPosting.class.getName(), "JSON",
-			batchEngineTaskExecuteStatus.name(), null, new HashMap<>(), null);
+			null, "com.liferay.headless.admin.user.dto.v1_0.UserAccount",
+			"JSON", batchEngineTaskExecuteStatus.name(), null, new HashMap<>(),
+			null);
 	}
 
 	private BatchEngineImportTask _addBatchEngineImportTask(
@@ -145,8 +145,8 @@ public class BatchEngineTaskCleanerSchedulerJobConfigurationTest {
 
 		return _batchEngineImportTaskLocalService.addBatchEngineImportTask(
 			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			10, null, BlogPosting.class.getName(), new byte[0], "JSON",
-			batchEngineTaskExecuteStatus.name(), null,
+			10, null, "com.liferay.headless.admin.user.dto.v1_0.UserAccount",
+			new byte[0], "JSON", batchEngineTaskExecuteStatus.name(), null,
 			BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
 			BatchEngineTaskOperation.CREATE.name(), new HashMap<>(), null);
 	}

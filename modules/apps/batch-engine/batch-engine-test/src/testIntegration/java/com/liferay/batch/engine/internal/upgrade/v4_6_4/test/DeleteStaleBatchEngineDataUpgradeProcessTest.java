@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.constants.BatchEngineImportTaskConstants;
-import com.liferay.batch.engine.internal.test.BlogPosting;
 import com.liferay.batch.engine.model.BatchEngineExportTask;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.model.BatchEngineImportTaskError;
@@ -62,7 +61,7 @@ public class DeleteStaleBatchEngineDataUpgradeProcessTest {
 		BatchEngineExportTask batchEngineExportTask =
 			_batchEngineExportTaskLocalService.addBatchEngineExportTask(
 				null, companyId, TestPropsValues.getUserId(), null,
-				BlogPosting.class.getName(), "JSON",
+				"com.liferay.headless.admin.user.dto.v1_0.UserAccount", "JSON",
 				BatchEngineTaskExecuteStatus.INITIAL.name(),
 				Collections.emptyList(),
 				HashMapBuilder.<String, Serializable>put(
@@ -73,7 +72,8 @@ public class DeleteStaleBatchEngineDataUpgradeProcessTest {
 		BatchEngineImportTask batchEngineImportTask =
 			_batchEngineImportTaskLocalService.addBatchEngineImportTask(
 				null, companyId, TestPropsValues.getUserId(), 10, null,
-				BlogPosting.class.getName(), new byte[0], "JSON",
+				"com.liferay.headless.admin.user.dto.v1_0.UserAccount",
+				new byte[0], "JSON",
 				BatchEngineTaskExecuteStatus.INITIAL.name(), null,
 				BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
 				BatchEngineTaskOperation.CREATE.name(), new HashMap<>(), null);
