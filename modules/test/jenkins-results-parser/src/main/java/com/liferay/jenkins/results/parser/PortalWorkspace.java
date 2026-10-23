@@ -550,7 +550,8 @@ public class PortalWorkspace extends BaseWorkspace {
 		Matcher matcher = Pattern.compile(
 			"(?<basePortalBranchName>.+)-private"
 		).matcher(
-			primaryWorkspaceGitRepository.getUpstreamBranchName());
+			primaryWorkspaceGitRepository.getUpstreamBranchName()
+		);
 
 		if (!matcher.matches()) {
 			return;
