@@ -5,12 +5,12 @@ import ClayLink from '@clayui/link';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import Nav from 'shared/components/Nav';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
-import React from 'react';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
+import React, {useState} from 'react';
 import RowActions from 'shared/components/RowActions';
 import URLConstants from 'shared/util/url-constants';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {
@@ -34,6 +34,7 @@ import {NameCell} from 'shared/components/table/cell-components';
 import {Routes, toRoute} from 'shared/util/router';
 import {Sizes} from 'shared/util/constants';
 import {useMutation, useQuery} from '@apollo/client';
+import {useModal} from '@clayui/modal';
 import {useParams} from 'react-router-dom';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
@@ -42,7 +43,7 @@ import {
 	withSelectionProvider,
 } from 'shared/context/selection';
 
-const connector = connect(null, {addAlert, close, open});
+const connector = connect(null, {addAlert});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -52,9 +53,7 @@ interface EventAnalysisListCardProps extends PropsFromRedux {
 
 const EventAnalysisListCard: React.FC<EventAnalysisListCardProps> = ({
 	addAlert,
-	close,
 	onItemsChange,
-	open,
 }) => {
 	const {selectedItems, selectionDispatch} = useSelectionContext();
 
@@ -102,6 +101,13 @@ const EventAnalysisListCard: React.FC<EventAnalysisListCardProps> = ({
 		DeleteEventAnalysisData,
 		DeleteEventAnalysisVariables
 	>(DeleteEventAnalysisMutation);
+
+	const deleteModal = useModal();
+
+	const [deletion, setDeletion] = useState<{
+		message: React.ReactNode;
+		onSubmit: () => void;
+	}>();
 
 	const handleDeleteEventAnalysis = (eventAnalysisIds: Array<string>) => {
 		const {refetch} = response;
@@ -167,16 +173,9 @@ const EventAnalysisListCard: React.FC<EventAnalysisListCardProps> = ({
 				});
 		};
 
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message,
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit,
-			submitButtonDisplay: 'warning',
-			submitMessage: Liferay.Language.get('delete'),
-			title: Liferay.Language.get('deleting-analysis'),
-			titleIcon: 'warning-full',
-		});
+		setDeletion({message, onSubmit});
+
+		deleteModal.onOpenChange(true);
 	};
 
 	const renderNav = () => {
@@ -219,87 +218,104 @@ const EventAnalysisListCard: React.FC<EventAnalysisListCardProps> = ({
 	};
 
 	return (
-		<Card className="event-analysis-list-root" pageDisplay>
-			<CrossPageSelect
-				{...mapListResultsToProps(response, (result: any) => ({
-					items: result.eventAnalyses.eventAnalyses,
-					total: result.eventAnalyses.total,
-				}))}
-				columns={[
-					{
-						accessor: NAME,
-						cellRenderer: NameCell,
-						cellRendererProps: {
-							routeFn: ({data: {id}}: {data: {id: string}}) =>
-								toRoute(Routes.EVENT_ANALYSIS_EDIT, {
-									channelId,
-									groupId,
-									id,
-								}),
+		<>
+			<Card className="event-analysis-list-root" pageDisplay>
+				<CrossPageSelect
+					{...mapListResultsToProps(response, (result: any) => ({
+						items: result.eventAnalyses.eventAnalyses,
+						total: result.eventAnalyses.total,
+					}))}
+					columns={[
+						{
+							accessor: NAME,
+							cellRenderer: NameCell,
+							cellRendererProps: {
+								routeFn: ({data: {id}}: {data: {id: string}}) =>
+									toRoute(Routes.EVENT_ANALYSIS_EDIT, {
+										channelId,
+										groupId,
+										id,
+									}),
+							},
+							className: 'table-cell-expand',
+							label: Liferay.Language.get('name'),
 						},
-						className: 'table-cell-expand',
-						label: Liferay.Language.get('name'),
-					},
-					{
-						accessor: CREATED_BY_USER_NAME,
-						cellRenderer: CreatedByCell,
-						label: Liferay.Language.get('created-by'),
-					},
-				]}
-				delta={delta}
-				entityLabel={Liferay.Language.get('event-analysis')}
-				legacyDropdownRangeKey={false}
-				noResultsRenderer={
-					<NoResultsDisplay
-						description={
-							<>
-								{Liferay.Language.get(
-									'create-an-analysis-to-get-started'
-								)}
-
-								<ClayLink
-									className="d-block"
-									href={
-										URLConstants.EventAnalysisDocumentationLink
-									}
-									key="DOCUMENTATION"
-									target="_blank"
-								>
+						{
+							accessor: CREATED_BY_USER_NAME,
+							cellRenderer: CreatedByCell,
+							label: Liferay.Language.get('created-by'),
+						},
+					]}
+					delta={delta}
+					entityLabel={Liferay.Language.get('event-analysis')}
+					legacyDropdownRangeKey={false}
+					noResultsRenderer={
+						<NoResultsDisplay
+							description={
+								<>
 									{Liferay.Language.get(
-										'access-our-documentation-to-learn-more'
+										'create-an-analysis-to-get-started'
 									)}
-								</ClayLink>
-							</>
-						}
-						icon={{
-							border: false,
-							size: Sizes.XXXLarge,
-							symbol: 'ac_satellite',
-						}}
-						title={Liferay.Language.get('no-analyses-were-found')}
-					/>
-				}
-				orderByOptions={[
-					{
-						label: Liferay.Language.get('name'),
-						value: NAME,
-					},
-					{
-						label: Liferay.Language.get('created-by'),
-						value: CREATED_BY_USER_NAME,
-					},
-				]}
-				orderIOMap={orderIOMap}
-				page={page}
-				query={query}
-				rangeSelectors={rangeSelectors}
-				renderNav={renderNav}
-				renderRowActions={renderRowActions}
-				rowIdentifier="id"
-				showCheckbox
-				showFilterAndOrder
-			/>
-		</Card>
+
+									<ClayLink
+										className="d-block"
+										href={
+											URLConstants.EventAnalysisDocumentationLink
+										}
+										key="DOCUMENTATION"
+										target="_blank"
+									>
+										{Liferay.Language.get(
+											'access-our-documentation-to-learn-more'
+										)}
+									</ClayLink>
+								</>
+							}
+							icon={{
+								border: false,
+								size: Sizes.XXXLarge,
+								symbol: 'ac_satellite',
+							}}
+							title={Liferay.Language.get(
+								'no-analyses-were-found'
+							)}
+						/>
+					}
+					orderByOptions={[
+						{
+							label: Liferay.Language.get('name'),
+							value: NAME,
+						},
+						{
+							label: Liferay.Language.get('created-by'),
+							value: CREATED_BY_USER_NAME,
+						},
+					]}
+					orderIOMap={orderIOMap}
+					page={page}
+					query={query}
+					rangeSelectors={rangeSelectors}
+					renderNav={renderNav}
+					renderRowActions={renderRowActions}
+					rowIdentifier="id"
+					showCheckbox
+					showFilterAndOrder
+				/>
+			</Card>
+
+			{deleteModal.open && deletion && (
+				<ConfirmationModal
+					message={deletion.message}
+					observer={deleteModal.observer}
+					onClose={() => deleteModal.onOpenChange(false)}
+					onSubmit={() => deletion.onSubmit()}
+					submitButtonDisplay="warning"
+					submitMessage={Liferay.Language.get('delete')}
+					title={Liferay.Language.get('deleting-analysis')}
+					type="warning"
+				/>
+			)}
+		</>
 	);
 };
 

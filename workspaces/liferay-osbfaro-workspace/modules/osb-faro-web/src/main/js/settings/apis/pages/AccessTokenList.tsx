@@ -8,6 +8,7 @@ import CopyButton from 'shared/components/CopyButton';
 import GenerateTokenCard from '../components/GenerateTokenCard';
 import Loading, {Align} from 'shared/components/Loading';
 import moment from 'moment';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
 import React, {useState} from 'react';
 import Table from 'shared/components/table';
 import TokenCell from '../components/TokenCell';
@@ -16,7 +17,6 @@ import {AccessToken} from '../types';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {ApisPath} from 'shared/util/url-constants';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {getCustomDateFormat} from 'shared/util/date';
@@ -24,6 +24,7 @@ import {ExpirationPeriod} from 'shared/util/constants';
 import {formatDateToTimeZone, getDateNow} from 'shared/util/date';
 import {RootState} from 'shared/store';
 import {sub} from 'shared/util/lang';
+import {useModal} from '@clayui/modal';
 import {
 	withAdminPermission,
 	withError,
@@ -58,7 +59,7 @@ const connector = connect(
 			'timeZoneId',
 		]),
 	}),
-	{addAlert, close, open}
+	{addAlert}
 );
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -69,8 +70,11 @@ const TokenList: React.FC<
 		refetch: () => Promise<any>;
 		tokens: AccessToken[];
 	} & PropsFromRedux
-> = ({addAlert, close, groupId, open, refetch, timeZoneId, tokens}) => {
+> = ({addAlert, groupId, refetch, timeZoneId, tokens}) => {
 	const [loading, setLoading] = useState(false);
+	const [tokenToRevoke, setTokenToRevoke] = useState('');
+
+	const revokeModal = useModal();
 	const [onCloseAlert, setOnCloseAlert] = useState(false);
 
 	const handleError = () => {
@@ -209,52 +213,9 @@ const TokenList: React.FC<
 										disabled={loading}
 										displayType="secondary"
 										onClick={() => {
-											open(
-												modalTypes.CONFIRMATION_MODAL,
-												{
-													message: (
-														<div className="text-secondary">
-															<div>
-																<strong>
-																	{Liferay.Language.get(
-																		'are-you-sure-you-want-to-revoke-this-token'
-																	)}
-																</strong>
-															</div>
+											setTokenToRevoke(token);
 
-															{Liferay.Language.get(
-																'you-will-need-to-generate-a-new-token-to-continue-using-this-api'
-															)}
-														</div>
-													),
-													modalVariant:
-														'modal-warning',
-													onClose: close,
-													onSubmit: () => {
-														setLoading(true);
-
-														API.apiTokens
-															.revoke({
-																groupId,
-																token,
-															})
-															.then(() =>
-																handleSuccess(
-																	Liferay.Language.get(
-																		'token-successfully-revoked'
-																	)
-																)
-															)
-															.catch(handleError);
-													},
-													submitButtonDisplay:
-														'warning',
-													title: Liferay.Language.get(
-														'revoke-token'
-													),
-													titleIcon: 'warning-full',
-												}
-											);
+											revokeModal.onOpenChange(true);
 										}}
 									>
 										{Liferay.Language.get('revoke')}
@@ -270,6 +231,48 @@ const TokenList: React.FC<
 					/>
 				)}
 			</Card>
+
+			{revokeModal.open && (
+				<ConfirmationModal
+					message={
+						<div className="text-secondary">
+							<div>
+								<strong>
+									{Liferay.Language.get(
+										'are-you-sure-you-want-to-revoke-this-token'
+									)}
+								</strong>
+							</div>
+
+							{Liferay.Language.get(
+								'you-will-need-to-generate-a-new-token-to-continue-using-this-api'
+							)}
+						</div>
+					}
+					observer={revokeModal.observer}
+					onClose={() => revokeModal.onOpenChange(false)}
+					onSubmit={() => {
+						setLoading(true);
+
+						API.apiTokens
+							.revoke({
+								groupId,
+								token: tokenToRevoke,
+							})
+							.then(() =>
+								handleSuccess(
+									Liferay.Language.get(
+										'token-successfully-revoked'
+									)
+								)
+							)
+							.catch(handleError);
+					}}
+					submitButtonDisplay="warning"
+					title={Liferay.Language.get('revoke-token')}
+					type="warning"
+				/>
+			)}
 		</div>
 	);
 };
