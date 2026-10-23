@@ -27,6 +27,11 @@ import {
 	getMissingRequiredFieldsFDSProps,
 	renderMissingRequiredFields,
 } from '../../../props_transformer/MissingRequiredFieldsFDSPropsTransformer';
+import {
+	IUnlinkedAsset,
+	getUnlinkedContentFDSProps,
+	renderUnlinkedContent,
+} from '../../../props_transformer/UnlinkedContentFDSPropsTransformer';
 import AssetRenderer from '../../../props_transformer/cell_renderers/AssetRenderer';
 import {AssetListFDSProps} from '../../../props_transformer/utils/createAssetListFDSPropsBuilder';
 import {SectionHeader} from '../../common/SectionHeader';
@@ -53,7 +58,7 @@ interface QualityCard<T extends IQualityAsset> {
 	color: MetricColor;
 	countKey: keyof Pick<
 		AssetStatistics,
-		'brokenLinksCount' | 'missingRequiredFieldsCount'
+		'brokenLinksCount' | 'missingRequiredFieldsCount' | 'unlinkedCount'
 	>;
 	description: string;
 	emptyStateDescription: string;
@@ -70,7 +75,8 @@ interface QualityCard<T extends IQualityAsset> {
 
 type AnyQualityCard =
 	| QualityCard<IBrokenLinkAsset>
-	| QualityCard<IMissingRequiredFieldsAsset>;
+	| QualityCard<IMissingRequiredFieldsAsset>
+	| QualityCard<IUnlinkedAsset>;
 
 function getQualityCards(
 	additionalProps: GovernanceAdditionalProps
@@ -114,6 +120,25 @@ function getQualityCards(
 			renderSubtitle: renderMissingRequiredFields,
 			sectionPath: 'missing-required-data',
 			title: Liferay.Language.get('missing-required-data'),
+		},
+		{
+			color: 'purple',
+			countKey: 'unlinkedCount',
+			description: Liferay.Language.get(
+				'these-are-assets-not-used-in-any-content-or-page-across-the-selected-spaces'
+			),
+			emptyStateDescription: Liferay.Language.get(
+				'there-is-no-unlinked-content'
+			),
+			emptyStateTitle: Liferay.Language.get('no-unlinked-content'),
+			getAPIURL: GovernanceService.getUnlinkedAssetsURL,
+			getFDSProps: getUnlinkedContentFDSProps,
+			icon: 'link',
+			id: 'unlinkedContent',
+			itemsActions: additionalProps.unlinkedContentFDSActionDropdownItems,
+			renderSubtitle: renderUnlinkedContent,
+			sectionPath: 'unlinked-content',
+			title: Liferay.Language.get('unlinked-content'),
 		},
 	];
 }

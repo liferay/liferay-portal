@@ -63,7 +63,8 @@ public class ViewDashboardJSPSectionFragmentRenderer
 				WebKeys.THEME_DISPLAY),
 			_translationInfoItemFieldValuesExporterRegistry,
 			_viewBrokenLinksSectionFDSItemsActions,
-			_viewMissingRequiredFieldsSectionFDSItemsActions);
+			_viewMissingRequiredFieldsSectionFDSItemsActions,
+			_viewUnlinkedContentSectionFDSItemsActions);
 	}
 
 	@Override
@@ -101,5 +102,10 @@ public class ViewDashboardJSPSectionFragmentRenderer
 		target = "(frontend.data.set.name=" + CMSSiteInitializerFDSNames.MISSING_REQUIRED_FIELDS_SECTION + ")"
 	)
 	private FDSItemsActions _viewMissingRequiredFieldsSectionFDSItemsActions;
+
+	@Reference(
+		target = "(frontend.data.set.name=" + CMSSiteInitializerFDSNames.UNLINKED_CONTENT_SECTION + ")"
+	)
+	private FDSItemsActions _viewUnlinkedContentSectionFDSItemsActions;
 
 }

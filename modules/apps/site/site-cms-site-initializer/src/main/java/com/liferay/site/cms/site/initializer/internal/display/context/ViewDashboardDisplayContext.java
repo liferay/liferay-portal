@@ -67,7 +67,8 @@ public class ViewDashboardDisplayContext {
 		TranslationInfoItemFieldValuesExporterRegistry
 			translationInfoItemFieldValuesExporterRegistry,
 		FDSItemsActions viewBrokenLinksSectionFDSItemsActions,
-		FDSItemsActions viewMissingRequiredFieldsSectionFDSItemsActions) {
+		FDSItemsActions viewMissingRequiredFieldsSectionFDSItemsActions,
+		FDSItemsActions viewUnlinkedContentSectionFDSItemsActions) {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
 		_depotEntryLocalService = depotEntryLocalService;
@@ -84,6 +85,8 @@ public class ViewDashboardDisplayContext {
 			viewBrokenLinksSectionFDSItemsActions;
 		_viewMissingRequiredFieldsSectionFDSItemsActions =
 			viewMissingRequiredFieldsSectionFDSItemsActions;
+		_viewUnlinkedContentSectionFDSItemsActions =
+			viewUnlinkedContentSectionFDSItemsActions;
 	}
 
 	public Map<String, Object> getConstants() {
@@ -296,6 +299,11 @@ public class ViewDashboardDisplayContext {
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS
 		).put(
 			"redirect", _themeDisplay.getURLCurrent()
+		).put(
+			"unlinkedContentFDSActionDropdownItems",
+			() ->
+				_viewUnlinkedContentSectionFDSItemsActions.
+					getFDSActionDropdownItems(_httpServletRequest)
 		).build();
 	}
 
@@ -367,5 +375,6 @@ public class ViewDashboardDisplayContext {
 	private final FDSItemsActions _viewBrokenLinksSectionFDSItemsActions;
 	private final FDSItemsActions
 		_viewMissingRequiredFieldsSectionFDSItemsActions;
+	private final FDSItemsActions _viewUnlinkedContentSectionFDSItemsActions;
 
 }

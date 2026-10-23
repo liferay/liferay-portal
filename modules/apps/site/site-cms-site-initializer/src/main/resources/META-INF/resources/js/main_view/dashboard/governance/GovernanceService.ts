@@ -31,6 +31,7 @@ export type AssetStatistics = {
 	scheduledCount: number;
 	slaBreachedWorkflowTasksCount: number;
 	totalCount: number;
+	unlinkedCount?: number;
 	upcomingReviewCount: number;
 	workflowTasksCount: number;
 };
@@ -350,6 +351,10 @@ function getMissingRequiredFieldsAssetsURL(assetLibraryId?: string) {
 	);
 }
 
+function getUnlinkedAssetsURL(assetLibraryId?: string) {
+	return getQualityAssetsURL('unlinked-assets', assetLibraryId);
+}
+
 function getDateInDays(days: number) {
 	return new Date(Date.now() + days * MILLISECONDS_PER_DAY);
 }
@@ -383,4 +388,5 @@ export default {
 	getLongStandingDraftsThresholdDate,
 	getLongStandingDraftsURL,
 	getMissingRequiredFieldsAssetsURL,
+	getUnlinkedAssetsURL,
 };
