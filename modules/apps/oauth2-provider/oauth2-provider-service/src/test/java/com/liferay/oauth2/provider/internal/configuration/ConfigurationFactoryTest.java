@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
@@ -329,6 +330,7 @@ public class ConfigurationFactoryTest {
 			virtualHostLocalService);
 
 		configurationFactory.activate(
+			SystemBundleUtil.getBundleContext(),
 			HashMapBuilder.<String, Object>put(
 				"baseURL", "http://localhost"
 			).put(
@@ -444,6 +446,7 @@ public class ConfigurationFactoryTest {
 			_snapshot);
 
 		configurationFactory.activate(
+			SystemBundleUtil.getBundleContext(),
 			HashMapBuilder.<String, Object>put(
 				"baseURL", "http://localhost"
 			).put(

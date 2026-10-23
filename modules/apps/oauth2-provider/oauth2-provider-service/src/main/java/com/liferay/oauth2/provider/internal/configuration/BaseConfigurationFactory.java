@@ -12,6 +12,9 @@ import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalSer
 import com.liferay.osgi.util.configuration.ConfigurationFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
+import com.liferay.portal.instance.lifecycle.EveryNodeEveryStartup;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.k8s.agent.PortalK8sConfigMapModifier;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -34,8 +37,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
@@ -48,13 +54,17 @@ import org.osgi.service.component.annotations.Reference;
 public abstract class BaseConfigurationFactory {
 
 	@Activate
-	protected void activate(Map<String, Object> properties) throws Exception {
+	protected void activate(
+			BundleContext bundleContext, Map<String, Object> properties)
+		throws Exception {
+
 		Log log = getLog();
 
 		if (log.isDebugEnabled()) {
 			log.debug("Activate " + properties);
 		}
 
+		_bundleContext = bundleContext;
 		_properties = properties;
 
 		DependencyManagerSyncUtil.registerSyncCallable(
@@ -69,6 +79,10 @@ public abstract class BaseConfigurationFactory {
 	@Deactivate
 	protected void deactivate(Integer reason) throws PortalException {
 		scopeLocator.stopWaitingForScopeAliases(_runnable);
+
+		if (_serviceRegistration != null) {
+			_serviceRegistration.unregister();
+		}
 
 		if ((oAuth2Application == null) ||
 			(reason !=
@@ -312,10 +326,54 @@ public abstract class BaseConfigurationFactory {
 				});
 		}
 		catch (Exception exception) {
+			String webId = GetterUtil.getString(
+				_properties.get("dxp.lxc.liferay.com.virtualInstanceId"));
+
+			if (Validator.isNotNull(webId) && !webId.equals("default") &&
+				(_getCompanyByWebId(webId) == null)) {
+
+				_registerPortalInstanceLifecycleListener();
+
+				return;
+			}
+
 			Log log = getLog();
 
 			log.error(exception);
 		}
+	}
+
+	private Company _getCompanyByWebId(String webId) {
+		try {
+			return companyLocalService.getCompanyByWebId(webId);
+		}
+		catch (PortalException portalException) {
+			Log log = getLog();
+
+			if (log.isDebugEnabled()) {
+				log.debug(portalException);
+			}
+		}
+
+		return null;
+	}
+
+	private void _registerPortalInstanceLifecycleListener() {
+		if (_serviceRegistration != null) {
+			return;
+		}
+
+		Log log = getLog();
+
+		if (log.isInfoEnabled()) {
+			log.info(
+				"Waiting for virtual instance " +
+					_properties.get("dxp.lxc.liferay.com.virtualInstanceId"));
+		}
+
+		_serviceRegistration = _bundleContext.registerService(
+			PortalInstanceLifecycleListener.class,
+			new VirtualInstancePortalInstanceLifecycleListener(), null);
 	}
 
 	private static final Snapshot<PortalK8sConfigMapModifier>
@@ -323,6 +381,7 @@ public abstract class BaseConfigurationFactory {
 			BaseConfigurationFactory.class, PortalK8sConfigMapModifier.class,
 			null, true);
 
+	private BundleContext _bundleContext;
 	private volatile String _configMapName;
 	private volatile Map<String, String> _extensionProperties;
 	private volatile String _projectName;
@@ -345,6 +404,26 @@ public abstract class BaseConfigurationFactory {
 		}
 	};
 
+	private volatile ServiceRegistration<PortalInstanceLifecycleListener>
+		_serviceRegistration;
 	private volatile String _virtualInstanceId;
+
+	private class VirtualInstancePortalInstanceLifecycleListener
+		extends BasePortalInstanceLifecycleListener
+		implements EveryNodeEveryStartup {
+
+		@Override
+		public void portalInstanceRegistered(Company company) {
+			if (!Objects.equals(
+					company.getWebId(),
+					_properties.get("dxp.lxc.liferay.com.virtualInstanceId"))) {
+
+				return;
+			}
+
+			_runnable.run();
+		}
+
+	}
 
 }
