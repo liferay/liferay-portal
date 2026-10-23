@@ -352,8 +352,7 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 			_getDSRequestAdditionalProps(UserTestUtil.addUser()));
 	}
 
-	private void
-			_testGetDSRequestAdditionalPropsWithRestrictedCommerceOrderAttachment()
+	private void _testGetDSRequestAdditionalPropsWithRestrictedCommerceOrderAttachment()
 		throws Exception {
 
 		CommerceOrderAttachment commerceOrderAttachment =
