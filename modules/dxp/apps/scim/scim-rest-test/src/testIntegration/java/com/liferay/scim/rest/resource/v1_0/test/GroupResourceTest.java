@@ -758,8 +758,6 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 	}
 
 	private void _testGetV2GroupsWithDisplayNameFilter() throws Exception {
-		Group group = testDeleteV2Group_addGroup();
-
 		_assertListResponse(
 			groupResource.getV2Groups(
 				5, null, 0,
@@ -769,6 +767,9 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 			groupResource.getV2Groups(
 				5, null, 0, "displayName eq \"" + _PREFIX + "\""),
 			0, 0);
+
+		Group group = testDeleteV2Group_addGroup();
+
 		_assertListResponse(
 			groupResource.getV2Groups(
 				5, null, 0,
@@ -779,8 +780,9 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 			400,
 			groupResource.getV2GroupsHttpResponse(
 				5, null, 0,
-				RandomTestUtil.randomString() + " eq +\"" +
-					RandomTestUtil.randomString() + "\""));
+				StringBundler.concat(
+					RandomTestUtil.randomString(), " eq +\"",
+					RandomTestUtil.randomString(), "\"")));
 
 		assertHttpResponseStatusCode(
 			204, groupResource.deleteV2GroupHttpResponse(group.getId()));
