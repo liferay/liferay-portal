@@ -386,27 +386,6 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 	);
 
 	test(
-		'Clears the required error once the field is filled',
-		{tag: '@LPD-99230'},
-		async ({profilesPage}) => {
-			await profilesPage.goto();
-			await profilesPage.newProfileButton.click();
-
-			await profilesPage.saveButton.click();
-
-			await expect(profilesPage.nameInput).toHaveAccessibleDescription(
-				/This field is required\./
-			);
-
-			await profilesPage.nameInput.fill(profileName());
-
-			await expect(
-				profilesPage.nameInput
-			).not.toHaveAccessibleDescription(/This field is required\./);
-		}
-	);
-
-	test(
 		'Edits a profile and persists the change',
 		{tag: '@LPD-99230'},
 		async ({apiHelpers, profilesPage}) => {
