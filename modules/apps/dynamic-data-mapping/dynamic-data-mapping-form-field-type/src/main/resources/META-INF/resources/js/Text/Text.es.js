@@ -569,6 +569,14 @@ const Main = ({
 				valid={valid}
 				value={value ?? predefinedValue}
 			/>
+
+			{readOnly && (
+				<input
+					name={name}
+					type="hidden"
+					value={value ?? predefinedValue}
+				/>
+			)}
 		</FieldBase>
 	);
 };

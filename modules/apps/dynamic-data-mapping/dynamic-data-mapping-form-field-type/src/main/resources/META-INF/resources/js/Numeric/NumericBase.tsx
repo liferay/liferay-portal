@@ -132,6 +132,10 @@ const NumericBase = ({
 			{inputMask && (
 				<input name={name} type="hidden" value={inputValue.raw} />
 			)}
+
+			{!inputMask && readOnly && (
+				<input name={name} type="hidden" value={inputValue.masked} />
+			)}
 		</>
 	);
 };
