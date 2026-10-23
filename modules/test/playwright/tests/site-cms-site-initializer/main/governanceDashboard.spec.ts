@@ -230,6 +230,20 @@ async function addSpaceMemberAndSwitch(
 	await performUserSwitchViaApi(page, user.alternateName);
 }
 
+async function expectNoDashboardAccess(page: Page) {
+	await page.goto('/web/cms/home');
+
+	await expect(page.getByRole('menuitem', {name: 'Home'})).toBeVisible();
+
+	await expect(page.getByRole('menuitem', {name: 'Dashboard'})).toBeHidden();
+
+	await page.goto('/web/cms/dashboard');
+
+	await expect(
+		page.getByText('The requested resource could not be found.')
+	).toBeVisible();
+}
+
 async function expectSpaceOption(
 	page: Page,
 	spaceName: string,
@@ -1263,7 +1277,9 @@ test.describe('Permissions', () => {
 
 			await performUserSwitchViaApi(page, user.alternateName);
 
-			await page.goto('/web/cms/dashboard');
+			await page.goto('/web/cms/home');
+
+			await page.getByRole('menuitem', {name: 'Dashboard'}).click();
 
 			await expect(
 				page.getByRole('button', {exact: true, name: 'Governance'})
@@ -1311,15 +1327,7 @@ test.describe('Permissions', () => {
 				'Asset Library Content Reviewer'
 			);
 
-			await page.goto('/web/cms/dashboard');
-
-			await expect(
-				page.getByRole('heading', {name: 'What Is New'})
-			).toBeVisible();
-
-			await expect(
-				page.getByRole('button', {exact: true, name: 'Governance'})
-			).toBeHidden();
+			await expectNoDashboardAccess(page);
 		}
 	);
 
@@ -1333,15 +1341,7 @@ test.describe('Permissions', () => {
 				`space ${getRandomString()}`
 			);
 
-			await page.goto('/web/cms/dashboard');
-
-			await expect(
-				page.getByRole('heading', {name: 'What Is New'})
-			).toBeVisible();
-
-			await expect(
-				page.getByRole('button', {exact: true, name: 'Governance'})
-			).toBeHidden();
+			await expectNoDashboardAccess(page);
 		}
 	);
 });

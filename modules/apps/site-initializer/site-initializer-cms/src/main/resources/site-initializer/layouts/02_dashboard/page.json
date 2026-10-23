@@ -57,6 +57,13 @@
 		},
 		{
 			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "CMS Space Administrator",
+			"scope": 4
+		},
+		{
+			"actionIds": [
 			],
 			"roleName": "Guest",
 			"scope": 4

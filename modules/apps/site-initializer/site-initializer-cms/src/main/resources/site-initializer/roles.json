@@ -269,5 +269,16 @@
 		},
 		"scope": 1,
 		"type": 1
+	},
+	{
+		"actions": [
+		],
+		"externalReferenceCode": "L_CMS_SPACE_ADMINISTRATOR",
+		"name": "CMS Space Administrator",
+		"name_i18n": {
+			"en-US": "CMS Space Administrator"
+		},
+		"scope": 1,
+		"type": 1
 	}
 ]

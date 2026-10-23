@@ -25,11 +25,9 @@ const ALWAYS_VISIBLE_SECTIONS = [
 	'Recycle Bin',
 ];
 
-const CMS_ADMIN_ONLY_SECTIONS = [
-	'Dashboard',
-	'Content Structures',
-	'Categorization',
-];
+const CMS_ADMIN_ONLY_SECTIONS = ['Content Structures', 'Categorization'];
+
+const SPACE_ADMIN_SECTIONS = ['Dashboard'];
 
 async function expectSectionsVisibility(
 	page: Page,
@@ -125,7 +123,11 @@ test(
 
 		await expectSectionsVisibility(page, {
 			hidden: [],
-			visible: [...ALWAYS_VISIBLE_SECTIONS, ...CMS_ADMIN_ONLY_SECTIONS],
+			visible: [
+				...ALWAYS_VISIBLE_SECTIONS,
+				...SPACE_ADMIN_SECTIONS,
+				...CMS_ADMIN_ONLY_SECTIONS,
+			],
 		});
 	}
 );
@@ -139,7 +141,7 @@ test(
 		await test.step('A Space Member sees only the allowed CMS sections', () =>
 			expectAllowedSectionsForRole({
 				apiHelpers,
-				hidden: CMS_ADMIN_ONLY_SECTIONS,
+				hidden: [...SPACE_ADMIN_SECTIONS, ...CMS_ADMIN_ONLY_SECTIONS],
 				page,
 				role: null,
 				spaceName: space.name,
@@ -150,7 +152,7 @@ test(
 		await test.step('A Content Reviewer sees only the allowed CMS sections', () =>
 			expectAllowedSectionsForRole({
 				apiHelpers,
-				hidden: CMS_ADMIN_ONLY_SECTIONS,
+				hidden: [...SPACE_ADMIN_SECTIONS, ...CMS_ADMIN_ONLY_SECTIONS],
 				page,
 				role: 'Space Content Reviewer',
 				spaceName: space.name,
@@ -166,7 +168,7 @@ test(
 				role: 'Space Administrator',
 				spaceName: space.name,
 				spaceSummaryPage,
-				visible: ALWAYS_VISIBLE_SECTIONS,
+				visible: [...ALWAYS_VISIBLE_SECTIONS, ...SPACE_ADMIN_SECTIONS],
 			}));
 	}
 );
