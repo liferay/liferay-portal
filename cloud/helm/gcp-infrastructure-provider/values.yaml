@@ -1,53 +1,9 @@
-clusterBootstrap:
-    enabled: true
-    image: alpine:3
-    resources:
-        limits:
-            cpu: 3m
-            memory: 16Mi
-        requests:
-            cpu: 1m
-            memory: 8Mi
-    script: |
-        sysctl -w vm.max_map_count=1048576
-crossplaneGsaEmail: ""
-crossplaneNamespace: crossplane-system
-eck-operator:
-    enabled: true
-filestore:
-    enabled: true
-    storageClassName: filestore-sc
-    tier: standard
-gateway:
-    accessControl:
-        allowedCIDRs: []
-        enabled: false
-        gateways: []
-    enabled: true
-    internetFacing: true
-    namespace: envoy-gateway-system
-global:
-    gcp: {}
-liferay-dxp-operator:
-    clientExtensions:
-        enabled: true
-    enabled: true
-    fullnameOverride: dxp-operator
-    marketplace:
-        claimName: dxp-operator-marketplace
-        csi:
-            driver: filestore.csi.storage.gke.io
-            volumeAttributes:
-                protocol: NFS_V3
-                volume: marketplace
-        enabled: true
-        mountPath: /marketplace
-    namespaceOverride: dxp-operator-system
-    onlineActivationWorkflow:
-        enabled: true
-    podSecurityContext:
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
+deploymentContext:
+    deploymentName: ""
+    projectId: ""
+    projectNumber: ""
+    region: ""
+    vpcName: ""
 liferay-subchart-backup-controller:
     enabled: true
     serviceAccountName: backup-controller
