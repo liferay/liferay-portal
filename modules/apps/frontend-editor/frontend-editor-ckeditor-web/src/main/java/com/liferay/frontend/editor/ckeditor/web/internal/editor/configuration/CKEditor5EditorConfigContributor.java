@@ -112,12 +112,12 @@ public class CKEditor5EditorConfigContributor
 
 			int paddingLength = (4 - (payload.length() % 4)) % 4;
 
+			Base64.Decoder decoder = Base64.getUrlDecoder();
+
 			JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
 				new String(
-					Base64.getUrlDecoder(
-					).decode(
-						payload.concat(StringPool.EQUAL.repeat(paddingLength))
-					),
+					decoder.decode(
+						payload.concat(StringPool.EQUAL.repeat(paddingLength))),
 					StandardCharsets.UTF_8));
 
 			long expirationTime = payloadJSONObject.getLong("exp", 0);
