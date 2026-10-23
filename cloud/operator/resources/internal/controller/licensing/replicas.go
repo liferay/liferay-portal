@@ -1,0 +1,344 @@
+package licensing
+
+import (
+	"context"
+	"fmt"
+	"slices"
+	"time"
+
+	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
+	corev1 "k8s.io/api/core/v1"
+	errors "k8s.io/apimachinery/pkg/api/errors"
+	meta "k8s.io/apimachinery/pkg/api/meta"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	client "sigs.k8s.io/controller-runtime/pkg/client"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
+)
+
+const (
+	annotationScaledToZero                  = "licensing.liferay.com/scaled-to-zero"
+	conditionProvisioningGracePeriodExpired = "ProvisioningGracePeriodExpired"
+	conditionReplicasCountValid             = "ReplicasCountValid"
+	provisioningGracePeriodReplicaCeiling   = 1
+)
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) clearUnreachable(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) {
+	if liferayEnvironment.Status.UnreachableSince == nil {
+		return
+	}
+
+	if meta.IsStatusConditionTrue(
+		liferayEnvironment.Status.Conditions, conditionProvisioningGracePeriodExpired,
+	) {
+		logf.FromContext(context).Info(
+			"Provisioning recovered; restoring the licensed replica ceiling",
+			"environmentID", liferayEnvironment.Status.EnvironmentID,
+		)
+
+		liferayEnvironmentReconciler.Recorder.Event(
+			liferayEnvironment,
+			corev1.EventTypeNormal,
+			"ProvisioningRecovered",
+			"Provisioning is reachable again; the licensed replica ceiling was restored.",
+		)
+	}
+
+	meta.RemoveStatusCondition(
+		&liferayEnvironment.Status.Conditions, conditionProvisioningGracePeriodExpired,
+	)
+
+	liferayEnvironment.Status.UnreachableSince = nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceProvisioningGracePeriod(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) error {
+	if liferayEnvironment.Status.UnreachableSince == nil {
+		return nil
+	}
+
+	now := time.Now()
+
+	provisioningGracePeriodExpired := now.Sub(liferayEnvironment.Status.UnreachableSince.Time) >=
+		liferayEnvironmentReconciler.ProvisioningGracePeriod
+
+	expirationCeiling, expiredCondition, licenseExpired :=
+		liferayEnvironmentReconciler.evaluateLastKnownLicense(liferayEnvironment, now)
+
+	if !provisioningGracePeriodExpired && !licenseExpired {
+		return nil
+	}
+
+	var replicaCeilings []int32
+
+	if liferayEnvironment.Status.ReplicaCeiling != nil {
+		replicaCeilings = append(replicaCeilings, *liferayEnvironment.Status.ReplicaCeiling)
+	}
+
+	if provisioningGracePeriodExpired {
+		replicaCeilings = append(replicaCeilings, provisioningGracePeriodReplicaCeiling)
+	}
+
+	if licenseExpired {
+		meta.SetStatusCondition(&liferayEnvironment.Status.Conditions, expiredCondition)
+
+		replicaCeilings = append(replicaCeilings, expirationCeiling)
+	}
+
+	replicaCeiling := slices.Min(replicaCeilings)
+
+	if _, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+		context, liferayEnvironment, replicaCeiling,
+	); error != nil {
+		return error
+	}
+
+	if !provisioningGracePeriodExpired {
+		return nil
+	}
+
+	message := fmt.Sprintf(
+		"Provisioning has been unreachable since %s; the replica ceiling of %q is %d.",
+		liferayEnvironment.Status.UnreachableSince.Format(time.RFC3339),
+		liferayEnvironment.Spec.WorkloadRef.Name,
+		replicaCeiling,
+	)
+
+	if !meta.IsStatusConditionTrue(
+		liferayEnvironment.Status.Conditions, conditionProvisioningGracePeriodExpired,
+	) {
+		logf.FromContext(context).Error(
+			nil, message, "environmentID", liferayEnvironment.Status.EnvironmentID,
+		)
+
+		liferayEnvironmentReconciler.Recorder.Event(
+			liferayEnvironment,
+			corev1.EventTypeWarning,
+			"ProvisioningGracePeriodExpired",
+			message,
+		)
+	}
+
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Message: message,
+			Reason:  "ProvisioningUnreachable",
+			Status:  metav1.ConditionTrue,
+			Type:    conditionProvisioningGracePeriodExpired,
+		},
+	)
+
+	return nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplicaCeiling(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	replicaCeiling int32,
+) (time.Duration, error) {
+	logger := logf.FromContext(context)
+
+	ceilingChanged := liferayEnvironment.Status.ReplicaCeiling == nil ||
+		*liferayEnvironment.Status.ReplicaCeiling != replicaCeiling
+
+	liferayEnvironment.Status.ReplicaCeiling = &replicaCeiling
+
+	workloadKind := liferayEnvironment.Spec.WorkloadRef.EffectiveKind()
+
+	workload, getError := liferayEnvironmentReconciler.getWorkload(
+		context, liferayEnvironment,
+	)
+
+	if errors.IsNotFound(getError) {
+		logger.V(1).Info(
+			"Workload not found; skipping replica enforcement",
+			"workload", liferayEnvironment.Spec.WorkloadRef.Name,
+		)
+
+		liferayEnvironment.Status.EffectiveReplicas = nil
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"Workload %s %q does not exist.",
+					workloadKind, liferayEnvironment.Spec.WorkloadRef.Name,
+				),
+				Reason: "WorkloadNotFound",
+				Status: metav1.ConditionUnknown,
+				Type:   conditionReplicasCountValid,
+			},
+		)
+
+		return 0, nil
+	}
+
+	if getError != nil {
+		return 0, getError
+	}
+
+	liveReplicas := getReplicas(workload)
+
+	desiredReplicas := resolveDesiredReplicas(liferayEnvironment, liveReplicas)
+
+	annotations := workload.GetAnnotations()
+
+	markedScaledToZero := annotations[annotationScaledToZero] == "true"
+
+	if markedScaledToZero && replicaCeiling > 0 && liferayEnvironment.Spec.Autoscaling != nil {
+		desiredReplicas = max(desiredReplicas, liferayEnvironment.Spec.Autoscaling.MinReplicas)
+	}
+
+	effectiveReplicas := min(desiredReplicas, replicaCeiling)
+
+	markScaledToZero := liferayEnvironment.Spec.Autoscaling != nil && replicaCeiling == 0 &&
+		(markedScaledToZero || liveReplicas == nil || *liveReplicas > 0)
+
+	replicasChanged := liveReplicas == nil || *liveReplicas != effectiveReplicas
+
+	if ceilingChanged || replicasChanged {
+		if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
+			return 0, error
+		}
+	}
+
+	if replicasChanged || markScaledToZero != markedScaledToZero {
+		setReplicas(&effectiveReplicas, workload)
+
+		if markScaledToZero {
+			if annotations == nil {
+				annotations = map[string]string{}
+			}
+
+			annotations[annotationScaledToZero] = "true"
+		} else {
+			delete(annotations, annotationScaledToZero)
+		}
+
+		workload.SetAnnotations(annotations)
+
+		if error := liferayEnvironmentReconciler.Update(
+			context, workload, client.FieldOwner(fieldOwner),
+		); error != nil {
+			logger.Error(
+				error, "Unable to enforce the licensed replica ceiling",
+				"effectiveReplicas", effectiveReplicas,
+				"workload", workload.GetName(),
+			)
+
+			liferayEnvironment.Status.EffectiveReplicas = liveReplicas
+
+			meta.SetStatusCondition(
+				&liferayEnvironment.Status.Conditions,
+				metav1.Condition{
+					Message: fmt.Sprintf(
+						"Unable to scale %s %q to %d replicas: %s.",
+						workloadKind, workload.GetName(), effectiveReplicas, error,
+					),
+					Reason: "WorkloadUpdateRejected",
+					Status: metav1.ConditionFalse,
+					Type:   conditionReplicasCountValid,
+				},
+			)
+
+			if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
+				return 0, error
+			}
+
+			return liferayEnvironmentReconciler.RetryInitialDelay, nil
+		}
+
+		logger.Info(
+			"Enforced licensed replica ceiling",
+			"desiredReplicas", desiredReplicas,
+			"effectiveReplicas", effectiveReplicas,
+			"replicaCeiling", replicaCeiling,
+			"workload", workload.GetName(),
+		)
+	}
+
+	liferayEnvironment.Status.EffectiveReplicas = &effectiveReplicas
+
+	if error := liferayEnvironmentReconciler.enforceAutoscalerCeiling(
+		context, liferayEnvironment, replicaCeiling,
+	); error != nil {
+		logger.Error(
+			error, "Unable to enforce the licensed autoscaling ceiling",
+			"replicaCeiling", replicaCeiling,
+			"workload", workload.GetName(),
+		)
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"Unable to cap the autoscaler of %s %q to %d replicas: %s.",
+					workloadKind, workload.GetName(), replicaCeiling, error,
+				),
+				Reason: "AutoscalerUpdateRejected",
+				Status: metav1.ConditionFalse,
+				Type:   conditionReplicasCountValid,
+			},
+		)
+
+		if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
+			return 0, error
+		}
+
+		return liferayEnvironmentReconciler.RetryInitialDelay, nil
+	}
+
+	requestedReplicas := desiredReplicas
+
+	if liferayEnvironment.Spec.Autoscaling != nil {
+		requestedReplicas = liferayEnvironment.Spec.Autoscaling.MaxReplicas
+	}
+
+	if requestedReplicas > replicaCeiling {
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"Requested %d replicas exceeds the replica ceiling of %d; capping to %d.",
+					requestedReplicas, replicaCeiling, replicaCeiling,
+				),
+				Reason: "ExceedsLicensedMaximum",
+				Status: metav1.ConditionFalse,
+				Type:   conditionReplicasCountValid,
+			},
+		)
+
+		return 0, nil
+	}
+
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Reason: "WithinLicensedLimit",
+			Status: metav1.ConditionTrue,
+			Type:   conditionReplicasCountValid,
+		},
+	)
+
+	return 0, nil
+}
+
+func resolveDesiredReplicas(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	workloadReplicas *int32,
+) int32 {
+	if liferayEnvironment.Spec.DesiredReplicas != nil {
+		return *liferayEnvironment.Spec.DesiredReplicas
+	}
+
+	if workloadReplicas != nil {
+		return *workloadReplicas
+	}
+
+	return 1
+}
