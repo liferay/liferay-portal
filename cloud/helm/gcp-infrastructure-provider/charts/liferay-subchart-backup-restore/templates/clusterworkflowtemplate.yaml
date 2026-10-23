@@ -329,7 +329,6 @@ spec:
                     -   postgres
                     -   --instance={{ "{{" }}inputs.parameters.restore-instance}}
                     -   --password=$(PGPASSWORD)
-                    -   --project={{ .Values.global.gcp.projectId }}
                     -   --quiet
                 command: [gcloud]
                 env:
@@ -379,7 +378,6 @@ spec:
                     -   backups
                     -   restore
                     -   "{{ "{{" }}inputs.parameters.database-snapshot-uuid}}"
-                    -   --project={{ .Values.global.gcp.projectId }}
                     -   --quiet
                     -   --restore-instance
                     -   "{{ "{{" }}inputs.parameters.restore-instance}}"
