@@ -13,9 +13,11 @@ import com.liferay.headless.cms.internal.util.CMSGroupUtil;
 import com.liferay.headless.cms.resource.v1_0.UnlinkedAssetResource;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
@@ -90,8 +92,10 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 		}
 
 		UnlinkedAssetSearcher unlinkedAssetSearcher = new UnlinkedAssetSearcher(
-			_aggregations, _objectEntryLocalService, _searcher,
-			_searchRequestBuilderFactory, _siteNavigationMenuItemLocalService);
+			_aggregations, _objectDefinitionLocalService,
+			_objectEntryLocalService, _objectRelationshipLocalService,
+			_searcher, _searchRequestBuilderFactory,
+			_siteNavigationMenuItemLocalService);
 
 		SearchResponse searchResponse = unlinkedAssetSearcher.search(
 			contextCompany.getCompanyId(), selectedSpaceGroupIds,
@@ -185,6 +189,9 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 	private DepotEntryService _depotEntryService;
 
 	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
 	private ObjectDefinitionService _objectDefinitionService;
 
 	@Reference
@@ -192,6 +199,9 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private Portal _portal;

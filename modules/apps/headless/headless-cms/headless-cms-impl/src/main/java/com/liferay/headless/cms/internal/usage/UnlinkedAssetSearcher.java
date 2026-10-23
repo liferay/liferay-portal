@@ -8,10 +8,19 @@ package com.liferay.headless.cms.internal.usage;
 import com.liferay.headless.cms.internal.util.CMSSearchUtil;
 import com.liferay.layout.model.LayoutClassedModelUsageTable;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.petra.sql.dsl.DynamicObjectRelationshipMappingTable;
+import com.liferay.object.petra.sql.dsl.DynamicObjectRelationshipMappingTableFactory;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassNameTable;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -45,12 +54,17 @@ public class UnlinkedAssetSearcher {
 
 	public UnlinkedAssetSearcher(
 		Aggregations aggregations,
-		ObjectEntryLocalService objectEntryLocalService, Searcher searcher,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectEntryLocalService objectEntryLocalService,
+		ObjectRelationshipLocalService objectRelationshipLocalService,
+		Searcher searcher,
 		SearchRequestBuilderFactory searchRequestBuilderFactory,
 		SiteNavigationMenuItemLocalService siteNavigationMenuItemLocalService) {
 
 		_aggregations = aggregations;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectEntryLocalService = objectEntryLocalService;
+		_objectRelationshipLocalService = objectRelationshipLocalService;
 		_searcher = searcher;
 		_searchRequestBuilderFactory = searchRequestBuilderFactory;
 		_siteNavigationMenuItemLocalService =
@@ -124,6 +138,54 @@ public class UnlinkedAssetSearcher {
 
 		objectEntryIds.addAll(
 			TransformUtil.transform(classPKs, String::valueOf));
+	}
+
+	private void _addManyToManyObjectEntryIds(
+			long companyId, Set<String> objectEntryIds)
+		throws Exception {
+
+		Set<Long> objectRelationshipIds = new HashSet<>();
+
+		for (ObjectDefinition objectDefinition :
+				_objectDefinitionLocalService.getObjectDefinitions(
+					companyId, true, WorkflowConstants.STATUS_APPROVED)) {
+
+			if (!objectDefinition.isCMS()) {
+				continue;
+			}
+
+			for (ObjectRelationship objectRelationship :
+					_objectRelationshipLocalService.getObjectRelationships(
+						objectDefinition.getObjectDefinitionId(),
+						ObjectRelationshipConstants.TYPE_MANY_TO_MANY)) {
+
+				if (!objectRelationshipIds.add(
+						objectRelationship.getObjectRelationshipId())) {
+
+					continue;
+				}
+
+				DynamicObjectRelationshipMappingTable
+					dynamicObjectRelationshipMappingTable =
+						DynamicObjectRelationshipMappingTableFactory.create(
+							objectRelationship);
+
+				List<Object[]> rows = _objectEntryLocalService.dslQuery(
+					DSLQueryFactoryUtil.select(
+						dynamicObjectRelationshipMappingTable.
+							getPrimaryKeyColumn1(),
+						dynamicObjectRelationshipMappingTable.
+							getPrimaryKeyColumn2()
+					).from(
+						dynamicObjectRelationshipMappingTable
+					));
+
+				for (Object[] row : rows) {
+					objectEntryIds.add(String.valueOf(row[0]));
+					objectEntryIds.add(String.valueOf(row[1]));
+				}
+			}
+		}
 	}
 
 	private void _addNavigationMenuExternalReferenceCodes(
@@ -215,6 +277,18 @@ public class UnlinkedAssetSearcher {
 
 		_addLayoutObjectEntryIds(companyId, objectEntryIds);
 
+		try {
+			_addManyToManyObjectEntryIds(companyId, objectEntryIds);
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get the object entries of many to many " +
+						"relationships",
+					exception);
+			}
+		}
+
 		Set<String> externalReferenceCodes = new HashSet<>();
 
 		_addNavigationMenuExternalReferenceCodes(
@@ -268,8 +342,14 @@ public class UnlinkedAssetSearcher {
 			CMSOutboundLinksUtil.getObjectEntryIdToken(0), '0',
 			StringPool.BLANK);
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		UnlinkedAssetSearcher.class);
+
 	private final Aggregations _aggregations;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectRelationshipLocalService
+		_objectRelationshipLocalService;
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 	private final Searcher _searcher;
 	private final SiteNavigationMenuItemLocalService

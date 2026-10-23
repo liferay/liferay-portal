@@ -17,8 +17,10 @@ import com.liferay.headless.cms.resource.v1_0.AssetStatisticsResource;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryTable;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -376,8 +378,9 @@ public class AssetStatisticsResourceImpl
 		try {
 			UnlinkedAssetSearcher unlinkedAssetSearcher =
 				new UnlinkedAssetSearcher(
-					_aggregations, _objectEntryLocalService, _searcher,
-					_searchRequestBuilderFactory,
+					_aggregations, _objectDefinitionLocalService,
+					_objectEntryLocalService, _objectRelationshipLocalService,
+					_searcher, _searchRequestBuilderFactory,
 					_siteNavigationMenuItemLocalService);
 
 			return unlinkedAssetSearcher.getCount(
@@ -467,10 +470,16 @@ public class AssetStatisticsResourceImpl
 		_kaleoTaskInstanceTokenLocalService;
 
 	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
 	private ObjectDefinitionService _objectDefinitionService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private SearchEngineAdapter _searchEngineAdapter;
