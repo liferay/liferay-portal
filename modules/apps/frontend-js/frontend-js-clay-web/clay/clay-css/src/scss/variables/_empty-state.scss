@@ -24,6 +24,11 @@ $c-empty-state-image: map-deep-merge(
 
 		'.c-empty-state-illustration': (
 			margin-bottom: -2.5rem,
+
+			'> svg': (
+				height: 288px,
+				width: 288px,
+			),
 		),
 	),
 	$c-empty-state-image
@@ -95,6 +100,11 @@ $c-empty-state-sm: map-deep-merge(
 			'.c-empty-state-illustration': (
 				display: flex,
 				margin-bottom: -0.5rem,
+
+				'> svg': (
+					height: 138px,
+					width: 138px,
+				),
 			),
 		),
 
