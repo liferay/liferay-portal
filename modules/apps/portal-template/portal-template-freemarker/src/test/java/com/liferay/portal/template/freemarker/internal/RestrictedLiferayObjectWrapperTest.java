@@ -133,6 +133,28 @@ public class RestrictedLiferayObjectWrapperTest
 	}
 
 	@Test
+	public void testGetWithAllowedClass() throws Exception {
+		_testGetWithAllowedClass("*", "com.liferay.portal.template.freemarker");
+		_testGetWithAllowedClass("*", TestLiferayMethodObject.class.getName());
+		_testGetWithAllowedClass(
+			"com.liferay.portal.*", "com.liferay.portal.template.freemarker");
+		_testGetWithAllowedClass(
+			"com.liferay.portal.*", TestLiferayMethodObject.class.getName());
+		_testGetWithAllowedClass(
+			"com.liferay.portal.template.freemarker",
+			"com.liferay.portal.template.freemarker");
+		_testGetWithAllowedClass(
+			"com.liferay.portal.template.freemarker",
+			TestLiferayMethodObject.class.getName());
+		_testGetWithAllowedClass(
+			TestLiferayMethodObject.class.getName(),
+			"com.liferay.portal.template.freemarker");
+		_testGetWithAllowedClass(
+			TestLiferayMethodObject.class.getName(),
+			TestLiferayMethodObject.class.getName());
+	}
+
+	@Test
 	public void testGetWithRestrictedClass() throws Exception {
 		_testGetWithRestrictedClass("com.liferay.portal.*");
 		_testGetWithRestrictedClass("com.liferay.portal.template.freemarker");
@@ -473,6 +495,43 @@ public class RestrictedLiferayObjectWrapperTest
 			new RestrictedLiferayObjectWrapper(null, null, null), "_isMatch",
 			new Class<?>[] {List.class, Class.class, Map.class, List.class},
 			classes, clazz, matchResults, packageNames);
+	}
+
+	private void _testGetWithAllowedClass(
+			String allowedClassName, String restrictedClassName)
+		throws Exception {
+
+		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper =
+			new RestrictedLiferayObjectWrapper(
+				new String[] {allowedClassName},
+				new String[] {restrictedClassName}, null);
+
+		TemplateModel templateModel = restrictedLiferayObjectWrapper.wrap(
+			new TestLiferayMethodObject("test"));
+
+		Assert.assertThat(
+			templateModel,
+			CoreMatchers.not(
+				CoreMatchers.instanceOf(LiferayFreeMarkerStringModel.class)));
+
+		StringModel stringModel = (StringModel)templateModel;
+
+		Assert.assertNull(stringModel.get("Name"));
+		Assert.assertNull(stringModel.get("generateName"));
+
+		SimpleMethodModel simpleMethodModel =
+			(SimpleMethodModel)stringModel.get("getName");
+
+		TemplateModel resultTemplateModel =
+			(TemplateModel)simpleMethodModel.exec(Collections.emptyList());
+
+		Assert.assertEquals("test", resultTemplateModel.toString());
+
+		Assert.assertNull(stringModel.get("getname"));
+
+		TemplateModel nameTemplateModel = stringModel.get("name");
+
+		Assert.assertEquals("test", nameTemplateModel.toString());
 	}
 
 	private void _testGetWithRestricted(
