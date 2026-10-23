@@ -182,6 +182,36 @@ describe('Geolocation', () => {
 		expect(previousListener.removeListener).toHaveBeenCalledTimes(1);
 		expect(currentListener.removeListener).not.toHaveBeenCalled();
 	});
+
+	it('submits the value with the form when readOnly is set', () => {
+		const {container} = render(
+			<ConfigProvider value={{defaultLanguageId: 'en_US'}}>
+				<FormProvider
+					initialState={{
+						editingLanguageId: 'en_US',
+						pages: [],
+					}}
+				>
+					<PageProvider value={{pageIndex: 0}}>
+						<form>
+							<Geolocation
+								instanceId="readOnly"
+								mapProviderKey="OpenStreetMap"
+								name="geo"
+								onChange={jest.fn()}
+								readOnly
+								value={{lat: 1, lng: 1}}
+							/>
+						</form>
+					</PageProvider>
+				</FormProvider>
+			</ConfigProvider>
+		);
+
+		const formData = new FormData(container.querySelector('form'));
+
+		expect(formData.getAll('geo')).toEqual(['{"lat":1,"lng":1}']);
+	});
 });
 
 describe('Geolocation Google Maps loader', () => {

@@ -297,4 +297,21 @@ describe('Grid', () => {
 
 		expect(container).toMatchSnapshot();
 	});
+
+	it('submits the value with the form when readOnly is set', () => {
+		const {container} = render(
+			<form>
+				<GridWithProvider
+					name="gridField"
+					readOnly
+					spritemap={spritemap}
+					value={{jehf: 'fieldId'}}
+				/>
+			</form>
+		);
+
+		const formData = new FormData(container.querySelector('form'));
+
+		expect(formData.getAll('gridField')).toEqual(['jehf;fieldId']);
+	});
 });

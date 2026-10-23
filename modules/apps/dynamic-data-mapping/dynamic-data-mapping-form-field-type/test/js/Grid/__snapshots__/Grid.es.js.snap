@@ -292,6 +292,10 @@ exports[`Grid is not editable 1`] = `
     <div
       class="table-responsive"
     >
+      <input
+        type="hidden"
+        value=""
+      />
       <div
         class="table-responsive"
       >
