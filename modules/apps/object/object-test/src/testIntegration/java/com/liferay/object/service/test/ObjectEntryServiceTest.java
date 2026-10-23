@@ -1169,17 +1169,17 @@ public class ObjectEntryServiceTest {
 		AssertUtils.assertFailure(
 			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
-				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
-				" permission for ", _objectDefinition.getClassName(),
-				StringPool.SPACE, objectEntry2.getObjectEntryId()),
-			() -> _testGetObjectEntry(objectEntry2, _user));
-		AssertUtils.assertFailure(
-			PrincipalException.MustHavePermission.class,
-			StringBundler.concat(
 				"User ", _user.getUserId(), " must have ", ActionKeys.DELETE,
 				" permission for ", _objectDefinition.getClassName(),
 				StringPool.SPACE, objectEntry2.getObjectEntryId()),
 			() -> _testDeleteObjectEntry(objectEntry2, _user));
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", _objectDefinition.getClassName(),
+				StringPool.SPACE, objectEntry2.getObjectEntryId()),
+			() -> _testGetObjectEntry(objectEntry2, _user));
 	}
 
 	@Test
