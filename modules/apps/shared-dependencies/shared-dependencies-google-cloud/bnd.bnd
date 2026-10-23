@@ -22,24 +22,4 @@ Import-Package:\
 	com.google.shopping.*;version='2.51.0',\
 	com.google.type.*;version='2.51.0',\
 	\
-	google.api.*;version='2.51.0',\
-	\
-	google.apps.*;version='2.51.0',\
-	\
-	google.cloud.*;version='2.51.0',\
-	\
-	google.geo.*;version='2.51.0',\
-	\
-	google.iam.v1.*;version='1.46.0',\
-	\
-	google.logging.*;version='2.51.0',\
-	\
-	google.longrunning.*;version='2.51.0',\
-	\
-	google.rpc.*;version='2.51.0',\
-	\
-	google.shopping.*;version='2.51.0',\
-	\
-	google.type.*;version='2.51.0',\
-	\
 	org.threeten.bp.*;version='1.7.0'
