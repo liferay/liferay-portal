@@ -29,7 +29,6 @@ const ALERT_DISPLAYS: AlertDisplaysType = {
 const connector = connect(
 	(state: RootState) => ({
 		alertsIMap: state.get('alerts'),
-		modalActive: state.get('modals').size > 0,
 	}),
 	{
 		removeAlert,
@@ -45,14 +44,9 @@ interface IAlertFeedProps
 export const AlertFeed: React.FC<IAlertFeedProps> = ({
 	alertsIMap,
 	className,
-	modalActive = false,
 	removeAlert,
 }) => (
-	<div
-		className={getCN(className, 'alert-feed-root alert-notifications', {
-			'modal-active': modalActive,
-		})}
-	>
+	<div className={getCN(className, 'alert-feed-root alert-notifications')}>
 		<TransitionGroup>
 			{alertsIMap
 				.map((alertIMap: Map<string, any>) => {

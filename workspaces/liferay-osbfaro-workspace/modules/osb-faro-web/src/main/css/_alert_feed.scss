@@ -4,8 +4,4 @@
 	margin: 3rem;
 	position: fixed;
 	z-index: $alertZIndex;
-
-	&.modal-active {
-		z-index: $windowZIndex + $alertZIndex;
-	}
 }

@@ -16,7 +16,6 @@ import {
 	NAME,
 } from 'shared/util/pagination';
 import {addAlert} from 'shared/actions/alerts';
-import {close, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {individualsListColumns} from 'shared/util/table-columns';
@@ -33,7 +32,7 @@ import {useRequest} from 'shared/hooks/useRequest';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
 import {withSelectionProvider} from 'shared/context/selection';
 
-const connector = connect(null, {addAlert, close, open});
+const connector = connect(null, {addAlert});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

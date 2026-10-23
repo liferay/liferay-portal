@@ -39,7 +39,6 @@ import {
 	removeItemsByIndex,
 } from '../utils/custom-inputs';
 import {isBoolean, isNil, isNull} from 'lodash';
-import {Modal} from 'shared/types/Modal';
 import {parseActivityKey, parseReferencedEntityId} from '../utils/utils';
 
 type Touched = {
@@ -60,8 +59,6 @@ type Valid = {
 
 interface IBehaviorInputProps extends ISegmentEditorCustomInputBase {
 	channelId: string;
-	close: Modal.close;
-	open: Modal.open;
 	segmentCategory: SegmentCategories;
 	segmentType: SegmentTypes;
 	touched: Touched;
@@ -77,6 +74,8 @@ export class BehaviorInput extends React.Component<
 	IBehaviorInputState
 > {
 	static contextType = ReferencedObjectsContext;
+
+	declare context: React.ContextType<typeof ReferencedObjectsContext>;
 
 	constructor(props: IBehaviorInputProps) {
 		super(props);
@@ -99,8 +98,6 @@ export class BehaviorInput extends React.Component<
 			),
 		};
 	}
-
-	declare context: React.ContextType<typeof ReferencedObjectsContext>;
 
 	getAttributeCriterionIMap(value: CustomValue) {
 		return getFilterCriterionIMapByPropertyNamePrefix(

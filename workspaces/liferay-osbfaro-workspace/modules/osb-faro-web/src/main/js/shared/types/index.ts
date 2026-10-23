@@ -1,11 +1,9 @@
 import React from 'react';
 import {Filters} from 'shared/util/filter';
 import {Map, OrderedMap, Set} from 'immutable';
-import {Modal} from './Modal';
 import {OrderByDirections, RangeKeyTimeRanges} from 'shared/util/constants';
 
 export {Alert} from './Alert';
-export {Modal} from './Modal';
 
 export interface IDataColumn {
 	accessor: string;
@@ -151,11 +149,6 @@ export type Sort = {
 	column: string;
 	type: OrderByDirections;
 };
-
-export interface HasModal {
-	close: Modal.close;
-	open: Modal.open;
-}
 
 import {OrderParams} from 'shared/util/records';
 

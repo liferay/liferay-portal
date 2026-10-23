@@ -1,6 +1,5 @@
 import AlertFeed from 'shared/components/AlertFeed';
 import Loading from 'shared/components/Loading';
-import ModalRenderer from 'shared/components/ModalRenderer';
 import React, {Suspense, useEffect, useState} from 'react';
 import TrackingConsentBanner from 'shared/components/TrackingConsentBanner';
 import {FaroEnv} from 'shared/util/constants';
@@ -57,8 +56,6 @@ const RootLayout = () => {
 			<ScrollRestoration />
 
 			<AlertFeed />
-
-			<ModalRenderer />
 
 			<Suspense fallback={<Loading />}>
 				<Outlet />
