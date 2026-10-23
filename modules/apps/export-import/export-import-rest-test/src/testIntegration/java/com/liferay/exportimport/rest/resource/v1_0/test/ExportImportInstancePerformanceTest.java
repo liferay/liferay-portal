@@ -106,7 +106,7 @@ public class ExportImportInstancePerformanceTest {
 		Files.write(file.toPath(), httpResponse.getBinaryContent());
 
 		ImportPreview importPreview = _importPreviewResource.postImportPreview(
-			null, null, null,
+			null, null,
 			HashMapBuilder.put(
 				"file", file
 			).build());
@@ -122,7 +122,7 @@ public class ExportImportInstancePerformanceTest {
 
 			ImportProcess importProcess =
 				_importProcessResource.postImportProcess(
-					null, null, importProcessRequest);
+					null, importProcessRequest);
 
 			ExportImportTestUtil.assertBackgroundTaskSuccessful(
 				importProcess.getId(), _IMPORT_BACKGROUND_TASK_MAX_WAIT_TIME,
@@ -134,7 +134,7 @@ public class ExportImportInstancePerformanceTest {
 		throws Exception {
 
 		ExportPreview exportPreview = _exportPreviewResource.getExportPreview(
-			null, null, null, null, null, null);
+			null, null, null, null, null);
 
 		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
 
@@ -143,7 +143,7 @@ public class ExportImportInstancePerformanceTest {
 			exportPreview.getPortletDataHandlers());
 
 		ExportProcess exportProcess = _exportProcessResource.postExportProcess(
-			null, null, exportProcessRequest);
+			null, exportProcessRequest);
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(
 			exportProcess.getId(), backgroundTaskMaxWaitTime,

@@ -23,7 +23,7 @@ describe('getPreview', () => {
 				startDate: '2026-06-26T00:00:00.000Z',
 				type: 'DateRange',
 			},
-			url: '/o/export-import/v1.0/sites/L_GUEST/portlets/com_liferay_document_library_web_portlet_DLAdminPortlet/export-preview?plid=1',
+			url: '/o/export-import/v1.0/sites/L_GUEST/export-preview?portletId=com_liferay_document_library_web_portlet_DLPortlet&sitePageExternalReferenceCode=home',
 		});
 
 		const url = getRequestedURL();
@@ -32,7 +32,12 @@ describe('getPreview', () => {
 		expect(url.searchParams.get('endDate')).toBe(
 			'2026-06-26T12:00:00.000Z'
 		);
-		expect(url.searchParams.get('plid')).toBe('1');
+		expect(url.searchParams.get('portletId')).toBe(
+			'com_liferay_document_library_web_portlet_DLPortlet'
+		);
+		expect(url.searchParams.get('sitePageExternalReferenceCode')).toBe(
+			'home'
+		);
 		expect(url.searchParams.get('startDate')).toBe(
 			'2026-06-26T00:00:00.000Z'
 		);
@@ -52,14 +57,16 @@ describe('getPreview', () => {
 
 	it('keeps the url untouched when there is no date filter', async () => {
 		await getPreview({
-			url: '/o/export-import/v1.0/sites/L_GUEST/export-preview?plid=1',
+			url: '/o/export-import/v1.0/sites/L_GUEST/export-preview?portletId=com_liferay_document_library_web_portlet_DLAdminPortlet',
 		});
 
 		const url = getRequestedURL();
 
 		expect(url.searchParams.has('dateFilterType')).toBe(false);
 		expect(url.searchParams.has('endDate')).toBe(false);
-		expect(url.searchParams.get('plid')).toBe('1');
+		expect(url.searchParams.get('portletId')).toBe(
+			'com_liferay_document_library_web_portlet_DLAdminPortlet'
+		);
 		expect(url.searchParams.has('startDate')).toBe(false);
 	});
 });

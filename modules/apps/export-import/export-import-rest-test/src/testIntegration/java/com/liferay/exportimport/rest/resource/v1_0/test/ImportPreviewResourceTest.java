@@ -128,7 +128,7 @@ public class ImportPreviewResourceTest
 		assertHttpResponseStatusCode(
 			403,
 			_importPreviewResource.postAssetLibraryImportPreviewHttpResponse(
-				externalReferenceCode, 0L, null, null,
+				externalReferenceCode, null, null,
 				HashMapBuilder.put(
 					"file",
 					_exportLayoutAsFile(testDepotEntryGroup.getGroupId())
@@ -137,7 +137,7 @@ public class ImportPreviewResourceTest
 		_testPostImportPreviewWithInvalidFile(
 			file ->
 				importPreviewResource.postAssetLibraryImportPreviewHttpResponse(
-					externalReferenceCode, 0L, null, null,
+					externalReferenceCode, null, null,
 					HashMapBuilder.put(
 						"file", file
 					).build()));
@@ -149,19 +149,21 @@ public class ImportPreviewResourceTest
 		try {
 			String portletId = objectDefinition.getPortletId();
 
-			long plid = _addLayoutWithPortlet(testDepotEntryGroup, portletId);
+			Layout layout = _addLayoutWithPortlet(
+				testDepotEntryGroup, portletId);
 
 			_testPostImportPreviewWithObjectEntries(
 				testDepotEntryGroup.getGroupId(), objectDefinition,
 				file -> importPreviewResource.postAssetLibraryImportPreview(
-					externalReferenceCode, 0L, null, null,
+					externalReferenceCode, null, null,
 					HashMapBuilder.put(
 						"file", file
 					).build()));
 			_testPostPortletImportPreviewWithObjectEntries(
-				testDepotEntryGroup.getGroupId(), objectDefinition, plid,
+				testDepotEntryGroup.getGroupId(), objectDefinition,
+				layout.getPlid(),
 				file -> importPreviewResource.postAssetLibraryImportPreview(
-					externalReferenceCode, plid, portletId, null,
+					externalReferenceCode, portletId, null,
 					HashMapBuilder.put(
 						"file", file
 					).build()));
@@ -186,14 +188,14 @@ public class ImportPreviewResourceTest
 		assertHttpResponseStatusCode(
 			403,
 			_importPreviewResource.postImportPreviewHttpResponse(
-				0L, null, null,
+				null, null,
 				HashMapBuilder.put(
 					"file", _exportLayoutAsFile(group.getGroupId())
 				).build()));
 
 		_testPostImportPreviewWithInvalidFile(
 			file -> importPreviewResource.postImportPreviewHttpResponse(
-				0L, null, null,
+				null, null,
 				HashMapBuilder.put(
 					"file", file
 				).build()));
@@ -205,19 +207,19 @@ public class ImportPreviewResourceTest
 		try {
 			String portletId = objectDefinition.getPortletId();
 
-			long plid = _addLayoutWithPortlet(testGroup, portletId);
+			Layout layout = _addLayoutWithPortlet(testGroup, portletId);
 
 			_testPostImportPreviewWithObjectEntries(
 				group.getGroupId(), objectDefinition,
 				file -> importPreviewResource.postImportPreview(
-					0L, null, null,
+					null, null,
 					HashMapBuilder.put(
 						"file", file
 					).build()));
 			_testPostPortletImportPreviewWithObjectEntries(
-				group.getGroupId(), objectDefinition, plid,
+				group.getGroupId(), objectDefinition, layout.getPlid(),
 				file -> importPreviewResource.postImportPreview(
-					plid, portletId, null,
+					portletId, null,
 					HashMapBuilder.put(
 						"file", file
 					).build()));
@@ -240,14 +242,14 @@ public class ImportPreviewResourceTest
 		assertHttpResponseStatusCode(
 			403,
 			_importPreviewResource.postSiteImportPreviewHttpResponse(
-				externalReferenceCode, 0L, null, null,
+				externalReferenceCode, null, null, null,
 				HashMapBuilder.put(
 					"file", _exportLayoutAsFile(testGroup.getGroupId())
 				).build()));
 
 		_testPostImportPreviewWithInvalidFile(
 			file -> importPreviewResource.postSiteImportPreviewHttpResponse(
-				externalReferenceCode, 0L, null, null,
+				externalReferenceCode, null, null, null,
 				HashMapBuilder.put(
 					"file", file
 				).build()));
@@ -258,19 +260,27 @@ public class ImportPreviewResourceTest
 		try {
 			String portletId = objectDefinition.getPortletId();
 
-			long plid = _addLayoutWithPortlet(testGroup, portletId);
+			Layout layout = _addLayoutWithPortlet(testGroup, portletId);
 
 			_testPostImportPreviewWithObjectEntries(
 				testGroup.getGroupId(), objectDefinition,
 				file -> importPreviewResource.postSiteImportPreview(
-					externalReferenceCode, 0L, null, null,
+					externalReferenceCode, null, null, null,
 					HashMapBuilder.put(
 						"file", file
 					).build()));
 			_testPostPortletImportPreviewWithObjectEntries(
-				testGroup.getGroupId(), objectDefinition, plid,
+				testGroup.getGroupId(), objectDefinition, layout.getPlid(),
 				file -> importPreviewResource.postSiteImportPreview(
-					externalReferenceCode, plid, portletId, null,
+					externalReferenceCode, portletId,
+					layout.getExternalReferenceCode(), null,
+					HashMapBuilder.put(
+						"file", file
+					).build()));
+			_testPostPortletImportPreviewWithObjectEntries(
+				testGroup.getGroupId(), objectDefinition, layout.getPlid(),
+				file -> importPreviewResource.postSiteImportPreview(
+					externalReferenceCode, portletId, null, null,
 					HashMapBuilder.put(
 						"file", file
 					).build()));
@@ -284,14 +294,14 @@ public class ImportPreviewResourceTest
 		_testPostSiteImportPreviewWithLayoutSetPrototypeGroup();
 	}
 
-	private long _addLayoutWithPortlet(Group group, String portletId)
+	private Layout _addLayoutWithPortlet(Group group, String portletId)
 		throws Exception {
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(group);
 
 		LayoutTestUtil.addPortletToLayout(layout, portletId);
 
-		return layout.getPlid();
+		return layout;
 	}
 
 	private void _addObjectEntry(
@@ -448,7 +458,7 @@ public class ImportPreviewResourceTest
 
 	private ImportPreview _postImportPreview(File file) throws Exception {
 		return importPreviewResource.postImportPreview(
-			0L, null, null,
+			null, null,
 			HashMapBuilder.put(
 				"file", file
 			).build());
@@ -594,7 +604,7 @@ public class ImportPreviewResourceTest
 
 		ImportPreview importPreview =
 			importPreviewResource.postSiteImportPreview(
-				testGroup.getExternalReferenceCode(), 0L, null, null,
+				testGroup.getExternalReferenceCode(), null, null, null,
 				HashMapBuilder.put(
 					"file",
 					_exportLayoutAsFile(
@@ -634,7 +644,7 @@ public class ImportPreviewResourceTest
 		_testPostImportPreviewWithObjectEntries(
 			group.getGroupId(), objectDefinition,
 			file -> importPreviewResource.postSiteImportPreview(
-				group.getExternalReferenceCode(), 0L, null, null,
+				group.getExternalReferenceCode(), null, null, null,
 				HashMapBuilder.put(
 					"file", file
 				).build()));
