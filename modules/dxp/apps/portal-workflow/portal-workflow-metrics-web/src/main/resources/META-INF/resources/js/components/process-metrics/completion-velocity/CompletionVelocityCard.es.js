@@ -20,7 +20,8 @@ import Body from './CompletionVelocityCardBody.es';
 const getDefaultStartDate = () => {
 	const date = new Date();
 
-	date.setDate(date.getDate() - 30);
+	date.setDate(date.getDate() - 29);
+	date.setHours(0, 0, 0, 0);
 
 	let newDate = date.toISOString();
 
